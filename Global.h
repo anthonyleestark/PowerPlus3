@@ -74,10 +74,15 @@ static inline void SetDebugLogStyle(int nValue) { g_nDebugLogStyle = nValue; }
 
 /*-------------------------------------------------App flags-------------------------------------------------*/
 
-// Power reminder action trace flag
+// Power action trace flag
 extern BYTE g_byPwrActionFlag;
 static inline BYTE GetPwrActionFlag() { return g_byPwrActionFlag; }
 static inline void SetPwrActionFlag(BYTE byValue) { g_byPwrActionFlag = byValue; }
+
+// System suspended trace flag
+extern BYTE g_bySystemSuspendFlag;
+static inline BYTE GetSystemSuspendFlag() { return g_bySystemSuspendFlag; }
+static inline void SetSystemSuspendFlag(BYTE byValue) { g_bySystemSuspendFlag = byValue; }
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

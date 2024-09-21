@@ -607,12 +607,12 @@ void CHotkeySetDlg::RefreshDlgItemState()
 {
 	// Enable/disable buttons if data is all empty or not
 	BOOL bIsAllEmpty = m_hksHotkeySetTemp.IsAllEmpty();
-	GetDlgItem(IDC_HOTKEYSET_REMOVE_BTN)->EnableWindow(!bIsAllEmpty);
-	GetDlgItem(IDC_HOTKEYSET_REMOVEALL_BTN)->EnableWindow(!bIsAllEmpty);
+	EnableControl(IDC_HOTKEYSET_REMOVE_BTN, !bIsAllEmpty);
+	EnableControl(IDC_HOTKEYSET_REMOVEALL_BTN, !bIsAllEmpty);
 
 	// Enable/disable buttons if data changed or not
 	m_bChangeFlag = CheckDataChangeState();
-	GetDlgItem(IDC_HOTKEYSET_APPLY_BTN)->EnableWindow(m_bChangeFlag);
+	EnableControl(IDC_HOTKEYSET_APPLY_BTN, m_bChangeFlag);
 
 	// Update "Check All" button state
 	UpdateCheckAllBtnState();
@@ -643,7 +643,10 @@ void CHotkeySetDlg::UpdateCheckAllBtnState()
 	// Update button state/title
 	int nBtnTitleID = (m_bAllChecked == FALSE) ? BTN_HKSETDLG_CHECKALL : BTN_HKSETDLG_UNCHECKALL;
 	LANGTABLE_PTR ptrLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	GetDlgItem(IDC_HOTKEYSET_CHECKALL_BTN)->SetWindowText(GetLanguageString(ptrLang, nBtnTitleID));
+	CWnd* pCheckAllBtn = GetDlgItem(IDC_HOTKEYSET_CHECKALL_BTN);
+	if (pCheckAllBtn != NULL) {
+		SetControlText(pCheckAllBtn, nBtnTitleID, ptrLang);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -1118,6 +1118,7 @@ void tagACTIONDATA::Copy(const tagACTIONDATA& pData)
 
 void tagACTIONDATA::RemoveAll(void)
 {
+	this->bInitState = TRUE;						// Init state flag
 	this->nActionType = 0;							// Action type
 	this->stActionTime = {0};						// Time of action
 	this->nActionNameID = 0;						// Name of action (string ID)
@@ -1379,7 +1380,7 @@ LPCTSTR PairFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR 
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	DoPowerAction
+//	Function name:	ExecutePowerAction
 //	Description:	Main power action function
 //  Arguments:		nActionType - Type of action
 //					nMessage	- Action message
@@ -1388,7 +1389,7 @@ LPCTSTR PairFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR 
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::DoPowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
+BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
 	// Action here
 	BOOL bRet = FALSE;
@@ -1409,8 +1410,8 @@ BOOL CoreFuncs::DoPowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 				case DEF_APP_MESSAGE_SIGNOUT:
 				{
 					// Force action
-					UINT nAction = nMessage;
-					nAction |= EWX_FORCE;
+					UINT uExitWinExFlags = nMessage;
+					uExitWinExFlags |= EWX_FORCE;
 
 					HANDLE hToken;
 					TOKEN_PRIVILEGES tkPrivileges;
@@ -1422,30 +1423,41 @@ BOOL CoreFuncs::DoPowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 					}
 
 					// Adjust token privileges
-					LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkPrivileges.Privileges[0].Luid);
+					if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkPrivileges.Privileges[0].Luid)) {
+						dwErrCode = GetLastError();
+						return FALSE;
+					}
+
+					// Adjust token privileges
 					tkPrivileges.PrivilegeCount = 1;
 					tkPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-					AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0);
-
-					// Adjust token privileges failed
-					dwErrCode = GetLastError();
-					if (dwErrCode != DEF_APP_ERROR_SUCCESS)
+					if (!AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
+						// Adjust token privileges failed
+						dwErrCode = GetLastError();
 						return FALSE;
+					}
 
 					// Exit Windows
-					bRet = ExitWindowsEx(nAction, 0);
-					dwErrCode = GetLastError();
+					if (!ExitWindowsEx(uExitWinExFlags, 0)) {
+						// Get exit Windows error
+						dwErrCode = GetLastError();
+						return FALSE;
+					}
 
 				} break;
 				case DEF_APP_MESSAGE_SLEEP:
-					// Sleep
-					bRet = SetSuspendState(FALSE, FALSE, FALSE);	// Stand by (sleep)
-					dwErrCode = GetLastError();
+					// Sleep mode
+					if (!SetSuspendState(FALSE, FALSE, FALSE)) {		// Stand by (sleep)
+						dwErrCode = GetLastError();
+						return FALSE;
+					}
 					break;
 				case DEF_APP_MESSAGE_HIBERNATE:
-					// Hibernate
-					bRet = SetSuspendState(TRUE, FALSE, FALSE);		// Hibernate
-					dwErrCode = GetLastError();
+					// Hibernate mode
+					if (!SetSuspendState(TRUE, FALSE, FALSE)) {			// Hibernate
+						dwErrCode = GetLastError();
+						return FALSE;
+					}
 					break;
 			}
 		} break;
@@ -1461,7 +1473,7 @@ BOOL CoreFuncs::DoPowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	DoPowerActionDummy
+//	Function name:	ExecutePowerActionDummy
 //	Description:	Dummy power action function (use for testing)
 //  Arguments:		nActionType - Type of action
 //					nMessage	- Action message
@@ -1470,10 +1482,10 @@ BOOL CoreFuncs::DoPowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::DoPowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
+BOOL CoreFuncs::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
 	CString strAction;
-	strAction.Format(_T("DoPowerAction: "));
+	strAction.Format(_T("ExecutePowerAction: "));
 	if (nActionType == DEF_APP_ACTIONTYPE_MONITOR) {
 		strAction += _T("Turn off display");
 		dwErrCode = ERROR_SUCCESS;
@@ -1549,15 +1561,15 @@ void CoreFuncs::SetDefaultData(PCONFIGDATA pcfgData)
 	pcfgData->nLanguageID = APP_LANGUAGE_ENGLISH;
 	pcfgData->bShowDlgAtStartup = TRUE;
 	pcfgData->bStartupEnabled = TRUE;
-	pcfgData->bConfirmAction = FALSE;
-	pcfgData->bSaveActionLog = TRUE;
+	pcfgData->bConfirmAction = TRUE;
+	pcfgData->bSaveActionLog = FALSE;
 	pcfgData->bSaveAppEventLog = TRUE;
 	pcfgData->bRunAsAdmin = FALSE;
 	pcfgData->bShowErrorMsg = FALSE;
-	pcfgData->bNotifySchedule = FALSE;
+	pcfgData->bNotifySchedule = TRUE;
 	pcfgData->bAllowCancelSchedule = FALSE;
 	pcfgData->bEnableBackgroundHotkey = FALSE;
-	pcfgData->bEnablePowerReminder = FALSE;
+	pcfgData->bEnablePowerReminder = TRUE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1888,12 +1900,12 @@ void CoreFuncs::WriteTraceNDebugLogFile(LPCTSTR lpszFileName, LPCTSTR lpszLogStr
 	// Format log date/time
 	CString strTimeFormat;
 	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
-	strTimeFormat.Format(IDS_STRFORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
 		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_STRFORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
 
 	if (!strLogFormat.IsEmpty()) {
 		// Write log string to file
@@ -2141,8 +2153,8 @@ BOOL CoreFuncs::Text2Time(SYSTEMTIME& stTime, CString strText)
 
 	int nHour = DEF_INTEGER_INVALID;
 	int nMinute = DEF_INTEGER_INVALID;
-	int nLeft = 0, nLeft1 = 0;
-	int	nRight = 0, nRight1 = 0;
+	int nLeft1Digit = 0, nLeft2Digits = 0;
+	int	nRight1Digit = 0, nRight2Digits = 0;
 
 	// Convert
 	switch (nLength)
@@ -2153,12 +2165,12 @@ BOOL CoreFuncs::Text2Time(SYSTEMTIME& stTime, CString strText)
 		nMinute = 0;
 		break;
 	case 2:
-		nLeft = _tstoi(strTime.Left(1));
-		nRight = _tstoi(strTime.Right(1));
-		if ((nLeft == 0) ||										// Ex: 08 -> 00:08
-			((nLeft > 2) || ((nLeft == 2) && (nRight > 3)))) {	// Ex: 35 -> 03:05, 24 -> 02:04, ...
-			nHour = nLeft;
-			nMinute = nRight;
+		nLeft1Digit = _tstoi(strTime.Left(1));
+		nRight1Digit = _tstoi(strTime.Right(1));
+		if ((nLeft1Digit == 0) ||													// Ex: 08 -> 00:08
+			((nLeft1Digit > 2) || ((nLeft1Digit == 2) && (nRight1Digit > 3)))) {	// Ex: 35 -> 03:05, 24 -> 02:04, ...
+			nHour = nLeft1Digit;
+			nMinute = nRight1Digit;
 		}
 		else {
 			// Ex: 13 -> 13:00, 18 -> 18:00, ...
@@ -2166,16 +2178,16 @@ BOOL CoreFuncs::Text2Time(SYSTEMTIME& stTime, CString strText)
 			nMinute = 0;
 		} break;
 	case 3:
-		nLeft = _tstoi(strTime.Left(1));
-		nLeft1 = _tstoi(strTime.Left(2));
-		if ((nLeft == 0) ||						// Ex: 034 -> 00:34, ...
-			((nLeft > 2) || (nLeft1 >= 24))) {	// Ex: 320 -> 03:20, 250 -> 02:50, ...
-			nHour = nLeft;
+		nLeft1Digit = _tstoi(strTime.Left(1));
+		nLeft2Digits = _tstoi(strTime.Left(2));
+		if ((nLeft1Digit == 0) ||								// Ex: 034 -> 00:34, ...
+			((nLeft1Digit > 2) || (nLeft2Digits >= 24))) {		// Ex: 320 -> 03:20, 250 -> 02:50, ...
+			nHour = nLeft1Digit;
 			nMinute = _tstoi(strTime.Right(2));
 		}
 		else {
 			// Ex: 180 -> 18:00, 225 -> 22:05
-			nHour = nLeft1;
+			nHour = nLeft2Digits;
 			nMinute = _tstoi(strTime.Right(1));
 		} break;
 	case 4:
@@ -2490,12 +2502,21 @@ void CoreFuncs::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int nRowNum, in
 
 SYSTEMTIME CoreFuncs::GetCurSysTime(void)
 {
-	SYSTEMTIME tsTemp;
-	GetSystemTime(&tsTemp);
-	WORD wMillisecs = tsTemp.wMilliseconds;
-	(CTime::GetCurrentTime()).GetAsSystemTime(tsTemp);
-	tsTemp.wMilliseconds = wMillisecs;
-	return tsTemp;
+	// Get system time
+	SYSTEMTIME tsSysTimeTemp;
+	GetSystemTime(&tsSysTimeTemp);
+	
+	// Backup millisecond value
+	WORD wMillisecs = tsSysTimeTemp.wMilliseconds;
+	
+	// Get current time
+	CTime timeTemp = CTime::GetCurrentTime();
+	timeTemp.GetAsSystemTime(tsSysTimeTemp);
+
+	// Restore the millisecond value
+	tsSysTimeTemp.wMilliseconds = wMillisecs;
+
+	return tsSysTimeTemp;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2563,6 +2584,7 @@ BOOL CoreFuncs::CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOff
 
 CString	CoreFuncs::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal)
 {
+	// Load format string
 	CString strFormat;
 	BOOL bRet = LoadResourceString(strFormat, nFormatID);
 

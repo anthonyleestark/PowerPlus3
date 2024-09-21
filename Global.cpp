@@ -43,8 +43,11 @@ int g_nDebugLogStyle = DEFAULT_DEBUGLOGSTYLE;
 
 /*-------------------------------------------------App flags-------------------------------------------------*/
 
-// Power reminder action trace flag
+// Power action trace flag
 BYTE g_byPwrActionFlag = 0;
+
+// System suspended trace flag
+BYTE g_bySystemSuspendFlag = 0;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

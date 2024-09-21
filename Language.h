@@ -172,7 +172,7 @@ static LANGTABLE langtable_en_US
 
 /*-----About Dialog Item--------------------------------------------------------------------Language String-----------------------------------------------------------*/
 	{ IDD_ABOUT_DLG,										_T("About Power++") },
-	{ IDC_APPNAME_LABEL,								  	_T("Power++ 3.1 (v3.1.1.0)") },
+	{ IDC_APPNAME_LABEL,								  	_T("Power++ 3.1 (v3.1.2.0)") },
 	{ IDC_COPYRIGHT_LABEL, 							 		_T("Copyright (C) 2017 - 2024 AnthonyLeeStark.") },
 	{ IDC_AUTH_LABEL,  										_T("Developed by: Anthony Lee Stark (@AnthonyLeeStark)") },
 	{ IDC_DEVPROFILE_LINK,	 								_T("<a>View Developer's Facebook Profile</a>") },
@@ -488,7 +488,7 @@ static LANGTABLE langtable_vi_VN
 
 /*-----About Dialog Item---------------------------------------------------------------Language String----------------------------------------------------------------*/
 	{ IDD_ABOUT_DLG, 										_T("Về Power++") },
-	{ IDC_APPNAME_LABEL,									_T("Power++ 3.1 (v3.1.1.0)") },
+	{ IDC_APPNAME_LABEL,									_T("Power++ 3.1 (v3.1.2.0)") },
 	{ IDC_COPYRIGHT_LABEL, 									_T("Bản quyền thuộc (C) AnthonyLeeStark 2017 - 2024.") },
 	{ IDC_AUTH_LABEL,  										_T("Phát triển bởi: Anthony Lee Stark (@AnthonyLeeStark)") },
 	{ IDC_DEVPROFILE_LINK,									_T("<a>Xem trang Facebook cá nhân của tác giả</a>") },
@@ -804,7 +804,7 @@ static LANGTABLE langtable_zh_CH
 
 /*-----About Dialog Item--------------------------------------------------------------------Language String-----------------------------------------------------------*/
 	{ IDD_ABOUT_DLG,										_T("关于Power++") },
-	{ IDC_APPNAME_LABEL,								  	_T("Power++ 3.1 (v3.1.1.0)") },
+	{ IDC_APPNAME_LABEL,								  	_T("Power++ 3.1 (v3.1.2.0)") },
 	{ IDC_COPYRIGHT_LABEL, 							 		_T("版权(C)属于2017 - 2024 AnthonyLeeStark.") },
 	{ IDC_AUTH_LABEL,  										_T("开发者：Anthony Lee Stark (@AnthonyLeeStark)") },
 	{ IDC_DEVPROFILE_LINK,	 								_T("<a>查看开发者的Facebook个人资料</a>") },

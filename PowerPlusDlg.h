@@ -178,8 +178,8 @@ protected:
 
 private:
 	// Core functions
-	BOOL DoAction(UINT nActionType, WPARAM wParam = NULL, LPARAM lParam = NULL);
-	void ApplyAndClose();
+	BOOL ExecuteAction(UINT nActionType, WPARAM wParam = NULL, LPARAM lParam = NULL);
+	void ApplySettings(BOOL bMinimize);
 	void ReloadSettings();
 
 	void ShowDialog(HWND hWnd, UINT nDialogID, BOOL bShowFlag = TRUE);
@@ -190,7 +190,7 @@ private:
 	// Advanced features functions
 	BOOL ProcessSchedule();
 	void SetScheduleActiveState(BOOL bActive);
-	void SetupBackgroundHotkey(int nMode = DEF_MODE_INIT);
+	void SetupBackgroundHotkey(int nMode);
 	BOOL ProcessHotkey(int nHotkeyID);
 	BOOL ExecutePowerReminder(UINT nExecEventID);
 	int  DisplayPwrReminder(PWRREMINDERITEM& pwrDispItem);
@@ -198,7 +198,7 @@ private:
 	BOOL ProcessDebugCommand(LPCTSTR lpszCommand);
 
 	// Logging and message functions
-	void SaveActionHistory(ACTIONDATA actionInfo);
+	void SaveActionHistory(void);
 	int	 ConfirmAction(UINT nActionType, UINT nActionID);
 	int  NotifySchedule(void);
 	void ShowErrorMessage(DWORD dwError);

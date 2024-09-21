@@ -59,7 +59,7 @@ CString tagLOGITEM::FormatDateTime()
 {
 	CString strTimeFormat;
 	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
-	strTimeFormat.Format(IDS_STRFORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
 						stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
 
 	return strTimeFormat;
@@ -77,7 +77,7 @@ CString tagLOGITEM::FormatDateTime()
 CString tagLOGITEM::FormatLogString()
 {
 	CString strLogFormat;
-	strLogFormat.Format(IDS_STRFORMAT_LOGSTRING, FormatDateTime(), strLogString, strDetails);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, FormatDateTime(), strLogString, strDetails);
 	return strLogFormat;
 }
 

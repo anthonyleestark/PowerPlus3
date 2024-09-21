@@ -512,7 +512,7 @@ void CScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TRUE 
 	else {
 		// Set value for time editbox
 		CString strTimeFormat;
-		strTimeFormat = FormatDispTime(pLang, IDS_STRFORMAT_SHORTTIME, stTime);
+		strTimeFormat = FormatDispTime(pLang, IDS_FORMAT_SHORTTIME, stTime);
 		m_pTimeEdit->SetWindowText(strTimeFormat);
 	}
 }

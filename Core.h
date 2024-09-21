@@ -641,6 +641,7 @@ typedef struct tagPWRREMINDERDATA
 typedef struct tagACTIONDATA
 {
 	// Member variables
+	BOOL		bInitState;							// Init state flag
 	UINT		nActionType;						// Action type
 	SYSTEMTIME	stActionTime;						// Time of action
 	UINT		nActionNameID;						// Name of action (string ID)
@@ -1009,9 +1010,9 @@ namespace PairFuncs
 
 namespace CoreFuncs
 {
-	// Power action functions (main core)
-	BOOL DoPowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
-	BOOL DoPowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
+	// Power action execution functions (main core)
+	BOOL ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
+	BOOL ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
 
 	// Default data initialization
 	void SetDefaultData(PCONFIGDATA pcfgData);

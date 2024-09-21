@@ -1031,9 +1031,15 @@ BOOL CPowerPlusApp::LoadGlobalVars(void)
 	// Subsection: AppFlags
 	nSubSection = IDS_REGSECTION_GLBVAR_APPFLAG;
 
-	// Power action flag
+	// Power action trace flag
 	if (GetGlobalVar(nSubSection, IDS_REGKEY_APPFLAG_PWRACTIONFLG, nGlbValue)) {
 		SetPwrActionFlag((BYTE)nGlbValue);
+		bRet |= TRUE;
+	}
+
+	// System suspended trace flag
+	if (GetGlobalVar(nSubSection, IDS_REGKEY_APPFLAG_SYSTEMSUSPENDFLG, nGlbValue)) {
+		SetSystemSuspendFlag((BYTE)nGlbValue);
 		bRet |= TRUE;
 	}
 	/*-----------------------------------------------------------------------------------*/
@@ -1148,9 +1154,15 @@ BOOL CPowerPlusApp::SaveGlobalVars(BYTE byCateID /* = 0xFF */)
 		// Subsection: AppFlags
 		nSubSection = IDS_REGSECTION_GLBVAR_APPFLAG;
 
-		// Power action flag
+		// Power action trace flag
 		byGlbValue = GetPwrActionFlag();
 		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_APPFLAG_PWRACTIONFLG, byGlbValue)) {
+			bRet = FALSE;
+		}
+
+		// System suspended trace flag
+		byGlbValue = GetSystemSuspendFlag();
+		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_APPFLAG_SYSTEMSUSPENDFLG, byGlbValue)) {
 			bRet = FALSE;
 		}
 	}
@@ -2717,7 +2729,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	// Extract time data from string
 	TCHAR tcMiddayFlag[5];
 	CString strDateTimeFormat;
-	strDateTimeFormat.LoadString(IDS_STRFORMAT_FULLDATETIME);
+	strDateTimeFormat.LoadString(IDS_FORMAT_FULLDATETIME_NOSPACE);
 	_stscanf_s(tcBuffer, strDateTimeFormat, &timeSysEvent.wYear, &timeSysEvent.wMonth, &timeSysEvent.wDay,
 		&timeSysEvent.wHour, &timeSysEvent.wMinute, &timeSysEvent.wSecond, &timeSysEvent.wMilliseconds, tcMiddayFlag, (unsigned)_countof(tcMiddayFlag));
 
@@ -2755,7 +2767,7 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEve
 	CString strDateTimeFormat;
 	UINT nMiddayFlag = (timeSysEvent.wHour < 12) ? FORMAT_TIME_BEFOREMIDDAY : FORMAT_TIME_AFTERMIDDAY;
 	CString strMiddayFlag = PairFuncs::GetLanguageString(GetAppLanguage(), nMiddayFlag);
-	strDateTimeFormat.Format(IDS_STRFORMAT_FULLDATETIME, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
+	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME_NOSPACE, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
 		timeSysEvent.wHour, timeSysEvent.wMinute, timeSysEvent.wSecond, timeSysEvent.wMilliseconds, strMiddayFlag);
 
 	// Get key name
