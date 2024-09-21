@@ -567,12 +567,6 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR ptrLanguage)
 
 void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupComboBox");
-	strFuncDetail.Format(IDMAP_GET(nComboID));
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	switch (nComboID)
 	{
 	case IDC_HOTKEYSET_ACTION_LIST:

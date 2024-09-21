@@ -1193,6 +1193,7 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
 		// Output action history after waken up
 		SaveActionHistory();
 	}
+	// Process system suspend event
 	else if (ulEvent == PBT_APMSUSPEND) {
 		// Turn on system suspended flag
 		SetSystemSuspendFlag(FLAG_ON);
@@ -2067,13 +2068,6 @@ void CPowerPlusDlg::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 void CPowerPlusDlg::SetupLanguage()
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupLanguage");
-	UINT nCurLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption();
-	strFuncDetail.SetString(GetLanguageName(nCurLanguage));
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
@@ -2123,12 +2117,6 @@ void CPowerPlusDlg::SetupLanguage()
 
 void CPowerPlusDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR pLanguage)
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupComboBox");
-	strFuncDetail.Format(IDMAP_GET(nComboID));
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	switch (nComboID)
 	{
 	case IDC_LMBACTION_LIST:
@@ -3821,41 +3809,70 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand)
 				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
 				// Format and print data
 				CString strKeyName = DEF_STRING_EMPTY;
-				BOOL bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONLMB);
+				CString strValue = DEF_STRING_EMPTY;
+				// Left mouse button action
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONLMB);
 				int nActionStringID = GetPairedID(idplActionName, pcfgDataTemp->nLMBAction);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONMMB);
+				// Middle mouse button action
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONMMB);
 				nActionStringID = GetPairedID(idplActionName, pcfgDataTemp->nMMBAction);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONRMB);
+				// Right mouse button action
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONRMB);
 				nActionStringID = GetPairedID(idplActionName, pcfgDataTemp->nRMBAction);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_RMBSHOWMENU);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bRMBShowMenu) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_LANGUAGEID);
+				// Right mouse button: Only show menu
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_RMBSHOWMENU);
+				strValue = ((pcfgDataTemp->bRMBShowMenu) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Language setting
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_LANGUAGEID);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, CA2W(GetLanguageName(pcfgDataTemp->nLanguageID)).m_psz);
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWATSTARTUP);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bShowDlgAtStartup) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_STARTUPENABLE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bStartupEnabled) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_CONFIRMACTION);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bConfirmAction) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_SAVEACTIONLOG);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bSaveActionLog) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_SAVEAPPEVENTLOG);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bSaveAppEventLog) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_RUNASADMIN);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bRunAsAdmin) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWERROR);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bShowErrorMsg) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_SCHEDULENOTIFY);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bNotifySchedule) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_SCHEDALLOWCANCEL);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bAllowCancelSchedule) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_ENBBKGRDHOTKEYS);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bEnableBackgroundHotkey) ? _T("YES") : _T("NO")));
-				bRet = LoadResourceString(strKeyName, IDS_REGKEY_CFG_ENBPWRREMINDER);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, ((pcfgDataTemp->bEnablePowerReminder) ? _T("YES") : _T("NO")));
+				// Show dialog at startup
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWATSTARTUP);
+				strValue = ((pcfgDataTemp->bShowDlgAtStartup) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Startup with Windows
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_STARTUPENABLE);
+				strValue = ((pcfgDataTemp->bStartupEnabled) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Show confirm message before executing action
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_CONFIRMACTION);
+				strValue = ((pcfgDataTemp->bConfirmAction) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Save action log
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SAVEACTIONLOG);
+				strValue = ((pcfgDataTemp->bSaveActionLog) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Save app event log
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SAVEAPPEVENTLOG);
+				strValue = ((pcfgDataTemp->bSaveAppEventLog) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Run with admin privileges
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_RUNASADMIN);
+				strValue = ((pcfgDataTemp->bRunAsAdmin) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Show action error message
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWERROR);
+				strValue = ((pcfgDataTemp->bShowErrorMsg) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Show notify tip for schedule action
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SCHEDULENOTIFY);
+				strValue = ((pcfgDataTemp->bNotifySchedule) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Allow canceling schedule when notify
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SCHEDALLOWCANCEL);
+				strValue = ((pcfgDataTemp->bAllowCancelSchedule) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Enable background action hotkeys
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ENBBKGRDHOTKEYS);
+				strValue = ((pcfgDataTemp->bEnableBackgroundHotkey) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Enable Power Peminder feature
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ENBPWRREMINDER);
+				strValue = ((pcfgDataTemp->bEnablePowerReminder) ? _T("YES") : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 			}
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("schedule")))) {
@@ -3865,11 +3882,11 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand)
 				// Load app language package
 				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
 				// Format schedule data
-				CString strActive = (pSchedDataTemp->bEnable == TRUE) ? _T("YES") : _T("NO");
+				CString strActive = (pSchedDataTemp->bEnable == TRUE) ? _T("YES") : _T("NO");						// Enable/disable state
 				UINT nActionStringID = GetPairedID(idplActionName, pSchedDataTemp->nAction);
-				CString strAction = GetLanguageString(ptrLanguage, nActionStringID);
-				CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, pSchedDataTemp->stTime);
-				CString strRepeat = (pSchedDataTemp->bRepeat == TRUE) ? _T("YES") : _T("NO");
+				CString strAction = GetLanguageString(ptrLanguage, nActionStringID);								// Schedule action
+				CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, pSchedDataTemp->stTime);	// Schedule time
+				CString strRepeat = (pSchedDataTemp->bRepeat == TRUE) ? _T("YES") : _T("NO");						// Repeat daily
 				// Print data
 				strOutputResult.Format(_T("Active=(%s), Action=(%s), Time=(%s), Repeat=(%s)"), strActive, strAction, strTimeFormat, strRepeat);
 				OutputDebugLog(strOutputResult, DBLOG_OUTPUTTODBTOOL);

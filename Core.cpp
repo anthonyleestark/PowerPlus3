@@ -136,13 +136,34 @@ void tagHOTKEYSETITEM::Copy(const tagHOTKEYSETITEM& pItem)
 
 BOOL tagHOTKEYSETITEM::IsEmpty()
 {
-	// Check if keystroke value is empty
-	if ((this->dwCtrlKeyCode == 0) &&
-		(this->dwFuncKeyCode == 0)) {
-		return TRUE;
-	}
+	BOOL bIsEmpty = FALSE;
 
-	return FALSE;
+	// Check if keystroke value is empty
+	bIsEmpty &= (this->dwCtrlKeyCode == 0);
+	bIsEmpty &= (this->dwFuncKeyCode == 0);
+
+	return bIsEmpty;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Compare
+//	Description:	Compare with another given item
+//  Arguments:		pItem - Pointer of given item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagHOTKEYSETITEM::Compare(const tagHOTKEYSETITEM& pItem)
+{
+	BOOL bRet = FALSE;
+
+	// Compare item
+	bRet &= (this->nHKActionID == pItem.nHKActionID);
+	bRet &= (this->dwCtrlKeyCode == pItem.dwCtrlKeyCode);
+	bRet &= (this->dwFuncKeyCode == pItem.dwFuncKeyCode);
+
+	return bRet;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -277,9 +298,7 @@ void tagHOTKEYSETDATA::Add(const HOTKEYSETITEM& pItem)
 	// Check if item exists, if yes, do not add
 	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
 		HOTKEYSETITEM pItemTemp = this->GetItemAt(nIndex);
-		if ((pItemTemp.nHKActionID == pItem.nHKActionID) &&
-			(pItemTemp.dwCtrlKeyCode == pItem.dwCtrlKeyCode) &&
-			(pItemTemp.dwFuncKeyCode == pItem.dwFuncKeyCode))
+		if (pItemTemp.Compare(pItem) == TRUE)
 			return;
 	}
 
@@ -355,9 +374,7 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 	// If item with same action ID existed, update its data
 	if (nDupActionIndex != DEF_INTEGER_INVALID) {
 		HOTKEYSETITEM& hksTemp = this->GetItemAt(nDupActionIndex);
-		hksTemp.bEnable = pItem.bEnable;
-		hksTemp.dwCtrlKeyCode = pItem.dwCtrlKeyCode;
-		hksTemp.dwFuncKeyCode = pItem.dwFuncKeyCode;
+		hksTemp.Copy(pItem);
 	}
 	// Otherwise, add new
 	else {
@@ -630,16 +647,41 @@ void tagPWRREMINDERITEM::Copy(const tagPWRREMINDERITEM& pItem)
 
 BOOL tagPWRREMINDERITEM::IsEmpty()
 {
-	// Check if item data is empty
-	if ((this->strMessage == DEF_STRING_EMPTY) &&
-		(this->nEventID == 0) &&
-		(this->stTime.wHour == 0) &&
-		(this->stTime.wMinute == 0) &&
-		(this->dwStyle == 0) &&
-		(this->bRepeat == 0))
-		return TRUE;
+	BOOL bIsEmpty = FALSE;
 
-	return FALSE;
+	// Check if item data is empty
+	bIsEmpty &= (this->strMessage == DEF_STRING_EMPTY);
+	bIsEmpty &= (this->nEventID == 0);
+	bIsEmpty &= (this->stTime.wHour == 0);
+	bIsEmpty &= (this->stTime.wMinute == 0);
+	bIsEmpty &= (this->dwStyle == 0);
+	bIsEmpty &= (this->bRepeat == 0);
+
+	return bIsEmpty;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Compare
+//	Description:	Compare with another given item
+//  Arguments:		pItem - Pointer of given item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagPWRREMINDERITEM::Compare(const tagPWRREMINDERITEM& pItem)
+{
+	BOOL bRet = FALSE;
+
+	// Compare item
+	bRet &= (this->nItemID == pItem.nItemID);
+	bRet &= (this->strMessage == pItem.strMessage);
+	bRet &= (this->nEventID == pItem.nEventID);
+	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
+	bRet &= (this->stTime.wMinute == pItem.stTime.wMinute);
+	bRet &= (this->dwStyle == pItem.dwStyle);
+
+	return bRet;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -782,13 +824,7 @@ void tagPWRREMINDERDATA::Add(const PWRREMINDERITEM& pItem)
 	// Check if item exists, if yes, do not add
 	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
 		PWRREMINDERITEM pItemTemp = this->GetItemAt(nIndex);
-		if ((pItemTemp.bEnable == pItem.bEnable) &&
-			(pItemTemp.nItemID == pItem.nItemID) &&
-			(pItemTemp.strMessage == pItem.strMessage) &&
-			(pItemTemp.nEventID == pItem.nEventID) &&
-			(pItemTemp.stTime.wHour == pItem.stTime.wHour) &&
-			(pItemTemp.stTime.wMinute == pItem.stTime.wMinute) &&
-			(pItemTemp.dwStyle == pItem.dwStyle))
+		if (pItemTemp.Compare(pItem) == TRUE)
 			return;
 	}
 
@@ -3282,7 +3318,7 @@ BOOL CoreFuncs::CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT n
 BOOL CoreFuncs::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 {
 	// Load theme library
-	HMODULE hUxTheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+	HMODULE hUxTheme = LoadLibraryEx(_T("uxtheme.dll"), nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 	if (hUxTheme == NULL)
 		return FALSE;
 

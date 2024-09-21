@@ -454,7 +454,7 @@ typedef struct tagCONFIGDATA
 	// System settings
 	BOOL	bShowDlgAtStartup;						// Show dialog at startup
 	BOOL	bStartupEnabled;						// Startup with Windows
-	BOOL	bConfirmAction;							// Show confirm message before doing action
+	BOOL	bConfirmAction;							// Show confirm message before executing action
 	BOOL	bSaveActionLog;							// Save action log
 	BOOL	bSaveAppEventLog;						// Save app event log
 	BOOL	bRunAsAdmin;							// Run with admin privileges
@@ -509,6 +509,7 @@ typedef struct tagHOTKEYSETITEM
 	// Member functions
 	void Copy(const tagHOTKEYSETITEM&);				// Copy item
 	BOOL IsEmpty();									// Check if item is empty
+	BOOL Compare(const tagHOTKEYSETITEM&);			// Compare items
 	void Print(CString& strOutput);					// Print item data
 } HOTKEYSETITEM, *PHOTKEYSETITEM;
 
@@ -583,6 +584,7 @@ typedef struct tagPWRREMINDERITEM
 	// Member functions
 	void Copy(const tagPWRREMINDERITEM&);			// Copy item
 	BOOL IsEmpty();									// Check if item is empty
+	BOOL Compare(const tagPWRREMINDERITEM&);		// Compare items
 	void Print(CString& strOutput);					// Print item data
 } PWRREMINDERITEM, *PPWRREMINDERITEM;
 

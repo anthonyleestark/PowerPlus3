@@ -159,13 +159,6 @@ BOOL CScheduleDlg::OnInitDialog()
 
 void CScheduleDlg::SetupLanguage()
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupLanguage");
-	UINT nCurLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption();
-	strFuncDetail.SetString(GetLanguageName(nCurLanguage));
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
@@ -207,12 +200,6 @@ void CScheduleDlg::SetupLanguage()
 
 void CScheduleDlg::SetupComboBox(LANGTABLE_PTR pLanguage)
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupComboBox");
-	strFuncDetail.Format(IDMAP_GET(IDC_SCHEDULE_ACTION_LIST));
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	// Initialization
 	if (m_pActionList == NULL) {
 		m_pActionList = (CComboBox*)GetDlgItem(IDC_SCHEDULE_ACTION_LIST);

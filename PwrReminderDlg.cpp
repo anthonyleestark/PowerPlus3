@@ -1189,12 +1189,6 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 
 void CPwrReminderDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupComboBox");
-	strFuncDetail.Format(IDMAP_GET(nComboID));
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	// Check combo validity
 	if (m_pMsgStyleCombo == NULL) return;
 

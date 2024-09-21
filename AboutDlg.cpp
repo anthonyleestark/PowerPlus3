@@ -125,13 +125,6 @@ BOOL CAboutDlg::OnInitDialog()
 
 void CAboutDlg::SetupLanguage()
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupLanguage");
-	UINT nCurLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption();
-	strFuncDetail.SetString(GetLanguageName(nCurLanguage));
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	// Load app language packages
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
@@ -344,13 +337,6 @@ void CHelpDlg::OnSwitchViewMode()
 
 void CHelpDlg::SetupLanguage()
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupLanguage");
-	UINT nCurLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption();
-	strFuncDetail.SetString(GetLanguageName(nCurLanguage));
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
