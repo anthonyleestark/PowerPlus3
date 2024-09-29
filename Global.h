@@ -53,7 +53,7 @@ static inline BOOL GetDebugMode() {	return g_bDebugMode; }
 static inline void SetDebugMode(BOOL bValue) { g_bDebugMode = bValue; }
 
 // Debug log style
-enum eDEBUGLOGSTYLE {
+enum eDEBUGOUTPUT {
 	DBLOG_OUTPUTDBSTRING = 0,
 	DBLOG_OUTPUTTOFILE,
 	DBLOG_OUTPUTTODBTOOL,
@@ -89,16 +89,17 @@ static inline void SetSystemSuspendFlag(BYTE byValue) { g_bySystemSuspendFlag = 
 /*---------------------------------------Power reminder message styles---------------------------------------*/
 
 // Define default value
-#define DEFAULT_MSGBKGRDCLR		RGB(230,190,200)
-#define DEFAULT_MSGTEXTCLR		RGB(255,0,0)
-#define DEFAULT_MSGFONTNAME		_T("Arial")
-#define DEFAULT_MSGFONTSIZE		20
-#define DEFAULT_MSGTIMEOUT		0
-#define DEFAULT_MSGICONID		IDI_MSGICON_INFORMATION
-#define DEFAULT_MSGICONSIZE		50
-#define DEFAULT_MSGICONPOS		MSGICONPOS_ONTOP
-#define DEFAULT_MSGHMARGIN		50
-#define DEFAULT_MSGVMARGIN		50
+#define DEFAULT_MSGBKGRDCLR		RGB(230,190,200)			// Default background color: Bright pink
+#define DEFAULT_MSGTEXTCLR		RGB(255,0,0)				// Default text color: Red
+#define DEFAULT_MSGFONTNAME		_T("Arial")					// Default font name: Arial
+#define DEFAULT_MSGFONTSIZE		20							// Default font size: 20pt
+#define DEFAULT_MSGTIMEOUT		0							// Default time-out: None
+#define DEFAULT_MSGICONID		IDI_MSGICON_INFORMATION		// Default icon ID: MB_ICONINFORMATION
+#define DEFAULT_MSGICONSIZE		50							// Default icon size: 50x50px
+#define DEFAULT_MSGICONPOS		MSGICONPOS_ONTOP			// Default icon position: On top
+#define DEFAULT_MSGHMARGIN		50							// Default horizontal margin: 50px
+#define DEFAULT_MSGVMARGIN		50							// Default vertical margin: 50px
+#define DEFAULT_SNOOZETIME		600							// Default snooze time: 10 minutes
 
 // Background color
 extern COLORREF g_colorMsgBkgrd;
@@ -171,6 +172,11 @@ static inline void SetReminderMsgHMargin(UINT uiValue) { g_uiRmdMsgHMargin = uiV
 extern UINT g_uiRmdMsgVMargin;
 static inline UINT GetReminderMsgVMargin() { return g_uiRmdMsgVMargin; }
 static inline void SetReminderMsgVMargin(UINT uiValue) { g_uiRmdMsgVMargin = uiValue; }
+
+// Message snooze interval
+extern UINT g_uiRmdMsgSnoozeInterval;
+static inline UINT GetReminderMsgSnoozeInterval() { return g_uiRmdMsgSnoozeInterval; }
+static inline void SetReminderMsgSnoozeInterval(UINT uiValue) { g_uiRmdMsgSnoozeInterval = uiValue; }
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

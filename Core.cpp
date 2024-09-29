@@ -581,38 +581,38 @@ void tagHOTKEYSETDATA::DeleteAll(void)
 tagPWRREMINDERITEM::tagPWRREMINDERITEM()
 {
 	// Init data
-	this->bEnable = FALSE;					// Enable state
-	this->nItemID = 0;						// Item ID
-	this->strMessage = DEF_STRING_EMPTY;	// Message content
-	this->nEventID = 0;						// Event ID
-	this->stTime = {0};						// Event time
-	this->dwStyle = 0;						// Reminder style
-	this->bRepeat = 0;						// Repeat daily
+	this->bEnable = FALSE;							// Enable state
+	this->nItemID = DEF_PWRREMINDER_MIN_ITEMID;		// Item ID
+	this->strMessage = DEF_STRING_EMPTY;			// Message content
+	this->nEventID = PREVT_AT_SETTIME;				// Event ID
+	this->stTime = {0};								// Event time
+	this->dwStyle = PRSTYLE_MSGBOX;					// Reminder style
+	this->bRepeat = FALSE;							// Repeat daily
 }
 
 tagPWRREMINDERITEM::tagPWRREMINDERITEM(const tagPWRREMINDERITEM& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;			// Enable state
-	this->nItemID = pItem.nItemID;			// Item ID
-	this->strMessage = pItem.strMessage;	// Message content
-	this->nEventID = pItem.nEventID;		// Event ID
-	this->stTime = pItem.stTime;			// Event time
-	this->dwStyle = pItem.dwStyle;			// Reminder style
-	this->bRepeat = pItem.bRepeat;			// Repeat daily
+	this->bEnable = pItem.bEnable;					// Enable state
+	this->nItemID = pItem.nItemID;					// Item ID
+	this->strMessage = pItem.strMessage;			// Message content
+	this->nEventID = pItem.nEventID;				// Event ID
+	this->stTime = pItem.stTime;					// Event time
+	this->dwStyle = pItem.dwStyle;					// Reminder style
+	this->bRepeat = pItem.bRepeat;					// Repeat daily
 }
 
 tagPWRREMINDERITEM::tagPWRREMINDERITEM(BOOL bSetEnable, UINT nSetItemID, LPCTSTR lpszSetMsg, 
 									   UINT nSetEventID, SYSTEMTIME stSetTime, DWORD dwSetStyle, BOOL bSetRepeat)
 {
 	// Copy data
-	this->bEnable = bSetEnable;				// Enable state
-	this->nItemID = nSetItemID;				// Item ID
-	this->strMessage = lpszSetMsg;			// Message content
-	this->nEventID = nSetEventID;			// Event ID
-	this->stTime = stSetTime;				// Event time
-	this->dwStyle = dwSetStyle;				// Reminder style
-	this->bRepeat = bSetRepeat;				// Repeat daily
+	this->bEnable = bSetEnable;						// Enable state
+	this->nItemID = nSetItemID;						// Item ID
+	this->strMessage = lpszSetMsg;					// Message content
+	this->nEventID = nSetEventID;					// Event ID
+	this->stTime = stSetTime;						// Event time
+	this->dwStyle = dwSetStyle;						// Reminder style
+	this->bRepeat = bSetRepeat;						// Repeat daily
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -937,6 +937,7 @@ void tagPWRREMINDERDATA::Remove(int nAtIndex)
 	pwrItem.stTime.wHour = 0;
 	pwrItem.stTime.wMinute = 0;
 	pwrItem.dwStyle = 0;
+	pwrItem.bRepeat = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1123,6 +1124,64 @@ void tagPWRREMINDERDATA::DeleteAll(void)
 	this->nItemNum = 0;
 	this->arrRmdItemList.RemoveAll();
 	this->arrRmdItemList.FreeExtra();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	tagPWRRMDITEMADVSPEC
+//	Description:	Constructor
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagPWRRMDITEMADVSPEC::tagPWRRMDITEMADVSPEC()
+{
+	// Init data
+	this->nItemID = 0;										// Power Reminder item ID
+	this->nSnoozeFlag = FLAG_OFF;							// Snooze trigger flag
+	this->stNextSnoozeTime = {0};							// Next snooze trigger time
+}
+
+tagPWRRMDITEMADVSPEC::tagPWRRMDITEMADVSPEC(const tagPWRRMDITEMADVSPEC& pItem)
+{
+	// Copy data
+	this->nItemID = pItem.nItemID;							// Power Reminder item ID
+	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Snooze trigger flag
+	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Copy
+//	Description:	Copy data from another Power Reminder advance info data
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagPWRRMDITEMADVSPEC::Copy(const tagPWRRMDITEMADVSPEC& pItem)
+{
+	// Copy data
+	this->nItemID = pItem.nItemID;							// Item ID
+	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Snooze trigger flag
+	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CalcNextSnoozeTime
+//	Description:	Calculate Power Reminder item next snooze time
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagPWRRMDITEMADVSPEC::CalcNextSnoozeTime(void)
+{
+	// Calculate time with offset
+	int nSnoozeInterval = GetReminderMsgSnoozeInterval();
+	CoreFuncs::CalcTimeOffset(this->stNextSnoozeTime, nSnoozeInterval);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2575,6 +2634,16 @@ void CoreFuncs::CalcTimeOffset(SYSTEMTIME& stTime, int nOffset)
 	stTime.wHour = nTotalSecs / 3600;
 	stTime.wMinute = (nTotalSecs % 3600) / 60;
 	stTime.wSecond = (nTotalSecs % 3600) % 60;
+
+	// Re-correct time data
+	if (stTime.wHour >= 24) {
+		// Decrease by 24-hour (next day)
+		stTime.wHour -= 24;
+	}
+	else if (stTime.wHour < 0) {
+		// Increase by 24-hour (previous day)
+		stTime.wHour += 24;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

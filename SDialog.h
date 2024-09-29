@@ -48,6 +48,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 protected:
+	// Parent window
+	CWnd*	m_pParentWnd;
+
 	// Member variables
 	BOOL	m_bChangeFlag;
 	BOOL	m_bReadOnlyMode;
@@ -92,6 +95,10 @@ public:
 	virtual void PreDestroyDialog();
 
 	// Member functions
+	virtual CWnd* GetParentWnd();
+	virtual void SetParentWnd(CWnd* pParentWnd);
+	virtual BOOL IsParentWndAvailable();
+
 	virtual UINT GetDialogID();
 	virtual BOOL GetReadOnlyMode();
 	virtual void SetReadOnlyMode(BOOL bReadOnly);

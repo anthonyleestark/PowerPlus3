@@ -41,8 +41,15 @@ public:
 private:
 	// Edit view
 	CEdit* m_pDebugEditView;
+
+	// Buffer content
 	CString m_strBuffer;
 	CString m_strBufferBak;
+
+	// Debug command history
+	BOOL		 m_bCurDispHistory;
+	INT_PTR		 m_nHistoryCurIndex;
+	CStringArray m_arrCommandHistory;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -57,19 +64,41 @@ public:
 	virtual void OnDestroy();
 	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
 	virtual void OnSize(UINT nType, int nWidth, int nHeight);
-	afx_msg void OnDebugViewChange(void);
+	afx_msg void OnDebugViewEditChange(void);
 	afx_msg LRESULT OnDebugOutput(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugViewClear(WPARAM wParam, LPARAM lParam);
+	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL PreTranslateMessage(MSG *pMsg);
-	virtual void SendDebugCommand(HWND hRcvWnd);
+	virtual BOOL SendDebugCommand(void);
 
 private:
 	// Member functions
+	CEdit* GetDebugEditView(void);
+	BOOL InitDebugEditView(UINT nCtrlID);
+
+	BOOL IsDebugEditViewValid(void);
+	BOOL IsDebugEditViewFocus(void);
+
+	int  GetCaretPosition(void);
+	BOOL ShowDebugTestEditViewMenu(void);
+
 	void BackupDebugViewBuffer(void);
-	void FormatDebugCommand(CString &strDebugCommand);
+	int  FormatDebugCommand(CString &strDebugCommand);
 	void ClearViewBuffer(void);
+
 	void AddLine(LPCTSTR lpszString);
 	void UpdateDisplay(BOOL bSeekToEnd = FALSE);
+
+	INT_PTR AddDebugCommandHistory(LPCTSTR lpszCommand);
+	void DispDebugCommandHistory(int nHistoryIndex);
+	void ClearDebugCommandHistory(void);
+	INT_PTR GetDebugCommandHistoryCount(void);
+	BOOL IsDebugCommandHistoryEmpty(void);
+
+	BOOL IsCurrentlyDispHistory(void);
+	void SetCurrentlyDispHistoryState(BOOL bState);
+	INT_PTR GetHistoryCurrentDispIndex(void);
+	void SetHistoryCurrentDispIndex(INT_PTR nCurIndex);
 };
 
 #endif	// ifndef _DEBUGTESTDLG_H_INCLUDED

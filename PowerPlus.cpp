@@ -182,9 +182,9 @@ BOOL CPowerPlusApp::InitInstance()
 	if (0x8000 & ::GetKeyState(VK_CONTROL)) {
 		pDebugTestDlg = new CDebugTestDlg();
 		if (pDebugTestDlg != NULL) {
+			// Parent is NULL because main window hasn't been initialized yet
 			pDebugTestDlg->Create(IDD_DEBUGTEST_DLG, NULL);
 			pDebugTestDlg->ShowWindow(SW_SHOW);
-			pDebugTestDlg->BringWindowToTop();
 		}
 	}
 
@@ -273,12 +273,20 @@ BOOL CPowerPlusApp::InitInstance()
 		// Hide dialog
 		pMainDlg->Create(IDD_POWERPLUS_DIALOG, NULL);
 		pMainDlg->ShowWindow(SW_HIDE);
+		// Set parent window for DebugTest dialog if available
+		if (pDebugTestDlg != NULL) {
+			pDebugTestDlg->SetParentWnd(pMainDlg);
+		}
 		// Notification sound
 		MessageBeep(0xFFFFFFFF);
 		pMainDlg->RunModalLoop();
 	}
 	else {
-		// Show dialog
+		// Set parent window for DebugTest dialog if available
+		if (pDebugTestDlg != NULL) {
+			pDebugTestDlg->SetParentWnd(pMainDlg);
+		}
+		// Show dialog (in modal state)
 		pMainDlg->DoModal();
 		PostMessage(pMainDlg->m_hWnd, SM_WND_SHOWDIALOG, TRUE, NULL);
 	}
@@ -369,16 +377,19 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 	PKBDLLHOOKSTRUCT hHookKeyInfo = (PKBDLLHOOKSTRUCT)lParam;
 	if (((wParam == WM_KEYDOWN || (wParam == WM_SYSKEYDOWN))) && (nCode == HC_ACTION)) {
 		DWORD dwKeyCode = hHookKeyInfo->vkCode;		// Get keycode
-		DWORD dwKeyFlag = hHookKeyInfo->flags;		// Get keyflag
-		// Keystroke pressed: Alt-Backspace
-		if ((dwKeyCode == VK_BACK) && (dwKeyFlag == LLKHF_ALTDOWN)) {
-			// Show DebugTest dialog
-			::PostMessage((AfxGetMainWnd()->m_hWnd), SM_WND_DEBUGTEST, NULL, NULL);
-		}
-		// Keystroke pressed: Ctrl-Backspace
-		else if ((dwKeyCode == VK_BACK) && (0x8000 & ::GetKeyState(VK_CONTROL))) {
-			// Show main window
-			::PostMessage((AfxGetMainWnd()->m_hWnd), SM_WND_SHOWDIALOG, TRUE, NULL);
+		DWORD dwKeyFlags = hHookKeyInfo->flags;		// Get keyflags
+		// Process when Alt & Backspace keys are pressed
+		if ((dwKeyCode == VK_BACK) && (dwKeyFlags & LLKHF_ALTDOWN)) {
+			// Keystroke pressed: "Alt + Left-Win + Backspace"
+			if (0x8000 & ::GetKeyState(VK_LWIN)) {
+				// Show DebugTest dialog
+				::PostMessage((AfxGetMainWnd()->m_hWnd), SM_WND_DEBUGTEST, NULL, NULL);
+			}
+			// Keystroke pressed: "Alt + Left-Shift + Backspace"
+			else if (0x8000 & ::GetKeyState(VK_LSHIFT)) {
+				// Show main window
+				::PostMessage((AfxGetMainWnd()->m_hWnd), SM_WND_SHOWDIALOG, TRUE, NULL);
+			}
 		}
 	}
 
@@ -399,7 +410,8 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID pContext, ULONG ulType, P
 {
 	// Get app pointer
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	if (pApp == NULL) return ULONG(0xFFFF);
+	if (pApp == NULL) 
+		return ULONG(DEF_RESULT_FAILED);
 
 	// Get current system time
 	SYSTEMTIME stCurSysTime = GetCurSysTime();
@@ -421,7 +433,7 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID pContext, ULONG ulType, P
 	}
 
 	// Default return
-	return ULONG(0);		// ERROR_SUCCESS
+	return ULONG(DEF_RESULT_SUCCESS);		// ERROR_SUCCESS
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -670,11 +682,20 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		}
 
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-			HOTKEYSETITEM hksTemp = { 0 };
-			bResult &= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE, (int&)hksTemp.bEnable);
-			bResult &= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID, (int&)hksTemp.nHKActionID);
-			bResult &= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY, (int&)hksTemp.dwCtrlKeyCode);
-			bResult &= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_FUNCKEY, (int&)hksTemp.dwFuncKeyCode);
+			// Initialize temp item
+			HOTKEYSETITEM hksTemp;
+			ZeroMemory(&hksTemp, sizeof(HOTKEYSETITEM));
+
+			// Read item data
+			BOOL bItemRet = FALSE;
+			bItemRet |= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE, (int&)hksTemp.bEnable);
+			bItemRet |= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID, (int&)hksTemp.nHKActionID);
+			bItemRet |= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY, (int&)hksTemp.dwCtrlKeyCode);
+			bItemRet |= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_FUNCKEY, (int&)hksTemp.dwFuncKeyCode);
+
+			// Mark the item as reading failed
+			// only if all values were read unsuccessfully
+			bResult &= bItemRet;
 
 			// Trace error
 			if (bResult == FALSE) {
@@ -728,19 +749,27 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 			// Read each item data
 			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-				PWRREMINDERITEM pwrTemp = {};
-				bResult &= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID, (int&)pwrTemp.nItemID);
-				bResult &= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE, (int&)pwrTemp.bEnable);
-				bResult &= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING, pwrTemp.strMessage);
-				bResult &= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID, (int&)pwrTemp.nEventID);
-				bResult &= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE, (int&)pwrTemp.dwStyle);
-				bResult &= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT, (int&)pwrTemp.bRepeat);
-				bResult &= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIME, nTemp);
+				// Initialize temp item
+				PWRREMINDERITEM pwrTemp;
+
+				// Read item data
+				BOOL bItemRet = FALSE;
+				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID, (int&)pwrTemp.nItemID);
+				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE, (int&)pwrTemp.bEnable);
+				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING, pwrTemp.strMessage);
+				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID, (int&)pwrTemp.nEventID);
+				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE, (int&)pwrTemp.dwStyle);
+				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT, (int&)pwrTemp.bRepeat);
+				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIME, nTemp);
 				if (nTemp != DEF_INTEGER_INVALID) {
 					pwrTemp.stTime.wHour = WORD(nTemp / 100);
 					pwrTemp.stTime.wMinute = WORD(nTemp % 100);
 					nTemp = DEF_INTEGER_INVALID;
 				}
+
+				// Mark the item as reading failed
+				// only if all values were read unsuccessfully
+				bResult &= bItemRet;
 
 				// Trace error
 				if (bResult == FALSE) {
@@ -1098,6 +1127,11 @@ BOOL CPowerPlusApp::LoadGlobalVars(void)
 		SetReminderMsgVMargin((UINT)nGlbValue);
 		bRet |= TRUE;
 	}
+	// Reminder message snooze interval
+	if (GetGlobalVar(nSubSection, IDS_REGKEY_SPECVAR_RMDMSG_SNOOZETIME, nGlbValue)) {
+		SetReminderMsgSnoozeInterval((UINT)nGlbValue);
+		bRet |= TRUE;
+	}
 	/*-----------------------------------------------------------------------------------*/
 
 	return bRet;
@@ -1221,6 +1255,11 @@ BOOL CPowerPlusApp::SaveGlobalVars(BYTE byCateID /* = 0xFF */)
 		// Reminder message display area vertical margin
 		dwGlbValue = GetReminderMsgVMargin();
 		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_SPECVAR_RMDMSG_VMARGIN, dwGlbValue)) {
+			bRet = FALSE;
+		}
+		// Reminder message snooze interval
+		dwGlbValue = GetReminderMsgSnoozeInterval();
+		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_SPECVAR_RMDMSG_SNOOZETIME, dwGlbValue)) {
 			bRet = FALSE;
 		}
 	}
@@ -2407,7 +2446,7 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 
 	// Output trace log
 	if (!strTrcLog.IsEmpty()) {
-		TRCFFMT(__FUNCTION__, strTrcLog);
+		TRCFFMT(__FUNCTION__, CW2A(strTrcLog).m_psz);
 	}
 
 	// Show error message

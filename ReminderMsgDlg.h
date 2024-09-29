@@ -30,8 +30,8 @@ class CReminderMsgDlg : public SDialog
 	DECLARE_DYNAMIC(CReminderMsgDlg)
 
 public:
-	CReminderMsgDlg();	// constructor
-	~CReminderMsgDlg();	// destructor
+	CReminderMsgDlg(CWnd *pParentWnd = NULL);	// constructor
+	~CReminderMsgDlg();							// destructor
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -53,11 +53,15 @@ private:
 	BYTE	m_byIconPosition;
 	CSize	m_szIconSize;
 
-	// Properties
+	// Flags
 	BOOL m_bTimerSet;
-	UINT m_nAutoCloseInterval;
 	BOOL m_bLockDlgSize;
 	BOOL m_bLockFontSize;
+	BOOL m_bAllowSnooze;
+	int	 m_nSnoozeFlag;
+
+	// Properties
+	UINT m_nAutoCloseInterval;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -73,6 +77,8 @@ public:
 	virtual void PostNcDestroy();
 	afx_msg void OnPaint();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 	// Setup displaying content and properties
@@ -97,6 +103,14 @@ public:
 	// Icon and margin
 	virtual void SetMsgIcon(UINT nIconID, int nIconSqrSize);
 	virtual void SetMsgIconPosition(BYTE byPosition);
+
+	// Other properties
+	virtual BOOL GetAllowSnoozeMode();
+	virtual void SetAllowSnoozeMode(BOOL bValue);
+
+	// Flags
+	virtual void GetSnoozeTriggerFlag(int& nValue);
+	virtual void SetSnoozeTriggerFLag(int nValue);
 
 protected:
 	// Calculate icon position

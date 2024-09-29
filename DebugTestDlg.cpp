@@ -49,8 +49,15 @@ CDebugTestDlg::CDebugTestDlg() : SDialog(IDD_DEBUGTEST_DLG)
 {
 	// Edit view
 	m_pDebugEditView = NULL;
+
+	// Buffer content
 	m_strBuffer = DEF_STRING_EMPTY;
 	m_strBufferBak = DEF_STRING_EMPTY;
+
+	// Debug command history
+	m_bCurDispHistory = FALSE;
+	m_nHistoryCurIndex = 0;
+	m_arrCommandHistory.RemoveAll();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -78,7 +85,7 @@ void CDebugTestDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CDebugTestDlg, SDialog)
-	ON_EN_CHANGE(IDC_DEBUGTEST_EDITVIEW, &CDebugTestDlg::OnDebugViewChange)
+	ON_EN_CHANGE(IDC_DEBUGTEST_EDITVIEW, &CDebugTestDlg::OnDebugViewEditChange)
 	ON_MESSAGE(SM_APP_DEBUGOUTPUT,		 &CDebugTestDlg::OnDebugOutput)
 	ON_MESSAGE(SM_WND_DEBUGVIEWCLRSCR,	 &CDebugTestDlg::OnDebugViewClear)
 	ON_WM_DESTROY()
@@ -109,9 +116,9 @@ BOOL CDebugTestDlg::OnInitDialog()
 	this->SetWindowText(strDlgTitle);
 
 	// Get DebugTest edit view
-	m_pDebugEditView = (CEdit*)GetDlgItem(IDC_DEBUGTEST_EDITVIEW);
-	if (m_pDebugEditView == NULL)
-		return FALSE;
+	BOOL bRet = InitDebugEditView(IDC_DEBUGTEST_EDITVIEW);
+	if (bRet == FALSE)
+		return bRet;
 
 	RECT rcClient;
 	this->GetClientRect(&rcClient);
@@ -120,10 +127,16 @@ BOOL CDebugTestDlg::OnInitDialog()
 	int nXPos = rcClient.left, nYPos = rcClient.top;
 	int nWidth = rcClient.right - rcClient.left;
 	int nHeight = rcClient.bottom - rcClient.top;
-	m_pDebugEditView->SetWindowPos(NULL, nXPos, nYPos, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
+	GetDebugEditView()->SetWindowPos(NULL, nXPos, nYPos, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
+
+	// Bring window to top
+	this->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
 
 	// Clear buffer
 	ClearViewBuffer();
+
+	// Init debug command history
+	ClearDebugCommandHistory();
 
 	return TRUE;
 }
@@ -174,9 +187,9 @@ void CDebugTestDlg::OnSize(UINT nType, int nWidth, int nHeight)
 	SDialog::OnSize(nType, nWidth, nHeight);
 
 	// Get DebugTest edit view
-	if (m_pDebugEditView == NULL) {
-		m_pDebugEditView = (CEdit*)GetDlgItem(IDC_DEBUGTEST_EDITVIEW);
-		if (m_pDebugEditView == NULL)
+	if (!IsDebugEditViewValid()) {
+		BOOL bRet = InitDebugEditView(IDC_DEBUGTEST_EDITVIEW);
+		if (bRet == FALSE)
 			return;
 	}
 
@@ -187,26 +200,26 @@ void CDebugTestDlg::OnSize(UINT nType, int nWidth, int nHeight)
 	int nXPos = rcClient.left, nYPos = rcClient.top;
 	nWidth = rcClient.right - rcClient.left;
 	nHeight = rcClient.bottom - rcClient.top;
-	m_pDebugEditView->SetWindowPos(NULL, nXPos, nYPos, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
+	GetDebugEditView()->SetWindowPos(NULL, nXPos, nYPos, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	OnDebugViewChange
-//	Description:	Handle event when debug contents changed
+//	Function name:	OnDebugViewEditChange
+//	Description:	Handle event when debug view edit contents changed
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestDlg::OnDebugViewChange(void)
+void CDebugTestDlg::OnDebugViewEditChange(void)
 {
 	// Check debug view pointer validity
-	if (m_pDebugEditView == NULL)
+	if (!IsDebugEditViewValid())
 		return;
 
 	// Update buffer content
-	m_pDebugEditView->GetWindowText(m_strBuffer);
+	GetDebugEditView()->GetWindowText(m_strBuffer);
 
 	// If buffer length did not increase
 	int nBufferLength = m_strBuffer.GetLength();
@@ -245,6 +258,9 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 	// Backup buffer
 	BackupDebugViewBuffer();
 
+	// Reset currently displaying history flag
+	SetCurrentlyDispHistoryState(FALSE);
+
 	return (LRESULT)1;
 }
 
@@ -267,6 +283,64 @@ LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM wParam, LPARAM lParam)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	OnCommand
+//	Description:	Handle app command messages (WM_COMMAND)
+//	Arguments:		wParam - First param (HIWORD)
+//					lParam - Second param (LOWORD)
+//  Return value:	BOOL
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	// Process commands
+	switch (LOWORD(wParam))
+	{
+	case IDM_DEBUGTEST_COPY:
+		// Copy selection text to clipboard
+		GetDebugEditView()->Copy();
+		break;
+	case IDM_DEBUGTEST_PASTE:
+		// Check if focus belongs to DebugTest edit view
+		if (IsDebugEditViewFocus() == TRUE) {
+			// Get caret position
+			int nCaretPos = GetCaretPosition();
+			// Get line index by caret position
+			int nCaretLineIdx = GetDebugEditView()->LineFromChar(nCaretPos);
+			// If the caret position is not in the last line
+			if (nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1)) {
+				// Move caret to end of DebugTest edit view
+				GetDebugEditView()->SetSel(-1);
+			}
+			// Paste clipboard text to DebugTest edit view
+			GetDebugEditView()->Paste();
+		} break;
+	case IDM_DEBUGTEST_DISP_PREVCOMMAND:
+		// Display previous command
+		DispDebugCommandHistory(GetHistoryCurrentDispIndex() - 1);
+		break;
+	case IDM_DEBUGTEST_DISP_NEXTCOMMAND:
+		// Display next command
+		DispDebugCommandHistory(GetHistoryCurrentDispIndex() + 1);
+		break;
+	case IDM_DEBUGTEST_CLEAR_BUFFER:
+		// Clear view buffer
+		ClearViewBuffer();
+		break;
+	case IDM_DEBUGTEST_CLOSE:
+		// Close DebugTest
+		EndDialog(IDCANCEL);
+		break;
+	default:
+		break;
+	}
+
+	// Default
+	return SDialog::OnCommand(wParam, lParam);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	PreTranslateMessage
 //	Description:	Pre-translate message
 //  Arguments:		pMsg - Default
@@ -276,36 +350,147 @@ LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM wParam, LPARAM lParam)
 
 BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// Handle key pressed event for DebugTest view
+	// Handle key pressed event for DebugTest edit view
 	if (pMsg->message == WM_KEYDOWN) {
-		// Get current window that has focus
-		CWnd* pFocusWnd = GetFocus();
 
-		// Check if focus belongs to edit control
-		if (pFocusWnd == GetDlgItem(IDC_DEBUGTEST_EDITVIEW)) {
+		// Check if focus belongs to DebugTest edit view
+		if (IsDebugEditViewFocus() == TRUE) {
+
 			// Get pressed key
 			DWORD dwKey = pMsg->wParam;
+
+			// Get caret position
+			int nCaretPos = GetCaretPosition();
+
+			// Get line index by caret position
+			int nCaretLineIdx = GetDebugEditView()->LineFromChar(nCaretPos);
+
+			// If the caret position is not in the last line
+			if (nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1)) {
+				// If "Ctrl+C" keys are pressed
+				if ((dwKey == 0x43) && (0x8000 & ::GetKeyState(VK_CONTROL))) {
+					// If currently selecting a text
+					int nStartSel, nEndSel;
+					GetDebugEditView()->GetSel(nStartSel, nEndSel);
+					if (nStartSel != nEndSel) {
+						// Copy the current selection
+						GetDebugEditView()->Copy();
+						return TRUE;
+					}
+				}
+				else {
+					// Block --> Do nothing
+					return TRUE;
+				}
+			}
 
 			// If [Enter] key is pressed
 			if (dwKey == VK_RETURN) {
 				//Send debug command
-				SendDebugCommand((AfxGetMainWnd()->m_hWnd));
+				BOOL bRet = SendDebugCommand();
+
+				// If debug command is sent, block the break-line
+				if (bRet == TRUE) return bRet;
 			}
 			// If [Backspace] or [Delete] keys are pressed
 			else if ((dwKey == VK_BACK) || (dwKey == VK_DELETE)) {
 				// Only allow erasing inputted content
 				if (m_strBuffer.Compare(m_strBufferBak) == 0)
 					return TRUE;
+
+				// [Backspace] key --> Can not delete empty line
+				if (dwKey == VK_BACK) {
+					// Get line begin character index
+					int nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
+
+					// If the caret position is in the beginning of line
+					// or is not in the last line
+					if ((nCaretPos == nLineBeginIndex) ||
+						(nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1))) {
+						// Block --> Do nothing
+						return TRUE;
+					}
+				}
 			}
-			// If arrow keys are pressed
-			else if ((dwKey == VK_UP) || (dwKey == VK_DOWN) ||
-					(dwKey == VK_LEFT) || (dwKey == VK_RIGHT)) {
+			// If "Ctrl+A" keys are pressed
+			else if ((dwKey == 0x41) && (0x8000 & ::GetKeyState(VK_CONTROL))) {
 				// Block --> Do nothing
 				return TRUE;
 			}
+			// If the [Up/Down] arrow keys are pressed
+			else if ((dwKey == VK_UP) || (dwKey == VK_DOWN)) {
+				// If debug command history is empty
+				if (IsDebugCommandHistoryEmpty())
+					return TRUE;
+
+				// Get command history display index
+				int nHistoryDispIndex = 0;
+				// [Up] arrow key --> Display previous command
+				if (dwKey == VK_UP) {
+					// Get index
+					nHistoryDispIndex = GetHistoryCurrentDispIndex() - 1;
+					// If current index is 0
+					if (nHistoryDispIndex < 0)
+						return TRUE;
+				}
+				// [Down] arrow key --> Display next command
+				else if (dwKey == VK_DOWN) {
+					// Get index
+					nHistoryDispIndex = GetHistoryCurrentDispIndex() + 1;
+					// If current index exceeded limit
+					if (nHistoryDispIndex >= GetDebugCommandHistoryCount())
+						return TRUE;
+				}
+
+				// Display debug command
+				DispDebugCommandHistory(nHistoryDispIndex);
+				return TRUE;
+			}
+			// If the [Left/Right] arrow key is pressed
+			else if (dwKey == VK_LEFT) {
+
+				// Get line begin character index
+				int nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
+
+				// If the caret position is in the beginning of line
+				// or is not in the last line
+				if ((nCaretPos == nLineBeginIndex) ||
+					(nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1))) {
+					// Block --> Do nothing
+					return TRUE;
+				}
+			}
+		}
+	}
+	// Handle right mouse click for DebugTest edit view
+	else if (pMsg->message == WM_RBUTTONDOWN ||
+			 pMsg->message == WM_RBUTTONUP ||
+			 pMsg->message == WM_RBUTTONDBLCLK) {
+
+		// Get clicked point
+		POINT pt;
+		pt.x = GET_X_LPARAM(pMsg->lParam);
+		pt.y = GET_Y_LPARAM(pMsg->lParam);
+
+		// Get DebugTest edit view
+		if (!IsDebugEditViewValid())
+			return 0;
+
+		// Get the editbox rect
+		RECT rcDebugEditView;
+		GetDebugEditView()->GetWindowRect(&rcDebugEditView);
+		ScreenToClient(&rcDebugEditView);
+
+		// If clicked point is inside the editbox area
+		if (((pt.x > rcDebugEditView.left) && (pt.x < rcDebugEditView.right)) &&
+			((pt.y > rcDebugEditView.top) && (pt.y < rcDebugEditView.bottom))) {
+			// Show DebugTest edit view menu
+			ShowDebugTestEditViewMenu();
+			return TRUE;
 		}
 	}
 
+	// Default
 	return SDialog::PreTranslateMessage(pMsg);
 }
 
@@ -318,29 +503,236 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestDlg::SendDebugCommand(HWND hRcvWnd)
+BOOL CDebugTestDlg::SendDebugCommand(void)
 {
-	// Get buffer length
-	int nBufferLength = m_strBuffer.GetLength();
-	int nBufferBakLength = m_strBufferBak.GetLength();
-
-	// If buffer length did not increase, do not send
-	if (nBufferLength <= nBufferBakLength)
-		return;
+	// Check DebugTest edit view validity
+	if (!IsDebugEditViewValid())
+		return FALSE;
 
 	// Backup buffer
 	BackupDebugViewBuffer();
 
-	// Prepare debug command content
-	CString strDebugCommand = m_strBuffer;
-	strDebugCommand.Delete(0, nBufferBakLength);
-	FormatDebugCommand(strDebugCommand);
+	// Get the debug command line
+	CString strDebugCommand;
+	int nCurLine = (GetDebugEditView()->GetLineCount() - 1);
+	int nLineIndex = GetDebugEditView()->LineIndex(nCurLine);
+	int nLineLength = GetDebugEditView()->LineLength(nLineIndex);
+	GetDebugEditView()->GetLine(nCurLine, strDebugCommand.GetBuffer(nLineLength), nLineLength);
+	strDebugCommand.ReleaseBuffer(nLineLength);
 
-	// Send debug command
-	WPARAM wParam = (WPARAM)strDebugCommand.GetLength();
+	// Re-format the debug command
+	int nCommandLength = FormatDebugCommand(strDebugCommand);
+
+	// If debug command is empty, do not send
+	if (nCommandLength <= 0)
+		return FALSE;
+
+	// Prepare params
+	WPARAM wParam = (WPARAM)nCommandLength;
 	LPARAM lParam = (LPARAM)strDebugCommand.GetBuffer();
-	::PostMessage(hRcvWnd, SM_APP_DEBUGCOMMAND, wParam, lParam);
+	
+	// Check if parent window is available
+	if (IsParentWndAvailable()) {
+		// Send to parent window
+		GetParentWnd()->PostMessage(SM_APP_DEBUGCOMMAND, wParam, lParam);
+	}
+	// Check if main window is available
+	else if (CWnd* pMainWnd = AfxGetMainWnd()) {
+		// Send to main window
+		pMainWnd->PostMessage(SM_APP_DEBUGCOMMAND, wParam, lParam);
+	}
+	// There's no window handle to send to
+	else {
+		// Just send to a NULL window and hope that app class will handle
+		::PostMessage(NULL, SM_APP_DEBUGCOMMAND, wParam, lParam);
+	}
+
+	// Update debug command history
+	AddDebugCommandHistory(strDebugCommand);
+
+	// Release buffer
 	strDebugCommand.ReleaseBuffer();
+
+	return TRUE;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Protected methods
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDebugEditView
+//	Description:	Get access to the DebugTest edit view pointer
+//  Arguments:		None
+//  Return value:	CEdit* pointer
+//
+//////////////////////////////////////////////////////////////////////////
+
+CEdit* CDebugTestDlg::GetDebugEditView(void)
+{
+	return m_pDebugEditView;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	InitDebugEditView
+//	Description:	Initialize the DebugTest edit view pointer
+//  Arguments:		nCtrlID - Dialog control ID
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::InitDebugEditView(UINT nCtrlID)
+{
+	// If it has already been initialized, do nothing
+	if (IsDebugEditViewValid())
+		return TRUE;
+
+	// Initialize
+	m_pDebugEditView = (CEdit*)GetDlgItem(nCtrlID);
+	return IsDebugEditViewValid();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsDebugEditViewValid
+//	Description:	Check if the DebugTest edit view (pointer) is valid
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::IsDebugEditViewValid(void)
+{
+	return (GetDebugEditView() != NULL);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsDebugViewFocus
+//	Description:	Check if the DebugTest edit view is focused
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::IsDebugEditViewFocus(void)
+{
+	// Check DebugTest edit view validity
+	if (!IsDebugEditViewValid())
+		return FALSE;
+
+	// Check if it is focused
+	HWND hCurFocusWnd = GetFocus()->GetSafeHwnd();
+	return (hCurFocusWnd == GetDebugEditView()->GetSafeHwnd());
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetCaretPosition
+//	Description:	Get the caret's current position
+//  Arguments:		None
+//  Return value:	int - Caret position
+//
+//////////////////////////////////////////////////////////////////////////
+
+int CDebugTestDlg::GetCaretPosition(void)
+{
+	// Check DebugTest edit view validity
+	if (!IsDebugEditViewValid())
+		return DEF_INTEGER_INVALID;
+
+	// Get caret position
+	int nStartSel, nEndSel;
+	GetDebugEditView()->GetSel(nStartSel, nEndSel);
+	return nStartSel;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	ShowDebugTestEditViewMenu
+//	Description:	Show DebugTest edit view context menu
+//  Arguments:		None
+//	Return value:	BOOL - Show menu successfully or failed
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::ShowDebugTestEditViewMenu(void)
+{
+	// Prepare menu
+	CMenu menuDebugTest, *pContextMenu;
+	menuDebugTest.LoadMenu(IDR_MENU_DEBUGTEST_EDITVIEW);
+	pContextMenu = menuDebugTest.GetSubMenu(0);
+	if (pContextMenu == NULL)
+		return FALSE;
+
+	// Check DebugTest edit view validity
+	if (!IsDebugEditViewValid())
+		return FALSE;
+
+	// Modify menu items
+	for (int nMenuItem = 0; nMenuItem < pContextMenu->GetMenuItemCount(); nMenuItem++) {
+		// Get menu item ID
+		UINT nItemID = pContextMenu->GetMenuItemID(nMenuItem);
+		// Menu "Copy" item
+		if (nItemID == IDM_DEBUGTEST_COPY) {
+			// If currently not selecting any text
+			int nStartSel, nEndSel;
+			GetDebugEditView()->GetSel(nStartSel, nEndSel);
+			// Start and end selection index are equal
+			// means not selecting anything 
+			if (nStartSel == nEndSel) {
+				// Disable menu item
+				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+			}
+		}
+		// Menu "Paste" item
+		else if (nItemID == IDM_DEBUGTEST_PASTE) {
+			// Check if clipboard content available in text format
+			BOOL bClipboardTextAvailable = IsClipboardFormatAvailable(CF_TEXT);
+			// If not available
+			if (bClipboardTextAvailable != TRUE) {
+				// Disable menu item
+				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+			}
+		}
+		// Menu "Previous command" item
+		else if (nItemID == IDM_DEBUGTEST_DISP_PREVCOMMAND) {
+			// If debug command history is empty
+			// or it is currently displaying first command
+			if ((IsDebugCommandHistoryEmpty()) || (GetHistoryCurrentDispIndex() == 0)) {
+				// Disable menu item
+				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+			}
+		}
+		// Menu "Next command" item
+		else if (nItemID == IDM_DEBUGTEST_DISP_NEXTCOMMAND) {
+			// If debug command history is empty
+			// or it is currently displaying last command
+			if ((IsDebugCommandHistoryEmpty()) || 
+				(GetHistoryCurrentDispIndex() >= (GetDebugCommandHistoryCount() - 1))) {
+				// Disable menu item
+				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+			}
+		}
+		// Menu "Clear buffer" item
+		else if (nItemID == IDM_DEBUGTEST_CLEAR_BUFFER) {
+			// If DebugTest buffer screen is empty
+			if (m_strBuffer.IsEmpty()) {
+				// Disable menu item
+				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+			}
+		}
+	}
+
+	// Show menu
+	POINT ptCursor;
+	GetCursorPos(&ptCursor);
+	UINT nFlags = TPM_LEFTALIGN | TPM_TOPALIGN;
+	BOOL bResult = pContextMenu->TrackPopupMenu(nFlags, ptCursor.x, ptCursor.y, (CWnd*)this, NULL);
+
+	return bResult;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -360,23 +752,26 @@ void CDebugTestDlg::BackupDebugViewBuffer(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	BackupDebugViewBuffer
-//	Description:	Backup debug view screen buffer content
-//  Arguments:		None
-//  Return value:	None
+//	Function name:	FormatDebugCommand
+//	Description:	Re-format debug command and return its length
+//  Arguments:		strDebugCommand - Debug command (IN & OUT)
+//  Return value:	int - Length of debug command
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
+int CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 {
 	// If debug command is empty, do nothing
 	if (strDebugCommand.IsEmpty())
-		return;
+		return 0;
 
 	// Format debug command
 	strDebugCommand.Trim();
 	strDebugCommand.Remove(DEF_CHAR_RETURN);
 	strDebugCommand.Remove(DEF_CHAR_ENDLINE);
+
+	// Return the debug command's new length
+	return strDebugCommand.GetLength();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -390,12 +785,12 @@ void CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 
 void CDebugTestDlg::ClearViewBuffer(void)
 {
-	if (m_pDebugEditView == NULL)
+	if (!IsDebugEditViewValid())
 		return;
 
 	// Clear buffer
 	m_strBuffer = DEF_STRING_EMPTY;
-	m_pDebugEditView->SetWindowText(m_strBuffer);
+	GetDebugEditView()->SetWindowText(m_strBuffer);
 
 	// Backup buffer
 	BackupDebugViewBuffer();
@@ -412,13 +807,22 @@ void CDebugTestDlg::ClearViewBuffer(void)
 
 void CDebugTestDlg::AddLine(LPCTSTR lpszString)
 {
-	// If buffer not empty, add an endline first
+	// If buffer not empty
 	if (!m_strBuffer.IsEmpty()) {
-		m_strBuffer += DEF_STRING_NEWLINEWRET;
+		// Get end of buffer character
+		int nBuffLength = m_strBuffer.GetLength();
+		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
+
+		// If end of buffer is not an endline
+		if (tcEndChar != DEF_CHAR_RETURN && tcEndChar != DEF_CHAR_ENDLINE) {
+			// Add an endline first
+			m_strBuffer += DEF_STRING_NEWLINEWRET;
+		}
 	}
 
 	// Add string line
 	m_strBuffer += lpszString;
+	m_strBuffer += DEF_STRING_NEWLINEWRET;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -433,11 +837,187 @@ void CDebugTestDlg::AddLine(LPCTSTR lpszString)
 void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */)
 {
 	// Update display text
-	m_pDebugEditView->SetWindowText(m_strBuffer);
+	GetDebugEditView()->SetWindowText(m_strBuffer);
 
 	// Move to end
 	if (bSeekToEnd == TRUE) {
-		m_pDebugEditView->SetSel(-1);
+		GetDebugEditView()->SetSel(-1);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	AddDebugCommandHistory
+//	Description:	Add debug command to history
+//  Arguments:		lpszCommand - Input command
+//  Return value:	INT_PTR - New item count
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR CDebugTestDlg::AddDebugCommandHistory(LPCTSTR lpszCommand)
+{
+	// Only add if input command is not empty
+	if (_tcscmp(lpszCommand, DEF_STRING_EMPTY)) {
+		m_arrCommandHistory.Add(lpszCommand);
+
+		// Not currently displaying history
+		if (!IsCurrentlyDispHistory()) {
+			int nCount = GetDebugCommandHistoryCount();
+			SetHistoryCurrentDispIndex(nCount);
+		}
+	}
+	
+	// Return new history item count
+	return GetDebugCommandHistoryCount();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	DispDebugCommandHistory
+//	Description:	Display history command by index
+//  Arguments:		nHistoryIndex - History index
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CDebugTestDlg::DispDebugCommandHistory(int nHistoryIndex)
+{
+	// If debug command history is empty, do nothing
+	if (IsDebugCommandHistoryEmpty())
+		return;
+
+	// Check index validity
+	if ((nHistoryIndex < 0) && (nHistoryIndex >= GetDebugCommandHistoryCount()))
+		return;
+
+	// Get command at index
+	CString strCommand = m_arrCommandHistory.GetAt(nHistoryIndex);
+	if (strCommand.IsEmpty())
+		return;
+
+	// Check if DebugTest edit view is available and focused
+	if (IsDebugEditViewFocus()) {
+		// Get last (current) line index
+		int nCurLine = GetDebugEditView()->GetLineCount() - 1;
+
+		// Get the character index of the start of the specified line
+		int nLineStart = GetDebugEditView()->LineIndex(nCurLine);
+		if (nLineStart != -1)
+		{
+			// Get the length of the line
+			int nLineLength = GetDebugEditView()->LineLength(nLineStart);
+
+			// Select the line
+			GetDebugEditView()->SetSel(nLineStart, nLineStart + nLineLength);
+
+			// Replace the selected line with the command line
+			GetDebugEditView()->ReplaceSel(strCommand);
+
+			// Update current displaying history index
+			SetHistoryCurrentDispIndex(nHistoryIndex);
+
+			// Set currently displaying history flag
+			SetCurrentlyDispHistoryState(TRUE);
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	ClearDebugCommandHistory
+//	Description:	Clear current debug command history
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CDebugTestDlg::ClearDebugCommandHistory(void)
+{
+	m_arrCommandHistory.RemoveAll();
+	m_arrCommandHistory.FreeExtra();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDebugCommandHistoryCount
+//	Description:	Get debug command history item count
+//  Arguments:		None
+//  Return value:	INT_PTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR CDebugTestDlg::GetDebugCommandHistoryCount(void)
+{
+	return m_arrCommandHistory.GetSize();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsDebugCommandHistoryEmpty
+//	Description:	Check if current command history is empty or not
+//  Arguments:		bSeekToEnd - Move cursor to end of view
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::IsDebugCommandHistoryEmpty(void)
+{
+	return m_arrCommandHistory.IsEmpty();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsCurrentlyDispHistory
+//	Description:	Check if currently displaying command history or not
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::IsCurrentlyDispHistory(void)
+{
+	return m_bCurDispHistory;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetCurrentlyDispHistoryState
+//	Description:	Set currently displaying command history state
+//  Arguments:		bState - State flag
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CDebugTestDlg::SetCurrentlyDispHistoryState(BOOL bState)
+{
+	m_bCurDispHistory = bState;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetHistoryCurrentDispIndex
+//	Description:	Get command history current displaying index
+//  Arguments:		None
+//  Return value:	INT_PTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR CDebugTestDlg::GetHistoryCurrentDispIndex(void)
+{
+	return m_nHistoryCurIndex;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetHistoryCurrentDispIndex
+//	Description:	Set command history current displaying index
+//  Arguments:		INT_PTR
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CDebugTestDlg::SetHistoryCurrentDispIndex(INT_PTR nCurIndex)
+{
+	m_nHistoryCurIndex = nCurIndex;
 }
 

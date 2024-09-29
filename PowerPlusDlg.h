@@ -87,11 +87,17 @@ private:
 	BOOL	m_bDlgExpanded;
 	CSize*	m_pDialogSize;
 
-	// Other member variable(s)
+	// Hotkey register data
 	BOOL		m_bHotkeyRegistered;
 	CUIntArray	m_arrCurRegHKeyList;
-	BOOL		m_bRestartAsAdminFlag;
-	int			m_nPwrBroadcastSkipCount;
+
+	// Power Reminder advanced data
+	PWRREMINDERADVLIST m_arrRmdAdvList;
+
+	// Other flags
+	BOOL m_bRestartAsAdminFlag;
+	int	 m_nPwrBroadcastSkipCount;
+
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -182,7 +188,7 @@ private:
 	void ApplySettings(BOOL bMinimize);
 	void ReloadSettings();
 
-	void ShowDialog(HWND hWnd, UINT nDialogID, BOOL bShowFlag = TRUE);
+	void ShowDialog(HWND hWnd, BOOL bShowFlag = TRUE);
 	void OpenDialog(UINT nDialogID, BOOL bReadOnlyMode = FALSE, int nOpenMode = DEF_MODE_OPENDLG_MODAL);
 	BOOL OpenFileToView(LPCTSTR lpszFileName, LPCTSTR lpszSubDir = DEF_STRING_EMPTY);
 	void RestartApp(BOOL bRestartAsAdmin);
@@ -195,7 +201,9 @@ private:
 	BOOL ExecutePowerReminder(UINT nExecEventID);
 	int  DisplayPwrReminder(PWRREMINDERITEM& pwrDispItem);
 	void ReupdatePwrReminderData();
-	BOOL ProcessDebugCommand(LPCTSTR lpszCommand);
+	void SetPwrReminderSnooze(PWRREMINDERITEM pwrItem, int nSnoozeFlag);
+	BOOL GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
+	BOOL ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode);
 
 	// Logging and message functions
 	void SaveActionHistory(void);

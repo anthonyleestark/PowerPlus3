@@ -50,6 +50,9 @@ IMPLEMENT_DYNAMIC(SDialog, CDialogEx)
 
 SDialog::SDialog() : CDialogEx()
 {
+	// Init parent window
+	m_pParentWnd = NULL;
+
 	// Init member variables
 	m_bReadOnlyMode = FALSE;
 	m_bChangeFlag = FALSE;
@@ -83,6 +86,9 @@ SDialog::SDialog() : CDialogEx()
 
 SDialog::SDialog(UINT nIDTemplate, CWnd* pParent /* = NULL */) : CDialogEx(nIDTemplate, pParent)
 {
+	// Init parent window
+	m_pParentWnd = pParent;
+
 	// Init member variables
 	m_bReadOnlyMode = FALSE;
 	m_bChangeFlag = FALSE;
@@ -116,6 +122,9 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParent /* = NULL */) : CDialogEx(nIDTe
 
 SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParent /* = NULL */) : CDialogEx(lpszTemplateName, pParent)
 {
+	// Init parent window
+	m_pParentWnd = pParent;
+
 	// Init member variables
 	m_bReadOnlyMode = FALSE;
 	m_bChangeFlag = FALSE;
@@ -359,6 +368,7 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 
+	// Default
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -374,6 +384,48 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 void SDialog::PreDestroyDialog()
 {
 	// TODO: Deliver this function for custom actions
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetParentWnd
+//	Description:	Get current dialog's parent window
+//  Arguments:		None
+//  Return value:	CWnd*
+//
+//////////////////////////////////////////////////////////////////////////
+
+CWnd* SDialog::GetParentWnd()
+{
+	return m_pParentWnd;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetParentWnd
+//	Description:	Get parent window for current dialog
+//  Arguments:		pParentWnd - Parent window
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::SetParentWnd(CWnd* pParentWnd)
+{
+	m_pParentWnd = pParentWnd;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsParentWndAvailable
+//	Description:	Check if parent window (pointer) is available
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL SDialog::IsParentWndAvailable()
+{
+	return (m_pParentWnd != NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////

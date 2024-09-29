@@ -83,6 +83,9 @@ UINT	 g_uiRmdMsgHMargin = DEFAULT_MSGHMARGIN;
 // Display area vertical margin
 UINT	 g_uiRmdMsgVMargin = DEFAULT_MSGVMARGIN;
 
+// Message snooze interval
+UINT	 g_uiRmdMsgSnoozeInterval = DEFAULT_SNOOZETIME;
+
 /*-----------------------------------------------------------------------------------------------------------*/
 
 

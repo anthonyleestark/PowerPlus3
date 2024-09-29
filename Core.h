@@ -117,6 +117,10 @@
 #define DEF_APP_ERROR_OUTPUT_LOG_FAILED			(DEF_APP_ERROR << 8) + 0xF5
 #define DEF_APP_ERROR_UNKNOWN					(DEF_APP_ERROR << 8) + 0xFF
 
+// Define function results
+#define DEF_RESULT_SUCCESS						0x0000
+#define DEF_RESULT_FAILED						0xFFFF
+
 // Define menu item types
 #define MENU_ITEM								0x06
 #define MENU_ITEM_OPTION						(MENU_ITEM << 8) + 0x0001
@@ -443,29 +447,29 @@ typedef enum eFILETYPE {
 typedef struct tagCONFIGDATA
 {
 	// Main settings
-	UINT	nLMBAction;								// Left mouse button action
-	UINT	nMMBAction;								// Middle mouse button action
-	UINT	nRMBAction;								// Right mouse button action
-	BOOL	bRMBShowMenu;							// Right mouse button: Only show menu
+	UINT	nLMBAction;										// Left mouse button action
+	UINT	nMMBAction;										// Middle mouse button action
+	UINT	nRMBAction;										// Right mouse button action
+	BOOL	bRMBShowMenu;									// Right mouse button: Only show menu
 
 	// Display setting
-	UINT	nLanguageID;							// Language setting
+	UINT	nLanguageID;									// Language setting
 
 	// System settings
-	BOOL	bShowDlgAtStartup;						// Show dialog at startup
-	BOOL	bStartupEnabled;						// Startup with Windows
-	BOOL	bConfirmAction;							// Show confirm message before executing action
-	BOOL	bSaveActionLog;							// Save action log
-	BOOL	bSaveAppEventLog;						// Save app event log
-	BOOL	bRunAsAdmin;							// Run with admin privileges
-	BOOL	bShowErrorMsg;							// Show action error message
-	BOOL	bNotifySchedule;						// Show notify tip for schedule action
-	BOOL	bAllowCancelSchedule;					// Allow canceling schedule when notify
-	BOOL	bEnableBackgroundHotkey;				// Enable background action hotkeys
-	BOOL	bEnablePowerReminder;					// Enable Power Peminder feature
+	BOOL	bShowDlgAtStartup;								// Show dialog at startup
+	BOOL	bStartupEnabled;								// Startup with Windows
+	BOOL	bConfirmAction;									// Show confirm message before executing action
+	BOOL	bSaveActionLog;									// Save action log
+	BOOL	bSaveAppEventLog;								// Save app event log
+	BOOL	bRunAsAdmin;									// Run with admin privileges
+	BOOL	bShowErrorMsg;									// Show action error message
+	BOOL	bNotifySchedule;								// Show notify tip for schedule action
+	BOOL	bAllowCancelSchedule;							// Allow canceling schedule when notify
+	BOOL	bEnableBackgroundHotkey;						// Enable background action hotkeys
+	BOOL	bEnablePowerReminder;							// Enable Power Peminder feature
 
 	// Member functions
-	void Copy(const tagCONFIGDATA&);				// Copy data
+	void Copy(const tagCONFIGDATA&);						// Copy data
 } CONFIGDATA, *PCONFIGDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -479,15 +483,15 @@ typedef struct tagCONFIGDATA
 typedef struct tagSCHEDULEDATA
 {
 	// Member variables
-	BOOL		bEnable;							// Enable/disable state
-	BOOL		bRepeat;							// Repeat daily
-	UINT		nAction;							// Schedule action
-	SYSTEMTIME	stTime;								// Schedule time
+	BOOL		bEnable;									// Enable/disable state
+	BOOL		bRepeat;									// Repeat daily
+	UINT		nAction;									// Schedule action
+	SYSTEMTIME	stTime;										// Schedule time
 
 	// Member functions
-	void Copy(const tagSCHEDULEDATA&);				// Copy data
-	void Activate();								// Activate schedule
-	void Deactivate();								// Deactivate schedule
+	void Copy(const tagSCHEDULEDATA&);						// Copy data
+	void Activate();										// Activate schedule
+	void Deactivate();										// Deactivate schedule
 } SCHEDULEDATA, *PSCHEDULEDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -501,16 +505,16 @@ typedef struct tagSCHEDULEDATA
 typedef struct tagHOTKEYSETITEM
 {
 	// Member variables
-	BOOL	bEnable;								// Hotkey enabled/disabled
-	UINT	nHKActionID;							// Hotkey action ID
-	DWORD	dwCtrlKeyCode;							// Control Keycode #1
-	DWORD	dwFuncKeyCode;							// Function Keycode #2
+	BOOL	bEnable;										// Hotkey enabled/disabled
+	UINT	nHKActionID;									// Hotkey action ID
+	DWORD	dwCtrlKeyCode;									// Control Keycode #1
+	DWORD	dwFuncKeyCode;									// Function Keycode #2
 
 	// Member functions
-	void Copy(const tagHOTKEYSETITEM&);				// Copy item
-	BOOL IsEmpty();									// Check if item is empty
-	BOOL Compare(const tagHOTKEYSETITEM&);			// Compare items
-	void Print(CString& strOutput);					// Print item data
+	void Copy(const tagHOTKEYSETITEM&);						// Copy item
+	BOOL IsEmpty();											// Check if item is empty
+	BOOL Compare(const tagHOTKEYSETITEM&);					// Compare items
+	void Print(CString& strOutput);							// Print item data
 } HOTKEYSETITEM, *PHOTKEYSETITEM;
 
 //////////////////////////////////////////////////////////////////////////
@@ -534,26 +538,26 @@ typedef CArray<HOTKEYSETITEM, HOTKEYSETITEM> HOTKEYSETITEMLIST;
 typedef struct tagHOTKEYSETDATA
 {
 	// Member variables
-	int				  nItemNum;						// Number of hotkeyset items
-	HOTKEYSETITEMLIST arrHotkeySetList;				// Pointer to HotkeySet list
+	int				  nItemNum;								// Number of hotkeyset items
+	HOTKEYSETITEMLIST arrHotkeySetList;						// Pointer to HotkeySet list
 
 	// Constructor
-	tagHOTKEYSETDATA();								// Default constructor
-	tagHOTKEYSETDATA(const tagHOTKEYSETDATA&);		// Copy constructor
+	tagHOTKEYSETDATA();										// Default constructor
+	tagHOTKEYSETDATA(const tagHOTKEYSETDATA&);				// Copy constructor
 
 	// Member functions
-	void Init();									// Init data
-	void Copy(const tagHOTKEYSETDATA&);				// Copy data
-	void Add(const HOTKEYSETITEM&);					// Add item
-	void Update(const HOTKEYSETITEM&);				// Update item
-	HOTKEYSETITEM& GetItemAt(int);					// Get item at index
-	void Remove(int);								// Remove item at index
-	void RemoveAll(void);							// Remove all item
-	void Adjust();									// Adjust data validity
-	BOOL IsEmpty(int);								// Check if item at index is empty
-	BOOL IsAllEmpty();								// Check if all items are empty
-	void Delete(int);								// Delete item at index
-	void DeleteAll(void);							// Delete all data
+	void Init();											// Init data
+	void Copy(const tagHOTKEYSETDATA&);						// Copy data
+	void Add(const HOTKEYSETITEM&);							// Add item
+	void Update(const HOTKEYSETITEM&);						// Update item
+	HOTKEYSETITEM& GetItemAt(int);							// Get item at index
+	void Remove(int);										// Remove item at index
+	void RemoveAll(void);									// Remove all item
+	void Adjust();											// Adjust data validity
+	BOOL IsEmpty(int);										// Check if item at index is empty
+	BOOL IsAllEmpty();										// Check if all items are empty
+	void Delete(int);										// Delete item at index
+	void DeleteAll(void);									// Delete all data
 } HOTKEYSETDATA, *PHOTKEYSETDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -567,25 +571,25 @@ typedef struct tagHOTKEYSETDATA
 typedef struct tagPWRREMINDERITEM
 {
 	// Member variables
-	BOOL		bEnable;							// Enable state
-	UINT		nItemID;							// Item ID
-	CString		strMessage;							// Message content
-	UINT		nEventID;							// Event ID
-	SYSTEMTIME  stTime;								// Event time
-	DWORD		dwStyle;							// Reminder style
-	BOOL		bRepeat;							// Repeat daily
+	BOOL		bEnable;									// Enable state
+	UINT		nItemID;									// Item ID
+	CString		strMessage;									// Message content
+	UINT		nEventID;									// Event ID
+	SYSTEMTIME  stTime;										// Event time
+	DWORD		dwStyle;									// Reminder style
+	BOOL		bRepeat;									// Repeat daily
 
 	// Constructor
-	tagPWRREMINDERITEM();							// Default constructor
-	tagPWRREMINDERITEM(const tagPWRREMINDERITEM&);	// Copy constructor
-	tagPWRREMINDERITEM(BOOL, UINT, LPCTSTR, UINT,	// Copy constructor (init list)
+	tagPWRREMINDERITEM();									// Default constructor
+	tagPWRREMINDERITEM(const tagPWRREMINDERITEM&);			// Copy constructor
+	tagPWRREMINDERITEM(BOOL, UINT, LPCTSTR, UINT,			// Copy constructor (init list)
 					   SYSTEMTIME, DWORD, BOOL);
 
 	// Member functions
-	void Copy(const tagPWRREMINDERITEM&);			// Copy item
-	BOOL IsEmpty();									// Check if item is empty
-	BOOL Compare(const tagPWRREMINDERITEM&);		// Compare items
-	void Print(CString& strOutput);					// Print item data
+	void Copy(const tagPWRREMINDERITEM&);					// Copy item
+	BOOL IsEmpty();											// Check if item is empty
+	BOOL Compare(const tagPWRREMINDERITEM&);				// Compare items
+	void Print(CString& strOutput);							// Print item data
 } PWRREMINDERITEM, *PPWRREMINDERITEM;
 
 //////////////////////////////////////////////////////////////////////////
@@ -609,28 +613,61 @@ typedef CArray<PWRREMINDERITEM, PWRREMINDERITEM> PWRREMINDERITEMLIST;
 typedef struct tagPWRREMINDERDATA
 {
 	// Member variables
-	int					nItemNum;					// Number of reminder items
-	PWRREMINDERITEMLIST	arrRmdItemList;				// List of reminder items
+	int					nItemNum;							// Number of reminder items
+	PWRREMINDERITEMLIST	arrRmdItemList;						// List of reminder items
 
 	// Constructor
-	tagPWRREMINDERDATA();							// Default constructor
-	tagPWRREMINDERDATA(const tagPWRREMINDERDATA&);	// Copy constructor
+	tagPWRREMINDERDATA();									// Default constructor
+	tagPWRREMINDERDATA(const tagPWRREMINDERDATA&);			// Copy constructor
 
 	// Member functions
-	void Init();									// Init data
-	void Copy(const tagPWRREMINDERDATA&);			// Copy data
-	void Add(const PWRREMINDERITEM&);				// Add item
-	void Update(const PWRREMINDERITEM&);			// Update item
-	PWRREMINDERITEM& GetItemAt(int);				// Get item at index
-	void Remove(int);								// Remove item at index
-	void RemoveAll(void);							// Remove all item
-	void Adjust();									// Adjust data validity
-	UINT GetNextID();								// Get next item ID (to add new item)
-	BOOL IsEmpty(int);								// Check if item at index is empty
-	BOOL IsAllEmpty();								// Check if all items are empty
-	void Delete(int);								// Delete item at index
-	void DeleteAll(void);							// Delete all data
+	void Init();											// Init data
+	void Copy(const tagPWRREMINDERDATA&);					// Copy data
+	void Add(const PWRREMINDERITEM&);						// Add item
+	void Update(const PWRREMINDERITEM&);					// Update item
+	PWRREMINDERITEM& GetItemAt(int);						// Get item at index
+	void Remove(int);										// Remove item at index
+	void RemoveAll(void);									// Remove all item
+	void Adjust();											// Adjust data validity
+	UINT GetNextID();										// Get next item ID (to add new item)
+	BOOL IsEmpty(int);										// Check if item at index is empty
+	BOOL IsAllEmpty();										// Check if all items are empty
+	void Delete(int);										// Delete item at index
+	void DeleteAll(void);									// Delete all data
 } PWRREMINDERDATA, *PPWRREMINDERDATA;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	tagPWRRMDITEMADVSPEC
+//  Description:	Store data of a Power Reminder item advanced info
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagPWRRMDITEMADVSPEC {
+	// Member variables
+	UINT		nItemID;									// Power Reminder item ID
+	int			nSnoozeFlag;								// Snooze trigger flag
+	SYSTEMTIME	stNextSnoozeTime;							// Next snooze trigger time
+
+	// Constructor
+	tagPWRRMDITEMADVSPEC();									// Default constructor
+	tagPWRRMDITEMADVSPEC(const tagPWRRMDITEMADVSPEC&);		// Copy constructor
+
+	// Member functions
+	void Copy(const tagPWRRMDITEMADVSPEC&);					// Copy data
+	void CalcNextSnoozeTime(void);								// Calculate next snooze time
+} PWRRMDITEMADVSPEC, *PPWRRMDITEMADVSPEC;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	PWRREMINDERADVLIST
+//  Description:	Store list of Power Reminder advanced info items
+//  Derivered from: MFC CArray class
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef CArray<PWRRMDITEMADVSPEC, PWRRMDITEMADVSPEC> PWRREMINDERADVLIST;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -643,16 +680,16 @@ typedef struct tagPWRREMINDERDATA
 typedef struct tagACTIONDATA
 {
 	// Member variables
-	BOOL		bInitState;							// Init state flag
-	UINT		nActionType;						// Action type
-	SYSTEMTIME	stActionTime;						// Time of action
-	UINT		nActionNameID;						// Name of action (string ID)
-	BOOL		bActionSucceed;						// Action success status
-	UINT		nErrorCode;							// Action returned error code
+	BOOL		bInitState;									// Init state flag
+	UINT		nActionType;								// Action type
+	SYSTEMTIME	stActionTime;								// Time of action
+	UINT		nActionNameID;								// Name of action (string ID)
+	BOOL		bActionSucceed;								// Action success status
+	UINT		nErrorCode;									// Action returned error code
 
 	// Member functions
-	void Copy(const tagACTIONDATA&);				// Copy data
-	void RemoveAll();								// Remove all data
+	void Copy(const tagACTIONDATA&);						// Copy data
+	void RemoveAll();										// Remove all data
 } ACTIONDATA, *PACTIONDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -665,10 +702,10 @@ typedef struct tagACTIONDATA
 
 typedef struct tagUSERMENUITEM
 {
-	UINT	nItemID;								// Menu item ID
-	UINT	nItemType;								// Menu item type
-	UINT	nAction;								// Menu action ID
-	LPCTSTR	lpszItemTitle;							// Menu item text
+	UINT	nItemID;										// Menu item ID
+	UINT	nItemType;										// Menu item type
+	UINT	nAction;										// Menu action ID
+	LPCTSTR	lpszItemTitle;									// Menu item text
 } USERMENUITEM, *PUSERMENUITEM;
 
 //////////////////////////////////////////////////////////////////////////
@@ -681,8 +718,8 @@ typedef struct tagUSERMENUITEM
 
 typedef struct tagUSERMENU
 {
-	UINT nItemCount;								// Number of menu items
-	PUSERMENUITEM pMenu;							// User menu pointer
+	UINT nItemCount;										// Number of menu items
+	PUSERMENUITEM pMenu;									// User menu pointer
 } USERMENU, *PUSERMENU;
 
 //////////////////////////////////////////////////////////////////////////
@@ -695,23 +732,23 @@ typedef struct tagUSERMENU
 
 typedef struct tagREGISTRYKEY
 {
-	HKEY	hkTagName;								// Tag name (HKEY)
-	UINT	nTagNameID;								// Tag name ID
-	LPCTSTR lpszTagName;							// Tag name (string)
-	UINT	nSubPathID;								// Sub-path
-	LPCTSTR lpszSubPath;							// Sub-path (string)
-	DWORD	dwMasterKeyID;							// Master key ID
-	UINT	nMasterKeyNameID;						// Master key name ID
-	LPCTSTR	lpszMasterKeyName;						// Master key name (string)
-	UINT	nAppNameID;								// App name ID
-	LPCTSTR lpszAppName;							// App name (string)
-	UINT	nSectionNameID;							// Section name ID
-	LPCTSTR lpszSectionName;						// Section name (string)
-	UINT	nKeyNameID;								// Key name ID
-	LPCTSTR lpszKeyName;							// Key name (string)
-	UINT	nValueType;								// Value type
-	LPCTSTR	lpszValue;								// String value
-	DWORD	dwValue;								// DWORD value
+	HKEY	hkTagName;										// Tag name (HKEY)
+	UINT	nTagNameID;										// Tag name ID
+	LPCTSTR lpszTagName;									// Tag name (string)
+	UINT	nSubPathID;										// Sub-path
+	LPCTSTR lpszSubPath;									// Sub-path (string)
+	DWORD	dwMasterKeyID;									// Master key ID
+	UINT	nMasterKeyNameID;								// Master key name ID
+	LPCTSTR	lpszMasterKeyName;								// Master key name (string)
+	UINT	nAppNameID;										// App name ID
+	LPCTSTR lpszAppName;									// App name (string)
+	UINT	nSectionNameID;									// Section name ID
+	LPCTSTR lpszSectionName;								// Section name (string)
+	UINT	nKeyNameID;										// Key name ID
+	LPCTSTR lpszKeyName;									// Key name (string)
+	UINT	nValueType;										// Value type
+	LPCTSTR	lpszValue;										// String value
+	DWORD	dwValue;										// DWORD value
 } REGISTRYKEY, *PREGISTRYKEY;
 
 //////////////////////////////////////////////////////////////////////////
@@ -724,9 +761,9 @@ typedef struct tagREGISTRYKEY
 
 typedef struct tagLVCOLUMNFORMAT
 {
-	int		nColumnTitleID;							// Column title ID
-	int		nColumnSize;							// Column size
-	int		nColumnSizeUnit;						// Column size unit
+	int		nColumnTitleID;									// Column title ID
+	int		nColumnSize;									// Column size
+	int		nColumnSizeUnit;								// Column size unit
 } LVCOLUMNFORMAT, *PLVCOLUMNFORMAT;
 
 //////////////////////////////////////////////////////////////////////////
@@ -739,12 +776,12 @@ typedef struct tagLVCOLUMNFORMAT
 
 typedef struct tagGRIDCTRLCOLFMT 
 {
-	int		nColID;									// Column ID
-	UINT	nHeaderTitleID;							// Header title string ID
-	int		nWidth;									// Column width
-	int		nWidthUnit;								// Column width unit (pixel or percent)
-	UINT	nColStyle;								// Column style
-	BOOL	bCenter;								// Align center
+	int		nColID;											// Column ID
+	UINT	nHeaderTitleID;									// Header title string ID
+	int		nWidth;											// Column width
+	int		nWidthUnit;										// Column width unit (pixel or percent)
+	UINT	nColStyle;										// Column style
+	BOOL	bCenter;										// Align center
 } GRIDCTRLCOLFORMAT, *PGRIDCTRLCOLFORMAT;
 
 //////////////////////////////////////////////////////////////////////////
@@ -757,9 +794,9 @@ typedef struct tagGRIDCTRLCOLFMT
 
 typedef struct tagHOTKEYINFO
 {
-	DWORD	dwCtrlKeyCode;							// Control Keycode #1
-	DWORD	dwFuncKeyCode;							// Function Keycode #2
-	UINT	nHotkeyDescription;						// Hotkey description (string ID)
+	DWORD	dwCtrlKeyCode;									// Control Keycode #1
+	DWORD	dwFuncKeyCode;									// Function Keycode #2
+	UINT	nHotkeyDescription;								// Hotkey description (string ID)
 } HOTKEYINFO, *PHOTKEYINFO;
 
 //////////////////////////////////////////////////////////////////////////
@@ -772,8 +809,8 @@ typedef struct tagHOTKEYINFO
 
 typedef struct tagIDPAIR
 {
-	UINT nFirstID;									// First pair ID
-	UINT nSecondID;									// Second pair ID
+	UINT nFirstID;											// First pair ID
+	UINT nSecondID;											// Second pair ID
 } IDPAIR, *PIDPAIR;
 
 //////////////////////////////////////////////////////////////////////////
@@ -786,12 +823,12 @@ typedef struct tagIDPAIR
 
 typedef struct tagACTIONDEF
 {
-	UINT nActionDefID;								// Action ID
-	UINT nActionNameID;								// Action Name ID
-	UINT nActionMsgID;								// Action message ID
-	UINT nSchedNotifyID;							// Schedule notify message ID
-	UINT nNotifyTipID;								// Notify file tip ID
-	UINT nBallonTipID;								// Balloon tip ID
+	UINT nActionDefID;										// Action ID
+	UINT nActionNameID;										// Action Name ID
+	UINT nActionMsgID;										// Action message ID
+	UINT nSchedNotifyID;									// Schedule notify message ID
+	UINT nNotifyTipID;										// Notify file tip ID
+	UINT nBallonTipID;										// Balloon tip ID
 } ACTIONDEF, *PACTIONDEF;
 
 //////////////////////////////////////////////////////////////////////////
@@ -818,8 +855,8 @@ typedef std::vector<ACTIONDEF>	ACTIONDEFTABLE;
 
 typedef struct tagBUFFER 
 {
-	int		nLength;								// Buffer length
-	TCHAR	tcToken[DEF_BUFF_MAXLENGTH];			// Buffer token
+	int		nLength;										// Buffer length
+	TCHAR	tcToken[DEF_BUFF_MAXLENGTH];					// Buffer token
 } BUFFER, *PBUFFER;
 
 //////////////////////////////////////////////////////////////////////////
@@ -832,12 +869,12 @@ typedef struct tagBUFFER
 
 typedef struct tagRESTARTREQ 
 {
-	BOOL bRequest;									// Request to restart
-	BOOL bAdminCheck;								// Check if already running as admin
-	BOOL bNotAdminShowMsg;							// If not admin, not show check message
-	BOOL bIsAdminDoNothing;							// If already running as admin, do nothing
-	BOOL bShowMsgWhenDeny;							// Show message when denied
-	BOOL bResetFlag;								// Reset flag when denied
+	BOOL bRequest;											// Request to restart
+	BOOL bAdminCheck;										// Check if already running as admin
+	BOOL bNotAdminShowMsg;									// If not admin, not show check message
+	BOOL bIsAdminDoNothing;									// If already running as admin, do nothing
+	BOOL bShowMsgWhenDeny;									// Show message when denied
+	BOOL bResetFlag;										// Reset flag when denied
 } RESTARTREQ, *PRESTARTREQ;
 
 

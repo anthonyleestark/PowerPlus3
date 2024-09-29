@@ -38,7 +38,8 @@ IMPLEMENT_DYNAMIC(CReminderMsgDlg, SDialog)
 //
 //////////////////////////////////////////////////////////////////////////
 
-CReminderMsgDlg::CReminderMsgDlg() : SDialog(IDD_REMINDERMSG_DLG)
+CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
+	: SDialog(IDD_REMINDERMSG_DLG, pParentWnd)
 {
 	// Message string buffer
 	m_strBuffer = DEF_STRING_EMPTY;
@@ -55,13 +56,17 @@ CReminderMsgDlg::CReminderMsgDlg() : SDialog(IDD_REMINDERMSG_DLG)
 	m_szIconSize.cx = DEFAULT_MSGICONSIZE;
 	m_szIconSize.cy = DEFAULT_MSGICONSIZE;
 
+	// Flags
+	m_bTimerSet = FALSE;
+	m_bLockDlgSize = FALSE;
+	m_bLockFontSize = FALSE;
+	m_bAllowSnooze = FALSE;
+	m_nSnoozeFlag = FLAG_OFF;
+
 	// Properties
 	m_clBkgrdColor = DEF_COLOR_WHITE;
 	m_clTextColor = DEF_COLOR_BLACK;
-	m_bTimerSet = FALSE;
 	m_nAutoCloseInterval = 0;
-	m_bLockDlgSize = FALSE;
-	m_bLockFontSize = FALSE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -97,12 +102,14 @@ void CReminderMsgDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CReminderMsgDlg, SDialog)
+	ON_WM_CREATE()
 	ON_WM_DESTROY()
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
 	ON_WM_TIMER()
 	ON_WM_PAINT()
 	ON_WM_CTLCOLOR()
+	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
 
 
@@ -282,6 +289,56 @@ void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	SDialog::OnTimer(nIDEvent);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnCreate
+//	Description:	OnCreate function
+//  Arguments:		Default
+//  Return value:	int - Default
+//
+//////////////////////////////////////////////////////////////////////////
+
+int CReminderMsgDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	// Default creation
+	if (SDialog::OnCreate(lpCreateStruct) == DEF_INTEGER_INVALID)
+		return DEF_INTEGER_INVALID;
+
+	// Set allow snoozing mode
+	if (GetAllowSnoozeMode() == TRUE) {
+		// Display minimize button
+		LONG lCurStyle = GetWindowLong(this->m_hWnd, GWL_STYLE);
+		SetWindowLong(this->m_hWnd, GWL_STYLE, lCurStyle | WS_MINIMIZEBOX);
+	}
+
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnSysCommand
+//	Description:	OnSysCommand function
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CReminderMsgDlg::OnSysCommand(UINT nID, LPARAM lParam)
+{
+	if ((nID & 0xFFF0) == SC_MINIMIZE) {
+		// Handle minimize button event
+		if (GetAllowSnoozeMode() == TRUE) {
+			// Trigger snooze mode
+			SetSnoozeTriggerFLag(FLAG_ON);
+		}
+		EndDialog(IDOK);
+	}
+	else {
+		// Execute default syscommand
+		SDialog::OnSysCommand(nID, lParam);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -545,6 +602,62 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 void CReminderMsgDlg::SetMsgIconPosition(BYTE byPosition)
 {
 	m_byIconPosition = byPosition;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetAllowSnoozeMode
+//	Description:	Get allow snoozing mode enable status
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CReminderMsgDlg::GetAllowSnoozeMode()
+{
+	return m_bAllowSnooze;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetAllowSnoozeMode
+//	Description:	Set allow snoozing mode enable status
+//  Arguments:		bValue - Status value (TRUE/FALSE -> ON/OFF)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CReminderMsgDlg::SetAllowSnoozeMode(BOOL bValue)
+{
+	m_bAllowSnooze = bValue;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSnoozeTriggerFlag
+//	Description:	Get snooze mode trigger flag value
+//  Arguments:		nValue - Return value
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CReminderMsgDlg::GetSnoozeTriggerFlag(int& nValue)
+{
+	nValue = m_nSnoozeFlag;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSnoozeTriggerFlag
+//	Description:	Set snooze mode trigger flag value
+//  Arguments:		nValue - Flag value
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CReminderMsgDlg::SetSnoozeTriggerFLag(int nValue)
+{
+	m_nSnoozeFlag = nValue;
 }
 
 //////////////////////////////////////////////////////////////////////////
