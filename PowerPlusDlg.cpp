@@ -97,6 +97,14 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	m_bRestartAsAdminFlag = FALSE;
 	m_nPwrBroadcastSkipCount = 0;
 
+	// Init child dialogs
+	m_pAboutDlg = NULL;
+	m_pHelpDlg = NULL;
+	m_pLogViewerDlg = NULL;
+	m_pScheduleDlg = NULL;
+	m_pHotkeySetDlg = NULL;
+	m_pPwrReminderDlg = NULL;
+
 	INIT_CLASS_IDMAP()
 }
 
@@ -119,6 +127,43 @@ CPowerPlusDlg::~CPowerPlusDlg()
 		delete m_pDialogSize;
 		m_pDialogSize = NULL;
 	}
+
+	// Destroy child dialogs
+	if (m_pAboutDlg != NULL) {
+		// Destroy dialog
+		delete m_pAboutDlg;
+		m_pAboutDlg = NULL;
+	}
+
+	if (m_pHelpDlg != NULL) {
+		// Destroy dialog
+		delete m_pHelpDlg;
+		m_pHelpDlg = NULL;
+	}
+
+	if (m_pScheduleDlg != NULL) {
+		// Destroy dialog
+		delete m_pScheduleDlg;
+		m_pScheduleDlg = NULL;
+	}
+
+	if (m_pLogViewerDlg != NULL) {
+		// Destroy dialog
+		delete m_pLogViewerDlg;
+		m_pLogViewerDlg = NULL;
+	}
+
+	if (m_pHotkeySetDlg != NULL) {
+		// Destroy dialog
+		delete m_pHotkeySetDlg;
+		m_pHotkeySetDlg = NULL;
+	}
+
+	if (m_pPwrReminderDlg != NULL) {
+		// Destroy dialog
+		delete m_pPwrReminderDlg;
+		m_pPwrReminderDlg = NULL;
+	}
 	
 	// Clear HotkeySet data
 	m_hksHotkeySetData.DeleteAll();
@@ -136,9 +181,6 @@ CPowerPlusDlg::~CPowerPlusDlg()
 
 	// Kill timer of schedule
 	KillTimer(TIMERID_STD_BYSECOND);
-
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -168,6 +210,12 @@ void CPowerPlusDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX,	IDC_ENBBKGRDHOTKEYS_CHK,	m_bEnableBackgroundHotkey);
 	DDX_Check(pDX,	IDC_ENBPWRREMINDER_CHK,		m_bEnablePowerReminder);
 }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	CPowerPlusDlg dialog items ID map
+//
+//////////////////////////////////////////////////////////////////////////
 
 BEGIN_ID_MAPPING(CPowerPlusDlg)
 	// Dialog controls
@@ -232,6 +280,12 @@ BEGIN_ID_MAPPING(CPowerPlusDlg)
 	IDMAP_ADD(IDM_NOTIFY_EXIT_APP,				"Menu.ExitApp")
 END_ID_MAPPING()
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CPowerPlusDlg dialog message map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(CPowerPlusDlg, SDialog)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
@@ -254,6 +308,7 @@ BEGIN_MESSAGE_MAP(CPowerPlusDlg, SDialog)
 	ON_CBN_SELCHANGE(IDC_RMBACTION_LIST,		&CPowerPlusDlg::OnChangeRMBAction)
 	ON_BN_CLICKED(IDC_ENABLERMBMENU_CHK,		&CPowerPlusDlg::OnEnableRightMouseMenu)
 	ON_BN_CLICKED(IDC_VIEWACTIONLOG_BTN,		&CPowerPlusDlg::OnViewActionLog)
+	ON_MESSAGE(SCM_DLGDESTROY_NOTIFY,			&CPowerPlusDlg::OnChildDialogDestroy)
 	ON_MESSAGE(SM_APP_UPDATE_SCHEDULEDATA,		&CPowerPlusDlg::OnUpdateScheduleData)
 	ON_MESSAGE(SM_APP_UPDATE_HOTKEYSETDATA,		&CPowerPlusDlg::OnUpdateHotkeySetData)
 	ON_MESSAGE(SM_APP_UPDATE_PWRREMINDERDATA,	&CPowerPlusDlg::OnUpdatePwrReminderData)
@@ -389,6 +444,52 @@ BOOL CPowerPlusDlg::OnInitDialog()
 
 void CPowerPlusDlg::PreDestroyDialog()
 {
+	// Request closing all child dialog if opening
+	LRESULT resCloseReq;
+
+	// About dialog
+	if (m_pAboutDlg != NULL) {
+		// Request close dialog
+		 resCloseReq = m_pAboutDlg->RequestCloseDialog();
+		if (resCloseReq != DEF_RESULT_SUCCESS)
+			return;
+	}
+	// Help dialog
+	if (m_pHelpDlg != NULL) {
+		// Request close dialog
+		resCloseReq = m_pHelpDlg->RequestCloseDialog();
+		if (resCloseReq != DEF_RESULT_SUCCESS)
+			return;
+	}
+	// LogViewer dialog
+	if (m_pLogViewerDlg != NULL) {
+		// Request close dialog
+		resCloseReq = m_pLogViewerDlg->RequestCloseDialog();
+		if (resCloseReq != DEF_RESULT_SUCCESS)
+			return;
+	}
+	// Schedule dialog
+	if (m_pScheduleDlg != NULL) {
+		// Request close dialog
+		resCloseReq = m_pScheduleDlg->RequestCloseDialog();
+		if (resCloseReq != DEF_RESULT_SUCCESS)
+			return;
+	}
+	// HotkeySet dialog
+	if (m_pHotkeySetDlg != NULL) {
+		// Request close dialog
+		resCloseReq = m_pHotkeySetDlg->RequestCloseDialog();
+		if (resCloseReq != DEF_RESULT_SUCCESS)
+			return;
+	}
+	// Power Reminder dialog
+	if (m_pPwrReminderDlg != NULL) {
+		// Request close dialog
+		resCloseReq = m_pPwrReminderDlg->RequestCloseDialog();
+		if (resCloseReq != DEF_RESULT_SUCCESS)
+			return;
+	}
+
 	// Destroy components
 	RemoveNotifyIcon();
 	KillTimer(TIMERID_STD_BYSECOND);
@@ -398,10 +499,6 @@ void CPowerPlusDlg::PreDestroyDialog()
 
 	// Destroy background hotkeys if enabled
 	SetupBackgroundHotkey(DEF_MODE_DISABLE);
-
-	// Termination
-	PostMessage(WM_DESTROY);
-	EndDialog(IDCANCEL);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -418,12 +515,8 @@ void CPowerPlusDlg::OnDestroy()
 	// Destroy background hotkeys if enabled
 	SetupBackgroundHotkey(DEF_MODE_DISABLE);
 
-	// Close DebugTest dialog if opening
-	HWND hDebugTestWnd = FindDebugTestDlg();
-	if (hDebugTestWnd != NULL) {
-		// Destroy dialog
-		::DestroyWindow(hDebugTestWnd);
-	}
+	// Save app event log if enabled
+	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -442,7 +535,7 @@ void CPowerPlusDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX) {
 		// Open About dialog
-		OpenDialog(IDD_ABOUT_DLG);
+		OpenChildDialogEx(IDD_ABOUT_DLG);
 	}
 	else {
 		// Execute default syscommand
@@ -569,6 +662,10 @@ void CPowerPlusDlg::OnExit()
 
 	// Destroy dialog and exit
 	PreDestroyDialog();
+
+	// Termination
+	PostMessage(WM_DESTROY);
+	EndDialog(IDCANCEL);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -631,7 +728,7 @@ void CPowerPlusDlg::OnAbout()
 	OutputButtonLog(GetDialogID(), IDC_ABOUT_BTN);
 
 	// Open About dialog
-	OpenDialog(IDD_ABOUT_DLG);
+	OpenChildDialogEx(IDD_ABOUT_DLG);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -649,7 +746,7 @@ void CPowerPlusDlg::OnHelp()
 	OutputButtonLog(GetDialogID(), IDC_HELP_BTN);
 
 	// Open Help dialog
-	OpenDialog(IDD_HELP_DLG);
+	OpenChildDialogEx(IDD_HELP_DLG);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -879,7 +976,7 @@ void CPowerPlusDlg::OnLogViewer()
 	OutputButtonLog(GetDialogID(), IDC_LOGVIEWER_BTN);
 
 	// Open LogViewer dialog
-	OpenDialog(IDD_LOGVIEWER_DLG);
+	OpenChildDialogEx(IDD_LOGVIEWER_DLG);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -897,7 +994,7 @@ void CPowerPlusDlg::OnSchedule()
 	OutputButtonLog(GetDialogID(), IDC_SCHEDULE_BTN);
 
 	// Open Schedule dialog
-	OpenDialog(IDD_SCHEDULE_DLG);
+	OpenChildDialogEx(IDD_SCHEDULE_DLG);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -915,7 +1012,7 @@ void CPowerPlusDlg::OnHotkeySet()
 	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_BTN);
 
 	// Open HotkeySet dialog
-	OpenDialog(IDD_HOTKEYSET_DLG);
+	OpenChildDialogEx(IDD_HOTKEYSET_DLG);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -933,7 +1030,7 @@ void CPowerPlusDlg::OnPowerReminder()
 	OutputButtonLog(GetDialogID(), IDC_PWRREMINDER_BTN);
 
 	// Open PowerReminder dialog
-	OpenDialog(IDD_PWRREMINDER_DLG);
+	OpenChildDialogEx(IDD_PWRREMINDER_DLG);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1011,6 +1108,78 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	OnChildDialogDestroy
+//	Description:	Handle event when a child dialog is closed/destroyed
+//  Arguments:		wParam - Child dialog ID
+//					lParam - Not used
+//  Return value:	LRESULT
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT CPowerPlusDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
+{
+	// Get dialog ID
+	UINT nDialogID = (UINT)wParam;
+
+	// About dialog
+	if (nDialogID == IDD_ABOUT_DLG) {
+		if (m_pAboutDlg != NULL) {
+			// Delete dialog
+			delete m_pAboutDlg;
+			m_pAboutDlg = NULL;
+		}
+	}
+	// Help dialog
+	else if (nDialogID == IDD_HELP_DLG) {
+		if (m_pHelpDlg != NULL) {
+			// Delete dialog
+			delete m_pHelpDlg;
+			m_pHelpDlg = NULL;
+		}
+	}
+	// Schedule dialog
+	else if (nDialogID == IDD_SCHEDULE_DLG) {
+		if (m_pScheduleDlg != NULL) {
+			// Delete dialog
+			delete m_pScheduleDlg;
+			m_pScheduleDlg = NULL;
+		}
+	}
+	// LogViewer dialog
+	else if (nDialogID == IDD_LOGVIEWER_DLG) {
+		if (m_pLogViewerDlg != NULL) {
+			// Delete dialog
+			delete m_pLogViewerDlg;
+			m_pLogViewerDlg = NULL;
+		}
+	}
+	// HotkeySet dialog
+	else if (nDialogID == IDD_HOTKEYSET_DLG) {
+		if (m_pHotkeySetDlg != NULL) {
+			// Delete dialog
+			delete m_pHotkeySetDlg;
+			m_pHotkeySetDlg = NULL;
+		}
+	}
+	// Power Reminder dialog
+	else if (nDialogID == IDD_PWRREMINDER_DLG) {
+		if (m_pPwrReminderDlg != NULL) {
+			// Delete dialog
+			delete m_pPwrReminderDlg;
+			m_pPwrReminderDlg = NULL;
+		}
+	}
+	// DebugTest dialog
+	else if (nDialogID == IDD_DEBUGTEST_DLG) {
+		// Temporarily do nothing
+		// DebugTest dialog will be destroyed in app class
+	}
+
+	return LRESULT(DEF_RESULT_SUCCESS);	// ERROR_SUCCESS
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	OnUpdateScheduleData
 //	Description:	Update schedule data if changed
 //  Arguments:		wParam - Not used
@@ -1073,6 +1242,7 @@ LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM wParam, LPARAM lParam)
 		PPWRREMINDERDATA ppwrData = pApp->GetAppPwrReminderData();
 		if (ppwrData != NULL) {
 			m_prdReminderData.Copy(*ppwrData);
+			UpdatePwrReminderSnooze(DEF_MODE_UPDATE);
 		}
 	}
 
@@ -1278,11 +1448,11 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 	case IDM_NOTIFY_OPENDLG_ABOUT:
 		OutputMenuLog(IDM_NOTIFY_OPENDLG_ABOUT);
-		OpenDialog(IDD_ABOUT_DLG);
+		OpenChildDialogEx(IDD_ABOUT_DLG);
 		break;
 	case IDM_NOTIFY_OPENDLG_HELP:
 		OutputMenuLog(IDM_NOTIFY_OPENDLG_HELP);
-		OpenDialog(IDD_HELP_DLG);
+		OpenChildDialogEx(IDD_HELP_DLG);
 		break;
 	case IDM_NOTIFY_VIEW_ACTIONLOG:
 		OutputMenuLog(IDM_NOTIFY_VIEW_ACTIONLOG);
@@ -1298,19 +1468,19 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 	case IDM_NOTIFY_OPENDLG_LOGVIEWER:
 		OutputMenuLog(IDM_NOTIFY_OPENDLG_LOGVIEWER);
-		OpenDialog(IDD_LOGVIEWER_DLG);
+		OpenChildDialogEx(IDD_LOGVIEWER_DLG);
 		break;
 	case IDM_NOTIFY_OPENDLG_SCHEDULE:
 		OutputMenuLog(IDM_NOTIFY_OPENDLG_SCHEDULE);
-		OpenDialog(IDD_SCHEDULE_DLG);
+		OpenChildDialogEx(IDD_SCHEDULE_DLG);
 		break;
 	case IDM_NOTIFY_OPENDLG_HOTKEYSET:
 		OutputMenuLog(IDM_NOTIFY_OPENDLG_HOTKEYSET);
-		OpenDialog(IDD_HOTKEYSET_DLG);
+		OpenChildDialogEx(IDD_HOTKEYSET_DLG);
 		break;
 	case IDM_NOTIFY_OPENDLG_PWRREMINDER:
 		OutputMenuLog(IDM_NOTIFY_OPENDLG_PWRREMINDER);
-		OpenDialog(IDD_PWRREMINDER_DLG);
+		OpenChildDialogEx(IDD_PWRREMINDER_DLG);
 		break;
 	case IDM_NOTIFY_RESTART_APP:
 		OutputMenuLog(IDM_NOTIFY_RESTART_APP);
@@ -1328,6 +1498,8 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	case IDM_NOTIFY_EXIT_APP:
 		OutputMenuLog(IDM_NOTIFY_EXIT_APP);
 		PreDestroyDialog();
+		PostMessage(WM_DESTROY);
+		EndDialog(IDCANCEL);
 		break;
 	default:
 		break;
@@ -1374,7 +1546,7 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 		break;
 	case SM_WND_DEBUGTEST:
-		OpenDialog(IDD_DEBUGTEST_DLG);
+		OpenChildDialogEx(IDD_DEBUGTEST_DLG);
 		break;
 	case WM_QUERYENDSESSION:
 		SaveActionHistory();
@@ -2658,7 +2830,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 		}
 
 		// Save Power Action trace flag
-		SetPwrActionFlag(bResult);
+		SetPwrActionFlag((bResult == TRUE) ? FLAG_ON : FLAG_OFF);
 		CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 		if (pApp != NULL) {
 			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_APPFLAG);
@@ -2710,6 +2882,11 @@ void CPowerPlusDlg::ApplySettings(BOOL bMinimize)
 
 	// Update background hotkeys if enabled
 	SetupBackgroundHotkey(DEF_MODE_UPDATE);
+
+	// Disable Power Reminder snooze queue if feature's disabled
+	if (GetAppOption(OPTIONID_ENABLEPWRREMINDER) == NULL) {
+		UpdatePwrReminderSnooze(DEF_MODE_DISABLE);
+	}
 
 	// Update notify icon tip text
 	UpdateNotifyIcon();
@@ -2780,16 +2957,138 @@ void CPowerPlusDlg::ShowDialog(HWND hWnd, BOOL bShowFlag /* = TRUE */)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	OpenDialog
+//	Function name:	OpenChildDialogEx
+//	Description:	Open child dialog with corresponding ID
+//  Arguments:		nDialogID	  - Dialog ID
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CPowerPlusDlg::OpenChildDialogEx(UINT nDialogID)
+{
+	// Get app
+	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
+	if (pApp == NULL)
+		return;
+
+	// About dialog
+	if (nDialogID == IDD_ABOUT_DLG) {
+		if (m_pAboutDlg == NULL) {
+			// Initialize dialog
+			m_pAboutDlg = new CAboutDlg();
+			m_pAboutDlg->SetParentWnd(this);
+			m_pAboutDlg->DoModal();
+		}
+		else {
+			// Show dialog
+			m_pAboutDlg->SetParentWnd(this);
+			ShowDialog(m_pAboutDlg->GetSafeHwnd(), TRUE);
+		}
+	}
+	// Help dialog
+	else if (nDialogID == IDD_HELP_DLG) {
+		if (m_pHelpDlg == NULL) {
+			// Initialize dialog
+			m_pHelpDlg = new CHelpDlg();
+			m_pHelpDlg->SetParentWnd(this);
+			m_pHelpDlg->DoModal();
+		}
+		else {
+			// Show dialog
+			m_pHelpDlg->SetParentWnd(this);
+			ShowDialog(m_pHelpDlg->GetSafeHwnd(), TRUE);
+		}
+	}
+	// Schedule dialog
+	else if (nDialogID == IDD_SCHEDULE_DLG) {
+		if (m_pScheduleDlg == NULL) {
+			// Initialize dialog
+			m_pScheduleDlg = new CScheduleDlg();
+			m_pScheduleDlg->SetParentWnd(this);
+			m_pScheduleDlg->DoModal();
+		}
+		else {
+			// Show dialog
+			m_pScheduleDlg->SetParentWnd(this);
+			ShowDialog(m_pScheduleDlg->GetSafeHwnd(), TRUE);
+		}
+	}
+	// LogViewer dialog
+	else if (nDialogID == IDD_LOGVIEWER_DLG) {
+		if (m_pLogViewerDlg == NULL) {
+			// Initialize dialog
+			m_pLogViewerDlg = new CLogViewerDlg();
+			m_pLogViewerDlg->SetParentWnd(this);
+			m_pLogViewerDlg->DoModal();
+		}
+		else {
+			// Show dialog
+			m_pLogViewerDlg->SetParentWnd(this);
+			ShowDialog(m_pLogViewerDlg->GetSafeHwnd(), TRUE);
+		}
+	}
+	// HotkeySet dialog
+	else if (nDialogID == IDD_HOTKEYSET_DLG) {
+		if (m_pHotkeySetDlg == NULL) {
+			// Initialize dialog
+			m_pHotkeySetDlg = new CHotkeySetDlg();
+			m_pHotkeySetDlg->SetParentWnd(this);
+			m_pHotkeySetDlg->DoModal();
+		}
+		else {
+			// Show dialog
+			m_pHotkeySetDlg->SetParentWnd(this);
+			ShowDialog(m_pHotkeySetDlg->GetSafeHwnd(), TRUE);
+		}
+	}
+	// Power Reminder dialog
+	else if (nDialogID == IDD_PWRREMINDER_DLG) {
+		if (m_pPwrReminderDlg == NULL) {
+			// Initialize dialog
+			m_pPwrReminderDlg = new CPwrReminderDlg();
+			m_pPwrReminderDlg->SetParentWnd(this);
+			m_pPwrReminderDlg->DoModal();
+		}
+		else {
+			// Show dialog
+			m_pPwrReminderDlg->SetParentWnd(this);
+			ShowDialog(m_pPwrReminderDlg->GetSafeHwnd(), TRUE);
+		}
+	}
+	// DebugTest dialog
+	else if (nDialogID == IDD_DEBUGTEST_DLG) {
+		// Get app DebugTest dialog
+		CDebugTestDlg* pDialog = pApp->GetDebugTestDlg();
+		if (pDialog == NULL) {
+			// Initialize dialog
+			pDialog = new CDebugTestDlg();
+			pDialog->SetParentWnd(this);
+
+			// Open in modeless mode
+			pDialog->Create(nDialogID, this);
+			pDialog->ShowWindow(SW_SHOW);
+		}
+		else {
+			// Show dialog
+			pDialog->SetParentWnd(this);
+			ShowDialog(pDialog->GetSafeHwnd(), TRUE);
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OpenDialogBase
 //	Description:	Open dialog with corresponding ID
 //  Arguments:		nDialogID	  - Dialog ID
 //					bReadOnlyMode - Read-only mode flag
 //					nOpenMode	  - Open mode: Modal or modeless
 //  Return value:	None
+//	Note:			Base function (no longer used)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::OpenDialog(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE */, int nOpenMode /* = DEF_MODE_OPENDLG_MODAL */)
+void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE */, int nOpenMode /* = DEF_MODE_OPENDLG_MODAL */)
 {
 	// Check if there is any other instance of dialog currently running,
 	HWND hDialogWnd = NULL;
@@ -3278,6 +3577,9 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 		switch (nExecEventID)
 		{
 		case PREVT_AT_SETTIME:
+			// If item is set to repeat but not set active in current day of week
+			if ((pwrCurItem.IsRepeatEnable() == TRUE) && (!pwrCurItem.IsDayActive((DAYOFWEEK)curSysTime.wDayOfWeek)))
+				continue;
 			// If set time matching or snooze time is triggered
 			if ((CheckTimeMatch(curSysTime, pwrCurItem.stTime)) ||
 				(GetPwrReminderSnoozeStatus(pwrCurItem.nItemID, curSysTime))) {
@@ -3315,7 +3617,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 
 			// If repeat daily option is not enabled
 			// --> Disable reminder item after displaying
-			if (pwrDispItem.bRepeat == FALSE) {
+			if (pwrDispItem.IsRepeatEnable() == FALSE) {
 				bTriggerReupdate |= TRUE;
 				pwrCurItem.bEnable = FALSE;
 			}
@@ -3383,13 +3685,7 @@ int CPowerPlusDlg::DisplayPwrReminder(PWRREMINDERITEM& pwrDispItem)
 		int nTimeout = GetReminderMsgTimeout();
 
 		// Allow snooze mode
-		BOOL bAllowSnooze = (pwrDispItem.nEventID == PREVT_AT_SETTIME);
-
-		// If repeat option is currently OFF
-		if (pwrDispItem.bRepeat != TRUE) {
-			// Disable snooze mode
-			bAllowSnooze = FALSE;
-		}
+		BOOL bAllowSnooze = pwrDispItem.IsAllowSnoozing();
 
 		// Set allow snooze mode
 		pMsgDlg->SetAllowSnoozeMode(bAllowSnooze);
@@ -3465,11 +3761,14 @@ void CPowerPlusDlg::SetPwrReminderSnooze(PWRREMINDERITEM pwrItem, int nSnoozeFla
 	if (pwrItem.nEventID != PREVT_AT_SETTIME)
 		return;
 
-	// If repeat option is currently OFF
-	if (pwrItem.bRepeat != TRUE) {
+	// If snoozing option is not available
+	if (pwrItem.IsAllowSnoozing() != TRUE) {
 		// Turn off flag
 		nSnoozeFlag = FLAG_OFF;
 	}
+
+	// Snooze interval
+	int nInterval = pwrItem.rpsRepeatSet.nSnoozeInterval;
 
 	// Find if item snooze mode is already setup
 	for (int nIndex = 0; nIndex < m_arrRmdAdvList.GetSize(); nIndex++) {
@@ -3480,7 +3779,7 @@ void CPowerPlusDlg::SetPwrReminderSnooze(PWRREMINDERITEM pwrItem, int nSnoozeFla
 			if (pAdvItem.nSnoozeFlag == FLAG_ON) {
 				// Calculate next snooze trigger time
 				pAdvItem.stNextSnoozeTime = GetCurSysTime();
-				pAdvItem.CalcNextSnoozeTime();
+				pAdvItem.CalcNextSnoozeTime(nInterval);
 			}
 			return;
 		}
@@ -3493,11 +3792,66 @@ void CPowerPlusDlg::SetPwrReminderSnooze(PWRREMINDERITEM pwrItem, int nSnoozeFla
 	if (pwrAdvItem.nSnoozeFlag == FLAG_ON) {
 		// Calculate next snooze trigger time
 		pwrAdvItem.stNextSnoozeTime = GetCurSysTime();
-		pwrAdvItem.CalcNextSnoozeTime();
+		pwrAdvItem.CalcNextSnoozeTime(nInterval);
 	}
 
 	// Add item
 	m_arrRmdAdvList.Add(pwrAdvItem);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	UpdatePwrReminderSnooze
+//	Description:	Update Power Reminder snooze queue data
+//  Arguments:		nMode - Update mode flag (UPDATE or DISABLE)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
+{
+	if (nMode == DEF_MODE_UPDATE) {
+		// Update snooze queue items
+		for (int nQueueIdx = (m_arrRmdAdvList.GetSize() - 1); nQueueIdx >= 0; nQueueIdx--) {
+			// Get item in queue
+			PWRRMDITEMADVSPEC& pAdvItem = m_arrRmdAdvList.GetAt(nQueueIdx);
+
+			// Search for item ID in Power Reminder data
+			BOOL bItemFound = FALSE;
+			for (int nItemIdx = 0; nItemIdx < m_prdReminderData.nItemNum; nItemIdx++) {
+				PWRREMINDERITEM& pwrItem = m_prdReminderData.GetItemAt(nItemIdx);
+				if (pwrItem.nItemID == pAdvItem.nItemID) {
+					// If item's snoozing mode is no longer available
+					if (!pwrItem.IsAllowSnoozing()) {
+						// Disable snooze mode
+						pAdvItem.nSnoozeFlag = FLAG_OFF;
+					}
+
+					// Mark as found
+					bItemFound = TRUE;
+					break;
+				}
+			}
+
+			// If item data is not found,
+			// which means item maybe removed and no longer exists
+			if (bItemFound == FALSE) {
+				// Remove item from snooze queue
+				m_arrRmdAdvList.RemoveAt(nQueueIdx);
+			}
+		}
+
+		// Free extra memory
+		m_arrRmdAdvList.FreeExtra();
+	}
+	else if (nMode == DEF_MODE_DISABLE) {
+		// Disable snooze mode for all items in queue
+		for (int nIndex = 0; nIndex < m_arrRmdAdvList.GetSize(); nIndex++) {
+			// Update item snooze mode data
+			PWRRMDITEMADVSPEC& pAdvItem = m_arrRmdAdvList.GetAt(nIndex);
+			pAdvItem.nSnoozeFlag = FLAG_OFF;
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3521,12 +3875,14 @@ BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysT
 		PWRRMDITEMADVSPEC& pAdvItem = m_arrRmdAdvList.GetAt(nIndex);
 		if (pAdvItem.nItemID == nItemID) {
 			// Get snooze enable flag
-			if (pAdvItem.nItemID == FLAG_OFF)
+			if (pAdvItem.nSnoozeFlag == FLAG_OFF)
 				return FALSE;
 			
 			// Check for next snooze time matching
 			if (CheckTimeMatch(curSysTime, pAdvItem.stNextSnoozeTime))
 				return TRUE;
+
+			return FALSE;
 		}
 	}
 
@@ -3576,6 +3932,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	if (!_tcscmp(strDebugCommand, _T("exit"))) {
 		// Exit app
 		PreDestroyDialog();
+		EndDialog(IDCANCEL);
 		return TRUE;
 	}
 	else if (!_tcscmp(strDebugCommand, _T("taskkill"))) {
@@ -3612,7 +3969,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	}
 	else if (!_tcscmp(strDebugCommand, _T("logviewer"))) {
 		// Open Logviewer dialog
-		OpenDialog(IDD_LOGVIEWER_DLG);
+		OpenChildDialogEx(IDD_LOGVIEWER_DLG);
 		strOutputResult.Format(_T("Logviewer opened"));
 		OutputDebugLog(strOutputResult, DBLOG_OUTPUTTODBTOOL);
 		return TRUE;

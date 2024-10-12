@@ -62,7 +62,12 @@ private:
 	SCHEDULEDATA m_schScheduleTemp;
 
 public:
+	// Generated message map functions
 	virtual BOOL OnInitDialog();
+	virtual void OnClose();
+	virtual LRESULT RequestCloseDialog(void);
+
+	// Member functions
 	void SetupLanguage();
 	void SetupComboBox(LANGTABLE_PTR pLanguage);
 	void SetupDlgItemState();

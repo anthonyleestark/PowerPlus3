@@ -57,9 +57,10 @@ private:
 	// Other variables
 	BOOL m_bAllChecked;
 
-protected:
+public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
+	virtual void OnClose();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	afx_msg void OnApply();
 	afx_msg void OnCancel();
@@ -71,10 +72,11 @@ protected:
 	afx_msg void OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnRightClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult);
+	virtual LRESULT RequestCloseDialog(void);
 	DECLARE_MESSAGE_MAP()
 	DECLARE_CLASS_IDMAP()
 
-public:
+protected:
 	// Dialog setup functions
 	void SetupLanguage();
 	void SetupHotkeySetList(LANGTABLE_PTR ptrLanguage);

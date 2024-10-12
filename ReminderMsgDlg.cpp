@@ -101,8 +101,15 @@ void CReminderMsgDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CReminderMsgDlg dialog message map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(CReminderMsgDlg, SDialog)
 	ON_WM_CREATE()
+	ON_WM_CLOSE()
 	ON_WM_DESTROY()
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
@@ -196,6 +203,20 @@ BOOL CReminderMsgDlg::OnInitDialog()
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	OnClose
+//	Description:	Default method for dialog closing
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CReminderMsgDlg::OnClose()
+{
+	SDialog::OnClose();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	OnDestroy
 //	Description:	Destroy dialog
 //  Arguments:		None
@@ -205,7 +226,7 @@ BOOL CReminderMsgDlg::OnInitDialog()
 
 void CReminderMsgDlg::OnDestroy()
 {
-	EndDialog(IDCANCEL);
+	SDialog::OnDestroy();
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -66,6 +66,9 @@ CPowerPlusApp::CPowerPlusApp()
 	// Hook procedure handle
 	m_hAppKeyboardHook = NULL;
 
+	// Init DebugTest dialog
+	m_pDebugTestDlg = NULL;
+
 	// Init other member variables
 	m_strAppWndTitle.Empty();
 	m_nCurDispLang = DEF_INTEGER_NULL;
@@ -112,6 +115,14 @@ CPowerPlusApp::~CPowerPlusApp()
 	if (m_pActionLog != NULL) {
 		delete m_pActionLog;
 		m_pActionLog = NULL;
+	}
+
+	// Destroy DebugTest dialog
+	if (m_pDebugTestDlg != NULL) {
+		// Destroy dialog
+		m_pDebugTestDlg->DestroyWindow();
+		delete m_pDebugTestDlg;
+		m_pDebugTestDlg = NULL;
 	}
 
 	IDMAP_CLEAR()
@@ -178,13 +189,12 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 
 	// Check CTRL key press state and open DebugTest dialog
-	CDebugTestDlg* pDebugTestDlg = NULL;
 	if (0x8000 & ::GetKeyState(VK_CONTROL)) {
-		pDebugTestDlg = new CDebugTestDlg();
-		if (pDebugTestDlg != NULL) {
+		m_pDebugTestDlg = new CDebugTestDlg();
+		if (m_pDebugTestDlg != NULL) {
 			// Parent is NULL because main window hasn't been initialized yet
-			pDebugTestDlg->Create(IDD_DEBUGTEST_DLG, NULL);
-			pDebugTestDlg->ShowWindow(SW_SHOW);
+			m_pDebugTestDlg->Create(IDD_DEBUGTEST_DLG, NULL);
+			m_pDebugTestDlg->ShowWindow(SW_SHOW);
 		}
 	}
 
@@ -274,8 +284,8 @@ BOOL CPowerPlusApp::InitInstance()
 		pMainDlg->Create(IDD_POWERPLUS_DIALOG, NULL);
 		pMainDlg->ShowWindow(SW_HIDE);
 		// Set parent window for DebugTest dialog if available
-		if (pDebugTestDlg != NULL) {
-			pDebugTestDlg->SetParentWnd(pMainDlg);
+		if (m_pDebugTestDlg != NULL) {
+			m_pDebugTestDlg->SetParentWnd(pMainDlg);
 		}
 		// Notification sound
 		MessageBeep(0xFFFFFFFF);
@@ -283,8 +293,8 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 	else {
 		// Set parent window for DebugTest dialog if available
-		if (pDebugTestDlg != NULL) {
-			pDebugTestDlg->SetParentWnd(pMainDlg);
+		if (m_pDebugTestDlg != NULL) {
+			m_pDebugTestDlg->SetParentWnd(pMainDlg);
 		}
 		// Show dialog (in modal state)
 		pMainDlg->DoModal();
@@ -308,10 +318,10 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 
 	// Destroy DebugTest dialog if opening
-	if ((pDebugTestDlg != NULL) && (pDebugTestDlg->IsWindowVisible())) {
-		pDebugTestDlg->DestroyWindow();
-		delete pDebugTestDlg;
-		pDebugTestDlg = NULL;
+	if (m_pDebugTestDlg != NULL) {
+		m_pDebugTestDlg->DestroyWindow();
+		delete m_pDebugTestDlg;
+		m_pDebugTestDlg = NULL;
 	}
 
 	// Delete the main dialog pointer
@@ -344,12 +354,20 @@ int CPowerPlusApp::ExitInstance()
 		GetAppEventLog()->WriteLog();
 	}
 
-	//Write action logs to file if enabled
+	// Write action logs to file if enabled
 	if (GetActionLogOption() == TRUE) {
 		GetActionLog()->WriteLog();
 	}
 
-	// Close DebugTest dialog if opening
+	// Close DebugTest dialog
+	if (m_pDebugTestDlg != NULL) {
+		// Destroy dialog
+		m_pDebugTestDlg->DestroyWindow();
+		delete m_pDebugTestDlg;
+		m_pDebugTestDlg = NULL;
+	}
+
+	// Find if the DebugTest dialog is still running
 	HWND hDebugTestWnd = FindDebugTestDlg();
 	if (hDebugTestWnd != NULL) {
 		// Destroy dialog
@@ -583,22 +601,22 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 	// Load configuration data
 	if (pcfgTempData != NULL) {
-		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONLMB, (int&)pcfgTempData->nLMBAction);
-		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONMMB, (int&)pcfgTempData->nMMBAction);
-		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONRMB, (int&)pcfgTempData->nRMBAction);
-		bResult &= GetConfig(IDS_REGKEY_CFG_RMBSHOWMENU, pcfgTempData->bRMBShowMenu);
-		bResult &= GetConfig(IDS_REGKEY_CFG_LANGUAGEID, (int&)pcfgTempData->nLanguageID);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SHOWATSTARTUP, pcfgTempData->bShowDlgAtStartup);
-		bResult &= GetConfig(IDS_REGKEY_CFG_STARTUPENABLE, pcfgTempData->bStartupEnabled);
-		bResult &= GetConfig(IDS_REGKEY_CFG_CONFIRMACTION, pcfgTempData->bConfirmAction);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SAVEACTIONLOG, pcfgTempData->bSaveActionLog);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SAVEAPPEVENTLOG, pcfgTempData->bSaveAppEventLog);
-		bResult &= GetConfig(IDS_REGKEY_CFG_RUNASADMIN, pcfgTempData->bRunAsAdmin);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SHOWERROR, pcfgTempData->bShowErrorMsg);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SCHEDULENOTIFY, pcfgTempData->bNotifySchedule);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SCHEDALLOWCANCEL, pcfgTempData->bAllowCancelSchedule);
-		bResult &= GetConfig(IDS_REGKEY_CFG_ENBBKGRDHOTKEYS, pcfgTempData->bEnableBackgroundHotkey);
-		bResult &= GetConfig(IDS_REGKEY_CFG_ENBPWRREMINDER, pcfgTempData->bEnablePowerReminder);
+		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONLMB,			(int&)pcfgTempData->nLMBAction);
+		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONMMB,			(int&)pcfgTempData->nMMBAction);
+		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONRMB,			(int&)pcfgTempData->nRMBAction);
+		bResult &= GetConfig(IDS_REGKEY_CFG_RMBSHOWMENU,		pcfgTempData->bRMBShowMenu);
+		bResult &= GetConfig(IDS_REGKEY_CFG_LANGUAGEID,			(int&)pcfgTempData->nLanguageID);
+		bResult &= GetConfig(IDS_REGKEY_CFG_SHOWATSTARTUP,		pcfgTempData->bShowDlgAtStartup);
+		bResult &= GetConfig(IDS_REGKEY_CFG_STARTUPENABLE,		pcfgTempData->bStartupEnabled);
+		bResult &= GetConfig(IDS_REGKEY_CFG_CONFIRMACTION,		pcfgTempData->bConfirmAction);
+		bResult &= GetConfig(IDS_REGKEY_CFG_SAVEACTIONLOG,		pcfgTempData->bSaveActionLog);
+		bResult &= GetConfig(IDS_REGKEY_CFG_SAVEAPPEVENTLOG,	pcfgTempData->bSaveAppEventLog);
+		bResult &= GetConfig(IDS_REGKEY_CFG_RUNASADMIN,			pcfgTempData->bRunAsAdmin);
+		bResult &= GetConfig(IDS_REGKEY_CFG_SHOWERROR,			pcfgTempData->bShowErrorMsg);
+		bResult &= GetConfig(IDS_REGKEY_CFG_SCHEDULENOTIFY,		pcfgTempData->bNotifySchedule);
+		bResult &= GetConfig(IDS_REGKEY_CFG_SCHEDALLOWCANCEL,	pcfgTempData->bAllowCancelSchedule);
+		bResult &= GetConfig(IDS_REGKEY_CFG_ENBBKGRDHOTKEYS,	pcfgTempData->bEnableBackgroundHotkey);
+		bResult &= GetConfig(IDS_REGKEY_CFG_ENBPWRREMINDER,		pcfgTempData->bEnablePowerReminder);
 	}
 
 	// Trace error
@@ -633,7 +651,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		bResult &= GetSchedule(IDS_REGKEY_SCHED_ENABLE, pschTempData->bEnable);
 		bResult &= GetSchedule(IDS_REGKEY_SCHED_ACTION, (int&)pschTempData->nAction);
 		bResult &= GetSchedule(IDS_REGKEY_SCHED_REPEAT, pschTempData->bRepeat);
-		bResult &= GetSchedule(IDS_REGKEY_SCHED_TIME, nTemp);
+		bResult &= GetSchedule(IDS_REGKEY_SCHED_TIME,	nTemp);
 		if (nTemp != DEF_INTEGER_INVALID) {
 			pschTempData->stTime.wHour = WORD(nTemp / 100);
 			pschTempData->stTime.wMinute = WORD(nTemp % 100);
@@ -687,15 +705,15 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			ZeroMemory(&hksTemp, sizeof(HOTKEYSETITEM));
 
 			// Read item data
-			BOOL bItemRet = FALSE;
-			bItemRet |= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE, (int&)hksTemp.bEnable);
-			bItemRet |= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID, (int&)hksTemp.nHKActionID);
-			bItemRet |= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY, (int&)hksTemp.dwCtrlKeyCode);
-			bItemRet |= GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_FUNCKEY, (int&)hksTemp.dwFuncKeyCode);
+			int nItemRet = DEF_INTEGER_NULL;
+			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE,		(int&)hksTemp.bEnable);
+			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID,	(int&)hksTemp.nHKActionID);
+			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY,	(int&)hksTemp.dwCtrlKeyCode);
+			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_FUNCKEY,	(int&)hksTemp.dwFuncKeyCode);
 
 			// Mark the item as reading failed
 			// only if all values were read unsuccessfully
-			bResult &= bItemRet;
+			bResult = (nItemRet != DEF_INTEGER_NULL);
 
 			// Trace error
 			if (bResult == FALSE) {
@@ -753,14 +771,17 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				PWRREMINDERITEM pwrTemp;
 
 				// Read item data
-				BOOL bItemRet = FALSE;
-				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID, (int&)pwrTemp.nItemID);
-				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE, (int&)pwrTemp.bEnable);
-				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING, pwrTemp.strMessage);
-				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID, (int&)pwrTemp.nEventID);
-				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE, (int&)pwrTemp.dwStyle);
-				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT, (int&)pwrTemp.bRepeat);
-				bItemRet |= GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIME, nTemp);
+				int nItemRet = DEF_INTEGER_NULL;
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID,		 (int&)pwrTemp.nItemID);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE,		 (int&)pwrTemp.bEnable);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING,		 pwrTemp.strMessage);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID,		 (int&)pwrTemp.nEventID);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE,		 (int&)pwrTemp.dwStyle);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT,		 (int&)pwrTemp.rpsRepeatSet.bRepeat);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ALLOWSNOOZE,	 (int&)pwrTemp.rpsRepeatSet.bAllowSnooze);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_SNOOZEINTERVAL, (int&)pwrTemp.rpsRepeatSet.nSnoozeInterval);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEATDAYS,	 (int&)pwrTemp.rpsRepeatSet.byRepeatDays);
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIME,			 nTemp);
 				if (nTemp != DEF_INTEGER_INVALID) {
 					pwrTemp.stTime.wHour = WORD(nTemp / 100);
 					pwrTemp.stTime.wMinute = WORD(nTemp % 100);
@@ -769,7 +790,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 				// Mark the item as reading failed
 				// only if all values were read unsuccessfully
-				bResult &= bItemRet;
+				bResult = (nItemRet != DEF_INTEGER_NULL);
 
 				// Trace error
 				if (bResult == FALSE) {
@@ -914,7 +935,9 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 	// Save auto-start status info
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
-		int nRetAutoStartEnabled = EnableAutoStart(m_pcfgAppConfig->bStartupEnabled, m_pcfgAppConfig->bRunAsAdmin);
+		BOOL bStartupEnabled = m_pcfgAppConfig->bStartupEnabled;
+		BOOL bRunAsAdmin = m_pcfgAppConfig->bRunAsAdmin;
+		int nRetAutoStartEnabled = EnableAutoStart(bStartupEnabled, bRunAsAdmin);
 		bResult &= nRetAutoStartEnabled ? TRUE : FALSE;
 
 		// Trace error
@@ -973,14 +996,17 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		bResult &= WritePwrReminderItemNum(IDS_REGKEY_PWRRMD_ITEMNUM, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 			PWRREMINDERITEM pwrTemp = m_ppwrReminderData->GetItemAt(nIndex);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID,		pwrTemp.nItemID);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE,		pwrTemp.bEnable);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING,	pwrTemp.strMessage);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID,		pwrTemp.nEventID);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID,			pwrTemp.nItemID);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE,			pwrTemp.bEnable);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING,		pwrTemp.strMessage);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID,			pwrTemp.nEventID);
 			nTemp = int((pwrTemp.stTime.wHour * 100) + pwrTemp.stTime.wMinute);
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIME, nTemp);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE,		pwrTemp.dwStyle);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT,		pwrTemp.bRepeat);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE,			pwrTemp.dwStyle);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT,			pwrTemp.rpsRepeatSet.bRepeat);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ALLOWSNOOZE,		pwrTemp.rpsRepeatSet.bAllowSnooze);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_SNOOZEINTERVAL,	pwrTemp.rpsRepeatSet.nSnoozeInterval);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEATDAYS,		pwrTemp.rpsRepeatSet.byRepeatDays);
 		}
 
 		// Trace error
@@ -2351,10 +2377,10 @@ void CPowerPlusApp::OutputDataChangeLog(PWRREMINDERDATA& BakData)
 			CString strBakStyle = GetLanguageString(GetAppLanguage(), nTemp);
 			ptrLog->OutputDataChangeLog(byDataType, byDataCate, dwCtrlID, strBakStyle, strCurStyle, strFlagName);
 		}
-		if (CurItem.bRepeat != BakItem.bRepeat) {
+		if (CurItem.IsRepeatEnable() != BakItem.IsRepeatEnable()) {
 			byDataType = DATATYPE_YESNO_VALUE;
 			strFlagName.Format(IDS_REGSECTION_PWRRMDITEMID, nIndex);
-			ptrLog->OutputDataChangeLog(byDataType, byDataCate, dwCtrlID, BakItem.bRepeat, CurItem.bRepeat, strFlagName);
+			ptrLog->OutputDataChangeLog(byDataType, byDataCate, dwCtrlID, BakItem.IsRepeatEnable(), CurItem.IsRepeatEnable(), strFlagName);
 		}
 	}
 }
@@ -2532,6 +2558,24 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 	}
 
 	return bResult;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// DebugTest dialog function
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDebugTestDlg
+//	Description:	Get app DebugTest dialog pointer
+//  Arguments:		None
+//  Return value:	CDebugTestDlg*
+//
+//////////////////////////////////////////////////////////////////////////
+
+CDebugTestDlg* CPowerPlusApp::GetDebugTestDlg(void)
+{
+	return m_pDebugTestDlg;
 }
 
 

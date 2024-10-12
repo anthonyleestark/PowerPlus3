@@ -57,8 +57,6 @@ CLogViewerDlg::CLogViewerDlg(CWnd* pParent /*=nullptr*/)
 
 CLogViewerDlg::~CLogViewerDlg()
 {
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -85,6 +83,7 @@ BEGIN_ID_MAPPING(CLogViewerDlg)
 END_ID_MAPPING()
 
 BEGIN_MESSAGE_MAP(CLogViewerDlg, SDialog)
+	ON_WM_CLOSE()
 	ON_LBN_SELCHANGE(IDC_LOGVIEWER_LOGDATA_LISTBOX, OnSelectLogItem)
 END_MESSAGE_MAP()
 
@@ -115,6 +114,23 @@ BOOL CLogViewerDlg::OnInitDialog()
 	DisplayLogDetails(0);
 
 	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnClose
+//	Description:	Handle event when closing the dialog
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CLogViewerDlg::OnClose()
+{
+	// Save app event log if enabled
+	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
+
+	SDialog::OnClose();
 }
 
 //////////////////////////////////////////////////////////////////////////

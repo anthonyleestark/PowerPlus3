@@ -70,8 +70,6 @@ CScheduleDlg::CScheduleDlg() : SDialog(IDD_SCHEDULE_DLG)
 
 CScheduleDlg::~CScheduleDlg()
 {
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -89,6 +87,12 @@ void CScheduleDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CScheduleDlg dialog items ID map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_ID_MAPPING(CScheduleDlg)
 	IDMAP_ADD(IDD_SCHEDULE_DLG,				"ScheduleDlg")
 	IDMAP_ADD(IDC_SCHEDULE_ENABLE_CHK,		"EnableScheduleCheck")
@@ -102,7 +106,14 @@ BEGIN_ID_MAPPING(CScheduleDlg)
 	IDMAP_ADD(IDC_SCHEDULE_CANCEL_BTN,		"CancelButton")
 END_ID_MAPPING()
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CScheduleDlg dialog message map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(CScheduleDlg, SDialog)
+	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_SCHEDULE_APPLY_BTN,			&CScheduleDlg::OnApply)
 	ON_BN_CLICKED(IDC_SCHEDULE_CANCEL_BTN,			&CScheduleDlg::OnExit)
 	ON_BN_CLICKED(IDC_SCHEDULE_ENABLE_CHK,			&CScheduleDlg::OnEnableSchedule)
@@ -146,6 +157,75 @@ BOOL CScheduleDlg::OnInitDialog()
 	SetupDlgItemState();
 
 	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnClose
+//	Description:	Default method for dialog closing
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CScheduleDlg::OnClose()
+{
+	// If not forced closing by request
+	if (!IsForceClosingByRequest()) {
+
+		// If data changed, ask for saving before closing dialog
+		if (m_bChangeFlag == TRUE) {
+			// Setup messagebox language
+			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+			CString strMessage = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CONTENT);
+			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CAPTION);
+
+			// Show save confirmation message
+			int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
+			if (nConfirm == IDYES) {
+				// Save data
+				SaveScheduleSettings();
+			}
+		}
+	}
+
+	// Save app event log if enabled
+	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
+
+	SDialog::OnClose();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RequestCloseDialog
+//	Description:	Request current dialog to close
+//  Arguments:		None
+//  Return value:	LRESULT (0:Success, else:Failed)
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT CScheduleDlg::RequestCloseDialog(void)
+{
+	// If data changed, ask for saving before closing dialog
+	if (m_bChangeFlag == TRUE) {
+		// Setup messagebox language
+		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		CString strMessage = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CONTENT);
+		CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CAPTION);
+
+		int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
+		if (nConfirm == IDYES) {
+			// Save data
+			SaveScheduleSettings();
+		}
+		else if (nConfirm == IDCANCEL) {
+			// Request denied
+			return LRESULT(DEF_RESULT_FAILED);
+		}
+	}
+
+	// Request accepted
+	return SDialog::RequestCloseDialog();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -538,20 +618,25 @@ void CScheduleDlg::OnApply()
 
 void CScheduleDlg::OnExit()
 {
-	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_SCHEDULE_CANCEL_BTN);
+	// If not forced closing by request
+	if (!IsForceClosingByRequest()) {
 
-	// If data changed, ask for saving before closing dialog
-	if (m_bChangeFlag == TRUE) {
-		// Setup messagebox language
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		CString strMessage = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CONTENT);
-		CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CAPTION);
+		// Save app event log if enabled
+		OutputButtonLog(GetDialogID(), IDC_SCHEDULE_CANCEL_BTN);
 
-		int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
-		if (nConfirm == IDYES) {
-			// Save data
-			SaveScheduleSettings();
+		// If data changed, ask for saving before closing dialog
+		if (m_bChangeFlag == TRUE) {
+			// Setup messagebox language
+			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+			CString strMessage = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CONTENT);
+			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CAPTION);
+
+			// Show save confirmation message
+			int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
+			if (nConfirm == IDYES) {
+				// Save data
+				SaveScheduleSettings();
+			}
 		}
 	}
 

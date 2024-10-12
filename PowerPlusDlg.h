@@ -26,6 +26,16 @@
 
 
 ////////////////////////////////////////////////////////
+// Declaration of child dialog classes
+
+class CAboutDlg;
+class CHelpDlg;
+class CScheduleDlg;
+class CLogViewerDlg;
+class CHotkeySetDlg;
+class CPwrReminderDlg;
+
+////////////////////////////////////////////////////////
 //
 //	CPowerPlusDlg used for main app window
 //
@@ -98,6 +108,13 @@ private:
 	BOOL m_bRestartAsAdminFlag;
 	int	 m_nPwrBroadcastSkipCount;
 
+	// Child dialogs
+	CAboutDlg*		 m_pAboutDlg;
+	CHelpDlg*		 m_pHelpDlg;
+	CLogViewerDlg*	 m_pLogViewerDlg;
+	CScheduleDlg*	 m_pScheduleDlg;
+	CHotkeySetDlg*	 m_pHotkeySetDlg;
+	CPwrReminderDlg* m_pPwrReminderDlg;
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -134,6 +151,7 @@ protected:
 	afx_msg void OnViewActionLog();
 	afx_msg void OnViewBackupConfig();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg LRESULT OnChildDialogDestroy(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateScheduleData(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateHotkeySetData(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdatePwrReminderData(WPARAM wParam, LPARAM lParam);
@@ -189,7 +207,8 @@ private:
 	void ReloadSettings();
 
 	void ShowDialog(HWND hWnd, BOOL bShowFlag = TRUE);
-	void OpenDialog(UINT nDialogID, BOOL bReadOnlyMode = FALSE, int nOpenMode = DEF_MODE_OPENDLG_MODAL);
+	void OpenChildDialogEx(UINT nDialogID);
+	void OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode = FALSE, int nOpenMode = DEF_MODE_OPENDLG_MODAL);
 	BOOL OpenFileToView(LPCTSTR lpszFileName, LPCTSTR lpszSubDir = DEF_STRING_EMPTY);
 	void RestartApp(BOOL bRestartAsAdmin);
 
@@ -202,6 +221,7 @@ private:
 	int  DisplayPwrReminder(PWRREMINDERITEM& pwrDispItem);
 	void ReupdatePwrReminderData();
 	void SetPwrReminderSnooze(PWRREMINDERITEM pwrItem, int nSnoozeFlag);
+	void UpdatePwrReminderSnooze(int nMode);
 	BOOL GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
 	BOOL ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode);
 

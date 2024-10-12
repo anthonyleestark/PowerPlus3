@@ -44,6 +44,7 @@ private:
 
 protected:
 	virtual BOOL OnInitDialog();
+	virtual void OnClose();
 	afx_msg void OnSelectLogItem();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	DECLARE_MESSAGE_MAP()

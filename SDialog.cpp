@@ -50,35 +50,52 @@ IMPLEMENT_DYNAMIC(SDialog, CDialogEx)
 
 SDialog::SDialog() : CDialogEx()
 {
-	// Init parent window
+	// Parent window
 	m_pParentWnd = NULL;
 
-	// Init member variables
+	// Dialog special flags
 	m_bReadOnlyMode = FALSE;
 	m_bChangeFlag = FALSE;
 	m_bLockState = FALSE;
+	m_bForceClose = FALSE;
+	m_bUseEnter = TRUE;
+	m_bUseEscape = TRUE;
+
+	// Properties set flags
 	m_bSetDlgTitle = FALSE;
 	m_bSetBkgrdColor = FALSE;
 	m_bSetTextColor = FALSE;
-	m_bUseEnter = TRUE;
-	m_bUseEscape = TRUE;
+
 	m_bSetMinSize = FALSE;
 	m_bSetMaxSize = FALSE;
+
 	m_bSetTopMost = FALSE;
 	m_bSetInitSound = FALSE;
 
+	// Lock state exception IDs
 	m_arrLockExceptionIDList.RemoveAll();
 
-	// Properties
+	// Dialog position
+	m_ptDlgPosition = CPoint(0,0);
+
+	// Dialog alignment
+	m_nDlgAlign = SDA_LEFTALIGN | SDA_TOPALIGN;
+
+	// Dialog size
 	m_szDlgSize = CSize();
 	m_szDefaultSize = CSize();
+
 	m_ptMinSize = CPoint(0, 0);
 	m_ptMaxSize = CPoint(0, 0);
+
+	// Dialog margin
 	m_ptMarginTopLeft = CPoint(DEFAULT_MARGIN_HORZ, DEFAULT_MARGIN_VERT);
 	m_ptMarginBottomRight = CPoint(DEFAULT_MARGIN_HORZ, DEFAULT_MARGIN_VERT);
 
+	// Other properties
 	m_strDlgTitle = DEF_STRING_EMPTY;
 	m_hDefaultIcon = NULL;
+
 	m_pBkgrdBrush = NULL;
 	m_clBkgrdColor = DEF_COLOR_WHITE;
 	m_clTextColor = DEF_COLOR_BLACK;
@@ -86,35 +103,52 @@ SDialog::SDialog() : CDialogEx()
 
 SDialog::SDialog(UINT nIDTemplate, CWnd* pParent /* = NULL */) : CDialogEx(nIDTemplate, pParent)
 {
-	// Init parent window
+	// Parent window
 	m_pParentWnd = pParent;
 
-	// Init member variables
+	// Dialog special flags
 	m_bReadOnlyMode = FALSE;
 	m_bChangeFlag = FALSE;
 	m_bLockState = FALSE;
+	m_bForceClose = FALSE;
+	m_bUseEnter = TRUE;
+	m_bUseEscape = TRUE;
+
+	// Properties set flags
 	m_bSetDlgTitle = FALSE;
 	m_bSetBkgrdColor = FALSE;
 	m_bSetTextColor = FALSE;
-	m_bUseEnter = TRUE;
-	m_bUseEscape = TRUE;
+
 	m_bSetMinSize = FALSE;
 	m_bSetMaxSize = FALSE;
+
 	m_bSetTopMost = FALSE;
 	m_bSetInitSound = FALSE;
 
+	// Lock state exception IDs
 	m_arrLockExceptionIDList.RemoveAll();
 
-	// Properties
+	// Dialog position
+	m_ptDlgPosition = CPoint(0, 0);
+
+	// Dialog alignment
+	m_nDlgAlign = SDA_LEFTALIGN | SDA_TOPALIGN;
+
+	// Dialog size
 	m_szDlgSize = CSize();
 	m_szDefaultSize = CSize();
+
 	m_ptMinSize = CPoint(0, 0);
 	m_ptMaxSize = CPoint(0, 0);
+
+	// Dialog margin
 	m_ptMarginTopLeft = CPoint(DEFAULT_MARGIN_HORZ, DEFAULT_MARGIN_VERT);
 	m_ptMarginBottomRight = CPoint(DEFAULT_MARGIN_HORZ, DEFAULT_MARGIN_VERT);
 
+	// Other properties
 	m_strDlgTitle = DEF_STRING_EMPTY;
 	m_hDefaultIcon = NULL;
+
 	m_pBkgrdBrush = NULL;
 	m_clBkgrdColor = DEF_COLOR_WHITE;
 	m_clTextColor = DEF_COLOR_BLACK;
@@ -122,35 +156,52 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParent /* = NULL */) : CDialogEx(nIDTe
 
 SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParent /* = NULL */) : CDialogEx(lpszTemplateName, pParent)
 {
-	// Init parent window
+	// Parent window
 	m_pParentWnd = pParent;
 
-	// Init member variables
+	// Dialog special flags
 	m_bReadOnlyMode = FALSE;
 	m_bChangeFlag = FALSE;
 	m_bLockState = FALSE;
+	m_bForceClose = FALSE;
+	m_bUseEnter = TRUE;
+	m_bUseEscape = TRUE;
+
+	// Properties set flags
 	m_bSetDlgTitle = FALSE;
 	m_bSetBkgrdColor = FALSE;
 	m_bSetTextColor = FALSE;
-	m_bUseEnter = TRUE;
-	m_bUseEscape = TRUE;
+
 	m_bSetMinSize = FALSE;
 	m_bSetMaxSize = FALSE;
+
 	m_bSetTopMost = FALSE;
 	m_bSetInitSound = FALSE;
 
+	// Lock state exception IDs
 	m_arrLockExceptionIDList.RemoveAll();
 
 	// Properties
+	m_ptDlgPosition = CPoint(0, 0);
+
+	// Dialog alignment
+	m_nDlgAlign = SDA_LEFTALIGN | SDA_TOPALIGN;
+
+	// Dialog size
 	m_szDlgSize = CSize();
 	m_szDefaultSize = CSize();
+
 	m_ptMinSize = CPoint(0, 0);
 	m_ptMaxSize = CPoint(0, 0);
+
+	// Dialog margin
 	m_ptMarginTopLeft = CPoint(DEFAULT_MARGIN_HORZ, DEFAULT_MARGIN_VERT);
 	m_ptMarginBottomRight = CPoint(DEFAULT_MARGIN_HORZ, DEFAULT_MARGIN_VERT);
 
+	// Other properties
 	m_strDlgTitle = DEF_STRING_EMPTY;
 	m_hDefaultIcon = NULL;
+
 	m_pBkgrdBrush = NULL;
 	m_clBkgrdColor = DEF_COLOR_WHITE;
 	m_clTextColor = DEF_COLOR_BLACK;
@@ -165,10 +216,10 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParent /* = NULL */) : CDialog
 
 SDialog::~SDialog()
 {
-	// Member variables
+	// Clear lock state exception IDs list
 	ResetLockStateExceptionList();
 
-	// Properties
+	// Properties data cleanup
 	::DeleteObject(m_hDefaultIcon);
 	if (m_pBkgrdBrush != NULL) {
 		delete m_pBkgrdBrush;
@@ -188,10 +239,18 @@ void SDialog::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	SDialog dialog message map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(SDialog, CDialogEx)
+	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDOK, &SDialog::OnOK)
 	ON_BN_CLICKED(IDCANCEL, &SDialog::OnCancel)
-	ON_WM_DESTROY()
+	ON_WM_ACTIVATE()
 END_MESSAGE_MAP()
 
 
@@ -303,6 +362,33 @@ BOOL SDialog::OnInitDialog()
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	OnClose
+//	Description:	Default method for dialog closing
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::OnClose()
+{
+	// Get dialog ID
+	WPARAM wParam = (WPARAM)GetDialogID();
+
+	// If parent window is set
+	if (m_pParentWnd != NULL) {
+		// Notify parent window about dialog closing
+		m_pParentWnd->PostMessage(SCM_DLGCLOSE_NOTIFY, wParam, NULL);
+	}
+	else {
+		// Notify to app main thread
+		::PostMessage(NULL, SCM_DLGCLOSE_NOTIFY, wParam, NULL);
+	}
+
+	CDialogEx::OnClose();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	OnDestroy
 //	Description:	Default method for dialog destroying
 //  Arguments:		None
@@ -312,7 +398,34 @@ BOOL SDialog::OnInitDialog()
 
 void SDialog::OnDestroy()
 {
+	// Get dialog ID
+	WPARAM wParam = (WPARAM)GetDialogID();
+
+	// If parent window is set
+	if (m_pParentWnd != NULL) {
+		// Notify parent window about dialog destroying
+		m_pParentWnd->PostMessage(SCM_DLGDESTROY_NOTIFY, wParam, NULL);
+	}
+	else {
+		// Notify to app main thread
+		::PostMessage(NULL, SCM_DLGDESTROY_NOTIFY, wParam, NULL);
+	}
+
 	CDialogEx::OnDestroy();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnActivate
+//	Description:	Default method for dialog activate message handling
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+{
+	CDialogEx::OnActivate(nState, pWndOther, bMinimized);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -426,6 +539,40 @@ void SDialog::SetParentWnd(CWnd* pParentWnd)
 BOOL SDialog::IsParentWndAvailable()
 {
 	return (m_pParentWnd != NULL);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	AddDialogStyle
+//	Description:	Add dialog extended styles
+//  Arguments:		dwAddStyle - Styles to add
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL SDialog::AddDialogStyle(DWORD dwAddStyle)
+{
+	DWORD dwStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
+	dwStyle |= dwAddStyle;
+	LONG lRet = SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, dwStyle);
+	return (lRet != 0);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RemoveDialogStyle
+//	Description:	Remove dialog extended styles
+//  Arguments:		dwRemoveStyle - Styles to remove
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL SDialog::RemoveDialogStyle(DWORD dwRemoveStyle)
+{
+	DWORD dwStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
+	dwStyle &= ~dwRemoveStyle;
+	LONG lRet = SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, dwStyle);
+	return (lRet != 0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -569,6 +716,154 @@ void SDialog::ResetLockStateExceptionList()
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	Get/SetDialogAlign
+//	Description:	Get/set dialog alignments
+//  Arguments:		nAlign - Dialog alignments
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT SDialog::GetDialogAlign(void)
+{
+	return m_nDlgAlign;
+}
+
+void SDialog::SetDialogAlign(UINT nAlign)
+{
+	m_nDlgAlign = nAlign;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Get/SetDialogPosition
+//	Description:	Get/set dialog position
+//  Arguments:		lpPosition - Dialog position (anchor point) (OUT)
+//					ptPosition - Dialog position (anchor point) (IN)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::GetDialogPosition(LPPOINT lpPosition)
+{
+	// Get position
+	lpPosition->x = m_ptDlgPosition.x;
+	lpPosition->y = m_ptDlgPosition.y;
+}
+
+void SDialog::SetDialogPosition(POINT ptPosition)
+{
+	// Set position
+	m_ptDlgPosition.x = ptPosition.x;
+	m_ptDlgPosition.y = ptPosition.y;
+
+	// Move dialog
+	MoveDialog(m_ptDlgPosition);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	MoveDialog
+//	Description:	Move dialog position and return new rectangle
+//  Arguments:		ptPosition - Dialog position (anchor point)
+//					lpNewRect  - New dialog rectangle (OUT)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
+{
+	// Get current dialog rectangle
+	CRect rcCurPos;
+	this->GetWindowRect(&rcCurPos);
+
+	// Get dialog alignments
+	UINT nAlign = GetDialogAlign();
+
+	// Calculate moving delta by alignments
+	int dx = 0, dy = 0;
+
+	// --> Calculate horizontal delta
+	if (nAlign & SDA_LEFTALIGN) {
+		// Move left rect
+		dx = ptPosition.x - rcCurPos.left;
+	}
+	else if (nAlign & SDA_RIGHTALIGN) {
+		// Move right rect
+		dx = ptPosition.x - rcCurPos.right;
+	}
+	else if (nAlign & SDA_HCENTERALIGN) {
+		// Move center rect
+		int nHCenter = rcCurPos.right - rcCurPos.left;
+		dx = ptPosition.x - nHCenter;
+	}
+
+	// --> Calculate vertical delta
+	if (nAlign & SDA_TOPALIGN) {
+		// Move top rect
+		dy = ptPosition.y - rcCurPos.top;
+	}
+	else if (nAlign & SDA_BOTTOMALIGN) {
+		// Move bottom rect
+		dy = ptPosition.y - rcCurPos.bottom;
+	}
+	else if (nAlign & SDA_VCENTERALIGN) {
+		// Move center rect
+		int nVCenter = rcCurPos.bottom - rcCurPos.top;
+		dy = ptPosition.y - nVCenter;
+	}
+
+	// Move dialog
+	MoveDialog(dx, dy, lpNewRect);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	MoveDialog
+//	Description:	Move dialog position as given delta and return new rect
+//  Arguments:		dx		  - Horizontal delta
+//					dy		  - Vertical delta
+//					lpNewRect - New dialog rectangle (OUT)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::MoveDialog(int dx, int dy, LPRECT lpNewRect /* = NULL */)
+{
+	// Get current dialog rectangle
+	CRect rcCurPos;
+	this->GetWindowRect(&rcCurPos);
+
+	// Shift rectangle
+	if (dx != 0) {
+		// Move horizontal direction --> Shift X value
+		rcCurPos.left += dx;
+		rcCurPos.right += dx;
+	}
+	if (dy != 0) {
+		// Move vertical direction --> Shift Y value
+		rcCurPos.top += dy;
+		rcCurPos.bottom += dy;
+	}
+
+	// Move dialog
+	if ((dx != 0) || (dy != 0)) {
+		// Top-left point
+		int x = rcCurPos.left;
+		int y = rcCurPos.top;
+		// Set dialog position
+		BOOL bRet = this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		// If moving successfully, update new rectangle 
+		if ((bRet == TRUE) && (lpNewRect != NULL)) {
+			lpNewRect->left = rcCurPos.left;
+			lpNewRect->right = rcCurPos.right;
+			lpNewRect->top = rcCurPos.top;
+			lpNewRect->bottom = rcCurPos.bottom;
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	ResizeDialog
 //	Description:	Resize dialog (after change size)
 //  Arguments:		bCenterDialog - Replace dialog to center
@@ -641,7 +936,7 @@ void SDialog::ResetDialogSize()
 // 
 //	Function name:	Get/SetDlgSize
 //	Description:	Get/set dialog size
-//  Arguments:		lpszDlgSize - Dialog size
+//  Arguments:		lpDlgSize	- Dialog size
 //					szDlgSize	- Dialog size
 //					nWidth		- Dialog width
 //					nHeight		- Dialog height
@@ -649,16 +944,16 @@ void SDialog::ResetDialogSize()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::GetDlgSize(LPSIZE lpszDlgSize)
+void SDialog::GetDlgSize(LPSIZE lpDlgSize)
 {
 	// If size is not set, use default
 	if ((m_szDlgSize.cx <= 0) && (m_szDlgSize.cy <= 0)) {
-		lpszDlgSize->cx = m_szDefaultSize.cx;
-		lpszDlgSize->cy = m_szDefaultSize.cy;
+		lpDlgSize->cx = m_szDefaultSize.cx;
+		lpDlgSize->cy = m_szDefaultSize.cy;
 	}
 
-	lpszDlgSize->cx = m_szDlgSize.cx;
-	lpszDlgSize->cy = m_szDlgSize.cy;
+	lpDlgSize->cx = m_szDlgSize.cx;
+	lpDlgSize->cy = m_szDlgSize.cy;
 }
 
 void SDialog::SetDlgSize(SIZE szDlgSize)
@@ -836,9 +1131,6 @@ void SDialog::GetDisplayArea(LPRECT lpRect)
 
 void SDialog::SetDisplayArea(RECT rcNewDispArea, BOOL bResizeDialog, BOOL bCenter)
 {
-	// Debug log
-	CString strALSLog;
-
 	// Get current margin
 	POINT ptTopLeft, ptBottomRight;
 	this->GetMargin(&ptTopLeft, &ptBottomRight);
@@ -1282,6 +1574,62 @@ void SDialog::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	UpdateItemText
+//	Description:	Update control text label
+//  Arguments:		nCtrlID		   - ID of control item
+//					lpszNewCaption - New caption string
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::UpdateItemText(UINT nCtrlID, LPCTSTR lpszNewCaption)
+{
+	// Get item by ID
+	CWnd* pCtrlWnd = this->GetDlgItem(nCtrlID);
+	if (pCtrlWnd == NULL)
+		return;
+
+	// Update item text
+	pCtrlWnd->SetWindowText(lpszNewCaption);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	UpdateItemText
+//	Description:	Update control text label
+//  Arguments:		nCtrlID		  - ID of control item
+//					nNewCaptionID - New caption language string ID
+//					ptrLanguage   - Language package pointer
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::UpdateItemText(UINT nCtrlID , UINT nNewCaptionID /* = NULL */, LANGTABLE_PTR ptrLanguage /* = NULL */)
+{
+	// Check language package validity
+	if (ptrLanguage == NULL) {
+		ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		if (ptrLanguage == NULL)
+			return;
+	}
+
+	// Get caption language string
+	CString strWndText;
+	if (nNewCaptionID != NULL) {
+		// Get new caption
+		strWndText = GetLanguageString(ptrLanguage, nNewCaptionID);
+	}
+	else {
+		// Get its own caption string ID
+		strWndText = GetLanguageString(ptrLanguage, nCtrlID);
+	}
+
+	// Update item text
+	UpdateItemText(nCtrlID, strWndText);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	SetControlText
 //	Description:	Set control text label
 //  Arguments:		pCtrlWnd	- Pointer of control window
@@ -1303,6 +1651,8 @@ void SDialog::SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLang
 	// Check language package validity
 	if (ptrLanguage == NULL) {
 		ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		if (ptrLanguage == NULL)
+			return;
 	}
 
 	// Get language string
@@ -1420,4 +1770,39 @@ BOOL SDialog::CheckDataChangeState()
 BOOL SDialog::CheckSettingChangeState()
 {
 	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsForceClosingByRequest
+//	Description:	Check dialog force closing flag
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL SDialog::IsForceClosingByRequest(void)
+{
+	return m_bForceClose;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RequestCloseDialog
+//	Description:	Request current dialog to close
+//  Arguments:		None
+//  Return value:	LRESULT (0:Success, else:Failed)
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT SDialog::RequestCloseDialog(void)
+{
+	// Set force closing flag
+	m_bForceClose = TRUE;
+
+	// Default: Close the dialog
+	this->PostMessage(WM_CLOSE);
+
+	// Request accepted
+	return LRESULT(0);	// ERROR_SUCCESS
 }

@@ -448,7 +448,7 @@ BOOL RegFuncs::DeleteHotkeySetSection(void)
 		bRet &= DeleteRegistrySection(strSectionName, strSubSectionName);
 	}
 
-	// Delete section
+	// Delete parent section
 	bRet &= DeleteRegistrySection(IDS_REGSECTION_HOTKEYSET);
 
 	return bRet;
@@ -603,7 +603,7 @@ BOOL RegFuncs::DeletePwrReminderSection(void)
 		bRet &= DeleteRegistrySection(strSectionName, strSubSectionName);
 	}
 
-	// Delete section
+	// Delete parent section
 	bRet &= DeleteRegistrySection(IDS_REGSECTION_PWRREMINDER);
 
 	return bRet;

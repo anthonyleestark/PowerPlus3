@@ -73,6 +73,7 @@ protected:
 public:
 	// Generated message handle functions
 	virtual BOOL OnInitDialog();
+	virtual void OnClose();
 	virtual void OnDestroy();
 	virtual void PostNcDestroy();
 	afx_msg void OnPaint();

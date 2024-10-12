@@ -61,6 +61,7 @@ protected:
 public:
 	// Generated message handle functions
 	virtual BOOL OnInitDialog();
+	virtual void OnClose();
 	virtual void OnDestroy();
 	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
 	virtual void OnSize(UINT nType, int nWidth, int nHeight);

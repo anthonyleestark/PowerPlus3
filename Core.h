@@ -252,13 +252,17 @@
 
 // Define macros
 #define TRCLOG(logString)						TraceLog(logString)
-#define TRCFFMT(funcname, errString)			TraceLogFormat("Error: %s [Function: %s]", errString, funcname)
+#define TRCFFMT(funcname, errString)			TraceLogFormat("[%s] %s", funcname, errString)
 
 // Define properties for Power Reminder function
 #define DEF_PWRREMINDER_MAX_ITEMNUM				100					// Max item number: 100
 #define DEF_PWRREMINDER_MIN_ITEMID				10000				// Min item ID: 10000
 #define DEF_PWRREMINDER_MAX_ITEMID				19999				// Max item ID: 19999
 #define DEF_PWRREMINDER_PREVIEW_TIMEOUT			10					// Default time-out for preview: 10s
+#define DEF_PWRREMINDER_MIN_SNOOZE				60					// Min snooze interval: 1 minutes
+#define DEF_PWRREMINDER_DEFAULT_SNOOZE			600					// Default snooze interval: 10 minutes
+#define DEF_PWRREMINDER_MAX_SNOOZE				1800				// Max snooze interval: 30 minutes
+#define DEF_PWRREMINDER_DEFAULT_REPEAT			0b01111111			// Default repeat: All days of week
 
 // Define special strings and numbers
 #define DEF_STRING_EMPTY						_T("")				// Empty string
@@ -269,7 +273,9 @@
 #define DEF_SYMBOL_OUTPUTSIGN					_T(">> ")			// Output sign
 #define DEF_SYMBOL_INPUTSIGN					_T(" <<")			// Input sign
 #define DEF_CHAR_RETURN							_T('\r')			// 'Return' character
-#define DEF_CHAR_ENDLINE						_T('\n')			// 'New line' character
+#define DEF_CHAR_ENDLINE						_T('\n')			// 'Endline' character
+#define DEF_CHAR_NEWLINE						_T('\r\n')			// 'New line' character
+#define DEF_CHAR_ENDSTRING						_T('\0')			// Null-termination (end of string)
 #define DEF_FILEEXT_BAKFILE						_T(".bak")			// Backup file extension
 #define DEF_FILEEXT_BAKFILEWNUM					_T("%d.bak")		// Backup file extension (with number)
 #define DEF_BAKFILE_MAXNUM						100					// Maximum backup file number: 100
@@ -292,6 +298,8 @@
 
 #define DEF_SPINCTRL_TIMEMINPOS					0					// As 00:00
 #define DEF_SPINCTRL_TIMEMAXPOS					1439				// As 23:59
+#define DEF_SPINCTRL_SNOOZEMINPOS				1					// Min snooze time: 1 minutes
+#define DEF_SPINCTRL_SNOOZEMAXPOS				30					// Max snooze time: 30 minutes
 #define DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH	30					// Max length: 30 characters
 #define DEF_LOGDISP_STRING_MAXLENGTH			20					// Max length: 20 characters
 #define DEF_LOGFILE_MAXLENGTH					1048576				// Max file size: 1MB
@@ -308,6 +316,17 @@ typedef enum eFLAG {
 	FLAG_OFF = 0,					// Flag OFF
 	FLAG_ON	 = 1,					// Flag ON
 } FLAG;
+
+// Days of week
+typedef enum eDAYOFWEEK {
+	SUNDAY,							// Sunday
+	MONDAY,							// Monday
+	TUESDAY,						// Tuesday
+	WEDNESDAY,						// Wednesday
+	THURSDAY,						// Thursday
+	FRIDAY,							// Friday
+	SATURDAY,						// Saturday
+} DAYOFWEEK;
 
 // System events
 typedef enum eSYSTEMEVENTID {
@@ -562,6 +581,32 @@ typedef struct tagHOTKEYSETDATA
 
 //////////////////////////////////////////////////////////////////////////
 //
+//	Data type name:	RMDREPEATSET
+//  Description:	Store data of a Reminder item repeat set
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagRMDREPEATSET
+{
+	// Member variables
+	BOOL		bRepeat;									// Repeat daily
+	BOOL		bAllowSnooze;								// Allow snoozing mode
+	INT			nSnoozeInterval;							// Snooze interval
+	BYTE		byRepeatDays;								// Days of week (for repeating)
+
+	// Constructor
+	tagRMDREPEATSET();										// Default constructor
+	tagRMDREPEATSET(const tagRMDREPEATSET&);				// Copy constructor
+
+	// Member functions
+	void Copy(const tagRMDREPEATSET&);						// Copy data
+	BOOL Compare(const tagRMDREPEATSET&);					// Compare data
+	BOOL IsDayActive(DAYOFWEEK dayOfWeek);					// Check if day of week is active
+} RMDREPEATSET, *PRMDREPEATSET;
+
+//////////////////////////////////////////////////////////////////////////
+//
 //	Data type name:	PWRREMINDERITEM
 //  Description:	Store data of a Power Reminder item
 //  Derivered from: C++ basic struct
@@ -571,24 +616,25 @@ typedef struct tagHOTKEYSETDATA
 typedef struct tagPWRREMINDERITEM
 {
 	// Member variables
-	BOOL		bEnable;									// Enable state
-	UINT		nItemID;									// Item ID
-	CString		strMessage;									// Message content
-	UINT		nEventID;									// Event ID
-	SYSTEMTIME  stTime;										// Event time
-	DWORD		dwStyle;									// Reminder style
-	BOOL		bRepeat;									// Repeat daily
+	BOOL			bEnable;								// Enable state
+	UINT			nItemID;								// Item ID
+	CString			strMessage;								// Message content
+	UINT			nEventID;								// Event ID
+	SYSTEMTIME		stTime;									// Event time
+	DWORD			dwStyle;								// Reminder style
+	RMDREPEATSET	rpsRepeatSet;							// Repeat set data
 
 	// Constructor
 	tagPWRREMINDERITEM();									// Default constructor
 	tagPWRREMINDERITEM(const tagPWRREMINDERITEM&);			// Copy constructor
-	tagPWRREMINDERITEM(BOOL, UINT, LPCTSTR, UINT,			// Copy constructor (init list)
-					   SYSTEMTIME, DWORD, BOOL);
 
 	// Member functions
 	void Copy(const tagPWRREMINDERITEM&);					// Copy item
 	BOOL IsEmpty();											// Check if item is empty
 	BOOL Compare(const tagPWRREMINDERITEM&);				// Compare items
+	BOOL IsRepeatEnable(void);								// Check if item repeat mode is enabled
+	BOOL IsDayActive(DAYOFWEEK dayOfWeek);					// Check if day of week is active
+	BOOL IsAllowSnoozing(void);								// Check if item snooze mode is available
 	void Print(CString& strOutput);							// Print item data
 } PWRREMINDERITEM, *PPWRREMINDERITEM;
 
@@ -644,7 +690,8 @@ typedef struct tagPWRREMINDERDATA
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagPWRRMDITEMADVSPEC {
+typedef struct tagPWRRMDITEMADVSPEC 
+{
 	// Member variables
 	UINT		nItemID;									// Power Reminder item ID
 	int			nSnoozeFlag;								// Snooze trigger flag
@@ -656,7 +703,7 @@ typedef struct tagPWRRMDITEMADVSPEC {
 
 	// Member functions
 	void Copy(const tagPWRRMDITEMADVSPEC&);					// Copy data
-	void CalcNextSnoozeTime(void);								// Calculate next snooze time
+	void CalcNextSnoozeTime(int nInterval);					// Calculate next snooze time
 } PWRRMDITEMADVSPEC, *PPWRRMDITEMADVSPEC;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1115,7 +1162,7 @@ namespace CoreFuncs
 	BOOL	CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT nStyle, DWORD& dwErrorCode);
 
 	BOOL	SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode);
-	void	DrawButton(CButton*& pButton, UINT nIconID, LPCTSTR lpszButtonTitle);
+	void	DrawButton(CButton*& pButton, UINT nIconID, LPCTSTR lpszButtonTitle = DEF_STRING_EMPTY);
 	BOOL	EnumFontNames(std::vector<std::wstring>& fontNames);
 	BOOL	ValidateFontName(LPCTSTR lpszFontName);
 };

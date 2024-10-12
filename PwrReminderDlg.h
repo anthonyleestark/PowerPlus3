@@ -22,6 +22,11 @@
 
 
 ////////////////////////////////////////////////////////
+// Declaration of child dialog classes
+
+class CRmdRepeatSetDlg;
+
+////////////////////////////////////////////////////////
 //
 //	CPwrReminderDlg dialog used for Power Reminder function
 //
@@ -47,6 +52,7 @@ private:
 	CButton*		 m_pEvtSetTimeRad;
 	CEdit*			 m_pEvtSetTimeEdit;
 	CSpinButtonCtrl* m_pEvtSetTimeSpin;
+	CButton*		 m_pEvtRepeatSetBtn;
 	CButton*		 m_pEvtAppStartupRad;
 	CButton*		 m_pEvtSysWakeupRad;
 	CButton*		 m_pEvtBfrPwrActionRad;
@@ -55,6 +61,9 @@ private:
 	CButton*		 m_pStyleMsgBoxRad;
 	CButton*		 m_pStyleDialogBoxRad;
 	CComboBox*		 m_pMsgStyleCombo;
+
+	// Properties child dialogs
+	CRmdRepeatSetDlg* m_pRepeatSetDlg;
 
 	// Checkbox/radio button variables
 	BOOL m_bEvtSetTimeRad;
@@ -85,12 +94,10 @@ private:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-protected:
-	DECLARE_MESSAGE_MAP()
-	DECLARE_CLASS_IDMAP()
-
+public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
+	virtual void OnClose();
 	afx_msg void OnApply();
 	afx_msg void OnCancel();
 	afx_msg void OnAdd();
@@ -108,7 +115,12 @@ protected:
 	afx_msg void OnTimeEditKillFocus();
 	afx_msg void OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnPwrEventRadBtnClicked(UINT nID);
+	afx_msg void OnRepeatSet();
+	virtual LRESULT RequestCloseDialog(void);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
+	DECLARE_MESSAGE_MAP()
+	DECLARE_CLASS_IDMAP()
 
 protected:
 	// Dialog setup functions
@@ -146,11 +158,12 @@ private:
 	void UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate);
 	BOOL Validate(PWRREMINDERITEM pwrItem, BOOL bShowMsg = FALSE);
 
-public:
+protected:
 	// Get/set functions
-	int GetItemNum();
-	int GetCurMode();
+	int GetItemNum(void);
+	int GetCurMode(void);
 	void SetCurMode(int nMode);
+	void DrawRepeatSetButton(void);
 };
 
 #endif	// ifndef _PWRREMINDERDLG_H_INCLUDED

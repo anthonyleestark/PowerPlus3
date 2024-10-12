@@ -71,9 +71,6 @@ CHotkeySetDlg::~CHotkeySetDlg()
 	// Remove HotkeySet data
 	m_hksHotkeySet.DeleteAll();
 	m_hksHotkeySetTemp.DeleteAll();
-
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -93,6 +90,12 @@ void CHotkeySetDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_HOTKEYSET_ALTKEY_CHK, m_bAltBtn);
 	DDX_Check(pDX, IDC_HOTKEYSET_WINKEY_CHK, m_bWinKeyBtn);
 }
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	CHotkeySetDlg dialog items ID map
+//
+//////////////////////////////////////////////////////////////////////////
 
 BEGIN_ID_MAPPING(CHotkeySetDlg)
 	IDMAP_ADD(IDD_HOTKEYSET_DLG,				"HotkeySetDlg")
@@ -115,7 +118,14 @@ BEGIN_ID_MAPPING(CHotkeySetDlg)
 END_ID_MAPPING()
 
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CHotkeySetDlg dialog message map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(CHotkeySetDlg, SDialog)
+	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_HOTKEYSET_APPLY_BTN,					&CHotkeySetDlg::OnApply)
 	ON_BN_CLICKED(IDC_HOTKEYSET_CANCEL_BTN,					&CHotkeySetDlg::OnCancel)
 	ON_BN_CLICKED(IDC_HOTKEYSET_ADD_BTN,					&CHotkeySetDlg::OnAdd)
@@ -178,6 +188,38 @@ BOOL CHotkeySetDlg::OnInitDialog()
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	OnClose
+//	Description:	Default method for dialog closing
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHotkeySetDlg::OnClose()
+{
+	// If not forced closing by request
+	if (!IsForceClosingByRequest()) {
+
+		// Ask for saving before exiting if data changed
+		m_bChangeFlag = CheckDataChangeState();
+		if (m_bChangeFlag == TRUE) {
+			// Show save confirmation message
+			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, MSGBOX_HOTKEYSET_CAPTION, MB_YESNO | MB_ICONQUESTION);
+			if (nConfirm == IDYES) {
+				// Save data
+				SaveHotkeySetData();
+			}
+		}
+	}
+
+	// Save app event log if enabled
+	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
+
+	SDialog::OnClose();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	OnApply
 //	Description:	Handle click event for [Apply] button
 //  Arguments:		None
@@ -212,16 +254,21 @@ void CHotkeySetDlg::OnApply()
 
 void CHotkeySetDlg::OnCancel()
 {
-	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_CANCEL_BTN);
+	// If not forced closing by request
+	if (!IsForceClosingByRequest()) {
 
-	// Ask for saving before exiting if data changed
-	m_bChangeFlag = CheckDataChangeState();
-	if (m_bChangeFlag == TRUE) {
-		int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, MSGBOX_HOTKEYSET_CAPTION, MB_YESNO | MB_ICONQUESTION);
-		if (nConfirm == IDYES) {
-			// Save data
-			SaveHotkeySetData();
+		// Save app event log if enabled
+		OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_CANCEL_BTN);
+
+		// Ask for saving before exiting if data changed
+		m_bChangeFlag = CheckDataChangeState();
+		if (m_bChangeFlag == TRUE) {
+			// Show save confirmation message
+			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, MSGBOX_HOTKEYSET_CAPTION, MB_YESNO | MB_ICONQUESTION);
+			if (nConfirm == IDYES) {
+				// Save data
+				SaveHotkeySetData();
+			}
 		}
 	}
 
@@ -436,6 +483,35 @@ void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Refresh button states
 	RefreshDlgItemState();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RequestCloseDialog
+//	Description:	Request current dialog to close
+//  Arguments:		None
+//  Return value:	LRESULT (0:Success, else:Failed)
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT CHotkeySetDlg::RequestCloseDialog(void)
+{
+	// Ask for saving before exiting if data changed
+	m_bChangeFlag = CheckDataChangeState();
+	if (m_bChangeFlag == TRUE) {
+		int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, MSGBOX_HOTKEYSET_CAPTION, MB_YESNOCANCEL | MB_ICONQUESTION);
+		if (nConfirm == IDYES) {
+			// Save data
+			SaveHotkeySetData();
+		}
+		else if (nConfirm == IDCANCEL) {
+			// Request denied
+			return LRESULT(DEF_RESULT_FAILED);
+		}
+	}
+
+	// Request accepted
+	return SDialog::RequestCloseDialog();
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -52,6 +52,7 @@ protected:
 
 public:
 	virtual BOOL OnInitDialog();
+	virtual void OnClose();
 	afx_msg void OnDevProfileLinkClick(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnCloseButton();
 
@@ -93,6 +94,7 @@ protected:
 public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
+	virtual void OnClose();
 	afx_msg void OnCloseButton();
 	afx_msg void OnSwitchViewMode();
 

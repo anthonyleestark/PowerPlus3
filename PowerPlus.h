@@ -23,6 +23,11 @@
 
 
 ////////////////////////////////////////////////////////
+// Declaration of child dialog classes
+
+class CDebugTestDlg;
+
+////////////////////////////////////////////////////////
 //
 //	CPowerPlusApp used for app
 //
@@ -56,6 +61,9 @@ private:
 
 	// Hook procedure handle
 	HHOOK m_hAppKeyboardHook;
+
+	// DebugTest dialog
+	CDebugTestDlg*	m_pDebugTestDlg;
 
 	// Other member variables
 	CString			m_strAppWndTitle;
@@ -121,6 +129,9 @@ public:
 
 	void TraceSerializeData(WORD wErrCode);
 	BOOL DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag = APPDATA_ALL);
+
+	// DebugTest dialog function
+	CDebugTestDlg* GetDebugTestDlg(void);
 
 	// Window title functions
 	LPCTSTR GetAppWindowTitle(void);

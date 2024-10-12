@@ -56,8 +56,6 @@ CAboutDlg::CAboutDlg() : SDialog(IDD_ABOUT_DLG)
 
 CAboutDlg::~CAboutDlg()
 {
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -72,6 +70,12 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	SDialog::DoDataExchange(pDX);
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CAboutDlg dialog items ID map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_ID_MAPPING(CAboutDlg)
 	IDMAP_ADD(IDD_ABOUT_DLG,		"AboutDlg")
 	IDMAP_ADD(IDC_ABOUT_CLOSE_BTN,	"CloseButton")
@@ -82,7 +86,14 @@ BEGIN_ID_MAPPING(CAboutDlg)
 	IDMAP_ADD(IDC_APPINFO_LABEL,	"AuthorInfoLabel")
 END_ID_MAPPING()
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CAboutDlg dialog message map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(CAboutDlg, SDialog)
+	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_ABOUT_CLOSE_BTN,		 &CAboutDlg::OnCloseButton)
 	ON_NOTIFY(NM_CLICK, IDC_DEVPROFILE_LINK, &CAboutDlg::OnDevProfileLinkClick)
 END_MESSAGE_MAP()
@@ -112,6 +123,23 @@ BOOL CAboutDlg::OnInitDialog()
 	SetupLanguage();
 
 	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnClose
+//	Description:	Default method for dialog closing
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CAboutDlg::OnClose()
+{
+	// Save app event log if enabled
+	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
+
+	SDialog::OnClose();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -163,6 +191,7 @@ void CAboutDlg::OnCloseButton()
 	// Save app event log if enabled
 	OutputButtonLog(GetDialogID(), IDC_ABOUT_CLOSE_BTN);
 
+	// Close dialog
 	EndDialog(IDOK);
 }
 
@@ -221,8 +250,6 @@ CHelpDlg::CHelpDlg(CWnd* pParent /*=NULL*/)
 
 CHelpDlg::~CHelpDlg()
 {
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -238,6 +265,12 @@ void CHelpDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CHelpDlg dialog items ID map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_ID_MAPPING(CHelpDlg)
 	IDMAP_ADD(IDD_HELP_DLG,					"HelpDlg")
 	IDMAP_ADD(IDC_HELPINFO_EDITBOX,			"HelpInfoEditView")
@@ -245,7 +278,14 @@ BEGIN_ID_MAPPING(CHelpDlg)
 	IDMAP_ADD(IDC_HELP_SWITCHVIEWMODE_BTN,	"SwitchViewModeButton")
 END_ID_MAPPING()
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CHelpDlg dialog message map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(CHelpDlg, SDialog)
+	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_HELP_CLOSE_BTN,			&CHelpDlg::OnCloseButton)
 	ON_BN_CLICKED(IDC_HELP_SWITCHVIEWMODE_BTN,	&CHelpDlg::OnSwitchViewMode)
 END_MESSAGE_MAP()
@@ -279,6 +319,23 @@ BOOL CHelpDlg::OnInitDialog()
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	OnClose
+//	Description:	Default method for dialog closing
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHelpDlg::OnClose()
+{
+	// Save app event log if enabled
+	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
+
+	SDialog::OnClose();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	OnCloseButton
 //	Description:	Handle clicking event for [Close] button
 //  Arguments:		None
@@ -291,6 +348,7 @@ void CHelpDlg::OnCloseButton()
 	// Save app event log if enabled
 	OutputButtonLog(GetDialogID(), IDC_HELP_CLOSE_BTN);
 
+	// Close dialog
 	EndDialog(IDOK);
 }
 

@@ -223,6 +223,7 @@
     <ClInclude Include="PowerPlus.h" />
     <ClInclude Include="PowerPlusDlg.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RmdRepeatSetDlg.h" />
     <ClInclude Include="ScheduleDlg.h" />
     <ClInclude Include="SDialog.h" />
     <ClInclude Include="stdafx.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="PowerPlusDlgFunc.cpp" />
     <ClCompile Include="PwrReminderDlg.cpp" />
     <ClCompile Include="ReminderMsgDlg.cpp" />
+    <ClCompile Include="RmdRepeatSetDlg.cpp" />
     <ClCompile Include="ScheduleDlg.cpp" />
     <ClCompile Include="SDialog.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -571,6 +571,91 @@ void tagHOTKEYSETDATA::DeleteAll(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	tagRMDREPEATSET
+//	Description:	Constructor
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagRMDREPEATSET::tagRMDREPEATSET()
+{
+	// Init data
+	this->bRepeat = FALSE;									// Repeat daily
+	this->bAllowSnooze = TRUE;								// Allow snoozing mode
+	this->nSnoozeInterval = DEF_PWRREMINDER_DEFAULT_SNOOZE;	// Snooze interval
+	this->byRepeatDays = DEF_PWRREMINDER_DEFAULT_REPEAT;	// Default repeat: All days of week
+}
+
+tagRMDREPEATSET::tagRMDREPEATSET(const tagRMDREPEATSET& pItem)
+{
+	// Copy data
+	this->bRepeat = pItem.bRepeat;							// Repeat daily
+	this->bAllowSnooze = pItem.bAllowSnooze;				// Allow snoozing mode
+	this->nSnoozeInterval = pItem.nSnoozeInterval;			// Snooze interval
+	this->byRepeatDays = pItem.byRepeatDays;				// Default repeat: All days of week
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Copy
+//	Description:	Copy data from another Repeat set data
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagRMDREPEATSET::Copy(const tagRMDREPEATSET& pItem)
+{
+	// Copy data
+	this->bRepeat = pItem.bRepeat;							// Repeat daily
+	this->bAllowSnooze = pItem.bAllowSnooze;				// Allow snoozing mode
+	this->nSnoozeInterval = pItem.nSnoozeInterval;			// Snooze interval
+	this->byRepeatDays = pItem.byRepeatDays;				// Days of week (for repeating)
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Compare
+//	Description:	Compare data with another Repeat set data
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagRMDREPEATSET::Compare(const tagRMDREPEATSET& pItem)
+{
+	BOOL bRetCompare = TRUE;
+
+	// Compare data
+	bRetCompare &= (this->bRepeat == pItem.bRepeat);					// Repeat daily
+	bRetCompare &= (this->bAllowSnooze == pItem.bAllowSnooze);			// Allow snoozing mode
+	bRetCompare &= (this->nSnoozeInterval == pItem.nSnoozeInterval);	// Snooze interval
+	bRetCompare &= (this->byRepeatDays == pItem.byRepeatDays);			// Days of week (for repeating)
+
+	return bRetCompare;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsDayActive
+//	Description:	Check if day of week is active
+//  Arguments:		dayOfWeek - Day of week
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagRMDREPEATSET::IsDayActive(DAYOFWEEK dayOfWeek)
+{
+	// Invalid day of week
+	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
+		return FALSE;
+
+	return (this->byRepeatDays & (1 << dayOfWeek));
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	tagPWRREMINDERITEM
 //	Description:	Constructor
 //  Arguments:		Default
@@ -581,13 +666,13 @@ void tagHOTKEYSETDATA::DeleteAll(void)
 tagPWRREMINDERITEM::tagPWRREMINDERITEM()
 {
 	// Init data
-	this->bEnable = FALSE;							// Enable state
-	this->nItemID = DEF_PWRREMINDER_MIN_ITEMID;		// Item ID
-	this->strMessage = DEF_STRING_EMPTY;			// Message content
-	this->nEventID = PREVT_AT_SETTIME;				// Event ID
-	this->stTime = {0};								// Event time
-	this->dwStyle = PRSTYLE_MSGBOX;					// Reminder style
-	this->bRepeat = FALSE;							// Repeat daily
+	this->bEnable = FALSE;									// Enable state
+	this->nItemID = DEF_PWRREMINDER_MIN_ITEMID;				// Item ID
+	this->strMessage = DEF_STRING_EMPTY;					// Message content
+	this->nEventID = PREVT_AT_SETTIME;						// Event ID
+	this->stTime = {0};										// Event time
+	this->dwStyle = PRSTYLE_MSGBOX;							// Reminder style
+	this->rpsRepeatSet = RMDREPEATSET();					// Repeat set
 }
 
 tagPWRREMINDERITEM::tagPWRREMINDERITEM(const tagPWRREMINDERITEM& pItem)
@@ -599,20 +684,7 @@ tagPWRREMINDERITEM::tagPWRREMINDERITEM(const tagPWRREMINDERITEM& pItem)
 	this->nEventID = pItem.nEventID;				// Event ID
 	this->stTime = pItem.stTime;					// Event time
 	this->dwStyle = pItem.dwStyle;					// Reminder style
-	this->bRepeat = pItem.bRepeat;					// Repeat daily
-}
-
-tagPWRREMINDERITEM::tagPWRREMINDERITEM(BOOL bSetEnable, UINT nSetItemID, LPCTSTR lpszSetMsg, 
-									   UINT nSetEventID, SYSTEMTIME stSetTime, DWORD dwSetStyle, BOOL bSetRepeat)
-{
-	// Copy data
-	this->bEnable = bSetEnable;						// Enable state
-	this->nItemID = nSetItemID;						// Item ID
-	this->strMessage = lpszSetMsg;					// Message content
-	this->nEventID = nSetEventID;					// Event ID
-	this->stTime = stSetTime;						// Event time
-	this->dwStyle = dwSetStyle;						// Reminder style
-	this->bRepeat = bSetRepeat;						// Repeat daily
+	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);	// Repeat set
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -627,13 +699,13 @@ tagPWRREMINDERITEM::tagPWRREMINDERITEM(BOOL bSetEnable, UINT nSetItemID, LPCTSTR
 void tagPWRREMINDERITEM::Copy(const tagPWRREMINDERITEM& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;			// Enable state
-	this->nItemID = pItem.nItemID;			// Item ID
-	this->strMessage = pItem.strMessage;	// Message content
-	this->nEventID = pItem.nEventID;		// Event ID
-	this->stTime = pItem.stTime;			// Event time
-	this->dwStyle = pItem.dwStyle;			// Reminder style
-	this->bRepeat = pItem.bRepeat;			// Repeat daily
+	this->bEnable = pItem.bEnable;					// Enable state
+	this->nItemID = pItem.nItemID;					// Item ID
+	this->strMessage = pItem.strMessage;			// Message content
+	this->nEventID = pItem.nEventID;				// Event ID
+	this->stTime = pItem.stTime;					// Event time
+	this->dwStyle = pItem.dwStyle;					// Reminder style
+	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);	// Repeat set
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -647,17 +719,11 @@ void tagPWRREMINDERITEM::Copy(const tagPWRREMINDERITEM& pItem)
 
 BOOL tagPWRREMINDERITEM::IsEmpty()
 {
-	BOOL bIsEmpty = FALSE;
+	// Initialize an empty item
+	PWRREMINDERITEM pwrDummyItem;
 
-	// Check if item data is empty
-	bIsEmpty &= (this->strMessage == DEF_STRING_EMPTY);
-	bIsEmpty &= (this->nEventID == 0);
-	bIsEmpty &= (this->stTime.wHour == 0);
-	bIsEmpty &= (this->stTime.wMinute == 0);
-	bIsEmpty &= (this->dwStyle == 0);
-	bIsEmpty &= (this->bRepeat == 0);
-
-	return bIsEmpty;
+	// Compare with this item and return result
+	return this->Compare(pwrDummyItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -671,7 +737,7 @@ BOOL tagPWRREMINDERITEM::IsEmpty()
 
 BOOL tagPWRREMINDERITEM::Compare(const tagPWRREMINDERITEM& pItem)
 {
-	BOOL bRet = FALSE;
+	BOOL bRet = TRUE;
 
 	// Compare item
 	bRet &= (this->nItemID == pItem.nItemID);
@@ -680,8 +746,67 @@ BOOL tagPWRREMINDERITEM::Compare(const tagPWRREMINDERITEM& pItem)
 	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
 	bRet &= (this->stTime.wMinute == pItem.stTime.wMinute);
 	bRet &= (this->dwStyle == pItem.dwStyle);
+	bRet &= (this->rpsRepeatSet.Compare(pItem.rpsRepeatSet));
 
 	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsRepeatEnable
+//	Description:	Check if item repeat mode is enabled
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagPWRREMINDERITEM::IsRepeatEnable(void)
+{
+	return (this->rpsRepeatSet.bRepeat);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsDayActive
+//	Description:	Check if day of week is active
+//  Arguments:		dayOfWeek - Day of week
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagPWRREMINDERITEM::IsDayActive(DAYOFWEEK dayOfWeek)
+{
+	return (this->rpsRepeatSet.IsDayActive(dayOfWeek));
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsAllowSnoozing
+//	Description:	Check if item snooze mode is available
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagPWRREMINDERITEM::IsAllowSnoozing(void)
+{
+	// If current eventID is not at settime
+	if (this->nEventID != PREVT_AT_SETTIME) {
+		// Not allow snooze mode
+		return FALSE;
+	}
+	// If repeat option is currently OFF
+	if (this->IsRepeatEnable() != TRUE) {
+		// Not allow snooze mode
+		return FALSE;
+	}
+	// If allow snooze option is OFF
+	if (this->rpsRepeatSet.bAllowSnooze != TRUE) {
+		// Not allow snooze mode
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -719,7 +844,7 @@ void tagPWRREMINDERITEM::Print(CString& strOutput)
 
 	// Print item
 	strOutput.Format(_T("State=(%s), ItemID=%d, Msg=(%s), Event=(%s), Style=(%s), Repeat=%d"),
-				strEnable, this->nItemID, strMsg, strEvent, strStyle, this->bRepeat);
+				strEnable, this->nItemID, strMsg, strEvent, strStyle, this->rpsRepeatSet.bRepeat);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -930,14 +1055,7 @@ void tagPWRREMINDERDATA::Remove(int nAtIndex)
 	PWRREMINDERITEM& pwrItem = this->GetItemAt(nAtIndex);
 
 	// Reset item value
-	pwrItem.bEnable = FALSE;
-	pwrItem.nItemID = 0;
-	pwrItem.strMessage = DEF_STRING_EMPTY;
-	pwrItem.nEventID = 0;
-	pwrItem.stTime.wHour = 0;
-	pwrItem.stTime.wMinute = 0;
-	pwrItem.dwStyle = 0;
-	pwrItem.bRepeat = 0;
+	pwrItem.Copy(PWRREMINDERITEM());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1013,15 +1131,6 @@ UINT tagPWRREMINDERDATA::GetNextID(void)
 
 	// Increase value
 	nMaxID++;
-
-	// Get unexisting ID value
-	UINT nAvailableID = DEF_PWRREMINDER_MIN_ITEMID;
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
-		pwrItem = this->GetItemAt(nIndex);
-		if (pwrItem.nItemID == nMaxID) {
-			nMaxID = pwrItem.nItemID;
-		}
-	}
 
 	return nMaxID;
 }
@@ -1172,16 +1281,15 @@ void tagPWRRMDITEMADVSPEC::Copy(const tagPWRRMDITEMADVSPEC& pItem)
 // 
 //	Function name:	CalcNextSnoozeTime
 //	Description:	Calculate Power Reminder item next snooze time
-//  Arguments:		None
+//  Arguments:		nInterval - Snooze interval
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRRMDITEMADVSPEC::CalcNextSnoozeTime(void)
+void tagPWRRMDITEMADVSPEC::CalcNextSnoozeTime(int nInterval)
 {
 	// Calculate time with offset
-	int nSnoozeInterval = GetReminderMsgSnoozeInterval();
-	CoreFuncs::CalcTimeOffset(this->stNextSnoozeTime, nSnoozeInterval);
+	CoreFuncs::CalcTimeOffset(this->stNextSnoozeTime, nInterval);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1487,13 +1595,12 @@ LPCTSTR PairFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR 
 BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
 	// Action here
-	BOOL bRet = FALSE;
+	BOOL bRet = TRUE;
 	switch (nActionType)
 	{
 		case DEF_APP_ACTIONTYPE_MONITOR:
 			// Turn off display
 			PostMessage(HWND_BROADCAST, WM_SYSCOMMAND, (WPARAM)nMessage, (LPARAM)2);
-			bRet = TRUE;
 			dwErrCode = DEF_APP_ERROR_SUCCESS;
 			break;
 		case DEF_APP_ACTIONTYPE_POWER:
@@ -1745,6 +1852,7 @@ void CoreFuncs::SetDefaultData(PPWRREMINDERDATA ppwrData)
 	// Initialize data
 	ppwrData->Init();
 
+#ifdef DEBUG
 	// Create default data
 	const PWRREMINDERITEM pwrDefItemList[] = {
 	//---Enable state---Item ID------------Message content----------------------Event ID-------------Event time-----Reminder style----Repeat daily---
@@ -1763,6 +1871,7 @@ void CoreFuncs::SetDefaultData(PPWRREMINDERDATA ppwrData)
 	for (int nIndex = 0; nIndex < ppwrData->nItemNum; nIndex++) {
 		ppwrData->arrRmdItemList.Add(pwrDefItemList[nIndex]);
 	}
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2758,10 +2867,19 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 	int nKeyLength = _tcslen(lpszKeyChars);
 
 	// Re-format given string buffer
-	for (int nIndex = 0; nIndex < 256; nIndex++) {
-		if (lpszBuff[nIndex] == '\n') {
-			lpszBuff[nIndex] = '\0';
-		}
+	int nBuffIdx = 0;
+	for (int nIndex = 0; nIndex < nBuffLength; nIndex++) {
+		// Invalid characters
+		if ((lpszBuff[nIndex] == DEF_CHAR_ENDLINE) ||
+			(lpszBuff[nIndex] == DEF_CHAR_RETURN) ||
+			(lpszBuff[nIndex] == DEF_CHAR_NEWLINE))
+			continue;
+		// Keep valid characters only
+		lpszBuff[nBuffIdx] = lpszBuff[nIndex];
+		nBuffIdx++;
+		// End string
+		if (lpszBuff[nBuffIdx] == DEF_CHAR_ENDSTRING)
+			break;
 	}
 
 	// Index and flag
@@ -2775,6 +2893,9 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 		int nKeyFlag = FLAG_OFF;
 		// Get current character
 		TCHAR tcCurChar = lpszBuff[nCurCharIndex];
+		// In case of newline character
+		if ((tcCurChar == '\n') || (tcCurChar == '\r') || (tcCurChar == '\r\n'))
+			continue;
 		// In case of quotation mark
 		if (tcCurChar == '\"') {
 			// Change flag
@@ -3421,7 +3542,7 @@ BOOL CoreFuncs::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle)
+void CoreFuncs::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* = DEF_STRING_EMPTY */)
 {
 	// Check validity
 	if (pBtn == NULL)
@@ -3435,14 +3556,13 @@ void CoreFuncs::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle)
 	// Button rect
 	CRect rcBtnRect;
 	pBtn->GetWindowRect(&rcBtnRect);
-	if (rcBtnRect == NULL)
-		return;
 
 	// Button title
 	CString strBtnTitle;
 	strBtnTitle.SetString(lpszBtnTitle);
-	if (strBtnTitle.IsEmpty())
+	if (!strBtnTitle.IsEmpty()) {
 		pBtn->GetWindowText(strBtnTitle);
+	}
 
 	// Update button
 	pBtn->SetButtonStyle(BS_ICON);

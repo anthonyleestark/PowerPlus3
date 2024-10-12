@@ -84,11 +84,18 @@ void CDebugTestDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	CDebugTestDlg dialog message map
+//
+//////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(CDebugTestDlg, SDialog)
+	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 	ON_EN_CHANGE(IDC_DEBUGTEST_EDITVIEW, &CDebugTestDlg::OnDebugViewEditChange)
 	ON_MESSAGE(SM_APP_DEBUGOUTPUT,		 &CDebugTestDlg::OnDebugOutput)
 	ON_MESSAGE(SM_WND_DEBUGVIEWCLRSCR,	 &CDebugTestDlg::OnDebugViewClear)
-	ON_WM_DESTROY()
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
@@ -143,6 +150,21 @@ BOOL CDebugTestDlg::OnInitDialog()
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	OnClose
+//	Description:	Close dialog
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CDebugTestDlg::OnClose()
+{
+	// Only hide the dialog
+	ShowWindow(SW_HIDE);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	OnDestroy
 //	Description:	Destroy dialog
 //  Arguments:		None
@@ -152,7 +174,7 @@ BOOL CDebugTestDlg::OnInitDialog()
 
 void CDebugTestDlg::OnDestroy()
 {
-	EndDialog(IDCANCEL);
+	SDialog::OnDestroy();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -765,10 +787,36 @@ int CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 	if (strDebugCommand.IsEmpty())
 		return 0;
 
-	// Format debug command
+	// Remove whitespace
 	strDebugCommand.Trim();
-	strDebugCommand.Remove(DEF_CHAR_RETURN);
-	strDebugCommand.Remove(DEF_CHAR_ENDLINE);
+
+	// Initialize a temporary string buffer
+	LPTSTR lpszBuffTemp = new TCHAR[DEF_BUFF_MAXLENGTH];
+	_tcscpy(lpszBuffTemp, strDebugCommand.operator LPCWSTR());
+
+	// Remove invalid characters
+	int nBuffIndex = 0;
+	int nSrcLength = _tcslen(lpszBuffTemp);
+	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
+		// If not an invalid character
+		switch (lpszBuffTemp[nIndex])
+		{
+		case DEF_CHAR_RETURN:
+		case DEF_CHAR_ENDLINE:
+			break;
+		default:
+			// Add to buffer
+			lpszBuffTemp[nBuffIndex] = lpszBuffTemp[nIndex];
+			nBuffIndex++;
+			break;
+		}
+	}
+
+	// Copy back formatted string
+	strDebugCommand.Empty();
+	strDebugCommand.FreeExtra();
+	strDebugCommand.SetString(lpszBuffTemp);
+	delete[] lpszBuffTemp;
 
 	// Return the debug command's new length
 	return strDebugCommand.GetLength();
