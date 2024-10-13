@@ -593,7 +593,7 @@ static LANGTABLE langtable_vi_VN
 	{ IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK,					_T("Chủ nhật") },
 	{ GRIDCOLUMN_PWRREMINDER_INDEX,							_T("Số") },
 	{ GRIDCOLUMN_PWRREMINDER_STATE,							_T("K.hoạt") },
-	{ GRIDCOLUMN_PWRREMINDER_ITEMID,						_T("Mã đ.danh") },
+	{ GRIDCOLUMN_PWRREMINDER_ITEMID,						_T("Số hiệu") },
 	{ GRIDCOLUMN_PWRREMINDER_MESSAGE,						_T("Nội dung Thông điệp") },
 	{ GRIDCOLUMN_PWRREMINDER_EVENTID,						_T("Sự kiện") },
 	{ GRIDCOLUMN_PWRREMINDER_STYLE,							_T("Kiểu") },
