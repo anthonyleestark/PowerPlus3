@@ -55,6 +55,9 @@ CRmdRepeatSetDlg::CRmdRepeatSetDlg() : SDialog(IDD_RMDREPEATSET_DLG)
 	m_pActiveFridayChk = NULL;
 	m_pActiveSaturdayChk = NULL;
 	m_pActiveSundayChk = NULL;
+
+	// Member value
+	m_nSnoozeInterval = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -169,8 +172,13 @@ void CRmdRepeatSetDlg::OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
-	// Get timespin position and convert to time value
+	// Get timespin position
 	int nPos = pNMUpDown->iPos;
+
+	// Set snooze interval value
+	SetSnoozeInterval(nPos * 60);
+
+	// Convert and set edit value
 	SetSnoozeIntervalEdit(nPos);
 
 	*pResult = NULL;
@@ -240,77 +248,88 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 	if (m_pSnoozeIntervalEdit == NULL) {
 		m_pSnoozeIntervalEdit = (CEdit*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_INTERVAL_EDIT);
 		if (m_pSnoozeIntervalEdit == NULL) {
-			TRCFFMT(__FUNCTION__, "Snooze interval edit control not found");
+			TRCLOG("Error: Snooze interval edit control not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pSnoozeIntervalSpin == NULL) {
 		m_pSnoozeIntervalSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_INTERVAL_SPIN);
 		if (m_pSnoozeIntervalSpin == NULL) {
-			TRCFFMT(__FUNCTION__, "Snooze interval spin control not found");
+			TRCLOG("Error: Snooze interval spin control not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pRepeatEnableChk == NULL) {
 		m_pRepeatEnableChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_REPEAT_CHK);
 		if (m_pRepeatEnableChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Repeat enable checkbox not found");
+			TRCLOG("Error: Repeat enable checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pSnoozeEnableChk == NULL) {
 		m_pSnoozeEnableChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_CHK);
 		if (m_pSnoozeEnableChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Snooze enable checkbox not found");
+			TRCLOG("Error: Snooze enable checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pActiveMondayChk == NULL) {
 		m_pActiveMondayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_MONDAY_CHK);
 		if (m_pActiveMondayChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Monday active checkbox not found");
+			TRCLOG("Error: Monday active checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pActiveTuesdayChk == NULL) {
 		m_pActiveTuesdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_TUESDAY_CHK);
 		if (m_pActiveTuesdayChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Tuesday active checkbox not found");
+			TRCLOG("Error: Tuesday active checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pActiveWednesdayChk == NULL) {
 		m_pActiveWednesdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_WEDNESDAY_CHK);
 		if (m_pActiveWednesdayChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Wednesday active checkbox not found");
+			TRCLOG("Error: Wednesday active checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pActiveThursdayChk == NULL) {
 		m_pActiveThursdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_THURSDAY_CHK);
 		if (m_pActiveThursdayChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Thursday active checkbox not found");
+			TRCLOG("Error: Thursday active checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pActiveFridayChk == NULL) {
 		m_pActiveFridayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_FRIDAY_CHK);
 		if (m_pActiveFridayChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Friday active checkbox not found");
+			TRCLOG("Error: Friday active checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pActiveSaturdayChk == NULL) {
 		m_pActiveSaturdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_SATURDAY_CHK);
 		if (m_pActiveSaturdayChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Saturday active checkbox not found");
+			TRCLOG("Error: Saturday active checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
 	if (m_pActiveSundayChk == NULL) {
 		m_pActiveSundayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK);
 		if (m_pActiveSundayChk == NULL) {
-			TRCFFMT(__FUNCTION__, "Sunday active checkbox not found");
+			TRCLOG("Error: Sunday active checkbox not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
@@ -325,9 +344,14 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 
 		// Set buddy: Snooze interval edit control
 		m_pSnoozeIntervalSpin->SetBuddy(m_pSnoozeIntervalEdit);
+
+		// Set spin edit value
 		m_pSnoozeIntervalSpin->SetRange(DEF_SPINCTRL_SNOOZEMINPOS, DEF_SPINCTRL_SNOOZEMAXPOS);
 		m_pSnoozeIntervalSpin->SetPos(nDefaultSnoozeMin);
 		SetSnoozeIntervalEdit(nDefaultSnoozeMin);
+
+		// Set snooze interval value
+		SetSnoozeInterval(DEF_PWRREMINDER_DEFAULT_SNOOZE);
 	}
 }
 
@@ -434,6 +458,25 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	Get/SetSnoozeInterval
+//	Description:	Get/set snooze interval current value
+//  Arguments:		nValue - Value to set (in seconds)
+//  Return value:	int - Value to get
+//
+//////////////////////////////////////////////////////////////////////////
+
+int CRmdRepeatSetDlg::GetSnoozeInterval()
+{
+	return m_nSnoozeInterval;
+}
+
+void CRmdRepeatSetDlg::SetSnoozeInterval(int nValue)
+{
+	m_nSnoozeInterval = nValue;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	UpdateDialogData
 //	Description:	Update repeat set data from/to dialog controls
 //  Arguments:		pwrItemData - Power Reminder item
@@ -468,8 +511,8 @@ void CRmdRepeatSetDlg::UpdateDialogData(PWRREMINDERITEM& pwrItemData, BOOL bUpda
 			rpsRepeatData.bAllowSnooze = (nState == 1) ? TRUE : FALSE;
 
 			if (m_pSnoozeIntervalSpin != NULL) {
-				int nSnoozeMinute = m_pSnoozeIntervalSpin->GetPos();
-				rpsRepeatData.nSnoozeInterval = nSnoozeMinute * 60;
+				// Get snooze interval value (in seconds)
+				rpsRepeatData.nSnoozeInterval = GetSnoozeInterval();
 			}
 		}
 
@@ -551,9 +594,12 @@ void CRmdRepeatSetDlg::UpdateDialogData(PWRREMINDERITEM& pwrItemData, BOOL bUpda
 			m_pSnoozeEnableChk->SetCheck(nState);
 			
 			if (m_pSnoozeIntervalSpin != NULL) {
+				// Set spin edit value (in minutes)
 				int nSnoozeMinute = rpsRepeatData.nSnoozeInterval / 60;
 				m_pSnoozeIntervalSpin->SetPos(nSnoozeMinute);
 				SetSnoozeIntervalEdit(nSnoozeMinute);
+				// Set snooze interval value (in seconds)
+				SetSnoozeInterval(rpsRepeatData.nSnoozeInterval);
 			}
 		}
 

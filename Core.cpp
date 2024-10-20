@@ -1621,12 +1621,16 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					// Get process token
 					if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
 						dwErrCode = GetLastError();
+						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 						return FALSE;
 					}
 
 					// Adjust token privileges
 					if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkPrivileges.Privileges[0].Luid)) {
 						dwErrCode = GetLastError();
+						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 						return FALSE;
 					}
 
@@ -1636,6 +1640,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
 						// Adjust token privileges failed
 						dwErrCode = GetLastError();
+						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 						return FALSE;
 					}
 
@@ -1643,6 +1649,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!ExitWindowsEx(uExitWinExFlags, 0)) {
 						// Get exit Windows error
 						dwErrCode = GetLastError();
+						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 						return FALSE;
 					}
 
@@ -1651,6 +1659,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					// Sleep mode
 					if (!SetSuspendState(FALSE, FALSE, FALSE)) {		// Stand by (sleep)
 						dwErrCode = GetLastError();
+						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 						return FALSE;
 					}
 					break;
@@ -1658,6 +1668,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					// Hibernate mode
 					if (!SetSuspendState(TRUE, FALSE, FALSE)) {			// Hibernate
 						dwErrCode = GetLastError();
+						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 						return FALSE;
 					}
 					break;
@@ -1666,6 +1678,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 	default:
 		// Wrong argument
 		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
+		TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		bRet = FALSE;
 		break;
 	}
@@ -1886,7 +1900,7 @@ void CoreFuncs::SetDefaultData(PPWRREMINDERDATA ppwrData)
 void CoreFuncs::TraceLog(LPCSTR lpszTraceLogA)
 {
 	// Convert ANSI string to UNICODE
-	LPCTSTR lpszTraceLogW = CA2W(lpszTraceLogA).m_psz;
+	LPCTSTR lpszTraceLogW = MAKEUNICODE(lpszTraceLogA);
 	TraceLog(lpszTraceLogW);
 }
 
@@ -1955,6 +1969,31 @@ void CoreFuncs::TraceLogFormat(LPCTSTR lpszTraceLogFormat, ...)
 
 	// Output trace log
 	TraceLog(strLogFormat);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	TraceDebugInfo
+//	Description:	Output debug trace information log
+//  Arguments:		lpszFuncName - Code function name
+//					lpszFileName - Code file name
+//					nLineIndex	 - Code line number
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CoreFuncs::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex)
+{
+	// Debug trace info
+	CString strFuncName = MAKEUNICODE(lpszFuncName);
+	CString strFileName = MAKEUNICODE(lpszFileName);
+
+	// Format debug trace log
+	CString strDebugTraceFormat;
+	strDebugTraceFormat.Format(_T("Function: %s, File: %s(%d)"), strFuncName, strFileName, nLineIndex);
+
+	// Write debug trace log
+	WriteTraceNDebugLogFile(FILE_DEBUG_LOG, strDebugTraceFormat);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2064,8 +2103,10 @@ void CoreFuncs::WriteTraceNDebugLogFile(LPCTSTR lpszFileName, LPCTSTR lpszLogStr
 	OPENFILE: {
 			bResult = fTrcDbgLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 			if (bResult == FALSE) {
+				// Show error message
 				DWORD dwErrorCode = GetLastError();
-				ShowErrorMessage(NULL, NULL, dwErrorCode);
+				LPARAM lParam = (LPARAM)lpszFileName;
+				ShowErrorMessage(NULL, NULL, dwErrorCode, lParam);
 				return;
 			}
 		}
@@ -2130,12 +2171,20 @@ void CoreFuncs::WriteTraceNDebugLogFile(LPCTSTR lpszFileName, LPCTSTR lpszLogStr
 //  Arguments:		hWnd		- Handle of messagebox parent window
 //					nLanguageID - Language option ID
 //					dwError		- Error code
+//					lParam		- Additional attached param (description string)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwError)
+void CoreFuncs::ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwError, LPARAM lParam /* = NULL */)
 {
+	// Get attached long param
+	CString strDescription = DEF_STRING_NULL;
+	if (lParam != NULL) {
+		strDescription = (LPCTSTR)lParam;
+	}
+
+	// Error message ID
 	int nErrMsgID = DEF_INTEGER_INVALID;
 
 	// Check error code and show error message
@@ -2279,6 +2328,12 @@ void CoreFuncs::ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwError)
 	LANGTABLE_PTR pAppLang = LoadLanguageTable(nLanguageID);
 	CString strMsg = GetLanguageString(pAppLang, nErrMsgID);
 	CString strCaption = GetLanguageString(pAppLang, MSGBOX_ERROR_CAPTION);
+
+	// Attach description
+	if (_tcscmp(strDescription, DEF_STRING_NULL)) {
+		strMsg += DEF_STRING_NEWLINE;
+		strMsg += strDescription;
+	}
 
 	// Show error message
 	DisplayMessageBox(hWnd, strMsg, strCaption, MB_OK | MB_ICONERROR);
@@ -2839,10 +2894,33 @@ CString	CoreFuncs::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString,
 //
 //////////////////////////////////////////////////////////////////////////
 
+LPCTSTR CoreFuncs::LoadResourceString(UINT nResStringID)
+{
+	CString strResult;
+	BOOL bRet = strResult.LoadString(nResStringID);
+	if (bRet == FALSE) {
+		// Null string
+		strResult = DEF_STRING_NULL;
+	}
+
+	return strResult.GetString();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	LoadResourceString
+//	Description:	Load resource ID and return the string
+//  Arguments:		strResult	 - Returned resource string
+//					nResStringID - ID of resource string
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
 BOOL CoreFuncs::LoadResourceString(CString& strResult, UINT nResStringID)
 {
 	BOOL bRet = strResult.LoadString(nResStringID);
 	if (bRet == FALSE) {
+		// Null string
 		strResult = DEF_STRING_NULL;
 	}
 
@@ -3115,7 +3193,8 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHA
 			strResult = strSrc.Right(strSrc.GetLength() - (nStart + 1));
 		break;
 	default:
-		TRCFFMT(__FUNCTION__, "Invalid argument (2)");
+		TRCLOG("Error: Invalid argument (2)");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		break;
 	}
 
@@ -3629,8 +3708,11 @@ BOOL CoreFuncs::ValidateFontName(LPCTSTR lpszFontName)
 
 	// Enumerate all currently available fonts
 	BOOL bRet = EnumFontNames(fontNames);
-	if (bRet == FALSE)
+	if (bRet == FALSE) {
+		TRCLOG("Error: Enumerate fonts failed!");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return FALSE;
+	}
 
 	// Find for input font name within the acquired font families
 	bRet = (std::find(fontNames.begin(), fontNames.end(), lpszFontName) != fontNames.end());

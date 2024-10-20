@@ -53,6 +53,9 @@ private:
 	CButton*			m_pActiveSaturdayChk;
 	CButton*			m_pActiveSundayChk;
 
+	// Member value
+	int					m_nSnoozeInterval;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -75,6 +78,10 @@ protected:
 	virtual void RefreshDlgItemState();
 
 	void SetSnoozeIntervalEdit(int nValue);
+	
+	// Get/set value functions
+	int  GetSnoozeInterval();
+	void SetSnoozeInterval(int nValue);
 
 public:
 	// Data processing functions

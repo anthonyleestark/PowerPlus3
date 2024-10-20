@@ -712,7 +712,8 @@ BOOL SConfigBackup::AutoRegistryExport()
 BOOL SConfigBackup::PrepareBakFile()
 {
 	if (m_pBakFile == NULL) {
-		TRCFFMT(__FUNCTION__, "pBakFile is NULL");
+		TRCLOG("Error: PrepareBakFile failed, pBakFile is NULL");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return FALSE;
 	}
 
@@ -808,15 +809,18 @@ void SConfigBackup::WriteValue(CString strKeyName, UINT nValue)
 void SConfigBackup::UpdateBakFile()
 {
 	if (m_pBakFile == NULL) {
-		TRCFFMT(__FUNCTION__, "pBakFile is NULL");
+		TRCLOG("Error: UpdateBakFile failed, pBakFile is NULL");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return;
 	}
 	else if (m_pBakFile->m_hFile == CFile::hFileNull) {
-		TRCFFMT(__FUNCTION__, "Backup file is not opening");
+		TRCLOG("Error: UpdateBakFile failed, backup file is not opening");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return;
 	}
 	else if (m_strContent.IsEmpty()) {
-		TRCFFMT(__FUNCTION__, "Content is empty");
+		TRCLOG("Error: UpdateBakFile failed, content is empty");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return;
 	}
 

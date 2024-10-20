@@ -164,9 +164,13 @@ BOOL CPowerPlusApp::InitInstance()
 		SetAppWindowTitle(strAppWindowTitle.GetString());
 	}
 	else {
+		// Load title string failed
+		TRCLOG("Error: Load app window title failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
+		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
 		PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrorCode, NULL);
-		TRCFFMT(__FUNCTION__, "Load app window title failed");
 		return bRet;
 	}
 
@@ -182,9 +186,13 @@ BOOL CPowerPlusApp::InitInstance()
 	// Init instance
 	bRet = CWinApp::InitInstance();
 	if (bRet == FALSE) {
+		// Trace log
+		TRCLOG("Error: Init instance failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
+		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
 		PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrorCode, NULL);
-		TRCFFMT(__FUNCTION__, "Init instance failed");
 		return FALSE;
 	}
 
@@ -208,9 +216,13 @@ BOOL CPowerPlusApp::InitInstance()
 	// Initialize app data
 	bRet = InitAppData();
 	if (bRet == FALSE) {
+		// Trace log
+		TRCLOG("Error: Init app data failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
+		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
 		PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrorCode, NULL);
-		TRCFFMT(__FUNCTION__, "Init app data failed");
 		return bRet;
 	}
 	
@@ -223,15 +235,20 @@ BOOL CPowerPlusApp::InitInstance()
 	// Load registry app data
 	if (!LoadRegistryAppData()) {
 		// Trace log
-		TRCFFMT(__FUNCTION__, "Load registry app data failed");
+		TRCLOG("Error: Load registry app data failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 	}
 
 	// Initialize app language
 	bRet = InitAppLanguage();
 	if (bRet == FALSE) {
+		// Trace log
+		TRCLOG("Error: Init app language failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
+		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
 		PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrorCode, NULL);
-		TRCFFMT(__FUNCTION__, "Init app language failed");
 		return bRet;
 	}
 	
@@ -253,8 +270,9 @@ BOOL CPowerPlusApp::InitInstance()
 
 	if (dwResult != ERROR_SUCCESS) {
 		// Handle error and show message
+		TRCLOG("Error: Power event notification register failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwResult, NULL);
-		TRCFFMT(__FUNCTION__, "Power event notification register failed");
 	}
 
 	/************************************************************************************/
@@ -266,9 +284,13 @@ BOOL CPowerPlusApp::InitInstance()
 	// Initialize main dialog
 	CPowerPlusDlg* pMainDlg = new CPowerPlusDlg;
 	if (pMainDlg == NULL) {
+		// Trace error
+		TRCLOG("Error: Main dialog pointer allocation failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
+		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
 		PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrorCode, NULL);
-		TRCFFMT(__FUNCTION__, "Main dialog pointer allocation failed");
 		return FALSE;
 	}
 
@@ -312,8 +334,9 @@ BOOL CPowerPlusApp::InitInstance()
 		dwResult = PowerUnregisterSuspendResumeNotification(hPowerNotify);
 		if (dwResult != ERROR_SUCCESS) {
 			// Handle error and show message
+			TRCLOG("Error: Power event notification unregister failed");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwResult, NULL);
-			TRCFFMT(__FUNCTION__, "Power event notification unregister failed");
 		}
 	}
 
@@ -545,22 +568,26 @@ BOOL CPowerPlusApp::InitAppData()
 	// Check app config data
 	if (m_pcfgAppConfig == NULL) {
 		bResult = FALSE;
-		TRCFFMT(__FUNCTION__, "App config data init failed");
+		TRCLOG("Error: App config data init failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 	}
 	// Check schedule data
 	if (m_pschSheduleData == NULL) {
 		bResult = FALSE;
-		TRCFFMT(__FUNCTION__, "Schedule data init failed");
+		TRCLOG("Error: Schedule data init failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 	}
 	// Check HotkeySet data
 	if (m_phksHotkeySetData == NULL) {
 		bResult = FALSE;
-		TRCFFMT(__FUNCTION__, "HotkeySet data init failed");
+		TRCLOG("Error: HotkeySet data init failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 	}
 	// Check Power Reminder data
 	if (m_ppwrReminderData == NULL) {
 		bResult = FALSE;
-		TRCFFMT(__FUNCTION__, "Power Reminder data init failed");
+		TRCLOG("Error: Power Reminder data init failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 	}
 
 	return bResult;
@@ -1841,7 +1868,8 @@ BOOL CPowerPlusApp::InitAppLanguage()
 
 	// Check validity after loading
 	if (m_pAppLang == NULL) {
-		TRCFFMT(__FUNCTION__, "Language pointer acquiring failed");
+		TRCLOG("Error: Language pointer acquiring failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return FALSE;
 	}
 	
@@ -1961,7 +1989,8 @@ void CPowerPlusApp::InitAppEventLog()
 
 	// Check validity after allocating
 	if (m_pAppEventLog == NULL) {
-		TRCFFMT(__FUNCTION__, "AppEventLog initialization failed");
+		TRCLOG("Error: AppEventLog initialization failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return;
 	}
 
@@ -2026,7 +2055,8 @@ void CPowerPlusApp::InitActionLog()
 	
 	// Check validity after allocating
 	if (m_pActionLog == NULL) {
-		TRCFFMT(__FUNCTION__, "ActionLog initialization failed");
+		TRCLOG("Error: ActionLog initialization failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return;
 	}
 
@@ -2397,7 +2427,7 @@ void CPowerPlusApp::OutputDataChangeLog(PWRREMINDERDATA& BakData)
 void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 {
 	CString strTrcTitle = DEF_STRING_EMPTY;
-	CString strTrcLog = DEF_STRING_EMPTY;
+	CString strTrcLogFormat = DEF_STRING_EMPTY;
 	LPCTSTR lpszDataNull = _T("Data is NULL");
 	LPCTSTR lpszReadFailed = _T("Key value is unreadable or invalid");
 	LPCTSTR lpszWriteFailed = _T("Unable to write registry value");
@@ -2406,73 +2436,73 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 	{
 	case DEF_APP_ERROR_LOAD_CFG_INVALID:
 		strTrcTitle = _T("Load config failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case DEF_APP_ERROR_LOAD_CFG_FAILED:
 		strTrcTitle = _T("Load config failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
 	case DEF_APP_ERROR_LOAD_SCHED_INVALID:
 		strTrcTitle = _T("Load schedule failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case DEF_APP_ERROR_LOAD_SCHED_FAILED:
 		strTrcTitle = _T("Load schedule failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
 	case DEF_APP_ERROR_LOAD_HKEYSET_INVALID:
 		strTrcTitle = _T("Load hotkeyset failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case DEF_APP_ERROR_LOAD_HKEYSET_FAILED:
 		strTrcTitle = _T("Load hotkeyset failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
 	case DEF_APP_ERROR_LOAD_PWRRMD_INVALID:
 		strTrcTitle = _T("Load reminder failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case DEF_APP_ERROR_LOAD_PWRRMD_FAILED:
 		strTrcTitle = _T("Load reminder failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
 	case DEF_APP_ERROR_SAVE_CFG_INVALID:
 		strTrcTitle = _T("Save config failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case DEF_APP_ERROR_SAVE_CFG_FAILED:
 		strTrcTitle = _T("Save config failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
 	case DEF_APP_ERROR_SAVE_SCHED_INVALID:
 		strTrcTitle = _T("Save schedule failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case DEF_APP_ERROR_SAVE_SCHED_FAILED:
 		strTrcTitle = _T("Save schedule failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
 	case DEF_APP_ERROR_SAVE_HKEYSET_INVALID:
 		strTrcTitle = _T("Save hotkeyset failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case DEF_APP_ERROR_SAVE_HKEYSET_FAILED:
 		strTrcTitle = _T("Save hotkeyset failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
 	case DEF_APP_ERROR_SAVE_PWRRMD_INVALID:
 		strTrcTitle = _T("Save reminder failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case DEF_APP_ERROR_SAVE_PWRRMD_FAILED:
 		strTrcTitle = _T("Save reminder failed");
-		strTrcLog.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
 	}
 
 	// Output trace log
-	if (!strTrcLog.IsEmpty()) {
-		TRCFFMT(__FUNCTION__, CW2A(strTrcLog).m_psz);
+	if (!strTrcLogFormat.IsEmpty()) {
+		TRCLOG(strTrcLogFormat);
 	}
 
 	// Show error message
@@ -2676,8 +2706,11 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 	lRes = RegCreateKeyEx(hRootDir, strAutoStartRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hKey, &dwState);
 
 	// Registry key creation failed
-	if (lRes != ERROR_SUCCESS)
+	if (lRes != ERROR_SUCCESS) {
+		TRCLOG("Error: Registry key creation failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return 0;
+	}
 
 	// Enable auto-start
 	if (bEnable == TRUE) {
@@ -2735,8 +2768,11 @@ int CPowerPlusApp::GetAutoStartStatus(void)
 	CString strAutoStartRegPath;
 	strAutoStartRegPath.LoadString(IDS_REGSECTION_AUTOSTART);
 	lRes = RegOpenKeyEx(hRootDir, strAutoStartRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hKey);
-	if (lRes != ERROR_SUCCESS)
+	if (lRes != ERROR_SUCCESS) {
+		TRCLOG("Error: Registry key open failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return 0;
+	}
 
 	// Get registry key value
 	lRes = RegQueryValueEx(hKey, REG_STARTUP_VALUENAME, 0, NULL, NULL, NULL);
@@ -2777,8 +2813,11 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	lRes = RegOpenKeyEx(hRootDir, strRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hKey);
 
 	// Registry key open failed
-	if (lRes != ERROR_SUCCESS)
+	if (lRes != ERROR_SUCCESS) {
+		TRCLOG("Error: Registry key open failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return FALSE;
+	}
 
 	// Get key name
 	CString strKeyName;
@@ -2804,6 +2843,10 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	
 	// Get registry key value failed
 	if (lRes != ERROR_SUCCESS) {
+		// Trace error
+		TRCLOG("Error: Registry key query value failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
 		// Close key and exit
 		RegCloseKey(hKey);
 		return FALSE;
@@ -2843,8 +2886,11 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEve
 	lRes = RegCreateKeyEx(hRootDir, strRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hKey, &dwState);
 
 	// Registry key creation failed
-	if (lRes != ERROR_SUCCESS)
+	if (lRes != ERROR_SUCCESS) {
+		TRCLOG("Error: Registry key creation failed");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return FALSE;
+	}
 
 	// Format time
 	CString strDateTimeFormat;

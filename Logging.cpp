@@ -325,9 +325,11 @@ BOOL SLogging::WriteLog()
 			break;
 		default:
 			// Wrong argument
+			TRCLOG("Error: Invalid log type");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			// Show error message
 			dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
 			PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
-			TRCFFMT(__FUNCTION__, "Invalid log type");
 			break;
 		}
 
@@ -337,9 +339,12 @@ BOOL SLogging::WriteLog()
 			bResult = fLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 			if (bResult == FALSE) {
 				// Open file failed
+				TRCLOG("Error: Can not open/create log file");
+				TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
+				// Show error message
 				dwErrCode = GetLastError();
 				PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
-				TRCFFMT(__FUNCTION__, "Can not open/create log file");
 				return bResult;
 			}
 
@@ -409,9 +414,10 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 		break;
 	default:
 		// Wrong argument
+		TRCLOG("Error: Invalid log type");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
-		TRCFFMT(__FUNCTION__, "Invalid log type");
 		return FALSE;
 		break;
 	}
@@ -425,9 +431,12 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 		bResult = fLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 		if (bResult == FALSE) {
 			// Open file failed
+			TRCLOG("Error: Can not open/create log file");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
+			// Show error message
 			dwErrCode = GetLastError();
 			PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
-			TRCFFMT(__FUNCTION__, "Can not open/create log file");
 			return bResult;
 		}
 
@@ -478,7 +487,8 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 	// Quit if current log mode is not write instantly mode
 	if (this->GetLogWriteMode() != LOG_WRITE_MODE_INSTANT) {
 		bResult = FALSE;
-		TRCFFMT(__FUNCTION__, "Not write instantly mode");
+		TRCLOG("Error: Not write instantly mode");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return bResult;
 	}
 
@@ -505,9 +515,11 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 		break;
 	default:
 		// Wrong argument
+		TRCLOG("Error: Invalid log type");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		// Show error message
 		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
-		TRCFFMT(__FUNCTION__, "Invalid log type");
 		return FALSE;
 		break;
 	}
@@ -521,9 +533,12 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 		bResult = fLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 		if (bResult == FALSE) {
 			// Open file failed
+			TRCLOG("Error: Can not open/create log file");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+
+			// Show error message
 			dwErrCode = GetLastError();
 			PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
-			TRCFFMT(__FUNCTION__, "Can not open/create log file");
 			return bResult;
 		}
 

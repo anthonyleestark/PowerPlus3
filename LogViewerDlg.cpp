@@ -185,7 +185,8 @@ void CLogViewerDlg::UpdateLogViewer()
 		m_pLogViewerList = (CListBox*)GetDlgItem(IDC_LOGVIEWER_LOGDATA_LISTBOX);
 	}
 	if (m_pLogViewerList == NULL) {
-		TRCFFMT(__FUNCTION__, "LogViewer list control not found");
+		TRCLOG("Error: LogViewer list control not found");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return;
 	}
 

@@ -156,7 +156,7 @@ private:
 	void SetAllItemState(BOOL bState);
 	void PreviewItem(int nIndex);
 	void UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate);
-	BOOL Validate(PWRREMINDERITEM pwrItem, BOOL bShowMsg = FALSE);
+	BOOL Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg = FALSE, BOOL bAutoCorrect = FALSE);
 
 protected:
 	// Get/set functions

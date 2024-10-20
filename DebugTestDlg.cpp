@@ -124,8 +124,11 @@ BOOL CDebugTestDlg::OnInitDialog()
 
 	// Get DebugTest edit view
 	BOOL bRet = InitDebugEditView(IDC_DEBUGTEST_EDITVIEW);
-	if (bRet == FALSE)
+	if (bRet == FALSE) {
+		TRCLOG("Error: Debug edit view initialization failed!!!");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return bRet;
+	}
 
 	RECT rcClient;
 	this->GetClientRect(&rcClient);
@@ -266,7 +269,7 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 {
 	// Check argument validity
 	if ((wParam == 0) || (lParam == NULL))
-		return (LRESULT)0;
+		return LRESULT(DEF_RESULT_FAILED);
 
 	// Format log
 	CString strDebugLog;
@@ -283,7 +286,7 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 	// Reset currently displaying history flag
 	SetCurrentlyDispHistoryState(FALSE);
 
-	return (LRESULT)1;
+	return LRESULT(DEF_RESULT_SUCCESS);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -300,7 +303,8 @@ LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM wParam, LPARAM lParam)
 {
 	// Clear buffer
 	ClearViewBuffer();
-	return (LRESULT)1;
+
+	return LRESULT(DEF_RESULT_SUCCESS);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -578,14 +578,19 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 
 	// Load icon failed
 	if ((hResult != S_OK) || (m_hMsgIcon == NULL)) {
-		TRCFFMT(__FUNCTION__, "Load icon failed!");
+		TRCLOG("Error: Load icon failed!");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return;
 	}
 
 	// Get icon info
 	ICONINFO iiIconInfo;
 	BOOL bRet = ::GetIconInfo(m_hMsgIcon, &iiIconInfo);
-	if (bRet == FALSE) return;
+	if (bRet == FALSE) {
+		TRCLOG("Error: Get icon info failed!");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		return;
+	}
 
 	// Update icon size
 	BITMAP bmp;
@@ -753,13 +758,18 @@ void CReminderMsgDlg::TextToClient(LPRECT lpRect) const
 
 	// Invalid font
 	if (pMsgFont == NULL) {
-		TRCFFMT(__FUNCTION__, "Invalid font");
+		TRCLOG("Error: Invalid font");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		return;
 	}
 
 	// Set draw area
 	CWnd* pWnd = this->GetDlgItem(IDC_REMINDERMSG_MSGTEXT_STATIC);
-	if (pWnd == NULL) return;
+	if (pWnd == NULL) {
+		TRCLOG("Error: Message text draw area not found!");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		return;
+	}
 
 	// Set font
 	CDC* pDC = pWnd->GetDC();

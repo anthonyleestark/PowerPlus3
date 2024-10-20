@@ -515,11 +515,13 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		if (GetViewMode() == DEF_MODE_HELPVIEW_HELPFILE) {
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
-			TRCFFMT(__FUNCTION__, "Help file not found");
+			TRCLOG("Error: Help file not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		}
 		else if(GetViewMode() == DEF_MODE_HELPVIEW_CHANGELOG) {
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
-			TRCFFMT(__FUNCTION__, "Changelog file not found");
+			TRCLOG("Error: Changelog file not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 		}
 	}
 

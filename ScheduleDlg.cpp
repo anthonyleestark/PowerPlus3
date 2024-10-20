@@ -337,7 +337,8 @@ void CScheduleDlg::SetupDlgItemState()
 	if (m_pTimeSpin == NULL) {
 		m_pTimeSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_SCHEDULE_TIME_SPIN);
 		if (m_pTimeSpin == NULL) {
-			TRCFFMT(__FUNCTION__, "Time spin control not found");
+			TRCLOG("Error: Time spin control not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
@@ -547,7 +548,8 @@ void CScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TRUE 
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
-			TRCFFMT(__FUNCTION__, "Time edit control not found");
+			TRCLOG("Error: Time edit control not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
@@ -721,7 +723,8 @@ void CScheduleDlg::OnTimeEditSetFocus()
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
-			TRCFFMT(__FUNCTION__, "Time edit control not found");
+			TRCLOG("Error: Time edit control not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
@@ -751,7 +754,8 @@ void CScheduleDlg::OnTimeEditKillFocus()
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
-			TRCFFMT(__FUNCTION__, "Time edit control not found");
+			TRCLOG("Error: Time edit control not found");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}

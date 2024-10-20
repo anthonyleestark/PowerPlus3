@@ -251,8 +251,12 @@
 #define APP_SYSTEMCMD_PATH						_T("C:\\Windows\\System32\\cmd.exe")
 
 // Define macros
+#define TRCFMT									TraceLogFormat
 #define TRCLOG(logString)						TraceLog(logString)
-#define TRCFFMT(funcname, errString)			TraceLogFormat("[%s] %s", funcname, errString)
+#define TRCDBG(func,file,line)					TraceDebugInfo(func,file,line)
+#define MAKEANSI(string)						CW2A(string).m_psz
+#define MAKEUNICODE(string)						CA2W(string).m_psz
+#define RESOURCESTRING(resourceid)				LoadResourceString(resourceid)
 
 // Define properties for Power Reminder function
 #define DEF_PWRREMINDER_MAX_ITEMNUM				100					// Max item number: 100
@@ -1111,10 +1115,11 @@ namespace CoreFuncs
 	void TraceLog(LPCTSTR lpszTraceLogW);
 	void TraceLogFormat(LPCSTR lpszTraceLogFormat, ...);
 	void TraceLogFormat(LPCTSTR lpszTraceLogFormat, ...);
+	void TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex);
 	void OutputDebugLog(LPCTSTR lpszDebugLog, int nForceStyle = -1);
 	void OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...);
 	void WriteTraceNDebugLogFile(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW);
-	void ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwErrCode);
+	void ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwErrCode, LPARAM lParam = NULL);
 	int  DisplayMessageBox(HWND hWnd, LPCTSTR strPrompt, LPCTSTR strCaption, UINT nStyle);
 
 	// Data converting functions
@@ -1139,14 +1144,15 @@ namespace CoreFuncs
 	CString		FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString, SYSTEMTIME timeVal);
 
 	// String functions
-	BOOL LoadResourceString(CString& strResult, UINT nResStringID);
-	int	 GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyChars);
-	void UpperEachWord(CString& strInput, BOOL bTrim);
-	BOOL StringValidate(LPCTSTR lpszSrc, DWORD& dwError);
-	BOOL SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd, UINT nSubStringType);
-	BOOL Left(LPCTSTR lpszSrc, CString& strDest, TCHAR tcEnd);
-	BOOL Mid(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd);
-	BOOL Right(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart);
+	LPCTSTR LoadResourceString(UINT nResStringID);
+	BOOL	LoadResourceString(CString& strResult, UINT nResStringID);
+	int		GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyChars);
+	void	UpperEachWord(CString& strInput, BOOL bTrim);
+	BOOL	StringValidate(LPCTSTR lpszSrc, DWORD& dwError);
+	BOOL	SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd, UINT nSubStringType);
+	BOOL	Left(LPCTSTR lpszSrc, CString& strDest, TCHAR tcEnd);
+	BOOL	Mid(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd);
+	BOOL	Right(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart);
 
 	// Additional functions
 	LPCTSTR GetAppPath(void);

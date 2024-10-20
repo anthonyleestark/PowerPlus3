@@ -1198,7 +1198,7 @@ LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM wParam, LPARAM lParam)
 		}
 	}
 
-	return LRESULT(0);
+	return LRESULT(DEF_RESULT_SUCCESS);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1222,7 +1222,7 @@ LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM wParam, LPARAM lParam)
 		}
 	}
 
-	return LRESULT(0);
+	return LRESULT(DEF_RESULT_SUCCESS);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1246,7 +1246,7 @@ LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM wParam, LPARAM lParam)
 		}
 	}
 
-	return LRESULT(0);
+	return LRESULT(DEF_RESULT_SUCCESS);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1299,7 +1299,7 @@ LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM lParam)
 	HWND hWnd = this->GetSafeHwnd();
 	ShowDialog(hWnd, bShowFlag);
 
-	return LRESULT(0);
+	return LRESULT(DEF_RESULT_SUCCESS);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1521,9 +1521,6 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	// Debug log
-	CString strALSLog;
-
 	switch (message)
 	{
 	case SM_APP_TRAYICON:
@@ -1759,7 +1756,8 @@ void CPowerPlusDlg::SetNotifyIcon()
 		m_pNotifyIconData = new NOTIFYICONDATA;
 		if (m_pNotifyIconData == NULL) {
 			// Initialization failed
-			TRCFFMT(__FUNCTION__, "Notify icon initialization failed.");
+			TRCLOG("Error: Notify icon initialization failed.");
+			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			return;
 		}
 	}
@@ -1798,7 +1796,12 @@ BOOL CPowerPlusDlg::ShowNotifyMenu()
 	CMenu menuNotify, *pMenu;
 	menuNotify.LoadMenu(IDR_MENU_NOTIFY_DEFAULT);
 	pMenu = menuNotify.GetSubMenu(0);
-	if (pMenu == NULL) return FALSE;
+	if (pMenu == NULL) {
+		// Trace error
+		TRCLOG("Error: Show notify menu failed!!!");
+		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		return FALSE;
+	}
 
 	// Setup menu properties
 	SetMenuItemText(pMenu);
@@ -3380,7 +3383,10 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 					ShowErrorMessage(dwErrorCode);
 					OutputDebugLogFormat(_T("Unregister hotkey failed: %d"), nHKID);
 					DisplayMessageBox(MSGBOX_HOTKEYSET_UNREG_FAILED, MSGBOX_HOTKEYSET_CAPTION, MB_OK | MB_ICONERROR);
-					TRCFFMT(__FUNCTION__, "Hotkey unregister failed");
+
+					// Trace error
+					TRCLOG("Error: Hotkey unregister failed");
+					TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 				}
 			}
 		}
@@ -3463,7 +3469,10 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 				ShowErrorMessage(dwErrorCode);
 				OutputDebugLogFormat(_T("Register hotkey failed: %s"), strLogTemp);
 				DisplayMessageBox(MSGBOX_HOTKEYSET_UNREG_FAILED, MSGBOX_HOTKEYSET_CAPTION, MB_OK | MB_ICONERROR);
-				TRCFFMT(__FUNCTION__, "Hotkey register failed");
+
+				// Trace error
+				TRCLOG("Error: Hotkey register failed");
+				TRCDBG(__FUNCTION__, __FILE__, __LINE__);
 			}
 		}
 	}
