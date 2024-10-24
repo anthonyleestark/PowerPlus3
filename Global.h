@@ -84,6 +84,11 @@ extern BYTE g_bySystemSuspendFlag;
 static inline BYTE GetSystemSuspendFlag() { return g_bySystemSuspendFlag; }
 static inline void SetSystemSuspendFlag(BYTE byValue) { g_bySystemSuspendFlag = byValue; }
 
+// Session ending trace flag
+extern BYTE g_bySessionEndFlag;
+static inline BYTE GetSessionEndFlag() { return g_bySessionEndFlag; }
+static inline void SetSessionEndFlag(BYTE byValue) { g_bySessionEndFlag = byValue; }
+
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------Power reminder message styles---------------------------------------*/

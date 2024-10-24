@@ -49,6 +49,9 @@ BYTE g_byPwrActionFlag = 0;
 // System suspended trace flag
 BYTE g_bySystemSuspendFlag = 0;
 
+// Session ending trace flag
+BYTE g_bySessionEndFlag = 0;
+
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------Power reminder message styles---------------------------------------*/

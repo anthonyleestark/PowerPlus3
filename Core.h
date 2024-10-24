@@ -258,6 +258,9 @@
 #define MAKEUNICODE(string)						CA2W(string).m_psz
 #define RESOURCESTRING(resourceid)				LoadResourceString(resourceid)
 
+// Define properties for advanced functions
+#define DEF_SCHEDULE_DEFAULT_REPEAT				0b01111111			// Default repeat: All days of week
+
 // Define properties for Power Reminder function
 #define DEF_PWRREMINDER_MAX_ITEMNUM				100					// Max item number: 100
 #define DEF_PWRREMINDER_MIN_ITEMID				10000				// Min item ID: 10000
@@ -276,6 +279,7 @@
 #define DEF_PATH_SEPARATOR						_T("\\")			// File/folder path separator
 #define DEF_SYMBOL_OUTPUTSIGN					_T(">> ")			// Output sign
 #define DEF_SYMBOL_INPUTSIGN					_T(" <<")			// Input sign
+#define DEF_CHAR_QUOTAMARK						_T('\"')			// 'Quotation mark' character
 #define DEF_CHAR_RETURN							_T('\r')			// 'Return' character
 #define DEF_CHAR_ENDLINE						_T('\n')			// 'Endline' character
 #define DEF_CHAR_NEWLINE						_T('\r\n')			// 'New line' character
@@ -288,17 +292,20 @@
 #define DEF_INTEGER_NULL						0					// Null integer number (equals 0)
 #define DEF_BOOLVAL_CHECK						-1					// Checked
 #define DEF_BOOLVAL_UNCHECK						0					// Unchecked
+#define DEF_NUM_DAYSOFWEEK						7					// Number of days of week: 7 days
 #define DEF_TOKEN_MAXCOUNT						50					// Max token number: 50
 #define DEF_BUFF_MAXLENGTH						512					// Max buffer length: 512 characters
-#define DEF_STRING_MAXLENGTH					50					// Max string length: 50 characters
+#define DEF_STRING_MAXLENGTH					256					// Max string length: 256 characters
 
 #define DEF_OFFSET_VSCRLBRWIDTH					3					// Offset = 3px
 #define DEF_OFFSET_LISTCTRLWIDTH				5					// Offset = 5px
 #define DEF_LISTCTRL_HEADERHEIGHT				27					// Header height = 27px
 #define DEF_LISTCTRL_ROWHEIGHT					18					// Row height = 18px
+#define DEF_GRIDCTRL_ROWHEADER					0					// Row header index
 #define DEF_GRIDCTRL_HEADERHEIGHT				25					// Header height = 25px
 #define DEF_GRIDCTRL_ROWHEIGHT					23					// Row height = 23px
-#define DEF_GRIDCTRL_ROWHEADER					0					// Row header index
+#define DEF_GRIDCTRL_HEADERHEIGHTEX				28					// Header height (extra) = 28px
+#define DEF_GRIDCTRL_ROWHEIGHTEX				25					// Row height (extra) = 25px
 
 #define DEF_SPINCTRL_TIMEMINPOS					0					// As 00:00
 #define DEF_SPINCTRL_TIMEMAXPOS					1439				// As 23:59
@@ -336,6 +343,7 @@ typedef enum eDAYOFWEEK {
 typedef enum eSYSTEMEVENTID {
 	SYSEVT_SUSPEND = 0,
 	SYSEVT_WAKEUP,
+	SYSEVT_SESSIONEND,
 } SYSTEMEVENTID;
 
 // App option IDs
@@ -510,11 +518,17 @@ typedef struct tagSCHEDULEDATA
 	BOOL		bRepeat;									// Repeat daily
 	UINT		nAction;									// Schedule action
 	SYSTEMTIME	stTime;										// Schedule time
+	BYTE		byRepeatDays;								// Days of week (for repeating)
+
+	// Constructor
+	tagSCHEDULEDATA();										// Default constructor
+	tagSCHEDULEDATA(const tagSCHEDULEDATA&);				// Copy constructor
 
 	// Member functions
 	void Copy(const tagSCHEDULEDATA&);						// Copy data
 	void Activate();										// Activate schedule
 	void Deactivate();										// Deactivate schedule
+	BOOL IsDayActive(DAYOFWEEK dayOfWeek);					// Check if day of week is active
 } SCHEDULEDATA, *PSCHEDULEDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1026,6 +1040,19 @@ static IDPAIRLIST idplPwrReminderStyle
 /*-----Style ID-------------------------Style String ID--------------------*/
 	{ PRSTYLE_MSGBOX,				PWRRMD_STYLE_MESSAGEBOX			},
 	{ PRSTYLE_DIALOG,				PWRRMD_STYLE_DIALOG				},
+/*-------------------------------------------------------------------------*/
+};
+
+static IDPAIRLIST idplDayOfWeek
+{
+/*----Day ID--------------------------Day title string ID------------------*/
+	{ MONDAY,						DAYOFWEEK_TITLE_MONDAY			},
+	{ TUESDAY,						DAYOFWEEK_TITLE_TUESDAY			},
+	{ WEDNESDAY,					DAYOFWEEK_TITLE_WEDNESDAY		},
+	{ THURSDAY,						DAYOFWEEK_TITLE_THURSDAY		},
+	{ FRIDAY,						DAYOFWEEK_TITLE_FRIDAY			},
+	{ SATURDAY,						DAYOFWEEK_TITLE_SATURDAY		},
+	{ SUNDAY,						DAYOFWEEK_TITLE_SUNDAY			},
 /*-------------------------------------------------------------------------*/
 };
 

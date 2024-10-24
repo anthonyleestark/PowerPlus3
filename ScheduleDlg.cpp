@@ -25,6 +25,18 @@
 using namespace PairFuncs;
 using namespace CoreFuncs;
 
+
+////////////////////////////////////////////////////////
+//
+//	Define macros for active day list table
+//
+////////////////////////////////////////////////////////
+
+#define COL_ID_CHECKBOX		0
+#define COL_ID_DAYTITLE		1
+#define COL_SIZE_CHECKBOX	30
+
+
 ////////////////////////////////////////////////////////
 //
 //	Implement methods for CScheduleDlg
@@ -48,6 +60,7 @@ CScheduleDlg::CScheduleDlg() : SDialog(IDD_SCHEDULE_DLG)
 	m_pActionList = NULL;
 	m_pTimeEdit = NULL;
 	m_pTimeSpin = NULL;
+	m_pActiveDayListTable = NULL;
 
 	// Data variables
 	m_bEnable = FALSE;
@@ -57,6 +70,9 @@ CScheduleDlg::CScheduleDlg() : SDialog(IDD_SCHEDULE_DLG)
 	// Data container variables
 	ZeroMemory(&m_schSchedule, sizeof(SCHEDULEDATA));
 	ZeroMemory(&m_schScheduleTemp, sizeof(SCHEDULEDATA));
+
+	// Other variables
+	m_pszTableFrameSize = NULL;
 
 	INIT_CLASS_IDMAP()
 }
@@ -70,6 +86,17 @@ CScheduleDlg::CScheduleDlg() : SDialog(IDD_SCHEDULE_DLG)
 
 CScheduleDlg::~CScheduleDlg()
 {
+	// Active day list control
+	if (m_pActiveDayListTable) {
+		delete m_pActiveDayListTable;
+		m_pActiveDayListTable = NULL;
+	}
+
+	// Other variables
+	if (m_pszTableFrameSize != NULL) {
+		delete m_pszTableFrameSize;
+		m_pszTableFrameSize = NULL;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -114,14 +141,16 @@ END_ID_MAPPING()
 
 BEGIN_MESSAGE_MAP(CScheduleDlg, SDialog)
 	ON_WM_CLOSE()
-	ON_BN_CLICKED(IDC_SCHEDULE_APPLY_BTN,			&CScheduleDlg::OnApply)
-	ON_BN_CLICKED(IDC_SCHEDULE_CANCEL_BTN,			&CScheduleDlg::OnExit)
-	ON_BN_CLICKED(IDC_SCHEDULE_ENABLE_CHK,			&CScheduleDlg::OnEnableSchedule)
-	ON_BN_CLICKED(IDC_SCHEDULE_REPEATDAILY_CHK,		&CScheduleDlg::OnChangeRepeatDaily)
-	ON_CBN_SELCHANGE(IDC_SCHEDULE_ACTION_LIST,		&CScheduleDlg::OnChangeAction)
-	ON_EN_SETFOCUS(IDC_SCHEDULE_TIME_EDITBOX,		&CScheduleDlg::OnTimeEditSetFocus)
-	ON_EN_KILLFOCUS(IDC_SCHEDULE_TIME_EDITBOX,		&CScheduleDlg::OnTimeEditKillFocus)
-	ON_NOTIFY(UDN_DELTAPOS, IDC_SCHEDULE_TIME_SPIN, &CScheduleDlg::OnTimeSpinChange)
+	ON_BN_CLICKED(IDC_SCHEDULE_APPLY_BTN,					&CScheduleDlg::OnApply)
+	ON_BN_CLICKED(IDC_SCHEDULE_CANCEL_BTN,					&CScheduleDlg::OnExit)
+	ON_BN_CLICKED(IDC_SCHEDULE_ENABLE_CHK,					&CScheduleDlg::OnEnableSchedule)
+	ON_BN_CLICKED(IDC_SCHEDULE_REPEATDAILY_CHK,				&CScheduleDlg::OnChangeRepeatDaily)
+	ON_CBN_SELCHANGE(IDC_SCHEDULE_ACTION_LIST,				&CScheduleDlg::OnChangeAction)
+	ON_EN_SETFOCUS(IDC_SCHEDULE_TIME_EDITBOX,				&CScheduleDlg::OnTimeEditSetFocus)
+	ON_EN_KILLFOCUS(IDC_SCHEDULE_TIME_EDITBOX,				&CScheduleDlg::OnTimeEditKillFocus)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SCHEDULE_TIME_SPIN,			&CScheduleDlg::OnTimeSpinChange)
+	ON_NOTIFY(NM_CLICK, IDC_SCHEDULE_ACTIVEDAYS_LISTBOX,	&CScheduleDlg::OnClickActiveDayList)
+	ON_NOTIFY(NM_RCLICK, IDC_SCHEDULE_ACTIVEDAYS_LISTBOX,	&CScheduleDlg::OnRightClickActiveDayList)
 END_MESSAGE_MAP()
 
 
@@ -257,6 +286,7 @@ void CScheduleDlg::SetupLanguage()
 		case IDC_STATIC:
 		case IDC_SCHEDULE_TIME_EDITBOX:
 		case IDC_SCHEDULE_TIME_SPIN:
+		case IDC_SCHEDULE_ACTIVEDAYS_LISTBOX:
 			// Skip these items
 			break;
 		case IDC_SCHEDULE_ACTION_LIST:
@@ -267,6 +297,9 @@ void CScheduleDlg::SetupLanguage()
 			break;
 		}
 	}
+
+	// Setup Active day list
+	SetupActiveDayList(pAppLang);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -294,6 +327,145 @@ void CScheduleDlg::SetupComboBox(LANGTABLE_PTR pLanguage)
 		m_pActionList->AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_RESTART));		// Restart
 		m_pActionList->AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SIGNOUT));		// Log out
 		m_pActionList->AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetupActiveDayList
+//	Description:	Initialize and setup language for Active Day list
+//  Arguments:		ptrLanguage - Language package pointer
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
+{
+	// Get parent list frame rect
+	CWnd* pListFrameWnd = GetDlgItem(IDC_SCHEDULE_ACTIVEDAYS_LISTBOX);
+	if (pListFrameWnd == NULL) return;
+	RECT rcListFrameWnd;
+	pListFrameWnd->GetWindowRect(&rcListFrameWnd);
+	ScreenToClient(&rcListFrameWnd);
+
+	// Get frame size
+	if (m_pszTableFrameSize == NULL) {
+		m_pszTableFrameSize = new CSize();
+		m_pszTableFrameSize->cx = rcListFrameWnd.right - rcListFrameWnd.left;
+		m_pszTableFrameSize->cy = rcListFrameWnd.bottom - rcListFrameWnd.top;
+	}
+
+	// Initialization
+	if (m_pActiveDayListTable == NULL) {
+		m_pActiveDayListTable = new CGridCtrl();
+	}
+
+	// Create table
+	if (m_pActiveDayListTable == NULL) return;
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
+	m_pActiveDayListTable->Create(rcListFrameWnd, this, IDC_SCHEDULE_ACTIVEDAYS_LISTBOX, dwStyle);
+
+	// Destroy frame
+	pListFrameWnd->DestroyWindow();
+
+	// Cell format
+	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pActiveDayListTable->GetDefaultCell(FALSE, FALSE);
+	if (pCell == NULL) return;
+	pCell->SetFormat(pCell->GetFormat());
+	pCell->SetMargin(0);
+	pCell->SetBackClr(DEF_COLOR_WHITE);
+	pCell->SetTextClr(DEF_COLOR_BLACK);
+	pCell->SetHeight(DEF_GRIDCTRL_ROWHEIGHTEX);
+
+	// Setup table
+	m_pActiveDayListTable->SetColumnCount(2);
+	m_pActiveDayListTable->SetRowCount(DEF_NUM_DAYSOFWEEK);
+
+	// Draw table
+	DrawActiveDayTable(GetReadOnlyMode());
+
+	// Display table
+	m_pActiveDayListTable->SetEditable(FALSE);
+	m_pActiveDayListTable->SetColumnResize(FALSE);
+	m_pActiveDayListTable->SetRowResize(FALSE);
+	m_pActiveDayListTable->EnableSelection(FALSE);
+	m_pActiveDayListTable->ShowWindow(SW_SHOW);
+	m_pActiveDayListTable->SetRedraw(TRUE);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	DrawDataTable
+//	Description:	Draw data list table
+//  Arguments:		bReadOnly	- Read-only mode
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
+{
+	// Check table validity
+	if (m_pActiveDayListTable == NULL) return;
+
+	// Check table format data validity
+	if (m_pszTableFrameSize == NULL) return;
+
+	// Re-update default cell properties
+	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pActiveDayListTable->GetDefaultCell(FALSE, FALSE);
+	if (pCell == NULL) return;
+
+	// Read-only mode --> Change cell color
+	if (bReadOnly == TRUE) {
+		pCell->SetBackClr(DEF_COLOR_BRIGHT_GRAY);
+		pCell->SetTextClr(DEF_COLOR_DARK_GRAY);
+	}
+	else {
+		pCell->SetBackClr(DEF_COLOR_WHITE);
+		pCell->SetTextClr(DEF_COLOR_BLACK);
+	}
+
+	// Setup display size
+	int nFrameHeight = m_pszTableFrameSize->cy;
+	int nFrameWidth = m_pszTableFrameSize->cx;
+	nFrameWidth -= DEF_OFFSET_LISTCTRLWIDTH;
+	if ((DEF_NUM_DAYSOFWEEK * DEF_GRIDCTRL_ROWHEIGHTEX) >= nFrameHeight) {
+		// Fix table width in case vertical scrollbar is displayed
+		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
+		nFrameWidth -= (nScrollBarWidth + DEF_OFFSET_VSCRLBRWIDTH);
+	}
+
+	// Setup columns
+	m_pActiveDayListTable->SetColumnWidth(COL_ID_CHECKBOX, COL_SIZE_CHECKBOX);
+	m_pActiveDayListTable->SetColumnWidth(COL_ID_DAYTITLE, nFrameWidth - COL_SIZE_CHECKBOX);
+
+	// Setup rows
+	UINT nItemState = DEF_INTEGER_NULL;
+	for (int nRow = 0; nRow < DEF_NUM_DAYSOFWEEK; nRow++) {
+
+		/*------------------------------------- Checkbox column -------------------------------------*/
+
+		// Set cell type: Checkbox
+		if (!m_pActiveDayListTable->SetCellType(nRow, COL_ID_CHECKBOX, RUNTIME_CLASS(CGridCellCheck)))
+			continue;
+
+		// Set cell checkbox placement: Centering
+		CGridCellCheck* pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRow, COL_ID_CHECKBOX);
+		if (pCellCheck == NULL) continue;
+		pCellCheck->SetCheckPlacement(SCP_CENTERING);
+
+		/*------------------------------------ Day title column -------------------------------------*/
+
+		// Update cell state
+		nItemState = m_pActiveDayListTable->GetItemState(nRow, COL_ID_DAYTITLE);
+		if (!m_pActiveDayListTable->SetItemState(nRow, COL_ID_DAYTITLE, nItemState | GVIS_READONLY))
+			continue;
+
+		// Set cell alignment: Center
+		CGridCellBase* pCell = (CGridCellBase*)m_pActiveDayListTable->GetCell(nRow, COL_ID_DAYTITLE);
+		if (pCell == NULL) continue;
+		pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
+
+		/*-------------------------------------------------------------------------------------------*/
 	}
 }
 
@@ -353,6 +525,9 @@ void CScheduleDlg::SetupDlgItemState()
 	// Setup time editbox
 	UpdateTimeSetting(m_schScheduleTemp.stTime, FALSE);
 
+	// Enable/disable active day table (also update its display)
+	DisableTable(!(m_schScheduleTemp.bEnable & m_schScheduleTemp.bRepeat));
+
 	// Disable save button at first
 	EnableSaveButton(FALSE);
 
@@ -364,6 +539,91 @@ void CScheduleDlg::SetupDlgItemState()
 			pWndChild = pWndChild->GetWindow(GW_HWNDNEXT);
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	UpdateDataItemList
+//	Description:	Update Power Reminder data item list
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CScheduleDlg::UpdateActiveDayList()
+{
+	// Check table validity
+	if (m_pActiveDayListTable == NULL) return;
+
+	// Load app language package
+	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+
+	// Print items
+	CString strTemp;
+	int nDayOfWeekID = DEF_INTEGER_INVALID;
+	CGridCellCheck* pCellCheck = NULL;
+	for (int nRowIndex = 0; nRowIndex < DEF_NUM_DAYSOFWEEK; nRowIndex++) {
+
+		// Day of week
+		nDayOfWeekID = nRowIndex;
+
+		// Active state
+		BOOL bActive = (m_schScheduleTemp.IsDayActive((DAYOFWEEK)nDayOfWeekID)) ? TRUE : FALSE;
+		pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, COL_ID_CHECKBOX);
+		if (pCellCheck != NULL) {
+			pCellCheck->SetCheck(bActive);
+		}
+
+		// Day title
+		strTemp = GetLanguageString(ptrLanguage, GetPairedID(idplDayOfWeek, nDayOfWeekID));
+		m_pActiveDayListTable->SetItemText(nRowIndex, COL_ID_DAYTITLE, strTemp);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	DisableTable
+//	Description:	Disable mouse click events for table
+//  Arguments:		bDisable - Disable/enable
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CScheduleDlg::DisableTable(BOOL bDisable)
+{
+	// Redraw read-only style
+	RedrawActiveDayTable(bDisable);
+
+	// Check table validity
+	if (m_pActiveDayListTable == NULL) return;
+
+	// Disable/enable mouse events
+	m_pActiveDayListTable->DisableMouseClick(bDisable);
+	m_pActiveDayListTable->DisableMouseMove(bDisable);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RedrawActiveDayTable
+//	Description:	Update and redraw Active day table
+//  Arguments:		BOOL bReadOnly - Read-only mode
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CScheduleDlg::RedrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
+{
+	// Check table validity
+	if (m_pActiveDayListTable == NULL) return;
+
+	// Draw table
+	DrawActiveDayTable(bReadOnly);
+
+	// Update table data
+	UpdateActiveDayList();
+
+	// Trigger redrawing table
+	m_pActiveDayListTable->RedrawWindow();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -419,6 +679,25 @@ void CScheduleDlg::UpdateScheduleSettings()
 
 	m_schScheduleTemp.stTime.wHour = stTimeTemp.wHour;
 	m_schScheduleTemp.stTime.wMinute = stTimeTemp.wMinute;
+
+	// Update active day table changes
+	BYTE byRepeatDays = 0;
+	CGridCellCheck* pCellCheckActive = NULL;
+	if (m_pActiveDayListTable == NULL) return;
+	for (int nRowIndex = 0; nRowIndex < DEF_NUM_DAYSOFWEEK; nRowIndex++) {
+		// Get checkbox cell
+		pCellCheckActive = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, COL_ID_CHECKBOX);
+		if (pCellCheckActive == NULL) continue;
+
+		// Get checked states
+		BOOL bActive = pCellCheckActive->GetCheck();
+
+		// Update active days of week data
+		byRepeatDays |= bActive << nRowIndex;
+	}
+
+	// Update active day data
+	m_schScheduleTemp.byRepeatDays = byRepeatDays;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -480,6 +759,8 @@ BOOL CScheduleDlg::CheckDataChangeState()
 
 	bChangeFlag |= (m_schScheduleTemp.stTime.wHour != m_schSchedule.stTime.wHour);
 	bChangeFlag |= (m_schScheduleTemp.stTime.wMinute != m_schSchedule.stTime.wMinute);
+
+	bChangeFlag |= (m_schScheduleTemp.byRepeatDays != m_schSchedule.byRepeatDays);
 
 	return bChangeFlag;
 }
@@ -661,8 +942,13 @@ void CScheduleDlg::OnEnableSchedule()
 	UpdateData(TRUE);
 	EnableSubItems(m_bEnable);
 
-	// Check for value change and enable/disable save button
+	// Check for data change
 	m_bChangeFlag = CheckDataChangeState();
+
+	// Enable/disable active day table
+	DisableTable(!(m_schScheduleTemp.bEnable & m_schScheduleTemp.bRepeat));
+
+	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);
 }
 
@@ -697,8 +983,13 @@ void CScheduleDlg::OnChangeAction()
 
 void CScheduleDlg::OnChangeRepeatDaily()
 {
-	// Check for value change and enable/disable save button
+	// Check for data change
 	m_bChangeFlag = CheckDataChangeState();
+
+	// Enable/disable active day table
+	DisableTable(!m_schScheduleTemp.bRepeat);
+
+	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);
 }
 
@@ -812,6 +1103,84 @@ void CScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check for value change and enable/disable save button
 	m_bChangeFlag = CheckDataChangeState();
+	EnableSaveButton(m_bChangeFlag);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnClickActiveDayList
+//	Description:	Handle click event on Active days of week table
+//  Arguments:		pNMHDR  - Default of notify/event handler
+//					pResult - Default of notify/event handler
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// Get clicked item info
+	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
+	if (pItem == NULL) return;
+	int nCol = pItem->iColumn;
+	int nRow = pItem->iRow;
+
+	// Handle click event on Checkbox columns
+	if (nCol == COL_ID_CHECKBOX) {
+		if (m_pActiveDayListTable == NULL) return;
+		CGridCellCheck* clickedCell = (CGridCellCheck*)(m_pActiveDayListTable->GetCell(nRow, nCol));
+		if (clickedCell == NULL) return;
+		BOOL bCheck = clickedCell->GetCheck();
+		clickedCell->SetCheck(!bCheck);
+
+		// Update cell
+		m_pActiveDayListTable->RedrawCell(nRow, nCol);
+
+		// Update data (also check change state)
+		m_bChangeFlag = CheckDataChangeState();
+	}
+
+	*pResult = NULL;
+
+	// Enable/disable save button
+	EnableSaveButton(m_bChangeFlag);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnRightClickActiveDayList
+//	Description:	Handle right click event on Active days of week table
+//  Arguments:		pNMHDR  - Default of notify/event handler
+//					pResult - Default of notify/event handler
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CScheduleDlg::OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// Get clicked item info
+	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
+	if (pItem == NULL) return;
+	int nCol = pItem->iColumn;
+	int nRow = pItem->iRow;
+
+	// Handle click event on Checkbox columns
+	if (nCol == COL_ID_CHECKBOX) {
+		if (m_pActiveDayListTable == NULL) return;
+		CGridCellCheck* clickedCell = (CGridCellCheck*)(m_pActiveDayListTable->GetCell(nRow, nCol));
+		if (clickedCell == NULL) return;
+		BOOL bCheck = clickedCell->GetCheck();
+		clickedCell->SetCheck(!bCheck);
+
+		// Update cell
+		m_pActiveDayListTable->RedrawCell(nRow, nCol);
+
+		// Update data (also check change state)
+		m_bChangeFlag = CheckDataChangeState();
+	}
+
+	*pResult = NULL;
+
+	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);
 }
 

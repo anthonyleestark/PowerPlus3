@@ -51,6 +51,7 @@ private:
 	CComboBox*		 m_pActionList;
 	CEdit*			 m_pTimeEdit;
 	CSpinButtonCtrl* m_pTimeSpin;
+	CGridCtrl*		 m_pActiveDayListTable;
 
 	// Data variables
 	BOOL m_bEnable;
@@ -61,6 +62,9 @@ private:
 	SCHEDULEDATA m_schSchedule;
 	SCHEDULEDATA m_schScheduleTemp;
 
+	// Other variables
+	CSize* m_pszTableFrameSize;
+
 public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -70,8 +74,16 @@ public:
 	// Member functions
 	void SetupLanguage();
 	void SetupComboBox(LANGTABLE_PTR pLanguage);
-	void SetupDlgItemState();
+	void SetupActiveDayList(LANGTABLE_PTR ptrLanguage);
+	void DrawActiveDayTable(BOOL bReadOnly = FALSE);
 
+	// Dialog item properties functions
+	void SetupDlgItemState();
+	void UpdateActiveDayList();
+	void DisableTable(BOOL bDisable);
+	void RedrawActiveDayTable(BOOL bReadOnly = FALSE);
+
+	// Data processing functions
 	void LoadScheduleSettings();
 	void UpdateScheduleSettings();
 	BOOL SaveScheduleSettings();
@@ -90,6 +102,8 @@ public:
 	afx_msg void OnTimeEditSetFocus();
 	afx_msg void OnTimeEditKillFocus();
 	afx_msg void OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 };
 

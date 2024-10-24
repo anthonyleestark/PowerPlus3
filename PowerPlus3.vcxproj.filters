@@ -201,4 +201,7 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="PowerPlus3.exe.manifest" />
+  </ItemGroup>
 </Project>

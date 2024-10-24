@@ -294,7 +294,7 @@ void SDialog::OnCancel()
 BOOL SDialog::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-	
+
 	// Set dialog title
 	if (m_bSetDlgTitle == TRUE) {
 		this->SetWindowText(m_strDlgTitle);

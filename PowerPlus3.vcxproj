@@ -271,6 +271,9 @@
   <ItemGroup>
     <Image Include="res\PowerPlus.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="PowerPlus3.exe.manifest" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

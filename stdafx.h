@@ -46,6 +46,16 @@ __pragma(warning(disable:4805))
 #endif
 
 
+// Support Visual Styles
+#ifndef _SUPPORT_VISUAL_STYLES
+#define _SUPPORT_VISUAL_STYLES
+
+#include "commctrl.h"
+#pragma comment (lib, "Comctl32.lib")
+
+#endif
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "targetver.h"

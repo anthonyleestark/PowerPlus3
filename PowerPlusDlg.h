@@ -159,6 +159,7 @@ protected:
 	afx_msg LRESULT OnShowDialog(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnShowErrorMessage(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnQuerryEndSession(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 

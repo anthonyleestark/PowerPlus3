@@ -64,6 +64,35 @@ void tagCONFIGDATA::Copy(const tagCONFIGDATA& pData)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	tagSCHEDULEDATA
+//	Description:	Constructor
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagSCHEDULEDATA::tagSCHEDULEDATA()
+{
+	// Initialize
+	this->bEnable = FALSE;								// Enable/disable status
+	this->bRepeat = FALSE;								// Repeat daily
+	this->nAction = DEF_APP_ACTION_NOTHING;				// Schedule action
+	this->stTime = CoreFuncs::GetCurSysTime();			// Schedule time
+	this->byRepeatDays = DEF_SCHEDULE_DEFAULT_REPEAT;	// Days of week (for repeating)
+}
+
+tagSCHEDULEDATA::tagSCHEDULEDATA(const tagSCHEDULEDATA& pData)
+{
+	// Copy data
+	this->bEnable = pData.bEnable;						// Enable/disable status
+	this->bRepeat = pData.bRepeat;						// Repeat daily
+	this->nAction = pData.nAction;						// Schedule action
+	this->stTime = pData.stTime;						// Schedule time
+	this->byRepeatDays = pData.byRepeatDays;			// Days of week (for repeating)
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	Copy
 //	Description:	Copy data from another schedule data
 //  Arguments:		pData - Pointer of input data
@@ -73,10 +102,11 @@ void tagCONFIGDATA::Copy(const tagCONFIGDATA& pData)
 
 void tagSCHEDULEDATA::Copy(const tagSCHEDULEDATA& pData)
 {
-	this->bEnable = pData.bEnable;		// Enable/disable status
-	this->bRepeat = pData.bRepeat;		// Repeat daily
-	this->nAction = pData.nAction;		// Schedule action
-	this->stTime = pData.stTime;		// Schedule time
+	this->bEnable = pData.bEnable;						// Enable/disable status
+	this->bRepeat = pData.bRepeat;						// Repeat daily
+	this->nAction = pData.nAction;						// Schedule action
+	this->stTime = pData.stTime;						// Schedule time
+	this->byRepeatDays = pData.byRepeatDays;			// Days of week (for repeating)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,6 +135,24 @@ void tagSCHEDULEDATA::Activate()
 void tagSCHEDULEDATA::Deactivate()
 {
 	this->bEnable = FALSE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsDayActive
+//	Description:	Check if day of week is active
+//  Arguments:		dayOfWeek - Day of week
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagSCHEDULEDATA::IsDayActive(DAYOFWEEK dayOfWeek)
+{
+	// Invalid day of week
+	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
+		return FALSE;
+
+	return (this->byRepeatDays & (1 << dayOfWeek));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1769,12 +1817,18 @@ void CoreFuncs::SetDefaultData(PCONFIGDATA pcfgData)
 	if (pcfgData == NULL)
 		return;
 
-	// Set default data
+	/*----------------- Set default data ----------------- */
+
+	// Main settings
 	pcfgData->nLMBAction = DEF_APP_ACTION_DISPLAYOFF;
 	pcfgData->nMMBAction = DEF_APP_ACTION_SLEEP;
 	pcfgData->nRMBAction = DEF_APP_ACTION_SHOWMENU;
 	pcfgData->bRMBShowMenu = TRUE;
+
+	// Display setting
 	pcfgData->nLanguageID = APP_LANGUAGE_ENGLISH;
+
+	// System settings
 	pcfgData->bShowDlgAtStartup = TRUE;
 	pcfgData->bStartupEnabled = TRUE;
 	pcfgData->bConfirmAction = TRUE;
@@ -1803,11 +1857,13 @@ void CoreFuncs::SetDefaultData(PSCHEDULEDATA pschData)
 	if (pschData == NULL)
 		return;
 
-	// Set default data
+	/*----------------- Set default data ----------------- */
+
 	pschData->bEnable = FALSE;
 	pschData->bRepeat = FALSE;
 	pschData->nAction = DEF_APP_ACTION_NOTHING;
 	pschData->stTime = GetCurSysTime();
+	pschData->byRepeatDays = DEF_SCHEDULE_DEFAULT_REPEAT;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2949,8 +3005,7 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 	for (int nIndex = 0; nIndex < nBuffLength; nIndex++) {
 		// Invalid characters
 		if ((lpszBuff[nIndex] == DEF_CHAR_ENDLINE) ||
-			(lpszBuff[nIndex] == DEF_CHAR_RETURN) ||
-			(lpszBuff[nIndex] == DEF_CHAR_NEWLINE))
+			(lpszBuff[nIndex] == DEF_CHAR_RETURN))
 			continue;
 		// Keep valid characters only
 		lpszBuff[nBuffIdx] = lpszBuff[nIndex];
@@ -2966,16 +3021,16 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 	int nQuoteFlag = 0;
 
 	// Loop through given string buffer and separate tokens
-	while ((nCurCharIndex <= nBuffLength) && (nCurCharIndex < 256)) {
+	while ((nCurCharIndex <= nBuffLength) && (nCurCharIndex < DEF_BUFF_MAXLENGTH)) {
 		// Init flag OFF
 		int nKeyFlag = FLAG_OFF;
 		// Get current character
 		TCHAR tcCurChar = lpszBuff[nCurCharIndex];
 		// In case of newline character
-		if ((tcCurChar == '\n') || (tcCurChar == '\r') || (tcCurChar == '\r\n'))
+		if ((tcCurChar == DEF_CHAR_ENDLINE) || (tcCurChar == DEF_CHAR_RETURN))
 			continue;
 		// In case of quotation mark
-		if (tcCurChar == '\"') {
+		if (tcCurChar == DEF_CHAR_QUOTAMARK) {
 			// Change flag
 			nQuoteFlag = (nQuoteFlag == 0) ? FLAG_ON : FLAG_OFF;
 		}
@@ -2991,11 +3046,11 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 			}
 		}
 		// If current character is a key letter or end of string
-		if ((nKeyFlag == FLAG_ON) || (tcCurChar == '\0')) {
+		if ((nKeyFlag == FLAG_ON) || (tcCurChar == DEF_CHAR_ENDSTRING)) {
 			// Empty token means continuous key letters
 			if (nTokenCharIndex > 0) {
 				// End current token
-				retBuff[nTokenCount].tcToken[nTokenCharIndex] = '\0';
+				retBuff[nTokenCount].tcToken[nTokenCharIndex] = DEF_CHAR_ENDSTRING;
 				retBuff[nTokenCount].nLength = _tcsclen(retBuff[nTokenCount].tcToken);
 				nTokenCharIndex = 0;
 				// Token number count-up
@@ -3003,7 +3058,7 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 			}
 		}
 		// Current character is the quotation mark itself
-		else if (tcCurChar == '\"') {
+		else if (tcCurChar == DEF_CHAR_QUOTAMARK) {
 			// If token number exceeds max count, stop
 			if (nTokenCount > DEF_TOKEN_MAXCOUNT)
 				break;
@@ -3024,7 +3079,7 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 		nCurCharIndex++;
 
 		// If end of string or token number exceeds max count, stop
-		if ((tcCurChar == '\0') || (nTokenCount > DEF_TOKEN_MAXCOUNT))
+		if ((tcCurChar == DEF_CHAR_ENDSTRING) || (nTokenCount > DEF_TOKEN_MAXCOUNT))
 			break;
 	}
 

@@ -414,16 +414,18 @@ BOOL CPowerPlusDlg::OnInitDialog()
 		ExecutePowerReminder(PREVT_AT_PWRACTIONWAKE);
 		SetPwrActionFlag(FLAG_OFF);			// Reset flag
 		SetSystemSuspendFlag(FLAG_OFF);		// Reset flag
+		SetSessionEndFlag(FLAG_OFF);		// Reset flag
 		if (pApp != NULL) {
 			// Save flag value update
 			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_APPFLAG);
 		}
 	}
 
-	// Execute Power Reminder after system awake
-	if (GetSystemSuspendFlag() == FLAG_ON) {
+	// Execute Power Reminder after system awake (or after session ending)
+	if ((GetSystemSuspendFlag() == FLAG_ON) || (GetSessionEndFlag() == FLAG_ON)) {
 		ExecutePowerReminder(PREVT_AT_SYSWAKEUP);
 		SetSystemSuspendFlag(FLAG_OFF);		// Reset flag
+		SetSessionEndFlag(FLAG_OFF);		// Reset flag
 		if (pApp != NULL) {
 			// Save flag value update
 			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_APPFLAG);
@@ -1095,7 +1097,7 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 			// Execute Power reminder
 			ExecutePowerReminder(PREVT_AT_SETTIME);
 		}
-		// Process Power Broadcase event skip counter
+		// Process Power Broadcast event skip counter
 		int nCounter = GetFlagValue(FLAGID_PWRBROADCASTSKIPCOUNT);
 		if (nCounter > 0) {
 			// Count down (decrease value by 1)
@@ -1366,6 +1368,9 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
 			ExecutePowerReminder(PREVT_AT_SYSWAKEUP);
 		}
 
+		// Reset session ending flag
+		SetSessionEndFlag(FLAG_OFF);
+
 		// Reset system suspended flag
 		SetSystemSuspendFlag(FLAG_OFF);
 		if (pApp != NULL) {
@@ -1385,6 +1390,41 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
 			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_APPFLAG);
 		}
 	}
+
+	return LRESULT(DEF_RESULT_SUCCESS);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnQuerryEndSession
+//	Description:	Handle querry ending session event
+//	Arguments:		wParam - Not used
+//					lParam - Not used
+//  Return value:	LRESULT
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM wParam, LPARAM lParam)
+{
+	// Get app pointer
+	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
+	if (pApp == NULL) 
+		return LRESULT(DEF_RESULT_FAILED);
+
+	/*---------- Process querry ending session event ----------*/
+
+	// Turn on session ending flag
+	SetSessionEndFlag(FLAG_ON);
+	pApp->SaveGlobalVars(DEF_GLBVAR_CATE_APPFLAG);
+
+	// Save last session ending time
+	SYSTEMTIME stCurSysTime = GetCurSysTime();
+	pApp->SaveLastSysEventTime(SYSEVT_SESSIONEND, stCurSysTime);
+
+	// Save action history if remaining unsaved
+	SaveActionHistory();
+
+	/*---------------------------------------------------------*/
 
 	return LRESULT(DEF_RESULT_SUCCESS);
 }
@@ -1546,7 +1586,7 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		OpenChildDialogEx(IDD_DEBUGTEST_DLG);
 		break;
 	case WM_QUERYENDSESSION:
-		SaveActionHistory();
+		OnQuerryEndSession(NULL, NULL);
 		break;
 	case WM_HOTKEY:
 		ProcessHotkey((UINT)wParam);
@@ -3265,6 +3305,10 @@ BOOL CPowerPlusDlg::ProcessSchedule()
 	// Get current time
 	SYSTEMTIME stCurrentTime;
 	GetLocalTime(&stCurrentTime);
+
+	// Do not process if repeat option is ON but is not set as active in current day of week
+	if ((GetAppOption(OPTIONID_SCHEDULEREPEAT)) && (!m_schScheduleData.IsDayActive((DAYOFWEEK)stCurrentTime.wDayOfWeek)))
+		return FALSE;
 
 	// Check for time matching and trigger schedule notifying if enabled
 	BOOL bNotifySchedule = GetAppOption(OPTIONID_NOTIFYSCHEDULE);
@@ -5123,6 +5167,7 @@ int CPowerPlusDlg::NotifySchedule(void)
 	BOOL bAllowCancel = GetAppOption(OPTIONID_ALLOWCANCELSCHED);
 	if (bAllowCancel == TRUE)
 	{
+		// Update message content
 		strMsg += GetLanguageString(pAppLang, MSGBOX_SCHEDULE_ALLOWCANCEL);
 		int nRespond = DisplayMessageBox(strMsg, strCaption, MB_OKCANCEL | MB_ICONINFORMATION);
 		if (nRespond == IDCANCEL)

@@ -183,6 +183,23 @@ BOOL CPowerPlusApp::InitInstance()
 		return FALSE;
 	}
 
+	// Enable support Visual Styles
+#ifdef _SUPPORT_VISUAL_STYLES
+	// Init common controls
+	InitCommonControls();
+
+	// InitCommonControlsEx() is required on Windows XP if an application
+	// manifest specifies use of ComCtl32.dll version 6 or later to enable
+	// visual styles.  Otherwise, any window creation will fail.
+	INITCOMMONCONTROLSEX InitCtrls;
+	InitCtrls.dwSize = sizeof(InitCtrls);
+
+	// Set this to include all the common control classes you want to use
+	// in your application.
+	InitCtrls.dwICC = ICC_WIN95_CLASSES;
+	InitCommonControlsEx(&InitCtrls);
+#endif
+
 	// Init instance
 	bRet = CWinApp::InitInstance();
 	if (bRet == FALSE) {
@@ -607,7 +624,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	BOOL bResult = TRUE;
 	BOOL bFinalResult = TRUE;
 	WORD wLoadRet = DEF_APP_ERROR_SUCCESS;
-	int nTemp = DEF_INTEGER_INVALID;
+	int nTimeTemp = DEF_INTEGER_INVALID;
 
 	// Check data validity first
 	if (!DataSerializeCheck(DEF_MODE_LOAD))
@@ -626,38 +643,44 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	/*															   */
 	/***************************************************************/
 
-	// Load configuration data
 	if (pcfgTempData != NULL) {
-		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONLMB,			(int&)pcfgTempData->nLMBAction);
-		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONMMB,			(int&)pcfgTempData->nMMBAction);
-		bResult &= GetConfig(IDS_REGKEY_CFG_ACTIONRMB,			(int&)pcfgTempData->nRMBAction);
-		bResult &= GetConfig(IDS_REGKEY_CFG_RMBSHOWMENU,		pcfgTempData->bRMBShowMenu);
-		bResult &= GetConfig(IDS_REGKEY_CFG_LANGUAGEID,			(int&)pcfgTempData->nLanguageID);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SHOWATSTARTUP,		pcfgTempData->bShowDlgAtStartup);
-		bResult &= GetConfig(IDS_REGKEY_CFG_STARTUPENABLE,		pcfgTempData->bStartupEnabled);
-		bResult &= GetConfig(IDS_REGKEY_CFG_CONFIRMACTION,		pcfgTempData->bConfirmAction);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SAVEACTIONLOG,		pcfgTempData->bSaveActionLog);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SAVEAPPEVENTLOG,	pcfgTempData->bSaveAppEventLog);
-		bResult &= GetConfig(IDS_REGKEY_CFG_RUNASADMIN,			pcfgTempData->bRunAsAdmin);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SHOWERROR,			pcfgTempData->bShowErrorMsg);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SCHEDULENOTIFY,		pcfgTempData->bNotifySchedule);
-		bResult &= GetConfig(IDS_REGKEY_CFG_SCHEDALLOWCANCEL,	pcfgTempData->bAllowCancelSchedule);
-		bResult &= GetConfig(IDS_REGKEY_CFG_ENBBKGRDHOTKEYS,	pcfgTempData->bEnableBackgroundHotkey);
-		bResult &= GetConfig(IDS_REGKEY_CFG_ENBPWRREMINDER,		pcfgTempData->bEnablePowerReminder);
+
+		// Read configuration data
+		int nConfigRet = DEF_INTEGER_NULL;
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_ACTIONLMB,			(int&)pcfgTempData->nLMBAction);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_ACTIONMMB,			(int&)pcfgTempData->nMMBAction);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_ACTIONRMB,			(int&)pcfgTempData->nRMBAction);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_RMBSHOWMENU,			pcfgTempData->bRMBShowMenu);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_LANGUAGEID,			(int&)pcfgTempData->nLanguageID);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_SHOWATSTARTUP,		pcfgTempData->bShowDlgAtStartup);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_STARTUPENABLE,		pcfgTempData->bStartupEnabled);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_CONFIRMACTION,		pcfgTempData->bConfirmAction);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_SAVEACTIONLOG,		pcfgTempData->bSaveActionLog);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_SAVEAPPEVENTLOG,		pcfgTempData->bSaveAppEventLog);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_RUNASADMIN,			pcfgTempData->bRunAsAdmin);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_SHOWERROR,			pcfgTempData->bShowErrorMsg);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_SCHEDULENOTIFY,		pcfgTempData->bNotifySchedule);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_SCHEDALLOWCANCEL,	pcfgTempData->bAllowCancelSchedule);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_ENBBKGRDHOTKEYS,		pcfgTempData->bEnableBackgroundHotkey);
+		nConfigRet += GetConfig(IDS_REGKEY_CFG_ENBPWRREMINDER,		pcfgTempData->bEnablePowerReminder);
+
+		// Mark data as reading failed
+		// only if all values were read unsuccessfully
+		bResult = (nConfigRet != DEF_INTEGER_NULL);
 	}
 
 	// Trace error
 	if (bResult == FALSE) {
 		wLoadRet = DEF_APP_ERROR_LOAD_CFG_FAILED;
 		TraceSerializeData(wLoadRet);
-		bFinalResult = FALSE; // Set final result
-		bResult = TRUE; // Reset flag
+		bFinalResult = FALSE;	// Set final result
+		bResult = TRUE;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (pcfgTempData != NULL) {
 			m_pcfgAppConfig->Copy(*pcfgTempData);
-			bResult = TRUE; // Reset flag
+			bResult = TRUE;		// Reset flag
 		}
 	}
 
@@ -673,31 +696,40 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	/*															   */
 	/***************************************************************/
 
-	// Load schedule data
 	if (pschTempData != NULL) {
-		bResult &= GetSchedule(IDS_REGKEY_SCHED_ENABLE, pschTempData->bEnable);
-		bResult &= GetSchedule(IDS_REGKEY_SCHED_ACTION, (int&)pschTempData->nAction);
-		bResult &= GetSchedule(IDS_REGKEY_SCHED_REPEAT, pschTempData->bRepeat);
-		bResult &= GetSchedule(IDS_REGKEY_SCHED_TIME,	nTemp);
-		if (nTemp != DEF_INTEGER_INVALID) {
-			pschTempData->stTime.wHour = WORD(nTemp / 100);
-			pschTempData->stTime.wMinute = WORD(nTemp % 100);
-			nTemp = DEF_INTEGER_INVALID;
+
+		// Read schedule data
+		int nSchedRet = DEF_INTEGER_NULL;
+		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_ENABLE,		pschTempData->bEnable);
+		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_ACTION,		(int&)pschTempData->nAction);
+		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_REPEAT,		pschTempData->bRepeat);
+		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_REPEATDAYS,	(int&)pschTempData->byRepeatDays);
+		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_TIMEVALUE,	nTimeTemp);
+
+		// Convert time value
+		if (nTimeTemp != DEF_INTEGER_INVALID) {
+			pschTempData->stTime.wHour = WORD(nTimeTemp / 100);
+			pschTempData->stTime.wMinute = WORD(nTimeTemp % 100);
+			nTimeTemp = DEF_INTEGER_INVALID;
 		}
+
+		// Mark data as reading failed
+		// only if all values were read unsuccessfully
+		bResult = (nSchedRet != DEF_INTEGER_NULL);
 	}
 
 	// Trace error
 	if (bResult == FALSE) {
 		wLoadRet = DEF_APP_ERROR_LOAD_SCHED_FAILED;
 		TraceSerializeData(wLoadRet);
-		bFinalResult = FALSE; // Set final result
-		bResult = TRUE; // Reset flag
+		bFinalResult = FALSE;	// Set final result
+		bResult = TRUE;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (pschTempData != NULL) {
 			m_pschSheduleData->Copy(*pschTempData);
-			bResult = TRUE; // Reset flag
+			bResult = TRUE;		// Reset flag
 		}
 	}
 
@@ -746,8 +778,8 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			if (bResult == FALSE) {
 				wLoadRet = DEF_APP_ERROR_LOAD_HKEYSET_FAILED;
 				TraceSerializeData(wLoadRet);
-				bFinalResult = FALSE; // Set final result
-				bResult = TRUE; // Reset flag
+				bFinalResult = FALSE;	// Set final result
+				bResult = TRUE;			// Reset flag
 				continue;
 			}
 
@@ -760,14 +792,14 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	if (bResult == FALSE) {
 		wLoadRet = DEF_APP_ERROR_LOAD_HKEYSET_FAILED;
 		TraceSerializeData(wLoadRet);
-		bFinalResult = FALSE; // Set final result
-		bResult = TRUE; // Reset flag
+		bFinalResult = FALSE;	// Set final result
+		bResult = TRUE;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (phksTempData != NULL) {
 			m_phksHotkeySetData->Copy(*phksTempData);
-			bResult = TRUE; // Reset flag
+			bResult = TRUE;		// Reset flag
 		}
 	}
 
@@ -808,11 +840,13 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ALLOWSNOOZE,	 (int&)pwrTemp.rpsRepeatSet.bAllowSnooze);
 				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_SNOOZEINTERVAL, (int&)pwrTemp.rpsRepeatSet.nSnoozeInterval);
 				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEATDAYS,	 (int&)pwrTemp.rpsRepeatSet.byRepeatDays);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIME,			 nTemp);
-				if (nTemp != DEF_INTEGER_INVALID) {
-					pwrTemp.stTime.wHour = WORD(nTemp / 100);
-					pwrTemp.stTime.wMinute = WORD(nTemp % 100);
-					nTemp = DEF_INTEGER_INVALID;
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIMEVALUE,		 nTimeTemp);
+
+				// Convert time value
+				if (nTimeTemp != DEF_INTEGER_INVALID) {
+					pwrTemp.stTime.wHour = WORD(nTimeTemp / 100);
+					pwrTemp.stTime.wMinute = WORD(nTimeTemp % 100);
+					nTimeTemp = DEF_INTEGER_INVALID;
 				}
 
 				// Mark the item as reading failed
@@ -823,8 +857,8 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				if (bResult == FALSE) {
 					wLoadRet = DEF_APP_ERROR_LOAD_PWRRMD_FAILED;
 					TraceSerializeData(wLoadRet);
-					bFinalResult = FALSE; // Set final result
-					bResult = TRUE; // Reset flag
+					bFinalResult = FALSE;	// Set final result
+					bResult = TRUE;			// Reset flag
 					continue;
 				}
 
@@ -838,15 +872,15 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	if (bResult == FALSE) {
 		wLoadRet = DEF_APP_ERROR_LOAD_PWRRMD_FAILED;
 		TraceSerializeData(wLoadRet);
-		bFinalResult = FALSE; // Set final result
-		bResult = TRUE; // Reset flag
+		bFinalResult = FALSE;	// Set final result
+		bResult = TRUE;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (ppwrTempData != NULL) {
 			m_ppwrReminderData->Copy(*ppwrTempData);
 			m_ppwrReminderData->Adjust();
-			bResult = TRUE; // Reset flag
+			bResult = TRUE;		// Reset flag
 		}
 	}
 
@@ -883,7 +917,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	BOOL bResult = TRUE;
 	BOOL bFinalResult = TRUE;
 	WORD wSaveRet = DEF_APP_ERROR_SUCCESS;
-	int nTemp = DEF_INTEGER_INVALID;
+	int nTimeTemp = DEF_INTEGER_INVALID;
 
 	// Check data validity first
 	if (!DataSerializeCheck(DEF_MODE_SAVE, dwDataType))
@@ -897,6 +931,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 	// Save configuration data
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
+
 		// Delete old data before writing
 		DeleteConfigSection();
 
@@ -935,15 +970,19 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 	// Save schedule data
 	if ((dwDataType & APPDATA_SCHEDULE) != 0) {
+
 		// Delete old data before writing
 		DeleteScheduleSection();
 
+		// Convert time data
+		nTimeTemp = int((m_pschSheduleData->stTime.wHour * 100) + m_pschSheduleData->stTime.wMinute);
+
 		// Save registry data
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_ENABLE,	m_pschSheduleData->bEnable);
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_ACTION,	m_pschSheduleData->nAction);
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_REPEAT,	m_pschSheduleData->bRepeat);
-		nTemp = int((m_pschSheduleData->stTime.wHour * 100) + m_pschSheduleData->stTime.wMinute);
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_TIME,		nTemp);
+		bResult &= WriteSchedule(IDS_REGKEY_SCHED_ENABLE,		m_pschSheduleData->bEnable);
+		bResult &= WriteSchedule(IDS_REGKEY_SCHED_ACTION,		m_pschSheduleData->nAction);
+		bResult &= WriteSchedule(IDS_REGKEY_SCHED_REPEAT,		m_pschSheduleData->bRepeat);
+		bResult &= WriteSchedule(IDS_REGKEY_SCHED_REPEATDAYS,	m_pschSheduleData->byRepeatDays);
+		bResult &= WriteSchedule(IDS_REGKEY_SCHED_TIMEVALUE,	nTimeTemp);
 
 		// Trace error
 		if (bResult == FALSE) {
@@ -962,6 +1001,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 	// Save auto-start status info
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
+
 		BOOL bStartupEnabled = m_pcfgAppConfig->bStartupEnabled;
 		BOOL bRunAsAdmin = m_pcfgAppConfig->bRunAsAdmin;
 		int nRetAutoStartEnabled = EnableAutoStart(bStartupEnabled, bRunAsAdmin);
@@ -984,6 +1024,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 	// Save HotkeySet data
 	if ((dwDataType & APPDATA_HOTKEYSET) != 0) {
+
 		// Delete old data before writing
 		DeleteHotkeySetSection();
 
@@ -991,7 +1032,10 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		int nItemNum = m_phksHotkeySetData->nItemNum;
 		bResult &= WriteHotkeyItemNum(IDS_REGKEY_HKEYSET_ITEMNUM, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+			// Get HotkeySet item
 			HOTKEYSETITEM hksTemp = m_phksHotkeySetData->GetItemAt(nIndex);
+
+			// Write item data
 			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE,	hksTemp.bEnable);
 			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID,	hksTemp.nHKActionID);
 			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY,	hksTemp.dwCtrlKeyCode);
@@ -1015,6 +1059,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 	// Save Power Reminder data
 	if ((dwDataType & APPDATA_PWRREMINDER) != 0) {
+
 		// Delete old data before writing
 		DeletePwrReminderSection();
 
@@ -1022,13 +1067,18 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		int nItemNum = m_ppwrReminderData->nItemNum;
 		bResult &= WritePwrReminderItemNum(IDS_REGKEY_PWRRMD_ITEMNUM, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+			// Get Power Reminder item
 			PWRREMINDERITEM pwrTemp = m_ppwrReminderData->GetItemAt(nIndex);
+
+			// Convert time data
+			nTimeTemp = int((pwrTemp.stTime.wHour * 100) + pwrTemp.stTime.wMinute);
+
+			// Write item data
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID,			pwrTemp.nItemID);
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE,			pwrTemp.bEnable);
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING,		pwrTemp.strMessage);
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID,			pwrTemp.nEventID);
-			nTemp = int((pwrTemp.stTime.wHour * 100) + pwrTemp.stTime.wMinute);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIME, nTemp);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIMEVALUE,		nTimeTemp);
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE,			pwrTemp.dwStyle);
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT,			pwrTemp.rpsRepeatSet.bRepeat);
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ALLOWSNOOZE,		pwrTemp.rpsRepeatSet.bAllowSnooze);
@@ -1122,6 +1172,12 @@ BOOL CPowerPlusApp::LoadGlobalVars(void)
 	// System suspended trace flag
 	if (GetGlobalVar(nSubSection, IDS_REGKEY_APPFLAG_SYSTEMSUSPENDFLG, nGlbValue)) {
 		SetSystemSuspendFlag((BYTE)nGlbValue);
+		bRet |= TRUE;
+	}
+
+	// Session ending trace flag
+	if (GetGlobalVar(nSubSection, IDS_REGKEY_APPFLAG_SESSIONENDFLAG, nGlbValue)) {
+		SetSessionEndFlag((BYTE)nGlbValue);
 		bRet |= TRUE;
 	}
 	/*-----------------------------------------------------------------------------------*/
@@ -1252,6 +1308,12 @@ BOOL CPowerPlusApp::SaveGlobalVars(BYTE byCateID /* = 0xFF */)
 		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_APPFLAG_SYSTEMSUSPENDFLG, byGlbValue)) {
 			bRet = FALSE;
 		}
+
+		// Session ending trace flag
+		byGlbValue = GetSessionEndFlag();
+		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_APPFLAG_SESSIONENDFLAG, byGlbValue)) {
+			bRet = FALSE;
+		}
 	}
 	/*-----------------------------------------------------------------------------------*/
 
@@ -1361,7 +1423,7 @@ void CPowerPlusApp::InitFileData()
 	sectionSchedule.AddKey(IDS_REGKEY_SCHED_ENABLE);
 	sectionSchedule.AddKey(IDS_REGKEY_SCHED_ACTION);
 	sectionSchedule.AddKey(IDS_REGKEY_SCHED_REPEAT);
-	sectionSchedule.AddKey(IDS_REGKEY_SCHED_TIME);
+	sectionSchedule.AddKey(IDS_REGKEY_SCHED_TIMEVALUE);
 
 	INISection sectionHotkeySet;
 	sectionHotkeySet.SetName(IDS_REGSECTION_HOTKEYSET);
@@ -1530,7 +1592,7 @@ void CPowerPlusApp::LoadFileAppData()
 	}
 	// Schedule time
 	m_pschSheduleData->stTime = GetCurSysTime();
-	nTemp = sectionSchedule.GetKeyValueInt(IDS_REGKEY_SCHED_TIME);
+	nTemp = sectionSchedule.GetKeyValueInt(IDS_REGKEY_SCHED_TIMEVALUE);
 	if (nTemp > DEF_INTEGER_INVALID) {
 		m_pschSheduleData->stTime.wHour = WORD(nTemp / 100);	// Hour
 		m_pschSheduleData->stTime.wMinute = WORD(nTemp % 100);	// Minute
@@ -1614,7 +1676,7 @@ void CPowerPlusApp::SetFileAppData()
 	sectionSchedule.SetKeyValue(IDS_REGKEY_SCHED_ACTION, m_pschSheduleData->nAction);
 	sectionSchedule.SetKeyValue(IDS_REGKEY_SCHED_REPEAT, m_pschSheduleData->bRepeat);
 	nTemp = int((m_pschSheduleData->stTime.wHour * 100) + m_pschSheduleData->stTime.wMinute);
-	sectionSchedule.SetKeyValue(IDS_REGKEY_SCHED_TIME, nTemp);
+	sectionSchedule.SetKeyValue(IDS_REGKEY_SCHED_TIMEVALUE, nTemp);
 
 	INISection& sectionHotkeySet = m_fileConfigData.GetSectionByName(IDS_REGSECTION_HOTKEYSET);
 	sectionHotkeySet.SetKeyValue(IDS_REGKEY_HKEYSET_ITEMNUM, m_phksHotkeySetData->nItemNum);
@@ -2829,6 +2891,10 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 		// Last system wakeup
 		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSYSWAKEUP);
 	}
+	else if (byEventType == SYSEVT_SESSIONEND) {
+		// Last app/system session ending
+		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSESSIONEND);
+	}
 	else {
 		// Close key and exit
 		RegCloseKey(hKey);
@@ -2908,6 +2974,10 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEve
 	else if (byEventType == SYSEVT_WAKEUP) {
 		// Last system wakeup
 		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSYSWAKEUP);
+	}
+	else if (byEventType == SYSEVT_SESSIONEND) {
+		// Last app/system session ending
+		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSESSIONEND);
 	}
 	else {
 		// Close key and exit
