@@ -54,7 +54,7 @@
     <ClInclude Include="Resource2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ScheduleDlg.h">
+    <ClInclude Include="EditScheduleDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -105,6 +105,9 @@
     <ClInclude Include="RmdRepeatSetDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MultiScheduleDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp">
@@ -137,7 +140,7 @@
     <ClCompile Include="PowerPlusDlgFunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ScheduleDlg.cpp">
+    <ClCompile Include="EditScheduleDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -180,6 +183,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RmdRepeatSetDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiScheduleDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

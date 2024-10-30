@@ -64,77 +64,142 @@ void tagCONFIGDATA::Copy(const tagCONFIGDATA& pData)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagSCHEDULEDATA
+//	Function name:	tagSCHEDULEITEM
 //	Description:	Constructor
 //  Arguments:		Default
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagSCHEDULEDATA::tagSCHEDULEDATA()
+tagSCHEDULEITEM::tagSCHEDULEITEM()
 {
 	// Initialize
+	this->nItemID = DEF_SCHEDULE_MIN_ITEMID;			// Item ID
 	this->bEnable = FALSE;								// Enable/disable status
 	this->bRepeat = FALSE;								// Repeat daily
 	this->nAction = DEF_APP_ACTION_NOTHING;				// Schedule action
-	this->stTime = CoreFuncs::GetCurSysTime();			// Schedule time
+	this->stTime = {0};									// Schedule time
 	this->byRepeatDays = DEF_SCHEDULE_DEFAULT_REPEAT;	// Days of week (for repeating)
 }
 
-tagSCHEDULEDATA::tagSCHEDULEDATA(const tagSCHEDULEDATA& pData)
+tagSCHEDULEITEM::tagSCHEDULEITEM(UINT nItemID)
+{
+	// Initialize
+	this->nItemID = nItemID;							// Item ID
+	this->bEnable = FALSE;								// Enable/disable status
+	this->bRepeat = FALSE;								// Repeat daily
+	this->nAction = DEF_APP_ACTION_NOTHING;				// Schedule action
+	this->stTime = {0};									// Schedule time
+	this->byRepeatDays = DEF_SCHEDULE_DEFAULT_REPEAT;	// Days of week (for repeating)
+}
+
+tagSCHEDULEITEM::tagSCHEDULEITEM(const tagSCHEDULEITEM& pItem)
 {
 	// Copy data
-	this->bEnable = pData.bEnable;						// Enable/disable status
-	this->bRepeat = pData.bRepeat;						// Repeat daily
-	this->nAction = pData.nAction;						// Schedule action
-	this->stTime = pData.stTime;						// Schedule time
-	this->byRepeatDays = pData.byRepeatDays;			// Days of week (for repeating)
+	this->nItemID = pItem.nItemID;						// Item ID
+	this->bEnable = pItem.bEnable;						// Enable/disable status
+	this->bRepeat = pItem.bRepeat;						// Repeat daily
+	this->nAction = pItem.nAction;						// Schedule action
+	this->stTime = pItem.stTime;						// Schedule time
+	this->byRepeatDays = pItem.byRepeatDays;			// Days of week (for repeating)
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagSCHEDULEITEM& tagSCHEDULEITEM::operator=(const tagSCHEDULEITEM& pItem)
+{
+	// Copy data
+	this->nItemID = pItem.nItemID;						// Item ID
+	this->bEnable = pItem.bEnable;						// Enable/disable status
+	this->bRepeat = pItem.bRepeat;						// Repeat daily
+	this->nAction = pItem.nAction;						// Schedule action
+	this->stTime = pItem.stTime;						// Schedule time
+	this->byRepeatDays = pItem.byRepeatDays;			// Days of week (for repeating)
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	Copy
-//	Description:	Copy data from another schedule data
-//  Arguments:		pData - Pointer of input data
+//	Description:	Copy data from another schedule item
+//  Arguments:		pItem - Pointer of input item
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::Copy(const tagSCHEDULEDATA& pData)
+void tagSCHEDULEITEM::Copy(const tagSCHEDULEITEM& pItem)
 {
-	this->bEnable = pData.bEnable;						// Enable/disable status
-	this->bRepeat = pData.bRepeat;						// Repeat daily
-	this->nAction = pData.nAction;						// Schedule action
-	this->stTime = pData.stTime;						// Schedule time
-	this->byRepeatDays = pData.byRepeatDays;			// Days of week (for repeating)
+	// Copy data
+	this->nItemID = pItem.nItemID;						// Item ID
+	this->bEnable = pItem.bEnable;						// Enable/disable status
+	this->bRepeat = pItem.bRepeat;						// Repeat daily
+	this->nAction = pItem.nAction;						// Schedule action
+	this->stTime = pItem.stTime;						// Schedule time
+	this->byRepeatDays = pItem.byRepeatDays;			// Days of week (for repeating)
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Activate
-//	Description:	Activate schedule
-//  Arguments:		None
-//  Return value:	None
+//	Function name:	Compare
+//	Description:	Compare with another given item
+//  Arguments:		pItem - Pointer of given item
+//  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::Activate()
+BOOL tagSCHEDULEITEM::Compare(const tagSCHEDULEITEM& pItem)
 {
-	this->bEnable = TRUE;
+	BOOL bRet = FALSE;
+
+	// Compare item (do not compare item ID)
+	bRet &= (this->bEnable == pItem.bEnable);
+	bRet &= (this->bRepeat == pItem.bRepeat);
+	bRet &= (this->nAction == pItem.nAction);
+	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
+	bRet &= (this->stTime.wMinute == pItem.stTime.wMinute);
+	bRet &= (this->byRepeatDays == pItem.byRepeatDays);
+
+	return bRet;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Deactivate
-//	Description:	Deactivate schedule
-//  Arguments:		None
+//	Function name:	SetActiveState
+//	Description:	Set/change item active state
+//  Arguments:		bActive - New active state
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::Deactivate()
+void tagSCHEDULEITEM::SetActiveState(BOOL bActive)
 {
-	this->bEnable = FALSE;
+	this->bEnable = bActive;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEmpty
+//	Description:	Check if schedule item is empty
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagSCHEDULEITEM::IsEmpty()
+{
+	// Initialize an empty item
+	SCHEDULEITEM schDummyItem;
+
+	// Compare with this item and return result
+	return this->Compare(schDummyItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -146,13 +211,599 @@ void tagSCHEDULEDATA::Deactivate()
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsDayActive(DAYOFWEEK dayOfWeek)
+BOOL tagSCHEDULEITEM::IsDayActive(DAYOFWEEK dayOfWeek)
 {
 	// Invalid day of week
 	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
 		return FALSE;
 
-	return (this->byRepeatDays & (1 << dayOfWeek));
+	return ((this->byRepeatDays & (1 << dayOfWeek)) >> dayOfWeek);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Print
+//	Description:	Print schedule item
+//  Arguments:		strOutput - Output printed string
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEITEM::Print(CString& strOutput)
+{
+	using namespace PairFuncs;
+	using namespace CoreFuncs;
+
+	// Get language table
+	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
+
+	// Format schedule data
+	CString strActive = (this->bEnable == TRUE) ? _T("YES") : _T("NO");							// Enable/disable state
+	UINT nActionStringID = GetPairedID(idplActionName, this->nAction);
+	CString strAction = GetLanguageString(ptrLanguage, nActionStringID);						// Schedule action
+	CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, this->stTime);	// Schedule time
+	CString strRepeat = (this->bRepeat == TRUE) ? _T("YES") : _T("NO");							// Repeat daily
+
+	// Print item
+	strOutput.Format(_T("Active=(%s), ItemID=%d, Action=(%s), Time=(%s), Repeat=(%s)"),
+						strActive, this->nItemID, strAction, strTimeFormat, strRepeat);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	tagSCHEDULEDATA
+//	Description:	Constructor
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagSCHEDULEDATA::tagSCHEDULEDATA()
+{
+	// Initialize
+	this->schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	this->arrSchedExtraItemList.RemoveAll();
+}
+
+tagSCHEDULEDATA::tagSCHEDULEDATA(const tagSCHEDULEDATA& pData)
+{
+	// Remove existing data
+	this->DeleteAll();
+
+	// Copy default item
+	this->schDefaultItem.Copy(pData.schDefaultItem);
+
+	// Copy extra data
+	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
+		SCHEDULEITEM schItem = pData.arrSchedExtraItemList.GetAt(nIndex);
+		this->arrSchedExtraItemList.Add(schItem);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pData - Pointer of input data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagSCHEDULEDATA& tagSCHEDULEDATA::operator=(const tagSCHEDULEDATA& pData)
+{
+	// Remove existing data
+	this->DeleteAll();
+
+	// Copy default item
+	this->schDefaultItem.Copy(pData.schDefaultItem);
+
+	// Copy extra data
+	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
+		SCHEDULEITEM schItem = pData.arrSchedExtraItemList.GetAt(nIndex);
+		this->arrSchedExtraItemList.Add(schItem);
+	}
+
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Init
+//	Description:	Init Action Schedule data (NULL)
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEDATA::Init()
+{
+	// Initialize
+	this->schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	this->arrSchedExtraItemList.RemoveAll();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Copy
+//	Description:	Copy data from another Action Schedule data
+//  Arguments:		pData - Pointer of input data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEDATA::Copy(const tagSCHEDULEDATA& pData)
+{
+	// Remove existing data
+	this->DeleteAll();
+
+	// Copy default item
+	this->schDefaultItem.Copy(pData.schDefaultItem);
+
+	// Copy extra data
+	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
+		SCHEDULEITEM schItem = pData.arrSchedExtraItemList.GetAt(nIndex);
+		this->arrSchedExtraItemList.Add(schItem);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Add
+//	Description:	Add an Action Schedule item
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	DWORD - Error code
+//
+//////////////////////////////////////////////////////////////////////////
+
+DWORD tagSCHEDULEDATA::Add(const SCHEDULEITEM& pItem)
+{
+	// If default item is currently empty
+	if (this->schDefaultItem.IsEmpty()) {
+		// Make item as default
+		SCHEDULEITEM schDefault(pItem);
+		schDefault.nItemID = DEF_SCHEDULE_DEFAULT_ITEMID;
+		this->schDefaultItem.Copy(schDefault);
+		return DEF_SCHEDULE_ERROR_SUCCESS;
+	}
+
+	// If extra schedule data is currently empty
+	if (this->arrSchedExtraItemList.IsEmpty()) {
+		// Just add the item
+		this->arrSchedExtraItemList.Add(pItem);
+		return DEF_SCHEDULE_ERROR_SUCCESS;
+	}
+
+	// If number of items exceeded limit
+	if (this->GetExtraItemNum() >= DEF_SCHEDULE_ERROR_MAXITEM)
+		return DEF_SCHEDULE_ERROR_MAXITEM;
+
+	// Check if item is duplicated, if yes, do not add
+	for (int nIndex = 0; nIndex < (this->GetExtraItemNum()); nIndex++) {
+		SCHEDULEITEM pItemTemp = this->GetItemAt(nIndex);
+		if (pItemTemp.Compare(pItem) == TRUE) {
+			// All data is duplicated
+			return DEF_SCHEDULE_ERROR_DUPLICATE;
+		}
+		else if (CoreFuncs::CheckTimeMatch(pItemTemp.stTime, pItem.stTime)) {
+			// Time value is duplicated
+			// Can not execute multiple action at the same time
+			return DEF_SCHEDULE_ERROR_DUPLICATETIME;
+		}
+	}
+
+	// Create new temporary data
+	PSCHEDULEDATA pNew = new SCHEDULEDATA;
+	pNew->arrSchedExtraItemList.RemoveAll();
+
+	// Copy old data to new one
+	pNew->schDefaultItem.Copy(this->schDefaultItem);
+	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
+		SCHEDULEITEM schItem = this->GetItemAt(nIndex);
+		pNew->arrSchedExtraItemList.Add(schItem);
+	}
+
+	// Add new item and copy back to old data
+	pNew->arrSchedExtraItemList.Add(pItem);
+	this->Copy(*pNew);
+
+	// Delete data
+	pNew->DeleteAll();
+	if (pNew != NULL) {
+		delete pNew;
+		pNew = NULL;
+	}
+
+	return DEF_SCHEDULE_ERROR_SUCCESS;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Update
+//	Description:	Update a Action Schedule item
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	DWORD - Error code
+//
+//////////////////////////////////////////////////////////////////////////
+
+DWORD tagSCHEDULEDATA::Update(const SCHEDULEITEM& pItem)
+{
+	// If default item or extra schedule data is currently empty
+	if ((this->GetDefaultItem().IsEmpty()) || (this->IsAllEmpty())) {
+		// Just add item
+		return this->Add(pItem);
+	}
+
+	// If item ID is matching with default item
+	if (pItem.nItemID == DEF_SCHEDULE_DEFAULT_ITEMID) {
+		// Update default item
+		this->GetDefaultItem().Copy(pItem);
+		return DEF_SCHEDULE_ERROR_SUCCESS;
+	}
+
+	// Find extra item with matching ID
+	int nRetItemIndex = DEF_INTEGER_INVALID;
+	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
+		if (this->GetItemAt(nIndex).nItemID == pItem.nItemID) {
+			nRetItemIndex = nIndex;
+			break;
+		}
+	}
+
+	// Update item if found
+	if (nRetItemIndex != DEF_INTEGER_INVALID) {
+		SCHEDULEITEM& schTemp = this->GetItemAt(nRetItemIndex);
+		schTemp.Copy(pItem);
+		return DEF_SCHEDULE_ERROR_SUCCESS;
+	}
+	// Otherwise,
+	else {
+		// Just add new
+		return this->Add(pItem);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDefaultItem
+//	Description:	Get the default Action Schedule item
+//  Arguments:		None
+//  Return value:	SCHEDULEITEM
+//
+//////////////////////////////////////////////////////////////////////////
+
+SCHEDULEITEM& tagSCHEDULEDATA::GetDefaultItem(void)
+{
+	return this->schDefaultItem;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetItemAt
+//	Description:	Get the Action Schedule item at index
+//  Arguments:		nIndex - Item index
+//  Return value:	SCHEDULEITEM
+//
+//////////////////////////////////////////////////////////////////////////
+
+SCHEDULEITEM& tagSCHEDULEDATA::GetItemAt(int nIndex)
+{
+	ASSERT((nIndex >= 0) && (nIndex < this->GetExtraItemNum()));
+	if ((nIndex >= 0) && (nIndex < this->GetExtraItemNum()))
+		return this->arrSchedExtraItemList.GetAt(nIndex);
+
+	// Invalid argument
+	AfxThrowInvalidArgException();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Remove
+//	Description:	Remove a schedule item by index
+//  Arguments:		nAtIndex - Index of item to remove
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEDATA::Remove(int nAtIndex)
+{
+	// Check index validity
+	if ((nAtIndex < 0) || (nAtIndex >= this->GetExtraItemNum()))
+		return;
+
+	// Get item data
+	SCHEDULEITEM& schItem = this->GetItemAt(nAtIndex);
+
+	// Reset item value
+	schItem.Copy(SCHEDULEITEM());
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RemoveAll
+//	Description:	Remove all Action Schedule data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEDATA::RemoveAll(void)
+{
+	// Remove each item
+	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
+		Remove(nIndex);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Adjust
+//	Description:	Adjust Action Schedule data validity
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEDATA::Adjust(void)
+{
+	// If default item is empty but extra data is not
+	if ((this->IsDefaultEmpty()) && (this->IsExtraEmpty() == FALSE)) {
+		// Make first extra item default
+		this->schDefaultItem.Copy(this->GetItemAt(0));
+		this->schDefaultItem.nItemID = DEF_SCHEDULE_DEFAULT_ITEMID;
+
+		// Remove that extra item
+		this->Delete(0);
+	}
+
+	// Check and remove empty extra items
+	for (int nIndex = (this->GetExtraItemNum() - 1); nIndex >= 0; nIndex--) {
+		SCHEDULEITEM schTemp = this->GetItemAt(nIndex);
+		if (!schTemp.IsEmpty()) continue;
+
+		// Remove item
+		this->Delete(nIndex);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetNextID
+//	Description:	Get next item ID (to add new item)
+//  Arguments:		None
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT tagSCHEDULEDATA::GetNextID(void)
+{
+	// Get currently max ID
+	UINT nRetNextID = DEF_SCHEDULE_MIN_ITEMID;
+	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
+		SCHEDULEITEM schItem = this->GetItemAt(nIndex);
+		if (schItem.nItemID > nRetNextID) {
+			nRetNextID = schItem.nItemID;
+		}
+	}
+
+	// Increase value
+	nRetNextID++;
+
+	return nRetNextID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetExtraItemNum
+//	Description:	Get number of extra items
+//  Arguments:		None
+//  Return value:	INT_PTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR tagSCHEDULEDATA::GetExtraItemNum(void) const
+{
+	return this->arrSchedExtraItemList.GetSize();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsDefaultEmpty
+//	Description:	Check if default item is empty
+//  Arguments:		None
+//  Return value:	BOOL - Result of empty or not
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagSCHEDULEDATA::IsDefaultEmpty(void)
+{
+	return this->schDefaultItem.IsEmpty();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEmpty
+//	Description:	Check if item at index is empty
+//  Arguments:		nIndex - Item index to check
+//  Return value:	BOOL - Result of empty or not
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagSCHEDULEDATA::IsEmpty(int nIndex)
+{
+	// Check index validity
+	if ((nIndex < 0) || (nIndex >= this->GetExtraItemNum()))
+		return TRUE;
+
+	// Check if item is empty
+	SCHEDULEITEM schItem = this->GetItemAt(nIndex);
+	return schItem.IsEmpty();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsExtraEmpty
+//	Description:	Check if extra data is empty
+//  Arguments:		None
+//  Return value:	BOOL - Result of all item empty
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagSCHEDULEDATA::IsExtraEmpty(void)
+{
+	// If there's no item, return TRUE
+	if (this->arrSchedExtraItemList.IsEmpty())
+		return TRUE;
+
+	// Check each item
+	BOOL bExtraEmpty = TRUE;
+	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
+		if (this->IsEmpty(nIndex) == FALSE) {
+			bExtraEmpty = FALSE;
+			break;
+		}
+	}
+
+	return bExtraEmpty;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsAllEmpty
+//	Description:	Check if all item are empty
+//  Arguments:		None
+//  Return value:	BOOL - Result of all item empty
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagSCHEDULEDATA::IsAllEmpty(void)
+{
+	return ((this->IsDefaultEmpty()) && (this->IsExtraEmpty()));
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Delete
+//	Description:	Delete a reminder item by index
+//  Arguments:		nAtIndex - Index of item to delete
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEDATA::Delete(int nAtIndex)
+{
+	// Check index validity
+	if ((nAtIndex < 0) || (nAtIndex >= this->GetExtraItemNum()))
+		return;
+
+	// Create new temporary data
+	PSCHEDULEDATA pNew = new SCHEDULEDATA;
+	pNew->arrSchedExtraItemList.RemoveAll();
+
+	// Copy old data to new one (except the AtIndex item)
+	pNew->schDefaultItem.Copy(this->schDefaultItem);
+	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
+		if (nIndex == nAtIndex) continue;
+		pNew->arrSchedExtraItemList.Add(this->arrSchedExtraItemList.GetAt(nIndex));
+	}
+
+	// Copy back to old data
+	this->Copy(*pNew);
+
+	// Delete temporary data
+	pNew->DeleteAll();
+	if (pNew != NULL) {
+		delete pNew;
+		pNew = NULL;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	DeleteExtra
+//	Description:	Delete all Schedule extra items
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEDATA::DeleteExtra(void)
+{
+	// Reset data
+	this->arrSchedExtraItemList.RemoveAll();
+	this->arrSchedExtraItemList.FreeExtra();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	DeleteAll
+//	Description:	Delete all Action Schedule data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSCHEDULEDATA::DeleteAll(void)
+{
+	// Reset data
+	this->schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	this->arrSchedExtraItemList.RemoveAll();
+	this->arrSchedExtraItemList.FreeExtra();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	tagHOTKEYSETITEM
+//	Description:	Constructor
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagHOTKEYSETITEM::tagHOTKEYSETITEM()
+{
+	// Initialize
+	this->bEnable = FALSE;							// Hotkey enabled/disabled
+	this->nHKActionID = 0;							// Hotkey action ID
+	this->dwCtrlKeyCode = 0;						// Control Keycode #1
+	this->dwFuncKeyCode = 0;						// Function Keycode #2
+}
+
+tagHOTKEYSETITEM::tagHOTKEYSETITEM(UINT nHKActionID)
+{
+	// Initialize
+	this->bEnable = FALSE;							// Hotkey enabled/disabled
+	this->nHKActionID = nHKActionID;				// Hotkey action ID
+	this->dwCtrlKeyCode = 0;						// Control Keycode #1
+	this->dwFuncKeyCode = 0;						// Function Keycode #2
+}
+
+tagHOTKEYSETITEM::tagHOTKEYSETITEM(const tagHOTKEYSETITEM& pItem)
+{
+	// Copy data
+	this->bEnable = pItem.bEnable;					// Hotkey enabled/disabled
+	this->nHKActionID = pItem.nHKActionID;			// Hotkey action ID
+	this->dwCtrlKeyCode = pItem.dwCtrlKeyCode;		// Control Keycode #1
+	this->dwFuncKeyCode = pItem.dwFuncKeyCode;		// Function Keycode #2
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagHOTKEYSETITEM& tagHOTKEYSETITEM::operator=(const tagHOTKEYSETITEM& pItem)
+{
+	// Copy data
+	this->bEnable = pItem.bEnable;					// Hotkey enabled/disabled
+	this->nHKActionID = pItem.nHKActionID;			// Hotkey action ID
+	this->dwCtrlKeyCode = pItem.dwCtrlKeyCode;		// Control Keycode #1
+	this->dwFuncKeyCode = pItem.dwFuncKeyCode;		// Function Keycode #2
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -167,10 +818,10 @@ BOOL tagSCHEDULEDATA::IsDayActive(DAYOFWEEK dayOfWeek)
 void tagHOTKEYSETITEM::Copy(const tagHOTKEYSETITEM& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;
-	this->nHKActionID = pItem.nHKActionID;
-	this->dwCtrlKeyCode = pItem.dwCtrlKeyCode;
-	this->dwFuncKeyCode = pItem.dwFuncKeyCode;
+	this->bEnable = pItem.bEnable;					// Hotkey enabled/disabled
+	this->nHKActionID = pItem.nHKActionID;			// Hotkey action ID
+	this->dwCtrlKeyCode = pItem.dwCtrlKeyCode;		// Control Keycode #1
+	this->dwFuncKeyCode = pItem.dwFuncKeyCode;		// Function Keycode #2
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -182,7 +833,7 @@ void tagHOTKEYSETITEM::Copy(const tagHOTKEYSETITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETITEM::IsEmpty()
+BOOL tagHOTKEYSETITEM::IsEmpty(void)
 {
 	BOOL bIsEmpty = FALSE;
 
@@ -256,7 +907,6 @@ void tagHOTKEYSETITEM::Print(CString& strOutput)
 tagHOTKEYSETDATA::tagHOTKEYSETDATA()
 {
 	// Initialize
-	this->nItemNum = 0;
 	this->arrHotkeySetList.RemoveAll();
 }
 
@@ -266,18 +916,33 @@ tagHOTKEYSETDATA::tagHOTKEYSETDATA(const tagHOTKEYSETDATA& pData)
 	this->DeleteAll();
 
 	// Copy data
-	this->nItemNum = pData.nItemNum;
-	if (this->nItemNum <= 0) {
-		this->arrHotkeySetList.RemoveAll();
-		this->arrHotkeySetList.FreeExtra();
+	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
+		HOTKEYSETITEM hksItem = pData.arrHotkeySetList.GetAt(nIndex);
+		this->arrHotkeySetList.Add(hksItem);
 	}
-	else {
-		// Copy each item
-		for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
-			HOTKEYSETITEM hksItem = pData.arrHotkeySetList.GetAt(nIndex);
-			this->arrHotkeySetList.Add(hksItem);
-		}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pData - Pointer of input data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagHOTKEYSETDATA& tagHOTKEYSETDATA::operator=(const tagHOTKEYSETDATA& pData)
+{
+	// Remove existing data
+	this->DeleteAll();
+
+	// Copy data
+	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
+		HOTKEYSETITEM hksItem = pData.arrHotkeySetList.GetAt(nIndex);
+		this->arrHotkeySetList.Add(hksItem);
 	}
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -292,7 +957,6 @@ tagHOTKEYSETDATA::tagHOTKEYSETDATA(const tagHOTKEYSETDATA& pData)
 void tagHOTKEYSETDATA::Init()
 {
 	// Initialize
-	this->nItemNum = 0;
 	this->arrHotkeySetList.RemoveAll();
 }
 
@@ -311,17 +975,9 @@ void tagHOTKEYSETDATA::Copy(const tagHOTKEYSETDATA& pData)
 	this->DeleteAll();
 
 	// Copy data
-	this->nItemNum = pData.nItemNum;
-	if (this->nItemNum <= 0) {
-		this->arrHotkeySetList.RemoveAll();
-		this->arrHotkeySetList.FreeExtra();
-	}
-	else {
-		// Copy each item
-		for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
-			HOTKEYSETITEM hksItem = pData.arrHotkeySetList.GetAt(nIndex);
-			this->arrHotkeySetList.Add(hksItem);
-		}
+	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
+		HOTKEYSETITEM hksItem = pData.arrHotkeySetList.GetAt(nIndex);
+		this->arrHotkeySetList.Add(hksItem);
 	}
 }
 
@@ -336,15 +992,15 @@ void tagHOTKEYSETDATA::Copy(const tagHOTKEYSETDATA& pData)
 
 void tagHOTKEYSETDATA::Add(const HOTKEYSETITEM& pItem)
 {
-	// If data list is current empty, just add
-	if ((this->nItemNum == 0) && (this->arrHotkeySetList.IsEmpty())) {
-		this->nItemNum = 1;
+	// If data list is current empty
+	if (this->arrHotkeySetList.IsEmpty()) {
+		// Just add item
 		this->arrHotkeySetList.Add(pItem);
 		return;
 	}
 
 	// Check if item exists, if yes, do not add
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		HOTKEYSETITEM pItemTemp = this->GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE)
 			return;
@@ -352,11 +1008,10 @@ void tagHOTKEYSETDATA::Add(const HOTKEYSETITEM& pItem)
 
 	// Create new temporary data
 	PHOTKEYSETDATA pNew = new HOTKEYSETDATA;
-	pNew->nItemNum = (this->nItemNum + 1);
 	pNew->arrHotkeySetList.RemoveAll();
 	
 	// Copy old data to new one
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		HOTKEYSETITEM hksItem = this->GetItemAt(nIndex);
 		pNew->arrHotkeySetList.Add(hksItem);
 	}
@@ -384,8 +1039,9 @@ void tagHOTKEYSETDATA::Add(const HOTKEYSETITEM& pItem)
 
 void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 {
-	// If data list is current empty, just add
-	if ((this->nItemNum == 0) || (this->arrHotkeySetList.IsEmpty())) {
+	// If data list is current empty
+	if (this->arrHotkeySetList.IsEmpty()) {
+		// Just add item
 		this->Add(pItem);
 		return;
 	}
@@ -394,7 +1050,7 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 	int nDupActionIndex = DEF_INTEGER_INVALID;
 	int nDupKeyIndex = DEF_INTEGER_INVALID;
 
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		HOTKEYSETITEM hksTemp = this->GetItemAt(nIndex);
 		if (hksTemp.nHKActionID == pItem.nHKActionID) {
 			// Duplicate action ID found
@@ -441,8 +1097,8 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 
 HOTKEYSETITEM& tagHOTKEYSETDATA::GetItemAt(int nIndex)
 {
-	ASSERT((nIndex >= 0) && (nIndex < (this->nItemNum)));
-	if ((nIndex >= 0) && (nIndex < (this->nItemNum)))
+	ASSERT((nIndex >= 0) && (nIndex < this->GetItemNum()));
+	if ((nIndex >= 0) && (nIndex < this->GetItemNum()))
 		return this->arrHotkeySetList.GetAt(nIndex);
 
 	// Invalid argument
@@ -461,7 +1117,7 @@ HOTKEYSETITEM& tagHOTKEYSETDATA::GetItemAt(int nIndex)
 void tagHOTKEYSETDATA::Remove(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= (this->nItemNum)))
+	if ((nAtIndex < 0) || (nAtIndex >= this->GetItemNum()))
 		return;
 
 	// Get item data
@@ -485,7 +1141,7 @@ void tagHOTKEYSETDATA::Remove(int nAtIndex)
 void tagHOTKEYSETDATA::RemoveAll(void)
 {
 	// Remove each item
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		Remove(nIndex);
 	}
 }
@@ -501,7 +1157,7 @@ void tagHOTKEYSETDATA::RemoveAll(void)
 
 void tagHOTKEYSETDATA::Adjust(void)
 {
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 
 		// Get hotkeyset item
 		HOTKEYSETITEM& hksItem = this->GetItemAt(nIndex);
@@ -517,6 +1173,20 @@ void tagHOTKEYSETDATA::Adjust(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetItemNum
+//	Description:	Get number of items
+//  Arguments:		None
+//  Return value:	INT_PTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR tagHOTKEYSETDATA::GetItemNum(void) const
+{
+	return this->arrHotkeySetList.GetSize();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	IsEmpty
 //	Description:	Check if item at index is empty
 //  Arguments:		nIndex - Item index to check
@@ -527,7 +1197,7 @@ void tagHOTKEYSETDATA::Adjust(void)
 BOOL tagHOTKEYSETDATA::IsEmpty(int nIndex)
 {
 	// Check index validity
-	if ((nIndex < 0) || (nIndex >= (this->nItemNum)))
+	if ((nIndex < 0) || (nIndex >= this->GetItemNum()))
 		return TRUE;
 
 	// Get item data
@@ -549,12 +1219,12 @@ BOOL tagHOTKEYSETDATA::IsEmpty(int nIndex)
 BOOL tagHOTKEYSETDATA::IsAllEmpty()
 {
 	// If there's no item, return TRUE
-	if ((this->nItemNum <= 0) && (this->arrHotkeySetList.IsEmpty()))
+	if (this->arrHotkeySetList.IsEmpty())
 		return TRUE;
 
 	// Check each item
 	BOOL bAllEmpty = TRUE;
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (this->IsEmpty(nIndex) == FALSE) {
 			bAllEmpty = FALSE;
 			break;
@@ -576,16 +1246,15 @@ BOOL tagHOTKEYSETDATA::IsAllEmpty()
 void tagHOTKEYSETDATA::Delete(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= (this->nItemNum)))
+	if ((nAtIndex < 0) || (nAtIndex >= this->GetItemNum()))
 		return;
 
 	// Create new temporary data
 	PHOTKEYSETDATA pNew = new HOTKEYSETDATA;
-	pNew->nItemNum = (this->nItemNum - 1);
 	pNew->arrHotkeySetList.RemoveAll();
 
 	// Copy old data to new one (except the AtIndex item)
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (nIndex == nAtIndex) continue;
 		pNew->arrHotkeySetList.Add(this->GetItemAt(nIndex));
 	}
@@ -612,7 +1281,7 @@ void tagHOTKEYSETDATA::Delete(int nAtIndex)
 
 void tagHOTKEYSETDATA::DeleteAll(void)
 {
-	this->nItemNum = 0;
+	// Reset data
 	this->arrHotkeySetList.RemoveAll();
 	this->arrHotkeySetList.FreeExtra();
 }
@@ -642,6 +1311,26 @@ tagRMDREPEATSET::tagRMDREPEATSET(const tagRMDREPEATSET& pItem)
 	this->bAllowSnooze = pItem.bAllowSnooze;				// Allow snoozing mode
 	this->nSnoozeInterval = pItem.nSnoozeInterval;			// Snooze interval
 	this->byRepeatDays = pItem.byRepeatDays;				// Default repeat: All days of week
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagRMDREPEATSET& tagRMDREPEATSET::operator=(const tagRMDREPEATSET& pItem)
+{
+	// Copy data
+	this->bRepeat = pItem.bRepeat;							// Repeat daily
+	this->bAllowSnooze = pItem.bAllowSnooze;				// Allow snoozing mode
+	this->nSnoozeInterval = pItem.nSnoozeInterval;			// Snooze interval
+	this->byRepeatDays = pItem.byRepeatDays;				// Default repeat: All days of week
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -699,7 +1388,7 @@ BOOL tagRMDREPEATSET::IsDayActive(DAYOFWEEK dayOfWeek)
 	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
 		return FALSE;
 
-	return (this->byRepeatDays & (1 << dayOfWeek));
+	return ((this->byRepeatDays & (1 << dayOfWeek)) >> dayOfWeek);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -714,13 +1403,13 @@ BOOL tagRMDREPEATSET::IsDayActive(DAYOFWEEK dayOfWeek)
 tagPWRREMINDERITEM::tagPWRREMINDERITEM()
 {
 	// Init data
-	this->bEnable = FALSE;									// Enable state
-	this->nItemID = DEF_PWRREMINDER_MIN_ITEMID;				// Item ID
-	this->strMessage = DEF_STRING_EMPTY;					// Message content
-	this->nEventID = PREVT_AT_SETTIME;						// Event ID
-	this->stTime = {0};										// Event time
-	this->dwStyle = PRSTYLE_MSGBOX;							// Reminder style
-	this->rpsRepeatSet = RMDREPEATSET();					// Repeat set
+	this->bEnable = FALSE;							// Enable state
+	this->nItemID = DEF_PWRREMINDER_MIN_ITEMID;		// Item ID
+	this->strMessage = DEF_STRING_EMPTY;			// Message content
+	this->nEventID = PREVT_AT_SETTIME;				// Event ID
+	this->stTime = {0};								// Event time
+	this->dwStyle = PRSTYLE_MSGBOX;					// Reminder style
+	this->rpsRepeatSet = RMDREPEATSET();			// Repeat set
 }
 
 tagPWRREMINDERITEM::tagPWRREMINDERITEM(const tagPWRREMINDERITEM& pItem)
@@ -733,6 +1422,29 @@ tagPWRREMINDERITEM::tagPWRREMINDERITEM(const tagPWRREMINDERITEM& pItem)
 	this->stTime = pItem.stTime;					// Event time
 	this->dwStyle = pItem.dwStyle;					// Reminder style
 	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);	// Repeat set
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagPWRREMINDERITEM& tagPWRREMINDERITEM::operator=(const tagPWRREMINDERITEM& pItem)
+{
+	// Copy data
+	this->bEnable = pItem.bEnable;					// Enable state
+	this->nItemID = pItem.nItemID;					// Item ID
+	this->strMessage = pItem.strMessage;			// Message content
+	this->nEventID = pItem.nEventID;				// Event ID
+	this->stTime = pItem.stTime;					// Event time
+	this->dwStyle = pItem.dwStyle;					// Reminder style
+	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);	// Repeat set
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -787,8 +1499,7 @@ BOOL tagPWRREMINDERITEM::Compare(const tagPWRREMINDERITEM& pItem)
 {
 	BOOL bRet = TRUE;
 
-	// Compare item
-	bRet &= (this->nItemID == pItem.nItemID);
+	// Compare item (do not compare item ID)
 	bRet &= (this->strMessage == pItem.strMessage);
 	bRet &= (this->nEventID == pItem.nEventID);
 	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
@@ -797,6 +1508,20 @@ BOOL tagPWRREMINDERITEM::Compare(const tagPWRREMINDERITEM& pItem)
 	bRet &= (this->rpsRepeatSet.Compare(pItem.rpsRepeatSet));
 
 	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetEnableState
+//	Description:	Set/change item enable state
+//  Arguments:		bEnable - New enable state
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagPWRREMINDERITEM::SetEnableState(BOOL bEnable)
+{
+	this->bEnable = bEnable;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -907,7 +1632,6 @@ void tagPWRREMINDERITEM::Print(CString& strOutput)
 tagPWRREMINDERDATA::tagPWRREMINDERDATA()
 {
 	// Initialize
-	this->nItemNum = 0;
 	this->arrRmdItemList.RemoveAll();
 }
 
@@ -917,18 +1641,33 @@ tagPWRREMINDERDATA::tagPWRREMINDERDATA(const tagPWRREMINDERDATA& pData)
 	this->DeleteAll();
 
 	// Copy data
-	this->nItemNum = pData.nItemNum;
-	if (this->nItemNum <= 0) {
-		this->arrRmdItemList.RemoveAll();
-		this->arrRmdItemList.FreeExtra();
+	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
+		PWRREMINDERITEM pwrItem = pData.arrRmdItemList.GetAt(nIndex);
+		this->arrRmdItemList.Add(pwrItem);
 	}
-	else {
-		// Copy each item
-		for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
-			PWRREMINDERITEM pwrItem = pData.arrRmdItemList.GetAt(nIndex);
-			this->arrRmdItemList.Add(pwrItem);
-		}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pData - Pointer of input data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagPWRREMINDERDATA& tagPWRREMINDERDATA::operator=(const tagPWRREMINDERDATA& pData)
+{
+	// Remove existing data
+	this->DeleteAll();
+
+	// Copy data
+	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
+		PWRREMINDERITEM pwrItem = pData.arrRmdItemList.GetAt(nIndex);
+		this->arrRmdItemList.Add(pwrItem);
 	}
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -943,7 +1682,6 @@ tagPWRREMINDERDATA::tagPWRREMINDERDATA(const tagPWRREMINDERDATA& pData)
 void tagPWRREMINDERDATA::Init()
 {
 	// Initialize
-	this->nItemNum = 0;
 	this->arrRmdItemList.RemoveAll();
 }
 
@@ -962,17 +1700,9 @@ void tagPWRREMINDERDATA::Copy(const tagPWRREMINDERDATA& pData)
 	this->DeleteAll();
 
 	// Copy data
-	this->nItemNum = pData.nItemNum;
-	if (this->nItemNum <= 0) {
-		this->arrRmdItemList.RemoveAll();
-		this->arrRmdItemList.FreeExtra();
-	}
-	else {
-		// Copy each item
-		for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
-			PWRREMINDERITEM pwrItem = pData.arrRmdItemList.GetAt(nIndex);
-			this->arrRmdItemList.Add(pwrItem);
-		}
+	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
+		PWRREMINDERITEM pwrItem = pData.arrRmdItemList.GetAt(nIndex);
+		this->arrRmdItemList.Add(pwrItem);
 	}
 }
 
@@ -987,15 +1717,15 @@ void tagPWRREMINDERDATA::Copy(const tagPWRREMINDERDATA& pData)
 
 void tagPWRREMINDERDATA::Add(const PWRREMINDERITEM& pItem)
 {
-	// If data list is current empty, just add
-	if ((this->nItemNum == 0) || (this->arrRmdItemList.IsEmpty())) {
-		this->nItemNum = 1;
+	// If data list is current empty
+	if (this->arrRmdItemList.IsEmpty()) {
+		// Just add item
 		this->arrRmdItemList.Add(pItem);
 		return;
 	}
 
 	// Check if item exists, if yes, do not add
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		PWRREMINDERITEM pItemTemp = this->GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE)
 			return;
@@ -1003,11 +1733,10 @@ void tagPWRREMINDERDATA::Add(const PWRREMINDERITEM& pItem)
 
 	// Create new temporary data
 	PPWRREMINDERDATA pNew = new PWRREMINDERDATA;
-	pNew->nItemNum = (this->nItemNum + 1);
 	pNew->arrRmdItemList.RemoveAll();
 
 	// Copy old data to new one
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		PWRREMINDERITEM pwrItem = this->GetItemAt(nIndex);
 		pNew->arrRmdItemList.Add(pwrItem);
 	}
@@ -1035,19 +1764,16 @@ void tagPWRREMINDERDATA::Add(const PWRREMINDERITEM& pItem)
 
 void tagPWRREMINDERDATA::Update(const PWRREMINDERITEM& pItem)
 {
-	// If data list is current empty, just add
-	if ((this->nItemNum == 0) || (this->arrRmdItemList.IsEmpty())) {
+	// If data list is current empty
+	if (this->arrRmdItemList.IsEmpty()) {
+		// Just add item
 		this->Add(pItem);
 		return;
 	}
 
-	// If there's no item, do nothing
-	if (this->nItemNum <= 0)
-		return;
-
 	// Find item index
 	int nRetItemIndex = DEF_INTEGER_INVALID;
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (this->GetItemAt(nIndex).nItemID == pItem.nItemID) {
 			nRetItemIndex = nIndex;
 			break;
@@ -1076,8 +1802,8 @@ void tagPWRREMINDERDATA::Update(const PWRREMINDERITEM& pItem)
 
 PWRREMINDERITEM& tagPWRREMINDERDATA::GetItemAt(int nIndex)
 {
-	ASSERT((nIndex >= 0) && (nIndex < (this->nItemNum)));
-	if ((nIndex >= 0) && (nIndex < (this->nItemNum)))
+	ASSERT((nIndex >= 0) && (nIndex < this->GetItemNum()));
+	if ((nIndex >= 0) && (nIndex < this->GetItemNum()))
 		return this->arrRmdItemList.GetAt(nIndex);
 
 	// Invalid argument
@@ -1096,7 +1822,7 @@ PWRREMINDERITEM& tagPWRREMINDERDATA::GetItemAt(int nIndex)
 void tagPWRREMINDERDATA::Remove(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= (this->nItemNum)))
+	if ((nAtIndex < 0) || (nAtIndex >= this->GetItemNum()))
 		return;
 
 	// Get item data
@@ -1118,7 +1844,7 @@ void tagPWRREMINDERDATA::Remove(int nAtIndex)
 void tagPWRREMINDERDATA::RemoveAll(void)
 {
 	// Remove each item
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		Remove(nIndex);
 	}
 }
@@ -1135,18 +1861,7 @@ void tagPWRREMINDERDATA::RemoveAll(void)
 void tagPWRREMINDERDATA::Adjust(void)
 {
 	// Remove garbage items
-	int nArrItemNum = arrRmdItemList.GetSize();
-	if (nArrItemNum > nItemNum) {
-		for (int nIndex = (nArrItemNum - 1); nIndex >= (this->nItemNum); nIndex--) {
-			// Remove item out of data array
-			arrRmdItemList.RemoveAt(nIndex);
-		}
-
-		// Free extra memory
-		arrRmdItemList.FreeExtra();
-	}
-
-	for (int nIndex = (this->nItemNum - 1); nIndex >= 0 ; nIndex--) {
+	for (int nIndex = (this->GetItemNum() - 1); nIndex >= 0; nIndex--) {
 		// Get item
 		PWRREMINDERITEM pwrTemp = this->GetItemAt(nIndex);
 		if (!pwrTemp.IsEmpty()) continue;
@@ -1168,19 +1883,32 @@ void tagPWRREMINDERDATA::Adjust(void)
 UINT tagPWRREMINDERDATA::GetNextID(void)
 {
 	// Get max ID
-	UINT nMaxID = DEF_PWRREMINDER_MIN_ITEMID;
-	PWRREMINDERITEM pwrItem;
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
-		pwrItem = this->GetItemAt(nIndex);
-		if (pwrItem.nItemID > nMaxID) {
-			nMaxID = pwrItem.nItemID;
+	UINT nRetNextID = DEF_PWRREMINDER_MIN_ITEMID;
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
+		PWRREMINDERITEM pwrItem = this->GetItemAt(nIndex);
+		if (pwrItem.nItemID > nRetNextID) {
+			nRetNextID = pwrItem.nItemID;
 		}
 	}
 
 	// Increase value
-	nMaxID++;
+	nRetNextID++;
 
-	return nMaxID;
+	return nRetNextID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetItemNum
+//	Description:	Get number of items
+//  Arguments:		None
+//  Return value:	INT_PTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR tagPWRREMINDERDATA::GetItemNum(void) const
+{
+	return this->arrRmdItemList.GetSize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1195,7 +1923,7 @@ UINT tagPWRREMINDERDATA::GetNextID(void)
 BOOL tagPWRREMINDERDATA::IsEmpty(int nIndex)
 {
 	// Check index validity
-	if ((nIndex < 0) || (nIndex >= (this->nItemNum)))
+	if ((nIndex < 0) || (nIndex >= this->GetItemNum()))
 		return TRUE;
 
 	// Check if item is empty
@@ -1215,12 +1943,12 @@ BOOL tagPWRREMINDERDATA::IsEmpty(int nIndex)
 BOOL tagPWRREMINDERDATA::IsAllEmpty()
 {
 	// If there's no item, return TRUE
-	if ((this->nItemNum <= 0) && (this->arrRmdItemList.IsEmpty()))
+	if (this->arrRmdItemList.IsEmpty())
 		return TRUE;
 
 	// Check each item
 	BOOL bAllEmpty = TRUE;
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (this->IsEmpty(nIndex) == FALSE) {
 			bAllEmpty = FALSE;
 			break;
@@ -1242,16 +1970,15 @@ BOOL tagPWRREMINDERDATA::IsAllEmpty()
 void tagPWRREMINDERDATA::Delete(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= (this->nItemNum)))
+	if ((nAtIndex < 0) || (nAtIndex >= this->GetItemNum()))
 		return;
 
 	// Create new temporary data
 	PPWRREMINDERDATA pNew = new PWRREMINDERDATA;
-	pNew->nItemNum = (this->nItemNum - 1);
 	pNew->arrRmdItemList.RemoveAll();
 
 	// Copy old data to new one (except the AtIndex item)
-	for (int nIndex = 0; nIndex < (this->nItemNum); nIndex++) {
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (nIndex == nAtIndex) continue;
 		pNew->arrRmdItemList.Add(this->arrRmdItemList.GetAt(nIndex));
 	}
@@ -1278,7 +2005,7 @@ void tagPWRREMINDERDATA::Delete(int nAtIndex)
 
 void tagPWRREMINDERDATA::DeleteAll(void)
 {
-	this->nItemNum = 0;
+	// Reset data
 	this->arrRmdItemList.RemoveAll();
 	this->arrRmdItemList.FreeExtra();
 }
@@ -1306,6 +2033,25 @@ tagPWRRMDITEMADVSPEC::tagPWRRMDITEMADVSPEC(const tagPWRRMDITEMADVSPEC& pItem)
 	this->nItemID = pItem.nItemID;							// Power Reminder item ID
 	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Snooze trigger flag
 	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagPWRRMDITEMADVSPEC& tagPWRRMDITEMADVSPEC::operator=(const tagPWRRMDITEMADVSPEC& pItem)
+{
+	// Copy data
+	this->nItemID = pItem.nItemID;							// Power Reminder item ID
+	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Snooze trigger flag
+	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1857,13 +2603,29 @@ void CoreFuncs::SetDefaultData(PSCHEDULEDATA pschData)
 	if (pschData == NULL)
 		return;
 
-	/*----------------- Set default data ----------------- */
+	// Initialize data
+	pschData->Init();
 
-	pschData->bEnable = FALSE;
-	pschData->bRepeat = FALSE;
-	pschData->nAction = DEF_APP_ACTION_NOTHING;
-	pschData->stTime = GetCurSysTime();
-	pschData->byRepeatDays = DEF_SCHEDULE_DEFAULT_REPEAT;
+#ifdef DEBUG
+	// Create default data
+	const SCHEDULEITEM schDefItemList[] = {
+	//-----Item ID----Enable state------Repeat----------Schedule action---------Time setting---------------Active days-----------------
+		{	10000,		FALSE,			FALSE,		DEF_APP_ACTION_DISPLAYOFF,		{0},			DEF_SCHEDULE_DEFAULT_REPEAT		},
+		{	10001,		FALSE,			FALSE,		DEF_APP_ACTION_SLEEP,			{0},			DEF_SCHEDULE_DEFAULT_REPEAT		},
+		{	10002,		FALSE,			FALSE,		DEF_APP_ACTION_SHUTDOWN,		{0},			DEF_SCHEDULE_DEFAULT_REPEAT		},
+		{	10003,		FALSE,			FALSE,		DEF_APP_ACTION_RESTART,			{0},			DEF_SCHEDULE_DEFAULT_REPEAT		},
+		{	10004,		FALSE,			FALSE,		DEF_APP_ACTION_SIGNOUT,			{0},			DEF_SCHEDULE_DEFAULT_REPEAT		},
+		{	10005,		FALSE,			FALSE,		DEF_APP_ACTION_HIBERNATE,		{0},			DEF_SCHEDULE_DEFAULT_REPEAT		},
+	//---------------------------------------------------------------------------------------------------------------------------------
+	};
+
+	// Bind data
+	pschData->nItemNum = (sizeof(schDefItemList) / sizeof(SCHEDULEITEM));
+	pschData->arrSchedItemList.RemoveAll();
+	for (int nIndex = 0; nIndex < pschData->nItemNum; nIndex++) {
+		pschData->arrSchedItemList.Add(schDefItemList[nIndex]);
+	}
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1885,6 +2647,15 @@ void CoreFuncs::SetDefaultData(PHOTKEYSETDATA phksData)
 	phksData->Init();
 
 	// Create default data
+	phksData->arrHotkeySetList.Add(HOTKEYSETITEM(HKID_DISPLAYOFF));
+	phksData->arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SLEEP));
+	phksData->arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SHUTDOWN));
+	phksData->arrHotkeySetList.Add(HOTKEYSETITEM(HKID_RESTART));
+	phksData->arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SIGNOUT));
+	phksData->arrHotkeySetList.Add(HOTKEYSETITEM(HKID_HIBERNATE));
+
+#ifdef DEBUG
+	// Create default data
 	const HOTKEYSETITEM hksDefItemList[] = {
 	//----Enable state-----Hotkey action ID------Control key code----Function key code---
 		{	FALSE,			HKID_DISPLAYOFF,			0,					0	},
@@ -1902,6 +2673,7 @@ void CoreFuncs::SetDefaultData(PHOTKEYSETDATA phksData)
 	for (int nIndex = 0; nIndex < phksData->nItemNum; nIndex++) {
 		phksData->arrHotkeySetList.Add(hksDefItemList[nIndex]);
 	}
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////

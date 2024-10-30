@@ -20,7 +20,7 @@
 #include "PowerPlusDlg.h"
 
 #include "AboutDlg.h"
-#include "ScheduleDlg.h"
+#include "MultiScheduleDlg.h"
 #include "LogViewerDlg.h"
 #include "HotkeySetDlg.h"
 #include "PwrReminderDlg.h"
@@ -101,7 +101,7 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	m_pAboutDlg = NULL;
 	m_pHelpDlg = NULL;
 	m_pLogViewerDlg = NULL;
-	m_pScheduleDlg = NULL;
+	m_pMultiScheduleDlg = NULL;
 	m_pHotkeySetDlg = NULL;
 	m_pPwrReminderDlg = NULL;
 
@@ -141,10 +141,10 @@ CPowerPlusDlg::~CPowerPlusDlg()
 		m_pHelpDlg = NULL;
 	}
 
-	if (m_pScheduleDlg != NULL) {
+	if (m_pMultiScheduleDlg != NULL) {
 		// Destroy dialog
-		delete m_pScheduleDlg;
-		m_pScheduleDlg = NULL;
+		delete m_pMultiScheduleDlg;
+		m_pMultiScheduleDlg = NULL;
 	}
 
 	if (m_pLogViewerDlg != NULL) {
@@ -164,6 +164,9 @@ CPowerPlusDlg::~CPowerPlusDlg()
 		delete m_pPwrReminderDlg;
 		m_pPwrReminderDlg = NULL;
 	}
+
+	// Clear Action Schedule data
+	m_schScheduleData.DeleteAll();
 	
 	// Clear HotkeySet data
 	m_hksHotkeySetData.DeleteAll();
@@ -179,8 +182,10 @@ CPowerPlusDlg::~CPowerPlusDlg()
 	m_arrRmdAdvList.RemoveAll();
 	m_arrRmdAdvList.FreeExtra();
 
-	// Kill timer of schedule
-	KillTimer(TIMERID_STD_BYSECOND);
+	// Kill timers
+	KillTimer(TIMERID_STD_ACTIONSCHEDULE);
+	KillTimer(TIMERID_STD_POWERREMINDER);
+	KillTimer(TIMERID_STD_EVENTSKIPCOUNTER);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -379,8 +384,10 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	// Do not apply settings with Enter button
 	SetUseEnter(FALSE);
 
-	// Set default timer
-	SetTimer(TIMERID_STD_BYSECOND, 1000, NULL);
+	// Set app features standard timers
+	SetTimer(TIMERID_STD_ACTIONSCHEDULE, 1000, NULL);
+	SetTimer(TIMERID_STD_POWERREMINDER, 1000, NULL);
+	SetTimer(TIMERID_STD_EVENTSKIPCOUNTER, 1000, NULL);
 
 	// Save app event log if enabled
 	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_STARTUP);
@@ -470,10 +477,10 @@ void CPowerPlusDlg::PreDestroyDialog()
 		if (resCloseReq != DEF_RESULT_SUCCESS)
 			return;
 	}
-	// Schedule dialog
-	if (m_pScheduleDlg != NULL) {
+	// Multi schedule dialog
+	if (m_pMultiScheduleDlg != NULL) {
 		// Request close dialog
-		resCloseReq = m_pScheduleDlg->RequestCloseDialog();
+		resCloseReq = m_pMultiScheduleDlg->RequestCloseDialog();
 		if (resCloseReq != DEF_RESULT_SUCCESS)
 			return;
 	}
@@ -494,7 +501,9 @@ void CPowerPlusDlg::PreDestroyDialog()
 
 	// Destroy components
 	RemoveNotifyIcon();
-	KillTimer(TIMERID_STD_BYSECOND);
+	KillTimer(TIMERID_STD_ACTIONSCHEDULE);
+	KillTimer(TIMERID_STD_POWERREMINDER);
+	KillTimer(TIMERID_STD_EVENTSKIPCOUNTER);
 
 	// Execute Power Reminder before exitting
 	ExecutePowerReminder(PREVT_AT_APPEXIT);
@@ -996,7 +1005,7 @@ void CPowerPlusDlg::OnSchedule()
 	OutputButtonLog(GetDialogID(), IDC_SCHEDULE_BTN);
 
 	// Open Schedule dialog
-	OpenChildDialogEx(IDD_SCHEDULE_DLG);
+	OpenChildDialogEx(IDD_MULTISCHEDULE_DLG);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1082,21 +1091,24 @@ void CPowerPlusDlg::OnViewBackupConfig()
 
 void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	// Timer interval: 1 second
-	if (nIDEvent == TIMERID_STD_BYSECOND)
-	{
-		// Process schedule timer event
-		BOOL bScheduleActive = GetAppOption(OPTIONID_SCHEDULEACTIVE);
-		if (bScheduleActive == TRUE) {
-			// Process schedule
-			ProcessSchedule();
-		}
+	// Timer ID: Action Schedule
+	if (nIDEvent == TIMERID_STD_ACTIONSCHEDULE) {
+		// Process Action schedule
+		ProcessActionSchedule();
+	}
+
+	// Timer ID: Power Reminder
+	else if (nIDEvent == TIMERID_STD_POWERREMINDER) {
 		// Process Power Reminder at set time event
 		BOOL bPwrReminderActive = GetAppOption(OPTIONID_ENABLEPWRREMINDER);
 		if (bPwrReminderActive == TRUE) {
 			// Execute Power reminder
 			ExecutePowerReminder(PREVT_AT_SETTIME);
 		}
+	}
+
+	// Timer ID: Event skip counter
+	else if (nIDEvent == TIMERID_STD_EVENTSKIPCOUNTER) {
 		// Process Power Broadcast event skip counter
 		int nCounter = GetFlagValue(FLAGID_PWRBROADCASTSKIPCOUNT);
 		if (nCounter > 0) {
@@ -1105,6 +1117,7 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 	}
 
+	// Default
 	SDialog::OnTimer(nIDEvent);
 }
 
@@ -1139,12 +1152,12 @@ LRESULT CPowerPlusDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 			m_pHelpDlg = NULL;
 		}
 	}
-	// Schedule dialog
-	else if (nDialogID == IDD_SCHEDULE_DLG) {
-		if (m_pScheduleDlg != NULL) {
+	// Multi schedule dialog
+	else if (nDialogID == IDD_MULTISCHEDULE_DLG) {
+		if (m_pMultiScheduleDlg != NULL) {
 			// Delete dialog
-			delete m_pScheduleDlg;
-			m_pScheduleDlg = NULL;
+			delete m_pMultiScheduleDlg;
+			m_pMultiScheduleDlg = NULL;
 		}
 	}
 	// LogViewer dialog
@@ -1512,7 +1525,7 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 	case IDM_NOTIFY_OPENDLG_SCHEDULE:
 		OutputMenuLog(IDM_NOTIFY_OPENDLG_SCHEDULE);
-		OpenChildDialogEx(IDD_SCHEDULE_DLG);
+		OpenChildDialogEx(IDD_MULTISCHEDULE_DLG);
 		break;
 	case IDM_NOTIFY_OPENDLG_HOTKEYSET:
 		OutputMenuLog(IDM_NOTIFY_OPENDLG_HOTKEYSET);
@@ -2046,18 +2059,6 @@ int CPowerPlusDlg::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE 
 	case OPTIONID_ENABLEPWRREMINDER:
 		nResult = m_cfgAppConfig.bEnablePowerReminder;
 		nTempResult = m_cfgTempConfig.bEnablePowerReminder;
-		break;
-	case OPTIONID_SCHEDULEACTIVE:
-		nResult = m_schScheduleData.bEnable;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_SCHEDULEACTION:
-		nResult = m_schScheduleData.nAction;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_SCHEDULEREPEAT:
-		nResult = m_schScheduleData.bRepeat;
-		nTempResult = nResult;		// No temp data
 		break;
 	}
 
@@ -2653,7 +2654,7 @@ void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 		switch (nID)
 		{
 		case IDM_NOTIFY_ACTION_SCHEDULE:
-			bShowItem = GetAppOption(OPTIONID_SCHEDULEACTIVE);
+			bShowItem = FALSE;
 			break;
 		default:
 			continue;
@@ -2725,12 +2726,13 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 //	Function name:	SetBallonTipText
 //	Description:	Show balloon tip to notify schedule
 //  Arguments:		nCurLanguage - Current language ID
+//					nScheduleAction - Upcoming schedule action
 //					nSecondLeft  - Number of second left
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetBalloonTipText(UINT nCurLanguage, UINT nSecondLeft)
+void CPowerPlusDlg::SetBalloonTipText(UINT nCurLanguage, UINT nScheduleAction, UINT nSecondLeft)
 {
 	// If notify icon doesn't exist, do nothing
 	if (m_pNotifyIconData == NULL)
@@ -2750,7 +2752,7 @@ void CPowerPlusDlg::SetBalloonTipText(UINT nCurLanguage, UINT nSecondLeft)
 
 	// Load language strings
 	strFormat = GetLanguageString(pAppLang, BALLOON_TIP_TEMPLATE);
-	strBalloonText = GetLanguageString(pAppLang, GetPairedID(idplBalloonTip, m_schScheduleData.nAction));
+	strBalloonText = GetLanguageString(pAppLang, GetPairedID(idplBalloonTip, nScheduleAction));
 
 	strBalloonTip.Format(strFormat, strBalloonText, nSecondLeft);
 
@@ -2786,15 +2788,20 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 	switch (nActionType)
 	{
 	case DEF_APP_MACRO_LEFT_MOUSE:
+		// Get action ID
 		nActionID = GetAppOption(OPTIONID_LMBACTION);
 		break;
 	case DEF_APP_MACRO_MIDDLE_MOUSE:
+		// Get action ID
 		nActionID = GetAppOption(OPTIONID_MMBACTION);
 		break;
 	case DEF_APP_MACRO_ACTION_SCHEDULE:
-		nActionID = GetAppOption(OPTIONID_SCHEDULEACTION);
+		// Get action ID from param
+		if (wParam == NULL)	return FALSE;
+		nActionID = (UINT)wParam;
 		break;
 	case DEF_APP_MACRO_RIGHT_MOUSE:
+		// If right mouse action is set to show notify menu
 		if ((GetAppOption(OPTIONID_RMBACTION) == DEF_APP_ACTION_SHOWMENU) ||
 			(GetAppOption(OPTIONID_RMBSHOWMENU) == TRUE))
 			return ShowNotifyMenu();
@@ -2802,6 +2809,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 		break;
 	case DEF_APP_MACRO_ACTION_MENU:
 	case DEF_APP_MACRO_ACTION_HOTKEY:
+		// Get action ID from param
 		if (wParam == NULL)	return FALSE;
 		nActionID = (UINT)wParam;
 		break;
@@ -2813,31 +2821,37 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 	switch (nActionID)
 	{
 	case DEF_APP_ACTION_DISPLAYOFF:
+		// Turn off display
 		nAction = DEF_APP_ACTIONTYPE_MONITOR;
 		nMessage = DEF_APP_MESSAGE_DISPLAYOFF;
 		nActionNameID = IDS_ACTIONLOG_ACTION_DISPLAYOFF;
 		break;
 	case DEF_APP_ACTION_SLEEP:
+		// Sleep
 		nAction = DEF_APP_ACTIONTYPE_POWER;
 		nMessage = DEF_APP_MESSAGE_SLEEP;
 		nActionNameID = IDS_ACTIONLOG_ACTION_SLEEP;
 		break;
 	case DEF_APP_ACTION_SHUTDOWN:
+		// Shutdown
 		nAction = DEF_APP_ACTIONTYPE_POWER;
 		nMessage = DEF_APP_MESSAGE_SHUTDOWN;
 		nActionNameID = IDS_ACTIONLOG_ACTION_SHUTDOWN;
 		break;
 	case DEF_APP_ACTION_RESTART:
+		// Restart
 		nAction = DEF_APP_ACTIONTYPE_POWER;
 		nMessage = DEF_APP_MESSAGE_REBOOT;
 		nActionNameID = IDS_ACTIONLOG_ACTION_RESTART;
 		break;
 	case DEF_APP_ACTION_SIGNOUT:
+		// Sign out
 		nAction = DEF_APP_ACTIONTYPE_POWER;
 		nMessage = DEF_APP_MESSAGE_SIGNOUT;
 		nActionNameID = IDS_ACTIONLOG_ACTION_SIGNOUT;
 		break;
 	case DEF_APP_ACTION_HIBERNATE:
+		// Hibernate
 		nAction = DEF_APP_ACTIONTYPE_POWER;
 		nMessage = DEF_APP_MESSAGE_HIBERNATE;
 		nActionNameID = IDS_ACTIONLOG_ACTION_HIBERNATE;
@@ -3042,18 +3056,18 @@ void CPowerPlusDlg::OpenChildDialogEx(UINT nDialogID)
 			ShowDialog(m_pHelpDlg->GetSafeHwnd(), TRUE);
 		}
 	}
-	// Schedule dialog
-	else if (nDialogID == IDD_SCHEDULE_DLG) {
-		if (m_pScheduleDlg == NULL) {
+	// Multi schedule dialog
+	else if (nDialogID == IDD_MULTISCHEDULE_DLG) {
+		if (m_pMultiScheduleDlg == NULL) {
 			// Initialize dialog
-			m_pScheduleDlg = new CScheduleDlg();
-			m_pScheduleDlg->SetParentWnd(this);
-			m_pScheduleDlg->DoModal();
+			m_pMultiScheduleDlg = new CMultiScheduleDlg();
+			m_pMultiScheduleDlg->SetParentWnd(this);
+			m_pMultiScheduleDlg->DoModal();
 		}
 		else {
 			// Show dialog
-			m_pScheduleDlg->SetParentWnd(this);
-			ShowDialog(m_pScheduleDlg->GetSafeHwnd(), TRUE);
+			m_pMultiScheduleDlg->SetParentWnd(this);
+			ShowDialog(m_pMultiScheduleDlg->GetSafeHwnd(), TRUE);
 		}
 	}
 	// LogViewer dialog
@@ -3172,9 +3186,9 @@ void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			break;
-		case IDD_SCHEDULE_DLG:
-			// Schedule dialog
-			pDialog = new CScheduleDlg;
+		case IDD_MULTISCHEDULE_DLG:
+			// Multi schedule dialog
+			pDialog = new CMultiScheduleDlg;
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			break;
@@ -3291,14 +3305,14 @@ void CPowerPlusDlg::RestartApp(BOOL bRestartAsAdmin)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	ProcessSchedule
-//	Description:	Process schedule function
+//	Function name:	ProcessActionSchedule
+//	Description:	Process Action schedule function
 //  Arguments:		None
 //  Return value:	BOOL - Schedule processing result
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusDlg::ProcessSchedule()
+BOOL CPowerPlusDlg::ProcessActionSchedule()
 {
 	BOOL bResult = FALSE;
 
@@ -3306,32 +3320,101 @@ BOOL CPowerPlusDlg::ProcessSchedule()
 	SYSTEMTIME stCurrentTime;
 	GetLocalTime(&stCurrentTime);
 
-	// Do not process if repeat option is ON but is not set as active in current day of week
-	if ((GetAppOption(OPTIONID_SCHEDULEREPEAT)) && (!m_schScheduleData.IsDayActive((DAYOFWEEK)stCurrentTime.wDayOfWeek)))
-		return FALSE;
+	// Flag that trigger to reupdate schedule data
+	BOOL bTriggerReupdate = FALSE;
 
-	// Check for time matching and trigger schedule notifying if enabled
-	BOOL bNotifySchedule = GetAppOption(OPTIONID_NOTIFYSCHEDULE);
-	if (bNotifySchedule == TRUE) {
-		BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, m_schScheduleData.stTime, -30);
-		if (bTriggerNotify == TRUE) {
-			// Do notify schedule
-			int nRetNotify = NotifySchedule();
+	// Get default schedule item
+	SCHEDULEITEM& schDefaultItem = m_schScheduleData.GetDefaultItem();
+	{
+		// Flag to skip processing schedule item
+		BOOL bSkipProcess = FALSE;
+
+		// If item is not enabled
+		if (schDefaultItem.bEnable == FALSE) {
+			// Do not process
+			bSkipProcess = TRUE;
+		}
+
+		// If repeat option is ON and is set as active in current day of week
+		if ((schDefaultItem.bRepeat == TRUE) && (!schDefaultItem.IsDayActive((DAYOFWEEK)stCurrentTime.wDayOfWeek))) {
+			// Do not process
+			bSkipProcess = TRUE;
+		}
+
+		// Process default schedule
+		if (bSkipProcess != TRUE) {
+
+			// Check for time matching and trigger schedule notifying if enabled
+			if (GetAppOption(OPTIONID_NOTIFYSCHEDULE) == TRUE) {
+				BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, schDefaultItem.stTime, -30);
+				if (bTriggerNotify == TRUE) {
+					// Do notify schedule (and check for trigger reupdate)
+					int nRetNotify = NotifySchedule(&schDefaultItem, bTriggerReupdate);
+					bResult = FALSE;
+				}
+			}
+
+			// Check for time matching and trigger the scheduled action
+			BOOL bTriggerAction = CheckTimeMatch(stCurrentTime, schDefaultItem.stTime);
+			if (bTriggerAction == TRUE) {
+				// Execute schedule action
+				bResult = ExecuteAction(DEF_APP_MACRO_ACTION_SCHEDULE, schDefaultItem.nAction);
+
+				// If "Repeat" option is not ON,
+				// --> Disable schedule item after done
+				if (schDefaultItem.bRepeat == FALSE) {
+					schDefaultItem.SetActiveState(FALSE);
+					bTriggerReupdate |= TRUE;
+				}
+			}
+		}
+		else {
+			// Process failed
 			bResult = FALSE;
 		}
 	}
 
-	// Check for time matching and trigger the scheduled action
-	BOOL bTriggerAction = CheckTimeMatch(stCurrentTime, m_schScheduleData.stTime);
-	if (bTriggerAction == TRUE) {
-		// Execute schedule action
-		bResult = ExecuteAction(DEF_APP_MACRO_ACTION_SCHEDULE);
-		
-		// Deactivate schedule after done (if "Repeat" option is not ON)
-		BOOL bRepeat = GetAppOption(OPTIONID_SCHEDULEREPEAT);
-		if (bRepeat == FALSE) {
-			SetScheduleActiveState(FALSE);
+	// Loop through each extra item and process
+	for (int nExtraIndex = 0; nExtraIndex < m_schScheduleData.GetExtraItemNum(); nExtraIndex++) {
+
+		// Get schedule item
+		SCHEDULEITEM& schExtraItem = m_schScheduleData.GetItemAt(nExtraIndex);
+
+		// Do not process if repeat option is ON but is not set as active in current day of week
+		if ((schExtraItem.bRepeat == TRUE) && (!schExtraItem.IsDayActive((DAYOFWEEK)stCurrentTime.wDayOfWeek)))
+			continue;
+
+		// Check for time matching and trigger schedule notifying if enabled
+		if (GetAppOption(OPTIONID_NOTIFYSCHEDULE) == TRUE) {
+			BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, schExtraItem.stTime, -30);
+			if (bTriggerNotify == TRUE) {
+				// Do notify schedule (and check for trigger reupdate)
+				int nRetNotify = NotifySchedule(&schExtraItem, bTriggerReupdate);
+				bResult = FALSE;
+				continue;
+			}
 		}
+
+		// Check for time matching and trigger the scheduled action
+		BOOL bTriggerAction = CheckTimeMatch(stCurrentTime, schExtraItem.stTime);
+		if (bTriggerAction == TRUE) {
+			// Execute schedule action
+			bResult = ExecuteAction(DEF_APP_MACRO_ACTION_SCHEDULE, schExtraItem.nAction);
+
+			// If "Repeat" option is not ON,
+			// --> Disable schedule item after done
+			if (schExtraItem.bRepeat == FALSE) {
+				schExtraItem.SetActiveState(FALSE);
+				bTriggerReupdate |= TRUE;
+			}
+		}
+	}
+
+	// Reupdate flag is triggered
+	if (bTriggerReupdate == TRUE) {
+		// Reupdate schedule data
+		ReupdateActionScheduleData();
+		bResult = TRUE;
 	}
 
 	return bResult;
@@ -3339,30 +3422,20 @@ BOOL CPowerPlusDlg::ProcessSchedule()
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetScheduleActiveState
-//	Description:	Set/update schedule active state
-//  Arguments:		bActive - New active state
+//	Function name:	ReupdateActionScheduleData
+//	Description:	Reupdate Action Schedule data
+//  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetScheduleActiveState(BOOL bActive)
+void CPowerPlusDlg::ReupdateActionScheduleData(void)
 {
-	// If new state is the same as current state, do nothing
-	BOOL bCurState = GetAppOption(OPTIONID_SCHEDULEACTIVE);
-	if (bCurState == bActive)
-		return;
-
-	// Update schedule active state
+	// Disable Action schedule items
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		PSCHEDULEDATA pSchedule = pApp->GetAppScheduleData();
-		if (pSchedule != NULL) {
-			if (bActive == TRUE) pSchedule->Activate();
-			else pSchedule->Deactivate();
-		}
-
-		// Save data
+		// Update schedule data
+		pApp->SetAppScheduleData(&m_schScheduleData);
 		pApp->SaveRegistryAppData(APPDATA_SCHEDULE);
 	}
 
@@ -3449,7 +3522,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 			return;
 
 		// If there's no item, do nothing
-		int nItemNum = m_hksHotkeySetData.nItemNum;
+		int nItemNum = m_hksHotkeySetData.GetItemNum();
 		if (nItemNum <= 0) return;
 
 		// Reset flag and re-initialize registered hotkey list
@@ -3597,7 +3670,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 		return FALSE;
 
 	// If there's no item, do nothing
-	int nItemNum = m_prdReminderData.nItemNum;
+	int nItemNum = m_prdReminderData.GetItemNum();
 	if (nItemNum <= 0) return FALSE;
 
 	// Get current time
@@ -3665,6 +3738,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 
 		// Display reminder
 		if (!pwrDispItem.IsEmpty()) {
+
 			// Display reminder item
 			DisplayPwrReminder(pwrDispItem);
 
@@ -3672,13 +3746,14 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 			// --> Disable reminder item after displaying
 			if (pwrDispItem.IsRepeatEnable() == FALSE) {
 				bTriggerReupdate |= TRUE;
-				pwrCurItem.bEnable = FALSE;
+				pwrCurItem.SetEnableState(FALSE);
 			}
 		}
 	}
 
-	// Reupdate Power Reminder data
+	// Reupdate flag is triggered
 	if (bTriggerReupdate == TRUE) {
+		// Reupdate Power Reminder data
 		ReupdatePwrReminderData();
 	}
 
@@ -3871,7 +3946,7 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 
 			// Search for item ID in Power Reminder data
 			BOOL bItemFound = FALSE;
-			for (int nItemIdx = 0; nItemIdx < m_prdReminderData.nItemNum; nItemIdx++) {
+			for (int nItemIdx = 0; nItemIdx < m_prdReminderData.GetItemNum(); nItemIdx++) {
 				PWRREMINDERITEM& pwrItem = m_prdReminderData.GetItemAt(nItemIdx);
 				if (pwrItem.nItemID == pAdvItem.nItemID) {
 					// If item's snoozing mode is no longer available
@@ -4298,7 +4373,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// Find and display reminder item by ID
 			BOOL bFindRet = FALSE;
 			PWRREMINDERITEM pwrTemp;
-			int nItemNum = m_prdReminderData.nItemNum;
+			int nItemNum = m_prdReminderData.GetItemNum();
 			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 				pwrTemp = m_prdReminderData.GetItemAt(nIndex);
 				if (pwrTemp.nItemID == nItemID) {
@@ -4438,17 +4513,25 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// Print schedule data
 			PSCHEDULEDATA pSchedDataTemp = pApp->GetAppScheduleData();
 			if (pSchedDataTemp != NULL) {
-				// Load app language package
-				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
-				// Format schedule data
-				CString strActive = (pSchedDataTemp->bEnable == TRUE) ? _T("YES") : _T("NO");						// Enable/disable state
-				UINT nActionStringID = GetPairedID(idplActionName, pSchedDataTemp->nAction);
-				CString strAction = GetLanguageString(ptrLanguage, nActionStringID);								// Schedule action
-				CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, pSchedDataTemp->stTime);	// Schedule time
-				CString strRepeat = (pSchedDataTemp->bRepeat == TRUE) ? _T("YES") : _T("NO");						// Repeat daily
-				// Print data
-				strOutputResult.Format(_T("Active=(%s), Action=(%s), Time=(%s), Repeat=(%s)"), strActive, strAction, strTimeFormat, strRepeat);
+				// Print default schedule
+				CString strDefItemPrint;
+				pSchedDataTemp->GetDefaultItem().Print(strDefItemPrint);
+				strOutputResult.Format(_T("DefaultSchedule: %s"), strDefItemPrint);
 				OutputDebugLog(strOutputResult, DBLOG_OUTPUTTODBTOOL);
+				// Print extra item number
+				int nExtraItemNum = pSchedDataTemp->GetExtraItemNum();
+				strOutputResult.Format(_T("ScheduleExtraData: ItemNum = %d"), nExtraItemNum);
+				OutputDebugLog(strOutputResult, DBLOG_OUTPUTTODBTOOL);
+				// Print each item data
+				for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
+					SCHEDULEITEM schExtraItem = pSchedDataTemp->GetItemAt(nExtraIndex);
+
+					// Print item
+					CString strItemPrint;
+					schExtraItem.Print(strItemPrint);
+					strOutputResult.Format(_T("Index=%d, %s"), nExtraIndex, strItemPrint);
+					OutputDebugLog(strOutputResult, DBLOG_OUTPUTTODBTOOL);
+				}
 			}
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("hksetdata")))) {
@@ -4456,7 +4539,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			PHOTKEYSETDATA pHksDataTemp = pApp->GetAppHotkeySetData();
 			if (pHksDataTemp != NULL) {
 				// Print item number
-				int nItemNum = pHksDataTemp->nItemNum;
+				int nItemNum = pHksDataTemp->GetItemNum();
 				strOutputResult.Format(_T("HotkeySetData: ItemNum = %d"), nItemNum);
 				OutputDebugLog(strOutputResult, DBLOG_OUTPUTTODBTOOL);
 				// Load app language package
@@ -4478,7 +4561,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			PPWRREMINDERDATA pRmdDataTemp = pApp->GetAppPwrReminderData();
 			if (pRmdDataTemp != NULL) {
 				// Print item number
-				int nItemNum = pRmdDataTemp->nItemNum;
+				int nItemNum = pRmdDataTemp->GetItemNum();
 				strOutputResult.Format(_T("PwrReminderData: ItemNum = %d"), nItemNum);
 				OutputDebugLog(strOutputResult, DBLOG_OUTPUTTODBTOOL);
 				// Load app language package
@@ -5141,24 +5224,24 @@ int CPowerPlusDlg::ConfirmAction(UINT nActionType, UINT nActionID)
 // 
 //	Function name:	NotifySchedule
 //	Description:	Notify schedule if enabled
-//  Arguments:		None
+//  Arguments:		pschItem  - Schedule item to notify (pointer)
+//					bReupdate - Trigger reupdate flag (out)
 //  Return value:	int - Result of notify message
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CPowerPlusDlg::NotifySchedule(void)
+int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
 {
 	// Get action info
-	UINT nAction = GetAppOption(OPTIONID_SCHEDULEACTION);
-	UINT nActionStringID = GetPairedID(idplSchedNotifyMsg, nAction);
+	UINT nActionStringID = GetPairedID(idplSchedNotifyMsg, pschItem->nAction);
 
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Format message
-	CString strCaption = GetLanguageString(pAppLang, IDD_SCHEDULE_DLG);
+	CString strCaption = GetLanguageString(pAppLang, IDD_MULTISCHEDULE_DLG);
 	CString strAction = GetLanguageString(pAppLang, nActionStringID);
-	CString strMsgTemp = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_NOTIFY);
+	CString strMsgTemp = GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_NOTIFY);
 	
 	CString strMsg;
 	strMsg.Format(strMsgTemp, strAction);
@@ -5168,19 +5251,21 @@ int CPowerPlusDlg::NotifySchedule(void)
 	if (bAllowCancel == TRUE)
 	{
 		// Update message content
-		strMsg += GetLanguageString(pAppLang, MSGBOX_SCHEDULE_ALLOWCANCEL);
+		strMsg += GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL);
 		int nRespond = DisplayMessageBox(strMsg, strCaption, MB_OKCANCEL | MB_ICONINFORMATION);
 		if (nRespond == IDCANCEL)
 		{
-			// Deactivate schedule (if "Repeat" option is not ON)
-			BOOL bScheduleRepeat = GetAppOption(OPTIONID_SCHEDULEREPEAT);
-			if (bScheduleRepeat == FALSE) {
-				SetScheduleActiveState(FALSE);
+			// If "Repeat" option is not ON,
+			// --> Disable schedule item after canceling
+			if (pschItem->bRepeat == FALSE) {
+				// Deactivate schedule
+				pschItem->SetActiveState(FALSE);
+				bReupdate = TRUE;
 			}
 
 			// Output event log
 			OutputAppEventLog("Schedule has been canceled");
-			DisplayMessageBox(MSGBOX_SCHEDULE_CANCELED, IDD_SCHEDULE_DLG, MB_OK | MB_ICONINFORMATION);
+			DisplayMessageBox(MSGBOX_PROCESSSCHEDULE_CANCELED, IDD_MULTISCHEDULE_DLG, MB_OK | MB_ICONINFORMATION);
 			return nRespond;
 		}
 	}

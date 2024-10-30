@@ -1,12 +1,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//		File name:		ScheduleDlg.cpp
-//		Description:	Source file for Schedule dialog
+//		File name:		EditScheduleDlg.cpp
+//		Description:	Source file for Edit Schedule details dialog
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2017.03.08:		Create new
 //						<1> 2024.01.27:		Update to version 3.0
+//						<2> 2024.10.27:		Implement Multi schedule function
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //
@@ -16,7 +17,7 @@
 
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
-#include "ScheduleDlg.h"
+#include "EditScheduleDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,20 +40,20 @@ using namespace CoreFuncs;
 
 ////////////////////////////////////////////////////////
 //
-//	Implement methods for CScheduleDlg
+//	Implement methods for CEditScheduleDlg
 //
 ////////////////////////////////////////////////////////
 
-IMPLEMENT_DYNAMIC(CScheduleDlg, SDialog)
+IMPLEMENT_DYNAMIC(CEditScheduleDlg, SDialog)
 
 ////////////////////////////////////////////////////////
 // 
-//	Function name:	CScheduleDlg
+//	Function name:	CEditScheduleDlg
 //	Description:	Constructor
 //
 ////////////////////////////////////////////////////////
 
-CScheduleDlg::CScheduleDlg() : SDialog(IDD_SCHEDULE_DLG)
+CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 {
 	// Initialize member variables
 
@@ -68,34 +69,36 @@ CScheduleDlg::CScheduleDlg() : SDialog(IDD_SCHEDULE_DLG)
 	m_nAction = DEF_APP_ACTION_NOTHING;
 
 	// Data container variables
-	ZeroMemory(&m_schSchedule, sizeof(SCHEDULEDATA));
-	ZeroMemory(&m_schScheduleTemp, sizeof(SCHEDULEDATA));
+	ZeroMemory(&m_schScheduleItem, sizeof(SCHEDULEITEM));
+	ZeroMemory(&m_schScheduleItemTemp, sizeof(SCHEDULEITEM));
 
 	// Other variables
-	m_pszTableFrameSize = NULL;
+	m_nRetFlag = RETFLAG_INVALID;
+	m_nDispMode = DEF_MODE_INIT;
+	m_pszActiveTableFrameSize = NULL;
 
 	INIT_CLASS_IDMAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	~CScheduleDlg
+//	Function name:	~CEditScheduleDlg
 //	Description:	Destructor
 //
 //////////////////////////////////////////////////////////////////////////
 
-CScheduleDlg::~CScheduleDlg()
+CEditScheduleDlg::~CEditScheduleDlg()
 {
-	// Active day list control
+	// Grid table list controls
 	if (m_pActiveDayListTable) {
 		delete m_pActiveDayListTable;
 		m_pActiveDayListTable = NULL;
 	}
 
 	// Other variables
-	if (m_pszTableFrameSize != NULL) {
-		delete m_pszTableFrameSize;
-		m_pszTableFrameSize = NULL;
+	if (m_pszActiveTableFrameSize != NULL) {
+		delete m_pszActiveTableFrameSize;
+		m_pszActiveTableFrameSize = NULL;
 	}
 }
 
@@ -106,69 +109,70 @@ CScheduleDlg::~CScheduleDlg()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::DoDataExchange(CDataExchange* pDX)
+void CEditScheduleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_SCHEDULE_ENABLE_CHK,		 m_bEnable);
-	DDX_Check(pDX, IDC_SCHEDULE_REPEATDAILY_CHK, m_bRepeat);
+	DDX_Check(pDX, IDC_EDITSCHEDULE_ENABLE_CHK,		 m_bEnable);
+	DDX_Check(pDX, IDC_EDITSCHEDULE_REPEATDAILY_CHK, m_bRepeat);
 }
 
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	CScheduleDlg dialog items ID map
+//	CEditScheduleDlg dialog items ID map
 //
 //////////////////////////////////////////////////////////////////////////
 
-BEGIN_ID_MAPPING(CScheduleDlg)
-	IDMAP_ADD(IDD_SCHEDULE_DLG,				"ScheduleDlg")
-	IDMAP_ADD(IDC_SCHEDULE_ENABLE_CHK,		"EnableScheduleCheck")
-	IDMAP_ADD(IDC_SCHEDULE_ACTION_LABEL,	"ActionLabel")
-	IDMAP_ADD(IDC_SCHEDULE_ACTION_LIST,		"ActionList")
-	IDMAP_ADD(IDC_SCHEDULE_TIME_LABEL,		"TimeLabel")
-	IDMAP_ADD(IDC_SCHEDULE_TIME_EDITBOX,	"TimeEditbox")
-	IDMAP_ADD(IDC_SCHEDULE_TIME_SPIN,		"TimeSpinButton")
-	IDMAP_ADD(IDC_SCHEDULE_REPEATDAILY_CHK, "RepeatDailyCheck")
-	IDMAP_ADD(IDC_SCHEDULE_APPLY_BTN,		"SaveButton")
-	IDMAP_ADD(IDC_SCHEDULE_CANCEL_BTN,		"CancelButton")
+BEGIN_ID_MAPPING(CEditScheduleDlg)
+	IDMAP_ADD(IDD_EDITSCHEDULE_DLG,					"EditScheduleDlg")
+	IDMAP_ADD(IDC_EDITSCHEDULE_ENABLE_CHK,			"EnableScheduleCheck")
+	IDMAP_ADD(IDC_EDITSCHEDULE_ACTION_LABEL,		"ActionLabel")
+	IDMAP_ADD(IDC_EDITSCHEDULE_ACTION_LIST,			"ActionList")
+	IDMAP_ADD(IDC_EDITSCHEDULE_TIME_LABEL,			"TimeLabel")
+	IDMAP_ADD(IDC_EDITSCHEDULE_TIME_EDITBOX,		"TimeEditbox")
+	IDMAP_ADD(IDC_EDITSCHEDULE_TIME_SPIN,			"TimeSpinButton")
+	IDMAP_ADD(IDC_EDITSCHEDULE_REPEATDAILY_CHK,		"RepeatDailyCheck")
+	IDMAP_ADD(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX,  "ActiveDayList")
+	IDMAP_ADD(IDC_EDITSCHEDULE_APPLY_BTN,			"SaveButton")
+	IDMAP_ADD(IDC_EDITSCHEDULE_CANCEL_BTN,			"CancelButton")
 END_ID_MAPPING()
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	CScheduleDlg dialog message map
+//	CEditScheduleDlg dialog message map
 //
 //////////////////////////////////////////////////////////////////////////
 
-BEGIN_MESSAGE_MAP(CScheduleDlg, SDialog)
+BEGIN_MESSAGE_MAP(CEditScheduleDlg, SDialog)
 	ON_WM_CLOSE()
-	ON_BN_CLICKED(IDC_SCHEDULE_APPLY_BTN,					&CScheduleDlg::OnApply)
-	ON_BN_CLICKED(IDC_SCHEDULE_CANCEL_BTN,					&CScheduleDlg::OnExit)
-	ON_BN_CLICKED(IDC_SCHEDULE_ENABLE_CHK,					&CScheduleDlg::OnEnableSchedule)
-	ON_BN_CLICKED(IDC_SCHEDULE_REPEATDAILY_CHK,				&CScheduleDlg::OnChangeRepeatDaily)
-	ON_CBN_SELCHANGE(IDC_SCHEDULE_ACTION_LIST,				&CScheduleDlg::OnChangeAction)
-	ON_EN_SETFOCUS(IDC_SCHEDULE_TIME_EDITBOX,				&CScheduleDlg::OnTimeEditSetFocus)
-	ON_EN_KILLFOCUS(IDC_SCHEDULE_TIME_EDITBOX,				&CScheduleDlg::OnTimeEditKillFocus)
-	ON_NOTIFY(UDN_DELTAPOS, IDC_SCHEDULE_TIME_SPIN,			&CScheduleDlg::OnTimeSpinChange)
-	ON_NOTIFY(NM_CLICK, IDC_SCHEDULE_ACTIVEDAYS_LISTBOX,	&CScheduleDlg::OnClickActiveDayList)
-	ON_NOTIFY(NM_RCLICK, IDC_SCHEDULE_ACTIVEDAYS_LISTBOX,	&CScheduleDlg::OnRightClickActiveDayList)
+	ON_BN_CLICKED(IDC_EDITSCHEDULE_APPLY_BTN,					&CEditScheduleDlg::OnApply)
+	ON_BN_CLICKED(IDC_EDITSCHEDULE_CANCEL_BTN,					&CEditScheduleDlg::OnExit)
+	ON_BN_CLICKED(IDC_EDITSCHEDULE_ENABLE_CHK,					&CEditScheduleDlg::OnEnableSchedule)
+	ON_BN_CLICKED(IDC_EDITSCHEDULE_REPEATDAILY_CHK,				&CEditScheduleDlg::OnChangeRepeatDaily)
+	ON_CBN_SELCHANGE(IDC_EDITSCHEDULE_ACTION_LIST,				&CEditScheduleDlg::OnChangeAction)
+	ON_EN_SETFOCUS(IDC_EDITSCHEDULE_TIME_EDITBOX,				&CEditScheduleDlg::OnTimeEditSetFocus)
+	ON_EN_KILLFOCUS(IDC_EDITSCHEDULE_TIME_EDITBOX,				&CEditScheduleDlg::OnTimeEditKillFocus)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_EDITSCHEDULE_TIME_SPIN,			&CEditScheduleDlg::OnTimeSpinChange)
+	ON_NOTIFY(NM_CLICK, IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX,	&CEditScheduleDlg::OnClickActiveDayList)
+	ON_NOTIFY(NM_RCLICK, IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX,	&CEditScheduleDlg::OnRightClickActiveDayList)
 END_MESSAGE_MAP()
 
 
 //////////////////////////////////////////////////////////////////////////
 //// Implementation
 
-// CScheduleDlg message handlers
+// CEditScheduleDlg message handlers
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	OnInitDialog
-//	Description:	Initialize Schedule dialog and setup dialog content
+//	Description:	Initialize Edit Schedule dialog and setup dialog content
 //  Arguments:		None
 //  Return value:	BOOL - Default
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CScheduleDlg::OnInitDialog()
+BOOL CEditScheduleDlg::OnInitDialog()
 {
 	SDialog::OnInitDialog();
 
@@ -182,7 +186,6 @@ BOOL CScheduleDlg::OnInitDialog()
 	SetupLanguage();
 
 	// Update data
-	LoadScheduleSettings();
 	SetupDlgItemState();
 
 	return TRUE;
@@ -197,7 +200,7 @@ BOOL CScheduleDlg::OnInitDialog()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnClose()
+void CEditScheduleDlg::OnClose()
 {
 	// If not forced closing by request
 	if (!IsForceClosingByRequest()) {
@@ -206,16 +209,28 @@ void CScheduleDlg::OnClose()
 		if (m_bChangeFlag == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			CString strMessage = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CONTENT);
-			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CAPTION);
+			CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
 			int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
-				// Save data
-				SaveScheduleSettings();
+
+				// Update data
+				SaveScheduleItem();
+
+				// Return UPDATE flag
+				SetReturnFlag(RETFLAG_UPDATE);
+			}
+			else {
+				// Return CLOSE flag
+				SetReturnFlag(RETFLAG_CLOSE);
 			}
 		}
+	}
+	else {
+		// Return CLOSE flag
+		SetReturnFlag(RETFLAG_CLOSE);
 	}
 
 	// Save app event log if enabled
@@ -233,24 +248,32 @@ void CScheduleDlg::OnClose()
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CScheduleDlg::RequestCloseDialog(void)
+LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 {
 	// If data changed, ask for saving before closing dialog
 	if (m_bChangeFlag == TRUE) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		CString strMessage = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CONTENT);
-		CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CAPTION);
+		CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+		CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 		int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
-			// Save data
-			SaveScheduleSettings();
+
+			// Update data
+			SaveScheduleItem();
+
+			// Return UPDATE flag
+			SetReturnFlag(RETFLAG_UPDATE);
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
 			return LRESULT(DEF_RESULT_FAILED);
 		}
+	}
+	else {
+		// Return CLOSE flag
+		SetReturnFlag(RETFLAG_CLOSE);
 	}
 
 	// Request accepted
@@ -266,7 +289,7 @@ LRESULT CScheduleDlg::RequestCloseDialog(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::SetupLanguage()
+void CEditScheduleDlg::SetupLanguage()
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -283,13 +306,13 @@ void CScheduleDlg::SetupLanguage()
 
 		switch (nID)
 		{
-		case IDC_STATIC:
-		case IDC_SCHEDULE_TIME_EDITBOX:
-		case IDC_SCHEDULE_TIME_SPIN:
-		case IDC_SCHEDULE_ACTIVEDAYS_LISTBOX:
+		case IDC_EDITSCHEDULE_SUBDETAIL_STATIC:
+		case IDC_EDITSCHEDULE_TIME_EDITBOX:
+		case IDC_EDITSCHEDULE_TIME_SPIN:
+		case IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX:
 			// Skip these items
 			break;
-		case IDC_SCHEDULE_ACTION_LIST:
+		case IDC_EDITSCHEDULE_ACTION_LIST:
 			SetupComboBox(pAppLang);
 			break;
 		default:
@@ -311,11 +334,11 @@ void CScheduleDlg::SetupLanguage()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::SetupComboBox(LANGTABLE_PTR pLanguage)
+void CEditScheduleDlg::SetupComboBox(LANGTABLE_PTR pLanguage)
 {
 	// Initialization
 	if (m_pActionList == NULL) {
-		m_pActionList = (CComboBox*)GetDlgItem(IDC_SCHEDULE_ACTION_LIST);
+		m_pActionList = (CComboBox*)GetDlgItem(IDC_EDITSCHEDULE_ACTION_LIST);
 	}
 
 	// Setup data
@@ -339,20 +362,20 @@ void CScheduleDlg::SetupComboBox(LANGTABLE_PTR pLanguage)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
+void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
 {
 	// Get parent list frame rect
-	CWnd* pListFrameWnd = GetDlgItem(IDC_SCHEDULE_ACTIVEDAYS_LISTBOX);
+	CWnd* pListFrameWnd = GetDlgItem(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX);
 	if (pListFrameWnd == NULL) return;
 	RECT rcListFrameWnd;
 	pListFrameWnd->GetWindowRect(&rcListFrameWnd);
 	ScreenToClient(&rcListFrameWnd);
 
 	// Get frame size
-	if (m_pszTableFrameSize == NULL) {
-		m_pszTableFrameSize = new CSize();
-		m_pszTableFrameSize->cx = rcListFrameWnd.right - rcListFrameWnd.left;
-		m_pszTableFrameSize->cy = rcListFrameWnd.bottom - rcListFrameWnd.top;
+	if (m_pszActiveTableFrameSize == NULL) {
+		m_pszActiveTableFrameSize = new CSize();
+		m_pszActiveTableFrameSize->cx = rcListFrameWnd.right - rcListFrameWnd.left;
+		m_pszActiveTableFrameSize->cy = rcListFrameWnd.bottom - rcListFrameWnd.top;
 	}
 
 	// Initialization
@@ -363,7 +386,7 @@ void CScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
 	// Create table
 	if (m_pActiveDayListTable == NULL) return;
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
-	m_pActiveDayListTable->Create(rcListFrameWnd, this, IDC_SCHEDULE_ACTIVEDAYS_LISTBOX, dwStyle);
+	m_pActiveDayListTable->Create(rcListFrameWnd, this, IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX, dwStyle);
 
 	// Destroy frame
 	pListFrameWnd->DestroyWindow();
@@ -395,20 +418,24 @@ void CScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	DrawDataTable
-//	Description:	Draw data list table
-//  Arguments:		bReadOnly	- Read-only mode
+//	Function name:	DrawActiveDayTable
+//	Description:	Draw active day list table
+//  Arguments:		bReadOnly - Read-only mode
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
+void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
 	if (m_pActiveDayListTable == NULL) return;
 
 	// Check table format data validity
-	if (m_pszTableFrameSize == NULL) return;
+	if (m_pszActiveTableFrameSize == NULL) return;
+
+	// Get app pointer
+	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
+	if (pApp == NULL) return;
 
 	// Re-update default cell properties
 	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pActiveDayListTable->GetDefaultCell(FALSE, FALSE);
@@ -425,9 +452,13 @@ void CScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	}
 
 	// Setup display size
-	int nFrameHeight = m_pszTableFrameSize->cy;
-	int nFrameWidth = m_pszTableFrameSize->cx;
+	int nFrameHeight = m_pszActiveTableFrameSize->cy;
+	int nFrameWidth = m_pszActiveTableFrameSize->cx;
 	nFrameWidth -= DEF_OFFSET_LISTCTRLWIDTH;
+	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
+		// Windows 10 list control offset
+		nFrameWidth -= DEF_OFFSET_LISTCTRLWIDTH_W10;
+	}
 	if ((DEF_NUM_DAYSOFWEEK * DEF_GRIDCTRL_ROWHEIGHTEX) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
@@ -478,23 +509,17 @@ void CScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::SetupDlgItemState()
+void CEditScheduleDlg::SetupDlgItemState()
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SetupDialog");
-	strFuncDetail.Format("ItemState");
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	// Setup checkboxes
-	m_bEnable = m_schScheduleTemp.bEnable;
-	m_bRepeat = m_schScheduleTemp.bRepeat;
+	m_bEnable = m_schScheduleItemTemp.bEnable;
+	m_bRepeat = m_schScheduleItemTemp.bRepeat;
 
 	// Enable/disable sub-items
 	EnableSubItems(m_bEnable);
 
 	// Setup action list combo value
-	m_nAction = m_schScheduleTemp.nAction;
+	m_nAction = m_schScheduleItemTemp.nAction;
 	if (m_pActionList != NULL) {
 		m_pActionList->SetCurSel(Opt2Sel(DEF_APP_ACTION, m_nAction));
 	}
@@ -503,11 +528,11 @@ void CScheduleDlg::SetupDlgItemState()
 
 	// Setup time spin button properties
 	int nTimeSpinPos;
-	Time2SpinPos(m_schScheduleTemp.stTime, nTimeSpinPos);
+	Time2SpinPos(m_schScheduleItemTemp.stTime, nTimeSpinPos);
 
 	// Time spin initialization
 	if (m_pTimeSpin == NULL) {
-		m_pTimeSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_SCHEDULE_TIME_SPIN);
+		m_pTimeSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_EDITSCHEDULE_TIME_SPIN);
 		if (m_pTimeSpin == NULL) {
 			TRCLOG("Error: Time spin control not found");
 			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
@@ -517,16 +542,16 @@ void CScheduleDlg::SetupDlgItemState()
 
 	// Setup properties
 	if (m_pTimeSpin != NULL) {
-		m_pTimeSpin->SetBuddy(GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX));
+		m_pTimeSpin->SetBuddy(GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX));
 		m_pTimeSpin->SetRange(DEF_SPINCTRL_TIMEMINPOS, DEF_SPINCTRL_TIMEMAXPOS);
 		m_pTimeSpin->SetPos(nTimeSpinPos);
 	}
 
 	// Setup time editbox
-	UpdateTimeSetting(m_schScheduleTemp.stTime, FALSE);
+	UpdateTimeSetting(m_schScheduleItemTemp.stTime, FALSE);
 
 	// Enable/disable active day table (also update its display)
-	DisableTable(!(m_schScheduleTemp.bEnable & m_schScheduleTemp.bRepeat));
+	DisableActiveDayTable(!(m_schScheduleItemTemp.bEnable & m_schScheduleItemTemp.bRepeat));
 
 	// Disable save button at first
 	EnableSaveButton(FALSE);
@@ -543,14 +568,14 @@ void CScheduleDlg::SetupDlgItemState()
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	UpdateDataItemList
-//	Description:	Update Power Reminder data item list
+//	Function name:	UpdateActiveDayList
+//	Description:	Update Active days list table
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::UpdateActiveDayList()
+void CEditScheduleDlg::UpdateActiveDayList()
 {
 	// Check table validity
 	if (m_pActiveDayListTable == NULL) return;
@@ -568,7 +593,7 @@ void CScheduleDlg::UpdateActiveDayList()
 		nDayOfWeekID = nRowIndex;
 
 		// Active state
-		BOOL bActive = (m_schScheduleTemp.IsDayActive((DAYOFWEEK)nDayOfWeekID)) ? TRUE : FALSE;
+		BOOL bActive = (m_schScheduleItemTemp.IsDayActive((DAYOFWEEK)nDayOfWeekID)) ? TRUE : FALSE;
 		pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, COL_ID_CHECKBOX);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(bActive);
@@ -582,15 +607,21 @@ void CScheduleDlg::UpdateActiveDayList()
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	DisableTable
-//	Description:	Disable mouse click events for table
+//	Function name:	DisableActiveDayTable
+//	Description:	Disable mouse click events for Active Days table
 //  Arguments:		bDisable - Disable/enable
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::DisableTable(BOOL bDisable)
+void CEditScheduleDlg::DisableActiveDayTable(BOOL bDisable)
 {
+	// If is currently in read-only or view mode
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == DEF_MODE_VIEW)) {
+		// Force disable
+		bDisable = TRUE;
+	}
+
 	// Redraw read-only style
 	RedrawActiveDayTable(bDisable);
 
@@ -611,7 +642,7 @@ void CScheduleDlg::DisableTable(BOOL bDisable)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::RedrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
+void CEditScheduleDlg::RedrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
 	if (m_pActiveDayListTable == NULL) return;
@@ -628,57 +659,65 @@ void CScheduleDlg::RedrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	LoadScheduleSettings
-//	Description:	Load schedule settings from configurations
+//	Function name:	GetScheduleItem
+//	Description:	Get schedule item data
+//  Arguments:		pschItem - Return item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CEditScheduleDlg::GetScheduleItem(PSCHEDULEITEM pschItem)
+{
+	// Copy data
+	if (pschItem == NULL) return;
+	pschItem->Copy(m_schScheduleItem);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetScheduleItem
+//	Description:	Set schedule item data
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::LoadScheduleSettings()
+void CEditScheduleDlg::SetScheduleItem(const SCHEDULEITEM& pschItem)
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("LoadData");
-	strFuncDetail.Format("Schedule");
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
-	// Load data
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	VERIFY(pApp != NULL);
-	if (pApp == NULL) return;
-	m_schSchedule.Copy(*(pApp->GetAppScheduleData()));
-	m_schScheduleTemp.Copy(m_schSchedule);
+	// Copy data
+	m_schScheduleItem.Copy(pschItem);
+	m_schScheduleItemTemp.Copy(m_schScheduleItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	UpdateScheduleSettings
+//	Function name:	UpdateScheduleItem
 //	Description:	Update and refresh schedule settings
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::UpdateScheduleSettings()
+void CEditScheduleDlg::UpdateScheduleItem()
 {
+	// Update data
 	UpdateData(TRUE);
 
 	// Update checkbox values
-	m_schScheduleTemp.bEnable = m_bEnable;
-	m_schScheduleTemp.bRepeat = m_bRepeat;
+	m_schScheduleItemTemp.bEnable = m_bEnable;
+	m_schScheduleItemTemp.bRepeat = m_bRepeat;
 
 	// Update action list combo value
 	int nCurSel = m_pActionList->GetCurSel();
 	m_nAction = Sel2Opt(DEF_APP_ACTION, nCurSel);
-	m_schScheduleTemp.nAction = m_nAction;
+	m_schScheduleItemTemp.nAction = m_nAction;
 
 	// Update time value
 	SYSTEMTIME stTimeTemp;
 	UpdateTimeSetting(stTimeTemp, TRUE);
 
-	m_schScheduleTemp.stTime.wHour = stTimeTemp.wHour;
-	m_schScheduleTemp.stTime.wMinute = stTimeTemp.wMinute;
+	m_schScheduleItemTemp.stTime.wHour = stTimeTemp.wHour;
+	m_schScheduleItemTemp.stTime.wMinute = stTimeTemp.wMinute;
 
 	// Update active day table changes
 	BYTE byRepeatDays = 0;
@@ -697,44 +736,23 @@ void CScheduleDlg::UpdateScheduleSettings()
 	}
 
 	// Update active day data
-	m_schScheduleTemp.byRepeatDays = byRepeatDays;
+	m_schScheduleItemTemp.byRepeatDays = byRepeatDays;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SaveScheduleSettings
-//	Description:	Save schedule settings to configurations
+//	Function name:	SaveScheduleItem
+//	Description:	Update and save schedule settings
 //  Arguments:		None
-//  Return value:	BOOL - Result of saving process
+//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CScheduleDlg::SaveScheduleSettings()
+void CEditScheduleDlg::SaveScheduleItem()
 {
-	// Save app event log if enabled
-	CStringA strFuncName, strFuncDetail;
-	strFuncName.Format("SaveData");
-	strFuncDetail.Format("Schedule");
-	OutputFunctionLog(strFuncName, strFuncDetail);
-
 	// Update settings
-	UpdateScheduleSettings();
-	m_schSchedule.Copy(m_schScheduleTemp);
-
-	// Save schedule info to app config data
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	VERIFY(pApp != NULL);
-	if (pApp == NULL) return FALSE;
-	pApp->SetAppScheduleData(&m_schSchedule);
-	pApp->SaveRegistryAppData(APPDATA_SCHEDULE);
-
-	// Notify main dialog to re-update schedule data
-	CPowerPlusDlg* pMainDlg = (CPowerPlusDlg*)(pApp->GetMainWnd());
-	VERIFY(pMainDlg != NULL);
-	if (pMainDlg == NULL) return FALSE;
-	pMainDlg->PostMessage(SM_APP_UPDATE_SCHEDULEDATA, NULL, NULL);
-
-	return TRUE;
+	UpdateScheduleItem();
+	m_schScheduleItem.Copy(m_schScheduleItemTemp);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -746,21 +764,21 @@ BOOL CScheduleDlg::SaveScheduleSettings()
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CScheduleDlg::CheckDataChangeState()
+BOOL CEditScheduleDlg::CheckDataChangeState()
 {
-	// Update settings
-	UpdateScheduleSettings();
+	// Update item
+	UpdateScheduleItem();
 
 	BOOL bChangeFlag = FALSE;
 
-	bChangeFlag |= (m_schScheduleTemp.bEnable != m_schSchedule.bEnable);
-	bChangeFlag |= (m_schScheduleTemp.bRepeat != m_schSchedule.bRepeat);
-	bChangeFlag |= (m_schScheduleTemp.nAction != m_schSchedule.nAction);
+	bChangeFlag |= (m_schScheduleItemTemp.bEnable != m_schScheduleItem.bEnable);
+	bChangeFlag |= (m_schScheduleItemTemp.bRepeat != m_schScheduleItem.bRepeat);
+	bChangeFlag |= (m_schScheduleItemTemp.nAction != m_schScheduleItem.nAction);
 
-	bChangeFlag |= (m_schScheduleTemp.stTime.wHour != m_schSchedule.stTime.wHour);
-	bChangeFlag |= (m_schScheduleTemp.stTime.wMinute != m_schSchedule.stTime.wMinute);
+	bChangeFlag |= (m_schScheduleItemTemp.stTime.wHour != m_schScheduleItem.stTime.wHour);
+	bChangeFlag |= (m_schScheduleItemTemp.stTime.wMinute != m_schScheduleItem.stTime.wMinute);
 
-	bChangeFlag |= (m_schScheduleTemp.byRepeatDays != m_schSchedule.byRepeatDays);
+	bChangeFlag |= (m_schScheduleItemTemp.byRepeatDays != m_schScheduleItem.byRepeatDays);
 
 	return bChangeFlag;
 }
@@ -774,10 +792,16 @@ BOOL CScheduleDlg::CheckDataChangeState()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::EnableSaveButton(BOOL bEnable)
+void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
 {
+	// If is currently in read-only or view mode, do not enable
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == DEF_MODE_VIEW)) {
+		// Force disable
+		bEnable = FALSE;
+	}
+
 	// If new state is the same as current state, do nothing
-	CButton* pSaveBtn = (CButton*)GetDlgItem(IDC_SCHEDULE_APPLY_BTN);
+	CButton* pSaveBtn = (CButton*)GetDlgItem(IDC_EDITSCHEDULE_APPLY_BTN);
 	if (pSaveBtn != NULL) {
 		if (pSaveBtn->IsWindowEnabled() == bEnable)
 			return;
@@ -785,7 +809,7 @@ void CScheduleDlg::EnableSaveButton(BOOL bEnable)
 
 	// Save app event log if enabled
 	UINT nButtonEvent = (bEnable == TRUE) ? LOG_EVENT_BUTTON_ENABLED : LOG_EVENT_BUTTON_DISABLED;
-	OutputButtonLog(GetDialogID(), IDC_SCHEDULE_APPLY_BTN, nButtonEvent);
+	OutputButtonLog(GetDialogID(), IDC_EDITSCHEDULE_APPLY_BTN, nButtonEvent);
 
 	// Update state
 	pSaveBtn->EnableWindow(bEnable);
@@ -800,14 +824,21 @@ void CScheduleDlg::EnableSaveButton(BOOL bEnable)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::EnableSubItems(BOOL bEnable)
+void CEditScheduleDlg::EnableSubItems(BOOL bEnable)
 {
-	GetDlgItem(IDC_SCHEDULE_ACTION_LABEL)->EnableWindow(bEnable);
-	GetDlgItem(IDC_SCHEDULE_ACTION_LIST)->EnableWindow(bEnable);
-	GetDlgItem(IDC_SCHEDULE_TIME_LABEL)->EnableWindow(bEnable);
-	GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX)->EnableWindow(bEnable);
-	GetDlgItem(IDC_SCHEDULE_TIME_SPIN)->EnableWindow(bEnable);
-	GetDlgItem(IDC_SCHEDULE_REPEATDAILY_CHK)->EnableWindow(bEnable);
+	// If is currently in read-only or view mode, do not enable
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == DEF_MODE_VIEW)) {
+		// Force disable
+		bEnable = FALSE;
+	}
+
+	// Enable/disable items
+	GetDlgItem(IDC_EDITSCHEDULE_ACTION_LABEL)->EnableWindow(bEnable);
+	GetDlgItem(IDC_EDITSCHEDULE_ACTION_LIST)->EnableWindow(bEnable);
+	GetDlgItem(IDC_EDITSCHEDULE_TIME_LABEL)->EnableWindow(bEnable);
+	GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX)->EnableWindow(bEnable);
+	GetDlgItem(IDC_EDITSCHEDULE_TIME_SPIN)->EnableWindow(bEnable);
+	GetDlgItem(IDC_EDITSCHEDULE_REPEATDAILY_CHK)->EnableWindow(bEnable);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -820,14 +851,14 @@ void CScheduleDlg::EnableSubItems(BOOL bEnable)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TRUE */)
+void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TRUE */)
 {
 	// Get app language package
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Get time editbox pointer
 	if (m_pTimeEdit == NULL) {
-		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX);
+		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
 			TRCLOG("Error: Time edit control not found");
 			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
@@ -869,6 +900,62 @@ void CScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TRUE 
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetReturnFlag
+//	Description:	Get dialog return flag
+//  Arguments:		None
+//  Return value:	int - Return flag
+//
+//////////////////////////////////////////////////////////////////////////
+
+int CEditScheduleDlg::GetReturnFlag(void)
+{
+	return m_nRetFlag;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetReturnFlag
+//	Description:	Set dialog return flag
+//  Arguments:		nRetFlag - Return flag
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CEditScheduleDlg::SetReturnFlag(int nRetFlag)
+{
+	m_nRetFlag = nRetFlag;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDispMode
+//	Description:	Get dialog display mode
+//  Arguments:		None
+//  Return value:	int - Display mode
+//
+//////////////////////////////////////////////////////////////////////////
+
+int CEditScheduleDlg::GetDispMode(void)
+{
+	return m_nDispMode;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDispMode
+//	Description:	Set dialog display mode
+//  Arguments:		nMode - Display mode
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CEditScheduleDlg::SetDispMode(int nMode)
+{
+	m_nDispMode = nMode;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	OnApply
 //	Description:	Handle clicking event for [Save] button
 //  Arguments:		None
@@ -876,14 +963,23 @@ void CScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TRUE 
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnApply()
+void CEditScheduleDlg::OnApply()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_SCHEDULE_APPLY_BTN);
+	OutputButtonLog(GetDialogID(), IDC_EDITSCHEDULE_APPLY_BTN);
 
 	// Save data if changed
 	if (m_bChangeFlag == TRUE) {
-		SaveScheduleSettings();
+
+		// Update data
+		SaveScheduleItem();
+
+		// Return UPDATE flag
+		SetReturnFlag(RETFLAG_UPDATE);
+	}
+	else {
+		// Return OK flag
+		SetReturnFlag(RETFLAG_OK);
 	}
 
 	// Close dialog
@@ -899,28 +995,40 @@ void CScheduleDlg::OnApply()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnExit()
+void CEditScheduleDlg::OnExit()
 {
 	// If not forced closing by request
 	if (!IsForceClosingByRequest()) {
 
 		// Save app event log if enabled
-		OutputButtonLog(GetDialogID(), IDC_SCHEDULE_CANCEL_BTN);
+		OutputButtonLog(GetDialogID(), IDC_EDITSCHEDULE_CANCEL_BTN);
 
 		// If data changed, ask for saving before closing dialog
 		if (m_bChangeFlag == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			CString strMessage = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CONTENT);
-			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_SCHEDULE_CHANGED_CAPTION);
+			CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
 			int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
-				// Save data
-				SaveScheduleSettings();
+
+				// Update data
+				SaveScheduleItem();
+
+				// Return UPDATE flag
+				SetReturnFlag(RETFLAG_UPDATE);
+			}
+			else {
+				// Return CANCEL flag
+				SetReturnFlag(RETFLAG_CANCEL);
 			}
 		}
+	}
+	else {
+		// Return CANCEL flag
+		SetReturnFlag(RETFLAG_CANCEL);
 	}
 
 	// Close dialog
@@ -936,7 +1044,7 @@ void CScheduleDlg::OnExit()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnEnableSchedule()
+void CEditScheduleDlg::OnEnableSchedule()
 {
 	// Update dialog item state
 	UpdateData(TRUE);
@@ -946,7 +1054,7 @@ void CScheduleDlg::OnEnableSchedule()
 	m_bChangeFlag = CheckDataChangeState();
 
 	// Enable/disable active day table
-	DisableTable(!(m_schScheduleTemp.bEnable & m_schScheduleTemp.bRepeat));
+	DisableActiveDayTable(!(m_schScheduleItemTemp.bEnable & m_schScheduleItemTemp.bRepeat));
 
 	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);
@@ -961,11 +1069,11 @@ void CScheduleDlg::OnEnableSchedule()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnChangeAction()
+void CEditScheduleDlg::OnChangeAction()
 {
 	// Save app event log if enabled
 	int nSel = m_pActionList->GetCurSel();
-	OutputComboLog(GetDialogID(), IDC_SCHEDULE_ACTION_LIST, nSel);
+	OutputComboLog(GetDialogID(), IDC_EDITSCHEDULE_ACTION_LIST, nSel);
 
 	// Check for value change and enable/disable save button
 	m_bChangeFlag = CheckDataChangeState();
@@ -981,13 +1089,13 @@ void CScheduleDlg::OnChangeAction()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnChangeRepeatDaily()
+void CEditScheduleDlg::OnChangeRepeatDaily()
 {
 	// Check for data change
 	m_bChangeFlag = CheckDataChangeState();
 
 	// Enable/disable active day table
-	DisableTable(!m_schScheduleTemp.bRepeat);
+	DisableActiveDayTable(!m_schScheduleItemTemp.bRepeat);
 
 	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);
@@ -1002,7 +1110,7 @@ void CScheduleDlg::OnChangeRepeatDaily()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnTimeEditSetFocus()
+void CEditScheduleDlg::OnTimeEditSetFocus()
 {
 	/*********************************************************************/
 	/*																	 */
@@ -1012,7 +1120,7 @@ void CScheduleDlg::OnTimeEditSetFocus()
 
 	// Check control validity
 	if (m_pTimeEdit == NULL) {
-		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX);
+		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
 			TRCLOG("Error: Time edit control not found");
 			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
@@ -1033,7 +1141,7 @@ void CScheduleDlg::OnTimeEditSetFocus()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnTimeEditKillFocus()
+void CEditScheduleDlg::OnTimeEditKillFocus()
 {
 	/*********************************************************************/
 	/*																	 */
@@ -1043,7 +1151,7 @@ void CScheduleDlg::OnTimeEditKillFocus()
 
 	// Check control validity
 	if (m_pTimeEdit == NULL) {
-		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX);
+		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
 			TRCLOG("Error: Time edit control not found");
 			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
@@ -1070,7 +1178,7 @@ void CScheduleDlg::OnTimeEditKillFocus()
 	}
 	else {
 		// Restore old time value
-		UpdateTimeSetting(m_schScheduleTemp.stTime, FALSE);
+		UpdateTimeSetting(m_schScheduleItemTemp.stTime, FALSE);
 		return;
 	}
 
@@ -1089,7 +1197,7 @@ void CScheduleDlg::OnTimeEditKillFocus()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
+void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
@@ -1116,7 +1224,7 @@ void CScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
+void CEditScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
@@ -1155,7 +1263,7 @@ void CScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CScheduleDlg::OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
+void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
@@ -1195,7 +1303,7 @@ void CScheduleDlg::OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CEditScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
@@ -1229,7 +1337,7 @@ LRESULT CScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			// If the edit box is focused, kill its focus
 			CWnd* pCurCtrl = GetFocus();
 			if (pCurCtrl == NULL) return 0;
-			if (pCurCtrl->GetDlgCtrlID() == IDC_SCHEDULE_TIME_EDITBOX) {
+			if (pCurCtrl->GetDlgCtrlID() == IDC_EDITSCHEDULE_TIME_EDITBOX) {
 				pCurCtrl->PostMessage(WM_KILLFOCUS);
 				this->SetFocus();	// Return focus to dialog
 				return 0;
@@ -1238,5 +1346,7 @@ LRESULT CScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	} break;
 	}
 
+	// Default
 	return SDialog::WindowProc(message, wParam, lParam);
 }
+

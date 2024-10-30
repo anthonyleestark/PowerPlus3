@@ -669,9 +669,6 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 
 		// Update cell
 		m_pDataItemListTable->RedrawCell(nRow, nCol);
-
-		// Update data
-		m_pwrReminderDataTemp.GetItemAt(nRow - 1).bEnable = !bCheck;
 	}
 
 	*pResult = NULL;
@@ -720,9 +717,6 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 
 		// Update cell
 		m_pDataItemListTable->RedrawCell(nRow, nCol);
-
-		// Update data
-		m_pwrReminderDataTemp.GetItemAt(nRow - 1).bEnable = !bCheck;
 	}
 
 	*pResult = NULL;
@@ -777,7 +771,7 @@ void CPwrReminderDlg::OnTimeEditSetFocus()
 
 	// Check control validity
 	if (m_pEvtSetTimeEdit == NULL) {
-		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_SCHEDULE_TIME_EDITBOX);
+		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
 		if (m_pEvtSetTimeEdit == NULL) {
 			TRCLOG("Error: Time edit control not found");
 			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
@@ -1264,9 +1258,13 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 	if ((nColNum <= 0) || (nRowNum < 1 ))
 		return;
 
+	// Get app pointer
+	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
+	if (pApp == NULL) return;
+
 	// Load app language package
 	if (ptrLanguage == NULL) {
-		ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		ptrLanguage = pApp->GetAppLanguage();
 	}
 
 	// Re-update default cell properties
@@ -1287,6 +1285,10 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 	int nFrameHeight = pszFrameWndSize->cy;
 	int nFrameWidth = pszFrameWndSize->cx;
 	nFrameWidth -= DEF_OFFSET_LISTCTRLWIDTH;
+	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
+		// Windows 10 list control offset
+		nFrameWidth -= DEF_OFFSET_LISTCTRLWIDTH_W10;
+	}
 	if ((DEF_GRIDCTRL_HEADERHEIGHT + ((nRowNum - 1) * DEF_GRIDCTRL_ROWHEIGHT)) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
@@ -2139,12 +2141,12 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	VERIFY(pApp != NULL);
 	if (pApp == NULL) return FALSE;
-	PPWRREMINDERDATA phksData = pApp->GetAppPwrReminderData();
-	if (phksData == NULL)
+	PPWRREMINDERDATA ppwrData = pApp->GetAppPwrReminderData();
+	if (ppwrData == NULL)
 		return FALSE;
 
 	// Copy data
-	m_pwrReminderData.Copy(*phksData);
+	m_pwrReminderData.Copy(*ppwrData);
 	m_pwrReminderDataTemp.Copy(m_pwrReminderData);
 
 	// Reset change flag
@@ -2214,8 +2216,8 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 	int nRowIndex = 0;
 	CGridCellCheck* pCellCheckEnable = NULL;
 	CGridCellCheck* pCellCheckRepeat = NULL;
-	int nItemNum = (m_pDataItemListTable->GetRowCount() - 1);
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+	int nItemRowNum = (m_pDataItemListTable->GetRowCount() - 1);
+	for (int nIndex = 0; nIndex < nItemRowNum; nIndex++) {
 		// Get row index
 		nRowIndex = (nIndex + 1);
 
@@ -2235,8 +2237,8 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 	}
 
 	// Check if number of items changed
-	nItemNum = GetItemNum();
-	bChangeFlag |= (nItemNum != m_pwrReminderData.nItemNum);
+	int nItemNum = GetItemNum();
+	bChangeFlag |= (nItemNum != m_pwrReminderData.GetItemNum());
 	if (bChangeFlag == TRUE)
 		return bChangeFlag;
 
@@ -2870,7 +2872,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 
 int CPwrReminderDlg::GetItemNum()
 {
-	return m_pwrReminderDataTemp.nItemNum;
+	return m_pwrReminderDataTemp.GetItemNum();
 }
 
 //////////////////////////////////////////////////////////////////////////

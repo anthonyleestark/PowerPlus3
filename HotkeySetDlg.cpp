@@ -310,7 +310,7 @@ void CHotkeySetDlg::OnRemove()
 	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_REMOVE_BTN);
 
 	// If there's no item, do nothing
-	int nItemNum = m_hksHotkeySetTemp.nItemNum;
+	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
 	if (nItemNum <= 0)
 		return;
 
@@ -573,11 +573,17 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR ptrLanguage)
 	m_listHotkeySet.GetWindowRect(&rcHotkeySetList);
 	int nViewWidth = rcHotkeySetList.right - rcHotkeySetList.left;
 	nViewWidth -= DEF_OFFSET_LISTCTRLWIDTH;
+	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
+	if (pApp == NULL) return;
+	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
+		// Windows 10 list control offset
+		nViewWidth -= DEF_OFFSET_LISTCTRLWIDTH_W10;
+	}
 
 	// Fix list control width in case vertical scrollbar is displayed
 	int nRowHeight = DEF_LISTCTRL_ROWHEIGHT;
 	int nViewHeight = (rcHotkeySetList.bottom - rcHotkeySetList.top);
-	int nTableHeight = ((m_hksHotkeySetTemp.nItemNum * nRowHeight) + DEF_LISTCTRL_HEADERHEIGHT);
+	int nTableHeight = ((m_hksHotkeySetTemp.GetItemNum() * nRowHeight) + DEF_LISTCTRL_HEADERHEIGHT);
 	if (nTableHeight > nViewHeight) {
 		int nScrollbarWidth = GetSystemMetrics(SM_CXVSCROLL);
 		nViewWidth -= nScrollbarWidth;
@@ -701,7 +707,7 @@ void CHotkeySetDlg::UpdateCheckAllBtnState()
 {
 	// Get all item enable state
 	m_bAllChecked = TRUE;
-	int nItemNum = m_hksHotkeySetTemp.nItemNum;
+	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 		HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
 		if (hksTemp.bEnable == FALSE) {
@@ -734,7 +740,7 @@ void CHotkeySetDlg::UpdateHotkeySet()
 	m_listHotkeySet.DeleteAllItems();
 
 	// If there's no item, do nothing
-	int nItemNum = m_hksHotkeySetTemp.nItemNum;
+	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
 	if (nItemNum <= 0)
 		return;
 
@@ -780,7 +786,7 @@ void CHotkeySetDlg::UpdateHotkeySet()
 void CHotkeySetDlg::UpdateHotkeySet(int nIndex)
 {
 	// If there's no item, do nothing
-	int nItemNum = m_hksHotkeySetTemp.nItemNum;
+	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
 	if (nItemNum <= 0)
 		return;
 
@@ -836,7 +842,7 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 	m_bWinKeyBtn = FALSE;
 
 	// If index is invalid, display dummy details
-	if ((nIndex < 0) || (nIndex >= m_hksHotkeySetTemp.nItemNum)) {
+	if ((nIndex < 0) || (nIndex >= m_hksHotkeySetTemp.GetItemNum())) {
 		m_cmbActionList.SetWindowText(_T("---"));
 		m_cmbFuncKeyList.SetWindowText(_T("---"));
 		UpdateData(FALSE);
@@ -948,12 +954,12 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 	}
 
 	// Check if number of items changed
-	bChangeFlag |= (m_hksHotkeySetTemp.nItemNum != m_hksHotkeySet.nItemNum);
+	bChangeFlag |= (m_hksHotkeySetTemp.GetItemNum() != m_hksHotkeySet.GetItemNum());
 	if (bChangeFlag == TRUE)
 		return bChangeFlag;
 
 	// Check if each item's data changed
-	for (int nIndex = 0; nIndex < m_hksHotkeySetTemp.nItemNum; nIndex++) {
+	for (int nIndex = 0; nIndex < m_hksHotkeySetTemp.GetItemNum(); nIndex++) {
 		// Get current item and temp item
 		HOTKEYSETITEM hksCurItem = m_hksHotkeySet.GetItemAt(nIndex);
 		HOTKEYSETITEM hksTempItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
@@ -1061,7 +1067,7 @@ void CHotkeySetDlg::RemoveAll()
 void CHotkeySetDlg::SwitchAllItemState()
 {
 	// Check/uncheck all --> Update all item enable state
-	int nItemNum = m_hksHotkeySetTemp.nItemNum;
+	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 		HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
 		if (hksTemp.bEnable == m_bAllChecked) {

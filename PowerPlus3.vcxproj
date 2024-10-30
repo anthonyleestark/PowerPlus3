@@ -210,6 +210,7 @@
     <ClInclude Include="GridCellBase.h" />
     <ClInclude Include="GridCellCheck.h" />
     <ClInclude Include="GridCtrl.h" />
+    <ClInclude Include="MultiScheduleDlg.h" />
     <ClInclude Include="PowerPlus.inl" />
     <ClInclude Include="HotkeySetDlg.h" />
     <ClInclude Include="IDMapping.h" />
@@ -224,7 +225,7 @@
     <ClInclude Include="PowerPlusDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RmdRepeatSetDlg.h" />
-    <ClInclude Include="ScheduleDlg.h" />
+    <ClInclude Include="EditScheduleDlg.h" />
     <ClInclude Include="SDialog.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -246,13 +247,14 @@
     <ClCompile Include="InPlaceEdit.cpp" />
     <ClCompile Include="Logging.cpp" />
     <ClCompile Include="LogViewerDlg.cpp" />
+    <ClCompile Include="MultiScheduleDlg.cpp" />
     <ClCompile Include="PowerPlus.cpp" />
     <ClCompile Include="PowerPlusDlg.cpp" />
     <ClCompile Include="PowerPlusDlgFunc.cpp" />
     <ClCompile Include="PwrReminderDlg.cpp" />
     <ClCompile Include="ReminderMsgDlg.cpp" />
     <ClCompile Include="RmdRepeatSetDlg.cpp" />
-    <ClCompile Include="ScheduleDlg.cpp" />
+    <ClCompile Include="EditScheduleDlg.cpp" />
     <ClCompile Include="SDialog.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

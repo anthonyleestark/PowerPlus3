@@ -90,6 +90,7 @@ CPowerPlusApp::~CPowerPlusApp()
 	}
 
 	if (m_pschSheduleData != NULL) {
+		m_pschSheduleData->DeleteAll();
 		delete m_pschSheduleData;
 		m_pschSheduleData = NULL;
 	}
@@ -637,11 +638,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	PPWRREMINDERDATA ppwrTempData = new PWRREMINDERDATA;
 
 
-	/***************************************************************/
-	/*															   */
-	/*					 Load configuration info				   */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*									 Load configuration info								   */
+	/*																							   */
+	/***********************************************************************************************/
 
 	if (pcfgTempData != NULL) {
 
@@ -690,32 +691,96 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		pcfgTempData = NULL;
 	}
 
-	/***************************************************************/
-	/*															   */
-	/*						Load schedule info				       */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*										Load schedule info									   */
+	/*																							   */
+	/***********************************************************************************************/
 
 	if (pschTempData != NULL) {
 
-		// Read schedule data
-		int nSchedRet = DEF_INTEGER_NULL;
-		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_ENABLE,		pschTempData->bEnable);
-		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_ACTION,		(int&)pschTempData->nAction);
-		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_REPEAT,		pschTempData->bRepeat);
-		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_REPEATDAYS,	(int&)pschTempData->byRepeatDays);
-		nSchedRet += GetSchedule(IDS_REGKEY_SCHED_TIMEVALUE,	nTimeTemp);
+		// Initialize temp data
+		pschTempData->Init();
 
-		// Convert time value
-		if (nTimeTemp != DEF_INTEGER_INVALID) {
-			pschTempData->stTime.wHour = WORD(nTimeTemp / 100);
-			pschTempData->stTime.wMinute = WORD(nTimeTemp % 100);
-			nTimeTemp = DEF_INTEGER_INVALID;
+		// Initialize default item
+		SCHEDULEITEM schDefaultTemp(DEF_SCHEDULE_DEFAULT_ITEMID);
+		{
+			// Read default schedule item
+			int nDefSchedRet = DEF_INTEGER_NULL;
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_ENABLE,		schDefaultTemp.bEnable);
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_ACTION,		(int&)schDefaultTemp.nAction);
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEAT,		schDefaultTemp.bRepeat);
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEATDAYS,  (int&)schDefaultTemp.byRepeatDays);
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_TIMEVALUE,	nTimeTemp);
+
+			// Convert time value
+			if (nTimeTemp != DEF_INTEGER_INVALID) {
+				schDefaultTemp.stTime.wHour = WORD(nTimeTemp / 100);
+				schDefaultTemp.stTime.wMinute = WORD(nTimeTemp % 100);
+				nTimeTemp = DEF_INTEGER_INVALID;
+			}
+
+			// Mark data as reading failed
+			// only if all values were read unsuccessfully
+			bResult = (nDefSchedRet != DEF_INTEGER_NULL);
+
+			// Trace error
+			if (bResult == FALSE) {
+				wLoadRet = DEF_APP_ERROR_LOAD_SCHED_FAILED;
+				TraceSerializeData(wLoadRet);
+				bFinalResult = FALSE;	// Set final result
+				bResult = TRUE;			// Reset flag
+			}
+			else {
+				// Update default item data
+				SCHEDULEITEM& schDefaultItem = pschTempData->GetDefaultItem();
+				schDefaultItem.Copy(schDefaultTemp);
+			}
 		}
 
-		// Mark data as reading failed
-		// only if all values were read unsuccessfully
-		bResult = (nSchedRet != DEF_INTEGER_NULL);
+		// Load number of extra items
+		int nExtraItemNum = 0;
+		bResult &= GetScheduleExtraItemNum(IDS_REGKEY_SCHEDULE_ITEMNUM, nExtraItemNum);
+		if (bResult != FALSE) {
+
+			// Read each extra item data
+			for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
+
+				// Initialize temp item
+				SCHEDULEITEM schExtraTemp;
+
+				// Read extra item
+				int nSchedRet = DEF_INTEGER_NULL;
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ENABLE,		schExtraTemp.bEnable);
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ITEMID,		(int&)schExtraTemp.nItemID);
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ACTION,		(int&)schExtraTemp.nAction);
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEAT,		schExtraTemp.bRepeat);
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEATDAYS,  (int&)schExtraTemp.byRepeatDays);
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_TIMEVALUE,	nTimeTemp);
+
+				// Convert time value
+				if (nTimeTemp != DEF_INTEGER_INVALID) {
+					schExtraTemp.stTime.wHour = WORD(nTimeTemp / 100);
+					schExtraTemp.stTime.wMinute = WORD(nTimeTemp % 100);
+					nTimeTemp = DEF_INTEGER_INVALID;
+				}
+
+				// Mark data as reading failed
+				// only if all values were read unsuccessfully
+				bResult = (nSchedRet != DEF_INTEGER_NULL);
+
+				// Trace error
+				if (bResult == FALSE) {
+					wLoadRet = DEF_APP_ERROR_LOAD_SCHED_FAILED;
+					TraceSerializeData(wLoadRet);
+					bFinalResult = FALSE;	// Set final result
+					bResult = TRUE;			// Reset flag
+				}
+
+				// Update item data
+				pschTempData->Update(schExtraTemp);
+			}
+		}
 	}
 
 	// Trace error
@@ -739,26 +804,28 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		pschTempData = NULL;
 	}
 
-	/***************************************************************/
-	/*															   */
-	/*					  Load HotkeySet info				       */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*									  Load HotkeySet info								       */
+	/*																							   */
+	/***********************************************************************************************/
 
 	// Load HotkeySet data
 	int nItemNum = 0;
 	if (phksTempData != NULL) {
+
 		// Copy data
 		phksTempData->Copy(*m_phksHotkeySetData);
 
 		// Load number of items
 		bResult &= GetHotkeyItemNum(IDS_REGKEY_HKEYSET_ITEMNUM, nItemNum);
-		if (nItemNum > phksTempData->nItemNum) {
+		if (nItemNum > phksTempData->GetItemNum()) {
 			// Limit the hotkeyset data item number
-			nItemNum = phksTempData->nItemNum;
+			nItemNum = phksTempData->GetItemNum();
 		}
 
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+
 			// Initialize temp item
 			HOTKEYSETITEM hksTemp;
 			ZeroMemory(&hksTemp, sizeof(HOTKEYSETITEM));
@@ -810,22 +877,24 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		phksTempData = NULL;
 	}
 
-	/***************************************************************/
-	/*															   */
-	/*					 Load Power Reminder info				   */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*									 Load Power Reminder info								   */
+	/*																							   */
+	/***********************************************************************************************/
 
 	// Load Power Reminder data
 	nItemNum = 0;
 	if (ppwrTempData != NULL) {
 		bResult &= GetPwrReminderItemNum(IDS_REGKEY_PWRRMD_ITEMNUM, nItemNum);
 		if (bResult != FALSE) {
+
 			// Initialize temp data
 			ppwrTempData->Init();
 
 			// Read each item data
 			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+
 				// Initialize temp item
 				PWRREMINDERITEM pwrTemp;
 
@@ -891,11 +960,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		ppwrTempData = NULL;
 	}
 
-	/***************************************************************/
-	/*															   */
-	/*					Load global variable info				   */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*										Load other data										   */
+	/*																							   */
+	/***********************************************************************************************/
 	
 	// Load global variable values
 	LoadGlobalVars();
@@ -923,11 +992,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	if (!DataSerializeCheck(DEF_MODE_SAVE, dwDataType))
 		return FALSE;
 
-	/***************************************************************/
-	/*															   */
-	/*					Save configuration info					   */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*									Save configuration info									   */
+	/*																							   */
+	/***********************************************************************************************/
 
 	// Save configuration data
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
@@ -962,11 +1031,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		}
 	}
 
-	/***************************************************************/
-	/*															   */
-	/*					  Save schedule info					   */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*									 Save schedule info										   */
+	/*																							   */
+	/***********************************************************************************************/
 
 	// Save schedule data
 	if ((dwDataType & APPDATA_SCHEDULE) != 0) {
@@ -974,30 +1043,62 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		// Delete old data before writing
 		DeleteScheduleSection();
 
-		// Convert time data
-		nTimeTemp = int((m_pschSheduleData->stTime.wHour * 100) + m_pschSheduleData->stTime.wMinute);
+		// Save default schedule item
+		SCHEDULEITEM schTempDefault = m_pschSheduleData->GetDefaultItem();
+		{
+			// Convert time data
+			nTimeTemp = int((schTempDefault.stTime.wHour * 100) + schTempDefault.stTime.wMinute);
 
-		// Save registry data
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_ENABLE,		m_pschSheduleData->bEnable);
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_ACTION,		m_pschSheduleData->nAction);
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_REPEAT,		m_pschSheduleData->bRepeat);
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_REPEATDAYS,	m_pschSheduleData->byRepeatDays);
-		bResult &= WriteSchedule(IDS_REGKEY_SCHED_TIMEVALUE,	nTimeTemp);
+			// Save registry data
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_ENABLE,		schTempDefault.bEnable);
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_ACTION,		schTempDefault.nAction);
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEAT,		schTempDefault.bRepeat);
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEATDAYS, schTempDefault.byRepeatDays);
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_TIMEVALUE,  nTimeTemp);
 
-		// Trace error
-		if (bResult == FALSE) {
-			wSaveRet = DEF_APP_ERROR_SAVE_SCHED_FAILED;
-			TraceSerializeData(wSaveRet);
-			bFinalResult = FALSE; // Set final result
-			bResult = TRUE; // Reset flag
+			// Trace error
+			if (bResult == FALSE) {
+				wSaveRet = DEF_APP_ERROR_SAVE_SCHED_FAILED;
+				TraceSerializeData(wSaveRet);
+				bFinalResult = FALSE; // Set final result
+				bResult = TRUE; // Reset flag
+			}
+		}
+
+		// Save schedule extra data
+		int nExtraItemNum = m_pschSheduleData->GetExtraItemNum();
+		bResult &= WriteScheduleExtraItemNum(IDS_REGKEY_SCHEDULE_ITEMNUM, nExtraItemNum);
+		for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
+
+			// Get schedule extra item
+			SCHEDULEITEM schTempExtra = m_pschSheduleData->GetItemAt(nExtraIndex);
+
+			// Convert time data
+			nTimeTemp = int((schTempExtra.stTime.wHour * 100) + schTempExtra.stTime.wMinute);
+
+			// Save registry data
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ENABLE,		schTempExtra.bEnable);
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ITEMID,		schTempExtra.nItemID);
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ACTION,		schTempExtra.nAction);
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEAT,		schTempExtra.bRepeat);
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEATDAYS,  schTempExtra.byRepeatDays);
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_TIMEVALUE,	nTimeTemp);
+
+			// Trace error
+			if (bResult == FALSE) {
+				wSaveRet = DEF_APP_ERROR_SAVE_SCHED_FAILED;
+				TraceSerializeData(wSaveRet);
+				bFinalResult = FALSE; // Set final result
+				bResult = TRUE; // Reset flag
+			}
 		}
 	}
 
-	/***************************************************************/
-	/*															   */
-	/*				 Save auto-start status info				   */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*								 Save auto-start status info								   */
+	/*																							   */
+	/***********************************************************************************************/
 
 	// Save auto-start status info
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
@@ -1016,11 +1117,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		}
 	}
 
-	/***************************************************************/
-	/*															   */
-	/*					 Save HotkeySet info					   */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*									 Save HotkeySet info									   */
+	/*																							   */
+	/***********************************************************************************************/
 
 	// Save HotkeySet data
 	if ((dwDataType & APPDATA_HOTKEYSET) != 0) {
@@ -1029,9 +1130,10 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeleteHotkeySetSection();
 
 		// Save registry data
-		int nItemNum = m_phksHotkeySetData->nItemNum;
+		int nItemNum = m_phksHotkeySetData->GetItemNum();
 		bResult &= WriteHotkeyItemNum(IDS_REGKEY_HKEYSET_ITEMNUM, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+
 			// Get HotkeySet item
 			HOTKEYSETITEM hksTemp = m_phksHotkeySetData->GetItemAt(nIndex);
 
@@ -1051,11 +1153,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		}
 	}
 
-	/***************************************************************/
-	/*															   */
-	/*					Save Power Reminder info				   */
-	/*															   */
-	/***************************************************************/
+	/***********************************************************************************************/
+	/*																							   */
+	/*									Save Power Reminder info								   */
+	/*																							   */
+	/***********************************************************************************************/
 
 	// Save Power Reminder data
 	if ((dwDataType & APPDATA_PWRREMINDER) != 0) {
@@ -1064,9 +1166,10 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeletePwrReminderSection();
 
 		// Save registry data
-		int nItemNum = m_ppwrReminderData->nItemNum;
+		int nItemNum = m_ppwrReminderData->GetItemNum();
 		bResult &= WritePwrReminderItemNum(IDS_REGKEY_PWRRMD_ITEMNUM, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+
 			// Get Power Reminder item
 			PWRREMINDERITEM pwrTemp = m_ppwrReminderData->GetItemAt(nIndex);
 
@@ -1384,6 +1487,7 @@ BOOL CPowerPlusApp::SaveGlobalVars(BYTE byCateID /* = 0xFF */)
 }
 
 
+#ifdef _TEST
 //////////////////////////////////////////////////////////////////////////
 // File data serialization functions
 
@@ -1733,6 +1837,7 @@ BOOL CPowerPlusApp::WriteFile()
 
 	return bRet;
 }
+#endif
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -2287,6 +2392,7 @@ void CPowerPlusApp::OutputDataChangeLog(SCHEDULEDATA& BakData)
 	SLogging* ptrLog = GetAppEventLog();
 	if (ptrLog == NULL) return;
 
+#ifdef _TEST
 	// Compare data and output change log
 	if (CurData.bEnable != BakData.bEnable) {
 		byDataType = DATATYPE_YESNO_VALUE;
@@ -2312,6 +2418,7 @@ void CPowerPlusApp::OutputDataChangeLog(SCHEDULEDATA& BakData)
 		Time2SpinPos(CurData.stTime, (int&)dwAftTime);
 		ptrLog->OutputDataChangeLog(byDataType, byDataCate, dwCtrlID, dwPreTime, dwAftTime, 0);
 	}
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2337,18 +2444,18 @@ void CPowerPlusApp::OutputDataChangeLog(HOTKEYSETDATA& BakData)
 	if (ptrLog == NULL) return;
 
 	// Compare data and output change log
-	if (CurData.nItemNum != BakData.nItemNum) {
+	if (CurData.GetItemNum() != BakData.GetItemNum()) {
 		// Number of items changed
-		byDataType = (CurData.nItemNum > BakData.nItemNum) ? DATATYPE_ITEMNUM_ADD : DATATYPE_ITEMNUM_REMOVE;
-		ptrLog->OutputDataChangeLog(byDataType, byDataCate, dwCtrlID, BakData.nItemNum, CurData.nItemNum, 0);
+		byDataType = (CurData.GetItemNum() > BakData.GetItemNum()) ? DATATYPE_ITEMNUM_ADD : DATATYPE_ITEMNUM_REMOVE;
+		ptrLog->OutputDataChangeLog(byDataType, byDataCate, dwCtrlID, BakData.GetItemNum(), CurData.GetItemNum(), 0);
 	}
-	int nItemNum = (CurData.nItemNum > BakData.nItemNum) ? (CurData.nItemNum) : (BakData.nItemNum);
+	int nItemNum = (CurData.GetItemNum() > BakData.GetItemNum()) ? (CurData.GetItemNum()) : (BakData.GetItemNum());
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		if (nIndex >= CurData.nItemNum) {
+		if (nIndex >= CurData.GetItemNum()) {
 			// Item removed
 			continue;
 		}
-		else if (nIndex >= BakData.nItemNum) {
+		else if (nIndex >= BakData.GetItemNum()) {
 			// Item added
 			continue;
 		}
@@ -2410,18 +2517,18 @@ void CPowerPlusApp::OutputDataChangeLog(PWRREMINDERDATA& BakData)
 	if (ptrLog == NULL) return;
 
 	// Compare data and output change log
-	if (CurData.nItemNum != BakData.nItemNum) {
+	if (CurData.GetItemNum() != BakData.GetItemNum()) {
 		// Number of items changed
-		byDataType = (CurData.nItemNum > BakData.nItemNum) ? DATATYPE_ITEMNUM_ADD : DATATYPE_ITEMNUM_REMOVE;
-		ptrLog->OutputDataChangeLog(byDataType, byDataCate, dwCtrlID, BakData.nItemNum, CurData.nItemNum, 0);
+		byDataType = (CurData.GetItemNum() > BakData.GetItemNum()) ? DATATYPE_ITEMNUM_ADD : DATATYPE_ITEMNUM_REMOVE;
+		ptrLog->OutputDataChangeLog(byDataType, byDataCate, dwCtrlID, BakData.GetItemNum(), CurData.GetItemNum(), 0);
 	}
-	int nItemNum = (CurData.nItemNum > BakData.nItemNum) ? (CurData.nItemNum) : (BakData.nItemNum);
+	int nItemNum = (CurData.GetItemNum() > BakData.GetItemNum()) ? (CurData.GetItemNum()) : (BakData.GetItemNum());
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		if (nIndex >= CurData.nItemNum) {
+		if (nIndex >= CurData.GetItemNum()) {
 			// Item removed
 			continue;
 		}
-		else if (nIndex >= BakData.nItemNum) {
+		else if (nIndex >= BakData.GetItemNum()) {
 			// Item added
 			continue;
 		}
@@ -2476,6 +2583,7 @@ void CPowerPlusApp::OutputDataChangeLog(PWRREMINDERDATA& BakData)
 		}
 	}
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 // 
@@ -2707,6 +2815,42 @@ void CPowerPlusApp::SetAppWindowTitle(LPCTSTR lpszTitle)
 
 //////////////////////////////////////////////////////////////////////////
 // Registry functions
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetWindowsVersion
+//	Description:	Get Windows OS build version
+//  Arguments:		None
+//  Return value:	UINT - Windows version macro
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT CPowerPlusApp::GetWindowsOSVersion(void)
+{
+	// Init info data
+	OSVERSIONINFOEX oviOSVersion;
+	oviOSVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+
+	NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFOEXW);
+	*(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
+
+	// Get Window OS version
+	if (RtlGetVersion != NULL)
+		RtlGetVersion(&oviOSVersion);
+
+	// Return Windows OS version macro
+	UINT nRetWinVer = DEF_WINVER_NONE;
+	if (oviOSVersion.dwBuildNumber >= DEF_WINVER_BUILDNUMVER11) {
+		// Is Windows 11
+		nRetWinVer = DEF_WINVER_WIN11;
+	}
+	else {
+		// Is Windows 10
+		nRetWinVer = DEF_WINVER_WIN10;
+	}
+
+	return nRetWinVer;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // 

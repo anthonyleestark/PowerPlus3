@@ -138,6 +138,7 @@ public:
 	void SetAppWindowTitle(LPCTSTR strTitle);
 
 	// Registry functions
+	UINT GetWindowsOSVersion(void);
 	void GetAutoStartRegRootDir(HKEY& hRootDir);
 	int EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin);
 	int GetAutoStartStatus(void);

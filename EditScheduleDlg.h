@@ -1,19 +1,20 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//		File name:		ScheduleDlg.h
-//		Description:	Header file for Schedule dialog
+//		File name:		EditScheduleDlg.h
+//		Description:	Header file for Edit Schedule details dialog
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2017.03.08:		Create new
 //						<1> 2024.01.27:		Update to version 3.0
+//						<2> 2024.10.27:		Implement Multi schedule function
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _SCHEDULEDLG_H_INCLUDED
-#define _SCHEDULEDLG_H_INCLUDED
+#ifndef _EDITSCHEDULEDLG_H_INCLUDED
+#define _EDITSCHEDULEDLG_H_INCLUDED
 
 #include "Core.h"
 #include "Config.h"
@@ -23,21 +24,21 @@
 
 ////////////////////////////////////////////////////////
 //
-//	CScheduleDlg dialog used for Schedule function
+//	CEditScheduleDlg dialog used for Edit Schedule function
 //
 ////////////////////////////////////////////////////////
 
-class CScheduleDlg : public SDialog
+class CEditScheduleDlg : public SDialog
 {
-	DECLARE_DYNAMIC(CScheduleDlg)
+	DECLARE_DYNAMIC(CEditScheduleDlg)
 
 public:
-	CScheduleDlg();				// standard constructor
-	virtual ~CScheduleDlg();
+	CEditScheduleDlg();				// standard constructor
+	virtual ~CEditScheduleDlg();
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_SCHEDULE_DLG };
+	enum { IDD = IDD_EDITSCHEDULE_DLG };
 #endif
 
 protected:
@@ -59,11 +60,13 @@ private:
 	UINT m_nAction;
 
 	// Data container variables
-	SCHEDULEDATA m_schSchedule;
-	SCHEDULEDATA m_schScheduleTemp;
+	SCHEDULEITEM m_schScheduleItem;
+	SCHEDULEITEM m_schScheduleItemTemp;
 
 	// Other variables
-	CSize* m_pszTableFrameSize;
+	int		m_nRetFlag;
+	int		m_nDispMode;
+	CSize*  m_pszActiveTableFrameSize;
 
 public:
 	// Generated message map functions
@@ -80,19 +83,28 @@ public:
 	// Dialog item properties functions
 	void SetupDlgItemState();
 	void UpdateActiveDayList();
-	void DisableTable(BOOL bDisable);
+	void DisableActiveDayTable(BOOL bDisable);
 	void RedrawActiveDayTable(BOOL bReadOnly = FALSE);
 
 	// Data processing functions
-	void LoadScheduleSettings();
-	void UpdateScheduleSettings();
-	BOOL SaveScheduleSettings();
+	void GetScheduleItem(PSCHEDULEITEM pschItem);
+	void SetScheduleItem(const SCHEDULEITEM& pschItem);
+	void UpdateScheduleItem(void);
+	void SaveScheduleItem(void);
 
-	BOOL CheckDataChangeState();
+	BOOL CheckDataChangeState(void);
 	void EnableSaveButton(BOOL bEnable);
 	void EnableSubItems(BOOL bEnable);
 	void UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate = TRUE);
 
+public:
+	// Get/set functions
+	int	 GetReturnFlag(void);
+	void SetReturnFlag(int nRetFlag);
+	int GetDispMode(void);
+	void SetDispMode(int nMode);
+
+protected:
 	// Message handlers
 	afx_msg void OnApply();
 	afx_msg void OnExit();
@@ -107,4 +119,4 @@ public:
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 };
 
-#endif	// ifndef _SCHEDULEDLG_H_INCLUDED
+#endif	// ifndef _EDITSCHEDULEDLG_H_INCLUDED

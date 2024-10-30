@@ -70,9 +70,17 @@ namespace RegFuncs
 	// Delete section
 	BOOL DeleteConfigSection(void);
 
-	// Read/write registry schedule values
-	BOOL GetSchedule(UINT nKeyName, int& nRef);
-	BOOL WriteSchedule(UINT nKeyName, int nValue);
+	// Read/write registry default schedule values
+	BOOL GetDefaultSchedule(UINT nKeyName, int& nRef);
+	BOOL WriteDefaultSchedule(UINT nKeyName, int nValue);
+
+	// Read/write registry schedule extra item number value
+	BOOL GetScheduleExtraItemNum(UINT nKeyName, int& nRef);
+	BOOL WriteScheduleExtraItemNum(UINT nKeyName, int nValue);
+
+	// Read/write registry schedule extra item values
+	BOOL GetScheduleExtra(int nItemIndex, UINT nKeyName, int& nRef);
+	BOOL WriteScheduleExtra(int nItemIndex, UINT nKeyName, int nValue);
 
 	// Delete section
 	BOOL DeleteScheduleSection(void);

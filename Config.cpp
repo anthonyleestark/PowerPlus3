@@ -307,8 +307,8 @@ BOOL RegFuncs::DeleteConfigSection(void)
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Function name:	GetSchedule/WriteSchedule
-//  Description:	Using for reading/writing registry schedule values
+//	Function name:	GetDefaultSchedule/GetDefaultSchedule
+//  Description:	Using for reading/writing registry default schedule values
 //  Arguments:		nKeyName - Key name (string ID)
 //					nRef	 - Result value (ref-value)
 //					nValue	 - Value to write
@@ -316,7 +316,7 @@ BOOL RegFuncs::DeleteConfigSection(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetSchedule(UINT nKeyName, int& nRef)
+BOOL RegFuncs::GetDefaultSchedule(UINT nKeyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(IDS_REGSECTION_SCHEDULE, NULL, nKeyName);
@@ -325,9 +325,81 @@ BOOL RegFuncs::GetSchedule(UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteSchedule(UINT nKeyName, int nValue)
+BOOL RegFuncs::WriteDefaultSchedule(UINT nKeyName, int nValue)
 {
 	return WriteRegistryValueInt(IDS_REGSECTION_SCHEDULE, NULL, nKeyName, nValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Function name:	GetScheduleExtraItemNum/WriteScheduleExtraItemNum
+//  Description:	Using for reading/writing registry schedule extra
+//					item number values
+//  Arguments:		nKeyName - Key name (string ID)
+//					nRef	 - Result value (ref-value)
+//					nValue	 - Value to write
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL RegFuncs::GetScheduleExtraItemNum(UINT nKeyName, int& nRef)
+{
+	// Get registry value
+	int nRet = GetRegistryValueInt(IDS_REGSECTION_SCHEDULE, NULL, nKeyName);
+	if (nRet == UINT_MAX) return FALSE;
+	nRef = nRet; // Copy returned value
+	return TRUE;
+}
+
+BOOL RegFuncs::WriteScheduleExtraItemNum(UINT nKeyName, int nValue)
+{
+	return WriteRegistryValueInt(IDS_REGSECTION_SCHEDULE, NULL, nKeyName, nValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Function name:	GetScheduleExtra/WriteScheduleExtra
+//  Description:	Using for reading/writing registry schedule extra item values
+//  Arguments:		nItemIndex - Schedule extra item index
+//					nKeyName   - Key name (string ID)
+//					nRef	   - Result value (ref-value)
+//					nValue	   - Value to write
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL RegFuncs::GetScheduleExtra(int nItemIndex, UINT nKeyName, int& nRef)
+{
+	// Get name string
+	CString strSectionName;
+	strSectionName.LoadString(IDS_REGSECTION_SCHEDULE);
+	CString strSubSectionName;
+	strSubSectionName.Format(IDS_REGSECTION_SCHEDITEMID, nItemIndex);
+
+	// Get name string
+	CString strKeyName;
+	VERIFY(strKeyName.LoadString(nKeyName));
+
+	// Get registry value
+	int nRet = GetRegistryValueInt(strSectionName, strSubSectionName, strKeyName);
+	if (nRet == UINT_MAX) return FALSE;
+	nRef = nRet; // Copy returned value
+	return TRUE;
+}
+
+BOOL RegFuncs::WriteScheduleExtra(int nItemIndex, UINT nKeyName, int nValue)
+{
+	// Get name string
+	CString strSectionName;
+	strSectionName.LoadString(IDS_REGSECTION_SCHEDULE);
+	CString strSubSectionName;
+	strSubSectionName.Format(IDS_REGSECTION_SCHEDITEMID, nItemIndex);
+
+	// Get name string
+	CString strKeyName;
+	VERIFY(strKeyName.LoadString(nKeyName));
+
+	return WriteRegistryValueInt(strSectionName, strSubSectionName, strKeyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////

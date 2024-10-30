@@ -30,7 +30,7 @@
 
 class CAboutDlg;
 class CHelpDlg;
-class CScheduleDlg;
+class CMultiScheduleDlg;
 class CLogViewerDlg;
 class CHotkeySetDlg;
 class CPwrReminderDlg;
@@ -109,12 +109,12 @@ private:
 	int	 m_nPwrBroadcastSkipCount;
 
 	// Child dialogs
-	CAboutDlg*		 m_pAboutDlg;
-	CHelpDlg*		 m_pHelpDlg;
-	CLogViewerDlg*	 m_pLogViewerDlg;
-	CScheduleDlg*	 m_pScheduleDlg;
-	CHotkeySetDlg*	 m_pHotkeySetDlg;
-	CPwrReminderDlg* m_pPwrReminderDlg;
+	CAboutDlg*			m_pAboutDlg;
+	CHelpDlg*			m_pHelpDlg;
+	CLogViewerDlg*		m_pLogViewerDlg;
+	CMultiScheduleDlg*	m_pMultiScheduleDlg;
+	CHotkeySetDlg*		m_pHotkeySetDlg;
+	CPwrReminderDlg*	m_pPwrReminderDlg;
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -199,7 +199,7 @@ protected:
 	void UpdateMenuItemState(CMenu* pMenu);
 	LPCTSTR GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
 	void SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
-	void SetBalloonTipText(UINT nCurLanguage, UINT nSecondLeft);
+	void SetBalloonTipText(UINT nCurLanguage, UINT nScheduleAction, UINT nSecondLeft);
 
 private:
 	// Core functions
@@ -214,8 +214,8 @@ private:
 	void RestartApp(BOOL bRestartAsAdmin);
 
 	// Advanced features functions
-	BOOL ProcessSchedule();
-	void SetScheduleActiveState(BOOL bActive);
+	BOOL ProcessActionSchedule();
+	void ReupdateActionScheduleData();
 	void SetupBackgroundHotkey(int nMode);
 	BOOL ProcessHotkey(int nHotkeyID);
 	BOOL ExecutePowerReminder(UINT nExecEventID);
@@ -229,7 +229,7 @@ private:
 	// Logging and message functions
 	void SaveActionHistory(void);
 	int	 ConfirmAction(UINT nActionType, UINT nActionID);
-	int  NotifySchedule(void);
+	int  NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate);
 	void ShowErrorMessage(DWORD dwError);
 	void RequestRestart(UINT uiCommandID, BOOL bRestartAsAdmin);
 	void RequestRestartAsAdmin(RESTARTREQ reqRestart);

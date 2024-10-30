@@ -242,9 +242,14 @@
 #define FILE_CHANGELOG_VIE						_T("Change_log.vi.hlps")
 #define FILE_CHANGELOG_CHS						_T("Change_log.ch.hlps")
 
+// Define timer IDs
+#define TIMERID_DEFAULT							0x0100
+#define TIMERID_STD_ACTIONSCHEDULE				(TIMERID_DEFAULT + 1)
+#define TIMERID_STD_POWERREMINDER				(TIMERID_DEFAULT + 2)
+#define TIMERID_STD_EVENTSKIPCOUNTER			(TIMERID_DEFAULT + 3)
+#define TIMERID_RMDMSG_AUTOCLOSE				(TIMERID_DEFAULT + 4)
+
 // Other special definitions
-#define TIMERID_STD_BYSECOND					(DWORD)1
-#define TIMERID_RMDMSG_AUTOCLOSE				(DWORD)2
 #define REG_AFX_PROJECTNAME						_T("PowerPlus3")
 #define REG_STARTUP_VALUENAME					REG_AFX_PROJECTNAME
 #define APP_NOTEPAD_PATH						_T("C:\\Windows\\notepad.exe")
@@ -258,62 +263,82 @@
 #define MAKEUNICODE(string)						CA2W(string).m_psz
 #define RESOURCESTRING(resourceid)				LoadResourceString(resourceid)
 
-// Define properties for advanced functions
-#define DEF_SCHEDULE_DEFAULT_REPEAT				0b01111111			// Default repeat: All days of week
+// Define properties for Action Schedule function
+#define DEF_SCHEDULE_DEFAULT_ITEMNUM			1							// Default item number: 1
+#define DEF_SCHEDULE_MAX_ITEMNUM				100							// Max item number: 100
+#define DEF_SCHEDULE_DEFAULT_ITEMID				0x00						// Default item ID: 0
+#define DEF_SCHEDULE_MIN_ITEMID					10000						// Min item ID: 10000
+#define DEF_SCHEDULE_MAX_ITEMID					19999						// Max item ID: 19999
+#define DEF_SCHEDULE_DEFAULT_REPEAT				0b01111111					// Default repeat: All days of week
+#define DEF_SCHEDULE_INIT_ACTION				DEF_APP_ACTION_DISPLAYOFF	// Init action (for new item): Turn off display
+
+#define DEF_SCHEDULE_ERROR						3240L
+#define DEF_SCHEDULE_ERROR_SUCCESS				(DEF_SCHEDULE_ERROR + 1)	// Success (no error)
+#define DEF_SCHEDULE_ERROR_ISDEFAULT			(DEF_SCHEDULE_ERROR + 2)	// Item is default (can not remove/delete)
+#define DEF_SCHEDULE_ERROR_EMPTY				(DEF_SCHEDULE_ERROR + 3)	// Schedule data is empty
+#define DEF_SCHEDULE_ERROR_MAXITEM				(DEF_SCHEDULE_ERROR + 4)	// Schedule data item number reaches maximum limit
+#define DEF_SCHEDULE_ERROR_DUPLICATE			(DEF_SCHEDULE_ERROR + 5)	// Item data is duplicated (can not add)
+#define DEF_SCHEDULE_ERROR_DUPLICATETIME		(DEF_SCHEDULE_ERROR + 5)	// Item time value is duplicated (can not add)
 
 // Define properties for Power Reminder function
-#define DEF_PWRREMINDER_MAX_ITEMNUM				100					// Max item number: 100
-#define DEF_PWRREMINDER_MIN_ITEMID				10000				// Min item ID: 10000
-#define DEF_PWRREMINDER_MAX_ITEMID				19999				// Max item ID: 19999
-#define DEF_PWRREMINDER_PREVIEW_TIMEOUT			10					// Default time-out for preview: 10s
-#define DEF_PWRREMINDER_MIN_SNOOZE				60					// Min snooze interval: 1 minutes
-#define DEF_PWRREMINDER_DEFAULT_SNOOZE			600					// Default snooze interval: 10 minutes
-#define DEF_PWRREMINDER_MAX_SNOOZE				1800				// Max snooze interval: 30 minutes
-#define DEF_PWRREMINDER_DEFAULT_REPEAT			0b01111111			// Default repeat: All days of week
+#define DEF_PWRREMINDER_MAX_ITEMNUM				100							// Max item number: 100
+#define DEF_PWRREMINDER_MIN_ITEMID				10000						// Min item ID: 10000
+#define DEF_PWRREMINDER_MAX_ITEMID				19999						// Max item ID: 19999
+#define DEF_PWRREMINDER_PREVIEW_TIMEOUT			10							// Default time-out for preview: 10s
+#define DEF_PWRREMINDER_MIN_SNOOZE				60							// Min snooze interval: 1 minutes
+#define DEF_PWRREMINDER_DEFAULT_SNOOZE			600							// Default snooze interval: 10 minutes
+#define DEF_PWRREMINDER_MAX_SNOOZE				1800						// Max snooze interval: 30 minutes
+#define DEF_PWRREMINDER_DEFAULT_REPEAT			0b01111111					// Default repeat: All days of week
 
 // Define special strings and numbers
-#define DEF_STRING_EMPTY						_T("")				// Empty string
-#define DEF_STRING_NEWLINE						_T("\n")			// New line string
-#define DEF_STRING_NEWLINEWRET					_T("\r\n")			// New line string (with 'return' character)
-#define DEF_STRING_NULL							_T("#NULL")			// Null/invalid string
-#define DEF_PATH_SEPARATOR						_T("\\")			// File/folder path separator
-#define DEF_SYMBOL_OUTPUTSIGN					_T(">> ")			// Output sign
-#define DEF_SYMBOL_INPUTSIGN					_T(" <<")			// Input sign
-#define DEF_CHAR_QUOTAMARK						_T('\"')			// 'Quotation mark' character
-#define DEF_CHAR_RETURN							_T('\r')			// 'Return' character
-#define DEF_CHAR_ENDLINE						_T('\n')			// 'Endline' character
-#define DEF_CHAR_NEWLINE						_T('\r\n')			// 'New line' character
-#define DEF_CHAR_ENDSTRING						_T('\0')			// Null-termination (end of string)
-#define DEF_FILEEXT_BAKFILE						_T(".bak")			// Backup file extension
-#define DEF_FILEEXT_BAKFILEWNUM					_T("%d.bak")		// Backup file extension (with number)
-#define DEF_BAKFILE_MAXNUM						100					// Maximum backup file number: 100
+#define DEF_STRING_EMPTY						_T("")						// Empty string
+#define DEF_STRING_NEWLINE						_T("\n")					// New line string
+#define DEF_STRING_NEWLINEWRET					_T("\r\n")					// New line string (with 'return' character)
+#define DEF_STRING_NULL							_T("#NULL")					// Null/invalid string
+#define DEF_PATH_SEPARATOR						_T("\\")					// File/folder path separator
+#define DEF_SYMBOL_OUTPUTSIGN					_T(">> ")					// Output sign
+#define DEF_SYMBOL_INPUTSIGN					_T(" <<")					// Input sign
+#define DEF_CHAR_QUOTAMARK						_T('\"')					// 'Quotation mark' character
+#define DEF_CHAR_RETURN							_T('\r')					// 'Return' character
+#define DEF_CHAR_ENDLINE						_T('\n')					// 'Endline' character
+#define DEF_CHAR_NEWLINE						_T('\r\n')					// 'New line' character
+#define DEF_CHAR_ENDSTRING						_T('\0')					// Null-termination (end of string)
+#define DEF_FILEEXT_BAKFILE						_T(".bak")					// Backup file extension
+#define DEF_FILEEXT_BAKFILEWNUM					_T("%d.bak")				// Backup file extension (with number)
+#define DEF_BAKFILE_MAXNUM						100							// Maximum backup file number: 100
 
-#define DEF_INTEGER_INVALID						-1					// Invalid integer number (equals -1)
-#define DEF_INTEGER_NULL						0					// Null integer number (equals 0)
-#define DEF_BOOLVAL_CHECK						-1					// Checked
-#define DEF_BOOLVAL_UNCHECK						0					// Unchecked
-#define DEF_NUM_DAYSOFWEEK						7					// Number of days of week: 7 days
-#define DEF_TOKEN_MAXCOUNT						50					// Max token number: 50
-#define DEF_BUFF_MAXLENGTH						512					// Max buffer length: 512 characters
-#define DEF_STRING_MAXLENGTH					256					// Max string length: 256 characters
+#define DEF_INTEGER_INVALID						-1							// Invalid integer number (equals -1)
+#define DEF_INTEGER_NULL						0							// Null integer number (equals 0)
+#define DEF_BOOLVAL_CHECK						-1							// Checked
+#define DEF_BOOLVAL_UNCHECK						0							// Unchecked
+#define DEF_NUM_DAYSOFWEEK						7							// Number of days of week: 7 days
+#define DEF_TOKEN_MAXCOUNT						50							// Max token number: 50
+#define DEF_BUFF_MAXLENGTH						512							// Max buffer length: 512 characters
+#define DEF_STRING_MAXLENGTH					256							// Max string length: 256 characters
 
-#define DEF_OFFSET_VSCRLBRWIDTH					3					// Offset = 3px
-#define DEF_OFFSET_LISTCTRLWIDTH				5					// Offset = 5px
-#define DEF_LISTCTRL_HEADERHEIGHT				27					// Header height = 27px
-#define DEF_LISTCTRL_ROWHEIGHT					18					// Row height = 18px
-#define DEF_GRIDCTRL_ROWHEADER					0					// Row header index
-#define DEF_GRIDCTRL_HEADERHEIGHT				25					// Header height = 25px
-#define DEF_GRIDCTRL_ROWHEIGHT					23					// Row height = 23px
-#define DEF_GRIDCTRL_HEADERHEIGHTEX				28					// Header height (extra) = 28px
-#define DEF_GRIDCTRL_ROWHEIGHTEX				25					// Row height (extra) = 25px
+#define DEF_WINVER_NONE							0x00
+#define DEF_WINVER_WIN10						DEF_WINVER_NONE+1			// Windows 10
+#define DEF_WINVER_WIN11						DEF_WINVER_NONE+2			// Windows 11
+#define DEF_WINVER_BUILDNUMVER11				21996						// Build number: 21996
 
-#define DEF_SPINCTRL_TIMEMINPOS					0					// As 00:00
-#define DEF_SPINCTRL_TIMEMAXPOS					1439				// As 23:59
-#define DEF_SPINCTRL_SNOOZEMINPOS				1					// Min snooze time: 1 minutes
-#define DEF_SPINCTRL_SNOOZEMAXPOS				30					// Max snooze time: 30 minutes
-#define DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH	30					// Max length: 30 characters
-#define DEF_LOGDISP_STRING_MAXLENGTH			20					// Max length: 20 characters
-#define DEF_LOGFILE_MAXLENGTH					1048576				// Max file size: 1MB
+#define DEF_OFFSET_VSCRLBRWIDTH					3							// Offset = 3px
+#define DEF_OFFSET_LISTCTRLWIDTH				5							// Offset = 5px
+#define DEF_OFFSET_LISTCTRLWIDTH_W10			12							// Offset (on Windows 10) = 12px
+#define DEF_LISTCTRL_HEADERHEIGHT				27							// Header height = 27px
+#define DEF_LISTCTRL_ROWHEIGHT					18							// Row height = 18px
+#define DEF_GRIDCTRL_ROWHEADER					0							// Row header index
+#define DEF_GRIDCTRL_HEADERHEIGHT				25							// Header height = 25px
+#define DEF_GRIDCTRL_ROWHEIGHT					23							// Row height = 23px
+#define DEF_GRIDCTRL_HEADERHEIGHTEX				28							// Header height (extra) = 28px
+#define DEF_GRIDCTRL_ROWHEIGHTEX				25							// Row height (extra) = 25px
+
+#define DEF_SPINCTRL_TIMEMINPOS					0							// As 00:00
+#define DEF_SPINCTRL_TIMEMAXPOS					1439						// As 23:59
+#define DEF_SPINCTRL_SNOOZEMINPOS				1							// Min snooze time: 1 minutes
+#define DEF_SPINCTRL_SNOOZEMAXPOS				30							// Max snooze time: 30 minutes
+#define DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH	30							// Max length: 30 characters
+#define DEF_LOGDISP_STRING_MAXLENGTH			20							// Max length: 20 characters
+#define DEF_LOGFILE_MAXLENGTH					1048576						// Max file size: 1MB
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,6 +352,15 @@ typedef enum eFLAG {
 	FLAG_OFF = 0,					// Flag OFF
 	FLAG_ON	 = 1,					// Flag ON
 } FLAG;
+
+// Return flag value
+typedef enum eRETFLAG {
+	RETFLAG_INVALID = -1,			// Return flag: Invalid
+	RETFLAG_OK,						// Return flag: OK
+	RETFLAG_CANCEL,					// Return flag: Cancel
+	RETFLAG_UPDATE,					// Return flag: Update
+	RETFLAG_CLOSE,					// Return flag: Close
+} RETFLAG;
 
 // Days of week
 typedef enum eDAYOFWEEK {
@@ -364,9 +398,6 @@ typedef enum eAPPOPTIONID {
 	OPTIONID_ALLOWCANCELSCHED,		// Allow canceling schedule when notify
 	OPTIONID_ENABLEHOTKEYSET,		// Enable background action hotkeys
 	OPTIONID_ENABLEPWRREMINDER,		// Enable Power Peminder feature
-	OPTIONID_SCHEDULEACTIVE,		// Enable/disable state
-	OPTIONID_SCHEDULEACTION,		// Schedule action
-	OPTIONID_SCHEDULEREPEAT,		// Repeat daily
 } APPOPTIONID;
 
 // App flag IDs
@@ -417,6 +448,15 @@ typedef enum eGRIDCOLSTYLE {
 	COLSTYLE_CHECKBOX,				// Checkbox cell
 	COLSTYLE_NORMAL,				// Normal cell
 } GRIDCOLSTYLE;
+
+// Schedule data table column IDs
+typedef enum eSCHTABLECOLID {
+	SCHCOL_ID_INDEX = 0,			// Index
+	SCHCOL_ID_STATE,				// Enable/active state
+	SCHCOL_ID_ACTIONID,				// Action ID
+	SCHCOL_ID_TIMEVALUE,			// Time value
+	SCHCOL_ID_REPEAT,				// Repeat daily
+} SCHTABLECOLID;
 
 // Power Reminder table column IDs
 typedef enum ePWRTABLECOLID {
@@ -478,35 +518,80 @@ typedef enum eFILETYPE {
 typedef struct tagCONFIGDATA
 {
 	// Main settings
-	UINT	nLMBAction;										// Left mouse button action
-	UINT	nMMBAction;										// Middle mouse button action
-	UINT	nRMBAction;										// Right mouse button action
-	BOOL	bRMBShowMenu;									// Right mouse button: Only show menu
+	UINT	nLMBAction;												// Left mouse button action
+	UINT	nMMBAction;												// Middle mouse button action
+	UINT	nRMBAction;												// Right mouse button action
+	BOOL	bRMBShowMenu;											// Right mouse button: Only show menu
 
 	// Display setting
-	UINT	nLanguageID;									// Language setting
+	UINT	nLanguageID;											// Language setting
 
 	// System settings
-	BOOL	bShowDlgAtStartup;								// Show dialog at startup
-	BOOL	bStartupEnabled;								// Startup with Windows
-	BOOL	bConfirmAction;									// Show confirm message before executing action
-	BOOL	bSaveActionLog;									// Save action log
-	BOOL	bSaveAppEventLog;								// Save app event log
-	BOOL	bRunAsAdmin;									// Run with admin privileges
-	BOOL	bShowErrorMsg;									// Show action error message
-	BOOL	bNotifySchedule;								// Show notify tip for schedule action
-	BOOL	bAllowCancelSchedule;							// Allow canceling schedule when notify
-	BOOL	bEnableBackgroundHotkey;						// Enable background action hotkeys
-	BOOL	bEnablePowerReminder;							// Enable Power Peminder feature
+	BOOL	bShowDlgAtStartup;										// Show dialog at startup
+	BOOL	bStartupEnabled;										// Startup with Windows
+	BOOL	bConfirmAction;											// Show confirm message before executing action
+	BOOL	bSaveActionLog;											// Save action log
+	BOOL	bSaveAppEventLog;										// Save app event log
+	BOOL	bRunAsAdmin;											// Run with admin privileges
+	BOOL	bShowErrorMsg;											// Show action error message
+	BOOL	bNotifySchedule;										// Show notify tip for schedule action
+	BOOL	bAllowCancelSchedule;									// Allow canceling schedule when notify
+	BOOL	bEnableBackgroundHotkey;								// Enable background action hotkeys
+	BOOL	bEnablePowerReminder;									// Enable Power Peminder feature
 
 	// Member functions
-	void Copy(const tagCONFIGDATA&);						// Copy data
+	void Copy(const tagCONFIGDATA&);								// Copy data
 } CONFIGDATA, *PCONFIGDATA;
 
 //////////////////////////////////////////////////////////////////////////
 //
+//	Data type name:	SCHEDULEITEM
+//  Description:	Store schedule item settings
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagSCHEDULEITEM
+{
+	// Member variables
+	UINT		nItemID;											// Item ID
+	BOOL		bEnable;											// Enable/disable state
+	BOOL		bRepeat;											// Repeat daily
+	UINT		nAction;											// Schedule action
+	SYSTEMTIME	stTime;												// Schedule time
+	BYTE		byRepeatDays;										// Days of week (for repeating)
+
+	// Constructor
+	tagSCHEDULEITEM();												// Default constructor
+	tagSCHEDULEITEM(UINT nItemID);									// Overloaded constructor
+	tagSCHEDULEITEM(const tagSCHEDULEITEM&);						// Copy constructor
+
+	// Operator
+	tagSCHEDULEITEM& operator=(const tagSCHEDULEITEM&);				// Copy assignment operator
+
+	// Member functions
+	void Copy(const tagSCHEDULEITEM&);								// Copy data
+	BOOL Compare(const tagSCHEDULEITEM&);							// Compare items
+	void SetActiveState(BOOL);										// Set item active state
+	BOOL IsEmpty(void);												// Check if item data is empty
+	BOOL IsDayActive(DAYOFWEEK);									// Check if day of week is active
+	void Print(CString& strOutput);									// Print item data
+} SCHEDULEITEM, *PSCHEDULEITEM;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	SCHEDULEITEMLIST
+//  Description:	Store list of Action Schedule items
+//  Derivered from: MFC CArray class
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef CArray<SCHEDULEITEM, SCHEDULEITEM> SCHEDULEITEMLIST;
+
+//////////////////////////////////////////////////////////////////////////
+//
 //	Data type name:	SCHEDULEDATA
-//  Description:	Store app schedule settings
+//  Description:	Store app Action Schedule data settings
 //  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
@@ -514,21 +599,35 @@ typedef struct tagCONFIGDATA
 typedef struct tagSCHEDULEDATA
 {
 	// Member variables
-	BOOL		bEnable;									// Enable/disable state
-	BOOL		bRepeat;									// Repeat daily
-	UINT		nAction;									// Schedule action
-	SYSTEMTIME	stTime;										// Schedule time
-	BYTE		byRepeatDays;								// Days of week (for repeating)
+	SCHEDULEITEM		schDefaultItem;								// Default schedule item
+	SCHEDULEITEMLIST	arrSchedExtraItemList;						// List of extra schedule items
 
 	// Constructor
-	tagSCHEDULEDATA();										// Default constructor
-	tagSCHEDULEDATA(const tagSCHEDULEDATA&);				// Copy constructor
+	tagSCHEDULEDATA();												// Default constructor
+	tagSCHEDULEDATA(const tagSCHEDULEDATA&);						// Copy constructor
+
+	// Operator
+	tagSCHEDULEDATA& operator=(const tagSCHEDULEDATA&);				// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagSCHEDULEDATA&);						// Copy data
-	void Activate();										// Activate schedule
-	void Deactivate();										// Deactivate schedule
-	BOOL IsDayActive(DAYOFWEEK dayOfWeek);					// Check if day of week is active
+	void Init();													// Init data
+	void Copy(const tagSCHEDULEDATA&);								// Copy data
+	DWORD Add(const SCHEDULEITEM&);									// Add item
+	DWORD Update(const SCHEDULEITEM&);								// Update item
+	SCHEDULEITEM& GetDefaultItem(void);								// Get default item
+	SCHEDULEITEM& GetItemAt(int);									// Get item at index
+	void Remove(int);												// Remove item at index
+	void RemoveAll(void);											// Remove all item
+	void Adjust();													// Adjust data validity
+	UINT GetNextID();												// Get next item ID (to add new item)
+	INT_PTR GetExtraItemNum(void) const;							// Get number of extra items
+	BOOL IsDefaultEmpty(void);										// Check if default item is empty
+	BOOL IsEmpty(int);												// Check if item at index is empty
+	BOOL IsExtraEmpty(void);										// Check if extra data is empty
+	BOOL IsAllEmpty(void);											// Check if all items are empty
+	void Delete(int);												// Delete item at index
+	void DeleteExtra(void);											// Delete all extra items
+	void DeleteAll(void);											// Delete all data
 } SCHEDULEDATA, *PSCHEDULEDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -542,16 +641,24 @@ typedef struct tagSCHEDULEDATA
 typedef struct tagHOTKEYSETITEM
 {
 	// Member variables
-	BOOL	bEnable;										// Hotkey enabled/disabled
-	UINT	nHKActionID;									// Hotkey action ID
-	DWORD	dwCtrlKeyCode;									// Control Keycode #1
-	DWORD	dwFuncKeyCode;									// Function Keycode #2
+	BOOL	bEnable;												// Hotkey enabled/disabled
+	UINT	nHKActionID;											// Hotkey action ID
+	DWORD	dwCtrlKeyCode;											// Control Keycode #1
+	DWORD	dwFuncKeyCode;											// Function Keycode #2
+
+	// Constructor
+	tagHOTKEYSETITEM();												// Default constructor
+	tagHOTKEYSETITEM(UINT nHKActionID);								// Overloaded constructor
+	tagHOTKEYSETITEM(const tagHOTKEYSETITEM&);						// Copy constructor
+
+	// Operator
+	tagHOTKEYSETITEM& operator=(const tagHOTKEYSETITEM&);			// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagHOTKEYSETITEM&);						// Copy item
-	BOOL IsEmpty();											// Check if item is empty
-	BOOL Compare(const tagHOTKEYSETITEM&);					// Compare items
-	void Print(CString& strOutput);							// Print item data
+	void Copy(const tagHOTKEYSETITEM&);								// Copy item
+	BOOL IsEmpty(void);												// Check if item is empty
+	BOOL Compare(const tagHOTKEYSETITEM&);							// Compare items
+	void Print(CString& strOutput);									// Print item data
 } HOTKEYSETITEM, *PHOTKEYSETITEM;
 
 //////////////////////////////////////////////////////////////////////////
@@ -575,26 +682,29 @@ typedef CArray<HOTKEYSETITEM, HOTKEYSETITEM> HOTKEYSETITEMLIST;
 typedef struct tagHOTKEYSETDATA
 {
 	// Member variables
-	int				  nItemNum;								// Number of hotkeyset items
-	HOTKEYSETITEMLIST arrHotkeySetList;						// Pointer to HotkeySet list
+	HOTKEYSETITEMLIST arrHotkeySetList;								// Pointer to HotkeySet list
 
 	// Constructor
-	tagHOTKEYSETDATA();										// Default constructor
-	tagHOTKEYSETDATA(const tagHOTKEYSETDATA&);				// Copy constructor
+	tagHOTKEYSETDATA();												// Default constructor
+	tagHOTKEYSETDATA(const tagHOTKEYSETDATA&);						// Copy constructor
+
+	// Operator
+	tagHOTKEYSETDATA& operator=(const tagHOTKEYSETDATA&);			// Copy assignment operator
 
 	// Member functions
-	void Init();											// Init data
-	void Copy(const tagHOTKEYSETDATA&);						// Copy data
-	void Add(const HOTKEYSETITEM&);							// Add item
-	void Update(const HOTKEYSETITEM&);						// Update item
-	HOTKEYSETITEM& GetItemAt(int);							// Get item at index
-	void Remove(int);										// Remove item at index
-	void RemoveAll(void);									// Remove all item
-	void Adjust();											// Adjust data validity
-	BOOL IsEmpty(int);										// Check if item at index is empty
-	BOOL IsAllEmpty();										// Check if all items are empty
-	void Delete(int);										// Delete item at index
-	void DeleteAll(void);									// Delete all data
+	void Init();													// Init data
+	void Copy(const tagHOTKEYSETDATA&);								// Copy data
+	void Add(const HOTKEYSETITEM&);									// Add item
+	void Update(const HOTKEYSETITEM&);								// Update item
+	HOTKEYSETITEM& GetItemAt(int);									// Get item at index
+	void Remove(int);												// Remove item at index
+	void RemoveAll(void);											// Remove all item
+	void Adjust();													// Adjust data validity
+	INT_PTR GetItemNum(void) const;									// Get number of items
+	BOOL IsEmpty(int);												// Check if item at index is empty
+	BOOL IsAllEmpty();												// Check if all items are empty
+	void Delete(int);												// Delete item at index
+	void DeleteAll(void);											// Delete all data
 } HOTKEYSETDATA, *PHOTKEYSETDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -608,19 +718,22 @@ typedef struct tagHOTKEYSETDATA
 typedef struct tagRMDREPEATSET
 {
 	// Member variables
-	BOOL		bRepeat;									// Repeat daily
-	BOOL		bAllowSnooze;								// Allow snoozing mode
-	INT			nSnoozeInterval;							// Snooze interval
-	BYTE		byRepeatDays;								// Days of week (for repeating)
+	BOOL		bRepeat;											// Repeat daily
+	BOOL		bAllowSnooze;										// Allow snoozing mode
+	INT			nSnoozeInterval;									// Snooze interval
+	BYTE		byRepeatDays;										// Days of week (for repeating)
 
 	// Constructor
-	tagRMDREPEATSET();										// Default constructor
-	tagRMDREPEATSET(const tagRMDREPEATSET&);				// Copy constructor
+	tagRMDREPEATSET();												// Default constructor
+	tagRMDREPEATSET(const tagRMDREPEATSET&);						// Copy constructor
+
+	// Operator
+	tagRMDREPEATSET& operator=(const tagRMDREPEATSET&);				// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagRMDREPEATSET&);						// Copy data
-	BOOL Compare(const tagRMDREPEATSET&);					// Compare data
-	BOOL IsDayActive(DAYOFWEEK dayOfWeek);					// Check if day of week is active
+	void Copy(const tagRMDREPEATSET&);								// Copy data
+	BOOL Compare(const tagRMDREPEATSET&);							// Compare data
+	BOOL IsDayActive(DAYOFWEEK dayOfWeek);							// Check if day of week is active
 } RMDREPEATSET, *PRMDREPEATSET;
 
 //////////////////////////////////////////////////////////////////////////
@@ -634,26 +747,30 @@ typedef struct tagRMDREPEATSET
 typedef struct tagPWRREMINDERITEM
 {
 	// Member variables
-	BOOL			bEnable;								// Enable state
-	UINT			nItemID;								// Item ID
-	CString			strMessage;								// Message content
-	UINT			nEventID;								// Event ID
-	SYSTEMTIME		stTime;									// Event time
-	DWORD			dwStyle;								// Reminder style
-	RMDREPEATSET	rpsRepeatSet;							// Repeat set data
+	BOOL			bEnable;										// Enable state
+	UINT			nItemID;										// Item ID
+	CString			strMessage;										// Message content
+	UINT			nEventID;										// Event ID
+	SYSTEMTIME		stTime;											// Event time
+	DWORD			dwStyle;										// Reminder style
+	RMDREPEATSET	rpsRepeatSet;									// Repeat set data
 
 	// Constructor
-	tagPWRREMINDERITEM();									// Default constructor
-	tagPWRREMINDERITEM(const tagPWRREMINDERITEM&);			// Copy constructor
+	tagPWRREMINDERITEM();											// Default constructor
+	tagPWRREMINDERITEM(const tagPWRREMINDERITEM&);					// Copy constructor
+
+	// Operator
+	tagPWRREMINDERITEM& operator=(const tagPWRREMINDERITEM&);		// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagPWRREMINDERITEM&);					// Copy item
-	BOOL IsEmpty();											// Check if item is empty
-	BOOL Compare(const tagPWRREMINDERITEM&);				// Compare items
-	BOOL IsRepeatEnable(void);								// Check if item repeat mode is enabled
-	BOOL IsDayActive(DAYOFWEEK dayOfWeek);					// Check if day of week is active
-	BOOL IsAllowSnoozing(void);								// Check if item snooze mode is available
-	void Print(CString& strOutput);							// Print item data
+	void Copy(const tagPWRREMINDERITEM&);							// Copy item
+	BOOL IsEmpty();													// Check if item is empty
+	BOOL Compare(const tagPWRREMINDERITEM&);						// Compare items
+	void SetEnableState(BOOL);										// Set item enable state
+	BOOL IsRepeatEnable(void);										// Check if item repeat mode is enabled
+	BOOL IsDayActive(DAYOFWEEK dayOfWeek);							// Check if day of week is active
+	BOOL IsAllowSnoozing(void);										// Check if item snooze mode is available
+	void Print(CString& strOutput);									// Print item data
 } PWRREMINDERITEM, *PPWRREMINDERITEM;
 
 //////////////////////////////////////////////////////////////////////////
@@ -677,27 +794,30 @@ typedef CArray<PWRREMINDERITEM, PWRREMINDERITEM> PWRREMINDERITEMLIST;
 typedef struct tagPWRREMINDERDATA
 {
 	// Member variables
-	int					nItemNum;							// Number of reminder items
-	PWRREMINDERITEMLIST	arrRmdItemList;						// List of reminder items
+	PWRREMINDERITEMLIST	arrRmdItemList;								// List of reminder items
 
 	// Constructor
-	tagPWRREMINDERDATA();									// Default constructor
-	tagPWRREMINDERDATA(const tagPWRREMINDERDATA&);			// Copy constructor
+	tagPWRREMINDERDATA();											// Default constructor
+	tagPWRREMINDERDATA(const tagPWRREMINDERDATA&);					// Copy constructor
+
+	// Operator
+	tagPWRREMINDERDATA& operator=(const tagPWRREMINDERDATA&);		// Copy assignment operator
 
 	// Member functions
-	void Init();											// Init data
-	void Copy(const tagPWRREMINDERDATA&);					// Copy data
-	void Add(const PWRREMINDERITEM&);						// Add item
-	void Update(const PWRREMINDERITEM&);					// Update item
-	PWRREMINDERITEM& GetItemAt(int);						// Get item at index
-	void Remove(int);										// Remove item at index
-	void RemoveAll(void);									// Remove all item
-	void Adjust();											// Adjust data validity
-	UINT GetNextID();										// Get next item ID (to add new item)
-	BOOL IsEmpty(int);										// Check if item at index is empty
-	BOOL IsAllEmpty();										// Check if all items are empty
-	void Delete(int);										// Delete item at index
-	void DeleteAll(void);									// Delete all data
+	void Init();													// Init data
+	void Copy(const tagPWRREMINDERDATA&);							// Copy data
+	void Add(const PWRREMINDERITEM&);								// Add item
+	void Update(const PWRREMINDERITEM&);							// Update item
+	PWRREMINDERITEM& GetItemAt(int);								// Get item at index
+	void Remove(int);												// Remove item at index
+	void RemoveAll(void);											// Remove all item
+	void Adjust();													// Adjust data validity
+	UINT GetNextID();												// Get next item ID (to add new item)
+	INT_PTR GetItemNum(void) const;									// Get number of items
+	BOOL IsEmpty(int);												// Check if item at index is empty
+	BOOL IsAllEmpty();												// Check if all items are empty
+	void Delete(int);												// Delete item at index
+	void DeleteAll(void);											// Delete all data
 } PWRREMINDERDATA, *PPWRREMINDERDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -711,17 +831,20 @@ typedef struct tagPWRREMINDERDATA
 typedef struct tagPWRRMDITEMADVSPEC 
 {
 	// Member variables
-	UINT		nItemID;									// Power Reminder item ID
-	int			nSnoozeFlag;								// Snooze trigger flag
-	SYSTEMTIME	stNextSnoozeTime;							// Next snooze trigger time
+	UINT		nItemID;											// Power Reminder item ID
+	int			nSnoozeFlag;										// Snooze trigger flag
+	SYSTEMTIME	stNextSnoozeTime;									// Next snooze trigger time
 
 	// Constructor
-	tagPWRRMDITEMADVSPEC();									// Default constructor
-	tagPWRRMDITEMADVSPEC(const tagPWRRMDITEMADVSPEC&);		// Copy constructor
+	tagPWRRMDITEMADVSPEC();											// Default constructor
+	tagPWRRMDITEMADVSPEC(const tagPWRRMDITEMADVSPEC&);				// Copy constructor
+
+	// Operator
+	tagPWRRMDITEMADVSPEC& operator=(const tagPWRRMDITEMADVSPEC&);	// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagPWRRMDITEMADVSPEC&);					// Copy data
-	void CalcNextSnoozeTime(int nInterval);					// Calculate next snooze time
+	void Copy(const tagPWRRMDITEMADVSPEC&);							// Copy data
+	void CalcNextSnoozeTime(int nInterval);							// Calculate next snooze time
 } PWRRMDITEMADVSPEC, *PPWRRMDITEMADVSPEC;
 
 //////////////////////////////////////////////////////////////////////////
@@ -952,6 +1075,7 @@ typedef struct tagRESTARTREQ
 static IDPAIRLIST idplActionName
 {
 /*----------Action ID---------------------ActionName ID--------------------*/
+	{ DEF_APP_ACTION_NOTHING,		ACTION_NAME_NOTHING				},
 	{ DEF_APP_ACTION_DISPLAYOFF,	ACTION_NAME_DISPLAYOFF			},
 	{ DEF_APP_ACTION_SLEEP,			ACTION_NAME_SLEEP				},
 	{ DEF_APP_ACTION_SHUTDOWN,		ACTION_NAME_SHUTDOWN			},
