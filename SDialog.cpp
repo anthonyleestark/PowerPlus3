@@ -490,13 +490,15 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 //	Function name:	PreDestroyDialog
 //	Description:	Execute some actions before destroying dialog
 //  Arguments:		None
-//  Return value:	None
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::PreDestroyDialog()
+int SDialog::PreDestroyDialog()
 {
-	// TODO: Deliver this function for custom actions
+	// TODO: Deriver this function for custom actions
+
+	return DEF_RESULT_SUCCESS;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1432,7 +1434,7 @@ void SDialog::SetTextColor(COLORREF clTextColor)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SDialog::DisplayMessageBox(UINT nPromptID, UINT nCaptionID, UINT nStyle)
+int SDialog::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UINT nStyle /* = NULL */)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -1462,7 +1464,7 @@ int SDialog::DisplayMessageBox(UINT nPromptID, UINT nCaptionID, UINT nStyle)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, UINT nCaptionID, UINT nStyle)
+int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, UINT nCaptionID /* = NULL */, UINT nStyle /* = NULL */)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -1492,7 +1494,7 @@ int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, UINT nCaptionID, UINT nStyle)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SDialog::DisplayMessageBox(UINT nPromptID, LPCTSTR lpszCaption, UINT nStyle)
+int SDialog::DisplayMessageBox(UINT nPromptID, LPCTSTR lpszCaption, UINT nStyle /* = NULL */)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -1521,7 +1523,7 @@ int SDialog::DisplayMessageBox(UINT nPromptID, LPCTSTR lpszCaption, UINT nStyle)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption, UINT nStyle)
+int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption, UINT nStyle /* = NULL */)
 {
 	// Display message box
 	nStyle |= MB_SYSTEMMODAL;
@@ -1569,7 +1571,7 @@ void SDialog::SetupLanguage()
 
 void SDialog::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
-	// TODO: Deliver this function for custom actions
+	// TODO: Deriver this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1708,7 +1710,7 @@ void SDialog::EnableControl(UINT nCtrlID, BOOL bEnable)
 
 void SDialog::SetupDlgItemState()
 {
-	// TODO: Deliver this function for custom actions
+	// TODO: Deriver this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1722,7 +1724,7 @@ void SDialog::SetupDlgItemState()
 
 void SDialog::RefreshDlgItemState()
 {
-	// TODO: Deliver this function for custom actions
+	// TODO: Deriver this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////

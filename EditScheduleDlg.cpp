@@ -457,7 +457,8 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	nFrameWidth -= DEF_OFFSET_LISTCTRLWIDTH;
 	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
 		// Windows 10 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRLWIDTH_W10;
+		nFrameWidth -= DEF_OFFSET_LISTCTRL_WIN10;
+		nFrameHeight -= DEF_OFFSET_LISTCTRL_WIN10;
 	}
 	if ((DEF_NUM_DAYSOFWEEK * DEF_GRIDCTRL_ROWHEIGHTEX) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
@@ -515,6 +516,12 @@ void CEditScheduleDlg::SetupDlgItemState()
 	m_bEnable = m_schScheduleItemTemp.bEnable;
 	m_bRepeat = m_schScheduleItemTemp.bRepeat;
 
+	// If is currently in read-only or view mode
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == DEF_MODE_VIEW)) {
+		// Disable top checkbox
+		EnableControl(IDC_EDITSCHEDULE_ENABLE_CHK, FALSE);
+	}
+
 	// Enable/disable sub-items
 	EnableSubItems(m_bEnable);
 
@@ -535,7 +542,7 @@ void CEditScheduleDlg::SetupDlgItemState()
 		m_pTimeSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_EDITSCHEDULE_TIME_SPIN);
 		if (m_pTimeSpin == NULL) {
 			TRCLOG("Error: Time spin control not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -861,7 +868,7 @@ void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = T
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
 			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1123,7 +1130,7 @@ void CEditScheduleDlg::OnTimeEditSetFocus()
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
 			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1154,7 +1161,7 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
 			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}

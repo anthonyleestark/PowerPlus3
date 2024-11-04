@@ -61,7 +61,7 @@ CPowerPlusApp::CPowerPlusApp()
 
 	// Init logging pointers
 	m_pAppEventLog = NULL;
-	m_pActionLog = NULL;
+	m_pAppHistoryLog = NULL;
 
 	// Hook procedure handle
 	m_hAppKeyboardHook = NULL;
@@ -113,9 +113,9 @@ CPowerPlusApp::~CPowerPlusApp()
 		m_pAppEventLog = NULL;
 	}
 
-	if (m_pActionLog != NULL) {
-		delete m_pActionLog;
-		m_pActionLog = NULL;
+	if (m_pAppHistoryLog != NULL) {
+		delete m_pAppHistoryLog;
+		m_pAppHistoryLog = NULL;
 	}
 
 	// Destroy DebugTest dialog
@@ -125,6 +125,11 @@ CPowerPlusApp::~CPowerPlusApp()
 		delete m_pDebugTestDlg;
 		m_pDebugTestDlg = NULL;
 	}
+
+	// Release trace/debug log files
+	ReleaseTraceErrorLogFile();
+	ReleaseTraceDebugLogFile();
+	ReleaseDebugInfoLogFile();
 
 	IDMAP_CLEAR()
 	DESTROY_APP_IDMAP()
@@ -167,7 +172,7 @@ BOOL CPowerPlusApp::InitInstance()
 	else {
 		// Load title string failed
 		TRCLOG("Error: Load app window title failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
@@ -206,7 +211,7 @@ BOOL CPowerPlusApp::InitInstance()
 	if (bRet == FALSE) {
 		// Trace log
 		TRCLOG("Error: Init instance failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
@@ -236,7 +241,7 @@ BOOL CPowerPlusApp::InitInstance()
 	if (bRet == FALSE) {
 		// Trace log
 		TRCLOG("Error: Init app data failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
@@ -254,7 +259,7 @@ BOOL CPowerPlusApp::InitInstance()
 	if (!LoadRegistryAppData()) {
 		// Trace log
 		TRCLOG("Error: Load registry app data failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 
 	// Initialize app language
@@ -262,7 +267,7 @@ BOOL CPowerPlusApp::InitInstance()
 	if (bRet == FALSE) {
 		// Trace log
 		TRCLOG("Error: Init app language failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
@@ -272,7 +277,7 @@ BOOL CPowerPlusApp::InitInstance()
 	
 	// Initialize log objects
 	InitAppEventLog();
-	InitActionLog();
+	InitAppHistoryLog();
 
 	if (GetAppEventLogOption() == TRUE) {
 		GetAppEventLog()->OutputLogString("Init Instance");
@@ -289,7 +294,7 @@ BOOL CPowerPlusApp::InitInstance()
 	if (dwResult != ERROR_SUCCESS) {
 		// Handle error and show message
 		TRCLOG("Error: Power event notification register failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwResult, NULL);
 	}
 
@@ -304,7 +309,7 @@ BOOL CPowerPlusApp::InitInstance()
 	if (pMainDlg == NULL) {
 		// Trace error
 		TRCLOG("Error: Main dialog pointer allocation failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		dwErrorCode = DEF_APP_ERROR_APP_INIT_FAILURE;
@@ -353,7 +358,7 @@ BOOL CPowerPlusApp::InitInstance()
 		if (dwResult != ERROR_SUCCESS) {
 			// Handle error and show message
 			TRCLOG("Error: Power event notification unregister failed");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwResult, NULL);
 		}
 	}
@@ -395,9 +400,9 @@ int CPowerPlusApp::ExitInstance()
 		GetAppEventLog()->WriteLog();
 	}
 
-	// Write action logs to file if enabled
-	if (GetActionLogOption() == TRUE) {
-		GetActionLog()->WriteLog();
+	// Write action history logs to file if enabled
+	if (GetAppHistoryLogOption() == TRUE) {
+		GetAppHistoryLog()->WriteLog();
 	}
 
 	// Close DebugTest dialog
@@ -587,25 +592,25 @@ BOOL CPowerPlusApp::InitAppData()
 	if (m_pcfgAppConfig == NULL) {
 		bResult = FALSE;
 		TRCLOG("Error: App config data init failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check schedule data
 	if (m_pschSheduleData == NULL) {
 		bResult = FALSE;
 		TRCLOG("Error: Schedule data init failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check HotkeySet data
 	if (m_phksHotkeySetData == NULL) {
 		bResult = FALSE;
 		TRCLOG("Error: HotkeySet data init failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check Power Reminder data
 	if (m_ppwrReminderData == NULL) {
 		bResult = FALSE;
 		TRCLOG("Error: Power Reminder data init failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 
 	return bResult;
@@ -1255,9 +1260,9 @@ BOOL CPowerPlusApp::LoadGlobalVars(void)
 		SetDebugMode(nGlbValue);
 		bRet |= TRUE;
 	}
-	// Debug log style
-	if (GetGlobalVar(nSubSection, IDS_REGKEY_DBTESTVAR_DBLOGSTYLE, nGlbValue)) {
-		SetDebugLogStyle(nGlbValue);
+	// Debug log output target
+	if (GetGlobalVar(nSubSection, IDS_REGKEY_DBTESTVAR_DBLOGOUTPUT, nGlbValue)) {
+		SetDebugOutputTarget(nGlbValue);
 		bRet |= TRUE;
 	}
 	/*-----------------------------------------------------------------------------------*/
@@ -1329,6 +1334,11 @@ BOOL CPowerPlusApp::LoadGlobalVars(void)
 		SetReminderMsgIconPosition(nGlbValue);
 		bRet |= TRUE;
 	}
+	// Reminder message display position
+	if (GetGlobalVar(nSubSection, IDS_REGKEY_SPECVAR_RMDMSG_MSGDISPPOS, nGlbValue)) {
+		SetReminderMsgDispPosition(nGlbValue);
+		bRet |= TRUE;
+	}
 	// Reminder message display area horizontal margin
 	if (GetGlobalVar(nSubSection, IDS_REGKEY_SPECVAR_RMDMSG_HMARGIN, nGlbValue)) {
 		SetReminderMsgHMargin((UINT)nGlbValue);
@@ -1387,9 +1397,9 @@ BOOL CPowerPlusApp::SaveGlobalVars(BYTE byCateID /* = 0xFF */)
 		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_DBTESTVAR_DEBUGMODE, nGlbValue)) {
 			bRet = FALSE;
 		}
-		// Debug log style
-		nGlbValue = GetDebugLogStyle();
-		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_DBTESTVAR_DBLOGSTYLE, nGlbValue)) {
+		// Debug log output target
+		nGlbValue = GetDebugOutputTarget();
+		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_DBTESTVAR_DBLOGOUTPUT, nGlbValue)) {
 			bRet = FALSE;
 		}
 	}
@@ -1463,6 +1473,11 @@ BOOL CPowerPlusApp::SaveGlobalVars(BYTE byCateID /* = 0xFF */)
 		// Reminder message icon position
 		dwGlbValue = GetReminderMsgIconPosition();
 		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_SPECVAR_RMDMSG_ICONPOS, dwGlbValue)) {
+			bRet = FALSE;
+		}
+		// Reminder message display position
+		dwGlbValue = GetReminderMsgDispPosition();
+		if (!WriteGlobalVar(nSubSection, IDS_REGKEY_SPECVAR_RMDMSG_MSGDISPPOS, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message display area horizontal margin
@@ -2036,7 +2051,7 @@ BOOL CPowerPlusApp::InitAppLanguage()
 	// Check validity after loading
 	if (m_pAppLang == NULL) {
 		TRCLOG("Error: Language pointer acquiring failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 	
@@ -2157,7 +2172,7 @@ void CPowerPlusApp::InitAppEventLog()
 	// Check validity after allocating
 	if (m_pAppEventLog == NULL) {
 		TRCLOG("Error: AppEventLog initialization failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
@@ -2187,14 +2202,14 @@ SLogging* CPowerPlusApp::GetAppEventLog()
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetActionLogOption
-//	Description:	Check if action event log option is enabled
+//	Function name:	GetAppHistoryLogOption
+//	Description:	Check if action history log option is enabled
 //  Arguments:		None
-//  Return value:	BOOL - Save action log option
+//  Return value:	BOOL - Save action history log option
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusApp::GetActionLogOption()
+BOOL CPowerPlusApp::GetAppHistoryLogOption()
 {
 	// Check validity
 	VERIFY(m_pcfgAppConfig != NULL);
@@ -2206,65 +2221,65 @@ BOOL CPowerPlusApp::GetActionLogOption()
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	InitActionLog
-//	Description:	Initialize action log data
+//	Function name:	InitAppHistoryLog
+//	Description:	Initialize action history log data
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusApp::InitActionLog()
+void CPowerPlusApp::InitAppHistoryLog()
 {
 	// Initialization
-	if (m_pActionLog == NULL) {
-		m_pActionLog = new SLogging;
+	if (m_pAppHistoryLog == NULL) {
+		m_pAppHistoryLog = new SLogging;
 	}
 	
 	// Check validity after allocating
-	if (m_pActionLog == NULL) {
-		TRCLOG("Error: ActionLog initialization failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+	if (m_pAppHistoryLog == NULL) {
+		TRCLOG("Error: AppHistoryLog initialization failed");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Set properties
-	m_pActionLog->Init();
-	m_pActionLog->SetLogDataType(LOGTYPE_ACTION_LOG);
-	m_pActionLog->SetLogWriteMode(LOG_WRITE_MODE_INSTANT);
+	m_pAppHistoryLog->Init();
+	m_pAppHistoryLog->SetLogDataType(LOGTYPE_HISTORY_LOG);
+	m_pAppHistoryLog->SetLogWriteMode(LOG_WRITE_MODE_INSTANT);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetActionLog
-//	Description:	Get app action log pointer
+//	Function name:	GetAppHistoryLog
+//	Description:	Get app action history log pointer
 //  Arguments:		None
-//  Return value:	SLogging - Action log pointer
+//  Return value:	SLogging - Action history log pointer
 //
 //////////////////////////////////////////////////////////////////////////
 
-SLogging* CPowerPlusApp::GetActionLog()
+SLogging* CPowerPlusApp::GetAppHistoryLog()
 {
 	// Check validity
-	VERIFY(m_pActionLog != NULL);
-	if ((m_pActionLog == NULL) || (GetActionLogOption() == FALSE))
+	VERIFY(m_pAppHistoryLog != NULL);
+	if ((m_pAppHistoryLog == NULL) || (GetAppHistoryLogOption() == FALSE))
 		return NULL;
 
-	return m_pActionLog;
+	return m_pAppHistoryLog;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	OutputActionLog
+//	Function name:	OutputAppHistoryLog
 //	Description:	Output a log item to action history log
 //  Arguments:		logItem - Log item data
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusApp::OutputActionLog(LOGITEM logItem)
+void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 {
-	if (m_pActionLog == NULL) return;
-	m_pActionLog->OutputLog(logItem);
+	if (m_pAppHistoryLog == NULL) return;
+	m_pAppHistoryLog->OutputLog(logItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2854,14 +2869,14 @@ UINT CPowerPlusApp::GetWindowsOSVersion(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetAutoStartRegRoot
-//	Description:	Get registry root directory for auto-start function
-//  Arguments:		hRootDir - Returned root directory handle (ref-value)
+//	Function name:	GetAutoStartRegistryRootKey
+//	Description:	Get registry root key for auto-start function
+//  Arguments:		hAutoStartRootKey - Returned root key handle (ref-value)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusApp::GetAutoStartRegRootDir(HKEY& hRootDir)
+void CPowerPlusApp::GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
 {
 	// Init info data
 	OSVERSIONINFOEX oviOSVersion;
@@ -2877,11 +2892,11 @@ void CPowerPlusApp::GetAutoStartRegRootDir(HKEY& hRootDir)
 	// Get root directory
 	if (oviOSVersion.dwPlatformId == VER_PLATFORM_WIN32_NT) {
 		// HKEY_CURRENT_USER
-		hRootDir = HKEY_CURRENT_USER;
+		hAutoStartRootKey = HKEY_CURRENT_USER;
 	}
 	else {
 		// HKEY_LOCAL_MACHINE
-		hRootDir = HKEY_LOCAL_MACHINE;
+		hAutoStartRootKey = HKEY_LOCAL_MACHINE;
 	}
 }
 
@@ -2898,23 +2913,23 @@ void CPowerPlusApp::GetAutoStartRegRootDir(HKEY& hRootDir)
 int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 {
 	long lRes;
-	HKEY hRootDir, hKey;
+	HKEY hRootKey, hKey;
 	DWORD dwState;
 	TCHAR tcPath[_MAX_PATH];
 	int nRet;
 
-	// Get root directory
-	GetAutoStartRegRootDir(hRootDir);
+	// Get root key
+	GetAutoStartRegistryRootKey(hRootKey);
 
 	// Create registry key
 	CString strAutoStartRegPath;
 	strAutoStartRegPath.LoadString(IDS_REGSECTION_AUTOSTART);
-	lRes = RegCreateKeyEx(hRootDir, strAutoStartRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hKey, &dwState);
+	lRes = RegCreateKeyEx(hRootKey, strAutoStartRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hKey, &dwState);
 
 	// Registry key creation failed
 	if (lRes != ERROR_SUCCESS) {
 		TRCLOG("Error: Registry key creation failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return 0;
 	}
 
@@ -2926,7 +2941,7 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 
 		if (bRunAsAdmin == TRUE) {
 			// Register to run as admin
-			strAppPath.Format(_T("\"%s\""), GetAppPath());
+			strAppPath.Format(DEF_STRING_QUOTEFORMAT, GetAppPath());
 			strCommand.Format(IDS_COMMAND_REGISTER_RUNASADMIN, REG_AFX_PROJECTNAME, strAppPath);
 			WinExec(CW2A(strCommand.GetString()).m_psz, SW_HIDE);
 		}
@@ -2955,28 +2970,28 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetAutoStartStatus
+//	Function name:	GetAutoStartRegisterStatus
 //	Description:	Check if startup with Windows is enabled or not
 //  Arguments:		None
 //  Return value:	int - Result of querrying process
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CPowerPlusApp::GetAutoStartStatus(void)
+int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 {
 	long lRes;
-	HKEY hRootDir, hKey;
+	HKEY hRootKey, hKey;
 
 	// Get root directory
-	GetAutoStartRegRootDir(hRootDir);
+	GetAutoStartRegistryRootKey(hRootKey);
 
 	// Open registry key
 	CString strAutoStartRegPath;
 	strAutoStartRegPath.LoadString(IDS_REGSECTION_AUTOSTART);
-	lRes = RegOpenKeyEx(hRootDir, strAutoStartRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hKey);
+	lRes = RegOpenKeyEx(hRootKey, strAutoStartRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hKey);
 	if (lRes != ERROR_SUCCESS) {
 		TRCLOG("Error: Registry key open failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return 0;
 	}
 
@@ -3021,7 +3036,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	// Registry key open failed
 	if (lRes != ERROR_SUCCESS) {
 		TRCLOG("Error: Registry key open failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -3055,7 +3070,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	if (lRes != ERROR_SUCCESS) {
 		// Trace error
 		TRCLOG("Error: Registry key query value failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Close key and exit
 		RegCloseKey(hKey);
@@ -3098,7 +3113,7 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEve
 	// Registry key creation failed
 	if (lRes != ERROR_SUCCESS) {
 		TRCLOG("Error: Registry key creation failed");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 

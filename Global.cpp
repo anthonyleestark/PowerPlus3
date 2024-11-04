@@ -29,8 +29,21 @@ BOOL g_bDummyTest = DEFAULT_DUMMYTEST;
 // Debug mode
 BOOL g_bDebugMode = DEFAULT_DEBUGMODE;
 
-// Debug log style
-int g_nDebugLogStyle = DEFAULT_DEBUGLOGSTYLE;
+// Debug log output target flag
+int g_nDebugOutputTarget = DEFAULT_DEBUGOUTPUT;
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------Debug/Test special variables---------------------------------------*/
+
+// Trace error log file pointer
+CFile* g_pFileLogTraceError = NULL;
+
+// Trace error log file pointer
+CFile* g_pFileLogTraceDebug = NULL;
+
+// Debug info log file pointer
+CFile* g_pFileLogDebugInfo = NULL;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -79,6 +92,9 @@ int		 g_nRmdMsgIconSize = DEFAULT_MSGICONSIZE;
 
 // Message icon position
 BYTE	 g_byRmdMsgIconPos = DEFAULT_MSGICONPOS;
+
+// Message display position
+BYTE	 g_byRmdMsgDispPos = DEFAULT_MSGDISPPOS;
 
 // Display area horizontal margin
 UINT	 g_uiRmdMsgHMargin = DEFAULT_MSGHMARGIN;

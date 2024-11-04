@@ -413,7 +413,31 @@ BOOL RegFuncs::WriteScheduleExtra(int nItemIndex, UINT nKeyName, int nValue)
 
 BOOL RegFuncs::DeleteScheduleSection(void)
 {
-	return DeleteRegistrySection(IDS_REGSECTION_SCHEDULE);
+	BOOL bRet = TRUE;
+
+	// Get subsection number
+	int nSubItemNum = 0;
+	bRet &= GetScheduleExtraItemNum(IDS_REGKEY_SCHEDULE_ITEMNUM, nSubItemNum);
+	if (bRet == FALSE) return FALSE;
+
+	// Get section name
+	CString strSectionName;
+	VERIFY(strSectionName.LoadString(IDS_REGSECTION_SCHEDULE));
+
+	// Delete subsection of items
+	for (int nIndex = 0; nIndex < nSubItemNum; nIndex++) {
+		// Format subsection name
+		CString strSubSectionName;
+		strSubSectionName.Format(IDS_REGSECTION_SCHEDITEMID, nIndex);
+
+		// Delete subsection
+		bRet &= DeleteRegistrySection(strSectionName, strSubSectionName);
+	}
+
+	// Delete parent section
+	bRet &= DeleteRegistrySection(IDS_REGSECTION_SCHEDULE);
+
+	return bRet;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -766,7 +790,8 @@ BOOL SConfigBackup::AutoRegistryExport()
 
 	CString strCmd;
 	CString strCmdFormat = _T("\"reg.exe export \"%s\" \"%s\"\" /y");
-	strCmd.Format(strCmdFormat, MakeRegFullPath(regKeyInfo, REGPATH_NOSECTION), FILE_BAK_CONFIG);
+	CString strFilePath = (CString)FILENAME_BAKCONFIG + FILEEXT_REGFILE;
+	strCmd.Format(strCmdFormat, MakeRegFullPath(regKeyInfo, REGPATH_NOSECTION), strFilePath);
 	ExecuteCommand(strCmd, FALSE, FALSE);
 
 	return TRUE;
@@ -785,11 +810,12 @@ BOOL SConfigBackup::PrepareBakFile()
 {
 	if (m_pBakFile == NULL) {
 		TRCLOG("Error: PrepareBakFile failed, pBakFile is NULL");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
-	BOOL bRet = m_pBakFile->Open(FILE_BAK_CONFIG, CFile::modeWrite | CFile::typeText | CFile::modeCreate);
+	CString strFilePath = (CString)FILENAME_BAKCONFIG + FILEEXT_REGFILE;
+	BOOL bRet = m_pBakFile->Open(strFilePath, CFile::modeWrite | CFile::typeText | CFile::modeCreate);
 
 	WriteLine(_T("Windows Registry Editor Version 5.00"));
 	WriteLine();
@@ -882,17 +908,17 @@ void SConfigBackup::UpdateBakFile()
 {
 	if (m_pBakFile == NULL) {
 		TRCLOG("Error: UpdateBakFile failed, pBakFile is NULL");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 	else if (m_pBakFile->m_hFile == CFile::hFileNull) {
 		TRCLOG("Error: UpdateBakFile failed, backup file is not opening");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 	else if (m_strContent.IsEmpty()) {
 		TRCLOG("Error: UpdateBakFile failed, content is empty");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 

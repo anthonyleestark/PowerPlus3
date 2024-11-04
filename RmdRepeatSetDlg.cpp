@@ -249,7 +249,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pSnoozeIntervalEdit = (CEdit*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_INTERVAL_EDIT);
 		if (m_pSnoozeIntervalEdit == NULL) {
 			TRCLOG("Error: Snooze interval edit control not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -257,7 +257,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pSnoozeIntervalSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_INTERVAL_SPIN);
 		if (m_pSnoozeIntervalSpin == NULL) {
 			TRCLOG("Error: Snooze interval spin control not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -265,7 +265,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pRepeatEnableChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_REPEAT_CHK);
 		if (m_pRepeatEnableChk == NULL) {
 			TRCLOG("Error: Repeat enable checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -273,7 +273,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pSnoozeEnableChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_CHK);
 		if (m_pSnoozeEnableChk == NULL) {
 			TRCLOG("Error: Snooze enable checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -281,7 +281,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pActiveMondayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_MONDAY_CHK);
 		if (m_pActiveMondayChk == NULL) {
 			TRCLOG("Error: Monday active checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -289,7 +289,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pActiveTuesdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_TUESDAY_CHK);
 		if (m_pActiveTuesdayChk == NULL) {
 			TRCLOG("Error: Tuesday active checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -297,7 +297,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pActiveWednesdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_WEDNESDAY_CHK);
 		if (m_pActiveWednesdayChk == NULL) {
 			TRCLOG("Error: Wednesday active checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -305,7 +305,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pActiveThursdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_THURSDAY_CHK);
 		if (m_pActiveThursdayChk == NULL) {
 			TRCLOG("Error: Thursday active checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -313,7 +313,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pActiveFridayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_FRIDAY_CHK);
 		if (m_pActiveFridayChk == NULL) {
 			TRCLOG("Error: Friday active checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -321,7 +321,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pActiveSaturdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_SATURDAY_CHK);
 		if (m_pActiveSaturdayChk == NULL) {
 			TRCLOG("Error: Saturday active checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -329,7 +329,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pActiveSundayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK);
 		if (m_pActiveSundayChk == NULL) {
 			TRCLOG("Error: Sunday active checkbox not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}

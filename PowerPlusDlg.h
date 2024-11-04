@@ -66,7 +66,7 @@ private:
 	SCHEDULEDATA	m_schScheduleData;
 	HOTKEYSETDATA	m_hksHotkeySetData;
 	PWRREMINDERDATA m_prdReminderData;
-	ACTIONDATA		m_actActionData;
+	HISTORYINFODATA	m_hidHistoryInfoData;
 
 	// Dialog control variables:
 	CComboBox m_cmbLMBAction;
@@ -101,8 +101,8 @@ private:
 	BOOL		m_bHotkeyRegistered;
 	CUIntArray	m_arrCurRegHKeyList;
 
-	// Power Reminder advanced data
-	PWRREMINDERADVLIST m_arrRmdAdvList;
+	// Power Reminder runtime data
+	PWRREMINDERRUNTIME m_arrRmdRuntimeData;
 
 	// Other flags
 	BOOL m_bRestartAsAdminFlag;
@@ -122,7 +122,7 @@ protected:
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
-	virtual void PreDestroyDialog();
+	virtual int  PreDestroyDialog();
 	virtual void OnDestroy();
 	afx_msg void OnPaint();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -169,21 +169,21 @@ protected:
 	void MoveControls(const int* arrCtrlIDs, int nCount, int nDir, int nDistance);
 
 	// Notify icon functions
-	void SetNotifyIcon();
-	void UpdateNotifyIcon();
-	void RemoveNotifyIcon();
-	BOOL ShowNotifyMenu();
+	void SetNotifyIcon(void);
+	void UpdateNotifyIcon(void);
+	void RemoveNotifyIcon(void);
+	BOOL ShowNotifyMenu(void);
 
 	// Data processing functions
 	void GetAppData(UINT dwDataType = APPDATA_ALL);
 	int  GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp = FALSE);
 	void UpdateDialogData(BOOL bUpdate);
-	BOOL CheckSettingChangeState();
+	BOOL CheckSettingChangeState(void);
 	int  GetFlagValue(APPFLAGID eFlagID);
 	void SetFlagValue(APPFLAGID eFlagID, int nValue);
 
 	// Dialog setup functions
-	void SetupLanguage();
+	void SetupLanguage(void);
 	void SetupComboBox(UINT nComboID, LANGTABLE_PTR pLanguage);
 
 	// Item state/checkbox update functions
@@ -205,29 +205,36 @@ private:
 	// Core functions
 	BOOL ExecuteAction(UINT nActionType, WPARAM wParam = NULL, LPARAM lParam = NULL);
 	void ApplySettings(BOOL bMinimize);
-	void ReloadSettings();
+	void ReloadSettings(void);
 
 	void ShowDialog(HWND hWnd, BOOL bShowFlag = TRUE);
 	void OpenChildDialogEx(UINT nDialogID);
 	void OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode = FALSE, int nOpenMode = DEF_MODE_OPENDLG_MODAL);
-	BOOL OpenFileToView(LPCTSTR lpszFileName, LPCTSTR lpszSubDir = DEF_STRING_EMPTY);
+	BOOL OpenFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir = DEF_STRING_EMPTY);
 	void RestartApp(BOOL bRestartAsAdmin);
 
 	// Advanced features functions
-	BOOL ProcessActionSchedule();
-	void ReupdateActionScheduleData();
+	BOOL ProcessActionSchedule(void);
+	void ReupdateActionScheduleData(void);
 	void SetupBackgroundHotkey(int nMode);
 	BOOL ProcessHotkey(int nHotkeyID);
 	BOOL ExecutePowerReminder(UINT nExecEventID);
-	int  DisplayPwrReminder(PWRREMINDERITEM& pwrDispItem);
-	void ReupdatePwrReminderData();
-	void SetPwrReminderSnooze(PWRREMINDERITEM pwrItem, int nSnoozeFlag);
+	int  DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem);
+	void ReupdatePwrReminderData(void);
+	void SetPwrReminderSnooze(const PWRREMINDERITEM& pwrItem, int nSnoozeFlag);
 	void UpdatePwrReminderSnooze(int nMode);
 	BOOL GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
+	void SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int nDispFlag);
+	INT_PTR GetPwrReminderDispList(CUIntArray& arrPwrDispList);
 	BOOL ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode);
 
-	// Logging and message functions
-	void SaveActionHistory(void);
+	// History and logging functions
+	void InitScheduleHistoryInfo(const SCHEDULEITEM& schItem);
+	void InitHotkeyHistoryInfo(UINT nHKID);
+	void InitPwrReminderHistoryInfo(const PWRREMINDERITEM& pwrItem);
+	void SaveHistoryInfoData(void);
+
+	// Notification and error message functions
 	int	 ConfirmAction(UINT nActionType, UINT nActionID);
 	int  NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate);
 	void ShowErrorMessage(DWORD dwError);

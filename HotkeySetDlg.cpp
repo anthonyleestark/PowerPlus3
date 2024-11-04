@@ -577,7 +577,7 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR ptrLanguage)
 	if (pApp == NULL) return;
 	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
 		// Windows 10 list control offset
-		nViewWidth -= DEF_OFFSET_LISTCTRLWIDTH_W10;
+		nViewWidth -= DEF_OFFSET_LISTCTRL_WIN10;
 	}
 
 	// Fix list control width in case vertical scrollbar is displayed

@@ -297,8 +297,8 @@ BOOL SLogging::WriteLog()
 		{
 		case LOGTYPE_APPEVENT_LOG:
 			// Format app event log filename
-			strFileName.Format(FILE_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth, stTemp.wDay);
-			strFilePath.Format(_T("%s\\%s"), DIR_SUBDIR_LOG, strFileName);
+			strFileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth, stTemp.wDay);
+			MakeFilePath(strFilePath, DIR_SUBDIR_LOG, strFileName, FILEEXT_LOGFILE);
 			if (strCurFileName.IsEmpty())
 				strCurFileName = strFileName;
 
@@ -318,15 +318,15 @@ BOOL SLogging::WriteLog()
 				strCurFileName = strFileName;
 			}
 			break;
-		case LOGTYPE_ACTION_LOG:
-			// Action log
-			strFileName = FILE_ACTION_LOG;
-			strFilePath.Format(_T("%s\\%s"), DIR_SUBDIR_LOG, strFileName);
+		case LOGTYPE_HISTORY_LOG:
+			// App history log
+			strFileName = FILENAME_HISTORY_LOG;
+			MakeFilePath(strFilePath, DIR_SUBDIR_LOG, strFileName, FILEEXT_LOGFILE);
 			break;
 		default:
 			// Wrong argument
 			TRCLOG("Error: Invalid log type");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			// Show error message
 			dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
 			PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
@@ -340,7 +340,7 @@ BOOL SLogging::WriteLog()
 			if (bResult == FALSE) {
 				// Open file failed
 				TRCLOG("Error: Can not open/create log file");
-				TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 				// Show error message
 				dwErrCode = GetLastError();
@@ -406,16 +406,16 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 	{
 	case LOGTYPE_APPEVENT_LOG:
 		// Format app event log filename
-		strFileName.Format(FILE_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay);
+		strFileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay);
 		break;
-	case LOGTYPE_ACTION_LOG:
-		// Action log
-		strFileName = FILE_ACTION_LOG;
+	case LOGTYPE_HISTORY_LOG:
+		// App history log
+		strFileName = FILENAME_HISTORY_LOG;
 		break;
 	default:
 		// Wrong argument
 		TRCLOG("Error: Invalid log type");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
 		return FALSE;
@@ -423,7 +423,7 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 	}
 
 	// Get file path
-	strFilePath.Format(_T("%s\\%s"), DIR_SUBDIR_LOG, strFileName);
+	MakeFilePath(strFilePath, DIR_SUBDIR_LOG, strFileName, FILEEXT_LOGFILE);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -432,7 +432,7 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 		if (bResult == FALSE) {
 			// Open file failed
 			TRCLOG("Error: Can not open/create log file");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
 			dwErrCode = GetLastError();
@@ -488,7 +488,7 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 	if (this->GetLogWriteMode() != LOG_WRITE_MODE_INSTANT) {
 		bResult = FALSE;
 		TRCLOG("Error: Not write instantly mode");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return bResult;
 	}
 
@@ -507,16 +507,16 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 	{
 	case LOGTYPE_APPEVENT_LOG:
 		// Format app event log filename
-		strFileName.Format(FILE_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth, stCurTime.wDay);
+		strFileName.Format(FILENAME_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth, stCurTime.wDay);
 		break;
-	case LOGTYPE_ACTION_LOG:
-		// Action log
-		strFileName = FILE_ACTION_LOG;
+	case LOGTYPE_HISTORY_LOG:
+		// App history log
+		strFileName = FILENAME_HISTORY_LOG;
 		break;
 	default:
 		// Wrong argument
 		TRCLOG("Error: Invalid log type");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		// Show error message
 		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
@@ -525,7 +525,7 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 	}
 
 	// Get file path
-	strFilePath.Format(_T("%s\\%s"), DIR_SUBDIR_LOG, strFileName);
+	MakeFilePath(strFilePath, DIR_SUBDIR_LOG, strFileName, FILEEXT_LOGFILE);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -534,7 +534,7 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 		if (bResult == FALSE) {
 			// Open file failed
 			TRCLOG("Error: Can not open/create log file");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
 			dwErrCode = GetLastError();

@@ -90,7 +90,6 @@ public:
 	void UpdateDataItemList();
 	void DisableDataTable(BOOL bDisable);
 	void RedrawDataTable(BOOL bReadOnly = FALSE);
-	void DisplayItemDetails(int nIndex);
 	void RefreshDlgItemState(BOOL bRecheckState);
 	void UpdateCheckAllBtnState(BOOL bRecheck = FALSE);
 
@@ -117,6 +116,8 @@ public:
 	afx_msg void OnRemoveAll();
 	afx_msg void OnCheckAll();
 	afx_msg void OnUncheckAll();
+	afx_msg void OnViewDetails();
+	afx_msg void OnSetDefault();
 	afx_msg void OnSelectScheduleItem(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult);

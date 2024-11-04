@@ -126,7 +126,7 @@ BOOL CDebugTestDlg::OnInitDialog()
 	BOOL bRet = InitDebugEditView(IDC_DEBUGTEST_EDITVIEW);
 	if (bRet == FALSE) {
 		TRCLOG("Error: Debug edit view initialization failed!!!");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return bRet;
 	}
 
@@ -894,6 +894,22 @@ void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */)
 	// Move to end
 	if (bSeekToEnd == TRUE) {
 		GetDebugEditView()->SetSel(-1);
+	}
+
+	// Check if parent window is available
+	if (IsParentWndAvailable()) {
+		// Send to parent window
+		GetParentWnd()->PostMessage(SM_WND_DEBUGOUTPUTDISP);
+	}
+	// Check if main window is available
+	else if (CWnd* pMainWnd = AfxGetMainWnd()) {
+		// Send to main window
+		pMainWnd->PostMessage(SM_WND_DEBUGOUTPUTDISP);
+	}
+	// There's no window handle to send to
+	else {
+		// Just send to a NULL window and hope that app class will handle
+		::PostMessage(NULL, SM_WND_DEBUGOUTPUTDISP, NULL, NULL);
 	}
 }
 

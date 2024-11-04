@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Global.h
@@ -35,32 +35,90 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*-------------------------------------------Debug/Test variables-------------------------------------------*/
+/*----------------------------------------------Debug/Test flags---------------------------------------------*/
 
 // Define default value
 #define DEFAULT_DUMMYTEST		FALSE
 #define DEFAULT_DEBUGMODE		FALSE
-#define DEFAULT_DEBUGLOGSTYLE	DBLOG_OUTPUTDBSTRING
+#define DEFAULT_DEBUGOUTPUT		DBOUT_DEFAULT
 
-// Dummy test mode
+// Dummy test mode flag
 extern BOOL g_bDummyTest;
 static inline BOOL GetDummyTestMode() { return g_bDummyTest; }
 static inline void SetDummyTestMode(BOOL bValue) { g_bDummyTest = bValue; }
 
-// Debug mode
+// Debug mode flag
 extern BOOL g_bDebugMode;
 static inline BOOL GetDebugMode() {	return g_bDebugMode; }
 static inline void SetDebugMode(BOOL bValue) { g_bDebugMode = bValue; }
 
-// Debug log style
+// Debug log output target flag
 enum eDEBUGOUTPUT {
-	DBLOG_OUTPUTDBSTRING = 0,
-	DBLOG_OUTPUTTOFILE,
-	DBLOG_OUTPUTTODBTOOL,
+	DBOUT_DEFAULT = 0,
+	DBOUT_DEBUGINFOFILE,
+	DBOUT_DEBUGTESTTOOL,
 };
-extern int g_nDebugLogStyle;
-static inline BOOL GetDebugLogStyle() { return g_nDebugLogStyle; }
-static inline void SetDebugLogStyle(int nValue) { g_nDebugLogStyle = nValue; }
+extern int g_nDebugOutputTarget;
+static inline BOOL GetDebugOutputTarget() { return g_nDebugOutputTarget; }
+static inline void SetDebugOutputTarget(int nValue) { g_nDebugOutputTarget = nValue; }
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------Debug/Test special variables---------------------------------------*/
+
+// Trace error log file pointer
+extern CFile* g_pFileLogTraceError;
+static inline CFile* GetTraceErrorLogFile() { return g_pFileLogTraceError; }
+static inline BOOL InitTraceErrorLogFile(void);
+static inline void ReleaseTraceErrorLogFile(void)
+{
+	// Clean up trace error log file pointer
+	if (g_pFileLogTraceError != NULL) {
+		// Close file if is opening
+		if (g_pFileLogTraceError->m_hFile != CFile::hFileNull) {
+			g_pFileLogTraceError->Flush();
+			g_pFileLogTraceError->Close();
+		}
+		delete g_pFileLogTraceError;
+		g_pFileLogTraceError = NULL;
+	}
+}
+
+// Trace debug info log file pointer
+extern CFile* g_pFileLogTraceDebug;
+static inline CFile* GetTraceDebugLogFile() { return g_pFileLogTraceDebug; }
+static inline BOOL InitTraceDebugLogFile(void);
+static inline void ReleaseTraceDebugLogFile(void)
+{
+	// Clean up trace debug info log file pointer
+	if (g_pFileLogTraceDebug != NULL) {
+		// Close file if is opening
+		if (g_pFileLogTraceDebug->m_hFile != CFile::hFileNull) {
+			g_pFileLogTraceDebug->Flush();
+			g_pFileLogTraceDebug->Close();
+		}
+		delete g_pFileLogTraceDebug;
+		g_pFileLogTraceDebug = NULL;
+	}
+}
+
+// Debug info output log file pointer
+extern CFile* g_pFileLogDebugInfo;
+static inline CFile* GetDebugInfoLogFile() { return g_pFileLogDebugInfo; }
+static inline BOOL InitDebugInfoLogFile(void);
+static inline void ReleaseDebugInfoLogFile(void)
+{
+	// Clean up debug info log file pointer
+	if (g_pFileLogDebugInfo != NULL) {
+		// Close file if is opening
+		if (g_pFileLogDebugInfo->m_hFile != CFile::hFileNull) {
+			g_pFileLogDebugInfo->Flush();
+			g_pFileLogDebugInfo->Close();
+		}
+		delete g_pFileLogDebugInfo;
+		g_pFileLogDebugInfo = NULL;
+	}
+}
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -102,6 +160,7 @@ static inline void SetSessionEndFlag(BYTE byValue) { g_bySessionEndFlag = byValu
 #define DEFAULT_MSGICONID		IDI_MSGICON_INFORMATION		// Default icon ID: MB_ICONINFORMATION
 #define DEFAULT_MSGICONSIZE		50							// Default icon size: 50x50px
 #define DEFAULT_MSGICONPOS		MSGICONPOS_ONTOP			// Default icon position: On top
+#define DEFAULT_MSGDISPPOS		MSGDISPPOS_CENTER			// Default display position: Center screen
 #define DEFAULT_MSGHMARGIN		50							// Default horizontal margin: 50px
 #define DEFAULT_MSGVMARGIN		50							// Default vertical margin: 50px
 #define DEFAULT_SNOOZETIME		600							// Default snooze time: 10 minutes
@@ -167,6 +226,18 @@ enum eMSGICONPOSITION {
 extern BYTE g_byRmdMsgIconPos;
 static inline BYTE GetReminderMsgIconPosition() { return g_byRmdMsgIconPos; }
 static inline void SetReminderMsgIconPosition(BYTE byValue) { g_byRmdMsgIconPos = byValue; };
+
+// Message display position
+enum eMSGDISPPOSITION {
+	MSGDISPPOS_CENTER = 0,
+	MSGDISPPOS_TOPLEFT,
+	MSGDISPPOS_TOPRIGHT,
+	MSGDISPPOS_BOTTOMLEFT,
+	MSGDISPPOS_BOTTOMRIGHT,
+};
+extern BYTE g_byRmdMsgDispPos;
+static inline BYTE GetReminderMsgDispPosition() { return g_byRmdMsgDispPos; }
+static inline void SetReminderMsgDispPosition(BYTE byValue) { g_byRmdMsgDispPos = byValue; };
 
 // Display area horizontal margin
 extern UINT g_uiRmdMsgHMargin;
