@@ -6209,6 +6209,10 @@ CPoint CGridCtrl::GetPointClicked(int nRow, int nCol, const CPoint& point)
 
 void CGridCtrl::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
+    // If mouse event is disabled, do nothing
+    if (m_bMouseClickDisable == TRUE)
+        return;
+
     TRACE0("CGridCtrl::OnLButtonDblClk\n");
 
 	CCellID cellOriginal;
@@ -6791,16 +6795,13 @@ void CGridCtrl::OnLButtonUp(UINT nFlags, CPoint point)
     {
 	    SendMessageToParent(m_idCurrentCell.row, m_idCurrentCell.col, GVN_SELCHANGED);
 
-//+++++<NW012919>
-        SendMessageToParent(m_idCurrentCell.row, m_idCurrentCell.col, NM_CLICK);
-//-----<NW012919>
-
 		CGridCellBase* pCell = GetCell(m_idCurrentCell.row, m_idCurrentCell.col);
         if (pCell)
             pCell->OnClick( GetPointClicked( m_idCurrentCell.row, m_idCurrentCell.col, point) );
-//+++++<NW012919>
-//        SendMessageToParent(m_LeftClickDownCell.row, m_LeftClickDownCell.col, NM_CLICK);
-//-----<NW012919>
+
+        // Anthony Lee Stark (2024.11.04):
+        // NM_CLICK message must come after cell done handling its mouse click event
+        SendMessageToParent(m_LeftClickDownCell.row, m_LeftClickDownCell.col, NM_CLICK);
     }
     
     m_MouseMode = MOUSE_NOTHING;
@@ -6821,6 +6822,10 @@ void CGridCtrl::OnLButtonUp(UINT nFlags, CPoint point)
 #ifndef _WIN32_WCE
 void CGridCtrl::OnRButtonDown(UINT nFlags, CPoint point)
 {
+    // If mouse event is disabled, do nothing
+    if (m_bMouseClickDisable == TRUE)
+        return;
+
     CWnd::OnRButtonDown(nFlags, point);
 	m_bRMouseButtonDown = TRUE;
 
@@ -6834,6 +6839,10 @@ void CGridCtrl::OnRButtonDown(UINT nFlags, CPoint point)
 // menu can be shown without deriving a new grid class.
 void CGridCtrl::OnRButtonUp(UINT nFlags, CPoint point)
 {
+    // If mouse event is disabled, do nothing
+    if (m_bMouseClickDisable == TRUE)
+        return;
+
     CWnd::OnRButtonUp(nFlags, point);
 
 	m_bRMouseButtonDown = FALSE;

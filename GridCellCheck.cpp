@@ -31,7 +31,7 @@ CGridCellCheck::CGridCellCheck() : CGridCell()
     m_bChecked = FALSE;
     //m_Rect.IsRectNull();
     m_bCentering = FALSE;
-    //m_bReadOnly = FALSE;
+    m_bClickPtInBox = FALSE;
 }
 
 CSize CGridCellCheck::GetCellExtent(CDC* pDC)
@@ -69,16 +69,16 @@ void CGridCellCheck::SetCheckPlacement(int nFormat)
     }
 }
 
-//// Get/set the read-only mode (editable state) for check cell
-//void CGridCellCheck::SetReadOnly(BOOL bReadOnly)
-//{
-//    m_bReadOnly = bReadOnly;
-//}
-//
-//BOOL CGridCellCheck::GetReadOnly()
-//{
-//    return m_bReadOnly;
-//}
+// Get/set the flag with validate if clicked point is inside the checkbox
+void CGridCellCheck::SetClickPtInBoxFlag(BOOL bValue)
+{
+    m_bClickPtInBox = bValue;
+}
+
+BOOL CGridCellCheck::IsClickPtInBox(void)
+{
+    return m_bClickPtInBox;
+}
 
 // Override draw so that when the cell is selected, a drop arrow is shown in the RHS.
 BOOL CGridCellCheck::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
@@ -109,17 +109,24 @@ void CGridCellCheck::OnClick(CPoint PointCellRelative)
 	// PointCellRelative is relative to the topleft of the cell. Convert to client coords
 	PointCellRelative += m_Rect.TopLeft();
 
+#if 1
+    // Anthony Lee Stark (2024.11.04):
+    // Remove this so that the cell will handle and update the checked state itself
+#else
     // Bail if cell is read-only
     CCellID cell = GetGrid()->GetCellFromPt(PointCellRelative);	
     if (!GetGrid()->IsCellEditable(cell))		
         return;
+#endif
 
-	// GetCheckPlacement returns the checkbox dimensions in client coords. Only check/
-	// uncheck if the user clicked in the box
+	// GetCheckPlacement returns the checkbox dimensions in client coords. 
+    // Only check/uncheck if the user clicked in the box
+    SetClickPtInBoxFlag(FALSE);
 	if (GetCheckPlacement().PtInRect(PointCellRelative))
 	{
 		m_bChecked = !m_bChecked;
 		GetGrid()->InvalidateRect(m_Rect);
+        SetClickPtInBoxFlag(TRUE);
 	}
 }
 

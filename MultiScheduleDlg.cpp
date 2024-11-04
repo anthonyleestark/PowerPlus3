@@ -408,10 +408,15 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	DrawDataTable(GetReadOnlyMode());
 
 	// Display table
+	m_pDataItemListTable->SetListMode(TRUE);
 	m_pDataItemListTable->SetEditable(FALSE);
 	m_pDataItemListTable->SetColumnResize(FALSE);
 	m_pDataItemListTable->SetRowResize(FALSE);
-	m_pDataItemListTable->EnableSelection(FALSE);
+	m_pDataItemListTable->EnableSelection(TRUE);
+	m_pDataItemListTable->SetSingleRowSelection(TRUE);
+	m_pDataItemListTable->SetSingleColSelection(FALSE);
+	m_pDataItemListTable->SetFixedRowSelection(FALSE);
+	m_pDataItemListTable->SetFixedColumnSelection(FALSE);
 	m_pDataItemListTable->ShowWindow(SW_SHOW);
 	m_pDataItemListTable->SetRedraw(TRUE);
 }
@@ -1693,17 +1698,21 @@ void CMultiScheduleDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 		return;
 	}
 
+#if 0
 	// Handle click event on Checkbox columns
 	if (((nCol == SCHCOL_ID_STATE) || (nCol == SCHCOL_ID_REPEAT)) && (nRow != DEF_GRIDCTRL_ROWHEADER)) {
 		if (m_pDataItemListTable == NULL) return;
 		CGridCellCheck* clickedCell = (CGridCellCheck*)(m_pDataItemListTable->GetCell(nRow, nCol));
 		if (clickedCell == NULL) return;
+
+		// Change cell selected state
 		BOOL bCheck = clickedCell->GetCheck();
 		clickedCell->SetCheck(!bCheck);
 
 		// Update cell
 		m_pDataItemListTable->RedrawCell(nRow, nCol);
 	}
+#endif
 
 	*pResult = NULL;
 
@@ -1736,17 +1745,21 @@ void CMultiScheduleDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult
 		return;
 	}
 
+#if 0
 	// Handle click event on Checkbox columns
 	if (((nCol == SCHCOL_ID_STATE) || (nCol == SCHCOL_ID_REPEAT)) && (nRow != DEF_GRIDCTRL_ROWHEADER)) {
 		if (m_pDataItemListTable == NULL) return;
 		CGridCellCheck* clickedCell = (CGridCellCheck*)(m_pDataItemListTable->GetCell(nRow, nCol));
 		if (clickedCell == NULL) return;
+
+		// Change cell selected state
 		BOOL bCheck = clickedCell->GetCheck();
 		clickedCell->SetCheck(!bCheck);
 
 		// Update cell
 		m_pDataItemListTable->RedrawCell(nRow, nCol);
 	}
+#endif
 
 	*pResult = NULL;
 

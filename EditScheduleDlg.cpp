@@ -408,10 +408,13 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
 	DrawActiveDayTable(GetReadOnlyMode());
 
 	// Display table
+	m_pActiveDayListTable->SetListMode(TRUE);
 	m_pActiveDayListTable->SetEditable(FALSE);
 	m_pActiveDayListTable->SetColumnResize(FALSE);
 	m_pActiveDayListTable->SetRowResize(FALSE);
-	m_pActiveDayListTable->EnableSelection(FALSE);
+	m_pActiveDayListTable->EnableSelection(TRUE);
+	m_pActiveDayListTable->SetSingleRowSelection(TRUE);
+	m_pActiveDayListTable->SetSingleColSelection(FALSE);
 	m_pActiveDayListTable->ShowWindow(SW_SHOW);
 	m_pActiveDayListTable->SetRedraw(TRUE);
 }
@@ -1239,6 +1242,7 @@ void CEditScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
 	int nCol = pItem->iColumn;
 	int nRow = pItem->iRow;
 
+#if 0
 	// Handle click event on Checkbox columns
 	if (nCol == COL_ID_CHECKBOX) {
 		if (m_pActiveDayListTable == NULL) return;
@@ -1249,12 +1253,13 @@ void CEditScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
 
 		// Update cell
 		m_pActiveDayListTable->RedrawCell(nRow, nCol);
-
-		// Update data (also check change state)
-		m_bChangeFlag = CheckDataChangeState();
 	}
+#endif
 
 	*pResult = NULL;
+
+	// Update data (also check change state)
+	m_bChangeFlag = CheckDataChangeState();
 
 	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);
@@ -1278,6 +1283,7 @@ void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult
 	int nCol = pItem->iColumn;
 	int nRow = pItem->iRow;
 
+#if 0
 	// Handle click event on Checkbox columns
 	if (nCol == COL_ID_CHECKBOX) {
 		if (m_pActiveDayListTable == NULL) return;
@@ -1288,12 +1294,13 @@ void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult
 
 		// Update cell
 		m_pActiveDayListTable->RedrawCell(nRow, nCol);
-
-		// Update data (also check change state)
-		m_bChangeFlag = CheckDataChangeState();
 	}
+#endif
 
 	*pResult = NULL;
+
+	// Update data (also check change state)
+	m_bChangeFlag = CheckDataChangeState();
 
 	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);

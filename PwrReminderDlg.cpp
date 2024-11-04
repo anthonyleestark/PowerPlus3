@@ -676,17 +676,21 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	if ((nCurMode != DEF_MODE_INIT) && (nCurMode != DEF_MODE_VIEW))
 		return;
 
+#if 0
 	// Handle click event on Checkbox columns
 	if (((nCol == PWRCOL_ID_STATE) || (nCol == PWRCOL_ID_REPEAT)) && (nRow != DEF_GRIDCTRL_ROWHEADER)) {
 		if (m_pDataItemListTable == NULL) return;
 		CGridCellCheck* clickedCell = (CGridCellCheck*)(m_pDataItemListTable->GetCell(nRow, nCol));
 		if (clickedCell == NULL) return;
+
+		// Change cell selected state
 		BOOL bCheck = clickedCell->GetCheck();
 		clickedCell->SetCheck(!bCheck);
 
 		// Update cell
 		m_pDataItemListTable->RedrawCell(nRow, nCol);
 	}
+#endif
 
 	*pResult = NULL;
 
@@ -724,17 +728,21 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	if ((nCurMode != DEF_MODE_INIT) && (nCurMode != DEF_MODE_VIEW))
 		return;
 
+#if 0
 	// Handle click event on Checkbox columns
 	if (((nCol == PWRCOL_ID_STATE) || (nCol == PWRCOL_ID_REPEAT)) && (nRow != DEF_GRIDCTRL_ROWHEADER)) {
 		if (m_pDataItemListTable == NULL) return;
 		CGridCellCheck* clickedCell = (CGridCellCheck*)(m_pDataItemListTable->GetCell(nRow, nCol));
 		if (clickedCell == NULL) return;
+
+		// Change cell selected state
 		BOOL bCheck = clickedCell->GetCheck();
 		clickedCell->SetCheck(!bCheck);
 
 		// Update cell
 		m_pDataItemListTable->RedrawCell(nRow, nCol);
 	}
+#endif
 
 	*pResult = NULL;
 
@@ -1250,10 +1258,15 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	DrawDataTable(m_pszFrameWndSize, nColNum, nRowNum, FALSE, ptrLanguage);
 
 	// Display table
+	m_pDataItemListTable->SetListMode(TRUE);
 	m_pDataItemListTable->SetEditable(FALSE);
 	m_pDataItemListTable->SetColumnResize(FALSE);
 	m_pDataItemListTable->SetRowResize(FALSE);
-	m_pDataItemListTable->EnableSelection(FALSE);
+	m_pDataItemListTable->EnableSelection(TRUE);
+	m_pDataItemListTable->SetSingleRowSelection(TRUE);
+	m_pDataItemListTable->SetSingleColSelection(FALSE);
+	m_pDataItemListTable->SetFixedRowSelection(FALSE);
+	m_pDataItemListTable->SetFixedColumnSelection(FALSE);
 	m_pDataItemListTable->ShowWindow(SW_SHOW);
 	m_pDataItemListTable->SetRedraw(TRUE);
 }

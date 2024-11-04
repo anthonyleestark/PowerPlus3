@@ -43,11 +43,11 @@ public:
     virtual void OnClick( CPoint PointCellRelative);
     virtual BOOL GetTextRect( LPRECT pRect);
     virtual void SetCheckPlacement(int nFormat);
-    //virtual void SetReadOnly(BOOL bReadOnly);
-    //virtual BOOL GetReadOnly();
+    virtual BOOL IsClickPtInBox(void);
 
 protected:
-	CRect GetCheckPlacement();
+	CRect GetCheckPlacement(void);
+    void  SetClickPtInBoxFlag(BOOL bValue);
 
     virtual BOOL Draw(CDC* pDC, int nRow, int nCol, CRect rect, BOOL bEraseBkgnd = TRUE);
 
@@ -55,7 +55,7 @@ protected:
     BOOL  m_bChecked;
     CRect m_Rect;
     BOOL  m_bCentering;
-    //BOOL  m_bReadOnly;
+    BOOL  m_bClickPtInBox;
 };
 
 /////////////////////////////////////////////////////////////////////////////
