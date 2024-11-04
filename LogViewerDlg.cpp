@@ -186,7 +186,7 @@ void CLogViewerDlg::UpdateLogViewer()
 	}
 	if (m_pLogViewerList == NULL) {
 		TRCLOG("Error: LogViewer list control not found");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 

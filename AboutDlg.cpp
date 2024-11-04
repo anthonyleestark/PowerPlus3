@@ -451,20 +451,20 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 	UINT nCurLanguage = pApp->GetAppLanguageOption(TRUE);
 
 	// Get help file name
-	CString strHelpFileName = CString(DIR_SUBDIR_HELP) + DEF_PATH_SEPARATOR;
+	CString strHelpFileName;
 
 	// View help file mode
 	if (GetViewMode() == DEF_MODE_HELPVIEW_HELPFILE) {
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			strHelpFileName += FILE_HELP_ENG;
+			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_HELP_ENG, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			strHelpFileName += FILE_HELP_VIE;
+			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_HELP_VIE, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			strHelpFileName += FILE_HELP_CHS;
+			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_HELP_CHS, FILEEXT_HELPFILE);
 			break;
 		}
 	}
@@ -473,13 +473,13 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			strHelpFileName += FILE_CHANGELOG_ENG;
+			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_CHANGELOG_ENG, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			strHelpFileName += FILE_CHANGELOG_VIE;
+			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_CHANGELOG_VIE, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			strHelpFileName += FILE_CHANGELOG_CHS;
+			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_CHANGELOG_CHS, FILEEXT_HELPFILE);
 			break;
 		}
 	}
@@ -516,12 +516,12 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		if (GetViewMode() == DEF_MODE_HELPVIEW_HELPFILE) {
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
 			TRCLOG("Error: Help file not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
 		else if(GetViewMode() == DEF_MODE_HELPVIEW_CHANGELOG) {
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
 			TRCLOG("Error: Changelog file not found");
-			TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
 	}
 

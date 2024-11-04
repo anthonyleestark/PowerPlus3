@@ -143,7 +143,7 @@ public:
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	virtual void PreDestroyDialog();
+	virtual int	 PreDestroyDialog();
 
 	// Member functions
 	virtual CWnd* GetParentWnd();
@@ -209,10 +209,10 @@ public:
 	virtual void SetTextColor(COLORREF clTextColor);
 
 	// MessageBox and logging functions
-	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID, UINT nStyle);
-	virtual int DisplayMessageBox(LPCTSTR lpszPrompt, UINT nCaptionID, UINT nStyle);
-	virtual int DisplayMessageBox(UINT nPromptID, LPCTSTR lpszCaption, UINT nStyle);
-	virtual int DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption, UINT nStyle);
+	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
+	virtual int DisplayMessageBox(LPCTSTR lpszPrompt, UINT nCaptionID = NULL, UINT nStyle = NULL);
+	virtual int DisplayMessageBox(UINT nPromptID, LPCTSTR lpszCaption, UINT nStyle = NULL);
+	virtual int DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption, UINT nStyle = NULL);
 
 	// Dialog and items setup functions
 	virtual void SetupLanguage();

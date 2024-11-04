@@ -57,7 +57,7 @@ private:
 
 	// Logging pointers
 	SLogging* m_pAppEventLog;
-	SLogging* m_pActionLog;
+	SLogging* m_pAppHistoryLog;
 
 	// Hook procedure handle
 	HHOOK m_hAppKeyboardHook;
@@ -117,11 +117,11 @@ public:
 	BOOL GetAppEventLogOption();
 	void InitAppEventLog();
 	SLogging* GetAppEventLog();
-	BOOL GetActionLogOption();
-	void InitActionLog();
-	SLogging* GetActionLog();
+	BOOL GetAppHistoryLogOption();
+	void InitAppHistoryLog();
+	SLogging* GetAppHistoryLog();
 
-	void OutputActionLog(LOGITEM logItem);
+	void OutputAppHistoryLog(LOGITEM logItem);
 	void OutputDataChangeLog(CONFIGDATA& cfgBakData);
 	void OutputDataChangeLog(SCHEDULEDATA& schBakData);
 	void OutputDataChangeLog(HOTKEYSETDATA& hksBakData);
@@ -139,9 +139,9 @@ public:
 
 	// Registry functions
 	UINT GetWindowsOSVersion(void);
-	void GetAutoStartRegRootDir(HKEY& hRootDir);
+	void GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey);
 	int EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin);
-	int GetAutoStartStatus(void);
+	int GetAutoStartRegisterStatus(void);
 	BOOL GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEvent);
 	BOOL SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEvent);
 };

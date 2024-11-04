@@ -117,7 +117,7 @@ static LANGTABLE langtable_en_US
 /*--------Menu Item ID--------------------------------------------------------------------Language String-------------------------------------------------------------*/
 	{ IDM_NOTIFY_OPENDLG_ABOUT,								_T("About") },
 	{ IDM_NOTIFY_OPENDLG_HELP,								_T("Help") },
-	{ IDM_NOTIFY_VIEW_ACTIONLOG,							_T("View action log") },
+	{ IDM_NOTIFY_VIEW_ACTIONLOG,							_T("View action history log") },
 	{ IDM_NOTIFY_BACKUP_CONFIG,								_T("Backup configurations") },
 	{ IDM_NOTIFY_VIEW_BAKCONFIG,							_T("View backup configurations") },
 	{ IDM_NOTIFY_OPENDLG_LOGVIEWER,							_T("LogViewer") },
@@ -206,6 +206,8 @@ static LANGTABLE langtable_en_US
 	{ IDC_MULTISCHEDULE_REMOVEALL_BTN,						_T("Remove All") },
 	{ IDC_MULTISCHEDULE_CHECKALL_BTN,						_T("Check All") },
 	{ IDC_MULTISCHEDULE_UNCHECKALL_BTN,						_T("Uncheck All") },
+	{ IDC_MULTISCHEDULE_VIEWDETAILS_BTN,					_T("View Details") },
+	{ IDC_MULTISCHEDULE_SETDEFAULT_BTN,						_T("Set Default") },
 	{ IDC_MULTISCHEDULE_APPLY_BTN,		 					_T("Save") },
 	{ IDC_MULTISCHEDULE_CANCEL_BTN, 						_T("Close") },
 	{ GRIDCOLUMN_MULTISCHEDULE_INDEX,						_T("No.") },
@@ -363,6 +365,7 @@ static LANGTABLE langtable_en_US
 	{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("The application will run with admin privileges in the next startup.") },
 	{ MSGBOX_OTHER_ALREADY_ADMIN,							_T("The application is currently running with admin privileges.") },
 	{ MSGBOX_OTHER_FUNCTION_NOT_AVAILABLE,					_T("This function is currently not available.") },
+	{ MSGBOX_OTHER_PREDESTROY_REMINDERDISP,					_T("Please close all displaying reminder messages first!") },
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MSGBOX_ERROR_CAPTION,									_T("Error") },
@@ -403,7 +406,7 @@ static LANGTABLE langtable_en_US
 	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("Save reminder data failed") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("Write log failed") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("Output log failed") },
-	{ MSGBOX_ERROR_UNKNOWN, 								_T("Unknown error.") },
+	{ MSGBOX_ERROR_UNKNOWN, 								_T("Unknown error (0x%X).") },
 
 /*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 	{ FORMAT_TIME_BEFOREMIDDAY,								_T("AM") },
@@ -577,6 +580,8 @@ static LANGTABLE langtable_vi_VN
 	{ IDC_MULTISCHEDULE_REMOVEALL_BTN,						_T("Xoá hết") },
 	{ IDC_MULTISCHEDULE_CHECKALL_BTN,						_T("Chọn hết") },
 	{ IDC_MULTISCHEDULE_UNCHECKALL_BTN,						_T("Bỏ chọn hết") },
+	{ IDC_MULTISCHEDULE_VIEWDETAILS_BTN,					_T("Xem chi tiết") },
+	{ IDC_MULTISCHEDULE_SETDEFAULT_BTN,						_T("Đặt làm mặc định") },
 	{ IDC_MULTISCHEDULE_APPLY_BTN,  						_T("Lưu") },
 	{ IDC_MULTISCHEDULE_CANCEL_BTN, 						_T("Đóng") },
 	{ GRIDCOLUMN_MULTISCHEDULE_INDEX,						_T("Số") },
@@ -734,6 +739,7 @@ static LANGTABLE langtable_vi_VN
 	{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("Ứng dụng sẽ được chạy dưới quyền admin ở lần khởi động tiếp theo.") },
 	{ MSGBOX_OTHER_ALREADY_ADMIN,							_T("Ứng dụng hiện đang được chạy dưới quyền admin.") },
 	{ MSGBOX_OTHER_FUNCTION_NOT_AVAILABLE,					_T("Tính năng hiện tại chưa được hỗ trợ") },
+	{ MSGBOX_OTHER_PREDESTROY_REMINDERDISP,					_T("Vui lòng tắt hết các thông điệp nhắc nhở đang hiển thị!") },
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MSGBOX_ERROR_CAPTION,									_T("Lỗi") },
@@ -774,7 +780,7 @@ static LANGTABLE langtable_vi_VN
 	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("Lưu dữ liệu nội dung nhắc nhở thất bại!") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("Ghi log thất bại") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("Xuất log thất bại") },
-	{ MSGBOX_ERROR_UNKNOWN, 								_T("Lỗi không xác định.") },
+	{ MSGBOX_ERROR_UNKNOWN, 								_T("Lỗi không xác định (0x%X).") },
 
 /*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 	{ FORMAT_TIME_BEFOREMIDDAY,								_T("SA") },
@@ -947,9 +953,11 @@ static LANGTABLE langtable_zh_CH
 	{ IDC_MULTISCHEDULE_REMOVE_BTN,							_T("删除") },
 	{ IDC_MULTISCHEDULE_REMOVEALL_BTN,						_T("全部删除") },
 	{ IDC_MULTISCHEDULE_CHECKALL_BTN,						_T("全部选中") },
+	{ IDC_MULTISCHEDULE_UNCHECKALL_BTN,						_T("全部取消选中") },
+	{ IDC_MULTISCHEDULE_VIEWDETAILS_BTN,					_T("看详情") },
+	{ IDC_MULTISCHEDULE_SETDEFAULT_BTN,						_T("设为默认") },
 	{ IDC_MULTISCHEDULE_APPLY_BTN,		 					_T("应用") },
 	{ IDC_MULTISCHEDULE_CANCEL_BTN, 						_T("关闭") },
-	{ IDC_MULTISCHEDULE_UNCHECKALL_BTN,						_T("全部取消选中") },
 	{ GRIDCOLUMN_MULTISCHEDULE_INDEX,						_T("号") },
 	{ GRIDCOLUMN_MULTISCHEDULE_STATE,						_T("启用") },
 	{ GRIDCOLUMN_MULTISCHEDULE_ACTIONID,					_T("行动") },
@@ -1091,8 +1099,8 @@ static LANGTABLE langtable_zh_CH
 	{ MSGBOX_PWRREMINDER_REMOVEALL_ITEMS,					_T("您是否要删除所有提醒事项吗？") },
 	{ MSGBOX_PWRREMINDER_CONFIRM_EXITMODE,					_T("您确实要中止所有当前更改吗？") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_ITEMID,				_T("提醒数据无效。\n项目 ID 为空或无效。") },
-	{ MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_EMPTY,			_T("提醒数据无效。\n留言内容不能为空。") },
-	{ MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT,	_T("提醒数据无效。\n留言内容不能超过50个字符。") },
+	{ MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_EMPTY,			_T("提醒数据无效。\n消息内容不能为空。") },
+	{ MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT,	_T("提醒数据无效。\n消息内容不能超过50个字符。") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_INVALIDCHAR,	_T("提醒数据无效。\n邮件内容包含一个或多个无效字符") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_EVENTID,				_T("提醒数据无效。\n事件设置为空或者无效。") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_TIMEVALUE,				_T("提醒数据无效。\n时间设置为空或者无效。") },
@@ -1105,6 +1113,7 @@ static LANGTABLE langtable_zh_CH
 	{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("该应用程序将在下次启动时以管理员权限运行。") },
 	{ MSGBOX_OTHER_ALREADY_ADMIN,							_T("该应用程序当前以管理员权限运行。") },
 	{ MSGBOX_OTHER_FUNCTION_NOT_AVAILABLE,					_T("此功能目前不可用。") },
+	{ MSGBOX_OTHER_PREDESTROY_REMINDERDISP,					_T("请先关闭所有正在显示的提醒消息！") },
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MSGBOX_ERROR_CAPTION,									_T("错误") },
@@ -1145,7 +1154,7 @@ static LANGTABLE langtable_zh_CH
 	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("保存提醒数据失败") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("写入日志失败") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("输出日志失败") },
-	{ MSGBOX_ERROR_UNKNOWN, 								_T("未知错误。") },
+	{ MSGBOX_ERROR_UNKNOWN, 								_T("未知错误 (0x%X)。") },
 
 /*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 	{ FORMAT_TIME_BEFOREMIDDAY,								_T("午前") },

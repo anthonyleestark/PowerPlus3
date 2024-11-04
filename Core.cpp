@@ -155,7 +155,7 @@ void tagSCHEDULEITEM::Copy(const tagSCHEDULEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEITEM::Compare(const tagSCHEDULEITEM& pItem)
+BOOL tagSCHEDULEITEM::Compare(const tagSCHEDULEITEM& pItem) const
 {
 	BOOL bRet = FALSE;
 
@@ -193,10 +193,10 @@ void tagSCHEDULEITEM::SetActiveState(BOOL bActive)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEITEM::IsEmpty()
+BOOL tagSCHEDULEITEM::IsEmpty() const
 {
 	// Initialize an empty item
-	SCHEDULEITEM schDummyItem;
+	static const SCHEDULEITEM schDummyItem;
 
 	// Compare with this item and return result
 	return this->Compare(schDummyItem);
@@ -211,7 +211,7 @@ BOOL tagSCHEDULEITEM::IsEmpty()
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEITEM::IsDayActive(DAYOFWEEK dayOfWeek)
+BOOL tagSCHEDULEITEM::IsDayActive(DAYOFWEEK dayOfWeek) const
 {
 	// Invalid day of week
 	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
@@ -468,12 +468,47 @@ DWORD tagSCHEDULEDATA::Update(const SCHEDULEITEM& pItem)
 //	Description:	Get the default Action Schedule item
 //  Arguments:		None
 //  Return value:	SCHEDULEITEM
+//	Notes:			Constant function
+//
+//////////////////////////////////////////////////////////////////////////
+
+const SCHEDULEITEM& tagSCHEDULEDATA::GetDefaultItem(void) const
+{
+	return this->schDefaultItem;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDefaultItem
+//	Description:	Get the default Action Schedule item
+//  Arguments:		None
+//  Return value:	SCHEDULEITEM
 //
 //////////////////////////////////////////////////////////////////////////
 
 SCHEDULEITEM& tagSCHEDULEDATA::GetDefaultItem(void)
 {
 	return this->schDefaultItem;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetItemAt
+//	Description:	Get the Action Schedule item at index
+//  Arguments:		nIndex - Item index
+//  Return value:	SCHEDULEITEM
+//	Notes:			Constant function
+//
+//////////////////////////////////////////////////////////////////////////
+
+const SCHEDULEITEM& tagSCHEDULEDATA::GetItemAt(int nIndex) const
+{
+	ASSERT((nIndex >= 0) && (nIndex < this->GetExtraItemNum()));
+	if ((nIndex >= 0) && (nIndex < this->GetExtraItemNum()))
+		return this->arrSchedExtraItemList.GetAt(nIndex);
+
+	// Invalid argument
+	AfxThrowInvalidArgException();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -614,7 +649,7 @@ INT_PTR tagSCHEDULEDATA::GetExtraItemNum(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsDefaultEmpty(void)
+BOOL tagSCHEDULEDATA::IsDefaultEmpty(void) const
 {
 	return this->schDefaultItem.IsEmpty();
 }
@@ -628,7 +663,7 @@ BOOL tagSCHEDULEDATA::IsDefaultEmpty(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsEmpty(int nIndex)
+BOOL tagSCHEDULEDATA::IsEmpty(int nIndex) const
 {
 	// Check index validity
 	if ((nIndex < 0) || (nIndex >= this->GetExtraItemNum()))
@@ -648,7 +683,7 @@ BOOL tagSCHEDULEDATA::IsEmpty(int nIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsExtraEmpty(void)
+BOOL tagSCHEDULEDATA::IsExtraEmpty(void) const
 {
 	// If there's no item, return TRUE
 	if (this->arrSchedExtraItemList.IsEmpty())
@@ -675,7 +710,7 @@ BOOL tagSCHEDULEDATA::IsExtraEmpty(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsAllEmpty(void)
+BOOL tagSCHEDULEDATA::IsAllEmpty(void) const
 {
 	return ((this->IsDefaultEmpty()) && (this->IsExtraEmpty()));
 }
@@ -833,7 +868,7 @@ void tagHOTKEYSETITEM::Copy(const tagHOTKEYSETITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETITEM::IsEmpty(void)
+BOOL tagHOTKEYSETITEM::IsEmpty(void) const
 {
 	BOOL bIsEmpty = FALSE;
 
@@ -853,7 +888,7 @@ BOOL tagHOTKEYSETITEM::IsEmpty(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETITEM::Compare(const tagHOTKEYSETITEM& pItem)
+BOOL tagHOTKEYSETITEM::Compare(const tagHOTKEYSETITEM& pItem) const
 {
 	BOOL bRet = FALSE;
 
@@ -882,17 +917,42 @@ void tagHOTKEYSETITEM::Print(CString& strOutput)
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
+	CString strEnable = (this->bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
 	UINT nActionNameID = GetPairedID(idplActionName, GetPairedID(idplHKActionID, this->nHKActionID));
 	CString strAction = GetLanguageString(ptrLanguage, nActionNameID);
+	CString strKeyStrokes = DEF_STRING_EMPTY;
+	PrintKeyStrokes(strKeyStrokes);
+
+	// Print item
+	strOutput.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  strEnable, strAction, strKeyStrokes);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	PrintKeyStrokes
+//	Description:	Print HotkeySet item keystrokes data
+//  Arguments:		strOutput - Output printed keystrokes string
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagHOTKEYSETITEM::PrintKeyStrokes(CString& strOutput)
+{
+	using namespace PairFuncs;
+
+	// Get language table
+	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
+
+	// Format keystrokes
 	CString strKeyStrokes = DEF_STRING_EMPTY;
 	if (this->dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
 	if (this->dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
 	if (this->dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
 	strKeyStrokes += GetPairedString(strplFuncKeyList, this->dwFuncKeyCode);
-	CString strEnable = (this->bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
 
-	// Print item
-	strOutput.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  strEnable, strAction, strKeyStrokes);
+	// Output string
+	strOutput.Empty();
+	strOutput = strKeyStrokes;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1092,6 +1152,26 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 //	Description:	Get the hotkeyset item at index
 //  Arguments:		nIndex - Item index
 //  Return value:	HOTKEYSETITEM
+//	Notes:			Constant function
+//
+//////////////////////////////////////////////////////////////////////////
+
+const HOTKEYSETITEM& tagHOTKEYSETDATA::GetItemAt(int nIndex) const
+{
+	ASSERT((nIndex >= 0) && (nIndex < this->GetItemNum()));
+	if ((nIndex >= 0) && (nIndex < this->GetItemNum()))
+		return this->arrHotkeySetList.GetAt(nIndex);
+
+	// Invalid argument
+	AfxThrowInvalidArgException();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetItemAt
+//	Description:	Get the hotkeyset item at index
+//  Arguments:		nIndex - Item index
+//  Return value:	HOTKEYSETITEM
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -1194,7 +1274,7 @@ INT_PTR tagHOTKEYSETDATA::GetItemNum(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETDATA::IsEmpty(int nIndex)
+BOOL tagHOTKEYSETDATA::IsEmpty(int nIndex) const
 {
 	// Check index validity
 	if ((nIndex < 0) || (nIndex >= this->GetItemNum()))
@@ -1216,7 +1296,7 @@ BOOL tagHOTKEYSETDATA::IsEmpty(int nIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETDATA::IsAllEmpty()
+BOOL tagHOTKEYSETDATA::IsAllEmpty() const
 {
 	// If there's no item, return TRUE
 	if (this->arrHotkeySetList.IsEmpty())
@@ -1284,6 +1364,33 @@ void tagHOTKEYSETDATA::DeleteAll(void)
 	// Reset data
 	this->arrHotkeySetList.RemoveAll();
 	this->arrHotkeySetList.FreeExtra();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	PrintKeyStrokes
+//	Description:	Print HotkeySet item keystrokes data by ID
+//  Arguments:		nHKID	  - Item hotkey ID
+//					strOutput - Output printed keystrokes string
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagHOTKEYSETDATA::PrintKeyStrokes(UINT nHKID, CString& strOutput)
+{
+	// Search for hotkey ID and get keystrokes string
+	CString strKeyStrokes = DEF_STRING_EMPTY;
+	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
+		HOTKEYSETITEM hksItem = this->GetItemAt(nIndex);
+		if (hksItem.nHKActionID == nHKID) {
+			hksItem.PrintKeyStrokes(strKeyStrokes);
+			break;
+		}
+	}
+
+	// Output string
+	strOutput.Empty();
+	strOutput = strKeyStrokes;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1360,7 +1467,7 @@ void tagRMDREPEATSET::Copy(const tagRMDREPEATSET& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagRMDREPEATSET::Compare(const tagRMDREPEATSET& pItem)
+BOOL tagRMDREPEATSET::Compare(const tagRMDREPEATSET& pItem) const
 {
 	BOOL bRetCompare = TRUE;
 
@@ -1382,7 +1489,7 @@ BOOL tagRMDREPEATSET::Compare(const tagRMDREPEATSET& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagRMDREPEATSET::IsDayActive(DAYOFWEEK dayOfWeek)
+BOOL tagRMDREPEATSET::IsDayActive(DAYOFWEEK dayOfWeek) const
 {
 	// Invalid day of week
 	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
@@ -1477,10 +1584,10 @@ void tagPWRREMINDERITEM::Copy(const tagPWRREMINDERITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::IsEmpty()
+BOOL tagPWRREMINDERITEM::IsEmpty() const
 {
 	// Initialize an empty item
-	PWRREMINDERITEM pwrDummyItem;
+	static const PWRREMINDERITEM pwrDummyItem;
 
 	// Compare with this item and return result
 	return this->Compare(pwrDummyItem);
@@ -1495,7 +1602,7 @@ BOOL tagPWRREMINDERITEM::IsEmpty()
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::Compare(const tagPWRREMINDERITEM& pItem)
+BOOL tagPWRREMINDERITEM::Compare(const tagPWRREMINDERITEM& pItem) const
 {
 	BOOL bRet = TRUE;
 
@@ -1533,7 +1640,7 @@ void tagPWRREMINDERITEM::SetEnableState(BOOL bEnable)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::IsRepeatEnable(void)
+BOOL tagPWRREMINDERITEM::IsRepeatEnable(void) const
 {
 	return (this->rpsRepeatSet.bRepeat);
 }
@@ -1547,7 +1654,7 @@ BOOL tagPWRREMINDERITEM::IsRepeatEnable(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::IsDayActive(DAYOFWEEK dayOfWeek)
+BOOL tagPWRREMINDERITEM::IsDayActive(DAYOFWEEK dayOfWeek) const
 {
 	return (this->rpsRepeatSet.IsDayActive(dayOfWeek));
 }
@@ -1561,7 +1668,7 @@ BOOL tagPWRREMINDERITEM::IsDayActive(DAYOFWEEK dayOfWeek)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::IsAllowSnoozing(void)
+BOOL tagPWRREMINDERITEM::IsAllowSnoozing(void) const
 {
 	// If current eventID is not at settime
 	if (this->nEventID != PREVT_AT_SETTIME) {
@@ -1797,6 +1904,26 @@ void tagPWRREMINDERDATA::Update(const PWRREMINDERITEM& pItem)
 //	Description:	Get the Power Reminder item at index
 //  Arguments:		nIndex - Item index
 //  Return value:	PWRREMINDERITEM
+//	Notes:			Constant function
+//
+//////////////////////////////////////////////////////////////////////////
+
+const PWRREMINDERITEM& tagPWRREMINDERDATA::GetItemAt(int nIndex) const
+{
+	ASSERT((nIndex >= 0) && (nIndex < this->GetItemNum()));
+	if ((nIndex >= 0) && (nIndex < this->GetItemNum()))
+		return this->arrRmdItemList.GetAt(nIndex);
+
+	// Invalid argument
+	AfxThrowInvalidArgException();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetItemAt
+//	Description:	Get the Power Reminder item at index
+//  Arguments:		nIndex - Item index
+//  Return value:	PWRREMINDERITEM
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -1920,7 +2047,7 @@ INT_PTR tagPWRREMINDERDATA::GetItemNum(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERDATA::IsEmpty(int nIndex)
+BOOL tagPWRREMINDERDATA::IsEmpty(int nIndex) const
 {
 	// Check index validity
 	if ((nIndex < 0) || (nIndex >= this->GetItemNum()))
@@ -1940,7 +2067,7 @@ BOOL tagPWRREMINDERDATA::IsEmpty(int nIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERDATA::IsAllEmpty()
+BOOL tagPWRREMINDERDATA::IsAllEmpty() const
 {
 	// If there's no item, return TRUE
 	if (this->arrRmdItemList.IsEmpty())
@@ -2012,25 +2139,27 @@ void tagPWRREMINDERDATA::DeleteAll(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagPWRRMDITEMADVSPEC
+//	Function name:	tagPWRRMDRUNTIMEITEM
 //	Description:	Constructor
 //  Arguments:		Default
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRRMDITEMADVSPEC::tagPWRRMDITEMADVSPEC()
+tagPWRRMDRUNTIMEITEM::tagPWRRMDRUNTIMEITEM()
 {
 	// Init data
 	this->nItemID = 0;										// Power Reminder item ID
+	this->nDisplayFlag = FLAG_OFF;							// Display flag
 	this->nSnoozeFlag = FLAG_OFF;							// Snooze trigger flag
 	this->stNextSnoozeTime = {0};							// Next snooze trigger time
 }
 
-tagPWRRMDITEMADVSPEC::tagPWRRMDITEMADVSPEC(const tagPWRRMDITEMADVSPEC& pItem)
+tagPWRRMDRUNTIMEITEM::tagPWRRMDRUNTIMEITEM(const tagPWRRMDRUNTIMEITEM& pItem)
 {
 	// Copy data
 	this->nItemID = pItem.nItemID;							// Power Reminder item ID
+	this->nDisplayFlag = pItem.nDisplayFlag;				// Display flag
 	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Snooze trigger flag
 	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
 }
@@ -2044,10 +2173,11 @@ tagPWRRMDITEMADVSPEC::tagPWRRMDITEMADVSPEC(const tagPWRRMDITEMADVSPEC& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRRMDITEMADVSPEC& tagPWRRMDITEMADVSPEC::operator=(const tagPWRRMDITEMADVSPEC& pItem)
+tagPWRRMDRUNTIMEITEM& tagPWRRMDRUNTIMEITEM::operator=(const tagPWRRMDRUNTIMEITEM& pItem)
 {
 	// Copy data
 	this->nItemID = pItem.nItemID;							// Power Reminder item ID
+	this->nDisplayFlag = pItem.nDisplayFlag;				// Display flag
 	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Snooze trigger flag
 	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
 
@@ -2057,16 +2187,17 @@ tagPWRRMDITEMADVSPEC& tagPWRRMDITEMADVSPEC::operator=(const tagPWRRMDITEMADVSPEC
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	Copy
-//	Description:	Copy data from another Power Reminder advance info data
+//	Description:	Copy data from another Power Reminder runtime info item
 //  Arguments:		pItem - Pointer of input item
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRRMDITEMADVSPEC::Copy(const tagPWRRMDITEMADVSPEC& pItem)
+void tagPWRRMDRUNTIMEITEM::Copy(const tagPWRRMDRUNTIMEITEM& pItem)
 {
 	// Copy data
 	this->nItemID = pItem.nItemID;							// Item ID
+	this->nDisplayFlag = pItem.nDisplayFlag;				// Display flag
 	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Snooze trigger flag
 	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
 }
@@ -2080,7 +2211,7 @@ void tagPWRRMDITEMADVSPEC::Copy(const tagPWRRMDITEMADVSPEC& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRRMDITEMADVSPEC::CalcNextSnoozeTime(int nInterval)
+void tagPWRRMDRUNTIMEITEM::CalcNextSnoozeTime(int nInterval)
 {
 	// Calculate time with offset
 	CoreFuncs::CalcTimeOffset(this->stNextSnoozeTime, nInterval);
@@ -2088,20 +2219,83 @@ void tagPWRRMDITEMADVSPEC::CalcNextSnoozeTime(int nInterval)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	tagHISTORYINFODATA
+//	Description:	Constructor
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagHISTORYINFODATA::tagHISTORYINFODATA()
+{
+	// Init data
+	this->bInitState = TRUE;							// Init state
+	this->nCategoryID = 0;								// Category ID
+	this->stTimestamp = {0};							// Timestamp of history
+	this->nItemID = 0;									// Item ID
+	this->nActionNameID = 0;							// Name of action (string ID)
+	this->bActionResult = FALSE;						// Action result
+	this->dwErrorCode = 0;								// Returned error code
+	this->strDescription = DEF_STRING_EMPTY;			// History description (attached info)
+}
+
+tagHISTORYINFODATA::tagHISTORYINFODATA(const tagHISTORYINFODATA& pData)
+{
+	// Copy data
+	this->bInitState = pData.bInitState;				// Init state
+	this->nCategoryID = pData.nCategoryID;				// Category ID
+	this->stTimestamp = pData.stTimestamp;				// Timestamp of history
+	this->nItemID = pData.nItemID;						// Item ID
+	this->nActionNameID = pData.nActionNameID;			// Name of action (string ID)
+	this->bActionResult = pData.bActionResult;			// Action result
+	this->dwErrorCode = pData.dwErrorCode;				// Returned error code
+	this->strDescription = pData.strDescription;		// History description (attached info)
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagHISTORYINFODATA& tagHISTORYINFODATA::operator=(const tagHISTORYINFODATA& pData)
+{
+	// Copy data
+	this->bInitState = pData.bInitState;				// Init state
+	this->nCategoryID = pData.nCategoryID;				// Category ID
+	this->stTimestamp = pData.stTimestamp;				// Timestamp of history
+	this->nItemID = pData.nItemID;						// Item ID
+	this->nActionNameID = pData.nActionNameID;			// Name of action (string ID)
+	this->bActionResult = pData.bActionResult;			// Action result
+	this->dwErrorCode = pData.dwErrorCode;				// Returned error code
+	this->strDescription = pData.strDescription;		// History description (attached info)
+
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	Copy
-//	Description:	Copy data from another action data
+//	Description:	Copy data from another action history data
 //  Arguments:		pData - Pointer of input data
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagACTIONDATA::Copy(const tagACTIONDATA& pData)
+void tagHISTORYINFODATA::Copy(const tagHISTORYINFODATA& pData)
 {
-	this->nActionType = pData.nActionType;				// Action type
-	this->stActionTime = pData.stActionTime;			// Time of action
+	// Copy data
+	this->bInitState = pData.bInitState;				// Init state
+	this->nCategoryID = pData.nCategoryID;				// Category ID
+	this->stTimestamp = pData.stTimestamp;				// Timestamp of history
+	this->nItemID = pData.nItemID;						// Item ID
 	this->nActionNameID = pData.nActionNameID;			// Name of action (string ID)
-	this->bActionSucceed = pData.bActionSucceed;		// Action success status
-	this->nErrorCode = pData.nErrorCode;				// Action returned error code
+	this->bActionResult = pData.bActionResult;			// Action result
+	this->dwErrorCode = pData.dwErrorCode;				// Returned error code
+	this->strDescription = pData.strDescription;		// History description (attached info)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2113,16 +2307,18 @@ void tagACTIONDATA::Copy(const tagACTIONDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagACTIONDATA::RemoveAll(void)
+void tagHISTORYINFODATA::RemoveAll(void)
 {
-	this->bInitState = TRUE;						// Init state flag
-	this->nActionType = 0;							// Action type
-	this->stActionTime = {0};						// Time of action
-	this->nActionNameID = 0;						// Name of action (string ID)
-	this->bActionSucceed = FALSE;					// Action success status
-	this->nErrorCode = 0;							// Action returned error code
+	// Reset data
+	this->bInitState = TRUE;							// Init state
+	this->nCategoryID = 0;								// Category ID
+	this->stTimestamp = {0};							// Timestamp of history
+	this->nItemID = 0;									// Item ID
+	this->nActionNameID = 0;							// Name of action (string ID)
+	this->bActionResult = FALSE;						// Action result
+	this->dwErrorCode = 0;								// Returned error code
+	this->strDescription.Empty();						// History description (attached info)
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -2416,7 +2612,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
 						dwErrCode = GetLastError();
 						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
@@ -2424,7 +2620,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkPrivileges.Privileges[0].Luid)) {
 						dwErrCode = GetLastError();
 						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
@@ -2435,7 +2631,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 						// Adjust token privileges failed
 						dwErrCode = GetLastError();
 						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
@@ -2444,7 +2640,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 						// Get exit Windows error
 						dwErrCode = GetLastError();
 						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
@@ -2454,7 +2650,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!SetSuspendState(FALSE, FALSE, FALSE)) {		// Stand by (sleep)
 						dwErrCode = GetLastError();
 						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 					break;
@@ -2463,7 +2659,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!SetSuspendState(TRUE, FALSE, FALSE)) {			// Hibernate
 						dwErrCode = GetLastError();
 						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 					break;
@@ -2473,7 +2669,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 		// Wrong argument
 		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
 		TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		bRet = FALSE;
 		break;
 	}
@@ -2743,8 +2939,8 @@ void CoreFuncs::TraceLog(LPCSTR lpszTraceLogA)
 
 void CoreFuncs::TraceLog(LPCTSTR lpszTraceLogW)
 {
-	// Write trace log file: Trace.log
-	WriteTraceNDebugLogFile(FILE_TRACE_LOG, lpszTraceLogW);
+	// Write trace log file: TraceError.log
+	WriteTraceErrorLogFile(lpszTraceLogW);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2820,8 +3016,8 @@ void CoreFuncs::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLi
 	CString strDebugTraceFormat;
 	strDebugTraceFormat.Format(_T("Function: %s, File: %s(%d)"), strFuncName, strFileName, nLineIndex);
 
-	// Write debug trace log
-	WriteTraceNDebugLogFile(FILE_DEBUG_LOG, strDebugTraceFormat);
+	// Write debug trace log: TraceDebug.log
+	WriteTraceDebugLogFile(strDebugTraceFormat);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2829,12 +3025,12 @@ void CoreFuncs::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLi
 //	Function name:	OutputDebugLog
 //	Description:	Output debug log string
 //  Arguments:		lpszDebugLog - Debug log string (Unicode)
-//					nForceStyle	 - Force output log style
+//					nForceOutput - Force output target
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceStyle /* = -1 */)
+void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = DEF_INTEGER_INVALID */)
 {
 	// Get debug mode enable state
 	BOOL bDebugMode = GetDebugMode();
@@ -2845,15 +3041,16 @@ void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceStyle /* = -1 */)
 	// Find DebugTest tool dialog
 	HWND hDebugTestWnd = FindDebugTestDlg();
 
-	// Debug log style
-	int nDebugLogStyle = nForceStyle;
-	if (nDebugLogStyle == -1) {
-		nDebugLogStyle = GetDebugLogStyle();
+	// Debug log output target
+	int nDebugOutput = nForceOutput;
+	if (nDebugOutput == DEF_INTEGER_INVALID) {
+		nDebugOutput = GetDebugOutputTarget();
 	}
 	if (hDebugTestWnd != NULL) {
-		// Prefer output to DebugTest tool if showing
-		nDebugLogStyle = DBLOG_OUTPUTTODBTOOL;
+		// Force enable debug mode and
+		// prefer output target to DebugTest tool if showing
 		bDebugMode = TRUE;
+		nDebugOutput = DBOUT_DEBUGTESTTOOL;
 	}
 
 	// If debug mode not enabled, do nothing
@@ -2861,16 +3058,16 @@ void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceStyle /* = -1 */)
 		return;
 
 	// Output debug string
-	if (nDebugLogStyle == DBLOG_OUTPUTDBSTRING) {
-		// Default style: OutputDebugString
+	if (nDebugOutput == DBOUT_DEFAULT) {
+		// Default output target: OutputDebugString
 		// Debug string can be watched by using VS Ouput screen or DebugView tool
 		OutputDebugString(strLog);
 	}
-	else if (nDebugLogStyle == DBLOG_OUTPUTTOFILE) {
-		// Ouput debug log to file: Debug.log
-		WriteTraceNDebugLogFile(FILE_DEBUG_LOG, strLog);
+	else if (nDebugOutput == DBOUT_DEBUGINFOFILE) {
+		// Ouput debug log to file: DebugInfo.log
+		WriteDebugInfoLogFile(strLog);
 	}
-	else if (nDebugLogStyle == DBLOG_OUTPUTTODBTOOL) {
+	else if (nDebugOutput == DBOUT_DEBUGTESTTOOL) {
 		// Output debug log to DebugTest tool
 		if (hDebugTestWnd == NULL) return;
 		WPARAM wParam = (WPARAM)strLog.GetLength();
@@ -2908,21 +3105,475 @@ void CoreFuncs::OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	WriteTraceNDebugLogFile
+//	Function name:	InitTraceErrorLogFile
+//	Description:	Initialize trace error log file
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//	Notes:			TraceError.log
+//					File to output trace error detail log strings
+//
+//////////////////////////////////////////////////////////////////////////
+
+static inline BOOL InitTraceErrorLogFile(void)
+{
+	// If global trace error log file is not initialized
+	if (g_pFileLogTraceError == NULL) {
+		// Initialize global trace error log file
+		g_pFileLogTraceError = new CFile();
+		if (g_pFileLogTraceError == NULL)
+			return FALSE;
+	}
+
+	// Get trace error log file pointer
+	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
+
+	// Log file path
+	CString strFilePath;
+	CoreFuncs::MakeFilePath(strFilePath, DIR_SUBDIR_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+
+	// If the log file is not being opened
+	if (pTraceErrorLogFile->m_hFile == CFile::hFileNull) {
+		OPENFILE: {
+			// Open the log file
+			if (!pTraceErrorLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareExclusive)) {
+				// Show error message
+				DWORD dwErrorCode = GetLastError();
+				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
+				return FALSE;
+			}
+		}
+
+		// Go to end of file
+		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
+
+		// If the file line number is already out of limit
+		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+
+			// Step1: Close file
+			pTraceErrorLogFile->Close();
+
+			// Step2: Rename file extension to BAK
+			CFileFind Finder;
+			CString strBakFilePath;
+			CString strFilePathTemp;
+			for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
+				CoreFuncs::MakeFilePath(strFilePathTemp, DIR_SUBDIR_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_BAKLOGFILE);
+				strBakFilePath.Format(strFilePathTemp, nNum);
+				if (Finder.FindFile(strBakFilePath) == TRUE) {
+					if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return FALSE;
+					else continue;
+				}
+				CFile::Rename(strFilePath, strBakFilePath);
+				break;
+			}
+
+			// Step3: Create new file and reopen
+			goto OPENFILE;
+		}
+	}
+
+	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	InitTraceDebugLogFile
+//	Description:	Initialize trace debug log file
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//	Notes:			TraceDebug.log
+//					File to output trace debug log strings (including 
+//					the function name, code file and line where it failed)
+//
+//////////////////////////////////////////////////////////////////////////
+
+static inline BOOL InitTraceDebugLogFile(void)
+{
+	// If global trace debug log file is not initialized
+	if (g_pFileLogTraceDebug == NULL) {
+		// Initialize global trace debug log file
+		g_pFileLogTraceDebug = new CFile();
+		if (g_pFileLogTraceDebug == NULL)
+			return FALSE;
+	}
+
+	// Get trace debug log file pointer
+	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
+
+	// Log file path
+	CString strFilePath;
+	CoreFuncs::MakeFilePath(strFilePath, DIR_SUBDIR_LOG, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
+
+	// If the log file is not being opened
+	if (pTraceDebugLogFile->m_hFile == CFile::hFileNull) {
+		OPENFILE: {
+			// Open the log file
+			if (!pTraceDebugLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareExclusive)) {
+				// Show error message
+				DWORD dwErrorCode = GetLastError();
+				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
+				return FALSE;
+			}
+		}
+
+		// Go to end of file
+		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
+
+		// If the file line number is already out of limit
+		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+
+			// Step1: Close file
+			pTraceDebugLogFile->Close();
+
+			// Step2: Rename file extension to BAK
+			CFileFind Finder;
+			CString strBakFilePath;
+			CString strFilePathTemp;
+			for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
+				CoreFuncs::MakeFilePath(strFilePathTemp, DIR_SUBDIR_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_BAKLOGFILE);
+				strBakFilePath.Format(strFilePathTemp, nNum);
+				if (Finder.FindFile(strBakFilePath) == TRUE) {
+					if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return FALSE;
+					else continue;
+				}
+				CFile::Rename(strFilePath, strBakFilePath);
+				break;
+			}
+
+			// Step3: Create new file and reopen
+			goto OPENFILE;
+		}
+	}
+
+	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	InitDebugInfoLogFile
+//	Description:	Initialize debug info log file
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//	Notes:			DebugInfo.log
+//					File to output debug info log strings (similar to
+//					OutputDebugString, but output to file instead)
+//
+//////////////////////////////////////////////////////////////////////////
+
+static inline BOOL InitDebugInfoLogFile(void)
+{
+	// If global debug info log file is not initialized
+	if (g_pFileLogDebugInfo == NULL) {
+		// Initialize global debug info log file
+		g_pFileLogDebugInfo = new CFile();
+		if (g_pFileLogDebugInfo == NULL)
+			return FALSE;
+	}
+
+	// Get debug info log file pointer
+	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
+
+	// Log file path
+	CString strFilePath;
+	CoreFuncs::MakeFilePath(strFilePath, DIR_SUBDIR_LOG, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
+
+	// If the log file is not being opened
+	if (pDebugInfoLogFile->m_hFile == CFile::hFileNull) {
+		OPENFILE: {
+			// Open the log file
+			if (!pDebugInfoLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareExclusive)) {
+				// Show error message
+				DWORD dwErrorCode = GetLastError();
+				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
+				return FALSE;
+			}
+		}
+
+		// Go to end of file
+		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
+
+		// If the file line number is already out of limit
+		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+
+			// Step1: Close file
+			pDebugInfoLogFile->Close();
+
+			// Step2: Rename file extension to BAK
+			CFileFind Finder;
+			CString strBakFilePath;
+			CString strFilePathTemp;
+			for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
+				CoreFuncs::MakeFilePath(strFilePathTemp, DIR_SUBDIR_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_BAKLOGFILE);
+				strBakFilePath.Format(strFilePathTemp, nNum);
+				if (Finder.FindFile(strBakFilePath) == TRUE) {
+					if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return FALSE;
+					else continue;
+				}
+				CFile::Rename(strFilePath, strBakFilePath);
+				break;
+			}
+
+			// Step3: Create new file and reopen
+			goto OPENFILE;
+		}
+	}
+
+	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	WriteTraceErrorLogFile
+//	Description:	Write trace error log string to file
+//  Arguments:		lpszLogStringW	- Log string
+//  Return value:	None
+//	Notes:			TraceError.log
+//					File to output trace error detail log strings
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CoreFuncs::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
+{
+	// If the file is not initialized or had been released
+	if (GetTraceErrorLogFile() == NULL) {
+		if (!InitTraceErrorLogFile())
+			return;
+	}
+
+	// Get trace log file pointer
+	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
+
+	// Get current time up to milisecs
+	SYSTEMTIME stTime;
+	GetLocalTime(&stTime);
+
+	// Format log date/time
+	CString strTimeFormat;
+	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
+
+	// Format output log string
+	CString strLogFormat;
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
+
+	if (!strLogFormat.IsEmpty()) {
+		// Write log string to file
+		pTraceErrorLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		pTraceErrorLogFile->Flush();
+	}
+
+	// Recheck file size after writing
+	{
+		// Go to end of file
+		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
+
+		// If the file line number is already out of limit
+		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+
+			// Step1: Close file
+			pTraceErrorLogFile->Close();
+
+			// Step2: Rename file extension to BAK
+			CFileFind Finder;
+			CString strOrgFilePath;
+			CString strBakFilePath;
+			CString strBakFilePathTemp;
+			MakeFilePath(strOrgFilePath, DIR_SUBDIR_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+			for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
+				MakeFilePath(strBakFilePathTemp, DIR_SUBDIR_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_BAKLOGFILE);
+				strBakFilePath.Format(strBakFilePathTemp, nNum);
+				if (Finder.FindFile(strBakFilePath) == TRUE) {
+					if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return;
+					else continue;
+				}
+				CFile::Rename(strOrgFilePath, strBakFilePath);
+				break;
+			}
+
+			// Step3: Release log file pointer --> Quit
+			// New file will be re-initialized in the next function call
+			ReleaseTraceErrorLogFile();
+			return;
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	WriteTraceDebugLogFile
+//	Description:	Write trace debug log string to file
+//  Arguments:		lpszLogStringW	- Log string
+//  Return value:	None
+//	Notes:			TraceDebug.log
+//					File to output trace debug log strings (including 
+//					the function name, code file and line where it failed)
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CoreFuncs::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
+{
+	// If the file is not initialized or had been released
+	if (GetTraceDebugLogFile() == NULL) {
+		if (!InitTraceDebugLogFile())
+			return;
+	}
+
+	// Get trace debug log file pointer
+	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
+
+	// Get current time up to milisecs
+	SYSTEMTIME stTime;
+	GetLocalTime(&stTime);
+
+	// Format log date/time
+	CString strTimeFormat;
+	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
+
+	// Format output log string
+	CString strLogFormat;
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
+
+	if (!strLogFormat.IsEmpty()) {
+		// Write log string to file
+		pTraceDebugLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		pTraceDebugLogFile->Flush();
+	}
+
+	// Recheck file size after writing
+	{
+		// Go to end of file
+		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
+
+		// If the file line number is already out of limit
+		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+
+			// Step1: Close file
+			pTraceDebugLogFile->Close();
+
+			// Step2: Rename file extension to BAK
+			CFileFind Finder;
+			CString strOrgFilePath;
+			CString strBakFilePath;
+			CString strBakFilePathTemp;
+			MakeFilePath(strOrgFilePath, DIR_SUBDIR_LOG, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
+			for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
+				MakeFilePath(strBakFilePathTemp, DIR_SUBDIR_LOG, FILENAME_TRACE_DEBUG_LOG, FILEEXT_BAKLOGFILE);
+				strBakFilePath.Format(strBakFilePathTemp, nNum);
+				if (Finder.FindFile(strBakFilePath) == TRUE) {
+					if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return;
+					else continue;
+				}
+				CFile::Rename(strOrgFilePath, strBakFilePath);
+				break;
+			}
+
+			// Step3: Release log file pointer --> Quit
+			// New file will be re-initialized in the next function call
+			ReleaseTraceDebugLogFile();
+			return;
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	WriteDebugInfoLogFile
+//	Description:	Write debug info output log string to file
+//  Arguments:		lpszLogStringW	- Log string
+//  Return value:	None
+//	Notes:			DebugInfo.log
+//					File to output debug info log strings (similar to
+//					OutputDebugString, but output to file instead)
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CoreFuncs::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
+{
+	// If the file is not initialized or had been released
+	if (GetDebugInfoLogFile() == NULL) {
+		if (!InitDebugInfoLogFile())
+			return;
+	}
+
+	// Get debug info log file pointer
+	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
+
+	// Get current time up to milisecs
+	SYSTEMTIME stTime;
+	GetLocalTime(&stTime);
+
+	// Format log date/time
+	CString strTimeFormat;
+	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
+
+	// Format output log string
+	CString strLogFormat;
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
+
+	if (!strLogFormat.IsEmpty()) {
+		// Write log string to file
+		pDebugInfoLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		pDebugInfoLogFile->Flush();
+	}
+
+	// Recheck file size after writing
+	{
+		// Go to end of file
+		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
+
+		// If the file line number is already out of limit
+		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+
+			// Step1: Close file
+			pDebugInfoLogFile->Close();
+
+			// Step2: Rename file extension to BAK
+			CFileFind Finder;
+			CString strOrgFilePath;
+			CString strBakFilePath;
+			CString strBakFilePathTemp;
+			MakeFilePath(strOrgFilePath, DIR_SUBDIR_LOG, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
+			for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
+				MakeFilePath(strBakFilePathTemp, DIR_SUBDIR_LOG, FILENAME_DEBUG_INFO_LOG, FILEEXT_BAKLOGFILE);
+				strBakFilePath.Format(strBakFilePathTemp, nNum);
+				if (Finder.FindFile(strBakFilePath) == TRUE) {
+					if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return;
+					else continue;
+				}
+				CFile::Rename(strOrgFilePath, strBakFilePath);
+				break;
+			}
+
+			// Step3: Release log file pointer --> Quit
+			// New file will be re-initialized in the next function call
+			ReleaseDebugInfoLogFile();
+			return;
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	WriteTraceNDebugLogFileBase
 //	Description:	Write trace and debug log string to file
 //  Arguments:		lpszFileName	- Log file name
 //					lpszLogStringW	- Log string
 //  Return value:	None
+//	Notes:			Base function - No longer used
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::WriteTraceNDebugLogFile(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW)
+void CoreFuncs::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW)
 {
 	// Log file path
 	CString strFilePath;
-	strFilePath.Format(_T("%s\\%s"), DIR_SUBDIR_LOG, lpszFileName);
+	MakeFilePath(strFilePath, DIR_SUBDIR_LOG, lpszFileName, FILEEXT_LOGFILE);
 
-	CString strALSLog;
 	CFile fTrcDbgLogFile;
 
 	// Check if file is opening, if not, open it
@@ -2952,7 +3603,7 @@ void CoreFuncs::WriteTraceNDebugLogFile(LPCTSTR lpszFileName, LPCTSTR lpszLogStr
 			CFileFind Finder;
 			CString strBakFilePath;
 			for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
-				strBakFilePath.Format((strFilePath + DEF_FILEEXT_BAKFILEWNUM), nNum);
+				strBakFilePath.Format((strFilePath + FILEEXT_BAKLOGFILE), nNum);
 				if (Finder.FindFile(strBakFilePath) == TRUE) {
 					if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return;
 					else continue;
@@ -2990,6 +3641,47 @@ void CoreFuncs::WriteTraceNDebugLogFile(LPCTSTR lpszFileName, LPCTSTR lpszLogStr
 	if (fTrcDbgLogFile.m_hFile != CFile::hFileNull) {
 		fTrcDbgLogFile.Close();
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	WaitMessage
+//	Description:	Create a loop and wait for specified message
+//  Arguments:		nMsg	 - Message to wait for
+//					nTimeout - Timeout (tick-count)
+//  Return value:	LRESULT
+//	Notes:			Be careful when using this function, it may cause the
+//					program to be not responding
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT	CoreFuncs::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOUT */)
+{
+	LRESULT lResult = DEF_RESULT_SUCCESS;
+
+	// Get begin timestamp (for timeout counter)
+	ULONGLONG ullBeginTimestamp = GetTickCount64();
+
+	// Wait for message
+	while (1) {
+		MSG msg;
+		if (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
+			// If received specified message, break the loop
+			if (msg.message == nMsg) {
+				// Success
+				lResult = DEF_RESULT_SUCCESS;
+				break;
+			}
+		}
+		// Check for timeout
+		if (GetTickCount64() - ullBeginTimestamp >= nTimeout) {
+			// Timeout --> Failed
+			lResult = DEF_RESULT_FAILED;
+			break;
+		}
+	}
+
+	return lResult;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3157,7 +3849,14 @@ void CoreFuncs::ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwError, LPA
 	CString strMsg = GetLanguageString(pAppLang, nErrMsgID);
 	CString strCaption = GetLanguageString(pAppLang, MSGBOX_ERROR_CAPTION);
 
-	// Attach description
+	// In case of unknown error, attach the error code
+	if (nErrMsgID == MSGBOX_ERROR_UNKNOWN) {
+		CString strTemp;
+		strTemp.Format(strMsg, dwError);
+		strMsg = strTemp;
+	}
+
+	// Attach description if available
 	if (_tcscmp(strDescription, DEF_STRING_NULL)) {
 		strMsg += DEF_STRING_NEWLINE;
 		strMsg += strDescription;
@@ -3922,6 +4621,26 @@ void CoreFuncs::UpperEachWord(CString& strInput, BOOL bTrim)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	MakeFilePath
+//	Description:	Make file path by given part names
+//  Arguments:		strOutput	  - Output file path
+//					lpszDirectory - Directory path
+//					lpszFileName  - File name
+//					lpszExtension - File extension
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CoreFuncs::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension)
+{
+	// Format file path
+	CString strFilePath;
+	strFilePath.Format(_T("%s\\%s%s"), lpszDirectory, lpszFileName, lpszExtension);
+	strOutput = strFilePath;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	StringValidate
 //	Description:	Validate given string value
 //  Arguments:		lpszSrc	 - Given string
@@ -4021,7 +4740,7 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHA
 		break;
 	default:
 		TRCLOG("Error: Invalid argument (2)");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		break;
 	}
 
@@ -4537,7 +5256,7 @@ BOOL CoreFuncs::ValidateFontName(LPCTSTR lpszFontName)
 	BOOL bRet = EnumFontNames(fontNames);
 	if (bRet == FALSE) {
 		TRCLOG("Error: Enumerate fonts failed!");
-		TRCDBG(__FUNCTION__, __FILE__, __LINE__);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 

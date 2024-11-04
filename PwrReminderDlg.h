@@ -24,6 +24,7 @@
 ////////////////////////////////////////////////////////
 // Declaration of child dialog classes
 
+class CReminderMsgDlg;
 class CRmdRepeatSetDlg;
 
 ////////////////////////////////////////////////////////
@@ -63,6 +64,7 @@ private:
 	CComboBox*		 m_pMsgStyleCombo;
 
 	// Properties child dialogs
+	CReminderMsgDlg* m_pRmdPreviewMsgDlg;
 	CRmdRepeatSetDlg* m_pRepeatSetDlg;
 
 	// Checkbox/radio button variables

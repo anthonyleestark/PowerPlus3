@@ -180,6 +180,7 @@
 #define SM_APP_DEBUGOUTPUT						(WM_USER + 199)
 #define SM_WND_SHOWDIALOG						(WM_USER + 201)
 #define SM_WND_DEBUGVIEWCLRSCR					(WM_USER + 202)
+#define SM_WND_DEBUGOUTPUTDISP					(WM_USER + 203)
 
 // Define app data types
 #define APPDATA_CONFIG							0x00001001L
@@ -217,7 +218,7 @@
 
 // Define log types
 #define LOGTYPE_APPEVENT_LOG					0x01a				// App event log
-#define LOGTYPE_ACTION_LOG						0x01b				// Action log/history
+#define LOGTYPE_HISTORY_LOG						0x01b				// Action log/history
 #define LOGTYPE_TRACE_LOG						0x01c				// Trace log
 #define LOGTYPE_DEBUG_LOG						0x01d				// Debug log
 
@@ -228,19 +229,29 @@
 #define DIR_SUBDIR_TEMP							_T(".\\Temp")
 
 // Define file names
-#define FILE_APP_EXENAME						_T("PowerPlus3.exe")
-#define FILE_APP_CONFIG							_T("Config.ini")
-#define FILE_BAK_CONFIG							_T("BakConfig.reg")
-#define FILE_APPEVENT_LOG						_T("AppEventLog_%d%02d%02d.log")
-#define FILE_ACTION_LOG							_T("ActionHistory.log")
-#define FILE_TRACE_LOG							_T("Trace.log")
-#define FILE_DEBUG_LOG							_T("Debug.log")
-#define FILE_HELP_ENG							_T("English.hlps")
-#define FILE_HELP_VIE							_T("Vietnamese.hlps")
-#define FILE_HELP_CHS							_T("Chinese.hlps")
-#define FILE_CHANGELOG_ENG						_T("Change_log.en.hlps")
-#define FILE_CHANGELOG_VIE						_T("Change_log.vi.hlps")
-#define FILE_CHANGELOG_CHS						_T("Change_log.ch.hlps")
+#define FILENAME_APPEXEFILE						_T("PowerPlus3")
+#define FILENAME_APPCONFIG						_T("Config")
+#define FILENAME_BAKCONFIG						_T("BakConfig")
+#define FILENAME_APPEVENT_LOG					_T("AppEventLog_%d%02d%02d")
+#define FILENAME_HISTORY_LOG					_T("AppHistory")
+#define FILENAME_TRACE_ERROR_LOG				_T("TraceError")
+#define FILENAME_TRACE_DEBUG_LOG				_T("TraceDebug")
+#define FILENAME_DEBUG_INFO_LOG					_T("DebugInfo")
+#define FILENAME_HELP_ENG						_T("English")
+#define FILENAME_HELP_VIE						_T("Vietnamese")
+#define FILENAME_HELP_CHS						_T("Chinese")
+#define FILENAME_CHANGELOG_ENG					_T("Change_log.en")
+#define FILENAME_CHANGELOG_VIE					_T("Change_log.vi")
+#define FILENAME_CHANGELOG_CHS					_T("Change_log.ch")
+
+// Define file extensions
+#define FILEEXT_EXEFILE							_T(".exe")					// EXE file
+#define FILEEXT_INIFILE							_T(".ini")					// INI file
+#define FILEEXT_REGFILE							_T(".reg")					// Registry file
+#define FILEEXT_LOGFILE							_T(".log")					// Log file
+#define FILEEXT_BAKFILE							_T(".bak")					// Backup file extension
+#define FILEEXT_BAKLOGFILE						_T("_%02d.log.bak")			// Backup log file extension
+#define FILEEXT_HELPFILE						_T(".hlps")					// Help file
 
 // Define timer IDs
 #define TIMERID_DEFAULT							0x0100
@@ -262,6 +273,7 @@
 #define MAKEANSI(string)						CW2A(string).m_psz
 #define MAKEUNICODE(string)						CA2W(string).m_psz
 #define RESOURCESTRING(resourceid)				LoadResourceString(resourceid)
+#define __FILENAME__							(strrchr("\\" __FILE__, '\\') + 1)
 
 // Define properties for Action Schedule function
 #define DEF_SCHEDULE_DEFAULT_ITEMNUM			1							// Default item number: 1
@@ -295,6 +307,7 @@
 #define DEF_STRING_NEWLINE						_T("\n")					// New line string
 #define DEF_STRING_NEWLINEWRET					_T("\r\n")					// New line string (with 'return' character)
 #define DEF_STRING_NULL							_T("#NULL")					// Null/invalid string
+#define DEF_STRING_QUOTEFORMAT					_T("\"%s\"")				// Quote string template format
 #define DEF_PATH_SEPARATOR						_T("\\")					// File/folder path separator
 #define DEF_SYMBOL_OUTPUTSIGN					_T(">> ")					// Output sign
 #define DEF_SYMBOL_INPUTSIGN					_T(" <<")					// Input sign
@@ -303,8 +316,6 @@
 #define DEF_CHAR_ENDLINE						_T('\n')					// 'Endline' character
 #define DEF_CHAR_NEWLINE						_T('\r\n')					// 'New line' character
 #define DEF_CHAR_ENDSTRING						_T('\0')					// Null-termination (end of string)
-#define DEF_FILEEXT_BAKFILE						_T(".bak")					// Backup file extension
-#define DEF_FILEEXT_BAKFILEWNUM					_T("%d.bak")				// Backup file extension (with number)
 #define DEF_BAKFILE_MAXNUM						100							// Maximum backup file number: 100
 
 #define DEF_INTEGER_INVALID						-1							// Invalid integer number (equals -1)
@@ -323,7 +334,7 @@
 
 #define DEF_OFFSET_VSCRLBRWIDTH					3							// Offset = 3px
 #define DEF_OFFSET_LISTCTRLWIDTH				5							// Offset = 5px
-#define DEF_OFFSET_LISTCTRLWIDTH_W10			12							// Offset (on Windows 10) = 12px
+#define DEF_OFFSET_LISTCTRL_WIN10				10							// Offset (on Windows 10) = 12px
 #define DEF_LISTCTRL_HEADERHEIGHT				27							// Header height = 27px
 #define DEF_LISTCTRL_ROWHEIGHT					18							// Row height = 18px
 #define DEF_GRIDCTRL_ROWHEADER					0							// Row header index
@@ -339,6 +350,7 @@
 #define DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH	30							// Max length: 30 characters
 #define DEF_LOGDISP_STRING_MAXLENGTH			20							// Max length: 20 characters
 #define DEF_LOGFILE_MAXLENGTH					1048576						// Max file size: 1MB
+#define DEF_WAITMESSAGE_TIMEOUT					30000						// Wait message timeout (tick-count): 30s
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,9 +387,9 @@ typedef enum eDAYOFWEEK {
 
 // System events
 typedef enum eSYSTEMEVENTID {
-	SYSEVT_SUSPEND = 0,
-	SYSEVT_WAKEUP,
-	SYSEVT_SESSIONEND,
+	SYSEVT_SUSPEND = 0,				// System suspend event
+	SYSEVT_WAKEUP,					// System wakeup event
+	SYSEVT_SESSIONEND,				// Session end event
 } SYSTEMEVENTID;
 
 // App option IDs
@@ -390,7 +402,7 @@ typedef enum eAPPOPTIONID {
 	OPTIONID_SHOWDLGATSTARTUP,		// Show dialog at startup
 	OPTIONID_STARTUPENABLE,			// Startup with Windows
 	OPTIONID_CONFIRMACTION,			// Show confirm message before doing action
-	OPTIONID_SAVEACTIONLOG,			// Save action log
+	OPTIONID_SAVEHISTORYLOG,		// Save action history log
 	OPTIONID_SAVEAPPEVENTLOG,		// Save app event log
 	OPTIONID_RUNASADMIN,			// Run with admin privileges
 	OPTIONID_SHOWERRORMSG,			// Show action error message
@@ -398,6 +410,9 @@ typedef enum eAPPOPTIONID {
 	OPTIONID_ALLOWCANCELSCHED,		// Allow canceling schedule when notify
 	OPTIONID_ENABLEHOTKEYSET,		// Enable background action hotkeys
 	OPTIONID_ENABLEPWRREMINDER,		// Enable Power Peminder feature
+	OPTIONID_SCHEDULEACTIVE,		// Default schedule active state
+	OPTIONID_SCHEDULEACTION,		// Default schedule action ID
+	OPTIONID_SCHEDULEREPEAT			// Default schedule repeat option
 } APPOPTIONID;
 
 // App flag IDs
@@ -435,6 +450,14 @@ typedef enum ePWRREMIDERSTYLE {
 	PRSTYLE_MSGBOX = 0x1c01,		// Message Box
 	PRSTYLE_DIALOG,					// Dialog Box
 } PWRREMINDERSTYLE;
+
+// Action history category IDs
+typedef enum eHISTORYCATEGORY {
+	HSTRCATE_PWRACTION = 0x1c02,	// Power action
+	HSTRCATE_SCHEDULE,				// Schedule
+	HSTRCATE_HOTKEYSET,				// HotkeySet
+	HSTRCATE_PWRREMINDER,			// Power Reminder
+} HISTORYCATEGORY;
 
 // List view column size units
 typedef enum eLVCOLSIZEUNIT {
@@ -571,10 +594,10 @@ typedef struct tagSCHEDULEITEM
 
 	// Member functions
 	void Copy(const tagSCHEDULEITEM&);								// Copy data
-	BOOL Compare(const tagSCHEDULEITEM&);							// Compare items
+	BOOL Compare(const tagSCHEDULEITEM&) const;						// Compare items
 	void SetActiveState(BOOL);										// Set item active state
-	BOOL IsEmpty(void);												// Check if item data is empty
-	BOOL IsDayActive(DAYOFWEEK);									// Check if day of week is active
+	BOOL IsEmpty(void) const;										// Check if item data is empty
+	BOOL IsDayActive(DAYOFWEEK) const;								// Check if day of week is active
 	void Print(CString& strOutput);									// Print item data
 } SCHEDULEITEM, *PSCHEDULEITEM;
 
@@ -614,17 +637,19 @@ typedef struct tagSCHEDULEDATA
 	void Copy(const tagSCHEDULEDATA&);								// Copy data
 	DWORD Add(const SCHEDULEITEM&);									// Add item
 	DWORD Update(const SCHEDULEITEM&);								// Update item
+	const SCHEDULEITEM& GetDefaultItem(void) const;					// Get default item (constant)
 	SCHEDULEITEM& GetDefaultItem(void);								// Get default item
+	const SCHEDULEITEM& GetItemAt(int) const;						// Get item at index (constant)
 	SCHEDULEITEM& GetItemAt(int);									// Get item at index
 	void Remove(int);												// Remove item at index
 	void RemoveAll(void);											// Remove all item
 	void Adjust();													// Adjust data validity
 	UINT GetNextID();												// Get next item ID (to add new item)
 	INT_PTR GetExtraItemNum(void) const;							// Get number of extra items
-	BOOL IsDefaultEmpty(void);										// Check if default item is empty
-	BOOL IsEmpty(int);												// Check if item at index is empty
-	BOOL IsExtraEmpty(void);										// Check if extra data is empty
-	BOOL IsAllEmpty(void);											// Check if all items are empty
+	BOOL IsDefaultEmpty(void) const;								// Check if default item is empty
+	BOOL IsEmpty(int) const;										// Check if item at index is empty
+	BOOL IsExtraEmpty(void) const;									// Check if extra data is empty
+	BOOL IsAllEmpty(void) const;									// Check if all items are empty
 	void Delete(int);												// Delete item at index
 	void DeleteExtra(void);											// Delete all extra items
 	void DeleteAll(void);											// Delete all data
@@ -656,9 +681,10 @@ typedef struct tagHOTKEYSETITEM
 
 	// Member functions
 	void Copy(const tagHOTKEYSETITEM&);								// Copy item
-	BOOL IsEmpty(void);												// Check if item is empty
-	BOOL Compare(const tagHOTKEYSETITEM&);							// Compare items
+	BOOL IsEmpty(void) const;										// Check if item is empty
+	BOOL Compare(const tagHOTKEYSETITEM&) const;					// Compare items
 	void Print(CString& strOutput);									// Print item data
+	void PrintKeyStrokes(CString& strOutput);						// Print item keystrokes
 } HOTKEYSETITEM, *PHOTKEYSETITEM;
 
 //////////////////////////////////////////////////////////////////////////
@@ -696,15 +722,17 @@ typedef struct tagHOTKEYSETDATA
 	void Copy(const tagHOTKEYSETDATA&);								// Copy data
 	void Add(const HOTKEYSETITEM&);									// Add item
 	void Update(const HOTKEYSETITEM&);								// Update item
+	const HOTKEYSETITEM& GetItemAt(int) const;						// Get item at index (const)
 	HOTKEYSETITEM& GetItemAt(int);									// Get item at index
 	void Remove(int);												// Remove item at index
 	void RemoveAll(void);											// Remove all item
 	void Adjust();													// Adjust data validity
 	INT_PTR GetItemNum(void) const;									// Get number of items
-	BOOL IsEmpty(int);												// Check if item at index is empty
-	BOOL IsAllEmpty();												// Check if all items are empty
+	BOOL IsEmpty(int) const;										// Check if item at index is empty
+	BOOL IsAllEmpty() const;										// Check if all items are empty
 	void Delete(int);												// Delete item at index
 	void DeleteAll(void);											// Delete all data
+	void PrintKeyStrokes(UINT nHKID, CString& strOutput);			// Print item keystrokes by ID
 } HOTKEYSETDATA, *PHOTKEYSETDATA;
 
 //////////////////////////////////////////////////////////////////////////
@@ -732,8 +760,8 @@ typedef struct tagRMDREPEATSET
 
 	// Member functions
 	void Copy(const tagRMDREPEATSET&);								// Copy data
-	BOOL Compare(const tagRMDREPEATSET&);							// Compare data
-	BOOL IsDayActive(DAYOFWEEK dayOfWeek);							// Check if day of week is active
+	BOOL Compare(const tagRMDREPEATSET&) const;						// Compare data
+	BOOL IsDayActive(DAYOFWEEK dayOfWeek) const;					// Check if day of week is active
 } RMDREPEATSET, *PRMDREPEATSET;
 
 //////////////////////////////////////////////////////////////////////////
@@ -764,12 +792,12 @@ typedef struct tagPWRREMINDERITEM
 
 	// Member functions
 	void Copy(const tagPWRREMINDERITEM&);							// Copy item
-	BOOL IsEmpty();													// Check if item is empty
-	BOOL Compare(const tagPWRREMINDERITEM&);						// Compare items
+	BOOL IsEmpty() const;											// Check if item is empty
+	BOOL Compare(const tagPWRREMINDERITEM&) const;					// Compare items
 	void SetEnableState(BOOL);										// Set item enable state
-	BOOL IsRepeatEnable(void);										// Check if item repeat mode is enabled
-	BOOL IsDayActive(DAYOFWEEK dayOfWeek);							// Check if day of week is active
-	BOOL IsAllowSnoozing(void);										// Check if item snooze mode is available
+	BOOL IsRepeatEnable(void) const;								// Check if item repeat mode is enabled
+	BOOL IsDayActive(DAYOFWEEK dayOfWeek) const;					// Check if day of week is active
+	BOOL IsAllowSnoozing(void) const;								// Check if item snooze mode is available
 	void Print(CString& strOutput);									// Print item data
 } PWRREMINDERITEM, *PPWRREMINDERITEM;
 
@@ -808,77 +836,88 @@ typedef struct tagPWRREMINDERDATA
 	void Copy(const tagPWRREMINDERDATA&);							// Copy data
 	void Add(const PWRREMINDERITEM&);								// Add item
 	void Update(const PWRREMINDERITEM&);							// Update item
+	const PWRREMINDERITEM& GetItemAt(int) const;					// Get item at index (constant)
 	PWRREMINDERITEM& GetItemAt(int);								// Get item at index
 	void Remove(int);												// Remove item at index
 	void RemoveAll(void);											// Remove all item
 	void Adjust();													// Adjust data validity
 	UINT GetNextID();												// Get next item ID (to add new item)
 	INT_PTR GetItemNum(void) const;									// Get number of items
-	BOOL IsEmpty(int);												// Check if item at index is empty
-	BOOL IsAllEmpty();												// Check if all items are empty
+	BOOL IsEmpty(int) const;										// Check if item at index is empty
+	BOOL IsAllEmpty() const;										// Check if all items are empty
 	void Delete(int);												// Delete item at index
 	void DeleteAll(void);											// Delete all data
 } PWRREMINDERDATA, *PPWRREMINDERDATA;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	tagPWRRMDITEMADVSPEC
-//  Description:	Store data of a Power Reminder item advanced info
+//	Data type name:	PWRRMDRUNTIMEITEM
+//  Description:	Store data of a Power Reminder item runtime info
 //  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagPWRRMDITEMADVSPEC 
+typedef struct tagPWRRMDRUNTIMEITEM 
 {
 	// Member variables
 	UINT		nItemID;											// Power Reminder item ID
+	int			nDisplayFlag;										// Display flag
 	int			nSnoozeFlag;										// Snooze trigger flag
 	SYSTEMTIME	stNextSnoozeTime;									// Next snooze trigger time
 
 	// Constructor
-	tagPWRRMDITEMADVSPEC();											// Default constructor
-	tagPWRRMDITEMADVSPEC(const tagPWRRMDITEMADVSPEC&);				// Copy constructor
+	tagPWRRMDRUNTIMEITEM();											// Default constructor
+	tagPWRRMDRUNTIMEITEM(const tagPWRRMDRUNTIMEITEM&);				// Copy constructor
 
 	// Operator
-	tagPWRRMDITEMADVSPEC& operator=(const tagPWRRMDITEMADVSPEC&);	// Copy assignment operator
+	tagPWRRMDRUNTIMEITEM& operator=(const tagPWRRMDRUNTIMEITEM&);	// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagPWRRMDITEMADVSPEC&);							// Copy data
+	void Copy(const tagPWRRMDRUNTIMEITEM&);							// Copy data
 	void CalcNextSnoozeTime(int nInterval);							// Calculate next snooze time
-} PWRRMDITEMADVSPEC, *PPWRRMDITEMADVSPEC;
+} PWRRMDRUNTIMEITEM, *PPWRRMDRUNTIMEITEM;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	PWRREMINDERADVLIST
+//	Data type name:	PWRREMINDERRUNTIME
 //  Description:	Store list of Power Reminder advanced info items
 //  Derivered from: MFC CArray class
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef CArray<PWRRMDITEMADVSPEC, PWRRMDITEMADVSPEC> PWRREMINDERADVLIST;
+typedef CArray<PWRRMDRUNTIMEITEM, PWRRMDRUNTIMEITEM> PWRREMINDERRUNTIME;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	ACTIONDATA
-//  Description:	Store app action info data
+//	Data type name:	HISTORYINFODATA
+//  Description:	Store app action history info data
 //  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagACTIONDATA
+typedef struct tagHISTORYINFODATA
 {
 	// Member variables
-	BOOL		bInitState;									// Init state flag
-	UINT		nActionType;								// Action type
-	SYSTEMTIME	stActionTime;								// Time of action
-	UINT		nActionNameID;								// Name of action (string ID)
-	BOOL		bActionSucceed;								// Action success status
-	UINT		nErrorCode;									// Action returned error code
+	BOOL		bInitState;										// Init state flag
+	UINT		nCategoryID;									// Category ID
+	SYSTEMTIME	stTimestamp;									// Timestamp of history
+	UINT		nItemID;										// Item ID
+	UINT		nActionNameID;									// Name of action (string ID)
+	BOOL		bActionResult;									// Action result
+	DWORD		dwErrorCode;									// Returned error code
+	CString		strDescription;									// History description (attached info)
+
+	// Constructor
+	tagHISTORYINFODATA();										// Default constructor
+	tagHISTORYINFODATA(const tagHISTORYINFODATA&);				// Copy constructor
+
+	// Operator
+	tagHISTORYINFODATA& operator=(const tagHISTORYINFODATA&);	// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagACTIONDATA&);						// Copy data
-	void RemoveAll();										// Remove all data
-} ACTIONDATA, *PACTIONDATA;
+	void Copy(const tagHISTORYINFODATA&);						// Copy data
+	void RemoveAll(void);										// Remove all data
+} HISTORYINFODATA, *PHISTORYINFODATA;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1261,15 +1300,25 @@ namespace CoreFuncs
 	void SetDefaultData(PHOTKEYSETDATA phksData);
 	void SetDefaultData(PPWRREMINDERDATA ppwrData);
 
-	// Logging and messages functions
+	// Trace logging functions
 	void TraceLog(LPCSTR lpszTraceLogA);
 	void TraceLog(LPCTSTR lpszTraceLogW);
 	void TraceLogFormat(LPCSTR lpszTraceLogFormat, ...);
 	void TraceLogFormat(LPCTSTR lpszTraceLogFormat, ...);
 	void TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex);
+
+	// Debug logging functions
 	void OutputDebugLog(LPCTSTR lpszDebugLog, int nForceStyle = -1);
 	void OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...);
-	void WriteTraceNDebugLogFile(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW);
+
+	// Trace/debug file logging functions
+	void WriteTraceErrorLogFile(LPCTSTR lpszLogStringW);
+	void WriteTraceDebugLogFile(LPCTSTR lpszLogStringW);
+	void WriteDebugInfoLogFile(LPCTSTR lpszLogStringW);
+	void WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW);
+
+	// Message functions
+	LRESULT	WaitMessage(UINT nMsg, int nTimeout = DEF_WAITMESSAGE_TIMEOUT);
 	void ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwErrCode, LPARAM lParam = NULL);
 	int  DisplayMessageBox(HWND hWnd, LPCTSTR strPrompt, LPCTSTR strCaption, UINT nStyle);
 
@@ -1299,6 +1348,7 @@ namespace CoreFuncs
 	BOOL	LoadResourceString(CString& strResult, UINT nResStringID);
 	int		GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyChars);
 	void	UpperEachWord(CString& strInput, BOOL bTrim);
+	void	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
 	BOOL	StringValidate(LPCTSTR lpszSrc, DWORD& dwError);
 	BOOL	SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd, UINT nSubStringType);
 	BOOL	Left(LPCTSTR lpszSrc, CString& strDest, TCHAR tcEnd);
