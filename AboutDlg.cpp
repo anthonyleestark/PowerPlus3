@@ -71,6 +71,67 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 //////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RegisterDialogManagement
+//	Description:	Register dialog control management
+//  Arguments:		None
+//  Return value:	INT_PTR - Number of controls added to management
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR CAboutDlg::RegisterDialogManagement(void)
+{
+	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	if (nRet != 0) {
+		TRCLOG("Error: Register dialog management failed!!!");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		return nRet;
+	}
+
+	// Get control manager
+	SControlManager* pCtrlMan = this->GetControlManager();
+
+	// Add dialog controls to management
+	if (pCtrlMan != NULL) {
+		nRet = pCtrlMan->AddControl(IDC_APPNAME_LABEL, CTRL_TYPE_STATIC);
+		nRet = pCtrlMan->AddControl(IDC_COPYRIGHT_LABEL, CTRL_TYPE_STATIC);
+		nRet = pCtrlMan->AddControl(IDC_DEVPROFILE_LINK, CTRL_TYPE_SYSLINKCTRL);
+		nRet = pCtrlMan->AddControl(IDC_AUTH_LABEL, CTRL_TYPE_STATIC);
+		nRet = pCtrlMan->AddControl(IDC_APPINFO_LABEL, CTRL_TYPE_STATIC);
+		nRet = pCtrlMan->AddControl(IDC_ABOUT_CLOSE_BTN, CTRL_TYPE_BUTTON);
+	}
+
+	return nRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	UnregisterDialogManagement
+//	Description:	Unregister dialog control management
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CAboutDlg::UnregisterDialogManagement(void)
+{
+	// Get control manager
+	SControlManager* pCtrlMan = this->GetControlManager();
+
+	// Remove dialog controls from managements
+	if (pCtrlMan != NULL) {
+		pCtrlMan->RemoveControl(IDC_APPNAME_LABEL);
+		pCtrlMan->RemoveControl(IDC_COPYRIGHT_LABEL);
+		pCtrlMan->RemoveControl(IDC_DEVPROFILE_LINK);
+		pCtrlMan->RemoveControl(IDC_AUTH_LABEL);
+		pCtrlMan->RemoveControl(IDC_APPINFO_LABEL);
+		pCtrlMan->RemoveControl(IDC_ABOUT_CLOSE_BTN);
+	}
+
+	return SDialog::UnregisterDialogManagement();
+}
+
+//////////////////////////////////////////////////////////////////////////
 //
 //	CAboutDlg dialog items ID map
 //
@@ -94,6 +155,7 @@ END_ID_MAPPING()
 
 BEGIN_MESSAGE_MAP(CAboutDlg, SDialog)
 	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_ABOUT_CLOSE_BTN,		 &CAboutDlg::OnCloseButton)
 	ON_NOTIFY(NM_CLICK, IDC_DEVPROFILE_LINK, &CAboutDlg::OnDevProfileLinkClick)
 END_MESSAGE_MAP()
@@ -117,10 +179,10 @@ BOOL CAboutDlg::OnInitDialog()
 {
 	SDialog::OnInitDialog();
 
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_STARTUP);
-
 	SetupLanguage();
+
+	// Save dialog event log if enabled
+	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
 
 	return TRUE;
 }
@@ -136,10 +198,26 @@ BOOL CAboutDlg::OnInitDialog()
 
 void CAboutDlg::OnClose()
 {
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
-
+	// Close dialog
 	SDialog::OnClose();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnDestroy
+//	Description:	Default method for dialog destroying
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CAboutDlg::OnDestroy()
+{
+	// Save app event log if enabled
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+
+	// Destroy dialog
+	SDialog::OnDestroy();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -151,14 +229,13 @@ void CAboutDlg::OnClose()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CAboutDlg::SetupLanguage()
+void CAboutDlg::SetupLanguage(void)
 {
 	// Load app language packages
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	CString strWndText = GetLanguageString(pAppLang, GetDialogID());
-	this->SetWindowText(strWndText);
+	this->SetLangDialogCaption(GetDialogID());
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -168,13 +245,82 @@ void CAboutDlg::SetupLanguage()
 		{
 		case IDI_ICON_DEFAULT:
 		case IDC_STATIC:
+			// Skip these items
 			continue;
+			break;
+		case IDC_APPNAME_LABEL:
+			SetAppNameLabel();
+			break;
+		case IDC_APPINFO_LABEL:
+			SetAppInfoLabel();
 			break;
 		default:
 			SetControlText(pWndChild, nID, pAppLang);
 			break;
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetAppNameLabel
+//	Description:	Set application name label info
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CAboutDlg::SetAppNameLabel(void)
+{
+	// Get app name label static
+	CWnd* pAppNameLabel = GetDlgItem(IDC_APPNAME_LABEL);
+	if (pAppNameLabel == NULL) return;
+
+	// Get product version info
+	CString strFullProductVersion;
+	CString strShortProductVersion;
+	if (!GetProductVersion(strFullProductVersion, strShortProductVersion))
+		return;
+
+	// Get app name label format from app language package
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	CString strFormat = GetLanguageString(pAppLang, IDC_APPNAME_LABEL);
+	if (strFormat == DEF_STRING_NULL) return;
+
+	// Set app name label
+	CString strAppNameLabel;
+	strAppNameLabel.Format(strFormat, strShortProductVersion, strFullProductVersion);
+	pAppNameLabel->SetWindowText(strAppNameLabel);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetAppInfoLabel
+//	Description:	Set application info label
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CAboutDlg::SetAppInfoLabel(void)
+{
+	// Get app info label static
+	CWnd* pAppInfoLabel = GetDlgItem(IDC_APPINFO_LABEL);
+	if (pAppInfoLabel == NULL) return;
+
+	// Get product version info (short number)
+	CString strProductVersion = GetProductVersion(FALSE);
+	if (strProductVersion.IsEmpty()) return;
+
+	// Get app info label format from app language package
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	CString strFormat = GetLanguageString(pAppLang, IDC_APPINFO_LABEL);
+	if (strFormat == DEF_STRING_NULL) return;
+
+	// Set app info label
+	CString strAppInfoLabel;
+	strAppInfoLabel.Format(strFormat, strProductVersion);
+	pAppInfoLabel->SetWindowText(strAppInfoLabel);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -189,7 +335,7 @@ void CAboutDlg::SetupLanguage()
 void CAboutDlg::OnCloseButton()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_ABOUT_CLOSE_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_ABOUT_CLOSE_BTN);
 
 	// Close dialog
 	EndDialog(IDOK);
@@ -207,11 +353,13 @@ void CAboutDlg::OnCloseButton()
 
 void CAboutDlg::OnDevProfileLinkClick(NMHDR* pNMHDR, LRESULT* pResult)
 {
-
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_DEVPROFILE_LINK);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_DEVPROFILE_LINK);
 
+	// Open profile link
 	OpenWebURL(_T("https://facebook.com/anthonyleestark"));
+
+	// Return result
 	*pResult = 0;
 }
 
@@ -264,6 +412,60 @@ void CHelpDlg::DoDataExchange(CDataExchange* pDX)
 	SDialog::DoDataExchange(pDX);
 }
 
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RegisterDialogManagement
+//	Description:	Register dialog control management
+//  Arguments:		None
+//  Return value:	INT_PTR - Number of controls added to management
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR CHelpDlg::RegisterDialogManagement(void)
+{
+	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	if (nRet != 0) {
+		TRCLOG("Error: Register dialog management failed!!!");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		return nRet;
+	}
+
+	// Get control manager
+	SControlManager* pCtrlMan = this->GetControlManager();
+
+	// Add dialog controls to management
+	if (pCtrlMan != NULL) {
+		nRet = pCtrlMan->AddControl(IDC_HELPINFO_EDITBOX, CTRL_TYPE_EDITBOX);
+		nRet = pCtrlMan->AddControl(IDC_HELP_CLOSE_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HELP_SWITCHVIEWMODE_BTN, CTRL_TYPE_BUTTON);
+	}
+
+	return nRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	UnregisterDialogManagement
+//	Description:	Unregister dialog control management
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CHelpDlg::UnregisterDialogManagement(void)
+{
+	// Get control manager
+	SControlManager* pCtrlMan = this->GetControlManager();
+
+	// Remove dialog controls from managements
+	if (pCtrlMan != NULL) {
+		pCtrlMan->RemoveControl(IDC_HELPINFO_EDITBOX);
+		pCtrlMan->RemoveControl(IDC_HELP_CLOSE_BTN);
+		pCtrlMan->RemoveControl(IDC_HELP_SWITCHVIEWMODE_BTN);
+	}
+
+	return SDialog::UnregisterDialogManagement();
+}
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -278,6 +480,7 @@ BEGIN_ID_MAPPING(CHelpDlg)
 	IDMAP_ADD(IDC_HELP_SWITCHVIEWMODE_BTN,	"SwitchViewModeButton")
 END_ID_MAPPING()
 
+
 //////////////////////////////////////////////////////////////////////////
 //
 //	CHelpDlg dialog message map
@@ -286,6 +489,7 @@ END_ID_MAPPING()
 
 BEGIN_MESSAGE_MAP(CHelpDlg, SDialog)
 	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_HELP_CLOSE_BTN,			&CHelpDlg::OnCloseButton)
 	ON_BN_CLICKED(IDC_HELP_SWITCHVIEWMODE_BTN,	&CHelpDlg::OnSwitchViewMode)
 END_MESSAGE_MAP()
@@ -309,10 +513,10 @@ BOOL CHelpDlg::OnInitDialog()
 {
 	SDialog::OnInitDialog();
 
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_STARTUP);
-
 	SetupLanguage();
+
+	// Save dialog event log if enabled
+	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
 
 	return TRUE;
 }
@@ -328,10 +532,26 @@ BOOL CHelpDlg::OnInitDialog()
 
 void CHelpDlg::OnClose()
 {
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
-
+	// Close dialog
 	SDialog::OnClose();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnDestroy
+//	Description:	Default method for dialog destroying
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHelpDlg::OnDestroy()
+{
+	// Save app event log if enabled
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+
+	// Destroy dialog
+	SDialog::OnDestroy();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -346,7 +566,7 @@ void CHelpDlg::OnClose()
 void CHelpDlg::OnCloseButton()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HELP_CLOSE_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_CLOSE_BTN);
 
 	// Close dialog
 	EndDialog(IDOK);
@@ -364,7 +584,7 @@ void CHelpDlg::OnCloseButton()
 void CHelpDlg::OnSwitchViewMode()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HELP_SWITCHVIEWMODE_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_SWITCHVIEWMODE_BTN);
 
 	// Switch view mode
 	if (GetViewMode() == DEF_MODE_HELPVIEW_HELPFILE) {
@@ -398,14 +618,13 @@ void CHelpDlg::SetupLanguage()
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
-	// Set dialog title
-	CString strWndText = GetLanguageString(pAppLang, GetDialogID());
-	this->SetWindowText(strWndText);
+	// Setup dialog title
+	this->SetLangDialogCaption(GetDialogID());
 
 	// Set [Close] button title
 	CWnd* pWnd = GetDlgItem(IDC_HELP_CLOSE_BTN);
 	if (pWnd != NULL) {
-		strWndText = GetLanguageString(pAppLang, IDC_HELP_CLOSE_BTN);
+		CString strWndText = GetLanguageString(pAppLang, IDC_HELP_CLOSE_BTN);
 		pWnd->SetWindowText(strWndText);
 	}
 
@@ -415,8 +634,9 @@ void CHelpDlg::SetupLanguage()
 	// Load help contents by default
 	LoadFileData(m_strFileData);
 	pWnd = GetDlgItem(IDC_HELPINFO_EDITBOX);
-	if (pWnd != NULL)
+	if (pWnd != NULL) {
 		pWnd->SetWindowText(m_strFileData);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -458,13 +678,13 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_HELP_ENG, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_HELP_ENG, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_HELP_VIE, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_HELP_VIE, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_HELP_CHS, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_HELP_CHS, FILEEXT_HELPFILE);
 			break;
 		}
 	}
@@ -473,13 +693,13 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_CHANGELOG_ENG, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_CHANGELOG_ENG, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_CHANGELOG_VIE, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_CHANGELOG_VIE, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			MakeFilePath(strHelpFileName, DIR_SUBDIR_HELP, FILENAME_CHANGELOG_CHS, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_CHANGELOG_CHS, FILEEXT_HELPFILE);
 			break;
 		}
 	}

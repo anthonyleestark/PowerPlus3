@@ -109,6 +109,15 @@ namespace RegFuncs
 	// Delete section
 	BOOL DeletePwrReminderSection(void);
 
+	// Read/write registry layout info values
+	BOOL GetLayoutInfo(UINT nSectionName, UINT nKeyName, int& nRef);
+	BOOL WriteLayoutInfo(UINT nSectionName, UINT nKeyName, int nValue);
+	BOOL GetLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int& nRef);
+	BOOL WriteLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int nValue);
+
+	// Delete section
+	BOOL DeleteLayoutInfoSection(void);
+
 	// Read/write other variables
 	BOOL GetGlobalVar(UINT nSubSection, UINT nKeyName, int& nRef);
 	BOOL WriteGlobalVar(UINT nSubSection, UINT nKeyName, int nValue);

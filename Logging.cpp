@@ -21,6 +21,281 @@
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetSizeByType
+//	Description:	Get size of data by data type
+//  Arguments:		byDataType - Data type
+//  Return value:	SIZE_T
+//
+//////////////////////////////////////////////////////////////////////////
+
+SIZE_T GetSizeByType(BYTE byDataType)
+{
+	SIZE_T retSize = 0;
+	switch (byDataType)
+	{
+	case DATA_TYPE_VOID:				// No type (unusable)
+		retSize = DEF_INTEGER_NULL;
+		break;
+	case DATA_TYPE_NUM_U1:				// Unsigned integer (1-byte)
+	case DATA_TYPE_NUM_I1:				// Signed integer (1-byte)
+	case DATA_TYPE_NUM_F1:				// Float number (1-byte)
+		retSize = sizeof(UCHAR);
+		break;
+	case DATA_TYPE_NUM_U2:				// Unsigned integer (2-byte)
+	case DATA_TYPE_NUM_I2:				// Signed integer (2-byte)
+	case DATA_TYPE_NUM_F2:				// Float number (2-byte)
+		retSize = sizeof(USHORT);
+		break;
+	case DATA_TYPE_NUM_U4:				// Unsigned integer (4-byte)
+	case DATA_TYPE_NUM_I4:				// Signed integer (4-byte)
+	case DATA_TYPE_NUM_F4:				// Float number (4-byte)
+		retSize = sizeof(ULONG);
+		break;
+	case DATA_TYPE_NUM_U8:				// Unsigned integer (8-byte)
+	case DATA_TYPE_NUM_I8:				// Signed integer (8-byte)
+	case DATA_TYPE_NUM_F8:				// Float number (8-byte)
+		retSize = sizeof(ULONGLONG);
+		break;
+	case DATA_TYPE_NUM_BOOLEAN:			// Boolean number (TRUE/FALSE)
+		retSize = sizeof(BOOL);
+		break;
+	case DATA_TYPE_SYSTEMTIME:			// SYSTEMTIME struct
+		retSize = sizeof(SYSTEMTIME);
+		break;
+	default:
+		retSize = DEF_INTEGER_NULL;
+		break;
+	}
+
+	return retSize;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSizeByValue
+//	Description:	Get size of data by data value
+//  Arguments:		dataValue - Data value
+//  Return value:	SIZE_T
+//
+//////////////////////////////////////////////////////////////////////////
+
+template <typename DATA>
+SIZE_T GetSizeByValue(DATA dataValue)
+{
+	return sizeof(dataValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	tagLOGDETAIL
+//	Description:	Constructor
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagLOGDETAIL::tagLOGDETAIL()
+{
+	// Initialization
+	this->byCategory = 0;										// Detail category
+	this->uiDetailInfo = 0;										// Detail info (integer)
+	this->strDetailInfo.Empty();								// Detail info (string)
+	this->ptrDetailInfo = NULL;									// Detail info (pointer)
+	this->byPointerType = DATA_TYPE_VOID;						// Detail info pointer data type
+	this->szPointerSize = DEF_INTEGER_NULL;						// Detail info pointer data size
+}
+
+tagLOGDETAIL::tagLOGDETAIL(const tagLOGDETAIL& pItem)
+{
+	// Copy data
+	this->byCategory = pItem.byCategory;						// Detail category
+	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
+	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
+	this->PointerCopy(pItem);									// Detail info (pointer)
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		Default
+//  Return value:	tagLOGDETAIL&
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagLOGDETAIL& tagLOGDETAIL::operator=(const tagLOGDETAIL& pItem)
+{
+	// Copy data
+	this->byCategory = pItem.byCategory;						// Detail category
+	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
+	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
+	this->PointerCopy(pItem);									// Detail info (pointer)
+
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Init
+//	Description:	Initialize/reset item data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagLOGDETAIL::Init()
+{
+	// Initialization
+	this->byCategory = 0;										// Detail category
+	this->uiDetailInfo = 0;										// Detail info (integer)
+	this->strDetailInfo.Empty();								// Detail info (string)
+	this->ptrDetailInfo = NULL;									// Detail info (pointer)
+	this->byPointerType = DATA_TYPE_VOID;						// Detail info pointer data type
+	this->szPointerSize = DEF_INTEGER_NULL;						// Detail info pointer data size
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Copy
+//	Description:	Copy data from another item
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagLOGDETAIL::Copy(const tagLOGDETAIL& pItem)
+{
+	// Copy data
+	this->byCategory = pItem.byCategory;						// Detail category
+	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
+	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
+	this->PointerCopy(pItem);									// Detail info (pointer)
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	PointerCopy
+//	Description:	Copy detail info pointer
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagLOGDETAIL::PointerCopy(const tagLOGDETAIL& pItem)
+{
+	// Copy pointer properties
+	this->byPointerType = pItem.byPointerType;					// Detail info pointer data type
+	this->szPointerSize = pItem.szPointerSize;					// Detail info pointer data size
+
+	// Copy pointer data
+	memcpy(this->ptrDetailInfo, pItem.ptrDetailInfo, pItem.szPointerSize);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Compare
+//	Description:	Compare with another given item
+//  Arguments:		pItem - Pointer of given item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagLOGDETAIL::Compare(const tagLOGDETAIL& pItem) const
+{
+	BOOL bRet = FALSE;
+
+	// Compare items
+	bRet &= (this->byCategory == pItem.byCategory);				// Detail category
+	bRet &= (this->uiDetailInfo == pItem.uiDetailInfo);			// Detail info (integer)
+	bRet &= (this->strDetailInfo == pItem.strDetailInfo);		// Detail info (string)
+	bRet &= this->PointerCompare(pItem);						// Detail info (pointer)
+
+	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	PointerCompare
+//	Description:	Compare detail info pointers
+//  Arguments:		pItem - Pointer of given item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagLOGDETAIL::PointerCompare(const tagLOGDETAIL& pItem) const
+{
+	BOOL bRet = FALSE;
+
+	// Compare properties
+	bRet &= (this->byPointerType == pItem.byPointerType);		// Detail info pointer data type
+	bRet &= (this->szPointerSize == pItem.szPointerSize);		// Detail info pointer data size
+
+	// Only compare pointer values if properties are matching
+	if (bRet != FALSE) {
+		bRet &= memcmp(this->ptrDetailInfo, pItem.ptrDetailInfo, this->szPointerSize);
+	}
+
+	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEmpty
+//	Description:	Check if current detail info data is empty
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagLOGDETAIL::IsEmpty(void) const
+{
+	// Initialize empty detail info
+	static const LOGDETAIL logDummyDetail;
+
+	// Compare with that data and return result
+	return this->Compare(logDummyDetail);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetPointerData
+//	Description:	Set detail info pointer data
+//  Arguments:		pDataBuff	- Data buffer (pointer)
+//					byDataType	- Data type
+//					szDataSize	- Data size
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagLOGDETAIL::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_UNSPECIFIED */, SIZE_T szDataSize /* = 0 */)
+{
+	// If data type is void (unusable), do nothing
+	if (byDataType == DATA_TYPE_VOID)
+		return FALSE;
+
+	// If both data type and size are not specified, do nothing
+	if ((byDataType == DATA_TYPE_UNSPECIFIED) && (szDataSize == 0))
+		return FALSE;
+
+	// If size is not specified,
+	if (szDataSize == 0) {
+		// Get size by data type
+		szDataSize = GetSizeByType(byDataType);
+
+		// Get size failed, do nothing
+		if (szDataSize == 0)
+			return FALSE;
+	}
+
+	// Otherwise, set normally
+	this->byPointerType = byDataType;
+	this->szPointerSize = szDataSize;
+	memcpy(this->ptrDetailInfo, pDataBuff, szDataSize);
+	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	tagLOGITEM
 //	Description:	Constructor
 //  Arguments:		Default
@@ -30,20 +305,201 @@
 
 tagLOGITEM::tagLOGITEM()
 {
-	this->stTime = {};							// Log time
-	this->byType = 0;							// Log type
-	this->byCategory = 0;						// Log category
-	this->strLogString = DEF_STRING_EMPTY;		// Log string
-	this->strDetails = DEF_STRING_EMPTY;		// Log detail string
+	// Initialization
+	this->stTime = {0};											// Log time
+	this->usCategory = LOG_MACRO_NONE;							// Log category
+	this->strLogString = DEF_STRING_EMPTY;						// Log string
+	this->arrDetailInfo.RemoveAll();							// Log detail info
 }
 
 tagLOGITEM::tagLOGITEM(const tagLOGITEM& pItem)
 {
-	this->stTime = pItem.stTime;				// Log time
-	this->byType = pItem.byType;				// Log type
-	this->byCategory = pItem.byCategory;		// Log category
-	this->strLogString = pItem.strLogString;	// Log string
-	this->strDetails = pItem.strDetails;		// Log detail string
+	// Copy data
+	this->stTime = pItem.stTime;								// Log time
+	this->usCategory = pItem.usCategory;						// Log category
+	this->strLogString = pItem.strLogString;					// Log string
+	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		Default
+//  Return value:	tagLOGITEM&
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagLOGITEM& tagLOGITEM::operator=(const tagLOGITEM& pItem)
+{
+	// Copy data
+	this->stTime = pItem.stTime;								// Log time
+	this->usCategory = pItem.usCategory;						// Log category
+	this->strLogString = pItem.strLogString;					// Log string
+	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
+
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Copy
+//	Description:	Copy data from another log item
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagLOGITEM::Copy(const tagLOGITEM& pItem)
+{
+	// Copy data
+	this->stTime = pItem.stTime;								// Log time
+	this->usCategory = pItem.usCategory;						// Log category
+	this->strLogString = pItem.strLogString;					// Log string
+	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Compare
+//	Description:	Compare with another given item
+//  Arguments:		pItem - Pointer of given item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagLOGITEM::Compare(const tagLOGITEM& pItem) const
+{
+	BOOL bRet = FALSE;
+
+	// Compare item
+	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
+	bRet &= (this->stTime.wMinute == pItem.stTime.wMinute);
+	bRet &= (this->usCategory == pItem.usCategory);
+	bRet &= (this->strLogString == pItem.strLogString);
+
+	// Compare log detail info
+	BOOL bDetailInfoCompare = TRUE;
+	if (this->arrDetailInfo.GetSize() != pItem.arrDetailInfo.GetSize()) {
+		bDetailInfoCompare = FALSE;
+	}
+	else {
+		for (int nIndex = 0; nIndex < this->arrDetailInfo.GetSize(); nIndex++) {
+			if (this->arrDetailInfo.GetAt(nIndex).Compare(pItem.arrDetailInfo.GetAt(nIndex)) != TRUE) {
+				bDetailInfoCompare = FALSE;
+				break;
+			}
+		}
+	}
+	bRet &= bDetailInfoCompare;
+
+	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEmpty
+//	Description:	Check if current log item is empty
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagLOGITEM::IsEmpty(void) const
+{
+	// Initialize an empty item
+	static const LOGITEM logDummyItem;
+
+	// Compare with this item and return result
+	return this->Compare(logDummyItem);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RemoveDetailInfo
+//	Description:	Remove all log detail info data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagLOGITEM::RemoveDetailInfo(void)
+{
+	// Clean up log detail info data
+	this->arrDetailInfo.RemoveAll();
+	this->arrDetailInfo.FreeExtra();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RemoveAll
+//	Description:	Remove all log item data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagLOGITEM::RemoveAll(void)
+{
+	// Reset data
+	this->stTime = {0};											// Log time
+	this->usCategory = LOG_MACRO_NONE;							// Log category
+	this->strLogString = DEF_STRING_EMPTY;						// Log string
+
+	// Clean up log detail info data
+	this->RemoveDetailInfo();									// Log detail info
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	AddDetail
+//	Description:	Add log detail info data
+//  Arguments:		logDetailInfo	- Log detail info data
+//					byCategory		- Detail category
+//					nDetailInfo		- Detail info (integer)
+//					strDetailInfo	- Detail info (string)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagLOGITEM::AddDetail(const LOGDETAIL& logDetailInfo)
+{
+	// Add detail info data
+	this->arrDetailInfo.Add(logDetailInfo);
+}
+
+void tagLOGITEM::AddDetail(BYTE byCategory, UINT nDetailInfo)
+{
+	// Prepare detail info data
+	LOGDETAIL logDetailInfo;
+	logDetailInfo.byCategory = byCategory;
+	logDetailInfo.uiDetailInfo = nDetailInfo;
+
+	// Add detail info data
+	this->AddDetail(logDetailInfo);
+}
+
+void tagLOGITEM::AddDetail(BYTE byCategory, LPCTSTR lpszDetailInfo)
+{
+	// Prepare detail info data
+	LOGDETAIL logDetailInfo;
+	logDetailInfo.byCategory = byCategory;
+	logDetailInfo.strDetailInfo = lpszDetailInfo;
+
+	// Add detail info data
+	this->AddDetail(logDetailInfo);
+}
+
+void tagLOGITEM::AddDetail(BYTE byCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo)
+{
+	// Prepare detail info data
+	LOGDETAIL logDetailInfo;
+	logDetailInfo.byCategory = byCategory;
+	logDetailInfo.uiDetailInfo = nDetailInfo;
+	logDetailInfo.strDetailInfo = lpszDetailInfo;
+
+	// Add detail info data
+	this->AddDetail(logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -55,10 +511,10 @@ tagLOGITEM::tagLOGITEM(const tagLOGITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString tagLOGITEM::FormatDateTime()
+CString tagLOGITEM::FormatDateTime(void) const
 {
 	CString strTimeFormat;
-	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	CString strMiddayFlag = (stTime.wHour >= 12) ? DEF_SYMBOL_POSTMERIDIEM : DEF_SYMBOL_ANTEMERIDIEM;
 	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
 						stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
 
@@ -74,10 +530,10 @@ CString tagLOGITEM::FormatDateTime()
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString tagLOGITEM::FormatLogString()
+CString tagLOGITEM::FormatLogString(void) const
 {
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, FormatDateTime(), strLogString, strDetails);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, FormatDateTime(), strLogString, DEF_STRING_EMPTY);
 	return strLogFormat;
 }
 
@@ -88,17 +544,30 @@ CString tagLOGITEM::FormatLogString()
 //
 //////////////////////////////////////////////////////////////////////////
 
-SLogging::SLogging()
+SLogging::SLogging(BYTE byLogType)
 {
-	m_nLogWriteMode = 0;
-	m_nLogDataType = 0;
+	// Log data array
+	m_arrLogData.RemoveAll();
+
+	// Properties
+	m_byLogType = byLogType;
+	m_byWriteMode = LOG_WRITEMODE_NONE;
+	m_nMaxSize = DEF_INTEGER_INFINITE;
+	m_strFilePath = DEF_STRING_EMPTY;
+	m_pItemDefTemplate = NULL;
 }
 
 SLogging::~SLogging()
 {
-	// Clean up loglist
+	// Clean up log data
 	m_arrLogData.RemoveAll();
 	m_arrLogData.FreeExtra();
+
+	// Clean up default item template
+	if (m_pItemDefTemplate != NULL) {
+		delete m_pItemDefTemplate;
+		m_pItemDefTemplate = NULL;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -112,22 +581,53 @@ SLogging::~SLogging()
 
 void SLogging::Init()
 {
+	// Initialize empty log data
 	m_arrLogData.RemoveAll();
 	m_arrLogData.FreeExtra();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetLogCount
-//	Description:	Return the number of items of log list
+//	Function name:	DeleteAll
+//	Description:	Delete all log data
 //  Arguments:		None
-//  Return value:	int - Number of log items
+//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SLogging::GetLogCount()
+void SLogging::DeleteAll()
 {
-	return int(m_arrLogData.GetSize());
+	// Clean up log data
+	m_arrLogData.RemoveAll();
+	m_arrLogData.FreeExtra();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEmpty
+//	Description:	Check if current log data is empty
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE BOOL SLogging::IsEmpty(void) const
+{
+	return m_arrLogData.IsEmpty();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetLogCount
+//	Description:	Return the number of items of log data
+//  Arguments:		None
+//  Return value:	INT_PTR - Number of log items
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE INT_PTR SLogging::GetLogCount() const
+{
+	return m_arrLogData.GetSize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -139,79 +639,165 @@ int SLogging::GetLogCount()
 //
 //////////////////////////////////////////////////////////////////////////
 
-LOGITEM SLogging::GetLogItem(int nIndex)
+LOGITEM& SLogging::GetLogItem(int nIndex)
 {
+	// If current log data is empty
+	if (this->IsEmpty()) {
+		// Return an empty dummy item
+		static LOGITEM logDummyItem;
+		return logDummyItem;
+	}
+
 	// Invalid index
-	if (nIndex < 0)
+	if (nIndex < 0) {
+		// Return 1st item
 		nIndex = 0;
-	else if (nIndex >= GetLogCount())
-		nIndex = GetLogCount() - 1;
+	}
+	else if (nIndex >= GetLogCount()) {
+		// Return last item
+		nIndex = (GetLogCount() - 1);
+	}
+
+	return m_arrLogData.GetAt(nIndex);
+}
+
+const LOGITEM& SLogging::GetLogItem(int nIndex) const
+{
+	// If current log data is empty
+	if (this->IsEmpty()) {
+		// Return an empty dummy item
+		static const LOGITEM logDummyItem;
+		return logDummyItem;
+	}
+
+	// Invalid index
+	if (nIndex < 0) {
+		// Return 1st item
+		nIndex = 0;
+	}
+	else if (nIndex >= GetLogCount()) {
+		// Return last item
+		nIndex = (GetLogCount() - 1);
+	}
 
 	return m_arrLogData.GetAt(nIndex);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Get/SetLogDataType
-//	Description:	Get/set log data type
-//  Arguments:		None
-//  Return value:	None
+//	Function name:	Get/SetMaxSize
+//	Description:	Get/set maximum log data size
+//  Arguments:		nMaxSize - Max log data size
+//  Return value:	INT_PTR
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT SLogging::GetLogDataType()
+AFX_INLINE INT_PTR SLogging::GetMaxSize(void) const
 {
-	return m_nLogDataType;
+	return m_nMaxSize;
 }
 
-void SLogging::SetLogDataType(UINT logDataType)
+void SLogging::SetMaxSize(INT_PTR nMaxSize)
 {
-	m_nLogDataType = logDataType;
+	m_nMaxSize = nMaxSize;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Get/SetLogWriteMode
+//	Function name:	Get/SetWriteMode
 //	Description:	Get/set log write mode
-//  Arguments:		None
-//  Return value:	None
+//  Arguments:		byWriteMode - Log write mode
+//  Return value:	BYTE
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT SLogging::GetLogWriteMode()
+AFX_INLINE BYTE SLogging::GetWriteMode(void) const
 {
-	return m_nLogWriteMode;
+	return m_byWriteMode;
 }
 
-void SLogging::SetLogWriteMode(UINT logWriteMode)
+void SLogging::SetWriteMode(BYTE byWriteMode)
 {
-	m_nLogWriteMode = logWriteMode;
+	m_byWriteMode = byWriteMode;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	OutputLog
-//	Description:	Add a log item into log list data
-//  Arguments:		logItem			- Log item to write
-//					nForceWriteMode - Force specific write mode
+//	Function name:	Get/SetFilePath
+//	Description:	Get/set log output file path
+//  Arguments:		strFilePath/lpszFilePath - Log file path
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SLogging::OutputLog(LOGITEM& logItem, UINT nForceWriteMode /* = 0 */)
+void SLogging::GetFilePath(CString& strFilePath)
 {
-	UINT nLogWriteMode = this->GetLogWriteMode();
-	if ((nForceWriteMode != 0) && (nForceWriteMode != nLogWriteMode)) {
-		// Force log write mode
-		nLogWriteMode = nForceWriteMode;
+	strFilePath = m_strFilePath;
+}
+
+void SLogging::SetFilePath(LPCTSTR lpszFilePath)
+{
+	m_strFilePath = lpszFilePath;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Get/SetDefaultTemplate
+//	Description:	Get/set log default template
+//  Arguments:		logItemTemplate - Log item template
+//  Return value:	BYTE
+//
+//////////////////////////////////////////////////////////////////////////
+
+PLOGITEM SLogging::GetDefaultTemplate(void)
+{
+	return m_pItemDefTemplate;
+}
+
+void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
+{
+	// Initialize default template
+	if (m_pItemDefTemplate == NULL) {
+		m_pItemDefTemplate = new LOGITEM;
+		if (m_pItemDefTemplate == NULL) {
+			TRCLOG("Default item initialization failed!!!");
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			return;
+		}
 	}
 
-	if (nLogWriteMode == LOG_WRITE_MODE_INSTANT) {
-		// Write instantly mode
-		WriteInstantLog(logItem);
+	// Update template
+	if (m_pItemDefTemplate != NULL) {
+		if (logItemTemplate.IsEmpty()) return;
+		m_pItemDefTemplate->Copy(logItemTemplate);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OutputItem
+//	Description:	Add a log item into log data
+//  Arguments:		logItem	- Log item to write
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SLogging::OutputItem(const LOGITEM& logItem)
+{
+	if (GetWriteMode() == LOG_WRITEMODE_INSTANT) {
+		// Write instantly
+		Write(logItem);
 	}
 	else {
-		// Write on-call mode -> Store log
+		// If already reached max data size
+		INT_PTR nMaxSize = GetMaxSize();
+		if ((nMaxSize != DEF_INTEGER_INFINITE) && (GetLogCount() >= nMaxSize)) {
+			// Can not output log item --> Trace info
+			TRCLOG("Output log item failed: Log data exceeded max size!!!");
+			return;
+		}
+
+		// Store log data
 		m_arrLogData.Add(logItem);
 	}
 }
@@ -227,55 +813,71 @@ void SLogging::OutputLog(LOGITEM& logItem, UINT nForceWriteMode /* = 0 */)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SLogging::OutputLogString(LPCSTR lpszLogStringA, LPCSTR lpszLogDetailA /* = NULL */, BYTE byType /* = 0 */)
+void SLogging::OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate /* = TRUE */)
 {
-	// Convert to Unicode string
-	LPCTSTR lpszLogStringW = CA2W(lpszLogStringA).m_psz;
-	LPCTSTR lpszLogDetailW = CA2W(lpszLogDetailA).m_psz;
-	OutputLogString(lpszLogStringW, lpszLogDetailW, byType);
-}
-
-void SLogging::OutputLogString(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /* = NULL */, BYTE byType /* = 0 */)
-{
-	// Write instantly mode
-	if (this->GetLogWriteMode() == LOG_WRITE_MODE_INSTANT) {
-		WriteInstantLog(lpszLogStringW, lpszLogDetailW, byType);
+	if (GetWriteMode() == LOG_WRITEMODE_INSTANT) {
+		// Write instantly
+		Write(lpszLogString);
 	}
 	else {
 		// Get log time
 		SYSTEMTIME stLogTime;
 		stLogTime = GetCurSysTime();
 
-		// Output log string
+		// Prepare log item
 		LOGITEM logItem;
-		logItem.byType = byType;
+		if (bUseLastTemplate == TRUE) {
+			// Use last log item as template
+			if (this->IsEmpty()) {
+				// Can not output log string --> Trace info
+				TRCLOG("Output log string failed: No item to use as template!!!");
+				return;
+			}
+			else {
+				// Copy template
+				logItem.Copy(this->GetLogItem(GetLogCount() - 1));
+			}
+		}
+		else {
+			// Use default template
+			if (this->GetDefaultTemplate() == NULL) {
+				// Can not output log string --> Trace info
+				TRCLOG("Output log string failed: Default template not set!!!");
+				return;
+			}
+			else {
+				// Copy template
+				logItem.Copy(*(this->GetDefaultTemplate()));
+			}
+		}
+
+		// Update log item data
 		logItem.stTime = stLogTime;
-		logItem.strLogString = lpszLogStringW;
-		logItem.strDetails = lpszLogDetailW;
-		OutputLog(logItem);
+		logItem.strLogString = lpszLogString;
+		OutputItem(logItem);
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	WriteLog
-//	Description:	Write log data list into the corresponding logfile
+//	Function name:	Write
+//	Description:	Write log data into the corresponding logfile
 //  Arguments:		None
 //  Return value:	BOOL - Result of log writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SLogging::WriteLog()
+BOOL SLogging::Write()
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
-	HWND hWnd = AfxGetMainWnd()->GetSafeHwnd();
+	HWND hMainWnd = AfxGetMainWnd()->GetSafeHwnd();
 
-	// Quit if current log mode is write instantly mode
-	if (this->GetLogWriteMode() == LOG_WRITE_MODE_INSTANT) {
-		bResult = FALSE;
-		return bResult;
-	}
+	// Quit if current log is set as Read-only
+	// or current log mode is write instantly mode
+	if ((this->GetWriteMode() == LOG_WRITEMODE_NONE) ||
+		(this->GetWriteMode() == LOG_WRITEMODE_INSTANT))
+		return FALSE;
 
 	CString strFileName;
 	CString strFilePath;
@@ -293,12 +895,12 @@ BOOL SLogging::WriteLog()
 		stTemp = logItem.stTime;
 
 		// Get filename according to type of logs
-		switch (m_nLogDataType)
+		switch (m_byLogType)
 		{
-		case LOGTYPE_APPEVENT_LOG:
+		case LOGTYPE_APP_EVENT:
 			// Format app event log filename
 			strFileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth, stTemp.wDay);
-			MakeFilePath(strFilePath, DIR_SUBDIR_LOG, strFileName, FILEEXT_LOGFILE);
+			MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
 			if (strCurFileName.IsEmpty())
 				strCurFileName = strFileName;
 
@@ -321,15 +923,15 @@ BOOL SLogging::WriteLog()
 		case LOGTYPE_HISTORY_LOG:
 			// App history log
 			strFileName = FILENAME_HISTORY_LOG;
-			MakeFilePath(strFilePath, DIR_SUBDIR_LOG, strFileName, FILEEXT_LOGFILE);
+			MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
 			break;
 		default:
 			// Wrong argument
-			TRCLOG("Error: Invalid log type");
+			TRCLOG("Write log failed: Invalid log type!!!");
 			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			// Show error message
 			dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
-			PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
+			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 			break;
 		}
 
@@ -339,12 +941,12 @@ BOOL SLogging::WriteLog()
 			bResult = fLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 			if (bResult == FALSE) {
 				// Open file failed
-				TRCLOG("Error: Can not open/create log file");
+				TRCLOG("Write log failed: Can not open/create log file!!!");
 				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 				// Show error message
 				dwErrCode = GetLastError();
-				PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
+				PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 				return bResult;
 			}
 
@@ -372,24 +974,23 @@ BOOL SLogging::WriteLog()
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	WriteInstantLog
-//	Description:	Write logitem instantly into logfile
-//  Arguments:		logItem - Log item to write
+//	Function name:	Write
+//	Description:	Write log item instantly into logfile
+//  Arguments:		logItem		 - Log item to write
+//					lpszFilePath - Output log file path
 //  Return value:	BOOL - Result of log writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
+BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
 	HWND hWnd = AfxGetMainWnd()->GetSafeHwnd();
 
 	// Quit if current log mode is not write instantly mode
-	if (this->GetLogWriteMode() != LOG_WRITE_MODE_INSTANT) {
-		bResult = FALSE;
-		return bResult;
-	}
+	if (this->GetWriteMode() != LOG_WRITEMODE_INSTANT)
+		return FALSE;
 
 	CString strFileName;
 	CString strFilePath;
@@ -402,9 +1003,9 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 	stTimeTemp = logItem.stTime;
 
 	// Get filename according to type of logs
-	switch (m_nLogDataType)
+	switch (m_byLogType)
 	{
-	case LOGTYPE_APPEVENT_LOG:
+	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
 		strFileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay);
 		break;
@@ -417,13 +1018,13 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 		TRCLOG("Error: Invalid log type");
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
-		PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
+		PostMessage(hWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 		return FALSE;
 		break;
 	}
 
 	// Get file path
-	MakeFilePath(strFilePath, DIR_SUBDIR_LOG, strFileName, FILEEXT_LOGFILE);
+	MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -436,7 +1037,7 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 
 			// Show error message
 			dwErrCode = GetLastError();
-			PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
+			PostMessage(hWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 			return bResult;
 		}
 
@@ -470,27 +1071,15 @@ BOOL SLogging::WriteInstantLog(LOGITEM& logItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SLogging::WriteInstantLog(LPCSTR lpszLogStringA, LPCSTR lpszLogDetailA /* = NULL */, BYTE byType /* = 0 */)
-{
-	// Convert to Unicode string
-	LPCTSTR lpszLogStringW = CA2W(lpszLogStringA).m_psz;
-	LPCTSTR lpszLogDetailW = CA2W(lpszLogDetailA).m_psz;
-	return WriteInstantLog(lpszLogStringW, lpszLogDetailW, byType);
-}
-
-BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /* = NULL */, BYTE byType /* = 0 */)
+BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
 	HWND hWnd = AfxGetMainWnd()->GetSafeHwnd();
 
 	// Quit if current log mode is not write instantly mode
-	if (this->GetLogWriteMode() != LOG_WRITE_MODE_INSTANT) {
-		bResult = FALSE;
-		TRCLOG("Error: Not write instantly mode");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
-		return bResult;
-	}
+	if (this->GetWriteMode() != LOG_WRITEMODE_INSTANT)
+		return FALSE;
 
 	CString strFileName;
 	CString strFilePath;
@@ -503,9 +1092,9 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 	GetLocalTime(&stCurTime);
 
 	// Get filename according to type of logs
-	switch (m_nLogDataType)
+	switch (m_byLogType)
 	{
-	case LOGTYPE_APPEVENT_LOG:
+	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
 		strFileName.Format(FILENAME_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth, stCurTime.wDay);
 		break;
@@ -519,13 +1108,13 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		// Show error message
 		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
-		PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
+		PostMessage(hWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 		return FALSE;
 		break;
 	}
 
 	// Get file path
-	MakeFilePath(strFilePath, DIR_SUBDIR_LOG, strFileName, FILEEXT_LOGFILE);
+	MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -538,7 +1127,7 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 
 			// Show error message
 			dwErrCode = GetLastError();
-			PostMessage(hWnd, SM_APP_SHOW_ERROR_MSG, (WPARAM)dwErrCode, NULL);
+			PostMessage(hWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 			return bResult;
 		}
 
@@ -548,10 +1137,8 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 
 	// Format output log strings
 	LOGITEM logItem;
-	logItem.byType = byType;
 	logItem.stTime = stCurTime;
-	logItem.strLogString = lpszLogStringW;
-	logItem.strDetails = lpszLogDetailW;
+	logItem.strLogString = lpszLogString;
 	strLogFormat = logItem.FormatLogString();
 
 	if (!strLogFormat.IsEmpty()) {
@@ -568,366 +1155,3 @@ BOOL SLogging::WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW /*
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputDlgEventLog
-//	Description:	Output log for dialog item events
-//  Arguments:		nEventID   - Item event ID
-//					lpszDlgID  - Dialog string ID
-//					lpszItemID - Item string ID
-//					wParam	   - Additional param 1
-//					lParam	   - Additional param 2
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SLogging::OutputDlgEventLog(UINT nEventID, LPCSTR lpszDlgID /* = NULL */, LPCSTR lpszItemID /* = NULL */, WPARAM wParam /* = NULL */, LPARAM lParam /* = NULL */)
-{
-	CStringA strLog;
-	switch (nEventID)
-	{
-	// Button events
-	case LOG_EVENT_BUTTON_CLICKED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_BUTTONLOG_CLICKED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-	case LOG_EVENT_BUTTON_ENABLED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_BUTTONLOG_ENABLED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-	case LOG_EVENT_BUTTON_DISABLED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_BUTTONLOG_DISABLED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-
-	// Combo-box events
-	case LOG_EVENT_COMBO_SELECTION:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL) && (wParam == NULL)) return;
-		strLog.Format(IDS_COMBOLOG_SELECTION_FORMAT, lpszDlgID, lpszItemID, (int)wParam);
-		break;
-	case LOG_EVENT_COMBO_ENABLED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_COMBOLOG_ENABLED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-	case LOG_EVENT_COMBO_DISABLED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_COMBOLOG_DISABLED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-
-	// Checkbox events
-	case LOG_EVENT_CHKBOX_CHECKED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_CHKBOXLOG_CHECKED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-	case LOG_EVENT_CHKBOX_UNCHECKED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_CHKBOXLOG_UNCHECKED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-	case LOG_EVENT_CHKBOX_ENABLED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_CHKBOXLOG_ENABLED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-	case LOG_EVENT_CHKBOX_DISABLED:
-		if ((lpszDlgID == NULL) && (lpszItemID == NULL)) return;
-		strLog.Format(IDS_CHKBOXLOG_DISABLED_FORMAT, lpszDlgID, lpszItemID);
-		break;
-
-	// Menu events
-	case LOG_EVENT_MENU_SELECTION:
-		if (lpszItemID == NULL) return;
-		strLog.Format(IDS_MENULOG_SELECTION_FORMAT, lpszItemID);
-		break;
-	case LOG_EVENT_MENU_ENABLED:
-		if (lpszItemID == NULL) return;
-		strLog.Format(IDS_MENULOG_ENABLED_FORMAT, lpszItemID);
-		break;
-	case LOG_EVENT_MENU_DISABLED:
-		if (lpszItemID == NULL) return;
-		strLog.Format(IDS_MENULOG_DISABLED_FORMAT, lpszItemID);
-		break;
-
-	// Dialog events
-	case LOG_EVENT_DLG_STARTUP:
-		if (lpszDlgID == NULL) return;
-		strLog.Format(IDS_DIALOGLOG_STARTUP_FORMAT, lpszDlgID);
-		break;
-	case LOG_EVENT_DLG_DESTROYED:
-		if (lpszDlgID == NULL) return;
-		strLog.Format(IDS_DIALOGLOG_DESTROYED_FORMAT, lpszDlgID);
-		break;
-	case LOG_EVENT_DLG_SHOWED:
-		if (lpszDlgID == NULL) return;
-		strLog.Format(IDS_DIALOGLOG_SHOWED_FORMAT, lpszDlgID);
-		break;
-	case LOG_EVENT_DLG_HIDDEN:
-		if (lpszDlgID == NULL) return;
-		strLog.Format(IDS_DIALOGLOG_HIDDEN_FORMAT, lpszDlgID);
-		break;
-	case LOG_EVENT_DLG_EXPANDED:
-		if (lpszDlgID == NULL) return;
-		strLog.Format(IDS_DIALOGLOG_EXPANDED_FORMAT, lpszDlgID);
-		break;
-	case LOG_EVENT_DLG_COLLAPSED:
-		if (lpszDlgID == NULL) return;
-		strLog.Format(IDS_DIALOGLOG_COLLAPSED_FORMAT, lpszDlgID);
-		break;
-
-	// Notify icon events
-	case LOG_EVENT_NOTIFY_CREATED:
-		strLog.Format(IDS_NOTIFYLOG_CREATED_FORMAT);
-		break;
-	case LOG_EVENT_NOTIFY_REMOVED:
-		strLog.Format(IDS_NOTIFYLOG_REMOVED_FORMAT);
-		break;
-	case LOG_EVENT_NOTIFY_LMBCLICKED:
-		strLog.Format(IDS_NOTIFYLOG_LMBCLICKED_FORMAT);
-		break;
-	case LOG_EVENT_NOTIFY_MMBCLICKED:
-		strLog.Format(IDS_NOTIFYLOG_MMBCLICKED_FORMAT);
-		break;
-	case LOG_EVENT_NOTIFY_RMBCLICKED:
-		strLog.Format(IDS_NOTIFYLOG_RMBCLICKED_FORMAT);
-		break;
-	case LOG_EVENT_NOTIFY_SHOWMENU:
-		strLog.Format(IDS_NOTIFYLOG_SHOWMENU_FORMAT);
-		break;
-	case LOG_EVENT_NOTIFY_UPDATETIPTEXT:
-		strLog.Format(IDS_NOTIFYLOG_UPDATETIPTEXT_FORMAT);
-		break;
-	}
-
-	// Log string validity
-	if (strLog.IsEmpty())
-		return;
-
-	// Output log string
-	OutputLogString(strLog);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputDataChangeLog
-//	Description:	Output log for data change event
-//  Arguments:		byDataType	   - Data type ID
-//					byDataCategory - Data category ID
-//					dwCtrlID	   - Parent control ID
-//					dwPreVal	   - Previous value (integer)
-//					dwAftVal	   - After value (integer)
-//					lpszFlagName   - Additional flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SLogging::OutputDataChangeLog(BYTE byDataType, BYTE byDataCategory, DWORD dwCtrlID, DWORD dwPreVal, DWORD dwAftVal, LPCTSTR lpszFlagName)
-{
-	UINT nLogStringFormatID = DEF_INTEGER_INVALID;
-	CString strDataCate = DEF_STRING_NULL;
-	CString strPreVal = DEF_STRING_NULL;
-	CString strAftVal = DEF_STRING_NULL;
-	CString strCtrlName = DEF_STRING_NULL;
-	CString strTemp;
-	CString strLogFormat;
-	SYSTEMTIME stTimeTemp;
-
-	// Load language package
-	LANGTABLE_PTR pLang = LoadLanguageTable(APP_LANGUAGE_ENGLISH);
-	strTemp = GetLanguageString(pLang, dwCtrlID);
-	strCtrlName = strTemp;
-	if (strTemp.GetLength() > DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH) {
-		// Shorten control title if too long
-		int nMaxLength = DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH;
-		strCtrlName.Format(_T("%s..."), strTemp.Left(nMaxLength));
-	}
-	if ((dwCtrlID == DEF_INTEGER_NULL) &&
-		(lpszFlagName != NULL)) {
-		// Use flag value instead
-		strCtrlName = lpszFlagName;
-	}
-
-	switch (byDataCategory)
-	{
-	case DATACATE_APPCONFIG:
-		strDataCate = _T("Config");
-		break;
-	case DATACATE_SCHEDULE:
-		strDataCate = _T("Schedule");
-		break;
-	case DATACATE_HOTKEYSET:
-		strDataCate = _T("HotkeySet");
-		break;
-	case DATACATE_PWRREMINDER:
-		strDataCate = _T("PwrReminder");
-		break;
-	}
-
-	switch (byDataType)
-	{
-	case DATATYPE_YESNO_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_YESNO_VALUE;
-		strPreVal = (dwPreVal == TRUE) ? _T("Yes") : _T("No");
-		strAftVal = (dwAftVal == TRUE) ? _T("Yes") : _T("No");
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strCtrlName, strPreVal, strAftVal);
-		break;
-	case DATATYPE_OPTION_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_OPTION_VALUE;
-		strPreVal = GetLanguageString(pLang, dwPreVal);
-		strAftVal = GetLanguageString(pLang, dwAftVal);
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strCtrlName, strPreVal, strAftVal);
-		break;
-	case DATATYPE_ITEMNUM_ADD:
-		nLogStringFormatID = IDS_DATACHANGELOG_ITEMNUM_ADD;
-		strLogFormat.Format(nLogStringFormatID, strDataCate, dwPreVal, dwAftVal);
-		break;
-	case DATATYPE_ITEMNUM_REMOVE:
-		nLogStringFormatID = IDS_DATACHANGELOG_ITEMNUM_REMOVE;
-		strLogFormat.Format(nLogStringFormatID, strDataCate, dwPreVal, dwAftVal);
-		break;
-	case DATATYPE_STRING_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_STRING_VALUE;
-		strPreVal = GetLanguageString(pLang, dwPreVal);
-		strAftVal = GetLanguageString(pLang, dwAftVal);
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strPreVal, strAftVal);
-		break;
-	case DATATYPE_TIME_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_TIME_VALUE;
-		SpinPos2Time(stTimeTemp, dwPreVal);
-		strPreVal.Format(_T("%02d:%02d"), stTimeTemp.wHour, stTimeTemp.wMinute);
-		SpinPos2Time(stTimeTemp, dwAftVal);
-		strAftVal.Format(_T("%02d:%02d"), stTimeTemp.wHour, stTimeTemp.wMinute);
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strPreVal, strAftVal);
-		break;
-	case DATATYPE_FLAG_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_FLAG_VALUE;
-		strPreVal.Format(_T("%d"), dwPreVal);
-		strAftVal.Format(_T("%d"), dwAftVal);
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strPreVal, strAftVal);
-		break;
-	case DATATYPE_SPEC_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_SPEC_VALUE;
-		strPreVal.Format(_T("%d"), dwPreVal);
-		strAftVal.Format(_T("%d"), dwAftVal);
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strCtrlName, strPreVal, strAftVal);
-		break;
-	}
-
-	// If log string is empty, do nothing
-	if (strLogFormat.IsEmpty())
-		return;
-
-	// Output log string
-	OutputLogString(strLogFormat);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputDataChangeLog
-//	Description:	Output log for data change event
-//  Arguments:		byDataType	   - Data type ID
-//					byDataCategory - Data category ID
-//					dwCtrlID	   - Parent control ID
-//					lpszPreVal	   - Previous value (string)
-//					lpszAftVal	   - After value (string)
-//					lpszFlagName   - Additional flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SLogging::OutputDataChangeLog(BYTE byDataType, BYTE byDataCategory, DWORD dwCtrlID, LPCTSTR lpszPreVal, LPCTSTR lpszAftVal, LPCTSTR lpszFlagName)
-{
-	UINT nLogStringFormatID = DEF_INTEGER_INVALID;
-	CString strDataCate = DEF_STRING_NULL;
-	DWORD dwPreVal = DEF_INTEGER_NULL;
-	DWORD dwAftVal = DEF_INTEGER_NULL;
-	CString strCtrlName = DEF_STRING_NULL;
-	CString strTemp;
-	CString strPreVal, strAftVal;
-	CString strLogFormat;
-
-	// Load language package
-	LANGTABLE_PTR pLang = LoadLanguageTable(APP_LANGUAGE_ENGLISH);
-	strTemp = GetLanguageString(pLang, dwCtrlID);
-	strCtrlName = strTemp;
-	if (strTemp.GetLength() > DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH) {
-		// Shorten control title if too long
-		int nMaxLength = DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH;
-		strCtrlName.Format(_T("%s..."), strTemp.Left(nMaxLength));
-	}
-	if ((dwCtrlID == DEF_INTEGER_NULL) &&
-		(lpszFlagName != NULL)) {
-		// Use flag value instead
-		strCtrlName = lpszFlagName;
-	}
-
-	switch (byDataCategory)
-	{
-	case DATACATE_APPCONFIG:
-		strDataCate = _T("Config");
-		break;
-	case DATACATE_SCHEDULE:
-		strDataCate = _T("Schedule");
-		break;
-	case DATACATE_HOTKEYSET:
-		strDataCate = _T("HotkeySet");
-		break;
-	case DATACATE_PWRREMINDER:
-		strDataCate = _T("PwrReminder");
-		break;
-	}
-
-	switch (byDataType)
-	{
-	case DATATYPE_YESNO_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_YESNO_VALUE;
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strCtrlName, lpszPreVal, lpszAftVal);
-		break;
-	case DATATYPE_OPTION_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_OPTION_VALUE;
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strCtrlName, lpszPreVal, lpszAftVal);
-		break;
-	case DATATYPE_ITEMNUM_ADD:
-		nLogStringFormatID = IDS_DATACHANGELOG_ITEMNUM_ADD;
-		dwPreVal = _tstoi(lpszPreVal);
-		dwAftVal = _tstoi(lpszAftVal);
-		strLogFormat.Format(nLogStringFormatID, strDataCate, dwPreVal, dwAftVal);
-		break;
-	case DATATYPE_ITEMNUM_REMOVE:
-		nLogStringFormatID = IDS_DATACHANGELOG_ITEMNUM_REMOVE;
-		dwPreVal = _tstoi(lpszPreVal);
-		dwAftVal = _tstoi(lpszAftVal);
-		strLogFormat.Format(nLogStringFormatID, strDataCate, dwPreVal, dwAftVal);
-		break;
-	case DATATYPE_STRING_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_STRING_VALUE;
-		strTemp = lpszPreVal;
-		strPreVal = strTemp;
-		if (strTemp.GetLength() > DEF_LOGDISP_STRING_MAXLENGTH) {
-			strPreVal = strTemp.Left(DEF_LOGDISP_STRING_MAXLENGTH) + _T("...");
-		}
-		strTemp = lpszAftVal;
-		strAftVal = strTemp;
-		if (strTemp.GetLength() > DEF_LOGDISP_STRING_MAXLENGTH) {
-			strAftVal = strTemp.Left(DEF_LOGDISP_STRING_MAXLENGTH) + _T("...");
-		}
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strPreVal, strAftVal);
-		break;
-	case DATATYPE_TIME_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_TIME_VALUE;
-		strLogFormat.Format(nLogStringFormatID, strDataCate, lpszPreVal, lpszAftVal);
-		break;
-	case DATATYPE_FLAG_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_FLAG_VALUE;
-		strLogFormat.Format(nLogStringFormatID, strDataCate, lpszPreVal, lpszAftVal);
-		break;
-	case DATATYPE_SPEC_VALUE:
-		nLogStringFormatID = IDS_DATACHANGELOG_SPEC_VALUE;
-		strLogFormat.Format(nLogStringFormatID, strDataCate, strCtrlName, lpszPreVal, lpszAftVal);
-		break;
-	}
-
-	// If log string is empty, do nothing
-	if (strLogFormat.IsEmpty())
-		return;
-
-	// Output log string
-	OutputLogString(strLogFormat);
-}

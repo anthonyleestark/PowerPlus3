@@ -36,86 +36,99 @@
 
 // Define languages
 #define APP_LANGUAGE							0x01
-#define APP_LANGUAGE_ENGLISH					(APP_LANGUAGE << 8) + 0x01
-#define APP_LANGUAGE_VIETNAMESE					(APP_LANGUAGE << 8) + 0x02
-#define APP_LANGUAGE_SIMPCHINESE				(APP_LANGUAGE << 8) + 0x03
+#define APP_LANGUAGE_ENGLISH					((APP_LANGUAGE << 8) + 0x01)
+#define APP_LANGUAGE_VIETNAMESE					((APP_LANGUAGE << 8) + 0x02)
+#define APP_LANGUAGE_SIMPCHINESE				((APP_LANGUAGE << 8) + 0x03)
 
 // Define app actions
 #define DEF_APP_ACTION							0x02
-#define DEF_APP_ACTION_NOTHING					(DEF_APP_ACTION << 8) + 0x00
-#define DEF_APP_ACTION_DISPLAYOFF				(DEF_APP_ACTION << 8) + 0x01
-#define DEF_APP_ACTION_SLEEP					(DEF_APP_ACTION << 8) + 0x02
-#define DEF_APP_ACTION_SHUTDOWN					(DEF_APP_ACTION << 8) + 0x03
-#define DEF_APP_ACTION_RESTART					(DEF_APP_ACTION << 8) + 0x04
-#define DEF_APP_ACTION_SIGNOUT					(DEF_APP_ACTION << 8) + 0x05
-#define DEF_APP_ACTION_HIBERNATE				(DEF_APP_ACTION << 8) + 0x06
-#define DEF_APP_ACTION_SHOWMENU					(DEF_APP_ACTION << 8) + 0x07
-#define DEF_APP_ACTION_SHOWWINDOW				(DEF_APP_ACTION << 8) + 0x08
+#define DEF_APP_ACTION_NOTHING					((DEF_APP_ACTION << 8) + 0x00)
+#define DEF_APP_ACTION_DISPLAYOFF				((DEF_APP_ACTION << 8) + 0x01)
+#define DEF_APP_ACTION_SLEEP					((DEF_APP_ACTION << 8) + 0x02)
+#define DEF_APP_ACTION_SHUTDOWN					((DEF_APP_ACTION << 8) + 0x03)
+#define DEF_APP_ACTION_RESTART					((DEF_APP_ACTION << 8) + 0x04)
+#define DEF_APP_ACTION_SIGNOUT					((DEF_APP_ACTION << 8) + 0x05)
+#define DEF_APP_ACTION_HIBERNATE				((DEF_APP_ACTION << 8) + 0x06)
+#define DEF_APP_ACTION_SHOWMENU					((DEF_APP_ACTION << 8) + 0x07)
+#define DEF_APP_ACTION_SHOWWINDOW				((DEF_APP_ACTION << 8) + 0x08)
 
 // Define app action messages
 #define DEF_APP_MESSAGE							0x03
 #define DEF_APP_MESSAGE_DISPLAYOFF				SC_MONITORPOWER
-#define DEF_APP_MESSAGE_SLEEP					(DEF_APP_MESSAGE << 8) + 0x01
-#define DEF_APP_MESSAGE_HIBERNATE				(DEF_APP_MESSAGE << 8) + 0x02
-#define DEF_APP_MESSAGE_SHUTDOWN				EWX_SHUTDOWN | EWX_HYBRID_SHUTDOWN
+#define DEF_APP_MESSAGE_SLEEP					((DEF_APP_MESSAGE << 8) + 0x01)
+#define DEF_APP_MESSAGE_HIBERNATE				((DEF_APP_MESSAGE << 8) + 0x02)
+#define DEF_APP_MESSAGE_SHUTDOWN				(EWX_SHUTDOWN | EWX_HYBRID_SHUTDOWN)
 #define DEF_APP_MESSAGE_POWEROFF				EWX_POWEROFF
 #define DEF_APP_MESSAGE_REBOOT					EWX_REBOOT
 #define DEF_APP_MESSAGE_SIGNOUT					EWX_LOGOFF
 
 // Define action type constants
 #define DEF_APP_ACTIONTYPE						0x04
-#define DEF_APP_ACTIONTYPE_MONITOR				(DEF_APP_ACTIONTYPE << 8) + 0x01
-#define DEF_APP_ACTIONTYPE_POWER				(DEF_APP_ACTIONTYPE << 8) + 0x02
+#define DEF_APP_ACTIONTYPE_MONITOR				((DEF_APP_ACTIONTYPE << 8) + 0x01)
+#define DEF_APP_ACTIONTYPE_POWER				((DEF_APP_ACTIONTYPE << 8) + 0x02)
 
 // Define app error codes
 #define DEF_APP_ERROR							0x05
-#define DEF_APP_ERROR_SUCCESS					ERROR_SUCCESS
-#define DEF_APP_ERROR_FAILED					(DEF_APP_ERROR << 8) + 0xE1
-#define DEF_APP_ERROR_WRONG_ARGUMENT			(DEF_APP_ERROR << 8) + 0xE2
-#define DEF_APP_ERROR_INVALID_FUNCTION			ERROR_INVALID_FUNCTION
-#define DEF_APP_ERROR_FILE_NOT_FOUND			ERROR_FILE_NOT_FOUND
-#define DEF_APP_ERROR_PATH_NOT_FOUND			ERROR_PATH_NOT_FOUND
-#define DEF_APP_ERROR_ACCESS_DENIED				ERROR_ACCESS_DENIED
-#define DEF_APP_ERROR_INVALID_HANDLE			ERROR_INVALID_HANDLE
-#define DEF_APP_ERROR_INVALID_DATA				ERROR_INVALID_DATA
-#define DEF_APP_ERROR_NO_MORE_FILES				ERROR_NO_MORE_FILES
-#define DEF_APP_ERROR_FILE_EXISTS				ERROR_FILE_EXISTS
-#define DEF_APP_ERROR_CANNOT_MAKE				ERROR_CANNOT_MAKE
-#define DEF_APP_ERROR_INVALID_PARAMETER			ERROR_INVALID_PARAMETER
-#define DEF_APP_ERROR_OPEN_FAILED				ERROR_OPEN_FAILED
-#define DEF_APP_ERROR_BUFFER_OVERFLOW			ERROR_BUFFER_OVERFLOW
-#define DEF_APP_ERROR_INVALID_NAME				ERROR_INVALID_NAME
-#define DEF_APP_ERROR_DIR_NOT_EMPTY				ERROR_DIR_NOT_EMPTY
-#define DEF_APP_ERROR_FAIL_SHUTDOWN				ERROR_FAIL_SHUTDOWN
-#define DEF_APP_ERROR_FAIL_RESTART				ERROR_FAIL_RESTART
-#define DEF_APP_ERROR_INVALID_ADDRESS			ERROR_INVALID_ADDRESS
-#define DEF_APP_ERROR_APP_INIT_FAILURE			ERROR_APP_INIT_FAILURE
-#define DEF_APP_ERROR_CANNOT_LOAD_REGISTRY		ERROR_CANNOT_LOAD_REGISTRY_FILE
-#define DEF_APP_ERROR_REGISTRY_QUOTA_LIMIT		ERROR_REGISTRY_QUOTA_LIMIT
-#define DEF_APP_ERROR_SYSTEM_SHUTDOWN			ERROR_SYSTEM_SHUTDOWN
-#define DEF_APP_ERROR_HIBERNATED				ERROR_HIBERNATED
-#define DEF_APP_ERROR_RESUME_HIBERNATION		ERROR_RESUME_HIBERNATION
-#define DEF_APP_ERROR_WAKE_SYSTEM				ERROR_WAKE_SYSTEM
-#define DEF_APP_ERROR_BACKUP_REG_FAILED			(DEF_APP_ERROR << 8) + 0xE3
-#define DEF_APP_ERROR_LOAD_CFG_INVALID			(DEF_APP_ERROR << 8) + 0xE4
-#define DEF_APP_ERROR_LOAD_CFG_FAILED			(DEF_APP_ERROR << 8) + 0xE5
-#define DEF_APP_ERROR_LOAD_SCHED_INVALID		(DEF_APP_ERROR << 8) + 0xE6
-#define DEF_APP_ERROR_LOAD_SCHED_FAILED			(DEF_APP_ERROR << 8) + 0xE7
-#define DEF_APP_ERROR_LOAD_HKEYSET_INVALID		(DEF_APP_ERROR << 8) + 0xE8
-#define DEF_APP_ERROR_LOAD_HKEYSET_FAILED		(DEF_APP_ERROR << 8) + 0xE9
-#define DEF_APP_ERROR_LOAD_PWRRMD_INVALID		(DEF_APP_ERROR << 8) + 0xEA
-#define DEF_APP_ERROR_LOAD_PWRRMD_FAILED		(DEF_APP_ERROR << 8) + 0xEB
-#define DEF_APP_ERROR_SAVE_CFG_INVALID			(DEF_APP_ERROR << 8) + 0xEC
-#define DEF_APP_ERROR_SAVE_CFG_FAILED			(DEF_APP_ERROR << 8) + 0xED
-#define DEF_APP_ERROR_SAVE_SCHED_INVALID		(DEF_APP_ERROR << 8) + 0xEE
-#define DEF_APP_ERROR_SAVE_SCHED_FAILED			(DEF_APP_ERROR << 8) + 0xEF
-#define DEF_APP_ERROR_SAVE_HKEYSET_INVALID		(DEF_APP_ERROR << 8) + 0xF0
-#define DEF_APP_ERROR_SAVE_HKEYSET_FAILED		(DEF_APP_ERROR << 8) + 0xF1
-#define DEF_APP_ERROR_SAVE_PWRRMD_INVALID		(DEF_APP_ERROR << 8) + 0xF2
-#define DEF_APP_ERROR_SAVE_PWRRMD_FAILED		(DEF_APP_ERROR << 8) + 0xF3
-#define DEF_APP_ERROR_WRITE_LOG_FAILED			(DEF_APP_ERROR << 8) + 0xF4
-#define DEF_APP_ERROR_OUTPUT_LOG_FAILED			(DEF_APP_ERROR << 8) + 0xF5
-#define DEF_APP_ERROR_UNKNOWN					(DEF_APP_ERROR << 8) + 0xFF
+#define DEF_APP_ERROR_SUCCESS					((DEF_APP_ERROR << 8) + 0xE000)
+#define DEF_APP_ERROR_FAILED					((DEF_APP_ERROR << 8) + 0xE001)
+#define DEF_APP_ERROR_WRONG_ARGUMENT			((DEF_APP_ERROR << 8) + 0xE002)
+#define DEF_APP_ERROR_INVALID_FUNCTION			((DEF_APP_ERROR << 8) + 0xE003)
+#define DEF_APP_ERROR_FILE_NOT_FOUND			((DEF_APP_ERROR << 8) + 0xE004)
+#define DEF_APP_ERROR_PATH_NOT_FOUND			((DEF_APP_ERROR << 8) + 0xE005)
+#define DEF_APP_ERROR_ACCESS_DENIED				((DEF_APP_ERROR << 8) + 0xE006)
+#define DEF_APP_ERROR_INVALID_HANDLE			((DEF_APP_ERROR << 8) + 0xE007)
+#define DEF_APP_ERROR_INVALID_DATA				((DEF_APP_ERROR << 8) + 0xE008)
+#define DEF_APP_ERROR_NO_MORE_FILES				((DEF_APP_ERROR << 8) + 0xE009)
+#define DEF_APP_ERROR_FILE_EXISTS				((DEF_APP_ERROR << 8) + 0xE00A)
+#define DEF_APP_ERROR_CANNOT_MAKE				((DEF_APP_ERROR << 8) + 0xE00B)
+#define DEF_APP_ERROR_INVALID_PARAMETER			((DEF_APP_ERROR << 8) + 0xE00C)
+#define DEF_APP_ERROR_OPEN_FAILED				((DEF_APP_ERROR << 8) + 0xE00D)
+#define DEF_APP_ERROR_BUFFER_OVERFLOW			((DEF_APP_ERROR << 8) + 0xE00E)
+#define DEF_APP_ERROR_INVALID_NAME				((DEF_APP_ERROR << 8) + 0xE00F)
+#define DEF_APP_ERROR_DIR_NOT_EMPTY				((DEF_APP_ERROR << 8) + 0xE010)
+#define DEF_APP_ERROR_FAIL_SHUTDOWN				((DEF_APP_ERROR << 8) + 0xE011)
+#define DEF_APP_ERROR_FAIL_RESTART				((DEF_APP_ERROR << 8) + 0xE012)
+#define DEF_APP_ERROR_INVALID_ADDRESS			((DEF_APP_ERROR << 8) + 0xE013)
+#define DEF_APP_ERROR_APP_INIT_FAILURE			((DEF_APP_ERROR << 8) + 0xE014)
+#define DEF_APP_ERROR_CANNOT_LOAD_REGISTRY		((DEF_APP_ERROR << 8) + 0xE015)
+#define DEF_APP_ERROR_REGISTRY_QUOTA_LIMIT		((DEF_APP_ERROR << 8) + 0xE016)
+#define DEF_APP_ERROR_SYSTEM_SHUTDOWN			((DEF_APP_ERROR << 8) + 0xE017)
+#define DEF_APP_ERROR_HIBERNATED				((DEF_APP_ERROR << 8) + 0xE018)
+#define DEF_APP_ERROR_RESUME_HIBERNATION		((DEF_APP_ERROR << 8) + 0xE019)
+#define DEF_APP_ERROR_WAKE_SYSTEM				((DEF_APP_ERROR << 8) + 0xE01A)
+#define DEF_APP_ERROR_BACKUP_REG_FAILED			((DEF_APP_ERROR << 8) + 0xE01B)
+#define DEF_APP_ERROR_LOAD_CFG_INVALID			((DEF_APP_ERROR << 8) + 0xE01C)
+#define DEF_APP_ERROR_LOAD_CFG_FAILED			((DEF_APP_ERROR << 8) + 0xE01D)
+#define DEF_APP_ERROR_LOAD_SCHED_INVALID		((DEF_APP_ERROR << 8) + 0xE01E)
+#define DEF_APP_ERROR_LOAD_SCHED_FAILED			((DEF_APP_ERROR << 8) + 0xE01F)
+#define DEF_APP_ERROR_LOAD_HKEYSET_INVALID		((DEF_APP_ERROR << 8) + 0xE020)
+#define DEF_APP_ERROR_LOAD_HKEYSET_FAILED		((DEF_APP_ERROR << 8) + 0xE021)
+#define DEF_APP_ERROR_LOAD_PWRRMD_INVALID		((DEF_APP_ERROR << 8) + 0xE022)
+#define DEF_APP_ERROR_LOAD_PWRRMD_FAILED		((DEF_APP_ERROR << 8) + 0xE023)
+#define DEF_APP_ERROR_SAVE_CFG_INVALID			((DEF_APP_ERROR << 8) + 0xE024)
+#define DEF_APP_ERROR_SAVE_CFG_FAILED			((DEF_APP_ERROR << 8) + 0xE025)
+#define DEF_APP_ERROR_SAVE_SCHED_INVALID		((DEF_APP_ERROR << 8) + 0xE026)
+#define DEF_APP_ERROR_SAVE_SCHED_FAILED			((DEF_APP_ERROR << 8) + 0xE027)
+#define DEF_APP_ERROR_SAVE_HKEYSET_INVALID		((DEF_APP_ERROR << 8) + 0xE028)
+#define DEF_APP_ERROR_SAVE_HKEYSET_FAILED		((DEF_APP_ERROR << 8) + 0xE029)
+#define DEF_APP_ERROR_SAVE_PWRRMD_INVALID		((DEF_APP_ERROR << 8) + 0xE02A)
+#define DEF_APP_ERROR_SAVE_PWRRMD_FAILED		((DEF_APP_ERROR << 8) + 0xE02B)
+#define DEF_APP_ERROR_WRITE_LOG_FAILED			((DEF_APP_ERROR << 8) + 0xE02C)
+#define DEF_APP_ERROR_OUTPUT_LOG_FAILED			((DEF_APP_ERROR << 8) + 0xE02D)
+#define DEF_APP_ERROR_FUNC_GETAPP_FAILED		((DEF_APP_ERROR << 8) + 0xE02E)
+#define DEF_APP_ERROR_ALLOC_FAILED_POINTER		((DEF_APP_ERROR << 8) + 0xE02F)
+#define DEF_APP_ERROR_ALLOC_FAILED_BUFFER		((DEF_APP_ERROR << 8) + 0xE030)
+#define DEF_APP_ERROR_DEBUG_COMMAND				((DEF_APP_ERROR << 8) + 0xE031)
+#define DEF_APP_ERROR_UNKNOWN					((DEF_APP_ERROR << 8) + 0xE0FF)
+
+// Define debug command error codes
+#define DEF_DBG_ERROR_SUCCESS					((DEF_APP_ERROR_DEBUG_COMMAND << 8) + 0x00)
+#define DEF_DBG_ERROR_EMPTY						((DEF_APP_ERROR_DEBUG_COMMAND << 8) + 0x01)
+#define DEF_DBG_ERROR_GETAPP_FAILED				((DEF_APP_ERROR_DEBUG_COMMAND << 8) + 0x02)
+#define DEF_DBG_ERROR_CPYBUFF_ALLOC_FAILED		((DEF_APP_ERROR_DEBUG_COMMAND << 8) + 0x03)
+#define DEF_DBG_ERROR_RETBUFF_ALLOC_FAILED		((DEF_APP_ERROR_DEBUG_COMMAND << 8) + 0x04)
+#define DEF_DBG_ERROR_TOKENIZATION_FAILED		((DEF_APP_ERROR_DEBUG_COMMAND << 8) + 0x05)
+#define DEF_DBG_ERROR_INVALID_COMMAND			((DEF_APP_ERROR_DEBUG_COMMAND << 8) + 0x06)
 
 // Define function results
 #define DEF_RESULT_SUCCESS						0x0000
@@ -123,110 +136,127 @@
 
 // Define menu item types
 #define MENU_ITEM								0x06
-#define MENU_ITEM_OPTION						(MENU_ITEM << 8) + 0x0001
-#define MENU_ITEM_SEPERATOR_ITEM				(MENU_ITEM << 8) + 0x0002
-#define	MENU_ITEM_POPUP_CHILD_MENU				(MENU_ITEM << 8) + 0x0003
+#define MENU_ITEM_OPTION						((MENU_ITEM << 8) + 0x0001)
+#define MENU_ITEM_SEPERATOR_ITEM				((MENU_ITEM << 8) + 0x0002)
+#define	MENU_ITEM_POPUP_CHILD_MENU				((MENU_ITEM << 8) + 0x0003)
 
 // Define menu actions
 #define MENU_ACTION								0x07
-#define MENU_ACTION_HELP						(MENU_ACTION << 8) + 0x0001
-#define MENU_ACTION_ABOUT						(MENU_ACTION << 8) + 0x0002
-#define MENU_ACTION_SHOW_WINDOW					(MENU_ACTION << 8) + 0x0003
-#define MENU_ACTION_EXIT						(MENU_ACTION << 8) + 0x0004
-#define MENU_ACTION_SELECT_VIETNAMESE			(MENU_ACTION << 8) + 0x0005
-#define MENU_ACTION_SELECT_ENGLISH				(MENU_ACTION << 8) + 0x0006
-#define MENU_ACTION_VIEW_LOG					(MENU_ACTION << 8) + 0x0007
-#define MENU_ACTION_DEFAULT						(MENU_ACTION << 8) + 0x0008
-#define MENU_ACTION_ADJUST_MENU					(MENU_ACTION << 8) + 0x0009
-#define MENU_ACTION_SHOW_WHEN_START				(MENU_ACTION << 8) + 0x000a
-#define MENU_ACTION_STARTUP						(MENU_ACTION << 8) + 0x000b
-#define MENU_ACTION_ASK_BEFORE					(MENU_ACTION << 8) + 0x000c
-#define MENU_ACTION_SAVE_LOGS					(MENU_ACTION << 8) + 0x000d
-#define MENU_ACTION_SHOW_ERROR_MSG				(MENU_ACTION << 8) + 0x000e
+#define MENU_ACTION_HELP						((MENU_ACTION << 8) + 0x01)
+#define MENU_ACTION_ABOUT						((MENU_ACTION << 8) + 0x02)
+#define MENU_ACTION_SHOW_WINDOW					((MENU_ACTION << 8) + 0x03)
+#define MENU_ACTION_EXIT						((MENU_ACTION << 8) + 0x04)
+#define MENU_ACTION_SELECT_VIETNAMESE			((MENU_ACTION << 8) + 0x05)
+#define MENU_ACTION_SELECT_ENGLISH				((MENU_ACTION << 8) + 0x06)
+#define MENU_ACTION_VIEW_LOG					((MENU_ACTION << 8) + 0x07)
+#define MENU_ACTION_DEFAULT						((MENU_ACTION << 8) + 0x08)
+#define MENU_ACTION_ADJUST_MENU					((MENU_ACTION << 8) + 0x09)
+#define MENU_ACTION_SHOW_WHEN_START				((MENU_ACTION << 8) + 0x0A)
+#define MENU_ACTION_STARTUP						((MENU_ACTION << 8) + 0x0B)
+#define MENU_ACTION_ASK_BEFORE					((MENU_ACTION << 8) + 0x0C)
+#define MENU_ACTION_SAVE_LOGS					((MENU_ACTION << 8) + 0x0D)
+#define MENU_ACTION_SHOW_ERROR_MSG				((MENU_ACTION << 8) + 0x0E)
 
 // Define types of sound
 #define DEF_APP_SOUND							0x08
-#define DEF_APP_SOUND_ERROR						(DEF_APP_SOUND << 8) + 0x0001
-#define DEF_APP_SOUND_SUCCESS					(DEF_APP_SOUND << 8) + 0x0002
+#define DEF_APP_SOUND_ERROR						((DEF_APP_SOUND << 8) + 0x0001)
+#define DEF_APP_SOUND_SUCCESS					((DEF_APP_SOUND << 8) + 0x0002)
 
 // Macros definition
 #define DEF_APP_MACRO							0x09
-#define DEF_APP_MACRO_LEFT_MOUSE				(DEF_APP_MACRO << 8) + 0x0001
-#define DEF_APP_MACRO_MIDDLE_MOUSE				(DEF_APP_MACRO << 8) + 0x0002
-#define DEF_APP_MACRO_RIGHT_MOUSE				(DEF_APP_MACRO << 8) + 0x0003
-#define DEF_APP_MACRO_ACTION_MENU				(DEF_APP_MACRO << 8) + 0x0004
-#define DEF_APP_MACRO_ACTION_SCHEDULE			(DEF_APP_MACRO << 8) + 0x0005
-#define DEF_APP_MACRO_ACTION_HOTKEY				(DEF_APP_MACRO << 8) + 0x0006
-#define DEF_APP_MACRO_DIR_HORZ					(DEF_APP_MACRO << 8) + 0x0007
-#define DEF_APP_MACRO_DIR_VERT					(DEF_APP_MACRO << 8) + 0x0008
+#define DEF_APP_MACRO_LEFT_MOUSE				((DEF_APP_MACRO << 8) + 0x0001)
+#define DEF_APP_MACRO_MIDDLE_MOUSE				((DEF_APP_MACRO << 8) + 0x0002)
+#define DEF_APP_MACRO_RIGHT_MOUSE				((DEF_APP_MACRO << 8) + 0x0003)
+#define DEF_APP_MACRO_ACTION_MENU				((DEF_APP_MACRO << 8) + 0x0004)
+#define DEF_APP_MACRO_ACTION_SCHEDULE			((DEF_APP_MACRO << 8) + 0x0005)
+#define DEF_APP_MACRO_ACTION_HOTKEY				((DEF_APP_MACRO << 8) + 0x0006)
 
 // Define registry informations
 #define REG_DEFINE_NONE							0x0a
 #define REG_HKEY_CURRENT_USER					HKEY_CURRENT_USER
 #define REG_HKEY_LOCAL_MACHINE					HKEY_LOCAL_MACHINE
-#define REG_TYPE								(REG_DEFINE_NONE << 4) + 0x001
-#define REG_VALUE_STRING						(REG_TYPE << 4) + 0x0001
-#define REG_VALUE_DWORD							(REG_TYPE << 4) + 0x0002
+#define REG_TYPE								((REG_DEFINE_NONE << 4) + 0x001)
+#define REG_VALUE_STRING						((REG_TYPE << 4) + 0x0001)
+#define REG_VALUE_DWORD							((REG_TYPE << 4) + 0x0002)
 
-// Define app custom messages
-#define SM_APP_TRAYICON							(WM_USER + 100)
-#define SM_APP_UPDATE_CONFIGDATA				(WM_USER + 101)
-#define SM_APP_UPDATE_SCHEDULEDATA				(WM_USER + 102)
-#define SM_APP_UPDATE_HOTKEYSETDATA				(WM_USER + 103)
-#define SM_APP_UPDATE_PWRREMINDERDATA			(WM_USER + 104)
-#define SM_APP_SHOW_ERROR_MSG					(WM_USER + 105)
-#define SM_WND_DEBUGTEST						(WM_USER + 197)
-#define SM_APP_DEBUGCOMMAND						(WM_USER + 198)
-#define SM_APP_DEBUGOUTPUT						(WM_USER + 199)
-#define SM_WND_SHOWDIALOG						(WM_USER + 201)
-#define SM_WND_DEBUGVIEWCLRSCR					(WM_USER + 202)
-#define SM_WND_DEBUGOUTPUTDISP					(WM_USER + 203)
+// Define custom user-defined messages
+#define SM_APP_MESSAGE							(WM_USER + 100)
+#define SM_WND_MESSAGE							(WM_USER + 200)
+
+// Define application custom messages
+#define SM_APP_TRAYICON							(SM_APP_MESSAGE + 1)
+#define SM_APP_UPDATE_CONFIGDATA				(SM_APP_MESSAGE + 2)
+#define SM_APP_UPDATE_SCHEDULEDATA				(SM_APP_MESSAGE + 3)
+#define SM_APP_UPDATE_HOTKEYSETDATA				(SM_APP_MESSAGE + 4)
+#define SM_APP_UPDATE_PWRREMINDERDATA			(SM_APP_MESSAGE + 5)
+#define SM_APP_ERROR_MESSAGE					(SM_APP_MESSAGE + 6)
+#define SM_APP_SHOW_ERROR_MSG					(SM_APP_MESSAGE + 7)
+#define SM_APP_DEBUGCOMMAND						(SM_APP_MESSAGE + 8)
+#define SM_APP_DEBUGCMDEXEC						(SM_APP_MESSAGE + 9)
+#define SM_APP_DEBUGOUTPUT						(SM_APP_MESSAGE + 10)
+
+// Define window custom messages
+#define SM_WND_SHOWDIALOG						(SM_WND_MESSAGE + 1)
+#define SM_WND_DEBUGTEST						(SM_WND_MESSAGE + 2)
+#define SM_WND_DEBUGVIEWCLRSCR					(SM_WND_MESSAGE + 3)
+#define SM_WND_DEBUGOUTPUTDISP					(SM_WND_MESSAGE + 4)
 
 // Define app data types
 #define APPDATA_CONFIG							0x00001001L
 #define APPDATA_SCHEDULE						0x00001002L
 #define APPDATA_HOTKEYSET						0x00001004L
 #define APPDATA_PWRREMINDER						0x00001008L
-#define APPDATA_ALL								(APPDATA_CONFIG | APPDATA_SCHEDULE | APPDATA_HOTKEYSET | APPDATA_PWRREMINDER)
+#define APPDATA_ALL								(APPDATA_CONFIG|APPDATA_SCHEDULE|APPDATA_HOTKEYSET|APPDATA_PWRREMINDER)
 
 // Define modes
-#define DEF_MODE_INIT							0x000				// Mode: Initialize
-#define DEF_MODE_VIEW							0x001				// Mode: View
-#define DEF_MODE_ADD							0x002				// Mode: Add
-#define DEF_MODE_UPDATE							0x003				// Mode: Update
-#define DEF_MODE_LOAD							0x004				// Mode: Load
-#define DEF_MODE_SAVE							0x005				// Mode: Save
-#define DEF_MODE_DISABLE						0xFFF				// Mode: Disable
-#define DEF_MODE_HELPVIEW_HELPFILE				0x0a1				// Mode: View help file
-#define DEF_MODE_HELPVIEW_CHANGELOG				0x0a2				// Mode: View changelog file
-#define DEF_MODE_BAKREGDATA_MANUAL				0x0a3				// Mode: Registry manually backup
-#define DEF_MODE_BAKREGDATA_AUTO				0x0a4				// Mode: Registry auto backup
-#define DEF_MODE_OPENDLG_MODAL					0x0a5				// Modal dialog
-#define DEF_MODE_OPENDLG_MODELESS				0x0a6				// Modeless dialog
+#define DEF_MODE_INIT							0x000					// Mode: Initialize
+#define DEF_MODE_VIEW							0x001					// Mode: View
+#define DEF_MODE_ADD							0x002					// Mode: Add
+#define DEF_MODE_UPDATE							0x003					// Mode: Update
+#define DEF_MODE_LOAD							0x004					// Mode: Load
+#define DEF_MODE_SAVE							0x005					// Mode: Save
+#define DEF_MODE_DISABLE						0xFFF					// Mode: Disable
+#define DEF_MODE_HELPVIEW_HELPFILE				0x0a1					// Mode: View help file
+#define DEF_MODE_HELPVIEW_CHANGELOG				0x0a2					// Mode: View changelog file
+#define DEF_MODE_BAKREGDATA_MANUAL				0x0a3					// Mode: Registry manually backup
+#define DEF_MODE_BAKREGDATA_AUTO				0x0a4					// Mode: Registry auto backup
+#define DEF_MODE_OPENDLG_MODAL					0x0a5					// Modal dialog
+#define DEF_MODE_OPENDLG_MODELESS				0x0a6					// Modeless dialog
 
 // Define colors
-#define DEF_COLOR_RED							RGB(255,0,0)		// Color: Red
-#define DEF_COLOR_GREEN							RGB(0,255,0)		// Color: Green
-#define DEF_COLOR_YELLOW						RGB(255,255,0)		// Color: Yellow
-#define DEF_COLOR_BLUE							RGB(0,0,255)		// Color: Blue
-#define DEF_COLOR_WHITE							RGB(255,255,255)	// Color: White
-#define DEF_COLOR_BLACK							RGB(0,0,0)			// Color: Black
-#define DEF_COLOR_PINK							RGB(230,190,200)	// Color: Pink
-#define DEF_COLOR_GRAY							RGB(200,200,200)	// Color: Gray
-#define DEF_COLOR_DARK_GRAY						RGB(160,160,160)	// Color: Dark gray
-#define DEF_COLOR_BRIGHT_GRAY					RGB(240,240,240)	// Color: Bright gray
+#define DEF_COLOR_RED							RGB(255,0,0)			// Color: Red
+#define DEF_COLOR_GREEN							RGB(0,255,0)			// Color: Green
+#define DEF_COLOR_YELLOW						RGB(255,255,0)			// Color: Yellow
+#define DEF_COLOR_BLUE							RGB(0,0,255)			// Color: Blue
+#define DEF_COLOR_WHITE							RGB(255,255,255)		// Color: White
+#define DEF_COLOR_BLACK							RGB(0,0,0)				// Color: Black
+#define DEF_COLOR_PINK							RGB(230,190,200)		// Color: Pink
+#define DEF_COLOR_SAKURA_PINK					RGB(250,224,216)		// Color: Sakura pink
+#define DEF_COLOR_ORANGE						RGB(255,127,40)			// Color: Orange
+#define DEF_COLOR_UMARINE_BLUE					RGB(63,72,204)			// Color: Ultramarine blue
+#define DEF_COLOR_INDIGO						RGB(75,0,130)			// Color: Indigo
+#define DEF_COLOR_VIOLET						RGB(238,130,238)		// Color: Violet
+#define DEF_COLOR_PURPLE						RGB(115,43,245)			// Color: Purple
+#define DEF_COLOR_SCARLET						RGB(255,36,0)			// Color: Scarlet
+#define DEF_COLOR_JADE							RGB(0,168,207)			// Color: Jade
+#define DEF_COLOR_EMERALD						RGB(80,200,120)			// Color: Emerald
+#define DEF_COLOR_GRAY							RGB(200,200,200)		// Color: Gray
+#define DEF_COLOR_DARK_GRAY						RGB(160,160,160)		// Color: Dark gray
+#define DEF_COLOR_BRIGHT_GRAY					RGB(240,240,240)		// Color: Bright gray
 
 // Define log types
-#define LOGTYPE_APPEVENT_LOG					0x01a				// App event log
-#define LOGTYPE_HISTORY_LOG						0x01b				// Action log/history
-#define LOGTYPE_TRACE_LOG						0x01c				// Trace log
-#define LOGTYPE_DEBUG_LOG						0x01d				// Debug log
+#define LOGTYPE_NONE							0x00					// Not defined
+#define LOGTYPE_APP_EVENT						(LOGTYPE_NONE + 0x01)	// App event log
+#define LOGTYPE_HISTORY_LOG						(LOGTYPE_NONE + 0x02)	// Action log/history
+#define LOGTYPE_TRACE_ERROR						(LOGTYPE_NONE + 0x03)	// Trace error log
+#define LOGTYPE_TRACE_DEBUG						(LOGTYPE_NONE + 0x04)	// Trace debug log
+#define LOGTYPE_DEBUG_INFO						(LOGTYPE_NONE + 0x05)	// Debug info output log
 
 // Define subdirectory names
-#define DIR_SUBDIR_LOG							_T(".\\Log")
-#define DIR_SUBDIR_HELP							_T(".\\Help")
-#define DIR_SUBDIR_BACKUP						_T(".\\Backup")
-#define DIR_SUBDIR_TEMP							_T(".\\Temp")
+#define SUBFOLDER_LOG							_T(".\\Log")
+#define SUBFOLDER_HELP							_T(".\\Help")
+#define SUBFOLDER_BACKUP						_T(".\\Backup")
+#define SUBFOLDER_TEMP							_T(".\\Temp")
 
 // Define file names
 #define FILENAME_APPEXEFILE						_T("PowerPlus3")
@@ -274,6 +304,15 @@
 #define MAKEUNICODE(string)						CA2W(string).m_psz
 #define RESOURCESTRING(resourceid)				LoadResourceString(resourceid)
 #define __FILENAME__							(strrchr("\\" __FILE__, '\\') + 1)
+#define FORMAT_REG_TIME(systemtime)				(INT((systemtime.wHour * 100) + systemtime.wMinute))
+#define GET_REGTIME_HOUR(time)					(WORD(time / 100))
+#define GET_REGTIME_MINUTE(time)				(WORD(time % 100))
+
+// Define properties for RepeatSet data
+#define DEF_REPEATSET_MIN_SNOOZE				60							// Min snooze interval: 1 minutes
+#define DEF_REPEATSET_DEFAULT_SNOOZE			600							// Default snooze interval: 10 minutes
+#define DEF_REPEATSET_MAX_SNOOZE				1800						// Max snooze interval: 30 minutes
+#define DEF_REPEATSET_DEFAULT_ACTIVEDAYS		0b01111111					// Default repeat: All days of weekss
 
 // Define properties for Action Schedule function
 #define DEF_SCHEDULE_DEFAULT_ITEMNUM			1							// Default item number: 1
@@ -281,7 +320,6 @@
 #define DEF_SCHEDULE_DEFAULT_ITEMID				0x00						// Default item ID: 0
 #define DEF_SCHEDULE_MIN_ITEMID					10000						// Min item ID: 10000
 #define DEF_SCHEDULE_MAX_ITEMID					19999						// Max item ID: 19999
-#define DEF_SCHEDULE_DEFAULT_REPEAT				0b01111111					// Default repeat: All days of week
 #define DEF_SCHEDULE_INIT_ACTION				DEF_APP_ACTION_DISPLAYOFF	// Init action (for new item): Turn off display
 
 #define DEF_SCHEDULE_ERROR						3240L
@@ -290,17 +328,13 @@
 #define DEF_SCHEDULE_ERROR_EMPTY				(DEF_SCHEDULE_ERROR + 3)	// Schedule data is empty
 #define DEF_SCHEDULE_ERROR_MAXITEM				(DEF_SCHEDULE_ERROR + 4)	// Schedule data item number reaches maximum limit
 #define DEF_SCHEDULE_ERROR_DUPLICATE			(DEF_SCHEDULE_ERROR + 5)	// Item data is duplicated (can not add)
-#define DEF_SCHEDULE_ERROR_DUPLICATETIME		(DEF_SCHEDULE_ERROR + 5)	// Item time value is duplicated (can not add)
+#define DEF_SCHEDULE_ERROR_DUPLICATETIME		(DEF_SCHEDULE_ERROR + 6)	// Item time value is duplicated (can not add)
 
 // Define properties for Power Reminder function
 #define DEF_PWRREMINDER_MAX_ITEMNUM				100							// Max item number: 100
 #define DEF_PWRREMINDER_MIN_ITEMID				10000						// Min item ID: 10000
 #define DEF_PWRREMINDER_MAX_ITEMID				19999						// Max item ID: 19999
 #define DEF_PWRREMINDER_PREVIEW_TIMEOUT			10							// Default time-out for preview: 10s
-#define DEF_PWRREMINDER_MIN_SNOOZE				60							// Min snooze interval: 1 minutes
-#define DEF_PWRREMINDER_DEFAULT_SNOOZE			600							// Default snooze interval: 10 minutes
-#define DEF_PWRREMINDER_MAX_SNOOZE				1800						// Max snooze interval: 30 minutes
-#define DEF_PWRREMINDER_DEFAULT_REPEAT			0b01111111					// Default repeat: All days of week
 
 // Define special strings and numbers
 #define DEF_STRING_EMPTY						_T("")						// Empty string
@@ -308,9 +342,18 @@
 #define DEF_STRING_NEWLINEWRET					_T("\r\n")					// New line string (with 'return' character)
 #define DEF_STRING_NULL							_T("#NULL")					// Null/invalid string
 #define DEF_STRING_QUOTEFORMAT					_T("\"%s\"")				// Quote string template format
-#define DEF_PATH_SEPARATOR						_T("\\")					// File/folder path separator
+#define DEF_STRING_TEXTCHANGEFORMAT				_T("%s -> %s")				// Text change format string template
+#define DEF_STRING_INTCHANGEFORMAT				_T("%d -> %d")				// Integer number change format string template
+#define DEF_STRING_FLOATCHANGEFORMAT			_T("%f -> %f")				// Float number change format string template
+#define DEF_SYMBOL_DOT							_T(".")						// Dot (.) symbol
+#define DEF_SYMBOL_COMMA						_T(",")						// Comma (,) symbol
+#define DEF_SYMBOL_PATHSEPARATOR				_T("\\")					// File/folder path separator
 #define DEF_SYMBOL_OUTPUTSIGN					_T(">> ")					// Output sign
 #define DEF_SYMBOL_INPUTSIGN					_T(" <<")					// Input sign
+#define DEF_SYMBOL_ANTEMERIDIEM					_T("AM")					// Ante meridiem (AM)
+#define DEF_SYMBOL_POSTMERIDIEM					_T("PM")					// Post meridiem (PM)
+#define DEF_CHAR_DOT							_T('.')						// Dot (.) character
+#define DEF_CHAR_COMMA							_T(',')						// Comma (,) character
 #define DEF_CHAR_QUOTAMARK						_T('\"')					// 'Quotation mark' character
 #define DEF_CHAR_RETURN							_T('\r')					// 'Return' character
 #define DEF_CHAR_ENDLINE						_T('\n')					// 'Endline' character
@@ -320,6 +363,7 @@
 
 #define DEF_INTEGER_INVALID						-1							// Invalid integer number (equals -1)
 #define DEF_INTEGER_NULL						0							// Null integer number (equals 0)
+#define DEF_INTEGER_INFINITE					0							// Infinite (0 means "limitation not set")
 #define DEF_BOOLVAL_CHECK						-1							// Checked
 #define DEF_BOOLVAL_UNCHECK						0							// Unchecked
 #define DEF_NUM_DAYSOFWEEK						7							// Number of days of week: 7 days
@@ -328,13 +372,14 @@
 #define DEF_STRING_MAXLENGTH					256							// Max string length: 256 characters
 
 #define DEF_WINVER_NONE							0x00
-#define DEF_WINVER_WIN10						DEF_WINVER_NONE+1			// Windows 10
-#define DEF_WINVER_WIN11						DEF_WINVER_NONE+2			// Windows 11
+#define DEF_WINVER_WIN10						(DEF_WINVER_NONE+1)			// Windows 10
+#define DEF_WINVER_WIN11						(DEF_WINVER_NONE+2)			// Windows 11
 #define DEF_WINVER_BUILDNUMVER11				21996						// Build number: 21996
 
 #define DEF_OFFSET_VSCRLBRWIDTH					3							// Offset = 3px
-#define DEF_OFFSET_LISTCTRLWIDTH				5							// Offset = 5px
-#define DEF_OFFSET_LISTCTRL_WIN10				10							// Offset (on Windows 10) = 12px
+#define DEF_OFFSET_LISTCTRL						5							// Offset = 5px
+#define DEF_OFFSET_LISTCTRL_WIN10				16							// Offset (on Windows 10) = 16px
+#define DEF_OFFSET_LISTCOLWIDTH_WIN10			10							// Offset (on Windows 10) = 10px
 #define DEF_LISTCTRL_HEADERHEIGHT				27							// Header height = 27px
 #define DEF_LISTCTRL_ROWHEIGHT					18							// Row height = 18px
 #define DEF_GRIDCTRL_ROWHEADER					0							// Row header index
@@ -342,6 +387,7 @@
 #define DEF_GRIDCTRL_ROWHEIGHT					23							// Row height = 23px
 #define DEF_GRIDCTRL_HEADERHEIGHTEX				28							// Header height (extra) = 28px
 #define DEF_GRIDCTRL_ROWHEIGHTEX				25							// Row height (extra) = 25px
+#define DEF_GRIDCELL_LEFTMARGIN					3							// Grid cell left margin = 3px
 
 #define DEF_SPINCTRL_TIMEMINPOS					0							// As 00:00
 #define DEF_SPINCTRL_TIMEMAXPOS					1439						// As 23:59
@@ -350,7 +396,7 @@
 #define DEF_DATACHANGELOG_CTRLNAME_MAXLENGTH	30							// Max length: 30 characters
 #define DEF_LOGDISP_STRING_MAXLENGTH			20							// Max length: 20 characters
 #define DEF_LOGFILE_MAXLENGTH					1048576						// Max file size: 1MB
-#define DEF_WAITMESSAGE_TIMEOUT					30000						// Wait message timeout (tick-count): 30s
+#define DEF_WAITMESSAGE_TIMEOUT					30000						// Wait message timeout (tick-counts): 30s
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -399,11 +445,12 @@ typedef enum eAPPOPTIONID {
 	OPTIONID_RMBACTION,				// Right mouse button action
 	OPTIONID_RMBSHOWMENU,			// Right mouse button: Only show menu
 	OPTIONID_LANGUAGEID,			// Language setting
+	OPTIONID_CURDISPLANGUAGE,		// Currently displaying language
 	OPTIONID_SHOWDLGATSTARTUP,		// Show dialog at startup
 	OPTIONID_STARTUPENABLE,			// Startup with Windows
 	OPTIONID_CONFIRMACTION,			// Show confirm message before doing action
-	OPTIONID_SAVEHISTORYLOG,		// Save action history log
 	OPTIONID_SAVEAPPEVENTLOG,		// Save app event log
+	OPTIONID_SAVEHISTORYLOG,		// Save action history log
 	OPTIONID_RUNASADMIN,			// Run with admin privileges
 	OPTIONID_SHOWERRORMSG,			// Show action error message
 	OPTIONID_NOTIFYSCHEDULE,		// Show notify tip for schedule action
@@ -418,12 +465,23 @@ typedef enum eAPPOPTIONID {
 // App flag IDs
 typedef enum eAPPFLAGID {
 	FLAGID_CHANGEFLAG = 0,			// Data/setting change flag
+	FLAGID_READONLYMODE,			// Read-only mode
+	FLAGID_LOCKSTATE,				// Lock state
+	FLAGID_FORCECLOSING,			// Force closing by request
 	FLAGID_DLGEXPANDED,				// Dialog expanded/collapsed
 	FLAGID_NOTIFYICONSHOWED,		// Notify icon showing flag
 	FLAGID_HOTKEYREGISTERED,		// Hotkey registered
 	FLAGID_RESTARTASADMIN,			// Restart as admin flag
 	FLAGID_PWRBROADCASTSKIPCOUNT,	// Power Broadcase event skip counter
 } APPFLAGID;
+
+// App feature item category IDs
+typedef enum eFEATUREITEMCATEID {
+	FID_POWERACTION = 0,			// Power action
+	FID_SCHEDULEITEM,				// Action schedule item
+	FID_HOTKEYITEM,					// HotkeySet item
+	FID_PWRREMINDERITEM,			// Power Reminder item
+} FEATUREITEMCATEID;
 
 // Hotkey IDs
 typedef enum eHOTKEYID {
@@ -472,6 +530,13 @@ typedef enum eGRIDCOLSTYLE {
 	COLSTYLE_NORMAL,				// Normal cell
 } GRIDCOLSTYLE;
 
+// LogViewer table column IDs
+typedef enum eLOGVWERTABLECOLID {
+	SCHCOL_ID_DATETIME = 0,			// Date/Time
+	SCHCOL_ID_CATEGORY,				// Event ID (category ID)
+	SCHCOL_ID_DESCRIPTION,			// Additional description
+} LOGVWERTABLECOLID;
+
 // Schedule data table column IDs
 typedef enum eSCHTABLECOLID {
 	SCHCOL_ID_INDEX = 0,			// Index
@@ -480,6 +545,13 @@ typedef enum eSCHTABLECOLID {
 	SCHCOL_ID_TIMEVALUE,			// Time value
 	SCHCOL_ID_REPEAT,				// Repeat daily
 } SCHTABLECOLID;
+
+// HotkeySet table column IDs
+typedef enum eHKEYTABLECOLID {
+	HKSCOL_ID_STATE = 0,			// Enable state
+	HKSCOL_ID_HKACTIONID,			// Hotkey action ID
+	HKSCOL_ID_KEYSTROKES,			// Keystrokes
+} HKEYTABLECOLID;
 
 // Power Reminder table column IDs
 typedef enum ePWRTABLECOLID {
@@ -495,11 +567,22 @@ typedef enum ePWRTABLECOLID {
 // Registry path type
 typedef enum eREGPATHTYPE {
 	REGPATH_FULL = 0,				// Full path
-	REGPATH_NOMASTERKEY,			// No master/root key
-	REGPATH_NOAPPNAME,				// No app name
-	REGPATH_NOSECTION,				// No section
-	REGPATH_NOKEY,					// No key
+	REGPATH_ROOTKEY,				// Root key only
+	REGPATH_SUBPATH,				// Including sub-key path
+	REGPATH_PROFILEKEY,				// Including profile key name
+	REGPATH_APPNAME,				// Including app name
+	REGPATH_SECTIONNAME,			// Including section name
+	REGPATH_KEYNAME,				// Including key name
 } REGPATHTYPE;
+
+// Registry value type
+typedef enum eREGVALUETYPE {
+	REGTYPE_NONE = 0,				// Undefined type
+	REGTYPE_STRING,					// String value
+	REGTYPE_DWORD32,				// DWORD (32-bit) value
+	REGTYPE_QWORD64,				// QWORD (64-bit) value
+	REGTYPE_MULTISTRING,			// Multi-string value
+} REGVALUETYPE;
 
 // String validation error codes
 typedef enum eSTRVALIDERR {
@@ -553,7 +636,7 @@ typedef struct tagCONFIGDATA
 	BOOL	bShowDlgAtStartup;										// Show dialog at startup
 	BOOL	bStartupEnabled;										// Startup with Windows
 	BOOL	bConfirmAction;											// Show confirm message before executing action
-	BOOL	bSaveActionLog;											// Save action log
+	BOOL	bSaveHistoryLog;										// Save app history log
 	BOOL	bSaveAppEventLog;										// Save app event log
 	BOOL	bRunAsAdmin;											// Run with admin privileges
 	BOOL	bShowErrorMsg;											// Show action error message
@@ -564,7 +647,37 @@ typedef struct tagCONFIGDATA
 
 	// Member functions
 	void Copy(const tagCONFIGDATA&);								// Copy data
+	BOOL Compare(const tagCONFIGDATA&) const;						// Compare data
 } CONFIGDATA, *PCONFIGDATA;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	PWRREPEATSET
+//  Description:	Store data of a Power++ item repeat set
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagPWRREPEATSET
+{
+	// Member variables
+	BOOL		bRepeat;											// Repeat daily
+	BOOL		bAllowSnooze;										// Allow snoozing mode
+	INT			nSnoozeInterval;									// Snooze interval
+	BYTE		byRepeatDays;										// Days of week (for repeating)
+
+	// Constructor
+	tagPWRREPEATSET();												// Default constructor
+	tagPWRREPEATSET(const tagPWRREPEATSET&);						// Copy constructor
+
+	// Operator
+	tagPWRREPEATSET& operator=(const tagPWRREPEATSET&);				// Copy assignment operator
+
+	// Member functions
+	void Copy(const tagPWRREPEATSET&);								// Copy data
+	BOOL Compare(const tagPWRREPEATSET&) const;						// Compare data
+	BOOL IsDayActive(DAYOFWEEK dayOfWeek) const;					// Check if day of week is active
+} PWRREPEATSET, *PPWRREPEATSET;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -577,12 +690,11 @@ typedef struct tagCONFIGDATA
 typedef struct tagSCHEDULEITEM
 {
 	// Member variables
-	UINT		nItemID;											// Item ID
-	BOOL		bEnable;											// Enable/disable state
-	BOOL		bRepeat;											// Repeat daily
-	UINT		nAction;											// Schedule action
-	SYSTEMTIME	stTime;												// Schedule time
-	BYTE		byRepeatDays;										// Days of week (for repeating)
+	UINT			nItemID;										// Item ID
+	BOOL			bEnable;										// Enable/disable state
+	UINT			nAction;										// Schedule action
+	SYSTEMTIME		stTime;											// Schedule time
+	PWRREPEATSET	rpsRepeatSet;									// Repeat set data
 
 	// Constructor
 	tagSCHEDULEITEM();												// Default constructor
@@ -597,7 +709,10 @@ typedef struct tagSCHEDULEITEM
 	BOOL Compare(const tagSCHEDULEITEM&) const;						// Compare items
 	void SetActiveState(BOOL);										// Set item active state
 	BOOL IsEmpty(void) const;										// Check if item data is empty
+	BOOL IsRepeatEnable(void) const;								// Check if repeat is enabled
+	BOOL IsAllowSnoozing(void) const;								// Check if item snooze mode is available
 	BOOL IsDayActive(DAYOFWEEK) const;								// Check if day of week is active
+	BYTE GetActiveDays(void) const;									// Get repeat active days
 	void Print(CString& strOutput);									// Print item data
 } SCHEDULEITEM, *PSCHEDULEITEM;
 
@@ -737,32 +852,38 @@ typedef struct tagHOTKEYSETDATA
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	RMDREPEATSET
-//  Description:	Store data of a Reminder item repeat set
+//	Data type name:	RMDMSGSTYLESET
+//  Description:	Store data of a Reminder message style set
 //  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagRMDREPEATSET
+typedef struct tagRMDMSGSTYLESET
 {
 	// Member variables
-	BOOL		bRepeat;											// Repeat daily
-	BOOL		bAllowSnooze;										// Allow snoozing mode
-	INT			nSnoozeInterval;									// Snooze interval
-	BYTE		byRepeatDays;										// Days of week (for repeating)
+	COLORREF	colorBkgrd;											// Background color
+	COLORREF	colorText;											// Text color
+	CString		strFontName;										// Font name
+	UINT		uiFontSize;											// Font size
+	UINT		uiTimeout;											// Timeout (auto-close) interval
+	UINT		uiIconID;											// Message icon ID
+	INT			nIconSize;											// Message icon size
+	BYTE		byIconPos;											// Message icon position
+	BYTE		byDisplayPos;										// Message display position
+	UINT		uiHMargin;											// Display area horizontal margin
+	UINT		uiVMargin;											// Display area vertical margin
 
 	// Constructor
-	tagRMDREPEATSET();												// Default constructor
-	tagRMDREPEATSET(const tagRMDREPEATSET&);						// Copy constructor
+	tagRMDMSGSTYLESET();											// Default constructor
+	tagRMDMSGSTYLESET(const tagRMDMSGSTYLESET&);					// Copy constructor
 
 	// Operator
-	tagRMDREPEATSET& operator=(const tagRMDREPEATSET&);				// Copy assignment operator
+	tagRMDMSGSTYLESET& operator=(const tagRMDMSGSTYLESET&);			// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagRMDREPEATSET&);								// Copy data
-	BOOL Compare(const tagRMDREPEATSET&) const;						// Compare data
-	BOOL IsDayActive(DAYOFWEEK dayOfWeek) const;					// Check if day of week is active
-} RMDREPEATSET, *PRMDREPEATSET;
+	void Copy(const tagRMDMSGSTYLESET&);							// Copy data
+	BOOL Compare(const tagRMDMSGSTYLESET&) const;					// Compare data
+} RMDMSGSTYLESET, *PRMDMSGSTYLESET;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -780,8 +901,10 @@ typedef struct tagPWRREMINDERITEM
 	CString			strMessage;										// Message content
 	UINT			nEventID;										// Event ID
 	SYSTEMTIME		stTime;											// Event time
-	DWORD			dwStyle;										// Reminder style
-	RMDREPEATSET	rpsRepeatSet;									// Repeat set data
+	DWORD			dwMsgStyle;										// Reminder style
+	PWRREPEATSET	rpsRepeatSet;									// Repeat set data
+	BOOL			bUseCustomStyle;								// Use message custom style
+	RMDMSGSTYLESET	rmsMsgStyleSet;									// Reminder message style set
 
 	// Constructor
 	tagPWRREMINDERITEM();											// Default constructor
@@ -798,6 +921,7 @@ typedef struct tagPWRREMINDERITEM
 	BOOL IsRepeatEnable(void) const;								// Check if item repeat mode is enabled
 	BOOL IsDayActive(DAYOFWEEK dayOfWeek) const;					// Check if day of week is active
 	BOOL IsAllowSnoozing(void) const;								// Check if item snooze mode is available
+	BYTE GetActiveDays(void) const;									// Get repeat active days
 	void Print(CString& strOutput);									// Print item data
 } PWRREMINDERITEM, *PPWRREMINDERITEM;
 
@@ -823,6 +947,7 @@ typedef struct tagPWRREMINDERDATA
 {
 	// Member variables
 	PWRREMINDERITEMLIST	arrRmdItemList;								// List of reminder items
+	RMDMSGSTYLESET		rmdCommonStyle;								// Common message style set
 
 	// Constructor
 	tagPWRREMINDERDATA();											// Default constructor
@@ -851,41 +976,43 @@ typedef struct tagPWRREMINDERDATA
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	PWRRMDRUNTIMEITEM
-//  Description:	Store data of a Power Reminder item runtime info
+//	Data type name:	PWRRUNTIMEITEM
+//  Description:	Store data of a runtime info item
 //  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagPWRRMDRUNTIMEITEM 
+typedef struct tagPWRRUNTIMEITEM 
 {
 	// Member variables
+	INT			nCategory;											// Item category
 	UINT		nItemID;											// Power Reminder item ID
-	int			nDisplayFlag;										// Display flag
-	int			nSnoozeFlag;										// Snooze trigger flag
+	INT			nDisplayFlag;										// Item displaying flag
+	INT			nSkipFlag;											// Item skip flag
+	INT			nSnoozeFlag;										// Item snooze trigger flag
 	SYSTEMTIME	stNextSnoozeTime;									// Next snooze trigger time
 
 	// Constructor
-	tagPWRRMDRUNTIMEITEM();											// Default constructor
-	tagPWRRMDRUNTIMEITEM(const tagPWRRMDRUNTIMEITEM&);				// Copy constructor
+	tagPWRRUNTIMEITEM();											// Default constructor
+	tagPWRRUNTIMEITEM(const tagPWRRUNTIMEITEM&);					// Copy constructor
 
 	// Operator
-	tagPWRRMDRUNTIMEITEM& operator=(const tagPWRRMDRUNTIMEITEM&);	// Copy assignment operator
+	tagPWRRUNTIMEITEM& operator=(const tagPWRRUNTIMEITEM&);			// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagPWRRMDRUNTIMEITEM&);							// Copy data
+	void Copy(const tagPWRRUNTIMEITEM&);							// Copy data
 	void CalcNextSnoozeTime(int nInterval);							// Calculate next snooze time
-} PWRRMDRUNTIMEITEM, *PPWRRMDRUNTIMEITEM;
+} PWRRUNTIMEITEM, *PPWRRUNTIMEITEM;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	PWRREMINDERRUNTIME
-//  Description:	Store list of Power Reminder advanced info items
+//	Data type name:	PWRRUNTIMEQUEUE
+//  Description:	Store list of Power++ runtime item queue
 //  Derivered from: MFC CArray class
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef CArray<PWRRMDRUNTIMEITEM, PWRRMDRUNTIMEITEM> PWRREMINDERRUNTIME;
+typedef CArray<PWRRUNTIMEITEM, PWRRUNTIMEITEM> PWRRUNTIMEQUEUE;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -916,6 +1043,7 @@ typedef struct tagHISTORYINFODATA
 
 	// Member functions
 	void Copy(const tagHISTORYINFODATA&);						// Copy data
+	void Init(UINT nCategoryID);								// Initialization
 	void RemoveAll(void);										// Remove all data
 } HISTORYINFODATA, *PHISTORYINFODATA;
 
@@ -931,8 +1059,9 @@ typedef struct tagUSERMENUITEM
 {
 	UINT	nItemID;										// Menu item ID
 	UINT	nItemType;										// Menu item type
-	UINT	nAction;										// Menu action ID
-	LPCTSTR	lpszItemTitle;									// Menu item text
+	LPTSTR	lpszItemCaption;								// Menu item text
+	UINT	nParentID;										// Item parent ID
+	LPTSTR	lpszParentCaption;								// Item parent caption
 } USERMENUITEM, *PUSERMENUITEM;
 
 //////////////////////////////////////////////////////////////////////////
@@ -946,8 +1075,37 @@ typedef struct tagUSERMENUITEM
 typedef struct tagUSERMENU
 {
 	UINT nItemCount;										// Number of menu items
-	PUSERMENUITEM pMenu;									// User menu pointer
+	PUSERMENUITEM pMenuItemList;							// User menu pointer
 } USERMENU, *PUSERMENU;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	REGISTRYVALUE
+//  Description:	Store data values of a registry key 
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagREGISTRYVALUE 
+{
+	// Member data values
+	CString			strValue;								// String value
+	DWORD			dwValue;								// DWORD (32-bit) value
+	ULONGLONG		ullValue;								// QWORD (64-bit) value
+	CStringArray	astrStringValue;						// Multi-string value
+
+	// Construction functions
+	tagREGISTRYVALUE();										// Default constructor
+	tagREGISTRYVALUE(const tagREGISTRYVALUE&);				// Copy constructor	
+	~tagREGISTRYVALUE();									// Default destructor
+
+	// Operator
+	tagREGISTRYVALUE& operator=(const tagREGISTRYVALUE&);	// Copy assignment operator
+
+	// Member functions
+	void Copy(const tagREGISTRYVALUE&);						// Copy data
+	void RemoveAll(void);									// Remove all data
+} REGISTRYVALUE, *PREGISTRYVALUE;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -959,24 +1117,81 @@ typedef struct tagUSERMENU
 
 typedef struct tagREGISTRYKEY
 {
-	HKEY	hkTagName;										// Tag name (HKEY)
-	UINT	nTagNameID;										// Tag name ID
-	LPCTSTR lpszTagName;									// Tag name (string)
-	UINT	nSubPathID;										// Sub-path
-	LPCTSTR lpszSubPath;									// Sub-path (string)
-	DWORD	dwMasterKeyID;									// Master key ID
-	UINT	nMasterKeyNameID;								// Master key name ID
-	LPCTSTR	lpszMasterKeyName;								// Master key name (string)
-	UINT	nAppNameID;										// App name ID
-	LPCTSTR lpszAppName;									// App name (string)
-	UINT	nSectionNameID;									// Section name ID
-	LPCTSTR lpszSectionName;								// Section name (string)
-	UINT	nKeyNameID;										// Key name ID
-	LPCTSTR lpszKeyName;									// Key name (string)
-	UINT	nValueType;										// Value type
-	LPCTSTR	lpszValue;										// String value
-	DWORD	dwValue;										// DWORD value
+	// Member variables
+	CString			strKeyName;								// Key name (string)
+	UINT			nValueType;								// Value type
+	REGISTRYVALUE	regValue;								// Registry value data
+
+	// Constructor
+	tagREGISTRYKEY();										// Default constructor
+	tagREGISTRYKEY(const tagREGISTRYKEY&);					// Copy constructor
+
+	// Operator
+	tagREGISTRYKEY& operator=(const tagREGISTRYKEY&);		// Copy assignment operator
+
+	// Member functions
+	void Copy(const tagREGISTRYKEY&);						// Copy data
+	void RemoveAll(void);									// Remove all data
+
+	// Get/set properties
+	void GetKeyName(CString&) const;						// Get key name
+	LPCTSTR GetKeyName(void) const;							// Get key name
+	void SetKeyName(UINT);									// Set key name
+	void SetKeyName(LPCTSTR);								// Set key name
+	UINT GetValueType(void) const;							// Get value type
+	void SetValueType(UINT);								// Set value type
+
+	// Get/set value
+	void GetStringValue(CString&) const;					// Get String value
+	LPCTSTR GetStringValue(void) const;						// Get String value
+	void SetStringValue(LPCTSTR);							// Set String value
+	DWORD GetDWordValue(void) const;						// Get DWORD (32-bit) value
+	void SetDWordValue(DWORD);								// Set DWORD (32-bit) value
+	QWORD GetQWordValue(void) const;						// Get QWORD (64-bit) value
+	void SetQWordValue(ULONGLONG);							// Set QWORD (64-bit) value
+	void GetMultiStringValue(CStringArray&) const;			// Get Multi-string value
+	void SetMultiStringValue(CStringArray&);				// Set Multi-string value
 } REGISTRYKEY, *PREGISTRYKEY;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	REGISTRYINFO
+//  Description:	Store data of a registry key info
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagREGISTRYINFO
+{
+	// Member variables
+	HKEY			hRootKey;								// Root key (HKEY)
+	CString			strRootKey;								// Root key (string)
+	CStringArray	astrSubkeyPath;							// Subkey path (string array)
+	CString			strProfileName;							// Profile key name (string)
+	CString			strAppName;								// App name (string)
+	CStringArray	astrSectionArray;						// Section array (string)
+	REGISTRYKEY		regKeyInfo;								// Registry key info
+
+	// Constructor
+	tagREGISTRYINFO();										// Default constructor
+	tagREGISTRYINFO(const tagREGISTRYINFO&);				// Copy constructor
+
+	// Operator
+	tagREGISTRYINFO& operator=(const tagREGISTRYINFO&);		// Copy assignment operator
+
+	// Member functions
+	void Copy(const tagREGISTRYINFO&);						// Copy data
+	void RemoveAll(void);									// Remove all data
+
+	// Set properties
+	void SetRootKeyName(UINT);								// Set root key name (resource ID)
+	void SetSubkeyPath(UINT);								// Set Subkey path (resource ID)
+	void SetSubkeyPath(CStringArray&);						// Set Subkey path (string array)
+	void SetProfileName(UINT);								// Set Profile key name (resource ID)
+	void SetAppName(UINT);									// Set App name (resource ID)
+	void SetSectionName(UINT);								// Set Section array (resource ID)
+	void SetSectionName(CStringArray&);						// Set Section array (string array)
+} REGISTRYINFO, *PREGISTRYINFO;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -988,9 +1203,9 @@ typedef struct tagREGISTRYKEY
 
 typedef struct tagLVCOLUMNFORMAT
 {
-	int		nColumnTitleID;									// Column title ID
-	int		nColumnSize;									// Column size
-	int		nColumnSizeUnit;								// Column size unit
+	INT		nColumnTitleID;									// Column title ID
+	INT		nColumnSize;									// Column size
+	INT		nColumnSizeUnit;								// Column size unit
 } LVCOLUMNFORMAT, *PLVCOLUMNFORMAT;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1003,10 +1218,9 @@ typedef struct tagLVCOLUMNFORMAT
 
 typedef struct tagGRIDCTRLCOLFMT 
 {
-	int		nColID;											// Column ID
+	INT		nColID;											// Column ID
 	UINT	nHeaderTitleID;									// Header title string ID
-	int		nWidth;											// Column width
-	int		nWidthUnit;										// Column width unit (pixel or percent)
+	INT		nWidth;											// Column width
 	UINT	nColStyle;										// Column style
 	BOOL	bCenter;										// Align center
 } GRIDCTRLCOLFORMAT, *PGRIDCTRLCOLFORMAT;
@@ -1055,7 +1269,7 @@ typedef struct tagACTIONDEF
 	UINT nActionMsgID;										// Action message ID
 	UINT nSchedNotifyID;									// Schedule notify message ID
 	UINT nNotifyTipID;										// Notify file tip ID
-	UINT nBallonTipID;										// Balloon tip ID
+	UINT nBalloonTipID;										// Balloon tip ID
 } ACTIONDEF, *PACTIONDEF;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1082,7 +1296,7 @@ typedef std::vector<ACTIONDEF>	ACTIONDEFTABLE;
 
 typedef struct tagBUFFER 
 {
-	int		nLength;										// Buffer length
+	INT		nLength;										// Buffer length
 	TCHAR	tcToken[DEF_BUFF_MAXLENGTH];					// Buffer token
 } BUFFER, *PBUFFER;
 
@@ -1104,6 +1318,30 @@ typedef struct tagRESTARTREQ
 	BOOL bResetFlag;										// Reset flag when denied
 } RESTARTREQ, *PRESTARTREQ;
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	PERFORMANCECOUNTER
+//  Description:	Using for querrying performance counter of functions
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagPERFORMANCECOUNTER
+{
+	// Member variables
+	LARGE_INTEGER startTime;								// Start time
+	LARGE_INTEGER endTime;									// End time
+	LARGE_INTEGER frequency;								// Performance frequency
+
+	// Constructor
+	tagPERFORMANCECOUNTER();								// Default constructor
+
+	// Member functions
+	void Start(void);										// Start performance counter
+	void Stop(void);										// Stop performance counter
+	double GetElapsedTime(BOOL) const;						// Get function execution elapsed time
+} PERFORMANCECOUNTER, *PPERFORMANCECOUNTER;
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1111,164 +1349,204 @@ typedef struct tagRESTARTREQ
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+static IDPAIRLIST idplErrorCode
+{
+/*----------Action ID----------------------------Action Name ID---------------------*/
+	{ DEF_APP_ERROR_SUCCESS,				ERROR_SUCCESS						},
+	{ DEF_APP_ERROR_INVALID_FUNCTION,		ERROR_INVALID_FUNCTION				},
+	{ DEF_APP_ERROR_FILE_NOT_FOUND,			ERROR_FILE_NOT_FOUND				},
+	{ DEF_APP_ERROR_PATH_NOT_FOUND,			ERROR_PATH_NOT_FOUND				},
+	{ DEF_APP_ERROR_ACCESS_DENIED,			ERROR_ACCESS_DENIED					},
+	{ DEF_APP_ERROR_INVALID_HANDLE,			ERROR_INVALID_HANDLE				},
+	{ DEF_APP_ERROR_INVALID_DATA,			ERROR_INVALID_DATA					},
+	{ DEF_APP_ERROR_NO_MORE_FILES,			ERROR_NO_MORE_FILES					},
+	{ DEF_APP_ERROR_FILE_EXISTS,			ERROR_FILE_EXISTS					},
+	{ DEF_APP_ERROR_CANNOT_MAKE,			ERROR_CANNOT_MAKE					},
+	{ DEF_APP_ERROR_INVALID_PARAMETER,		ERROR_INVALID_PARAMETER				},
+	{ DEF_APP_ERROR_OPEN_FAILED,			ERROR_OPEN_FAILED					},
+	{ DEF_APP_ERROR_BUFFER_OVERFLOW,		ERROR_BUFFER_OVERFLOW				},
+	{ DEF_APP_ERROR_INVALID_NAME,			ERROR_INVALID_NAME					},
+	{ DEF_APP_ERROR_DIR_NOT_EMPTY,			ERROR_DIR_NOT_EMPTY					},
+	{ DEF_APP_ERROR_FAIL_SHUTDOWN,			ERROR_FAIL_SHUTDOWN					},
+	{ DEF_APP_ERROR_FAIL_RESTART,			ERROR_FAIL_RESTART					},
+	{ DEF_APP_ERROR_INVALID_ADDRESS,		ERROR_INVALID_ADDRESS				},
+	{ DEF_APP_ERROR_APP_INIT_FAILURE,		ERROR_APP_INIT_FAILURE				},
+	{ DEF_APP_ERROR_CANNOT_LOAD_REGISTRY,	ERROR_CANNOT_LOAD_REGISTRY_FILE		},
+	{ DEF_APP_ERROR_REGISTRY_QUOTA_LIMIT,	ERROR_REGISTRY_QUOTA_LIMIT			},
+	{ DEF_APP_ERROR_SYSTEM_SHUTDOWN,		ERROR_SYSTEM_SHUTDOWN				},
+	{ DEF_APP_ERROR_HIBERNATED,				ERROR_HIBERNATED					},
+	{ DEF_APP_ERROR_RESUME_HIBERNATION,		ERROR_RESUME_HIBERNATION			},
+	{ DEF_APP_ERROR_WAKE_SYSTEM,			ERROR_WAKE_SYSTEM					},
+/*----------------------------------------------------------------------------------*/
+};
+
 static IDPAIRLIST idplActionName
 {
-/*----------Action ID---------------------ActionName ID--------------------*/
-	{ DEF_APP_ACTION_NOTHING,		ACTION_NAME_NOTHING				},
-	{ DEF_APP_ACTION_DISPLAYOFF,	ACTION_NAME_DISPLAYOFF			},
-	{ DEF_APP_ACTION_SLEEP,			ACTION_NAME_SLEEP				},
-	{ DEF_APP_ACTION_SHUTDOWN,		ACTION_NAME_SHUTDOWN			},
-	{ DEF_APP_ACTION_RESTART,		ACTION_NAME_RESTART				},
-	{ DEF_APP_ACTION_SIGNOUT,		ACTION_NAME_SIGNOUT				},
-	{ DEF_APP_ACTION_HIBERNATE,		ACTION_NAME_HIBERNATE			},
-	{ DEF_APP_ACTION_SHOWMENU,		ACTION_NAME_SHOWMENU			},
-/*-------------------------------------------------------------------------*/
+/*----------Action ID----------------------------Action Name ID---------------------*/
+	{ DEF_APP_ACTION_NOTHING,				ACTION_NAME_NOTHING					},
+	{ DEF_APP_ACTION_DISPLAYOFF,			ACTION_NAME_DISPLAYOFF				},
+	{ DEF_APP_ACTION_SLEEP,					ACTION_NAME_SLEEP					},
+	{ DEF_APP_ACTION_SHUTDOWN,				ACTION_NAME_SHUTDOWN				},
+	{ DEF_APP_ACTION_RESTART,				ACTION_NAME_RESTART					},
+	{ DEF_APP_ACTION_SIGNOUT,				ACTION_NAME_SIGNOUT					},
+	{ DEF_APP_ACTION_HIBERNATE,				ACTION_NAME_HIBERNATE				},
+	{ DEF_APP_ACTION_SHOWMENU,				ACTION_NAME_SHOWMENU				},
+/*----------------------------------------------------------------------------------*/
 };
 
 static IDPAIRLIST idplActionMsg
 {
-/*----------Action ID--------------------Message String ID-----------------*/
-	{ DEF_APP_ACTION_DISPLAYOFF,	MESSAGE_ACTION_DISPLAYOFF		},
-	{ DEF_APP_ACTION_SLEEP,			MESSAGE_ACTION_SLEEP			},
-	{ DEF_APP_ACTION_SHUTDOWN,		MESSAGE_ACTION_SHUTDOWN			},
-	{ DEF_APP_ACTION_RESTART,		MESSAGE_ACTION_RESTART			},
-	{ DEF_APP_ACTION_SIGNOUT,		MESSAGE_ACTION_SIGNOUT			},
-	{ DEF_APP_ACTION_HIBERNATE,		MESSAGE_ACTION_HIBERNATE		},
-/*-------------------------------------------------------------------------*/
+/*----------Action ID---------------------------Message String ID-------------------*/
+	{ DEF_APP_ACTION_DISPLAYOFF,			MESSAGE_ACTION_DISPLAYOFF			},
+	{ DEF_APP_ACTION_SLEEP,					MESSAGE_ACTION_SLEEP				},
+	{ DEF_APP_ACTION_SHUTDOWN,				MESSAGE_ACTION_SHUTDOWN				},
+	{ DEF_APP_ACTION_RESTART,				MESSAGE_ACTION_RESTART				},
+	{ DEF_APP_ACTION_SIGNOUT,				MESSAGE_ACTION_SIGNOUT				},
+	{ DEF_APP_ACTION_HIBERNATE,				MESSAGE_ACTION_HIBERNATE			},
+/*----------------------------------------------------------------------------------*/
 };
 
 static IDPAIRLIST idplSchedNotifyMsg
 {
-/*---------Action ID--------------------Message String ID------------------*/
-	{ DEF_APP_ACTION_DISPLAYOFF,	MESSAGE_SCHEDNOTIFY_DISPLAYOFF	},
-	{ DEF_APP_ACTION_SLEEP,			MESSAGE_SCHEDNOTIFY_SLEEP		},
-	{ DEF_APP_ACTION_SHUTDOWN,		MESSAGE_SCHEDNOTIFY_SHUTDOWN	},
-	{ DEF_APP_ACTION_RESTART,		MESSAGE_SCHEDNOTIFY_RESTART		},
-	{ DEF_APP_ACTION_SIGNOUT,		MESSAGE_SCHEDNOTIFY_SIGNOUT		},
-	{ DEF_APP_ACTION_HIBERNATE,		MESSAGE_SCHEDNOTIFY_HIBERNATE	},
-/*-------------------------------------------------------------------------*/
+/*---------Action ID------------------------------Message String ID-----------------*/
+	{ DEF_APP_ACTION_DISPLAYOFF,			MESSAGE_SCHEDNOTIFY_DISPLAYOFF		},
+	{ DEF_APP_ACTION_SLEEP,					MESSAGE_SCHEDNOTIFY_SLEEP			},
+	{ DEF_APP_ACTION_SHUTDOWN,				MESSAGE_SCHEDNOTIFY_SHUTDOWN		},
+	{ DEF_APP_ACTION_RESTART,				MESSAGE_SCHEDNOTIFY_RESTART			},
+	{ DEF_APP_ACTION_SIGNOUT,				MESSAGE_SCHEDNOTIFY_SIGNOUT			},
+	{ DEF_APP_ACTION_HIBERNATE,				MESSAGE_SCHEDNOTIFY_HIBERNATE		},
+/*----------------------------------------------------------------------------------*/
 };
 
 static IDPAIRLIST idplNotifyTip
 {
-/*---------Action ID--------------------Notify String ID-------------------*/
-	{ DEF_APP_ACTION_DISPLAYOFF,	NOTIFY_TIP_DISPLAYOFF			},
-	{ DEF_APP_ACTION_SLEEP,			NOTIFY_TIP_SLEEP				},
-	{ DEF_APP_ACTION_SHUTDOWN,		NOTIFY_TIP_SHUTDOWN				},
-	{ DEF_APP_ACTION_RESTART,		NOTIFY_TIP_RESTART				},
-	{ DEF_APP_ACTION_SIGNOUT,		NOTIFY_TIP_SIGNOUT				},
-	{ DEF_APP_ACTION_HIBERNATE,		NOTIFY_TIP_HIBERNATE			},
-	{ DEF_APP_ACTION_SHOWMENU,		NOTIFY_TIP_SHOWMENU				},
-/*-------------------------------------------------------------------------*/
+/*---------Action ID---------------------------Notify String ID---------------------*/
+	{ DEF_APP_ACTION_DISPLAYOFF,			NOTIFY_TIP_DISPLAYOFF				},
+	{ DEF_APP_ACTION_SLEEP,					NOTIFY_TIP_SLEEP					},
+	{ DEF_APP_ACTION_SHUTDOWN,				NOTIFY_TIP_SHUTDOWN					},
+	{ DEF_APP_ACTION_RESTART,				NOTIFY_TIP_RESTART					},
+	{ DEF_APP_ACTION_SIGNOUT,				NOTIFY_TIP_SIGNOUT					},
+	{ DEF_APP_ACTION_HIBERNATE,				NOTIFY_TIP_HIBERNATE				},
+	{ DEF_APP_ACTION_SHOWMENU,				NOTIFY_TIP_SHOWMENU					},
+/*----------------------------------------------------------------------------------*/
 };
 
 static IDPAIRLIST idplBalloonTip
 {
-/*---------Action ID--------------------Balloon String ID------------------*/
-	{ DEF_APP_ACTION_DISPLAYOFF,	BALLOON_TIP_DISPLAYOFF			},
-	{ DEF_APP_ACTION_SLEEP,			BALLOON_TIP_SLEEP				},
-	{ DEF_APP_ACTION_SHUTDOWN,		BALLOON_TIP_SHUTDOWN			},
-	{ DEF_APP_ACTION_RESTART,		BALLOON_TIP_RESTART				},
-	{ DEF_APP_ACTION_SIGNOUT,		BALLOON_TIP_SIGNOUT				},
-	{ DEF_APP_ACTION_HIBERNATE,		BALLOON_TIP_HIBERNATE			},
-/*-------------------------------------------------------------------------*/
+/*---------Action ID---------------------------Balloon String ID--------------------*/
+	{ DEF_APP_ACTION_DISPLAYOFF,			BALLOON_TIP_DISPLAYOFF				},
+	{ DEF_APP_ACTION_SLEEP,					BALLOON_TIP_SLEEP					},
+	{ DEF_APP_ACTION_SHUTDOWN,				BALLOON_TIP_SHUTDOWN				},
+	{ DEF_APP_ACTION_RESTART,				BALLOON_TIP_RESTART					},
+	{ DEF_APP_ACTION_SIGNOUT,				BALLOON_TIP_SIGNOUT					},
+	{ DEF_APP_ACTION_HIBERNATE,				BALLOON_TIP_HIBERNATE				},
+/*----------------------------------------------------------------------------------*/
 };
 
 static IDPAIRLIST idplHKActionID
 {
-/*----HotKey Action ID---------------------Action ID-----------------------*/
-	{ HKID_DISPLAYOFF,				DEF_APP_ACTION_DISPLAYOFF		},
-	{ HKID_SLEEP,					DEF_APP_ACTION_SLEEP			},
-	{ HKID_SHUTDOWN,				DEF_APP_ACTION_SHUTDOWN			},
-	{ HKID_RESTART,					DEF_APP_ACTION_RESTART			},
-	{ HKID_SIGNOUT,					DEF_APP_ACTION_SIGNOUT			},
-	{ HKID_HIBERNATE,				DEF_APP_ACTION_HIBERNATE		},
-/*-------------------------------------------------------------------------*/
+/*----HotKey Action ID----------------------------Action ID-------------------------*/
+	{ HKID_DISPLAYOFF,						DEF_APP_ACTION_DISPLAYOFF			},
+	{ HKID_SLEEP,							DEF_APP_ACTION_SLEEP				},
+	{ HKID_SHUTDOWN,						DEF_APP_ACTION_SHUTDOWN				},
+	{ HKID_RESTART,							DEF_APP_ACTION_RESTART				},
+	{ HKID_SIGNOUT,							DEF_APP_ACTION_SIGNOUT				},
+	{ HKID_HIBERNATE,						DEF_APP_ACTION_HIBERNATE			},
+/*----------------------------------------------------------------------------------*/
 };
 
 static IDPAIRLIST idplPwrReminderEvt
 {
-/*--------Event ID----------------------Event String ID--------------------*/
-	{ PREVT_AT_SETTIME,				PWRRMD_EVENT_AT_SETTIME			},
-	{ PREVT_AT_APPSTARTUP,			PWRRMD_EVENT_AT_APPSTARTUP		},
-	{ PREVT_AT_SYSWAKEUP,			PWRRMD_EVENT_AT_SYSWAKEUP		},
-	{ PREVT_AT_BFRPWRACTION,		PWRRMD_EVENT_AT_BFRPWRACTION	},
-	{ PREVT_AT_PWRACTIONWAKE,		PWRRMD_EVENT_AT_PWRACTIONWAKE	},
-	{ PREVT_AT_APPEXIT,				PWRRMD_EVENT_AT_APPEXIT			},
-/*-------------------------------------------------------------------------*/
+/*--------Event ID-----------------------------Event String ID----------------------*/
+	{ PREVT_AT_SETTIME,						PWRRMD_EVENT_AT_SETTIME				},
+	{ PREVT_AT_APPSTARTUP,					PWRRMD_EVENT_AT_APPSTARTUP			},
+	{ PREVT_AT_SYSWAKEUP,					PWRRMD_EVENT_AT_SYSWAKEUP			},
+	{ PREVT_AT_BFRPWRACTION,				PWRRMD_EVENT_AT_BFRPWRACTION		},
+	{ PREVT_AT_PWRACTIONWAKE,				PWRRMD_EVENT_AT_PWRACTIONWAKE		},
+	{ PREVT_AT_APPEXIT,						PWRRMD_EVENT_AT_APPEXIT				},
+/*----------------------------------------------------------------------------------*/
 };
 
 static IDPAIRLIST idplPwrReminderStyle
 {
-/*-----Style ID-------------------------Style String ID--------------------*/
-	{ PRSTYLE_MSGBOX,				PWRRMD_STYLE_MESSAGEBOX			},
-	{ PRSTYLE_DIALOG,				PWRRMD_STYLE_DIALOG				},
-/*-------------------------------------------------------------------------*/
+/*-----Style ID--------------------------------Style String ID----------------------*/
+	{ PRSTYLE_MSGBOX,						PWRRMD_STYLE_MESSAGEBOX				},
+	{ PRSTYLE_DIALOG,						PWRRMD_STYLE_DIALOG					},
+/*----------------------------------------------------------------------------------*/
 };
 
 static IDPAIRLIST idplDayOfWeek
 {
-/*----Day ID--------------------------Day title string ID------------------*/
-	{ MONDAY,						DAYOFWEEK_TITLE_MONDAY			},
-	{ TUESDAY,						DAYOFWEEK_TITLE_TUESDAY			},
-	{ WEDNESDAY,					DAYOFWEEK_TITLE_WEDNESDAY		},
-	{ THURSDAY,						DAYOFWEEK_TITLE_THURSDAY		},
-	{ FRIDAY,						DAYOFWEEK_TITLE_FRIDAY			},
-	{ SATURDAY,						DAYOFWEEK_TITLE_SATURDAY		},
-	{ SUNDAY,						DAYOFWEEK_TITLE_SUNDAY			},
-/*-------------------------------------------------------------------------*/
+/*----Day ID---------------------------------Day title string ID--------------------*/
+	{ MONDAY,								DAYOFWEEK_TITLE_MONDAY				},
+	{ TUESDAY,								DAYOFWEEK_TITLE_TUESDAY				},
+	{ WEDNESDAY,							DAYOFWEEK_TITLE_WEDNESDAY			},
+	{ THURSDAY,								DAYOFWEEK_TITLE_THURSDAY			},
+	{ FRIDAY,								DAYOFWEEK_TITLE_FRIDAY				},
+	{ SATURDAY,								DAYOFWEEK_TITLE_SATURDAY			},
+	{ SUNDAY,								DAYOFWEEK_TITLE_SUNDAY				},
+/*----------------------------------------------------------------------------------*/
 };
 
 static STRINGPAIRLIST strplFuncKeyList 
 {
-/*--------------------------------------------------------------------------*/
-	{ VK_F1, _T("F1") }, { VK_F2, _T("F2") }, { VK_F3, _T("F3") }, 
-	{ VK_F4, _T("F4") }, { VK_F5, _T("F5") }, { VK_F6, _T("F6") }, 
-	{ VK_F7, _T("F7") }, { VK_F8, _T("F8") }, { VK_F9, _T("F9") }, 
-	{ VK_F10, _T("F10") }, { VK_F11, _T("F11") }, { VK_F12, _T("F12") },
-/*--------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------------*/
+	{ VK_F1,  _T("F1")	},		{ VK_F2,  _T("F2")  },		{ VK_F3,  _T("F3")	}, 
+	{ VK_F4,  _T("F4")	},		{ VK_F5,  _T("F5")  },		{ VK_F6,  _T("F6")	}, 
+	{ VK_F7,  _T("F7")  },		{ VK_F8,  _T("F8")  },		{ VK_F9,  _T("F9")	}, 
+	{ VK_F10, _T("F10") },		{ VK_F11, _T("F11") },		{ VK_F12, _T("F12") },
+/*----------------------------------------------------------------------------------*/
 };
 
 static STRINGPAIRLIST strplColorName
 {
-/*-------Color ID----------------------------Color name---------------------*/
-	{ DEF_COLOR_RED,						_T("Red")				},
-	{ DEF_COLOR_GREEN,						_T("Green")				},
-	{ DEF_COLOR_YELLOW,						_T("Yellow")			},
-	{ DEF_COLOR_BLUE,						_T("Blue")				},
-	{ DEF_COLOR_WHITE,						_T("White")				},
-	{ DEF_COLOR_BLACK,						_T("Black")				},
-	{ DEF_COLOR_PINK,						_T("Pink")				},
-	{ DEF_COLOR_GRAY,						_T("Gray")				},
-	{ DEF_COLOR_DARK_GRAY,					_T("DGray")				},
-	{ DEF_COLOR_BRIGHT_GRAY,				_T("BGray")				},
-/*--------------------------------------------------------------------------*/
+/*-------Color ID----------------------------Color name-----------------------------*/
+	{ DEF_COLOR_RED,						_T("Red")							},
+	{ DEF_COLOR_GREEN,						_T("Green")							},
+	{ DEF_COLOR_YELLOW,						_T("Yellow")						},
+	{ DEF_COLOR_BLUE,						_T("Blue")							},
+	{ DEF_COLOR_WHITE,						_T("White")							},
+	{ DEF_COLOR_BLACK,						_T("Black")							},
+	{ DEF_COLOR_PINK,						_T("Pink")							},
+	{ DEF_COLOR_SAKURA_PINK,				_T("Sakura pink")					},
+	{ DEF_COLOR_ORANGE,						_T("Orange")						},
+	{ DEF_COLOR_UMARINE_BLUE,				_T("Ultramarine blue")				},
+	{ DEF_COLOR_INDIGO,						_T("Indigo")						},
+	{ DEF_COLOR_VIOLET,						_T("Violet")						},
+	{ DEF_COLOR_PURPLE,						_T("Purple")						},
+	{ DEF_COLOR_SCARLET,					_T("Scarlet")						},
+	{ DEF_COLOR_JADE,						_T("Jade")							},
+	{ DEF_COLOR_EMERALD,					_T("Emerald")						},
+	{ DEF_COLOR_GRAY,						_T("Gray")							},
+	{ DEF_COLOR_DARK_GRAY,					_T("Dark gray")						},
+	{ DEF_COLOR_BRIGHT_GRAY,				_T("Bright gray")					},
+/*----------------------------------------------------------------------------------*/
 };
 
 static STRINGPAIRLIST strplMsgIconName
 {
-/*--------Icon ID---------------------------Icon name-----------------------*/
-	{ IDI_MSGICON_APPLICATION,				_T("App")				},
-	{ IDI_MSGICON_HAND,						_T("Hand")				},
-	{ IDI_MSGICON_QUESTION,					_T("Question")			},
-	{ IDI_MSGICON_EXCLAMATION,				_T("Exclamation")		},
-	{ IDI_MSGICON_ASTERISK,					_T("Asterisk")			},
-	{ IDI_MSGICON_WARNING,					_T("Warning")			},
-	{ IDI_MSGICON_ERROR,					_T("Error")				},
-	{ IDI_MSGICON_INFORMATION,				_T("Information")		},
-/*--------------------------------------------------------------------------*/
+/*--------Icon ID---------------------------Icon name-------------------------------*/
+	{ IDI_MSGICON_APPLICATION,				_T("App")							},
+	{ IDI_MSGICON_HAND,						_T("Hand")							},
+	{ IDI_MSGICON_QUESTION,					_T("Question")						},
+	{ IDI_MSGICON_EXCLAMATION,				_T("Exclamation")					},
+	{ IDI_MSGICON_ASTERISK,					_T("Asterisk")						},
+	{ IDI_MSGICON_WARNING,					_T("Warning")						},
+	{ IDI_MSGICON_ERROR,					_T("Error")							},
+	{ IDI_MSGICON_INFORMATION,				_T("Information")					},
+/*----------------------------------------------------------------------------------*/
 };
 
 static const HOTKEYINFO hklExistedSysHotkeyList[] =
 {
-/*------Control Key----------Function Key------Hotkey description-----------*/
-	{ MOD_ALT,					VK_F4,		HKEYSET_EXISTED_ALT_F4		},
-	{ MOD_ALT,					VK_F8,		HKEYSET_EXISTED_ALT_F8		},
-	{ MOD_CONTROL,				VK_F3,		HKEYSET_EXISTED_CTRL_F3		},
-	{ MOD_CONTROL,				VK_F4,		HKEYSET_EXISTED_CTRL_F4		},
-	{ MOD_CONTROL,				VK_F5,		HKEYSET_EXISTED_CTRL_F5		},
-	{ MOD_CONTROL | MOD_WIN,	VK_F4,		HKEYSET_EXISTED_CTRL_WIN_F4 },
-/*--------------------------------------------------------------------------*/
+/*------Control Key--------------Function Key---------Hotkey description------------*/
+	{ MOD_ALT,						VK_F4,			HKEYSET_EXISTED_ALT_F4		},
+	{ MOD_ALT,						VK_F8,			HKEYSET_EXISTED_ALT_F8		},
+	{ MOD_CONTROL,					VK_F3,			HKEYSET_EXISTED_CTRL_F3		},
+	{ MOD_CONTROL,					VK_F4,			HKEYSET_EXISTED_CTRL_F4		},
+	{ MOD_CONTROL,					VK_F5,			HKEYSET_EXISTED_CTRL_F5		},
+	{ MOD_CONTROL | MOD_WIN,		VK_F4,			HKEYSET_EXISTED_CTRL_WIN_F4 },
+/*----------------------------------------------------------------------------------*/
 };
 
 
@@ -1312,6 +1590,7 @@ namespace CoreFuncs
 	void OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...);
 
 	// Trace/debug file logging functions
+	BOOL BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName);
 	void WriteTraceErrorLogFile(LPCTSTR lpszLogStringW);
 	void WriteTraceDebugLogFile(LPCTSTR lpszLogStringW);
 	void WriteDebugInfoLogFile(LPCTSTR lpszLogStringW);
@@ -1343,13 +1622,14 @@ namespace CoreFuncs
 	CString		FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal);
 	CString		FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString, SYSTEMTIME timeVal);
 
-	// String functions
+	// String processing functions
 	LPCTSTR LoadResourceString(UINT nResStringID);
 	BOOL	LoadResourceString(CString& strResult, UINT nResStringID);
 	int		GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyChars);
 	void	UpperEachWord(CString& strInput, BOOL bTrim);
-	void	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
+	BOOL	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
 	BOOL	StringValidate(LPCTSTR lpszSrc, DWORD& dwError);
+
 	BOOL	SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd, UINT nSubStringType);
 	BOOL	Left(LPCTSTR lpszSrc, CString& strDest, TCHAR tcEnd);
 	BOOL	Mid(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd);
@@ -1357,8 +1637,10 @@ namespace CoreFuncs
 
 	// Additional functions
 	LPCTSTR GetAppPath(void);
-	BOOL	AddRegistryKey(REGISTRYKEY regKeyInfo);
-	LPCTSTR MakeRegFullPath(REGISTRYKEY regKeyInfo, UINT nRegPathType = REGPATH_FULL);
+	CString	GetProductVersion(BOOL bFullVersion);
+	BOOL	GetProductVersion(CString& strFullVersion, CString& strShortVersion);
+	BOOL	AddRegistryKey(const REGISTRYINFO& regInfo);
+	LPCTSTR MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType = REGPATH_FULL, BOOL bIncRootKey = TRUE);
 
 	void	PlaySound(BOOL bSoundEnable, UINT nTypeOfSound);
 	BOOL	FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath);

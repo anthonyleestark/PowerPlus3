@@ -69,56 +69,20 @@ static inline void SetDebugOutputTarget(int nValue) { g_nDebugOutputTarget = nVa
 // Trace error log file pointer
 extern CFile* g_pFileLogTraceError;
 static inline CFile* GetTraceErrorLogFile() { return g_pFileLogTraceError; }
-static inline BOOL InitTraceErrorLogFile(void);
-static inline void ReleaseTraceErrorLogFile(void)
-{
-	// Clean up trace error log file pointer
-	if (g_pFileLogTraceError != NULL) {
-		// Close file if is opening
-		if (g_pFileLogTraceError->m_hFile != CFile::hFileNull) {
-			g_pFileLogTraceError->Flush();
-			g_pFileLogTraceError->Close();
-		}
-		delete g_pFileLogTraceError;
-		g_pFileLogTraceError = NULL;
-	}
-}
+static BOOL InitTraceErrorLogFile(void);
+inline void ReleaseTraceErrorLogFile(void);
 
 // Trace debug info log file pointer
 extern CFile* g_pFileLogTraceDebug;
 static inline CFile* GetTraceDebugLogFile() { return g_pFileLogTraceDebug; }
-static inline BOOL InitTraceDebugLogFile(void);
-static inline void ReleaseTraceDebugLogFile(void)
-{
-	// Clean up trace debug info log file pointer
-	if (g_pFileLogTraceDebug != NULL) {
-		// Close file if is opening
-		if (g_pFileLogTraceDebug->m_hFile != CFile::hFileNull) {
-			g_pFileLogTraceDebug->Flush();
-			g_pFileLogTraceDebug->Close();
-		}
-		delete g_pFileLogTraceDebug;
-		g_pFileLogTraceDebug = NULL;
-	}
-}
+static BOOL InitTraceDebugLogFile(void);
+inline void ReleaseTraceDebugLogFile(void);
 
 // Debug info output log file pointer
 extern CFile* g_pFileLogDebugInfo;
 static inline CFile* GetDebugInfoLogFile() { return g_pFileLogDebugInfo; }
-static inline BOOL InitDebugInfoLogFile(void);
-static inline void ReleaseDebugInfoLogFile(void)
-{
-	// Clean up debug info log file pointer
-	if (g_pFileLogDebugInfo != NULL) {
-		// Close file if is opening
-		if (g_pFileLogDebugInfo->m_hFile != CFile::hFileNull) {
-			g_pFileLogDebugInfo->Flush();
-			g_pFileLogDebugInfo->Close();
-		}
-		delete g_pFileLogDebugInfo;
-		g_pFileLogDebugInfo = NULL;
-	}
-}
+static BOOL InitDebugInfoLogFile(void);
+inline void ReleaseDebugInfoLogFile(void);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
