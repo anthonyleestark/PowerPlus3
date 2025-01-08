@@ -44,6 +44,12 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
+	// Dialog control management
+	virtual INT_PTR RegisterDialogManagement(void);
+	virtual BOOL UnregisterDialogManagement(void);
+
+	// Implementation
+protected:
 	DECLARE_MESSAGE_MAP()
 	DECLARE_CLASS_IDMAP()
 
@@ -72,6 +78,7 @@ public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
+	afx_msg void OnDestroy();
 	virtual LRESULT RequestCloseDialog(void);
 
 	// Member functions

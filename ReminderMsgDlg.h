@@ -93,8 +93,8 @@ public:
 	virtual void SetAutoCloseInterval(UINT nSeconds);
 
 	// Dialog size
-	virtual void SetDlgSize(CSize szDlgSize);
-	virtual void SetDlgSize(int nWidth, int nHeight);
+	virtual void SetDialogSize(CSize szDlgSize);
+	virtual void SetDialogSize(LONG lWidth, LONG lHeight);
 
 	// Message font
 	virtual void GetMsgFontName(CString& strFontName);

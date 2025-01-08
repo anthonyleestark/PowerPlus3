@@ -48,6 +48,12 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
+	// Dialog control management
+	virtual INT_PTR RegisterDialogManagement(void);
+	virtual BOOL UnregisterDialogManagement(void);
+
+	// Implementation
+protected:
 	DECLARE_MESSAGE_MAP()
 	DECLARE_CLASS_IDMAP()
 
@@ -77,13 +83,18 @@ public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
+	afx_msg void OnDestroy();
 	virtual LRESULT RequestCloseDialog(void);
 
 	// Member functions
 	void SetupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
 	void DrawDataTable(BOOL bReadOnly = FALSE);
-	void SwitchMode(BOOL bRedraw = FALSE);
+
+	// Layout functions
+	void UpdateLayoutInfo(void);
+	void LoadLayoutInfo(void);
+	void SaveLayoutInfo(void);
 
 	// Dialog item properties functions
 	void SetupDlgItemState();
@@ -121,7 +132,6 @@ public:
 	afx_msg void OnSelectScheduleItem(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg LRESULT OnChildDialogClose(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnChildDialogDestroy(WPARAM wParam, LPARAM lParam);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 

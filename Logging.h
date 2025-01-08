@@ -16,61 +16,10 @@
 
 #include "stdafx.h"
 #include "Core.h"
+#include "Logging_pub.h"
 
 using namespace PairFuncs;
 using namespace CoreFuncs;
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define macros for logging
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#define LOG_EVENT_BUTTON					0x01
-#define LOG_EVENT_BUTTON_CLICKED			(LOG_EVENT_BUTTON<<8) + 0x001
-#define LOG_EVENT_BUTTON_ENABLED			(LOG_EVENT_BUTTON<<8) + 0x002
-#define LOG_EVENT_BUTTON_DISABLED			(LOG_EVENT_BUTTON<<8) + 0x003
-
-#define LOG_EVENT_COMBO						0x02
-#define LOG_EVENT_COMBO_SELECTION			(LOG_EVENT_COMBO<<8) + 0x001
-#define LOG_EVENT_COMBO_ENABLED				(LOG_EVENT_COMBO<<8) + 0x002
-#define LOG_EVENT_COMBO_DISABLED			(LOG_EVENT_COMBO<<8) + 0x003
-
-#define LOG_EVENT_CHKBOX					0x03
-#define LOG_EVENT_CHKBOX_CHECKED			(LOG_EVENT_CHKBOX<<8) + 0x001
-#define LOG_EVENT_CHKBOX_UNCHECKED			(LOG_EVENT_CHKBOX<<8) + 0x002
-#define LOG_EVENT_CHKBOX_ENABLED			(LOG_EVENT_CHKBOX<<8) + 0x003
-#define LOG_EVENT_CHKBOX_DISABLED			(LOG_EVENT_CHKBOX<<8) + 0x004
-
-#define LOG_EVENT_MENU						0x04
-#define LOG_EVENT_MENU_SELECTION			(LOG_EVENT_MENU<<8) + 0x001
-#define LOG_EVENT_MENU_ENABLED				(LOG_EVENT_MENU<<8) + 0x002
-#define LOG_EVENT_MENU_DISABLED				(LOG_EVENT_MENU<<8) + 0x003
-
-#define LOG_EVENT_DLG						0x05
-#define LOG_EVENT_DLG_STARTUP				(LOG_EVENT_DLG<<8) + 0x001
-#define LOG_EVENT_DLG_DESTROYED				(LOG_EVENT_DLG<<8) + 0x002
-#define LOG_EVENT_DLG_SHOWED				(LOG_EVENT_DLG<<8) + 0x003
-#define LOG_EVENT_DLG_HIDDEN				(LOG_EVENT_DLG<<8) + 0x004
-#define LOG_EVENT_DLG_EXPANDED				(LOG_EVENT_DLG<<8) + 0x005
-#define LOG_EVENT_DLG_COLLAPSED				(LOG_EVENT_DLG<<8) + 0x006
-
-#define LOG_EVENT_NOTIFY					0x06
-#define LOG_EVENT_NOTIFY_CREATED			(LOG_EVENT_NOTIFY<<8) + 0x001
-#define LOG_EVENT_NOTIFY_REMOVED			(LOG_EVENT_NOTIFY<<8) + 0x002
-#define LOG_EVENT_NOTIFY_LMBCLICKED			(LOG_EVENT_NOTIFY<<8) + 0x003
-#define LOG_EVENT_NOTIFY_MMBCLICKED			(LOG_EVENT_NOTIFY<<8) + 0x004
-#define LOG_EVENT_NOTIFY_RMBCLICKED			(LOG_EVENT_NOTIFY<<8) + 0x005
-#define LOG_EVENT_NOTIFY_SHOWMENU			(LOG_EVENT_NOTIFY<<8) + 0x006
-#define LOG_EVENT_NOTIFY_UPDATETIPTEXT		(LOG_EVENT_NOTIFY<<8) + 0x007
-
-/* <Use this template to define new logevent group macros>
-#define LOG_EVENT_XXX				0x0
-#define LOG_EVENT_XXX_YYY			(LOG_EVENT_XXX<<8) + 0x001
-#define LOG_EVENT_XXX_YYY			(LOG_EVENT_XXX<<8) + 0x002
-#define LOG_EVENT_XXX_YYY			(LOG_EVENT_XXX<<8) + 0x003
-<REMEMBER: New group must come with new log output method> */
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,96 +28,165 @@ using namespace CoreFuncs;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	LOGDETAIL
+//  Description:	Store log detail info item
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagLOGDETAIL
+{
+	// Member variables
+	BYTE	byCategory;										// Detail category
+	UINT	uiDetailInfo;									// Detail info (integer)
+	CString	strDetailInfo;									// Detail info (string)
+	PVOID	ptrDetailInfo;									// Detail info (pointer)
+	BYTE	byPointerType;									// Detail info pointer data type
+	SIZE_T	szPointerSize;									// Detail info pointer data size
+
+	// Constructor
+	tagLOGDETAIL();											// Default constructor
+	tagLOGDETAIL(const tagLOGDETAIL&);						// Copy constructor
+
+	// Operator
+	tagLOGDETAIL& operator=(const tagLOGDETAIL&);			// Copy assignment operator
+
+	// Member functions
+	void Init();											// Initialize/reset item data
+	void Copy(const tagLOGDETAIL&);							// Copy item data
+	void PointerCopy(const tagLOGDETAIL&);					// Copy detail info pointers
+	BOOL Compare(const tagLOGDETAIL&) const;				// Compare items
+	BOOL PointerCompare(const tagLOGDETAIL&) const;			// Compare detail info pointer
+	BOOL IsEmpty(void) const;								// Check if item data is empty
+	BOOL SetPointerData(PVOID, BYTE = -1, SIZE_T = 0);		// Set detail info pointer data
+} LOGDETAIL, *PLOGDETAIL;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	LOGDETAILINFO
+//  Description:	Store log detail info data
+//  Derivered from: MFC CArray class
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef CArray<LOGDETAIL, LOGDETAIL> LOGDETAILINFO;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	LOGITEM
+//  Description:	Store app log item data
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
 typedef struct tagLOGITEM
 {
 	// Member variables
-	SYSTEMTIME	stTime;				// Log time
-	BYTE		byType;				// Log type
-	BYTE		byCategory;			// Log category
-	CString		strLogString;		// Log string
-	CString		strDetails;			// Log detail string
+	SYSTEMTIME		stTime;									// Log time
+	USHORT			usCategory;								// Log category
+	CString			strLogString;							// Log string
+	LOGDETAILINFO	arrDetailInfo;							// Log detail info
 
 	// Constructor
-	tagLOGITEM();					// Default constructor
-	tagLOGITEM(const tagLOGITEM&);	// Copy constructor
+	tagLOGITEM();											// Default constructor
+	tagLOGITEM(const tagLOGITEM&);							// Copy constructor
+
+	// Operator
+	tagLOGITEM& operator=(const tagLOGITEM&);				// Copy assignment operator
 
 	// Member functions
-	CString		FormatDateTime();	// Format date/time value
-	CString		FormatLogString();	// Format log string
+	void Copy(const tagLOGITEM&);							// Copy item
+	BOOL Compare(const tagLOGITEM&) const;					// Compare items
+	BOOL IsEmpty(void) const;								// Check if item data is empty
+	void RemoveDetailInfo(void);							// Remove all log detail info data
+	void RemoveAll(void);									// Remove all log item data
+
+	// Detail info functions
+	void AddDetail(const LOGDETAIL&);						// Add detail data
+	void AddDetail(BYTE, UINT);								// Add detail (integer data only)
+	void AddDetail(BYTE, LPCTSTR);							// Add detail (string data only)
+	void AddDetail(BYTE, UINT, LPCTSTR);					// Add detail (both integer and string data)
+
+	// Format data functions
+	CString	FormatDateTime(void) const;						// Format date/time value
+	CString	FormatLogString(void) const;					// Format log string
 } LOGITEM, *PLOGITEM;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	LOGARRAY
+//  Description:	Store app log data
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
 
 typedef CArray<LOGITEM, LOGITEM> LOGARRAY;
 
-typedef enum eLOGWRITEMODE {
-	LOG_WRITE_MODE_ONCALL = 1,		// Write log on-call mode
-	LOG_WRITE_MODE_INSTANT,			// Write log instantly mode
-} LOGWRITEMODE;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	Define static functions
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-typedef enum eDATACHANGELOG {
-	// Data types
-	DATATYPE_YESNO_VALUE = 0,		// Yes/No value (boolean)
-	DATATYPE_OPTION_VALUE,			// Option value (ID)
-	DATATYPE_ITEMNUM_ADD,			// Item number added
-	DATATYPE_ITEMNUM_REMOVE,		// Item number removed
-	DATATYPE_STRING_VALUE,			// String value
-	DATATYPE_TIME_VALUE,			// Time value
-	DATATYPE_FLAG_VALUE,			// Flag value
-	DATATYPE_SPEC_VALUE,			// Special value
-
-	// Data categories
-	DATACATE_APPCONFIG,				// App config data
-	DATACATE_SCHEDULE,				// Schedule data
-	DATACATE_HOTKEYSET,				// HotkeySet data
-	DATACATE_PWRREMINDER,			// Power Reminder data
-} DATACHANGELOG;
-
+static SIZE_T GetSizeByType(BYTE byDataType);
+template <typename DATA>
+static SIZE_T GetSizeByValue(DATA dataValue);
 
 ////////////////////////////////////////////////////////
 //
 //	Class name:	 SLogging
-//  Description: Using for saving logs
+//  Description: Using for saving application log data
 //
 ////////////////////////////////////////////////////////
 
 class SLogging
 {
 private:
-	// Member variables
-	LOGARRAY m_arrLogData;		// Log data array
-	UINT	 m_nLogDataType;	// Log data type
-	UINT	 m_nLogWriteMode;	// Log write mode
+	// Log data array
+	LOGARRAY m_arrLogData;
+
+	// Properties
+	BYTE	 m_byLogType;					// Log type
+	BYTE	 m_byWriteMode;					// Log write mode
+	INT_PTR	 m_nMaxSize;					// Log data max item count
+	CString  m_strFilePath;					// Log output file path
+	PLOGITEM m_pItemDefTemplate;			// Log default template
 
 public:
-	SLogging();		// constructor
-	~SLogging();	// destructor
+	SLogging(BYTE byLogType);				// constructor
+	~SLogging(void);						// destructor
 
 public:
 	// Initialization
-	void Init();
-	int  GetLogCount();
-	LOGITEM GetLogItem(int nIndex);
+	virtual void Init();
+	virtual void DeleteAll();
+
+	// Get/set data
+	virtual BOOL IsEmpty(void) const;
+	virtual INT_PTR GetLogCount() const;
+	virtual LOGITEM& GetLogItem(int nIndex);
+	virtual const LOGITEM& GetLogItem(int nIndex) const;
 
 	// Get/set properties function
-	UINT GetLogDataType();
-	void SetLogDataType(UINT logDataType);
-	UINT GetLogWriteMode();
-	void SetLogWriteMode(UINT logWriteMode);
+	virtual INT_PTR GetMaxSize(void) const;
+	virtual void SetMaxSize(INT_PTR nMaxSize);
+	virtual BYTE GetWriteMode(void) const;
+	virtual void SetWriteMode(BYTE byWriteMode);
+	virtual void GetFilePath(CString& strFilePath);
+	virtual void SetFilePath(LPCTSTR lpszFilePath);
+	virtual PLOGITEM GetDefaultTemplate(void);
+	virtual void SetDefaultTemplate(const LOGITEM& logItemTemplate);
 
 	// Output log functions
-	void OutputLog(LOGITEM& logItem, UINT nForceWriteMode = 0);
-	void OutputLogString(LPCSTR lpszLogStringA, LPCSTR lpszLogDetailA = NULL, BYTE byType = 0);
-	void OutputLogString(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW = NULL, BYTE byType = 0);
+	void OutputItem(const LOGITEM& logItem);
+	void OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate = TRUE);
 
 	// Write log functions
-	BOOL WriteLog();
-	BOOL WriteInstantLog(LOGITEM& logItem);
-	BOOL WriteInstantLog(LPCSTR lpszLogStringA, LPCSTR lpszLogDetailA = NULL, BYTE byType = 0);
-	BOOL WriteInstantLog(LPCTSTR lpszLogStringW, LPCTSTR lpszLogDetailW = NULL, BYTE byType = 0);
-
-	// Custom specified output log functions
-	void OutputDlgEventLog(UINT nEventID, LPCSTR lpszDlgID = NULL, LPCSTR lpszItemID = NULL, WPARAM wParam = NULL, LPARAM lParam = NULL);
-	void OutputDataChangeLog(BYTE byDataType, BYTE byDataCategory, DWORD dwCtrlID, DWORD dwPreVal, DWORD wAftVal, LPCTSTR lpszFlagName);
-	void OutputDataChangeLog(BYTE byDataType, BYTE byDataCategory, DWORD dwCtrlID, LPCTSTR lpszPreVal, LPCTSTR lpszAftVal, LPCTSTR lpszFlagName);
+	BOOL Write(void);
+	BOOL Write(const LOGITEM& logItem, LPCTSTR lpszFilePath = NULL);
+	BOOL Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath = NULL);
 };
 
 #endif	// ifndef _LOGGING_H_INCLUDED

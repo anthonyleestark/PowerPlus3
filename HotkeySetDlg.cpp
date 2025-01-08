@@ -23,6 +23,18 @@
 
 using namespace PairFuncs;
 using namespace CoreFuncs;
+using namespace RegFuncs;
+
+
+////////////////////////////////////////////////////////
+//
+//	Define macros for HotkeySet data list table
+//
+////////////////////////////////////////////////////////
+
+#define COL_FIXED_NUM			0
+#define ROW_FIXED_NUM			1
+#define ROW_INDEX_START			1
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -44,6 +56,9 @@ CHotkeySetDlg::CHotkeySetDlg(CWnd* pParent /*=nullptr*/)
 {
 	// Initialize member variables
 
+	// Data list table control
+	m_pHotkeySetListTable = NULL;
+
 	// Data container variables
 	ZeroMemory(&m_hksHotkeySet, sizeof(HOTKEYSETDATA));
 	ZeroMemory(&m_hksHotkeySetTemp, sizeof(HOTKEYSETDATA));
@@ -53,8 +68,14 @@ CHotkeySetDlg::CHotkeySetDlg(CWnd* pParent /*=nullptr*/)
 	m_bAltBtn = FALSE;
 	m_bWinKeyBtn = FALSE;
 
+	// Table format and properties
+	m_nColNum = 0;
+	m_apGrdColFormat = NULL;
+	m_pszDataTableFrameSize = NULL;
+
 	// Other variables
-	m_bAllChecked = FALSE;
+	m_nCheckCount = 0;
+	m_nCurSelIndex = -1;
 
 	INIT_CLASS_IDMAP()
 }
@@ -68,9 +89,25 @@ CHotkeySetDlg::CHotkeySetDlg(CWnd* pParent /*=nullptr*/)
 
 CHotkeySetDlg::~CHotkeySetDlg()
 {
+	// Data item list control
+	if (m_pHotkeySetListTable) {
+		delete m_pHotkeySetListTable;
+		m_pHotkeySetListTable = NULL;
+	}
+
 	// Remove HotkeySet data
 	m_hksHotkeySet.DeleteAll();
 	m_hksHotkeySetTemp.DeleteAll();
+
+	// Other variables
+	if (m_apGrdColFormat != NULL) {
+		delete[] m_apGrdColFormat;
+		m_apGrdColFormat = NULL;
+	}
+	if (m_pszDataTableFrameSize != NULL) {
+		delete m_pszDataTableFrameSize;
+		m_pszDataTableFrameSize = NULL;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -83,12 +120,94 @@ CHotkeySetDlg::~CHotkeySetDlg()
 void CHotkeySetDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_HOTKEYSET_ITEM_LISTBOX, m_listHotkeySet);
 	DDX_Control(pDX, IDC_HOTKEYSET_ACTION_LIST, m_cmbActionList);
 	DDX_Control(pDX, IDC_HOTKEYSET_FUNCKEY_LIST, m_cmbFuncKeyList);
 	DDX_Check(pDX, IDC_HOTKEYSET_CTRLKEY_CHK, m_bCtrlBtn);
 	DDX_Check(pDX, IDC_HOTKEYSET_ALTKEY_CHK, m_bAltBtn);
 	DDX_Check(pDX, IDC_HOTKEYSET_WINKEY_CHK, m_bWinKeyBtn);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RegisterDialogManagement
+//	Description:	Register dialog control management
+//  Arguments:		None
+//  Return value:	INT_PTR - Number of controls added to management
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR CHotkeySetDlg::RegisterDialogManagement(void)
+{
+	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	if (nRet != 0) {
+		TRCLOG("Error: Register dialog management failed!!!");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		return nRet;
+	}
+
+	// Get control manager
+	SControlManager* pCtrlMan = this->GetControlManager();
+
+	// Add dialog controls to management
+	if (pCtrlMan != NULL) {
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ITEM_LISTBOX, CTRL_TYPE_LISTBOX);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ADD_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVE_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVEALL_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CHECKALL_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_UNCHECKALL_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_EXPORT_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_APPLY_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CANCEL_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_TITLE, CTRL_TYPE_STATIC);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_LIST, CTRL_TYPE_COMBOBOX);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CONTROLKEY_STATIC, CTRL_TYPE_STATIC);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CTRLKEY_CHK, CTRL_TYPE_CHECKBOX);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ALTKEY_CHK, CTRL_TYPE_CHECKBOX);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_WINKEY_CHK, CTRL_TYPE_CHECKBOX);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_TITLE, CTRL_TYPE_STATIC);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_LIST, CTRL_TYPE_COMBOBOX);
+	}
+
+	return nRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	UnregisterDialogManagement
+//	Description:	Unregister dialog control management
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CHotkeySetDlg::UnregisterDialogManagement(void)
+{
+	// Get control manager
+	SControlManager* pCtrlMan = this->GetControlManager();
+
+	// Remove dialog controls from managements
+	if (pCtrlMan != NULL) {
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ITEM_LISTBOX);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ADD_BTN);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_REMOVE_BTN);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_REMOVEALL_BTN);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_CHECKALL_BTN);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_UNCHECKALL_BTN);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_EXPORT_BTN);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_APPLY_BTN);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_CANCEL_BTN);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ACTION_TITLE);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ACTION_LIST);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_CONTROLKEY_STATIC);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_CTRLKEY_CHK);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ALTKEY_CHK);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_WINKEY_CHK);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_FUNCKEY_TITLE);
+		pCtrlMan->RemoveControl(IDC_HOTKEYSET_FUNCKEY_LIST);
+	}
+
+	return SDialog::UnregisterDialogManagement();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -104,6 +223,7 @@ BEGIN_ID_MAPPING(CHotkeySetDlg)
 	IDMAP_ADD(IDC_HOTKEYSET_REMOVE_BTN,			"RemoveButton")
 	IDMAP_ADD(IDC_HOTKEYSET_REMOVEALL_BTN,		"RemoveAllButton")
 	IDMAP_ADD(IDC_HOTKEYSET_CHECKALL_BTN,		"CheckAllButton")
+	IDMAP_ADD(IDC_HOTKEYSET_UNCHECKALL_BTN,		"UncheckAllButton")
 	IDMAP_ADD(IDC_HOTKEYSET_EXPORT_BTN,			"ExportButton")
 	IDMAP_ADD(IDC_HOTKEYSET_APPLY_BTN,			"ApplyButton")
 	IDMAP_ADD(IDC_HOTKEYSET_CANCEL_BTN,			"CancelButton")
@@ -126,12 +246,14 @@ END_ID_MAPPING()
 
 BEGIN_MESSAGE_MAP(CHotkeySetDlg, SDialog)
 	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_HOTKEYSET_APPLY_BTN,					&CHotkeySetDlg::OnApply)
 	ON_BN_CLICKED(IDC_HOTKEYSET_CANCEL_BTN,					&CHotkeySetDlg::OnCancel)
 	ON_BN_CLICKED(IDC_HOTKEYSET_ADD_BTN,					&CHotkeySetDlg::OnAdd)
 	ON_BN_CLICKED(IDC_HOTKEYSET_REMOVE_BTN,					&CHotkeySetDlg::OnRemove)
 	ON_BN_CLICKED(IDC_HOTKEYSET_REMOVEALL_BTN,				&CHotkeySetDlg::OnRemoveAll)
 	ON_BN_CLICKED(IDC_HOTKEYSET_CHECKALL_BTN,				&CHotkeySetDlg::OnCheckAll)
+	ON_BN_CLICKED(IDC_HOTKEYSET_UNCHECKALL_BTN,				&CHotkeySetDlg::OnUncheckAll)
 	ON_BN_CLICKED(IDC_HOTKEYSET_EXPORT_BTN,					&CHotkeySetDlg::OnExport)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_HOTKEYSET_ITEM_LISTBOX,	&CHotkeySetDlg::OnSelectHotkeyItem)
 	ON_NOTIFY(NM_CLICK, IDC_HOTKEYSET_ITEM_LISTBOX,			&CHotkeySetDlg::OnClickHotkeyList)
@@ -160,19 +282,23 @@ BOOL CHotkeySetDlg::OnInitDialog()
 	// Do not use Enter button
 	SetUseEnter(FALSE);
 
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_STARTUP);
+	// Register message box caption
+	RegisterMessageBoxCaption(MSGBOX_HOTKEYSET_CAPTION);
 
 	// Load data
 	LoadHotkeySetData();
 
 	// Init dialog items
+	LoadLayoutInfo();
 	SetupLanguage();
 
 	// Update data
 	UpdateHotkeySet();
 	DisplayHotkeyDetails(DEF_INTEGER_INVALID);
 	RefreshDlgItemState();
+
+	// Save dialog event log if enabled
+	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
 
 	// Read-only mode (if enabled)
 	if (GetReadOnlyMode() == TRUE) {
@@ -204,7 +330,7 @@ void CHotkeySetDlg::OnClose()
 		m_bChangeFlag = CheckDataChangeState();
 		if (m_bChangeFlag == TRUE) {
 			// Show save confirmation message
-			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, MSGBOX_HOTKEYSET_CAPTION, MB_YESNO | MB_ICONQUESTION);
+			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Save data
 				SaveHotkeySetData();
@@ -212,10 +338,30 @@ void CHotkeySetDlg::OnClose()
 		}
 	}
 
-	// Save app event log if enabled
-	OutputDialogLog(GetDialogID(), LOG_EVENT_DLG_DESTROYED);
-
+	// Close dialog
 	SDialog::OnClose();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnDestroy
+//	Description:	Default method for dialog destroying
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHotkeySetDlg::OnDestroy()
+{
+	// Save app event log if enabled
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+
+	// Save layout info data
+	UpdateLayoutInfo();
+	SaveLayoutInfo();
+
+	// Destroy dialog
+	SDialog::OnDestroy();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -230,7 +376,7 @@ void CHotkeySetDlg::OnClose()
 void CHotkeySetDlg::OnApply()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_APPLY_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_APPLY_BTN);
 
 	// Save data if changed
 	m_bChangeFlag = CheckDataChangeState();
@@ -258,13 +404,13 @@ void CHotkeySetDlg::OnCancel()
 	if (!IsForceClosingByRequest()) {
 
 		// Save app event log if enabled
-		OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_CANCEL_BTN);
+		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_CANCEL_BTN);
 
 		// Ask for saving before exiting if data changed
 		m_bChangeFlag = CheckDataChangeState();
 		if (m_bChangeFlag == TRUE) {
 			// Show save confirmation message
-			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, MSGBOX_HOTKEYSET_CAPTION, MB_YESNO | MB_ICONQUESTION);
+			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Save data
 				SaveHotkeySetData();
@@ -288,7 +434,7 @@ void CHotkeySetDlg::OnCancel()
 void CHotkeySetDlg::OnAdd()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_ADD_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_ADD_BTN);
 
 	// Update data
 	Add();
@@ -307,7 +453,7 @@ void CHotkeySetDlg::OnAdd()
 void CHotkeySetDlg::OnRemove()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_REMOVE_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_REMOVE_BTN);
 
 	// If there's no item, do nothing
 	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
@@ -315,12 +461,12 @@ void CHotkeySetDlg::OnRemove()
 		return;
 
 	// Get current select item index
-	int nIndex = GetListCurSel(m_listHotkeySet);
+	int nIndex = GetListCurSel();
 	if (m_hksHotkeySetTemp.IsEmpty(nIndex) == TRUE)
 		return;
 
 	// Ask before remove
-	int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_REMOVE_ITEM, MSGBOX_HOTKEYSET_CAPTION, MB_YESNO | MB_ICONQUESTION);
+	int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
 		Remove(nIndex);
 		UpdateHotkeySet();
@@ -339,14 +485,14 @@ void CHotkeySetDlg::OnRemove()
 void CHotkeySetDlg::OnRemoveAll()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_REMOVEALL_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_REMOVEALL_BTN);
 
 	// If all item are empty, do nothing
 	if (m_hksHotkeySetTemp.IsAllEmpty() == TRUE)
 		return;
 
 	// Ask before remove
-	int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_REMOVEALL_ITEMS, MSGBOX_HOTKEYSET_CAPTION, MB_YESNO | MB_ICONQUESTION);
+	int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
 		RemoveAll();
 		UpdateHotkeySet();
@@ -365,14 +511,36 @@ void CHotkeySetDlg::OnRemoveAll()
 void CHotkeySetDlg::OnCheckAll()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_CHECKALL_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_CHECKALL_BTN);
 
 	// If all item are empty, do nothing
 	if (m_hksHotkeySetTemp.IsAllEmpty() == TRUE)
 		return;
 
-	// Check/uncheck all item
-	SwitchAllItemState();
+	// Check all items
+	SwitchAllItemState(TRUE);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnUncheckAll
+//	Description:	Handle click event for [Uncheck All] button
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHotkeySetDlg::OnUncheckAll()
+{
+	// Save app event log if enabled
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_UNCHECKALL_BTN);
+
+	// If all item are empty, do nothing
+	if (m_hksHotkeySetTemp.IsAllEmpty() == TRUE)
+		return;
+
+	// Uncheck all items
+	SwitchAllItemState(FALSE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -387,7 +555,7 @@ void CHotkeySetDlg::OnCheckAll()
 void CHotkeySetDlg::OnExport()
 {
 	// Save app event log if enabled
-	OutputButtonLog(GetDialogID(), IDC_HOTKEYSET_EXPORT_BTN);
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_EXPORT_BTN);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -402,18 +570,24 @@ void CHotkeySetDlg::OnExport()
 
 void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	//Get current selection index
-	int nCurSel = GetListCurSel(m_listHotkeySet);
-	int nItemCount = m_listHotkeySet.GetItemCount();
+	// Get clicked item info
+	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
+	if (pItem == NULL) return;
+	int nCurSelCol = pItem->iColumn;
+	int nCurSelRow = pItem->iRow;
+
+	// Update current selection index
+	SetListCurSel(nCurSelRow - ROW_INDEX_START);
+	int nItemCount = GetItemNum();
 
 	*pResult = NULL;
 
 	// Invalid selection
-	if (nCurSel < 0 || nCurSel >= nItemCount)
+	if (GetListCurSel() < 0 || GetListCurSel() >= nItemCount)
 		return;
 
 	// Display item details
-	DisplayHotkeyDetails(nCurSel);
+	DisplayHotkeyDetails(GetListCurSel());
 	RefreshDlgItemState();
 }
 
@@ -429,21 +603,7 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 void CHotkeySetDlg::OnClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	NMLISTVIEW* plvItem = (NMLISTVIEW*)pNMHDR;
-	int nItemCount = m_listHotkeySet.GetItemCount();
-
-	LVHITTESTINFO lvHTInfo;
-	lvHTInfo.pt = plvItem->ptAction;
-	m_listHotkeySet.SubItemHitTest(&lvHTInfo);
-
-	if ((lvHTInfo.iItem < 0) || (lvHTInfo.iItem > nItemCount)) {
-		int nItem = GetListCurSel(m_listHotkeySet);
-		m_listHotkeySet.SetItemState(nItem, LVIS_SELECTED, LVIS_SELECTED | LVIS_FOCUSED);
-	}
-	else {
-		m_listHotkeySet.SetItemState(lvHTInfo.iItem, LVIS_SELECTED, LVIS_SELECTED | LVIS_FOCUSED);
-	}
-
+	// Success (return 0)
 	*pResult = NULL;
 
 	// Refresh button states
@@ -462,23 +622,7 @@ void CHotkeySetDlg::OnClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
 
 void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	NMLISTVIEW* plvItem = (NMLISTVIEW*)pNMHDR;
-	int nItemCount = m_listHotkeySet.GetItemCount();
-
-	if (nItemCount > 0) {
-		LVHITTESTINFO lvHTInfo;
-		lvHTInfo.pt = plvItem->ptAction;
-		m_listHotkeySet.SubItemHitTest(&lvHTInfo);
-
-		if ((lvHTInfo.iItem < 0) || (lvHTInfo.iItem > nItemCount)) {
-			int nItem = GetListCurSel(m_listHotkeySet);
-			m_listHotkeySet.SetItemState(nItem, LVIS_SELECTED, LVIS_SELECTED | LVIS_FOCUSED);
-		}
-		else {
-			m_listHotkeySet.SetItemState(lvHTInfo.iItem, LVIS_SELECTED, LVIS_SELECTED | LVIS_FOCUSED);
-		}
-	}
-
+	// Success (return 0)
 	*pResult = NULL;
 
 	// Refresh button states
@@ -499,7 +643,7 @@ LRESULT CHotkeySetDlg::RequestCloseDialog(void)
 	// Ask for saving before exiting if data changed
 	m_bChangeFlag = CheckDataChangeState();
 	if (m_bChangeFlag == TRUE) {
-		int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, MSGBOX_HOTKEYSET_CAPTION, MB_YESNOCANCEL | MB_ICONQUESTION);
+		int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Save data
 			SaveHotkeySetData();
@@ -529,8 +673,7 @@ void CHotkeySetDlg::SetupLanguage()
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	CString strWndText = GetLanguageString(pAppLang, GetDialogID());
-	this->SetWindowText(strWndText);
+	this->SetLangDialogCaption(GetDialogID());
 
 	// Loop through all dialog items and setup language for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -541,10 +684,8 @@ void CHotkeySetDlg::SetupLanguage()
 		switch (nID)
 		{
 		case IDC_HOTKEYSET_DETAIL_STATIC:
-			// Skip these items
-			break;
 		case IDC_HOTKEYSET_ITEM_LISTBOX:
-			SetupHotkeySetList(pAppLang);
+			// Skip these items
 			break;
 		case IDC_HOTKEYSET_ACTION_LIST:
 		case IDC_HOTKEYSET_FUNCKEY_LIST:
@@ -555,6 +696,9 @@ void CHotkeySetDlg::SetupLanguage()
 			break;
 		}
 	}
+
+	// Setup HotkeySet list table
+	SetupHotkeySetList(pAppLang);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -568,72 +712,213 @@ void CHotkeySetDlg::SetupLanguage()
 
 void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR ptrLanguage)
 {
-	// Get list control size (width)
-	RECT rcHotkeySetList;
-	m_listHotkeySet.GetWindowRect(&rcHotkeySetList);
-	int nViewWidth = rcHotkeySetList.right - rcHotkeySetList.left;
-	nViewWidth -= DEF_OFFSET_LISTCTRLWIDTH;
+	// Get parent list frame rect
+	CWnd* pListFrameWnd = GetDlgItem(IDC_HOTKEYSET_ITEM_LISTBOX);
+	if (pListFrameWnd == NULL) return;
+	RECT rcListFrameWnd;
+	pListFrameWnd->GetWindowRect(&rcListFrameWnd);
+	ScreenToClient(&rcListFrameWnd);
+
+	// Get frame size
+	if (m_pszDataTableFrameSize == NULL) {
+		m_pszDataTableFrameSize = new CSize();
+		m_pszDataTableFrameSize->cx = rcListFrameWnd.right - rcListFrameWnd.left;
+		m_pszDataTableFrameSize->cy = rcListFrameWnd.bottom - rcListFrameWnd.top;
+	}
+
+	// Initialization
+	if (m_pHotkeySetListTable == NULL) {
+		m_pHotkeySetListTable = new CGridCtrl();
+	}
+
+	// Create table
+	if (m_pHotkeySetListTable == NULL) return;
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
+	m_pHotkeySetListTable->Create(rcListFrameWnd, this, IDC_HOTKEYSET_ITEM_LISTBOX, dwStyle);
+
+	// Destroy frame
+	pListFrameWnd->DestroyWindow();
+
+	// Cell format
+	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pHotkeySetListTable->GetDefaultCell(FALSE, FALSE);
+	if (pCell == NULL) return;
+	pCell->SetFormat(pCell->GetFormat());
+	pCell->SetMargin(0);
+	pCell->SetBackClr(DEF_COLOR_WHITE);
+	pCell->SetTextClr(DEF_COLOR_BLACK);
+	pCell->SetHeight(DEF_GRIDCTRL_ROWHEIGHT);
+
+	// Table format and properties
+	int nRowNum = (GetItemNum() + ROW_FIXED_NUM);
+	int nColNum = m_nColNum;
+
+	// Setup table
+	m_pHotkeySetListTable->SetColumnCount(nColNum);
+	m_pHotkeySetListTable->SetFixedColumnCount(COL_FIXED_NUM);
+	m_pHotkeySetListTable->SetRowCount(nRowNum);
+	m_pHotkeySetListTable->SetFixedRowCount(ROW_FIXED_NUM);
+	m_pHotkeySetListTable->SetRowHeight(DEF_GRIDCTRL_ROWHEADER, DEF_GRIDCTRL_HEADERHEIGHT);
+
+	// Draw table
+	DrawHotkeySetTable(GetReadOnlyMode());
+
+	// Update layout info
+	UpdateLayoutInfo();
+
+	// Display table
+	m_pHotkeySetListTable->SetListMode(TRUE);
+	m_pHotkeySetListTable->SetEditable(FALSE);
+	m_pHotkeySetListTable->SetRowResize(FALSE);
+	m_pHotkeySetListTable->EnableSelection(TRUE);
+	m_pHotkeySetListTable->SetSingleRowSelection(TRUE);
+	m_pHotkeySetListTable->SetSingleColSelection(FALSE);
+	m_pHotkeySetListTable->SetFixedRowSelection(FALSE);
+	m_pHotkeySetListTable->SetFixedColumnSelection(FALSE);
+	m_pHotkeySetListTable->ShowWindow(SW_SHOW);
+	m_pHotkeySetListTable->SetRedraw(TRUE);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	DrawHotkeySetTable
+//	Description:	Draw HotkeySet data list table
+//  Arguments:		bReadOnly - Read-only mode
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
+{
+	// Check table validity
+	if (m_pHotkeySetListTable == NULL) return;
+
+	// Check table format data validity
+	if (m_pszDataTableFrameSize == NULL) return;
+
+	// Get app pointer
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp == NULL) return;
+
+	// Get app language package
+	LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
+
+	// Re-update default cell properties
+	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pHotkeySetListTable->GetDefaultCell(FALSE, FALSE);
+	if (pCell == NULL) return;
+
+	// Read-only mode --> Change cell color
+	if (bReadOnly == TRUE) {
+		pCell->SetBackClr(DEF_COLOR_BRIGHT_GRAY);
+		pCell->SetTextClr(DEF_COLOR_DARK_GRAY);
+	}
+	else {
+		pCell->SetBackClr(DEF_COLOR_WHITE);
+		pCell->SetTextClr(DEF_COLOR_BLACK);
+	}
+
+	// Table properties
+	int nColNum = m_nColNum;
+	int nRowNum = (GetItemNum() + ROW_FIXED_NUM);
+
+	// Setup display size
+	int nFrameHeight = m_pszDataTableFrameSize->cy;
+	int nFrameWidth = m_pszDataTableFrameSize->cx;
 	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
 		// Windows 10 list control offset
-		nViewWidth -= DEF_OFFSET_LISTCTRL_WIN10;
+		nFrameWidth -= DEF_OFFSET_LISTCTRL_WIN10;
 	}
-
-	// Fix list control width in case vertical scrollbar is displayed
-	int nRowHeight = DEF_LISTCTRL_ROWHEIGHT;
-	int nViewHeight = (rcHotkeySetList.bottom - rcHotkeySetList.top);
-	int nTableHeight = ((m_hksHotkeySetTemp.GetItemNum() * nRowHeight) + DEF_LISTCTRL_HEADERHEIGHT);
-	if (nTableHeight > nViewHeight) {
-		int nScrollbarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nViewWidth -= nScrollbarWidth;
+	else {
+		// Windows 11 list control offset
+		nFrameWidth -= DEF_OFFSET_LISTCTRL;
 	}
-
-	// Define column format
-	LVCOLUMNFORMAT lvColumnFormat[] = {
-	//----Column title ID----------------Column size-------Column size unit------
-		LVCOLUMN_EMPTY_TITLE,				24,				COLSIZE_PIXEL,
-		LVCOLUMN_HOTKEYSET_ACTION,			40,				COLSIZE_PERCENT,
-		LVCOLUMN_HOTKEYSET_KEYSTROKES,		60,				COLSIZE_PERCENT,
-	//---------------------------------------------------------------------------
-	};
-
-	// Update extended style
-	DWORD dwStyle = m_listHotkeySet.GetExtendedStyle();
-	dwStyle |= LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_CHECKBOXES;
-	m_listHotkeySet.SetExtendedStyle(dwStyle);
-
-	LVCOLUMN lvColumn;
-	lvColumn.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+	if ((DEF_GRIDCTRL_HEADERHEIGHT + ((nRowNum - 1) * DEF_GRIDCTRL_ROWHEIGHT)) >= nFrameHeight) {
+		// Fix table width in case vertical scrollbar is displayed
+		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
+		nFrameWidth -= (nScrollBarWidth + DEF_OFFSET_VSCRLBRWIDTH);
+	}
 
 	// Setup columns
-	int nColNum = (sizeof(lvColumnFormat) / sizeof(LVCOLUMNFORMAT));
-	for (int nIndex = 0; nIndex < nColNum; nIndex++) {
-		// Column index
-		lvColumn.iSubItem = nIndex;
+	for (int nCol = 0; nCol < nColNum; nCol++) {
+		// Set header row style
+		SetFixedCellStyle(m_pHotkeySetListTable, DEF_GRIDCTRL_ROWHEADER, nCol);
 
-		// Column title
-		CString strTitle = GetLanguageString(ptrLanguage, lvColumnFormat[nIndex].nColumnTitleID);
-		lvColumn.pszText = strTitle.GetBuffer();
-		
-		// Column size
-		int nColWidth = lvColumnFormat[nIndex].nColumnSize;
-		int nColSizeUnit = lvColumnFormat[nIndex].nColumnSizeUnit;
-		if (nColSizeUnit == COLSIZE_PIXEL) {
-			lvColumn.cx = nColWidth;
-			nViewWidth -= nColWidth;
+		// Column header title
+		CString strHdrTitle = DEF_STRING_EMPTY;
+		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
+		if (nHeaderTitleID != DEF_INTEGER_NULL) {
+			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		else if (nColSizeUnit == COLSIZE_PERCENT) {
-			int nColWidthPx = floor((float)nViewWidth * nColWidth / 100);
-			lvColumn.cx = nColWidthPx;
+		m_pHotkeySetListTable->SetItemText(DEF_GRIDCTRL_ROWHEADER, nCol, strHdrTitle);
+
+		// Column width
+		int nColWidth = m_apGrdColFormat[nCol].nWidth;
+		if (nColWidth != -1) {
+			// Set column width as defined
+			if (m_pHotkeySetListTable->SetColumnWidth(nCol, nColWidth)) {
+				// Calculate remaining width
+				nFrameWidth -= nColWidth;
+			}
 		}
+		else {
+			// Set remaining width for current column
+			m_pHotkeySetListTable->SetColumnWidth(nCol, nFrameWidth);
+		}
+	}
 
-		// Column format
-		lvColumn.fmt = LVCFMT_FIXED_WIDTH | LVCFMT_CENTER;
+	// Setup rows
+	int nColStyle = -1;
+	UINT nItemState = DEF_INTEGER_NULL;
+	for (int nRow = 1; nRow < nRowNum; nRow++) {
+		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 
-		// Insert column
-		m_listHotkeySet.InsertColumn(nIndex, &lvColumn);
-		strTitle.ReleaseBuffer();
+			// Get column style & item state
+			nColStyle = m_apGrdColFormat[nCol].nColStyle;
+			nItemState = m_pHotkeySetListTable->GetItemState(nRow, nCol);
+			nItemState |= GVIS_READONLY;
+
+			// Base column - header-like style
+			if (nColStyle == COLSTYLE_FIXED) {
+				// Set fixed cell style
+				SetFixedCellStyle(m_pHotkeySetListTable, nRow, nCol);
+			}
+
+			// Checkbox column
+			else if (nColStyle == COLSTYLE_CHECKBOX) {
+				// Set cell type: Checkbox
+				if (!m_pHotkeySetListTable->SetCellType(nRow, nCol, RUNTIME_CLASS(CGridCellCheck)))
+					continue;
+
+				// Get cell
+				CGridCellCheck* pCell = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRow, nCol);
+
+				// Set center alignment if defined
+				if (m_apGrdColFormat[nCol].bCenter == TRUE) {
+					if (pCell == NULL) continue;
+					pCell->SetCheckPlacement(SCP_CENTERING);
+				}
+			}
+
+			// Normal column
+			else if (nColStyle == COLSTYLE_NORMAL) {
+				// Set item state
+				if (!m_pHotkeySetListTable->SetItemState(nRow, nCol, nItemState))
+					continue;
+
+				// Get cell
+				CGridCellBase* pCell = (CGridCellBase*)m_pHotkeySetListTable->GetCell(nRow, nCol);
+
+				// Set center alignment if defined
+				if (m_apGrdColFormat[nCol].bCenter == TRUE) {
+					if (pCell == NULL) continue;
+					pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
+				}
+				else {
+					// Set margin (left alignment)
+					if (pCell == NULL) continue;
+					pCell->SetMargin(DEF_GRIDCELL_LEFTMARGIN);
+				}
+			}
+		}
 	}
 }
 
@@ -698,30 +983,64 @@ void CHotkeySetDlg::RefreshDlgItemState()
 // 
 //	Function name:	UpdateCheckAllBtnState
 //	Description:	Refresh and update state for [Check/Uncheck All] button
-//  Arguments:		None
+//  Arguments:		bRecheck - Flag to recheck data item list
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::UpdateCheckAllBtnState()
+void CHotkeySetDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = TRUE */)
 {
-	// Get all item enable state
-	m_bAllChecked = TRUE;
-	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
-		if (hksTemp.bEnable == FALSE) {
-			m_bAllChecked = FALSE;
-			break;
+	// If dialog items are being locked, do nothing
+	if (GetLockState() == TRUE)
+		return;
+
+	// Get buttons
+	CWnd* pCheckAllBtn = GetDlgItem(IDC_HOTKEYSET_CHECKALL_BTN);
+	CWnd* pUncheckAllBtn = GetDlgItem(IDC_HOTKEYSET_UNCHECKALL_BTN);
+	if ((pCheckAllBtn == NULL) || (pUncheckAllBtn == NULL))
+		return;
+
+	// Get number of items
+	int nItemNum = GetItemNum();
+	if (nItemNum == 0) {
+		// Disable both [Check/Uncheck All] buttons
+		pCheckAllBtn->EnableWindow(FALSE);
+		pUncheckAllBtn->EnableWindow(FALSE);
+		return;
+	}
+
+	// Recheck all items state
+	if (bRecheck == TRUE) {
+
+		// Reset counter
+		m_nCheckCount = 0;
+		// Check for item states
+		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+			HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
+			if (hksTemp.bEnable == TRUE) {
+				// Increase counter
+				m_nCheckCount++;
+			}
 		}
 	}
 
-	// Update button state/title
-	int nBtnTitleID = (m_bAllChecked == FALSE) ? BTN_HKSETDLG_CHECKALL : BTN_HKSETDLG_UNCHECKALL;
-	LANGTABLE_PTR ptrLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	CWnd* pCheckAllBtn = GetDlgItem(IDC_HOTKEYSET_CHECKALL_BTN);
-	if (pCheckAllBtn != NULL) {
-		SetControlText(pCheckAllBtn, nBtnTitleID, ptrLang);
+	// Update button state
+	if (m_nCheckCount == 0) {
+		// Enable [Check All] button
+		pCheckAllBtn->EnableWindow(TRUE);
+		// Disable [Uncheck All] button
+		pUncheckAllBtn->EnableWindow(FALSE);
+	}
+	else if (m_nCheckCount == nItemNum) {
+		// Disable [Check All] button
+		pCheckAllBtn->EnableWindow(FALSE);
+		// Enable [Uncheck All] button
+		pUncheckAllBtn->EnableWindow(TRUE);
+	}
+	else {
+		// Enable both [Check/Uncheck All] buttons
+		pCheckAllBtn->EnableWindow(TRUE);
+		pUncheckAllBtn->EnableWindow(TRUE);
 	}
 }
 
@@ -736,11 +1055,11 @@ void CHotkeySetDlg::UpdateCheckAllBtnState()
 
 void CHotkeySetDlg::UpdateHotkeySet()
 {
-	// Remove all existing items in list to reupdate
-	m_listHotkeySet.DeleteAllItems();
+	// Check table validity
+	if (m_pHotkeySetListTable == NULL) return;
 
 	// If there's no item, do nothing
-	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
+	int nItemNum = GetItemNum();
 	if (nItemNum <= 0)
 		return;
 
@@ -748,81 +1067,85 @@ void CHotkeySetDlg::UpdateHotkeySet()
 	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Print items
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		HOTKEYSETITEM hksItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
+	CString strTemp;
+	int nTemp = -1;
+	int nItemIndex = 0;
+	CGridCellCheck* pCellCheck = NULL;
+	for (int nRowIndex = ROW_INDEX_START; nRowIndex <= nItemNum; nRowIndex++) {
 
-		UINT nActionNameID = GetPairedID(idplActionName, GetPairedID(idplHKActionID, hksItem.nHKActionID));
-		CString strAction = GetLanguageString(ptrLanguage, nActionNameID);
-		CString strKeyStrokes = DEF_STRING_EMPTY;
-		if (hksItem.dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
-		if (hksItem.dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
-		if (hksItem.dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
-		strKeyStrokes += GetPairedString(strplFuncKeyList, hksItem.dwFuncKeyCode);
-		CString strEnable = (hksItem.bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
+		// Get item
+		nItemIndex = nRowIndex - ROW_INDEX_START;
+		HOTKEYSETITEM hksItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
 
-		// Output debug log
-		OutputDebugLogFormat(_T("UpdateHotkeySet: State = %s, Action = %s, Keystrokes = %s"), strEnable, strAction, strKeyStrokes);
-		
-		// Print data
-		int nItem = m_listHotkeySet.InsertItem(nIndex, DEF_STRING_EMPTY);
-		m_listHotkeySet.SetCheck(nItem, hksItem.bEnable);
-		m_listHotkeySet.SetItemText(nItem, 1, strAction);
-
-		if ((strKeyStrokes != DEF_STRING_EMPTY) && (strKeyStrokes != DEF_STRING_NULL)) {
-			m_listHotkeySet.SetItemText(nItem, 2, strKeyStrokes);
+		// Enable state
+		pCellCheck = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, HKSCOL_ID_STATE);
+		if (pCellCheck != NULL) {
+			pCellCheck->SetCheck(hksItem.bEnable);
 		}
+
+		// Hotkey action
+		nTemp = GetPairedID(idplActionName, GetPairedID(idplHKActionID, hksItem.nHKActionID));
+		strTemp = GetLanguageString(ptrLanguage, nTemp);
+		m_pHotkeySetListTable->SetItemText(nRowIndex, HKSCOL_ID_HKACTIONID, strTemp);
+
+		// Keystrokes
+		hksItem.PrintKeyStrokes(strTemp);
+		if (!_tcscmp(strTemp, DEF_STRING_NULL)) {
+			// Undefined keystrokes
+			strTemp = GetLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
+		}
+		m_pHotkeySetListTable->SetItemText(nRowIndex, HKSCOL_ID_KEYSTROKES, strTemp);
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	UpdateHotkeySet
-//	Description:	Update HotkeySet list item by index
-//  Arguments:		nIndex - Index of item to update
+//	Function name:	DisableHotkeySetTable
+//	Description:	Disable mouse click events for HotkeySet data table
+//  Arguments:		bDisable - Disable/enable
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::UpdateHotkeySet(int nIndex)
+void CHotkeySetDlg::DisableHotkeySetTable(BOOL bDisable)
 {
-	// If there's no item, do nothing
-	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
-	if (nItemNum <= 0)
-		return;
+	// Redraw read-only style
+	RedrawHotkeySetTable(bDisable);
 
-	// Invalid index
-	if ((nIndex < 0) || (nIndex >= nItemNum))
-		return;
+	// Check table validity
+	if (m_pHotkeySetListTable == NULL) return;
 
-	// Load app language package
-	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	// Disable/enable mouse events
+	m_pHotkeySetListTable->DisableMouseClick(bDisable);
+	m_pHotkeySetListTable->DisableMouseMove(bDisable);
+}
 
-	// Update data
-	HOTKEYSETITEM hksItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RedrawHotkeySetTable
+//	Description:	Update and redraw HotkeySet data table
+//  Arguments:		BOOL bReadOnly - Read-only mode
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
 
-	UINT nActionNameID = GetPairedID(idplActionName, GetPairedID(idplHKActionID, hksItem.nHKActionID));
-	CString strAction = GetLanguageString(ptrLanguage, nActionNameID);
-	CString strKeyStrokes = DEF_STRING_EMPTY;
-	if (hksItem.dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
-	if (hksItem.dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
-	if (hksItem.dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
-	strKeyStrokes += GetPairedString(strplFuncKeyList, hksItem.dwFuncKeyCode);
-	CString strEnable = (hksItem.bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
+void CHotkeySetDlg::RedrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
+{
+	// Check table validity
+	if (m_pHotkeySetListTable == NULL) return;
 
-	// Output debug log
-	OutputDebugLogFormat(_T("UpdateHotkeySet: Status = %s, Action = %s, Keystrokes = %s"), strAction, strKeyStrokes, strEnable);
+	// Update new row number
+	int nCurRowNum = (GetItemNum() + ROW_FIXED_NUM);
+	m_pHotkeySetListTable->SetRowCount(nCurRowNum);
 
-	// Update hotkeyset list
-	m_listHotkeySet.SetRedraw(FALSE);
-	m_listHotkeySet.DeleteItem(nIndex);
+	// Draw table
+	DrawHotkeySetTable(bReadOnly);
 
-	int nItem = m_listHotkeySet.InsertItem(nIndex, DEF_STRING_EMPTY);
-	m_listHotkeySet.SetCheck(nItem, hksItem.bEnable);
-	m_listHotkeySet.SetItemText(nItem, 1, strAction);
-	m_listHotkeySet.SetItemText(nItem, 2, strKeyStrokes);
+	// Update table data
+	UpdateHotkeySet();
 
-	m_listHotkeySet.SetRedraw(TRUE);
-	m_listHotkeySet.UpdateWindow();
+	// Trigger redrawing table
+	m_pHotkeySetListTable->RedrawWindow();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -868,6 +1191,102 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 		m_cmbFuncKeyList.SetCurSel(hksCurItem.dwFuncKeyCode - VK_F1);
 
 	UpdateData(FALSE);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	UpdateLayoutInfo
+//	Description:	Update layout info data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHotkeySetDlg::UpdateLayoutInfo(void)
+{
+	// Check table validity
+	if (m_pHotkeySetListTable == NULL) return;
+
+	// Check table column format data validity
+	if (m_apGrdColFormat == NULL) return;
+
+	// Get table column count
+	int nColNum = m_pHotkeySetListTable->GetColumnCount();
+
+	// Update size of table columns
+	for (int nIndex = 0; nIndex < nColNum; nIndex++) {
+		int nColSize = m_pHotkeySetListTable->GetColumnWidth(nIndex);
+		m_apGrdColFormat[nIndex].nWidth = nColSize;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	LoadLayoutInfo
+//	Description:	Load layout info data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHotkeySetDlg::LoadLayoutInfo(void)
+{
+	// Define default table columns format
+	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
+	//-----------ID------------------------Header title ID---------------Width(px)----Column style-------Align Center---
+		{	HKSCOL_ID_STATE,		GRIDCOLUMN_HOTKEYSET_STATE,				28,		COLSTYLE_CHECKBOX,		TRUE,	},
+		{	HKSCOL_ID_HKACTIONID,	GRIDCOLUMN_HOTKEYSET_HKACTIONID,		122,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	HKSCOL_ID_KEYSTROKES,	GRIDCOLUMN_HOTKEYSET_KEYSTROKES,		-1,		COLSTYLE_NORMAL,		TRUE,	},
+	//------------------------------------------------------------------------------------------------------------------
+	};
+
+	// Backup format data
+	m_nColNum = (sizeof(arrGrdColFormat) / sizeof(GRIDCTRLCOLFORMAT));
+
+	// Initialize table format info data
+	if (m_apGrdColFormat == NULL) {
+		m_apGrdColFormat = new GRIDCTRLCOLFORMAT[m_nColNum];
+		for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
+			// Copy default table column format data
+			m_apGrdColFormat[nIndex] = arrGrdColFormat[nIndex];
+		}
+	}
+
+	// Load layout info data from registry
+	int nRet = 0;
+	CString strKeyName;
+	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
+		strKeyName.Format(IDS_REGKEY_LAYOUT_GRIDCOLUMNSIZE, nIndex);
+		if (GetLayoutInfo(IDS_REGSECTION_LAYOUT_HKEYSETTABLE, strKeyName, nRet)) {
+			if (m_apGrdColFormat != NULL) {
+				m_apGrdColFormat[nIndex].nWidth = nRet;
+			}
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SaveLayoutInfo
+//	Description:	Save layout info data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHotkeySetDlg::SaveLayoutInfo(void)
+{
+	// Check table column format data validity
+	if (m_apGrdColFormat == NULL) return;
+
+	// Save layout info data to registry
+	int nRef = 0;
+	CString strKeyName;
+	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
+		nRef = m_apGrdColFormat[nIndex].nWidth;
+		strKeyName.Format(IDS_REGKEY_LAYOUT_GRIDCOLUMNSIZE, nIndex);
+		WriteLayoutInfo(IDS_REGSECTION_LAYOUT_HKEYSETTABLE, strKeyName, nRef);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -946,10 +1365,19 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 	BOOL bChangeFlag = FALSE;
 
 	// Update enable state of all item before checking
-	int nItemNum = m_listHotkeySet.GetItemCount();
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		BOOL bEnable = m_listHotkeySet.GetCheck(nIndex);
-		HOTKEYSETITEM& hksTempItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
+	int nItemIndex = 0;
+	CGridCellCheck* pCellCheckEnable = NULL;
+	for (int nRowIndex = ROW_INDEX_START; nRowIndex <= GetItemNum(); nRowIndex++) {
+		// Get checkbox cell
+		pCellCheckEnable = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, HKSCOL_ID_STATE);
+		if (pCellCheckEnable == NULL) continue;
+
+		// Get checked states
+		BOOL bEnable = pCellCheckEnable->GetCheck();
+
+		// Update item checked state
+		nItemIndex = nRowIndex - ROW_INDEX_START;
+		HOTKEYSETITEM& hksTempItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
 		hksTempItem.bEnable = bEnable;
 	}
 
@@ -1059,19 +1487,19 @@ void CHotkeySetDlg::RemoveAll()
 // 
 //	Function name:	SwitchAllItemState
 //	Description:	Check/uncheck all HotkeySet items
-//  Arguments:		None
+//  Arguments:		bState - New state
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::SwitchAllItemState()
+void CHotkeySetDlg::SwitchAllItemState(BOOL bState)
 {
 	// Check/uncheck all --> Update all item enable state
 	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 		HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
-		if (hksTemp.bEnable == m_bAllChecked) {
-			hksTemp.bEnable = !m_bAllChecked;
+		if (hksTemp.bEnable != bState) {
+			hksTemp.bEnable = bState;
 		}
 	}
 
@@ -1152,7 +1580,7 @@ BOOL CHotkeySetDlg::Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg /* = FALSE */)
 	// Show error message if enabled
 	if ((bShowMsg == TRUE) && (!arrMsgString.IsEmpty())) {
 		for (int nIndex = 0; nIndex < arrMsgString.GetSize(); nIndex++) {
-			DisplayMessageBox(arrMsgString.GetAt(nIndex), MSGBOX_HOTKEYSET_CAPTION, MB_OK | MB_ICONERROR);
+			DisplayMessageBox(arrMsgString.GetAt(nIndex), NULL, MB_OK | MB_ICONERROR);
 		}
 	}
 
@@ -1160,4 +1588,46 @@ BOOL CHotkeySetDlg::Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg /* = FALSE */)
 	arrMsgString.RemoveAll();
 	arrMsgString.FreeExtra();
 	return bResult;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetItemNum
+//	Description:	Get data table item number
+//  Arguments:		None
+//  Return value:	int - Number of items
+//
+//////////////////////////////////////////////////////////////////////////
+
+int CHotkeySetDlg::GetItemNum()
+{
+	return m_hksHotkeySetTemp.GetItemNum();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetListCurSel
+//	Description:	Return list control current selected item index
+//  Arguments:		None
+//  Return value:	int - Selection
+//
+//////////////////////////////////////////////////////////////////////////
+
+int CHotkeySetDlg::GetListCurSel(void)
+{
+	return m_nCurSelIndex;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetListCurSel
+//	Description:	Update list control current selected item index
+//  Arguments:		nSelIndex - Selection index
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CHotkeySetDlg::SetListCurSel(int nSelIndex)
+{
+	m_nCurSelIndex = nSelIndex;
 }
