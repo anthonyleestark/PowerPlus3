@@ -19,7 +19,9 @@
 #include "Core.h"
 #include "Config.h"
 #include "Logging.h"
+#include "Logging_pub.h"
 #include "IDMapping.h"
+#include "SWinApp.h"
 
 
 ////////////////////////////////////////////////////////
@@ -33,30 +35,22 @@ class CDebugTestDlg;
 //
 ////////////////////////////////////////////////////////
 
-class CPowerPlusApp : public CWinApp
+class CPowerPlusApp : public SWinApp
 {
 public:
 	CPowerPlusApp();	// constructor
 	~CPowerPlusApp();	// destructor
 
-	// Implementation
-	DECLARE_MESSAGE_MAP()
-	DECLARE_APP_IDMAP()
-
 private:
 	// Member variables for app data
 	PCONFIGDATA			m_pcfgAppConfig;
-	PSCHEDULEDATA		m_pschSheduleData;
+	PSCHEDULEDATA		m_pschScheduleData;
 	PHOTKEYSETDATA		m_phksHotkeySetData;
 	PPWRREMINDERDATA	m_ppwrReminderData;
 
 	INIFile m_fileConfigData;
 
-	// App language pointer
-	LANGTABLE_PTR m_pAppLang;
-
 	// Logging pointers
-	SLogging* m_pAppEventLog;
 	SLogging* m_pAppHistoryLog;
 
 	// Hook procedure handle
@@ -65,9 +59,8 @@ private:
 	// DebugTest dialog
 	CDebugTestDlg*	m_pDebugTestDlg;
 
-	// Other member variables
-	CString			m_strAppWndTitle;
-	UINT			m_nCurDispLang;
+	// Other variables
+	CString m_strLastSysEvtRegPath;
 
 public:
 	// Instance functions
@@ -107,43 +100,50 @@ public:
 	PPWRREMINDERDATA GetAppPwrReminderData();
 	void SetAppPwrReminderData(PPWRREMINDERDATA ppwrData);
 
-	// Language functions
-	BOOL InitAppLanguage();
-	BOOL ReloadAppLanguage(UINT nCurLanguage = NULL);
-	LANGTABLE_PTR GetAppLanguage();
-	UINT GetAppLanguageOption(BOOL bCurDispLang = FALSE);
+	// Data options and flags get/set functions
+	int  GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp = FALSE) const;
+	int  GetFlagValue(APPFLAGID eFlagID) const;
+	void SetFlagValue(APPFLAGID eFlagID, int nValue);
 
-	// Logging functions
-	BOOL GetAppEventLogOption();
-	void InitAppEventLog();
-	SLogging* GetAppEventLog();
-	BOOL GetAppHistoryLogOption();
+	// App history logging functions
 	void InitAppHistoryLog();
 	SLogging* GetAppHistoryLog();
-
 	void OutputAppHistoryLog(LOGITEM logItem);
+
+#ifdef _DEBUG
 	void OutputDataChangeLog(CONFIGDATA& cfgBakData);
 	void OutputDataChangeLog(SCHEDULEDATA& schBakData);
 	void OutputDataChangeLog(HOTKEYSETDATA& hksBakData);
 	void OutputDataChangeLog(PWRREMINDERDATA& pwrBakData);
+#endif
 
+	// Data validity checking functions
 	void TraceSerializeData(WORD wErrCode);
 	BOOL DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag = APPDATA_ALL);
 
 	// DebugTest dialog function
+	BOOL InitDebugTestDlg(void);
 	CDebugTestDlg* GetDebugTestDlg(void);
-
-	// Window title functions
-	LPCTSTR GetAppWindowTitle(void);
-	void SetAppWindowTitle(LPCTSTR strTitle);
+	void DestroyDebugTestDlg(void);
 
 	// Registry functions
 	UINT GetWindowsOSVersion(void);
+
 	void GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey);
 	int EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin);
 	int GetAutoStartRegisterStatus(void);
+
+	void InitLastSysEventRegistryInfo(void);
 	BOOL GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEvent);
 	BOOL SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEvent);
+
+protected:
+	// Application message handlers
+	afx_msg void OnExecuteDebugCommand(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnShowErrorMessage(WPARAM wParam, LPARAM lParam);
+
+	DECLARE_MESSAGE_MAP()
+	DECLARE_APP_IDMAP()
 };
 
 extern CPowerPlusApp theApp;

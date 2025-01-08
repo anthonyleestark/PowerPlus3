@@ -15,6 +15,7 @@
 #define _LANGUAGE_H_INCLUDED
 
 #include "stdafx.h"
+#include "Logging_pub.h"
 
 #ifdef _RESOURCE2_NOTINCLUDED_
 #pragma message("--Language: Resource2.h not included")
@@ -71,6 +72,7 @@ static LANGTABLE langtable_en_US
 	{ ACTION_NAME_SIGNOUT,									_T("Sign out") },
 	{ ACTION_NAME_HIBERNATE,								_T("Hibernate") },
 	{ ACTION_NAME_SHOWMENU,									_T("Show notify menu") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------Action Message----------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ MESSAGE_ACTION_DISPLAYOFF,							_T("Are you sure you want to turn off display?") },
@@ -79,6 +81,7 @@ static LANGTABLE langtable_en_US
 	{ MESSAGE_ACTION_RESTART,								_T("Are you sure you really want to restart your computer?") },
 	{ MESSAGE_ACTION_SIGNOUT,								_T("Are you sure you want to sign out your current account?") },
 	{ MESSAGE_ACTION_HIBERNATE,								_T("Are you sure you want to put your computer into hibernation mode?") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*---------Control ID--------------------------------------------------------------------Language String--------------------------------------------------------------*/
 	{ IDC_MAIN_TITLE,										_T("Main Settings") },
@@ -98,7 +101,7 @@ static LANGTABLE langtable_en_US
 	{ IDC_SHOWATSTARTUP_CHK,								_T("Show this dialog box at startup") },
 	{ IDC_ENABLEAUTOSTART_CHK,						 		_T("Startup with Windows") },
 	{ IDC_CONFIRMACTION_CHK,								_T("Confirm before executing action") },
-	{ IDC_SAVEACTIONLOG_CHK,								_T("Save the log of actions") },
+	{ IDC_SAVEHISTORYLOG_CHK,								_T("Save the log of actions") },
 	{ IDC_SAVEAPPEVENTLOG_CHK,								_T("Save the log of app events") },
 	{ IDC_RUNASADMIN_CHK,									_T("Run with admin privileges") },
 	{ IDC_SHOWERROR_CHK,									_T("Show error message on screen") },
@@ -110,9 +113,10 @@ static LANGTABLE langtable_en_US
 	{ IDC_VIEWACTIONLOG_BTN,								_T("View the log of actions") },
 	{ IDC_BACKUPCFG_BTN,									_T("Backup settings") },
 	{ IDC_SCHEDULE_BTN,										_T("Action Schedule") },
-	{ IDC_LOGVIEWER_BTN,									_T("Logviewer") },
+	{ IDC_LOGVIEWER_BTN,									_T("LogViewer") },
 	{ IDC_HOTKEYSET_BTN,									_T("Hotkeys Set") },
 	{ IDC_PWRREMINDER_BTN,									_T("Power Reminder") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------Menu Item ID--------------------------------------------------------------------Language String-------------------------------------------------------------*/
 	{ IDM_NOTIFY_OPENDLG_ABOUT,								_T("About") },
@@ -137,6 +141,7 @@ static LANGTABLE langtable_en_US
 	{ IDM_NOTIFY_ACTION_SIGNOUT,							_T("Sign out") },
 	{ IDM_NOTIFY_ACTION_HIBERNATE,							_T("Hibernate") },
 	{ IDM_NOTIFY_ACTION_SCHEDULE,							_T("Action Schedule") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-------Combo-box Option ID---------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ COMBOBOX_ACTION_DISPLAYOFF,							_T("Turn off display") },
@@ -149,6 +154,7 @@ static LANGTABLE langtable_en_US
 	{ COMBOBOX_LANGUAGE_ENGLISH,							_T("English") },
 	{ COMBOBOX_LANGUAGE_VIETNAMESE,							_T("Vietnamese") },
 	{ COMBOBOX_LANGUAGE_SIMPCHINESE,						_T("Chinese") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Notify String ID-------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ NOTIFY_TIP_TEMPLATE,						 			_T("Click left mouse here to %s.\n")
@@ -161,6 +167,7 @@ static LANGTABLE langtable_en_US
 	{ NOTIFY_TIP_SIGNOUT,  									_T("sign out") },
 	{ NOTIFY_TIP_HIBERNATE,  								_T("hibernate") },
 	{ NOTIFY_TIP_SHOWMENU, 									_T("show menu") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Balloon String ID-------------------------------------------------------------------Language String-----------------------------------------------------------*/
 	{ BALLOON_TIP_TEMPLATE,							 		_T("Scheduled action is imminent.\n%s in %d second(s).") },
@@ -170,10 +177,11 @@ static LANGTABLE langtable_en_US
 	{ BALLOON_TIP_RESTART, 									_T("The computer will restart") },
 	{ BALLOON_TIP_SIGNOUT,  								_T("The current account will sign out") },
 	{ BALLOON_TIP_HIBERNATE,  								_T("The computer will hibernate") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----About Dialog Item--------------------------------------------------------------------Language String-----------------------------------------------------------*/
 	{ IDD_ABOUT_DLG,										_T("About Power++") },
-	{ IDC_APPNAME_LABEL,								  	_T("Power++ 3.1 (v3.1.2.0)") },
+	{ IDC_APPNAME_LABEL,								  	_T("Power++ %s (v%s)") },
 	{ IDC_COPYRIGHT_LABEL, 							 		_T("Copyright (C) 2017 - 2024 AnthonyLeeStark.") },
 	{ IDC_AUTH_LABEL,  										_T("Developed by: Anthony Lee Stark (@AnthonyLeeStark)") },
 	{ IDC_DEVPROFILE_LINK,	 								_T("<a>View Developer's Facebook Profile</a>") },
@@ -184,10 +192,11 @@ static LANGTABLE langtable_en_US
 															_T("Email: anthonyleestark.official@gmail.com\n")
 															_T("Facebook: https://www.facebook.com/anthonyleestark \n")
 															_T("Twitter: https://twitter.com/AnthonyLeeStark \n\n")
-															_T("Power++ v3.1 is an utility which allow you to do some power actions quickly and to set up schedule to excute those actions. ")
+															_T("Power++ v%s is an utility which allow you to do some power actions quickly and to set up schedule to excute those actions. ")
 															_T("This tool helps you turn off screen, turn PC to sleep, shutdown, reboot, hibernate, or sign off from current account just by one-click. ")
 															_T("It also helps you setup alarms to do those actions automatically or setup hotkeys for each of them. ") },
 	{ IDC_ABOUT_CLOSE_BTN,	 								_T("Close") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----Help Dialog Item--------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_HELP_DLG,											_T("Help") },
@@ -196,6 +205,7 @@ static LANGTABLE langtable_en_US
 	{ BTN_HELPDLG_VIEWMODE_CHANGELOG,						_T("View Changelog") },
 	{ ERROR_HELPDLG_NOHELPFILE,								_T("Can not open help file!\r\nThe file maybe corrupted or doesn't exist.") },
 	{ ERROR_HELPDLG_NOCHANGELOGFILE,						_T("Can not open changelog file!\r\nThe file maybe corrupted or doesn't exist.") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Schedule Dialog Item---------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_MULTISCHEDULE_DLG,  								_T("Action Schedule") },
@@ -223,12 +233,24 @@ static LANGTABLE langtable_en_US
 	{ IDC_EDITSCHEDULE_REPEATDAILY_CHK,						_T("Repeat schedule daily") },
 	{ IDC_EDITSCHEDULE_APPLY_BTN,		 					_T("Save") },
 	{ IDC_EDITSCHEDULE_CANCEL_BTN, 							_T("Cancel") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----LogViewer Dialog Item---------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_LOGVIEWER_DLG,									_T("LogViewer") },
-	{ IDC_LOGVIEWER_DETAILS_LABEL,							_T("Detail") },
-	{ IDC_LOGVIEWER_DATETIME_LABEL,							_T("Date/Time") },
-	{ IDC_LOGVIEWER_CONTENT_LABEL,							_T("Content") },
+	{ IDC_LOGVIEWER_REMOVEALL_BTN,							_T("Remove All Records") },
+	{ IDC_LOGVIEWER_DETAILS_BTN,							_T("Details") },
+	{ IDC_LOGVIEWER_CLOSE_BTN,								_T("Close") },
+	{ GRIDCOLUMN_LOGVIEWER_DATETIME,						_T("Date/Time") },
+	{ GRIDCOLUMN_LOGVIEWER_CATEGORY,						_T("Category") },
+	{ GRIDCOLUMN_LOGVIEWER_DESCRIPTION,						_T("Additional Description") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-----LogDetail Dialog Item---------------------------------------------------------------Language String------------------------------------------------------------*/
+	{ IDD_LOGDETAIL_DLG,									_T("Log detail information") },
+	{ IDC_LOGDETAIL_PREV_BTN,								_T("<< Prev") },
+	{ IDC_LOGDETAIL_NEXT_BTN,								_T("Next >>") },
+	{ IDC_LOGDETAIL_CLOSE_BTN,								_T("Close") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------HotkeySet Dialog Item--------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_HOTKEYSET_DLG,									_T("Hotkey Set") },
@@ -236,8 +258,8 @@ static LANGTABLE langtable_en_US
 	{ IDC_HOTKEYSET_REMOVE_BTN,								_T("Remove") },
 	{ IDC_HOTKEYSET_REMOVEALL_BTN,							_T("Remove All") },
 	{ IDC_HOTKEYSET_EXPORT_BTN,								_T("Export") },
-	{ BTN_HKSETDLG_CHECKALL,								_T("Check All") },
-	{ BTN_HKSETDLG_UNCHECKALL,								_T("Uncheck All") },
+	{ IDC_HOTKEYSET_CHECKALL_BTN,							_T("Check All") },
+	{ IDC_HOTKEYSET_UNCHECKALL_BTN,							_T("Uncheck All") },
 	{ IDC_HOTKEYSET_ACTION_TITLE,							_T("Action") },
 	{ IDC_HOTKEYSET_CONTROLKEY_STATIC,						_T("Control Key") },
 	{ IDC_HOTKEYSET_CTRLKEY_CHK,							_T("CTRL") },
@@ -246,9 +268,11 @@ static LANGTABLE langtable_en_US
 	{ IDC_HOTKEYSET_FUNCKEY_TITLE,							_T("Function Key") },
 	{ IDC_HOTKEYSET_APPLY_BTN,								_T("Apply") },
 	{ IDC_HOTKEYSET_CANCEL_BTN,								_T("Cancel") },
-	{ LVCOLUMN_EMPTY_TITLE,									_T("") },
-	{ LVCOLUMN_HOTKEYSET_ACTION,							_T("Action") },
-	{ LVCOLUMN_HOTKEYSET_KEYSTROKES,						_T("Keystrokes") },
+	{ GRIDCOLUMN_HOTKEYSET_STATE,							_T("") },
+	{ GRIDCOLUMN_HOTKEYSET_HKACTIONID,						_T("Action") },
+	{ GRIDCOLUMN_HOTKEYSET_KEYSTROKES,						_T("Keystrokes") },
+	{ HKEYSET_KEYSTROKES_NULL,								_T("Undefined") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Power Reminder Dialog Item---------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_PWRREMINDER_DLG,									_T("Power Reminder") },
@@ -299,6 +323,7 @@ static LANGTABLE langtable_en_US
 	{ PWRRMD_STYLE_MESSAGEBOX,								_T("Message Box") },
 	{ PWRRMD_STYLE_DIALOG,									_T("Dialog Box") },
 	{ PWRRMD_REPEATSET_SNOOZEINTERVAL,						_T("%d min(s)") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MESSAGE_SCHEDNOTIFY_DISPLAYOFF,						_T("computer will turn off display") },
@@ -307,6 +332,7 @@ static LANGTABLE langtable_en_US
 	{ MESSAGE_SCHEDNOTIFY_RESTART,							_T("computer will restart") },
 	{ MESSAGE_SCHEDNOTIFY_SIGNOUT,							_T("account will be signed out") },
 	{ MESSAGE_SCHEDNOTIFY_HIBERNATE,						_T("computer will be put into hibernation mode") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MSGBOX_CONFIG_RELOAD_CAPTION,							_T("Reload Settings") },
@@ -360,12 +386,15 @@ static LANGTABLE langtable_en_US
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL,		_T("Reminder data is invalid.\nSnooze interval value is empty or invalid.") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS,			_T("Reminder data is invalid.\nRepeat can not be enabled when no day of week is activated.") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT,			_T("\nData will be automatically reset to default.") },
+	{ MSGBOX_LOGVIEWER_CAPTION,								_T("LogViewer") },
+	{ MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS,			_T("Are you sure you want to remove all log records?") },
 	{ MSGBOX_OTHER_NOTRUNASADMIN,							_T("The application is not currently running with admin privileges.") },
 	{ MSGBOX_OTHER_REQUEST_RESTARTASADMIN,					_T("Do you want to restart the application with admin privileges?") },
 	{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("The application will run with admin privileges in the next startup.") },
 	{ MSGBOX_OTHER_ALREADY_ADMIN,							_T("The application is currently running with admin privileges.") },
 	{ MSGBOX_OTHER_FUNCTION_NOT_AVAILABLE,					_T("This function is currently not available.") },
 	{ MSGBOX_OTHER_PREDESTROY_REMINDERDISP,					_T("Please close all displaying reminder messages first!") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MSGBOX_ERROR_CAPTION,									_T("Error") },
@@ -406,7 +435,8 @@ static LANGTABLE langtable_en_US
 	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("Save reminder data failed") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("Write log failed") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("Output log failed") },
-	{ MSGBOX_ERROR_UNKNOWN, 								_T("Unknown error (0x%X).") },
+	{ MSGBOX_ERROR_UNKNOWN, 								_T("Unknown error (Error code: 0x%04X).") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 	{ FORMAT_TIME_BEFOREMIDDAY,								_T("AM") },
@@ -424,7 +454,61 @@ static LANGTABLE langtable_en_US
 	{ HKEYSET_EXISTED_CTRL_F4,								_T("Close the active document") },
 	{ HKEYSET_EXISTED_CTRL_F5,								_T("Refresh current window") },
 	{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("Close active virtual desktop") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+/*--------Logging macro ID--------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_MACRO_EVENT_APP,									_T("Application events") },
+	{ LOG_MACRO_EVENT_UI,									_T("UI events") },
+	{ LOG_MACRO_EVENT_DATACHG,								_T("Data change events") },
+	{ LOG_MACRO_HISTORY,									_T("History log") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*--------Application events------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_INIT_INSTANCE,								_T("Init Instance") },
+	{ LOG_EVENT_EXIT_INSTANCE,								_T("Exit Instance") },
+	{ LOG_EVENT_ERROR_MESSAGE,								_T("Error message") },
+	{ LOG_EVENT_EXEC_DEBUGCMD,								_T("Debug command executed") },
+	{ LOG_EVENT_CHANGE_LANGUAGE,							_T("Language changed") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*------------UI events-----------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_BTN_CLICKED,								_T("Button clicked") },
+	{ LOG_EVENT_CHK_CLICKED,								_T("Checkbox clicked") },
+	{ LOG_EVENT_RAD_CLICKED,								_T("Radio button clicked") },
+	{ LOG_EVENT_EDIT_CHANGED,								_T("Editbox text changed") },
+	{ LOG_EVENT_CMB_SELCHANGE,								_T("Combo-box selection changed") },
+	{ LOG_EVENT_LIST_SELCHANGE,								_T("Listbox selection changed") },
+	{ LOG_EVENT_SPIN_CHANGED,								_T("Spin control value changed") },
+	{ LOG_EVENT_MENU_SELECTED,								_T("Menu item selected") },
+	{ LOG_EVENT_DLG_INIT,									_T("Open dialog") },
+	{ LOG_EVENT_DLG_DESTROYED,								_T("Close dialog") },
+	{ LOG_EVENT_DLG_SHOWED,									_T("Dialog showed") },
+	{ LOG_EVENT_DLG_HIDDEN,									_T("Dialog hidden") },
+	{ LOG_EVENT_DLG_EXPANDED,								_T("Dialog expanded") },
+	{ LOG_EVENT_DLG_COLLAPSED,								_T("Dialog collapsed") },
+	{ LOG_EVENT_TRAYICO_LMBCLICKED,							_T("Notify icon left-mouse clicked") },
+	{ LOG_EVENT_TRAYICO_MMBCLICKED,							_T("Notify icon middle-mouse clicked") },
+	{ LOG_EVENT_TRAYICO_RMBCLICKED,							_T("Notify icon right-mouse clicked") },
+	{ LOG_EVENT_EXEC_PWRACTION,								_T("Power action executed") },
+	{ LOG_EVENT_CANCEL_PWRACTION,							_T("Power action canceled") },
+	{ LOG_EVENT_EXEC_SCHEDULE,								_T("Schedule executed") },
+	{ LOG_EVENT_CANCEL_SCHEDULE,							_T("Schedule canceled") },
+	{ LOG_EVENT_EXEC_HOTKEY,								_T("Hotkey pressed") },
+	{ LOG_EVENT_DISP_PWRREMINDER,							_T("Reminder message displayed") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*--------Application events------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_DATACHG_CONFIG,								_T("Config changed") },
+	{ LOG_EVENT_DATACHG_SCHEDULE,							_T("Schedule data changed") },
+	{ LOG_EVENT_DATACHG_HOTKEYSET,							_T("HotkeySet data changed") },
+	{ LOG_EVENT_DATACHG_PWRREMINDER,						_T("Power Reminder data changed") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-----------History log----------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_HISTORY_EXEC_PWRACTION,							_T("Power action executed") },
+	{ LOG_HISTORY_EXEC_SCHEDULE,							_T("Schedule executed") },
+	{ LOG_HISTORY_EXEC_HOTKEY,								_T("Hotkey action excuted") },
+	{ LOG_HISTORY_DISP_PWRREMINDER,							_T("Reminder message displayed") },
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 };
 
@@ -445,6 +529,7 @@ static LANGTABLE langtable_vi_VN
 	{ ACTION_NAME_SIGNOUT,									_T("Đăng xuất") },
 	{ ACTION_NAME_HIBERNATE,								_T("Ngủ đông") },
 	{ ACTION_NAME_SHOWMENU,									_T("Hiển thị menu") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------Action Message---------------------------------------------------------------Language String----------------------------------------------------------------*/
 	{ MESSAGE_ACTION_DISPLAYOFF,							_T("Bạn có chắc chắn muốn tắt màn hình?") },
@@ -453,6 +538,7 @@ static LANGTABLE langtable_vi_VN
 	{ MESSAGE_ACTION_RESTART,								_T("Bạn có chắc chắn muốn khởi động lại máy?") },
 	{ MESSAGE_ACTION_SIGNOUT,								_T("Bạn có chắc chắn muốn đăng xuất khỏi tài khoản hiện tại?") },
 	{ MESSAGE_ACTION_HIBERNATE,								_T("Bạn có chắc chắn muốn chuyển máy sang chế độ ngủ đông?") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*---------Control ID------------------------------------------------------------------Language String----------------------------------------------------------------*/
 	{ IDC_MAIN_TITLE,										_T("Thiết lập chính") },
@@ -472,7 +558,7 @@ static LANGTABLE langtable_vi_VN
 	{ IDC_SHOWATSTARTUP_CHK,								_T("Hiển thị hộp thoại này khi khởi động") },
 	{ IDC_ENABLEAUTOSTART_CHK, 								_T("Khởi động cùng Windows") },
 	{ IDC_CONFIRMACTION_CHK,								_T("Hỏi trước khi thực hiện") },
-	{ IDC_SAVEACTIONLOG_CHK,								_T("Lưu nhật ký hành động") },
+	{ IDC_SAVEHISTORYLOG_CHK,								_T("Lưu nhật ký hành động") },
 	{ IDC_SAVEAPPEVENTLOG_CHK,								_T("Lưu nhật ký ứng dụng") },
 	{ IDC_RUNASADMIN_CHK,									_T("Chạy với quyền admin") },
 	{ IDC_SHOWERROR_CHK,							 		_T("Hiển thị thông báo lỗi trên màn hình") },
@@ -484,9 +570,10 @@ static LANGTABLE langtable_vi_VN
 	{ IDC_VIEWACTIONLOG_BTN,								_T("Xem nhật ký hoạt động") },
 	{ IDC_BACKUPCFG_BTN, 									_T("Sao lưu thiết lập") },
 	{ IDC_SCHEDULE_BTN, 									_T("Hẹn giờ") },
-	{ IDC_LOGVIEWER_BTN, 									_T("Logviewer") },
+	{ IDC_LOGVIEWER_BTN, 									_T("LogViewer") },
 	{ IDC_HOTKEYSET_BTN,									_T("Thiết lập phím tắt") },
 	{ IDC_PWRREMINDER_BTN,									_T("Power Reminder") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------Menu Item ID----------------------------------------------------------------Language String-----------------------------------------------------------------*/
 	{ IDM_NOTIFY_OPENDLG_ABOUT,								_T("Giới thiệu") },
@@ -511,6 +598,7 @@ static LANGTABLE langtable_vi_VN
 	{ IDM_NOTIFY_ACTION_SIGNOUT,							_T("Đăng xuất") },
 	{ IDM_NOTIFY_ACTION_HIBERNATE,							_T("Ngủ đông") },
 	{ IDM_NOTIFY_ACTION_SCHEDULE,							_T("Hành động hẹn giờ") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-------Combo-box Option ID-----------------------------------------------------------Language String----------------------------------------------------------------*/
 	{ COMBOBOX_ACTION_DISPLAYOFF,							_T("Tắt màn hình") },
@@ -523,6 +611,7 @@ static LANGTABLE langtable_vi_VN
 	{ COMBOBOX_LANGUAGE_ENGLISH,							_T("Tiếng Anh") },
 	{ COMBOBOX_LANGUAGE_VIETNAMESE,							_T("Tiếng Việt") },
 	{ COMBOBOX_LANGUAGE_SIMPCHINESE,						_T("Tiếng Trung") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Notify String ID---------------------------------------------------------------Language String----------------------------------------------------------------*/
 	{ NOTIFY_TIP_TEMPLATE,									_T("Bấm chuột trái vào đây để %s.\n")
@@ -535,6 +624,7 @@ static LANGTABLE langtable_vi_VN
 	{ NOTIFY_TIP_SIGNOUT,  									_T("đăng xuất") },
 	{ NOTIFY_TIP_HIBERNATE,  								_T("ngủ đông") },
 	{ NOTIFY_TIP_SHOWMENU, 									_T("hiển thị menu") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Balloon String ID--------------------------------------------------------------Language String----------------------------------------------------------------*/
 	{ BALLOON_TIP_TEMPLATE,									_T("Hành động sắp diễn ra.\n%s trong %d giây nữa.") },
@@ -544,10 +634,11 @@ static LANGTABLE langtable_vi_VN
 	{ BALLOON_TIP_RESTART, 									_T("Máy tính sẽ khởi động lại") },
 	{ BALLOON_TIP_SIGNOUT,  								_T("Tài khoản hiện tại sẽ đăng xuất") },
 	{ BALLOON_TIP_HIBERNATE,							 	_T("Máy tính sẽ chuyển sang chế độ ngủ đông") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----About Dialog Item---------------------------------------------------------------Language String----------------------------------------------------------------*/
 	{ IDD_ABOUT_DLG, 										_T("Về Power++") },
-	{ IDC_APPNAME_LABEL,									_T("Power++ 3.1 (v3.1.2.0)") },
+	{ IDC_APPNAME_LABEL,									_T("Power++ %s (v%s)") },
 	{ IDC_COPYRIGHT_LABEL, 									_T("Bản quyền thuộc (C) AnthonyLeeStark 2017 - 2024.") },
 	{ IDC_AUTH_LABEL,  										_T("Phát triển bởi: Anthony Lee Stark (@AnthonyLeeStark)") },
 	{ IDC_DEVPROFILE_LINK,									_T("<a>Xem trang Facebook cá nhân của tác giả</a>") },
@@ -558,10 +649,11 @@ static LANGTABLE langtable_vi_VN
 															_T("Email: anthonyleestark.official@gmail.com\n")
 															_T("Facebook: https://www.facebook.com/anthonyleestark \n")
 															_T("Twitter: https://twitter.com/AnthonyLeeStark \n\n")
-															_T("Power++ v3.1 là một tiện ích cho phép người dùng thực hiện các hành động nguồn điện và hẹn giờ một cách nhanh chóng. ")
+															_T("Power++ v%s là một tiện ích cho phép người dùng thực hiện các hành động nguồn điện và hẹn giờ một cách nhanh chóng. ")
 															_T("Nó giúp bạn tắt màn hình, chuyển máy tính sang chế độ ngủ và ngủ đông, tắt máy, khởi động lại và đăng xuất chỉ bằng một cú nhấp chuột. ")
 															_T("Nó cũng giúp bạn hẹn giờ để thực hiện những hành động này một cách tự động hoặc thiết lập phím tắt cho từng hành động.") },
 	{ IDC_ABOUT_CLOSE_BTN,	 								_T("Đóng") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----Help Dialog Item-----------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ IDD_HELP_DLG,											_T("Trợ giúp") },
@@ -570,6 +662,7 @@ static LANGTABLE langtable_vi_VN
 	{ BTN_HELPDLG_VIEWMODE_CHANGELOG,						_T("Xem Changelog") },
 	{ ERROR_HELPDLG_NOHELPFILE,								_T("Không thể mở file trợ giúp!\r\nFile có thể bị lỗi hoặc không tồn tại.") },
 	{ ERROR_HELPDLG_NOCHANGELOGFILE,						_T("Không thể mở file changelog!\r\nFile có thể bị lỗi hoặc không tồn tại.") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Schedule Dialog Item------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ IDD_MULTISCHEDULE_DLG,  								_T("Hẹn giờ") },
@@ -597,12 +690,24 @@ static LANGTABLE langtable_vi_VN
 	{ IDC_EDITSCHEDULE_REPEATDAILY_CHK,						_T("Lặp lại hành động hàng ngày") },
 	{ IDC_EDITSCHEDULE_APPLY_BTN,  							_T("Lưu") },
 	{ IDC_EDITSCHEDULE_CANCEL_BTN, 							_T("Đóng") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----LogViewer Dialog Item------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ IDD_LOGVIEWER_DLG,									_T("LogViewer") },
-	{ IDC_LOGVIEWER_DETAILS_LABEL,							_T("Chi tiết") },
-	{ IDC_LOGVIEWER_DATETIME_LABEL,							_T("Ngày/Giờ") },
-	{ IDC_LOGVIEWER_CONTENT_LABEL,							_T("Nội dung") },
+	{ IDC_LOGVIEWER_REMOVEALL_BTN,							_T("Xoá hết Bản ghi") },
+	{ IDC_LOGVIEWER_DETAILS_BTN,							_T("Chi tiết") },
+	{ IDC_LOGVIEWER_CLOSE_BTN,								_T("Đóng") },
+	{ GRIDCOLUMN_LOGVIEWER_DATETIME,						_T("Ngày/Giờ") },
+	{ GRIDCOLUMN_LOGVIEWER_CATEGORY,						_T("Sự kiện") },
+	{ GRIDCOLUMN_LOGVIEWER_DESCRIPTION,						_T("Thông tin bổ sung") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-----LogDetail Dialog Item---------------------------------------------------------------Language String------------------------------------------------------------*/
+	{ IDD_LOGDETAIL_DLG,									_T("Thông tin chi tiết") },
+	{ IDC_LOGDETAIL_PREV_BTN,								_T("<< Trước") },
+	{ IDC_LOGDETAIL_NEXT_BTN,								_T("Sau >>") },
+	{ IDC_LOGDETAIL_CLOSE_BTN,								_T("Đóng") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------HotkeySet Dialog Item-----------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ IDD_HOTKEYSET_DLG,									_T("Thiết lập phím tắt") },
@@ -610,8 +715,8 @@ static LANGTABLE langtable_vi_VN
 	{ IDC_HOTKEYSET_REMOVE_BTN,								_T("Xoá") },
 	{ IDC_HOTKEYSET_REMOVEALL_BTN,							_T("Xoá hết") },
 	{ IDC_HOTKEYSET_EXPORT_BTN,								_T("Trích xuất") },
-	{ BTN_HKSETDLG_CHECKALL,								_T("Chọn hết") },
-	{ BTN_HKSETDLG_UNCHECKALL,								_T("Bỏ chọn hết") },
+	{ IDC_HOTKEYSET_CHECKALL_BTN,							_T("Chọn hết") },
+	{ IDC_HOTKEYSET_UNCHECKALL_BTN,							_T("Bỏ chọn hết") },
 	{ IDC_HOTKEYSET_ACTION_TITLE,							_T("Hành động") },
 	{ IDC_HOTKEYSET_CONTROLKEY_STATIC,						_T("Phím điều khiển") },
 	{ IDC_HOTKEYSET_CTRLKEY_CHK,							_T("CTRL") },
@@ -620,9 +725,11 @@ static LANGTABLE langtable_vi_VN
 	{ IDC_HOTKEYSET_FUNCKEY_TITLE,							_T("Phím chức năng") },
 	{ IDC_HOTKEYSET_APPLY_BTN,								_T("Lưu") },
 	{ IDC_HOTKEYSET_CANCEL_BTN,								_T("Huỷ bỏ") },
-	{ LVCOLUMN_EMPTY_TITLE,									_T("") },
-	{ LVCOLUMN_HOTKEYSET_ACTION,							_T("Hành động") },
-	{ LVCOLUMN_HOTKEYSET_KEYSTROKES,						_T("Phím tắt") },
+	{ GRIDCOLUMN_HOTKEYSET_STATE,							_T("") },
+	{ GRIDCOLUMN_HOTKEYSET_HKACTIONID,						_T("Hành động") },
+	{ GRIDCOLUMN_HOTKEYSET_KEYSTROKES,						_T("Phím tắt") },
+	{ HKEYSET_KEYSTROKES_NULL,								_T("Chưa thiết lập") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Power Reminder Dialog Item---------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_PWRREMINDER_DLG,									_T("Power Reminder") },
@@ -673,6 +780,7 @@ static LANGTABLE langtable_vi_VN
 	{ PWRRMD_STYLE_MESSAGEBOX,								_T("Hộp thông báo") },
 	{ PWRRMD_STYLE_DIALOG,									_T("Hộp thoại") },
 	{ PWRRMD_REPEATSET_SNOOZEINTERVAL,						_T("%d phút") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MESSAGE_SCHEDNOTIFY_DISPLAYOFF,						_T("Máy tính của bạn sẽ tắt màn hình") },
@@ -681,6 +789,7 @@ static LANGTABLE langtable_vi_VN
 	{ MESSAGE_SCHEDNOTIFY_RESTART,							_T("Máy tính của bạn sẽ khởi động lại") },
 	{ MESSAGE_SCHEDNOTIFY_SIGNOUT,							_T("Tài khoản của bạn sẽ bị đăng xuất") },
 	{ MESSAGE_SCHEDNOTIFY_HIBERNATE,						_T("Máy tính của bạn sẽ chuyển sang chế độ ngủ đông") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID---------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ MSGBOX_CONFIG_RELOAD_CAPTION,							_T("Tải lại thiết lập") },
@@ -734,12 +843,15 @@ static LANGTABLE langtable_vi_VN
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL,		_T("Thiết lập không hợp lệ.\nThiếp lập thời gian hiển thị thông báo lại nằm ngoài phạm vi cho phép") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS,			_T("Thiết lập không hợp lệ.\nKhông thể bật tuỳ chọn lặp lại khi không có ngày trong tuần nào được chọn.") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT,			_T("\nThiết lập sẽ được tự động đặt lại về giá trị mặc định.") },
+	{ MSGBOX_LOGVIEWER_CAPTION,								_T("LogViewer") },
+	{ MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS,			_T("Bạn có chắc muốn xoá hết tất cả các mục bản ghi hay ko?") },
 	{ MSGBOX_OTHER_NOTRUNASADMIN,							_T("Ứng dụng hiện đang không được chạy dưới quyền admin.") },
 	{ MSGBOX_OTHER_REQUEST_RESTARTASADMIN,					_T("Bạn có muốn khởi động lại ứng dụng với quyền admin không?") },
 	{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("Ứng dụng sẽ được chạy dưới quyền admin ở lần khởi động tiếp theo.") },
 	{ MSGBOX_OTHER_ALREADY_ADMIN,							_T("Ứng dụng hiện đang được chạy dưới quyền admin.") },
 	{ MSGBOX_OTHER_FUNCTION_NOT_AVAILABLE,					_T("Tính năng hiện tại chưa được hỗ trợ") },
 	{ MSGBOX_OTHER_PREDESTROY_REMINDERDISP,					_T("Vui lòng tắt hết các thông điệp nhắc nhở đang hiển thị!") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MSGBOX_ERROR_CAPTION,									_T("Lỗi") },
@@ -780,7 +892,8 @@ static LANGTABLE langtable_vi_VN
 	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("Lưu dữ liệu nội dung nhắc nhở thất bại!") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("Ghi log thất bại") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("Xuất log thất bại") },
-	{ MSGBOX_ERROR_UNKNOWN, 								_T("Lỗi không xác định (0x%X).") },
+	{ MSGBOX_ERROR_UNKNOWN, 								_T("Lỗi không xác định (Mã lỗi: 0x%04X).") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 	{ FORMAT_TIME_BEFOREMIDDAY,								_T("SA") },
@@ -798,7 +911,61 @@ static LANGTABLE langtable_vi_VN
 	{ HKEYSET_EXISTED_CTRL_F4,								_T("Đóng tài liệu hiện tại") },
 	{ HKEYSET_EXISTED_CTRL_F5,								_T("Làm mới cửa sổ hiện tại") },
 	{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("Đóng màn hình nền ảo hiện tại") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+/*--------Logging macro ID--------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_MACRO_EVENT_APP,									_T("Sự kiện Ứng dụng") },
+	{ LOG_MACRO_EVENT_UI,									_T("Sự kiện Giao diện") },
+	{ LOG_MACRO_EVENT_DATACHG,								_T("Dữ liệu Thay đổi") },
+	{ LOG_MACRO_HISTORY,									_T("Lịch sử Hoạt động") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*--------Application events------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_INIT_INSTANCE,								_T("Khởi chạy Ứng dụng") },
+	{ LOG_EVENT_EXIT_INSTANCE,								_T("Thoát khỏi Ứng dụng") },
+	{ LOG_EVENT_ERROR_MESSAGE,								_T("Thông báo Lỗi") },
+	{ LOG_EVENT_EXEC_DEBUGCMD,								_T("Thực thi Lệnh gỡ lỗi") },
+	{ LOG_EVENT_CHANGE_LANGUAGE,							_T("Thay đổi Ngôn ngữ") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*------------UI events-----------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_BTN_CLICKED,								_T("Bấm nút") },
+	{ LOG_EVENT_CHK_CLICKED,								_T("Bấm hộp kiểm") },
+	{ LOG_EVENT_RAD_CLICKED,								_T("Bấm nút radio") },
+	{ LOG_EVENT_EDIT_CHANGED,								_T("Hộp nhập liệu Thay đổi") },
+	{ LOG_EVENT_CMB_SELCHANGE,								_T("Hộp lựa chọn Thay đổi") },
+	{ LOG_EVENT_LIST_SELCHANGE,								_T("Hộp danh sách Thay đổi") },
+	{ LOG_EVENT_SPIN_CHANGED,								_T("Nút spin Thay đổi giá trị") },
+	{ LOG_EVENT_MENU_SELECTED,								_T("Bấm chọn mục menu") },
+	{ LOG_EVENT_DLG_INIT,									_T("Mở Hộp thoại") },
+	{ LOG_EVENT_DLG_DESTROYED,								_T("Đóng Hộp thoại") },
+	{ LOG_EVENT_DLG_SHOWED,									_T("Hiển thị Hộp thoại") },
+	{ LOG_EVENT_DLG_HIDDEN,									_T("Ẩn Hộp thoại") },
+	{ LOG_EVENT_DLG_EXPANDED,								_T("Mở rộng Hộp thoại") },
+	{ LOG_EVENT_DLG_COLLAPSED,								_T("Thu nhỏ Hộp thoại") },
+	{ LOG_EVENT_TRAYICO_LMBCLICKED,							_T("Bấm chuột trái Biểu tượng khay hệ thống") },
+	{ LOG_EVENT_TRAYICO_MMBCLICKED,							_T("Bấm chuột giữa Biểu tượng khay hệ thống") },
+	{ LOG_EVENT_TRAYICO_RMBCLICKED,							_T("Bấm chuột phải Biểu tượng khay hệ thống") },
+	{ LOG_EVENT_EXEC_PWRACTION,								_T("Thực thi Hành động nguồn điện") },
+	{ LOG_EVENT_CANCEL_PWRACTION,							_T("Huỷ Hành động nguồn điện") },
+	{ LOG_EVENT_EXEC_SCHEDULE,								_T("Thực hiện Hành động hẹn giờ") },
+	{ LOG_EVENT_CANCEL_SCHEDULE,							_T("Huỷ Hành động hẹn giờ") },
+	{ LOG_EVENT_EXEC_HOTKEY,								_T("Thực thi Hành động phím tắt") },
+	{ LOG_EVENT_DISP_PWRREMINDER,							_T("Hiển thị Thông báo nhắc nhở") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*--------Application events------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_DATACHG_CONFIG,								_T("Thiết lập Thay đổi") },
+	{ LOG_EVENT_DATACHG_SCHEDULE,							_T("Dữ liệu Lịch hẹn giờ thay đổi") },
+	{ LOG_EVENT_DATACHG_HOTKEYSET,							_T("Dữ liệu Thiết lập phím tắt thay đổi") },
+	{ LOG_EVENT_DATACHG_PWRREMINDER,						_T("Dữ liệu Power Reminder thay đổi") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-----------History log----------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_HISTORY_EXEC_PWRACTION,							_T("Thực thi Hành động nguồn điện") },
+	{ LOG_HISTORY_EXEC_SCHEDULE,							_T("Thực hiện Hành động hẹn giờ") },
+	{ LOG_HISTORY_EXEC_HOTKEY,								_T("Thực thi Hành động phím tắt") },
+	{ LOG_HISTORY_DISP_PWRREMINDER,							_T("Hiển thị Thông báo nhắc nhở") },
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 };
 
@@ -819,6 +986,7 @@ static LANGTABLE langtable_zh_CH
 	{ ACTION_NAME_SIGNOUT,									_T("登出") },
 	{ ACTION_NAME_HIBERNATE,								_T("休眠") },
 	{ ACTION_NAME_SHOWMENU,									_T("显示通知托盘菜单") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------Action Message----------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ MESSAGE_ACTION_DISPLAYOFF,							_T("您确定要关闭显示器吗？") },
@@ -827,6 +995,7 @@ static LANGTABLE langtable_zh_CH
 	{ MESSAGE_ACTION_RESTART,								_T("您确定要重新启动计算机吗？") },
 	{ MESSAGE_ACTION_SIGNOUT,								_T("您确定要退出当前帐户吗？") },
 	{ MESSAGE_ACTION_HIBERNATE,								_T("您确定要将电脑进入休眠模式吗？") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*---------Control ID--------------------------------------------------------------------Language String--------------------------------------------------------------*/
 	{ IDC_MAIN_TITLE,										_T("主要设置") },
@@ -846,7 +1015,7 @@ static LANGTABLE langtable_zh_CH
 	{ IDC_SHOWATSTARTUP_CHK,								_T("启动时显示此对话框") },
 	{ IDC_ENABLEAUTOSTART_CHK,						 		_T("随Windows启动") },
 	{ IDC_CONFIRMACTION_CHK,								_T("执行动作前确认") },
-	{ IDC_SAVEACTIONLOG_CHK,								_T("保存操作日志") },
+	{ IDC_SAVEHISTORYLOG_CHK,								_T("保存操作日志") },
 	{ IDC_SAVEAPPEVENTLOG_CHK,								_T("保存应用程序事件日志") },
 	{ IDC_RUNASADMIN_CHK,									_T("以管理员权限运行") },
 	{ IDC_SHOWERROR_CHK,									_T("在屏幕上显示错误信息") },
@@ -861,6 +1030,7 @@ static LANGTABLE langtable_zh_CH
 	{ IDC_LOGVIEWER_BTN,									_T("日志查看器") },
 	{ IDC_HOTKEYSET_BTN,									_T("热键设置") },
 	{ IDC_PWRREMINDER_BTN,									_T("Power Reminder") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------Menu Item ID--------------------------------------------------------------------Language String-------------------------------------------------------------*/
 	{ IDM_NOTIFY_OPENDLG_ABOUT,								_T("关于") },
@@ -877,6 +1047,7 @@ static LANGTABLE langtable_zh_CH
 	{ IDM_NOTIFY_RESTART_ASADMIN,							_T("以管理员权限重新启动") },
 	{ IDM_NOTIFY_SHOW_WINDOW,								_T("主窗口") },
 	{ IDM_NOTIFY_EXIT_APP,									_T("退出") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	{ IDM_NOTIFY_ACTION_DISPLAYOFF,							_T("关闭显示器") },
 	{ IDM_NOTIFY_ACTION_SLEEP,								_T("睡眠") },
@@ -885,6 +1056,7 @@ static LANGTABLE langtable_zh_CH
 	{ IDM_NOTIFY_ACTION_SIGNOUT,							_T("登出") },
 	{ IDM_NOTIFY_ACTION_HIBERNATE,							_T("休眠") },
 	{ IDM_NOTIFY_ACTION_SCHEDULE,							_T("行动计划") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-------Combo-box Option ID---------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ COMBOBOX_ACTION_DISPLAYOFF,							_T("关闭显示器") },
@@ -897,6 +1069,7 @@ static LANGTABLE langtable_zh_CH
 	{ COMBOBOX_LANGUAGE_ENGLISH,							_T("英文") },
 	{ COMBOBOX_LANGUAGE_VIETNAMESE,							_T("越语") },
 	{ COMBOBOX_LANGUAGE_SIMPCHINESE,						_T("中文") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Notify String ID-------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ NOTIFY_TIP_TEMPLATE,						 			_T("单击此处鼠标左键就%s.\n")
@@ -909,6 +1082,7 @@ static LANGTABLE langtable_zh_CH
 	{ NOTIFY_TIP_SIGNOUT,  									_T("登出") },
 	{ NOTIFY_TIP_HIBERNATE,  								_T("休眠") },
 	{ NOTIFY_TIP_SHOWMENU, 									_T("显示菜单") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Balloon String ID-------------------------------------------------------------------Language String-----------------------------------------------------------*/
 	{ BALLOON_TIP_TEMPLATE,							 		_T("预定的行动即将开始。\n%s在%d秒后.") },
@@ -918,10 +1092,11 @@ static LANGTABLE langtable_zh_CH
 	{ BALLOON_TIP_RESTART, 									_T("电脑将重新启动") },
 	{ BALLOON_TIP_SIGNOUT,  								_T("当前帐户将退出") },
 	{ BALLOON_TIP_HIBERNATE,  								_T("电脑将进入休眠状态") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----About Dialog Item--------------------------------------------------------------------Language String-----------------------------------------------------------*/
 	{ IDD_ABOUT_DLG,										_T("关于Power++") },
-	{ IDC_APPNAME_LABEL,								  	_T("Power++ 3.1 (v3.1.2.0)") },
+	{ IDC_APPNAME_LABEL,								  	_T("Power++ %s (v%s)") },
 	{ IDC_COPYRIGHT_LABEL, 							 		_T("版权(C)属于2017 - 2024 AnthonyLeeStark.") },
 	{ IDC_AUTH_LABEL,  										_T("开发者：Anthony Lee Stark (@AnthonyLeeStark)") },
 	{ IDC_DEVPROFILE_LINK,	 								_T("<a>查看开发者的Facebook个人资料</a>") },
@@ -932,10 +1107,11 @@ static LANGTABLE langtable_zh_CH
 															_T("电子邮件：anthonyleestark.official@gmail.com\n")
 															_T("Facebook： https://www.facebook.com/anthonyleestark \n")
 															_T("Twitter: https://twitter.com/AnthonyLeeStark \n\n")
-															_T("Power++ v3.1 是一个实用程序，它允许您快速执行一些电源操作并设置执行这些操作的计划。")
+															_T("Power++ v%s 是一个实用程序，它允许您快速执行一些电源操作并设置执行这些操作的计划。")
 															_T("此软件可帮助您只需单击一下即可关闭屏幕、使 PC 进入睡眠状态、关机、重启、休眠或退出当前帐户。")
 															_T("它还可以帮助您设置闹钟来自动执行这些操作或为每个操作设置热键。") },
 	{ IDC_ABOUT_CLOSE_BTN,	 								_T("关闭") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----Help Dialog Item--------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_HELP_DLG,											_T("帮助") },
@@ -944,6 +1120,7 @@ static LANGTABLE langtable_zh_CH
 	{ BTN_HELPDLG_VIEWMODE_CHANGELOG,						_T("查看变更日志") },
 	{ ERROR_HELPDLG_NOHELPFILE,								_T("无法打开帮助文件！\r\n该文件可能已损坏或不存在。") },
 	{ ERROR_HELPDLG_NOCHANGELOGFILE,						_T("无法打开变更日志文件！\r\n该文件可能已损坏或不存在。") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Schedule Dialog Item---------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_MULTISCHEDULE_DLG,  								_T("行动计划") },
@@ -971,12 +1148,24 @@ static LANGTABLE langtable_zh_CH
 	{ IDC_EDITSCHEDULE_REPEATDAILY_CHK,						_T("每天重复计划") },
 	{ IDC_EDITSCHEDULE_APPLY_BTN,		 					_T("保存") },
 	{ IDC_EDITSCHEDULE_CANCEL_BTN, 							_T("关闭") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-----LogViewer Dialog Item---------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_LOGVIEWER_DLG,									_T("日志查看器") },
-	{ IDC_LOGVIEWER_DETAILS_LABEL,							_T("细节") },
-	{ IDC_LOGVIEWER_DATETIME_LABEL,							_T("日期/时间") },
-	{ IDC_LOGVIEWER_CONTENT_LABEL,							_T("内容") },
+	{ IDC_LOGVIEWER_REMOVEALL_BTN,							_T("删除所有记录") },
+	{ IDC_LOGVIEWER_DETAILS_BTN,							_T("细节") },
+	{ IDC_LOGVIEWER_CLOSE_BTN,								_T("关闭") },
+	{ GRIDCOLUMN_LOGVIEWER_DATETIME,						_T("时间") },
+	{ GRIDCOLUMN_LOGVIEWER_CATEGORY,						_T("事件") },
+	{ GRIDCOLUMN_LOGVIEWER_DESCRIPTION,						_T("附加描述") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-----LogDetail Dialog Item---------------------------------------------------------------Language String------------------------------------------------------------*/
+	{ IDD_LOGDETAIL_DLG,									_T("日志详细信息") },
+	{ IDC_LOGDETAIL_PREV_BTN,								_T("<< 上一个") },
+	{ IDC_LOGDETAIL_NEXT_BTN,								_T("下一个 >>") },
+	{ IDC_LOGDETAIL_CLOSE_BTN,								_T("关闭") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------HotkeySet Dialog Item--------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_HOTKEYSET_DLG,									_T("热键设置") },
@@ -984,8 +1173,8 @@ static LANGTABLE langtable_zh_CH
 	{ IDC_HOTKEYSET_REMOVE_BTN,								_T("删除") },
 	{ IDC_HOTKEYSET_REMOVEALL_BTN,							_T("全部删除") },
 	{ IDC_HOTKEYSET_EXPORT_BTN,								_T("导出") },
-	{ BTN_HKSETDLG_CHECKALL,								_T("全部选中") },
-	{ BTN_HKSETDLG_UNCHECKALL,								_T("全部取消选中") },
+	{ IDC_HOTKEYSET_CHECKALL_BTN,							_T("全部选中") },
+	{ IDC_HOTKEYSET_UNCHECKALL_BTN,							_T("全部取消选中") },
 	{ IDC_HOTKEYSET_ACTION_TITLE,							_T("行动") },
 	{ IDC_HOTKEYSET_CONTROLKEY_STATIC,						_T("控制键") },
 	{ IDC_HOTKEYSET_CTRLKEY_CHK,							_T("CTRL") },
@@ -994,9 +1183,11 @@ static LANGTABLE langtable_zh_CH
 	{ IDC_HOTKEYSET_FUNCKEY_TITLE,							_T("功能键") },
 	{ IDC_HOTKEYSET_APPLY_BTN,								_T("应用") },
 	{ IDC_HOTKEYSET_CANCEL_BTN,								_T("取消") },
-	{ LVCOLUMN_EMPTY_TITLE,									_T("") },
-	{ LVCOLUMN_HOTKEYSET_ACTION,							_T("行动") },
-	{ LVCOLUMN_HOTKEYSET_KEYSTROKES,						_T("按键") },
+	{ GRIDCOLUMN_HOTKEYSET_STATE,							_T("") },
+	{ GRIDCOLUMN_HOTKEYSET_HKACTIONID,						_T("行动") },
+	{ GRIDCOLUMN_HOTKEYSET_KEYSTROKES,						_T("按键") },
+	{ HKEYSET_KEYSTROKES_NULL,								_T("尚未设置") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*------Power Reminder Dialog Item---------------------------------------------------------Language String------------------------------------------------------------*/
 	{ IDD_PWRREMINDER_DLG,									_T("Power Reminder") },
@@ -1047,6 +1238,7 @@ static LANGTABLE langtable_zh_CH
 	{ PWRRMD_STYLE_MESSAGEBOX,								_T("消息框") },
 	{ PWRRMD_STYLE_DIALOG,									_T("对话框") },
 	{ PWRRMD_REPEATSET_SNOOZEINTERVAL,						_T("%d 分钟") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MESSAGE_SCHEDNOTIFY_DISPLAYOFF,						_T("电脑将关闭显示器") },
@@ -1055,6 +1247,7 @@ static LANGTABLE langtable_zh_CH
 	{ MESSAGE_SCHEDNOTIFY_RESTART,							_T("电脑将重新启动") },
 	{ MESSAGE_SCHEDNOTIFY_SIGNOUT,							_T("帐户将退出") },
 	{ MESSAGE_SCHEDNOTIFY_HIBERNATE,						_T("将进入休眠模式") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MSGBOX_CONFIG_RELOAD_CAPTION,							_T("重新加载设置") },
@@ -1108,12 +1301,15 @@ static LANGTABLE langtable_zh_CH
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL,		_T("提醒数据无效。\n贪睡间隔值设置为空或者无效。") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS,			_T("提醒数据无效。\n当没有激活​​星期几时，无法启用重复。") },
 	{ MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT,			_T("\n数据将自动重置为默认值。") },
+	{ MSGBOX_LOGVIEWER_CAPTION,								_T("日志查看器") },
+	{ MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS,			_T("您确实要删除所有日志记录吗？") },
 	{ MSGBOX_OTHER_NOTRUNASADMIN,							_T("该应用程序当前未以管理员权限运行。") },
 	{ MSGBOX_OTHER_REQUEST_RESTARTASADMIN,					_T("您是否要以管理员权限重新启动该应用程序？") },
 	{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("该应用程序将在下次启动时以管理员权限运行。") },
 	{ MSGBOX_OTHER_ALREADY_ADMIN,							_T("该应用程序当前以管理员权限运行。") },
 	{ MSGBOX_OTHER_FUNCTION_NOT_AVAILABLE,					_T("此功能目前不可用。") },
 	{ MSGBOX_OTHER_PREDESTROY_REMINDERDISP,					_T("请先关闭所有正在显示的提醒消息！") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
 	{ MSGBOX_ERROR_CAPTION,									_T("错误") },
@@ -1154,7 +1350,8 @@ static LANGTABLE langtable_zh_CH
 	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("保存提醒数据失败") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("写入日志失败") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("输出日志失败") },
-	{ MSGBOX_ERROR_UNKNOWN, 								_T("未知错误 (0x%X)。") },
+	{ MSGBOX_ERROR_UNKNOWN, 								_T("未知错误 (错误代码: 0x%04X)。") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 	{ FORMAT_TIME_BEFOREMIDDAY,								_T("午前") },
@@ -1172,7 +1369,61 @@ static LANGTABLE langtable_zh_CH
 	{ HKEYSET_EXISTED_CTRL_F4,								_T("关闭活动文档") },
 	{ HKEYSET_EXISTED_CTRL_F5,								_T("刷新当前窗口") },
 	{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("关闭活动虚拟桌面") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+/*--------Logging macro ID--------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_MACRO_EVENT_APP,									_T("应用程序事件") },
+	{ LOG_MACRO_EVENT_UI,									_T("UI界面事件") },
+	{ LOG_MACRO_EVENT_DATACHG,								_T("数据更改事件") },
+	{ LOG_MACRO_HISTORY,									_T("活动历史记录") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*--------Application events------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_INIT_INSTANCE,								_T("启动申请流程") },
+	{ LOG_EVENT_EXIT_INSTANCE,								_T("退出申请流程") },
+	{ LOG_EVENT_ERROR_MESSAGE,								_T("错误信息") },
+	{ LOG_EVENT_EXEC_DEBUGCMD,								_T("调试命令已执行") },
+	{ LOG_EVENT_CHANGE_LANGUAGE,							_T("语言已改变") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*------------UI events-----------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_BTN_CLICKED,								_T("点击按钮") },
+	{ LOG_EVENT_CHK_CLICKED,								_T("点击复选框") },
+	{ LOG_EVENT_RAD_CLICKED,								_T("点击单选按钮") },
+	{ LOG_EVENT_EDIT_CHANGED,								_T("编辑框文本已更改") },
+	{ LOG_EVENT_CMB_SELCHANGE,								_T("组合框选择已更改") },
+	{ LOG_EVENT_LIST_SELCHANGE,								_T("列表框选择已更改") },
+	{ LOG_EVENT_SPIN_CHANGED,								_T("旋转控制值已改变") },
+	{ LOG_EVENT_MENU_SELECTED,								_T("菜单项已选择") },
+	{ LOG_EVENT_DLG_INIT,									_T("打开对话框") },
+	{ LOG_EVENT_DLG_DESTROYED,								_T("关闭对话框") },
+	{ LOG_EVENT_DLG_SHOWED,									_T("显示对话框") },
+	{ LOG_EVENT_DLG_HIDDEN,									_T("隐藏对话框") },
+	{ LOG_EVENT_DLG_EXPANDED,								_T("展开对话框") },
+	{ LOG_EVENT_DLG_COLLAPSED,								_T("折叠对话框") },
+	{ LOG_EVENT_TRAYICO_LMBCLICKED,							_T("鼠标左键单击通知图标") },
+	{ LOG_EVENT_TRAYICO_MMBCLICKED,							_T("鼠标中键单击通知图标") },
+	{ LOG_EVENT_TRAYICO_RMBCLICKED,							_T("鼠标右键单击通知图标") },
+	{ LOG_EVENT_EXEC_PWRACTION,								_T("执行电源动作") },
+	{ LOG_EVENT_CANCEL_PWRACTION,							_T("取消电源动作") },
+	{ LOG_EVENT_EXEC_SCHEDULE,								_T("执行行动计划") },
+	{ LOG_EVENT_CANCEL_SCHEDULE,							_T("取消行动计划") },
+	{ LOG_EVENT_EXEC_HOTKEY,								_T("执行按下的热键") },
+	{ LOG_EVENT_DISP_PWRREMINDER,							_T("显示提醒消息") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*--------Application events------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_EVENT_DATACHG_CONFIG,								_T("配置已更改") },
+	{ LOG_EVENT_DATACHG_SCHEDULE,							_T("计划数据已更改") },
+	{ LOG_EVENT_DATACHG_HOTKEYSET,							_T("热键设置已更改") },
+	{ LOG_EVENT_DATACHG_PWRREMINDER,						_T("Power Reminder数据已更改") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-----------History log----------------------------------------------------------------Language String---------------------------------------------------------------*/
+	{ LOG_HISTORY_EXEC_PWRACTION,							_T("执行电源动作") },
+	{ LOG_HISTORY_EXEC_SCHEDULE,							_T("执行行动计划") },
+	{ LOG_HISTORY_EXEC_HOTKEY,								_T("执行按下的热键") },
+	{ LOG_HISTORY_DISP_PWRREMINDER,							_T("显示提醒消息") },
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 };
 

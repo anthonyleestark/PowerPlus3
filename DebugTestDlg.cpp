@@ -118,9 +118,7 @@ END_MESSAGE_MAP()
 BOOL CDebugTestDlg::OnInitDialog()
 {
 	// Set dialog title
-	CString strDlgTitle;
-	strDlgTitle.LoadString(IDS_APP_DEBUGTESTDLG_TITLE);
-	this->SetWindowText(strDlgTitle);
+	this->SetRcDialogCaption(IDS_APP_DEBUGTESTDLG_TITLE);
 
 	// Get DebugTest edit view
 	BOOL bRet = InitDebugEditView(IDC_DEBUGTEST_EDITVIEW);

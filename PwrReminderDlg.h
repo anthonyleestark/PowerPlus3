@@ -46,6 +46,18 @@ public:
 	enum { IDD = IDD_PWRREMINDER_DLG };
 #endif
 
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+	// Dialog control management
+	virtual INT_PTR RegisterDialogManagement(void);
+	virtual BOOL UnregisterDialogManagement(void);
+
+	// Implementation
+protected:
+	DECLARE_MESSAGE_MAP()
+	DECLARE_CLASS_IDMAP()
+
 private:
 	// Dialog control variables
 	CGridCtrl*		 m_pDataItemListTable;
@@ -93,13 +105,11 @@ private:
 	int m_nCurDispIndex;
 	SYSTEMTIME m_stDispTimeBak;
 
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
 public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
+	afx_msg void OnDestroy();
 	afx_msg void OnApply();
 	afx_msg void OnCancel();
 	afx_msg void OnAdd();
@@ -121,9 +131,6 @@ public:
 	virtual LRESULT RequestCloseDialog(void);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
-	DECLARE_MESSAGE_MAP()
-	DECLARE_CLASS_IDMAP()
-
 protected:
 	// Dialog setup functions
 	void SetupLanguage();
@@ -131,6 +138,11 @@ protected:
 	void DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRowNum, BOOL bReadOnly = FALSE, LANGTABLE_PTR ptrLanguage = NULL);
 	void SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage);
 	void SwitchMode(BOOL bRedraw = FALSE);
+
+	// Layout functions
+	void UpdateLayoutInfo(void);
+	void LoadLayoutInfo(void);
+	void SaveLayoutInfo(void);
 
 	// Dialog item properties functions
 	void SetupDialogItemState();

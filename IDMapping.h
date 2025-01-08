@@ -52,18 +52,18 @@
 #define BEGIN_ID_MAPPING(theClass) \
 	PTM_WARNING_DISABLE \
 	void theClass::UpdateClassIDMap() {	\
-		SIDMapping *_classIDMap = ((CPowerPlusApp*)AfxGetApp())->GetAppIDMap(); \
+		SIDMapping *_classIDMap = ((SWinApp*)AfxGetApp())->GetAppIDMap(); \
 		if (_classIDMap == NULL) return;
 #define IDMAP_ADD(nID, lpszStringID) \
 		if (_classIDMap->FindID(nID) == -1) _classIDMap->Add(nID, lpszStringID);
 #define IDMAP_MODIFY(nID, lpszStringID) \
-		((CPowerPlusApp*)AfxGetApp())->GetAppIDMap()->Modify(nID, lpszStringID);
+		((SWinApp*)AfxGetApp())->GetAppIDMap()->Modify(nID, lpszStringID);
 #define IDMAP_REMOVE(nID) \
-		((CPowerPlusApp*)AfxGetApp())->GetAppIDMap()->Remove(nID);
+		((SWinApp*)AfxGetApp())->GetAppIDMap()->Remove(nID);
 #define IDMAP_GET \
-		((CPowerPlusApp*)AfxGetApp())->GetAppIDMap()->GetID
+		((SWinApp*)AfxGetApp())->GetAppIDMap()->GetID
 #define IDMAP_CLEAR() \
-		((CPowerPlusApp*)AfxGetApp())->GetAppIDMap()->Clear();
+		((SWinApp*)AfxGetApp())->GetAppIDMap()->Clear();
 #define END_ID_MAPPING() \
 	} \
 	PTM_WARNING_RESTORE

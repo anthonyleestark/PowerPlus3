@@ -146,19 +146,19 @@ BOOL CReminderMsgDlg::OnInitDialog()
 	// Shift margin if icon is displaying
 	if ((m_bDispIcon == TRUE) && (m_hMsgIcon != NULL)) {
 		// Get current margin
-		POINT ptTopLeft, ptBottomRight;
-		this->GetMargin(&ptTopLeft, &ptBottomRight);
+		CRect rcDialogMargin;
+		this->GetMargin(&rcDialogMargin);
 		if (m_byIconPosition == MSGICONPOS_ONTOP) {
 			// Shift top margin
-			ptTopLeft.y += m_szIconSize.cy;
-			ptTopLeft.y -= DEFAULT_TEXT2ICON_DISTANCE;
-			this->SetTopMargin(ptTopLeft.y);
+			rcDialogMargin.top += m_szIconSize.cy;
+			rcDialogMargin.top -= DEFAULT_TEXT2ICON_DISTANCE;
+			this->SetTopMargin(rcDialogMargin.top);
 		}
 		else if (m_byIconPosition == MSGICONPOS_ONLEFT) {
 			// Shift left margin
-			ptTopLeft.x += m_szIconSize.cx;
-			ptTopLeft.x -= DEFAULT_TEXT2ICON_DISTANCE;
-			this->SetLeftMargin(ptTopLeft.x);
+			rcDialogMargin.left += m_szIconSize.cx;
+			rcDialogMargin.left -= DEFAULT_TEXT2ICON_DISTANCE;
+			this->SetLeftMargin(rcDialogMargin.left);
 		}
 	}
 
@@ -168,7 +168,7 @@ BOOL CReminderMsgDlg::OnInitDialog()
 
 	// Get dialog size
 	CSize szDlgSize;
-	GetDlgSize(&szDlgSize);
+	GetDialogSize(&szDlgSize);
 
 	// If set lock font size
 	if (m_bLockFontSize == TRUE) {
@@ -377,7 +377,7 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	if (pWnd == this) {
-		if ((m_bSetBkgrdColor == TRUE) && (m_pBkgrdBrush != NULL)) {
+		if ((m_bBkgrdColorSet == TRUE) && (m_pBkgrdBrush != NULL)) {
 			// Get brush
 			hBrush = (HBRUSH)(*m_pBkgrdBrush);
 		}
@@ -385,12 +385,12 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	if (nCtlColor == CTLCOLOR_STATIC) {
 		// Set background color
-		if ((m_bSetBkgrdColor == TRUE) && (m_pBkgrdBrush != NULL)) {
+		if ((m_bBkgrdColorSet == TRUE) && (m_pBkgrdBrush != NULL)) {
 			hBrush = (HBRUSH)(*m_pBkgrdBrush);
 			pDC->SetBkColor(m_clBkgrdColor);
 		}
 		// Set text color
-		if (m_bSetTextColor == TRUE) {
+		if (m_bTextColorSet == TRUE) {
 			pDC->SetTextColor(m_clTextColor);
 		}
 	}
@@ -438,28 +438,28 @@ void CReminderMsgDlg::SetAutoCloseInterval(UINT nSeconds)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetDlgSize
+//	Function name:	SetDialogSize
 //	Description:	Set dialog size
-//  Arguments:		szDlgSize - Dialog size
-//					nWidth	  - Dialog width
-//					nHeight   - Dialog height
+//  Arguments:		szDialogSize - Dialog size
+//					lWidth		 - Dialog width
+//					lHeight		 - Dialog height
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::SetDlgSize(CSize szDlgSize)
+void CReminderMsgDlg::SetDialogSize(CSize szDialogSize)
 {
 	// Set dialog size
-	SDialog::SetDlgSize(szDlgSize);
+	SDialog::SetDialogSize(szDialogSize);
 
 	// Set lock size flag
 	m_bLockDlgSize = TRUE;
 }
 
-void CReminderMsgDlg::SetDlgSize(int nWidth, int nHeight)
+void CReminderMsgDlg::SetDialogSize(LONG lWidth, LONG lHeight)
 {
 	// Set dialog size
-	SDialog::SetDlgSize(nWidth, nHeight);
+	SDialog::SetDialogSize(lWidth, lHeight);
 
 	// Set lock size flag
 	m_bLockDlgSize = TRUE;
@@ -567,14 +567,12 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 		cy = GetSystemMetrics(SM_CYICON);
 	}
 
-	// Init result
-	HRESULT hResult = E_FAIL;
+	// If icon ID is not set
+	if (nIconID == NULL)
+		return;
 
-	// Get icon info
-	if (nIconID != 0) {
-		// Load system icon by ID and scale size
-		hResult = ::LoadIconWithScaleDown(NULL, MAKEINTRESOURCE(nIconID), cx, cy, &m_hMsgIcon);
-	}
+	// Load system icon by ID and scale size
+	HRESULT hResult = ::LoadIconWithScaleDown(NULL, MAKEINTRESOURCE(nIconID), cx, cy, &m_hMsgIcon);
 
 	// Load icon failed
 	if ((hResult != S_OK) || (m_hMsgIcon == NULL)) {
@@ -701,8 +699,8 @@ BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon)
 	if (lpptIcon == NULL) return FALSE;
 
 	// Get display margin
-	POINT ptTopLeft, ptBottomRight;
-	this->GetMargin(&ptTopLeft, &ptBottomRight);
+	CRect rcCurMargin;
+	this->GetMargin(&rcCurMargin);
 
 	// Get client rectangle
 	CRect rcClient;
@@ -711,11 +709,11 @@ BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon)
 	// Calculate icon top-left point
 	int nText2IconDist = DEFAULT_TEXT2ICON_DISTANCE;
 	if (m_byIconPosition == MSGICONPOS_ONTOP) {
-		lpptIcon->y = ptTopLeft.y - (m_szIconSize.cy + nText2IconDist);
+		lpptIcon->y = rcCurMargin.top - (m_szIconSize.cy + nText2IconDist);
 		lpptIcon->x = (rcClient.Width() - m_szIconSize.cx) / 2;
 	}
 	else if (m_byIconPosition == MSGICONPOS_ONLEFT) {
-		lpptIcon->x = ptTopLeft.x - (m_szIconSize.cx + nText2IconDist);
+		lpptIcon->x = rcCurMargin.left - (m_szIconSize.cx + nText2IconDist);
 		lpptIcon->y = (rcClient.Height() - m_szIconSize.cy) / 2;
 	}
 

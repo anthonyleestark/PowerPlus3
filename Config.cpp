@@ -707,6 +707,84 @@ BOOL RegFuncs::DeletePwrReminderSection(void)
 
 //////////////////////////////////////////////////////////////////////////
 //
+//	Function name:	GetLayoutInfo/WriteLayoutInfo
+//  Description:	Using for reading/writing registry layout info values
+//  Arguments:		nSectionName - Section name
+//					nKeyName	 - Key name (string ID)
+//					nRef		 - Result value (ref-value)
+//					nValue		 - Value to write
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL RegFuncs::GetLayoutInfo(UINT nSectionName, UINT nKeyName, int& nRef)
+{
+	// Get registry value
+	int nRet = GetRegistryValueInt(IDS_REGSECTION_LAYOUTINFO, nSectionName, nKeyName);
+	if (nRet == UINT_MAX) return FALSE;
+	nRef = nRet; // Copy returned value
+	return TRUE;
+}
+
+BOOL RegFuncs::WriteLayoutInfo(UINT nSectionName, UINT nKeyName, int nValue)
+{
+	return WriteRegistryValueInt(IDS_REGSECTION_LAYOUTINFO, nSectionName, nKeyName, nValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Function name:	GetLayoutInfo/WriteLayoutInfo
+//  Description:	Using for reading/writing registry layout info values
+//  Arguments:		nSectionName - Section name
+//					lpszKeyName	 - Key name (string)
+//					nRef		 - Result value (ref-value)
+//					nValue		 - Value to write
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL RegFuncs::GetLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int& nRef)
+{
+	// Get name string
+	CString strSectionName;
+	strSectionName.LoadString(IDS_REGSECTION_LAYOUTINFO);
+	CString strSubSectionName;
+	strSubSectionName.LoadString(nSectionName);
+
+	// Get registry value
+	int nRet = GetRegistryValueInt(strSectionName, strSubSectionName, lpszKeyName);
+	if (nRet == UINT_MAX) return FALSE;
+	nRef = nRet; // Copy returned value
+	return TRUE;
+}
+
+BOOL RegFuncs::WriteLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int nValue)
+{
+	// Get name string
+	CString strSectionName;
+	strSectionName.LoadString(IDS_REGSECTION_LAYOUTINFO);
+	CString strSubSectionName;
+	strSubSectionName.LoadString(nSectionName);
+
+	return WriteRegistryValueInt(strSectionName, strSubSectionName, lpszKeyName, nValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Function name:	DeleteLayoutInfoSection
+//  Description:	Using for delete config section
+//  Arguments:		None
+//  Return value:	TRUE/FALSE - Return of deletion
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL RegFuncs::DeleteLayoutInfoSection(void)
+{
+	return DeleteRegistrySection(IDS_REGSECTION_LAYOUTINFO);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
 //	Function name:	GetGlobalVar/WriteGlobalVar
 //  Description:	Using for reading/writing registry global variable values
 //  Arguments:		nSubSection - Subsection name (string ID)
@@ -782,17 +860,19 @@ SConfigBackup::~SConfigBackup()
 
 BOOL SConfigBackup::AutoRegistryExport()
 {
-	REGISTRYKEY regKeyInfo;
-	regKeyInfo.nTagNameID = IDS_APP_REGISTRY_TAGNAME;
-	regKeyInfo.nSubPathID = IDS_APP_REGISTRY_SUBPATH;
-	regKeyInfo.nMasterKeyNameID = IDS_APP_REGISTRY_MASTERKEY;
-	regKeyInfo.nAppNameID = IDS_APP_REGISTRY_APPNAME;
+	// Initialize registry info
+	REGISTRYINFO regInfo;
+	regInfo.SetRootKeyName(IDS_APP_REGISTRY_HKEY);
+	regInfo.SetSubkeyPath(IDS_APP_REGISTRY_SUBKEYPATH);
+	regInfo.SetProfileName(IDS_APP_REGISTRY_PROFILENAME);
+	regInfo.SetAppName(IDS_APP_REGISTRY_APPNAME);
 
-	CString strCmd;
-	CString strCmdFormat = _T("\"reg.exe export \"%s\" \"%s\"\" /y");
+	// Excute registry export command
+	CString strExecCommand;
+	CString strFormat = _T("\"reg.exe export \"%s\" \"%s\"\" /y");
 	CString strFilePath = (CString)FILENAME_BAKCONFIG + FILEEXT_REGFILE;
-	strCmd.Format(strCmdFormat, MakeRegFullPath(regKeyInfo, REGPATH_NOSECTION), strFilePath);
-	ExecuteCommand(strCmd, FALSE, FALSE);
+	strExecCommand.Format(strFormat, MakeRegistryPath(regInfo, REGPATH_APPNAME), strFilePath);
+	ExecuteCommand(strExecCommand, FALSE, FALSE);
 
 	return TRUE;
 }

@@ -39,6 +39,7 @@ __pragma(warning(disable:4805))
 #define WINDOWS_H_INCLUDED
 
 #include "windows.h"
+#include <winver.h>
 #include <powerbase.h>
 #include "PowrProf.h"
 #pragma comment (lib, "PowrProf.lib")

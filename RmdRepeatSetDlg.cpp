@@ -335,7 +335,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 	}
 
 	// Setup properties
-	int nDefaultSnoozeMin = DEF_PWRREMINDER_DEFAULT_SNOOZE / 60;
+	int nDefaultSnoozeMin = DEF_REPEATSET_DEFAULT_SNOOZE / 60;
 	if (m_pSnoozeIntervalEdit != NULL) {
 		m_pSnoozeIntervalEdit->SetReadOnly(TRUE);
 	}
@@ -351,7 +351,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		SetSnoozeIntervalEdit(nDefaultSnoozeMin);
 
 		// Set snooze interval value
-		SetSnoozeInterval(DEF_PWRREMINDER_DEFAULT_SNOOZE);
+		SetSnoozeInterval(DEF_REPEATSET_DEFAULT_SNOOZE);
 	}
 }
 
@@ -437,8 +437,8 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 	if (!_tcscmp(strFormat, DEF_STRING_NULL)) return;
 
 	// Check validity
-	if (((nValue * 60) < DEF_PWRREMINDER_MIN_SNOOZE) ||
-		((nValue * 60) > DEF_PWRREMINDER_MAX_SNOOZE))
+	if (((nValue * 60) < DEF_REPEATSET_MIN_SNOOZE) ||
+		((nValue * 60) > DEF_REPEATSET_MAX_SNOOZE))
 		return;
 
 	// Show snooze interval value
@@ -488,7 +488,7 @@ void CRmdRepeatSetDlg::SetSnoozeInterval(int nValue)
 void CRmdRepeatSetDlg::UpdateDialogData(PWRREMINDERITEM& pwrItemData, BOOL bUpdate)
 {
 	// Get repeat set data
-	RMDREPEATSET& rpsRepeatData = pwrItemData.rpsRepeatSet;
+	PWRREPEATSET& rpsRepeatData = pwrItemData.rpsRepeatSet;
 
 	if (bUpdate == TRUE) {
 
