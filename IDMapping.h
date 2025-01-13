@@ -7,6 +7,7 @@
 //		
 //		History:		<0> 2024.02.25:		Create new
 //						<1> 2024.07.06:		Update to version 3.1
+//						<2> 2024.12.18:		Update to version 3.2
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //

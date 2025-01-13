@@ -6,6 +6,8 @@
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2024.02.22:		Create new
+//						<1> 2024.07.06:		Update to version 3.1
+//						<2> 2024.12.18:		Update to version 3.2
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //
@@ -699,7 +701,10 @@ AFX_INLINE INT_PTR SLogging::GetMaxSize(void) const
 
 void SLogging::SetMaxSize(INT_PTR nMaxSize)
 {
-	m_nMaxSize = nMaxSize;
+	// Max size can only be larger than current log data size
+	if (nMaxSize > (this->m_arrLogData.GetSize())) {
+		m_nMaxSize = nMaxSize;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

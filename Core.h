@@ -9,6 +9,7 @@
 //						<1> 2017.03.08:		Update to version 2.0
 //						<2> 2024.01.27:		Update to version 3.0
 //						<3> 2024.07.06:		Update to version 3.1
+//						<4> 2024.12.18:		Update to version 3.2
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //
@@ -209,48 +210,48 @@
 #define APPDATA_ALL								(APPDATA_CONFIG|APPDATA_SCHEDULE|APPDATA_HOTKEYSET|APPDATA_PWRREMINDER)
 
 // Define modes
-#define DEF_MODE_INIT							0x000					// Mode: Initialize
-#define DEF_MODE_VIEW							0x001					// Mode: View
-#define DEF_MODE_ADD							0x002					// Mode: Add
-#define DEF_MODE_UPDATE							0x003					// Mode: Update
-#define DEF_MODE_LOAD							0x004					// Mode: Load
-#define DEF_MODE_SAVE							0x005					// Mode: Save
-#define DEF_MODE_DISABLE						0xFFF					// Mode: Disable
-#define DEF_MODE_HELPVIEW_HELPFILE				0x0a1					// Mode: View help file
-#define DEF_MODE_HELPVIEW_CHANGELOG				0x0a2					// Mode: View changelog file
-#define DEF_MODE_BAKREGDATA_MANUAL				0x0a3					// Mode: Registry manually backup
-#define DEF_MODE_BAKREGDATA_AUTO				0x0a4					// Mode: Registry auto backup
-#define DEF_MODE_OPENDLG_MODAL					0x0a5					// Modal dialog
-#define DEF_MODE_OPENDLG_MODELESS				0x0a6					// Modeless dialog
+#define DEF_MODE_INIT							0x000						// Mode: Initialize
+#define DEF_MODE_VIEW							0x001						// Mode: View
+#define DEF_MODE_ADD							0x002						// Mode: Add
+#define DEF_MODE_UPDATE							0x003						// Mode: Update
+#define DEF_MODE_LOAD							0x004						// Mode: Load
+#define DEF_MODE_SAVE							0x005						// Mode: Save
+#define DEF_MODE_DISABLE						0xFFF						// Mode: Disable
+#define DEF_MODE_HELPVIEW_HELPFILE				0x0a1						// Mode: View help file
+#define DEF_MODE_HELPVIEW_CHANGELOG				0x0a2						// Mode: View changelog file
+#define DEF_MODE_BAKREGDATA_MANUAL				0x0a3						// Mode: Registry manually backup
+#define DEF_MODE_BAKREGDATA_AUTO				0x0a4						// Mode: Registry auto backup
+#define DEF_MODE_OPENDLG_MODAL					0x0a5						// Modal dialog
+#define DEF_MODE_OPENDLG_MODELESS				0x0a6						// Modeless dialog
 
 // Define colors
-#define DEF_COLOR_RED							RGB(255,0,0)			// Color: Red
-#define DEF_COLOR_GREEN							RGB(0,255,0)			// Color: Green
-#define DEF_COLOR_YELLOW						RGB(255,255,0)			// Color: Yellow
-#define DEF_COLOR_BLUE							RGB(0,0,255)			// Color: Blue
-#define DEF_COLOR_WHITE							RGB(255,255,255)		// Color: White
-#define DEF_COLOR_BLACK							RGB(0,0,0)				// Color: Black
-#define DEF_COLOR_PINK							RGB(230,190,200)		// Color: Pink
-#define DEF_COLOR_SAKURA_PINK					RGB(250,224,216)		// Color: Sakura pink
-#define DEF_COLOR_ORANGE						RGB(255,127,40)			// Color: Orange
-#define DEF_COLOR_UMARINE_BLUE					RGB(63,72,204)			// Color: Ultramarine blue
-#define DEF_COLOR_INDIGO						RGB(75,0,130)			// Color: Indigo
-#define DEF_COLOR_VIOLET						RGB(238,130,238)		// Color: Violet
-#define DEF_COLOR_PURPLE						RGB(115,43,245)			// Color: Purple
-#define DEF_COLOR_SCARLET						RGB(255,36,0)			// Color: Scarlet
-#define DEF_COLOR_JADE							RGB(0,168,207)			// Color: Jade
-#define DEF_COLOR_EMERALD						RGB(80,200,120)			// Color: Emerald
-#define DEF_COLOR_GRAY							RGB(200,200,200)		// Color: Gray
-#define DEF_COLOR_DARK_GRAY						RGB(160,160,160)		// Color: Dark gray
-#define DEF_COLOR_BRIGHT_GRAY					RGB(240,240,240)		// Color: Bright gray
+#define DEF_COLOR_RED							RGB(255,0,0)				// Color: Red
+#define DEF_COLOR_GREEN							RGB(0,255,0)				// Color: Green
+#define DEF_COLOR_YELLOW						RGB(255,255,0)				// Color: Yellow
+#define DEF_COLOR_BLUE							RGB(0,0,255)				// Color: Blue
+#define DEF_COLOR_WHITE							RGB(255,255,255)			// Color: White
+#define DEF_COLOR_BLACK							RGB(0,0,0)					// Color: Black
+#define DEF_COLOR_PINK							RGB(230,190,200)			// Color: Pink
+#define DEF_COLOR_SAKURA_PINK					RGB(250,224,216)			// Color: Sakura pink
+#define DEF_COLOR_ORANGE						RGB(255,127,40)				// Color: Orange
+#define DEF_COLOR_UMARINE_BLUE					RGB(63,72,204)				// Color: Ultramarine blue
+#define DEF_COLOR_INDIGO						RGB(75,0,130)				// Color: Indigo
+#define DEF_COLOR_VIOLET						RGB(238,130,238)			// Color: Violet
+#define DEF_COLOR_PURPLE						RGB(115,43,245)				// Color: Purple
+#define DEF_COLOR_SCARLET						RGB(255,36,0)				// Color: Scarlet
+#define DEF_COLOR_JADE							RGB(0,168,207)				// Color: Jade
+#define DEF_COLOR_EMERALD						RGB(80,200,120)				// Color: Emerald
+#define DEF_COLOR_GRAY							RGB(200,200,200)			// Color: Gray
+#define DEF_COLOR_DARK_GRAY						RGB(160,160,160)			// Color: Dark gray
+#define DEF_COLOR_BRIGHT_GRAY					RGB(240,240,240)			// Color: Bright gray
 
 // Define log types
-#define LOGTYPE_NONE							0x00					// Not defined
-#define LOGTYPE_APP_EVENT						(LOGTYPE_NONE + 0x01)	// App event log
-#define LOGTYPE_HISTORY_LOG						(LOGTYPE_NONE + 0x02)	// Action log/history
-#define LOGTYPE_TRACE_ERROR						(LOGTYPE_NONE + 0x03)	// Trace error log
-#define LOGTYPE_TRACE_DEBUG						(LOGTYPE_NONE + 0x04)	// Trace debug log
-#define LOGTYPE_DEBUG_INFO						(LOGTYPE_NONE + 0x05)	// Debug info output log
+#define LOGTYPE_NONE							0x00						// Not defined
+#define LOGTYPE_APP_EVENT						(LOGTYPE_NONE + 0x01)		// App event log
+#define LOGTYPE_HISTORY_LOG						(LOGTYPE_NONE + 0x02)		// Action log/history
+#define LOGTYPE_TRACE_ERROR						(LOGTYPE_NONE + 0x03)		// Trace error log
+#define LOGTYPE_TRACE_DEBUG						(LOGTYPE_NONE + 0x04)		// Trace debug log
+#define LOGTYPE_DEBUG_INFO						(LOGTYPE_NONE + 0x05)		// Debug info output log
 
 // Define subdirectory names
 #define SUBFOLDER_LOG							_T(".\\Log")
@@ -363,7 +364,7 @@
 
 #define DEF_INTEGER_INVALID						-1							// Invalid integer number (equals -1)
 #define DEF_INTEGER_NULL						0							// Null integer number (equals 0)
-#define DEF_INTEGER_INFINITE					0							// Infinite (0 means "limitation not set")
+#define DEF_INTEGER_INFINITE					INFINITE					// Infinite (no limitation)
 #define DEF_BOOLVAL_CHECK						-1							// Checked
 #define DEF_BOOLVAL_UNCHECK						0							// Unchecked
 #define DEF_NUM_DAYSOFWEEK						7							// Number of days of week: 7 days

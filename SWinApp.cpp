@@ -7,6 +7,7 @@
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2024.11.19:		Create new
+//						<1> 2024.12.18:		Update to version 3.2
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //

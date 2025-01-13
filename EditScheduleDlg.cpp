@@ -8,6 +8,7 @@
 //		History:		<0> 2017.03.08:		Create new
 //						<1> 2024.01.27:		Update to version 3.0
 //						<2> 2024.10.27:		Implement Multi schedule function
+//						<3> 2024.12.18:		Update to version 3.2
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //

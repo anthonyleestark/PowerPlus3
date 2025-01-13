@@ -6,6 +6,7 @@
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2024.02.24:		Create new
+//						<1> 2024.12.18:		Update to version 3.2
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //
@@ -1401,6 +1402,12 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		// Invalid command
 		bInvalidCmdFlag = TRUE;
 	}
+
+	/*********************************************************************/
+	/*																	 */
+	/*					Post-processing and clean-up				     */
+	/*																	 */
+	/*********************************************************************/
 
 	// If command is invalid
 	if (bInvalidCmdFlag == TRUE) {
