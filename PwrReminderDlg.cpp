@@ -372,7 +372,7 @@ BOOL CPwrReminderDlg::OnInitDialog()
 
 	// Update data
 	UpdateDataItemList();
-	DisplayItemDetails(DEF_INTEGER_INVALID);
+	DisplayItemDetails(INT_INVALID);
 	RefreshDlgItemState(TRUE);
 
 	// Save dialog event log if enabled
@@ -407,12 +407,12 @@ void CPwrReminderDlg::OnClose()
 		// Exit current mode
 		int nConfirm = -1;
 		int nCurMode = GetCurMode();
-		if ((nCurMode == DEF_MODE_ADD) || (nCurMode == DEF_MODE_UPDATE)) {
+		if ((nCurMode == MODE_ADD) || (nCurMode == MODE_UPDATE)) {
 			// Show switch mode confirmation message
 			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Switch mode
-				SetCurMode(DEF_MODE_VIEW);
+				SetCurMode(MODE_VIEW);
 			}
 			return;
 		}
@@ -500,12 +500,12 @@ void CPwrReminderDlg::OnCancel()
 		// Exit current mode
 		int nConfirm = -1;
 		int nCurMode = GetCurMode();
-		if ((nCurMode == DEF_MODE_ADD) || (nCurMode == DEF_MODE_UPDATE)) {
+		if ((nCurMode == MODE_ADD) || (nCurMode == MODE_UPDATE)) {
 			// Show switch mode confirmation message
 			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Switch mode
-				SetCurMode(DEF_MODE_VIEW);
+				SetCurMode(MODE_VIEW);
 			}
 			return;
 		}
@@ -544,20 +544,20 @@ void CPwrReminderDlg::OnAdd()
 	int nCurMode = GetCurMode();
 
 	// Current mode: Add
-	if (nCurMode == DEF_MODE_ADD) {
+	if (nCurMode == MODE_ADD) {
 		// Add item
 		Add();
 
 		// Reset mode
-		SetCurMode(DEF_MODE_VIEW);
+		SetCurMode(MODE_VIEW);
 	}
 	// Current mode: Edit
-	else if (nCurMode == DEF_MODE_UPDATE) {
+	else if (nCurMode == MODE_UPDATE) {
 		// Do nothing
 	}
 	else {
 		// Switch mode
-		SetCurMode(DEF_MODE_ADD);
+		SetCurMode(MODE_ADD);
 	}
 }
 
@@ -579,7 +579,7 @@ void CPwrReminderDlg::OnEdit()
 	int nCurMode = GetCurMode();
 
 	// Mode: Edit
-	if (nCurMode == DEF_MODE_UPDATE) {
+	if (nCurMode == MODE_UPDATE) {
 		// Check if any item is selected or not
 		BOOL bIsSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
 
@@ -589,15 +589,15 @@ void CPwrReminderDlg::OnEdit()
 		}
 
 		// Reset mode
-		SetCurMode(DEF_MODE_VIEW);
+		SetCurMode(MODE_VIEW);
 	}
 	// Mode: Add
-	else if (nCurMode == DEF_MODE_ADD) {
+	else if (nCurMode == MODE_ADD) {
 		// Do nothing
 	}
 	else {
 		// Switch mode
-		SetCurMode(DEF_MODE_UPDATE);
+		SetCurMode(MODE_UPDATE);
 	}
 }
 
@@ -763,7 +763,7 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check read-only mode
 	int nCurMode = GetCurMode();
-	if ((nCurMode != DEF_MODE_INIT) && (nCurMode != DEF_MODE_VIEW))
+	if ((nCurMode != MODE_INIT) && (nCurMode != MODE_VIEW))
 		return;
 
 	// Display item details
@@ -792,13 +792,13 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check value validity
 	int nItemNum = GetItemNum();
-	if ((nClickedRow <= DEF_GRIDCTRL_ROWHEADER) || (nClickedRow > nItemNum)) {
+	if ((nClickedRow <= GRIDCTRL_INDEX_HEADER_ROW) || (nClickedRow > nItemNum)) {
 		return;
 	}
 
 	// Check read-only mode
 	int nCurMode = GetCurMode();
-	if ((nCurMode != DEF_MODE_INIT) && (nCurMode != DEF_MODE_VIEW))
+	if ((nCurMode != MODE_INIT) && (nCurMode != MODE_VIEW))
 		return;
 
 	// Success (return 0)
@@ -829,13 +829,13 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check value validity
 	int nItemNum = GetItemNum();
-	if ((nClickedRow <= DEF_GRIDCTRL_ROWHEADER) || (nClickedRow > nItemNum)) {
+	if ((nClickedRow <= GRIDCTRL_INDEX_HEADER_ROW) || (nClickedRow > nItemNum)) {
 		return;
 	}
 
 	// Check read-only mode
 	int nCurMode = GetCurMode();
-	if ((nCurMode != DEF_MODE_INIT) && (nCurMode != DEF_MODE_VIEW))
+	if ((nCurMode != MODE_INIT) && (nCurMode != MODE_VIEW))
 		return;
 
 	// Success (return 0)
@@ -1124,9 +1124,9 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	if (m_pRmdPreviewMsgDlg != NULL) {
 		// Request close message dialog
 		LRESULT resClosePreview = m_pRmdPreviewMsgDlg->RequestCloseDialog();
-		if (resClosePreview != DEF_RESULT_SUCCESS) {
+		if (resClosePreview != RESULT_SUCCESS) {
 			// Request denied
-			return LRESULT(DEF_RESULT_FAILED);
+			return LRESULT(RESULT_FAILED);
 		}
 	}
 
@@ -1134,22 +1134,22 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	if (m_pRepeatSetDlg != NULL) {
 		// Request close dialog
 		LRESULT resCloseRepeatSet = m_pRepeatSetDlg->RequestCloseDialog();
-		if (resCloseRepeatSet != DEF_RESULT_SUCCESS)
+		if (resCloseRepeatSet != RESULT_SUCCESS)
 			return resCloseRepeatSet;
 	}
 
 	// Exit current mode
 	int nConfirm = -1;
 	int nCurMode = GetCurMode();
-	if ((nCurMode == DEF_MODE_ADD) || (nCurMode == DEF_MODE_UPDATE)) {
+	if ((nCurMode == MODE_ADD) || (nCurMode == MODE_UPDATE)) {
 		nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Switch mode
-			SetCurMode(DEF_MODE_VIEW);
+			SetCurMode(MODE_VIEW);
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(DEF_RESULT_FAILED);
+			return LRESULT(RESULT_FAILED);
 		}
 	}
 
@@ -1163,7 +1163,7 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(DEF_RESULT_FAILED);
+			return LRESULT(RESULT_FAILED);
 		}
 	}
 
@@ -1320,9 +1320,9 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(DEF_COLOR_WHITE);
-	pCell->SetTextClr(DEF_COLOR_BLACK);
-	pCell->SetHeight(DEF_GRIDCTRL_ROWHEIGHT);
+	pCell->SetBackClr(COLOR_WHITE);
+	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW);
 
 	// Table format and properties
 	int nRowNum = (GetItemNum() + ROW_FIXED_NUM);
@@ -1333,7 +1333,7 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	m_pDataItemListTable->SetFixedColumnCount(COL_FIXED_NUM);
 	m_pDataItemListTable->SetRowCount(nRowNum);
 	m_pDataItemListTable->SetFixedRowCount(COL_FIXED_NUM);
-	m_pDataItemListTable->SetRowHeight(DEF_GRIDCTRL_ROWHEADER, DEF_GRIDCTRL_HEADERHEIGHT);
+	m_pDataItemListTable->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
 
 	// Draw table
 	DrawDataTable(m_pszFrameWndSize, nColNum, nRowNum, FALSE, ptrLanguage);
@@ -1396,45 +1396,45 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 
 	// Read-only mode --> Change cell color
 	if (bReadOnly == TRUE) {
-		pCell->SetBackClr(DEF_COLOR_BRIGHT_GRAY);
-		pCell->SetTextClr(DEF_COLOR_DARK_GRAY);
+		pCell->SetBackClr(COLOR_BRIGHT_GRAY);
+		pCell->SetTextClr(COLOR_DARK_GRAY);
 	}
 	else {
-		pCell->SetBackClr(DEF_COLOR_WHITE);
-		pCell->SetTextClr(DEF_COLOR_BLACK);
+		pCell->SetBackClr(COLOR_WHITE);
+		pCell->SetTextClr(COLOR_BLACK);
 	}
 
 	// Setup display size
 	int nFrameHeight = pszFrameWndSize->cy;
 	int nFrameWidth = pszFrameWndSize->cx;
-	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
+	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL_WIN10;
-		//nFrameHeight -= DEF_OFFSET_LISTCTRL_WIN10;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
+		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL;
-		//nFrameHeight -= DEF_OFFSET_LISTCTRL;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
+		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL;
 	}
-	if ((DEF_GRIDCTRL_HEADERHEIGHT + ((nRowNum - 1) * DEF_GRIDCTRL_ROWHEIGHT)) >= nFrameHeight) {
+	if ((GRIDCTRL_HEIGHT_HEADER + ((nRowNum - 1) * GRIDCTRL_HEIGHT_ROW)) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + DEF_OFFSET_VSCRLBRWIDTH);
+		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
 	}
 
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pDataItemListTable, DEF_GRIDCTRL_ROWHEADER, nCol);
+		SetFixedCellStyle(m_pDataItemListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = DEF_STRING_EMPTY;
+		CString strHdrTitle = STRING_EMPTY;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
-		if (nHeaderTitleID != DEF_INTEGER_NULL) {
+		if (nHeaderTitleID != INT_NULL) {
 			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pDataItemListTable->SetItemText(DEF_GRIDCTRL_ROWHEADER, nCol, strHdrTitle);
+		m_pDataItemListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, strHdrTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -1453,7 +1453,7 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 	// Setup rows
 	int nColStyle = -1;
 	int nCurMode = GetCurMode();
-	UINT nItemState = DEF_INTEGER_NULL;
+	UINT nItemState = INT_NULL;
 	for (int nRow = 1; nRow < nRowNum; nRow++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 			// Get column style & item state
@@ -1500,7 +1500,7 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 				else {
 					// Set margin (left alignment)
 					if (pCell == NULL) continue;
-					pCell->SetMargin(DEF_GRIDCELL_LEFTMARGIN);
+					pCell->SetMargin(GRIDCELL_MARGIN_LEFT);
 				}
 			}
 		}
@@ -1546,7 +1546,7 @@ void CPwrReminderDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 {
 	int nCurMode = GetCurMode();
-	if (nCurMode == DEF_MODE_INIT) {
+	if (nCurMode == MODE_INIT) {
 		// Unlock dialog items
 		SetLockState(FALSE);
 
@@ -1558,12 +1558,12 @@ void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 		DisableTable(FALSE);
 
 		// Refresh detail view
-		RefreshDetailView(DEF_MODE_INIT);
+		RefreshDetailView(MODE_INIT);
 
 		// Refresh dialog item states
 		RefreshDlgItemState(TRUE);
 	}
-	else if (nCurMode == DEF_MODE_VIEW) {
+	else if (nCurMode == MODE_VIEW) {
 		// Lock dialog items
 		SetLockState(FALSE);
 
@@ -1575,13 +1575,13 @@ void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 		DisableTable(FALSE);
 
 		// Refresh detail view
-		RefreshDetailView(DEF_MODE_VIEW);
+		RefreshDetailView(MODE_VIEW);
 		DisplayItemDetails(m_nCurSelIndex);
 
 		// Refresh dialog item states
 		RefreshDlgItemState(TRUE);
 	}
-	else if (nCurMode == DEF_MODE_ADD) {
+	else if (nCurMode == MODE_ADD) {
 		// Lock dialog items
 		SetLockState(TRUE);
 
@@ -1602,10 +1602,10 @@ void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 		DisableTable(TRUE);
 
 		// Refresh detail view
-		RefreshDetailView(DEF_MODE_ADD);
-		DisplayItemDetails(DEF_INTEGER_INVALID);
+		RefreshDetailView(MODE_ADD);
+		DisplayItemDetails(INT_INVALID);
 	}
-	else if (nCurMode == DEF_MODE_UPDATE) {
+	else if (nCurMode == MODE_UPDATE) {
 		// Lock dialog items
 		SetLockState(TRUE);
 
@@ -1626,9 +1626,9 @@ void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 		DisableTable(TRUE);
 
 		// Refresh detail view
-		RefreshDetailView(DEF_MODE_UPDATE);
+		RefreshDetailView(MODE_UPDATE);
 	}
-	else if (nCurMode == DEF_MODE_DISABLE) {
+	else if (nCurMode == MODE_DISABLE) {
 		// Lock dialog items
 		SetLockState(TRUE);
 
@@ -1859,7 +1859,7 @@ void CPwrReminderDlg::SetupDialogItemState()
 
 		// Set buddy: Time edit control
 		m_pEvtSetTimeSpin->SetBuddy(m_pEvtSetTimeEdit);
-		m_pEvtSetTimeSpin->SetRange(DEF_SPINCTRL_TIMEMINPOS, DEF_SPINCTRL_TIMEMAXPOS);
+		m_pEvtSetTimeSpin->SetRange(TIMESPIN_MIN, TIMESPIN_MAX);
 		m_pEvtSetTimeSpin->SetPos(0);
 	}
 
@@ -2010,18 +2010,18 @@ void CPwrReminderDlg::RedrawDataTable(BOOL bReadOnly /* = FALSE */)
 void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 {
 	// Check index validity
-	if ((nIndex < DEF_INTEGER_INVALID) || (nIndex > GetItemNum()))
+	if ((nIndex < INT_INVALID) || (nIndex > GetItemNum()))
 		return;
 
 	// Get item at index
 	PWRREMINDERITEM pwrItem;
-	if (nIndex != DEF_INTEGER_INVALID) {
+	if (nIndex != INT_INVALID) {
 		pwrItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 	}
 
 	// Init default data for mode add
-	if (GetCurMode() == DEF_MODE_ADD) {
-		pwrItem.strMessage = DEF_STRING_EMPTY;
+	if (GetCurMode() == MODE_ADD) {
+		pwrItem.strMessage = STRING_EMPTY;
 		pwrItem.nEventID = PREVT_AT_SETTIME;
 		pwrItem.stTime = GetCurSysTime();
 		pwrItem.dwMsgStyle = PRSTYLE_MSGBOX;
@@ -2031,7 +2031,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	// If item is empty
 	if (pwrItem.IsEmpty()) {
 		// TODO: Disable all detail item controls
-		RefreshDetailView(DEF_MODE_INIT);
+		RefreshDetailView(MODE_INIT);
 	}
 	else {
 		// TODO: Update current displaying item index
@@ -2198,13 +2198,13 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 {
 	// Set state and init value by mode
 	BOOL bEnable = TRUE;
-	if ((nMode == DEF_MODE_INIT) || (nMode == DEF_MODE_VIEW)) {
+	if ((nMode == MODE_INIT) || (nMode == MODE_VIEW)) {
 		bEnable = FALSE;
 	}
-	else if ((nMode == DEF_MODE_ADD) || (nMode == DEF_MODE_UPDATE)) {
+	else if ((nMode == MODE_ADD) || (nMode == MODE_UPDATE)) {
 		bEnable = TRUE;
 	}
-	else if (nMode == DEF_MODE_DISABLE) {
+	else if (nMode == MODE_DISABLE) {
 		bEnable = FALSE;
 	}
 
@@ -2291,11 +2291,11 @@ void CPwrReminderDlg::UpdateMsgCounter(int nCount)
 	if (pCounter == NULL) return;
 
 	// Check counter value validity
-	if ((nCount < 0) || (nCount > DEF_STRING_MAXLENGTH)) return;
+	if ((nCount < 0) || (nCount > MAX_STRING_LENGTH)) return;
 
 	// Display counter
 	CString strCountFormat;
-	strCountFormat.Format(_T("%d/%d"), nCount, DEF_STRING_MAXLENGTH);
+	strCountFormat.Format(_T("%d/%d"), nCount, MAX_STRING_LENGTH);
 	pCounter->SetWindowText(strCountFormat);
 }
 
@@ -2390,7 +2390,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 	m_pwrReminderDataTemp.Copy(m_pwrReminderData);
 
 	// Reset change flag
-	m_bChangeFlag = FALSE;
+	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
 
 	// Validate data and auto-correction
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
@@ -2398,7 +2398,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 		if (!Validate(pwrItem, TRUE, TRUE)) {
 			// Update temp data
 			m_pwrReminderDataTemp.Update(pwrItem);
-			m_bChangeFlag = TRUE;	// Update change flag
+			SetFlagValue(FLAGID_CHANGEFLAG, TRUE);	// Update change flag
 		}
 	}
 
@@ -2434,7 +2434,7 @@ BOOL CPwrReminderDlg::SavePwrReminderData()
 	pMainDlg->PostMessage(SM_APP_UPDATE_PWRREMINDERDATA, NULL, NULL);
 
 	// Reset change flag
-	m_bChangeFlag = FALSE;
+	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
 	
 	return TRUE;
 }
@@ -2675,7 +2675,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	// Check message content validity
 	CString strMsgContent = pwrDispItem.strMessage;
 	if ((strMsgContent.IsEmpty()) ||
-		(strMsgContent == DEF_STRING_NULL)) {
+		(strMsgContent == STRING_NULL)) {
 		// Invalid message content
 		return;
 	}
@@ -2769,7 +2769,7 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 
 		/*-----------------------Message content-----------------------*/
 
-		CString strTemp = DEF_STRING_EMPTY;
+		CString strTemp = STRING_EMPTY;
 		if (m_pMsgStringEdit != NULL) {
 			m_pMsgStringEdit->GetWindowText(strTemp);
 			pwrItem.strMessage = strTemp;
@@ -2860,15 +2860,15 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 
 		BOOL bEnable = TRUE;
 		int nMode = GetCurMode();
-		if ((nMode == DEF_MODE_INIT) || (nMode == DEF_MODE_VIEW)) {
+		if ((nMode == MODE_INIT) || (nMode == MODE_VIEW)) {
 			// Disable items
 			bEnable = FALSE;
 		}
-		else if ((nMode == DEF_MODE_ADD) || (nMode == DEF_MODE_UPDATE)) {
+		else if ((nMode == MODE_ADD) || (nMode == MODE_UPDATE)) {
 			// Enable items
 			bEnable = TRUE;
 		}
-		else if (nMode == DEF_MODE_DISABLE) {
+		else if (nMode == MODE_DISABLE) {
 			// Disable items
 			bEnable = FALSE;
 		}
@@ -2900,7 +2900,7 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		/*----------------------------Event----------------------------*/
 
 		BOOL bTemp = FALSE;
-		int nTemp = DEF_INTEGER_INVALID;
+		int nTemp = INT_INVALID;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
 		if (pWnd != NULL) {
 			pWnd->EnableWindow(bEnable);
@@ -3022,14 +3022,14 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			pwrItem.strMessage = GetLanguageString(pLang, PWRRMD_MSGCONTENT_SAMPLE);
-			if (_tcscmp(pwrItem.strMessage, DEF_STRING_NULL)) {
+			if (_tcscmp(pwrItem.strMessage, STRING_NULL)) {
 				// Re-format sample message
 				CString strFormat = pwrItem.strMessage;
 				pwrItem.strMessage.Format(strFormat, pwrItem.nItemID);
 			}
 		}
 	}
-	else if (pwrItem.strMessage.GetLength() > DEF_STRING_MAXLENGTH) {
+	else if (pwrItem.strMessage.GetLength() > MAX_STRING_LENGTH) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3037,7 +3037,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Only get character numbers in range
-			CString strTemp = pwrItem.strMessage.Left(DEF_STRING_MAXLENGTH);
+			CString strTemp = pwrItem.strMessage.Left(MAX_STRING_LENGTH);
 			pwrItem.strMessage = strTemp;
 		}
 	}

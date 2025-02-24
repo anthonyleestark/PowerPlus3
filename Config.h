@@ -120,11 +120,11 @@ namespace RegFuncs
 	// Delete section
 	BOOL DeleteLayoutInfoSection(void);
 
-	// Read/write other variables
-	BOOL GetGlobalVar(UINT nSubSection, UINT nKeyName, int& nRef);
-	BOOL WriteGlobalVar(UINT nSubSection, UINT nKeyName, int nValue);
-	BOOL GetGlobalVar(UINT nSubSection, UINT nKeyName, CString& strRef);
-	BOOL WriteGlobalVar(UINT nSubSection, UINT nKeyName, CString strValue);
+	// Read/write other global data variables
+	BOOL GetGlobalData(UINT nSubSection, UINT nKeyName, int& nRef);
+	BOOL WriteGlobalData(UINT nSubSection, UINT nKeyName, int nValue);
+	BOOL GetGlobalData(UINT nSubSection, UINT nKeyName, CString& strRef);
+	BOOL WriteGlobalData(UINT nSubSection, UINT nKeyName, CString strValue);
 };
 
 ////////////////////////////////////////////////////////
@@ -155,6 +155,7 @@ public:
 	void CloseBakFile();
 };
 
+#ifdef _CONFIG_FILE_TEST
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //	Declare structs and components using for INI file processing
@@ -298,5 +299,6 @@ public:
 	BOOL ReadFile(INIFile& iniFile);
 	BOOL WriteFile(INIFile& iniFile);
 };
+#endif	// ifdef _CONFIG_FILE_TEST
 
 #endif	// ifndef _CONFIG_H_INCLUDED

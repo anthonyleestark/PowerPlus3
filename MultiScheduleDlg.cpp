@@ -310,7 +310,7 @@ void CMultiScheduleDlg::OnClose()
 	if (!IsForceClosingByRequest()) {
 
 		// If data changed, ask for saving before closing dialog
-		if (m_bChangeFlag == TRUE) {
+		if (GetFlagValue(FLAGID_CHANGEFLAG) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			CString strMessage = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
@@ -366,12 +366,12 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 	if (m_pEditScheduleDlg != NULL) {
 		// Request close dialog
 		LRESULT resCloseReq = m_pEditScheduleDlg->RequestCloseDialog();
-		if (resCloseReq != DEF_RESULT_SUCCESS)
+		if (resCloseReq != RESULT_SUCCESS)
 			return resCloseReq;
 	}
 
 	// If data changed, ask for saving before closing dialog
-	if (m_bChangeFlag == TRUE) {
+	if (GetFlagValue(FLAGID_CHANGEFLAG) == TRUE) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		CString strMessage = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
@@ -384,7 +384,7 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(DEF_RESULT_FAILED);
+			return LRESULT(RESULT_FAILED);
 		}
 	}
 
@@ -473,9 +473,9 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(DEF_COLOR_WHITE);
-	pCell->SetTextClr(DEF_COLOR_BLACK);
-	pCell->SetHeight(DEF_GRIDCTRL_ROWHEIGHTEX);
+	pCell->SetBackClr(COLOR_WHITE);
+	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
 
 	// Table format and properties
 	int nRowNum = (GetTotalItemNum() + ROW_FIXED_NUM);
@@ -486,7 +486,7 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	m_pDataItemListTable->SetFixedColumnCount(COL_FIXED_NUM);
 	m_pDataItemListTable->SetRowCount(nRowNum);
 	m_pDataItemListTable->SetFixedRowCount(ROW_FIXED_NUM);
-	m_pDataItemListTable->SetRowHeight(DEF_GRIDCTRL_ROWHEADER, DEF_GRIDCTRL_HEADERHEIGHT);
+	m_pDataItemListTable->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
 
 	// Draw table
 	DrawDataTable(GetReadOnlyMode());
@@ -537,12 +537,12 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 
 	// Read-only mode --> Change cell color
 	if (bReadOnly == TRUE) {
-		pCell->SetBackClr(DEF_COLOR_BRIGHT_GRAY);
-		pCell->SetTextClr(DEF_COLOR_DARK_GRAY);
+		pCell->SetBackClr(COLOR_BRIGHT_GRAY);
+		pCell->SetTextClr(COLOR_DARK_GRAY);
 	}
 	else {
-		pCell->SetBackClr(DEF_COLOR_WHITE);
-		pCell->SetTextClr(DEF_COLOR_BLACK);
+		pCell->SetBackClr(COLOR_WHITE);
+		pCell->SetTextClr(COLOR_BLACK);
 	}
 	
 	// Table properties
@@ -552,34 +552,34 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 	// Setup display size
 	int nFrameHeight = m_pszDataTableFrameSize->cy;
 	int nFrameWidth = m_pszDataTableFrameSize->cx;
-	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
+	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL_WIN10;
-		//nFrameHeight -= DEF_OFFSET_LISTCTRL_WIN10;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
+		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL;
-		//nFrameHeight -= DEF_OFFSET_LISTCTRL;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
+		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL;
 	}
-	if ((DEF_GRIDCTRL_HEADERHEIGHT + ((nRowNum - 1) * DEF_GRIDCTRL_ROWHEIGHTEX)) >= nFrameHeight) {
+	if ((GRIDCTRL_HEIGHT_HEADER + ((nRowNum - 1) * GRIDCTRL_HEIGHT_ROW_EX)) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + DEF_OFFSET_VSCRLBRWIDTH);
+		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
 	}
 
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pDataItemListTable, DEF_GRIDCTRL_ROWHEADER, nCol);
+		SetFixedCellStyle(m_pDataItemListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = DEF_STRING_EMPTY;
+		CString strHdrTitle = STRING_EMPTY;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
-		if (nHeaderTitleID != DEF_INTEGER_NULL) {
+		if (nHeaderTitleID != INT_NULL) {
 			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pDataItemListTable->SetItemText(DEF_GRIDCTRL_ROWHEADER, nCol, strHdrTitle);
+		m_pDataItemListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, strHdrTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -598,7 +598,7 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 
 	// Setup rows
 	int nColStyle = -1;
-	UINT nItemState = DEF_INTEGER_NULL;
+	UINT nItemState = INT_NULL;
 	for (int nRow = 1; nRow < nRowNum; nRow++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 
@@ -611,8 +611,8 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 			if ((nRow == ROW_INDEX_DEFAULT) && (nColStyle != COLSTYLE_FIXED) && (bReadOnly != TRUE)) {
 				CGridCellBase* pCellBase = m_pDataItemListTable->GetCell(nRow, nCol);
 				if (pCellBase != NULL) {
-					pCellBase->SetBackClr(DEF_COLOR_YELLOW);
-					pCellBase->SetTextClr(DEF_COLOR_RED);
+					pCellBase->SetBackClr(COLOR_YELLOW);
+					pCellBase->SetTextClr(COLOR_RED);
 				}
 			}
 
@@ -655,7 +655,7 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 				else {
 					// Set margin (left alignment)
 					if (pCell == NULL) continue;
-					pCell->SetMargin(DEF_GRIDCELL_LEFTMARGIN);
+					pCell->SetMargin(GRIDCELL_MARGIN_LEFT);
 				}
 			}
 		}
@@ -1079,7 +1079,7 @@ BOOL CMultiScheduleDlg::LoadScheduleSettings()
 	m_schScheduleTemp.Copy(m_schSchedule);
 
 	// Reset change flag
-	m_bChangeFlag = FALSE;
+	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
 
 	return TRUE;
 }
@@ -1112,7 +1112,7 @@ BOOL CMultiScheduleDlg::SaveScheduleSettings()
 	pMainDlg->PostMessage(SM_APP_UPDATE_SCHEDULEDATA, NULL, NULL);
 
 	// Reset change flag
-	m_bChangeFlag = FALSE;
+	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
 
 	return TRUE;
 }
@@ -1393,7 +1393,7 @@ BOOL CMultiScheduleDlg::Validate(SCHEDULEITEM& schItem, BOOL bShowMsg /* = FALSE
 	}
 
 	// Check action ID
-	if ((schItem.nAction < DEF_APP_ACTION_NOTHING) || (schItem.nAction > DEF_APP_ACTION_HIBERNATE)) {
+	if ((schItem.nAction < APP_ACTION_NOTHING) || (schItem.nAction > APP_ACTION_HIBERNATE)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIONID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -1529,14 +1529,14 @@ void CMultiScheduleDlg::OnAdd()
 		m_pEditScheduleDlg = new CEditScheduleDlg;
 		m_pEditScheduleDlg->SetParentWnd(this);
 		m_pEditScheduleDlg->SetScheduleItem(schTemp);
-		m_pEditScheduleDlg->SetDispMode(DEF_MODE_ADD);
+		m_pEditScheduleDlg->SetDispMode(MODE_ADD);
 		m_pEditScheduleDlg->DoModal();
 	}
 	else {
 		// Update dialog
 		m_pEditScheduleDlg->SetParentWnd(this);
 		m_pEditScheduleDlg->SetScheduleItem(schTemp);
-		m_pEditScheduleDlg->SetDispMode(DEF_MODE_ADD);
+		m_pEditScheduleDlg->SetDispMode(MODE_ADD);
 		m_pEditScheduleDlg->ShowWindow(SW_SHOW);
 	}
 }
@@ -1585,14 +1585,14 @@ void CMultiScheduleDlg::OnEdit()
 			m_pEditScheduleDlg = new CEditScheduleDlg;
 			m_pEditScheduleDlg->SetParentWnd(this);
 			m_pEditScheduleDlg->SetScheduleItem(schItem);
-			m_pEditScheduleDlg->SetDispMode(DEF_MODE_UPDATE);
+			m_pEditScheduleDlg->SetDispMode(MODE_UPDATE);
 			m_pEditScheduleDlg->DoModal();
 		}
 		else {
 			// Update dialog
 			m_pEditScheduleDlg->SetParentWnd(this);
 			m_pEditScheduleDlg->SetScheduleItem(schItem);
-			m_pEditScheduleDlg->SetDispMode(DEF_MODE_UPDATE);
+			m_pEditScheduleDlg->SetDispMode(MODE_UPDATE);
 			m_pEditScheduleDlg->ShowWindow(SW_SHOW);
 		}
 	}
@@ -1759,14 +1759,14 @@ void CMultiScheduleDlg::OnViewDetails()
 			m_pEditScheduleDlg = new CEditScheduleDlg;
 			m_pEditScheduleDlg->SetParentWnd(this);
 			m_pEditScheduleDlg->SetScheduleItem(schItem);
-			m_pEditScheduleDlg->SetDispMode(DEF_MODE_VIEW);
+			m_pEditScheduleDlg->SetDispMode(MODE_VIEW);
 			m_pEditScheduleDlg->DoModal();
 		}
 		else {
 			// Update dialog
 			m_pEditScheduleDlg->SetParentWnd(this);
 			m_pEditScheduleDlg->SetScheduleItem(schItem);
-			m_pEditScheduleDlg->SetDispMode(DEF_MODE_VIEW);
+			m_pEditScheduleDlg->SetDispMode(MODE_VIEW);
 			m_pEditScheduleDlg->ShowWindow(SW_SHOW);
 		}
 	}
@@ -1877,7 +1877,7 @@ void CMultiScheduleDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check value validity
 	int nItemNum = GetTotalItemNum();
-	if ((nClickedRow <= DEF_GRIDCTRL_ROWHEADER) || (nClickedRow > nItemNum)) {
+	if ((nClickedRow <= GRIDCTRL_INDEX_HEADER_ROW) || (nClickedRow > nItemNum)) {
 		return;
 	}
 
@@ -1909,7 +1909,7 @@ void CMultiScheduleDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult
 
 	// Check value validity
 	int nItemNum = GetTotalItemNum();
-	if ((nClickedRow <= DEF_GRIDCTRL_ROWHEADER) || (nClickedRow > nItemNum)) {
+	if ((nClickedRow <= GRIDCTRL_INDEX_HEADER_ROW) || (nClickedRow > nItemNum)) {
 		return;
 	}
 
@@ -1940,7 +1940,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 
 		// Initialize info data
 		SCHEDULEITEM schItemTemp;
-		int nMode = DEF_MODE_INIT;
+		int nMode = MODE_INIT;
 		int nRetFlag = RETFLAG_INVALID;
 
 		// Update info data
@@ -1953,11 +1953,11 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 		// Validate return info
 		if ((!schItemTemp.IsEmpty()) && (nRetFlag == RETFLAG_UPDATE)) {
 			// Update data by mode
-			if (nMode == DEF_MODE_ADD) {
+			if (nMode == MODE_ADD) {
 				// Add item
 				Add(schItemTemp);
 			}
-			else if (nMode == DEF_MODE_UPDATE) {
+			else if (nMode == MODE_UPDATE) {
 				// Edit item --> Update changes
 				Update(schItemTemp);
 			}
@@ -1971,7 +1971,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 		}
 	}
 
-	return LRESULT(DEF_RESULT_SUCCESS);	// ERROR_SUCCESS
+	return LRESULT(RESULT_SUCCESS);	// ERROR_SUCCESS
 }
 
 //////////////////////////////////////////////////////////////////////////

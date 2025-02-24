@@ -347,7 +347,7 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		m_pSnoozeIntervalSpin->SetBuddy(m_pSnoozeIntervalEdit);
 
 		// Set spin edit value
-		m_pSnoozeIntervalSpin->SetRange(DEF_SPINCTRL_SNOOZEMINPOS, DEF_SPINCTRL_SNOOZEMAXPOS);
+		m_pSnoozeIntervalSpin->SetRange(MIN_SNOOZETIME, MAX_SNOOZETIME);
 		m_pSnoozeIntervalSpin->SetPos(nDefaultSnoozeMin);
 		SetSnoozeIntervalEdit(nDefaultSnoozeMin);
 
@@ -367,8 +367,8 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 
 void CRmdRepeatSetDlg::RefreshDlgItemState()
 {
-	int nRepeatState = DEF_INTEGER_NULL;
-	int nSnoozeState = DEF_INTEGER_NULL;
+	int nRepeatState = INT_NULL;
+	int nSnoozeState = INT_NULL;
 
 	// Update checkbox checked state
 	if (m_pRepeatEnableChk != NULL) {
@@ -435,7 +435,7 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 
 	// Get format string
 	CString strFormat = GetLanguageString(pAppLang, PWRRMD_REPEATSET_SNOOZEINTERVAL);
-	if (!_tcscmp(strFormat, DEF_STRING_NULL)) return;
+	if (!_tcscmp(strFormat, STRING_NULL)) return;
 
 	// Check validity
 	if (((nValue * 60) < DEF_REPEATSET_MIN_SNOOZE) ||

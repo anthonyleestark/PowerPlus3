@@ -23,6 +23,7 @@
 #pragma message("--Language: Resource2.h not included")
 #endif
 
+
 //////////////////////////////////////////////////
 // Implementation
 
@@ -65,7 +66,15 @@ typedef const std::vector<LANGTEXT> LANGTABLE, *LANGTABLE_PTR;
 
 static LANGTABLE langtable_en_US
 {
-/*--------ActionName ID-----------------------------------------------------------------Language String---------------------------------------------------------------*/
+/*-------Language Info ID-------------------------------------------------------------Language Info Details-----------------------------------------------------------*/
+	{ LANGPACKINFO_LANGPACKID,								_T("en_US") },
+	{ LANGPACKINFO_LANGNAMEID,								_T("English") },
+	{ LANGPACKINFO_LANGNAMEFULL,							_T("English") },
+	{ LANGPACKINFO_DESCRIPTIONID,							_T("English (United States)") },
+	{ LANGPACKINFO_DESCRIPTIONFULL,							_T("English (United States)")},
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-------Action Name ID-----------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ ACTION_NAME_NOTHING,									_T("Do nothing") },
 	{ ACTION_NAME_DISPLAYOFF,								_T("Turn off display") },
 	{ ACTION_NAME_SLEEP,									_T("Sleep") },
@@ -522,7 +531,15 @@ static LANGTABLE langtable_en_US
 
 static LANGTABLE langtable_vi_VN
 {
-/*--------ActionName ID-----------------------------------------------------Language String---------------------------------------------------------------------------*/
+/*-------Language Info ID-------------------------------------------------------------Language Info Details-----------------------------------------------------------*/
+	{ LANGPACKINFO_LANGPACKID,								_T("vi_VN") },
+	{ LANGPACKINFO_LANGNAMEID,								_T("Vietnamese") },
+	{ LANGPACKINFO_LANGNAMEFULL,							_T("Tiếng Việt") },
+	{ LANGPACKINFO_DESCRIPTIONID,							_T("Vietnamese (Vietnam)") },
+	{ LANGPACKINFO_DESCRIPTIONFULL,							_T("Tiếng Việt (Việt Nam)") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*--------ActionName ID----------------------------------------------------------------Language String----------------------------------------------------------------*/
 	{ ACTION_NAME_NOTHING,									_T("Không làm gì") },
 	{ ACTION_NAME_DISPLAYOFF,								_T("Tắt màn hình") },
 	{ ACTION_NAME_SLEEP,									_T("Ngủ") },
@@ -979,6 +996,14 @@ static LANGTABLE langtable_vi_VN
 
 static LANGTABLE langtable_zh_CH
 {
+/*-------Language Info ID-------------------------------------------------------------Language Info Details-----------------------------------------------------------*/
+	{ LANGPACKINFO_LANGPACKID,								_T("zh_CH") },
+	{ LANGPACKINFO_LANGNAMEID,								_T("Simplified Chinese") },
+	{ LANGPACKINFO_LANGNAMEFULL,							_T("简体中文") },
+	{ LANGPACKINFO_DESCRIPTIONID,							_T("Simplified Chinese (China mainland)") },
+	{ LANGPACKINFO_DESCRIPTIONFULL,							_T("简体中文（中国大陆）") },
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
 /*--------ActionName ID-----------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ ACTION_NAME_NOTHING,									_T("不做任何事") },
 	{ ACTION_NAME_DISPLAYOFF,								_T("关闭显示器") },

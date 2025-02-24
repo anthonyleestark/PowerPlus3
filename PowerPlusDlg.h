@@ -86,6 +86,7 @@ private:
 	CComboBox m_cmbLanguages;
 
 	// Boolean variables for checkboxes
+	BOOL m_bRMBShowMenu;
 	BOOL m_bShowDlgAtStartup;
 	BOOL m_bStartupEnabled;
 	BOOL m_bConfirmAction;
@@ -93,7 +94,6 @@ private:
 	BOOL m_bSaveAppEventLog;
 	BOOL m_bRunAsAdmin;
 	BOOL m_bShowErrorMsg;
-	BOOL m_bRMBShowMenu;
 	BOOL m_bNotifySchedule;
 	BOOL m_bAllowCancelSchedule;
 	BOOL m_bEnableBackgroundHotkey;
@@ -118,7 +118,8 @@ private:
 
 	// Other flags
 	BOOL m_bRestartAsAdminFlag;
-	int	 m_nPwrBroadcastSkipCount;
+	INT  m_nPwrBroadcastSkipCount;
+	BOOL m_bWTSSessionNotifyRegistered;
 
 	// Child dialogs
 	CAboutDlg*			m_pAboutDlg;
@@ -169,6 +170,7 @@ protected:
 	afx_msg LRESULT OnShowErrorMessage(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnQuerryEndSession(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnWTSSessionChange(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -213,15 +215,17 @@ private:
 	BOOL ExecuteAction(UINT nActionType, WPARAM wParam = NULL, LPARAM lParam = NULL);
 	void ApplySettings(BOOL bMinimize);
 	void ReloadSettings(void);
+	void SetDefaultConfig(void);
+	void RestartApp(BOOL bRestartAsAdmin);
+	void ExitApp(int nExitCode);
 
-	void ShowDialog(HWND hWnd, BOOL bShowFlag = TRUE);
+	// Dialog and window functions
 	void ShowDialog(CWnd* pWnd, BOOL bShowFlag = TRUE);
 	void OpenChildDialogEx(UINT nDialogID);
-	void OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode = FALSE, int nOpenMode = DEF_MODE_OPENDLG_MODAL);
-	BOOL OpenFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir = DEF_STRING_EMPTY);
-	void RestartApp(BOOL bRestartAsAdmin);
+	void OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode = FALSE, int nOpenMode = MODE_OPENDLG_MODAL);
+	BOOL OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir = STRING_EMPTY);
 
-	// Advanced features functions
+	// Action Schedule feature functions
 	BOOL ProcessActionSchedule(void);
 	void ReupdateActionScheduleData(void);
 	void SetActionScheduleSkip(const SCHEDULEITEM& schItem, int nSkipFlag);
@@ -230,9 +234,13 @@ private:
 	BOOL GetActionScheduleSkipStatus(UINT nItemID);
 	BOOL GetActionScheduleSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
 
+	// HotkeySet feature functions
 	void SetupBackgroundHotkey(int nMode);
 	BOOL ProcessHotkey(int nHotkeyID);
+	void RegisterSessionNotification(int nMode);
+	BOOL ProcessLockStateHotkey(DWORD dwHKeyParam);
 
+	// Power Reminder feature functions
 	BOOL ExecutePowerReminder(UINT nExecEventID);
 	int  DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem);
 	void ReupdatePwrReminderData(void);
@@ -248,6 +256,7 @@ private:
 	// History and logging functions
 	void OutputScheduleEventLog(USHORT usEvent, const SCHEDULEITEM& schItem);
 	void OutputPwrReminderEventLog(USHORT usEvent, const PWRREMINDERITEM& pwrItem);
+	void InitPwrActionHistoryInfo(UINT nActionID, BOOL bResult, DWORD dwErrorCode);
 	void InitScheduleHistoryInfo(const SCHEDULEITEM& schItem);
 	void InitHotkeyHistoryInfo(UINT nHKID);
 	void InitPwrReminderHistoryInfo(const PWRREMINDERITEM& pwrItem);
@@ -257,7 +266,7 @@ private:
 	int	 ConfirmActionExec(UINT nActionType, UINT nActionID);
 	int  NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate);
 	void ShowErrorMessage(DWORD dwError);
-	void RequestRestart(UINT uiCommandID, BOOL bRestartAsAdmin);
+	void RequestRestartApp(UINT uiCommandID, BOOL bRestartAsAdmin);
 	void RequestRestartAsAdmin(RESTARTREQ reqRestart);
 };
 

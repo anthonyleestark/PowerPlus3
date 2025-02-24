@@ -385,9 +385,9 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR ptrLanguage)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(DEF_COLOR_WHITE);
-	pCell->SetTextClr(DEF_COLOR_BLACK);
-	pCell->SetHeight(DEF_GRIDCTRL_ROWHEIGHTEX);
+	pCell->SetBackClr(COLOR_WHITE);
+	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
 
 	// Table format and properties
 	int nRowNum = (m_nLogCount + ROW_FIXED_NUM);
@@ -397,7 +397,7 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR ptrLanguage)
 	m_pLogViewerList->SetColumnCount(nColNum);
 	m_pLogViewerList->SetRowCount(nRowNum);
 	m_pLogViewerList->SetFixedRowCount(ROW_FIXED_NUM);
-	m_pLogViewerList->SetRowHeight(DEF_GRIDCTRL_ROWHEADER, DEF_GRIDCTRL_HEADERHEIGHT);
+	m_pLogViewerList->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
 
 	// Draw table
 	DrawLogViewerTable();
@@ -455,35 +455,35 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	int nFrameHeight = m_pszTableFrameSize->cy;
 	int nFrameWidth = m_pszTableFrameSize->cx;
 	int nColWidthOffset = 0;
-	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
+	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL_WIN10;
-		nFrameHeight -= DEF_OFFSET_LISTCTRL_WIN10;
-		nColWidthOffset = DEF_OFFSET_LISTCOLWIDTH_WIN10;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
+		nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
+		nColWidthOffset = OFFSET_WIDTH_LISTCOL_WIN10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL;
-		nFrameHeight -= DEF_OFFSET_LISTCTRL;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
+		nFrameHeight -= OFFSET_HEIGHT_LISTCTRL;
 	}
-	if ((DEF_GRIDCTRL_HEADERHEIGHT + ((nRowNum - 1) * DEF_GRIDCTRL_ROWHEIGHTEX)) >= nFrameHeight) {
+	if ((GRIDCTRL_HEIGHT_HEADER + ((nRowNum - 1) * GRIDCTRL_HEIGHT_ROW_EX)) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= nScrollBarWidth;
+		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
 	}
 
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pLogViewerList, DEF_GRIDCTRL_ROWHEADER, nCol);
+		SetFixedCellStyle(m_pLogViewerList, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = DEF_STRING_EMPTY;
+		CString strHdrTitle = STRING_EMPTY;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
-		if (nHeaderTitleID != DEF_INTEGER_NULL) {
+		if (nHeaderTitleID != INT_NULL) {
 			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pLogViewerList->SetItemText(DEF_GRIDCTRL_ROWHEADER, nCol, strHdrTitle);
+		m_pLogViewerList->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, strHdrTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -503,7 +503,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 
 	// Setup rows
 	int nColStyle = -1;
-	UINT nItemState = DEF_INTEGER_NULL;
+	UINT nItemState = INT_NULL;
 	for (int nRow = 1; nRow < nRowNum; nRow++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 
@@ -551,7 +551,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 				else {
 					// Set margin (left alignment)
 					if (pCell == NULL) continue;
-					pCell->SetMargin(DEF_GRIDCELL_LEFTMARGIN);
+					pCell->SetMargin(GRIDCELL_MARGIN_LEFT);
 				}
 			}
 		}
@@ -626,15 +626,15 @@ void CLogViewerDlg::UpdateLogViewer(void)
 
 		// Date/time
 		strTemp = logItem.FormatDateTime();
-		m_pLogViewerList->SetItemText(nRowIndex, SCHCOL_ID_DATETIME, strTemp);
+		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_DATETIME, strTemp);
 
 		// Category
 		strTemp = GetLanguageString(ptrLanguage, logItem.usCategory);
-		m_pLogViewerList->SetItemText(nRowIndex, SCHCOL_ID_CATEGORY, strTemp);
+		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_CATEGORY, strTemp);
 
 		// Additional description
 		strTemp = logItem.strLogString;
-		m_pLogViewerList->SetItemText(nRowIndex, SCHCOL_ID_DESCRIPTION, strTemp);
+		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_DESCRIPTION, strTemp);
 	}
 }
 
@@ -740,9 +740,9 @@ void CLogViewerDlg::LoadLayoutInfo(void)
 	// Define default table columns format
 	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
 	//-----------ID------------------------Header title ID---------------Width(px)---Column style--------Align Center---
-		{	SCHCOL_ID_DATETIME,		GRIDCOLUMN_LOGVIEWER_DATETIME,			220,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	SCHCOL_ID_CATEGORY,		GRIDCOLUMN_LOGVIEWER_CATEGORY,			220,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	SCHCOL_ID_DESCRIPTION,	GRIDCOLUMN_LOGVIEWER_DESCRIPTION,		-1,		COLSTYLE_NORMAL,		FALSE,	},
+		{	LGVCOL_ID_DATETIME,		GRIDCOLUMN_LOGVIEWER_DATETIME,			220,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	LGVCOL_ID_CATEGORY,		GRIDCOLUMN_LOGVIEWER_CATEGORY,			220,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	LGVCOL_ID_DESCRIPTION,	GRIDCOLUMN_LOGVIEWER_DESCRIPTION,		-1,		COLSTYLE_NORMAL,		FALSE,	},
 	//------------------------------------------------------------------------------------------------------------------
 	};
 

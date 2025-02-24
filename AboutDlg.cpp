@@ -287,7 +287,7 @@ void CAboutDlg::SetAppNameLabel(void)
 	// Get app name label format from app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 	CString strFormat = GetLanguageString(pAppLang, IDC_APPNAME_LABEL);
-	if (strFormat == DEF_STRING_NULL) return;
+	if (strFormat == STRING_NULL) return;
 
 	// Set app name label
 	CString strAppNameLabel;
@@ -317,7 +317,7 @@ void CAboutDlg::SetAppInfoLabel(void)
 	// Get app info label format from app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 	CString strFormat = GetLanguageString(pAppLang, IDC_APPINFO_LABEL);
-	if (strFormat == DEF_STRING_NULL) return;
+	if (strFormat == STRING_NULL) return;
 
 	// Set app info label
 	CString strAppInfoLabel;
@@ -385,8 +385,8 @@ CHelpDlg::CHelpDlg(CWnd* pParent /*=NULL*/)
 	: SDialog(IDD_HELP_DLG, pParent)
 {
 	// Initialize member variables
-	m_strFileData = DEF_STRING_EMPTY; 
-	m_nViewMode = DEF_MODE_HELPVIEW_HELPFILE;
+	m_strFileData = STRING_EMPTY; 
+	m_nViewMode = MODE_HELPVIEW_HELPFILE;
 	
 	INIT_CLASS_IDMAP()
 }
@@ -589,11 +589,11 @@ void CHelpDlg::OnSwitchViewMode()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_SWITCHVIEWMODE_BTN);
 
 	// Switch view mode
-	if (GetViewMode() == DEF_MODE_HELPVIEW_HELPFILE) {
-		SetViewMode(DEF_MODE_HELPVIEW_CHANGELOG);
+	if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
+		SetViewMode(MODE_HELPVIEW_CHANGELOG);
 	}
-	else if (GetViewMode() == DEF_MODE_HELPVIEW_CHANGELOG) {
-		SetViewMode(DEF_MODE_HELPVIEW_HELPFILE);
+	else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
+		SetViewMode(MODE_HELPVIEW_HELPFILE);
 	}
 
 	// Reupdate file data
@@ -676,7 +676,7 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 	CString strHelpFileName;
 
 	// View help file mode
-	if (GetViewMode() == DEF_MODE_HELPVIEW_HELPFILE) {
+	if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
@@ -691,7 +691,7 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		}
 	}
 	//View changelog mode
-	else if (GetViewMode() == DEF_MODE_HELPVIEW_CHANGELOG) {
+	else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
@@ -735,12 +735,12 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 	{
 		// Load app language package
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		if (GetViewMode() == DEF_MODE_HELPVIEW_HELPFILE) {
+		if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
 			TRCLOG("Error: Help file not found");
 			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
-		else if(GetViewMode() == DEF_MODE_HELPVIEW_CHANGELOG) {
+		else if(GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
 			TRCLOG("Error: Changelog file not found");
 			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -765,13 +765,13 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 void CHelpDlg::UpdateSwitchViewModeButton(void)
 {
 	// Language string ID
-	UINT nStringID = DEF_INTEGER_INVALID;
+	UINT nStringID = INT_INVALID;
 	switch (m_nViewMode)
 	{
-	case DEF_MODE_HELPVIEW_HELPFILE:
+	case MODE_HELPVIEW_HELPFILE:
 		nStringID = BTN_HELPDLG_VIEWMODE_CHANGELOG;
 		break;
-	case DEF_MODE_HELPVIEW_CHANGELOG:
+	case MODE_HELPVIEW_CHANGELOG:
 		nStringID = BTN_HELPDLG_VIEWMODE_HELPFILE;
 		break;
 	default:

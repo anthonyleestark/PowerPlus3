@@ -45,6 +45,9 @@ SDialog::SDialog() : CDialogEx()
 	// Parent window
 	m_pParentWnd = NULL;
 
+	// Tooltip control
+	m_pToolTip = NULL;
+
 	// Dialog control management
 	m_pCtrlManager = NULL;
 
@@ -90,14 +93,17 @@ SDialog::SDialog() : CDialogEx()
 	m_strMessageCaption.Empty();
 
 	m_pBkgrdBrush = NULL;
-	m_clBkgrdColor = DEF_COLOR_WHITE;
-	m_clTextColor = DEF_COLOR_BLACK;
+	m_clBkgrdColor = COLOR_WHITE;
+	m_clTextColor = COLOR_BLACK;
 }
 
 SDialog::SDialog(UINT nIDTemplate, CWnd* pParent /* = NULL */) : CDialogEx(nIDTemplate, pParent)
 {
 	// Parent window
 	m_pParentWnd = pParent;
+
+	// Tooltip control
+	m_pToolTip = NULL;
 
 	// Dialog control management
 	m_pCtrlManager = NULL;
@@ -144,14 +150,17 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParent /* = NULL */) : CDialogEx(nIDTe
 	m_strMessageCaption.Empty();
 
 	m_pBkgrdBrush = NULL;
-	m_clBkgrdColor = DEF_COLOR_WHITE;
-	m_clTextColor = DEF_COLOR_BLACK;
+	m_clBkgrdColor = COLOR_WHITE;
+	m_clTextColor = COLOR_BLACK;
 }
 
 SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParent /* = NULL */) : CDialogEx(lpszTemplateName, pParent)
 {
 	// Parent window
 	m_pParentWnd = pParent;
+
+	// Tooltip control
+	m_pToolTip = NULL;
 
 	// Dialog control management
 	m_pCtrlManager = NULL;
@@ -198,8 +207,8 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParent /* = NULL */) : CDialog
 	m_strMessageCaption.Empty();
 
 	m_pBkgrdBrush = NULL;
-	m_clBkgrdColor = DEF_COLOR_WHITE;
-	m_clTextColor = DEF_COLOR_BLACK;
+	m_clBkgrdColor = COLOR_WHITE;
+	m_clTextColor = COLOR_BLACK;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -211,8 +220,14 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParent /* = NULL */) : CDialog
 
 SDialog::~SDialog()
 {
+	// Destroy tooltip control window
+	if ((m_pToolTip != NULL) && (IsWindow(m_pToolTip->GetSafeHwnd()))) {
+		m_pToolTip->DestroyToolTipCtrl();
+	}
+
 	// Clear dialog control manager
 	if (m_pCtrlManager != NULL) {
+		m_pCtrlManager->DeleteAll();
 		delete m_pCtrlManager;
 		m_pCtrlManager = NULL;
 	}
@@ -237,6 +252,7 @@ SDialog::~SDialog()
 
 void SDialog::DoDataExchange(CDataExchange* pDX)
 {
+	// Default
 	CDialogEx::DoDataExchange(pDX);
 }
 
@@ -249,6 +265,7 @@ void SDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(SDialog, CDialogEx)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
+	ON_WM_MOUSEMOVE()
 	ON_BN_CLICKED(IDOK, &SDialog::OnOK)
 	ON_BN_CLICKED(IDCANCEL, &SDialog::OnCancel)
 	ON_WM_ACTIVATE()
@@ -266,6 +283,7 @@ END_MESSAGE_MAP()
 
 void SDialog::OnOK()
 {
+	// Default
 	CDialogEx::OnOK();
 }
 
@@ -280,6 +298,7 @@ void SDialog::OnOK()
 
 void SDialog::OnCancel()
 {
+	// Default
 	CDialogEx::OnCancel();
 }
 
@@ -298,6 +317,7 @@ BOOL SDialog::OnInitDialog()
 
 	// If parent window is not set
 	if (GetParentWnd() == NULL) {
+
 		// Set top-most active window as its parent
 		if (CWnd* pActiveWnd = CWnd::GetActiveWindow()) {
 			this->SetParentWnd(pActiveWnd);
@@ -309,8 +329,20 @@ BOOL SDialog::OnInitDialog()
 		}
 	}
 
+	// Create and initialize tooltip control
+	if (GetToolTipCtrl() == NULL) {
+		this->m_pToolTip = new CToolTipCtrl();
+		this->m_pToolTip->Create(this);
+	}
+
+	// Activate tooltip control
+	if (IsToolTipCtrlAvailable()) {
+		GetToolTipCtrl()->Activate(TRUE);
+	}
+
 	// If dialog custom caption is set
 	if (!m_strDialogCaption.IsEmpty()) {
+
 		// Update dialog caption
 		this->SetWindowText(m_strDialogCaption);
 	}
@@ -404,6 +436,7 @@ void SDialog::OnClose()
 		::PostMessage(NULL, SCM_DLGCLOSE_NOTIFY, wParam, NULL);
 	}
 
+	// Default
 	CDialogEx::OnClose();
 }
 
@@ -418,6 +451,9 @@ void SDialog::OnClose()
 
 void SDialog::OnDestroy()
 {
+	// Pre-destroy dialog
+	SDialog::PreDestroyDialog();
+
 	// Get dialog ID
 	WPARAM wParam = (WPARAM)GetDialogID();
 
@@ -427,10 +463,11 @@ void SDialog::OnDestroy()
 		m_pParentWnd->PostMessage(SCM_DLGDESTROY_NOTIFY, wParam, NULL);
 	}
 	else {
-		// Notify to app main thread
+		// Notify to application's main thread
 		::PostMessage(NULL, SCM_DLGDESTROY_NOTIFY, wParam, NULL);
 	}
 
+	// Default
 	CDialogEx::OnDestroy();
 }
 
@@ -445,7 +482,25 @@ void SDialog::OnDestroy()
 
 void SDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {
+	// Default
 	CDialogEx::OnActivate(nState, pWndOther, bMinimized);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnMouseMove
+//	Description:	Default method for handling mouse moving event within dialog
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::OnMouseMove(UINT nFlags, CPoint point)
+{
+//	CWnd* pHitTestWnd = ChildWindowFromPoint(point);
+
+	// Default
+	CDialogEx::OnMouseMove(nFlags, point);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -469,6 +524,7 @@ void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 		pMinMaxInfo->ptMaxTrackSize.y = m_szMaxSize.cy;
 	}
 
+	// Default
 	CDialogEx::OnGetMinMaxInfo(pMinMaxInfo);
 }
 
@@ -483,6 +539,7 @@ void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 
 BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 {
+	// Handle system key pressed message
 	if (pMsg->message == WM_KEYDOWN) {
 		switch (pMsg->wParam) 
 		{
@@ -503,6 +560,11 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 
+	// Allow the tooltip to receive mouse messages
+	if (IsToolTipCtrlAvailable()) {
+		this->m_pToolTip->RelayEvent(pMsg);
+	}
+
 	// Default
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
@@ -521,7 +583,7 @@ int SDialog::PreDestroyDialog()
 	// Unregister dialog control management
 	UnregisterDialogManagement();
 
-	return DEF_RESULT_SUCCESS;
+	return RESULT_SUCCESS;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -537,6 +599,7 @@ int SDialog::PreDestroyDialog()
 
 LRESULT SDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
+	// Default
 	return CDialogEx::WindowProc(message, wParam, lParam);
 }
 
@@ -584,6 +647,34 @@ AFX_INLINE BOOL SDialog::IsParentWndAvailable(void) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetToolTipCtrl
+//	Description:	Get current dialog's tooltip control window
+//  Arguments:		None
+//  Return value:	CToolTipCtrl*
+//
+//////////////////////////////////////////////////////////////////////////
+
+CToolTipCtrl* SDialog::GetToolTipCtrl(void)
+{
+	return m_pToolTip;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsToolTipCtrlAvailable
+//	Description:	Check if tooltip control window (pointer) is available
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE BOOL SDialog::IsToolTipCtrlAvailable(void) const
+{
+	return (m_pToolTip != NULL);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	GetControlManager
 //	Description:	Get dialog control manager pointer
 //  Arguments:		None
@@ -611,7 +702,7 @@ INT_PTR SDialog::RegisterDialogManagement(void)
 	if (m_pCtrlManager == NULL) {
 		m_pCtrlManager = new SControlManager(this);
 		if (m_pCtrlManager == NULL)
-			return DEF_INTEGER_INVALID;
+			return INT_INVALID;
 	}
 
 	if (m_pCtrlManager != NULL) {
@@ -651,8 +742,8 @@ BOOL SDialog::UnregisterDialogManagement(void)
 		return FALSE;
 
 	if (m_pCtrlManager != NULL) {
-		BOOL bRet = m_pCtrlManager->DeleteAll();
-		if (bRet != TRUE) return FALSE;
+		if (!m_pCtrlManager->DeleteAll())
+			return FALSE;
 
 		delete m_pCtrlManager;
 		m_pCtrlManager = NULL;
@@ -1421,7 +1512,7 @@ void SDialog::SetDialogCaption(LPCTSTR lpszCaption)
 	m_strDialogCaption = lpszCaption;
 
 	// If dialog is already initialized, trigger updating title
-	if (::IsWindow(this->m_hWnd)) {
+	if (IsWindow(this->m_hWnd)) {
 		this->SetWindowText(m_strDialogCaption);
 	}
 }
@@ -1548,11 +1639,12 @@ void SDialog::RegisterMessageBoxCaption(UINT nCaptionID)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
-	CString strCaption = DEF_STRING_EMPTY;
+	CString strCaption = STRING_EMPTY;
 	if (nCaptionID != NULL) {
+
 		// Get language string caption
 		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (strTemp != DEF_STRING_NULL) {
+		if (strTemp != STRING_NULL) {
 			// Set caption string
 			strCaption = strTemp;
 		}
@@ -1607,9 +1699,10 @@ int SDialog::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 	CString strMsg = GetLanguageString(pAppLang, nPromptID);
 	CString strCaption = ((SWinApp*)AfxGetApp())->GetAppWindowTitle();
 	if (nCaptionID != NULL) {
+
 		// Get language string caption
 		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (strTemp != DEF_STRING_NULL)
+		if (strTemp != STRING_NULL)
 			strCaption = strTemp;
 	}
 	else {
@@ -1647,11 +1740,13 @@ int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL
 	// If caption is not set
 	CString strCaption(lpszCaption);
 	if (strCaption.IsEmpty()) {
+
 		// If message box caption is registered
 		if (!m_strMessageCaption.IsEmpty()) {
 			// Use registered caption
 			strCaption = m_strMessageCaption;
 		}
+
 		// Otherwise,
 		else {
 			// Use app window title
@@ -1681,6 +1776,7 @@ void SDialog::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 	LOGITEM logItemDialogEvent;
 	logItemDialogEvent.usCategory = usEvent;
 	logItemDialogEvent.stTime = GetCurSysTime();
+	logItemDialogEvent.dwProcessID = GetCurrentProcessId();
 	if (lpszDescription != NULL) {
 		// Include event description
 		logItemDialogEvent.strLogString = lpszDescription;
@@ -1724,18 +1820,18 @@ void SDialog::OutputButtonLog(USHORT usEvent, UINT nButtonID)
 
 	// Button ID
 	LOGDETAIL logDetail;
-	logDetail.byCategory = LOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
 	logDetail.uiDetailInfo = nButtonID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_MAPTEXTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
 	logDetail.strDetailInfo = IDMAP_GET(nButtonID);
 	logDetailInfo.Add(logDetail);
 
 	// Output button event log
-	OutputEventLog(usEvent, strButtonCaption);
+	OutputEventLog(usEvent, strButtonCaption, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1761,19 +1857,19 @@ void SDialog::OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID)
 
 	// Checkbox ID
 	LOGDETAIL logDetail;
-	logDetail.byCategory = LOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
 	logDetail.uiDetailInfo = nCheckboxID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_MAPTEXTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
 	logDetail.strDetailInfo = IDMAP_GET(nCheckboxID);
 	logDetailInfo.Add(logDetail);
 
 	// Checkbox checked state
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_CHKSTATE;
+	logDetail.usCategory = EVENTLOG_DETAIL_CHKSTATE;
 	logDetail.uiDetailInfo = pChkBtn->GetCheck();
 	logDetailInfo.Add(logDetail);
 
@@ -1804,19 +1900,19 @@ void SDialog::OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID)
 
 	// Radio button ID
 	LOGDETAIL logDetail;
-	logDetail.byCategory = LOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
 	logDetail.uiDetailInfo = nRadButtonID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_MAPTEXTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
 	logDetail.strDetailInfo = IDMAP_GET(nRadButtonID);
 	logDetailInfo.Add(logDetail);
 
 	// Radio button checked state
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_CHKSTATE;
+	logDetail.usCategory = EVENTLOG_DETAIL_CHKSTATE;
 	logDetail.uiDetailInfo = pRadBtn->GetCheck();
 	logDetailInfo.Add(logDetail);
 
@@ -1845,13 +1941,13 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 
 	// Combo-box ID
 	LOGDETAIL logDetail;
-	logDetail.byCategory = LOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
 	logDetail.uiDetailInfo = nComboID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_MAPTEXTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
 	logDetail.strDetailInfo = IDMAP_GET(nComboID);
 	logDetailInfo.Add(logDetail);
 
@@ -1870,7 +1966,7 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 			pComboWrap->GetValueStringArray(arrDataList);
 			if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
 				logDetail.Init();
-				logDetail.byCategory = LOG_DETAIL_SELECTION;
+				logDetail.usCategory = EVENTLOG_DETAIL_SELECTION;
 				logDetail.strDetailInfo = arrDataList.GetAt(nCurSel);
 				logDetailInfo.Add(logDetail);
 			}
@@ -1902,13 +1998,13 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 
 	// Edit box ID
 	LOGDETAIL logDetail;
-	logDetail.byCategory = LOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
 	logDetail.uiDetailInfo = nEditID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_MAPTEXTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
 	logDetail.strDetailInfo = IDMAP_GET(nEditID);
 	logDetailInfo.Add(logDetail);
 
@@ -1923,7 +2019,7 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 			
 			// Edit box content
 			logDetail.Init();
-			logDetail.byCategory = LOG_DETAIL_DATAVALUE;
+			logDetail.usCategory = EVENTLOG_DETAIL_DATAVALUE;
 			pEditBoxWrap->GetValueString(logDetail.strDetailInfo);
 			logDetailInfo.Add(logDetail);
 		}
@@ -1954,13 +2050,13 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 
 	// List box ID
 	LOGDETAIL logDetail;
-	logDetail.byCategory = LOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
 	logDetail.uiDetailInfo = nListBoxID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_MAPTEXTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
 	logDetail.strDetailInfo = IDMAP_GET(nListBoxID);
 	logDetailInfo.Add(logDetail);
 
@@ -1979,7 +2075,7 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 			pListBoxWrap->GetValueStringArray(arrDataList);
 			if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
 				logDetail.Init();
-				logDetail.byCategory = LOG_DETAIL_SELECTION;
+				logDetail.usCategory = EVENTLOG_DETAIL_SELECTION;
 				logDetail.strDetailInfo = arrDataList.GetAt(nCurSel);
 				logDetailInfo.Add(logDetail);
 			}
@@ -2011,13 +2107,13 @@ void SDialog::OutputSpinCtrlLog(USHORT usEvent, UINT nSpinCtrlID)
 
 	// Spin control ID
 	LOGDETAIL logDetail;
-	logDetail.byCategory = LOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
 	logDetail.uiDetailInfo = nSpinCtrlID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_MAPTEXTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
 	logDetail.strDetailInfo = IDMAP_GET(nSpinCtrlID);
 	logDetailInfo.Add(logDetail);
 
@@ -2050,13 +2146,13 @@ void SDialog::OutputMenuLog(USHORT usEvent, UINT nMenuItemID)
 
 	// Menu item ID
 	LOGDETAIL logDetail;
-	logDetail.byCategory = LOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
 	logDetail.uiDetailInfo = nMenuItemID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.byCategory = LOG_DETAIL_MAPTEXTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
 	logDetail.strDetailInfo = IDMAP_GET(nMenuItemID);
 	logDetailInfo.Add(logDetail);
 
@@ -2358,13 +2454,32 @@ void SDialog::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 //	Function name:	GetAppOption
 //	Description:	Return option value by ID
 //  Arguments:		eAppOptionID - ID of specific option
+//					bTemp		 - Temp value or saved value (saved value by default)
 //  Return value:	int - Option value
 //
 //////////////////////////////////////////////////////////////////////////
 
 int SDialog::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE */) const
 {
-	return 0;
+	int nResult = INT_INVALID;
+	int nTempResult = INT_INVALID;
+
+	switch (eAppOptionID)
+	{
+	case OPTIONID_INVALID:		// *** Invalid option ***
+		break;
+	default:
+		// Get application-base-class option value
+		nResult = ((SWinApp*)AfxGetApp())->GetAppOption(eAppOptionID, FALSE);
+		nTempResult = ((SWinApp*)AfxGetApp())->GetAppOption(eAppOptionID, TRUE);
+		break;
+	}
+
+	// Return temp data if required and the result is valid
+	if ((bTemp == TRUE) && (nTempResult != INT_INVALID))
+		return nTempResult;
+
+	return nResult;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2378,7 +2493,55 @@ int SDialog::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE */) co
 
 int SDialog::GetFlagValue(APPFLAGID eFlagID) const
 {
-	return 0;
+	int nValue = INT_INVALID;
+
+	switch (eFlagID)
+	{
+	case FLAGID_INVALID:				// *** Invalid flag ID ***
+		break;
+	case FLAGID_CHANGEFLAG:				// Data/setting change flag
+		nValue = m_bChangeFlag;
+		break;
+	case FLAGID_READONLYMODE:			// Read-only mode
+		nValue = m_bReadOnlyMode;
+		break;
+	case FLAGID_LOCKSTATE:				// Lock state
+		nValue = m_bLockState;
+		break;
+	case FLAGID_FORCECLOSING:			// Force closing by request
+		nValue = m_bForceClose;
+		break;
+	case FLAGID_USEESCAPE:				// Use Escape key
+		nValue = m_bUseEscape;
+		break;
+	case FLAGID_USEENTER:				// Use Enter key
+		nValue = m_bUseEnter;
+		break;
+	case FLAGID_BKGRDCLRSET:			// Dialog background color is set
+		nValue = m_bBkgrdColorSet;
+		break;
+	case FLAGID_TEXTCLRSET:				// Dialog text color is set
+		nValue = m_bTextColorSet;
+		break;
+	case FLAGID_MINSIZESET:				// Dialog minimum size is set
+		nValue = m_bMinSizeSet;
+		break;
+	case FLAGID_MAXSIZESET:				// Dialog maximum size is set
+		nValue = m_bMaxSizeSet;
+		break;
+	case FLAGID_TOPMOSTSET:				// Dialog top-most position is set
+		nValue = m_bTopMostSet;
+		break;
+	case FLAGID_INITSOUNDSET:			// Dialog initialize sound is set
+		nValue = m_bInitSoundSet;
+		break;
+	default:
+		// Get application-base-class flag value
+		nValue = ((SWinApp*)AfxGetApp())->GetFlagValue(eFlagID);
+		break;
+	}
+
+	return nValue;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2393,7 +2556,55 @@ int SDialog::GetFlagValue(APPFLAGID eFlagID) const
 
 void SDialog::SetFlagValue(APPFLAGID eFlagID, int nValue)
 {
-	// TODO: Deriver this function for custom actions
+	// Check value validity
+	if (nValue == INT_INVALID)
+		return;
+
+	switch (eFlagID)
+	{
+	case FLAGID_INVALID:				// *** Invalid flag ID ***
+		break;
+	case FLAGID_CHANGEFLAG:				// Data/setting change flag
+		m_bChangeFlag = nValue;
+		break;
+	case FLAGID_READONLYMODE:			// Read-only mode
+		m_bReadOnlyMode = nValue;
+		break;
+	case FLAGID_LOCKSTATE:				// Lock state
+		m_bLockState = nValue;
+		break;
+	case FLAGID_FORCECLOSING:			// Force closing by request
+		m_bForceClose = nValue;
+		break;
+	case FLAGID_USEESCAPE:				// Use Escape key
+		m_bUseEscape = nValue;
+		break;
+	case FLAGID_USEENTER:				// Use Enter key
+		m_bUseEnter = nValue;
+		break;
+	case FLAGID_BKGRDCLRSET:			// Dialog background color is set
+		m_bBkgrdColorSet = nValue;
+		break;
+	case FLAGID_TEXTCLRSET:				// Dialog text color is set
+		m_bTextColorSet = nValue;
+		break;
+	case FLAGID_MINSIZESET:				// Dialog minimum size is set
+		m_bMinSizeSet = nValue;
+		break;
+	case FLAGID_MAXSIZESET:				// Dialog maximum size is set
+		m_bMaxSizeSet = nValue;
+		break;
+	case FLAGID_TOPMOSTSET:				// Dialog top-most position is set
+		m_bTopMostSet = nValue;
+		break;
+	case FLAGID_INITSOUNDSET:			// Dialog initialize sound is set
+		m_bInitSoundSet = nValue;
+		break;
+	default:
+		// Set application-base-class flag value
+		((SWinApp*)AfxGetApp())->SetFlagValue(eFlagID, nValue);
+		break;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2475,5 +2686,5 @@ LRESULT SDialog::RequestCloseDialog(void)
 	this->PostMessage(WM_CLOSE);
 
 	// Request accepted
-	return LRESULT(0);	// ERROR_SUCCESS
+	return LRESULT(RESULT_SUCCESS);	// ERROR_SUCCESS
 }

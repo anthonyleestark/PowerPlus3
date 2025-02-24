@@ -20,10 +20,13 @@
 
 #include "Core.h"
 #include "Config.h"
+
 #include "Logging.h"
 #include "Logging_pub.h"
 #include "IDMapping.h"
+
 #include "SWinApp.h"
+#include "SDialog.h"
 
 
 ////////////////////////////////////////////////////////
@@ -50,7 +53,9 @@ private:
 	PHOTKEYSETDATA		m_phksHotkeySetData;
 	PPWRREMINDERDATA	m_ppwrReminderData;
 
+#ifdef _CONFIG_FILE_TEST
 	INIFile m_fileConfigData;
+#endif
 
 	// Logging pointers
 	SLogging* m_pAppHistoryLog;
@@ -59,7 +64,7 @@ private:
 	HHOOK m_hAppKeyboardHook;
 
 	// DebugTest dialog
-	CDebugTestDlg*	m_pDebugTestDlg;
+	CDebugTestDlg* m_pDebugTestDlg;
 
 	// Other variables
 	CString m_strLastSysEvtRegPath;
@@ -82,15 +87,17 @@ public:
 	BOOL LoadRegistryAppData();
 	BOOL SaveRegistryAppData(DWORD dwDataType = APPDATA_ALL);
 	BOOL BackupRegistryAppData();
-	BOOL LoadGlobalVars(void);
-	BOOL SaveGlobalVars(BYTE byCateID = 0xFF);
+	BOOL LoadGlobalData(void);
+	BOOL SaveGlobalData(BYTE byCateID = 0xFF);
 
+#ifdef _CONFIG_FILE_TEST
 	// File data serialization functions
 	void InitFileData();
 	void LoadFileAppData();
 	void SetFileAppData();
 	BOOL ReadFile();
 	BOOL WriteFile();
+#endif
 
 	// App data processing functions
 	PCONFIGDATA GetAppConfigData();
@@ -125,7 +132,7 @@ public:
 
 	// DebugTest dialog function
 	BOOL InitDebugTestDlg(void);
-	CDebugTestDlg* GetDebugTestDlg(void);
+	SDialog* GetDebugTestDlg(void);
 	void DestroyDebugTestDlg(void);
 
 	// Registry functions

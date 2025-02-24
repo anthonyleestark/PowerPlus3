@@ -21,13 +21,14 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//	Define categories of global variables
+//	Define categories of global data variables
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define DEF_GLBVAR_CATE_DEBUGTEST	0x01		// Debugging/Testing variables
-#define DEF_GLBVAR_CATE_APPFLAG		0x02		// App special flags
-#define DEF_GLBVAR_CATE_SPECIAL		0x03		// Special variables
+#define DEF_GLBDATA_CATE_DEBUGTEST		0x01			// Debugging/Testing variables
+#define DEF_GLBDATA_CATE_APPFLAGS		0x02			// App special flags
+#define DEF_GLBDATA_CATE_FEATURES		0x03			// Special feature variables
+#define DEF_GLBDATA_CATE_OTHERS			0x04			// Other special variables
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,15 +44,16 @@
 #define DEFAULT_DUMMYTEST		FALSE
 #define DEFAULT_DEBUGMODE		FALSE
 #define DEFAULT_DEBUGOUTPUT		DBOUT_DEFAULT
+#define DEFAULT_TESTFEATURE		FALSE
 
 // Dummy test mode flag
 extern BOOL g_bDummyTest;
-static inline BOOL GetDummyTestMode() { return g_bDummyTest; }
+static inline const BOOL GetDummyTestMode(void) { return g_bDummyTest; }
 static inline void SetDummyTestMode(BOOL bValue) { g_bDummyTest = bValue; }
 
 // Debug mode flag
 extern BOOL g_bDebugMode;
-static inline BOOL GetDebugMode() {	return g_bDebugMode; }
+static inline const BOOL GetDebugMode(void) { return g_bDebugMode; }
 static inline void SetDebugMode(BOOL bValue) { g_bDebugMode = bValue; }
 
 // Debug log output target flag
@@ -60,9 +62,14 @@ enum eDEBUGOUTPUT {
 	DBOUT_DEBUGINFOFILE,
 	DBOUT_DEBUGTESTTOOL,
 };
-extern int g_nDebugOutputTarget;
-static inline BOOL GetDebugOutputTarget() { return g_nDebugOutputTarget; }
+extern INT g_nDebugOutputTarget;
+static inline const INT GetDebugOutputTarget(void) { return g_nDebugOutputTarget; }
 static inline void SetDebugOutputTarget(int nValue) { g_nDebugOutputTarget = nValue; }
+
+// Test feature enable flag
+extern BOOL g_bTestFeature;
+static inline const BOOL GetTestFeatureEnable(void) { return g_bTestFeature; }
+static inline void SetTestFeatureEnable(BOOL bValue) { g_bTestFeature = bValue; }
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -70,21 +77,33 @@ static inline void SetDebugOutputTarget(int nValue) { g_nDebugOutputTarget = nVa
 
 // Trace error log file pointer
 extern CFile* g_pFileLogTraceError;
-static inline CFile* GetTraceErrorLogFile() { return g_pFileLogTraceError; }
+static inline CFile* GetTraceErrorLogFile(void) { return g_pFileLogTraceError; }
 static BOOL InitTraceErrorLogFile(void);
 inline void ReleaseTraceErrorLogFile(void);
 
 // Trace debug info log file pointer
 extern CFile* g_pFileLogTraceDebug;
-static inline CFile* GetTraceDebugLogFile() { return g_pFileLogTraceDebug; }
+static inline CFile* GetTraceDebugLogFile(void) { return g_pFileLogTraceDebug; }
 static BOOL InitTraceDebugLogFile(void);
 inline void ReleaseTraceDebugLogFile(void);
 
 // Debug info output log file pointer
 extern CFile* g_pFileLogDebugInfo;
-static inline CFile* GetDebugInfoLogFile() { return g_pFileLogDebugInfo; }
+static inline CFile* GetDebugInfoLogFile(void) { return g_pFileLogDebugInfo; }
 static BOOL InitDebugInfoLogFile(void);
 inline void ReleaseDebugInfoLogFile(void);
+
+// Trace error log file exception pointer
+extern CException* g_excLogTraceError;
+static inline CException* GetTraceErrorException(void) { return g_excLogTraceError; }
+
+// Trace debug info log file exception pointer
+extern CException* g_excLogTraceDebug;
+static inline CException* GetTraceDebugException(void) { return g_excLogTraceDebug; }
+
+// Debug info output log file exception pointer
+extern CException* g_excLogDebugInfo;
+static inline CException* GetDebugInfoException(void) { return g_excLogDebugInfo; }
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -100,18 +119,27 @@ inline void ReleaseDebugInfoLogFile(void);
 
 // Power action trace flag
 extern BYTE g_byPwrActionFlag;
-static inline BYTE GetPwrActionFlag() { return g_byPwrActionFlag; }
+static inline const BYTE GetPwrActionFlag(void) { return g_byPwrActionFlag; }
 static inline void SetPwrActionFlag(BYTE byValue) { g_byPwrActionFlag = byValue; }
 
 // System suspended trace flag
 extern BYTE g_bySystemSuspendFlag;
-static inline BYTE GetSystemSuspendFlag() { return g_bySystemSuspendFlag; }
+static inline const BYTE GetSystemSuspendFlag(void) { return g_bySystemSuspendFlag; }
 static inline void SetSystemSuspendFlag(BYTE byValue) { g_bySystemSuspendFlag = byValue; }
 
 // Session ending trace flag
 extern BYTE g_bySessionEndFlag;
-static inline BYTE GetSessionEndFlag() { return g_bySessionEndFlag; }
+static inline const BYTE GetSessionEndFlag(void) { return g_bySessionEndFlag; }
 static inline void SetSessionEndFlag(BYTE byValue) { g_bySessionEndFlag = byValue; }
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+/*---------------------------------------------Memory-only flags---------------------------------------------*/
+
+// Session lock trace flag
+extern BYTE g_bySessionLockFlag;
+static inline const BYTE GetSessionLockFlag(void) { return g_bySessionLockFlag; }
+static inline void SetSessionLockFlag(BYTE byValue) { g_bySessionLockFlag = byValue; }
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -133,12 +161,12 @@ static inline void SetSessionEndFlag(BYTE byValue) { g_bySessionEndFlag = byValu
 
 // Background color
 extern COLORREF g_colorMsgBkgrd;
-static inline COLORREF GetReminderMsgBkgrdColor() { return g_colorMsgBkgrd; }
+static inline const COLORREF GetReminderMsgBkgrdColor(void) { return g_colorMsgBkgrd; }
 static inline void SetReminderMsgBkgrdColor(COLORREF colorValue) { g_colorMsgBkgrd = colorValue; }
 
 // Text color
 extern COLORREF g_colorMsgText;
-static inline COLORREF GetReminderMsgTextColor() { return g_colorMsgText; }
+static inline const COLORREF GetReminderMsgTextColor(void) { return g_colorMsgText; }
 static inline void SetReminderMsgTextColor(COLORREF colorValue) { g_colorMsgText = colorValue; }
 
 // Font name
@@ -148,12 +176,12 @@ static inline void SetReminderMsgFontName(LPCTSTR lpszValue) { if (_tcscmp(lpszV
 
 // Font size
 extern UINT	g_uiMsgFontSize;
-static inline UINT GetReminderMsgFontSize() { return g_uiMsgFontSize; }
+static inline const UINT GetReminderMsgFontSize(void) { return g_uiMsgFontSize; }
 static inline void SetReminderMsgFontSize(UINT uiValue) { g_uiMsgFontSize = uiValue; }
 
 // Timeout (auto-close) interval
 extern UINT g_uiRmdMsgTimeout;
-static inline UINT GetReminderMsgTimeout() { return g_uiRmdMsgTimeout; }
+static inline const UINT GetReminderMsgTimeout(void) { return g_uiRmdMsgTimeout; }
 static inline void SetReminderMsgTimeout(UINT uiValue) { g_uiRmdMsgTimeout = uiValue; }
 
 // Message icon ID
@@ -176,12 +204,12 @@ static inline void SetReminderMsgTimeout(UINT uiValue) { g_uiRmdMsgTimeout = uiV
 #endif /* WINVER >= 0x0400 */
 
 extern UINT g_uiRmdMsgIconID;
-static inline UINT GetReminderMsgIconID() { return g_uiRmdMsgIconID; }
+static inline const UINT GetReminderMsgIconID(void) { return g_uiRmdMsgIconID; }
 static inline void SetReminderMsgIconID(UINT uiValue) { g_uiRmdMsgIconID = uiValue; };
 
 // Message icon size
-extern int g_nRmdMsgIconSize;
-static inline int GetReminderMsgIconSize() { return g_nRmdMsgIconSize; }
+extern INT g_nRmdMsgIconSize;
+static inline const INT GetReminderMsgIconSize(void) { return g_nRmdMsgIconSize; }
 static inline void SetReminderMsgIconSize(int nValue) { g_nRmdMsgIconSize = nValue; };
 
 // Message icon position
@@ -190,7 +218,7 @@ enum eMSGICONPOSITION {
 	MSGICONPOS_ONLEFT,
 };
 extern BYTE g_byRmdMsgIconPos;
-static inline BYTE GetReminderMsgIconPosition() { return g_byRmdMsgIconPos; }
+static inline const BYTE GetReminderMsgIconPosition(void) { return g_byRmdMsgIconPos; }
 static inline void SetReminderMsgIconPosition(BYTE byValue) { g_byRmdMsgIconPos = byValue; };
 
 // Message display position
@@ -202,22 +230,22 @@ enum eMSGDISPPOSITION {
 	MSGDISPPOS_BOTTOMRIGHT,
 };
 extern BYTE g_byRmdMsgDispPos;
-static inline BYTE GetReminderMsgDispPosition() { return g_byRmdMsgDispPos; }
+static inline const BYTE GetReminderMsgDispPosition(void) { return g_byRmdMsgDispPos; }
 static inline void SetReminderMsgDispPosition(BYTE byValue) { g_byRmdMsgDispPos = byValue; };
 
 // Display area horizontal margin
 extern UINT g_uiRmdMsgHMargin;
-static inline UINT GetReminderMsgHMargin() { return g_uiRmdMsgHMargin; }
+static inline const UINT GetReminderMsgHMargin(void) { return g_uiRmdMsgHMargin; }
 static inline void SetReminderMsgHMargin(UINT uiValue) { g_uiRmdMsgHMargin = uiValue; }
 
 // Display area vertical margin
 extern UINT g_uiRmdMsgVMargin;
-static inline UINT GetReminderMsgVMargin() { return g_uiRmdMsgVMargin; }
+static inline const UINT GetReminderMsgVMargin(void) { return g_uiRmdMsgVMargin; }
 static inline void SetReminderMsgVMargin(UINT uiValue) { g_uiRmdMsgVMargin = uiValue; }
 
 // Message snooze interval
 extern UINT g_uiRmdMsgSnoozeInterval;
-static inline UINT GetReminderMsgSnoozeInterval() { return g_uiRmdMsgSnoozeInterval; }
+static inline const UINT GetReminderMsgSnoozeInterval(void) { return g_uiRmdMsgSnoozeInterval; }
 static inline void SetReminderMsgSnoozeInterval(UINT uiValue) { g_uiRmdMsgSnoozeInterval = uiValue; }
 
 /*-----------------------------------------------------------------------------------------------------------*/

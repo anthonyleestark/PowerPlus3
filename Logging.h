@@ -41,7 +41,7 @@ using namespace CoreFuncs;
 typedef struct tagLOGDETAIL
 {
 	// Member variables
-	BYTE	byCategory;										// Detail category
+	USHORT	usCategory;										// Detail category
 	UINT	uiDetailInfo;									// Detail info (integer)
 	CString	strDetailInfo;									// Detail info (string)
 	PVOID	ptrDetailInfo;									// Detail info (pointer)
@@ -87,8 +87,9 @@ typedef struct tagLOGITEM
 {
 	// Member variables
 	SYSTEMTIME		stTime;									// Log time
+	DWORD			dwProcessID;							// Process ID
 	USHORT			usCategory;								// Log category
-	CString			strLogString;							// Log string
+	CString			strLogString;							// Log description string
 	LOGDETAILINFO	arrDetailInfo;							// Log detail info
 
 	// Constructor
@@ -107,13 +108,13 @@ typedef struct tagLOGITEM
 
 	// Detail info functions
 	void AddDetail(const LOGDETAIL&);						// Add detail data
-	void AddDetail(BYTE, UINT);								// Add detail (integer data only)
-	void AddDetail(BYTE, LPCTSTR);							// Add detail (string data only)
-	void AddDetail(BYTE, UINT, LPCTSTR);					// Add detail (both integer and string data)
+	void AddDetail(USHORT, UINT);							// Add detail (integer data only)
+	void AddDetail(USHORT, LPCTSTR);						// Add detail (string data only)
+	void AddDetail(USHORT, UINT, LPCTSTR);					// Add detail (both integer and string data)
 
 	// Format data functions
 	CString	FormatDateTime(void) const;						// Format date/time value
-	CString	FormatLogString(void) const;					// Format log string
+	CString FormatOutput(void) const;						// Format log item output
 } LOGITEM, *PLOGITEM;
 
 //////////////////////////////////////////////////////////////////////////
@@ -132,9 +133,148 @@ typedef CArray<LOGITEM, LOGITEM> LOGARRAY;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static SIZE_T GetSizeByType(BYTE byDataType);
 template <typename DATA>
 static SIZE_T GetSizeByValue(DATA dataValue);
+static SIZE_T GetSizeByType(BYTE byDataType);
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	JSONDATA
+//  Description:	Store JSON format object
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagJSONDATA
+{
+	// Member variables
+	CString strGroupName;									// JSON group name
+	CStringArray astrItemName;								// List of item names
+	CStringArray astrItemValue;								// List of item values (string)
+
+	INT_PTR	nSubItemNum;									// Number of nested sub-items
+	tagJSONDATA** apSubItemData;							// List of nested sub-items
+
+	// Constructor
+	tagJSONDATA();											// Default constructor
+	tagJSONDATA(const tagJSONDATA&);						// Copy constructor
+	~tagJSONDATA();											// Destructor
+
+	// Operator
+	tagJSONDATA& operator=(const tagJSONDATA&);				// Copy assignment operator
+
+	// Member functions
+	void Copy(const tagJSONDATA&);							// Copy item
+	void CopyArrayData(const tagJSONDATA&);					// Copy JSON item array data
+	void CopyPtrData(const tagJSONDATA&);					// Copy JSON item pointer data
+	BOOL Compare(const tagJSONDATA&) const;					// Compare items
+	BOOL IsEmpty(void) const;								// Check if item data is empty
+	void RemoveItem(int);									// Remove item by index
+	void RemoveItem(LPCTSTR);								// Remove item by name
+	void RemoveAll(void);									// Remove all log item data
+
+	void SetGroupName(LPCTSTR);								// Set group name
+	void AddStringItem(LPCTSTR, LPCTSTR);					// Add string item
+	void AddIntItem(LPCTSTR, UINT);							// Add integer item
+	void AddFloatItem(LPCTSTR, DOUBLE);						// Add float item
+	void AddSubItem(tagJSONDATA*);							// Add sub-item
+
+	void Print(CString&, int, BOOL, BOOL = TRUE);			// Print item data (with indentation)
+} JSONDATA, *PJSONDATA;
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	Define static data tables for logging, these data will be used for logging feature only
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Table name:		strplLogInfoIDTitle
+//  Description:	Using for pairing logging info IDs and the titles when
+//					writing log files
+//  Table type:		STRINGPAIRLIST
+//
+//////////////////////////////////////////////////////////////////////////
+
+static STRINGPAIRLIST strplLogInfoIDTitle
+{
+/*-----Base log info IDs-----------------------------Log Info Titles----------------*/
+	{ BASELOG_INFO_TIME,							_T("time")					},
+	{ BASELOG_INFO_PID,								_T("pid")					},
+	{ BASELOG_INFO_CATEGORY,						_T("category")				},
+	{ BASELOG_INFO_DESCRIPTION,						_T("description")			},
+	{ BASELOG_INFO_DETAILS,							_T("details")				},
+/*----------------------------------------------------------------------------------*/
+
+/*-----Base log info IDs-----------------------------Log Info Titles----------------*/
+	{ EVENTLOG_DETAIL_RESOURCEID,					_T("resourceid")			},
+	{ EVENTLOG_DETAIL_MAPTEXTID,					_T("maptextid")				},
+	{ EVENTLOG_DETAIL_DIALOGCAPTION,				_T("dialogcaption")			},
+	{ EVENTLOG_DETAIL_CTRLCAPTION,					_T("ctrlcaption")			},
+	{ EVENTLOG_DETAIL_CHKSTATE,						_T("checkstate")			},
+	{ EVENTLOG_DETAIL_SELECTION,					_T("selection")				},
+	{ EVENTLOG_DETAIL_DATAVALUE,					_T("datavalue")				},
+	{ EVENTLOG_DETAIL_DATACHANGE,					_T("datachange")			},
+	{ EVENTLOG_DETAIL_CONTENTID,					_T("contentid")				},
+	{ EVENTLOG_DETAIL_MESSAGETEXT,					_T("messagetext")			},
+/*----------------------------------------------------------------------------------*/
+
+/*-----History log info IDs--------------------------Log Info Titles----------------*/
+	{ HISTORYLOG_DETAIL_CATEGORY,					_T("category")				},
+	{ HISTORYLOG_DETAIL_ACTION,						_T("action")				},
+	{ HISTORYLOG_DETAIL_KEYSTROKES,					_T("keystrokes")			},
+	{ HISTORYLOG_DETAIL_ITEMID,						_T("itemid")				},
+	{ HISTORYLOG_DETAIL_MESSAGE,					_T("message")				},
+	{ HISTORYLOG_DETAIL_RESULT,						_T("result")				},
+/*----------------------------------------------------------------------------------*/
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Table name:		strplHistoryLogDetail
+//  Description:	Using for pairing history log detail info IDs and the
+//					titles when writing log files
+//  Table type:		STRINGPAIRLIST
+//
+//////////////////////////////////////////////////////////////////////////
+
+static STRINGPAIRLIST strplHistoryLogDetail
+{
+/*-----History category IDs--------------------------Log Info Titles----------------*/
+	{ HISTORYLOG_CATE_PWRACTION,			_T("Power Action")					},
+	{ HISTORYLOG_CATE_SCHEDULE,				_T("Schedule")						},
+	{ HISTORYLOG_CATE_HOTKEYSET,			_T("HotkeySet")						},
+	{ HISTORYLOG_CATE_PWRREMINDER,			_T("Power Reminder")				},
+/*----------------------------------------------------------------------------------*/
+
+/*-----History log action IDs------------------------Log Info Titles----------------*/
+	{ HISTORYLOG_ACTION_NOTHING,			_T("Do nothing")					},
+	{ HISTORYLOG_ACTION_DISPLAYOFF,			_T("Turn off display")				},
+	{ HISTORYLOG_ACTION_SLEEP,				_T("Sleep")							},
+	{ HISTORYLOG_ACTION_SHUTDOWN,			_T("Shutdown")						},
+	{ HISTORYLOG_ACTION_RESTART,			_T("Restart")						},
+	{ HISTORYLOG_ACTION_SIGNOUT,			_T("Sign out")						},
+	{ HISTORYLOG_ACTION_HIBERNATE,			_T("Hibernate")						},
+/*----------------------------------------------------------------------------------*/
+
+/*-----History log action IDs------------------------Log Info Titles----------------*/
+	{ HISTORYLOG_RESULT_SUCCESS,			_T("Success")						},
+	{ HISTORYLOG_RESULT_FAILED_UNKNOWN,		_T("Failed (Unknown error)")		},
+	{ HISTORYLOG_RESULT_FAILED_ERRCODE,		_T("Failed (Error code: 0x%08X)")	},
+/*----------------------------------------------------------------------------------*/
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	Define neccessary classes for logging feature
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 ////////////////////////////////////////////////////////
 //

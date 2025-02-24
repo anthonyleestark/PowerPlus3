@@ -42,7 +42,7 @@ IMPLEMENT_DYNAMIC(CCustomMsgDlg, SDialog)
 CCustomMsgDlg::CCustomMsgDlg() : SDialog(IDD_CUSTOM_MESSAGE_DLG)
 {
 	// Message string buffer
-	m_strBuffer = DEF_STRING_EMPTY;
+	m_strBuffer = STRING_EMPTY;
 }
 
 //////////////////////////////////////////////////////////////////////////

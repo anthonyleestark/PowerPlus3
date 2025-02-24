@@ -23,7 +23,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*-------------------------------------------Debug/Test variables-------------------------------------------*/
+/*----------------------------------------------Debug/Test flags---------------------------------------------*/
 
 // Dummy test mode
 BOOL g_bDummyTest = DEFAULT_DUMMYTEST;
@@ -32,7 +32,10 @@ BOOL g_bDummyTest = DEFAULT_DUMMYTEST;
 BOOL g_bDebugMode = DEFAULT_DEBUGMODE;
 
 // Debug log output target flag
-int g_nDebugOutputTarget = DEFAULT_DEBUGOUTPUT;
+INT g_nDebugOutputTarget = DEFAULT_DEBUGOUTPUT;
+
+// Test feature enable flag
+BOOL g_bTestFeature = DEFAULT_TESTFEATURE;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -46,6 +49,15 @@ CFile* g_pFileLogTraceDebug = NULL;
 
 // Debug info log file pointer
 CFile* g_pFileLogDebugInfo = NULL;
+
+// Trace error log file exception pointer
+CException* g_excLogTraceError = NULL;
+
+// Trace debug info log file exception pointer
+CException* g_excLogTraceDebug = NULL;
+
+// Debug info output log file exception pointer
+CException* g_excLogDebugInfo = NULL;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -66,6 +78,13 @@ BYTE g_bySystemSuspendFlag = 0;
 
 // Session ending trace flag
 BYTE g_bySessionEndFlag = 0;
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+/*---------------------------------------------Memory-only flags---------------------------------------------*/
+
+// Session lock trace flag
+BYTE g_bySessionLockFlag = 0;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -90,7 +109,7 @@ UINT	 g_uiRmdMsgTimeout = DEFAULT_MSGTIMEOUT;
 UINT	 g_uiRmdMsgIconID = DEFAULT_MSGICONID;
 
 // Message icon size
-int		 g_nRmdMsgIconSize = DEFAULT_MSGICONSIZE;
+INT		 g_nRmdMsgIconSize = DEFAULT_MSGICONSIZE;
 
 // Message icon position
 BYTE	 g_byRmdMsgIconPos = DEFAULT_MSGICONPOS;

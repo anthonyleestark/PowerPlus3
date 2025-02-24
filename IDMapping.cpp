@@ -22,15 +22,15 @@
 // 
 //	Function name:	Add
 //	Description:	Add an ID pair to ID map
-//  Arguments:		nID			 - Integer typed ID
+//  Arguments:		dwID		 - Integer typed ID
 //					lpszStringID - String typed ID
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SIDMapping::Add(UINT nID, LPCSTR lpszStringID)
+void SIDMapping::Add(DWORD dwID, LPCSTR lpszStringID)
 {
-	IDMAPPAIR idMapPair = { nID, lpszStringID };
+	IDMAPPAIR idMapPair = { dwID, lpszStringID };
 	IDMapData.Add(idMapPair);
 }
 
@@ -38,17 +38,17 @@ void SIDMapping::Add(UINT nID, LPCSTR lpszStringID)
 // 
 //	Function name:	Modify
 //	Description:	Modify an ID pair in ID map
-//  Arguments:		nID			 - Integer typed ID
+//  Arguments:		dwID		 - Integer typed ID
 //					lpszStringID - String typed ID
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SIDMapping::Modify(UINT nID, LPCSTR lpszStringID)
+void SIDMapping::Modify(DWORD dwID, LPCSTR lpszStringID)
 {
 	// Find item index
-	int nIndex = FindID(nID);
-	if (nIndex == DEF_INTEGER_INVALID)
+	int nIndex = FindID(dwID);
+	if (nIndex == INT_INVALID)
 		return;
 	
 	// Modify item at index
@@ -59,16 +59,16 @@ void SIDMapping::Modify(UINT nID, LPCSTR lpszStringID)
 // 
 //	Function name:	Remove
 //	Description:	Remove an ID pair with specified ID out of ID map
-//  Arguments:		nID - Integer typed ID
+//  Arguments:		dwID - Integer typed ID
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SIDMapping::Remove(UINT nID)
+void SIDMapping::Remove(DWORD dwID)
 {
 	// Find item index
-	int nIndex = FindID(nID);
-	if (nIndex == DEF_INTEGER_INVALID)
+	int nIndex = FindID(dwID);
+	if (nIndex == INT_INVALID)
 		return;
 
 	// Remove item at index
@@ -94,25 +94,25 @@ void SIDMapping::Clear()
 // 
 //	Function name:	GetID
 //	Description:	Get an ID from ID map
-//  Arguments:		nID			 - Integer typed ID
+//  Arguments:		dwID		 - Integer typed ID
 //					lpszStringID - String typed ID
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT SIDMapping::GetID(LPCSTR lpszStringID)
+UINT SIDMapping::GetID(LPCSTR lpszStringID) const
 {
 	int nIndex = FindID(lpszStringID);
-	if (nIndex == DEF_INTEGER_INVALID)
-		return DEF_INTEGER_NULL;
+	if (nIndex == INT_INVALID)
+		return INT_NULL;
 	
 	return IDMapData.GetAt(nIndex).dwResourceID;
 }
 
-LPCSTR SIDMapping::GetID(UINT nID)
+LPCSTR SIDMapping::GetID(DWORD dwID) const
 {
-	int nIndex = FindID(nID);
-	if (nIndex == DEF_INTEGER_INVALID) 
+	int nIndex = FindID(dwID);
+	if (nIndex == INT_INVALID)
 		return "";
 	
 	return IDMapData.GetAt(nIndex).lpszStringID;
@@ -129,11 +129,11 @@ LPCSTR SIDMapping::GetID(UINT nID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SIDMapping::FindID(UINT nID)
+int SIDMapping::FindID(DWORD dwID) const
 {
-	int nRes = DEF_INTEGER_INVALID;
+	int nRes = INT_INVALID;
 	for (int nIndex = 0; nIndex < GetMapCount(); nIndex++) {
-		if (IDMapData.GetAt(nIndex).dwResourceID == nID) {
+		if (IDMapData.GetAt(nIndex).dwResourceID == dwID) {
 			nRes = nIndex;	// Index found
 			break;
 		}
@@ -142,9 +142,9 @@ int SIDMapping::FindID(UINT nID)
 	return nRes;
 }
 
-int SIDMapping::FindID(LPCSTR lpszStringID)
+int SIDMapping::FindID(LPCSTR lpszStringID) const
 {
-	int nRes = DEF_INTEGER_INVALID;
+	int nRes = INT_INVALID;
 	for (int nIndex = 0; nIndex < GetMapCount(); nIndex++) {
 		if (strcmp(IDMapData.GetAt(nIndex).lpszStringID, lpszStringID) == 0) {
 			nRes = nIndex;	// Index found
@@ -164,7 +164,7 @@ int SIDMapping::FindID(LPCSTR lpszStringID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int	SIDMapping::GetMapCount()
+inline int SIDMapping::GetMapCount(void) const
 {
 	return (int)IDMapData.GetSize();
 }

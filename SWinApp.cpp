@@ -43,14 +43,14 @@ INIT_APP_IDMAP(SWinApp)
 SWinApp::SWinApp() : CWinAppEx()
 {
 	// Title and caption
-	m_strTemplateName = DEF_STRING_EMPTY;
-	m_strAppWndTitle = DEF_STRING_EMPTY;
-	m_strMessageCaption = DEF_STRING_EMPTY;
+	m_strTemplateName = STRING_EMPTY;
+	m_strAppWndTitle = STRING_EMPTY;
+	m_strMessageCaption = STRING_EMPTY;
 
 	// App language function
 	m_pAppLangPtr = NULL;
-	m_nCurSetLang = DEF_INTEGER_NULL;
-	m_nCurDispLang = DEF_INTEGER_NULL;
+	m_nCurSetLang = INT_NULL;
+	m_nCurDispLang = INT_NULL;
 
 	// Logging pointer
 	m_pAppEventLog = NULL;
@@ -65,13 +65,13 @@ SWinApp::SWinApp(LPCTSTR lpszTemplateName) : CWinAppEx()
 {
 	// Title and caption
 	m_strTemplateName = lpszTemplateName;
-	m_strAppWndTitle = DEF_STRING_EMPTY;
-	m_strMessageCaption = DEF_STRING_EMPTY;
+	m_strAppWndTitle = STRING_EMPTY;
+	m_strMessageCaption = STRING_EMPTY;
 
 	// App language function
 	m_pAppLangPtr = NULL;
-	m_nCurSetLang = DEF_INTEGER_NULL;
-	m_nCurDispLang = DEF_INTEGER_NULL;
+	m_nCurSetLang = INT_NULL;
+	m_nCurDispLang = INT_NULL;
 
 	// Logging pointer
 	m_pAppEventLog = NULL;
@@ -152,7 +152,7 @@ int SWinApp::PreExitInstance()
 {
 	// TODO: Deriver this function for custom actions
 
-	return DEF_RESULT_SUCCESS;
+	return RESULT_SUCCESS;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -221,7 +221,7 @@ BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 		CString strEventDescription;
 		CString strOldLang = MAKEUNICODE(GetLanguageName(m_nCurDispLang));
 		CString strNewLang = MAKEUNICODE(GetLanguageName(nCurLanguage));
-		strEventDescription.Format(DEF_STRING_TEXTCHANGEFORMAT, strOldLang, strNewLang);
+		strEventDescription.Format(STRING_TEXTCHANGEFORMAT, strOldLang, strNewLang);
 		OutputEventLog(LOG_EVENT_CHANGE_LANGUAGE, strEventDescription);
 	}
 
@@ -464,11 +464,12 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
-	CString strCaption = DEF_STRING_EMPTY;
+	CString strCaption = STRING_EMPTY;
 	if (nCaptionID != NULL) {
+
 		// Get language string caption
 		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (strTemp != DEF_STRING_NULL) {
+		if (strTemp != STRING_NULL) {
 			// Set caption string
 			strCaption = strTemp;
 		}
@@ -506,6 +507,49 @@ void SWinApp::GetRegisterdMsgBoxCaption(CString& strRegMsgBoxCap) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	DoMessageBox
+//	Description:	Override this function to customize application-wide 
+//					processing of AfxMessageBox calls
+//  Arguments:		lpszPrompt  - Message box text
+//					nType		- Message box style
+//					nIDPrompt	- An index to a Help context string.
+//  Return value:	int	- Result of message box
+//
+//////////////////////////////////////////////////////////////////////////
+
+int SWinApp::DoMessageBox(LPCTSTR lpszPrompt, UINT nType, UINT nIDPrompt)
+{
+	// Message caption
+	CString strMsgCaption;
+	strMsgCaption.Empty();
+
+	// If application message box caption is registered
+	if (!m_strMessageCaption.IsEmpty()) {
+		// Use registered message box caption
+		strMsgCaption = m_strMessageCaption;
+	}
+	// Otherwise,
+	else {
+		// Use app window title
+		strMsgCaption = this->GetAppWindowTitle();
+	}
+
+	// If message caption is empty (not registered)
+	// or the global application window title is not set
+	if (strMsgCaption.IsEmpty()) {
+		// Use the default AfxMessageBox
+		return CWinApp::DoMessageBox(lpszPrompt, nType, nIDPrompt);
+	}
+	else {
+		// Use the MessageBox function, which we can specify the caption with
+		nType |= MB_SYSTEMMODAL;							// Show message box as Top-most
+		HWND hMainWnd = GET_HANDLE_MAINWND();				// Get main window handle
+		return MessageBox(hMainWnd, lpszPrompt, strMsgCaption, nType);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	DisplayMessageBox
 //	Description:	Display message box using language string ID
 //  Arguments:		nPromptID  - ID of prompt message string
@@ -525,7 +569,7 @@ int SWinApp::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 	if (nCaptionID != NULL) {
 		// Get language string caption
 		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (strTemp != DEF_STRING_NULL)
+		if (strTemp != STRING_NULL)
 			strCaption = strTemp;
 	}
 	else {
@@ -563,14 +607,14 @@ int SWinApp::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL
 	// If caption is not set
 	CString strCaption(lpszCaption);
 	if (strCaption.IsEmpty()) {
-		// If message box caption is registered
+		// If application message box caption is registered
 		if (!m_strMessageCaption.IsEmpty()) {
-			// Use registered caption
+			// Use registered message box caption
 			strCaption = m_strMessageCaption;
 		}
 		// Otherwise,
 		else {
-			// Use app window title
+			// Use application window title
 			strCaption = this->GetAppWindowTitle();
 		}
 	}
@@ -641,6 +685,7 @@ void SWinApp::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 	LOGITEM logItemAppEvent;
 	logItemAppEvent.usCategory = usEvent;
 	logItemAppEvent.stTime = GetCurSysTime();
+	logItemAppEvent.dwProcessID = GetCurrentProcessId();
 	if (lpszDescription != NULL) {
 		// Include event description
 		logItemAppEvent.strLogString = lpszDescription;
@@ -663,6 +708,7 @@ void SWinApp::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 //	Function name:	GetAppOption
 //	Description:	Return option value by ID
 //  Arguments:		eAppOptionID - ID of specific option
+//					bTemp		 - Temp value or saved value (saved value by default)
 //  Return value:	int - Option value
 //
 //////////////////////////////////////////////////////////////////////////
@@ -683,7 +729,22 @@ int SWinApp::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE */) co
 
 int SWinApp::GetFlagValue(APPFLAGID eFlagID) const
 {
-	return 0;
+	int nValue = INT_INVALID;
+
+	switch (eFlagID)
+	{
+	case FLAGID_CHANGEFLAG:						// Data/setting change flag
+		nValue = m_bChangeFlag;
+		break;
+	case FLAGID_READONLYMODE:					// Read-only mode
+		nValue = m_bReadOnlyMode;
+		break;
+	case FLAGID_FORCECLOSING:					// Force closing by request
+		nValue = m_bForceClose;
+		break;
+	}
+
+	return nValue;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -698,7 +759,22 @@ int SWinApp::GetFlagValue(APPFLAGID eFlagID) const
 
 void SWinApp::SetFlagValue(APPFLAGID eFlagID, int nValue)
 {
-	// TODO: Deriver this function for custom actions
+	// Check value validity
+	if (nValue == INT_INVALID)
+		return;
+
+	switch (eFlagID)
+	{
+	case FLAGID_CHANGEFLAG:						// Data/setting change flag
+		m_bChangeFlag = nValue;
+		break;
+	case FLAGID_READONLYMODE:					// Read-only mode
+		m_bReadOnlyMode = nValue;
+		break;
+	case FLAGID_FORCECLOSING:					// Force closing by request
+		m_bForceClose = nValue;
+		break;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -785,12 +861,19 @@ AFX_INLINE BOOL SWinApp::IsForceClosingByRequest(void) const
 // 
 //	Function name:	RequestCloseDialog
 //	Description:	Request current dialog to close
-//  Arguments:		None
+//  Arguments:		nDialogID  - Dialog ID
+//					hDialogWnd - Dialog window handle
 //  Return value:	LRESULT (0:Success, else:Failed)
 //
 //////////////////////////////////////////////////////////////////////////
 
 LRESULT SWinApp::RequestCloseDialog(UINT nDialogID)
+{
+	// Request denied
+	return LRESULT(1);	// ERROR_FAILED
+}
+
+LRESULT SWinApp::RequestCloseDialog(HWND hDialogWnd)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED
@@ -803,7 +886,7 @@ LRESULT SWinApp::RequestCloseDialog(UINT nDialogID)
 //  Arguments:		hRcvWnd		- Receive window handle
 //					pRcvWnd		- Receive window pointer
 //					dwErrorCode	- Error code (as First param)
-//					lParam		- Addition param (Second param)
+//					lParam		- Additional param (Second param)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////

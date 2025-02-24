@@ -23,6 +23,21 @@
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetSizeByValue
+//	Description:	Get size of data by data value
+//  Arguments:		dataValue - Data value
+//  Return value:	SIZE_T
+//
+//////////////////////////////////////////////////////////////////////////
+
+template <typename DATA>
+SIZE_T GetSizeByValue(DATA dataValue)
+{
+	return sizeof(dataValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	GetSizeByType
 //	Description:	Get size of data by data type
 //  Arguments:		byDataType - Data type
@@ -36,7 +51,7 @@ SIZE_T GetSizeByType(BYTE byDataType)
 	switch (byDataType)
 	{
 	case DATA_TYPE_VOID:				// No type (unusable)
-		retSize = DEF_INTEGER_NULL;
+		retSize = INT_NULL;
 		break;
 	case DATA_TYPE_NUM_U1:				// Unsigned integer (1-byte)
 	case DATA_TYPE_NUM_I1:				// Signed integer (1-byte)
@@ -65,26 +80,11 @@ SIZE_T GetSizeByType(BYTE byDataType)
 		retSize = sizeof(SYSTEMTIME);
 		break;
 	default:
-		retSize = DEF_INTEGER_NULL;
+		retSize = INT_NULL;
 		break;
 	}
 
 	return retSize;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetSizeByValue
-//	Description:	Get size of data by data value
-//  Arguments:		dataValue - Data value
-//  Return value:	SIZE_T
-//
-//////////////////////////////////////////////////////////////////////////
-
-template <typename DATA>
-SIZE_T GetSizeByValue(DATA dataValue)
-{
-	return sizeof(dataValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -99,18 +99,18 @@ SIZE_T GetSizeByValue(DATA dataValue)
 tagLOGDETAIL::tagLOGDETAIL()
 {
 	// Initialization
-	this->byCategory = 0;										// Detail category
+	this->usCategory = 0;										// Detail category
 	this->uiDetailInfo = 0;										// Detail info (integer)
 	this->strDetailInfo.Empty();								// Detail info (string)
 	this->ptrDetailInfo = NULL;									// Detail info (pointer)
 	this->byPointerType = DATA_TYPE_VOID;						// Detail info pointer data type
-	this->szPointerSize = DEF_INTEGER_NULL;						// Detail info pointer data size
+	this->szPointerSize = INT_NULL;								// Detail info pointer data size
 }
 
 tagLOGDETAIL::tagLOGDETAIL(const tagLOGDETAIL& pItem)
 {
 	// Copy data
-	this->byCategory = pItem.byCategory;						// Detail category
+	this->usCategory = pItem.usCategory;						// Detail category
 	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
 	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
 	this->PointerCopy(pItem);									// Detail info (pointer)
@@ -128,7 +128,7 @@ tagLOGDETAIL::tagLOGDETAIL(const tagLOGDETAIL& pItem)
 tagLOGDETAIL& tagLOGDETAIL::operator=(const tagLOGDETAIL& pItem)
 {
 	// Copy data
-	this->byCategory = pItem.byCategory;						// Detail category
+	this->usCategory = pItem.usCategory;						// Detail category
 	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
 	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
 	this->PointerCopy(pItem);									// Detail info (pointer)
@@ -148,12 +148,12 @@ tagLOGDETAIL& tagLOGDETAIL::operator=(const tagLOGDETAIL& pItem)
 void tagLOGDETAIL::Init()
 {
 	// Initialization
-	this->byCategory = 0;										// Detail category
+	this->usCategory = 0;										// Detail category
 	this->uiDetailInfo = 0;										// Detail info (integer)
 	this->strDetailInfo.Empty();								// Detail info (string)
 	this->ptrDetailInfo = NULL;									// Detail info (pointer)
 	this->byPointerType = DATA_TYPE_VOID;						// Detail info pointer data type
-	this->szPointerSize = DEF_INTEGER_NULL;						// Detail info pointer data size
+	this->szPointerSize = INT_NULL;								// Detail info pointer data size
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -168,7 +168,7 @@ void tagLOGDETAIL::Init()
 void tagLOGDETAIL::Copy(const tagLOGDETAIL& pItem)
 {
 	// Copy data
-	this->byCategory = pItem.byCategory;						// Detail category
+	this->usCategory = pItem.usCategory;						// Detail category
 	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
 	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
 	this->PointerCopy(pItem);									// Detail info (pointer)
@@ -207,7 +207,7 @@ BOOL tagLOGDETAIL::Compare(const tagLOGDETAIL& pItem) const
 	BOOL bRet = FALSE;
 
 	// Compare items
-	bRet &= (this->byCategory == pItem.byCategory);				// Detail category
+	bRet &= (this->usCategory == pItem.usCategory);				// Detail category
 	bRet &= (this->uiDetailInfo == pItem.uiDetailInfo);			// Detail info (integer)
 	bRet &= (this->strDetailInfo == pItem.strDetailInfo);		// Detail info (string)
 	bRet &= this->PointerCompare(pItem);						// Detail info (pointer)
@@ -309,8 +309,9 @@ tagLOGITEM::tagLOGITEM()
 {
 	// Initialization
 	this->stTime = {0};											// Log time
+	this->dwProcessID = 0;										// Process ID
 	this->usCategory = LOG_MACRO_NONE;							// Log category
-	this->strLogString = DEF_STRING_EMPTY;						// Log string
+	this->strLogString = STRING_EMPTY;							// Log string
 	this->arrDetailInfo.RemoveAll();							// Log detail info
 }
 
@@ -318,6 +319,7 @@ tagLOGITEM::tagLOGITEM(const tagLOGITEM& pItem)
 {
 	// Copy data
 	this->stTime = pItem.stTime;								// Log time
+	this->dwProcessID = pItem.dwProcessID;						// Process ID
 	this->usCategory = pItem.usCategory;						// Log category
 	this->strLogString = pItem.strLogString;					// Log string
 	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
@@ -336,6 +338,7 @@ tagLOGITEM& tagLOGITEM::operator=(const tagLOGITEM& pItem)
 {
 	// Copy data
 	this->stTime = pItem.stTime;								// Log time
+	this->dwProcessID = pItem.dwProcessID;						// Process ID
 	this->usCategory = pItem.usCategory;						// Log category
 	this->strLogString = pItem.strLogString;					// Log string
 	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
@@ -356,6 +359,7 @@ void tagLOGITEM::Copy(const tagLOGITEM& pItem)
 {
 	// Copy data
 	this->stTime = pItem.stTime;								// Log time
+	this->dwProcessID = pItem.dwProcessID;						// Process ID
 	this->usCategory = pItem.usCategory;						// Log category
 	this->strLogString = pItem.strLogString;					// Log string
 	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
@@ -377,6 +381,7 @@ BOOL tagLOGITEM::Compare(const tagLOGITEM& pItem) const
 	// Compare item
 	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
 	bRet &= (this->stTime.wMinute == pItem.stTime.wMinute);
+	bRet &= (this->dwProcessID == pItem.dwProcessID);
 	bRet &= (this->usCategory == pItem.usCategory);
 	bRet &= (this->strLogString == pItem.strLogString);
 
@@ -445,8 +450,9 @@ void tagLOGITEM::RemoveAll(void)
 {
 	// Reset data
 	this->stTime = {0};											// Log time
+	this->dwProcessID = 0;										// Process ID
 	this->usCategory = LOG_MACRO_NONE;							// Log category
-	this->strLogString = DEF_STRING_EMPTY;						// Log string
+	this->strLogString = STRING_EMPTY;							// Log string
 
 	// Clean up log detail info data
 	this->RemoveDetailInfo();									// Log detail info
@@ -457,7 +463,7 @@ void tagLOGITEM::RemoveAll(void)
 //	Function name:	AddDetail
 //	Description:	Add log detail info data
 //  Arguments:		logDetailInfo	- Log detail info data
-//					byCategory		- Detail category
+//					usCategory		- Detail category
 //					nDetailInfo		- Detail info (integer)
 //					strDetailInfo	- Detail info (string)
 //  Return value:	None
@@ -470,33 +476,33 @@ void tagLOGITEM::AddDetail(const LOGDETAIL& logDetailInfo)
 	this->arrDetailInfo.Add(logDetailInfo);
 }
 
-void tagLOGITEM::AddDetail(BYTE byCategory, UINT nDetailInfo)
+void tagLOGITEM::AddDetail(USHORT usCategory, UINT nDetailInfo)
 {
 	// Prepare detail info data
 	LOGDETAIL logDetailInfo;
-	logDetailInfo.byCategory = byCategory;
+	logDetailInfo.usCategory = usCategory;
 	logDetailInfo.uiDetailInfo = nDetailInfo;
 
 	// Add detail info data
 	this->AddDetail(logDetailInfo);
 }
 
-void tagLOGITEM::AddDetail(BYTE byCategory, LPCTSTR lpszDetailInfo)
+void tagLOGITEM::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo)
 {
 	// Prepare detail info data
 	LOGDETAIL logDetailInfo;
-	logDetailInfo.byCategory = byCategory;
+	logDetailInfo.usCategory = usCategory;
 	logDetailInfo.strDetailInfo = lpszDetailInfo;
 
 	// Add detail info data
 	this->AddDetail(logDetailInfo);
 }
 
-void tagLOGITEM::AddDetail(BYTE byCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo)
+void tagLOGITEM::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo)
 {
 	// Prepare detail info data
 	LOGDETAIL logDetailInfo;
-	logDetailInfo.byCategory = byCategory;
+	logDetailInfo.usCategory = usCategory;
 	logDetailInfo.uiDetailInfo = nDetailInfo;
 	logDetailInfo.strDetailInfo = lpszDetailInfo;
 
@@ -507,7 +513,7 @@ void tagLOGITEM::AddDetail(BYTE byCategory, UINT nDetailInfo, LPCTSTR lpszDetail
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	FormatDateTime
-//	Description:	Return a formated logitem date/time string
+//	Description:	Return a formatted logitem date/time string
 //  Arguments:		None
 //  Return value:	CString - Formatted result
 //
@@ -516,7 +522,7 @@ void tagLOGITEM::AddDetail(BYTE byCategory, UINT nDetailInfo, LPCTSTR lpszDetail
 CString tagLOGITEM::FormatDateTime(void) const
 {
 	CString strTimeFormat;
-	CString strMiddayFlag = (stTime.wHour >= 12) ? DEF_SYMBOL_POSTMERIDIEM : DEF_SYMBOL_ANTEMERIDIEM;
+	CString strMiddayFlag = (stTime.wHour >= 12) ? SYMBOL_POST_MERIDIEM : SYMBOL_ANTE_MERIDIEM;
 	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
 						stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
 
@@ -525,24 +531,665 @@ CString tagLOGITEM::FormatDateTime(void) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	FormatLogString
-//	Description:	Return a formated log string
+//	Function name:	FormatOutput
+//	Description:	Return formatted output log string for file writing
 //  Arguments:		None
 //  Return value:	CString - Formatted result
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString tagLOGITEM::FormatLogString(void) const
+CString tagLOGITEM::FormatOutput(void) const
 {
+	// Create JSON data object
+	JSONDATA jsonOutputData;
+
+	CString strLogInfoIDTitle;
+	CString strLogInfoValue;
+
+	// Load default language table package
+	LANGTABLE_PTR pDefLang = LoadLanguageTable(NULL);
+
+	/*********************************************************************/
+	/*																	 */
+	/*			  Convert log item base info into JSON data				 */
+	/*																	 */
+	/*********************************************************************/
+
+	// Log time
+	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_TIME);
+	jsonOutputData.AddStringItem(strLogInfoIDTitle, this->FormatDateTime());
+
+	// Process ID
+	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_PID);
+	jsonOutputData.AddIntItem(strLogInfoIDTitle, this->dwProcessID);
+
+	// Log category
+	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_CATEGORY);
+	strLogInfoValue = GetLanguageString(pDefLang, this->usCategory);
+	jsonOutputData.AddStringItem(strLogInfoIDTitle, strLogInfoValue);
+
+	// Log description string
+	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
+	jsonOutputData.AddStringItem(strLogInfoIDTitle, this->strLogString);
+
+	/*********************************************************************/
+	/*																	 */
+	/*		  Convert log item detail info data into JSON data			 */
+	/*																	 */
+	/*********************************************************************/
+
+	// Log detail info
+	if (!this->arrDetailInfo.IsEmpty()) {
+
+		// Create JSON detail data object
+		JSONDATA jsonDetailData;
+
+		CString strLogDetailTitle;
+
+		// Set group name: Detail
+		jsonDetailData.SetGroupName(GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_DETAILS));
+
+		// Convert data
+		for (int nIndex = 0; nIndex < (this->arrDetailInfo.GetSize()); nIndex++) {
+
+			// Get detail info item
+			LOGDETAIL logDetail = this->arrDetailInfo.GetAt(nIndex);
+
+			// Detail info category
+			strLogDetailTitle = GetPairedString(strplLogInfoIDTitle, logDetail.usCategory);
+
+			// Detail info value
+			if (logDetail.uiDetailInfo != INT_NULL) {
+				jsonDetailData.AddIntItem(strLogDetailTitle, logDetail.uiDetailInfo);
+			}
+			else if (!logDetail.strDetailInfo.IsEmpty()) {
+				jsonDetailData.AddStringItem(strLogDetailTitle, logDetail.strDetailInfo);
+			}
+		}
+
+		// Output detail JSON data
+		jsonOutputData.AddSubItem(&jsonDetailData);
+	}
+
+	/*********************************************************************/
+	/*																	 */
+	/*			    Format JSON data into output string					 */
+	/*																	 */
+	/*********************************************************************/
+
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, FormatDateTime(), strLogString, DEF_STRING_EMPTY);
+	jsonOutputData.Print(strLogFormat, 0, TRUE, TRUE);
+
 	return strLogFormat;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SLogging/~SLogging
-//	Description:	Constructor and destructor
+//	Function name:	tagJSONDATA
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagJSONDATA::tagJSONDATA()
+{
+	// Initialization
+	this->strGroupName = STRING_EMPTY;				// JSON group name
+	this->astrItemName.RemoveAll();					// List of item names
+	this->astrItemValue.RemoveAll();				// List of item values (string)
+	this->nSubItemNum = 0;							// Number of nested sub-items
+	this->apSubItemData = NULL;						// List of nested sub-items
+}
+
+tagJSONDATA::tagJSONDATA(const tagJSONDATA& pItem)
+{
+	// Copy data
+	this->strGroupName = pItem.strGroupName;		// JSON group name
+	this->CopyArrayData(pItem);						// Item array data
+	this->CopyPtrData(pItem);						// Item pointer data
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	~tagJSONDATA
+//	Description:	Destructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagJSONDATA::~tagJSONDATA()
+{
+	// Remove all data and clean-up
+	this->RemoveAll();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		Default
+//  Return value:	tagJSONDATA&
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagJSONDATA& tagJSONDATA::operator=(const tagJSONDATA& pItem)
+{
+	// Copy data
+	this->strGroupName = pItem.strGroupName;		// JSON group name
+	this->CopyArrayData(pItem);						// Item array data
+	this->CopyPtrData(pItem);						// Item pointer data
+
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Copy
+//	Description:	Copy data from another JSON item
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::Copy(const tagJSONDATA& pItem)
+{
+	// Copy data
+	this->strGroupName = pItem.strGroupName;		// JSON group name
+	this->CopyArrayData(pItem);						// Item array data
+	this->CopyPtrData(pItem);						// Item pointer data
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CopyArrayData
+//	Description:	Copy item array data from another JSON item
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::CopyArrayData(const tagJSONDATA& pItem)
+{
+	// Remove all existing array data
+	this->astrItemName.RemoveAll();
+	this->astrItemValue.RemoveAll();
+
+	// Free destination array data memory
+	this->astrItemName.FreeExtra();
+	this->astrItemValue.FreeExtra();
+
+	// Set destination array data size
+	this->astrItemName.SetSize(pItem.astrItemName.GetSize());
+	this->astrItemValue.SetSize(pItem.astrItemValue.GetSize());
+
+	// Copy list of item names
+	for (int nIndex = 0; nIndex < pItem.astrItemName.GetSize(); nIndex++) {
+		this->astrItemName.SetAt(nIndex, pItem.astrItemName.GetAt(nIndex));
+	}
+
+	// Copy list of item values
+	for (int nIndex = 0; nIndex < pItem.astrItemValue.GetSize(); nIndex++) {
+		this->astrItemValue.SetAt(nIndex, pItem.astrItemValue.GetAt(nIndex));
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CopyPtrData
+//	Description:	Copy item pointer data from another JSON item
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::CopyPtrData(const tagJSONDATA& pItem)
+{
+	// Number of nested sub-items
+	this->nSubItemNum = pItem.nSubItemNum;
+
+	// List of nested sub-items (pointer copy)
+	if ((pItem.nSubItemNum > 0) && (pItem.apSubItemData != NULL)) {
+
+		// Allocation and initialization
+		this->apSubItemData = new PJSONDATA[this->nSubItemNum];
+		if (this->apSubItemData == NULL) {
+			TRCLOG("Error: JSON sub-item array data allocation failed!!!");
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			return;
+		}
+
+		// Copy data
+		for (int nCount = 0; nCount < this->nSubItemNum; nCount++) {
+
+			// Allocate memory
+			this->apSubItemData[nCount] = new JSONDATA;
+			if (this->apSubItemData[nCount] == NULL) {
+				TRCFMT("Error: JSON new sub-item data allocation failed!!! (Index=%d)", nCount);
+				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+				continue;
+			}
+
+			// Get source data
+			PJSONDATA pSrcData = pItem.apSubItemData[nCount];
+			if (pSrcData == NULL) {
+				TRCFMT("Error: JSON sub-item is skipped when copying!!! (Index=%d)", nCount);
+				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+				continue;
+			}
+
+			// Copy item data (do not use 'memcpy' in here)
+			*(this->apSubItemData[nCount]) = *pSrcData;
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Compare
+//	Description:	Compare with another given item
+//  Arguments:		pItem - Pointer of given item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagJSONDATA::Compare(const tagJSONDATA& pItem) const
+{
+	BOOL bRet = FALSE;
+
+	// Compare group name
+	bRet &= (this->strGroupName == pItem.strGroupName);
+
+	// Compare detail item info
+	BOOL bRetCompareDetail = TRUE;
+	if ((this->astrItemName.GetSize() != pItem.astrItemName.GetSize()) ||
+		(this->astrItemValue.GetSize() != pItem.astrItemValue.GetSize())) {
+		bRetCompareDetail = FALSE;
+	}
+	if (bRetCompareDetail != FALSE) {
+		for (int nIndex = 0; nIndex < (this->astrItemName.GetSize()); nIndex++) {
+			if (this->astrItemName.GetAt(nIndex) != pItem.astrItemName.GetAt(nIndex)) {
+				bRetCompareDetail = FALSE;
+				break;
+			}
+		}
+	}
+	if (bRetCompareDetail != FALSE) {
+		for (int nIndex = 0; nIndex < (this->astrItemValue.GetSize()); nIndex++) {
+			if (this->astrItemValue.GetAt(nIndex) != pItem.astrItemValue.GetAt(nIndex)) {
+				bRetCompareDetail = FALSE;
+				break;
+			}
+		}
+	}
+	bRet &= bRetCompareDetail;
+
+	// Compare nested sub-items
+	if (this->apSubItemData != NULL && pItem.apSubItemData != NULL) {
+
+		bRetCompareDetail = TRUE;
+
+		// Compare nested sub-item numbers
+		int nThisSubItemNum = this->nSubItemNum;
+		int nOtherSubItemNum = pItem.nSubItemNum;
+		if (nThisSubItemNum != nOtherSubItemNum) {
+			bRetCompareDetail = FALSE;
+		}
+		else {
+			// Compare each item data
+			for (int nCount = 0; nCount < nThisSubItemNum; nCount++) {
+				PJSONDATA pThisSubItem = this->apSubItemData[nCount];
+				PJSONDATA pOtherSubItem = pItem.apSubItemData[nCount];
+				if ((pThisSubItem != NULL) && (pOtherSubItem != NULL)) {
+					bRetCompareDetail &= pThisSubItem->Compare(*pOtherSubItem);
+				}
+				else {
+					bRetCompareDetail = FALSE;
+					break;
+				}
+			}
+		}
+		bRet &= bRetCompareDetail;
+	}
+
+	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEmpty
+//	Description:	Check if current JSON item is empty
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL tagJSONDATA::IsEmpty(void) const
+{
+	// Initialize an empty item
+	static const JSONDATA jsonDummyItem;
+
+	// Compare with this item and return result
+	return this->Compare(jsonDummyItem);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RemoveItem
+//	Description:	Remove detail item by index
+//  Arguments:		nIndex - Item index
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::RemoveItem(int nIndex)
+{
+	// Invalid index
+	if ((nIndex < 0) || (nIndex >= this->astrItemName.GetSize()))
+		return;
+
+	// Remove item by index
+	this->astrItemName.RemoveAt(nIndex);
+	this->astrItemValue.RemoveAt(nIndex);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RemoveItem
+//	Description:	Remove detail item by name
+//  Arguments:		lpszItemName - Item name
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::RemoveItem(LPCTSTR lpszItemName)
+{
+	// If data is empty, do nothing
+	if (this->astrItemName.IsEmpty())
+		return;
+
+	// Search for name
+	int nFoundIndex = INT_INVALID;
+	for (int nIndex = 0; nIndex < (this->astrItemName.GetSize()); nIndex++) {
+		if (this->astrItemName.GetAt(nIndex) == lpszItemName) {
+			nFoundIndex = nIndex;
+			break;
+		}
+	}
+
+	// Remove item by index
+	this->RemoveItem(nFoundIndex);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RemoveAll
+//	Description:	Remove all JSON item data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::RemoveAll(void)
+{
+	// Reset data
+	this->strGroupName.Empty();						// JSON group name
+	this->astrItemName.RemoveAll();					// List of item names
+	this->astrItemValue.RemoveAll();				// List of item values (string)
+
+	// Free extra memory
+	this->astrItemName.FreeExtra();					// List of item names
+	this->astrItemValue.FreeExtra();				// List of item values (string)
+
+	// Remove all nested sub-items
+	if ((this->nSubItemNum > 0) && (this->apSubItemData != NULL)) {
+		for (int nCount = 0; nCount < this->nSubItemNum; nCount++) {
+			PJSONDATA pSubItem = this->apSubItemData[nCount];
+			if (pSubItem != NULL) {
+				pSubItem->RemoveAll();
+				delete pSubItem;
+			}
+		}
+		delete[] (this->apSubItemData);
+		this->apSubItemData = NULL;
+		
+		// Reset item counter
+		this->nSubItemNum = 0;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetGroupName
+//	Description:	Set JSON data group name
+//  Arguments:		lpszGroupName - Group name
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::SetGroupName(LPCTSTR lpszGroupName)
+{
+	this->strGroupName = lpszGroupName;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	AddStringItem
+//	Description:	Add string-typed item
+//  Arguments:		lpszItemName - Item name
+//					lpszValue	 - String value
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::AddStringItem(LPCTSTR lpszItemName, LPCTSTR lpszValue)
+{
+	// Search if item name existed
+	for (int nIndex = 0; nIndex < (this->astrItemName.GetSize()); nIndex++) {
+		const CString& strItemName = this->astrItemName.GetAt(nIndex);
+		if (strItemName == lpszItemName) {
+			// Replace item value with new value
+			this->astrItemValue.SetAt(nIndex, lpszValue);
+			return;
+		}
+	}
+
+	// Add item
+	this->astrItemName.Add(lpszItemName);
+	this->astrItemValue.Add(lpszValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	AddIntItem
+//	Description:	Add integer-typed item
+//  Arguments:		lpszItemName - Item name
+//					nValue		 - Unsigned integer value
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::AddIntItem(LPCTSTR lpszItemName, UINT nValue)
+{
+	// Convert integer to string
+	CString strValue;
+	strValue.Format(_T("%d"), nValue);
+
+	// Add item
+	AddStringItem(lpszItemName, strValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	AddFloatItem
+//	Description:	Add float-typed item
+//  Arguments:		lpszItemName - Item name
+//					dbValue		 - Float value
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::AddFloatItem(LPCTSTR lpszItemName, DOUBLE dbValue)
+{
+	// Convert integer to string
+	CString strValue;
+	strValue.Format(_T("%f"), dbValue);
+
+	// Add item
+	AddStringItem(lpszItemName, strValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	AddSubItem
+//	Description:	Add nested sub-item
+//  Arguments:		pSrc - Source item data (pointer)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::AddSubItem(tagJSONDATA* pSrc)
+{
+	// Check for data validity
+	if (pSrc == NULL)
+		return;
+
+	// Index to copy
+	INT_PTR nIndex = 0;
+
+	// Allocate array data memory if not yet allocated
+	if (this->apSubItemData == NULL) {
+		this->apSubItemData = new PJSONDATA;
+		if (this->apSubItemData == NULL) {
+			TRCLOG("Error: JSON sub-item array data allocation failed!!!");
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			return;
+		}
+	}
+	else {
+		nIndex = this->nSubItemNum;
+	}
+	
+	// Allocated destination sub-item memory
+	this->apSubItemData[nIndex] = new JSONDATA;
+	if (this->apSubItemData[nIndex] == NULL) {
+		TRCFMT("Error: JSON new sub-item data allocation failed!!! (Index=%d)", nIndex);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		return;
+	}
+
+	// Copy data (do not use 'memcpy' in here)
+	*(this->apSubItemData[nIndex]) = *pSrc;
+
+	// Increase sub-item counter
+	this->nSubItemNum++;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Print
+//	Description:	Print item data with indentation
+//  Arguments:		strOutput  - Output printed result string
+//					nIndent	   - Indentation
+//					bSeparator - Whether to add a blank line as separator
+//					bMultiline - Whether to print the data in multiple lines
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagJSONDATA::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultiline /* = TRUE */)
+{
+	// Empty output result string
+	strOutput.Empty();
+
+	// Make indentation
+	CString strIndent = STRING_EMPTY;
+	for (int nTabCount = 1; nTabCount <= nIndent; nTabCount++) {
+		// Add indent (tab character)
+		strIndent.Append(SYMBOL_INDENT);
+	}
+
+	// Do not use indentation if printing in single line
+	// This will make better visualization
+	if (bMultiline != TRUE) {
+		strIndent.Empty();
+	}
+
+	// Add indentation
+	strOutput.Append(strIndent);
+
+	CString strFormat = STRING_EMPTY;
+
+	// Print group name
+	if (!this->strGroupName.IsEmpty()) {
+		strFormat.Format(_T("\"%s\": "), this->strGroupName);
+		strOutput.Append(strFormat);
+	}
+
+	// Opening bracket
+	strOutput.Append(_T("{ "));
+	if (bMultiline == TRUE) {
+		strOutput.Append(STRING_ENDLINE);
+	}
+
+	// Print detail items
+	INT_PTR nItemNum = this->astrItemName.GetSize();
+	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+		// Add indentation
+		strOutput.Append(strIndent);
+
+		// Get item name and value
+		CString strItemName = this->astrItemName.GetAt(nIndex);
+		CString strItemValue = STRING_EMPTY;
+		if (nIndex < this->astrItemValue.GetSize()) {
+			strItemValue = this->astrItemValue.GetAt(nIndex);
+		}
+
+		// Format detail item
+		if (nIndex < (nItemNum - 1)) {
+			// Add comma character at the end of each item
+			strFormat.Format(_T("\t\"%s\": \"%s\", "), strItemName, strItemValue);
+			strOutput.Append(strFormat);
+			if (bMultiline == TRUE) {
+				strOutput.Append(STRING_ENDLINE);
+			}
+		}
+		else {
+			// Last item has no comma in the end
+			strFormat.Format(_T("\t\"%s\": \"%s\" "), strItemName, strItemValue);
+			strOutput.Append(strFormat);
+			if (bMultiline == TRUE) {
+				strOutput.Append(STRING_ENDLINE);
+			}
+		}
+	}
+
+	// Print nested sub-items
+	CString strSubItemOutput = STRING_EMPTY;
+	if ((this->nSubItemNum > 0) && (this->apSubItemData != NULL)) {
+		for (int nCount = 0; nCount < this->nSubItemNum; nCount++) {
+			PJSONDATA pSubItem = this->apSubItemData[nCount];
+			if (pSubItem != NULL) {
+				pSubItem->Print(strSubItemOutput, nIndent + 1, FALSE, bMultiline);
+				strOutput.Append(strSubItemOutput);
+			}
+		}
+	}
+
+	// Add indentation and closing bracket
+	strOutput.Append(strIndent);
+	strOutput.Append(_T("} "));
+	if (bMultiline == TRUE) {
+		strOutput.Append(STRING_ENDLINE);
+	}
+
+	// Add a blank line as seperator
+	if (bSeparator == TRUE) {
+		strOutput.Append(STRING_ENDLINE);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SLogging
+//	Description:	Constructor
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -554,10 +1201,17 @@ SLogging::SLogging(BYTE byLogType)
 	// Properties
 	m_byLogType = byLogType;
 	m_byWriteMode = LOG_WRITEMODE_NONE;
-	m_nMaxSize = DEF_INTEGER_INFINITE;
-	m_strFilePath = DEF_STRING_EMPTY;
+	m_nMaxSize = INT_INFINITE;
+	m_strFilePath = STRING_EMPTY;
 	m_pItemDefTemplate = NULL;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	~SLogging
+//	Description:	Destructor
+//
+//////////////////////////////////////////////////////////////////////////
 
 SLogging::~SLogging()
 {
@@ -796,7 +1450,7 @@ void SLogging::OutputItem(const LOGITEM& logItem)
 	else {
 		// If already reached max data size
 		INT_PTR nMaxSize = GetMaxSize();
-		if ((nMaxSize != DEF_INTEGER_INFINITE) && (GetLogCount() >= nMaxSize)) {
+		if ((nMaxSize != INT_INFINITE) && (GetLogCount() >= nMaxSize)) {
 			// Can not output log item --> Trace info
 			TRCLOG("Output log item failed: Log data exceeded max size!!!");
 			return;
@@ -876,7 +1530,7 @@ BOOL SLogging::Write()
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
-	HWND hMainWnd = AfxGetMainWnd()->GetSafeHwnd();
+	HWND hMainWnd = GET_HANDLE_MAINWND();
 
 	// Quit if current log is set as Read-only
 	// or current log mode is write instantly mode
@@ -906,14 +1560,17 @@ BOOL SLogging::Write()
 			// Format app event log filename
 			strFileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth, stTemp.wDay);
 			MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
-			if (strCurFileName.IsEmpty())
+			if (strCurFileName.IsEmpty()) {
+				// Set current file name
 				strCurFileName = strFileName;
+			}
 
 			// If a file with another name (previous day's log file) is opening,
 			// write down all current log strings and close the file
 			if ((fLogFile.m_hFile != CFile::hFileNull) && (strFileName != strCurFileName))
 			{
 				if (!strLogFormat.IsEmpty()) {
+
 					// Write log strings to file
 					fLogFile.Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
 					fLogFile.Flush();
@@ -921,7 +1578,10 @@ BOOL SLogging::Write()
 					strLogFormat.Empty();
 				}
 
+				// Close current file
 				fLogFile.Close();
+
+				// Set new current file name
 				strCurFileName = strFileName;
 			}
 			break;
@@ -935,7 +1595,7 @@ BOOL SLogging::Write()
 			TRCLOG("Write log failed: Invalid log type!!!");
 			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			// Show error message
-			dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
+			dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 			break;
 		}
@@ -945,12 +1605,15 @@ BOOL SLogging::Write()
 		{
 			bResult = fLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 			if (bResult == FALSE) {
+
 				// Open file failed
-				TRCLOG("Write log failed: Can not open/create log file!!!");
+				dwErrCode = GetLastError();
+
+				// Trace error
+				TRCFMT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
 				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 				// Show error message
-				dwErrCode = GetLastError();
 				PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 				return bResult;
 			}
@@ -960,7 +1623,7 @@ BOOL SLogging::Write()
 		}
 
 		// Format output log strings
-		strLogFormat += logItem.FormatLogString();
+		strLogFormat += logItem.FormatOutput();
 	}
 
 	if (!strLogFormat.IsEmpty()) {
@@ -991,7 +1654,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
-	HWND hWnd = AfxGetMainWnd()->GetSafeHwnd();
+	HWND hMainWnd = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
 	if (this->GetWriteMode() != LOG_WRITEMODE_INSTANT)
@@ -1022,8 +1685,8 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 		// Wrong argument
 		TRCLOG("Error: Invalid log type");
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
-		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
-		PostMessage(hWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
+		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 		return FALSE;
 		break;
 	}
@@ -1036,13 +1699,17 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 	{
 		bResult = fLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 		if (bResult == FALSE) {
+
 			// Open file failed
-			TRCLOG("Error: Can not open/create log file");
+			dwErrCode = GetLastError();
+
+			// Trace error
+			TRCFMT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
 			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
 			dwErrCode = GetLastError();
-			PostMessage(hWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 			return bResult;
 		}
 
@@ -1051,7 +1718,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 	}
 
 	// Format output log strings
-	strLogFormat = logItem.FormatLogString();
+	strLogFormat = logItem.FormatOutput();
 
 	if (!strLogFormat.IsEmpty()) {
 		// Write log strings to file
@@ -1080,7 +1747,7 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
-	HWND hWnd = AfxGetMainWnd()->GetSafeHwnd();
+	HWND hMainWnd = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
 	if (this->GetWriteMode() != LOG_WRITEMODE_INSTANT)
@@ -1112,8 +1779,8 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 		TRCLOG("Error: Invalid log type");
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		// Show error message
-		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
-		PostMessage(hWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
+		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 		return FALSE;
 		break;
 	}
@@ -1126,13 +1793,17 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 	{
 		bResult = fLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 		if (bResult == FALSE) {
+
 			// Open file failed
-			TRCLOG("Error: Can not open/create log file");
+			dwErrCode = GetLastError();
+
+			// Trace error
+			TRCFMT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
 			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
 			dwErrCode = GetLastError();
-			PostMessage(hWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 			return bResult;
 		}
 
@@ -1144,7 +1815,7 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 	LOGITEM logItem;
 	logItem.stTime = stCurTime;
 	logItem.strLogString = lpszLogString;
-	strLogFormat = logItem.FormatLogString();
+	strLogFormat = logItem.FormatOutput();
 
 	if (!strLogFormat.IsEmpty()) {
 		// Write log strings to file

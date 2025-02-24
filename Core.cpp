@@ -61,6 +61,7 @@ void tagCONFIGDATA::Copy(const tagCONFIGDATA& pData)
 	this->bNotifySchedule = pData.bNotifySchedule;						// Show notify tip for schedule action
 	this->bAllowCancelSchedule = pData.bAllowCancelSchedule;			// Allow canceling schedule when notify
 	this->bEnableBackgroundHotkey = pData.bEnableBackgroundHotkey;		// Enable background action hotkeys
+	this->bLockStateHotkey = pData.bLockStateHotkey;					// Allow background hotkeys on lockscreen
 	this->bEnablePowerReminder = pData.bEnablePowerReminder;			// Enable Power Peminder feature
 }
 
@@ -97,6 +98,7 @@ BOOL tagCONFIGDATA::Compare(const tagCONFIGDATA& pData) const
 	bRet &= (this->bNotifySchedule == pData.bNotifySchedule);					// Show notify tip for schedule action
 	bRet &= (this->bAllowCancelSchedule == pData.bAllowCancelSchedule);			// Allow canceling schedule when notify
 	bRet &= (this->bEnableBackgroundHotkey == pData.bEnableBackgroundHotkey);	// Enable background action hotkeys
+	bRet &= (this->bLockStateHotkey == pData.bLockStateHotkey);					// Allow background hotkeys on lockscreen
 	bRet &= (this->bEnablePowerReminder == pData.bEnablePowerReminder);			// Enable Power Peminder feature
 
 	return bRet;
@@ -221,7 +223,7 @@ tagSCHEDULEITEM::tagSCHEDULEITEM()
 	// Initialize
 	this->nItemID = DEF_SCHEDULE_MIN_ITEMID;			// Item ID
 	this->bEnable = FALSE;								// Enable/disable status
-	this->nAction = DEF_APP_ACTION_NOTHING;				// Schedule action
+	this->nAction = APP_ACTION_NOTHING;					// Schedule action
 	this->stTime = {0};									// Schedule time
 	this->rpsRepeatSet = PWRREPEATSET();				// Repeat set data
 }
@@ -231,7 +233,7 @@ tagSCHEDULEITEM::tagSCHEDULEITEM(UINT nItemID)
 	// Initialize
 	this->nItemID = nItemID;							// Item ID
 	this->bEnable = FALSE;								// Enable/disable status
-	this->nAction = DEF_APP_ACTION_NOTHING;				// Schedule action
+	this->nAction = APP_ACTION_NOTHING;					// Schedule action
 	this->stTime = {0};									// Schedule time
 	this->rpsRepeatSet = PWRREPEATSET();				// Repeat set data
 }
@@ -426,11 +428,11 @@ void tagSCHEDULEITEM::Print(CString& strOutput)
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format schedule data
-	CString strActive = (this->bEnable == TRUE) ? _T("YES") : _T("NO");							// Enable/disable state
+	CString strActive = (this->bEnable == TRUE) ? VALUE_TRUE : VALUE_FALSE;						// Enable/disable state
 	UINT nActionStringID = GetPairedID(idplActionName, this->nAction);
 	CString strAction = GetLanguageString(ptrLanguage, nActionStringID);						// Schedule action
 	CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, this->stTime);	// Schedule time
-	CString strRepeat = (this->rpsRepeatSet.bRepeat == TRUE) ? _T("YES") : _T("NO");							// Repeat daily
+	CString strRepeat = (this->rpsRepeatSet.bRepeat == TRUE) ? VALUE_TRUE : VALUE_FALSE;		// Repeat daily
 
 	// Print item
 	strOutput.Format(_T("Active=(%s), ItemID=%d, Action=(%s), Time=(%s), Repeat=(%s)"),
@@ -637,7 +639,7 @@ DWORD tagSCHEDULEDATA::Update(const SCHEDULEITEM& pItem)
 	}
 
 	// Find extra item with matching ID
-	int nRetItemIndex = DEF_INTEGER_INVALID;
+	int nRetItemIndex = INT_INVALID;
 	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
 		if (this->GetItemAt(nIndex).nItemID == pItem.nItemID) {
 			nRetItemIndex = nIndex;
@@ -646,7 +648,7 @@ DWORD tagSCHEDULEDATA::Update(const SCHEDULEITEM& pItem)
 	}
 
 	// Update item if found
-	if (nRetItemIndex != DEF_INTEGER_INVALID) {
+	if (nRetItemIndex != INT_INVALID) {
 		SCHEDULEITEM& schTemp = this->GetItemAt(nRetItemIndex);
 		schTemp.Copy(pItem);
 		return DEF_SCHEDULE_ERROR_SUCCESS;
@@ -1116,7 +1118,7 @@ void tagHOTKEYSETITEM::Print(CString& strOutput)
 	CString strEnable = (this->bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
 	UINT nActionNameID = GetPairedID(idplActionName, GetPairedID(idplHKActionID, this->nHKActionID));
 	CString strAction = GetLanguageString(ptrLanguage, nActionNameID);
-	CString strKeyStrokes = DEF_STRING_EMPTY;
+	CString strKeyStrokes = STRING_EMPTY;
 	PrintKeyStrokes(strKeyStrokes);
 
 	// Print item
@@ -1140,7 +1142,7 @@ void tagHOTKEYSETITEM::PrintKeyStrokes(CString& strOutput)
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format keystrokes
-	CString strKeyStrokes = DEF_STRING_EMPTY;
+	CString strKeyStrokes = STRING_EMPTY;
 	if (this->dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
 	if (this->dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
 	if (this->dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
@@ -1303,8 +1305,8 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 	}
 
 	// Check if item with same action ID or keystrokes exists
-	int nDupActionIndex = DEF_INTEGER_INVALID;
-	int nDupKeyIndex = DEF_INTEGER_INVALID;
+	int nDupActionIndex = INT_INVALID;
+	int nDupKeyIndex = INT_INVALID;
 
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		HOTKEYSETITEM hksTemp = this->GetItemAt(nIndex);
@@ -1327,12 +1329,12 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 	}
 
 	// Delete existed duplicate keystrokes
-	if (nDupKeyIndex != DEF_INTEGER_INVALID) {
+	if (nDupKeyIndex != INT_INVALID) {
 		this->Remove(nDupKeyIndex);
 	}
 
 	// If item with same action ID existed, update its data
-	if (nDupActionIndex != DEF_INTEGER_INVALID) {
+	if (nDupActionIndex != INT_INVALID) {
 		HOTKEYSETITEM& hksTemp = this->GetItemAt(nDupActionIndex);
 		hksTemp.Copy(pItem);
 	}
@@ -1575,7 +1577,7 @@ void tagHOTKEYSETDATA::DeleteAll(void)
 void tagHOTKEYSETDATA::PrintKeyStrokes(UINT nHKID, CString& strOutput)
 {
 	// Search for hotkey ID and get keystrokes string
-	CString strKeyStrokes = DEF_STRING_EMPTY;
+	CString strKeyStrokes = STRING_EMPTY;
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		HOTKEYSETITEM hksItem = this->GetItemAt(nIndex);
 		if (hksItem.nHKActionID == nHKID) {
@@ -1601,33 +1603,33 @@ void tagHOTKEYSETDATA::PrintKeyStrokes(UINT nHKID, CString& strOutput)
 tagRMDMSGSTYLESET::tagRMDMSGSTYLESET()
 {
 	// Init data
-	this->colorBkgrd = DEFAULT_MSGBKGRDCLR;					// Background color
-	this->colorText = DEFAULT_MSGTEXTCLR;					// Text color
-	this->strFontName = DEFAULT_MSGFONTNAME;				// Font name
-	this->uiFontSize = DEFAULT_MSGFONTSIZE;					// Font size
-	this->uiTimeout = DEFAULT_MSGTIMEOUT;					// Timeout (auto-close) interval
-	this->uiIconID = DEFAULT_MSGICONID;						// Message icon ID
-	this->nIconSize = DEFAULT_MSGICONSIZE;					// Message icon size
-	this->byIconPos = DEFAULT_MSGICONPOS;					// Message icon position
-	this->byDisplayPos = DEFAULT_MSGDISPPOS;				// Message display position
-	this->uiHMargin = DEFAULT_MSGHMARGIN;					// Display area horizontal margin
-	this->uiVMargin = DEFAULT_MSGVMARGIN;					// Display area vertical margin
+	this->colorBkgrd = DEFAULT_MSGBKGRDCLR;						// Background color
+	this->colorText = DEFAULT_MSGTEXTCLR;						// Text color
+	this->strFontName = DEFAULT_MSGFONTNAME;					// Font name
+	this->uiFontSize = DEFAULT_MSGFONTSIZE;						// Font size
+	this->uiTimeout = DEFAULT_MSGTIMEOUT;						// Timeout (auto-close) interval
+	this->uiIconID = DEFAULT_MSGICONID;							// Message icon ID
+	this->nIconSize = DEFAULT_MSGICONSIZE;						// Message icon size
+	this->byIconPos = DEFAULT_MSGICONPOS;						// Message icon position
+	this->byDisplayPos = DEFAULT_MSGDISPPOS;					// Message display position
+	this->uiHMargin = DEFAULT_MSGHMARGIN;						// Display area horizontal margin
+	this->uiVMargin = DEFAULT_MSGVMARGIN;						// Display area vertical margin
 }
 
 tagRMDMSGSTYLESET::tagRMDMSGSTYLESET(const tagRMDMSGSTYLESET& pItem)
 {
 	// Copy data
-	this->colorBkgrd = pItem.colorBkgrd;					// Background color
-	this->colorText = pItem.colorText;						// Text color
-	this->strFontName = pItem.strFontName;					// Font name
-	this->uiFontSize = pItem.uiFontSize;					// Font size
-	this->uiTimeout = pItem.uiTimeout;						// Timeout (auto-close) interval
-	this->uiIconID = pItem.uiIconID;						// Message icon ID
-	this->nIconSize = pItem.nIconSize;						// Message icon size
-	this->byIconPos = pItem.byIconPos;						// Message icon position
-	this->byDisplayPos = pItem.byDisplayPos;				// Message display position
-	this->uiHMargin = pItem.uiHMargin;						// Display area horizontal margin
-	this->uiVMargin = pItem.uiVMargin;						// Display area vertical margin
+	this->colorBkgrd = pItem.colorBkgrd;						// Background color
+	this->colorText = pItem.colorText;							// Text color
+	this->strFontName = pItem.strFontName;						// Font name
+	this->uiFontSize = pItem.uiFontSize;						// Font size
+	this->uiTimeout = pItem.uiTimeout;							// Timeout (auto-close) interval
+	this->uiIconID = pItem.uiIconID;							// Message icon ID
+	this->nIconSize = pItem.nIconSize;							// Message icon size
+	this->byIconPos = pItem.byIconPos;							// Message icon position
+	this->byDisplayPos = pItem.byDisplayPos;					// Message display position
+	this->uiHMargin = pItem.uiHMargin;							// Display area horizontal margin
+	this->uiVMargin = pItem.uiVMargin;							// Display area vertical margin
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1725,7 +1727,7 @@ tagPWRREMINDERITEM::tagPWRREMINDERITEM()
 	// Init data
 	this->bEnable = FALSE;								// Enable state
 	this->nItemID = DEF_PWRREMINDER_MIN_ITEMID;			// Item ID
-	this->strMessage = DEF_STRING_EMPTY;				// Message content
+	this->strMessage = STRING_EMPTY;					// Message content
 	this->nEventID = PREVT_AT_SETTIME;					// Event ID
 	this->stTime = {0};									// Event time
 	this->dwMsgStyle = PRSTYLE_MSGBOX;					// Reminder style
@@ -1945,8 +1947,8 @@ void tagPWRREMINDERITEM::Print(CString& strOutput)
 	// Format item data
 	CString strEnable = (this->bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
 	CString strMsg = this->strMessage;
-	if (strMsg.GetLength() > (DEF_LOGDISP_STRING_MAXLENGTH + 3)) {
-		strMsg = this->strMessage.Left(DEF_LOGDISP_STRING_MAXLENGTH) + _T("...");
+	if (strMsg.GetLength() > (MAX_DISP_LOGSTRING_LENGTH + 3)) {
+		strMsg = this->strMessage.Left(MAX_DISP_LOGSTRING_LENGTH) + _T("...");
 	}
 	int nTemp = GetPairedID(idplPwrReminderEvt, this->nEventID);
 	CString strEvent = GetLanguageString(ptrLanguage, nTemp);
@@ -2129,7 +2131,7 @@ void tagPWRREMINDERDATA::Update(const PWRREMINDERITEM& pItem)
 	}
 
 	// Find item index
-	int nRetItemIndex = DEF_INTEGER_INVALID;
+	int nRetItemIndex = INT_INVALID;
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (this->GetItemAt(nIndex).nItemID == pItem.nItemID) {
 			nRetItemIndex = nIndex;
@@ -2138,7 +2140,7 @@ void tagPWRREMINDERDATA::Update(const PWRREMINDERITEM& pItem)
 	}
 
 	// Update item if found
-	if (nRetItemIndex != DEF_INTEGER_INVALID) {
+	if (nRetItemIndex != INT_INVALID) {
 		PWRREMINDERITEM& pwrTemp = this->GetItemAt(nRetItemIndex);
 		pwrTemp.Copy(pItem);
 	}
@@ -2498,7 +2500,7 @@ tagHISTORYINFODATA::tagHISTORYINFODATA()
 	this->nActionNameID = 0;								// Name of action (string ID)
 	this->bActionResult = FALSE;							// Action result
 	this->dwErrorCode = 0;									// Returned error code
-	this->strDescription = DEF_STRING_EMPTY;				// History description (attached info)
+	this->strDescription = STRING_EMPTY;					// History description (attached info)
 }
 
 tagHISTORYINFODATA::tagHISTORYINFODATA(const tagHISTORYINFODATA& pData)
@@ -2612,7 +2614,7 @@ void tagHISTORYINFODATA::RemoveAll(void)
 tagREGISTRYKEY::tagREGISTRYKEY()
 {
 	// Initialize
-	this->strKeyName = DEF_STRING_EMPTY;					// Key name (string)
+	this->strKeyName = STRING_EMPTY;						// Key name (string)
 	this->nValueType = REGTYPE_NONE;						// Value type
 	this->regValue = REGISTRYVALUE();						// Data values
 }
@@ -2637,9 +2639,9 @@ tagREGISTRYKEY::tagREGISTRYKEY(const tagREGISTRYKEY& pItem)
 tagREGISTRYVALUE::tagREGISTRYVALUE()
 {
 	// Initialize
-	this->strValue = DEF_STRING_EMPTY;						// String value
-	this->dwValue = DEF_INTEGER_NULL;						// DWORD (32-bit) value
-	this->ullValue = DEF_INTEGER_NULL;						// QWORD (64-bit) value
+	this->strValue = STRING_EMPTY;							// String value
+	this->dwValue = INT_NULL;								// DWORD (32-bit) value
+	this->qwValue = INT_NULL;								// QWORD (64-bit) value
 	this->astrStringValue.RemoveAll();						// Multi-string value
 }
 
@@ -2648,7 +2650,7 @@ tagREGISTRYVALUE::tagREGISTRYVALUE(const tagREGISTRYVALUE& pItem)
 	// Copy data
 	this->strValue = pItem.strValue;						// String value
 	this->dwValue = pItem.dwValue;							// DWORD (32-bit) value
-	this->ullValue = pItem.ullValue;						// QWORD (64-bit) value
+	this->qwValue = pItem.qwValue;							// QWORD (64-bit) value
 	this->astrStringValue.Copy(pItem.astrStringValue);		// Multi-string value
 }
 
@@ -2692,7 +2694,7 @@ tagREGISTRYVALUE& tagREGISTRYVALUE::operator=(const tagREGISTRYVALUE& pItem)
 	// Copy data
 	this->strValue = pItem.strValue;						// String value
 	this->dwValue = pItem.dwValue;							// DWORD (32-bit) value
-	this->ullValue = pItem.ullValue;						// QWORD (64-bit) value
+	this->qwValue = pItem.qwValue;							// QWORD (64-bit) value
 	this->astrStringValue.Copy(pItem.astrStringValue);		// Multi-string value
 
 	return *this;
@@ -2720,7 +2722,7 @@ void tagREGISTRYVALUE::Copy(const tagREGISTRYVALUE& pItem)
 	// Copy data
 	this->strValue = pItem.strValue;						// String value
 	this->dwValue = pItem.dwValue;							// DWORD (32-bit) value
-	this->ullValue = pItem.ullValue;						// QWORD (64-bit) value
+	this->qwValue = pItem.qwValue;							// QWORD (64-bit) value
 	this->astrStringValue.Copy(pItem.astrStringValue);		// Multi-string value
 }
 
@@ -2736,7 +2738,7 @@ void tagREGISTRYVALUE::Copy(const tagREGISTRYVALUE& pItem)
 void tagREGISTRYKEY::RemoveAll(void)
 {
 	// Reset data
-	this->strKeyName = DEF_STRING_EMPTY;					// Key name (string)
+	this->strKeyName = STRING_EMPTY;						// Key name (string)
 	this->nValueType = REGTYPE_NONE;						// Value type
 	this->regValue.RemoveAll();								// Data values
 }
@@ -2834,7 +2836,7 @@ LPCTSTR tagREGISTRYKEY::GetStringValue(void) const
 	// If registry key data type is not string
 	if (this->nValueType != REGTYPE_STRING) {
 		// Return empty string
-		return DEF_STRING_EMPTY;
+		return STRING_EMPTY;
 	}
 	else {
 		// Return string value
@@ -2867,7 +2869,7 @@ DWORD tagREGISTRYKEY::GetDWordValue(void) const
 	// If registry key data type is not DWORD (32-bit)
 	if (this->nValueType != REGTYPE_DWORD32) {
 		// Return zero (NULL)
-		return DEF_INTEGER_NULL;
+		return INT_NULL;
 	}
 	else {
 		// Return DWORD (32-bit) value
@@ -2890,7 +2892,7 @@ void tagREGISTRYKEY::SetDWordValue(DWORD dwValue)
 // 
 //	Function name:	Get/SetQWordValue
 //	Description:	Get/set registry key QWORD (64-bit) value
-//  Arguments:		ullValue - QWORD (64-bit) value (in)
+//  Arguments:		qwValue - QWORD (64-bit) value (in)
 //  Return value:	QWORD
 //
 //////////////////////////////////////////////////////////////////////////
@@ -2900,15 +2902,15 @@ QWORD tagREGISTRYKEY::GetQWordValue(void) const
 	// If registry key data type is not QWORD (64-bit)
 	if (this->nValueType != REGTYPE_QWORD64) {
 		// Return zero (NULL)
-		return DEF_INTEGER_NULL;
+		return INT_NULL;
 	}
 	else {
 		// Return QWORD (64-bit) value
-		return this->regValue.ullValue;
+		return this->regValue.qwValue;
 	}
 }
 
-void tagREGISTRYKEY::SetQWordValue(ULONGLONG ullValue)
+void tagREGISTRYKEY::SetQWordValue(QWORD qwValue)
 {
 	// If registry key data type is not set
 	if (this->nValueType == REGTYPE_NONE) {
@@ -2916,7 +2918,7 @@ void tagREGISTRYKEY::SetQWordValue(ULONGLONG ullValue)
 	}
 
 	// Set QWORD (64-bit) value
-	this->regValue.ullValue = ullValue;
+	this->regValue.qwValue = qwValue;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2966,10 +2968,10 @@ tagREGISTRYINFO::tagREGISTRYINFO()
 {
 	// Initialize
 	this->hRootKey = NULL;									// Root key (HKEY)
-	this->strRootKey = DEF_STRING_EMPTY;					// Root key (string)
+	this->strRootKey = STRING_EMPTY;						// Root key (string)
 	this->astrSubkeyPath.RemoveAll();						// Subkey path (string array)
-	this->strProfileName = DEF_STRING_EMPTY;				// Profile key name (string)
-	this->strAppName = DEF_STRING_EMPTY;					// App name (string)
+	this->strProfileName = STRING_EMPTY;					// Profile key name (string)
+	this->strAppName = STRING_EMPTY;						// App name (string)
 	this->astrSectionArray.RemoveAll();						// Section array (string)
 	this->regKeyInfo = REGISTRYKEY();						// Registry key info
 }
@@ -3043,10 +3045,10 @@ void tagREGISTRYINFO::RemoveAll(void)
 {
 	// Reset data
 	this->hRootKey = NULL;									// Root key (HKEY)
-	this->strRootKey = DEF_STRING_EMPTY;					// Root key (string)
+	this->strRootKey = STRING_EMPTY;						// Root key (string)
 	this->astrSubkeyPath.RemoveAll();						// Subkey path (string array)
-	this->strProfileName = DEF_STRING_EMPTY;				// Profile key name (string)
-	this->strAppName = DEF_STRING_EMPTY;					// App name (string)
+	this->strProfileName = STRING_EMPTY;					// Profile key name (string)
+	this->strAppName = STRING_EMPTY;						// App name (string)
 	this->astrSectionArray.RemoveAll();						// Section array (string)
 	this->regKeyInfo.RemoveAll();							// Registry key info
 
@@ -3241,7 +3243,7 @@ UINT PairFuncs::GetPairedID(IDPAIRLIST& idplRef, UINT nID, BOOL bReverse /* = FA
 	// Return INVALID if ID pair list is empty
 	int nSize = idplRef.size();
 	if (nSize == 0) {
-		return (UINT)DEF_INTEGER_INVALID;
+		return (UINT)INT_INVALID;
 	}
 
 	// Find and return corresponding ID paired with specified macro ID
@@ -3260,7 +3262,7 @@ UINT PairFuncs::GetPairedID(IDPAIRLIST& idplRef, UINT nID, BOOL bReverse /* = FA
 	}
 
 	// Return INVALID if not found
-	return (UINT)DEF_INTEGER_INVALID;
+	return (UINT)INT_INVALID;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3279,7 +3281,7 @@ UINT PairFuncs::GetStringID(STRINGPAIRLIST& strplRef, LPCTSTR lpszInput)
 	// Return NULL string if language table is empty
 	int nSize = strplRef.size();
 	if (nSize == 0) {
-		return (UINT)DEF_INTEGER_INVALID;
+		return (UINT)INT_INVALID;
 	}
 
 	// Convert input string to lowercase
@@ -3287,7 +3289,7 @@ UINT PairFuncs::GetStringID(STRINGPAIRLIST& strplRef, LPCTSTR lpszInput)
 	strInput.MakeLower();
 
 	// Find and return corresponding ID paired with specified string
-	CString strPairedString = DEF_STRING_EMPTY;
+	CString strPairedString = STRING_EMPTY;
 	for (int nIndex = 0; nIndex < nSize; nIndex++) {
 		LANGTEXT strPair = strplRef[nIndex];
 
@@ -3301,7 +3303,7 @@ UINT PairFuncs::GetStringID(STRINGPAIRLIST& strplRef, LPCTSTR lpszInput)
 	}
 
 	// Return INVALID if not found
-	return (UINT)DEF_INTEGER_INVALID;
+	return (UINT)INT_INVALID;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3320,8 +3322,8 @@ LPCTSTR	PairFuncs::GetPairedString(STRINGPAIRLIST& strplRef, UINT nID, LPTSTR ps
 	// Return NULL string if language table is empty
 	int nSize = strplRef.size();
 	if (nSize == 0) {
-		if (pszResult != NULL) pszResult = DEF_STRING_NULL;
-		return DEF_STRING_NULL;
+		if (pszResult != NULL) pszResult = STRING_NULL;
+		return STRING_NULL;
 	}
 
 	// Find and return corresponding string paired with specified ID
@@ -3338,9 +3340,9 @@ LPCTSTR	PairFuncs::GetPairedString(STRINGPAIRLIST& strplRef, UINT nID, LPTSTR ps
 
 	// Return NULL string if not found
 	if (pszResult != NULL) {
-		pszResult = DEF_STRING_NULL;
+		pszResult = STRING_NULL;
 	}
-	return DEF_STRING_NULL;
+	return STRING_NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3446,8 +3448,8 @@ LPCTSTR PairFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR 
 {
 	// Return NULL string if language table is empty
 	if ((ptLanguage == NULL) || (ptLanguage->empty())) {
-		if (pszResult != NULL) pszResult = DEF_STRING_NULL;
-		return DEF_STRING_NULL;
+		if (pszResult != NULL) pszResult = STRING_NULL;
+		return STRING_NULL;
 	}
 
 	// Find and return corresponding language string paired with specified ID
@@ -3464,9 +3466,9 @@ LPCTSTR PairFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR 
 
 	// Return NULL string if not found
 	if (pszResult != NULL) {
-		pszResult = DEF_STRING_NULL;
+		pszResult = STRING_NULL;
 	}
-	return DEF_STRING_NULL;
+	return STRING_NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3482,22 +3484,26 @@ LPCTSTR PairFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR 
 
 BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
-	// Action here
 	BOOL bRet = TRUE;
+
+	// Execute Power Actions in here
 	switch (nActionType)
 	{
-		case DEF_APP_ACTIONTYPE_MONITOR:
+		// Monitor typed action
+		case APP_ACTIONTYPE_MONITOR:
 			// Turn off display
 			PostMessage(HWND_BROADCAST, WM_SYSCOMMAND, (WPARAM)nMessage, (LPARAM)2);
-			dwErrCode = DEF_APP_ERROR_SUCCESS;
+			dwErrCode = APP_ERROR_SUCCESS;
 			break;
-		case DEF_APP_ACTIONTYPE_POWER:
+
+		// Power typed actions
+		case APP_ACTIONTYPE_POWER:
 		{
 			switch (nMessage)
 			{
-				case DEF_APP_MESSAGE_SHUTDOWN:
-				case DEF_APP_MESSAGE_REBOOT:
-				case DEF_APP_MESSAGE_SIGNOUT:
+				case APP_MESSAGE_SHUTDOWN:
+				case APP_MESSAGE_REBOOT:
+				case APP_MESSAGE_SIGNOUT:
 				{
 					// Force action
 					UINT uExitWinExFlags = nMessage;
@@ -3508,16 +3514,18 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 
 					// Get process token
 					if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
+						// Get error code
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
-					// Adjust token privileges
+					// Lookup privilege value
 					if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkPrivileges.Privileges[0].Luid)) {
+						// Get error code
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
@@ -3528,7 +3536,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
 						// Adjust token privileges failed
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
@@ -3537,36 +3545,39 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!ExitWindowsEx(uExitWinExFlags, 0)) {
 						// Get exit Windows error
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
 				} break;
-				case DEF_APP_MESSAGE_SLEEP:
+
+				case APP_MESSAGE_SLEEP:
 					// Sleep mode
 					if (!SetSuspendState(FALSE, FALSE, FALSE)) {		// Stand by (sleep)
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 					break;
-				case DEF_APP_MESSAGE_HIBERNATE:
+
+				case APP_MESSAGE_HIBERNATE:
 					// Hibernate mode
 					if (!SetSuspendState(TRUE, FALSE, FALSE)) {			// Hibernate
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 					break;
 			}
 		} break;
+
 	default:
 		// Wrong argument
-		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
-		TRCFMT("Error: Excute action failed (Code:%d)", dwErrCode);
+		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
+		TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		bRet = FALSE;
 		break;
@@ -3590,41 +3601,41 @@ BOOL CoreFuncs::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& 
 {
 	CString strAction;
 	strAction.Format(_T("ExecutePowerAction: "));
-	if (nActionType == DEF_APP_ACTIONTYPE_MONITOR) {
+	if (nActionType == APP_ACTIONTYPE_MONITOR) {
 		strAction += _T("Turn off display");
 		dwErrCode = ERROR_SUCCESS;
 	}
-	else if (nActionType == DEF_APP_ACTIONTYPE_POWER && 
-			(nMessage != DEF_APP_MESSAGE_SLEEP && nMessage != DEF_APP_MESSAGE_HIBERNATE)) {
+	else if (nActionType == APP_ACTIONTYPE_POWER && 
+			(nMessage != APP_MESSAGE_SLEEP && nMessage != APP_MESSAGE_HIBERNATE)) {
 		switch (nMessage)
 		{
-		case DEF_APP_MESSAGE_SHUTDOWN:
+		case APP_MESSAGE_SHUTDOWN:
 			// Shutdown
 			strAction += _T("Shutdown");
 			dwErrCode = ERROR_SUCCESS;
 			break;
-		case DEF_APP_MESSAGE_REBOOT:
+		case APP_MESSAGE_REBOOT:
 			// Restart
 			strAction += _T("Restart");
 			dwErrCode = ERROR_SUCCESS;
 			break;
-		case DEF_APP_MESSAGE_SIGNOUT:
+		case APP_MESSAGE_SIGNOUT:
 			// Sign out
 			strAction += _T("Sign out");
 			dwErrCode = ERROR_SUCCESS;
 			break;
 		}
 	}
-	else if (nActionType == DEF_APP_ACTIONTYPE_POWER && 
-			(nMessage == DEF_APP_MESSAGE_SLEEP || nMessage == DEF_APP_MESSAGE_HIBERNATE)) {
+	else if (nActionType == APP_ACTIONTYPE_POWER && 
+			(nMessage == APP_MESSAGE_SLEEP || nMessage == APP_MESSAGE_HIBERNATE)) {
 		switch (nMessage)
 		{
-		case DEF_APP_MESSAGE_SLEEP:
+		case APP_MESSAGE_SLEEP:
 			// Sleep
 			strAction += _T("Sleep");
 			dwErrCode = ERROR_SUCCESS;
 			break;
-		case DEF_APP_MESSAGE_HIBERNATE:
+		case APP_MESSAGE_HIBERNATE:
 			// Hibernate
 			strAction += _T("Hibernate");
 			dwErrCode = ERROR_SUCCESS;
@@ -3633,11 +3644,11 @@ BOOL CoreFuncs::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& 
 	}
 	else {
 		// Wrong argument
-		dwErrCode = DEF_APP_ERROR_WRONG_ARGUMENT;
+		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 	}
 
 	// Show dummy test message
-	HWND hWnd = AfxGetMainWnd()->GetSafeHwnd();
+	HWND hWnd = GET_HANDLE_MAINWND();
 	MessageBox(hWnd, strAction, _T("DummyTest"), MB_OK | MB_ICONINFORMATION);
 	return TRUE;
 }
@@ -3660,9 +3671,9 @@ void CoreFuncs::SetDefaultData(PCONFIGDATA pcfgData)
 	/*----------------- Set default data -----------------*/
 
 	// Main settings
-	pcfgData->nLMBAction = DEF_APP_ACTION_DISPLAYOFF;
-	pcfgData->nMMBAction = DEF_APP_ACTION_SLEEP;
-	pcfgData->nRMBAction = DEF_APP_ACTION_SHOWMENU;
+	pcfgData->nLMBAction = APP_ACTION_DISPLAYOFF;
+	pcfgData->nMMBAction = APP_ACTION_SLEEP;
+	pcfgData->nRMBAction = APP_ACTION_SHOWMENU;
 	pcfgData->bRMBShowMenu = TRUE;
 
 	// Display setting
@@ -3679,6 +3690,7 @@ void CoreFuncs::SetDefaultData(PCONFIGDATA pcfgData)
 	pcfgData->bNotifySchedule = TRUE;
 	pcfgData->bAllowCancelSchedule = FALSE;
 	pcfgData->bEnableBackgroundHotkey = FALSE;
+	pcfgData->bLockStateHotkey = TRUE;
 	pcfgData->bEnablePowerReminder = TRUE;
 
 	/*----------------------------------------------------*/
@@ -3933,47 +3945,47 @@ void CoreFuncs::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLi
 void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = DEF_INTEGER_INVALID */)
 {
 	// Get debug mode enable state
-	BOOL bDebugMode = GetDebugMode();
+	BOOL bDebugModeEnable = GetDebugMode();
 
-	// Get log string
-	CString strLog = lpszDebugLog;
+	// Get debug log string
+	CString strDebugLog = lpszDebugLog;
 
-	// Find DebugTest tool dialog
+	// Get DebugTest tool dialog handle
 	HWND hDebugTestWnd = FindDebugTestDlg();
 
 	// Debug log output target
-	int nDebugOutput = nForceOutput;
-	if (nDebugOutput == DEF_INTEGER_INVALID) {
-		nDebugOutput = GetDebugOutputTarget();
+	int nDebugOutputTarget = nForceOutput;
+	if (nDebugOutputTarget == INT_INVALID) {
+		nDebugOutputTarget = GetDebugOutputTarget();
 	}
-	if (hDebugTestWnd != NULL) {
+	if ((hDebugTestWnd != NULL) &&
+		(IsWindowVisible(hDebugTestWnd))) {
 		// Force enable debug mode and
-		// prefer output target to DebugTest tool if showing
-		bDebugMode = TRUE;
-		nDebugOutput = DBOUT_DEBUGTESTTOOL;
+		// prefer output target to DebugTest tool if it's displaying
+		bDebugModeEnable = TRUE;
+		nDebugOutputTarget = DBOUT_DEBUGTESTTOOL;
 	}
 
 	// If debug mode not enabled, do nothing
-	if (bDebugMode == FALSE)
+	if (bDebugModeEnable == FALSE)
 		return;
 
 	// Output debug string
-	if (nDebugOutput == DBOUT_DEFAULT) {
+	if (nDebugOutputTarget == DBOUT_DEFAULT) {
 		// Default output target: OutputDebugString
-		// Debug string can be watched by using VS Ouput screen or DebugView tool
-		OutputDebugString(strLog);
+		// Debug strings can be watched by using VS Output screen or DebugView tool
+		OutputDebugString(strDebugLog);
 	}
-	else if (nDebugOutput == DBOUT_DEBUGINFOFILE) {
+	else if (nDebugOutputTarget == DBOUT_DEBUGINFOFILE) {
 		// Ouput debug log to file: DebugInfo.log
-		WriteDebugInfoLogFile(strLog);
+		WriteDebugInfoLogFile(strDebugLog);
 	}
-	else if (nDebugOutput == DBOUT_DEBUGTESTTOOL) {
+	else if (nDebugOutputTarget == DBOUT_DEBUGTESTTOOL) {
 		// Output debug log to DebugTest tool
 		if (hDebugTestWnd == NULL) return;
-		WPARAM wParam = (WPARAM)strLog.GetLength();
-		LPARAM lParam = (LPARAM)strLog.GetBuffer();
+		WPARAM wParam = MAKE_WPARAM_STRING(strDebugLog);
+		LPARAM lParam = MAKE_LPARAM_STRING(strDebugLog);
 		SendMessage(hDebugTestWnd, SM_APP_DEBUGOUTPUT, wParam, lParam);
-		strLog.ReleaseBuffer();
 	}
 }
 
@@ -4001,6 +4013,33 @@ void CoreFuncs::OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...)
 
 	// Output debug string
 	OutputDebugLog(strLogFormat);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OutputDebugStringFormat
+//	Description:	Output debug string format (combined version of String.Format
+//					and the default OutputDebugString function)
+//  Arguments:		lpszDebugStringFormat - Debug log format string (Unicode)
+//					...					  - Same as default MFC Format function
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void CoreFuncs::OutputDebugStringFormat(LPCTSTR lpszDebugStringFormat, ...)
+{
+	ATLASSERT(AtlIsValidString(lpszDebugStringFormat));
+
+	// Format source string
+	CString strStringFormat;
+
+	va_list argList;
+	va_start(argList, lpszDebugStringFormat);
+	strStringFormat.FormatV(lpszDebugStringFormat, argList);
+	va_end(argList);
+
+	// Output debug string
+	OutputDebugString(strStringFormat);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4035,7 +4074,7 @@ static BOOL InitTraceErrorLogFile(void)
 	if (pTraceErrorLogFile->m_hFile == CFile::hFileNull) {
 		OPENFILE: {
 			// Open the log file
-			if (!pTraceErrorLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareExclusive)) {
+			if (!pTraceErrorLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
 				// Show error message
 				DWORD dwErrorCode = GetLastError();
 				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
@@ -4047,7 +4086,7 @@ static BOOL InitTraceErrorLogFile(void)
 		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+		if (ullFileSize >= MAX_LOGFILE_SIZE) {
 
 			// Step1: Close file
 			pTraceErrorLogFile->Close();
@@ -4122,7 +4161,7 @@ static BOOL InitTraceDebugLogFile(void)
 	if (pTraceDebugLogFile->m_hFile == CFile::hFileNull) {
 		OPENFILE: {
 			// Open the log file
-			if (!pTraceDebugLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareExclusive)) {
+			if (!pTraceDebugLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
 				// Show error message
 				DWORD dwErrorCode = GetLastError();
 				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
@@ -4134,7 +4173,7 @@ static BOOL InitTraceDebugLogFile(void)
 		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+		if (ullFileSize >= MAX_LOGFILE_SIZE) {
 
 			// Step1: Close file
 			pTraceDebugLogFile->Close();
@@ -4210,7 +4249,7 @@ static BOOL InitDebugInfoLogFile(void)
 	if (pDebugInfoLogFile->m_hFile == CFile::hFileNull) {
 		OPENFILE: {
 			// Open the log file
-			if (!pDebugInfoLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareExclusive)) {
+			if (!pDebugInfoLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
 				// Show error message
 				DWORD dwErrorCode = GetLastError();
 				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
@@ -4222,7 +4261,7 @@ static BOOL InitDebugInfoLogFile(void)
 		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+		if (ullFileSize >= MAX_LOGFILE_SIZE) {
 
 			// Step1: Close file
 			pDebugInfoLogFile->Close();
@@ -4285,18 +4324,23 @@ BOOL CoreFuncs::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 	if (strFilePath.IsEmpty()) return FALSE;
 
 	// Search for backup file list
-	for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
+	for (int nNum = 0; nNum < MAX_BAKFILE_COUNT; nNum++) {
 		
-		// Make backup file path
-		MakeFilePath(strFilePathTemp, SUBFOLDER_LOG, lpszLogFileName, FILEEXT_BAKLOGFILE);
-		if (strBakFilePath.IsEmpty()) return FALSE;
+		// Make backup file path template
+		if (!MakeFilePath(strFilePathTemp, SUBFOLDER_LOG, lpszLogFileName, FILEEXT_BAKLOGFILE))
+			return FALSE;
+
+		// If backup file path template is empty, do nothing
+		if (strFilePathTemp.IsEmpty()) return FALSE;
+
+		// Format backup file path
 		strBakFilePath.Format(strFilePathTemp, nNum);
 
 		// Check if file has already existed
 		if (Finder.FindFile(strBakFilePath) == TRUE) {
 
 			// If backup file number exceeded the limit, can not backup more
-			if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return FALSE;
+			if (nNum == (MAX_BAKFILE_COUNT - 1)) return FALSE;
 			else continue;
 		}
 
@@ -4321,15 +4365,6 @@ BOOL CoreFuncs::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 
 void CoreFuncs::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 {
-	// If the file is not initialized or had been released
-	if (GetTraceErrorLogFile() == NULL) {
-		if (!InitTraceErrorLogFile())
-			return;
-	}
-
-	// Get trace log file pointer
-	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
-
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
 	GetLocalTime(&stTime);
@@ -4342,21 +4377,33 @@ void CoreFuncs::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, STRING_EMPTY);
 
-	if (!strLogFormat.IsEmpty()) {
+	// If output log string is empty, do nothing
+	if (strLogFormat.IsEmpty())
+		return;
+
+	// If the file is not initialized or had been released
+	if (GetTraceErrorLogFile() == NULL) {
+		if (!InitTraceErrorLogFile())
+			return;
+	}
+
+	// Re-acquire trace log file pointer
+	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
+	{
 		// Write log string to file
 		pTraceErrorLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
 		pTraceErrorLogFile->Flush();
 	}
 
-	// Recheck file size after writing
+	// Re-check file size after writing
 	{
 		// Go to end of file
 		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+		if (ullFileSize >= MAX_LOGFILE_SIZE) {
 
 			// Step1: Close file
 			pTraceErrorLogFile->Close();
@@ -4389,15 +4436,6 @@ void CoreFuncs::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 
 void CoreFuncs::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 {
-	// If the file is not initialized or had been released
-	if (GetTraceDebugLogFile() == NULL) {
-		if (!InitTraceDebugLogFile())
-			return;
-	}
-
-	// Get trace debug log file pointer
-	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
-
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
 	GetLocalTime(&stTime);
@@ -4410,21 +4448,32 @@ void CoreFuncs::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, STRING_EMPTY);
 
-	if (!strLogFormat.IsEmpty()) {
+	// If output log string is empty, do nothing
+	if (strLogFormat.IsEmpty()) return;
+
+	// If the file is not initialized or had been released
+	if (GetTraceDebugLogFile() == NULL) {
+		if (!InitTraceDebugLogFile())
+			return;
+	}
+
+	// Re-acquire trace debug log file pointer
+	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
+	{
 		// Write log string to file
 		pTraceDebugLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
 		pTraceDebugLogFile->Flush();
 	}
 
-	// Recheck file size after writing
+	// Re-check file size after writing
 	{
 		// Go to end of file
 		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+		if (ullFileSize >= MAX_LOGFILE_SIZE) {
 
 			// Step1: Close file
 			pTraceDebugLogFile->Close();
@@ -4457,15 +4506,6 @@ void CoreFuncs::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 
 void CoreFuncs::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 {
-	// If the file is not initialized or had been released
-	if (GetDebugInfoLogFile() == NULL) {
-		if (!InitDebugInfoLogFile())
-			return;
-	}
-
-	// Get debug info log file pointer
-	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
-
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
 	GetLocalTime(&stTime);
@@ -4478,9 +4518,20 @@ void CoreFuncs::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, STRING_EMPTY);
 
-	if (!strLogFormat.IsEmpty()) {
+	// If output log string is empty, do nothing
+	if (strLogFormat.IsEmpty()) return;
+
+	// If the file is not initialized or had been released
+	if (GetDebugInfoLogFile() == NULL) {
+		if (!InitDebugInfoLogFile())
+			return;
+	}
+
+	// Re-acquire debug info log file pointer
+	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
+	{
 		// Write log string to file
 		pDebugInfoLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
 		pDebugInfoLogFile->Flush();
@@ -4492,7 +4543,7 @@ void CoreFuncs::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+		if (ullFileSize >= MAX_LOGFILE_SIZE) {
 
 			// Step1: Close file
 			pDebugInfoLogFile->Close();
@@ -4548,7 +4599,7 @@ void CoreFuncs::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLo
 		ULONGLONG ullFileSize = fTrcDbgLogFile.SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= DEF_LOGFILE_MAXLENGTH) {
+		if (ullFileSize >= MAX_LOGFILE_SIZE) {
 
 			// Step1: Close file
 			fTrcDbgLogFile.Close();
@@ -4556,10 +4607,10 @@ void CoreFuncs::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLo
 			// Step2: Rename file extension to BAK
 			CFileFind Finder;
 			CString strBakFilePath;
-			for (int nNum = 0; nNum < DEF_BAKFILE_MAXNUM; nNum++) {
+			for (int nNum = 0; nNum < MAX_BAKFILE_COUNT; nNum++) {
 				strBakFilePath.Format((strFilePath + FILEEXT_BAKLOGFILE), nNum);
 				if (Finder.FindFile(strBakFilePath) == TRUE) {
-					if (nNum == (DEF_BAKFILE_MAXNUM - 1)) return;
+					if (nNum == (MAX_BAKFILE_COUNT - 1)) return;
 					else continue;
 				}
 				CFile::Rename(strFilePath, strBakFilePath);
@@ -4583,7 +4634,7 @@ void CoreFuncs::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLo
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, DEF_STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, STRING_EMPTY);
 
 	if (!strLogFormat.IsEmpty()) {
 		// Write log string to file
@@ -4611,26 +4662,29 @@ void CoreFuncs::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLo
 
 LRESULT	CoreFuncs::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOUT */)
 {
-	LRESULT lResult = DEF_RESULT_SUCCESS;
+	LRESULT lResult = RESULT_SUCCESS;
 
 	// Get begin timestamp (for timeout counter)
 	ULONGLONG ullBeginTimestamp = GetTickCount64();
 
 	// Wait for message
 	while (1) {
-		MSG msg;
+		MSG msg = {0};
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
+
 			// If received specified message, break the loop
 			if (msg.message == nMsg) {
+
 				// Success
-				lResult = DEF_RESULT_SUCCESS;
+				lResult = RESULT_SUCCESS;
 				break;
 			}
 		}
 		// Check for timeout
 		if (GetTickCount64() - ullBeginTimestamp >= nTimeout) {
+
 			// Timeout --> Failed
-			lResult = DEF_RESULT_FAILED;
+			lResult = RESULT_FAILED;
 			break;
 		}
 	}
@@ -4642,171 +4696,44 @@ LRESULT	CoreFuncs::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIME
 // 
 //	Function name:	ShowErrorMessage
 //	Description:	Show error message by error code
-//  Arguments:		hWnd		- Handle of messagebox parent window
-//					nLanguageID - Language option ID
-//					dwErrorCode	- Error code
-//					lParam		- Additional attached param (description string)
+//  Arguments:		hMsgOwnerWnd - Handle of Message Box's owner window
+//					nLanguageID	 - Language option ID
+//					dwErrorCode	 - Error code
+//					lParam		 - Additional attached param (description string)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
+void CoreFuncs::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
 {
-	// Get attached long param
-	CString strDescription = DEF_STRING_NULL;
-	if (lParam != NULL) {
-		strDescription = (LPCTSTR)lParam;
-	}
-
-	// Error message ID
-	int nErrMsgID = DEF_INTEGER_INVALID;
-
-	// Get app defined error code from system defined error code
 	using namespace PairFuncs;
+
+	// Get application-defined error code from system-defined error code
 	DWORD dwAppErrCode = GetPairedID(idplErrorCode, dwErrorCode, TRUE);
-	if (dwAppErrCode != DEF_INTEGER_INVALID) {
-		// Replace with app defined error code
+	if (dwAppErrCode != INT_INVALID) {
+		// Replace with application-defined error code
 		dwErrorCode = dwAppErrCode;
 	}
 
-	// Check error code and show error message
-	switch (dwErrorCode)
-	{
-	case DEF_APP_ERROR_SUCCESS:
-		break;
-	case DEF_APP_ERROR_FAILED:
-		nErrMsgID = MSGBOX_ERROR_FAILED;
-		break;
-	case DEF_APP_ERROR_WRONG_ARGUMENT:
-		nErrMsgID = MSGBOX_ERROR_WRONG_ARGUMENT;
-		break;
-	case DEF_APP_ERROR_INVALID_FUNCTION:
-		nErrMsgID = MSGBOX_ERROR_INVALID_FUNCTION;
-		break;
-	case DEF_APP_ERROR_FILE_NOT_FOUND:
-		nErrMsgID = MSGBOX_ERROR_FILE_NOT_FOUND;
-		break;
-	case DEF_APP_ERROR_PATH_NOT_FOUND:
-		nErrMsgID = MSGBOX_ERROR_PATH_NOT_FOUND;
-		break;
-	case DEF_APP_ERROR_ACCESS_DENIED:
-		nErrMsgID = MSGBOX_ERROR_ACCESS_DENIED;
-		break;
-	case DEF_APP_ERROR_INVALID_HANDLE:
-		nErrMsgID = MSGBOX_ERROR_INVALID_HANDLE;
-		break;
-	case DEF_APP_ERROR_INVALID_DATA:
-		nErrMsgID = MSGBOX_ERROR_INVALID_DATA;
-		break;
-	case DEF_APP_ERROR_NO_MORE_FILES:
-		nErrMsgID = MSGBOX_ERROR_NO_MORE_FILES;
-		break;
-	case DEF_APP_ERROR_FILE_EXISTS:
-		nErrMsgID = MSGBOX_ERROR_FILE_EXISTS;
-		break;
-	case DEF_APP_ERROR_CANNOT_MAKE:
-		nErrMsgID = MSGBOX_ERROR_CANNOT_MAKE;
-		break;
-	case DEF_APP_ERROR_INVALID_PARAMETER:
-		nErrMsgID = MSGBOX_ERROR_INVALID_PARAMETER;
-		break;
-	case DEF_APP_ERROR_OPEN_FAILED:
-		nErrMsgID = MSGBOX_ERROR_OPEN_FAILED;
-		break;
-	case DEF_APP_ERROR_BUFFER_OVERFLOW:
-		nErrMsgID = MSGBOX_ERROR_BUFFER_OVERFLOW;
-		break;
-	case DEF_APP_ERROR_INVALID_NAME:
-		nErrMsgID = MSGBOX_ERROR_INVALID_NAME;
-		break;
-	case DEF_APP_ERROR_DIR_NOT_EMPTY:
-		nErrMsgID = MSGBOX_ERROR_DIR_NOT_EMPTY;
-		break;
-	case DEF_APP_ERROR_FAIL_SHUTDOWN:
-		nErrMsgID = MSGBOX_ERROR_FAIL_SHUTDOWN;
-		break;
-	case DEF_APP_ERROR_FAIL_RESTART:
-		nErrMsgID = MSGBOX_ERROR_FAIL_RESTART;
-		break;
-	case DEF_APP_ERROR_INVALID_ADDRESS:
-		nErrMsgID = MSGBOX_ERROR_INVALID_ADDRESS;
-		break;
-	case DEF_APP_ERROR_APP_INIT_FAILURE:
-		nErrMsgID = MSGBOX_ERROR_APP_INIT_FAILURE;
-		break;
-	case DEF_APP_ERROR_CANNOT_LOAD_REGISTRY:
-		nErrMsgID = MSGBOX_ERROR_CANNOT_LOAD_REGISTRY;
-		break;
-	case DEF_APP_ERROR_REGISTRY_QUOTA_LIMIT:
-		nErrMsgID = MSGBOX_ERROR_REGISTRY_QUOTA_LIMIT;
-		break;
-	case DEF_APP_ERROR_SYSTEM_SHUTDOWN:
-		nErrMsgID = MSGBOX_ERROR_SYSTEM_SHUTDOWN;
-		break;
-	case DEF_APP_ERROR_HIBERNATED:
-		nErrMsgID = MSGBOX_ERROR_HIBERNATED;
-		break;
-	case DEF_APP_ERROR_RESUME_HIBERNATION:
-		nErrMsgID = MSGBOX_ERROR_RESUME_HIBERNATION;
-		break;
-	case DEF_APP_ERROR_WAKE_SYSTEM:
-		nErrMsgID = MSGBOX_ERROR_WAKE_SYSTEM;
-		break;
-	case DEF_APP_ERROR_BACKUP_REG_FAILED:
-		nErrMsgID = MSGBOX_ERROR_BACKUP_REG_FAILED;
-		break;
-	case DEF_APP_ERROR_LOAD_CFG_INVALID:
-	case DEF_APP_ERROR_LOAD_CFG_FAILED:
-		nErrMsgID = MSGBOX_ERROR_LOAD_CFG_FAILED;
-		break;
-	case DEF_APP_ERROR_SAVE_CFG_INVALID:
-	case DEF_APP_ERROR_SAVE_CFG_FAILED:
-		nErrMsgID = MSGBOX_ERROR_SAVE_CFG_FAILED;
-		break;
-	case DEF_APP_ERROR_LOAD_SCHED_INVALID:
-	case DEF_APP_ERROR_LOAD_SCHED_FAILED:
-		nErrMsgID = MSGBOX_ERROR_LOAD_SCHED_FAILED;
-		break;
-	case DEF_APP_ERROR_SAVE_SCHED_INVALID:
-	case DEF_APP_ERROR_SAVE_SCHED_FAILED:
-		nErrMsgID = MSGBOX_ERROR_SAVE_SCHED_FAILED;
-		break;
-	case DEF_APP_ERROR_LOAD_HKEYSET_INVALID:
-	case DEF_APP_ERROR_LOAD_HKEYSET_FAILED:
-		nErrMsgID = MSGBOX_ERROR_LOAD_HKEYSET_FAILED;
-		break;
-	case DEF_APP_ERROR_SAVE_HKEYSET_INVALID:
-	case DEF_APP_ERROR_SAVE_HKEYSET_FAILED:
-		nErrMsgID = MSGBOX_ERROR_SAVE_HKEYSET_FAILED;
-		break;
-	case DEF_APP_ERROR_LOAD_PWRRMD_INVALID:
-	case DEF_APP_ERROR_LOAD_PWRRMD_FAILED:
-		nErrMsgID = MSGBOX_ERROR_LOAD_PWRRMD_FAILED;
-		break;
-	case DEF_APP_ERROR_SAVE_PWRRMD_INVALID:
-	case DEF_APP_ERROR_SAVE_PWRRMD_FAILED:
-		nErrMsgID = MSGBOX_ERROR_SAVE_PWRRMD_FAILED;
-		break;
-	case DEF_APP_ERROR_WRITE_LOG_FAILED:
-		nErrMsgID = MSGBOX_ERROR_WRITE_LOG_FAILED;
-		break;
-	case DEF_APP_ERROR_OUTPUT_LOG_FAILED:
-		nErrMsgID = MSGBOX_ERROR_OUTPUT_LOG_FAILED;
-		break;
-	case DEF_APP_ERROR_UNKNOWN:
+	// Get error message string ID
+	int nErrMsgID = GetPairedID(idplErrorMessage, dwErrorCode);
+
+	// Invalid error message ID
+	if (nErrMsgID == INT_INVALID) {
+		// Show unknown error message
 		nErrMsgID = MSGBOX_ERROR_UNKNOWN;
-		break;
-	default:
-		nErrMsgID = MSGBOX_ERROR_UNKNOWN;
-		break;
 	}
 
-	// Invalid error message ID, do nothing 
-	if (nErrMsgID == DEF_INTEGER_INVALID)
+	// If error message ID is NULL, do nothing
+	if (nErrMsgID == INT_NULL)
 		return;
 
-	// Load language package and language strings
+	// Load language package
 	LANGTABLE_PTR pAppLang = LoadLanguageTable(nLanguageID);
+	if (pAppLang == NULL) 
+		return;
+
+	// Get language strings
 	CString strMessage = GetLanguageString(pAppLang, nErrMsgID);
 	CString strCaption = GetLanguageString(pAppLang, MSGBOX_ERROR_CAPTION);
 
@@ -4817,38 +4744,26 @@ void CoreFuncs::ShowErrorMessage(HWND hWnd, UINT nLanguageID, DWORD dwErrorCode,
 		strMessage = strTemp;
 	}
 
+	// Get attached param
+	CString strDescription = STRING_NULL;
+	if (lParam != NULL) {
+		// Convert to description string
+		strDescription = LPARAM_TO_STRING(lParam);
+	}
+
 	// Attach description if available
-	if (_tcscmp(strDescription, DEF_STRING_NULL)) {
-		strMessage += DEF_STRING_NEWLINE;
-		strMessage += strDescription;
+	if (_tcscmp(strDescription, STRING_NULL)) {
+		strMessage.Append(STRING_ENDLINE);
+		strMessage.Append(strDescription);
 	}
 
 	// Show error message
-	DisplayMessageBox(hWnd, strMessage, strCaption, MB_OK | MB_ICONERROR);
+	MessageBox(hMsgOwnerWnd, strMessage, strCaption, MB_OK | MB_ICONERROR | MB_SYSTEMMODAL);
 
-	// Notify app class about error message showing
+	// Notify application class about error message showing
 	WPARAM wAppMsgParam = (WPARAM)dwErrorCode;
-	LPARAM lAppMsgParam = (LPARAM)strMessage.GetBuffer();
-	::PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, wAppMsgParam, lAppMsgParam);
-	strMessage.ReleaseBuffer();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayMessageBox
-//	Description:	Display message box using language string
-//  Arguments:		hWnd		 - Handle of messagebox parent window
-//					strPromptID	 - Message string
-//					strCaptionID - Message caption string
-//					nStyle		 - Message box style
-//  Return value:	int	- Result of message box
-//
-//////////////////////////////////////////////////////////////////////////
-
-int CoreFuncs::DisplayMessageBox(HWND hWnd, LPCTSTR strPrompt, LPCTSTR strCaption, UINT nStyle)
-{
-	nStyle |= MB_SYSTEMMODAL;
-	return MessageBox(hWnd, strPrompt, strCaption, nStyle);
+	LPARAM lAppMsgParam = MAKE_LPARAM_STRING(strMessage);
+	PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, wAppMsgParam, lAppMsgParam);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4856,14 +4771,14 @@ int CoreFuncs::DisplayMessageBox(HWND hWnd, LPCTSTR strPrompt, LPCTSTR strCaptio
 //	Function name:	Sel2Opt
 //	Description:	Convert combo-box selection into option ID
 //  Arguments:		nOptionMacro - Option macro
-//					nSelection	 - Selection
+//					nSelection	 - Selection index
 //  Return value:	UINT - Option ID
 //
 //////////////////////////////////////////////////////////////////////////
 
 UINT CoreFuncs::Sel2Opt(UINT nOptionMacro, UINT nSelection)
 {
-	VERIFY(nOptionMacro > 0 && nOptionMacro < UINT_MAX);
+	VERIFY(nOptionMacro > 0x00 && nOptionMacro < UINT_MAX);
 	VERIFY(nSelection >= 0 && nSelection < UINT_MAX);
 	return ((nOptionMacro << 8) + (nSelection + 1));
 }
@@ -4874,13 +4789,13 @@ UINT CoreFuncs::Sel2Opt(UINT nOptionMacro, UINT nSelection)
 //	Description:	Convert option ID into combo-box selection
 //  Arguments:		nOptionMacro - Option macro
 //					nCurOption	 - Option ID
-//  Return value:	UINT - Selection
+//  Return value:	UINT - Selection index
 //
 //////////////////////////////////////////////////////////////////////////
 
 UINT CoreFuncs::Opt2Sel(UINT nOptionMacro, UINT nCurOption)
 {
-	VERIFY(nOptionMacro > 0 && nOptionMacro < UINT_MAX);
+	VERIFY(nOptionMacro > 0x00 && nOptionMacro < UINT_MAX);
 	VERIFY(nCurOption >= 0 && nCurOption < UINT_MAX);
 	return (nCurOption - (nOptionMacro << 8) - 1);
 }
@@ -4904,64 +4819,65 @@ BOOL CoreFuncs::Text2Time(SYSTEMTIME& stTime, CString strText)
 
 	CString strTime = strText;
 
-	int nHour = DEF_INTEGER_INVALID;
-	int nMinute = DEF_INTEGER_INVALID;
-	int nLeft1Digit = 0, nLeft2Digits = 0;
-	int	nRight1Digit = 0, nRight2Digits = 0;
+	int nHour = INT_INVALID;
+	int nMinute = INT_INVALID;
+
+	// Break the time value into combinations of digits
+	int nLeft1Digit = _tstoi(strTime.Left(1));
+	int nLeft2Digits = _tstoi(strTime.Left(2));
+	int	nRight1Digit = _tstoi(strTime.Right(1));
+	int nRight2Digits = _tstoi(strTime.Right(2));
 
 	// Convert
 	switch (nLength)
 	{
 	case 1:
 		// Ex: 3 -> 03:00, 9 -> 09:00, ...
-		nHour = _tstoi(strTime);
-		nMinute = 0;
+		nHour = _tstoi(strTime);			// The given time value will be the hour value
+		nMinute = 0;						// The minute value will be zero (0)
 		break;
 	case 2:
-		nLeft1Digit = _tstoi(strTime.Left(1));
-		nRight1Digit = _tstoi(strTime.Right(1));
 		if ((nLeft1Digit == 0) ||													// Ex: 08 -> 00:08
 			((nLeft1Digit > 2) || ((nLeft1Digit == 2) && (nRight1Digit > 3)))) {	// Ex: 35 -> 03:05, 24 -> 02:04, ...
-			nHour = nLeft1Digit;
-			nMinute = nRight1Digit;
+			nHour = nLeft1Digit;													// The first half will be the hour value
+			nMinute = nRight1Digit;													// The remaining will be the minute value
 		}
 		else {
 			// Ex: 13 -> 13:00, 18 -> 18:00, ...
-			nHour = _tstoi(strTime);
-			nMinute = 0;
+			nHour = _tstoi(strTime);				// All digits will be the hour value
+			nMinute = 0;							// The minute value will be zero (0)
 		} break;
 	case 3:
-		nLeft1Digit = _tstoi(strTime.Left(1));
-		nLeft2Digits = _tstoi(strTime.Left(2));
 		if ((nLeft1Digit == 0) ||								// Ex: 034 -> 00:34, ...
-			((nLeft1Digit > 2) || (nLeft2Digits >= 24))) {		// Ex: 320 -> 03:20, 250 -> 02:50, ...
-			nHour = nLeft1Digit;
-			nMinute = _tstoi(strTime.Right(2));
+			((nLeft1Digit > 2) || (nLeft2Digits >= 24)) ||		// Ex: 320 -> 03:20, 250 -> 02:50, ...
+			((nRight2Digits > 0) && (nRight2Digits < 60))) {	// Ex: 225 -> 02:25, 132 -> 01:32, ...
+			nHour = nLeft1Digit;								// The first digit will be the hour value
+			nMinute = nRight2Digits;							// The remaining will be the minute value
 		}
 		else {
-			// Ex: 180 -> 18:00, 225 -> 22:05
-			nHour = nLeft2Digits;
-			nMinute = _tstoi(strTime.Right(1));
+			// Ex: 180 -> 18:00, 1530 -> 15:30, ...
+			nHour = nLeft2Digits;					// The first 2 digits will be the hour value
+			nMinute = nRight1Digit;					// The remaining will be the minute value
 		} break;
 	case 4:
 		// Ex: 1235 -> 12:35, 1840 -> 18:40, ...
-		nHour = _tstoi(strTime.Left(2));
-		nMinute = _tstoi(strTime.Right(2));
+		nHour = nLeft2Digits;						// The first half will be the hour value
+		nMinute = nRight2Digits;					// The remaining will be the minute value
 		break;
 	}
 
-	// If minute is larger than 60, hour increases by 1
+	// If the minute value is larger than 60
 	if (nMinute >= 60) {
-		nHour++;
-		nMinute -= 60;
+		nHour++;			// The hour value increases by 1
+		nMinute -= 60;		// The minute value decreases by 60
 	}
 
-	// If hour exceeds 24, return invalid
+	// If the hour value exceeds 24, return invalid
 	if (nHour >= 24)
 		return FALSE;
 
-	// Only return if both hour and minute values are valid
-	if ((nHour > DEF_INTEGER_INVALID) && (nMinute > DEF_INTEGER_INVALID)) {
+	// Only return if both the hour and minute values are valid
+	if ((nHour > INT_INVALID) && (nMinute > INT_INVALID)) {
 		stTime.wHour = nHour;
 		stTime.wMinute = nMinute;
 	}
@@ -5054,17 +4970,17 @@ BOOL CoreFuncs::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
 void CoreFuncs::SpinPos2Time(SYSTEMTIME& stTime, int nPos)
 {
 	// Invalid input position
-	if (nPos < DEF_SPINCTRL_TIMEMINPOS)
-		nPos = DEF_SPINCTRL_TIMEMINPOS;
-	else if (nPos > DEF_SPINCTRL_TIMEMAXPOS)
-		nPos = DEF_SPINCTRL_TIMEMAXPOS;
+	if (nPos < TIMESPIN_MIN)
+		nPos = TIMESPIN_MIN;
+	else if (nPos > TIMESPIN_MAX)
+		nPos = TIMESPIN_MAX;
 
 	// Convert
 	int nHour = nPos / 60;
 	int nMinute = nPos - (nHour * 60);
 
 	// Validate
-	if ((nHour != DEF_INTEGER_INVALID) && (nMinute != DEF_INTEGER_INVALID)) {
+	if ((nHour != INT_INVALID) && (nMinute != INT_INVALID)) {
 		stTime.wHour = (WORD)nHour;
 		stTime.wMinute = (WORD)nMinute;
 	}
@@ -5086,10 +5002,10 @@ void CoreFuncs::Time2SpinPos(SYSTEMTIME stTime, int& nPos)
 	nPos = (stTime.wHour * 60) + stTime.wMinute;
 
 	// Invalid result
-	if (nPos < DEF_SPINCTRL_TIMEMINPOS)
-		nPos = DEF_SPINCTRL_TIMEMINPOS;
-	else if (nPos > DEF_SPINCTRL_TIMEMAXPOS)
-		nPos = DEF_SPINCTRL_TIMEMAXPOS;
+	if (nPos < TIMESPIN_MIN)
+		nPos = TIMESPIN_MIN;
+	else if (nPos > TIMESPIN_MAX)
+		nPos = TIMESPIN_MAX;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5103,7 +5019,7 @@ void CoreFuncs::Time2SpinPos(SYSTEMTIME stTime, int& nPos)
 
 int CoreFuncs::GetListCurSel(CListCtrl& pListCtrl)
 {
-	int nResult = DEF_INTEGER_INVALID;
+	int nResult = INT_INVALID;
 
 	// Get selected item
 	int nItemCount = pListCtrl.GetItemCount();
@@ -5168,8 +5084,8 @@ void CoreFuncs::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 	pHeaderCell->SetMargin(0);
 	//lfHeader.lfWeight = FW_BOLD;
 	//pHeaderCell->SetFont(&lfHeader);
-	pHeaderCell->SetBackClr(DEF_COLOR_GRAY);
-	pHeaderCell->SetTextClr(DEF_COLOR_BLACK);
+	pHeaderCell->SetBackClr(COLOR_GRAY);
+	pHeaderCell->SetTextClr(COLOR_BLACK);
 
 	//FontHeader.DeleteObject();
 }
@@ -5201,7 +5117,7 @@ void CoreFuncs::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int nRowNum, in
 
 	// Setup row
 	int nColStyle = -1;
-	UINT nItemState = DEF_INTEGER_NULL;
+	UINT nItemState = INT_NULL;
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Get column style & item state
 		nColStyle = apGrdColFormat[nCol].nColStyle;
@@ -5259,7 +5175,7 @@ SYSTEMTIME CoreFuncs::GetCurSysTime(void)
 	SYSTEMTIME tsSysTimeTemp;
 	GetSystemTime(&tsSysTimeTemp);
 	
-	// Backup millisecond value
+	// Backup the millisecond value
 	WORD wMillisecs = tsSysTimeTemp.wMilliseconds;
 	
 	// Get current time
@@ -5395,7 +5311,7 @@ LPCTSTR CoreFuncs::LoadResourceString(UINT nResStringID)
 	BOOL bRet = strResult.LoadString(nResStringID);
 	if (bRet == FALSE) {
 		// Null string
-		strResult = DEF_STRING_NULL;
+		strResult = STRING_NULL;
 	}
 
 	return strResult.GetString();
@@ -5416,10 +5332,52 @@ BOOL CoreFuncs::LoadResourceString(CString& strResult, UINT nResStringID)
 	BOOL bRet = strResult.LoadString(nResStringID);
 	if (bRet == FALSE) {
 		// Null string
-		strResult = DEF_STRING_NULL;
+		strResult = STRING_NULL;
 	}
 
 	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	LoadResourceTextFile
+//	Description:	Load resource text file by ID and return the text data
+//  Arguments:		strTextData		- Returned file's text data
+//					nResourceFileID - ID of the file in resource
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CoreFuncs::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
+{
+	// Empty result text data
+	strTextData.Empty();
+
+	// Get resource handle
+	HINSTANCE hResInstance = AfxGetResourceHandle();
+	if (hResInstance == NULL)
+		return FALSE;
+
+	// Find resource file by ID
+	HRSRC hRes = FindResource(hResInstance, MAKEINTRESOURCE(nResourceFileID), RT_RCDATA);
+	if (hRes != NULL) {
+
+		// Load resource data
+		HGLOBAL hData = LoadResource(hResInstance, hRes);
+		if (hData != NULL) {
+
+			// Get text data size
+			DWORD dwSize = SizeofResource(hResInstance, hRes);
+
+			// Convert data to text data
+			LPCSTR lpData = static_cast<LPCSTR>(LockResource(hData));
+			strTextData = CString(lpData, dwSize);
+
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5433,7 +5391,7 @@ BOOL CoreFuncs::LoadResourceString(CString& strResult, UINT nResStringID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyChars)
+int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars)
 {
 	// Get length
 	int nBuffLength = _tcslen(lpszBuff);
@@ -5443,14 +5401,14 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 	int nBuffIdx = 0;
 	for (int nIndex = 0; nIndex < nBuffLength; nIndex++) {
 		// Invalid characters
-		if ((lpszBuff[nIndex] == DEF_CHAR_ENDLINE) ||
-			(lpszBuff[nIndex] == DEF_CHAR_RETURN))
+		if ((lpszBuff[nIndex] == CHAR_ENDLINE) ||
+			(lpszBuff[nIndex] == CHAR_RETURN))
 			continue;
 		// Keep valid characters only
 		lpszBuff[nBuffIdx] = lpszBuff[nIndex];
 		nBuffIdx++;
 		// End string
-		if (lpszBuff[nBuffIdx] == DEF_CHAR_ENDSTRING)
+		if (lpszBuff[nBuffIdx] == CHAR_ENDSTRING)
 			break;
 	}
 
@@ -5460,16 +5418,16 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 	int nQuoteFlag = 0;
 
 	// Loop through given string buffer and separate tokens
-	while ((nCurCharIndex <= nBuffLength) && (nCurCharIndex < DEF_BUFF_MAXLENGTH)) {
+	while ((nCurCharIndex <= nBuffLength) && (nCurCharIndex < MAX_BUFFER_LENGTH)) {
 		// Init flag OFF
 		int nKeyFlag = FLAG_OFF;
 		// Get current character
 		TCHAR tcCurChar = lpszBuff[nCurCharIndex];
 		// In case of newline character
-		if ((tcCurChar == DEF_CHAR_ENDLINE) || (tcCurChar == DEF_CHAR_RETURN))
+		if ((tcCurChar == CHAR_ENDLINE) || (tcCurChar == CHAR_RETURN))
 			continue;
 		// In case of quotation mark
-		if (tcCurChar == DEF_CHAR_QUOTAMARK) {
+		if (tcCurChar == CHAR_QUOTAMARK) {
 			// Change flag
 			nQuoteFlag = (nQuoteFlag == 0) ? FLAG_ON : FLAG_OFF;
 		}
@@ -5485,11 +5443,11 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 			}
 		}
 		// If current character is a key letter or end of string
-		if ((nKeyFlag == FLAG_ON) || (tcCurChar == DEF_CHAR_ENDSTRING)) {
+		if ((nKeyFlag == FLAG_ON) || (tcCurChar == CHAR_ENDSTRING)) {
 			// Empty token means continuous key letters
 			if (nTokenCharIndex > 0) {
 				// End current token
-				retBuff[nTokenCount].tcToken[nTokenCharIndex] = DEF_CHAR_ENDSTRING;
+				retBuff[nTokenCount].tcToken[nTokenCharIndex] = CHAR_ENDSTRING;
 				retBuff[nTokenCount].nLength = _tcsclen(retBuff[nTokenCount].tcToken);
 				nTokenCharIndex = 0;
 				// Token number count-up
@@ -5497,9 +5455,9 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 			}
 		}
 		// Current character is the quotation mark itself
-		else if (tcCurChar == DEF_CHAR_QUOTAMARK) {
+		else if (tcCurChar == CHAR_QUOTAMARK) {
 			// If token number exceeds max count, stop
-			if (nTokenCount > DEF_TOKEN_MAXCOUNT)
+			if (nTokenCount > MAX_TOKEN_COUNT)
 				break;
 			else {
 				// Index count-up
@@ -5518,7 +5476,7 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, BUFFER* retBuff, LPCTSTR lpszKeyCha
 		nCurCharIndex++;
 
 		// If end of string or token number exceeds max count, stop
-		if ((tcCurChar == DEF_CHAR_ENDSTRING) || (nTokenCount > DEF_TOKEN_MAXCOUNT))
+		if ((tcCurChar == CHAR_ENDSTRING) || (nTokenCount > MAX_TOKEN_COUNT))
 			break;
 	}
 
@@ -5549,7 +5507,7 @@ void CoreFuncs::UpperEachWord(CString& strInput, BOOL bTrim)
 	// Lambda functions
 	auto IsNotSpace = [](TCHAR tcChar) { return (!std::isspace(tcChar)); };
 	auto BothSpaces = [](TCHAR tcFirst, TCHAR tcSecond) {
-		return ((tcFirst == tcSecond) && (tcFirst == _T(' ')));
+		return ((tcFirst == tcSecond) && (tcFirst == CHAR_SPACE));
 		};
 
 	// Trim string
@@ -5575,7 +5533,7 @@ void CoreFuncs::UpperEachWord(CString& strInput, BOOL bTrim)
 		if (lpszString[nIndex] != _T(' ')) {
 			if ((nIndex == 0)	/* First character */ ||
 				/* Not the first character and standing after a space */
-				((nIndex > 0) && (lpszString[nIndex - 1] == _T(' ')))) {
+				((nIndex > 0) && (lpszString[nIndex - 1] == CHAR_SPACE))) {
 				// Convert to uppercase
 				lpszString[nIndex] = std::toupper(lpszString[nIndex]);
 			}
@@ -5605,11 +5563,11 @@ BOOL CoreFuncs::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR 
 	CString strFilePath;
 
 	// Directory path, it may or may not be specified
-	// If not specified, it means targeted file is in the same folder with excutable file
+	// If not specified, it means targeted file is in the same folder with executable file
 	if (lpszDirectory != NULL) {
 		// Add directory path
 		strFilePath.Append(lpszDirectory);
-		strFilePath.Append(DEF_SYMBOL_PATHSEPARATOR);
+		strFilePath.Append(SYMBOL_BACKSLASH);
 	}
 
 	// File name must be specified, if not, do nothing
@@ -5628,6 +5586,7 @@ BOOL CoreFuncs::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR 
 
 	// Return output path
 	strOutput = strFilePath;
+
 	return TRUE;
 }
 
@@ -5644,7 +5603,7 @@ BOOL CoreFuncs::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR 
 BOOL CoreFuncs::StringValidate(LPCTSTR lpszSrc, DWORD& dwError)
 {
 	BOOL bResult = TRUE;
-	CString strInvalidKey = DEF_STRING_EMPTY;
+	CString strInvalidKey = STRING_EMPTY;
 	
 	// Mark as normal first
 	dwError = STRVAL_ERR_NORMAL;
@@ -5656,7 +5615,7 @@ BOOL CoreFuncs::StringValidate(LPCTSTR lpszSrc, DWORD& dwError)
 		bResult = FALSE;
 		dwError = STRVAL_ERR_EMPTY;
 	}
-	else if (strSrc.GetLength() > DEF_STRING_MAXLENGTH) {
+	else if (strSrc.GetLength() > MAX_STRING_LENGTH) {
 		// String oversize
 		bResult = FALSE;
 		dwError = STRVAL_ERR_OVERSIZE;
@@ -5687,6 +5646,65 @@ BOOL CoreFuncs::StringValidate(LPCTSTR lpszSrc, DWORD& dwError)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	StringFormat
+//	Description:	Format string (same as default MFC Format function)
+//  Arguments:		nFormatTemplateID  - ID of resource format template string
+//					...				   - Same as default MFC Format function
+//  Return value:	LPCTSTR	- Returned formatted string
+//
+//////////////////////////////////////////////////////////////////////////
+
+LPCTSTR CoreFuncs::StringFormat(UINT nFormatTemplateID, ...)
+{
+	// Load resource format template string
+	CString strTemplate;
+	VERIFY(strTemplate.LoadString(nFormatTemplateID));
+	if (strTemplate.IsEmpty()) return STRING_EMPTY;
+
+	// Template string validation
+	ATLASSERT(AtlIsValidString(strTemplate));
+
+	// Result string
+	static CString strResult;
+
+	// Format string
+	va_list argList;
+	va_start(argList, strTemplate);
+	strResult.FormatV(strTemplate, argList);
+	va_end(argList);
+
+	return strResult.GetString();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	StringFormat
+//	Description:	Format string (same as default MFC Format function)
+//  Arguments:		lpszFormatTemplate - Format template string
+//					...				   - Same as default MFC Format function
+//  Return value:	LPCTSTR	- Returned formatted string
+//
+//////////////////////////////////////////////////////////////////////////
+
+LPCTSTR CoreFuncs::StringFormat(LPCTSTR lpszFormatTemplate, ...)
+{
+	// Template string validation
+	ATLASSERT(AtlIsValidString(lpszFormatTemplate));
+
+	// Result string
+	static CString strResult;
+
+	// Format string
+	va_list argList;
+	va_start(argList, lpszFormatTemplate);
+	strResult.FormatV(lpszFormatTemplate, argList);
+	va_end(argList);
+
+	return strResult.GetString();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	SubString
 //	Description:	Get a substring from a source string
 //  Arguments:		lpszSrc		   - Source string
@@ -5703,31 +5721,31 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHA
 	CString strSrc(lpszSrc);
 	if (strSrc.IsEmpty()) {
 		TraceLogFormat("Function: CoreFuncs::GetSubString(), Error: Source string is empty");
-		strDest = DEF_STRING_EMPTY;
+		strDest = STRING_EMPTY;
 		return FALSE;
 	}
 
 	// Find starting and ending index
-	int nStart = (tcStart != NULL) ? (strSrc.Find(tcStart)) : DEF_INTEGER_INVALID;
-	int nEnd = (tcEnd != NULL) ? (strSrc.Find(tcEnd)) : DEF_INTEGER_INVALID;
+	int nStart = (tcStart != NULL) ? (strSrc.Find(tcStart)) : INT_INVALID;
+	int nEnd = (tcEnd != NULL) ? (strSrc.Find(tcEnd)) : INT_INVALID;
 
 	// Debug log
 	OutputDebugLogFormat(_T("[ALSTest] ==> GetSubString: nStart=%d, nEnd=%d"), nStart, nEnd);
 
-	CString strResult = DEF_STRING_EMPTY;
+	CString strResult = STRING_EMPTY;
 
 	switch (nSubStringType)
 	{
 	case SUBSTR_LEFT:
-		if (nEnd != DEF_INTEGER_INVALID)
+		if (nEnd != INT_INVALID)
 			strResult = strSrc.Left(nEnd);
 		break;
 	case SUBSTR_MID:
-		if ((nStart != DEF_INTEGER_INVALID) && (nEnd != DEF_INTEGER_INVALID))
+		if ((nStart != INT_INVALID) && (nEnd != INT_INVALID))
 			strResult = strSrc.Mid((nStart + 1), (nEnd - (nStart + 1)));
 		break;
 	case SUBSTR_RIGHT:
-		if (nStart != DEF_INTEGER_INVALID)
+		if (nStart != INT_INVALID)
 			strResult = strSrc.Right(strSrc.GetLength() - (nStart + 1));
 		break;
 	default:
@@ -5741,7 +5759,7 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHA
 
 	// Get result
 	BOOL bRet = (!strResult.IsEmpty());
-	strDest = DEF_STRING_EMPTY;
+	strDest = STRING_EMPTY;
 	return bRet;
 }
 
@@ -5830,7 +5848,7 @@ CString CoreFuncs::GetProductVersion(BOOL bFullVersion)
 	// Get product file name
 	CString strProductFileName;
 	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE))
-		return DEF_STRING_EMPTY;
+		return STRING_EMPTY;
 
 	// Get product version
 	CString strProductVersion;
@@ -5841,7 +5859,7 @@ CString CoreFuncs::GetProductVersion(BOOL bFullVersion)
 		if (GetFileVersionInfo(strProductFileName, dwHandle, dwSize, pVersionInfo)) {
 			UINT uLen;
 			VS_FIXEDFILEINFO* lpFfi;
-			if (VerQueryValue(pVersionInfo, DEF_SYMBOL_PATHSEPARATOR, (LPVOID*)&lpFfi, &uLen)) {
+			if (VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
 				DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
 				DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
 				if (bFullVersion == TRUE) {
@@ -5897,7 +5915,7 @@ BOOL CoreFuncs::GetProductVersion(CString& strFullVersion, CString& strShortVers
 
 	UINT uLen;
 	VS_FIXEDFILEINFO* lpFfi;
-	if (!VerQueryValue(pVersionInfo, DEF_SYMBOL_PATHSEPARATOR, (LPVOID*)&lpFfi, &uLen)) {
+	if (!VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
 		delete[] pVersionInfo;
 		return FALSE;
 	}
@@ -5963,36 +5981,36 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 	// Check root key info validity
 	if (bIncRootKey != FALSE) {
 		if ((regInfo.hRootKey == NULL) && (regInfo.strRootKey.IsEmpty()))
-			return DEF_STRING_NULL;
+			return STRING_NULL;
 	}
 
 	// Check sub-key path validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SUBPATH)) {
 		if (regInfo.astrSubkeyPath.IsEmpty())
-			return DEF_STRING_NULL;
+			return STRING_NULL;
 	}
 
 	// Check profile key validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_PROFILEKEY)) {
 		if (regInfo.strProfileName.IsEmpty())
-			return DEF_STRING_NULL;
+			return STRING_NULL;
 	}
 
 	// Check app name validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_APPNAME)) {
 		if (regInfo.strAppName.IsEmpty())
-			return DEF_STRING_NULL;
+			return STRING_NULL;
 	}
 
 	// Check section name array validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SECTIONNAME)) {
 		if (regInfo.astrSectionArray.IsEmpty())
-			return DEF_STRING_NULL;
+			return STRING_NULL;
 	}
 
 	// Root key (string)
 	CString strRootKey;
-	if (regInfo.strRootKey != DEF_STRING_EMPTY) {
+	if (regInfo.strRootKey != STRING_EMPTY) {
 		strRootKey.Format(regInfo.strRootKey);
 	}
 
@@ -6000,20 +6018,20 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 	CString strSubPath;
 	for (int nIndex = 0; nIndex < regInfo.astrSubkeyPath.GetSize(); nIndex++) {
 		if (nIndex > 0) {
-			strSubPath.Append(DEF_SYMBOL_PATHSEPARATOR);
+			strSubPath.Append(SYMBOL_BACKSLASH);
 		}
 		strSubPath.Append(regInfo.astrSubkeyPath.GetAt(nIndex));
 	}
 
 	// Profile key name
 	CString strProfileKeyName;
-	if (regInfo.strProfileName != DEF_STRING_EMPTY) {
+	if (regInfo.strProfileName != STRING_EMPTY) {
 		strProfileKeyName.Format(regInfo.strProfileName);
 	}
 
 	// App name
 	CString strAppName;
-	if (regInfo.strAppName != DEF_STRING_EMPTY) {
+	if (regInfo.strAppName != STRING_EMPTY) {
 		strAppName.Format(regInfo.strAppName);
 	}
 
@@ -6021,7 +6039,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 	CString strSectionName;
 	for (int nIndex = 0; nIndex < regInfo.astrSectionArray.GetSize(); nIndex++) {
 		if (nIndex > 0) {
-			strSectionName.Append(DEF_SYMBOL_PATHSEPARATOR);
+			strSectionName.Append(SYMBOL_BACKSLASH);
 		}
 		strSectionName.Append(regInfo.astrSectionArray.GetAt(nIndex));
 	}
@@ -6029,7 +6047,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 
 	// Key name
 	CString strKeyName;
-	if (regInfo.regKeyInfo.strKeyName != DEF_STRING_EMPTY) {
+	if (regInfo.regKeyInfo.strKeyName != STRING_EMPTY) {
 		strKeyName.Format(regInfo.regKeyInfo.strKeyName);
 	}
 
@@ -6048,7 +6066,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 			if ((nRetFailedFlag != FLAG_ON) && (!strSubPath.IsEmpty())) {
 				// Include separator character if rootkey is included
 				if ((bIncRootKey != FALSE) && (!strRootKey.IsEmpty())) {
-					strRegFullPath.Append(DEF_SYMBOL_PATHSEPARATOR);
+					strRegFullPath.Append(SYMBOL_BACKSLASH);
 				}
 				// Include sub-key path
 				strRegFullPath.Append(strSubPath);
@@ -6062,7 +6080,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_PROFILEKEY)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strProfileKeyName.IsEmpty())) {
 				// Include profile key name
-				strRegFullPath.Append(DEF_SYMBOL_PATHSEPARATOR);
+				strRegFullPath.Append(SYMBOL_BACKSLASH);
 				strRegFullPath.Append(strProfileKeyName);
 			}
 			else {
@@ -6074,7 +6092,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_APPNAME)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strAppName.IsEmpty())) {
 				// Include application name
-				strRegFullPath.Append(DEF_SYMBOL_PATHSEPARATOR);
+				strRegFullPath.Append(SYMBOL_BACKSLASH);
 				strRegFullPath.Append(strAppName);
 			}
 			else {
@@ -6086,7 +6104,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SECTIONNAME)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strSectionName.IsEmpty())) {
 				// Include section name
-				strRegFullPath.Append(DEF_SYMBOL_PATHSEPARATOR);
+				strRegFullPath.Append(SYMBOL_BACKSLASH);
 				strRegFullPath.Append(strSectionName);
 			}
 			else {
@@ -6098,7 +6116,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_KEYNAME)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strKeyName.IsEmpty())) {
 				// Include key name
-				strRegFullPath.Append(DEF_SYMBOL_PATHSEPARATOR);
+				strRegFullPath.Append(SYMBOL_BACKSLASH);
 				strRegFullPath.Append(strKeyName);
 			}
 			else {
@@ -6135,10 +6153,10 @@ void CoreFuncs::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 	// Play sound here
 	switch (nTypeOfSound)
 	{
-	case DEF_APP_SOUND_ERROR:
+	case APP_SOUND_ERROR:
 		::PlaySound(_T("SystemExclamination"), NULL, SND_ASYNC);
 		break;
-	case DEF_APP_SOUND_SUCCESS:
+	case APP_SOUND_SUCCESS:
 		::PlaySound(_T("SystemExit"), NULL, SND_ASYNC);
 		break;
 	}
@@ -6147,7 +6165,7 @@ void CoreFuncs::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	FileViewStd
-//	Description:	View a file using external fileviewer
+//	Description:	Open a file to view using external standard fileviewer
 //  Arguments:		eFileType	 - File type
 //					lpszFilePath - Path of file
 //  Return value:	BOOL - Result of file opening process
@@ -6156,14 +6174,14 @@ void CoreFuncs::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 
 BOOL CoreFuncs::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
 {
-	CString strAppPath = DEF_STRING_EMPTY;
+	CString strAppPath = STRING_EMPTY;
 
 	switch (eFileType) 
 	{
-	case FILETYPE_TXT:
-		strAppPath = APP_NOTEPAD_PATH;
+	case FILETYPE_TEXT:
+		strAppPath = PATH_APP_NOTEPAD;
 		break;
-	case FILETYPE_IMG:
+	case FILETYPE_IMAGE:
 		break;
 	default:
 		return FALSE;
@@ -6269,6 +6287,8 @@ BOOL CoreFuncs::CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT n
 	if (bResult == FALSE) {
 		// Get error code
 		dwErrorCode = GetLastError();
+		TRCFMT("Error: Create app process failed (Code: 0x%08X)", dwErrorCode);
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return bResult;
 	}
 
@@ -6362,14 +6382,14 @@ void CoreFuncs::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /*
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	EnumFontFamExProc
+//	Function name:	EnumFontFamiliesExProc
 //	Description:	Callback function used with the EnumFontFamiliesEx
 //  Arguments:		Default (see MSDN "EnumFontFamProc callback function")
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CALLBACK EnumFontFamExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* lpntme, DWORD FontType, LPARAM lParam) 
+BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* lpntme, DWORD FontType, LPARAM lParam) 
 {
 	std::vector<std::wstring>* fontNames = reinterpret_cast<std::vector<std::wstring>*>(lParam);
 	fontNames->push_back(lpelfe->elfLogFont.lfFaceName);
@@ -6393,7 +6413,7 @@ BOOL CoreFuncs::EnumFontNames(std::vector<std::wstring>& fontNames)
 
 	// Get font families
 	HDC hdc = GetDC(NULL);
-	EnumFontFamiliesEx(hdc, &logfont, (FONTENUMPROC)EnumFontFamExProc, (LPARAM)&fontNames, 0);
+	EnumFontFamiliesEx(hdc, &logfont, (FONTENUMPROC)EnumFontFamiliesExProc, (LPARAM)&fontNames, 0);
 	ReleaseDC(NULL, hdc);
 
 	// Remove duplicated font names

@@ -76,11 +76,27 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	IDMAPPAIR
+//  Description:	Using for ID pair mapping function
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
 typedef struct tagIDMAPPAIR
 {
 	DWORD	dwResourceID;	// Resource ID (integer type)
 	LPCSTR  lpszStringID;	// String ID
 } IDMAPPAIR, *PIDMAPPAIR;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	IDMAPDATA
+//  Description:	Store list of ID map data
+//  Derivered from: MFC CArray class
+//
+//////////////////////////////////////////////////////////////////////////
 
 typedef CArray<IDMAPPAIR, IDMAPPAIR>	IDMAPDATA;
 
@@ -99,17 +115,20 @@ private:
 	IDMAPDATA IDMapData;
 
 public:
-	// Member functions
-	void Add(UINT nID, LPCSTR lpszStringID);
-	void Modify(UINT nID, LPCSTR lpszStringID);
-	void Remove(UINT nID);
-	void Clear();
+	// Data processing functions
+	void Add(DWORD dwID, LPCSTR lpszStringID);
+	void Modify(DWORD dwID, LPCSTR lpszStringID);
+	void Remove(DWORD dwID);
+	void Clear(void);
 	
-	UINT	GetID(LPCSTR lpszStringID);
-	LPCSTR	GetID(UINT nID);
-	int		FindID(UINT nID);
-	int		FindID(LPCSTR lpszStringID);
-	int		GetMapCount();
+	// Data acquirement functions
+	UINT	GetID(LPCSTR lpszStringID) const;
+	LPCSTR	GetID(DWORD dwID) const;
+	int		FindID(DWORD dwID) const;
+	int		FindID(LPCSTR lpszStringID) const;
+
+	// Attributes get/set functions
+	inline int GetMapCount(void) const;
 };
 
-#endif	ifndef _IDMAPPING_H_INCLUDED
+#endif		// ifndef _IDMAPPING_H_INCLUDED

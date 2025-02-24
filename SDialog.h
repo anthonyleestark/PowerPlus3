@@ -93,7 +93,10 @@ protected:
 
 protected:
 	// Parent window
-	CWnd* m_pParentWnd;
+//	CWnd* m_pParentWnd;
+
+	// Tooltip control
+	CToolTipCtrl* m_pToolTip;
 
 	// Dialog control management
 	SControlManager* m_pCtrlManager;
@@ -155,6 +158,7 @@ public:
 	virtual void OnClose();
 	afx_msg void OnDestroy();
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual int	 PreDestroyDialog();
@@ -164,6 +168,10 @@ public:
 	virtual CWnd* GetParentWnd(void);
 	virtual void SetParentWnd(CWnd* pParentWnd);
 	virtual BOOL IsParentWndAvailable(void) const;
+
+	// Tooltip control functions
+	virtual CToolTipCtrl* GetToolTipCtrl(void);
+	virtual BOOL IsToolTipCtrlAvailable(void) const;
 
 	// Dialog control management functions
 	virtual SControlManager* GetControlManager(void);

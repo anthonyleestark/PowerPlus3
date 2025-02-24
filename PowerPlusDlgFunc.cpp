@@ -44,7 +44,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	CString strDebugCommand(lpszCommand);
 	if (strDebugCommand.IsEmpty()) {
 		// Error: Debug command empty
-		dwErrorCode = DEF_DBG_ERROR_EMPTY;
+		dwErrorCode = APP_ERROR_DBG_EMPTY;
 		return FALSE;
 	}
 
@@ -52,7 +52,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp == NULL) {
 		// Error: Get app failed
-		dwErrorCode = DEF_DBG_ERROR_GETAPP_FAILED;
+		dwErrorCode = APP_ERROR_DBG_GETAPP_FAILED;
 		return FALSE;
 	}
 
@@ -78,14 +78,8 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	/*********************************************************************/
 
 	if (!_tcscmp(strDebugCommand, _T("exit"))) {
-		// Exit app
-		PreDestroyDialog();
-		EndDialog(IDCANCEL);
-		return TRUE;
-	}
-	else if (!_tcscmp(strDebugCommand, _T("taskkill"))) {
-		// Exit app (terminate process)
-		PostQuitMessage(0);
+		// Exit application
+		ExitApp(EXITCODE_DEBUGCOMMAND);
 		return TRUE;
 	}
 	else if (!_tcscmp(strDebugCommand, _T("reload"))) {
@@ -98,10 +92,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	}
 	else if (!_tcscmp(strDebugCommand, _T("setdefault"))) {
 		// Set default settings
-		SetDefaultData(&m_cfgTempConfig);
-		((CPowerPlusApp*)AfxGetApp())->ReloadAppLanguage();
-		SetupLanguage();
-		UpdateDialogData(FALSE);
+		SetDefaultConfig();
 		strOutputResult.Format(_T("Reset default settings!!!"));
 		OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
 		bNoReply = FALSE;	// Reset flag
@@ -109,12 +100,12 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	}
 	else if (!_tcscmp(strDebugCommand, _T("restartapp"))) {
 		// Restart app (non-admin)
-		RequestRestart(IDD_DEBUGTEST_DLG, FALSE);
+		RequestRestartApp(IDD_DEBUGTEST_DLG, FALSE);
 		return TRUE;
 	}
 	else if (!_tcscmp(strDebugCommand, _T("restartadmin"))) {
 		// Restart app (as admin)
-		RequestRestart(IDD_DEBUGTEST_DLG, TRUE);
+		RequestRestartApp(IDD_DEBUGTEST_DLG, TRUE);
 		return TRUE;
 	}
 	else if (!_tcscmp(strDebugCommand, _T("logviewer"))) {
@@ -149,6 +140,22 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		bNoReply = FALSE;	// Reset flag
 		return TRUE;
 	}
+	else if (!_tcscmp(strDebugCommand, _T("viewbakconfig"))) {
+		// View backup configuration file
+		OpenTextFileToView(FILENAME_BAKCONFIG, FILEEXT_REGFILE);
+		strOutputResult.Format(_T("Opening backup config file..."));
+		OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
+		bNoReply = FALSE;	// Reset flag
+		return TRUE;
+	}
+	else if (!_tcscmp(strDebugCommand, _T("viewhistory"))) {
+		// View action history log file
+		OpenTextFileToView(FILENAME_HISTORY_LOG, FILEEXT_LOGFILE, SUBFOLDER_LOG);
+		strOutputResult.Format(_T("Opening action history log file..."));
+		OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
+		bNoReply = FALSE;	// Reset flag
+		return TRUE;
+	}
 	else if (!_tcscmp(strDebugCommand, _T("clrscr"))) {
 		// Clear debug view screen buffer
 		HWND hDebugTestDlg = FindDebugTestDlg();
@@ -160,9 +167,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	}
 	else if (!_tcscmp(strDebugCommand, _T("close"))) {
 		// Close DebugTest dialog if opening
-		SDialog* pĐebugTestDlg = pApp->GetDebugTestDlg();
-		if (pĐebugTestDlg != NULL) {
-			ShowDialog(pĐebugTestDlg->GetSafeHwnd(), FALSE);
+		SDialog* pDebugTestDlg = pApp->GetDebugTestDlg();
+		if (pDebugTestDlg != NULL) {
+			pDebugTestDlg->ShowWindow(SW_HIDE);
 		}
 		return TRUE;
 	}
@@ -174,39 +181,39 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	/*********************************************************************/
 
 	// Prepare copy-buffer data
-	LPTSTR lpszBuff = new TCHAR[DEF_BUFF_MAXLENGTH];
-	if (lpszBuff == NULL) {
+	LPTSTR lpszCopyBuff = new TCHAR[MAX_BUFFER_LENGTH];
+	if (lpszCopyBuff == NULL) {
 		// Error: Copy-buffer allocation failed
-		dwErrorCode = DEF_DBG_ERROR_CPYBUFF_ALLOC_FAILED;
+		dwErrorCode = APP_ERROR_DBG_CPYBUFF_ALLOC_FAILED;
 		return FALSE;
 	}
-	_tcscpy(lpszBuff, strDebugCommand.operator LPCTSTR());
+	_tcscpy(lpszCopyBuff, strDebugCommand.operator LPCTSTR());
 
 	// Prepare return-buffer data
-	PBUFFER retBuff = new BUFFER[DEF_TOKEN_MAXCOUNT];
+	PBUFFER retBuff = new BUFFER[MAX_TOKEN_COUNT];
 	if (retBuff == NULL) {
 		// Error: Return-buffer allocation failed
-		dwErrorCode = DEF_DBG_ERROR_RETBUFF_ALLOC_FAILED;
+		dwErrorCode = APP_ERROR_DBG_RETBUFF_ALLOC_FAILED;
 		// Clean-up copy-buffer data
-		delete[] lpszBuff;
+		delete[] lpszCopyBuff;
 		return FALSE;
 	}
 
 	// Make token list (break string buffer)
-	int nCount = GetTokenList(lpszBuff, retBuff, _T(" =,;:-_"));
+	int nCount = GetTokenList(lpszCopyBuff, retBuff, _T(" =,;:-_"));
 
 	// Validate number of tokens
 	if (nCount <= 0) {
 		// Error: Tokenization failed
-		dwErrorCode = DEF_DBG_ERROR_TOKENIZATION_FAILED;
+		dwErrorCode = APP_ERROR_DBG_TOKENIZATION_FAILED;
 		// Clean-up copy-buffer and return-buffer data
-		delete[] lpszBuff;
+		delete[] lpszCopyBuff;
 		delete[] retBuff;
 		return FALSE;
 	}
 
-	int nTemp = DEF_INTEGER_INVALID;
-	CString strTemp = DEF_STRING_EMPTY;
+	int nTemp = INT_INVALID;
+	CString strTemp = STRING_EMPTY;
 
 	// Process debug commands by tokens
 	if (!_tcscmp(retBuff[0].tcToken, _T("test"))) {
@@ -224,6 +231,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		}
 	}
 	else if (!_tcscmp(retBuff[0].tcToken, _T("dmytest"))) {
+		// Set dummy test mode
 		if ((nCount >= 2) && (!_tcscmp(retBuff[1].tcToken, _T("on")))) {
 			SetDummyTestMode(TRUE);
 			OutputDebugLog(_T("DummyTest ON"));
@@ -251,6 +259,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		bNoReply = FALSE;	// Reset flag
 	}
 	else if (!_tcscmp(retBuff[0].tcToken, _T("debugmode"))) {
+		// Set debug mode
 		if ((nCount >= 2) && (!_tcscmp(retBuff[1].tcToken, _T("on")))) {
 			SetDebugMode(TRUE);
 			OutputDebugLog(_T("DebugMode ON"));
@@ -279,6 +288,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	}
 	else if (!_tcscmp(retBuff[0].tcToken, _T("debuglog"))) {
 		if ((nCount >= 2) && (!_tcscmp(retBuff[1].tcToken, _T("output")))) {
+			// Set debug log output target
 			if ((nCount >= 3) && (!_tcscmp(retBuff[2].tcToken, _T("default")))) {
 				SetDebugOutputTarget(DBOUT_DEFAULT);
 				OutputDebugLog(_T("Debug log output target changed"));
@@ -314,6 +324,34 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// Invalid command
 			bInvalidCmdFlag = TRUE;
 		}
+	}
+	else if (!_tcscmp(retBuff[0].tcToken, _T("testfeature"))) {
+		// Set test feature enable
+		if ((nCount >= 2) && (!_tcscmp(retBuff[1].tcToken, _T("on")))) {
+			SetTestFeatureEnable(TRUE);
+			OutputDebugLog(_T("TestFeature ON"));
+			bNoReply = FALSE;	// Reset flag
+		}
+		else if ((nCount >= 2) && (!_tcscmp(retBuff[1].tcToken, _T("off")))) {
+			SetTestFeatureEnable(FALSE);
+			OutputDebugLog(_T("TestFeature OFF"));
+			bNoReply = FALSE;	// Reset flag
+		}
+		else if ((nCount >= 2) && (!_tcscmp(retBuff[1].tcToken, _T("reset")))) {
+			SetTestFeatureEnable(DEFAULT_TESTFEATURE);
+			OutputDebugLog(_T("TestFeature reset"));
+			bNoReply = FALSE;	// Reset flag
+		}
+		else {
+			// Invalid command
+			bInvalidCmdFlag = TRUE;
+		}
+	}
+	else if (!_tcscmp(retBuff[0].tcToken, _T("testfeaturests"))) {
+		// Get test feature enable
+		int nRet = GetTestFeatureEnable();
+		OutputDebugLogFormat(_T("TestFeature status = %d"), nRet);
+		bNoReply = FALSE;	// Reset flag
 	}
 	else if (!_tcscmp(retBuff[0].tcToken, _T("logtest"))) {
 		if ((nCount > 2) && (!_tcscmp(retBuff[1].tcToken, _T("trcerr")))) {
@@ -460,7 +498,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				strKeyName = _T("AppEventLog");
 			}
 			CFileFind Finder;
-			CString strFileName = (CString)SUBFOLDER_LOG + DEF_SYMBOL_PATHSEPARATOR + _T("*.log");
+			CString strFileName = (CString)SUBFOLDER_LOG + SYMBOL_BACKSLASH + _T("*.log");
 			BOOL bFindRet = Finder.FindFile(strFileName);
 			if (!strKeyName.IsEmpty()) {
 				int nDelFileCount = 0;
@@ -514,10 +552,10 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			bInvalidCmdFlag = TRUE;
 		}
 	}
-	else if (!_tcscmp(retBuff[0].tcToken, _T("saveglobalvars"))) {
+	else if (!_tcscmp(retBuff[0].tcToken, _T("saveglobaldata"))) {
 		if (nCount == 1) {
-			// Save all global variables
-			pApp->SaveGlobalVars(0xFF);
+			// Save all global data variables
+			pApp->SaveGlobalData(0xFF);
 			strOutputResult.Format(_T("Global variables stored"));
 			OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
 			bNoReply = FALSE;	// Reset flag
@@ -525,29 +563,29 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		else if (nCount == 2) {
 			if (!_tcscmp(retBuff[1].tcToken, _T("all"))) {
 				// Save all global variables
-				pApp->SaveGlobalVars(0xFF);
+				pApp->SaveGlobalData(0xFF);
 				strOutputResult.Format(_T("Global variables stored"));
 				OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
 				bNoReply = FALSE;	// Reset flag
 			}
 			else if (!_tcscmp(retBuff[1].tcToken, _T("dbtest"))) {
 				// Save debugging/testing config (global variables)
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_DEBUGTEST);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_DEBUGTEST);
 				strOutputResult.Format(_T("Debug/test config stored"));
 				OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
 				bNoReply = FALSE;	// Reset flag
 			}
 			else if (!_tcscmp(retBuff[1].tcToken, _T("appflags"))) {
 				// Save app flags (global variables)
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_APPFLAG);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 				strOutputResult.Format(_T("Global app flags stored"));
 				OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
 				bNoReply = FALSE;	// Reset flag
 			}
-			else if (!_tcscmp(retBuff[1].tcToken, _T("special"))) {
+			else if (!_tcscmp(retBuff[1].tcToken, _T("features"))) {
 				// Save special variables (global variables)
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
-				strOutputResult.Format(_T("Global special variables stored"));
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
+				strOutputResult.Format(_T("Global special feature variables stored"));
 				OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
 				bNoReply = FALSE;	// Reset flag
 			}
@@ -571,8 +609,8 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				// Load app language package
 				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
 				// Format and print data
-				CString strKeyName = DEF_STRING_EMPTY;
-				CString strValue = DEF_STRING_EMPTY;
+				CString strKeyName = STRING_EMPTY;
+				CString strValue = STRING_EMPTY;
 				// Left mouse button action
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONLMB);
 				int nActionStringID = GetPairedID(idplActionName, pcfgDataTemp->nLMBAction);
@@ -587,54 +625,58 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button: Only show menu
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_RMBSHOWMENU);
-				strValue = ((pcfgDataTemp->bRMBShowMenu) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bRMBShowMenu) ? VALUE_TRUE : _T("NO"));
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Language setting
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_LANGUAGEID);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, MAKEUNICODE(GetLanguageName(pcfgDataTemp->nLanguageID)));
 				// Show dialog at startup
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWATSTARTUP);
-				strValue = ((pcfgDataTemp->bShowDlgAtStartup) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bShowDlgAtStartup) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Startup with Windows
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_STARTUPENABLE);
-				strValue = ((pcfgDataTemp->bStartupEnabled) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bStartupEnabled) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Show confirm message before executing action
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_CONFIRMACTION);
-				strValue = ((pcfgDataTemp->bConfirmAction) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bConfirmAction) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Save action log
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SAVEACTIONLOG);
-				strValue = ((pcfgDataTemp->bSaveHistoryLog) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bSaveHistoryLog) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Save app event log
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SAVEAPPEVENTLOG);
-				strValue = ((pcfgDataTemp->bSaveAppEventLog) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bSaveAppEventLog) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Run with admin privileges
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_RUNASADMIN);
-				strValue = ((pcfgDataTemp->bRunAsAdmin) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bRunAsAdmin) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Show action error message
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWERROR);
-				strValue = ((pcfgDataTemp->bShowErrorMsg) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bShowErrorMsg) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Show notify tip for schedule action
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SCHEDULENOTIFY);
-				strValue = ((pcfgDataTemp->bNotifySchedule) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bNotifySchedule) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Allow canceling schedule when notify
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SCHEDALLOWCANCEL);
-				strValue = ((pcfgDataTemp->bAllowCancelSchedule) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bAllowCancelSchedule) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Enable background action hotkeys
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ENBBKGRDHOTKEYS);
-				strValue = ((pcfgDataTemp->bEnableBackgroundHotkey) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bEnableBackgroundHotkey) ? VALUE_TRUE : VALUE_FALSE);
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				// Allow background hotkeys on lockscreen
+				LoadResourceString(strKeyName, IDS_REGKEY_CFG_LOCKSTATEHOTKEY);
+				strValue = ((pcfgDataTemp->bLockStateHotkey) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Enable Power Peminder feature
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ENBPWRREMINDER);
-				strValue = ((pcfgDataTemp->bEnablePowerReminder) ? _T("YES") : _T("NO"));
+				strValue = ((pcfgDataTemp->bEnablePowerReminder) ? VALUE_TRUE : VALUE_FALSE);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 			}
 		}
@@ -724,10 +766,10 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				// Set message background color by name
 				CString strColorName = retBuff[2].tcToken;
 				DWORD dwRetColorID = GetStringID(strplColorName, strColorName);
-				if (dwRetColorID != DEF_INTEGER_INVALID) {
+				if (dwRetColorID != INT_INVALID) {
 					// Set background color
 					SetReminderMsgBkgrdColor(dwRetColorID);
-					pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 					OutputDebugLogFormat(_T("Message background color set: %s"), strColorName.MakeUpper());
 					bNoReply = FALSE;	// Reset flag
 				}
@@ -750,7 +792,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Set background color
 					COLORREF clrRGB = RGB(nRValue, nGValue, nBValue);
 					SetReminderMsgBkgrdColor(clrRGB);
-					pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 					OutputDebugLogFormat(_T("Message background color set: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
 					bNoReply = FALSE;	// Reset flag
 				}
@@ -765,10 +807,10 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				// Set message text color by name
 				CString strColorName = retBuff[2].tcToken;
 				DWORD dwRetColorID = GetStringID(strplColorName, strColorName);
-				if (dwRetColorID != DEF_INTEGER_INVALID) {
+				if (dwRetColorID != INT_INVALID) {
 					// Set text color
 					SetReminderMsgTextColor(dwRetColorID);
-					pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 					OutputDebugLogFormat(_T("Message text color set: %s"), strColorName.MakeUpper());
 					bNoReply = FALSE;	// Reset flag
 				}
@@ -791,7 +833,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Set text color
 					COLORREF clrRGB = RGB(nRValue, nGValue, nBValue);
 					SetReminderMsgTextColor(clrRGB);
-					pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 					OutputDebugLogFormat(_T("Message text color set: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
 					bNoReply = FALSE;	// Reset flag
 				}
@@ -817,7 +859,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Set message font
 				SetReminderMsgFontName(strFontName);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLogFormat(_T("Message font name set: %s"), strFontName);
 				bNoReply = FALSE;	// Reset flag
 			}
@@ -833,7 +875,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Set font size
 				SetReminderMsgFontSize(nFontSize);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLogFormat(_T("Message font size set: %dpt"), nFontSize);
 				bNoReply = FALSE;	// Reset flag
 			}
@@ -849,15 +891,15 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Set timeout
 				SetReminderMsgTimeout(nTimeout);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLogFormat(_T("Message time-out set: %ds"), nTimeout);
 				bNoReply = FALSE;	// Reset flag
 			}
 		}
 		else if ((nCount == 3) && (!_tcscmp(retBuff[1].tcToken, _T("notimeout")))) {
 			// No reminder message timeout (default 0)
-			SetReminderMsgTimeout(DEF_INTEGER_NULL);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			SetReminderMsgTimeout(INT_NULL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message time-out disabled"));
 			bNoReply = FALSE;	// Reset flag
 		}
@@ -865,10 +907,10 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// Set message icon ID by name
 			CString strIconName = retBuff[2].tcToken;
 			DWORD dwRetIconID = GetStringID(strplMsgIconName, strIconName);
-			if (dwRetIconID != DEF_INTEGER_INVALID) {
+			if (dwRetIconID != INT_INVALID) {
 				// Set icon ID
 				SetReminderMsgIconID(dwRetIconID);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLogFormat(_T("Message icon ID set: %s (%d)"), strIconName.MakeUpper(), dwRetIconID);
 				bNoReply = FALSE;	// Reset flag
 			}
@@ -880,7 +922,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		else if ((nCount == 3) && (!_tcscmp(retBuff[1].tcToken, _T("noicon")))) {
 			// No reminder message icon (default 0)
 			SetReminderMsgIconID(IDI_MSGICON_NOICON);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon disabled"));
 			bNoReply = FALSE;	// Reset flag
 		}
@@ -895,7 +937,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Set icon size
 				SetReminderMsgIconSize(nIconSize);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLogFormat(_T("Message icon size set: %dx%dpx"), nIconSize, nIconSize);
 				bNoReply = FALSE;	// Reset flag
 			}
@@ -906,14 +948,14 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			if (!_tcscmp(strIconPos, _T("left"))) {
 				// Set icon position: Left
 				SetReminderMsgIconPosition(MSGICONPOS_ONLEFT);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLog(_T("Message icon position set: Left"));
 				bNoReply = FALSE;	// Reset flag
 			}
 			else if (!_tcscmp(strIconPos, _T("top"))) {
 				// Set icon position: Top
 				SetReminderMsgIconPosition(MSGICONPOS_ONTOP);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLog(_T("Message icon position set: Top"));
 				bNoReply = FALSE;	// Reset flag
 			}
@@ -933,7 +975,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Set margin
 				SetReminderMsgHMargin(nHMargin);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLogFormat(_T("Message horizontal margin set: %dpx"), nHMargin);
 				bNoReply = FALSE;	// Reset flag
 			}
@@ -949,7 +991,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Set margin
 				SetReminderMsgVMargin(nVMargin);
-				pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLogFormat(_T("Message vertical margin set: %dpx"), nVMargin);
 				bNoReply = FALSE;	// Reset flag
 			}
@@ -963,70 +1005,70 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("bkgclr")))) {
 			// Reset message background color
 			SetReminderMsgBkgrdColor(DEFAULT_MSGBKGRDCLR);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message background color reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("txtclr")))) {
 			// Set message text color by name
 			SetReminderMsgTextColor(DEFAULT_MSGTEXTCLR);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message text color reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("fontname")))) {
 			// Set reminder message font name
 			SetReminderMsgFontName(DEFAULT_MSGFONTNAME);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message font name reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("fontsize")))) {
 			// Set reminder message font size
 			SetReminderMsgFontSize(DEFAULT_MSGFONTSIZE);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message font size reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("timeout")))) {
 			// Reset reminder message auto-close interval (time-out)
 			SetReminderMsgTimeout(DEFAULT_MSGTIMEOUT);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message time-out reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconid")))) {
 			// Reset reminder message icon ID
 			SetReminderMsgIconID(DEFAULT_MSGICONID);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon ID reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconsize")))) {
 			// Reset reminder message icon size
 			SetReminderMsgIconSize(DEFAULT_MSGICONSIZE);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon size reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconpos")))) {
 			// Reset reminder message icon position
 			SetReminderMsgIconPosition(DEFAULT_MSGICONPOS);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon position reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("hmargin")))) {
 			// Reset reminder message horizontal margin
 			SetReminderMsgHMargin(DEFAULT_MSGHMARGIN);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message horizontal margin reset)"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("vmargin")))) {
 			// Reset reminder message vertical margin
 			SetReminderMsgVMargin(DEFAULT_MSGVMARGIN);
-			pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message vertical margin reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
@@ -1176,7 +1218,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Set snooze interval
 					int nSnoozeInterval = nInputInterval * 60;
 					SetReminderMsgSnoozeInterval(nSnoozeInterval);
-					pApp->SaveGlobalVars(DEF_GLBVAR_CATE_SPECIAL);
+					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 					OutputDebugLogFormat(_T("Message snooze interval set: %ds"), nSnoozeInterval);
 					bNoReply = FALSE;	// Reset flag
 				}
@@ -1347,55 +1389,74 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			bInvalidCmdFlag = TRUE;
 		}
 	}
-	else if (!_tcscmp(retBuff[0].tcToken, _T("pwractionflag"))) {
-		// Turn ON/OFF power action flag
-		if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("on")))) {
-			SetPwrActionFlag(FLAG_ON);
-			OutputDebugLog(_T("Power action flag: ON"));
-			bNoReply = FALSE;	// Reset flag
+	else if (!_tcscmp(retBuff[0].tcToken, _T("flagset"))) {
+		if (!_tcscmp(retBuff[1].tcToken, _T("pwraction"))) {
+			// Turn ON/OFF power action flag
+			if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("on")))) {
+				SetPwrActionFlag(FLAG_ON);
+				OutputDebugLog(_T("Power action flag: ON"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("off")))) {
+				SetPwrActionFlag(FLAG_OFF);
+				OutputDebugLog(_T("Power action flag: OFF"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				// Invalid command
+				bInvalidCmdFlag = TRUE;
+			}
 		}
-		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("off")))) {
-			SetPwrActionFlag(FLAG_OFF);
-			OutputDebugLog(_T("Power action flag: OFF"));
-			bNoReply = FALSE;	// Reset flag
+		else if (!_tcscmp(retBuff[1].tcToken, _T("syssuspend"))) {
+			// Turn ON/OFF system suspend flag
+			if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("on")))) {
+				SetSystemSuspendFlag(FLAG_ON);
+				OutputDebugLog(_T("System suspend flag: ON"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("off")))) {
+				SetSystemSuspendFlag(FLAG_OFF);
+				OutputDebugLog(_T("System suspend flag: OFF"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				// Invalid command
+				bInvalidCmdFlag = TRUE;
+			}
 		}
-		else {
-			// Invalid command
-			bInvalidCmdFlag = TRUE;
+		else if (!_tcscmp(retBuff[1].tcToken, _T("sessionend"))) {
+			// Turn ON/OFF session end flag
+			if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("on")))) {
+				SetSessionEndFlag(FLAG_ON);
+				OutputDebugLog(_T("Session end flag: ON"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("off")))) {
+				SetSessionEndFlag(FLAG_OFF);
+				OutputDebugLog(_T("Session end flag: OFF"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				// Invalid command
+				bInvalidCmdFlag = TRUE;
+			}
 		}
-	}
-	else if (!_tcscmp(retBuff[0].tcToken, _T("syssuspendflag"))) {
-		// Turn ON/OFF system suspend flag
-		if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("on")))) {
-			SetSystemSuspendFlag(FLAG_ON);
-			OutputDebugLog(_T("System suspend flag: ON"));
-			bNoReply = FALSE;	// Reset flag
-		}
-		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("off")))) {
-			SetSystemSuspendFlag(FLAG_OFF);
-			OutputDebugLog(_T("System suspend flag: OFF"));
-			bNoReply = FALSE;	// Reset flag
-		}
-		else {
-			// Invalid command
-			bInvalidCmdFlag = TRUE;
-		}
-	}
-	else if (!_tcscmp(retBuff[0].tcToken, _T("sessionendflag"))) {
-		// Turn ON/OFF session end flag
-		if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("on")))) {
-			SetSessionEndFlag(FLAG_ON);
-			OutputDebugLog(_T("Session end flag: ON"));
-			bNoReply = FALSE;	// Reset flag
-		}
-		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("off")))) {
-			SetSessionEndFlag(FLAG_OFF);
-			OutputDebugLog(_T("Session end flag: OFF"));
-			bNoReply = FALSE;	// Reset flag
-		}
-		else {
-			// Invalid command
-			bInvalidCmdFlag = TRUE;
+		else if (!_tcscmp(retBuff[1].tcToken, _T("sessionlock"))) {
+			// Turn ON/OFF session lock flag
+			if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("on")))) {
+				SetSessionLockFlag(FLAG_ON);
+				OutputDebugLog(_T("Session lock flag: ON"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("off")))) {
+				SetSessionLockFlag(FLAG_OFF);
+				OutputDebugLog(_T("Session lock flag: OFF"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				// Invalid command
+				bInvalidCmdFlag = TRUE;
+			}
 		}
 	}
 	else {
@@ -1412,12 +1473,12 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	// If command is invalid
 	if (bInvalidCmdFlag == TRUE) {
 		// Error: Invalid command
-		dwErrorCode = DEF_DBG_ERROR_INVALID_COMMAND;
+		dwErrorCode = APP_ERROR_DBG_INVALID_COMMAND;
 		bNoReply = FALSE;	// Reset flag
 		bRet = FALSE;		// Return failed
 	}
 
-	// If command is excuted but no reply
+	// If command is executed but no reply
 	if (bNoReply == TRUE) {
 		OutputDebugLog(_T("Command sent, no reply!!!"));
 		bNoReply = FALSE;	// Reset flag
@@ -1425,8 +1486,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	}
 
 	// Clean-up copy-buffer and return-buffer data
-	delete[] lpszBuff;
+	delete[] lpszCopyBuff;
 	delete[] retBuff;
+
 	return bRet;
 }
 

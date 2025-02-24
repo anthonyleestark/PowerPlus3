@@ -23,12 +23,18 @@ using namespace CoreFuncs;
 
 
 //////////////////////////////////////////////////////////////////////////
-// Default min/max size
+//
+// Define macros for DebugTest functions
+//
+//////////////////////////////////////////////////////////////////////////
 
-#define DEFAULT_MIN_WIDTH	720
-#define DEFAULT_MIN_HEIGHT	480
-#define DEFAULT_MAX_WIDTH	1600
-#define DEFAULT_MAX_HEIGHT	900
+// Default min/max size
+#define DEFAULT_MIN_WIDTH		720
+#define DEFAULT_MIN_HEIGHT		480
+#define DEFAULT_MAX_WIDTH		1600
+#define DEFAULT_MAX_HEIGHT		900
+
+#define DEBUG_OUTPUT_FORMAT		_T(">> %s")
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -52,13 +58,13 @@ CDebugTestDlg::CDebugTestDlg() : SDialog(IDD_DEBUGTEST_DLG)
 	m_pDebugEditView = NULL;
 
 	// Buffer content
-	m_strBuffer = DEF_STRING_EMPTY;
-	m_strBufferBak = DEF_STRING_EMPTY;
+	m_strBuffer = STRING_EMPTY;
+	m_strBufferBak = STRING_EMPTY;
 
 	// Debug command history
 	m_bCurDispHistory = FALSE;
 	m_nHistoryCurIndex = 0;
-	m_arrCommandHistory.RemoveAll();
+	m_astrCommandHistory.RemoveAll();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -70,6 +76,8 @@ CDebugTestDlg::CDebugTestDlg() : SDialog(IDD_DEBUGTEST_DLG)
 
 CDebugTestDlg::~CDebugTestDlg()
 {
+	// Clean-up debug command history
+	ClearDebugCommandHistory();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -268,13 +276,13 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 {
 	// Check argument validity
 	if ((wParam == 0) || (lParam == NULL))
-		return LRESULT(DEF_RESULT_FAILED);
+		return LRESULT(RESULT_FAILED);
 
-	// Format log
-	CString strDebugLog;
-	strDebugLog.Format(_T(">> %s"), (LPCTSTR)lParam);
+	// Format debug output log string
+	CString strDebugOutputLog;
+	strDebugOutputLog.Format(DEBUG_OUTPUT_FORMAT, LPARAM_TO_STRING(lParam));
 
-	AddLine(strDebugLog);
+	AddLine(strDebugOutputLog);
 
 	// Display log and move cursor to end
 	UpdateDisplay(TRUE);
@@ -285,7 +293,7 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 	// Reset currently displaying history flag
 	SetCurrentlyDispHistoryState(FALSE);
 
-	return LRESULT(DEF_RESULT_SUCCESS);
+	return LRESULT(RESULT_SUCCESS);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -303,7 +311,7 @@ LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM wParam, LPARAM lParam)
 	// Clear buffer
 	ClearViewBuffer();
 
-	return LRESULT(DEF_RESULT_SUCCESS);
+	return LRESULT(RESULT_SUCCESS);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -393,7 +401,7 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 			// If the caret position is not in the last line
 			if (nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1)) {
 				// If "Ctrl+C" keys are pressed
-				if ((dwKey == 0x43) && (0x8000 & ::GetKeyState(VK_CONTROL))) {
+				if ((dwKey == 0x43) && (IS_PRESSED(VK_CONTROL))) {
 					// If currently selecting a text
 					int nStartSel, nEndSel;
 					GetDebugEditView()->GetSel(nStartSel, nEndSel);
@@ -438,7 +446,7 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 				}
 			}
 			// If "Ctrl+A" keys are pressed
-			else if ((dwKey == 0x41) && (0x8000 & ::GetKeyState(VK_CONTROL))) {
+			else if ((dwKey == 0x41) && (IS_PRESSED(VK_CONTROL))) {
 				// Block --> Do nothing
 				return TRUE;
 			}
@@ -553,8 +561,8 @@ BOOL CDebugTestDlg::SendDebugCommand(void)
 		return FALSE;
 
 	// Prepare params
-	WPARAM wParam = (WPARAM)nCommandLength;
-	LPARAM lParam = (LPARAM)strDebugCommand.GetBuffer();
+	WPARAM wParam = MAKE_WPARAM_STRING(strDebugCommand);
+	LPARAM lParam = MAKE_LPARAM_STRING(strDebugCommand);
 	
 	// Check if parent window is available
 	if (IsParentWndAvailable()) {
@@ -574,9 +582,6 @@ BOOL CDebugTestDlg::SendDebugCommand(void)
 
 	// Update debug command history
 	AddDebugCommandHistory(strDebugCommand);
-
-	// Release buffer
-	strDebugCommand.ReleaseBuffer();
 
 	return TRUE;
 }
@@ -628,7 +633,7 @@ BOOL CDebugTestDlg::InitDebugEditView(UINT nCtrlID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CDebugTestDlg::IsDebugEditViewValid(void)
+inline BOOL CDebugTestDlg::IsDebugEditViewValid(void)
 {
 	return (GetDebugEditView() != NULL);
 }
@@ -642,7 +647,7 @@ BOOL CDebugTestDlg::IsDebugEditViewValid(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CDebugTestDlg::IsDebugEditViewFocus(void)
+inline BOOL CDebugTestDlg::IsDebugEditViewFocus(void)
 {
 	// Check DebugTest edit view validity
 	if (!IsDebugEditViewValid())
@@ -666,7 +671,7 @@ int CDebugTestDlg::GetCaretPosition(void)
 {
 	// Check DebugTest edit view validity
 	if (!IsDebugEditViewValid())
-		return DEF_INTEGER_INVALID;
+		return INT_INVALID;
 
 	// Get caret position
 	int nStartSel, nEndSel;
@@ -769,7 +774,7 @@ BOOL CDebugTestDlg::ShowDebugTestEditViewMenu(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestDlg::BackupDebugViewBuffer(void)
+inline void CDebugTestDlg::BackupDebugViewBuffer(void)
 {
 	// Backup buffer
 	m_strBufferBak = m_strBuffer;
@@ -794,7 +799,7 @@ int CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 	strDebugCommand.Trim();
 
 	// Initialize a temporary string buffer
-	LPTSTR lpszBuffTemp = new TCHAR[DEF_BUFF_MAXLENGTH];
+	LPTSTR lpszBuffTemp = new TCHAR[MAX_BUFFER_LENGTH];
 	_tcscpy(lpszBuffTemp, strDebugCommand.operator LPCWSTR());
 
 	// Remove invalid characters
@@ -804,8 +809,8 @@ int CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 		// If not an invalid character
 		switch (lpszBuffTemp[nIndex])
 		{
-		case DEF_CHAR_RETURN:
-		case DEF_CHAR_ENDLINE:
+		case CHAR_RETURN:
+		case CHAR_ENDLINE:
 			break;
 		default:
 			// Add to buffer
@@ -819,6 +824,8 @@ int CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 	strDebugCommand.Empty();
 	strDebugCommand.FreeExtra();
 	strDebugCommand.SetString(lpszBuffTemp);
+
+	// Clean-up temporary string buffer
 	delete[] lpszBuffTemp;
 
 	// Return the debug command's new length
@@ -840,7 +847,7 @@ void CDebugTestDlg::ClearViewBuffer(void)
 		return;
 
 	// Clear buffer
-	m_strBuffer = DEF_STRING_EMPTY;
+	m_strBuffer = STRING_EMPTY;
 	GetDebugEditView()->SetWindowText(m_strBuffer);
 
 	// Backup buffer
@@ -865,15 +872,15 @@ void CDebugTestDlg::AddLine(LPCTSTR lpszString)
 		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
 
 		// If end of buffer is not an endline
-		if (tcEndChar != DEF_CHAR_RETURN && tcEndChar != DEF_CHAR_ENDLINE) {
+		if (tcEndChar != CHAR_RETURN && tcEndChar != CHAR_ENDLINE) {
 			// Add an endline first
-			m_strBuffer += DEF_STRING_NEWLINEWRET;
+			m_strBuffer.Append(STRING_NEWLINE);
 		}
 	}
 
 	// Add string line
-	m_strBuffer += lpszString;
-	m_strBuffer += DEF_STRING_NEWLINEWRET;
+	m_strBuffer.Append(lpszString);
+	m_strBuffer.Append(STRING_NEWLINE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -887,12 +894,18 @@ void CDebugTestDlg::AddLine(LPCTSTR lpszString)
 
 void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */)
 {
+	// Get debug edit view
+	CEdit* pDebugEditView = GetDebugEditView();
+	if (!IsDebugEditViewValid())
+		return;
+
 	// Update display text
-	GetDebugEditView()->SetWindowText(m_strBuffer);
+	pDebugEditView->SetWindowText(m_strBuffer);
+	pDebugEditView->Invalidate();
 
 	// Move to end
 	if (bSeekToEnd == TRUE) {
-		GetDebugEditView()->SetSel(-1);
+		pDebugEditView->SetSel(-1);
 	}
 
 	// Check if parent window is available
@@ -902,12 +915,12 @@ void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */)
 	}
 	// Check if main window is available
 	else if (CWnd* pMainWnd = AfxGetMainWnd()) {
-		// Send to main window
+		// Send to main window to process
 		pMainWnd->PostMessage(SM_WND_DEBUGOUTPUTDISP);
 	}
 	// There's no window handle to send to
 	else {
-		// Just send to a NULL window and hope that app class will handle
+		// Just send to a NULL window and hope that app class will handle it
 		::PostMessage(NULL, SM_WND_DEBUGOUTPUTDISP, NULL, NULL);
 	}
 }
@@ -924,8 +937,8 @@ void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */)
 INT_PTR CDebugTestDlg::AddDebugCommandHistory(LPCTSTR lpszCommand)
 {
 	// Only add if input command is not empty
-	if (_tcscmp(lpszCommand, DEF_STRING_EMPTY)) {
-		m_arrCommandHistory.Add(lpszCommand);
+	if (_tcscmp(lpszCommand, STRING_EMPTY)) {
+		m_astrCommandHistory.Add(lpszCommand);
 
 		// Not currently displaying history
 		if (!IsCurrentlyDispHistory()) {
@@ -958,7 +971,7 @@ void CDebugTestDlg::DispDebugCommandHistory(int nHistoryIndex)
 		return;
 
 	// Get command at index
-	CString strCommand = m_arrCommandHistory.GetAt(nHistoryIndex);
+	CString strCommand = m_astrCommandHistory.GetAt(nHistoryIndex);
 	if (strCommand.IsEmpty())
 		return;
 
@@ -1000,8 +1013,8 @@ void CDebugTestDlg::DispDebugCommandHistory(int nHistoryIndex)
 
 void CDebugTestDlg::ClearDebugCommandHistory(void)
 {
-	m_arrCommandHistory.RemoveAll();
-	m_arrCommandHistory.FreeExtra();
+	m_astrCommandHistory.RemoveAll();
+	m_astrCommandHistory.FreeExtra();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1013,9 +1026,9 @@ void CDebugTestDlg::ClearDebugCommandHistory(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CDebugTestDlg::GetDebugCommandHistoryCount(void)
+INT_PTR CDebugTestDlg::GetDebugCommandHistoryCount(void) const
 {
-	return m_arrCommandHistory.GetSize();
+	return m_astrCommandHistory.GetSize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1027,9 +1040,9 @@ INT_PTR CDebugTestDlg::GetDebugCommandHistoryCount(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CDebugTestDlg::IsDebugCommandHistoryEmpty(void)
+BOOL CDebugTestDlg::IsDebugCommandHistoryEmpty(void) const
 {
-	return m_arrCommandHistory.IsEmpty();
+	return m_astrCommandHistory.IsEmpty();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1041,7 +1054,7 @@ BOOL CDebugTestDlg::IsDebugCommandHistoryEmpty(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CDebugTestDlg::IsCurrentlyDispHistory(void)
+inline BOOL CDebugTestDlg::IsCurrentlyDispHistory(void) const
 {
 	return m_bCurDispHistory;
 }
@@ -1055,7 +1068,7 @@ BOOL CDebugTestDlg::IsCurrentlyDispHistory(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestDlg::SetCurrentlyDispHistoryState(BOOL bState)
+inline void CDebugTestDlg::SetCurrentlyDispHistoryState(BOOL bState)
 {
 	m_bCurDispHistory = bState;
 }
@@ -1069,7 +1082,7 @@ void CDebugTestDlg::SetCurrentlyDispHistoryState(BOOL bState)
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CDebugTestDlg::GetHistoryCurrentDispIndex(void)
+inline INT_PTR CDebugTestDlg::GetHistoryCurrentDispIndex(void) const
 {
 	return m_nHistoryCurIndex;
 }
@@ -1083,7 +1096,7 @@ INT_PTR CDebugTestDlg::GetHistoryCurrentDispIndex(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestDlg::SetHistoryCurrentDispIndex(INT_PTR nCurIndex)
+inline void CDebugTestDlg::SetHistoryCurrentDispIndex(INT_PTR nCurIndex)
 {
 	m_nHistoryCurIndex = nCurIndex;
 }

@@ -67,7 +67,7 @@ CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 	// Data variables
 	m_bEnable = FALSE;
 	m_bRepeat = FALSE;
-	m_nAction = DEF_APP_ACTION_NOTHING;
+	m_nAction = APP_ACTION_NOTHING;
 
 	// Data container variables
 	ZeroMemory(&m_schScheduleItem, sizeof(SCHEDULEITEM));
@@ -75,7 +75,7 @@ CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 
 	// Other variables
 	m_nRetFlag = RETFLAG_INVALID;
-	m_nDispMode = DEF_MODE_INIT;
+	m_nDispMode = MODE_INIT;
 	m_pszActiveTableFrameSize = NULL;
 
 	INIT_CLASS_IDMAP()
@@ -276,7 +276,7 @@ void CEditScheduleDlg::OnClose()
 	if (!IsForceClosingByRequest()) {
 
 		// If data changed, ask for saving before closing dialog
-		if (m_bChangeFlag == TRUE) {
+		if (GetFlagValue(FLAGID_CHANGEFLAG) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -337,7 +337,7 @@ void CEditScheduleDlg::OnDestroy()
 LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 {
 	// If data changed, ask for saving before closing dialog
-	if (m_bChangeFlag == TRUE) {
+	if (GetFlagValue(FLAGID_CHANGEFLAG) == TRUE) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -354,7 +354,7 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(DEF_RESULT_FAILED);
+			return LRESULT(RESULT_FAILED);
 		}
 	}
 	else {
@@ -481,13 +481,13 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(DEF_COLOR_WHITE);
-	pCell->SetTextClr(DEF_COLOR_BLACK);
-	pCell->SetHeight(DEF_GRIDCTRL_ROWHEIGHTEX);
+	pCell->SetBackClr(COLOR_WHITE);
+	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
 
 	// Setup table
 	m_pActiveDayListTable->SetColumnCount(2);
-	m_pActiveDayListTable->SetRowCount(DEF_NUM_DAYSOFWEEK);
+	m_pActiveDayListTable->SetRowCount(MAX_DAYS_OF_WEEK);
 
 	// Draw table
 	DrawActiveDayTable(GetReadOnlyMode());
@@ -531,29 +531,29 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 
 	// Read-only mode --> Change cell color
 	if (bReadOnly == TRUE) {
-		pCell->SetBackClr(DEF_COLOR_BRIGHT_GRAY);
-		pCell->SetTextClr(DEF_COLOR_DARK_GRAY);
+		pCell->SetBackClr(COLOR_BRIGHT_GRAY);
+		pCell->SetTextClr(COLOR_DARK_GRAY);
 	}
 	else {
-		pCell->SetBackClr(DEF_COLOR_WHITE);
-		pCell->SetTextClr(DEF_COLOR_BLACK);
+		pCell->SetBackClr(COLOR_WHITE);
+		pCell->SetTextClr(COLOR_BLACK);
 	}
 
 	// Setup display size
 	int nFrameHeight = m_pszActiveTableFrameSize->cy;
 	int nFrameWidth = m_pszActiveTableFrameSize->cx;
-	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
+	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL_WIN10;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
 	}
-	if ((DEF_NUM_DAYSOFWEEK * DEF_GRIDCTRL_ROWHEIGHTEX) >= nFrameHeight) {
+	if ((MAX_DAYS_OF_WEEK * GRIDCTRL_HEIGHT_ROW_EX) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + DEF_OFFSET_VSCRLBRWIDTH);
+		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
 	}
 
 	// Setup columns
@@ -561,8 +561,8 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	m_pActiveDayListTable->SetColumnWidth(COL_ID_DAYTITLE, nFrameWidth - COL_SIZE_CHECKBOX);
 
 	// Setup rows
-	UINT nItemState = DEF_INTEGER_NULL;
-	for (int nRow = 0; nRow < DEF_NUM_DAYSOFWEEK; nRow++) {
+	UINT nItemState = INT_NULL;
+	for (int nRow = 0; nRow < MAX_DAYS_OF_WEEK; nRow++) {
 
 		/*------------------------------------- Checkbox column -------------------------------------*/
 
@@ -607,7 +607,7 @@ void CEditScheduleDlg::SetupDlgItemState()
 	m_bRepeat = m_schScheduleItemTemp.IsRepeatEnable();
 
 	// If is currently in read-only or view mode
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == DEF_MODE_VIEW)) {
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
 		// Disable top checkbox
 		EnableControl(IDC_EDITSCHEDULE_ENABLE_CHK, FALSE);
 	}
@@ -618,7 +618,7 @@ void CEditScheduleDlg::SetupDlgItemState()
 	// Setup action list combo value
 	m_nAction = m_schScheduleItemTemp.nAction;
 	if (m_pActionList != NULL) {
-		m_pActionList->SetCurSel(Opt2Sel(DEF_APP_ACTION, m_nAction));
+		m_pActionList->SetCurSel(Opt2Sel(APP_ACTION, m_nAction));
 	}
 
 	UpdateData(FALSE);
@@ -640,7 +640,7 @@ void CEditScheduleDlg::SetupDlgItemState()
 	// Setup properties
 	if (m_pTimeSpin != NULL) {
 		m_pTimeSpin->SetBuddy(GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX));
-		m_pTimeSpin->SetRange(DEF_SPINCTRL_TIMEMINPOS, DEF_SPINCTRL_TIMEMAXPOS);
+		m_pTimeSpin->SetRange(TIMESPIN_MIN, TIMESPIN_MAX);
 		m_pTimeSpin->SetPos(nTimeSpinPos);
 	}
 
@@ -682,9 +682,9 @@ void CEditScheduleDlg::UpdateActiveDayList()
 
 	// Print items
 	CString strTemp;
-	int nDayOfWeekID = DEF_INTEGER_INVALID;
+	int nDayOfWeekID = INT_INVALID;
 	CGridCellCheck* pCellCheck = NULL;
-	for (int nRowIndex = 0; nRowIndex < DEF_NUM_DAYSOFWEEK; nRowIndex++) {
+	for (int nRowIndex = 0; nRowIndex < MAX_DAYS_OF_WEEK; nRowIndex++) {
 
 		// Day of week
 		nDayOfWeekID = nRowIndex;
@@ -714,7 +714,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 void CEditScheduleDlg::DisableActiveDayTable(BOOL bDisable)
 {
 	// If is currently in read-only or view mode
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == DEF_MODE_VIEW)) {
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
 		// Force disable
 		bDisable = TRUE;
 	}
@@ -806,7 +806,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 
 	// Update action list combo value
 	int nCurSel = m_pActionList->GetCurSel();
-	m_nAction = Sel2Opt(DEF_APP_ACTION, nCurSel);
+	m_nAction = Sel2Opt(APP_ACTION, nCurSel);
 	m_schScheduleItemTemp.nAction = m_nAction;
 
 	// Update time value
@@ -820,7 +820,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	BYTE byRepeatDays = 0;
 	CGridCellCheck* pCellCheckActive = NULL;
 	if (m_pActiveDayListTable == NULL) return;
-	for (int nRowIndex = 0; nRowIndex < DEF_NUM_DAYSOFWEEK; nRowIndex++) {
+	for (int nRowIndex = 0; nRowIndex < MAX_DAYS_OF_WEEK; nRowIndex++) {
 		// Get checkbox cell
 		pCellCheckActive = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, COL_ID_CHECKBOX);
 		if (pCellCheckActive == NULL) continue;
@@ -892,7 +892,7 @@ BOOL CEditScheduleDlg::CheckDataChangeState()
 void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == DEF_MODE_VIEW)) {
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
 		// Force disable
 		bEnable = FALSE;
 	}
@@ -920,7 +920,7 @@ void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
 void CEditScheduleDlg::EnableSubItems(BOOL bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == DEF_MODE_VIEW)) {
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
 		// Force disable
 		bEnable = FALSE;
 	}
@@ -1062,7 +1062,7 @@ void CEditScheduleDlg::OnApply()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_APPLY_BTN);
 
 	// Save data if changed
-	if (m_bChangeFlag == TRUE) {
+	if (GetFlagValue(FLAGID_CHANGEFLAG) == TRUE) {
 
 		// Update data
 		SaveScheduleItem();
@@ -1097,7 +1097,7 @@ void CEditScheduleDlg::OnExit()
 		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_CANCEL_BTN);
 
 		// If data changed, ask for saving before closing dialog
-		if (m_bChangeFlag == TRUE) {
+		if (GetFlagValue(FLAGID_CHANGEFLAG) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);

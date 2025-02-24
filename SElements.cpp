@@ -425,7 +425,7 @@ BOOL SCtrlInfoWrap::GetCheck(void) const
 LONG_PTR SCtrlInfoWrap::GetValueInt(void) const
 {
 	if (this->m_plValue == NULL)
-		return DEF_INTEGER_INVALID;
+		return INT_INVALID;
 	else
 		return *(this->m_plValue);
 }
@@ -433,7 +433,7 @@ LONG_PTR SCtrlInfoWrap::GetValueInt(void) const
 void SCtrlInfoWrap::GetValueInt(LONG_PTR& lValue) const
 {
 	if (this->m_plValue == NULL)
-		lValue = DEF_INTEGER_INVALID;
+		lValue = INT_INVALID;
 	else
 		lValue = *(this->m_plValue);
 }
@@ -452,13 +452,13 @@ void SCtrlInfoWrap::GetMinMaxInt(LONG_PTR& lMin, LONG_PTR& lMax) const
 {
 	// Min value
 	if (this->m_plMinValue == NULL)
-		lMin = DEF_INTEGER_INVALID;
+		lMin = INT_INVALID;
 	else
 		lMin = *(this->m_plMinValue);
 
 	// Max value
 	if (this->m_plMaxValue == NULL)
-		lMax = DEF_INTEGER_INVALID;
+		lMax = INT_INVALID;
 	else
 		lMax = *(this->m_plMaxValue);
 }
@@ -475,7 +475,7 @@ void SCtrlInfoWrap::GetMinMaxInt(LONG_PTR& lMin, LONG_PTR& lMax) const
 DOUBLE SCtrlInfoWrap::GetValueFloat(void) const
 {
 	if (this->m_pdbValue == NULL)
-		return DEF_INTEGER_INVALID;
+		return FLOAT_INVALID;
 	else
 		return *(this->m_pdbValue);
 }
@@ -483,7 +483,7 @@ DOUBLE SCtrlInfoWrap::GetValueFloat(void) const
 void SCtrlInfoWrap::GetValueFloat(DOUBLE& dbValue) const
 {
 	if (this->m_pdbValue == NULL)
-		dbValue = DEF_INTEGER_INVALID;
+		dbValue = FLOAT_INVALID;
 	else
 		dbValue = *(this->m_pdbValue);
 }
@@ -502,13 +502,13 @@ void SCtrlInfoWrap::GetMinMaxFloat(DOUBLE& dbMin, DOUBLE& dbMax) const
 {
 	// Min value
 	if (this->m_pdbMinValue == NULL)
-		dbMin = DEF_INTEGER_INVALID;
+		dbMin = FLOAT_INVALID;
 	else
 		dbMin = *(this->m_pdbMinValue);
 
 	// Max value
 	if (this->m_pdbMaxValue == NULL)
-		dbMax = DEF_INTEGER_INVALID;
+		dbMax = FLOAT_INVALID;
 	else
 		dbMax = *(this->m_pdbMaxValue);
 }
@@ -525,7 +525,7 @@ void SCtrlInfoWrap::GetMinMaxFloat(DOUBLE& dbMin, DOUBLE& dbMax) const
 LPCTSTR SCtrlInfoWrap::GetValueString(void) const
 {
 	if (this->m_pstrValue == NULL)
-		return DEF_STRING_EMPTY;
+		return STRING_EMPTY;
 	else
 		return *(this->m_pstrValue);
 }
@@ -533,7 +533,7 @@ LPCTSTR SCtrlInfoWrap::GetValueString(void) const
 void SCtrlInfoWrap::GetValueString(CString& strValue) const
 {
 	if (this->m_pstrValue == NULL)
-		strValue = DEF_STRING_EMPTY;
+		strValue = STRING_EMPTY;
 	else
 		strValue = *(this->m_pstrValue);
 }
@@ -975,11 +975,11 @@ INT_PTR SControlManager::AddControl(SCtrlInfoWrap* pControl)
 {
 	// Check for control pointer validity
 	if (pControl == NULL) 
-		return DEF_INTEGER_INVALID;
+		return INT_INVALID;
 
 	// If data is not initialized
 	if (this->m_pCtrlInfoArray == NULL)
-		return DEF_INTEGER_INVALID;
+		return INT_INVALID;
 
 	// Search if control ID had already existed
 	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->GetCount()); nIndex++) {
@@ -1009,12 +1009,12 @@ INT_PTR SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 {
 	// If parent window is not set, do nothing
 	if (this->m_pParentWnd == NULL)
-		return DEF_INTEGER_INVALID;
+		return INT_INVALID;
 
 	// Get base control window pointer
 	CWnd* pCtrlWnd = m_pParentWnd->GetDlgItem(nCtrlID);
 	if (pCtrlWnd == NULL)
-		return DEF_INTEGER_INVALID;
+		return INT_INVALID;
 
 	// Initialize control info
 	SCtrlInfoWrap* pControl = new SCtrlInfoWrap();
@@ -1027,7 +1027,7 @@ INT_PTR SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 
 	// Failed to add
 	delete pControl;
-	return DEF_INTEGER_INVALID;
+	return INT_INVALID;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1043,7 +1043,7 @@ INT_PTR SControlManager::RemoveControl(UINT nCtrlID)
 {
 	// If data is not initialized or is empty
 	if ((this->m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
-		return DEF_INTEGER_INVALID;
+		return INT_INVALID;
 
 	// Search for control ID
 	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->GetCount()); nIndex++) {
@@ -1060,7 +1060,7 @@ INT_PTR SControlManager::RemoveControl(UINT nCtrlID)
 	}
 
 	// Control ID not found, return -1
-	return DEF_INTEGER_INVALID;
+	return INT_INVALID;
 }
 
 //////////////////////////////////////////////////////////////////////////

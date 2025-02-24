@@ -18,16 +18,18 @@
 
 // Disable warnings
 #pragma once
-__pragma(warning(disable:6387))
-__pragma(warning(disable:6284))
-__pragma(warning(disable:6031))
-__pragma(warning(disable:4267))
 __pragma(warning(disable:4244))
+__pragma(warning(disable:4267))
+__pragma(warning(disable:4805))
+__pragma(warning(disable:4996))
+__pragma(warning(disable:6031))
+__pragma(warning(disable:6284))
+__pragma(warning(disable:6386))
+__pragma(warning(disable:6387))
+__pragma(warning(disable:6388))
 __pragma(warning(disable:26454))
 __pragma(warning(disable:26495))
-__pragma(warning(disable:4996))
-__pragma(warning(disable:6386))
-__pragma(warning(disable:4805))
+__pragma(warning(disable:28159))
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,12 +38,21 @@ __pragma(warning(disable:4805))
 #define VC_EXTRALEAN							// Exclude rarely-used stuff from Windows headers
 #endif
 
+
 // Include windows.h
 #ifndef WINDOWS_H_INCLUDED
 #define WINDOWS_H_INCLUDED
 
 #include "windows.h"
 #include <winver.h>
+
+#endif
+
+
+// Include Power functions
+#ifndef _POWER_FEATURE_INCLUDED
+#define _POWER_FEATURE_INCLUDED
+
 #include <powerbase.h>
 #include "PowrProf.h"
 #pragma comment (lib, "PowrProf.lib")
@@ -55,6 +66,16 @@ __pragma(warning(disable:4805))
 
 #include "commctrl.h"
 #pragma comment (lib, "Comctl32.lib")
+
+#endif
+
+
+// Support register session state change notification
+#ifndef _SUPPORT_SESSION_NOTIFY
+#define _SUPPORT_SESSION_NOTIFY
+
+#include "wtsapi32.h"
+#pragma comment (lib, "Wtsapi32.lib")
 
 #endif
 
@@ -84,6 +105,7 @@ __pragma(warning(disable:4805))
 #define _RESOURCE2_NOTINCLUDED_
 
 #include "resource.h"							// Default resource header
+
 #ifdef _RESOURCE2_NOTINCLUDED_
 #include "resource2.h"							// Custom additional resource header
 #undef _RESOURCE2_NOTINCLUDED_
@@ -109,6 +131,7 @@ __pragma(warning(disable:4805))
 
 // Include basic C++ standard libraries
 #include <iostream>
+#include <cmath>
 #include <iomanip>
 #include <fstream>
 #include <string.h>

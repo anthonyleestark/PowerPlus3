@@ -103,13 +103,15 @@ public:
 	virtual BOOL SetAppWindowTitle(UINT nResourceStringID);
 	virtual BOOL SetAppWindowTitle(UINT nResourceStringID, LPCTSTR lpszProductVersion);
 
-	// MessageBox and logging functions
+	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);
 	virtual void RegisterMessageBoxCaption(LPCTSTR lpszCaption);
 	virtual void GetRegisterdMsgBoxCaption(CString& strRegMsgBoxCap) const;
+	virtual int DoMessageBox(LPCTSTR lpszPrompt, UINT nType, UINT nIDPrompt);
 	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
 	virtual int DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption = NULL, UINT nStyle = NULL);
 
+	// Logging functions
 	virtual void InitAppEventLog(void);
 	virtual SLogging* GetAppEventLog(void);
 	virtual void OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription = NULL, LOGDETAILINFO* pDetailInfo = NULL);
@@ -128,6 +130,7 @@ public:
 
 	// Request processing functions
 	virtual LRESULT RequestCloseDialog(UINT nDialogID);
+	virtual LRESULT RequestCloseDialog(HWND hDialogWnd);
 	virtual void PostErrorMessage(DWORD dwErrorCode, LPARAM lParam = NULL);
 	virtual void PostErrorMessage(HWND hRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL);
 	virtual void PostErrorMessage(CWnd* pRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL);

@@ -296,7 +296,7 @@ BOOL CHotkeySetDlg::OnInitDialog()
 
 	// Update data
 	UpdateHotkeySet();
-	DisplayHotkeyDetails(DEF_INTEGER_INVALID);
+	DisplayHotkeyDetails(INT_INVALID);
 	RefreshDlgItemState();
 
 	// Save dialog event log if enabled
@@ -440,7 +440,9 @@ void CHotkeySetDlg::OnAdd()
 
 	// Update data
 	Add();
-	UpdateHotkeySet();
+
+	// Redraw HotkeySet table
+	RedrawHotkeySetTable();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -470,8 +472,12 @@ void CHotkeySetDlg::OnRemove()
 	// Ask before remove
 	int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
+
+		// Update data
 		Remove(nIndex);
-		UpdateHotkeySet();
+
+		// Redraw HotkeySet table
+		RedrawHotkeySetTable();
 	}
 }
 
@@ -496,8 +502,12 @@ void CHotkeySetDlg::OnRemoveAll()
 	// Ask before remove
 	int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
+
+		// Update data
 		RemoveAll();
-		UpdateHotkeySet();
+
+		// Redraw HotkeySet table
+		RedrawHotkeySetTable();
 	}
 }
 
@@ -652,7 +662,7 @@ LRESULT CHotkeySetDlg::RequestCloseDialog(void)
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(DEF_RESULT_FAILED);
+			return LRESULT(RESULT_FAILED);
 		}
 	}
 
@@ -746,9 +756,9 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR ptrLanguage)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(DEF_COLOR_WHITE);
-	pCell->SetTextClr(DEF_COLOR_BLACK);
-	pCell->SetHeight(DEF_GRIDCTRL_ROWHEIGHT);
+	pCell->SetBackClr(COLOR_WHITE);
+	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW);
 
 	// Table format and properties
 	int nRowNum = (GetItemNum() + ROW_FIXED_NUM);
@@ -759,7 +769,7 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR ptrLanguage)
 	m_pHotkeySetListTable->SetFixedColumnCount(COL_FIXED_NUM);
 	m_pHotkeySetListTable->SetRowCount(nRowNum);
 	m_pHotkeySetListTable->SetFixedRowCount(ROW_FIXED_NUM);
-	m_pHotkeySetListTable->SetRowHeight(DEF_GRIDCTRL_ROWHEADER, DEF_GRIDCTRL_HEADERHEIGHT);
+	m_pHotkeySetListTable->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
 
 	// Draw table
 	DrawHotkeySetTable(GetReadOnlyMode());
@@ -810,12 +820,12 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 
 	// Read-only mode --> Change cell color
 	if (bReadOnly == TRUE) {
-		pCell->SetBackClr(DEF_COLOR_BRIGHT_GRAY);
-		pCell->SetTextClr(DEF_COLOR_DARK_GRAY);
+		pCell->SetBackClr(COLOR_BRIGHT_GRAY);
+		pCell->SetTextClr(COLOR_DARK_GRAY);
 	}
 	else {
-		pCell->SetBackClr(DEF_COLOR_WHITE);
-		pCell->SetTextClr(DEF_COLOR_BLACK);
+		pCell->SetBackClr(COLOR_WHITE);
+		pCell->SetTextClr(COLOR_BLACK);
 	}
 
 	// Table properties
@@ -825,32 +835,32 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 	// Setup display size
 	int nFrameHeight = m_pszDataTableFrameSize->cy;
 	int nFrameWidth = m_pszDataTableFrameSize->cx;
-	if (pApp->GetWindowsOSVersion() == DEF_WINVER_WIN10) {
+	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL_WIN10;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= DEF_OFFSET_LISTCTRL;
+		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
 	}
-	if ((DEF_GRIDCTRL_HEADERHEIGHT + ((nRowNum - 1) * DEF_GRIDCTRL_ROWHEIGHT)) >= nFrameHeight) {
+	if ((GRIDCTRL_HEIGHT_HEADER + ((nRowNum - 1) * GRIDCTRL_HEIGHT_ROW)) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + DEF_OFFSET_VSCRLBRWIDTH);
+		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
 	}
 
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pHotkeySetListTable, DEF_GRIDCTRL_ROWHEADER, nCol);
+		SetFixedCellStyle(m_pHotkeySetListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = DEF_STRING_EMPTY;
+		CString strHdrTitle = STRING_EMPTY;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
-		if (nHeaderTitleID != DEF_INTEGER_NULL) {
+		if (nHeaderTitleID != INT_NULL) {
 			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pHotkeySetListTable->SetItemText(DEF_GRIDCTRL_ROWHEADER, nCol, strHdrTitle);
+		m_pHotkeySetListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, strHdrTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -869,7 +879,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 
 	// Setup rows
 	int nColStyle = -1;
-	UINT nItemState = DEF_INTEGER_NULL;
+	UINT nItemState = INT_NULL;
 	for (int nRow = 1; nRow < nRowNum; nRow++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 
@@ -917,7 +927,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 				else {
 					// Set margin (left alignment)
 					if (pCell == NULL) continue;
-					pCell->SetMargin(DEF_GRIDCELL_LEFTMARGIN);
+					pCell->SetMargin(GRIDCELL_MARGIN_LEFT);
 				}
 			}
 		}
@@ -1092,7 +1102,7 @@ void CHotkeySetDlg::UpdateHotkeySet()
 
 		// Keystrokes
 		hksItem.PrintKeyStrokes(strTemp);
-		if (!_tcscmp(strTemp, DEF_STRING_NULL)) {
+		if (!_tcscmp(strTemp, STRING_NULL)) {
 			// Undefined keystrokes
 			strTemp = GetLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
 		}
@@ -1187,7 +1197,7 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 
 	// Update combo-boxes
 	UINT nActionID = GetPairedID(idplHKActionID, hksCurItem.nHKActionID);
-	m_cmbActionList.SetCurSel(Opt2Sel(DEF_APP_ACTION, nActionID));
+	m_cmbActionList.SetCurSel(Opt2Sel(APP_ACTION, nActionID));
 	m_cmbFuncKeyList.SetWindowText(_T("---"));
 	if (hksCurItem.dwFuncKeyCode > 0)
 		m_cmbFuncKeyList.SetCurSel(hksCurItem.dwFuncKeyCode - VK_F1);
@@ -1315,7 +1325,7 @@ BOOL CHotkeySetDlg::LoadHotkeySetData()
 	m_hksHotkeySetTemp.Copy(m_hksHotkeySet);
 
 	// Reset change flag
-	m_bChangeFlag = FALSE;
+	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
 	return TRUE;
 }
 
@@ -1335,7 +1345,7 @@ BOOL CHotkeySetDlg::SaveHotkeySetData()
 	m_hksHotkeySet.Adjust();
 
 	// Reset change flag
-	m_bChangeFlag = FALSE;
+	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
 
 	// Save app HotkeySet data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
@@ -1430,7 +1440,7 @@ void CHotkeySetDlg::Add()
 
 	// Update combo-boxes
 	int nCurSel = m_cmbActionList.GetCurSel();
-	int nActionID = Sel2Opt(DEF_APP_ACTION, nCurSel);
+	int nActionID = Sel2Opt(APP_ACTION, nCurSel);
 	int nHKActionID = idplHKActionID[nCurSel].nFirstID;
 	hksTemp.nHKActionID = nHKActionID;
 
@@ -1562,12 +1572,12 @@ BOOL CHotkeySetDlg::Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg /* = FALSE */)
 		if ((hksItem.dwCtrlKeyCode == hklExistedSysHotkeyList[nIndex].dwCtrlKeyCode) &&
 			(hksItem.dwFuncKeyCode == hklExistedSysHotkeyList[nIndex].dwFuncKeyCode)) {
 			// Hotkey info format
-			CString strKeyStrokes = DEF_STRING_EMPTY;
+			CString strKeyStrokes = STRING_EMPTY;
 			if (hksItem.dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
 			if (hksItem.dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
 			if (hksItem.dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
 			strKeyStrokes += GetPairedString(strplFuncKeyList, hksItem.dwFuncKeyCode);
-			CString strKeyInfo = DEF_STRING_EMPTY;
+			CString strKeyInfo = STRING_EMPTY;
 			strKeyInfo.Format(_T("%s - %s"), strKeyStrokes, GetLanguageString(pLang, hklExistedSysHotkeyList[nIndex].nHotkeyDescription));
 
 			// Message format

@@ -49,7 +49,7 @@ private:
 	// Debug command history
 	BOOL		 m_bCurDispHistory;
 	INT_PTR		 m_nHistoryCurIndex;
-	CStringArray m_arrCommandHistory;
+	CStringArray m_astrCommandHistory;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -77,13 +77,13 @@ private:
 	CEdit* GetDebugEditView(void);
 	BOOL InitDebugEditView(UINT nCtrlID);
 
-	BOOL IsDebugEditViewValid(void);
-	BOOL IsDebugEditViewFocus(void);
+	inline BOOL IsDebugEditViewValid(void);
+	inline BOOL IsDebugEditViewFocus(void);
 
 	int  GetCaretPosition(void);
 	BOOL ShowDebugTestEditViewMenu(void);
 
-	void BackupDebugViewBuffer(void);
+	inline void BackupDebugViewBuffer(void);
 	int  FormatDebugCommand(CString &strDebugCommand);
 	void ClearViewBuffer(void);
 
@@ -93,13 +93,13 @@ private:
 	INT_PTR AddDebugCommandHistory(LPCTSTR lpszCommand);
 	void DispDebugCommandHistory(int nHistoryIndex);
 	void ClearDebugCommandHistory(void);
-	INT_PTR GetDebugCommandHistoryCount(void);
-	BOOL IsDebugCommandHistoryEmpty(void);
+	INT_PTR GetDebugCommandHistoryCount(void) const;
+	BOOL IsDebugCommandHistoryEmpty(void) const;
 
-	BOOL IsCurrentlyDispHistory(void);
-	void SetCurrentlyDispHistoryState(BOOL bState);
-	INT_PTR GetHistoryCurrentDispIndex(void);
-	void SetHistoryCurrentDispIndex(INT_PTR nCurIndex);
+	inline BOOL IsCurrentlyDispHistory(void) const;
+	inline void SetCurrentlyDispHistoryState(BOOL bState);
+	inline INT_PTR GetHistoryCurrentDispIndex(void) const;
+	inline void SetHistoryCurrentDispIndex(INT_PTR nCurIndex);
 };
 
 #endif	// ifndef _DEBUGTESTDLG_H_INCLUDED

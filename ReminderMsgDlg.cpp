@@ -43,11 +43,11 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	: SDialog(IDD_REMINDERMSG_DLG, pParentWnd)
 {
 	// Message string buffer
-	m_strBuffer = DEF_STRING_EMPTY;
+	m_strBuffer = STRING_EMPTY;
 
 	// Message font
 	m_pMsgFont = NULL;
-	m_strMsgFontName = DEF_STRING_EMPTY;
+	m_strMsgFontName = STRING_EMPTY;
 	m_fMsgFontPoint = (float)0.0F;
 
 	// Message icon
@@ -65,8 +65,8 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	m_nSnoozeFlag = FLAG_OFF;
 
 	// Properties
-	m_clBkgrdColor = DEF_COLOR_WHITE;
-	m_clTextColor = DEF_COLOR_BLACK;
+	m_clBkgrdColor = COLOR_WHITE;
+	m_clTextColor = COLOR_BLACK;
 	m_nAutoCloseInterval = 0;
 }
 
@@ -325,8 +325,8 @@ void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
 int CReminderMsgDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	// Default creation
-	if (SDialog::OnCreate(lpCreateStruct) == DEF_INTEGER_INVALID)
-		return DEF_INTEGER_INVALID;
+	if (SDialog::OnCreate(lpCreateStruct) == INT_INVALID)
+		return INT_INVALID;
 
 	// Set allow snoozing mode
 	if (GetAllowSnoozeMode() == TRUE) {
@@ -378,7 +378,7 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	if (pWnd == this) {
-		if ((m_bBkgrdColorSet == TRUE) && (m_pBkgrdBrush != NULL)) {
+		if ((GetFlagValue(FLAGID_BKGRDCLRSET) == TRUE) && (m_pBkgrdBrush != NULL)) {
 			// Get brush
 			hBrush = (HBRUSH)(*m_pBkgrdBrush);
 		}
@@ -386,12 +386,12 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	if (nCtlColor == CTLCOLOR_STATIC) {
 		// Set background color
-		if ((m_bBkgrdColorSet == TRUE) && (m_pBkgrdBrush != NULL)) {
+		if ((GetFlagValue(FLAGID_BKGRDCLRSET) == TRUE) && (m_pBkgrdBrush != NULL)) {
 			hBrush = (HBRUSH)(*m_pBkgrdBrush);
 			pDC->SetBkColor(m_clBkgrdColor);
 		}
 		// Set text color
-		if (m_bTextColorSet == TRUE) {
+		if (GetFlagValue(FLAGID_TEXTCLRSET) == TRUE) {
 			pDC->SetTextColor(m_clTextColor);
 		}
 	}

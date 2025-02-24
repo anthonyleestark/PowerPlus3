@@ -101,7 +101,7 @@ CString RegFuncs::GetRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSu
 	}
 
 	// Get registry value
-	return AfxGetApp()->GetProfileString(strSectionFormat, lpszKeyName, DEF_STRING_NULL);
+	return AfxGetApp()->GetProfileString(strSectionFormat, lpszKeyName, STRING_NULL);
 }
 
 BOOL RegFuncs::WriteRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, LPCTSTR lpszValue)
@@ -650,7 +650,7 @@ BOOL RegFuncs::GetPwrReminder(int nItemIndex, UINT nKeyName, CString& strRef)
 
 	// Get registry value
 	CString strRet = GetRegistryValueString(strSectionName, strSubSectionName, strKeyName);
-	if (strRet == DEF_STRING_NULL) return FALSE;
+	if (strRet == STRING_NULL) return FALSE;
 	strRef = strRet; // Copy returned value
 	return TRUE;
 }
@@ -787,8 +787,8 @@ BOOL RegFuncs::DeleteLayoutInfoSection(void)
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Function name:	GetGlobalVar/WriteGlobalVar
-//  Description:	Using for reading/writing registry global variable values
+//	Function name:	GetGlobalData/WriteGlobalData
+//  Description:	Using for reading/writing registry global data values
 //  Arguments:		nSubSection - Subsection name (string ID)
 //					nKeyName	- Key name (string ID)
 //					nRef		- Result value (integer/ref-value)
@@ -799,32 +799,32 @@ BOOL RegFuncs::DeleteLayoutInfoSection(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetGlobalVar(UINT nSubSection, UINT nKeyName, int& nRef)
+BOOL RegFuncs::GetGlobalData(UINT nSubSection, UINT nKeyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(IDS_REGSECTION_GLBVAR, nSubSection, nKeyName);
+	int nRet = GetRegistryValueInt(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteGlobalVar(UINT nSubSection, UINT nKeyName, int nValue)
+BOOL RegFuncs::WriteGlobalData(UINT nSubSection, UINT nKeyName, int nValue)
 {
-	return WriteRegistryValueInt(IDS_REGSECTION_GLBVAR, nSubSection, nKeyName, nValue);
+	return WriteRegistryValueInt(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName, nValue);
 }
 
-BOOL RegFuncs::GetGlobalVar(UINT nSubSection, UINT nKeyName, CString& strRef)
+BOOL RegFuncs::GetGlobalData(UINT nSubSection, UINT nKeyName, CString& strRef)
 {
 	// Get registry value
-	CString strRet = GetRegistryValueString(IDS_REGSECTION_GLBVAR, nSubSection, nKeyName);
-	if (strRet == DEF_STRING_NULL) return FALSE;
+	CString strRet = GetRegistryValueString(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName);
+	if (strRet == STRING_NULL) return FALSE;
 	strRef = strRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteGlobalVar(UINT nSubSection, UINT nKeyName, CString strValue)
+BOOL RegFuncs::WriteGlobalData(UINT nSubSection, UINT nKeyName, CString strValue)
 {
-	return WriteRegistryValueString(IDS_REGSECTION_GLBVAR, nSubSection, nKeyName, strValue);
+	return WriteRegistryValueString(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName, strValue);
 }
 
 
@@ -869,11 +869,11 @@ BOOL SConfigBackup::AutoRegistryExport()
 	regInfo.SetProfileName(IDS_APP_REGISTRY_PROFILENAME);
 	regInfo.SetAppName(IDS_APP_REGISTRY_APPNAME);
 
-	// Excute registry export command
+	// Execute registry export command
 	CString strExecCommand;
-	CString strFormat = _T("\"reg.exe export \"%s\" \"%s\"\" /y");
-	CString strFilePath = (CString)FILENAME_BAKCONFIG + FILEEXT_REGFILE;
-	strExecCommand.Format(strFormat, MakeRegistryPath(regInfo, REGPATH_APPNAME), strFilePath);
+	CString strCommandFormat = _T("\"reg.exe export \"%s\" \"%s\"\" /y");
+	CString strExpFilePath = (CString)FILENAME_BAKCONFIG + FILEEXT_REGFILE;
+	strExecCommand.Format(strCommandFormat, MakeRegistryPath(regInfo, REGPATH_APPNAME), strExpFilePath);
 	ExecuteCommand(strExecCommand, FALSE, FALSE);
 
 	return TRUE;
@@ -1024,6 +1024,7 @@ void SConfigBackup::CloseBakFile()
 }
 
 
+#ifdef _CONFIG_FILE_TEST
 //////////////////////////////////////////////////////////////////////////
 //
 //	Define methods using for INI file processing
@@ -2031,3 +2032,4 @@ BOOL SIniHandler::WriteFile(INIFile& iniFile)
 
 	return bResult;
 }
+#endif		// ifdef _CONFIG_FILE_TEST
