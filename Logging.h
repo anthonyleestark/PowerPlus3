@@ -280,7 +280,9 @@ public:
 	void AddFloat(LPCTSTR, DOUBLE);							// Add float value
 	void AddChildObject(JSON*);								// Add child object
 
-	void Print(CString&, int, BOOL, BOOL = TRUE);			// Print JSON data (with indentation)
+	// Printing functions
+	void Print(CString&, int, BOOL, BOOL = TRUE);			// Print data in JSON format (with indentation)
+	void PrintYAML(CString&);								// Print data in YAML format
 };
 
 // Define new names for JSON class object

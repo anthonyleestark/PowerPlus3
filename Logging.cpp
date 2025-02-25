@@ -775,6 +775,11 @@ void JSON::CopyPtrData(const JSON& pObj)
 				continue;
 			}
 
+			std::auto_ptr<int>		auto_int_ptr;
+			std::unique_ptr<int>	unique_int_ptr;
+			std::shared_ptr<int>	share_int_ptr;
+			std::weak_ptr<int>		weak_int_ptr;
+
 			// Copy object data (do not use 'memcpy' in here)
 			*(this->m_apChildObjectList[nCount]) = *pSrcData;
 		}
@@ -1135,6 +1140,7 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	// Print list of properties
 	INT_PTR nItemNum = this->m_astrKeyList.GetSize();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+
 		// Add indentation
 		strOutput.Append(strIndent);
 
@@ -1146,17 +1152,19 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 		}
 
 		// Format properties
-		if (nIndex < (nItemNum - 1)) {
-			// Add comma character at the end of each property
-			strFormat.Format(_T("\t\"%s\": \"%s\", "), strKeyName, strValue);
+		if ((nIndex == (nItemNum - 1)) &&
+			((this->m_nChildObjectCount <= 0) || (this->m_apChildObjectList == NULL))) {
+
+			// Last property (no other child object following) has no comma in the end
+			strFormat.Format(_T("\t\"%s\": \"%s\" "), strKeyName, strValue);
 			strOutput.Append(strFormat);
 			if (bMultiline == TRUE) {
 				strOutput.Append(STRING_ENDLINE);
 			}
 		}
 		else {
-			// Last property has no comma in the end
-			strFormat.Format(_T("\t\"%s\": \"%s\" "), strKeyName, strValue);
+			// Add comma character at the end of each property
+			strFormat.Format(_T("\t\"%s\": \"%s\", "), strKeyName, strValue);
 			strOutput.Append(strFormat);
 			if (bMultiline == TRUE) {
 				strOutput.Append(STRING_ENDLINE);
@@ -1183,10 +1191,23 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 		strOutput.Append(STRING_ENDLINE);
 	}
 
-	// Add a blank line as seperator
+	// Add a blank line as separator
 	if (bSeparator == TRUE) {
 		strOutput.Append(STRING_ENDLINE);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	PrintYAML
+//	Description:	Print JSON object data in YAML format
+//  Arguments:		strOutput  - Output printed result string
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void JSON::PrintYAML(CString& strOutput)
+{
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1529,7 +1550,7 @@ void SLogging::OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate /* = TR
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SLogging::Write()
+BOOL SLogging::Write(void)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
@@ -1549,6 +1570,10 @@ BOOL SLogging::Write()
 	LOGITEM logItem;
 	SYSTEMTIME stTemp;
 	CString strLogFormat;
+
+	// Setup performance counter for tracing
+	PERFORMANCECOUNTER counter;
+	counter.Start();
 
 	for (int nIndex = 0; nIndex < GetLogCount(); nIndex++)
 	{
@@ -1639,6 +1664,10 @@ BOOL SLogging::Write()
 	if (fLogFile.m_hFile != CFile::hFileNull) {
 		fLogFile.Close();
 	}
+
+	// Display performance counter
+	counter.Stop();
+	OutputDebugLogFormat(_T("Total write log time: %.4f (ms)"), counter.GetElapsedTime(TRUE));
 
 	return TRUE;
 }
