@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AboutDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -27,9 +24,6 @@
     <ClInclude Include="Global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HotkeySetDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IDMapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -37,9 +31,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logging.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LogViewerDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PowerPlus.h">
@@ -54,90 +45,96 @@
     <ClInclude Include="Resource2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EditScheduleDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugTestDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GridCell.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GridCellBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GridCellCheck.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GridCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InPlaceEdit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CellRange.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleTip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PwrReminderDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PowerPlus.inl">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ReminderMsgDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomMsgDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RmdRepeatSetDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiScheduleDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SWinApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logging_pub.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SElements.h">
+    <ClInclude Include="Framework\SDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\SElements.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\SWinApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\CellRange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\GridCell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\GridCellBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\GridCellCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\GridCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\InPlaceEdit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemDC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\TitleTip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CustomMsgDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\DebugTestDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\EditScheduleDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\HelpDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\HotkeySetDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\LogViewerDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\MultiScheduleDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\PwrReminderDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\ReminderMsgDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\RmdRepeatSetDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AboutDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HotkeySetDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="IDMapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Logging.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LogViewerDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PowerPlus.cpp">
@@ -149,58 +146,70 @@
     <ClCompile Include="PowerPlusDlgFunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EditScheduleDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugTestDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Global.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GridCell.cpp">
+    <ClCompile Include="Components\GridCell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GridCellBase.cpp">
+    <ClCompile Include="Components\GridCellBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GridCellCheck.cpp">
+    <ClCompile Include="Components\GridCellCheck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GridCtrl.cpp">
+    <ClCompile Include="Components\GridCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InPlaceEdit.cpp">
+    <ClCompile Include="Components\InPlaceEdit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TitleTip.cpp">
+    <ClCompile Include="Components\TitleTip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PwrReminderDlg.cpp">
+    <ClCompile Include="Dialogs\AboutDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReminderMsgDlg.cpp">
+    <ClCompile Include="Dialogs\CustomMsgDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CustomMsgDlg.cpp">
+    <ClCompile Include="Dialogs\DebugTestDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RmdRepeatSetDlg.cpp">
+    <ClCompile Include="Dialogs\EditScheduleDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MultiScheduleDlg.cpp">
+    <ClCompile Include="Dialogs\HelpDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SWinApp.cpp">
+    <ClCompile Include="Dialogs\HotkeySetDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SElements.cpp">
+    <ClCompile Include="Dialogs\LogViewerDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\MultiScheduleDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\PwrReminderDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\ReminderMsgDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\RmdRepeatSetDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\SDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\SElements.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\SWinApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
