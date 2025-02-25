@@ -143,6 +143,7 @@ __pragma(warning(disable:28159))
 #include <stdlib.h>
 #include <errno.h>
 #include <algorithm>
+#include <memory>
 
 #endif
 

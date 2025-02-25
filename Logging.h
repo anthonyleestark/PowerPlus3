@@ -137,51 +137,6 @@ template <typename DATA>
 static SIZE_T GetSizeByValue(DATA dataValue);
 static SIZE_T GetSizeByType(BYTE byDataType);
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	JSONDATA
-//  Description:	Store JSON format object
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef struct tagJSONDATA
-{
-	// Member variables
-	CString strGroupName;									// JSON group name
-	CStringArray astrItemName;								// List of item names
-	CStringArray astrItemValue;								// List of item values (string)
-
-	INT_PTR	nSubItemNum;									// Number of nested sub-items
-	tagJSONDATA** apSubItemData;							// List of nested sub-items
-
-	// Constructor
-	tagJSONDATA();											// Default constructor
-	tagJSONDATA(const tagJSONDATA&);						// Copy constructor
-	~tagJSONDATA();											// Destructor
-
-	// Operator
-	tagJSONDATA& operator=(const tagJSONDATA&);				// Copy assignment operator
-
-	// Member functions
-	void Copy(const tagJSONDATA&);							// Copy item
-	void CopyArrayData(const tagJSONDATA&);					// Copy JSON item array data
-	void CopyPtrData(const tagJSONDATA&);					// Copy JSON item pointer data
-	BOOL Compare(const tagJSONDATA&) const;					// Compare items
-	BOOL IsEmpty(void) const;								// Check if item data is empty
-	void RemoveItem(int);									// Remove item by index
-	void RemoveItem(LPCTSTR);								// Remove item by name
-	void RemoveAll(void);									// Remove all log item data
-
-	void SetGroupName(LPCTSTR);								// Set group name
-	void AddStringItem(LPCTSTR, LPCTSTR);					// Add string item
-	void AddIntItem(LPCTSTR, UINT);							// Add integer item
-	void AddFloatItem(LPCTSTR, DOUBLE);						// Add float item
-	void AddSubItem(tagJSONDATA*);							// Add sub-item
-
-	void Print(CString&, int, BOOL, BOOL = TRUE);			// Print item data (with indentation)
-} JSONDATA, *PJSONDATA;
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -278,6 +233,61 @@ static STRINGPAIRLIST strplHistoryLogDetail
 
 ////////////////////////////////////////////////////////
 //
+//	Class name:	 JSON
+//  Description: Using for storing JSON object data
+//
+////////////////////////////////////////////////////////
+
+class JSON
+{
+private:
+	// Attributes
+	CString m_strObjectName;								// JSON object name
+
+	// Properties
+	CStringArray m_astrKeyList;								// List of keys
+	CStringArray m_astrValueList;							// List of values (string)
+
+	// Children
+	INT_PTR	m_nChildObjectCount;							// Number of child objects
+	JSON** m_apChildObjectList;								// List of child objects
+
+public:
+	// Construction
+	JSON();													// Default constructor
+	JSON(const JSON&);										// Copy constructor
+	~JSON();												// Destructor
+
+	// Operator
+	JSON& operator=(const JSON&);							// Copy assignment operator
+
+protected:
+	// Member functions
+	void Copy(const JSON&);									// Copy object
+	void CopyArrayData(const JSON&);						// Copy JSON object array data
+	void CopyPtrData(const JSON&);							// Copy JSON object pointer data
+	BOOL Compare(const JSON&) const;						// Compare objects
+	BOOL IsEmpty(void) const;								// Check if object data is empty
+	void RemoveProperty(int);								// Remove property by index
+	void RemoveProperty(LPCTSTR);							// Remove property by key name
+	void RemoveAll(void);									// Remove all object data
+
+public:
+	// Get/set functions
+	void SetObjectName(LPCTSTR);							// Set group name
+	void AddString(LPCTSTR, LPCTSTR);						// Add string value
+	void AddInteger(LPCTSTR, INT);							// Add integer value
+	void AddFloat(LPCTSTR, DOUBLE);							// Add float value
+	void AddChildObject(JSON*);								// Add child object
+
+	void Print(CString&, int, BOOL, BOOL = TRUE);			// Print JSON data (with indentation)
+};
+
+// Define new names for JSON class object
+typedef JSON	JSONDATA, *PJSONDATA;
+
+////////////////////////////////////////////////////////
+//
 //	Class name:	 SLogging
 //  Description: Using for saving application log data
 //
@@ -297,8 +307,9 @@ private:
 	PLOGITEM m_pItemDefTemplate;			// Log default template
 
 public:
-	SLogging(BYTE byLogType);				// constructor
-	~SLogging(void);						// destructor
+	// Construction
+	SLogging(BYTE byLogType);				// Constructor
+	~SLogging(void);						// Destructor
 
 public:
 	// Initialization

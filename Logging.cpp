@@ -557,20 +557,20 @@ CString tagLOGITEM::FormatOutput(void) const
 
 	// Log time
 	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_TIME);
-	jsonOutputData.AddStringItem(strLogInfoIDTitle, this->FormatDateTime());
+	jsonOutputData.AddString(strLogInfoIDTitle, this->FormatDateTime());
 
 	// Process ID
 	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_PID);
-	jsonOutputData.AddIntItem(strLogInfoIDTitle, this->dwProcessID);
+	jsonOutputData.AddInteger(strLogInfoIDTitle, this->dwProcessID);
 
 	// Log category
 	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_CATEGORY);
 	strLogInfoValue = GetLanguageString(pDefLang, this->usCategory);
-	jsonOutputData.AddStringItem(strLogInfoIDTitle, strLogInfoValue);
+	jsonOutputData.AddString(strLogInfoIDTitle, strLogInfoValue);
 
 	// Log description string
 	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
-	jsonOutputData.AddStringItem(strLogInfoIDTitle, this->strLogString);
+	jsonOutputData.AddString(strLogInfoIDTitle, this->strLogString);
 
 	/*********************************************************************/
 	/*																	 */
@@ -586,8 +586,8 @@ CString tagLOGITEM::FormatOutput(void) const
 
 		CString strLogDetailTitle;
 
-		// Set group name: Detail
-		jsonDetailData.SetGroupName(GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_DETAILS));
+		// Set object name: Detail
+		jsonDetailData.SetObjectName(GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_DETAILS));
 
 		// Convert data
 		for (int nIndex = 0; nIndex < (this->arrDetailInfo.GetSize()); nIndex++) {
@@ -600,15 +600,15 @@ CString tagLOGITEM::FormatOutput(void) const
 
 			// Detail info value
 			if (logDetail.uiDetailInfo != INT_NULL) {
-				jsonDetailData.AddIntItem(strLogDetailTitle, logDetail.uiDetailInfo);
+				jsonDetailData.AddInteger(strLogDetailTitle, logDetail.uiDetailInfo);
 			}
 			else if (!logDetail.strDetailInfo.IsEmpty()) {
-				jsonDetailData.AddStringItem(strLogDetailTitle, logDetail.strDetailInfo);
+				jsonDetailData.AddString(strLogDetailTitle, logDetail.strDetailInfo);
 			}
 		}
 
 		// Output detail JSON data
-		jsonOutputData.AddSubItem(&jsonDetailData);
+		jsonOutputData.AddChildObject(&jsonDetailData);
 	}
 
 	/*********************************************************************/
@@ -625,37 +625,37 @@ CString tagLOGITEM::FormatOutput(void) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagJSONDATA
+//	Function name:	JSON
 //	Description:	Constructor
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagJSONDATA::tagJSONDATA()
+JSON::JSON()
 {
 	// Initialization
-	this->strGroupName = STRING_EMPTY;				// JSON group name
-	this->astrItemName.RemoveAll();					// List of item names
-	this->astrItemValue.RemoveAll();				// List of item values (string)
-	this->nSubItemNum = 0;							// Number of nested sub-items
-	this->apSubItemData = NULL;						// List of nested sub-items
+	this->m_strObjectName = STRING_EMPTY;			// JSON object name
+	this->m_astrKeyList.RemoveAll();				// List of keys
+	this->m_astrValueList.RemoveAll();				// List of values (string)
+	this->m_nChildObjectCount = 0;					// Number of child objects
+	this->m_apChildObjectList = NULL;				// List of child objects
 }
 
-tagJSONDATA::tagJSONDATA(const tagJSONDATA& pItem)
+JSON::JSON(const JSON& pObj)
 {
 	// Copy data
-	this->strGroupName = pItem.strGroupName;		// JSON group name
-	this->CopyArrayData(pItem);						// Item array data
-	this->CopyPtrData(pItem);						// Item pointer data
+	this->m_strObjectName = pObj.m_strObjectName;	// JSON object name
+	this->CopyArrayData(pObj);						// Property (array) data
+	this->CopyPtrData(pObj);						// Child object (pointer) data
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	~tagJSONDATA
+//	Function name:	~JSON
 //	Description:	Destructor
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagJSONDATA::~tagJSONDATA()
+JSON::~JSON()
 {
 	// Remove all data and clean-up
 	this->RemoveAll();
@@ -666,16 +666,16 @@ tagJSONDATA::~tagJSONDATA()
 //	Function name:	operator=
 //	Description:	Copy assignment operator
 //  Arguments:		Default
-//  Return value:	tagJSONDATA&
+//  Return value:	JSON&
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagJSONDATA& tagJSONDATA::operator=(const tagJSONDATA& pItem)
+JSON& JSON::operator=(const JSON& pObj)
 {
 	// Copy data
-	this->strGroupName = pItem.strGroupName;		// JSON group name
-	this->CopyArrayData(pItem);						// Item array data
-	this->CopyPtrData(pItem);						// Item pointer data
+	this->m_strObjectName = pObj.m_strObjectName;	// JSON object name
+	this->CopyArrayData(pObj);						// Property (array) data
+	this->CopyPtrData(pObj);						// Child object (pointer) data
 
 	return *this;
 }
@@ -683,100 +683,100 @@ tagJSONDATA& tagJSONDATA::operator=(const tagJSONDATA& pItem)
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	Copy
-//	Description:	Copy data from another JSON item
-//  Arguments:		pItem - Pointer of input item
+//	Description:	Copy data from another JSON object
+//  Arguments:		pObj - Pointer of input object
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::Copy(const tagJSONDATA& pItem)
+void JSON::Copy(const JSON& pObj)
 {
 	// Copy data
-	this->strGroupName = pItem.strGroupName;		// JSON group name
-	this->CopyArrayData(pItem);						// Item array data
-	this->CopyPtrData(pItem);						// Item pointer data
+	this->m_strObjectName = pObj.m_strObjectName;	// JSON object name
+	this->CopyArrayData(pObj);						// Property (array) data
+	this->CopyPtrData(pObj);						// Child object (pointer) data
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	CopyArrayData
-//	Description:	Copy item array data from another JSON item
-//  Arguments:		pItem - Pointer of input item
+//	Description:	Copy object array data from another JSON object
+//  Arguments:		pObj - Pointer of input object
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::CopyArrayData(const tagJSONDATA& pItem)
+void JSON::CopyArrayData(const JSON& pObj)
 {
 	// Remove all existing array data
-	this->astrItemName.RemoveAll();
-	this->astrItemValue.RemoveAll();
+	this->m_astrKeyList.RemoveAll();
+	this->m_astrValueList.RemoveAll();
 
 	// Free destination array data memory
-	this->astrItemName.FreeExtra();
-	this->astrItemValue.FreeExtra();
+	this->m_astrKeyList.FreeExtra();
+	this->m_astrValueList.FreeExtra();
 
 	// Set destination array data size
-	this->astrItemName.SetSize(pItem.astrItemName.GetSize());
-	this->astrItemValue.SetSize(pItem.astrItemValue.GetSize());
+	this->m_astrKeyList.SetSize(pObj.m_astrKeyList.GetSize());
+	this->m_astrValueList.SetSize(pObj.m_astrValueList.GetSize());
 
-	// Copy list of item names
-	for (int nIndex = 0; nIndex < pItem.astrItemName.GetSize(); nIndex++) {
-		this->astrItemName.SetAt(nIndex, pItem.astrItemName.GetAt(nIndex));
+	// Copy list of keys
+	for (int nIndex = 0; nIndex < pObj.m_astrKeyList.GetSize(); nIndex++) {
+		this->m_astrKeyList.SetAt(nIndex, pObj.m_astrKeyList.GetAt(nIndex));
 	}
 
-	// Copy list of item values
-	for (int nIndex = 0; nIndex < pItem.astrItemValue.GetSize(); nIndex++) {
-		this->astrItemValue.SetAt(nIndex, pItem.astrItemValue.GetAt(nIndex));
+	// Copy list of values
+	for (int nIndex = 0; nIndex < pObj.m_astrValueList.GetSize(); nIndex++) {
+		this->m_astrValueList.SetAt(nIndex, pObj.m_astrValueList.GetAt(nIndex));
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	CopyPtrData
-//	Description:	Copy item pointer data from another JSON item
-//  Arguments:		pItem - Pointer of input item
+//	Description:	Copy object pointer data from another JSON object
+//  Arguments:		pObj - Pointer of input object
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::CopyPtrData(const tagJSONDATA& pItem)
+void JSON::CopyPtrData(const JSON& pObj)
 {
-	// Number of nested sub-items
-	this->nSubItemNum = pItem.nSubItemNum;
+	// Number of child objects
+	this->m_nChildObjectCount = pObj.m_nChildObjectCount;
 
-	// List of nested sub-items (pointer copy)
-	if ((pItem.nSubItemNum > 0) && (pItem.apSubItemData != NULL)) {
+	// List of child objects (pointer copy)
+	if ((pObj.m_nChildObjectCount > 0) && (pObj.m_apChildObjectList != NULL)) {
 
 		// Allocation and initialization
-		this->apSubItemData = new PJSONDATA[this->nSubItemNum];
-		if (this->apSubItemData == NULL) {
-			TRCLOG("Error: JSON sub-item array data allocation failed!!!");
+		this->m_apChildObjectList = new PJSONDATA[this->m_nChildObjectCount];
+		if (this->m_apChildObjectList == NULL) {
+			TRCLOG("Error: JSON child object array data allocation failed!!!");
 			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 
 		// Copy data
-		for (int nCount = 0; nCount < this->nSubItemNum; nCount++) {
+		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
 
 			// Allocate memory
-			this->apSubItemData[nCount] = new JSONDATA;
-			if (this->apSubItemData[nCount] == NULL) {
-				TRCFMT("Error: JSON new sub-item data allocation failed!!! (Index=%d)", nCount);
+			this->m_apChildObjectList[nCount] = new JSONDATA;
+			if (this->m_apChildObjectList[nCount] == NULL) {
+				TRCFMT("Error: JSON new child object data allocation failed!!! (Index=%d)", nCount);
 				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
 			}
 
 			// Get source data
-			PJSONDATA pSrcData = pItem.apSubItemData[nCount];
+			PJSONDATA pSrcData = pObj.m_apChildObjectList[nCount];
 			if (pSrcData == NULL) {
-				TRCFMT("Error: JSON sub-item is skipped when copying!!! (Index=%d)", nCount);
+				TRCFMT("Error: JSON child object is skipped when copying!!! (Index=%d)", nCount);
 				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
 			}
 
-			// Copy item data (do not use 'memcpy' in here)
-			*(this->apSubItemData[nCount]) = *pSrcData;
+			// Copy object data (do not use 'memcpy' in here)
+			*(this->m_apChildObjectList[nCount]) = *pSrcData;
 		}
 	}
 }
@@ -784,36 +784,36 @@ void tagJSONDATA::CopyPtrData(const tagJSONDATA& pItem)
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	Compare
-//	Description:	Compare with another given item
-//  Arguments:		pItem - Pointer of given item
+//	Description:	Compare with another given object
+//  Arguments:		pObj - Pointer of given object
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagJSONDATA::Compare(const tagJSONDATA& pItem) const
+BOOL JSON::Compare(const JSON& pObj) const
 {
 	BOOL bRet = FALSE;
 
-	// Compare group name
-	bRet &= (this->strGroupName == pItem.strGroupName);
+	// Compare object name
+	bRet &= (this->m_strObjectName == pObj.m_strObjectName);
 
 	// Compare detail item info
 	BOOL bRetCompareDetail = TRUE;
-	if ((this->astrItemName.GetSize() != pItem.astrItemName.GetSize()) ||
-		(this->astrItemValue.GetSize() != pItem.astrItemValue.GetSize())) {
+	if ((this->m_astrKeyList.GetSize() != pObj.m_astrKeyList.GetSize()) ||
+		(this->m_astrValueList.GetSize() != pObj.m_astrValueList.GetSize())) {
 		bRetCompareDetail = FALSE;
 	}
 	if (bRetCompareDetail != FALSE) {
-		for (int nIndex = 0; nIndex < (this->astrItemName.GetSize()); nIndex++) {
-			if (this->astrItemName.GetAt(nIndex) != pItem.astrItemName.GetAt(nIndex)) {
+		for (int nIndex = 0; nIndex < (this->m_astrKeyList.GetSize()); nIndex++) {
+			if (this->m_astrKeyList.GetAt(nIndex) != pObj.m_astrKeyList.GetAt(nIndex)) {
 				bRetCompareDetail = FALSE;
 				break;
 			}
 		}
 	}
 	if (bRetCompareDetail != FALSE) {
-		for (int nIndex = 0; nIndex < (this->astrItemValue.GetSize()); nIndex++) {
-			if (this->astrItemValue.GetAt(nIndex) != pItem.astrItemValue.GetAt(nIndex)) {
+		for (int nIndex = 0; nIndex < (this->m_astrValueList.GetSize()); nIndex++) {
+			if (this->m_astrValueList.GetAt(nIndex) != pObj.m_astrValueList.GetAt(nIndex)) {
 				bRetCompareDetail = FALSE;
 				break;
 			}
@@ -821,24 +821,24 @@ BOOL tagJSONDATA::Compare(const tagJSONDATA& pItem) const
 	}
 	bRet &= bRetCompareDetail;
 
-	// Compare nested sub-items
-	if (this->apSubItemData != NULL && pItem.apSubItemData != NULL) {
+	// Compare child objects
+	if (this->m_apChildObjectList != NULL && pObj.m_apChildObjectList != NULL) {
 
 		bRetCompareDetail = TRUE;
 
-		// Compare nested sub-item numbers
-		int nThisSubItemNum = this->nSubItemNum;
-		int nOtherSubItemNum = pItem.nSubItemNum;
-		if (nThisSubItemNum != nOtherSubItemNum) {
+		// Compare child object numbers
+		int nThisChildObjectCount = this->m_nChildObjectCount;
+		int nOtherChildObjectCount = pObj.m_nChildObjectCount;
+		if (nThisChildObjectCount != nOtherChildObjectCount) {
 			bRetCompareDetail = FALSE;
 		}
 		else {
-			// Compare each item data
-			for (int nCount = 0; nCount < nThisSubItemNum; nCount++) {
-				PJSONDATA pThisSubItem = this->apSubItemData[nCount];
-				PJSONDATA pOtherSubItem = pItem.apSubItemData[nCount];
-				if ((pThisSubItem != NULL) && (pOtherSubItem != NULL)) {
-					bRetCompareDetail &= pThisSubItem->Compare(*pOtherSubItem);
+			// Compare each child object data
+			for (int nCount = 0; nCount < nThisChildObjectCount; nCount++) {
+				PJSONDATA pThisChildObject = this->m_apChildObjectList[nCount];
+				PJSONDATA pOtherChildObject = pObj.m_apChildObjectList[nCount];
+				if ((pThisChildObject != NULL) && (pOtherChildObject != NULL)) {
+					bRetCompareDetail &= pThisChildObject->Compare(*pOtherChildObject);
 				}
 				else {
 					bRetCompareDetail = FALSE;
@@ -855,13 +855,13 @@ BOOL tagJSONDATA::Compare(const tagJSONDATA& pItem) const
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	IsEmpty
-//	Description:	Check if current JSON item is empty
+//	Description:	Check if current JSON object is empty
 //  Arguments:		None
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagJSONDATA::IsEmpty(void) const
+BOOL JSON::IsEmpty(void) const
 {
 	// Initialize an empty item
 	static const JSONDATA jsonDummyItem;
@@ -872,180 +872,183 @@ BOOL tagJSONDATA::IsEmpty(void) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	RemoveItem
-//	Description:	Remove detail item by index
-//  Arguments:		nIndex - Item index
+//	Function name:	RemoveProperty
+//	Description:	Remove property by index
+//  Arguments:		nIndex - Property index
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::RemoveItem(int nIndex)
+void JSON::RemoveProperty(int nIndex)
 {
 	// Invalid index
-	if ((nIndex < 0) || (nIndex >= this->astrItemName.GetSize()))
+	if ((nIndex < 0) || (nIndex >= this->m_astrKeyList.GetSize()))
 		return;
 
-	// Remove item by index
-	this->astrItemName.RemoveAt(nIndex);
-	this->astrItemValue.RemoveAt(nIndex);
+	// Remove property by index
+	this->m_astrKeyList.RemoveAt(nIndex);
+	this->m_astrValueList.RemoveAt(nIndex);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	RemoveItem
-//	Description:	Remove detail item by name
-//  Arguments:		lpszItemName - Item name
+//	Function name:	RemoveProperty
+//	Description:	Remove property by its key name
+//  Arguments:		lpszKeyName - Key name
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::RemoveItem(LPCTSTR lpszItemName)
+void JSON::RemoveProperty(LPCTSTR lpszKeyName)
 {
-	// If data is empty, do nothing
-	if (this->astrItemName.IsEmpty())
+	// If property data is empty, do nothing
+	if (this->m_astrKeyList.IsEmpty())
 		return;
 
-	// Search for name
+	// Search for key name
 	int nFoundIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < (this->astrItemName.GetSize()); nIndex++) {
-		if (this->astrItemName.GetAt(nIndex) == lpszItemName) {
+	for (int nIndex = 0; nIndex < (this->m_astrKeyList.GetSize()); nIndex++) {
+		if (this->m_astrKeyList.GetAt(nIndex) == lpszKeyName) {
 			nFoundIndex = nIndex;
 			break;
 		}
 	}
 
-	// Remove item by index
-	this->RemoveItem(nFoundIndex);
+	// Remove property by index
+	this->RemoveProperty(nFoundIndex);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	RemoveAll
-//	Description:	Remove all JSON item data
+//	Description:	Remove all JSON object data
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::RemoveAll(void)
+void JSON::RemoveAll(void)
 {
 	// Reset data
-	this->strGroupName.Empty();						// JSON group name
-	this->astrItemName.RemoveAll();					// List of item names
-	this->astrItemValue.RemoveAll();				// List of item values (string)
+	this->m_strObjectName.Empty();					// JSON object name
+	this->m_astrKeyList.RemoveAll();					// List of keys
+	this->m_astrValueList.RemoveAll();				// List of values (string)
 
 	// Free extra memory
-	this->astrItemName.FreeExtra();					// List of item names
-	this->astrItemValue.FreeExtra();				// List of item values (string)
+	this->m_astrKeyList.FreeExtra();					// List of keys
+	this->m_astrValueList.FreeExtra();				// List of values (string)
 
-	// Remove all nested sub-items
-	if ((this->nSubItemNum > 0) && (this->apSubItemData != NULL)) {
-		for (int nCount = 0; nCount < this->nSubItemNum; nCount++) {
-			PJSONDATA pSubItem = this->apSubItemData[nCount];
-			if (pSubItem != NULL) {
-				pSubItem->RemoveAll();
-				delete pSubItem;
+	// Remove all child objects
+	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
+		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
+			PJSONDATA pChildObj = this->m_apChildObjectList[nCount];
+			if (pChildObj != NULL) {
+				pChildObj->RemoveAll();
+				delete pChildObj;
 			}
 		}
-		delete[] (this->apSubItemData);
-		this->apSubItemData = NULL;
+		delete[] (this->m_apChildObjectList);
+		this->m_apChildObjectList = NULL;
 		
-		// Reset item counter
-		this->nSubItemNum = 0;
+		// Reset child object counter
+		this->m_nChildObjectCount = 0;
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetGroupName
-//	Description:	Set JSON data group name
-//  Arguments:		lpszGroupName - Group name
+//	Function name:	SetObjectName
+//	Description:	Set JSON object name
+//  Arguments:		lpszObjectName - Object name
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::SetGroupName(LPCTSTR lpszGroupName)
+void JSON::SetObjectName(LPCTSTR lpszObjectName)
 {
-	this->strGroupName = lpszGroupName;
+	this->m_strObjectName = lpszObjectName;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	AddStringItem
-//	Description:	Add string-typed item
-//  Arguments:		lpszItemName - Item name
-//					lpszValue	 - String value
+//	Function name:	AddString
+//	Description:	Add a string-typed key-value pair, update value if
+//					the given key name already existed
+//  Arguments:		lpszKeyName - Key name
+//					lpszValue	- String value
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::AddStringItem(LPCTSTR lpszItemName, LPCTSTR lpszValue)
+void JSON::AddString(LPCTSTR lpszKeyName, LPCTSTR lpszValue)
 {
-	// Search if item name existed
-	for (int nIndex = 0; nIndex < (this->astrItemName.GetSize()); nIndex++) {
-		const CString& strItemName = this->astrItemName.GetAt(nIndex);
-		if (strItemName == lpszItemName) {
-			// Replace item value with new value
-			this->astrItemValue.SetAt(nIndex, lpszValue);
+	// Search if key name already existed
+	for (int nIndex = 0; nIndex < (this->m_astrKeyList.GetSize()); nIndex++) {
+		const CString& strKeyName = this->m_astrKeyList.GetAt(nIndex);
+		if (strKeyName == lpszKeyName) {
+			// Replace existed value with new value
+			this->m_astrValueList.SetAt(nIndex, lpszValue);
 			return;
 		}
 	}
 
-	// Add item
-	this->astrItemName.Add(lpszItemName);
-	this->astrItemValue.Add(lpszValue);
+	// Add property
+	this->m_astrKeyList.Add(lpszKeyName);
+	this->m_astrValueList.Add(lpszValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	AddIntItem
-//	Description:	Add integer-typed item
-//  Arguments:		lpszItemName - Item name
-//					nValue		 - Unsigned integer value
+//	Function name:	AddInteger
+//	Description:	Add an integer-typed key-value pair, update value if
+//					the given key name already existed
+//  Arguments:		lpszKeyName - Item name
+//					nValue		- Signed integer value
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::AddIntItem(LPCTSTR lpszItemName, UINT nValue)
+void JSON::AddInteger(LPCTSTR lpszKeyName, INT nValue)
 {
 	// Convert integer to string
 	CString strValue;
 	strValue.Format(_T("%d"), nValue);
 
-	// Add item
-	AddStringItem(lpszItemName, strValue);
+	// Add property
+	AddString(lpszKeyName, strValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	AddFloatItem
-//	Description:	Add float-typed item
-//  Arguments:		lpszItemName - Item name
-//					dbValue		 - Float value
+//	Function name:	AddFloat
+//	Description:	Add a float-typed key-value pair, update value if
+//					the given key name already existed
+//  Arguments:		lpszKeyName - Key name
+//					dbValue		- Float value
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::AddFloatItem(LPCTSTR lpszItemName, DOUBLE dbValue)
+void JSON::AddFloat(LPCTSTR lpszKeyName, DOUBLE dbValue)
 {
-	// Convert integer to string
+	// Convert float number to string
 	CString strValue;
 	strValue.Format(_T("%f"), dbValue);
 
-	// Add item
-	AddStringItem(lpszItemName, strValue);
+	// Add property
+	AddString(lpszKeyName, strValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	AddSubItem
-//	Description:	Add nested sub-item
+//	Function name:	AddChildOject
+//	Description:	Add a child object
 //  Arguments:		pSrc - Source item data (pointer)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::AddSubItem(tagJSONDATA* pSrc)
+void JSON::AddChildObject(JSON* pSrc)
 {
 	// Check for data validity
 	if (pSrc == NULL)
@@ -1054,38 +1057,38 @@ void tagJSONDATA::AddSubItem(tagJSONDATA* pSrc)
 	// Index to copy
 	INT_PTR nIndex = 0;
 
-	// Allocate array data memory if not yet allocated
-	if (this->apSubItemData == NULL) {
-		this->apSubItemData = new PJSONDATA;
-		if (this->apSubItemData == NULL) {
-			TRCLOG("Error: JSON sub-item array data allocation failed!!!");
+	// Allocate child object array data memory if not yet allocated
+	if (this->m_apChildObjectList == NULL) {
+		this->m_apChildObjectList = new PJSONDATA;
+		if (this->m_apChildObjectList == NULL) {
+			TRCLOG("Error: JSON child object array data allocation failed!!!");
 			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	else {
-		nIndex = this->nSubItemNum;
+		nIndex = this->m_nChildObjectCount;
 	}
 	
-	// Allocated destination sub-item memory
-	this->apSubItemData[nIndex] = new JSONDATA;
-	if (this->apSubItemData[nIndex] == NULL) {
-		TRCFMT("Error: JSON new sub-item data allocation failed!!! (Index=%d)", nIndex);
+	// Allocated destination child object memory
+	this->m_apChildObjectList[nIndex] = new JSONDATA;
+	if (this->m_apChildObjectList[nIndex] == NULL) {
+		TRCFMT("Error: JSON new child object data allocation failed!!! (Index=%d)", nIndex);
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
-	// Copy data (do not use 'memcpy' in here)
-	*(this->apSubItemData[nIndex]) = *pSrc;
+	// Copy child object data (do not use 'memcpy' in here)
+	*(this->m_apChildObjectList[nIndex]) = *pSrc;
 
-	// Increase sub-item counter
-	this->nSubItemNum++;
+	// Increase child object counter
+	this->m_nChildObjectCount++;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	Print
-//	Description:	Print item data with indentation
+//	Description:	Print JSON object data with indentation
 //  Arguments:		strOutput  - Output printed result string
 //					nIndent	   - Indentation
 //					bSeparator - Whether to add a blank line as separator
@@ -1094,7 +1097,7 @@ void tagJSONDATA::AddSubItem(tagJSONDATA* pSrc)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagJSONDATA::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultiline /* = TRUE */)
+void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultiline /* = TRUE */)
 {
 	// Empty output result string
 	strOutput.Empty();
@@ -1117,9 +1120,9 @@ void tagJSONDATA::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL b
 
 	CString strFormat = STRING_EMPTY;
 
-	// Print group name
-	if (!this->strGroupName.IsEmpty()) {
-		strFormat.Format(_T("\"%s\": "), this->strGroupName);
+	// Print object name (if set)
+	if (!this->m_strObjectName.IsEmpty()) {
+		strFormat.Format(_T("\"%s\": "), this->m_strObjectName);
 		strOutput.Append(strFormat);
 	}
 
@@ -1129,31 +1132,31 @@ void tagJSONDATA::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL b
 		strOutput.Append(STRING_ENDLINE);
 	}
 
-	// Print detail items
-	INT_PTR nItemNum = this->astrItemName.GetSize();
+	// Print list of properties
+	INT_PTR nItemNum = this->m_astrKeyList.GetSize();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 		// Add indentation
 		strOutput.Append(strIndent);
 
-		// Get item name and value
-		CString strItemName = this->astrItemName.GetAt(nIndex);
-		CString strItemValue = STRING_EMPTY;
-		if (nIndex < this->astrItemValue.GetSize()) {
-			strItemValue = this->astrItemValue.GetAt(nIndex);
+		// Get key and value
+		CString strKeyName = this->m_astrKeyList.GetAt(nIndex);
+		CString strValue = STRING_EMPTY;
+		if (nIndex < this->m_astrValueList.GetSize()) {
+			strValue = this->m_astrValueList.GetAt(nIndex);
 		}
 
-		// Format detail item
+		// Format properties
 		if (nIndex < (nItemNum - 1)) {
-			// Add comma character at the end of each item
-			strFormat.Format(_T("\t\"%s\": \"%s\", "), strItemName, strItemValue);
+			// Add comma character at the end of each property
+			strFormat.Format(_T("\t\"%s\": \"%s\", "), strKeyName, strValue);
 			strOutput.Append(strFormat);
 			if (bMultiline == TRUE) {
 				strOutput.Append(STRING_ENDLINE);
 			}
 		}
 		else {
-			// Last item has no comma in the end
-			strFormat.Format(_T("\t\"%s\": \"%s\" "), strItemName, strItemValue);
+			// Last property has no comma in the end
+			strFormat.Format(_T("\t\"%s\": \"%s\" "), strKeyName, strValue);
 			strOutput.Append(strFormat);
 			if (bMultiline == TRUE) {
 				strOutput.Append(STRING_ENDLINE);
@@ -1161,11 +1164,11 @@ void tagJSONDATA::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL b
 		}
 	}
 
-	// Print nested sub-items
+	// Print child objects
 	CString strSubItemOutput = STRING_EMPTY;
-	if ((this->nSubItemNum > 0) && (this->apSubItemData != NULL)) {
-		for (int nCount = 0; nCount < this->nSubItemNum; nCount++) {
-			PJSONDATA pSubItem = this->apSubItemData[nCount];
+	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
+		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
+			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
 			if (pSubItem != NULL) {
 				pSubItem->Print(strSubItemOutput, nIndent + 1, FALSE, bMultiline);
 				strOutput.Append(strSubItemOutput);
