@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Core.h
@@ -260,9 +260,10 @@
 #define SM_APP_LOCKSTATE_HOTKEY						(SM_APP_MESSAGE + 6)
 #define SM_APP_ERROR_MESSAGE						(SM_APP_MESSAGE + 7)
 #define SM_APP_SHOW_ERROR_MSG						(SM_APP_MESSAGE + 8)
-#define SM_APP_DEBUGCOMMAND							(SM_APP_MESSAGE + 9)
-#define SM_APP_DEBUGCMDEXEC							(SM_APP_MESSAGE + 10)
-#define SM_APP_DEBUGOUTPUT							(SM_APP_MESSAGE + 11)
+#define SM_APP_DEBUG_COMMAND						(SM_APP_MESSAGE + 9)
+#define SM_APP_DEBUGCMD_EXEC						(SM_APP_MESSAGE + 10)
+#define SM_APP_DEBUG_OUTPUT							(SM_APP_MESSAGE + 11)
+#define SM_APP_DEBUGCMD_NOREPLY						(SM_APP_MESSAGE + 12)
 	
 
 // Define window custom messages
@@ -270,8 +271,8 @@
 
 #define SM_WND_SHOWDIALOG							(SM_WND_MESSAGE + 1)
 #define SM_WND_DEBUGTEST							(SM_WND_MESSAGE + 2)
-#define SM_WND_DEBUGVIEWCLRSCR						(SM_WND_MESSAGE + 3)
-#define SM_WND_DEBUGOUTPUTDISP						(SM_WND_MESSAGE + 4)
+#define SM_WND_DEBUGVIEW_CLRSCR						(SM_WND_MESSAGE + 3)
+#define SM_WND_DEBUGOUTPUT_DISP						(SM_WND_MESSAGE + 4)
 
 
 // Define app data types
@@ -463,6 +464,8 @@
 #define INT_INFINITE								INFINITE						// Infinite (no limitation)
 #define FLOAT_INVALID								-1.0F							// Invalid float number (equals -1.0)
 #define FLOAT_NULL									0.0F							// Null float number (equals 0)
+#define STRUCT_ZERO									{0}								// Zero-initialized struct data
+#define SYSTEMTIME_ZERO								STRUCT_ZERO						// Zero-initialized systemtime data
 
 
 // Define special values
@@ -470,12 +473,15 @@
 
 #define VALUE_TRUE									_T("Yes")						// Boolean value: True (Yes)
 #define VALUE_FALSE									_T("No")						// Boolean value: False (No)
+#define VALUE_UNKNOWN								_T("Unknown")					// Unknown value
+#define VALUE_UNDEFINED								_T("Undefined")					// Undefined value
 
 
 // Define special min/max values
 //
 
 #define MIN_SNOOZETIME								1								// Min snooze time: 1 minute
+#define MIN_PASSWORD_LENGTH							6								// Min password length: 6 characters
 
 #define MAX_SNOOZETIME								30								// Max snooze time: 30 minutes
 #define MAX_DAYS_OF_WEEK							7								// Number of days of week: 7 days
@@ -483,6 +489,7 @@
 #define MAX_BUFFER_LENGTH							512								// Max buffer length: 512 characters
 #define MAX_STRING_LENGTH							1024							// Max string length: 2KB ~ 1024 characters
 #define MAX_TEXT_LENGTH								2097152							// Max text length: 2MB ~ 2097152 characters
+#define MAX_PASSWORD_LENGTH							30								// Max password length: 30 characters
 #define MAX_DISP_LOGSTRING_LENGTH					20								// Max log string displaying length: 20 characters
 #define MAX_BAKFILE_COUNT							100								// Maximum backup file number: 100
 #define MAX_LOGFILE_SIZE							1048576							// Max file size: 1MB
@@ -494,6 +501,7 @@
 //
 
 #define WINDOWS_VERSION_NONE						0x00
+#define WINDOWS_VERSION_UNKNOWN						WINDOWS_VERSION_NONE			// Unknown version
 #define WINDOWS_VERSION_95							(WINDOWS_VERSION_NONE+1)		// Windows 95
 #define WINDOWS_VERSION_NT							(WINDOWS_VERSION_NONE+2)		// Windows NT
 #define WINDOWS_VERSION_98							(WINDOWS_VERSION_NONE+3)		// Windows 98
@@ -503,7 +511,13 @@
 #define WINDOWS_VERSION_8							(WINDOWS_VERSION_NONE+7)		// Windows 8
 #define WINDOWS_VERSION_10							(WINDOWS_VERSION_NONE+8)		// Windows 10
 #define WINDOWS_VERSION_11							(WINDOWS_VERSION_NONE+9)		// Windows 11
-#define WINDOWS_BUILDNUMBER_11						21996							// Build number: 21996
+
+#define OS_BUILDNUMBER_W7_EARLIEST					6469							// Windows 7 earliest build number: 7700
+#define OS_BUILDNUMBER_W7_LATEST					7601							// Windows 7 earliest build number: 9600
+#define OS_BUILDNUMBER_W8_EARLIEST					7700							// Windows 8/8.1 earliest build number: 7700
+#define OS_BUILDNUMBER_W8_LATEST					9600							// Windows 8/8.1 latest build number: 9600
+#define OS_BUILDNUMBER_W10_ORIGINAL					10240							// Windows 10 original release build number: 10240
+#define OS_BUILDNUMBER_W11_EARLIEST					21996							// Windows 11 earliest build number: 21996
 
 
 // Define specific/default values for controls or items
@@ -594,6 +608,11 @@
 // String processing functions
 //
 
+#define IS_NOT_EMPTY_STRING(string)					(_tcscmp(string, STRING_EMPTY))
+#define IS_EMPTY_STRING(string)						(!IS_NOT_EMPTY_STRING(string))
+#define IS_NOT_NULL_STRING(string)					(_tcscmp(string, STRING_NULL))
+#define IS_NULL_STRING(string)						(!IS_NOT_NULL_STRING(string))
+
 #define MAKEANSI(string)							(CW2A(string).m_psz)
 #define MAKEUNICODE(string)							(CA2W(string).m_psz)
 #define RESOURCESTRING(resourceid)					LoadResourceString(resourceid)
@@ -617,6 +636,37 @@
 #define FORMAT_REG_TIME(systime)					(INT((systime.wHour * 100) + systime.wMinute))
 #define GET_REGTIME_HOUR(time)						(WORD(time / 100))
 #define GET_REGTIME_MINUTE(time)					(WORD(time % 100))
+#define TIME_TO_SECONDS(time)						(INT((time.wHour * 3600) + (time.wMinute * 60) + time.wSecond))
+#define GET_HOUR(nTotalSecs)						(WORD(nTotalSecs / 3600))
+#define GET_MINUTE(nTotalSecs)						(WORD((nTotalSecs % 3600) / 60))
+#define GET_SECOND(nTotalSecs)						(WORD((nTotalSecs % 3600) % 60))
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	Define commands for special functions
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Command runas flags
+//
+
+#define COMMAND_FLAG_RUNAS							_T("runas")
+#define COMMAND_FLAG_OPEN							_T("open")
+
+
+// Registry commands
+//
+
+#define COMMAND_REGISTRY_EXPORT						_T("\"reg.exe export \"%s\" \"%s\"\" /y")
+
+
+// Enable/disable startup as admin
+//
+
+#define COMMAND_REGISTER_RUNASADMIN					_T("schtasks /create /sc onlogon /tn %s /rl highest /tr \"%s\" /f")
+#define COMMAND_UNREGISTER_RUNASADMIN				_T("schtasks /delete /tn %s /f")
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -949,19 +999,6 @@ typedef enum eSTRVALIDERR {
 
 //////////////////// ********************
 // 
-// Substring types
-//
-//////////////////// ********************
-
-typedef enum eSUBSTRINGTYPE {
-	SUBSTR_LEFT = 0,					// Left substring
-	SUBSTR_MID,							// Middle substring
-	SUBSTR_RIGHT,						// Right substring
-} SUBSTRINGTYPE;
-
-
-//////////////////// ********************
-// 
 // File types (view file mode)
 //
 //////////////////// ********************
@@ -1090,7 +1127,7 @@ typedef struct tagSCHEDULEITEM
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef CArray<SCHEDULEITEM, SCHEDULEITEM> SCHEDULEITEMLIST;
+using SCHEDULEITEMLIST = CArray<SCHEDULEITEM, SCHEDULEITEM>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1176,7 +1213,7 @@ typedef struct tagHOTKEYSETITEM
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef CArray<HOTKEYSETITEM, HOTKEYSETITEM> HOTKEYSETITEMLIST;
+using HOTKEYSETITEMLIST = CArray<HOTKEYSETITEM, HOTKEYSETITEM>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1299,7 +1336,7 @@ typedef struct tagPWRREMINDERITEM
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef CArray<PWRREMINDERITEM, PWRREMINDERITEM> PWRREMINDERITEMLIST;
+using PWRREMINDERITEMLIST = CArray<PWRREMINDERITEM, PWRREMINDERITEM>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1569,6 +1606,7 @@ typedef struct tagREGISTRYINFO
 
 typedef struct tagLVCOLUMNFORMAT
 {
+	// Member variables
 	INT		nColumnTitleID;									// Column title ID
 	INT		nColumnSize;									// Column size
 	INT		nColumnSizeUnit;								// Column size unit
@@ -1584,6 +1622,7 @@ typedef struct tagLVCOLUMNFORMAT
 
 typedef struct tagGRIDCTRLCOLFMT 
 {
+	// Member variables
 	INT		nColID;											// Column ID
 	UINT	nHeaderTitleID;									// Header title string ID
 	INT		nWidth;											// Column width
@@ -1601,6 +1640,7 @@ typedef struct tagGRIDCTRLCOLFMT
 
 typedef struct tagHOTKEYINFO
 {
+	// Member variables
 	DWORD	dwCtrlKeyCode;									// Control Keycode #1
 	DWORD	dwFuncKeyCode;									// Function Keycode #2
 	UINT	nHotkeyDescription;								// Hotkey description (string ID)
@@ -1616,6 +1656,7 @@ typedef struct tagHOTKEYINFO
 
 typedef struct tagIDPAIR
 {
+	// Member variables
 	UINT nFirstID;											// First pair ID
 	UINT nSecondID;											// Second pair ID
 } IDPAIR, *PIDPAIR;
@@ -1630,6 +1671,7 @@ typedef struct tagIDPAIR
 
 typedef struct tagACTIONDEF
 {
+	// Member variables
 	UINT nActionDefID;										// Action ID
 	UINT nActionNameID;										// Action Name ID
 	UINT nActionMsgID;										// Action message ID
@@ -1640,16 +1682,14 @@ typedef struct tagACTIONDEF
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	IDPAIRLIST
-//					STRINGPAIRLIST
+//	Data type name:	IDMAPTABLE
 //					ACTIONDEFCOMBTABLE
-//  Description:	Data pair list
+//  Description:	Data mapping table
 //  Derivered from: C++ vector type
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef std::vector<IDPAIR>		IDPAIRLIST;
-typedef std::vector<LANGTEXT>	STRINGPAIRLIST;
+typedef std::vector<IDPAIR>		IDMAPTABLE;
 typedef std::vector<ACTIONDEF>	ACTIONDEFTABLE;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1662,8 +1702,9 @@ typedef std::vector<ACTIONDEF>	ACTIONDEFTABLE;
 
 typedef struct tagBUFFER 
 {
+	// Member variables
 	INT		nLength;										// Buffer length
-	TCHAR	tcToken[MAX_BUFFER_LENGTH];					// Buffer token
+	TCHAR	tcToken[MAX_BUFFER_LENGTH];						// Buffer token
 } BUFFER, *PBUFFER;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1676,6 +1717,7 @@ typedef struct tagBUFFER
 
 typedef struct tagRESTARTREQ 
 {
+	// Member variables
 	BOOL bRequest;											// Request to restart
 	BOOL bAdminCheck;										// Check if already running as admin
 	BOOL bNotAdminShowMsg;									// If not admin, not show check message
@@ -1683,6 +1725,38 @@ typedef struct tagRESTARTREQ
 	BOOL bShowMsgWhenDeny;									// Show message when denied
 	BOOL bResetFlag;										// Reset flag when denied
 } RESTARTREQ, *PRESTARTREQ;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	SUBSTRING
+//  Description:	Using for getting substrings
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+typedef struct tagSUBSTRING
+{
+	// Member variables
+	CString strLeft;										// Left part
+	CString strMid;											// Middle part
+	CString strRight;										// Right part
+
+	// Constructor
+	tagSUBSTRING();											// Default constructor
+	tagSUBSTRING(const tagSUBSTRING&);						// Copy constructor
+
+	// Operator
+	tagSUBSTRING& operator=(const tagSUBSTRING&);			// Copy assignment operator
+
+	// Member functions
+	void Copy(const tagSUBSTRING&);							// Copy data
+	void RemoveAll(void);									// Remove all data
+	BOOL IsEmpty(void) const;								// Check if data is empty
+
+	LPCTSTR	Left(void) const;								// Get left part
+	LPCTSTR	Mid(void) const;								// Get middle part
+	LPCTSTR	Right(void) const;								// Get right part
+} SUBSTRING, *PSUBSTRING;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1717,13 +1791,13 @@ typedef struct tagPERFORMANCECOUNTER
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		idplActionName
+//	Table name:		idTableActionName
 //  Description:	Using for pairing action macro IDs and action name IDs
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplActionName
+static IDMAPTABLE idTableActionName
 {
 /*----------Action ID----------------------------Action Name ID---------------------*/
 	{ APP_ACTION_NOTHING,					ACTION_NAME_NOTHING					},
@@ -1739,13 +1813,13 @@ static IDPAIRLIST idplActionName
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		idplActionMsg
+//	Table name:		idTableActionMsg
 //  Description:	Using for pairing action macro IDs and action message IDs
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplActionMsg
+static IDMAPTABLE idTableActionMsg
 {
 /*----------Action ID---------------------------Message String ID-------------------*/
 	{ APP_ACTION_DISPLAYOFF,				MESSAGE_ACTION_DISPLAYOFF			},
@@ -1759,14 +1833,14 @@ static IDPAIRLIST idplActionMsg
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		idplNotifyTip
+//	Table name:		idTableNotifyTip
 //  Description:	Using for pairing action macro IDs and string IDs for
 //					notify icon tip text
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplNotifyTip
+static IDMAPTABLE idTableNotifyTip
 {
 /*---------Action ID---------------------------Notify String ID---------------------*/
 	{ APP_ACTION_DISPLAYOFF,				NOTIFY_TIP_DISPLAYOFF				},
@@ -1784,11 +1858,11 @@ static IDPAIRLIST idplNotifyTip
 //	Table name:		idplBalloonTip
 //  Description:	Using for pairing action macro IDs and string IDs for
 //					notify icon balloon tip text
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplBalloonTip
+static IDMAPTABLE idTableBalloonTip
 {
 /*---------Action ID---------------------------Balloon String ID--------------------*/
 	{ APP_ACTION_DISPLAYOFF,				BALLOON_TIP_DISPLAYOFF				},
@@ -1802,14 +1876,14 @@ static IDPAIRLIST idplBalloonTip
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		idplErrorCode
+//	Table name:		idTableErrorCode
 //  Description:	Using for pairing application-defined error codes and
 //					system-defined error codes
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplErrorCode
+static IDMAPTABLE idTableErrorCode
 {
 /*----------Action ID----------------------------Action Name ID---------------------*/
 	{ APP_ERROR_SUCCESS,					ERROR_SUCCESS						},
@@ -1842,14 +1916,14 @@ static IDPAIRLIST idplErrorCode
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		idplErrorMessage
+//	Table name:		idTableErrorMessage
 //  Description:	Using for pairing application-defined error codes and
 //					error message string IDs
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplErrorMessage
+static IDMAPTABLE idTableErrorMessage
 {
 /*----------Action ID----------------------------Action Name ID---------------------*/
 	{ APP_ERROR_SUCCESS,					INT_NULL,							},
@@ -1903,14 +1977,14 @@ static IDPAIRLIST idplErrorMessage
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		idplSchedNotifyMsg
+//	Table name:		idTableSchedNotifyMsg
 //  Description:	Using for pairing action macro IDs and message box
 //					string IDs for Notify Schedule function
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplSchedNotifyMsg
+static IDMAPTABLE idTableSchedNotifyMsg
 {
 /*---------Action ID------------------------------Message String ID-----------------*/
 	{ APP_ACTION_DISPLAYOFF,				MESSAGE_SCHEDNOTIFY_DISPLAYOFF		},
@@ -1926,11 +2000,11 @@ static IDPAIRLIST idplSchedNotifyMsg
 //
 //	Table name:		idplHKActionID
 //  Description:	Using for pairing Hotkey ID and action macro IDs
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplHKActionID
+static IDMAPTABLE idTableHKActionID
 {
 /*----HotKey Action ID----------------------------Action ID-------------------------*/
 	{ HKID_DISPLAYOFF,						APP_ACTION_DISPLAYOFF				},
@@ -1947,11 +2021,11 @@ static IDPAIRLIST idplHKActionID
 //	Table name:		idplPwrReminderEvt
 //  Description:	Using for pairing Power Reminder event IDs and string IDs 
 //					which will display in Power Reminder data table
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplPwrReminderEvt
+static IDMAPTABLE idTablePwrReminderEvt
 {
 /*--------Event ID-----------------------------Event String ID----------------------*/
 	{ PREVT_AT_SETTIME,						PWRRMD_EVENT_AT_SETTIME				},
@@ -1968,11 +2042,11 @@ static IDPAIRLIST idplPwrReminderEvt
 //	Table name:		idplPwrReminderStyle
 //  Description:	Using for pairing Power Reminder style IDs and string IDs 
 //					which will display in Power Reminder data table
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplPwrReminderStyle
+static IDMAPTABLE idTablePwrReminderStyle
 {
 /*-----Style ID--------------------------------Style String ID----------------------*/
 	{ PRSTYLE_MSGBOX,						PWRRMD_STYLE_MESSAGEBOX				},
@@ -1984,11 +2058,11 @@ static IDPAIRLIST idplPwrReminderStyle
 //
 //	Table name:		idplDayOfWeek
 //  Description:	Using for pairing day-of-week macro IDs and title IDs
-//  Table type:		IDPAIRLIST
+//  Table type:		IDMAPTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static IDPAIRLIST idplDayOfWeek
+static IDMAPTABLE idTableDayOfWeek
 {
 /*----Day ID---------------------------------Day title string ID--------------------*/
 	{ MONDAY,								DAYOFWEEK_TITLE_MONDAY				},
@@ -2003,13 +2077,13 @@ static IDPAIRLIST idplDayOfWeek
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		strplFuncKeyList
+//	Table name:		strTableFuncKeyList
 //  Description:	Using for pairing function key macros and key names
-//  Table type:		STRINGPAIRLIST
+//  Table type:		STRINGTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static STRINGPAIRLIST strplFuncKeyList 
+static STRINGTABLE strTableFuncKeyList 
 {
 /*----------------------------------------------------------------------------------*/
 	{ VK_F1,  _T("F1")	},		{ VK_F2,  _T("F2")  },		{ VK_F3,  _T("F3")	}, 
@@ -2021,13 +2095,13 @@ static STRINGPAIRLIST strplFuncKeyList
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		strplColorName
+//	Table name:		strTableColorName
 //  Description:	Using for pairing color macro IDs and color names
-//  Table type:		STRINGPAIRLIST
+//  Table type:		STRINGTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static STRINGPAIRLIST strplColorName
+static STRINGTABLE strTableColorName
 {
 /*-------Color ID----------------------------Color name-----------------------------*/
 	{ COLOR_RED,							_T("Red")							},
@@ -2052,15 +2126,16 @@ static STRINGPAIRLIST strplColorName
 /*----------------------------------------------------------------------------------*/
 };
 
+
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		strplMsgIconName
+//	Table name:		strTableMsgIconName
 //  Description:	Using for pairing message icon IDs and icon names
-//  Table type:		STRINGPAIRLIST
+//  Table type:		STRINGTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static STRINGPAIRLIST strplMsgIconName
+static STRINGTABLE strTableMsgIconName
 {
 /*--------Icon ID---------------------------Icon name-------------------------------*/
 	{ IDI_MSGICON_APPLICATION,				_T("App")							},
@@ -2101,16 +2176,16 @@ static const HOTKEYINFO hklExistedSysHotkeyList[] =
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace PairFuncs
+namespace TableFuncs
 {
 	// Pair list processing functions
-	UINT		  GetPairedID(IDPAIRLIST& idplRef, UINT nID, BOOL bReverse = FALSE);
-	UINT		  GetStringID(STRINGPAIRLIST& strplRef, LPCTSTR lpszInput);
-	LPCTSTR		  GetPairedString(STRINGPAIRLIST& strplRef, UINT nID, LPTSTR pszResult = NULL);
+	UINT		  GetPairedID(IDMAPTABLE& idTableRef, UINT nID, BOOL bReverse = FALSE);
+	UINT		  GetStringID(STRINGTABLE& strTableRef, LPCTSTR lpszInput);
+	LPCTSTR		  GetString(STRINGTABLE& strTableRef, UINT nID, LPTSTR pszResult = NULL);
 
 	// Language table package processing functions
-	LPCSTR		  GetLanguageName(UINT nCurLanguage, LPSTR pszResult = NULL);
-	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage, LPSTR pszRetLangName = NULL, int* pnSize = NULL);
+	LPCTSTR		  GetLanguageName(UINT nCurLanguage, BOOL bGetDescription = FALSE, LPTSTR pszResult = NULL);
+	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangName = NULL, int* pnSize = NULL);
 	LPCTSTR		  GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult = NULL);
 };
 
@@ -2145,9 +2220,9 @@ namespace CoreFuncs
 	void WriteDebugInfoLogFile(LPCTSTR lpszLogStringW);
 	void WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW);
 
-	// Message functions
+	// Message and notification functions
 	LRESULT	WaitMessage(UINT nMsg, int nTimeout = TIMEOUT_WAIT_MESSAGE);
-	void	ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErrCode, LPARAM lParam = NULL);
+	void	ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErrorCode, LPARAM lParam = NULL);
 
 	// Data converting functions
 	UINT Sel2Opt(UINT nOptionMacro, UINT nSelection);
@@ -2179,20 +2254,22 @@ namespace CoreFuncs
 	int		GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars);
 	void	UpperEachWord(CString& strInput, BOOL bTrim);
 	BOOL	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
+
 	BOOL	StringValidate(LPCTSTR lpszSrc, DWORD& dwError);
 
 	LPCTSTR StringFormat(UINT nFormatTemplateID, ...);
 	LPCTSTR StringFormat(LPCTSTR lpszFormatTemplate, ...);
-	BOOL	SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd, UINT nSubStringType);
-
-	BOOL	Left(LPCTSTR lpszSrc, CString& strDest, TCHAR tcEnd);
-	BOOL	Mid(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd);
-	BOOL	Right(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart);
+	BOOL	SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL bIncSepChar = FALSE);
 
 	// Additional functions
-	LPCTSTR GetAppPath(void);
+	LPCTSTR GetApplicationPath(BOOL bIncludeExeName);
 	CString	GetProductVersion(BOOL bFullVersion);
 	BOOL	GetProductVersion(CString& strFullVersion, CString& strShortVersion);
+
+	UINT	GetWindowsOSVersion(void);
+	BOOL	GetDeviceName(CString& strDeviceName);
+	BOOL	GetCurrentUserName(CString& strUserName);
+
 	BOOL	AddRegistryKey(const REGISTRYINFO& regInfo);
 	LPCTSTR MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType = REGPATH_FULL, BOOL bIncRootKey = TRUE);
 

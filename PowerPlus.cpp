@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		PowerPlus.cpp
@@ -22,7 +22,7 @@
 #include "PowerPlusDlg.h"
 #include "DebugTestDlg.h"
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 using namespace RegFuncs;
 
@@ -149,11 +149,14 @@ BOOL CPowerPlusApp::InitInstance()
 {
 	DWORD dwErrorCode;
 
-	// Set application window title (with product version number)
-	if (!SetAppWindowTitle(IDS_APP_WINDOW_TITLE, GetProductVersion(FALSE))) {
+	// Set application launch time
+	SetAppLaunchTime(GetCurSysTime());
+
+	// Set application window caption (with product version number)
+	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, GetProductVersion(FALSE))) {
 
 		// Set title string failed
-		TRCLOG("Error: Set app window title failed");
+		TRCLOG("Error: Set app window caption failed");
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
@@ -163,7 +166,7 @@ BOOL CPowerPlusApp::InitInstance()
 
 	// Check if there is any other instance currently running
 	// If yes, bring that instance to top and exit current instance
-	if (HWND hPrevWnd = FindWindow(NULL, GetAppWindowTitle())) {
+	if (HWND hPrevWnd = FindWindow(NULL, GetAppWindowCaption())) {
 		PostMessage(hPrevWnd, SM_WND_SHOWDIALOG, TRUE, (LPARAM)0);
 		BringWindowToTop(hPrevWnd);
 		SetForegroundWindow(hPrevWnd);
@@ -214,6 +217,9 @@ BOOL CPowerPlusApp::InitInstance()
 	// Setup registry key info
 	SetRegistryKey(IDS_APP_REGISTRY_PROFILENAME);
 	InitLastSysEventRegistryInfo();
+
+	// Update application profile info data
+	UpdateAppProfileInfo();
 
 	// Create neccessary sub-folders
 	CreateDirectory(SUBFOLDER_LOG, NULL);
@@ -303,10 +309,7 @@ BOOL CPowerPlusApp::InitInstance()
 	m_pMainWnd = pMainDlg;
 
 	// Show/hide main dialog at startup
-	BOOL bShowDlgAtStartup = TRUE;
-	GetConfig(IDS_REGKEY_CFG_SHOWATSTARTUP, bShowDlgAtStartup);
-
-	if (bShowDlgAtStartup == FALSE) {
+	if (GetAppOption(OPTIONID_SHOWDLGATSTARTUP) == FALSE) {
 
 		// Hide dialog
 		pMainDlg->Create(IDD_POWERPLUS_DIALOG, NULL);
@@ -319,6 +322,8 @@ BOOL CPowerPlusApp::InitInstance()
 
 		// Notification sound
 		MessageBeep(0xFFFFFFFF);
+
+		// Run modal loop
 		pMainDlg->RunModalLoop();
 	}
 	else {
@@ -328,9 +333,13 @@ BOOL CPowerPlusApp::InitInstance()
 			m_pDebugTestDlg->SetParentWnd(pMainDlg);
 		}
 
-		// Show dialog (in modal state)
+		// Show dialog in modal state
 		pMainDlg->DoModal();
-		PostMessage(pMainDlg->GetSafeHwnd(), SM_WND_SHOWDIALOG, TRUE, NULL);
+
+		// Bring dialog window to top
+		pMainDlg->SendMessage(SM_WND_SHOWDIALOG, TRUE, NULL);
+		pMainDlg->BringWindowToTop();
+		pMainDlg->SetForegroundWindow();
 	}
 
 	/************************************************************************************/
@@ -588,7 +597,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 		// let it handle the error message on its own
 		else if (this->GetMainWnd() != NULL) {
 			HWND hMainWnd = GET_HANDLE_MAINWND();
-			PostMessage(hMainWnd, pMsg->message, pMsg->wParam, pMsg->lParam);
+			SendMessage(hMainWnd, pMsg->message, pMsg->wParam, pMsg->lParam);
 			return TRUE;
 		}
 	}
@@ -604,7 +613,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 	}
 
 	// "Debug command execution" message
-	else if (pMsg->message == SM_APP_DEBUGCMDEXEC) {
+	else if (pMsg->message == SM_APP_DEBUGCMD_EXEC) {
 		// Only process if the message window handle is invalid (HWND is NULL)
 		HWND hRcvWnd = pMsg->hwnd;
 		if (hRcvWnd == NULL) {
@@ -1291,6 +1300,128 @@ BOOL CPowerPlusApp::BackupRegistryAppData()
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	UpdateAppProfileInfo
+//	Description:	Load and update application profile info data
+//  Arguments:		None
+//  Return value:	BOOL - Result of loading process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CPowerPlusApp::UpdateAppProfileInfo(void)
+{
+	BOOL bRet = FALSE;
+
+	int nValue = (int)0;						// Integer type
+	UINT uiValue = (UINT)0;						// Unsigned integer value
+	CString strValue = STRING_EMPTY;			// String value
+
+	/*------------------------<Application launch-time counter>--------------------------*/
+
+	// Load info from registry
+	if (GetProfileInfo(IDS_REGKEY_PROFILE_LAUNCHCOUNTER, nValue)) {
+		SetAppLaunchTimeCounter(nValue);
+		bRet = TRUE;
+	}
+
+	// Update and overwrite data
+	UpdateAppLaunchTimeCounter();
+	uiValue = GetAppLaunchTimeCounter();
+	if (!WriteProfileInfo(IDS_REGKEY_PROFILE_LAUNCHCOUNTER, uiValue)) {
+		bRet = FALSE;
+	}
+
+	/*-----------------------------------------------------------------------------------*/
+
+	/*-----------------------------<Application launch-time>-----------------------------*/
+
+	// Format launch-time
+	CString strDateTimeFormat;
+	SYSTEMTIME stLaunchTime = GetAppLaunchTime();
+	UINT nMiddayFlag = (stLaunchTime.wHour < 12) ? FORMAT_TIME_BEFOREMIDDAY : FORMAT_TIME_AFTERMIDDAY;
+	CString strMiddayFlag = TableFuncs::GetLanguageString(LoadLanguageTable(NULL), nMiddayFlag);
+	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stLaunchTime.wYear, stLaunchTime.wMonth, stLaunchTime.wDay,
+		stLaunchTime.wHour, stLaunchTime.wMinute, stLaunchTime.wSecond, stLaunchTime.wMilliseconds, strMiddayFlag);
+
+	// Store launch-time info data
+	if (!WriteProfileInfo(IDS_REGKEY_PROFILE_LAUNCHTIME, strDateTimeFormat)) {
+		bRet = FALSE;
+	}
+
+	/*-----------------------------------------------------------------------------------*/
+
+	/*------------------------<Application directory/file info>--------------------------*/
+
+	// Directory path (not including the executable file name)
+	strValue = GetApplicationPath(FALSE);
+	if (!strValue.IsEmpty()) {
+		if (!WriteProfileInfo(IDS_REGKEY_PROFILE_DIRECTORY, strValue)) {
+			bRet = FALSE;
+		}
+	}
+
+	// Executable file name
+	strValue = GetApplicationPath(TRUE);
+	if (!strValue.IsEmpty()) {
+		CString strFileName = PathFindFileName(strValue);
+		if (!WriteProfileInfo(IDS_REGKEY_PROFILE_FILENAME, strFileName)) {
+			bRet = FALSE;
+		}
+	}
+
+	// Product version (full version)
+	strValue = GetProductVersion(TRUE);
+	if (!strValue.IsEmpty()) {
+		if (!WriteProfileInfo(IDS_REGKEY_PROFILE_PRODUCTVERSION, strValue)) {
+			bRet = FALSE;
+		}
+	}
+
+	/*-----------------------------------------------------------------------------------*/
+
+	/*--------------------------<Device, system and user info>---------------------------*/
+
+	// Device name
+	BOOL bRetGetInfo = GetDeviceName(strValue);
+	if ((bRetGetInfo != FALSE) && (!strValue.IsEmpty())) {
+		if (!WriteProfileInfo(IDS_REGKEY_PROFILE_DEVICENAME, strValue)) {
+			bRet = FALSE;
+		}
+	}
+
+	// User name
+	bRetGetInfo = GetCurrentUserName(strValue);
+	if ((bRetGetInfo != FALSE) && (!strValue.IsEmpty())) {
+		if (!WriteProfileInfo(IDS_REGKEY_PROFILE_USERNAME, strValue)) {
+			bRet = FALSE;
+		}
+	}
+
+	// Operating system info
+	OSVERSIONINFOEX osvi;
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	if (GetVersionEx((OSVERSIONINFO*)&osvi)) {
+		// Operating system version
+		if (!WriteProfileInfo(IDS_REGKEY_PROFILE_OSVERSION, osvi.dwMajorVersion)) {
+			bRet = FALSE;
+		}
+		// Build number
+		if (!WriteProfileInfo(IDS_REGKEY_PROFILE_OSBUILDNUMBER, osvi.dwBuildNumber)) {
+			bRet = FALSE;
+		}
+		// Platform ID
+		if (!WriteProfileInfo(IDS_REGKEY_PROFILE_OSPLATFORMID, osvi.dwPlatformId)) {
+			bRet = FALSE;
+		}
+	}
+
+	/*-----------------------------------------------------------------------------------*/
+
+	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	LoadGlobalData
 //	Description:	Load global data values from registry
 //  Arguments:		None
@@ -1313,32 +1444,35 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	UINT nSubSection = 0;
 
 	/*------------------------<Load debugging/testing variables>-------------------------*/
+
 	// Subsection: DebugTest
 	nSubSection = IDS_REGSECTION_GLBDATA_DEBUGTEST;
 
 	// DummyTest mode
-	if (GetGlobalData(nSubSection, IDS_REGKEY_DBTESTVAR_DUMMYTEST, nGlbValue)) {
+	if (GetGlobalData(nSubSection, IDS_REGKEY_DBTEST_DUMMYTEST, nGlbValue)) {
 		SetDummyTestMode(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Debug mode
-	if (GetGlobalData(nSubSection, IDS_REGKEY_DBTESTVAR_DEBUGMODE, nGlbValue)) {
+	if (GetGlobalData(nSubSection, IDS_REGKEY_DBTEST_DEBUGMODE, nGlbValue)) {
 		SetDebugMode(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Debug log output target
-	if (GetGlobalData(nSubSection, IDS_REGKEY_DBTESTVAR_DBLOGOUTPUT, nGlbValue)) {
+	if (GetGlobalData(nSubSection, IDS_REGKEY_DBTEST_DBLOGOUTPUT, nGlbValue)) {
 		SetDebugOutputTarget(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Test feature enable
-	if (GetGlobalData(nSubSection, IDS_REGKEY_DBTESTVAR_TESTFEATURE, nGlbValue)) {
+	if (GetGlobalData(nSubSection, IDS_REGKEY_DBTEST_TESTFEATURE, nGlbValue)) {
 		SetTestFeatureEnable(nGlbValue);
 		bRet |= TRUE;
 	}
+
 	/*-----------------------------------------------------------------------------------*/
 
 	/*-----------------------------<Load app special flags>------------------------------*/
+
 	// Subsection: AppFlags
 	nSubSection = IDS_REGSECTION_GLBDATA_APPFLAGS;
 
@@ -1359,9 +1493,11 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 		SetSessionEndFlag((BYTE)nGlbValue);
 		bRet |= TRUE;
 	}
+
 	/*-----------------------------------------------------------------------------------*/
 
 	/*-------------------------<Load special feature variables>--------------------------*/
+
 	// Subsection: Features
 	nSubSection = IDS_REGSECTION_GLBDATA_FEATURES;
 
@@ -1425,6 +1561,7 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 		SetReminderMsgSnoozeInterval((UINT)nGlbValue);
 		bRet |= TRUE;
 	}
+
 	/*-----------------------------------------------------------------------------------*/
 
 	return bRet;
@@ -1460,22 +1597,22 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 
 		// DummyTest mode
 		nGlbValue = GetDummyTestMode();
-		if (!WriteGlobalData(nSubSection, IDS_REGKEY_DBTESTVAR_DUMMYTEST, nGlbValue)) {
+		if (!WriteGlobalData(nSubSection, IDS_REGKEY_DBTEST_DUMMYTEST, nGlbValue)) {
 			bRet = FALSE;
 		}
 		// Debug mode
 		nGlbValue = GetDebugMode();
-		if (!WriteGlobalData(nSubSection, IDS_REGKEY_DBTESTVAR_DEBUGMODE, nGlbValue)) {
+		if (!WriteGlobalData(nSubSection, IDS_REGKEY_DBTEST_DEBUGMODE, nGlbValue)) {
 			bRet = FALSE;
 		}
 		// Debug log output target
 		nGlbValue = GetDebugOutputTarget();
-		if (!WriteGlobalData(nSubSection, IDS_REGKEY_DBTESTVAR_DBLOGOUTPUT, nGlbValue)) {
+		if (!WriteGlobalData(nSubSection, IDS_REGKEY_DBTEST_DBLOGOUTPUT, nGlbValue)) {
 			bRet = FALSE;
 		}
 		// Test feature enable
 		nGlbValue = GetTestFeatureEnable();
-		if (!WriteGlobalData(nSubSection, IDS_REGKEY_DBTESTVAR_TESTFEATURE, nGlbValue)) {
+		if (!WriteGlobalData(nSubSection, IDS_REGKEY_DBTEST_TESTFEATURE, nGlbValue)) {
 			bRet = FALSE;
 		}
 	}
@@ -2690,79 +2827,103 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 {
 	CString strTrcTitle = STRING_EMPTY;
 	CString strTrcLogFormat = STRING_EMPTY;
-	LPCTSTR lpszDataNull = _T("Data is NULL");
-	LPCTSTR lpszReadFailed = _T("Key value is unreadable or invalid");
-	LPCTSTR lpszWriteFailed = _T("Unable to write registry value");
+	LPCTSTR lpszDataNull = _T("Data pointer is NULL");
+	LPCTSTR lpszReadFailed = _T("Registry data is unreadable or invalid");
+	LPCTSTR lpszWriteFailed = _T("Unable to write registry data");
+
+	// Serialization trace skip flag
+	// Note: If the application is launching for the 1st time, do not trace data loading error
+	BOOL bSkipFlag = FALSE;
 	
 	switch (wErrCode)
 	{
 	case APP_ERROR_LOAD_CFG_INVALID:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load config failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case APP_ERROR_LOAD_CFG_FAILED:
+		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load config failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
 	case APP_ERROR_LOAD_SCHED_INVALID:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load schedule failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case APP_ERROR_LOAD_SCHED_FAILED:
+		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load schedule failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
 	case APP_ERROR_LOAD_HKEYSET_INVALID:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load hotkeyset failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case APP_ERROR_LOAD_HKEYSET_FAILED:
+		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load hotkeyset failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
 	case APP_ERROR_LOAD_PWRRMD_INVALID:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load reminder failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case APP_ERROR_LOAD_PWRRMD_FAILED:
+		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load reminder failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
 	case APP_ERROR_SAVE_CFG_INVALID:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save config failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case APP_ERROR_SAVE_CFG_FAILED:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save config failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
 	case APP_ERROR_SAVE_SCHED_INVALID:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save schedule failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case APP_ERROR_SAVE_SCHED_FAILED:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save schedule failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
 	case APP_ERROR_SAVE_HKEYSET_INVALID:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save hotkeyset failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case APP_ERROR_SAVE_HKEYSET_FAILED:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save hotkeyset failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
 	case APP_ERROR_SAVE_PWRRMD_INVALID:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save reminder failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
 	case APP_ERROR_SAVE_PWRRMD_FAILED:
+		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save reminder failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
 	}
 
-	// Output trace log
+	// If skip flag is triggered
+	if (bSkipFlag != FALSE)
+		return;
+
+	// Output trace error log
 	if (!strTrcLogFormat.IsEmpty()) {
 		TRCLOG(strTrcLogFormat);
 	}
@@ -2922,42 +3083,6 @@ void CPowerPlusApp::DestroyDebugTestDlg(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetWindowsVersion
-//	Description:	Get Windows OS build version
-//  Arguments:		None
-//  Return value:	UINT - Windows version macro
-//
-//////////////////////////////////////////////////////////////////////////
-
-UINT CPowerPlusApp::GetWindowsOSVersion(void)
-{
-	// Init info data
-	OSVERSIONINFOEX oviOSVersion;
-	oviOSVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-
-	NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFOEXW);
-	*(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
-
-	// Get Window OS version
-	if (RtlGetVersion != NULL)
-		RtlGetVersion(&oviOSVersion);
-
-	// Return Windows OS version macro
-	UINT nRetWinVer = WINDOWS_VERSION_NONE;
-	if (oviOSVersion.dwBuildNumber >= WINDOWS_BUILDNUMBER_11) {
-		// Is Windows 11
-		nRetWinVer = WINDOWS_VERSION_11;
-	}
-	else {
-		// Is Windows 10
-		nRetWinVer = WINDOWS_VERSION_10;
-	}
-
-	return nRetWinVer;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	GetAutoStartRegistryRootKey
 //	Description:	Get registry root key for auto-start function
 //  Arguments:		hAutoStartRootKey - Returned root key handle (ref-value)
@@ -3025,24 +3150,22 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 	// Enable auto-start
 	if (bEnable == TRUE) {
 
-		CString strAppPath;
-		CString strCommand;
+		CString strExecCommand;
 
 		if (bRunAsAdmin == TRUE) {
 			// Register to run as admin
-			strAppPath.Format(STRING_QUOTEFORMAT, GetAppPath());
-			strCommand.Format(IDS_COMMAND_REGISTER_RUNASADMIN, REG_AFX_PROJECTNAME, strAppPath);
-			WinExec(MAKEANSI(strCommand.GetString()), SW_HIDE);
+			strExecCommand.Format(COMMAND_REGISTER_RUNASADMIN, REG_AFX_PROJECTNAME, GetApplicationPath(TRUE));
+			WinExec(MAKEANSI(strExecCommand.GetString()), SW_HIDE);
 		}
 		else {
 			// Unregister to run as admin
-			strCommand.Format(IDS_COMMAND_UNREGISTER_RUNASADMIN, REG_AFX_PROJECTNAME);
-			WinExec(MAKEANSI(strCommand.GetString()), SW_HIDE);
+			strExecCommand.Format(COMMAND_UNREGISTER_RUNASADMIN, REG_AFX_PROJECTNAME);
+			WinExec(MAKEANSI(strExecCommand.GetString()), SW_HIDE);
 		}
 
 		// Debug log
 		CString strALSLog;
-		strALSLog.Format(_T("[ALS] => EnableAutoStart: Cmd=(%s)"), strCommand);
+		strALSLog.Format(_T("[ALS] => EnableAutoStart: Cmd=(%s)"), strExecCommand);
 		OutputDebugString(strALSLog);
 
 		// Register to run at startup
@@ -3114,7 +3237,10 @@ void CPowerPlusApp::InitLastSysEventRegistryInfo(void)
 	regInfoLastSysEvt.SetSubkeyPath(IDS_APP_REGISTRY_SUBKEYPATH);
 	regInfoLastSysEvt.SetProfileName(IDS_APP_REGISTRY_PROFILENAME);
 	regInfoLastSysEvt.SetAppName(IDS_APP_REGISTRY_APPNAME);
-	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA_OTHERS);
+	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA);
+
+	// Set subsection
+	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA_TRACKING);
 
 	// Get registry path
 	m_strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, REGPATH_SECTIONNAME, FALSE);
@@ -3150,15 +3276,15 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	CString strKeyName;
 	if (byEventType == SYSEVT_SUSPEND) {
 		// Last system suspend
-		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSYSSUSPEND);
+		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSYSSUSPEND);
 	}
 	else if (byEventType == SYSEVT_WAKEUP) {
 		// Last system wakeup
-		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSYSWAKEUP);
+		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSYSWAKEUP);
 	}
 	else if (byEventType == SYSEVT_SESSIONEND) {
 		// Last app/system session ending
-		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSESSIONEND);
+		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSESSIONEND);
 	}
 	else {
 		// Close key and exit
@@ -3226,7 +3352,7 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEve
 	// Format time
 	CString strDateTimeFormat;
 	UINT nMiddayFlag = (timeSysEvent.wHour < 12) ? FORMAT_TIME_BEFOREMIDDAY : FORMAT_TIME_AFTERMIDDAY;
-	CString strMiddayFlag = PairFuncs::GetLanguageString(GetAppLanguage(), nMiddayFlag);
+	CString strMiddayFlag = TableFuncs::GetLanguageString(GetAppLanguage(), nMiddayFlag);
 	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
 		timeSysEvent.wHour, timeSysEvent.wMinute, timeSysEvent.wSecond, timeSysEvent.wMilliseconds, strMiddayFlag);
 
@@ -3234,15 +3360,15 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEve
 	CString strKeyName;
 	if (byEventType == SYSEVT_SUSPEND) {
 		// Last system suspend
-		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSYSSUSPEND);
+		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSYSSUSPEND);
 	}
 	else if (byEventType == SYSEVT_WAKEUP) {
 		// Last system wakeup
-		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSYSWAKEUP);
+		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSYSWAKEUP);
 	}
 	else if (byEventType == SYSEVT_SESSIONEND) {
 		// Last app/system session ending
-		strKeyName.LoadString(IDS_REGKEY_OTHER_LASTSESSIONEND);
+		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSESSIONEND);
 	}
 	else {
 		// Close key and exit
@@ -3308,9 +3434,9 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 	// Event log detail info
 	LOGDETAILINFO logDetailInfo;
 
-	// Error ID
+	// Error code ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_CONTENTID;
+	logDetail.usCategory = EVENTLOG_DETAIL_ERRORCODE;
 	logDetail.uiDetailInfo = dwErrCode;
 	logDetailInfo.Add(logDetail);
 
@@ -3323,3 +3449,4 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 	// Output event log
 	OutputEventLog(LOG_EVENT_ERROR_MESSAGE, strDescription, &logDetailInfo);
 }
+

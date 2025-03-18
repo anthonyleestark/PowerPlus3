@@ -23,21 +23,30 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 // Log category macros
+//
+
 #define LOG_MACRO_NONE						0x00
 #define LOG_MACRO_EVENT_APP					(LOG_MACRO_NONE+0x01)
 #define LOG_MACRO_EVENT_UI					(LOG_MACRO_NONE+0x02)
 #define LOG_MACRO_EVENT_DATACHG				(LOG_MACRO_NONE+0x03)
 #define LOG_MACRO_HISTORY					(LOG_MACRO_NONE+0x04)
 
+
 // Application events
+//
+
 #define LOG_EVENT_INIT_INSTANCE				(LOG_MACRO_EVENT_APP<<8) + 0x001
 #define LOG_EVENT_EXIT_INSTANCE				(LOG_MACRO_EVENT_APP<<8) + 0x002
 #define LOG_EVENT_ERROR_MESSAGE				(LOG_MACRO_EVENT_APP<<8) + 0x003
 #define LOG_EVENT_EXEC_DEBUGCMD				(LOG_MACRO_EVENT_APP<<8) + 0x004
 #define LOG_EVENT_CHANGE_LANGUAGE			(LOG_MACRO_EVENT_APP<<8) + 0x005
 
+
 // UI events
+//
+
 #define LOG_EVENT_BTN_CLICKED				(LOG_MACRO_EVENT_UI<<8) + 0x001
 #define LOG_EVENT_CHK_CLICKED				(LOG_MACRO_EVENT_UI<<8) + 0x002
 #define LOG_EVENT_RAD_CLICKED				(LOG_MACRO_EVENT_UI<<8) + 0x003
@@ -65,13 +74,19 @@
 #define LOG_EVENT_EXEC_HOTKEY				(LOG_MACRO_EVENT_UI<<8) + 0x016
 #define LOG_EVENT_DISP_PWRREMINDER			(LOG_MACRO_EVENT_UI<<8) + 0x017
 
+
 // Data change events
+//
+
 #define LOG_EVENT_DATACHG_CONFIG			(LOG_MACRO_EVENT_DATACHG<<8) + 0x001
 #define LOG_EVENT_DATACHG_SCHEDULE			(LOG_MACRO_EVENT_DATACHG<<8) + 0x002
 #define LOG_EVENT_DATACHG_HOTKEYSET			(LOG_MACRO_EVENT_DATACHG<<8) + 0x003
 #define LOG_EVENT_DATACHG_PWRREMINDER		(LOG_MACRO_EVENT_DATACHG<<8) + 0x004
 
+
 // History log
+//
+
 #define LOG_HISTORY_EXEC_PWRACTION			(LOG_MACRO_HISTORY<<8) + 0x001
 #define LOG_HISTORY_EXEC_SCHEDULE			(LOG_MACRO_HISTORY<<8) + 0x002
 #define LOG_HISTORY_EXEC_HOTKEY				(LOG_MACRO_HISTORY<<8) + 0x003
@@ -165,6 +180,7 @@ typedef enum eEVENTDETAILCATE {
 	EVENTLOG_DETAIL_DATACHANGE,					// Data change state
 	EVENTLOG_DETAIL_CONTENTID,					// Content ID
 	EVENTLOG_DETAIL_MESSAGETEXT,				// Message box text
+	EVENTLOG_DETAIL_ERRORCODE,					// Error code
 } EVENTDETAILCATE;
 
 
@@ -181,6 +197,7 @@ typedef enum eHISTORYDETAILITEM {
 	HISTORYLOG_DETAIL_ITEMID,					// Item ID
 	HISTORYLOG_DETAIL_MESSAGE,					// Message
 	HISTORYLOG_DETAIL_RESULT,					// Result
+	HISTORYLOG_DETAIL_ERRORCODE					// Error code
 } HISTORYDETAILITEM;
 
 
@@ -232,4 +249,4 @@ typedef enum eHISTORYRESULT {
 /*                                                                                                             */
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif
+#endif		// ifndef _LOGGING_PUB_H_INCLUDED

@@ -81,7 +81,7 @@ protected:
 	void SetSnoozeIntervalEdit(int nValue);
 	
 	// Get/set value functions
-	int  GetSnoozeInterval();
+	int  GetSnoozeInterval(void) const;
 	void SetSnoozeInterval(int nValue);
 
 public:

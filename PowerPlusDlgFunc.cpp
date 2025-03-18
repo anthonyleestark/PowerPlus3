@@ -25,7 +25,7 @@
 #include "ReminderMsgDlg.h"
 #include "DebugTestDlg.h"
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 
 
@@ -67,6 +67,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 
 	// No replying flag
 	BOOL bNoReply = TRUE;
+	BOOL bNoReplySilent = FALSE;
 
 	// Invalid command flag
 	BOOL bInvalidCmdFlag = FALSE;
@@ -161,7 +162,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		HWND hDebugTestDlg = FindDebugTestDlg();
 		if (hDebugTestDlg != NULL) {
 			// Post clear screen message
-			::PostMessage(hDebugTestDlg, SM_WND_DEBUGVIEWCLRSCR, NULL, NULL);
+			::PostMessage(hDebugTestDlg, SM_WND_DEBUGVIEW_CLRSCR, NULL, NULL);
 		}
 		return TRUE;
 	}
@@ -170,6 +171,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		SDialog* pDebugTestDlg = pApp->GetDebugTestDlg();
 		if (pDebugTestDlg != NULL) {
 			pDebugTestDlg->ShowWindow(SW_HIDE);
+			pDebugTestDlg->PostMessage(SM_APP_DEBUGCMD_NOREPLY);
 		}
 		return TRUE;
 	}
@@ -364,7 +366,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				if (nVal >= 50) {
 					// Output waiting notification
 					OutputDebugLog(_T("Wait for a while!!!"), DBOUT_DEBUGTESTTOOL);
-					WaitMessage(SM_WND_DEBUGOUTPUTDISP); // wait for the notification displaying
+					WaitMessage(SM_WND_DEBUGOUTPUT_DISP); // wait for the notification displaying
 				}
 				for (int i = 0; i < nVal; i++) {
 					// Write test trace error log
@@ -389,7 +391,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				if (nVal >= 50) {
 					// Output waiting notification
 					OutputDebugLog(_T("Wait for a while!!!"), DBOUT_DEBUGTESTTOOL);
-					WaitMessage(SM_WND_DEBUGOUTPUTDISP); // wait for the notification displaying
+					WaitMessage(SM_WND_DEBUGOUTPUT_DISP); // wait for the notification displaying
 				}
 				CString strFormat;
 				for (int i = 0; i < nVal; i++) {
@@ -416,7 +418,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				if (nVal >= 50) {
 					// Output waiting notification
 					OutputDebugLog(_T("Wait for a while!!!"), DBOUT_DEBUGTESTTOOL);
-					WaitMessage(SM_WND_DEBUGOUTPUTDISP); // wait for the notification displaying
+					WaitMessage(SM_WND_DEBUGOUTPUT_DISP); // wait for the notification displaying
 				}
 				CString strFormat;
 				for (int i = 0; i < nVal; i++) {
@@ -613,15 +615,15 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				CString strValue = STRING_EMPTY;
 				// Left mouse button action
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONLMB);
-				int nActionStringID = GetPairedID(idplActionName, pcfgDataTemp->nLMBAction);
+				int nActionStringID = GetPairedID(idTableActionName, pcfgDataTemp->nLMBAction);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
 				// Middle mouse button action
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONMMB);
-				nActionStringID = GetPairedID(idplActionName, pcfgDataTemp->nMMBAction);
+				nActionStringID = GetPairedID(idTableActionName, pcfgDataTemp->nMMBAction);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button action
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONRMB);
-				nActionStringID = GetPairedID(idplActionName, pcfgDataTemp->nRMBAction);
+				nActionStringID = GetPairedID(idTableActionName, pcfgDataTemp->nRMBAction);
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button: Only show menu
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_RMBSHOWMENU);
@@ -629,7 +631,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
 				// Language setting
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_LANGUAGEID);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, MAKEUNICODE(GetLanguageName(pcfgDataTemp->nLanguageID)));
+				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageName(pcfgDataTemp->nLanguageID));
 				// Show dialog at startup
 				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWATSTARTUP);
 				strValue = ((pcfgDataTemp->bShowDlgAtStartup) ? VALUE_TRUE : VALUE_FALSE);
@@ -765,7 +767,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			if (nCount == 3) {
 				// Set message background color by name
 				CString strColorName = retBuff[2].tcToken;
-				DWORD dwRetColorID = GetStringID(strplColorName, strColorName);
+				DWORD dwRetColorID = GetStringID(strTableColorName, strColorName);
 				if (dwRetColorID != INT_INVALID) {
 					// Set background color
 					SetReminderMsgBkgrdColor(dwRetColorID);
@@ -806,7 +808,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			if (nCount == 3) {
 				// Set message text color by name
 				CString strColorName = retBuff[2].tcToken;
-				DWORD dwRetColorID = GetStringID(strplColorName, strColorName);
+				DWORD dwRetColorID = GetStringID(strTableColorName, strColorName);
 				if (dwRetColorID != INT_INVALID) {
 					// Set text color
 					SetReminderMsgTextColor(dwRetColorID);
@@ -906,7 +908,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		else if ((nCount == 3) && (!_tcscmp(retBuff[1].tcToken, _T("iconid")))) {
 			// Set message icon ID by name
 			CString strIconName = retBuff[2].tcToken;
-			DWORD dwRetIconID = GetStringID(strplMsgIconName, strIconName);
+			DWORD dwRetIconID = GetStringID(strTableMsgIconName, strIconName);
 			if (dwRetIconID != INT_INVALID) {
 				// Set icon ID
 				SetReminderMsgIconID(dwRetIconID);
@@ -1480,9 +1482,17 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 
 	// If command is executed but no reply
 	if (bNoReply == TRUE) {
-		OutputDebugLog(_T("Command sent, no reply!!!"));
-		bNoReply = FALSE;	// Reset flag
-		bRet = TRUE;		// Return successful
+		// Notify to the DebugTest dialog
+		SDialog* pDebugTestDlg = pApp->GetDebugTestDlg();
+		if (pDebugTestDlg != NULL) {
+			pDebugTestDlg->PostMessage(SM_APP_DEBUGCMD_NOREPLY);
+		}
+		if (bNoReplySilent != TRUE) {
+			OutputDebugLog(_T("Command sent, no reply!!!"));
+		}
+		bNoReply = FALSE;			// Reset flag
+		bNoReplySilent = FALSE;		// Reset flag
+		bRet = TRUE;				// Return successful
 	}
 
 	// Clean-up copy-buffer and return-buffer data

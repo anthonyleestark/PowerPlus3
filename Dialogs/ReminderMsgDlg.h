@@ -86,20 +86,20 @@ public:
 	// Setup displaying content and properties
 
 	// Display content
-	virtual LPCTSTR GetDispMessage();
+	virtual LPCTSTR GetDispMessage(void) const;
 	virtual void SetDispMessage(LPCTSTR lpszDispMsg);
 	
 	// Auto-close message
-	virtual UINT GetAutoCloseInterval();
+	virtual UINT GetAutoCloseInterval(void) const;
 	virtual void SetAutoCloseInterval(UINT nSeconds);
 
 	// Dialog size
-	virtual void SetDialogSize(CSize szDlgSize);
-	virtual void SetDialogSize(LONG lWidth, LONG lHeight);
+	virtual void SetSize(CSize szRegSize);
+	virtual void SetSize(LONG lWidth, LONG lHeight);
 
 	// Message font
-	virtual void GetMsgFontName(CString& strFontName);
-	virtual void GetMsgFontPoint(float& fFontPoint);
+	virtual void GetMsgFontName(CString& strFontName) const;
+	virtual void GetMsgFontPoint(float& fFontPoint) const;
 	virtual void SetMsgFont(LPCTSTR lpszFontName, float fFontPoint);
 
 	// Icon and margin
@@ -107,16 +107,16 @@ public:
 	virtual void SetMsgIconPosition(BYTE byPosition);
 
 	// Other properties
-	virtual BOOL GetAllowSnoozeMode();
+	virtual BOOL GetAllowSnoozeMode(void) const;
 	virtual void SetAllowSnoozeMode(BOOL bValue);
 
 	// Flags
-	virtual void GetSnoozeTriggerFlag(int& nValue);
+	virtual void GetSnoozeTriggerFlag(int& nValue) const;
 	virtual void SetSnoozeTriggerFLag(int nValue);
 
 protected:
 	// Calculate icon position
-	BOOL CalcMsgIconPosition(LPPOINT lpptIcon);
+	BOOL CalcMsgIconPosition(LPPOINT lpptIcon) const;
 
 	// Convert text and client rectangle
 	void ClientToText(LPRECT lpRect) const;

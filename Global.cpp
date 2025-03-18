@@ -19,6 +19,23 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+// Initialize global variables which are used for application profile management
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*---------------------------------------------Launch-info data----------------------------------------------*/
+
+// Application launch-time
+SYSTEMTIME g_stAppLaunchTime = {0};
+
+// Application launch-time counter
+UINT g_uiAppLaunchTimeCounter = 0;
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 // Initialize global variables which are used for debugging/testing
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,13 +68,13 @@ CFile* g_pFileLogTraceDebug = NULL;
 CFile* g_pFileLogDebugInfo = NULL;
 
 // Trace error log file exception pointer
-CException* g_excLogTraceError = NULL;
+CFileException* g_pExcLogTraceError = NULL;
 
 // Trace debug info log file exception pointer
-CException* g_excLogTraceDebug = NULL;
+CFileException* g_pExcLogTraceDebug = NULL;
 
 // Debug info output log file exception pointer
-CException* g_excLogDebugInfo = NULL;
+CFileException* g_pExcLogDebugInfo = NULL;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

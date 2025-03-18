@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Config.cpp
@@ -261,6 +261,82 @@ BOOL RegFuncs::DeleteRegistrySection(LPCTSTR lpszSectionName, LPCTSTR lpszSubSec
 	// Write registry value
 	return AfxGetApp()->WriteProfileString(strSectionFormat, NULL, NULL);
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Functions for reading/writing application profile info
+//
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Function name:	GetProfileInfo/WriteProfileInfo
+//  Description:	Using for reading/writing registry profile info values
+//  Arguments:		nKeyName - Key name (string ID)
+//					nRef	 - Result integer value (ref-value)
+//					nValue	 - Value to write (integer)
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL RegFuncs::GetProfileInfo(UINT nKeyName, int& nRef)
+{
+	// Key name
+	CString strKeyName;
+	VERIFY(strKeyName.LoadString(nKeyName));
+
+	// Get registry value
+	int nRet = AfxGetApp()->GetProfileInt(STRING_EMPTY, strKeyName, UINT_MAX);
+	if (nRet == UINT_MAX) return FALSE;
+	nRef = nRet; // Copy returned value
+	return TRUE;
+}
+
+BOOL RegFuncs::WriteProfileInfo(UINT nKeyName, int nValue)
+{
+	// Key name
+	CString strKeyName;
+	VERIFY(strKeyName.LoadString(nKeyName));
+
+	// Write registry value
+	return AfxGetApp()->WriteProfileInt(STRING_EMPTY, strKeyName, nValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Function name:	GetProfileInfo/WriteProfileInfo
+//  Description:	Using for reading/writing registry profile info values
+//  Arguments:		nKeyName - Key name (string ID)
+//					strRef	 - Result string value (ref-value)
+//					strValue - Value to write (string)
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL RegFuncs::GetProfileInfo(UINT nKeyName, CString& strRef)
+{
+	// Get name string
+	CString strKeyName;
+	VERIFY(strKeyName.LoadString(nKeyName));
+
+	// Get registry value
+	CString strRet = AfxGetApp()->GetProfileString(STRING_EMPTY, strKeyName, STRING_NULL);
+	if (IS_NULL_STRING(strRet)) return FALSE;
+	strRef = strRet; // Copy returned value
+	return TRUE;
+}
+
+BOOL RegFuncs::WriteProfileInfo(UINT nKeyName, CString strValue)
+{
+	// Key name
+	CString strKeyName;
+	VERIFY(strKeyName.LoadString(nKeyName));
+
+	// Write registry value
+	return AfxGetApp()->WriteProfileString(STRING_EMPTY, strKeyName, strValue);
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -650,7 +726,7 @@ BOOL RegFuncs::GetPwrReminder(int nItemIndex, UINT nKeyName, CString& strRef)
 
 	// Get registry value
 	CString strRet = GetRegistryValueString(strSectionName, strSubSectionName, strKeyName);
-	if (strRet == STRING_NULL) return FALSE;
+	if (IS_NULL_STRING(strRet)) return FALSE;
 	strRef = strRet; // Copy returned value
 	return TRUE;
 }
@@ -817,7 +893,7 @@ BOOL RegFuncs::GetGlobalData(UINT nSubSection, UINT nKeyName, CString& strRef)
 {
 	// Get registry value
 	CString strRet = GetRegistryValueString(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName);
-	if (strRet == STRING_NULL) return FALSE;
+	if (IS_NULL_STRING(strRet)) return FALSE;
 	strRef = strRet; // Copy returned value
 	return TRUE;
 }
@@ -869,12 +945,24 @@ BOOL SConfigBackup::AutoRegistryExport()
 	regInfo.SetProfileName(IDS_APP_REGISTRY_PROFILENAME);
 	regInfo.SetAppName(IDS_APP_REGISTRY_APPNAME);
 
+	// Registry export destination file
+	CString strDestFilePath;
+	if (!MakeFilePath(strDestFilePath, NULL, FILENAME_BAKCONFIG, FILEEXT_REGFILE)) {
+		// Make file path failed
+		TRCLOG("Error: AutoRegistryExport fail to make destination file path!!!");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		return FALSE;
+	}
+
 	// Execute registry export command
 	CString strExecCommand;
-	CString strCommandFormat = _T("\"reg.exe export \"%s\" \"%s\"\" /y");
-	CString strExpFilePath = (CString)FILENAME_BAKCONFIG + FILEEXT_REGFILE;
-	strExecCommand.Format(strCommandFormat, MakeRegistryPath(regInfo, REGPATH_APPNAME), strExpFilePath);
-	ExecuteCommand(strExecCommand, FALSE, FALSE);
+	strExecCommand.Format(COMMAND_REGISTRY_EXPORT, MakeRegistryPath(regInfo, REGPATH_APPNAME), strDestFilePath);
+	if (!ExecuteCommand(strExecCommand, FALSE, FALSE)) {
+		// Execute command failed
+		TRCLOG("Error: AutoRegistryExport fail to execute export command!!!");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		return FALSE;
+	}
 
 	return TRUE;
 }

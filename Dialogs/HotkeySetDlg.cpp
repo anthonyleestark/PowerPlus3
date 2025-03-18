@@ -23,7 +23,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 using namespace RegFuncs;
 
@@ -279,6 +279,7 @@ END_MESSAGE_MAP()
 
 BOOL CHotkeySetDlg::OnInitDialog()
 {
+	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
@@ -300,7 +301,7 @@ BOOL CHotkeySetDlg::OnInitDialog()
 	RefreshDlgItemState();
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
 	// Read-only mode (if enabled)
 	if (GetReadOnlyMode() == TRUE) {
@@ -356,7 +357,7 @@ void CHotkeySetDlg::OnClose()
 void CHotkeySetDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
 
 	// Save layout info data
 	UpdateLayoutInfo();
@@ -685,7 +686,7 @@ void CHotkeySetDlg::SetupLanguage()
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetLangDialogCaption(GetDialogID());
+	this->SetCaptionFromLanguage(GetDialogID());
 
 	// Loop through all dialog items and setup language for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -835,7 +836,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 	// Setup display size
 	int nFrameHeight = m_pszDataTableFrameSize->cy;
 	int nFrameWidth = m_pszDataTableFrameSize->cx;
-	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
 	}
@@ -959,8 +960,8 @@ void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 		break;
 	case IDC_HOTKEYSET_FUNCKEY_LIST:
 		m_cmbFuncKeyList.ResetContent();
-		for (int nIndex = 0; nIndex < strplFuncKeyList.size(); nIndex++)
-			m_cmbFuncKeyList.AddString(strplFuncKeyList.at(nIndex).lpszLangString);
+		for (int nIndex = 0; nIndex < strTableFuncKeyList.size(); nIndex++)
+			m_cmbFuncKeyList.AddString(strTableFuncKeyList.at(nIndex).lpszLangString);
 		break;
 	default:
 		break;
@@ -1096,13 +1097,13 @@ void CHotkeySetDlg::UpdateHotkeySet()
 		}
 
 		// Hotkey action
-		nTemp = GetPairedID(idplActionName, GetPairedID(idplHKActionID, hksItem.nHKActionID));
+		nTemp = GetPairedID(idTableActionName, GetPairedID(idTableHKActionID, hksItem.nHKActionID));
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
 		m_pHotkeySetListTable->SetItemText(nRowIndex, HKSCOL_ID_HKACTIONID, strTemp);
 
 		// Keystrokes
 		hksItem.PrintKeyStrokes(strTemp);
-		if (!_tcscmp(strTemp, STRING_NULL)) {
+		if (IS_NULL_STRING(strTemp)) {
 			// Undefined keystrokes
 			strTemp = GetLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
 		}
@@ -1196,7 +1197,7 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 	if (hksCurItem.dwCtrlKeyCode & MOD_WIN)			m_bWinKeyBtn = TRUE;
 
 	// Update combo-boxes
-	UINT nActionID = GetPairedID(idplHKActionID, hksCurItem.nHKActionID);
+	UINT nActionID = GetPairedID(idTableHKActionID, hksCurItem.nHKActionID);
 	m_cmbActionList.SetCurSel(Opt2Sel(APP_ACTION, nActionID));
 	m_cmbFuncKeyList.SetWindowText(_T("---"));
 	if (hksCurItem.dwFuncKeyCode > 0)
@@ -1426,13 +1427,13 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::Add()
+void CHotkeySetDlg::Add(void)
 {
 	// Update data
 	UpdateData(TRUE);
 
 	// Create temp hotkeyset item
-	HOTKEYSETITEM hksTemp = {0};
+	HOTKEYSETITEM hksTemp = STRUCT_ZERO;
 
 	if (m_bCtrlBtn == TRUE)		hksTemp.dwCtrlKeyCode |= MOD_CONTROL;
 	if (m_bAltBtn == TRUE)		hksTemp.dwCtrlKeyCode |= MOD_ALT;
@@ -1441,7 +1442,7 @@ void CHotkeySetDlg::Add()
 	// Update combo-boxes
 	int nCurSel = m_cmbActionList.GetCurSel();
 	int nActionID = Sel2Opt(APP_ACTION, nCurSel);
-	int nHKActionID = idplHKActionID[nCurSel].nFirstID;
+	int nHKActionID = idTableHKActionID[nCurSel].nFirstID;
 	hksTemp.nHKActionID = nHKActionID;
 
 	nCurSel = m_cmbFuncKeyList.GetCurSel();
@@ -1486,7 +1487,7 @@ void CHotkeySetDlg::Remove(int nIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::RemoveAll()
+void CHotkeySetDlg::RemoveAll(void)
 {
 	// Remove all items
 	m_hksHotkeySetTemp.RemoveAll();
@@ -1576,7 +1577,7 @@ BOOL CHotkeySetDlg::Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg /* = FALSE */)
 			if (hksItem.dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
 			if (hksItem.dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
 			if (hksItem.dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
-			strKeyStrokes += GetPairedString(strplFuncKeyList, hksItem.dwFuncKeyCode);
+			strKeyStrokes += GetString(strTableFuncKeyList, hksItem.dwFuncKeyCode);
 			CString strKeyInfo = STRING_EMPTY;
 			strKeyInfo.Format(_T("%s - %s"), strKeyStrokes, GetLanguageString(pLang, hklExistedSysHotkeyList[nIndex].nHotkeyDescription));
 
@@ -1611,7 +1612,7 @@ BOOL CHotkeySetDlg::Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg /* = FALSE */)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CHotkeySetDlg::GetItemNum()
+AFX_INLINE int CHotkeySetDlg::GetItemNum() const
 {
 	return m_hksHotkeySetTemp.GetItemNum();
 }
@@ -1625,7 +1626,7 @@ int CHotkeySetDlg::GetItemNum()
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CHotkeySetDlg::GetListCurSel(void)
+AFX_INLINE int CHotkeySetDlg::GetListCurSel(void) const
 {
 	return m_nCurSelIndex;
 }
@@ -1639,7 +1640,7 @@ int CHotkeySetDlg::GetListCurSel(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::SetListCurSel(int nSelIndex)
+AFX_INLINE void CHotkeySetDlg::SetListCurSel(int nSelIndex)
 {
 	m_nCurSelIndex = nSelIndex;
 }

@@ -40,7 +40,7 @@ class CPwrReminderDlg : public SDialog
 
 public:
 	CPwrReminderDlg(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~CPwrReminderDlg();				  // destructor
+	virtual ~CPwrReminderDlg();					// destructor
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME

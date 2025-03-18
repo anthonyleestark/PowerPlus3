@@ -107,9 +107,9 @@ public:
 
 public:
 	// Get/set functions
-	int	 GetReturnFlag(void);
+	int	 GetReturnFlag(void) const;
 	void SetReturnFlag(int nRetFlag);
-	int GetDispMode(void);
+	int GetDispMode(void) const;
 	void SetDispMode(int nMode);
 
 protected:

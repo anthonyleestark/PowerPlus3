@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		SElements.h
@@ -20,7 +20,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 
 
@@ -49,17 +49,25 @@ SCtrlInfoWrap::SCtrlInfoWrap() : CObject()
 	m_nTypeID = CTRL_TYPE_BASE;
 	m_nTemplateID = 0;
 	m_strTemplateID.Empty();
+
 	m_strCaption.Empty();
 
 	// Control data values
 	m_pbCheck = NULL;
+
 	m_plValue = NULL;
+	m_plReserveValue = NULL;
 	m_plMinValue = NULL;
 	m_plMaxValue = NULL;
+
 	m_pdbValue = NULL;
+	m_pdbReserveValue = NULL;
 	m_pdbMinValue = NULL;
 	m_pdbMaxValue = NULL;
+
 	m_pstrValue = NULL;
+	m_pstrReserveValue = NULL;
+
 	m_pauiValueList = NULL;
 	m_pastrValueList = NULL;
 }
@@ -82,6 +90,10 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
 		delete m_plValue;
 		m_plValue = NULL;
 	}
+	if (m_plReserveValue != NULL) {
+		delete m_plReserveValue;
+		m_plReserveValue = NULL;
+	}
 	if (m_plMinValue != NULL) {
 		delete m_plMinValue;
 		m_plMinValue = NULL;
@@ -94,6 +106,10 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
 		delete m_pdbValue;
 		m_pdbValue = NULL;
 	}
+	if (m_pdbReserveValue != NULL) {
+		delete m_pdbReserveValue;
+		m_pdbReserveValue = NULL;
+	}
 	if (m_pdbMinValue != NULL) {
 		delete m_pdbMinValue;
 		m_pdbMinValue = NULL;
@@ -105,6 +121,10 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
 	if (m_pstrValue != NULL) {
 		delete m_pstrValue;
 		m_pstrValue = NULL;
+	}
+	if (m_pstrReserveValue != NULL) {
+		delete m_pstrReserveValue;
+		m_pstrReserveValue = NULL;
 	}
 	if (m_pauiValueList != NULL) {
 		// Cleanup array data
@@ -141,6 +161,8 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
 BOOL SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, INT nTypeID)
 {
 	ASSERT(pParentWnd->GetSafeHwnd());
+	if (pParentWnd == NULL)
+		return FALSE;
 
 	// Set attributes and properties
 	this->m_pParentWnd = pParentWnd;
@@ -160,10 +182,10 @@ BOOL SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, 
 		case CTRL_TYPE_GROUPBOX:
 		case CTRL_TYPE_SYSLINKCTRL:
 		{
-			// Get control window text
-			CString strCaption;
+			// Get control window text itself
 			CWnd* pCtrlWnd = this->m_pParentWnd->GetDlgItem(this->m_nTemplateID);
 			if (pCtrlWnd != NULL) {
+				CString strCaption;
 				pCtrlWnd->GetWindowText(strCaption);
 				this->m_strCaption = strCaption;
 			}
@@ -178,9 +200,9 @@ BOOL SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, 
 		case CTRL_TYPE_TREECTRL:
 		case CTRL_TYPE_RICHEDIT:
 		{
-			// Get buddy control caption
-			CString strCaption;
+			// Get buddy control's caption
 			if (this->m_pBuddyWnd != NULL) {
+				CString strCaption;
 				this->m_pBuddyWnd->GetWindowText(strCaption);
 				this->m_strCaption = strCaption;
 			}
@@ -229,7 +251,7 @@ void SCtrlInfoWrap::SetParent(CWnd* pParentWnd)
 
 AFX_INLINE BOOL SCtrlInfoWrap::IsParentAvailable(void) const
 {
-	return (m_pParentWnd != NULL);
+	return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -440,6 +462,31 @@ void SCtrlInfoWrap::GetValueInt(LONG_PTR& lValue) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetReserveValueInt
+//	Description:	Get current control's reserve integer data value
+//  Arguments:		lValue - Integer reserve value (out)
+//  Return value:	LONG_PTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+LONG_PTR SCtrlInfoWrap::GetReserveValueInt(void) const
+{
+	if (this->m_plReserveValue == NULL)
+		return INT_INVALID;
+	else
+		return *(this->m_plReserveValue);
+}
+
+void SCtrlInfoWrap::GetReserveValueInt(LONG_PTR& lValue) const
+{
+	if (this->m_plReserveValue == NULL)
+		lValue = INT_INVALID;
+	else
+		lValue = *(this->m_plReserveValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	GetMinMaxInt
 //	Description:	Get current control's min/max range integer data value
 //  Arguments:		lMin - Min range integer value (out)
@@ -490,6 +537,31 @@ void SCtrlInfoWrap::GetValueFloat(DOUBLE& dbValue) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetReserveValueFloat
+//	Description:	Get current control's reserve float data value
+//  Arguments:		dbValue - Float reserve value (out)
+//  Return value:	DOUBLE
+//
+//////////////////////////////////////////////////////////////////////////
+
+DOUBLE SCtrlInfoWrap::GetReserveValueFloat(void) const
+{
+	if (this->m_pdbReserveValue == NULL)
+		return FLOAT_INVALID;
+	else
+		return *(this->m_pdbReserveValue);
+}
+
+void SCtrlInfoWrap::GetReserveValueFloat(DOUBLE& dbValue) const
+{
+	if (this->m_pdbReserveValue == NULL)
+		dbValue = FLOAT_INVALID;
+	else
+		dbValue = *(this->m_pdbReserveValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	GetMinMaxInt
 //	Description:	Get current control's min/max range integer data value
 //  Arguments:		lMin - Min range integer value (out)
@@ -536,6 +608,31 @@ void SCtrlInfoWrap::GetValueString(CString& strValue) const
 		strValue = STRING_EMPTY;
 	else
 		strValue = *(this->m_pstrValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetReserveValueString
+//	Description:	Get current control's reserve string data value
+//  Arguments:		strValue - String reserve value (out)
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+LPCTSTR SCtrlInfoWrap::GetReserveValueString(void) const
+{
+	if (this->m_pstrReserveValue == NULL)
+		return STRING_EMPTY;
+	else
+		return *(this->m_pstrReserveValue);
+}
+
+void SCtrlInfoWrap::GetReserveValueString(CString& strValue) const
+{
+	if (this->m_pstrReserveValue == NULL)
+		strValue = STRING_EMPTY;
+	else
+		strValue = *(this->m_pstrReserveValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -618,6 +715,25 @@ void SCtrlInfoWrap::SetValueInt(const LONG_PTR& lValue)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	SetReserveValueInt
+//	Description:	Set current control's reserve integer data value
+//  Arguments:		lValue - Integer reserve value (in)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SCtrlInfoWrap::SetReserveValueInt(const LONG_PTR& lValue)
+{
+	if (this->m_plReserveValue == NULL)
+		this->m_plReserveValue = new LONG_PTR(lValue);
+	else {
+		delete (this->m_plReserveValue);
+		this->m_plReserveValue = new LONG_PTR(lValue);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	SetMinMaxInt
 //	Description:	Set current control's min/max range integer data value
 //  Arguments:		lMin - Min range integer value (in)
@@ -666,6 +782,25 @@ void SCtrlInfoWrap::SetValueFloat(const DOUBLE& dbValue)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	SetReserveValueFloat
+//	Description:	Set current control's reserve float data value
+//  Arguments:		dbValue - Float reserve value (in)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SCtrlInfoWrap::SetReserveValueFloat(const DOUBLE& dbValue)
+{
+	if (this->m_pdbReserveValue == NULL)
+		this->m_pdbReserveValue = new DOUBLE(dbValue);
+	else {
+		delete (this->m_pdbReserveValue);
+		this->m_pdbReserveValue = new DOUBLE(dbValue);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	SetMinMaxFloat
 //	Description:	Set current control's min/max range float data value
 //  Arguments:		lMin - Min range integer value (in)
@@ -709,6 +844,25 @@ void SCtrlInfoWrap::SetValueString(LPCTSTR lpszValue)
 	else {
 		delete (this->m_pstrValue);
 		this->m_pstrValue = new CString(lpszValue);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetReserveValueString
+//	Description:	Set current control's reserve string data value
+//  Arguments:		lpszValue - String reserve value (in)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SCtrlInfoWrap::SetReserveValueString(LPCTSTR lpszValue)
+{
+	if (this->m_pstrReserveValue == NULL)
+		this->m_pstrReserveValue = new CString(lpszValue);
+	else {
+		delete (this->m_pstrReserveValue);
+		this->m_pstrReserveValue = new CString(lpszValue);
 	}
 }
 
@@ -903,6 +1057,10 @@ BOOL SControlManager::DeleteAll(void)
 
 inline INT_PTR SControlManager::GetCount(void) const
 {
+	// If data is not initialized
+	if (m_pCtrlInfoArray == NULL)
+		return 0;
+
 	return m_pCtrlInfoArray->GetCount();
 }
 
@@ -917,6 +1075,10 @@ inline INT_PTR SControlManager::GetCount(void) const
 
 inline BOOL SControlManager::IsEmpty(void) const
 {
+	// If data is not initialized
+	if (m_pCtrlInfoArray == NULL)
+		return TRUE;
+
 	return m_pCtrlInfoArray->IsEmpty();
 }
 
@@ -957,9 +1119,9 @@ void SControlManager::SetParent(CWnd* pParentWnd)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SControlManager::IsParentAvailable(void) const
+AFX_INLINE BOOL SControlManager::IsParentAvailable(void) const
 {
-	return (m_pParentWnd != NULL);
+	return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1161,9 +1323,12 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 	// Loop through control management list
 	INT nTriggerForceRetFlag = FLAG_OFF;
 	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->GetCount()); nIndex++) {
+
 		// Get control wrapper pointer
 		SCtrlInfoWrap* pCurControl = m_pCtrlInfoArray->GetAt(nIndex);
 		if (pCurControl == NULL) continue;
+
+		// Only update data for specified control
 		if (nCtrlID != NULL) {
 			if (pCurControl->GetTemplateID() != nCtrlID) {
 				// Skip control
@@ -1183,6 +1348,8 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			// Update data for control by type
 			switch (pCurControl->GetType())
 			{
+				// Clickable and checkable controls
+				case CTRL_TYPE_BUTTON:
 				case CTRL_TYPE_CHECKBOX:
 				case CTRL_TYPE_RADIOBTN:
 				{
@@ -1191,6 +1358,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 					pCurControl->SetCheck(bCheck);
 				} break;
 
+				// Edit box
 				case CTRL_TYPE_EDITBOX:
 				{
 					// Update control's text value
@@ -1199,6 +1367,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 					pCurControl->SetValueString(strTemp);
 				} break;
 
+				// Combo-box
 				case CTRL_TYPE_COMBOBOX:
 				{
 					// Update control's current selection index
@@ -1216,6 +1385,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 					pCurControl->SetValueStringArray(arrStringData);
 				} break;
 
+				// List box
 				case CTRL_TYPE_LISTBOX:
 				{
 					// Update control's current selection index
@@ -1233,6 +1403,31 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 					pCurControl->SetValueStringArray(arrStringData);
 				} break;
 
+				// Static text and decorating items
+				case CTRL_TYPE_STATIC:
+				case CTRL_TYPE_GROUPBOX:
+				case CTRL_TYPE_SYSLINKCTRL:
+				{
+					// Update control's text label
+					CString strTemp;
+					pBaseControl->GetWindowText(strTemp);
+					pCurControl->SetCaption(strTemp);
+				} break;
+
+				// Scroll bars
+				case CTRL_TYPE_HSCROLL:
+				case CTRL_TYPE_VSCROLL:
+				{
+					// Update control's current position
+					INT_PTR nCurPos = ((CScrollBar*)pBaseControl)->GetScrollPos();
+					pCurControl->SetValueInt(nCurPos);
+					// Update control's min/max range
+					INT nMin = NULL, nMax = NULL;
+					((CScrollBar*)pBaseControl)->GetScrollRange(&nMin, &nMax);
+					pCurControl->SetMinMaxInt(nMin, nMax);
+				} break;
+
+				// Slider control
 				case CTRL_TYPE_SLIDERCTRL:
 				{
 					// Update control's current position
@@ -1244,6 +1439,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 					pCurControl->SetMinMaxInt(nMin, nMax);
 				} break;
 
+				// Progress bar
 				case CTRL_TYPE_PROGRESSBAR:
 				{
 					// Update control's current position
@@ -1255,6 +1451,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 					pCurControl->SetMinMaxInt(nMin, nMax);
 				} break;
 
+				// Spin button control
 				case CTRL_TYPE_SPINCTRL:
 				{
 					// Update control's current position

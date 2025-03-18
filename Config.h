@@ -59,6 +59,20 @@ namespace RegFuncs
 	BOOL DeleteRegistrySection(UINT nSectionName, UINT nSubSectionName = NULL);
 	BOOL DeleteRegistrySection(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName = NULL);
 
+
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//	Functions for reading/writing application profile info
+	//
+	//////////////////////////////////////////////////////////////////////////
+
+	// Read/write registry profile info values
+	BOOL GetProfileInfo(UINT nKeyName, int& nRef);
+	BOOL WriteProfileInfo(UINT nKeyName, int nValue);
+	BOOL GetProfileInfo(UINT nKeyName, CString& strRef);
+	BOOL WriteProfileInfo(UINT nKeyName, CString strValue);
+
+
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//	Derivered functions for reading/writing each data type
@@ -126,6 +140,7 @@ namespace RegFuncs
 	BOOL GetGlobalData(UINT nSubSection, UINT nKeyName, CString& strRef);
 	BOOL WriteGlobalData(UINT nSubSection, UINT nKeyName, CString strValue);
 };
+
 
 ////////////////////////////////////////////////////////
 //

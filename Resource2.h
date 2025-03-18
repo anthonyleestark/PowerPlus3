@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Resource2.h
@@ -36,16 +36,16 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
-#define RESOURCEID_BUTTON										0x0c0000
-#define RESOURCEID_GRIDCOLUMN									0x0c1000
-#define RESOURCEID_FORMATSTRING									0x0c2000
-#define RESOURCEID_ACTIONNAME									0x0c3000
-#define RESOURCEID_MESSAGE										0x0c4000
-#define RESOURCEID_COMBOSELECTION								0x0c5000
-#define RESOURCEID_NOTIFYTIP									0x0c6000
-#define RESOURCEID_BALLOONTIP									0x0c7000
-#define RESOURCEID_MESSAGEBOX									0x0c8000
-#define RESOURCEID_SPECIAL										0x0c9000
+#define RESOURCEID_BUTTON										0x0c1000
+#define RESOURCEID_GRIDCOLUMN									0x0c2000
+#define RESOURCEID_FORMATSTRING									0x0c3000
+#define RESOURCEID_ACTIONNAME									0x0c4000
+#define RESOURCEID_MESSAGE										0x0c5000
+#define RESOURCEID_COMBOSELECTION								0x0c6000
+#define RESOURCEID_NOTIFYTIP									0x0c7000
+#define RESOURCEID_BALLOONTIP									0x0c8000
+#define RESOURCEID_MESSAGEBOX									0x0c9000
+#define RESOURCEID_SPECIAL										0x0ca000
 
 
 //////////////////////////////////////////////////////////////////////////

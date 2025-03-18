@@ -25,7 +25,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 using namespace RegFuncs;
 
@@ -249,7 +249,7 @@ BEGIN_MESSAGE_MAP(CMultiScheduleDlg, SDialog)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_MULTISCHEDULE_ITEM_LISTBOX,	&CMultiScheduleDlg::OnSelectScheduleItem)
 	ON_NOTIFY(NM_CLICK, IDC_MULTISCHEDULE_ITEM_LISTBOX,			&CMultiScheduleDlg::OnClickDataItemList)
 	ON_NOTIFY(NM_RCLICK, IDC_MULTISCHEDULE_ITEM_LISTBOX,		&CMultiScheduleDlg::OnRightClickDataItemList)
-	ON_MESSAGE(SCM_DLGDESTROY_NOTIFY,							&CMultiScheduleDlg::OnChildDialogDestroy)
+	ON_MESSAGE(SCM_NOTIFY_DIALOGDESTROY,						&CMultiScheduleDlg::OnChildDialogDestroy)
 END_MESSAGE_MAP()
 
 
@@ -269,6 +269,7 @@ END_MESSAGE_MAP()
 
 BOOL CMultiScheduleDlg::OnInitDialog()
 {
+	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
@@ -290,7 +291,7 @@ BOOL CMultiScheduleDlg::OnInitDialog()
 	RefreshDlgItemState(TRUE);
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
 	return TRUE;
 }
@@ -341,7 +342,7 @@ void CMultiScheduleDlg::OnClose()
 void CMultiScheduleDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
 
 	// Save layout info data
 	UpdateLayoutInfo();
@@ -407,7 +408,7 @@ void CMultiScheduleDlg::SetupLanguage()
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetLangDialogCaption(GetDialogID());
+	this->SetCaptionFromLanguage(GetDialogID());
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -552,7 +553,7 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 	// Setup display size
 	int nFrameHeight = m_pszDataTableFrameSize->cy;
 	int nFrameWidth = m_pszDataTableFrameSize->cx;
-	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
 		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
@@ -836,7 +837,7 @@ void CMultiScheduleDlg::UpdateDataItemList()
 		}
 
 		// Action name
-		nTemp = GetPairedID(idplActionName, schItem.nAction);
+		nTemp = GetPairedID(idTableActionName, schItem.nAction);
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
 		m_pDataItemListTable->SetItemText(nRowIndex, SCHCOL_ID_ACTIONID, strTemp);
 
@@ -1987,6 +1988,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 
 LRESULT CMultiScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
+	// Default
 	return SDialog::WindowProc(message, wParam, lParam);
 }
 
@@ -1999,7 +2001,7 @@ LRESULT CMultiScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CMultiScheduleDlg::GetTotalItemNum()
+AFX_INLINE int CMultiScheduleDlg::GetTotalItemNum() const
 {
 	return GetExtraItemNum() + DEF_SCHEDULE_DEFAULT_ITEMNUM;
 }
@@ -2013,7 +2015,7 @@ int CMultiScheduleDlg::GetTotalItemNum()
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CMultiScheduleDlg::GetExtraItemNum()
+AFX_INLINE int CMultiScheduleDlg::GetExtraItemNum() const
 {
 	return m_schScheduleTemp.GetExtraItemNum();
 }

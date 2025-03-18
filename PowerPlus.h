@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		PowerPlus.h
@@ -87,6 +87,7 @@ public:
 	BOOL LoadRegistryAppData();
 	BOOL SaveRegistryAppData(DWORD dwDataType = APPDATA_ALL);
 	BOOL BackupRegistryAppData();
+	BOOL UpdateAppProfileInfo(void);
 	BOOL LoadGlobalData(void);
 	BOOL SaveGlobalData(BYTE byCateID = 0xFF);
 
@@ -136,8 +137,6 @@ public:
 	void DestroyDebugTestDlg(void);
 
 	// Registry functions
-	UINT GetWindowsOSVersion(void);
-
 	void GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey);
 	int EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin);
 	int GetAutoStartRegisterStatus(void);

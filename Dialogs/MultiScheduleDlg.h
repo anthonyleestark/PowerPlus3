@@ -138,8 +138,8 @@ public:
 
 protected:
 	// Get/set functions
-	int GetTotalItemNum(void);
-	int GetExtraItemNum(void);
+	int GetTotalItemNum(void) const;
+	int GetExtraItemNum(void) const;
 };
 
 #endif	// ifndef _MULTISCHEDULEDLG_H_INCLUDED

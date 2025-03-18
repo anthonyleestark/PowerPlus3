@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		SDialog.h
@@ -35,26 +35,38 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
+
 // Flags for SetDialogAlign
-#define SDA_LEFTALIGN				0x0001L
-#define SDA_RIGHTALIGN				0x0002L
-#define SDA_TOPALIGN				0x0004L
-#define SDA_BOTTOMALIGN				0x0008L
+//
 
-#define SDA_HCENTERALIGN			0x0010L
-#define SDA_VCENTERALIGN			0x0020L
+#define SDA_LEFTALIGN					0x0001L
+#define SDA_RIGHTALIGN					0x0002L
+#define SDA_TOPALIGN					0x0004L
+#define SDA_BOTTOMALIGN					0x0008L
 
-#define SDA_LEFTBUTTON				0x0100L
-#define SDA_RIGHTBUTTON				0x0200L
+#define SDA_HCENTERALIGN				0x0010L
+#define SDA_VCENTERALIGN				0x0020L
+
+#define SDA_LEFTBUTTON					0x0100L
+#define SDA_RIGHTBUTTON					0x0200L
+
 
 // Flags for moving functions
-#define MOVDIR_HORIZONTAL			0x0001L
-#define MOVDIR_VERTICAL				0x0002L
+//
+
+#define MOVDIR_HORIZONTAL				0x0001L
+#define MOVDIR_VERTICAL					0x0002L
+
 
 // Flags and default values for dialog properties
-#define SIZE_NULL					CSize(0,0)
-#define MARGIN_NULL					CRect(0,0,0,0)
-#define MARGIN_DEFAULT				CRect(10,10,10,10)
+//
+
+#define POINT_NULL						CPoint(0,0)
+#define SIZE_NULL						CSize(0,0)
+#define SIZE_UNDEFINED					CSize(-1,-1)
+#define MARGIN_NULL						CRect(0,0,0,0)
+#define MARGIN_DEFAULT					CRect(10,10,10,10)
+
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -62,17 +74,25 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
-#define SCM_DIALOG					(WM_USER+2000)
 
-#define SCM_DLGINIT_NOTIFY			(SCM_DIALOG+1)
-#define SCM_DLGCLOSE_NOTIFY			(SCM_DIALOG+2)
-#define SCM_DLGHIDDEN_NOTIFY		(SCM_DIALOG+3)
-#define SCM_DLGDESTROY_NOTIFY		(SCM_DIALOG+4)
+#define SCM_DIALOG						(WM_USER+2000)
+
+#define SCM_NOTIFY_DIALOGINIT			(SCM_DIALOG+1)
+#define SCM_NOTIFY_DIALOGSHOWED			(SCM_DIALOG+2)
+#define SCM_NOTIFY_DIALOGHIDDEN			(SCM_DIALOG+3)
+#define SCM_NOTIFY_DIALOGEXPAND			(SCM_DIALOG+4)
+#define SCM_NOTIFY_DIALOGCOLLAPSE		(SCM_DIALOG+5)
+#define SCM_NOTIFY_DIALOGACTIVE			(SCM_DIALOG+6)
+#define SCM_NOTIFY_DIALOGINACTIVE		(SCM_DIALOG+7)
+#define SCM_NOTIFY_DIALOGCLOSE			(SCM_DIALOG+8)
+#define SCM_NOTIFY_DIALOGDESTROY		(SCM_DIALOG+9)
+
 
 /////////////////////////////////////////////////////////////////
 //
 //	Class name:	 SDialog
 //  Description: Custom base class for dialogs
+//  Base class:	 CDialogEx
 //
 /////////////////////////////////////////////////////////////////
 
@@ -80,21 +100,18 @@ class SDialog : public CDialogEx
 {
 	DECLARE_DYNAMIC(SDialog)
 
-	// Construction
 public:
-	SDialog();														// constructor
-	SDialog(UINT nIDTemplate, CWnd* pParent = NULL);				// custom constructor
-	SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);		// custom constructor
-	virtual ~SDialog();												// destructor
+	// Construction
+	SDialog();																// default constructor
+	explicit SDialog(UINT nIDTemplate, CWnd* pParentWnd = NULL);			// custom constructor
+	explicit SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);	// custom constructor
+	virtual ~SDialog();														// destructor
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 	DECLARE_MESSAGE_MAP()
 
 protected:
-	// Parent window
-//	CWnd* m_pParentWnd;
-
 	// Tooltip control
 	CToolTipCtrl* m_pToolTip;
 
@@ -112,35 +129,33 @@ protected:
 	// Properties set flags
 	BOOL m_bBkgrdColorSet;
 	BOOL m_bTextColorSet;
-
-	BOOL m_bMinSizeSet;
-	BOOL m_bMaxSizeSet;
-
 	BOOL m_bTopMostSet;
 	BOOL m_bInitSoundSet;
 
 	// Lock state exception ID list
-	CUIntArray m_arrLockExceptionIDList;
+	CUIntArray* m_paLockExceptionIDList;
 
 	// Dialog position
-	CPoint m_ptDialogPosition;
+	CPoint m_ptPosition;
 
 	// Dialog alignment
-	UINT m_nDialogAlign;
+	UINT m_nAlignment;
 
 	// Dialog size
-	CSize m_szDialogSize;
+	CSize m_szRegisterSize;
 	CSize m_szDefaultSize;
+
+	// Dialog min/max info
 	CSize m_szMinSize;
 	CSize m_szMaxSize;
 
-	// Dialog margin
-	CRect	 m_rcDialogMargin;
+	// Dialog client display margin
+	CRect	 m_rcClientMargin;
 
 	// Other properties
-	CString  m_strDialogCaption;
+	CString  m_strCaption;
 	HICON	 m_hDefaultIcon;
-	CString	 m_strMessageCaption;
+	CString	 m_strMsgCaption;
 
 	// Color and graphic objects
 	CBrush*  m_pBkgrdBrush;
@@ -168,6 +183,8 @@ public:
 	virtual CWnd* GetParentWnd(void);
 	virtual void SetParentWnd(CWnd* pParentWnd);
 	virtual BOOL IsParentWndAvailable(void) const;
+	virtual BOOL NotifyParent(UINT nMsg, WPARAM wParam, LPARAM lParam);
+	virtual LRESULT SendMessageToParent(UINT nMsg, WPARAM wParam, LPARAM lParam);
 
 	// Tooltip control functions
 	virtual CToolTipCtrl* GetToolTipCtrl(void);
@@ -180,8 +197,8 @@ public:
 	virtual BOOL UnregisterDialogManagement(void);
 
 	// Dialog style functions
-	virtual BOOL AddDialogStyle(DWORD dwAddStyle);
-	virtual BOOL RemoveDialogStyle(DWORD dwRemoveStyle);
+	virtual BOOL AddStyle(DWORD dwAddStyle);
+	virtual BOOL RemoveStyle(DWORD dwRemoveStyle);
 
 	// Dialog properties and information
 	virtual UINT GetDialogID(void) const;
@@ -198,10 +215,10 @@ public:
 	virtual void ResetLockStateExceptionList(void);
 
 	// Dialog align and position
-	virtual UINT GetDialogAlign(void) const;
-	virtual void SetDialogAlign(UINT nAlign);
-	virtual void GetDialogPosition(LPPOINT lpPosition) const;
-	virtual void SetDialogPosition(POINT ptPosition);
+	virtual UINT GetAlignment(void) const;
+	virtual void SetAlignment(UINT nAlignment);
+	virtual void GetPosition(LPPOINT lpPosition) const;
+	virtual void SetPosition(POINT ptPosition);
 
 	// Move and resize dialog
 	virtual void MoveDialog(POINT ptPosition, LPRECT lpNewRect = NULL);
@@ -210,9 +227,9 @@ public:
 	virtual void ResetDialogSize(void);
 
 	// Get/set dialog size functions
-	virtual void GetDialogSize(LPSIZE lpDialogSize) const;
-	virtual void SetDialogSize(SIZE szDialogSize);
-	virtual void SetDialogSize(LONG lWidth, LONG lHeight);
+	virtual void GetSize(LPSIZE lpRegSize) const;
+	virtual void SetSize(SIZE szRegSize);
+	virtual void SetSize(LONG lWidth, LONG lHeight);
 	virtual void SetMinSize(LONG lMinWidth, LONG lMinHeight);
 	virtual void SetMaxSize(LONG lMaxWidth, LONG lMaxHeight);
 
@@ -232,11 +249,11 @@ public:
 	virtual void GetMargin(LPRECT lpDialogMargin) const;
 
 	// Dialog caption get/set functions
-	virtual LPCTSTR GetDialogCaption(void) const;
-	virtual void GetDialogCaption(CString& strCaption) const;
-	virtual void SetDialogCaption(LPCTSTR lpszCaption);
-	virtual void SetRcDialogCaption(UINT nResourceStringID);
-	virtual void SetLangDialogCaption(UINT nLangStringID);
+	virtual LPCTSTR GetCaption(void) const;
+	virtual void GetCaption(CString& strCaption) const;
+	virtual void SetCaption(LPCTSTR lpszCaption);
+	virtual void SetCaptionFromResource(UINT nResourceStringID);
+	virtual void SetCaptionFromLanguage(UINT nLangStringID);
 
 	// Dialog icon functions
 	virtual void SetIcon(UINT nIconResourceID);
@@ -251,7 +268,7 @@ public:
 	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);
 	virtual void RegisterMessageBoxCaption(LPCTSTR lpszCaption);
-	virtual void GetRegisterdMsgBoxCaption(CString& strRegMsgBoxCap) const;
+	virtual void GetMessageBoxCaption(CString& strRegMsgBoxCap) const;
 	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
 	virtual int DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption = NULL, UINT nStyle = NULL);
 
@@ -274,7 +291,8 @@ public:
 	virtual void UpdateItemText(UINT nCtrlID, LPCTSTR lpszNewCaption);
 	virtual void UpdateItemText(UINT nCtrlID, UINT nNewCaptionID = NULL, LANGTABLE_PTR ptrLanguage = NULL);
 	virtual void SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLanguage = NULL);
-	virtual void MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDir, int nDistance);
+	virtual void MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPosition);
+	virtual void MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, int nDistance);
 	virtual void EnableControl(UINT nCtrlID, BOOL bEnable);
 	virtual void SetupDlgItemState(void);
 	virtual void RefreshDlgItemState(void);

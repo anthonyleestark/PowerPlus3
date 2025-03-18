@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Logging.h
@@ -20,7 +20,7 @@
 #include "Core.h"
 #include "Logging_pub.h"
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 
 
@@ -147,14 +147,14 @@ static SIZE_T GetSizeByType(BYTE byDataType);
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Table name:		strplLogInfoIDTitle
+//	Table name:		strTableLogInfoIDTitle
 //  Description:	Using for pairing logging info IDs and the titles when
 //					writing log files
-//  Table type:		STRINGPAIRLIST
+//  Table type:		STRINGTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static STRINGPAIRLIST strplLogInfoIDTitle
+static STRINGTABLE strTableLogInfoIDTitle
 {
 /*-----Base log info IDs-----------------------------Log Info Titles----------------*/
 	{ BASELOG_INFO_TIME,							_T("time")					},
@@ -175,6 +175,7 @@ static STRINGPAIRLIST strplLogInfoIDTitle
 	{ EVENTLOG_DETAIL_DATACHANGE,					_T("datachange")			},
 	{ EVENTLOG_DETAIL_CONTENTID,					_T("contentid")				},
 	{ EVENTLOG_DETAIL_MESSAGETEXT,					_T("messagetext")			},
+	{ EVENTLOG_DETAIL_ERRORCODE,					_T("errorcode")				},
 /*----------------------------------------------------------------------------------*/
 
 /*-----History log info IDs--------------------------Log Info Titles----------------*/
@@ -184,6 +185,7 @@ static STRINGPAIRLIST strplLogInfoIDTitle
 	{ HISTORYLOG_DETAIL_ITEMID,						_T("itemid")				},
 	{ HISTORYLOG_DETAIL_MESSAGE,					_T("message")				},
 	{ HISTORYLOG_DETAIL_RESULT,						_T("result")				},
+	{ HISTORYLOG_DETAIL_ERRORCODE,					_T("errorcode")				},
 /*----------------------------------------------------------------------------------*/
 };
 
@@ -193,11 +195,11 @@ static STRINGPAIRLIST strplLogInfoIDTitle
 //	Table name:		strplHistoryLogDetail
 //  Description:	Using for pairing history log detail info IDs and the
 //					titles when writing log files
-//  Table type:		STRINGPAIRLIST
+//  Table type:		STRINGTABLE
 //
 //////////////////////////////////////////////////////////////////////////
 
-static STRINGPAIRLIST strplHistoryLogDetail
+static STRINGTABLE strTableHistoryLogDetail
 {
 /*-----History category IDs--------------------------Log Info Titles----------------*/
 	{ HISTORYLOG_CATE_PWRACTION,			_T("Power Action")					},
@@ -268,13 +270,13 @@ protected:
 	void CopyPtrData(const JSON&);							// Copy JSON object pointer data
 	BOOL Compare(const JSON&) const;						// Compare objects
 	BOOL IsEmpty(void) const;								// Check if object data is empty
-	void RemoveProperty(int);								// Remove property by index
+	void RemoveProperty(INT_PTR);							// Remove property by index
 	void RemoveProperty(LPCTSTR);							// Remove property by key name
 	void RemoveAll(void);									// Remove all object data
 
 public:
 	// Get/set functions
-	void SetObjectName(LPCTSTR);							// Set group name
+	void SetObjectName(LPCTSTR);							// Set object name
 	void AddString(LPCTSTR, LPCTSTR);						// Add string value
 	void AddInteger(LPCTSTR, INT);							// Add integer value
 	void AddFloat(LPCTSTR, DOUBLE);							// Add float value
@@ -286,7 +288,8 @@ public:
 };
 
 // Define new names for JSON class object
-typedef JSON	JSONDATA, *PJSONDATA;
+using JSONDATA = typename JSON;
+using PJSONDATA = typename JSONDATA*;
 
 ////////////////////////////////////////////////////////
 //

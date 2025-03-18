@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Logging.cpp
@@ -308,8 +308,8 @@ BOOL tagLOGDETAIL::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYP
 tagLOGITEM::tagLOGITEM()
 {
 	// Initialization
-	this->stTime = {0};											// Log time
-	this->dwProcessID = 0;										// Process ID
+	this->stTime = SYSTEMTIME_ZERO;								// Log time
+	this->dwProcessID = INT_NULL;								// Process ID
 	this->usCategory = LOG_MACRO_NONE;							// Log category
 	this->strLogString = STRING_EMPTY;							// Log string
 	this->arrDetailInfo.RemoveAll();							// Log detail info
@@ -449,8 +449,8 @@ void tagLOGITEM::RemoveDetailInfo(void)
 void tagLOGITEM::RemoveAll(void)
 {
 	// Reset data
-	this->stTime = {0};											// Log time
-	this->dwProcessID = 0;										// Process ID
+	this->stTime = SYSTEMTIME_ZERO;								// Log time
+	this->dwProcessID = INT_NULL;								// Process ID
 	this->usCategory = LOG_MACRO_NONE;							// Log category
 	this->strLogString = STRING_EMPTY;							// Log string
 
@@ -556,20 +556,20 @@ CString tagLOGITEM::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log time
-	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_TIME);
+	strLogInfoIDTitle = GetString(strTableLogInfoIDTitle, BASELOG_INFO_TIME);
 	jsonOutputData.AddString(strLogInfoIDTitle, this->FormatDateTime());
 
 	// Process ID
-	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_PID);
+	strLogInfoIDTitle = GetString(strTableLogInfoIDTitle, BASELOG_INFO_PID);
 	jsonOutputData.AddInteger(strLogInfoIDTitle, this->dwProcessID);
 
 	// Log category
-	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_CATEGORY);
+	strLogInfoIDTitle = GetString(strTableLogInfoIDTitle, BASELOG_INFO_CATEGORY);
 	strLogInfoValue = GetLanguageString(pDefLang, this->usCategory);
 	jsonOutputData.AddString(strLogInfoIDTitle, strLogInfoValue);
 
 	// Log description string
-	strLogInfoIDTitle = GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
+	strLogInfoIDTitle = GetString(strTableLogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
 	jsonOutputData.AddString(strLogInfoIDTitle, this->strLogString);
 
 	/*********************************************************************/
@@ -587,7 +587,7 @@ CString tagLOGITEM::FormatOutput(void) const
 		CString strLogDetailTitle;
 
 		// Set object name: Detail
-		jsonDetailData.SetObjectName(GetPairedString(strplLogInfoIDTitle, BASELOG_INFO_DETAILS));
+		jsonDetailData.SetObjectName(GetString(strTableLogInfoIDTitle, BASELOG_INFO_DETAILS));
 
 		// Convert data
 		for (int nIndex = 0; nIndex < (this->arrDetailInfo.GetSize()); nIndex++) {
@@ -596,7 +596,7 @@ CString tagLOGITEM::FormatOutput(void) const
 			LOGDETAIL logDetail = this->arrDetailInfo.GetAt(nIndex);
 
 			// Detail info category
-			strLogDetailTitle = GetPairedString(strplLogInfoIDTitle, logDetail.usCategory);
+			strLogDetailTitle = GetString(strTableLogInfoIDTitle, logDetail.usCategory);
 
 			// Detail info value
 			if (logDetail.uiDetailInfo != INT_NULL) {
@@ -884,7 +884,7 @@ BOOL JSON::IsEmpty(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void JSON::RemoveProperty(int nIndex)
+void JSON::RemoveProperty(INT_PTR nIndex)
 {
 	// Invalid index
 	if ((nIndex < 0) || (nIndex >= this->m_astrKeyList.GetSize()))
@@ -1571,7 +1571,7 @@ BOOL SLogging::Write(void)
 	SYSTEMTIME stTemp;
 	CString strLogFormat;
 
-	// Setup performance counter for tracing
+	// Setup performance counter for tracking
 	PERFORMANCECOUNTER counter;
 	counter.Start();
 

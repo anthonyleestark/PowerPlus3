@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Core.cpp
@@ -224,7 +224,7 @@ tagSCHEDULEITEM::tagSCHEDULEITEM()
 	this->nItemID = DEF_SCHEDULE_MIN_ITEMID;			// Item ID
 	this->bEnable = FALSE;								// Enable/disable status
 	this->nAction = APP_ACTION_NOTHING;					// Schedule action
-	this->stTime = {0};									// Schedule time
+	this->stTime = SYSTEMTIME_ZERO;						// Schedule time
 	this->rpsRepeatSet = PWRREPEATSET();				// Repeat set data
 }
 
@@ -234,7 +234,7 @@ tagSCHEDULEITEM::tagSCHEDULEITEM(UINT nItemID)
 	this->nItemID = nItemID;							// Item ID
 	this->bEnable = FALSE;								// Enable/disable status
 	this->nAction = APP_ACTION_NOTHING;					// Schedule action
-	this->stTime = {0};									// Schedule time
+	this->stTime = SYSTEMTIME_ZERO;						// Schedule time
 	this->rpsRepeatSet = PWRREPEATSET();				// Repeat set data
 }
 
@@ -421,7 +421,7 @@ BYTE tagSCHEDULEITEM::GetActiveDays(void) const
 
 void tagSCHEDULEITEM::Print(CString& strOutput)
 {
-	using namespace PairFuncs;
+	using namespace TableFuncs;
 	using namespace CoreFuncs;
 
 	// Get language table
@@ -429,7 +429,7 @@ void tagSCHEDULEITEM::Print(CString& strOutput)
 
 	// Format schedule data
 	CString strActive = (this->bEnable == TRUE) ? VALUE_TRUE : VALUE_FALSE;						// Enable/disable state
-	UINT nActionStringID = GetPairedID(idplActionName, this->nAction);
+	UINT nActionStringID = GetPairedID(idTableActionName, this->nAction);
 	CString strAction = GetLanguageString(ptrLanguage, nActionStringID);						// Schedule action
 	CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, this->stTime);	// Schedule time
 	CString strRepeat = (this->rpsRepeatSet.bRepeat == TRUE) ? VALUE_TRUE : VALUE_FALSE;		// Repeat daily
@@ -1109,14 +1109,14 @@ BOOL tagHOTKEYSETITEM::Compare(const tagHOTKEYSETITEM& pItem) const
 
 void tagHOTKEYSETITEM::Print(CString& strOutput)
 {
-	using namespace PairFuncs;
+	using namespace TableFuncs;
 
 	// Get language table
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
 	CString strEnable = (this->bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
-	UINT nActionNameID = GetPairedID(idplActionName, GetPairedID(idplHKActionID, this->nHKActionID));
+	UINT nActionNameID = GetPairedID(idTableActionName, GetPairedID(idTableHKActionID, this->nHKActionID));
 	CString strAction = GetLanguageString(ptrLanguage, nActionNameID);
 	CString strKeyStrokes = STRING_EMPTY;
 	PrintKeyStrokes(strKeyStrokes);
@@ -1136,7 +1136,7 @@ void tagHOTKEYSETITEM::Print(CString& strOutput)
 
 void tagHOTKEYSETITEM::PrintKeyStrokes(CString& strOutput)
 {
-	using namespace PairFuncs;
+	using namespace TableFuncs;
 
 	// Get language table
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
@@ -1146,7 +1146,7 @@ void tagHOTKEYSETITEM::PrintKeyStrokes(CString& strOutput)
 	if (this->dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
 	if (this->dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
 	if (this->dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
-	strKeyStrokes += GetPairedString(strplFuncKeyList, this->dwFuncKeyCode);
+	strKeyStrokes += GetString(strTableFuncKeyList, this->dwFuncKeyCode);
 
 	// Output string
 	strOutput.Empty();
@@ -1729,7 +1729,7 @@ tagPWRREMINDERITEM::tagPWRREMINDERITEM()
 	this->nItemID = DEF_PWRREMINDER_MIN_ITEMID;			// Item ID
 	this->strMessage = STRING_EMPTY;					// Message content
 	this->nEventID = PREVT_AT_SETTIME;					// Event ID
-	this->stTime = {0};									// Event time
+	this->stTime = SYSTEMTIME_ZERO;						// Event time
 	this->dwMsgStyle = PRSTYLE_MSGBOX;					// Reminder style
 	this->rpsRepeatSet = PWRREPEATSET();				// Repeat set
 	this->bUseCustomStyle = FALSE;						// Use message custom style
@@ -1938,7 +1938,7 @@ BYTE tagPWRREMINDERITEM::GetActiveDays(void) const
 
 void tagPWRREMINDERITEM::Print(CString& strOutput)
 {
-	using namespace PairFuncs;
+	using namespace TableFuncs;
 	using namespace CoreFuncs;
 
 	// Get language table
@@ -1950,14 +1950,14 @@ void tagPWRREMINDERITEM::Print(CString& strOutput)
 	if (strMsg.GetLength() > (MAX_DISP_LOGSTRING_LENGTH + 3)) {
 		strMsg = this->strMessage.Left(MAX_DISP_LOGSTRING_LENGTH) + _T("...");
 	}
-	int nTemp = GetPairedID(idplPwrReminderEvt, this->nEventID);
+	int nTemp = GetPairedID(idTablePwrReminderEvt, this->nEventID);
 	CString strEvent = GetLanguageString(ptrLanguage, nTemp);
 	if (this->nEventID == PREVT_AT_SETTIME) {
 		// Format time string
 		CString strFormat = strEvent;
 		strEvent = FormatDispTime(ptrLanguage, strFormat, this->stTime);
 	}
-	nTemp = GetPairedID(idplPwrReminderStyle, this->dwMsgStyle);
+	nTemp = GetPairedID(idTablePwrReminderStyle, this->dwMsgStyle);
 	CString strStyle = GetLanguageString(ptrLanguage, nTemp);
 
 	// Print item
@@ -2405,12 +2405,12 @@ void tagPWRREMINDERDATA::DeleteAll(void)
 tagPWRRUNTIMEITEM::tagPWRRUNTIMEITEM()
 {
 	// Init data
-	this->nCategory = -1;									// Item category
-	this->nItemID = 0;										// Power Reminder item ID
+	this->nCategory = INT_INVALID;							// Item category
+	this->nItemID = INT_NULL;								// Power Reminder item ID
 	this->nDisplayFlag = FLAG_OFF;							// Item displaying flag
 	this->nSkipFlag = FLAG_OFF;								// Item skip flag
 	this->nSnoozeFlag = FLAG_OFF;							// Item snooze trigger flag
-	this->stNextSnoozeTime = {0};							// Next snooze trigger time
+	this->stNextSnoozeTime = SYSTEMTIME_ZERO;				// Next snooze trigger time
 }
 
 tagPWRRUNTIMEITEM::tagPWRRUNTIMEITEM(const tagPWRRUNTIMEITEM& pItem)
@@ -2494,12 +2494,12 @@ tagHISTORYINFODATA::tagHISTORYINFODATA()
 {
 	// Init data
 	this->bInitState = FALSE;								// Init state
-	this->nCategoryID = 0;									// Category ID
-	this->stTimestamp = {0};								// Timestamp of history
-	this->nItemID = 0;										// Item ID
-	this->nActionNameID = 0;								// Name of action (string ID)
+	this->nCategoryID = INT_NULL;							// Category ID
+	this->stTimestamp = SYSTEMTIME_ZERO;					// Timestamp of history
+	this->nItemID = INT_NULL;								// Item ID
+	this->nActionNameID = INT_NULL;							// Name of action (string ID)
 	this->bActionResult = FALSE;							// Action result
-	this->dwErrorCode = 0;									// Returned error code
+	this->dwErrorCode = INT_NULL;							// Returned error code
 	this->strDescription = STRING_EMPTY;					// History description (attached info)
 }
 
@@ -2593,12 +2593,12 @@ void tagHISTORYINFODATA::RemoveAll(void)
 {
 	// Reset data
 	this->bInitState = FALSE;								// Init state
-	this->nCategoryID = 0;									// Category ID
-	this->stTimestamp = {0};								// Timestamp of history
-	this->nItemID = 0;										// Item ID
-	this->nActionNameID = 0;								// Name of action (string ID)
+	this->nCategoryID = INT_NULL;							// Category ID
+	this->stTimestamp = SYSTEMTIME_ZERO;					// Timestamp of history
+	this->nItemID = INT_NULL;								// Item ID
+	this->nActionNameID = INT_NULL;							// Name of action (string ID)
 	this->bActionResult = FALSE;							// Action result
-	this->dwErrorCode = 0;									// Returned error code
+	this->dwErrorCode = INT_NULL;							// Returned error code
 	this->strDescription.Empty();							// History description (attached info)
 }
 
@@ -3158,10 +3158,140 @@ void tagREGISTRYINFO::SetSectionName(CStringArray& astrSectionArray)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	tagSUBSTRING
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagSUBSTRING::tagSUBSTRING()
+{
+	// Initialization
+	strLeft = STRING_EMPTY;					// Left part
+	strMid = STRING_EMPTY;					// Middle part
+	strRight = STRING_EMPTY;				// Right part
+}
+
+tagSUBSTRING::tagSUBSTRING(const tagSUBSTRING& pData)
+{
+	// Copy data
+	strLeft = pData.strLeft;				// Left part
+	strMid = pData.strMid;					// Middle part
+	strRight = pData.strRight;				// Right part
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pData - Pointer of input data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+tagSUBSTRING& tagSUBSTRING::operator=(const tagSUBSTRING& pData)
+{
+	// Copy data
+	strLeft = pData.strLeft;				// Left part
+	strMid = pData.strMid;					// Middle part
+	strRight = pData.strRight;				// Right part
+
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Copy
+//	Description:	Copy data from another substring data
+//  Arguments:		pData - Pointer of input data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSUBSTRING::Copy(const tagSUBSTRING& pData)
+{
+	// Copy data
+	strLeft = pData.strLeft;				// Left part
+	strMid = pData.strMid;					// Middle part
+	strRight = pData.strRight;				// Right part
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RemoveAll
+//	Description:	Remove all registry key info data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void tagSUBSTRING::RemoveAll(void)
+{
+	// Reset data
+	strLeft.Empty();						// Left part
+	strMid.Empty();							// Middle part
+	strRight.Empty();						// Right part
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEmpty
+//	Description:	Check if data is empty
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE BOOL tagSUBSTRING::IsEmpty(void) const
+{
+	return (strLeft.IsEmpty() && strMid.IsEmpty() && strRight.IsEmpty());
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Left
+//	Description:	Get left part
+//  Arguments:		None
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE LPCTSTR tagSUBSTRING::Left(void) const
+{
+	return (this->strLeft.GetString());
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Mid
+//	Description:	Get middle part
+//  Arguments:		None
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE LPCTSTR tagSUBSTRING::Mid(void) const
+{
+	return (this->strMid.GetString());
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Right
+//	Description:	Get right part
+//  Arguments:		None
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE LPCTSTR tagSUBSTRING::Right(void) const
+{
+	return (this->strRight.GetString());
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	tagPERFORMANCECOUNTER
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -3231,24 +3361,24 @@ double tagPERFORMANCECOUNTER::GetElapsedTime(BOOL bToMillisecs) const
 // 
 //	Function name:	GetPairedID
 //	Description:	Find and return ID paired with specified macro ID
-//  Arguments:		idplRef  - Reference ID pair list
-//					nID		 - First ID
-//					bReverse - Reverse search
+//  Arguments:		idTableRef  - Reference ID mapping table
+//					nID			- First ID
+//					bReverse	- Reverse search
 //  Return value:	UINT - Second paired ID
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT PairFuncs::GetPairedID(IDPAIRLIST& idplRef, UINT nID, BOOL bReverse /* = FALSE */)
+UINT TableFuncs::GetPairedID(IDMAPTABLE& idTableRef, UINT nID, BOOL bReverse /* = FALSE */)
 {
-	// Return INVALID if ID pair list is empty
-	int nSize = idplRef.size();
+	// Return INVALID if ID mapping table is empty
+	int nSize = idTableRef.size();
 	if (nSize == 0) {
 		return (UINT)INT_INVALID;
 	}
 
 	// Find and return corresponding ID paired with specified macro ID
 	for (int nIndex = 0; nIndex < nSize; nIndex++) {
-		IDPAIR idPair = idplRef[nIndex];
+		IDPAIR idPair = idTableRef[nIndex];
 
 		// Reverse search
 		if (bReverse == TRUE) {
@@ -3267,19 +3397,18 @@ UINT PairFuncs::GetPairedID(IDPAIRLIST& idplRef, UINT nID, BOOL bReverse /* = FA
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetPairedString
-//	Description:	Find and return string paired with specified ID
-//  Arguments:		strplRef  - Reference string pair list
-//					nID		  - First ID
-//					pszResult - Result string (reference type)
-//  Return value:	LPCTSTR - Paired string
+//	Function name:	GetStringID
+//	Description:	Find and return ID paired with given string
+//  Arguments:		strTableRef  - Reference string table
+//					lpszInput	 - Given string
+//  Return value:	UINT - String ID
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT PairFuncs::GetStringID(STRINGPAIRLIST& strplRef, LPCTSTR lpszInput)
+UINT TableFuncs::GetStringID(STRINGTABLE& strTableRef, LPCTSTR lpszInput)
 {
 	// Return NULL string if language table is empty
-	int nSize = strplRef.size();
+	int nSize = strTableRef.size();
 	if (nSize == 0) {
 		return (UINT)INT_INVALID;
 	}
@@ -3291,7 +3420,7 @@ UINT PairFuncs::GetStringID(STRINGPAIRLIST& strplRef, LPCTSTR lpszInput)
 	// Find and return corresponding ID paired with specified string
 	CString strPairedString = STRING_EMPTY;
 	for (int nIndex = 0; nIndex < nSize; nIndex++) {
-		LANGTEXT strPair = strplRef[nIndex];
+		LANGTEXT strPair = strTableRef[nIndex];
 
 		// Also convert language string to lower for easier comparison
 		strPairedString = strPair.lpszLangString;
@@ -3308,19 +3437,19 @@ UINT PairFuncs::GetStringID(STRINGPAIRLIST& strplRef, LPCTSTR lpszInput)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetPairedString
+//	Function name:	GetString
 //	Description:	Find and return string paired with specified ID
-//  Arguments:		strplRef  - Reference string pair list
+//  Arguments:		strplRef  - Reference string table
 //					nID		  - First ID
 //					pszResult - Result string (reference type)
 //  Return value:	LPCTSTR - Paired string
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR	PairFuncs::GetPairedString(STRINGPAIRLIST& strplRef, UINT nID, LPTSTR pszResult /* = NULL */)
+LPCTSTR	TableFuncs::GetString(STRINGTABLE& strTableRef, UINT nID, LPTSTR pszResult /* = NULL */)
 {
 	// Return NULL string if language table is empty
-	int nSize = strplRef.size();
+	int nSize = strTableRef.size();
 	if (nSize == 0) {
 		if (pszResult != NULL) pszResult = STRING_NULL;
 		return STRING_NULL;
@@ -3328,7 +3457,7 @@ LPCTSTR	PairFuncs::GetPairedString(STRINGPAIRLIST& strplRef, UINT nID, LPTSTR ps
 
 	// Find and return corresponding string paired with specified ID
 	for (int nIndex = 0; nIndex < nSize; nIndex++) {
-		LANGTEXT strPair = strplRef[nIndex];
+		LANGTEXT strPair = strTableRef[nIndex];
 
 		if (strPair.dwLangStringID == nID) {
 			if (pszResult != NULL) {
@@ -3342,6 +3471,7 @@ LPCTSTR	PairFuncs::GetPairedString(STRINGPAIRLIST& strplRef, UINT nID, LPTSTR ps
 	if (pszResult != NULL) {
 		pszResult = STRING_NULL;
 	}
+
 	return STRING_NULL;
 }
 
@@ -3349,35 +3479,37 @@ LPCTSTR	PairFuncs::GetPairedString(STRINGPAIRLIST& strplRef, UINT nID, LPTSTR ps
 // 
 //	Function name:	GetLanguageName
 //	Description:	Get the title name of current language
-//  Arguments:		nCurLanguage - Current language ID
+//  Arguments:		nCurLanguage	- Current language ID
+//					bGetDescription - Get language package description
+//					pszResult		- Result string pointer (in/out)
 //  Return value:	LPCTSTR - Language name
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCSTR PairFuncs::GetLanguageName(UINT nCurLanguage, LPSTR pszResult /* = NULL */)
+LPCTSTR TableFuncs::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = FALSE */, LPTSTR pszResult /* = NULL */)
 {
-	LPCSTR lpszLangName;
-	switch (nCurLanguage)
-	{
-	case APP_LANGUAGE_ENGLISH:
-		lpszLangName = "English";
-		break;
-	case APP_LANGUAGE_VIETNAMESE:
-		lpszLangName = "Vietnamese";
-		break;
-	case APP_LANGUAGE_SIMPCHINESE:
-		lpszLangName = "Simplified Chinese";
-		break;
-	default:
-		lpszLangName = "Unknown";
-		break;
-	}
-	// Get language table name
-	if (pszResult != NULL) {
-		strcpy(pszResult, lpszLangName);
+	// Load language table package
+	LANGTABLE_PTR ptrLangTable = LoadLanguageTable(nCurLanguage);
+	if (ptrLangTable == NULL) {
+		// Unknown result
+		if (pszResult != NULL)	pszResult = VALUE_UNKNOWN;
+		return VALUE_UNKNOWN;
 	}
 
-	return lpszLangName;
+	// Get language package info
+	UINT nInfoTargetID = (bGetDescription) ? LANGPACKINFO_DESCRIPTIONFULL : LANGPACKINFO_LANGNAMEID;
+	LPCTSTR lpszRetInfoString = GetLanguageString(ptrLangTable, nInfoTargetID);
+	if (IS_NULL_STRING(lpszRetInfoString)) {
+		// Unknown result
+		lpszRetInfoString = VALUE_UNKNOWN;
+	}
+
+	// Return result
+	if (pszResult != NULL) {
+		_tcscpy(pszResult, lpszRetInfoString);
+	}
+
+	return lpszRetInfoString;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3391,38 +3523,34 @@ LPCSTR PairFuncs::GetLanguageName(UINT nCurLanguage, LPSTR pszResult /* = NULL *
 //
 //////////////////////////////////////////////////////////////////////////
 
-LANGTABLE_PTR PairFuncs::LoadLanguageTable(UINT nCurLanguage, LPSTR pszRetLangName /* = NULL */, int* pnSize /* = NULL */)
+LANGTABLE_PTR TableFuncs::LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangName /* = NULL */, int* pnSize /* = NULL */)
 {
 	LANGTABLE_PTR ptrLangTable = NULL;
-	LPCSTR lpszLangName;
 
 	switch (nCurLanguage)
 	{
 	case APP_LANGUAGE_ENGLISH:
 		// Language: English (United States)
 		ptrLangTable = &langtable_en_US;
-		lpszLangName = "English";
 		break;
 	case APP_LANGUAGE_VIETNAMESE:
 		// Language: Vietnamese (Vietnam)
 		ptrLangTable = &langtable_vi_VN;
-		lpszLangName = "Vietnamese";
 		break;
 	case APP_LANGUAGE_SIMPCHINESE:
 		// Language: Simplified Chinese (China mainland)
 		ptrLangTable = &langtable_zh_CH;
-		lpszLangName = "Simplified Chinese";
 		break;
 	default:
 		// Default language: English
 		ptrLangTable = &langtable_en_US;
-		lpszLangName = "English";
 		break;
 	}
 
-	// Get language table name
-	if (pszRetLangName != NULL) {
-		strcpy(pszRetLangName, lpszLangName);
+	// Get language table name ID
+	if ((pszRetLangName != NULL) && (ptrLangTable != NULL)) {
+		LPCTSTR lpszLangName = GetLanguageString(ptrLangTable, LANGPACKINFO_LANGNAMEID);
+		_tcscpy(pszRetLangName, lpszLangName);
 	}
 
 	// Get language table size
@@ -3444,7 +3572,7 @@ LANGTABLE_PTR PairFuncs::LoadLanguageTable(UINT nCurLanguage, LPSTR pszRetLangNa
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR PairFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult /* = NULL */)
+LPCTSTR TableFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult /* = NULL */)
 {
 	// Return NULL string if language table is empty
 	if ((ptLanguage == NULL) || (ptLanguage->empty())) {
@@ -3686,7 +3814,7 @@ void CoreFuncs::SetDefaultData(PCONFIGDATA pcfgData)
 	pcfgData->bSaveHistoryLog = FALSE;
 	pcfgData->bSaveAppEventLog = TRUE;
 	pcfgData->bRunAsAdmin = FALSE;
-	pcfgData->bShowErrorMsg = FALSE;
+	pcfgData->bShowErrorMsg = TRUE;
 	pcfgData->bNotifySchedule = TRUE;
 	pcfgData->bAllowCancelSchedule = FALSE;
 	pcfgData->bEnableBackgroundHotkey = FALSE;
@@ -3942,7 +4070,7 @@ void CoreFuncs::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLi
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = DEF_INTEGER_INVALID */)
+void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = INT_INVALID */)
 {
 	// Get debug mode enable state
 	BOOL bDebugModeEnable = GetDebugMode();
@@ -3985,7 +4113,7 @@ void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = DEF_I
 		if (hDebugTestWnd == NULL) return;
 		WPARAM wParam = MAKE_WPARAM_STRING(strDebugLog);
 		LPARAM lParam = MAKE_LPARAM_STRING(strDebugLog);
-		SendMessage(hDebugTestWnd, SM_APP_DEBUGOUTPUT, wParam, lParam);
+		SendMessage(hDebugTestWnd, SM_APP_DEBUG_OUTPUT, wParam, lParam);
 	}
 }
 
@@ -4669,7 +4797,7 @@ LRESULT	CoreFuncs::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIME
 
 	// Wait for message
 	while (1) {
-		MSG msg = {0};
+		MSG msg = STRUCT_ZERO;
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
 
 			// If received specified message, break the loop
@@ -4706,17 +4834,18 @@ LRESULT	CoreFuncs::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIME
 
 void CoreFuncs::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
 {
-	using namespace PairFuncs;
+	// Use table functions
+	using namespace TableFuncs;
 
 	// Get application-defined error code from system-defined error code
-	DWORD dwAppErrCode = GetPairedID(idplErrorCode, dwErrorCode, TRUE);
+	DWORD dwAppErrCode = GetPairedID(idTableErrorCode, dwErrorCode, TRUE);
 	if (dwAppErrCode != INT_INVALID) {
 		// Replace with application-defined error code
 		dwErrorCode = dwAppErrCode;
 	}
 
 	// Get error message string ID
-	int nErrMsgID = GetPairedID(idplErrorMessage, dwErrorCode);
+	int nErrMsgID = GetPairedID(idTableErrorMessage, dwErrorCode);
 
 	// Invalid error message ID
 	if (nErrMsgID == INT_INVALID) {
@@ -4734,14 +4863,14 @@ void CoreFuncs::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwEr
 		return;
 
 	// Get language strings
-	CString strMessage = GetLanguageString(pAppLang, nErrMsgID);
-	CString strCaption = GetLanguageString(pAppLang, MSGBOX_ERROR_CAPTION);
+	CString strErrMessage = GetLanguageString(pAppLang, nErrMsgID);
+	CString strErrCaption = GetLanguageString(pAppLang, MSGBOX_ERROR_CAPTION);
 
 	// In case of unknown error, attach the error code
 	if (nErrMsgID == MSGBOX_ERROR_UNKNOWN) {
 		CString strTemp;
-		strTemp.Format(strMessage, dwErrorCode);
-		strMessage = strTemp;
+		strTemp.Format(strErrMessage, dwErrorCode);
+		strErrMessage = strTemp;
 	}
 
 	// Get attached param
@@ -4751,18 +4880,18 @@ void CoreFuncs::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwEr
 		strDescription = LPARAM_TO_STRING(lParam);
 	}
 
-	// Attach description if available
-	if (_tcscmp(strDescription, STRING_NULL)) {
-		strMessage.Append(STRING_ENDLINE);
-		strMessage.Append(strDescription);
+	// Attach additional description if available
+	if (IS_NOT_NULL_STRING(strDescription)) {
+		strErrMessage.Append(STRING_NEWLINE);
+		strErrMessage.Append(strDescription);
 	}
 
 	// Show error message
-	MessageBox(hMsgOwnerWnd, strMessage, strCaption, MB_OK | MB_ICONERROR | MB_SYSTEMMODAL);
+	MessageBox(hMsgOwnerWnd, strErrMessage, strErrCaption, MB_OK | MB_ICONERROR | MB_TOPMOST | MB_SETFOREGROUND);
 
 	// Notify application class about error message showing
 	WPARAM wAppMsgParam = (WPARAM)dwErrorCode;
-	LPARAM lAppMsgParam = MAKE_LPARAM_STRING(strMessage);
+	LPARAM lAppMsgParam = MAKE_LPARAM_STRING(strErrMessage);
 	PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, wAppMsgParam, lAppMsgParam);
 }
 
@@ -5201,13 +5330,13 @@ SYSTEMTIME CoreFuncs::GetCurSysTime(void)
 void CoreFuncs::CalcTimeOffset(SYSTEMTIME& stTime, int nOffset)
 {
 	// Convert to seconds and calculate offset
-	UINT nTotalSecs = (stTime.wHour * 3600) + (stTime.wMinute * 60) + (stTime.wSecond);
+	UINT nTotalSecs = TIME_TO_SECONDS(stTime);
 	nTotalSecs += nOffset;
 
 	// Revert back to time data
-	stTime.wHour = nTotalSecs / 3600;
-	stTime.wMinute = (nTotalSecs % 3600) / 60;
-	stTime.wSecond = (nTotalSecs % 3600) % 60;
+	stTime.wHour = GET_HOUR(nTotalSecs);
+	stTime.wMinute = GET_MINUTE(nTotalSecs);
+	stTime.wSecond = GET_SECOND(nTotalSecs);
 
 	// Re-correct time data
 	if (stTime.wHour >= 24) {
@@ -5285,7 +5414,7 @@ CString	CoreFuncs::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString,
 {
 	// Format time string
 	UINT nMiddayFlag = (timeVal.wHour < 12) ? FORMAT_TIME_BEFOREMIDDAY : FORMAT_TIME_AFTERMIDDAY;
-	CString strMiddayFormat = PairFuncs::GetLanguageString(pLang, nMiddayFlag);
+	CString strMiddayFormat = TableFuncs::GetLanguageString(pLang, nMiddayFlag);
 	WORD wHour = (timeVal.wHour > 12) ? (timeVal.wHour - 12) : timeVal.wHour;
 	WORD wMinute = timeVal.wMinute;
 
@@ -5306,8 +5435,11 @@ CString	CoreFuncs::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString,
 
 LPCTSTR CoreFuncs::LoadResourceString(UINT nResStringID)
 {
-	// Load resource string
+	// Output result
 	static CString strResult;
+	strResult.Empty();
+
+	// Load resource string
 	BOOL bRet = strResult.LoadString(nResStringID);
 	if (bRet == FALSE) {
 		// Null string
@@ -5666,6 +5798,7 @@ LPCTSTR CoreFuncs::StringFormat(UINT nFormatTemplateID, ...)
 
 	// Result string
 	static CString strResult;
+	strResult.Empty();
 
 	// Format string
 	va_list argList;
@@ -5693,6 +5826,7 @@ LPCTSTR CoreFuncs::StringFormat(LPCTSTR lpszFormatTemplate, ...)
 
 	// Result string
 	static CString strResult;
+	strResult.Empty();
 
 	// Format string
 	va_list argList;
@@ -5707,105 +5841,104 @@ LPCTSTR CoreFuncs::StringFormat(LPCTSTR lpszFormatTemplate, ...)
 // 
 //	Function name:	SubString
 //	Description:	Get a substring from a source string
-//  Arguments:		lpszSrc		   - Source string
-//					strDest		   - Destination string
-//					tcStart		   - Start character
-//					tcEnd		   - End character
-//					nSubStringType - Type of substring (left/mid/right)
+//  Arguments:		lpszSrc		 - Source string
+//					subDest		 - Destination substring data
+//					tcFirstChar	 - First separator character
+//					tcLastChar	 - Last separator character
+//					bIncSepChar	 - Include separator characters
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd, UINT nSubStringType)
+BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL bIncSepChar /* = FALSE */)
 {
 	CString strSrc(lpszSrc);
+
+	// Empty destination data
+	subDest.RemoveAll();
+
+	// If source string is empty
 	if (strSrc.IsEmpty()) {
-		TraceLogFormat("Function: CoreFuncs::GetSubString(), Error: Source string is empty");
-		strDest = STRING_EMPTY;
+		TRCLOG("Function: CoreFuncs::GetSubString(), Error: Source string is empty");
 		return FALSE;
 	}
 
-	// Find starting and ending index
-	int nStart = (tcStart != NULL) ? (strSrc.Find(tcStart)) : INT_INVALID;
-	int nEnd = (tcEnd != NULL) ? (strSrc.Find(tcEnd)) : INT_INVALID;
+	// Find starting and ending character index
+	INT_PTR nFirstIndex = (tcFirstChar != NULL) ? (strSrc.Find(tcFirstChar)) : INT_INVALID;
+	INT_PTR nLastIndex = (tcLastChar != NULL) ? (strSrc.ReverseFind(tcLastChar)) : INT_INVALID;
 
 	// Debug log
-	OutputDebugLogFormat(_T("[ALSTest] ==> GetSubString: nStart=%d, nEnd=%d"), nStart, nEnd);
+	OutputDebugStringFormat(_T("[ALSTest] ==> GetSubString: nFirstIndex=%d, nLastIndex=%d"), nFirstIndex, nLastIndex);
 
-	CString strResult = STRING_EMPTY;
+	// Temporary output data
+	SUBSTRING subResult;
 
-	switch (nSubStringType)
-	{
-	case SUBSTR_LEFT:
-		if (nEnd != INT_INVALID)
-			strResult = strSrc.Left(nEnd);
-		break;
-	case SUBSTR_MID:
-		if ((nStart != INT_INVALID) && (nEnd != INT_INVALID))
-			strResult = strSrc.Mid((nStart + 1), (nEnd - (nStart + 1)));
-		break;
-	case SUBSTR_RIGHT:
-		if (nStart != INT_INVALID)
-			strResult = strSrc.Right(strSrc.GetLength() - (nStart + 1));
-		break;
-	default:
-		TRCLOG("Error: Invalid argument (2)");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
-		break;
+	/**********************************************************************************************************/
+	/*                                                                                                        */
+	/*	Visualize how to get substring parts                                                                  */
+	/*	Example:                                                                                              */
+	/*				Source string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  --> Length = 26                             */
+	/*				Case #1:                                                                                  */
+	/*						First character = 'E' --> Index = 4                                               */
+	/*						Last character = 'R'  --> Index = 17                                              */
+	/*					Output:                                                                               */
+	/*							Left	= "ABCD"			--> Range = [0 -> 3]	--> Count = 4             */
+	/*							Middle	= "FGHIJKLMNOPQ"	--> Range = [5 -> 16]	--> Count = 12            */
+	/*							Right	= "STUVWXYZ"		--> Range = [18 -> 25]	--> Count = 8             */
+	/*				Case #2:                                                                                  */
+	/*						First character = '?' --> Index = -1                                              */
+	/*						Last character = 'M'  --> Index = 12                                              */
+	/*					Output:                                                                               */
+	/*							Left	= "ABCDEFGHIJKL"	--> Range = [0 -> 11]	--> Count = 12            */
+	/*							Middle	= Empty                                                               */
+	/*							Right	= "NOPQRSTUVWXYZ"	--> Range = [13 -> 25]	--> Count = 13            */
+	/*				Case #3:                                                                                  */
+	/*						First character = 'K' --> Index = 10                                              */
+	/*						Last character = '?'  --> Index = -1                                              */
+	/*					Output:                                                                               */
+	/*							Left	= "ABCDEFGHIJ"		--> Range = [0 -> 9]	--> Count = 10            */
+	/*							Middle	= Empty                                                               */
+	/*							Right	= "LMNOPQRSTUVWXYZ"	--> Range = [11 -> 25]	--> Count = 15            */
+	/*                                                                                                        */
+	/**********************************************************************************************************/
+
+	// Get substring parts
+	if ((nFirstIndex != INT_INVALID) && (nLastIndex != INT_INVALID)) {
+
+		// Case #1:
+		subResult.strLeft = strSrc.Left(nFirstIndex);
+		subResult.strMid = strSrc.Mid((nFirstIndex + 1), (nLastIndex - nFirstIndex));
+		subResult.strRight = strSrc.Right(strSrc.GetLength() - (nLastIndex + 1));
+	}
+	else if ((nFirstIndex == INT_INVALID) && (nLastIndex != INT_INVALID)) {
+
+		// Case #2:
+		subResult.strLeft = strSrc.Left(nLastIndex);
+		subResult.strMid = STRING_EMPTY;
+		subResult.strRight = strSrc.Right(strSrc.GetLength() - (nLastIndex + 1));
+	}
+	else if ((nFirstIndex != INT_INVALID) && (nLastIndex == INT_INVALID)) {
+
+		// Case #3:
+		subResult.strLeft = strSrc.Left(nFirstIndex);
+		subResult.strMid = STRING_EMPTY;
+		subResult.strRight = strSrc.Right(strSrc.GetLength() - (nFirstIndex + 1));
 	}
 
-	// Debug log
-	OutputDebugLogFormat(_T("[ALSTest] ==> GetSubString return: %s"), strResult);
-
 	// Get result
-	BOOL bRet = (!strResult.IsEmpty());
-	strDest = STRING_EMPTY;
+	BOOL bRet = (!subResult.IsEmpty());
+	if (bRet != FALSE) {
+
+		// Trim spaces
+		subResult.strLeft.Trim();
+		subResult.strMid.Trim();
+		subResult.strRight.Trim();
+
+		// Copy output result
+		subDest.Copy(subResult);
+	}
+
 	return bRet;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SubString
-//	Description:	Get a substring from a source string
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL CoreFuncs::Left(LPCTSTR lpszSrc, CString& strDest, TCHAR tcEnd)
-{
-	// Get substring
-	return SubString(lpszSrc, strDest, NULL, tcEnd, SUBSTR_LEFT);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SubString
-//	Description:	Get a substring from a source string
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL CoreFuncs::Mid(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart, TCHAR tcEnd)
-{
-	// Get substring
-	return SubString(lpszSrc, strDest, tcStart, tcEnd, SUBSTR_MID);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SubString
-//	Description:	Get a substring from a source string
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL CoreFuncs::Right(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart)
-{
-	// Get substring
-	return SubString(lpszSrc, strDest, tcStart, NULL, SUBSTR_RIGHT);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -5813,24 +5946,39 @@ BOOL CoreFuncs::Right(LPCTSTR lpszSrc, CString& strDest, TCHAR tcStart)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetAppPath
-//	Description:	Get app executable file path
-//  Arguments:		None
-//  Return value:	LPCTSTR - Return app executive file path
+//	Function name:	GetApplicationPath
+//	Description:	Get application executable file path
+//  Arguments:		bIncludeExeName - Including executable file name
+//  Return value:	LPCTSTR - Return application path
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR CoreFuncs::GetAppPath(void)
+LPCTSTR CoreFuncs::GetApplicationPath(BOOL bIncludeExeName)
 {
-	// Get app module handler
+	// Get the application's module handle
 	HMODULE hModule = GetModuleHandle(NULL);
 
-	// Get app module file path
+	// Get the full path of the executable file of the module
 	TCHAR tcAppPath[MAX_PATH];
-	GetModuleFileName(hModule, tcAppPath, MAX_PATH);
+	if (!GetModuleFileName(hModule, tcAppPath, MAX_PATH))
+		return STRING_EMPTY;
 
-	CString strAppPath(tcAppPath);
-	return strAppPath.GetString();
+	// Full path result
+	static CString strRetAppPath;
+	strRetAppPath.Empty();
+	strRetAppPath = tcAppPath;
+
+	// If not including the executable file name
+	if (bIncludeExeName != TRUE) {
+		// Remove the executable file name from the path
+		int nPos = strRetAppPath.ReverseFind(CHAR_BACKSLASH);
+		if (nPos != INT_INVALID) {
+			CString strTemp = strRetAppPath.Left(nPos);
+			strRetAppPath = strTemp;
+		}
+	}
+
+	return strRetAppPath.GetString();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5938,6 +6086,106 @@ BOOL CoreFuncs::GetProductVersion(CString& strFullVersion, CString& strShortVers
 
 	delete[] pVersionInfo;
 
+	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetWindowsVersion
+//	Description:	Get Windows OS build version
+//  Arguments:		None
+//  Return value:	UINT - Windows version macro
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT CoreFuncs::GetWindowsOSVersion(void)
+{
+	// Init info data
+	OSVERSIONINFOEX oviOSVersion;
+	oviOSVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+
+	NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFOEXW);
+	*(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
+
+	// Get Window OS version
+	if (RtlGetVersion != NULL)
+		RtlGetVersion(&oviOSVersion);
+
+	// Return Windows OS version macro
+	UINT nRetWinVer = WINDOWS_VERSION_NONE;
+	if (oviOSVersion.dwBuildNumber >= OS_BUILDNUMBER_W11_EARLIEST) {
+		// Is Windows 11
+		nRetWinVer = WINDOWS_VERSION_11;
+	}
+	else if (oviOSVersion.dwBuildNumber >= OS_BUILDNUMBER_W10_ORIGINAL) {
+		// Is Windows 10
+		nRetWinVer = WINDOWS_VERSION_10;
+	}
+	else if ((oviOSVersion.dwBuildNumber >= OS_BUILDNUMBER_W8_EARLIEST) &&
+		(oviOSVersion.dwBuildNumber <= OS_BUILDNUMBER_W8_LATEST)) {
+		// Is Windows 8/8.1
+		nRetWinVer = WINDOWS_VERSION_8;
+	}
+	else if ((oviOSVersion.dwBuildNumber >= OS_BUILDNUMBER_W7_EARLIEST) &&
+		(oviOSVersion.dwBuildNumber <= OS_BUILDNUMBER_W7_LATEST)) {
+		// Is Windows 7
+		nRetWinVer = WINDOWS_VERSION_7;
+	}
+	else {
+		// Unknown version
+		nRetWinVer = WINDOWS_VERSION_UNKNOWN;
+	}
+
+	return nRetWinVer;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDeviceName
+//	Description:	Get the computer device name
+//  Arguments:		strDeviceName - Device name (out)
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CoreFuncs::GetDeviceName(CString& strDeviceName)
+{
+	// Empty the output string
+	strDeviceName.Empty();
+
+	// Get the computer device name
+	TCHAR tcDeviceName[MAX_COMPUTERNAME_LENGTH + 1];
+	DWORD dwNameLength = sizeof(tcDeviceName) / sizeof(TCHAR);
+	if (!GetComputerName(tcDeviceName, &dwNameLength))
+		return FALSE;
+
+	// Return the computer name
+	strDeviceName = tcDeviceName;
+	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetCurrentUserName
+//	Description:	Get the current Windows user name
+//  Arguments:		strUserName - User name (out)
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CoreFuncs::GetCurrentUserName(CString& strUserName)
+{
+	// Empty the output string
+	strUserName.Empty();
+
+	// Get the current user name
+	TCHAR tcUserName[UNLEN + 1];
+	DWORD dwNameLength = sizeof(tcUserName) / sizeof(TCHAR);
+	if (!GetUserName(tcUserName, &dwNameLength))
+		return FALSE;
+
+	// Return the user name
+	strUserName = tcUserName;
 	return TRUE;
 }
 
@@ -6051,8 +6299,11 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 		strKeyName.Format(regInfo.regKeyInfo.strKeyName);
 	}
 
-	// Registry path type
+	// Result string
 	static CString strRegFullPath;
+	strRegFullPath.Empty();
+
+	// Make registry path by type
 	int nRetFailedFlag = FLAG_OFF;
 	if (!strRootKey.IsEmpty()) {
 
@@ -6137,7 +6388,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	PlaySound
-//	Description:	Play "BEEP" sound when sound enabled
+//	Description:	Play "BEEP" sound when sound is enabled
 //  Arguments:		bSoundEnable - Enable sound
 //					nTypeOfSound - Type of sound
 //  Return value:	None
@@ -6146,11 +6397,11 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 
 void CoreFuncs::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 {
-	// Sound not enabled, do nothing
+	// If sound is not enabled, do nothing
 	if (!bSoundEnable)
 		return;
 
-	// Play sound here
+	// Play sound by type here
 	switch (nTypeOfSound)
 	{
 	case APP_SOUND_ERROR:
@@ -6189,7 +6440,7 @@ BOOL CoreFuncs::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
 
 	// Run a file viewer instance
 	HWND hWnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
-	HINSTANCE hInstance = ShellExecute(hWnd, _T("open"), strAppPath, lpszFilePath, NULL, SW_SHOW);
+	HINSTANCE hInstance = ShellExecute(hWnd, COMMAND_FLAG_OPEN, strAppPath, lpszFilePath, NULL, SW_SHOW);
 	return (hInstance != NULL);
 }
 
@@ -6223,11 +6474,11 @@ BOOL CoreFuncs::OpenWebURL(LPCTSTR lpszWebUrl)
 LRESULT CoreFuncs::RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin /* = FALSE */, BOOL bShowFlag /* = TRUE */)
 {
 	// Param set
-	CString strRunAs = (bRunAsAdmin) ? _T("runas") : _T("open");
+	CString strRunAs = (bRunAsAdmin) ? COMMAND_FLAG_RUNAS : COMMAND_FLAG_OPEN;
 	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
 
 	// Run an executable instance
-	HINSTANCE hInstance = ShellExecute(0, strRunAs, lpszAppPath, 0, 0, nShowFlag);
+	HINSTANCE hInstance = ShellExecute(NULL, strRunAs, lpszAppPath, 0, 0, nShowFlag);
 	return (LRESULT)(hInstance != NULL);
 }
 
@@ -6242,18 +6493,18 @@ LRESULT CoreFuncs::RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin /* = FALSE */, B
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CoreFuncs::ExecuteCommand(LPCTSTR lpszCmd, BOOL bRunAsAdmin /* = TRUE */, BOOL bShowFlag /* = TRUE */)
+LRESULT CoreFuncs::ExecuteCommand(LPCTSTR lpszCommand, BOOL bRunAsAdmin /* = TRUE */, BOOL bShowFlag /* = TRUE */)
 {
-	// Format command
-	CString strCmdFormat;
-	strCmdFormat.Format(_T("/C %s"), lpszCmd);
+	// Format input command
+	CString strCommandFormat;
+	strCommandFormat.Format(_T("/C %s"), lpszCommand);
 
-	// Param set
-	CString strRunAs = (bRunAsAdmin) ? _T("runas") : _T("open");
+	// Flag param set
+	CString strRunAsFlag = (bRunAsAdmin) ? COMMAND_FLAG_RUNAS : COMMAND_FLAG_OPEN;
 	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
 
 	// Excute command
-	HINSTANCE hInstance = ShellExecute(0, strRunAs, _T("cmd.exe"), strCmdFormat, 0, nShowFlag);
+	HINSTANCE hInstance = ShellExecute(NULL, strRunAsFlag, PATH_APP_SYSTEMCMD, strCommandFormat, 0, nShowFlag);
 	return (LRESULT)(hInstance != NULL);
 }
 
@@ -6352,7 +6603,7 @@ BOOL CoreFuncs::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* = DEF_STRING_EMPTY */)
+void CoreFuncs::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* = STRING_EMPTY */)
 {
 	// Check validity
 	if (pBtn == NULL)
@@ -6408,7 +6659,7 @@ BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* lpn
 BOOL CoreFuncs::EnumFontNames(std::vector<std::wstring>& fontNames)
 {
 	// Define temp font
-	LOGFONT logfont = { 0 };
+	LOGFONT logfont = STRUCT_ZERO;
 	logfont.lfCharSet = DEFAULT_CHARSET;
 
 	// Get font families

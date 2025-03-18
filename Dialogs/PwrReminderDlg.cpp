@@ -24,7 +24,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 using namespace RegFuncs;
 
@@ -97,7 +97,7 @@ CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
 	m_nCheckCount = 0;
 	m_nCurSelIndex = -1;
 	m_nCurDispIndex = -2;
-	m_stDispTimeBak = {0};
+	m_stDispTimeBak = SYSTEMTIME_ZERO;
 
 	INIT_CLASS_IDMAP()
 }
@@ -354,6 +354,7 @@ END_MESSAGE_MAP()
 
 BOOL CPwrReminderDlg::OnInitDialog()
 {
+	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
@@ -376,7 +377,7 @@ BOOL CPwrReminderDlg::OnInitDialog()
 	RefreshDlgItemState(TRUE);
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
 	// Read-only mode (if enabled)
 	if (GetReadOnlyMode() == TRUE) {
@@ -445,7 +446,7 @@ void CPwrReminderDlg::OnClose()
 void CPwrReminderDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
 
 	// Save layout info data
 	UpdateLayoutInfo();
@@ -1072,7 +1073,7 @@ void CPwrReminderDlg::OnRepeatSet()
 	if (m_pRepeatSetDlg == NULL) {
 		m_pRepeatSetDlg = new CRmdRepeatSetDlg;
 		m_pRepeatSetDlg->Create(IDD_RMDREPEATSET_DLG);
-		m_pRepeatSetDlg->RemoveDialogStyle(DS_MODALFRAME | WS_CAPTION);
+		m_pRepeatSetDlg->RemoveStyle(DS_MODALFRAME | WS_CAPTION);
 		m_pRepeatSetDlg->SetParentWnd(this);
 	}
 
@@ -1091,9 +1092,9 @@ void CPwrReminderDlg::OnRepeatSet()
 			m_pRepeatSetDlg->ShowWindow(SW_HIDE);
 		}
 		else {
-			// Set dialog align
+			// Set dialog alignment
 			UINT nAlign = SDA_LEFTALIGN | SDA_TOPALIGN;
-			m_pRepeatSetDlg->SetDialogAlign(nAlign);
+			m_pRepeatSetDlg->SetAlignment(nAlign);
 
 			// Get button top-right point
 			POINT ptBtnTopRight;
@@ -1101,7 +1102,7 @@ void CPwrReminderDlg::OnRepeatSet()
 			ptBtnTopRight.y = rcButton.top;
 
 			// Set dialog position
-			m_pRepeatSetDlg->SetDialogPosition(ptBtnTopRight);
+			m_pRepeatSetDlg->SetPosition(ptBtnTopRight);
 
 			// Show dialog
 			m_pRepeatSetDlg->ShowWindow(SW_SHOW);
@@ -1246,7 +1247,7 @@ void CPwrReminderDlg::SetupLanguage()
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetLangDialogCaption(GetDialogID());
+	this->SetCaptionFromLanguage(GetDialogID());
 
 	// Loop through all dialog items and setup language for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -1407,7 +1408,7 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 	// Setup display size
 	int nFrameHeight = pszFrameWndSize->cy;
 	int nFrameWidth = pszFrameWndSize->cx;
-	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
 		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
@@ -1926,7 +1927,7 @@ void CPwrReminderDlg::UpdateDataItemList()
 		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_MESSAGE, strTemp);
 
 		// EventID
-		nTemp = GetPairedID(idplPwrReminderEvt, pwrItem.nEventID);
+		nTemp = GetPairedID(idTablePwrReminderEvt, pwrItem.nEventID);
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
 		if (pwrItem.nEventID == PREVT_AT_SETTIME) {
 			// Format time string
@@ -1936,7 +1937,7 @@ void CPwrReminderDlg::UpdateDataItemList()
 		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_EVENTID, strTemp);
 
 		// Message style
-		nTemp = GetPairedID(idplPwrReminderStyle, pwrItem.dwMsgStyle);
+		nTemp = GetPairedID(idTablePwrReminderStyle, pwrItem.dwMsgStyle);
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
 		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_STYLE, strTemp);
 
@@ -2043,7 +2044,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	if (m_pRepeatSetDlg == NULL) {
 		m_pRepeatSetDlg = new CRmdRepeatSetDlg;
 		m_pRepeatSetDlg->Create(IDD_RMDREPEATSET_DLG);
-		m_pRepeatSetDlg->RemoveDialogStyle(DS_MODALFRAME | WS_CAPTION);
+		m_pRepeatSetDlg->RemoveStyle(DS_MODALFRAME | WS_CAPTION);
 		m_pRepeatSetDlg->SetParentWnd(this);
 	}
 
@@ -2675,7 +2676,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	// Check message content validity
 	CString strMsgContent = pwrDispItem.strMessage;
 	if ((strMsgContent.IsEmpty()) ||
-		(strMsgContent == STRING_NULL)) {
+		(IS_NULL_STRING(strMsgContent))) {
 		// Invalid message content
 		return;
 	}
@@ -2725,7 +2726,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			int nDefTimeout = DEF_PWRREMINDER_PREVIEW_TIMEOUT;
 
 			// Set properties
-			m_pRmdPreviewMsgDlg->SetLangDialogCaption(IDC_PWRREMINDER_PREVIEW_BTN);
+			m_pRmdPreviewMsgDlg->SetCaptionFromLanguage(IDC_PWRREMINDER_PREVIEW_BTN);
 			m_pRmdPreviewMsgDlg->SetDispMessage(strMsgContent);
 			m_pRmdPreviewMsgDlg->SetBkgrdColor(clrMsgBkgrd);
 			m_pRmdPreviewMsgDlg->SetTextColor(clrMsgText);
@@ -3022,7 +3023,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			pwrItem.strMessage = GetLanguageString(pLang, PWRRMD_MSGCONTENT_SAMPLE);
-			if (_tcscmp(pwrItem.strMessage, STRING_NULL)) {
+			if (IS_NOT_NULL_STRING(pwrItem.strMessage)) {
 				// Re-format sample message
 				CString strFormat = pwrItem.strMessage;
 				pwrItem.strMessage.Format(strFormat, pwrItem.nItemID);

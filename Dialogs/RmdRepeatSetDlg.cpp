@@ -115,6 +115,7 @@ END_MESSAGE_MAP()
 
 BOOL CRmdRepeatSetDlg::OnInitDialog()
 {
+	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
 	// Setup display
@@ -136,7 +137,8 @@ BOOL CRmdRepeatSetDlg::OnInitDialog()
 
 void CRmdRepeatSetDlg::OnDestroy()
 {
-	EndDialog(IDCANCEL);
+	// Destroy dialog
+	SDialog::OnDestroy();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -150,6 +152,7 @@ void CRmdRepeatSetDlg::OnDestroy()
 
 void CRmdRepeatSetDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {
+	// Default
 	SDialog::OnActivate(nState, pWndOther, bMinimized);
 
 	// If dialog is inactivated
@@ -435,7 +438,7 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 
 	// Get format string
 	CString strFormat = GetLanguageString(pAppLang, PWRRMD_REPEATSET_SNOOZEINTERVAL);
-	if (!_tcscmp(strFormat, STRING_NULL)) return;
+	if (IS_NULL_STRING(strFormat)) return;
 
 	// Check validity
 	if (((nValue * 60) < DEF_REPEATSET_MIN_SNOOZE) ||
@@ -466,12 +469,12 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CRmdRepeatSetDlg::GetSnoozeInterval()
+AFX_INLINE int CRmdRepeatSetDlg::GetSnoozeInterval() const
 {
 	return m_nSnoozeInterval;
 }
 
-void CRmdRepeatSetDlg::SetSnoozeInterval(int nValue)
+AFX_INLINE void CRmdRepeatSetDlg::SetSnoozeInterval(int nValue)
 {
 	m_nSnoozeInterval = nValue;
 }

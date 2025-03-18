@@ -67,6 +67,7 @@ public:
 	virtual void OnSize(UINT nType, int nWidth, int nHeight);
 	afx_msg void OnDebugViewEditChange(void);
 	afx_msg LRESULT OnDebugOutput(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnDebugCmdNoReply(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugViewClear(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL PreTranslateMessage(MSG *pMsg);
@@ -80,15 +81,15 @@ private:
 	inline BOOL IsDebugEditViewValid(void);
 	inline BOOL IsDebugEditViewFocus(void);
 
-	int  GetCaretPosition(void);
-	BOOL ShowDebugTestEditViewMenu(void);
+	INT_PTR GetCaretPosition(void);
+	BOOL	ShowDebugTestEditViewMenu(void);
 
 	inline void BackupDebugViewBuffer(void);
 	int  FormatDebugCommand(CString &strDebugCommand);
 	void ClearViewBuffer(void);
 
-	void AddLine(LPCTSTR lpszString);
-	void UpdateDisplay(BOOL bSeekToEnd = FALSE);
+	void AddLine(LPCTSTR lpszString, BOOL bNewLine = TRUE);
+	void UpdateDisplay(BOOL bSeekToEnd = FALSE, BOOL bNotifyParent = TRUE);
 
 	INT_PTR AddDebugCommandHistory(LPCTSTR lpszCommand);
 	void DispDebugCommandHistory(int nHistoryIndex);

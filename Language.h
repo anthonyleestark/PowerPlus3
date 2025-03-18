@@ -43,13 +43,13 @@ typedef struct tagLANGTEXT
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	LANGTABLE/LANGTABLE_PTR
+//	Data type name:	STRINGTABLE/LANGTABLE/LANGTABLE_PTR
 //  Description:	Language package data
 //  Derivered from: C++ vector type
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef const std::vector<LANGTEXT> LANGTABLE, *LANGTABLE_PTR;
+typedef const std::vector<LANGTEXT> STRINGTABLE, LANGTABLE, *LANGTABLE_PTR;
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ static LANGTABLE langtable_en_US
 	{ LANGPACKINFO_LANGNAMEID,								_T("English") },
 	{ LANGPACKINFO_LANGNAMEFULL,							_T("English") },
 	{ LANGPACKINFO_DESCRIPTIONID,							_T("English (United States)") },
-	{ LANGPACKINFO_DESCRIPTIONFULL,							_T("English (United States)")},
+	{ LANGPACKINFO_DESCRIPTIONFULL,							_T("English (United States)") },
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*-------Action Name ID-----------------------------------------------------------------Language String---------------------------------------------------------------*/
@@ -195,7 +195,7 @@ static LANGTABLE langtable_en_US
 	{ IDC_APPNAME_LABEL,								  	_T("Power++ %s (v%s)") },
 	{ IDC_COPYRIGHT_LABEL, 							 		_T("Copyright (C) 2017 - 2024 AnthonyLeeStark.") },
 	{ IDC_AUTH_LABEL,  										_T("Developed by: Anthony Lee Stark (@AnthonyLeeStark)") },
-	{ IDC_DEVPROFILE_LINK,	 								_T("<a>View Developer's Facebook Profile</a>") },
+	{ IDC_VIEW_FACEBOOK_PROFILE_LINK,	 					_T("<a>View Developer's Facebook Profile</a>") },
 	{ IDC_APPINFO_LABEL,						 			_T("Power++ - Quick power action utility\n")
 															_T("Doing power action and setting up power schedule simplier.\n\n")
 															_T("Developer's Profile:\n")
@@ -435,15 +435,15 @@ static LANGTABLE langtable_en_US
 	{ MSGBOX_ERROR_HIBERNATED, 								_T("The system was put into hibernation.") },
 	{ MSGBOX_ERROR_RESUME_HIBERNATION, 						_T("The system was resumed from hibernation.") },
 	{ MSGBOX_ERROR_WAKE_SYSTEM, 							_T("The system has awoken.") },
-	{ MSGBOX_ERROR_BACKUP_REG_FAILED, 						_T("Backup data failed!") },
-	{ MSGBOX_ERROR_LOAD_CFG_FAILED, 						_T("Load configuration data failed") },
-	{ MSGBOX_ERROR_SAVE_CFG_FAILED, 						_T("Save configuration data failed") },
-	{ MSGBOX_ERROR_LOAD_SCHED_FAILED, 						_T("Load schedule data failed") },
-	{ MSGBOX_ERROR_SAVE_SCHED_FAILED, 						_T("Save schedule data failed") },
-	{ MSGBOX_ERROR_LOAD_HKEYSET_FAILED, 					_T("Load hotkeyset data failed") },
-	{ MSGBOX_ERROR_SAVE_HKEYSET_FAILED, 					_T("Save hotkeyset data failed") },
-	{ MSGBOX_ERROR_LOAD_PWRRMD_FAILED, 						_T("Load reminder data failed") },
-	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("Save reminder data failed") },
+	{ MSGBOX_ERROR_BACKUP_REG_FAILED, 						_T("Backup data failed!!!") },
+	{ MSGBOX_ERROR_LOAD_CFG_FAILED, 						_T("Load configuration data failed!!!") },
+	{ MSGBOX_ERROR_SAVE_CFG_FAILED, 						_T("Save configuration data failed!!!") },
+	{ MSGBOX_ERROR_LOAD_SCHED_FAILED, 						_T("Load schedule data failed!!!") },
+	{ MSGBOX_ERROR_SAVE_SCHED_FAILED, 						_T("Save schedule data failed!!!") },
+	{ MSGBOX_ERROR_LOAD_HKEYSET_FAILED, 					_T("Load hotkeyset data failed!!!") },
+	{ MSGBOX_ERROR_SAVE_HKEYSET_FAILED, 					_T("Save hotkeyset data failed!!!") },
+	{ MSGBOX_ERROR_LOAD_PWRRMD_FAILED, 						_T("Load reminder data failed!!!") },
+	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("Save reminder data failed!!!") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("Write log failed") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("Output log failed") },
 	{ MSGBOX_ERROR_UNKNOWN, 								_T("Unknown error (Error code: 0x%04X).") },
@@ -518,7 +518,7 @@ static LANGTABLE langtable_en_US
 /*-----------History log----------------------------------------------------------------Language String---------------------------------------------------------------*/
 	{ LOG_HISTORY_EXEC_PWRACTION,							_T("Power action executed") },
 	{ LOG_HISTORY_EXEC_SCHEDULE,							_T("Schedule executed") },
-	{ LOG_HISTORY_EXEC_HOTKEY,								_T("Hotkey action excuted") },
+	{ LOG_HISTORY_EXEC_HOTKEY,								_T("Hotkey action executed") },
 	{ LOG_HISTORY_DISP_PWRREMINDER,							_T("Reminder message displayed") },
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 };
@@ -660,7 +660,7 @@ static LANGTABLE langtable_vi_VN
 	{ IDC_APPNAME_LABEL,									_T("Power++ %s (v%s)") },
 	{ IDC_COPYRIGHT_LABEL, 									_T("Bản quyền thuộc (C) AnthonyLeeStark 2017 - 2024.") },
 	{ IDC_AUTH_LABEL,  										_T("Phát triển bởi: Anthony Lee Stark (@AnthonyLeeStark)") },
-	{ IDC_DEVPROFILE_LINK,									_T("<a>Xem trang Facebook cá nhân của tác giả</a>") },
+	{ IDC_VIEW_FACEBOOK_PROFILE_LINK,						_T("<a>Xem trang Facebook cá nhân của tác giả</a>") },
 	{ IDC_APPINFO_LABEL,									_T("Power++ - Tiện ích tắt máy tính nhanh\n")
 															_T("Tắt máy và hẹn giờ tắt nhanh hơn và đơn giản hơn.\n\n")
 															_T("Thông tin người phát triển:\n")
@@ -900,15 +900,15 @@ static LANGTABLE langtable_vi_VN
 	{ MSGBOX_ERROR_HIBERNATED, 								_T("Hệ thống đã rơi vào chế độ ngủ đông.") },
 	{ MSGBOX_ERROR_RESUME_HIBERNATION, 						_T("Hệ thống đã thức khỏi chế độ ngủ đông.") },
 	{ MSGBOX_ERROR_WAKE_SYSTEM, 							_T("Hệ thống đã bị đánh thức.") },
-	{ MSGBOX_ERROR_BACKUP_REG_FAILED, 						_T("Sao lưu dữ liệu thất bại!") },
-	{ MSGBOX_ERROR_LOAD_CFG_FAILED, 						_T("Tải dữ liệu thiết lập cấu hình thất bại!") },
-	{ MSGBOX_ERROR_SAVE_CFG_FAILED, 						_T("Lưu dữ liệu thiết lập cấu hình thất bại!") },
-	{ MSGBOX_ERROR_LOAD_SCHED_FAILED, 						_T("Tải dữ liệu thiết lập hẹn giờ thất bại!") },
-	{ MSGBOX_ERROR_SAVE_SCHED_FAILED, 						_T("Lưu dữ liệu thiết lập hẹn giờ thất bại!") },
-	{ MSGBOX_ERROR_LOAD_HKEYSET_FAILED, 					_T("Tải dữ liệu thiết lập phím tắt thất bại!") },
-	{ MSGBOX_ERROR_SAVE_HKEYSET_FAILED, 					_T("Lưu dữ liệu thiết lập phím tắt thất bại!") },
-	{ MSGBOX_ERROR_LOAD_PWRRMD_FAILED, 						_T("Tải dữ liệu nội dung nhắc nhở thất bại!") },
-	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("Lưu dữ liệu nội dung nhắc nhở thất bại!") },
+	{ MSGBOX_ERROR_BACKUP_REG_FAILED, 						_T("Sao lưu dữ liệu thất bại!!!") },
+	{ MSGBOX_ERROR_LOAD_CFG_FAILED, 						_T("Tải dữ liệu thiết lập cấu hình thất bại!!!") },
+	{ MSGBOX_ERROR_SAVE_CFG_FAILED, 						_T("Lưu dữ liệu thiết lập cấu hình thất bại!!!") },
+	{ MSGBOX_ERROR_LOAD_SCHED_FAILED, 						_T("Tải dữ liệu thiết lập hẹn giờ thất bại!!!") },
+	{ MSGBOX_ERROR_SAVE_SCHED_FAILED, 						_T("Lưu dữ liệu thiết lập hẹn giờ thất bại!!!") },
+	{ MSGBOX_ERROR_LOAD_HKEYSET_FAILED, 					_T("Tải dữ liệu thiết lập phím tắt thất bại!!!") },
+	{ MSGBOX_ERROR_SAVE_HKEYSET_FAILED, 					_T("Lưu dữ liệu thiết lập phím tắt thất bại!!!") },
+	{ MSGBOX_ERROR_LOAD_PWRRMD_FAILED, 						_T("Tải dữ liệu nội dung nhắc nhở thất bại!!!") },
+	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("Lưu dữ liệu nội dung nhắc nhở thất bại!!!") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("Ghi log thất bại") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("Xuất log thất bại") },
 	{ MSGBOX_ERROR_UNKNOWN, 								_T("Lỗi không xác định (Mã lỗi: 0x%04X).") },
@@ -1126,7 +1126,7 @@ static LANGTABLE langtable_zh_CH
 	{ IDC_APPNAME_LABEL,								  	_T("Power++ %s (v%s)") },
 	{ IDC_COPYRIGHT_LABEL, 							 		_T("版权(C)属于2017 - 2024 AnthonyLeeStark.") },
 	{ IDC_AUTH_LABEL,  										_T("开发者：Anthony Lee Stark (@AnthonyLeeStark)") },
-	{ IDC_DEVPROFILE_LINK,	 								_T("<a>查看开发者的Facebook个人资料</a>") },
+	{ IDC_VIEW_FACEBOOK_PROFILE_LINK,	 					_T("<a>查看开发者的Facebook个人资料</a>") },
 	{ IDC_APPINFO_LABEL,						 			_T("Power++ - 快速电源行动实用程序\n")
 															_T("执行电源操作和设置电源计划更简单。\n\n")
 															_T("开发者简介：\n")
@@ -1366,15 +1366,15 @@ static LANGTABLE langtable_zh_CH
 	{ MSGBOX_ERROR_HIBERNATED, 								_T("系统进入休眠状态。") },
 	{ MSGBOX_ERROR_RESUME_HIBERNATION, 						_T("系统已从休眠状态恢复。") },
 	{ MSGBOX_ERROR_WAKE_SYSTEM, 							_T("系统已唤醒。") },
-	{ MSGBOX_ERROR_BACKUP_REG_FAILED, 						_T("备份数据失败！") },
-	{ MSGBOX_ERROR_LOAD_CFG_FAILED, 						_T("加载配置数据失败") },
-	{ MSGBOX_ERROR_SAVE_CFG_FAILED, 						_T("保存配置数据失败") },
-	{ MSGBOX_ERROR_LOAD_SCHED_FAILED, 						_T("加载计划数据失败") },
-	{ MSGBOX_ERROR_SAVE_SCHED_FAILED, 						_T("保存计划数据失败") },
-	{ MSGBOX_ERROR_LOAD_HKEYSET_FAILED, 					_T("加载热键集数据失败") },
-	{ MSGBOX_ERROR_SAVE_HKEYSET_FAILED, 					_T("保存热键集数据失败") },
-	{ MSGBOX_ERROR_LOAD_PWRRMD_FAILED, 						_T("加载提醒数据失败") },
-	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("保存提醒数据失败") },
+	{ MSGBOX_ERROR_BACKUP_REG_FAILED, 						_T("备份数据失败！！！") },
+	{ MSGBOX_ERROR_LOAD_CFG_FAILED, 						_T("加载配置数据失败！！！") },
+	{ MSGBOX_ERROR_SAVE_CFG_FAILED, 						_T("保存配置数据失败！！！") },
+	{ MSGBOX_ERROR_LOAD_SCHED_FAILED, 						_T("加载计划数据失败！！！") },
+	{ MSGBOX_ERROR_SAVE_SCHED_FAILED, 						_T("保存计划数据失败！！！") },
+	{ MSGBOX_ERROR_LOAD_HKEYSET_FAILED, 					_T("加载热键集数据失败！！！") },
+	{ MSGBOX_ERROR_SAVE_HKEYSET_FAILED, 					_T("保存热键集数据失败！！！") },
+	{ MSGBOX_ERROR_LOAD_PWRRMD_FAILED, 						_T("加载提醒数据失败！！！") },
+	{ MSGBOX_ERROR_SAVE_PWRRMD_FAILED, 						_T("保存提醒数据失败！！！") },
 	{ MSGBOX_ERROR_WRITE_LOG_FAILED,						_T("写入日志失败") },
 	{ MSGBOX_ERROR_OUTPUT_LOG_FAILED,						_T("输出日志失败") },
 	{ MSGBOX_ERROR_UNKNOWN, 								_T("未知错误 (错误代码: 0x%04X)。") },

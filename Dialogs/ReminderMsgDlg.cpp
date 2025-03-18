@@ -137,6 +137,7 @@ END_MESSAGE_MAP()
 
 BOOL CReminderMsgDlg::OnInitDialog()
 {
+	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
 	// Set margin
@@ -168,8 +169,8 @@ BOOL CReminderMsgDlg::OnInitDialog()
 	GetDisplayArea(&rcDispArea);
 
 	// Get dialog size
-	CSize szDlgSize;
-	GetDialogSize(&szDlgSize);
+	CSize szDialogSize;
+	this->GetSize(&szDialogSize);
 
 	// If set lock font size
 	if (m_bLockFontSize == TRUE) {
@@ -213,6 +214,7 @@ BOOL CReminderMsgDlg::OnInitDialog()
 
 void CReminderMsgDlg::OnClose()
 {
+	// Close dialog
 	SDialog::OnClose();
 }
 
@@ -227,6 +229,7 @@ void CReminderMsgDlg::OnClose()
 
 void CReminderMsgDlg::OnDestroy()
 {
+	// Destroy dialog
 	SDialog::OnDestroy();
 }
 
@@ -310,6 +313,7 @@ void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 	}
 
+	// Default
 	SDialog::OnTimer(nIDEvent);
 }
 
@@ -408,12 +412,12 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR CReminderMsgDlg::GetDispMessage()
+AFX_INLINE LPCTSTR CReminderMsgDlg::GetDispMessage(void) const
 {
 	return m_strBuffer.GetString();
 }
 
-void CReminderMsgDlg::SetDispMessage(LPCTSTR lpszDispMsg)
+AFX_INLINE void CReminderMsgDlg::SetDispMessage(LPCTSTR lpszDispMsg)
 {
 	m_strBuffer = lpszDispMsg;
 }
@@ -427,40 +431,40 @@ void CReminderMsgDlg::SetDispMessage(LPCTSTR lpszDispMsg)
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT CReminderMsgDlg::GetAutoCloseInterval()
+AFX_INLINE UINT CReminderMsgDlg::GetAutoCloseInterval(void) const
 {
 	return m_nAutoCloseInterval;
 }
 
-void CReminderMsgDlg::SetAutoCloseInterval(UINT nSeconds)
+AFX_INLINE void CReminderMsgDlg::SetAutoCloseInterval(UINT nSeconds)
 {
 	m_nAutoCloseInterval = nSeconds;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetDialogSize
+//	Function name:	SetSize
 //	Description:	Set dialog size
-//  Arguments:		szDialogSize - Dialog size
-//					lWidth		 - Dialog width
-//					lHeight		 - Dialog height
+//  Arguments:		szRegSize - Dialog size
+//					lWidth	  - Dialog width
+//					lHeight	  - Dialog height
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::SetDialogSize(CSize szDialogSize)
+void CReminderMsgDlg::SetSize(CSize szRegSize)
 {
 	// Set dialog size
-	SDialog::SetDialogSize(szDialogSize);
+	SDialog::SetSize(szRegSize);
 
 	// Set lock size flag
 	m_bLockDlgSize = TRUE;
 }
 
-void CReminderMsgDlg::SetDialogSize(LONG lWidth, LONG lHeight)
+void CReminderMsgDlg::SetSize(LONG lWidth, LONG lHeight)
 {
 	// Set dialog size
-	SDialog::SetDialogSize(lWidth, lHeight);
+	SDialog::SetSize(lWidth, lHeight);
 
 	// Set lock size flag
 	m_bLockDlgSize = TRUE;
@@ -475,7 +479,7 @@ void CReminderMsgDlg::SetDialogSize(LONG lWidth, LONG lHeight)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::GetMsgFontName(CString& strFontName)
+void CReminderMsgDlg::GetMsgFontName(CString& strFontName) const
 {
 	// Do not return if font is invalid
 	if (m_pMsgFont == NULL)
@@ -494,7 +498,7 @@ void CReminderMsgDlg::GetMsgFontName(CString& strFontName)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::GetMsgFontPoint(float& fFontPoint)
+void CReminderMsgDlg::GetMsgFontPoint(float& fFontPoint) const
 {
 	// Do not return if font is invalid
 	if (m_pMsgFont == NULL)
@@ -624,7 +628,7 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::SetMsgIconPosition(BYTE byPosition)
+AFX_INLINE void CReminderMsgDlg::SetMsgIconPosition(BYTE byPosition)
 {
 	m_byIconPosition = byPosition;
 }
@@ -638,7 +642,7 @@ void CReminderMsgDlg::SetMsgIconPosition(BYTE byPosition)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CReminderMsgDlg::GetAllowSnoozeMode()
+AFX_INLINE BOOL CReminderMsgDlg::GetAllowSnoozeMode(void) const
 {
 	return m_bAllowSnooze;
 }
@@ -652,7 +656,7 @@ BOOL CReminderMsgDlg::GetAllowSnoozeMode()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::SetAllowSnoozeMode(BOOL bValue)
+AFX_INLINE void CReminderMsgDlg::SetAllowSnoozeMode(BOOL bValue)
 {
 	m_bAllowSnooze = bValue;
 }
@@ -666,7 +670,7 @@ void CReminderMsgDlg::SetAllowSnoozeMode(BOOL bValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::GetSnoozeTriggerFlag(int& nValue)
+AFX_INLINE void CReminderMsgDlg::GetSnoozeTriggerFlag(int& nValue) const
 {
 	nValue = m_nSnoozeFlag;
 }
@@ -680,7 +684,7 @@ void CReminderMsgDlg::GetSnoozeTriggerFlag(int& nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::SetSnoozeTriggerFLag(int nValue)
+AFX_INLINE void CReminderMsgDlg::SetSnoozeTriggerFLag(int nValue)
 {
 	m_nSnoozeFlag = nValue;
 }
@@ -694,7 +698,7 @@ void CReminderMsgDlg::SetSnoozeTriggerFLag(int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon)
+BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon) const
 {
 	// Check pointer validity
 	if (lpptIcon == NULL) return FALSE;

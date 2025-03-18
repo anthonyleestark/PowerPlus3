@@ -21,6 +21,7 @@
 #include "PowerPlusDlg.h"
 
 #include "AboutDlg.h"
+#include "HelpDlg.h"
 #include "MultiScheduleDlg.h"
 #include "LogViewerDlg.h"
 #include "HotkeySetDlg.h"
@@ -32,7 +33,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 
 //////////////////////////////////////////////////////////////////////////
@@ -457,11 +458,11 @@ BEGIN_MESSAGE_MAP(CPowerPlusDlg, SDialog)
 	ON_CBN_SELCHANGE(IDC_RMBACTION_LIST,		&CPowerPlusDlg::OnChangeRMBAction)
 	ON_BN_CLICKED(IDC_ENABLERMBMENU_CHK,		&CPowerPlusDlg::OnEnableRightMouseMenu)
 	ON_BN_CLICKED(IDC_VIEWACTIONLOG_BTN,		&CPowerPlusDlg::OnViewActionLog)
-	ON_MESSAGE(SCM_DLGDESTROY_NOTIFY,			&CPowerPlusDlg::OnChildDialogDestroy)
+	ON_MESSAGE(SCM_NOTIFY_DIALOGDESTROY,		&CPowerPlusDlg::OnChildDialogDestroy)
 	ON_MESSAGE(SM_APP_UPDATE_SCHEDULEDATA,		&CPowerPlusDlg::OnUpdateScheduleData)
 	ON_MESSAGE(SM_APP_UPDATE_HOTKEYSETDATA,		&CPowerPlusDlg::OnUpdateHotkeySetData)
 	ON_MESSAGE(SM_APP_UPDATE_PWRREMINDERDATA,	&CPowerPlusDlg::OnUpdatePwrReminderData)
-	ON_MESSAGE(SM_APP_DEBUGCOMMAND,				&CPowerPlusDlg::OnProcessDebugCommand)
+	ON_MESSAGE(SM_APP_DEBUG_COMMAND,			&CPowerPlusDlg::OnProcessDebugCommand)
 	ON_MESSAGE(SM_WND_SHOWDIALOG,				&CPowerPlusDlg::OnShowDialog)
 	ON_MESSAGE(SM_APP_ERROR_MESSAGE,			&CPowerPlusDlg::OnShowErrorMessage)
 	ON_COMMAND_RANGE(IDC_SHOWATSTARTUP_CHK, IDC_ENBPWRREMINDER_CHK, &CPowerPlusDlg::OnCheckboxClicked)
@@ -488,7 +489,7 @@ END_MESSAGE_MAP()
 
 BOOL CPowerPlusDlg::OnInitDialog()
 {
-	// First, init with base class method
+	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
@@ -513,10 +514,10 @@ BOOL CPowerPlusDlg::OnInitDialog()
 		}
 	}
 
-	// Set main window app title
+	// Set application's main window caption
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		SetDialogCaption(pApp->GetAppWindowTitle());
+		this->SetCaption(pApp->GetAppWindowCaption());
 	}
 
 	// Load app default icon
@@ -538,7 +539,7 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	SetTimer(TIMERID_STD_EVENTSKIPCOUNTER, 1000, NULL);
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
 	// First, init all default data
 	SetDefaultData(&m_cfgAppConfig);
@@ -701,7 +702,7 @@ void CPowerPlusDlg::OnDestroy()
 	RegisterSessionNotification(MODE_DISABLE);
 
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -1218,7 +1219,7 @@ void CPowerPlusDlg::OnViewActionLog()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEWACTIONLOG_BTN);
 
 	// View action log file
-	OpenTextFileToView(FILENAME_HISTORY_LOG, SUBFOLDER_LOG);
+	OpenTextFileToView(FILENAME_HISTORY_LOG, FILEEXT_LOGFILE, SUBFOLDER_LOG);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1465,7 +1466,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 	// Notify app class about debug command execution
 	WPARAM wAppNotiParam = MAKE_WPARAM_STRING(strDebugCommand);
 	LPARAM lAppNotiParam = MAKE_LPARAM_STRING(strDebugCommand);
-	::PostMessage(NULL, SM_APP_DEBUGCMDEXEC, wAppNotiParam, lAppNotiParam);
+	::PostMessage(NULL, SM_APP_DEBUGCMD_EXEC, wAppNotiParam, lAppNotiParam);
 
 	return LRESULT(RESULT_SUCCESS);
 }
@@ -1482,9 +1483,9 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 
 LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM lParam)
 {
+	// Get flag value
 	BOOL bShowFlag = TRUE;
 	if (wParam != NULL) {
-		// Get flag value
 		bShowFlag = (BOOL)wParam;
 	}
 
@@ -1506,9 +1507,9 @@ LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM lParam)
 
 LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 {
+	// Get error code value
 	DWORD dwErrorCode = NULL;
 	if (wParam != NULL) {
-		// Get error code value
 		dwErrorCode = (DWORD)wParam;
 	}
 
@@ -1944,7 +1945,7 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 
 	// Save app event log if enabled
 	UINT nEventID = bExpand ? LOG_EVENT_DLG_EXPANDED : LOG_EVENT_DLG_COLLAPSED;
-	OutputEventLog(nEventID, GetDialogCaption());
+	OutputEventLog(nEventID, this->GetCaption());
 
 	// Update flag
 	BOOL bNewState = !bCurState;
@@ -2834,10 +2835,11 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 
 	// Load language strings
 	strFormat = GetLanguageString(pAppLang, NOTIFY_TIP_TEMPLATE);
-	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(idplNotifyTip, m_cfgAppConfig.nLMBAction)));
-	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(idplNotifyTip, m_cfgAppConfig.nMMBAction)));
-	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(idplNotifyTip, m_cfgAppConfig.nRMBAction)));
+	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(idTableNotifyTip, m_cfgAppConfig.nLMBAction)));
+	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(idTableNotifyTip, m_cfgAppConfig.nMMBAction)));
+	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(idTableNotifyTip, m_cfgAppConfig.nRMBAction)));
 
+	// Format notify tip text
 	strTipText.Format(strFormat, arrTipText[0], arrTipText[1], arrTipText[2]);
 
 	// Set notify tip text
@@ -2875,7 +2877,7 @@ void CPowerPlusDlg::SetBalloonTipText(UINT nCurLanguage, UINT nScheduleAction, U
 
 	// Load language strings
 	strFormat = GetLanguageString(pAppLang, BALLOON_TIP_TEMPLATE);
-	strBalloonText = GetLanguageString(pAppLang, GetPairedID(idplBalloonTip, nScheduleAction));
+	strBalloonText = GetLanguageString(pAppLang, GetPairedID(idTableBalloonTip, nScheduleAction));
 
 	strBalloonTip.Format(strFormat, strBalloonText, nSecondLeft);
 
@@ -2909,7 +2911,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 	UINT nMessage = 0;
 
 	// Output debug log
-	OutputDebugLogFormat(_T("Execute action: Type = 0x%04X, Param = 0x%04X"), nActionType, (UINT)wParam);
+	OutputDebugLogFormat(_T("Execute action: Type=0x%04X, Param=0x%04X"), nActionType, (UINT)wParam);
 
 	// Get action ID
 	switch (nActionType)
@@ -3159,7 +3161,7 @@ void CPowerPlusDlg::RestartApp(BOOL bRestartAsAdmin)
 	ExitApp(EXITCODE_RESTARTAPP);
 
 	// Restart immediately
-	RunApp(GetAppPath(), bRestartAsAdmin);
+	RunApp(GetApplicationPath(TRUE), bRestartAsAdmin);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3212,7 +3214,7 @@ void CPowerPlusDlg::ShowDialog(CWnd* pWnd, BOOL bShowFlag /* = TRUE */)
 
 	// Save app event log if enabled
 	UINT nEventID = (bShowFlag == TRUE) ? LOG_EVENT_DLG_SHOWED : LOG_EVENT_DLG_HIDDEN;
-	OutputEventLog(nEventID, ((SDialog*)pWnd)->GetDialogCaption());
+	OutputEventLog(nEventID, ((SDialog*)pWnd)->GetCaption());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3490,14 +3492,14 @@ void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusDlg::OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir /* = DEF_STRING_EMPTY */)
+BOOL CPowerPlusDlg::OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir /* = STRING_EMPTY */)
 {
 	// Get file name
 	VERIFY(lpszFileName != NULL);
 	CString strFilePath = (CString)lpszFileName + lpszExtension;
 	
 	// If sub-directory name is not empty
-	if (_tcscmp(lpszSubDir, STRING_EMPTY)) {
+	if (IS_NOT_EMPTY_STRING(lpszSubDir)) {
 		// Format file path with sub-directory
 		MakeFilePath(strFilePath, lpszSubDir, lpszFileName, lpszExtension);
 	}
@@ -4327,22 +4329,23 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 		}
 	}
 
-	// Only process if HotkeyID is available
-	if (nHKActionID != NULL) {
+	// Do not process if HotkeyID is NOT available
+	if (nHKActionID != NULL)
+		return FALSE;
 
-		// Output debug log
-		OutputDebugLogFormat(_T("Lockstate Hotkey found: HKeyID=%d"), nHKActionID);
+	// Output debug log
+	OutputDebugLogFormat(_T("Lockstate Hotkey found: HKeyID=%d"), nHKActionID);
 		
-		// Check if HotkeyID is registered
-		if (GetFlagValue(FLAGID_HOTKEYREGISTERED) != TRUE)
-			return FALSE;
+	// Check if HotkeyID is registered
+	if (GetFlagValue(FLAGID_HOTKEYREGISTERED) != TRUE)
+		return FALSE;
 
-		for (int nIndex = 0; nIndex < m_arrCurRegHKeyList.GetSize(); nIndex++) {
-			UINT nRegHKeyID = m_arrCurRegHKeyList.GetAt(nIndex);
-			if (nRegHKeyID == nHKActionID) {
-				// Process Hotkey by ID
-				return ProcessHotkey(nHKActionID);
-			}
+	// Only process if HotkeyID is registered
+	for (int nIndex = 0; nIndex < m_arrCurRegHKeyList.GetSize(); nIndex++) {
+		UINT nRegHKeyID = m_arrCurRegHKeyList.GetAt(nIndex);
+		if (nRegHKeyID == nHKActionID) {
+			// Process Hotkey by ID
+			return ProcessHotkey(nHKActionID);
 		}
 	}
 
@@ -4475,7 +4478,7 @@ int CPowerPlusDlg::DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem)
 	// Check message content validity
 	CString strMsgContent = pwrDispItem.strMessage;
 	if ((strMsgContent.IsEmpty()) ||
-		(strMsgContent == STRING_NULL)) {
+		(IS_NULL_STRING(strMsgContent))) {
 		// Invalid message content
 		return INT_INVALID;
 	}
@@ -4542,7 +4545,7 @@ int CPowerPlusDlg::DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem)
 		pMsgDlg->SetAllowSnoozeMode(bAllowSnooze);
 
 		// Set properties
-		pMsgDlg->SetLangDialogCaption(IDD_PWRREMINDER_DLG);
+		pMsgDlg->SetCaptionFromLanguage(IDD_PWRREMINDER_DLG);
 		pMsgDlg->SetDispMessage(strMsgContent);
 		pMsgDlg->SetBkgrdColor(clrMsgBkgrd);
 		pMsgDlg->SetTextColor(clrMsgText);
@@ -4880,7 +4883,7 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const SCHEDULEITEM& s
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Schedule action name
-	int nActionNameID = GetPairedID(idplActionName, schItem.nAction);
+	int nActionNameID = GetPairedID(idTableActionName, schItem.nAction);
 	CString strActionName = GetLanguageString(pAppLang, nActionNameID);
 
 	// Detail info
@@ -5174,8 +5177,7 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 int CPowerPlusDlg::ConfirmActionExec(UINT nActionType, UINT nActionID)
 {
 	// If "Confirm action" option is not enabled, return YES
-	BOOL bConfirmAction = GetAppOption(OPTIONID_CONFIRMACTION);
-	if (bConfirmAction == FALSE)
+	if (GetAppOption(OPTIONID_CONFIRMACTION) == FALSE)
 		return IDYES;
 
 	// Allowed action IDs --> Bypass confirmation
@@ -5189,8 +5191,8 @@ int CPowerPlusDlg::ConfirmActionExec(UINT nActionType, UINT nActionID)
 		return IDYES;
 
 	// Display confirmation message
-	UINT nStringID = GetPairedID(idplActionMsg, nActionID);
-	int nResult = DisplayMessageBox(nStringID, (UINT)NULL, MB_YESNO | MB_ICONQUESTION);
+	UINT nMsgStringID = GetPairedID(idTableActionMsg, nActionID);
+	int nResult = DisplayMessageBox(nMsgStringID, (UINT)NULL, MB_YESNO | MB_ICONQUESTION);
 
 	return nResult;
 }
@@ -5212,7 +5214,7 @@ int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
 		return INT_INVALID;
 
 	// Get action info
-	UINT nActionStringID = GetPairedID(idplSchedNotifyMsg, pschItem->nAction);
+	UINT nActionStringID = GetPairedID(idTableSchedNotifyMsg, pschItem->nAction);
 
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -5271,8 +5273,7 @@ int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
 void CPowerPlusDlg::ShowErrorMessage(DWORD dwError)
 {
 	// If option is not enabled, do nothing
-	BOOL bShowErrMsg = GetAppOption(OPTIONID_SHOWERRORMSG);
-	if (bShowErrMsg == FALSE)
+	if (GetAppOption(OPTIONID_SHOWERRORMSG) == FALSE)
 		return;
 
 	// Get window handle and language ID
@@ -5360,7 +5361,7 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	CString strRequestMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_REQUEST_RESTARTASADMIN);
-	CString strCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowTitle();
+	CString strCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowCaption();
 	CString strMsgFormat = strRequestMsg;
 
 	BOOL bIsAdmin = FALSE;

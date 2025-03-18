@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		SElements.h
@@ -64,6 +64,7 @@
 //
 //	Class name:	 SCtrlInfoWrap
 //  Description: Custom class for dialog/window control info wrapper
+//  Base class:	 CObject
 //
 /////////////////////////////////////////////////////////////////
 
@@ -85,17 +86,25 @@ protected:
 	INT				m_nTypeID;
 	UINT			m_nTemplateID;
 	CString			m_strTemplateID;
+
 	CString			m_strCaption;
 
 	// Control data values
 	BOOL*			m_pbCheck;
+
 	LONG_PTR*		m_plValue;
+	LONG_PTR*		m_plReserveValue;
 	LONG_PTR*		m_plMinValue;
 	LONG_PTR*		m_plMaxValue;
+
 	DOUBLE*			m_pdbValue;
+	DOUBLE*			m_pdbReserveValue;
 	DOUBLE*			m_pdbMinValue;
 	DOUBLE*			m_pdbMaxValue;
+
 	CString*		m_pstrValue;
+	CString*		m_pstrReserveValue;
+
 	CUIntArray*		m_pauiValueList;
 	CStringArray*	m_pastrValueList;
 
@@ -118,6 +127,7 @@ public:
 	virtual UINT	GetTemplateID(void) const;
 	virtual LPCTSTR GetTemplateStringID(void) const;
 	virtual void	GetTemplateStringID(CString& strTemplateID) const;
+
 	virtual LPCTSTR GetCaption(void) const;
 	virtual void	GetCaption(CString& strCaption) const;
 
@@ -127,26 +137,51 @@ public:
 	virtual void	SetTemplateStringID(LPCTSTR lpszTemplateID);
 	virtual void	SetCaption(LPCTSTR lpszCaption);
 
-	// Get data values
+	// Get boolean data values
 	virtual BOOL	 GetCheck(void) const;
+
+	// Get integer data values
 	virtual LONG_PTR GetValueInt(void) const;
 	virtual void	 GetValueInt(LONG_PTR& lValue) const;
+	virtual LONG_PTR GetReserveValueInt(void) const;
+	virtual void	 GetReserveValueInt(LONG_PTR& lValue) const;
 	virtual void	 GetMinMaxInt(LONG_PTR& lMin, LONG_PTR& lMax) const;
+
+	// Get float data values
 	virtual DOUBLE	 GetValueFloat(void) const;
 	virtual void	 GetValueFloat(DOUBLE& dbValue) const;
+	virtual DOUBLE	 GetReserveValueFloat(void) const;
+	virtual void	 GetReserveValueFloat(DOUBLE& dbValue) const;
 	virtual void	 GetMinMaxFloat(DOUBLE& dbMin, DOUBLE& dbMax) const;
+
+	// Get string data values
 	virtual LPCTSTR	 GetValueString(void) const;
 	virtual void	 GetValueString(CString& strValue) const;
+	virtual LPCTSTR	 GetReserveValueString(void) const;
+	virtual void	 GetReserveValueString(CString& strValue) const;
+
+	// Get array data values
 	virtual void	 GetValueIntArray(CUIntArray& auiValue) const;
 	virtual void	 GetValueStringArray(CStringArray& astrValue) const;
 
-	// Set data values
+	// Set boolean data values
 	virtual void	SetCheck(const BOOL& bCheck);
+
+	// Set integer data values
 	virtual void	SetValueInt(const LONG_PTR& lValue);
+	virtual void	SetReserveValueInt(const LONG_PTR& lValue);
 	virtual void	SetMinMaxInt(const LONG_PTR& lMin, const LONG_PTR& lMax);
+
+	// Set float data values
 	virtual void	SetValueFloat(const DOUBLE& dbValue);
+	virtual void	SetReserveValueFloat(const DOUBLE& dbValue);
 	virtual void	SetMinMaxFloat(const DOUBLE& dbMin, const DOUBLE& dbMax);
+
+	// Set string data values
 	virtual void	SetValueString(LPCTSTR lpszValue);
+	virtual void	SetReserveValueString(LPCTSTR lpszValue);
+
+	// Set array data values
 	virtual void	SetValueIntArray(const CUIntArray& auiValue);
 	virtual void	SetValueStringArray(const CStringArray& astrValue);
 };
@@ -155,6 +190,7 @@ public:
 //
 //	Class name:	 SMenu
 //  Description: Custom base class for user menu
+//  Base class:	 CMenu
 //
 /////////////////////////////////////////////////////////////////
 
@@ -186,6 +222,7 @@ typedef CArray<SCtrlInfoWrap*, SCtrlInfoWrap*> SCtrlInfoList;
 //
 //	Class name:	 SControlManager
 //  Description: Class for dialog/window control management
+//  Base class:	 CObject
 //
 /////////////////////////////////////////////////////////////////
 

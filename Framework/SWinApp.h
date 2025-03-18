@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		SWinApp.h
@@ -39,6 +39,7 @@
 //
 //	Class name:	 SWinApp
 //  Description: Custom base class for application
+//  Base class:	 CWinAppEx
 //
 /////////////////////////////////////////////////////////////////
 
@@ -59,7 +60,7 @@ protected:
 protected:
 	// Title and caption
 	CString m_strTemplateName;
-	CString	m_strAppWndTitle;
+	CString	m_strWindowCaption;
 	CString	m_strMessageCaption;
 
 	// App language function
@@ -96,12 +97,12 @@ public:
 	virtual void SetAppName(LPCTSTR lpszAppName);
 	virtual BOOL SetAppName(UINT nResourceStringID);
 
-	// Application window title get/set functions
-	virtual LPCTSTR GetAppWindowTitle(void) const;
-	virtual void GetAppWindowTitle(CString& strAppWndTitle) const;
-	virtual void SetAppWindowTitle(LPCTSTR lpszAppWndTitle);
-	virtual BOOL SetAppWindowTitle(UINT nResourceStringID);
-	virtual BOOL SetAppWindowTitle(UINT nResourceStringID, LPCTSTR lpszProductVersion);
+	// Application window caption get/set functions
+	virtual LPCTSTR GetAppWindowCaption(void) const;
+	virtual void GetAppWindowCaption(CString& strWindowCaption) const;
+	virtual void SetAppWindowCaption(LPCTSTR lpszWindowCaption);
+	virtual BOOL SetAppWindowCaption(UINT nResourceStringID);
+	virtual BOOL SetAppWindowCaption(UINT nResourceStringID, LPCTSTR lpszProductVersion);
 
 	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);

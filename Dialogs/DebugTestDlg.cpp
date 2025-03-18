@@ -103,8 +103,9 @@ BEGIN_MESSAGE_MAP(CDebugTestDlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
 	ON_EN_CHANGE(IDC_DEBUGTEST_EDITVIEW, &CDebugTestDlg::OnDebugViewEditChange)
-	ON_MESSAGE(SM_APP_DEBUGOUTPUT,		 &CDebugTestDlg::OnDebugOutput)
-	ON_MESSAGE(SM_WND_DEBUGVIEWCLRSCR,	 &CDebugTestDlg::OnDebugViewClear)
+	ON_MESSAGE(SM_APP_DEBUG_OUTPUT,		 &CDebugTestDlg::OnDebugOutput)
+	ON_MESSAGE(SM_APP_DEBUGCMD_NOREPLY,	 &CDebugTestDlg::OnDebugCmdNoReply)
+	ON_MESSAGE(SM_WND_DEBUGVIEW_CLRSCR,	 &CDebugTestDlg::OnDebugViewClear)
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
@@ -126,8 +127,11 @@ END_MESSAGE_MAP()
 
 BOOL CDebugTestDlg::OnInitDialog()
 {
+	// First, initialize base dialog class
+	SDialog::OnInitDialog();
+
 	// Set dialog title
-	this->SetRcDialogCaption(IDS_APP_DEBUGTESTDLG_TITLE);
+	this->SetCaptionFromResource(IDS_APP_DEBUGTESTDLG_TITLE);
 
 	// Get DebugTest edit view
 	BOOL bRet = InitDebugEditView(IDC_DEBUGTEST_EDITVIEW);
@@ -184,6 +188,7 @@ void CDebugTestDlg::OnClose()
 
 void CDebugTestDlg::OnDestroy()
 {
+	// Destroy dialog
 	SDialog::OnDestroy();
 }
 
@@ -202,6 +207,7 @@ void CDebugTestDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 	pMinMaxInfo->ptMinTrackSize = CPoint(DEFAULT_MIN_WIDTH, DEFAULT_MIN_HEIGHT);
 	pMinMaxInfo->ptMaxTrackSize = CPoint(DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
 
+	// Default
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
 }
 
@@ -216,6 +222,7 @@ void CDebugTestDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 
 void CDebugTestDlg::OnSize(UINT nType, int nWidth, int nHeight)
 {
+	// Implement base class method
 	SDialog::OnSize(nType, nWidth, nHeight);
 
 	// Get DebugTest edit view
@@ -282,10 +289,39 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 	CString strDebugOutputLog;
 	strDebugOutputLog.Format(DEBUG_OUTPUT_FORMAT, LPARAM_TO_STRING(lParam));
 
+	// Add debug output string
 	AddLine(strDebugOutputLog);
 
 	// Display log and move cursor to end
 	UpdateDisplay(TRUE);
+
+	// Backup buffer
+	BackupDebugViewBuffer();
+
+	// Reset currently displaying history flag
+	SetCurrentlyDispHistoryState(FALSE);
+
+	return LRESULT(RESULT_SUCCESS);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnDebugCmdNoReply
+//	Description:	Handle event when a debug command has been processed 
+//					but there's no reply
+//  Arguments:		wParam - First param
+//					lParam - Second param
+//  Return value:	LRESULT
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT CDebugTestDlg::OnDebugCmdNoReply(WPARAM wParam, LPARAM lParam)
+{
+	// Add an empty new line
+	AddLine(STRING_EMPTY, FALSE);
+
+	// Display log and move cursor to end
+	UpdateDisplay(TRUE, FALSE);
 
 	// Backup buffer
 	BackupDebugViewBuffer();
@@ -400,11 +436,13 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 
 			// If the caret position is not in the last line
 			if (nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1)) {
+
 				// If "Ctrl+C" keys are pressed
 				if ((dwKey == 0x43) && (IS_PRESSED(VK_CONTROL))) {
 					// If currently selecting a text
 					int nStartSel, nEndSel;
 					GetDebugEditView()->GetSel(nStartSel, nEndSel);
+
 					if (nStartSel != nEndSel) {
 						// Copy the current selection
 						GetDebugEditView()->Copy();
@@ -419,6 +457,7 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 
 			// If [Enter] key is pressed
 			if (dwKey == VK_RETURN) {
+
 				//Send debug command
 				BOOL bRet = SendDebugCommand();
 
@@ -427,19 +466,24 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 			}
 			// If [Backspace] or [Delete] keys are pressed
 			else if ((dwKey == VK_BACK) || (dwKey == VK_DELETE)) {
+
 				// Only allow erasing inputted content
 				if (m_strBuffer.Compare(m_strBufferBak) == 0)
 					return TRUE;
 
 				// [Backspace] key --> Can not delete empty line
 				if (dwKey == VK_BACK) {
-					// Get line begin character index
-					int nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
 
-					// If the caret position is in the beginning of line
-					// or is not in the last line
-					if ((nCaretPos == nLineBeginIndex) ||
-						(nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1))) {
+					// Get line begin character index
+					INT_PTR nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
+
+					// Get last line index
+					INT_PTR nLastLineIndex = GetDebugEditView()->GetLineCount() - 1;
+
+					// If the caret position is not in the last line
+					// or is in the beginning of last line
+					if ((nCaretLineIdx != nLastLineIndex) ||
+						((nCaretPos == nLineBeginIndex) && (nCaretLineIdx == nLastLineIndex))) {
 						// Block --> Do nothing
 						return TRUE;
 					}
@@ -452,24 +496,30 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 			}
 			// If the [Up/Down] arrow keys are pressed
 			else if ((dwKey == VK_UP) || (dwKey == VK_DOWN)) {
+
 				// If debug command history is empty
 				if (IsDebugCommandHistoryEmpty())
 					return TRUE;
 
 				// Get command history display index
 				int nHistoryDispIndex = 0;
+
 				// [Up] arrow key --> Display previous command
 				if (dwKey == VK_UP) {
+
 					// Get index
 					nHistoryDispIndex = GetHistoryCurrentDispIndex() - 1;
+
 					// If current index is 0
 					if (nHistoryDispIndex < 0)
 						return TRUE;
 				}
 				// [Down] arrow key --> Display next command
 				else if (dwKey == VK_DOWN) {
+
 					// Get index
 					nHistoryDispIndex = GetHistoryCurrentDispIndex() + 1;
+
 					// If current index exceeded limit
 					if (nHistoryDispIndex >= GetDebugCommandHistoryCount())
 						return TRUE;
@@ -483,12 +533,15 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 			else if (dwKey == VK_LEFT) {
 
 				// Get line begin character index
-				int nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
+				INT_PTR nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
 
-				// If the caret position is in the beginning of line
-				// or is not in the last line
-				if ((nCaretPos == nLineBeginIndex) ||
-					(nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1))) {
+				// Get last line index
+				INT_PTR nLastLineIndex = GetDebugEditView()->GetLineCount() - 1;
+
+				// If the caret position is not in the last line
+				// or is in the beginning of last line
+				if ((nCaretLineIdx != nLastLineIndex) ||
+					((nCaretPos == nLineBeginIndex) && (nCaretLineIdx == nLastLineIndex))) {
 					// Block --> Do nothing
 					return TRUE;
 				}
@@ -564,21 +617,8 @@ BOOL CDebugTestDlg::SendDebugCommand(void)
 	WPARAM wParam = MAKE_WPARAM_STRING(strDebugCommand);
 	LPARAM lParam = MAKE_LPARAM_STRING(strDebugCommand);
 	
-	// Check if parent window is available
-	if (IsParentWndAvailable()) {
-		// Send to parent window
-		GetParentWnd()->PostMessage(SM_APP_DEBUGCOMMAND, wParam, lParam);
-	}
-	// Check if main window is available
-	else if (CWnd* pMainWnd = AfxGetMainWnd()) {
-		// Send to main window
-		pMainWnd->PostMessage(SM_APP_DEBUGCOMMAND, wParam, lParam);
-	}
-	// There's no window handle to send to
-	else {
-		// Just send to a NULL window and hope that app class will handle
-		::PostMessage(NULL, SM_APP_DEBUGCOMMAND, wParam, lParam);
-	}
+	// Send debug command message to parent window
+	this->NotifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);
 
 	// Update debug command history
 	AddDebugCommandHistory(strDebugCommand);
@@ -663,11 +703,11 @@ inline BOOL CDebugTestDlg::IsDebugEditViewFocus(void)
 //	Function name:	GetCaretPosition
 //	Description:	Get the caret's current position
 //  Arguments:		None
-//  Return value:	int - Caret position
+//  Return value:	INT_PTR - Caret position
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CDebugTestDlg::GetCaretPosition(void)
+INT_PTR CDebugTestDlg::GetCaretPosition(void)
 {
 	// Check DebugTest edit view validity
 	if (!IsDebugEditViewValid())
@@ -859,11 +899,12 @@ void CDebugTestDlg::ClearViewBuffer(void)
 //	Function name:	AddLine
 //	Description:	Add a string line to debug screen
 //  Arguments:		lpszString - String line
+//					bNewLine   - Whether to add a new empty line
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestDlg::AddLine(LPCTSTR lpszString)
+void CDebugTestDlg::AddLine(LPCTSTR lpszString, BOOL bNewLine /* = TRUE */)
 {
 	// If buffer not empty
 	if (!m_strBuffer.IsEmpty()) {
@@ -879,20 +920,34 @@ void CDebugTestDlg::AddLine(LPCTSTR lpszString)
 	}
 
 	// Add string line
-	m_strBuffer.Append(lpszString);
-	m_strBuffer.Append(STRING_NEWLINE);
+	if (IS_NOT_EMPTY_STRING(lpszString)) {
+		m_strBuffer.Append(lpszString);
+	}
+
+	// Re-check the end of buffer character
+	if (bNewLine == TRUE) {
+		int nBuffLength = m_strBuffer.GetLength();
+		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
+
+		// If end of buffer is not an endline
+		if (tcEndChar != CHAR_RETURN && tcEndChar != CHAR_ENDLINE) {
+			// Add a new empty line
+			m_strBuffer.Append(STRING_NEWLINE);
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	UpdateDisplay
 //	Description:	Update debug screen display
-//  Arguments:		bSeekToEnd - Move cursor to end of view
+//  Arguments:		bSeekToEnd	  - Move cursor to end of view
+//					bNotifyParent - Notify to parent window about display update
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */)
+void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */, BOOL bNotifyParent /* = TRUE */)
 {
 	// Get debug edit view
 	CEdit* pDebugEditView = GetDebugEditView();
@@ -908,20 +963,9 @@ void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */)
 		pDebugEditView->SetSel(-1);
 	}
 
-	// Check if parent window is available
-	if (IsParentWndAvailable()) {
-		// Send to parent window
-		GetParentWnd()->PostMessage(SM_WND_DEBUGOUTPUTDISP);
-	}
-	// Check if main window is available
-	else if (CWnd* pMainWnd = AfxGetMainWnd()) {
-		// Send to main window to process
-		pMainWnd->PostMessage(SM_WND_DEBUGOUTPUTDISP);
-	}
-	// There's no window handle to send to
-	else {
-		// Just send to a NULL window and hope that app class will handle it
-		::PostMessage(NULL, SM_WND_DEBUGOUTPUTDISP, NULL, NULL);
+	// Notify to parent window about display update
+	if (bNotifyParent == TRUE) {
+		this->NotifyParent(SM_WND_DEBUGOUTPUT_DISP, NULL, NULL);
 	}
 }
 
@@ -937,7 +981,7 @@ void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */)
 INT_PTR CDebugTestDlg::AddDebugCommandHistory(LPCTSTR lpszCommand)
 {
 	// Only add if input command is not empty
-	if (_tcscmp(lpszCommand, STRING_EMPTY)) {
+	if (IS_NOT_EMPTY_STRING(lpszCommand)) {
 		m_astrCommandHistory.Add(lpszCommand);
 
 		// Not currently displaying history

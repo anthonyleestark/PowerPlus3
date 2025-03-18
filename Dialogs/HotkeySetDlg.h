@@ -122,16 +122,16 @@ protected:
 	BOOL CheckDataChangeState();
 
 	// Data processing handlers
-	void Add();
+	void Add(void);
 	void Remove(int nIndex);
-	void RemoveAll();
+	void RemoveAll(void);
 	void SwitchAllItemState(BOOL bState);
 	BOOL Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg = FALSE);
 
 protected:
 	// Get/set functions
-	int GetItemNum(void);
-	int	GetListCurSel(void);
+	int GetItemNum(void) const;
+	int	GetListCurSel(void) const;
 	void SetListCurSel(int nSelIndex);
 };
 

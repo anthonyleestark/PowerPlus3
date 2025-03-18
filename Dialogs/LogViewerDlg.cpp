@@ -26,7 +26,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 using namespace RegFuncs;
 
@@ -163,6 +163,7 @@ END_MESSAGE_MAP()
 
 BOOL CLogViewerDlg::OnInitDialog()
 {
+	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
@@ -186,7 +187,7 @@ BOOL CLogViewerDlg::OnInitDialog()
 	}
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
 	return TRUE;
 }
@@ -218,7 +219,7 @@ void CLogViewerDlg::OnClose()
 void CLogViewerDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
 
 	// Save layout info data
 	UpdateLayoutInfo();
@@ -320,7 +321,7 @@ void CLogViewerDlg::SetupLanguage(void)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetLangDialogCaption(GetDialogID());
+	this->SetCaptionFromLanguage(GetDialogID());
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -455,7 +456,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	int nFrameHeight = m_pszTableFrameSize->cy;
 	int nFrameWidth = m_pszTableFrameSize->cx;
 	int nColWidthOffset = 0;
-	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
 		nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;

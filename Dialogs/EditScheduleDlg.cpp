@@ -24,7 +24,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 
 
@@ -244,6 +244,7 @@ END_MESSAGE_MAP()
 
 BOOL CEditScheduleDlg::OnInitDialog()
 {
+	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
@@ -256,7 +257,7 @@ BOOL CEditScheduleDlg::OnInitDialog()
 	SetupDlgItemState();
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
 	return TRUE;
 }
@@ -319,7 +320,7 @@ void CEditScheduleDlg::OnClose()
 void CEditScheduleDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, GetDialogCaption());
+	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -381,7 +382,7 @@ void CEditScheduleDlg::SetupLanguage()
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetLangDialogCaption(GetDialogID());
+	this->SetCaptionFromLanguage(GetDialogID());
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -542,7 +543,7 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	// Setup display size
 	int nFrameHeight = m_pszActiveTableFrameSize->cy;
 	int nFrameWidth = m_pszActiveTableFrameSize->cx;
-	if (pApp->GetWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
 	}
@@ -697,7 +698,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 		}
 
 		// Day title
-		strTemp = GetLanguageString(ptrLanguage, GetPairedID(idplDayOfWeek, nDayOfWeekID));
+		strTemp = GetLanguageString(ptrLanguage, GetPairedID(idTableDayOfWeek, nDayOfWeekID));
 		m_pActiveDayListTable->SetItemText(nRowIndex, COL_ID_DAYTITLE, strTemp);
 	}
 }
@@ -1000,7 +1001,7 @@ void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = T
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CEditScheduleDlg::GetReturnFlag(void)
+AFX_INLINE int CEditScheduleDlg::GetReturnFlag(void) const
 {
 	return m_nRetFlag;
 }
@@ -1014,7 +1015,7 @@ int CEditScheduleDlg::GetReturnFlag(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CEditScheduleDlg::SetReturnFlag(int nRetFlag)
+AFX_INLINE void CEditScheduleDlg::SetReturnFlag(int nRetFlag)
 {
 	m_nRetFlag = nRetFlag;
 }
@@ -1028,7 +1029,7 @@ void CEditScheduleDlg::SetReturnFlag(int nRetFlag)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CEditScheduleDlg::GetDispMode(void)
+AFX_INLINE int CEditScheduleDlg::GetDispMode(void) const
 {
 	return m_nDispMode;
 }
@@ -1042,7 +1043,7 @@ int CEditScheduleDlg::GetDispMode(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CEditScheduleDlg::SetDispMode(int nMode)
+AFX_INLINE void CEditScheduleDlg::SetDispMode(int nMode)
 {
 	m_nDispMode = nMode;
 }

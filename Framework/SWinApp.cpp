@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		SWinApp.h
@@ -20,7 +20,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace PairFuncs;
+using namespace TableFuncs;
 using namespace CoreFuncs;
 
 
@@ -44,7 +44,7 @@ SWinApp::SWinApp() : CWinAppEx()
 {
 	// Title and caption
 	m_strTemplateName = STRING_EMPTY;
-	m_strAppWndTitle = STRING_EMPTY;
+	m_strWindowCaption = STRING_EMPTY;
 	m_strMessageCaption = STRING_EMPTY;
 
 	// App language function
@@ -65,7 +65,7 @@ SWinApp::SWinApp(LPCTSTR lpszTemplateName) : CWinAppEx()
 {
 	// Title and caption
 	m_strTemplateName = lpszTemplateName;
-	m_strAppWndTitle = STRING_EMPTY;
+	m_strWindowCaption = STRING_EMPTY;
 	m_strMessageCaption = STRING_EMPTY;
 
 	// App language function
@@ -219,8 +219,8 @@ BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 	if (m_nCurDispLang != nCurLanguage) {
 		// Output event log
 		CString strEventDescription;
-		CString strOldLang = MAKEUNICODE(GetLanguageName(m_nCurDispLang));
-		CString strNewLang = MAKEUNICODE(GetLanguageName(nCurLanguage));
+		CString strOldLang = GetLanguageName(m_nCurDispLang);
+		CString strNewLang = GetLanguageName(nCurLanguage);
 		strEventDescription.Format(STRING_TEXTCHANGEFORMAT, strOldLang, strNewLang);
 		OutputEventLog(LOG_EVENT_CHANGE_LANGUAGE, strEventDescription);
 	}
@@ -361,63 +361,63 @@ BOOL SWinApp::SetAppName(UINT nResourceStringID)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetAppWindowTitle
-//	Description:	Get application window common title
+//	Function name:	GetAppWindowCaption
+//	Description:	Get application window common caption
 //  Arguments:		None
-//  Return value:	LPCTSTR - App title string
+//  Return value:	LPCTSTR - App caption string
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR SWinApp::GetAppWindowTitle(void) const
+LPCTSTR SWinApp::GetAppWindowCaption(void) const
 {
-	return m_strAppWndTitle.GetString();
+	return m_strWindowCaption.GetString();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetAppWindowTitle
-//	Description:	Get application window common title
-//  Arguments:		strAppWndTitle - Application window title
+//	Function name:	GetAppWindowCaption
+//	Description:	Get application window common caption
+//  Arguments:		strAppWndTitle - Application window caption
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SWinApp::GetAppWindowTitle(CString& strAppWndTitle) const
+void SWinApp::GetAppWindowCaption(CString& strWindowCaption) const
 {
-	strAppWndTitle = m_strAppWndTitle;
+	strWindowCaption = m_strWindowCaption;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetAppWindowTitle
-//	Description:	Set application window common title
-//  Arguments:		lpszAppWndTitle - Application window title
+//	Function name:	SetAppWindowCaption
+//	Description:	Set application window common caption
+//  Arguments:		lpszWindowCaption - Application window caption
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SWinApp::SetAppWindowTitle(LPCTSTR lpszAppWndTitle)
+void SWinApp::SetAppWindowCaption(LPCTSTR lpszWindowCaption)
 {
-	m_strAppWndTitle = lpszAppWndTitle;
+	m_strWindowCaption = lpszWindowCaption;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetAppWindowTitle
-//	Description:	Set application window common title by resource string ID
+//	Function name:	SetAppWindowCaption
+//	Description:	Set application window common caption by resource string ID
 //  Arguments:		nResourceStringID - Resource string ID
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SWinApp::SetAppWindowTitle(UINT nResourceStringID)
+BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID)
 {
 	CString strTemp;
 	BOOL bRet = strTemp.LoadString(nResourceStringID);
 	ASSERT(!strTemp.IsEmpty());
 	if ((bRet == TRUE) && (!strTemp.IsEmpty())) {
-		// Set app window title 
-		SetAppWindowTitle(strTemp);
+		// Set app window caption 
+		SetAppWindowCaption(strTemp);
 	}
 
 	return bRet;
@@ -425,26 +425,26 @@ BOOL SWinApp::SetAppWindowTitle(UINT nResourceStringID)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetAppWindowTitle
-//	Description:	Set application window common title by resource string ID
+//	Function name:	SetAppWindowCaption
+//	Description:	Set application window common caption by resource string ID
 //  Arguments:		nResourceStringID  - Resource string ID
 //					lpszProductVersion - Product version (string)
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SWinApp::SetAppWindowTitle(UINT nResourceStringID, LPCTSTR lpszProductVersion)
+BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID, LPCTSTR lpszProductVersion)
 {
 	CString strTemp;
 	BOOL bRet = strTemp.LoadString(nResourceStringID);
 	ASSERT(!strTemp.IsEmpty());
 	if ((bRet == TRUE) && (!strTemp.IsEmpty())) {
 		// Format title by adding product version
-		CString strAppWndTitle;
-		strAppWndTitle.Format(strTemp, lpszProductVersion);
+		CString strAppWindowCaption;
+		strAppWindowCaption.Format(strTemp, lpszProductVersion);
 		
-		// Set app window title 
-		SetAppWindowTitle(strAppWndTitle);
+		// Set app window caption 
+		SetAppWindowCaption(strAppWindowCaption);
 	}
 
 	return bRet;
@@ -469,7 +469,7 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 
 		// Get language string caption
 		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (strTemp != STRING_NULL) {
+		if (IS_NOT_NULL_STRING(strTemp)) {
 			// Set caption string
 			strCaption = strTemp;
 		}
@@ -477,8 +477,8 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 
 	// If caption is empty
 	if (strCaption.IsEmpty()) {
-		// Use default app window title
-		strCaption = this->GetAppWindowTitle();
+		// Use default app window caption
+		strCaption = this->GetAppWindowCaption();
 	}
 
 	// Register message box caption
@@ -530,8 +530,8 @@ int SWinApp::DoMessageBox(LPCTSTR lpszPrompt, UINT nType, UINT nIDPrompt)
 	}
 	// Otherwise,
 	else {
-		// Use app window title
-		strMsgCaption = this->GetAppWindowTitle();
+		// Use app window caption
+		strMsgCaption = this->GetAppWindowCaption();
 	}
 
 	// If message caption is empty (not registered)
@@ -565,11 +565,11 @@ int SWinApp::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
 
 	CString strMsg = GetLanguageString(pAppLang, nPromptID);
-	CString strCaption = this->GetAppWindowTitle();
+	CString strCaption = this->GetAppWindowCaption();
 	if (nCaptionID != NULL) {
 		// Get language string caption
 		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (strTemp != STRING_NULL)
+		if (IS_NOT_NULL_STRING(strTemp))
 			strCaption = strTemp;
 	}
 	else {
@@ -614,8 +614,8 @@ int SWinApp::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL
 		}
 		// Otherwise,
 		else {
-			// Use application window title
-			strCaption = this->GetAppWindowTitle();
+			// Use application window caption
+			strCaption = this->GetAppWindowCaption();
 		}
 	}
 	

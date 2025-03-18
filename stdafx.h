@@ -153,9 +153,18 @@ __pragma(warning(disable:28159))
 #ifndef _ADVANCED_LIB
 #define _ADVANCED_LIB
 
-// Include more advanced libraries
+// Include advanced libraries
 #include "mmsystem.h"
 #include "uxtheme.h"
+
+#include <cfgmgr32.h>
+#pragma comment(lib, "Cfgmgr32.lib")
+#include <setupapi.h>
+#pragma comment(lib, "setupapi.lib")
+
+#include <comdef.h>
+#include <Wbemidl.h>
+#pragma comment(lib, "wbemuuid.lib")
 
 #include <dwmapi.h>
 #ifndef DWMWA_USE_IMMERSIVE_DARK_MODE

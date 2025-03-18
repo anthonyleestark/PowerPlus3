@@ -25,10 +25,36 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define DEF_GLBDATA_CATE_NONE			0x00			// No category (main profile section)
 #define DEF_GLBDATA_CATE_DEBUGTEST		0x01			// Debugging/Testing variables
 #define DEF_GLBDATA_CATE_APPFLAGS		0x02			// App special flags
 #define DEF_GLBDATA_CATE_FEATURES		0x03			// Special feature variables
-#define DEF_GLBDATA_CATE_OTHERS			0x04			// Other special variables
+#define DEF_GLBDATA_CATE_TRACKING		0x04			// Tracking data variables
+#define DEF_GLBDATA_CATE_OTHERS			0x05			// Other special variables
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Define global variables and methods which are used for application profile management
+// These variables are not being grouped in any category and are stored in the main profile section
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*---------------------------------------------Launch-info data----------------------------------------------*/
+
+// Application launch-time
+extern SYSTEMTIME g_stAppLaunchTime;
+static inline const SYSTEMTIME GetAppLaunchTime(void) { return g_stAppLaunchTime; }
+static inline void SetAppLaunchTime(SYSTEMTIME stTime) { g_stAppLaunchTime = stTime; }
+
+// Application launch-time counter
+extern UINT g_uiAppLaunchTimeCounter;
+static inline const UINT GetAppLaunchTimeCounter(void) { return g_uiAppLaunchTimeCounter; }
+static inline const BOOL IsAppFirstLaunch(void) { return (g_uiAppLaunchTimeCounter <= 1); }
+static inline void SetAppLaunchTimeCounter(UINT uiValue) { g_uiAppLaunchTimeCounter = uiValue; }
+static inline void UpdateAppLaunchTimeCounter(void) { ++g_uiAppLaunchTimeCounter; }
+
+/*-----------------------------------------------------------------------------------------------------------*/
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,16 +120,16 @@ static BOOL InitDebugInfoLogFile(void);
 inline void ReleaseDebugInfoLogFile(void);
 
 // Trace error log file exception pointer
-extern CException* g_excLogTraceError;
-static inline CException* GetTraceErrorException(void) { return g_excLogTraceError; }
+extern CFileException* g_pExcLogTraceError;
+static inline CFileException* GetTraceErrorException(void) { return g_pExcLogTraceError; }
 
 // Trace debug info log file exception pointer
-extern CException* g_excLogTraceDebug;
-static inline CException* GetTraceDebugException(void) { return g_excLogTraceDebug; }
+extern CFileException* g_pExcLogTraceDebug;
+static inline CFileException* GetTraceDebugException(void) { return g_pExcLogTraceDebug; }
 
 // Debug info output log file exception pointer
-extern CException* g_excLogDebugInfo;
-static inline CException* GetDebugInfoException(void) { return g_excLogDebugInfo; }
+extern CFileException* g_pExcLogDebugInfo;
+static inline CFileException* GetDebugInfoException(void) { return g_pExcLogDebugInfo; }
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -127,7 +153,7 @@ extern BYTE g_bySystemSuspendFlag;
 static inline const BYTE GetSystemSuspendFlag(void) { return g_bySystemSuspendFlag; }
 static inline void SetSystemSuspendFlag(BYTE byValue) { g_bySystemSuspendFlag = byValue; }
 
-// Session ending trace flag
+// Session ended trace flag
 extern BYTE g_bySessionEndFlag;
 static inline const BYTE GetSessionEndFlag(void) { return g_bySessionEndFlag; }
 static inline void SetSessionEndFlag(BYTE byValue) { g_bySessionEndFlag = byValue; }
