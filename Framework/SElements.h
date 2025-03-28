@@ -19,7 +19,6 @@
 
 #include "Core.h"
 #include "IDMapping.h"
-#include "Logging.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -28,45 +27,60 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
-#define CTRL_TYPE_BASE				0x01
-#define CTRL_TYPE_BUTTON			((CTRL_TYPE_BASE<<8)+0x01)
-#define CTRL_TYPE_CHECKBOX			((CTRL_TYPE_BASE<<8)+0x02)
-#define CTRL_TYPE_RADIOBTN			((CTRL_TYPE_BASE<<8)+0x03)
-#define CTRL_TYPE_EDITBOX			((CTRL_TYPE_BASE<<8)+0x04)
-#define CTRL_TYPE_COMBOBOX			((CTRL_TYPE_BASE<<8)+0x05)
-#define CTRL_TYPE_LISTBOX			((CTRL_TYPE_BASE<<8)+0x06)
-#define CTRL_TYPE_STATIC			((CTRL_TYPE_BASE<<8)+0x07)
-#define CTRL_TYPE_PICTURE			((CTRL_TYPE_BASE<<8)+0x08)
-#define CTRL_TYPE_GROUPBOX			((CTRL_TYPE_BASE<<8)+0x09)
-#define CTRL_TYPE_HSCROLL			((CTRL_TYPE_BASE<<8)+0x0A)
-#define CTRL_TYPE_VSCROLL			((CTRL_TYPE_BASE<<8)+0x0B)
-#define CTRL_TYPE_SLIDERCTRL		((CTRL_TYPE_BASE<<8)+0x0C)
-#define CTRL_TYPE_SPINCTRL			((CTRL_TYPE_BASE<<8)+0x0D)
-#define CTRL_TYPE_PROGRESSBAR		((CTRL_TYPE_BASE<<8)+0x0E)
-#define CTRL_TYPE_HOTKEY			((CTRL_TYPE_BASE<<8)+0x0F)
-#define CTRL_TYPE_LISTCTRL			((CTRL_TYPE_BASE<<8)+0x10)
-#define CTRL_TYPE_TREECTRL			((CTRL_TYPE_BASE<<8)+0x11)
-#define CTRL_TYPE_TABCTRL			((CTRL_TYPE_BASE<<8)+0x12)
-#define CTRL_TYPE_ANIMATION			((CTRL_TYPE_BASE<<8)+0x13)
-#define CTRL_TYPE_RICHEDIT			((CTRL_TYPE_BASE<<8)+0x14)
-#define CTRL_TYPE_DATETIME			((CTRL_TYPE_BASE<<8)+0x15)
-#define CTRL_TYPE_MCALENDAR			((CTRL_TYPE_BASE<<8)+0x16)
-#define CTRL_TYPE_IPADDRESS			((CTRL_TYPE_BASE<<8)+0x17)
-#define CTRL_TYPE_EXTCOMBOBOX		((CTRL_TYPE_BASE<<8)+0x18)
-#define CTRL_TYPE_CUSTOMCTRL		((CTRL_TYPE_BASE<<8)+0x19)
-#define CTRL_TYPE_SYSLINKCTRL		((CTRL_TYPE_BASE<<8)+0x1A)
-#define CTRL_TYPE_SPLITBUTTON		((CTRL_TYPE_BASE<<8)+0x1B)
-#define CTRL_TYPE_NETADDRESS		((CTRL_TYPE_BASE<<8)+0x1B)
-#define CTRL_TYPE_CMDBUTTON			((CTRL_TYPE_BASE<<8)+0x1C)
+enum ControlType {
+	Control_Base = 0x00,			// Base control type (NULL)
+
+	Button,							// Push Button
+	Check_Box,						// Check Box
+	Edit_Control,					// Edit Control
+	Combo_Box,						// Combo Box
+	List_Box,						// List Box
+	Group_Box,						// Group Box
+	Radio_Button,					// Radio Button
+	Static_Text,					// Static Text
+	Picture_Control,				// Picture Control
+	Horizontal_Scroll_Bar,			// Horizontal Scroll Bar
+	Vertical_Scroll_Bar,			// Vertical Scroll Bar
+	Slider_Control,					// Slider Control
+	Spin_Control,					// Spin Control
+	Progress_Control,				// Progress Control
+	Hot_Key,						// Hot Key
+	List_Control,					// List Control
+	Tree_Control,					// Tree Control
+	Tab_Control,					// Tab Control
+	Animation_Control,				// Animation_Control
+	Rich_Edit_Control,				// Rich Edit 2.0 Control
+	Date_Time_Picker,				// Date Time Picker
+	Month_Calendar_Control,			// Month Calendar Control
+	IP_Address_Control,				// IP Address Control
+	Extended_Combo_Box,				// Extended Combo Box
+	Custom_Control,					// Custom Control
+	SysLink_Control,				// SysLink Control
+	Split_Button_Control,			// Split Button Control
+	Network_Address_Control,		// Network Address Control
+	Command_Button_Control,			// Command Button Control
+
+	MFC_Button_Control,				// MFC Button Control
+	MFC_ColorButton_Control,		// MFC ColorButton Control
+	MFC_EditBrowse_Control,			// MFC EditBrowse Control
+	MFC_VSListBox_Control,			// MFC VSListBox Control
+	MFC_FontComboBox_Control,		// MFC FontComboBox Control
+	MFC_MaskedEdit_Control,			// MFC MaskedEdit Control
+	MFC_MenuButton_Control,			// MFC MenuButton Control
+	MFC_PropertyGrid_Control,		// MFC PropertyGrid Control
+	MFC_ShellList_Control,			// MFC ShellList Control
+	MFC_ShellTree_Control,			// MFC ShellTree Control
+	MFC_Link_Control,				// MFC Link Control
+};
 
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //
 //	Class name:	 SCtrlInfoWrap
 //  Description: Custom class for dialog/window control info wrapper
 //  Base class:	 CObject
 //
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 class SCtrlInfoWrap : public CObject
 {
@@ -78,39 +92,68 @@ public:
 	virtual ~SCtrlInfoWrap();						// destructor
 
 protected:
+	// Base control window pointer
+	CWnd*			m_pBaseControl;
+
 	// Relative windows
 	CWnd*			m_pParentWnd;
 	CWnd*			m_pBuddyWnd;
 
-	// Control properties
+	// Control ID info
 	INT				m_nTypeID;
 	UINT			m_nTemplateID;
 	CString			m_strTemplateID;
 
+	// Control attributes
 	CString			m_strCaption;
+	BOOL			m_bVisible;
+	BOOL			m_bEnabled;
+	BOOL			m_bFocused;
 
-	// Control data values
-	BOOL*			m_pbCheck;
+protected:
+	// --- Control data values --- //
 
-	LONG_PTR*		m_plValue;
-	LONG_PTR*		m_plReserveValue;
-	LONG_PTR*		m_plMinValue;
-	LONG_PTR*		m_plMaxValue;
+	// Boolean data
+	PBOOL			m_pbCheck;
 
+	// Integer data
+	PLONG_PTR		m_plValue;
+	PLONG_PTR		m_plReserveValue;
+	PLONG_PTR		m_plMinValue;
+	PLONG_PTR		m_plMaxValue;
+
+	// Float data
 	DOUBLE*			m_pdbValue;
 	DOUBLE*			m_pdbReserveValue;
 	DOUBLE*			m_pdbMinValue;
 	DOUBLE*			m_pdbMaxValue;
 
+	// String data
 	CString*		m_pstrValue;
 	CString*		m_pstrReserveValue;
 
+	// Integer array data
 	CUIntArray*		m_pauiValueList;
+	CUIntArray*		m_pauiReserveValueList;
+
+	// String array data
 	CStringArray*	m_pastrValueList;
+	CStringArray*	m_pastrReserveValueList;
+
+	// Time data
+	LPSYSTEMTIME	m_pstTimeValue;
+
+	// Custom data
+	LPVOID			m_ptrCustomData;		// Data pointer
+	PSIZE_T			m_pszDataSize;			// Total size in bytes
 
 public:
 	// Initialization
 	virtual BOOL	Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, INT nTypeID);
+
+	// Base control window pointer access
+	virtual CWnd*	GetBaseControl(void);
+	virtual BOOL	IsBaseControlAvailable(void) const;
 
 	// Parent window functions
 	virtual CWnd*	GetParent(void);
@@ -122,77 +165,109 @@ public:
 	virtual void	SetBuddy(CWnd* pBuddyWnd);
 	virtual BOOL	IsBuddyAvailable(void) const;
 
-	// Get properties
+	// Get control ID info
 	virtual INT		GetType(void) const;
 	virtual UINT	GetTemplateID(void) const;
 	virtual LPCTSTR GetTemplateStringID(void) const;
-	virtual void	GetTemplateStringID(CString& strTemplateID) const;
+	virtual void	GetTemplateStringID(_Out_ CString& strTemplateID) const;
 
+	// Get attributes
 	virtual LPCTSTR GetCaption(void) const;
-	virtual void	GetCaption(CString& strCaption) const;
+	virtual void	GetCaption(_Out_ CString& strCaption) const;
+	virtual BOOL	IsVisible(void) const;
+	virtual BOOL	IsEnabled(void) const;
+	virtual BOOL	IsFocused(void) const;
 
-	// Set properties
-	virtual void	SetType(INT nTypeID);
-	virtual void	SetTemplateID(UINT nTemplateID);
-	virtual void	SetTemplateStringID(LPCTSTR lpszTemplateID);
-	virtual void	SetCaption(LPCTSTR lpszCaption);
+	// Set control ID info
+	virtual void	SetType(_In_ INT nTypeID);
+	virtual void	SetTemplateID(_In_ UINT nTemplateID);
+	virtual void	SetTemplateStringID(_In_z_ LPCTSTR lpszTemplateID);
+
+	// Set attributes
+	virtual void	SetCaption(_In_z_ LPCTSTR lpszCaption);
+	virtual void	SetVisibleState(_In_ BOOL bVisible);
+	virtual void	SetEnableState(_In_ BOOL bEnabled);
+	virtual void	SetFocusedState(_In_ BOOL bFocused);
+	virtual void	UpdateAttributes(void);
 
 	// Get boolean data values
 	virtual BOOL	 GetCheck(void) const;
 
 	// Get integer data values
-	virtual LONG_PTR GetValueInt(void) const;
-	virtual void	 GetValueInt(LONG_PTR& lValue) const;
-	virtual LONG_PTR GetReserveValueInt(void) const;
-	virtual void	 GetReserveValueInt(LONG_PTR& lValue) const;
-	virtual void	 GetMinMaxInt(LONG_PTR& lMin, LONG_PTR& lMax) const;
+	virtual LONG_PTR GetInteger(void) const;
+	virtual void	 GetInteger(_Out_ LONG_PTR& lValue) const;
+	virtual LONG_PTR GetReserveInteger(void) const;
+	virtual void	 GetReserveInteger(_Out_ LONG_PTR& lValue) const;
+	virtual void	 GetMinMaxInt(_Out_ LONG_PTR& lMin, _Out_ LONG_PTR& lMax) const;
 
 	// Get float data values
-	virtual DOUBLE	 GetValueFloat(void) const;
-	virtual void	 GetValueFloat(DOUBLE& dbValue) const;
-	virtual DOUBLE	 GetReserveValueFloat(void) const;
-	virtual void	 GetReserveValueFloat(DOUBLE& dbValue) const;
-	virtual void	 GetMinMaxFloat(DOUBLE& dbMin, DOUBLE& dbMax) const;
+	virtual DOUBLE	 GetFloat(void) const;
+	virtual void	 GetFloat(_Out_ DOUBLE& dbValue) const;
+	virtual DOUBLE	 GetReserveFloat(void) const;
+	virtual void	 GetReserveFloat(_Out_ DOUBLE& dbValue) const;
+	virtual void	 GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) const;
 
 	// Get string data values
-	virtual LPCTSTR	 GetValueString(void) const;
-	virtual void	 GetValueString(CString& strValue) const;
-	virtual LPCTSTR	 GetReserveValueString(void) const;
-	virtual void	 GetReserveValueString(CString& strValue) const;
+	virtual LPCTSTR	 GetString(void) const;
+	virtual void	 GetString(_Out_ CString& strValue) const;
+	virtual LPCTSTR	 GetReserveString(void) const;
+	virtual void	 GetReserveString(_Out_ CString& strValue) const;
 
 	// Get array data values
-	virtual void	 GetValueIntArray(CUIntArray& auiValue) const;
-	virtual void	 GetValueStringArray(CStringArray& astrValue) const;
+	virtual void	 GetIntArray(_Out_ CUIntArray& auiValue) const;
+	virtual void	 GetReserveIntArray(_Out_ CUIntArray& auiValue) const;
+	virtual void	 GetStringArray(_Out_ CStringArray& astrValue) const;
+	virtual void	 GetReserveStringArray(_Out_ CStringArray& astrValue) const;
+
+	// Get time data value
+	virtual SYSTEMTIME	GetTime(void) const;
+	virtual void		GetTime(_Out_ SYSTEMTIME& timeValue) const;
 
 	// Set boolean data values
-	virtual void	SetCheck(const BOOL& bCheck);
+	virtual void	SetCheck(_In_ const BOOL& bCheck);
 
 	// Set integer data values
-	virtual void	SetValueInt(const LONG_PTR& lValue);
-	virtual void	SetReserveValueInt(const LONG_PTR& lValue);
-	virtual void	SetMinMaxInt(const LONG_PTR& lMin, const LONG_PTR& lMax);
+	virtual void	SetInteger(_In_ const LONG_PTR& lValue);
+	virtual void	SetReserveInteger(_In_ const LONG_PTR& lValue);
+	virtual void	SetMinMaxInt(_In_ const LONG_PTR& lMin, _In_ const LONG_PTR& lMax);
 
 	// Set float data values
-	virtual void	SetValueFloat(const DOUBLE& dbValue);
-	virtual void	SetReserveValueFloat(const DOUBLE& dbValue);
-	virtual void	SetMinMaxFloat(const DOUBLE& dbMin, const DOUBLE& dbMax);
+	virtual void	SetFloat(_In_ const DOUBLE& dbValue);
+	virtual void	SetReserveFloat(_In_ const DOUBLE& dbValue);
+	virtual void	SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& dbMax);
 
 	// Set string data values
-	virtual void	SetValueString(LPCTSTR lpszValue);
-	virtual void	SetReserveValueString(LPCTSTR lpszValue);
+	virtual void	SetString(_In_ LPCTSTR lpszValue);
+	virtual void	SetReserveString(_In_ LPCTSTR lpszValue);
 
 	// Set array data values
-	virtual void	SetValueIntArray(const CUIntArray& auiValue);
-	virtual void	SetValueStringArray(const CStringArray& astrValue);
+	virtual void	SetIntArray(_In_ const CUIntArray& auiValue);
+	virtual void	SetReserveIntArray(_In_ const CUIntArray& auiValue);
+	virtual void	SetStringArray(_In_ const CStringArray& astrValue);
+	virtual void	SetReserveStringArray(_In_ const CStringArray& astrValue);
+
+	// Set time data values
+	virtual void	SetTime(_In_ const SYSTEMTIME& timeValue);
+
+public:
+	// Get/set custom data pointer
+	template<typename DATA_TYPE>
+	BOOL GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const;
+	template<typename DATA_TYPE>
+	BOOL SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize);
+
+	// Custom data size retrieving and validating
+	virtual BOOL	IsDataEmpty(void) const;
+	virtual SIZE_T	GetDataSize(void) const;
 };
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //
 //	Class name:	 SMenu
 //  Description: Custom base class for user menu
 //  Base class:	 CMenu
 //
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 class SMenu : public CMenu
 {
@@ -218,13 +293,13 @@ protected:
 
 typedef CArray<SCtrlInfoWrap*, SCtrlInfoWrap*> SCtrlInfoList;
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //
 //	Class name:	 SControlManager
 //  Description: Class for dialog/window control management
 //  Base class:	 CObject
 //
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 class SControlManager : public CObject
 {

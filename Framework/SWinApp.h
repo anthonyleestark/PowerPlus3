@@ -35,13 +35,13 @@
 #define SCM_FORCE_EXITAPP		(SCM_APPLICATION+2)
 
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //
 //	Class name:	 SWinApp
 //  Description: Custom base class for application
 //  Base class:	 CWinAppEx
 //
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 class SWinApp : public CWinAppEx
 {
@@ -55,7 +55,6 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
-	DECLARE_APP_IDMAP()
 
 protected:
 	// Title and caption
@@ -100,9 +99,8 @@ public:
 	// Application window caption get/set functions
 	virtual LPCTSTR GetAppWindowCaption(void) const;
 	virtual void GetAppWindowCaption(CString& strWindowCaption) const;
-	virtual void SetAppWindowCaption(LPCTSTR lpszWindowCaption);
-	virtual BOOL SetAppWindowCaption(UINT nResourceStringID);
-	virtual BOOL SetAppWindowCaption(UINT nResourceStringID, LPCTSTR lpszProductVersion);
+	virtual void SetAppWindowCaption(LPCTSTR lpszWindowCaption, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
+	virtual BOOL SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
 
 	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);

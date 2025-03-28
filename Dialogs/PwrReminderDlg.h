@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		PwrReminderDlg.h
@@ -57,7 +57,7 @@ protected:
 	// Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
-	DECLARE_CLASS_IDMAP()
+	DECLARE_RESOURCEID_MAP()
 
 private:
 	// Dialog control variables
@@ -151,7 +151,7 @@ protected:
 	void DisableTable(BOOL bDisable);
 	void RedrawDataTable(BOOL bReadOnly = FALSE);
 	void DisplayItemDetails(int nIndex);
-	void RefreshDlgItemState(BOOL bRecheckState);
+	void RefreshDialogItemState(BOOL bRecheckState = FALSE);
 	void UpdateCheckAllBtnState(BOOL bRecheck = FALSE);
 	void RefreshDetailView(int nMode);
 	void UpdateMsgCounter(int nCount);

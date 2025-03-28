@@ -618,8 +618,11 @@
 #define RESOURCESTRING(resourceid)					LoadResourceString(resourceid)
 
 #define MAKE_WPARAM_STRING(string)					((WPARAM)(_tcslen(string)))
-#define MAKE_LPARAM_STRING(string)					(reinterpret_cast<LPARAM>((LPCTSTR)string))
-#define LPARAM_TO_STRING(lParam)					(reinterpret_cast<LPCTSTR>(lParam))
+#define MAKE_LPARAM(type, data)						(reinterpret_cast<LPARAM>((type)data))
+#define MAKE_LPARAM_STRING(string)					MAKE_LPARAM(LPCTSTR, string)
+#define LPARAM_STATIC_CAST(type, lParam)			(static_cast<type>(lParam))
+#define LPARAM_REINTERPRET_CAST(type, lParam)		(reinterpret_cast<type>(lParam))
+#define LPARAM_TO_STRING(lParam)					LPARAM_REINTERPRET_CAST(LPCTSTR, lParam)
 
 
 // Special expressions
@@ -756,27 +759,27 @@ typedef enum eSYSTEMEVENTID {
 
 typedef enum eAPPOPTIONID {
 	OPTIONID_INVALID = -1,				// *** Invalid option ***
-	OPTIONID_LMBACTION = 0,				// Left mouse button action
-	OPTIONID_MMBACTION,					// Middle mouse button action
-	OPTIONID_RMBACTION,					// Right mouse button action
-	OPTIONID_RMBSHOWMENU,				// Right mouse button: Only show menu
-	OPTIONID_LANGUAGEID,				// Language setting
-	OPTIONID_CURDISPLANGUAGE,			// Currently displaying language
-	OPTIONID_SHOWDLGATSTARTUP,			// Show dialog at startup
-	OPTIONID_STARTUPENABLE,				// Startup with Windows
-	OPTIONID_CONFIRMACTION,				// Show confirm message before doing action
-	OPTIONID_SAVEAPPEVENTLOG,			// Save app event log
-	OPTIONID_SAVEHISTORYLOG,			// Save action history log
-	OPTIONID_RUNASADMIN,				// Run with admin privileges
-	OPTIONID_SHOWERRORMSG,				// Show action error message
-	OPTIONID_NOTIFYSCHEDULE,			// Show notify tip for schedule action
-	OPTIONID_ALLOWCANCELSCHED,			// Allow canceling schedule when notify
-	OPTIONID_ENABLEHOTKEYSET,			// Enable background action hotkeys
-	OPTIONID_LOCKSTATEHOTKEY,			// Allow background hotkeys on lockscreen
-	OPTIONID_ENABLEPWRREMINDER,			// Enable Power Peminder feature
-	OPTIONID_SCHEDULEACTIVE,			// Default schedule active state
-	OPTIONID_SCHEDULEACTION,			// Default schedule action ID
-	OPTIONID_SCHEDULEREPEAT				// Default schedule repeat option
+	OPTIONID_LMB_ACTION = 0,			// Left mouse button action
+	OPTIONID_MMB_ACTION,				// Middle mouse button action
+	OPTIONID_RMB_ACTION,				// Right mouse button action
+	OPTIONID_RMB_SHOW_MENU,				// Right mouse button: Only show menu
+	OPTIONID_LANGUAGE_ID,				// Language setting
+	OPTIONID_CUR_DISP_LANGUAGE,			// Currently displaying language
+	OPTIONID_SHOW_DLG_AT_STARTUP,		// Show dialog at startup
+	OPTIONID_STARTUP_ENABLE,			// Startup with Windows
+	OPTIONID_CONFIRM_ACTION,			// Show confirm message before doing action
+	OPTIONID_SAVE_APP_EVENT_LOG,		// Save app event log
+	OPTIONID_SAVE_HISTORY_LOG,			// Save action history log
+	OPTIONID_RUN_AS_ADMIN,				// Run with admin privileges
+	OPTIONID_SHOW_ERROR_MSG,			// Show action error message
+	OPTIONID_NOTIFY_SCHEDULE,			// Show notify tip for schedule action
+	OPTIONID_ALLOW_CANCEL_SCHEDULE,		// Allow canceling schedule when notify
+	OPTIONID_ENABLE_HOTKEYSET,			// Enable background action hotkeys
+	OPTIONID_LOCK_STATE_HOTKEY,			// Allow background hotkeys on lockscreen
+	OPTIONID_ENABLE_PWRREMINDER,		// Enable Power Peminder feature
+	OPTIONID_SCHEDULE_ACTIVE,			// Default schedule active state
+	OPTIONID_SCHEDULE_ACTION,			// Default schedule action ID
+	OPTIONID_SCHEDULE_REPEAT			// Default schedule repeat option
 } APPOPTIONID;
 
 
@@ -788,24 +791,24 @@ typedef enum eAPPOPTIONID {
 
 typedef enum eAPPFLAGID {
 	FLAGID_INVALID = -1,				// *** Invalid flag ID ***
-	FLAGID_CHANGEFLAG = 0,				// Data/setting change flag
-	FLAGID_READONLYMODE,				// Read-only mode
-	FLAGID_LOCKSTATE,					// Lock state
-	FLAGID_FORCECLOSING,				// Force closing by request
-	FLAGID_USEESCAPE,					// Use Escape key
-	FLAGID_USEENTER,					// Use Enter key
-	FLAGID_BKGRDCLRSET,					// Dialog background color is set
-	FLAGID_TEXTCLRSET,					// Dialog text color is set
-	FLAGID_MINSIZESET,					// Dialog minimum size is set
-	FLAGID_MAXSIZESET,					// Dialog maximum size is set
-	FLAGID_TOPMOSTSET,					// Dialog top-most position is set
-	FLAGID_INITSOUNDSET,				// Dialog initialize sound is set
-	FLAGID_DLGEXPANDED,					// Dialog expanded/collapsed
-	FLAGID_NOTIFYICONSHOWED,			// Notify icon showing flag
-	FLAGID_HOTKEYREGISTERED,			// Hotkey registered
-	FLAGID_RESTARTASADMIN,				// Restart as admin flag
-	FLAGID_PWRBROADCASTSKIPCOUNT,		// Power Broadcase event skip counter
-	FLAGID_WTSSESSIONNOTIFYREG,			// WTS Session Change State Notification registered
+	FLAGID_CHANGE_FLAG = 0,				// Data/setting change flag
+	FLAGID_READ_ONLY_MODE,				// Read-only mode
+	FLAGID_LOCK_STATE,					// Lock state
+	FLAGID_FORCE_CLOSING,				// Force closing by request
+	FLAGID_USE_ESCAPE,					// Use Escape key
+	FLAGID_USE_ENTER,					// Use Enter key
+	FLAGID_BKGRDCLR_SET,				// Dialog background color is set
+	FLAGID_TEXTCLR_SET,					// Dialog text color is set
+	FLAGID_MIN_SIZE_SET,				// Dialog minimum size is set
+	FLAGID_MAX_SIZE_SET,				// Dialog maximum size is set
+	FLAGID_TOPMOST_SET,					// Dialog top-most position is set
+	FLAGID_INIT_SOUND_SET,				// Dialog initialize sound is set
+	FLAGID_DLG_EXPANDED,				// Dialog expanded/collapsed
+	FLAGID_NOTIFY_ICON_SHOWED,			// Notify icon showing flag
+	FLAGID_HOTKEY_REGISTERED,			// Hotkey registered
+	FLAGID_RESTART_AS_ADMIN,			// Restart as admin flag
+	FLAGID_PWRBROADCAST_SKIP_COUNT,		// Power Broadcase event skip counter
+	FLAGID_WTSSESSIONNOTIFY_REG,		// WTS Session Change State Notification registered
 } APPFLAGID;
 
 

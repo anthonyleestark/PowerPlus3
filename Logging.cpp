@@ -1259,7 +1259,7 @@ SLogging::~SLogging()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SLogging::Init()
+AFX_INLINE void SLogging::Init()
 {
 	// Initialize empty log data
 	m_arrLogData.RemoveAll();
@@ -1275,7 +1275,7 @@ void SLogging::Init()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SLogging::DeleteAll()
+AFX_INLINE void SLogging::DeleteAll()
 {
 	// Clean up log data
 	m_arrLogData.RemoveAll();
@@ -1399,7 +1399,7 @@ AFX_INLINE BYTE SLogging::GetWriteMode(void) const
 	return m_byWriteMode;
 }
 
-void SLogging::SetWriteMode(BYTE byWriteMode)
+AFX_INLINE void SLogging::SetWriteMode(BYTE byWriteMode)
 {
 	m_byWriteMode = byWriteMode;
 }
@@ -1413,12 +1413,12 @@ void SLogging::SetWriteMode(BYTE byWriteMode)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SLogging::GetFilePath(CString& strFilePath)
+AFX_INLINE void SLogging::GetFilePath(CString& strFilePath)
 {
 	strFilePath = m_strFilePath;
 }
 
-void SLogging::SetFilePath(LPCTSTR lpszFilePath)
+AFX_INLINE void SLogging::SetFilePath(LPCTSTR lpszFilePath)
 {
 	m_strFilePath = lpszFilePath;
 }
@@ -1432,7 +1432,7 @@ void SLogging::SetFilePath(LPCTSTR lpszFilePath)
 //
 //////////////////////////////////////////////////////////////////////////
 
-PLOGITEM SLogging::GetDefaultTemplate(void)
+AFX_INLINE PLOGITEM SLogging::GetDefaultTemplate(void)
 {
 	return m_pItemDefTemplate;
 }

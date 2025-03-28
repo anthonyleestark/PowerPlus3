@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		PowerPlusDlg.h
@@ -68,7 +68,7 @@ protected:
 	// Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
-	DECLARE_CLASS_IDMAP()
+	DECLARE_RESOURCEID_MAP()
 
 private:
 	// App data variables
@@ -194,7 +194,7 @@ protected:
 
 	// Dialog setup functions
 	void SetupLanguage(void);
-	void SetupComboBox(UINT nComboID, LANGTABLE_PTR pLanguage);
+	void SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage);
 
 	// Item state/checkbox update functions
 	void EnableRightMouseMenu(BOOL bEnable);

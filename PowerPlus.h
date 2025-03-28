@@ -151,7 +151,6 @@ protected:
 	afx_msg void OnShowErrorMessage(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
-	DECLARE_APP_IDMAP()
 };
 
 extern CPowerPlusApp theApp;
@@ -164,8 +163,8 @@ extern CPowerPlusApp theApp;
 ////////////////////////////////////////////////////////
 
 #ifdef _AFX_ENABLE_INLINES
-	#ifndef _POWERPLUS_INLINE_ENABLED
-		#define _POWERPLUS_INLINE_ENABLED
+	#ifndef _POWERPLUS_ENABLES_INLINE
+		#define _POWERPLUS_ENABLES_INLINE
 		#include "PowerPlus.inl"
 		#pragma message("--Power++ inline enabled")
 	#endif

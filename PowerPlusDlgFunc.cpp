@@ -445,7 +445,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// Test show error message
 			int nErrCode = _tstoi(retBuff[2].tcToken);
 			if (nErrCode >= 0) {
-				if (GetAppOption(OPTIONID_SHOWERRORMSG) == FALSE) {
+				if (GetAppOption(OPTIONID_SHOW_ERROR_MSG) == FALSE) {
 					OutputDebugLog(_T("Show error message OFF"));
 					bNoReply = FALSE;	// Reset flag
 				}
@@ -753,6 +753,24 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					CString strItemPrint;
 					pwrItem.Print(strItemPrint);
 					strOutputResult.Format(_T("Index=%d, %s"), nIndex, strItemPrint);
+					OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
+				}
+			}
+		}
+		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("resourceidmap")))) {
+			// Print application resource ID map data
+			SResourceIDMap* pResourceIDMap = GET_RESOURCEID_MAP();
+			if (pResourceIDMap != NULL) {
+				// Prepare for replying
+				bNoReply = FALSE;	// Reset flag
+				// Print number of entries
+				INT_PTR nSize = pResourceIDMap->GetMapCount();
+				strOutputResult.Format(_T("Resource ID map count=%d"), nSize);
+				OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
+				// Print each resource ID map entry
+				for (INT_PTR nIndex = 0; nIndex < nSize; nIndex++) {
+					const RESOURCE_ID_MAP_ENTRY& resourceIDMapEntry = pResourceIDMap->GetAt(nIndex);
+					strOutputResult.Format(_T("Index=%d: { ResourceID=%d, NameID=%s }"), nIndex, resourceIDMapEntry.dwResourceID, MAKEUNICODE(resourceIDMapEntry.strNameID));
 					OutputDebugLog(strOutputResult, DBOUT_DEBUGTESTTOOL);
 				}
 			}
@@ -1381,7 +1399,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			}
 			else {
 				// Set skip counter
-				SetFlagValue(FLAGID_PWRBROADCASTSKIPCOUNT, nSkipCount);
+				SetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT, nSkipCount);
 				OutputDebugLogFormat(_T("Skip PowerBroadcast event: Counter=%d"), nSkipCount);
 				bNoReply = FALSE;	// Reset flag
 			}

@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		AboutDlg.h
@@ -54,7 +54,7 @@ protected:
 	// Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
-	DECLARE_CLASS_IDMAP()
+	DECLARE_RESOURCEID_MAP()
 
 public:
 	// Generated message map functions

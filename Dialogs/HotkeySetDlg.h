@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		HotkeySetDlg.h
@@ -52,7 +52,7 @@ protected:
 	// Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
-	DECLARE_CLASS_IDMAP()
+	DECLARE_RESOURCEID_MAP()
 
 private:
 	// Dialog control variables
@@ -104,7 +104,7 @@ protected:
 	void SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage);
 
 	// Dialog item properties functions
-	void RefreshDlgItemState();
+	void RefreshDialogItemState(BOOL bRecheckState = FALSE);
 	void UpdateCheckAllBtnState(BOOL bRecheck = TRUE);
 	void UpdateHotkeySet();
 	void DisableHotkeySetTable(BOOL bDisable);

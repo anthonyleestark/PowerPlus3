@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		AboutDlg.cpp
@@ -46,7 +46,6 @@ IMPLEMENT_DYNAMIC(CAboutDlg, SDialog)
 
 CAboutDlg::CAboutDlg() : SDialog(IDD_ABOUT_DLG)
 {
-	INIT_CLASS_IDMAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -95,12 +94,12 @@ INT_PTR CAboutDlg::RegisterDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_APPNAME_LABEL, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_COPYRIGHT_LABEL, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_VIEW_FACEBOOK_PROFILE_LINK, CTRL_TYPE_SYSLINKCTRL);
-		nRet = pCtrlMan->AddControl(IDC_AUTH_LABEL, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_APPINFO_LABEL, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_ABOUT_CLOSE_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_APPNAME_LABEL, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_COPYRIGHT_LABEL, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_VIEW_FACEBOOK_PROFILE_LINK, SysLink_Control);
+		nRet = pCtrlMan->AddControl(IDC_AUTH_LABEL, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_APPINFO_LABEL, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_ABOUT_CLOSE_BTN, Button);
 	}
 
 	return nRet;
@@ -139,15 +138,15 @@ BOOL CAboutDlg::UnregisterDialogManagement(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BEGIN_ID_MAPPING(CAboutDlg)
-	IDMAP_ADD(IDD_ABOUT_DLG,					"AboutDlg")
-	IDMAP_ADD(IDC_ABOUT_CLOSE_BTN,				"CloseButton")
-	IDMAP_ADD(IDC_VIEW_FACEBOOK_PROFILE_LINK,	"DevProfileLink")
-	IDMAP_ADD(IDC_APPNAME_LABEL,				"AppNameLabel")
-	IDMAP_ADD(IDC_COPYRIGHT_LABEL,				"CopyrightLabel")
-	IDMAP_ADD(IDC_AUTH_LABEL,					"AuthorLabel")
-	IDMAP_ADD(IDC_APPINFO_LABEL,				"AuthorInfoLabel")
-END_ID_MAPPING()
+BEGIN_RESOURCEID_MAP(CAboutDlg)
+	ON_ID_DIALOG(IDD_ABOUT_DLG,						"AboutDlg")
+	ON_ID_CONTROL(IDC_ABOUT_CLOSE_BTN,				"CloseButton")
+	ON_ID_CONTROL(IDC_VIEW_FACEBOOK_PROFILE_LINK,	"DevProfileLink")
+	ON_ID_CONTROL(IDC_APPNAME_LABEL,				"AppNameLabel")
+	ON_ID_CONTROL(IDC_COPYRIGHT_LABEL,				"CopyrightLabel")
+	ON_ID_CONTROL(IDC_AUTH_LABEL,					"AuthorLabel")
+	ON_ID_CONTROL(IDC_APPINFO_LABEL,				"AuthorInfoLabel")
+END_RESOURCEID_MAP()
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -263,6 +262,9 @@ void CAboutDlg::SetupLanguage(void)
 			break;
 		}
 	}
+
+	// Default
+	SDialog::SetupLanguage();
 }
 
 //////////////////////////////////////////////////////////////////////////

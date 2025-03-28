@@ -58,6 +58,7 @@ SDialog::SDialog() : CDialogEx()
 	m_bForceClose = FALSE;
 	m_bUseEnter = TRUE;
 	m_bUseEscape = TRUE;
+	m_nDescendantCount = INT_NULL;
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -113,6 +114,7 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogEx(nI
 	m_bForceClose = FALSE;
 	m_bUseEnter = TRUE;
 	m_bUseEscape = TRUE;
+	m_nDescendantCount = INT_NULL;
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -168,6 +170,7 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd /* = NULL */) : CDia
 	m_bForceClose = FALSE;
 	m_bUseEnter = TRUE;
 	m_bUseEscape = TRUE;
+	m_nDescendantCount = INT_NULL;
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -255,6 +258,26 @@ void SDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 //////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	UpdateResourceIDMap
+//					UpdateThisResourceIDMap
+//	Description:	Base functions for implementing dialog resource ID map
+//
+//////////////////////////////////////////////////////////////////////////
+
+const INT_PTR SDialog::UpdateResourceIDMap()
+{
+	// Default
+	return UpdateThisResourceIDMap();
+}
+
+const INT_PTR PASCAL SDialog::UpdateThisResourceIDMap()
+{
+	// Default
+	return GET_RESOURCEID_MAP()->GetMapCount();
+}
+
+//////////////////////////////////////////////////////////////////////////
 //
 //	SDialog dialog message map
 //
@@ -268,6 +291,8 @@ BEGIN_MESSAGE_MAP(SDialog, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL, &SDialog::OnCancel)
 	ON_WM_ACTIVATE()
 	ON_WM_GETMINMAXINFO()
+	ON_MESSAGE(SCM_NOTIFY_DIALOG_INIT, &SDialog::OnChildDialogInit)
+	ON_MESSAGE(SCM_NOTIFY_DIALOG_DESTROY, &SDialog::OnChildDialogDestroy)
 END_MESSAGE_MAP()
 
 
@@ -314,6 +339,9 @@ BOOL SDialog::OnInitDialog()
 {
 	// Base class initialization
 	CDialogEx::OnInitDialog();
+
+	// Initialize dialog resource ID map
+	UpdateResourceIDMap();
 
 	// If parent window is not set
 	if (GetParentWnd() == NULL) {
@@ -413,7 +441,7 @@ BOOL SDialog::OnInitDialog()
 	WPARAM wParam = (WPARAM)GetDialogID();
 
 	// Notify parent window about dialog initialization
-	this->NotifyParent(SCM_NOTIFY_DIALOGINIT, wParam, NULL);
+	this->NotifyParent(SCM_NOTIFY_DIALOG_INIT, wParam, NULL);
 
 	return TRUE;
 }
@@ -433,7 +461,7 @@ void SDialog::OnClose()
 	WPARAM wParam = (WPARAM)GetDialogID();
 
 	// Notify parent window about dialog closing
-	this->NotifyParent(SCM_NOTIFY_DIALOGCLOSE, wParam, NULL);
+	this->NotifyParent(SCM_NOTIFY_DIALOG_CLOSE, wParam, NULL);
 
 	// Close dialog
 	CDialogEx::OnClose();
@@ -457,7 +485,7 @@ void SDialog::OnDestroy()
 	WPARAM wParam = (WPARAM)GetDialogID();
 
 	// Notify parent window about dialog destroying
-	this->NotifyParent(SCM_NOTIFY_DIALOGDESTROY, wParam, NULL);
+	this->NotifyParent(SCM_NOTIFY_DIALOG_DESTROY, wParam, NULL);
 
 	// Destroy dialog
 	CDialogEx::OnDestroy();
@@ -482,10 +510,10 @@ void SDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 
 	// Notify parent window about dialog active/inactive state
 	if (nState == WA_ACTIVE) {
-		this->NotifyParent(SCM_NOTIFY_DIALOGACTIVE, wParam, NULL);
+		this->NotifyParent(SCM_NOTIFY_DIALOG_ACTIVE, wParam, NULL);
 	}
 	else if (nState == WA_INACTIVE) {
-		this->NotifyParent(SCM_NOTIFY_DIALOGINACTIVE, wParam, NULL);
+		this->NotifyParent(SCM_NOTIFY_DIALOG_INACTIVE, wParam, NULL);
 	}
 }
 
@@ -508,6 +536,44 @@ void SDialog::OnMouseMove(UINT nFlags, CPoint point)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	OnChildDialogInit
+//	Description:	Handle event when a child dialog is initialized
+//  Arguments:		wParam - Child dialog ID
+//					lParam - Modal or modeless state
+//  Return value:	LRESULT
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT SDialog::OnChildDialogInit(WPARAM wParam, LPARAM lParam)
+{
+	// Update descendant dialog counter
+	++m_nDescendantCount;
+
+	// Default: Success
+	return LRESULT(RESULT_SUCCESS);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnChildDialogDestroy
+//	Description:	Handle event when a child dialog is closed/destroyed
+//  Arguments:		wParam - Child dialog ID
+//					lParam - Modal or modeless state
+//  Return value:	LRESULT
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT SDialog::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
+{
+	// Update descendant dialog counter
+	--m_nDescendantCount;
+
+	// Default: Success
+	return LRESULT(RESULT_SUCCESS);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	OnGetMinMaxInfo
 //	Description:	Dialog get min/max info handler
 //  Arguments:		Default
@@ -518,11 +584,11 @@ void SDialog::OnMouseMove(UINT nFlags, CPoint point)
 void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
-	if (GetFlagValue(FLAGID_MINSIZESET) == TRUE) {
+	if (GetFlagValue(FLAGID_MIN_SIZE_SET) == TRUE) {
 		pMinMaxInfo->ptMinTrackSize.x = m_szMinSize.cx;
 		pMinMaxInfo->ptMinTrackSize.y = m_szMinSize.cy;
 	}
-	if (GetFlagValue(FLAGID_MAXSIZESET) == TRUE) {
+	if (GetFlagValue(FLAGID_MAX_SIZE_SET) == TRUE) {
 		pMinMaxInfo->ptMaxTrackSize.x = m_szMaxSize.cx;
 		pMinMaxInfo->ptMaxTrackSize.y = m_szMaxSize.cy;
 	}
@@ -604,6 +670,20 @@ LRESULT SDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	// Default
 	return CDialogEx::WindowProc(message, wParam, lParam);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	DoModal
+//	Description:	Run a modal dialog and return the result
+//  Arguments:		None
+//  Return value:	INT_PTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT_PTR SDialog::DoModal()
+{
+	return CDialogEx::DoModal();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -796,7 +876,11 @@ INT_PTR SDialog::RegisterDialogManagement(void)
 
 void SDialog::UpdateDialogManagement(void)
 {
-	// TODO: Deriver this function for custom actions
+	// Get control manager
+	if (m_pCtrlManager == NULL) return;
+
+	// Update control data
+	m_pCtrlManager->UpdateData(NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1906,8 +1990,8 @@ void SDialog::OutputButtonLog(USHORT usEvent, UINT nButtonID)
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
-	logDetail.strDetailInfo = IDMAP_GET(nButtonID);
+	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nButtonID));
 	logDetailInfo.Add(logDetail);
 
 	// Output button event log
@@ -1943,8 +2027,8 @@ void SDialog::OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID)
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
-	logDetail.strDetailInfo = IDMAP_GET(nCheckboxID);
+	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nCheckboxID));
 	logDetailInfo.Add(logDetail);
 
 	// Checkbox checked state
@@ -1986,8 +2070,8 @@ void SDialog::OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID)
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
-	logDetail.strDetailInfo = IDMAP_GET(nRadButtonID);
+	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nRadButtonID));
 	logDetailInfo.Add(logDetail);
 
 	// Radio button checked state
@@ -2027,8 +2111,8 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
-	logDetail.strDetailInfo = IDMAP_GET(nComboID);
+	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nComboID));
 	logDetailInfo.Add(logDetail);
 
 	// Combo-box control info
@@ -2041,9 +2125,9 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 			pComboWrap->GetCaption(strComboCaption);
 
 			// Combo-box current selection string
-			INT_PTR nCurSel = pComboWrap->GetValueInt();
+			INT_PTR nCurSel = pComboWrap->GetInteger();
 			CStringArray arrDataList;
-			pComboWrap->GetValueStringArray(arrDataList);
+			pComboWrap->GetStringArray(arrDataList);
 			if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
 				logDetail.Init();
 				logDetail.usCategory = EVENTLOG_DETAIL_SELECTION;
@@ -2084,8 +2168,8 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
-	logDetail.strDetailInfo = IDMAP_GET(nEditID);
+	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nEditID));
 	logDetailInfo.Add(logDetail);
 
 	// Edit box control info
@@ -2100,7 +2184,7 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 			// Edit box content
 			logDetail.Init();
 			logDetail.usCategory = EVENTLOG_DETAIL_DATAVALUE;
-			pEditBoxWrap->GetValueString(logDetail.strDetailInfo);
+			pEditBoxWrap->GetString(logDetail.strDetailInfo);
 			logDetailInfo.Add(logDetail);
 		}
 	}
@@ -2136,8 +2220,8 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
-	logDetail.strDetailInfo = IDMAP_GET(nListBoxID);
+	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nListBoxID));
 	logDetailInfo.Add(logDetail);
 
 	// List box control info
@@ -2150,9 +2234,9 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 			pListBoxWrap->GetCaption(strListBoxCaption);
 
 			// List box current selection string
-			INT_PTR nCurSel = pListBoxWrap->GetValueInt();
+			INT_PTR nCurSel = pListBoxWrap->GetInteger();
 			CStringArray arrDataList;
-			pListBoxWrap->GetValueStringArray(arrDataList);
+			pListBoxWrap->GetStringArray(arrDataList);
 			if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
 				logDetail.Init();
 				logDetail.usCategory = EVENTLOG_DETAIL_SELECTION;
@@ -2193,8 +2277,8 @@ void SDialog::OutputSpinCtrlLog(USHORT usEvent, UINT nSpinCtrlID)
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
-	logDetail.strDetailInfo = IDMAP_GET(nSpinCtrlID);
+	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nSpinCtrlID));
 	logDetailInfo.Add(logDetail);
 
 	// Output spin control event log
@@ -2232,8 +2316,8 @@ void SDialog::OutputMenuLog(USHORT usEvent, UINT nMenuItemID)
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MAPTEXTID;
-	logDetail.strDetailInfo = IDMAP_GET(nMenuItemID);
+	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nMenuItemID));
 	logDetailInfo.Add(logDetail);
 
 	// Output menu event log
@@ -2267,6 +2351,9 @@ void SDialog::SetupLanguage(void)
 			break;
 		}
 	}
+
+	// Update dialog control attributes
+	UpdateDialogManagement();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2281,7 +2368,8 @@ void SDialog::SetupLanguage(void)
 
 void SDialog::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
-	// TODO: Deriver this function for custom actions
+	// Update dialog control attributes
+	UpdateDialogManagement();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2494,53 +2582,110 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, in
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	EnableControl
-//	Description:	Enable/disable control with corresponding ID
-//  Arguments:		nCtrlID - Control ID
-//					bEnable - Enable or disable
+//	Function name:	ShowItem
+//	Description:	Show/hide dialog item with corresponding ID
+//  Arguments:		nDlgItemID - Dialog item ID
+//					bVisible   - Visible state
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::EnableControl(UINT nCtrlID, BOOL bEnable)
+void SDialog::ShowItem(UINT nDlgItemID, BOOL bVisible)
 {
-	// If new control state is the same as current state, do nothing
-	CWnd* pWndCtrl = GetDlgItem(nCtrlID);
-	if (pWndCtrl != NULL) {
-		if (pWndCtrl->IsWindowEnabled() == bEnable)
-			return;
-	}
-
-	// Enable/disable control
-	pWndCtrl->EnableWindow(bEnable);
+	ShowItem(GetDlgItem(nDlgItemID), bVisible);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetupDlgItemState
+//	Function name:	ShowItem
+//	Description:	Show/hide dialog item with corresponding ID
+//  Arguments:		pDlgItemWnd - Dialog item window pointer
+//					bVisible	- Visible state
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::ShowItem(CWnd* pDlgItemWnd, BOOL bVisible)
+{
+	// Check dialog item validity
+	ASSERT(pDlgItemWnd != NULL);
+	if (pDlgItemWnd == NULL) return;
+
+	// If new control state is the same as current state, do nothing
+	if (pDlgItemWnd->IsWindowVisible() == bVisible)
+		return;
+
+	// Show/hide control
+	pDlgItemWnd->ShowWindow(bVisible);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableItem
+//	Description:	Enable/disable dialog item with corresponding ID
+//  Arguments:		pDlgItemWnd - Dialog item window pointer
+//					bEnabled	- Enable or disable
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::EnableItem(UINT nDlgItemID, BOOL bEnabled)
+{
+	EnableItem(GetDlgItem(nDlgItemID), bEnabled);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableItem
+//	Description:	Enable/disable dialog item with corresponding ID
+//  Arguments:		nDlgItemID - Dialog item ID
+//					bEnabled   - Enable or disable
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::EnableItem(CWnd* pDlgItemWnd, BOOL bEnabled)
+{
+	// Check dialog item validity
+	ASSERT(pDlgItemWnd != NULL);
+	if (pDlgItemWnd == NULL) return;
+
+	// If new control state is the same as current state, do nothing
+	if (pDlgItemWnd->IsWindowEnabled() == bEnabled)
+		return;
+
+	// Enable/disable control
+	pDlgItemWnd->EnableWindow(bEnabled);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetupDialogItemState
 //	Description:	Setup properties and values for dialog items
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::SetupDlgItemState(void)
+void SDialog::SetupDialogItemState(void)
 {
-	// TODO: Deriver this function for custom actions
+	// Update dialog control attributes
+	UpdateDialogManagement();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	RefreshDlgItemState
+//	Function name:	RefreshDialogItemState
 //	Description:	Refresh and update state for dialog items
-//  Arguments:		None
+//  Arguments:		bRecheckState - Recheck all item's state
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::RefreshDlgItemState(void)
+void SDialog::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
-	// TODO: Deriver this function for custom actions
+	// Update dialog control attributes
+	UpdateDialogManagement();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2596,7 +2741,8 @@ void SDialog::SaveLayoutInfo(void)
 
 void SDialog::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 {
-	// TODO: Deriver this function for custom actions
+	// Update data for dialog control management
+	UpdateDialogManagement();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2649,42 +2795,42 @@ int SDialog::GetFlagValue(APPFLAGID eFlagID) const
 	{
 	case FLAGID_INVALID:					// *** Invalid flag ID ***
 		break;
-	case FLAGID_CHANGEFLAG:					// Data/setting change flag
+	case FLAGID_CHANGE_FLAG:				// Data/setting change flag
 		nValue = m_bChangeFlag;
 		break;
-	case FLAGID_READONLYMODE:				// Read-only mode
+	case FLAGID_READ_ONLY_MODE:				// Read-only mode
 		nValue = m_bReadOnlyMode;
 		break;
-	case FLAGID_LOCKSTATE:					// Lock state
+	case FLAGID_LOCK_STATE:					// Lock state
 		nValue = m_bLockState;
 		break;
-	case FLAGID_FORCECLOSING:				// Force closing by request
+	case FLAGID_FORCE_CLOSING:				// Force closing by request
 		nValue = m_bForceClose;
 		break;
-	case FLAGID_USEESCAPE:					// Use Escape key
+	case FLAGID_USE_ESCAPE:					// Use Escape key
 		nValue = m_bUseEscape;
 		break;
-	case FLAGID_USEENTER:					// Use Enter key
+	case FLAGID_USE_ENTER:					// Use Enter key
 		nValue = m_bUseEnter;
 		break;
-	case FLAGID_BKGRDCLRSET:				// Dialog background color is set
+	case FLAGID_BKGRDCLR_SET:				// Dialog background color is set
 		nValue = m_bBkgrdColorSet;
 		break;
-	case FLAGID_TEXTCLRSET:					// Dialog text color is set
+	case FLAGID_TEXTCLR_SET:				// Dialog text color is set
 		nValue = m_bTextColorSet;
 		break;
-	case FLAGID_MINSIZESET:					// Dialog minimum size is set
+	case FLAGID_MIN_SIZE_SET:				// Dialog minimum size is set
 		nValue = ((m_szMinSize.cx >= 0) &&
 				  (m_szMinSize.cy >= 0));
 		break;
-	case FLAGID_MAXSIZESET:					// Dialog maximum size is set
+	case FLAGID_MAX_SIZE_SET:				// Dialog maximum size is set
 		nValue = ((m_szMaxSize.cx > m_szMinSize.cx) &&
 				  (m_szMaxSize.cy > m_szMinSize.cy));
 		break;
-	case FLAGID_TOPMOSTSET:					// Dialog top-most position is set
+	case FLAGID_TOPMOST_SET:				// Dialog top-most position is set
 		nValue = m_bTopMostSet;
 		break;
-	case FLAGID_INITSOUNDSET:				// Dialog initialize sound is set
+	case FLAGID_INIT_SOUND_SET:				// Dialog initialize sound is set
 		nValue = m_bInitSoundSet;
 		break;
 	default:
@@ -2716,34 +2862,34 @@ void SDialog::SetFlagValue(APPFLAGID eFlagID, int nValue)
 	{
 	case FLAGID_INVALID:				// *** Invalid flag ID ***
 		break;
-	case FLAGID_CHANGEFLAG:				// Data/setting change flag
+	case FLAGID_CHANGE_FLAG:			// Data/setting change flag
 		m_bChangeFlag = nValue;
 		break;
-	case FLAGID_READONLYMODE:			// Read-only mode
+	case FLAGID_READ_ONLY_MODE:			// Read-only mode
 		m_bReadOnlyMode = nValue;
 		break;
-	case FLAGID_LOCKSTATE:				// Lock state
+	case FLAGID_LOCK_STATE:				// Lock state
 		m_bLockState = nValue;
 		break;
-	case FLAGID_FORCECLOSING:			// Force closing by request
+	case FLAGID_FORCE_CLOSING:			// Force closing by request
 		m_bForceClose = nValue;
 		break;
-	case FLAGID_USEESCAPE:				// Use Escape key
+	case FLAGID_USE_ESCAPE:				// Use Escape key
 		m_bUseEscape = nValue;
 		break;
-	case FLAGID_USEENTER:				// Use Enter key
+	case FLAGID_USE_ENTER:				// Use Enter key
 		m_bUseEnter = nValue;
 		break;
-	case FLAGID_BKGRDCLRSET:			// Dialog background color is set
+	case FLAGID_BKGRDCLR_SET:			// Dialog background color is set
 		m_bBkgrdColorSet = nValue;
 		break;
-	case FLAGID_TEXTCLRSET:				// Dialog text color is set
+	case FLAGID_TEXTCLR_SET:			// Dialog text color is set
 		m_bTextColorSet = nValue;
 		break;
-	case FLAGID_TOPMOSTSET:				// Dialog top-most position is set
+	case FLAGID_TOPMOST_SET:			// Dialog top-most position is set
 		m_bTopMostSet = nValue;
 		break;
-	case FLAGID_INITSOUNDSET:			// Dialog initialize sound is set
+	case FLAGID_INIT_SOUND_SET:			// Dialog initialize sound is set
 		m_bInitSoundSet = nValue;
 		break;
 	default:
@@ -2767,7 +2913,7 @@ AFX_INLINE BOOL SDialog::GetChangeFlagValue(void) const
 	return m_bChangeFlag;
 }
 
-void SDialog::SetChangeFlagValue(BOOL bChangeFlag)
+AFX_INLINE void SDialog::SetChangeFlagValue(BOOL bChangeFlag)
 {
 	m_bChangeFlag = bChangeFlag;
 }
@@ -2833,4 +2979,46 @@ LRESULT SDialog::RequestCloseDialog(void)
 
 	// Request accepted
 	return LRESULT(RESULT_SUCCESS);	// ERROR_SUCCESS
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OpenChildDialogEx
+//	Description:	Open a child dialog with corresponding ID
+//  Arguments:		nDialogID - Child dialog ID
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::OpenChildDialogEx(UINT nDialogID)
+{
+	// TODO: Deriver this function for custom actions
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OpenChildDialogEx
+//	Description:	Open a child dialog via its pointer
+//  Arguments:		pChildDialog - Child dialog pointer
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::OpenChildDialogEx(SDialog* pChildDialog)
+{
+	// TODO: Deriver this function for custom actions
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDescendantCount
+//	Description:	Get the number of descendant dialogs
+//  Arguments:		None
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE UINT SDialog::GetDescendantCount(void) const
+{
+	return m_nDescendantCount;
 }

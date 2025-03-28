@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		EditScheduleDlg.h
@@ -22,6 +22,7 @@
 #include "Logging.h"
 #include "IDMapping.h"
 #include "SDialog.h"
+
 
 ////////////////////////////////////////////////////////
 //
@@ -52,7 +53,7 @@ protected:
 	// Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
-	DECLARE_CLASS_IDMAP()
+	DECLARE_RESOURCEID_MAP()
 
 private:
 	// Dialog control item
@@ -84,12 +85,12 @@ public:
 
 	// Member functions
 	void SetupLanguage();
-	void SetupComboBox(LANGTABLE_PTR pLanguage);
+	void SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage);
 	void SetupActiveDayList(LANGTABLE_PTR ptrLanguage);
 	void DrawActiveDayTable(BOOL bReadOnly = FALSE);
 
 	// Dialog item properties functions
-	void SetupDlgItemState();
+	void SetupDialogItemState();
 	void UpdateActiveDayList();
 	void DisableActiveDayTable(BOOL bDisable);
 	void RedrawActiveDayTable(BOOL bReadOnly = FALSE);
@@ -107,9 +108,9 @@ public:
 
 public:
 	// Get/set functions
-	int	 GetReturnFlag(void) const;
+	int	GetReturnFlag(void) const;
 	void SetReturnFlag(int nRetFlag);
-	int GetDispMode(void) const;
+	int	GetDispMode(void) const;
 	void SetDispMode(int nMode);
 
 protected:

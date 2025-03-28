@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		HelpDlg.cpp
@@ -48,8 +48,6 @@ CHelpDlg::CHelpDlg(CWnd* pParent /*=NULL*/)
 	// Initialize member variables
 	m_strFileData = STRING_EMPTY;
 	m_nViewMode = MODE_HELPVIEW_HELPFILE;
-
-	INIT_CLASS_IDMAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -98,9 +96,9 @@ INT_PTR CHelpDlg::RegisterDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_HELPINFO_EDITBOX, CTRL_TYPE_EDITBOX);
-		nRet = pCtrlMan->AddControl(IDC_HELP_CLOSE_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HELP_SWITCHVIEWMODE_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_HELPINFO_EDITBOX, Edit_Control);
+		nRet = pCtrlMan->AddControl(IDC_HELP_CLOSE_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HELP_SWITCHVIEWMODE_BTN, Button);
 	}
 
 	return nRet;
@@ -136,12 +134,12 @@ BOOL CHelpDlg::UnregisterDialogManagement(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BEGIN_ID_MAPPING(CHelpDlg)
-	IDMAP_ADD(IDD_HELP_DLG,					"HelpDlg")
-	IDMAP_ADD(IDC_HELPINFO_EDITBOX,			"HelpInfoEditView")
-	IDMAP_ADD(IDC_HELP_CLOSE_BTN,			"CloseButton")
-	IDMAP_ADD(IDC_HELP_SWITCHVIEWMODE_BTN,	"SwitchViewModeButton")
-END_ID_MAPPING()
+BEGIN_RESOURCEID_MAP(CHelpDlg)
+	ON_ID_DIALOG(IDD_HELP_DLG,					"HelpDlg")
+	ON_ID_CONTROL(IDC_HELPINFO_EDITBOX,			"HelpInfoEditView")
+	ON_ID_CONTROL(IDC_HELP_CLOSE_BTN,			"CloseButton")
+	ON_ID_CONTROL(IDC_HELP_SWITCHVIEWMODE_BTN,	"SwitchViewModeButton")
+END_RESOURCEID_MAP()
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -302,6 +300,9 @@ void CHelpDlg::SetupLanguage()
 	if (pWnd != NULL) {
 		pWnd->SetWindowText(m_strFileData);
 	}
+
+	// Default
+	SDialog::SetupLanguage();
 }
 
 //////////////////////////////////////////////////////////////////////////

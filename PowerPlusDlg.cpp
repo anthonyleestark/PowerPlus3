@@ -100,8 +100,6 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	m_pMultiScheduleDlg = NULL;
 	m_pHotkeySetDlg = NULL;
 	m_pPwrReminderDlg = NULL;
-
-	INIT_CLASS_IDMAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -238,42 +236,42 @@ INT_PTR CPowerPlusDlg::RegisterDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_MAIN_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_LEFTMOUSE_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_LMBACTION_LIST, CTRL_TYPE_COMBOBOX);
-		nRet = pCtrlMan->AddControl(IDC_MIDMOUSE_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_MMBACTION_LIST, CTRL_TYPE_COMBOBOX);
-		nRet = pCtrlMan->AddControl(IDC_RIGHTMOUSE_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_RMBACTION_LIST, CTRL_TYPE_COMBOBOX);
-		nRet = pCtrlMan->AddControl(IDC_ENABLERMBMENU_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_APPLY_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_RELOAD_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_EXIT_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_EXPAND_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_COLLAPSE_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_SYSTEM_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_SHOWATSTARTUP_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_ENABLEAUTOSTART_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_CONFIRMACTION_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_SAVEHISTORYLOG_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_SAVEAPPEVENTLOG_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_RUNASADMIN_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_SHOWERROR_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_SCHEDNOTIFY_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_SCHEDALLOWCANCEL_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_ENBBKGRDHOTKEYS_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_ENBPWRREMINDER_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_LANGUAGE_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_LANGUAGE_LIST, CTRL_TYPE_COMBOBOX);
-		nRet = pCtrlMan->AddControl(IDC_VIEWACTIONLOG_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_BACKUPCFG_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_SCHEDULE_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_LOGVIEWER_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HELP_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_ABOUT_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_DEFAULT_BTN, CTRL_TYPE_BUTTON);
+		nRet = pCtrlMan->AddControl(IDC_MAIN_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_LEFTMOUSE_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_LMBACTION_LIST, Combo_Box);
+		nRet = pCtrlMan->AddControl(IDC_MIDMOUSE_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_MMBACTION_LIST, Combo_Box);
+		nRet = pCtrlMan->AddControl(IDC_RIGHTMOUSE_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_RMBACTION_LIST, Combo_Box);
+		nRet = pCtrlMan->AddControl(IDC_ENABLERMBMENU_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_APPLY_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_RELOAD_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_EXIT_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_EXPAND_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_COLLAPSE_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_SYSTEM_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_SHOWATSTARTUP_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_ENABLEAUTOSTART_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_CONFIRMACTION_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_SAVEHISTORYLOG_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_SAVEAPPEVENTLOG_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_RUNASADMIN_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_SHOWERROR_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_SCHEDNOTIFY_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_SCHEDALLOWCANCEL_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_ENBBKGRDHOTKEYS_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_ENBPWRREMINDER_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_LANGUAGE_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_LANGUAGE_LIST, Combo_Box);
+		nRet = pCtrlMan->AddControl(IDC_VIEWACTIONLOG_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_BACKUPCFG_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_SCHEDULE_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_LOGVIEWER_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HELP_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_ABOUT_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_DEFAULT_BTN, Button);
 	}
 
 	return nRet;
@@ -302,6 +300,9 @@ void CPowerPlusDlg::UpdateDialogManagement(void)
 
 	// Update control data
 	pCtrlMan->UpdateData(NULL);
+
+	// Default
+	SDialog::UpdateDialogManagement();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -367,68 +368,68 @@ BOOL CPowerPlusDlg::UnregisterDialogManagement(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BEGIN_ID_MAPPING(CPowerPlusDlg)
+BEGIN_RESOURCEID_MAP(CPowerPlusDlg)
 	// Dialog controls
-	IDMAP_ADD(IDD_POWERPLUS_DIALOG,				"AppMainDlg")
-	IDMAP_ADD(IDC_MAIN_TITLE,					"MainSettingTitle")
-	IDMAP_ADD(IDC_LMBACTION_LIST,				"LMBActionList")
-	IDMAP_ADD(IDC_MMBACTION_LIST,				"MMBActionList")
-	IDMAP_ADD(IDC_RMBACTION_LIST,				"RMBActionList")
-	IDMAP_ADD(IDC_ENABLERMBMENU_CHK,			"EnableRMBCheck")
-	IDMAP_ADD(IDC_APPLY_BTN,					"ApplyButton")
-	IDMAP_ADD(IDC_RELOAD_BTN,					"ReloadButton")
-	IDMAP_ADD(IDC_EXIT_BTN,						"ExitButton")
-	IDMAP_ADD(IDC_EXPAND_BTN,					"ExpandButton")
-	IDMAP_ADD(IDC_COLLAPSE_BTN,					"CollapseButton")
-	IDMAP_ADD(IDC_SHOWATSTARTUP_CHK,			"ShowDlgAtStartupCheck")
-	IDMAP_ADD(IDC_ENABLEAUTOSTART_CHK,			"RunAtStartupCheck")
-	IDMAP_ADD(IDC_CONFIRMACTION_CHK,			"ConfirmActionCheck")
-	IDMAP_ADD(IDC_SAVEHISTORYLOG_CHK,			"SaveAppHistoryCheck")
-	IDMAP_ADD(IDC_SAVEAPPEVENTLOG_CHK,			"SaveAppEventLogCheck")
-	IDMAP_ADD(IDC_RUNASADMIN_CHK,				"RunAsAdminCheck")
-	IDMAP_ADD(IDC_SHOWERROR_CHK,				"ShowErrMsgCheck")
-	IDMAP_ADD(IDC_SCHEDNOTIFY_CHK,				"ShowSchedNotifyCheck")
-	IDMAP_ADD(IDC_SCHEDALLOWCANCEL_CHK,			"AllowCancelSchedCheck")
-	IDMAP_ADD(IDC_ENBBKGRDHOTKEYS_CHK,			"EnableBkgrdHotkeysCheck")
-	IDMAP_ADD(IDC_ENBPWRREMINDER_CHK,			"EnablePowerReminderCheck")
-	IDMAP_ADD(IDC_LANGUAGE_LIST,				"AppLanguageList")
-	IDMAP_ADD(IDC_VIEWACTIONLOG_BTN,			"ViewActionLogButton")
-	IDMAP_ADD(IDC_BACKUPCFG_BTN,				"BackupConfigButton")
-	IDMAP_ADD(IDC_SCHEDULE_BTN,					"ScheduleButton")
-	IDMAP_ADD(IDC_LOGVIEWER_BTN,				"LogViewerButton")
-	IDMAP_ADD(IDC_HOTKEYSET_BTN,				"HotkeySetButton")
-	IDMAP_ADD(IDC_PWRREMINDER_BTN,				"PowerReminderButton")
-	IDMAP_ADD(IDC_HELP_BTN,						"HelpButton")
-	IDMAP_ADD(IDC_ABOUT_BTN,					"AboutButton")
-	IDMAP_ADD(IDC_DEFAULT_BTN,					"DefaultButton")
-	IDMAP_ADD(IDC_LEFTMOUSE_TITLE,				"LMBTitle")
-	IDMAP_ADD(IDC_MIDMOUSE_TITLE,				"MMBTitle")
-	IDMAP_ADD(IDC_RIGHTMOUSE_TITLE,				"RMBTitle")
-	IDMAP_ADD(IDC_SYSTEM_TITLE,					"AdvSettingsTitle")
-	IDMAP_ADD(IDC_LANGUAGE_TITLE,				"AppLanguageTitle")
+	ON_ID_DIALOG(IDD_POWERPLUS_DIALOG,			"AppMainDlg")
+	ON_ID_CONTROL(IDC_MAIN_TITLE,				"MainSettingTitle")
+	ON_ID_CONTROL(IDC_LMBACTION_LIST,			"LMBActionList")
+	ON_ID_CONTROL(IDC_MMBACTION_LIST,			"MMBActionList")
+	ON_ID_CONTROL(IDC_RMBACTION_LIST,			"RMBActionList")
+	ON_ID_CONTROL(IDC_ENABLERMBMENU_CHK,		"EnableRMBCheck")
+	ON_ID_CONTROL(IDC_APPLY_BTN,				"ApplyButton")
+	ON_ID_CONTROL(IDC_RELOAD_BTN,				"ReloadButton")
+	ON_ID_CONTROL(IDC_EXIT_BTN,					"ExitButton")
+	ON_ID_CONTROL(IDC_EXPAND_BTN,				"ExpandButton")
+	ON_ID_CONTROL(IDC_COLLAPSE_BTN,				"CollapseButton")
+	ON_ID_CONTROL(IDC_SHOWATSTARTUP_CHK,		"ShowDlgAtStartupCheck")
+	ON_ID_CONTROL(IDC_ENABLEAUTOSTART_CHK,		"RunAtStartupCheck")
+	ON_ID_CONTROL(IDC_CONFIRMACTION_CHK,		"ConfirmActionCheck")
+	ON_ID_CONTROL(IDC_SAVEHISTORYLOG_CHK,		"SaveAppHistoryCheck")
+	ON_ID_CONTROL(IDC_SAVEAPPEVENTLOG_CHK,		"SaveAppEventLogCheck")
+	ON_ID_CONTROL(IDC_RUNASADMIN_CHK,			"RunAsAdminCheck")
+	ON_ID_CONTROL(IDC_SHOWERROR_CHK,			"ShowErrMsgCheck")
+	ON_ID_CONTROL(IDC_SCHEDNOTIFY_CHK,			"ShowSchedNotifyCheck")
+	ON_ID_CONTROL(IDC_SCHEDALLOWCANCEL_CHK,		"AllowCancelSchedCheck")
+	ON_ID_CONTROL(IDC_ENBBKGRDHOTKEYS_CHK,		"EnableBkgrdHotkeysCheck")
+	ON_ID_CONTROL(IDC_ENBPWRREMINDER_CHK,		"EnablePowerReminderCheck")
+	ON_ID_CONTROL(IDC_LANGUAGE_LIST,			"AppLanguageList")
+	ON_ID_CONTROL(IDC_VIEWACTIONLOG_BTN,		"ViewActionLogButton")
+	ON_ID_CONTROL(IDC_BACKUPCFG_BTN,			"BackupConfigButton")
+	ON_ID_CONTROL(IDC_SCHEDULE_BTN,				"ScheduleButton")
+	ON_ID_CONTROL(IDC_LOGVIEWER_BTN,			"LogViewerButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_BTN,			"HotkeySetButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_BTN,			"PowerReminderButton")
+	ON_ID_CONTROL(IDC_HELP_BTN,					"HelpButton")
+	ON_ID_CONTROL(IDC_ABOUT_BTN,				"AboutButton")
+	ON_ID_CONTROL(IDC_DEFAULT_BTN,				"DefaultButton")
+	ON_ID_CONTROL(IDC_LEFTMOUSE_TITLE,			"LMBTitle")
+	ON_ID_CONTROL(IDC_MIDMOUSE_TITLE,			"MMBTitle")
+	ON_ID_CONTROL(IDC_RIGHTMOUSE_TITLE,			"RMBTitle")
+	ON_ID_CONTROL(IDC_SYSTEM_TITLE,				"AdvSettingsTitle")
+	ON_ID_CONTROL(IDC_LANGUAGE_TITLE,			"AppLanguageTitle")
 
 	// Menu items
-	IDMAP_ADD(IDM_NOTIFY_OPENDLG_ABOUT,			"Menu.AboutDlg")
-	IDMAP_ADD(IDM_NOTIFY_OPENDLG_HELP,			"Menu.HelpDlg")
-	IDMAP_ADD(IDM_NOTIFY_VIEW_ACTIONLOG,		"Menu.ViewActionLog")
-	IDMAP_ADD(IDM_NOTIFY_BACKUP_CONFIG,			"Menu.BackupConfig")
-	IDMAP_ADD(IDM_NOTIFY_VIEW_BAKCONFIG,		"Menu.ViewBakConfig")
-	IDMAP_ADD(IDM_NOTIFY_OPENDLG_LOGVIEWER,		"Menu.LogViewerDlg")
-	IDMAP_ADD(IDM_NOTIFY_OPENDLG_SCHEDULE,		"Menu.ScheduleDlg")
-	IDMAP_ADD(IDM_NOTIFY_OPENDLG_HOTKEYSET,		"Menu.HotkeySetDlg")
-	IDMAP_ADD(IDM_NOTIFY_OPENDLG_PWRREMINDER,	"Menu.PowerReminderDlg")
-	IDMAP_ADD(IDM_NOTIFY_ACTION_DISPLAYOFF,		"Menu.Action.DisplayOff")
-	IDMAP_ADD(IDM_NOTIFY_ACTION_SLEEP,			"Menu.Action.Sleep")
-	IDMAP_ADD(IDM_NOTIFY_ACTION_SHUTDOWN,		"Menu.Action.Shutdown")
-	IDMAP_ADD(IDM_NOTIFY_ACTION_RESTART,		"Menu.Action.Restart")
-	IDMAP_ADD(IDM_NOTIFY_ACTION_SIGNOUT,		"Menu.Action.SignOut")
-	IDMAP_ADD(IDM_NOTIFY_ACTION_HIBERNATE,		"Menu.Action.Hibernate")
-	IDMAP_ADD(IDM_NOTIFY_ACTION_SCHEDULE,		"Menu.Action.Schedule")
-	IDMAP_ADD(IDM_NOTIFY_RESTART_APP,			"Menu.RestartApp")
-	IDMAP_ADD(IDM_NOTIFY_RESTART_ASADMIN,		"Menu.RestartAsAdmin")
-	IDMAP_ADD(IDM_NOTIFY_SHOW_WINDOW,			"Menu.ShowWindow")
-	IDMAP_ADD(IDM_NOTIFY_EXIT_APP,				"Menu.ExitApp")
-END_ID_MAPPING()
+	ON_ID_MENU(IDM_NOTIFY_OPENDLG_ABOUT,		"Menu.AboutDlg")
+	ON_ID_MENU(IDM_NOTIFY_OPENDLG_HELP,			"Menu.HelpDlg")
+	ON_ID_MENU(IDM_NOTIFY_VIEW_ACTIONLOG,		"Menu.ViewActionLog")
+	ON_ID_MENU(IDM_NOTIFY_BACKUP_CONFIG,		"Menu.BackupConfig")
+	ON_ID_MENU(IDM_NOTIFY_VIEW_BAKCONFIG,		"Menu.ViewBakConfig")
+	ON_ID_MENU(IDM_NOTIFY_OPENDLG_LOGVIEWER,	"Menu.LogViewerDlg")
+	ON_ID_MENU(IDM_NOTIFY_OPENDLG_SCHEDULE,		"Menu.ScheduleDlg")
+	ON_ID_MENU(IDM_NOTIFY_OPENDLG_HOTKEYSET,	"Menu.HotkeySetDlg")
+	ON_ID_MENU(IDM_NOTIFY_OPENDLG_PWRREMINDER,	"Menu.PowerReminderDlg")
+	ON_ID_MENU(IDM_NOTIFY_ACTION_DISPLAYOFF,	"Menu.Action.DisplayOff")
+	ON_ID_MENU(IDM_NOTIFY_ACTION_SLEEP,			"Menu.Action.Sleep")
+	ON_ID_MENU(IDM_NOTIFY_ACTION_SHUTDOWN,		"Menu.Action.Shutdown")
+	ON_ID_MENU(IDM_NOTIFY_ACTION_RESTART,		"Menu.Action.Restart")
+	ON_ID_MENU(IDM_NOTIFY_ACTION_SIGNOUT,		"Menu.Action.SignOut")
+	ON_ID_MENU(IDM_NOTIFY_ACTION_HIBERNATE,		"Menu.Action.Hibernate")
+	ON_ID_MENU(IDM_NOTIFY_ACTION_SCHEDULE,		"Menu.Action.Schedule")
+	ON_ID_MENU(IDM_NOTIFY_RESTART_APP,			"Menu.RestartApp")
+	ON_ID_MENU(IDM_NOTIFY_RESTART_ASADMIN,		"Menu.RestartAsAdmin")
+	ON_ID_MENU(IDM_NOTIFY_SHOW_WINDOW,			"Menu.ShowWindow")
+	ON_ID_MENU(IDM_NOTIFY_EXIT_APP,				"Menu.ExitApp")
+END_RESOURCEID_MAP()
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -458,7 +459,7 @@ BEGIN_MESSAGE_MAP(CPowerPlusDlg, SDialog)
 	ON_CBN_SELCHANGE(IDC_RMBACTION_LIST,		&CPowerPlusDlg::OnChangeRMBAction)
 	ON_BN_CLICKED(IDC_ENABLERMBMENU_CHK,		&CPowerPlusDlg::OnEnableRightMouseMenu)
 	ON_BN_CLICKED(IDC_VIEWACTIONLOG_BTN,		&CPowerPlusDlg::OnViewActionLog)
-	ON_MESSAGE(SCM_NOTIFY_DIALOGDESTROY,		&CPowerPlusDlg::OnChildDialogDestroy)
+	ON_MESSAGE(SCM_NOTIFY_DIALOG_DESTROY,		&CPowerPlusDlg::OnChildDialogDestroy)
 	ON_MESSAGE(SM_APP_UPDATE_SCHEDULEDATA,		&CPowerPlusDlg::OnUpdateScheduleData)
 	ON_MESSAGE(SM_APP_UPDATE_HOTKEYSETDATA,		&CPowerPlusDlg::OnUpdateHotkeySetData)
 	ON_MESSAGE(SM_APP_UPDATE_PWRREMINDERDATA,	&CPowerPlusDlg::OnUpdatePwrReminderData)
@@ -887,7 +888,7 @@ void CPowerPlusDlg::OnExpand()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EXPAND_BTN);
 
 	// Expand/collapse dialog
-	BOOL bCurState = GetFlagValue(FLAGID_DLGEXPANDED);
+	BOOL bCurState = GetFlagValue(FLAGID_DLG_EXPANDED);
 	ExpandDialog(!bCurState);
 	UpdateDialogData(FALSE);
 }
@@ -1035,7 +1036,7 @@ void CPowerPlusDlg::OnChangeLanguage()
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_LANGUAGE_LIST);
 
 	// Reload app language
-	UINT nCurLanguage = GetAppOption(OPTIONID_LANGUAGEID, TRUE);
+	UINT nCurLanguage = GetAppOption(OPTIONID_LANGUAGE_ID, TRUE);
 	((CPowerPlusApp*)AfxGetApp())->ReloadAppLanguage(nCurLanguage);
 
 	// Check for settings change
@@ -1260,7 +1261,7 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 	// Timer ID: Power Reminder
 	else if (nIDEvent == TIMERID_STD_POWERREMINDER) {
 		// Process Power Reminder at set time event
-		BOOL bPwrReminderActive = GetAppOption(OPTIONID_ENABLEPWRREMINDER);
+		BOOL bPwrReminderActive = GetAppOption(OPTIONID_ENABLE_PWRREMINDER);
 		if (bPwrReminderActive == TRUE) {
 			// Execute Power reminder
 			ExecutePowerReminder(PREVT_AT_SETTIME);
@@ -1270,10 +1271,10 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 	// Timer ID: Event skip counter
 	else if (nIDEvent == TIMERID_STD_EVENTSKIPCOUNTER) {
 		// Process Power Broadcast event skip counter
-		int nCounter = GetFlagValue(FLAGID_PWRBROADCASTSKIPCOUNT);
+		int nCounter = GetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT);
 		if (nCounter > 0) {
 			// Count down (decrease value by 1)
-			SetFlagValue(FLAGID_PWRBROADCASTSKIPCOUNT, --nCounter);
+			SetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT, --nCounter);
 		}
 	}
 
@@ -1293,6 +1294,9 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 
 LRESULT CPowerPlusDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 {
+	// Debug log
+	OutputDebugString(_T("[ALS] => CPowerPlusDlg::OnChildDialogDestroy()"));
+
 	// Get dialog ID
 	UINT nDialogID = (UINT)wParam;
 
@@ -1350,7 +1354,8 @@ LRESULT CPowerPlusDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 		// DebugTest dialog will be destroyed in app class
 	}
 
-	return LRESULT(RESULT_SUCCESS);	// ERROR_SUCCESS
+	// Default
+	return SDialog::OnChildDialogDestroy(wParam, lParam);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1532,7 +1537,7 @@ LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
 {
 	// Check if event skip counter is triggered
-	if (GetFlagValue(FLAGID_PWRBROADCASTSKIPCOUNT) > 0)
+	if (GetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT) > 0)
 		return LRESULT(RESULT_FAILED);
 
 	// Get event ID from param
@@ -1544,7 +1549,7 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
 
 		// Trigger skip event counter
 		// Temporarily skip processing PowerBroadcastEvent in 3 seconds
-		SetFlagValue(FLAGID_PWRBROADCASTSKIPCOUNT, 3);
+		SetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT, 3);
 
 		// If Power action flag is triggered
 		// handle it like a wakeup event after power action
@@ -1702,7 +1707,7 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 	case IDM_NOTIFY_ACTION_SCHEDULE:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_ACTION_SCHEDULE);
-		ExecuteAction(APP_MACRO_ACTION_SCHEDULE, GetAppOption(OPTIONID_SCHEDULEACTION));
+		ExecuteAction(APP_MACRO_ACTION_SCHEDULE, GetAppOption(OPTIONID_SCHEDULE_ACTION));
 		break;
 
 	/*********************************************************************/
@@ -1843,7 +1848,7 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 {
 	// If new state is the same as current state, do nothing
-	BOOL bCurState = GetFlagValue(FLAGID_DLGEXPANDED);
+	BOOL bCurState = GetFlagValue(FLAGID_DLG_EXPANDED);
 	if (bExpand == bCurState)
 		return;
 
@@ -1949,7 +1954,7 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 
 	// Update flag
 	BOOL bNewState = !bCurState;
-	SetFlagValue(FLAGID_DLGEXPANDED, bNewState);
+	SetFlagValue(FLAGID_DLG_EXPANDED, bNewState);
 }
 
 
@@ -1968,7 +1973,7 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 void CPowerPlusDlg::SetNotifyIcon(void)
 {
 	// If notify icon is showed, do nothing
-	if (GetFlagValue(FLAGID_NOTIFYICONSHOWED))
+	if (GetFlagValue(FLAGID_NOTIFY_ICON_SHOWED))
 		return;
 
 	// Init notify icon
@@ -1995,7 +2000,7 @@ void CPowerPlusDlg::SetNotifyIcon(void)
 	Shell_NotifyIcon(NIM_ADD, m_pNotifyIconData);
 
 	// Update flag
-	SetFlagValue(FLAGID_NOTIFYICONSHOWED, TRUE);
+	SetFlagValue(FLAGID_NOTIFY_ICON_SHOWED, TRUE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2072,7 +2077,7 @@ void CPowerPlusDlg::UpdateNotifyIcon(void)
 void CPowerPlusDlg::RemoveNotifyIcon(void)
 {
 	// If notify icon is not showed, do nothing
-	if (!GetFlagValue(FLAGID_NOTIFYICONSHOWED))
+	if (!GetFlagValue(FLAGID_NOTIFY_ICON_SHOWED))
 		return;
 
 	// If notify icon doesn't exist, do nothing
@@ -2084,7 +2089,7 @@ void CPowerPlusDlg::RemoveNotifyIcon(void)
 	Shell_NotifyIcon(NIM_DELETE, m_pNotifyIconData);
 
 	// Update flag
-	SetFlagValue(FLAGID_NOTIFYICONSHOWED, FALSE);
+	SetFlagValue(FLAGID_NOTIFY_ICON_SHOWED, FALSE);
 }
 
 
@@ -2156,83 +2161,83 @@ int CPowerPlusDlg::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE 
 
 	switch (eAppOptionID)
 	{
-	case OPTIONID_LMBACTION:
+	case OPTIONID_LMB_ACTION:
 		nResult = m_cfgAppConfig.nLMBAction;
 		nTempResult = m_cfgTempConfig.nLMBAction;
 		break;
-	case OPTIONID_MMBACTION:
+	case OPTIONID_MMB_ACTION:
 		nResult = m_cfgAppConfig.nMMBAction;
 		nTempResult = m_cfgTempConfig.nMMBAction;
 		break;
-	case OPTIONID_RMBACTION:
+	case OPTIONID_RMB_ACTION:
 		nResult = m_cfgAppConfig.nRMBAction;
 		nTempResult = m_cfgTempConfig.nRMBAction;
 		break;
-	case OPTIONID_RMBSHOWMENU:
+	case OPTIONID_RMB_SHOW_MENU:
 		nResult = m_cfgAppConfig.bRMBShowMenu;
 		nTempResult = m_cfgTempConfig.bRMBShowMenu;
 		break;
-	case OPTIONID_LANGUAGEID:
+	case OPTIONID_LANGUAGE_ID:
 		nResult = m_cfgAppConfig.nLanguageID;
 		nTempResult = m_cfgTempConfig.nLanguageID;
 		break;
-	case OPTIONID_SHOWDLGATSTARTUP:
+	case OPTIONID_SHOW_DLG_AT_STARTUP:
 		nResult = m_cfgAppConfig.bShowDlgAtStartup;
 		nTempResult = m_cfgTempConfig.bShowDlgAtStartup;
 		break;
-	case OPTIONID_STARTUPENABLE:
+	case OPTIONID_STARTUP_ENABLE:
 		nResult = m_cfgAppConfig.bStartupEnabled;
 		nTempResult = m_cfgTempConfig.bStartupEnabled;
 		break;
-	case OPTIONID_CONFIRMACTION:
+	case OPTIONID_CONFIRM_ACTION:
 		nResult = m_cfgAppConfig.bConfirmAction;
 		nTempResult = m_cfgTempConfig.bConfirmAction;
 		break;
-	case OPTIONID_SAVEHISTORYLOG:
+	case OPTIONID_SAVE_HISTORY_LOG:
 		nResult = m_cfgAppConfig.bSaveHistoryLog;
 		nTempResult = m_cfgTempConfig.bSaveHistoryLog;
 		break;
-	case OPTIONID_SAVEAPPEVENTLOG:
+	case OPTIONID_SAVE_APP_EVENT_LOG:
 		nResult = m_cfgAppConfig.bSaveAppEventLog;
 		nTempResult = m_cfgTempConfig.bSaveAppEventLog;
 		break;
-	case OPTIONID_RUNASADMIN:
+	case OPTIONID_RUN_AS_ADMIN:
 		nResult = m_cfgAppConfig.bRunAsAdmin;
 		nTempResult = m_cfgTempConfig.bRunAsAdmin;
 		break;
-	case OPTIONID_SHOWERRORMSG:
+	case OPTIONID_SHOW_ERROR_MSG:
 		nResult = m_cfgAppConfig.bShowErrorMsg;
 		nTempResult = m_cfgTempConfig.bShowErrorMsg;
 		break;
-	case OPTIONID_NOTIFYSCHEDULE:
+	case OPTIONID_NOTIFY_SCHEDULE:
 		nResult = m_cfgAppConfig.bNotifySchedule;
 		nTempResult = m_cfgTempConfig.bNotifySchedule;
 		break;
-	case OPTIONID_ALLOWCANCELSCHED:
+	case OPTIONID_ALLOW_CANCEL_SCHEDULE:
 		nResult = m_cfgAppConfig.bAllowCancelSchedule;
 		nTempResult = m_cfgTempConfig.bAllowCancelSchedule;
 		break;
-	case OPTIONID_ENABLEHOTKEYSET:
+	case OPTIONID_ENABLE_HOTKEYSET:
 		nResult = m_cfgAppConfig.bEnableBackgroundHotkey;
 		nTempResult = m_cfgTempConfig.bEnableBackgroundHotkey;
 		break;
-	case OPTIONID_LOCKSTATEHOTKEY:
+	case OPTIONID_LOCK_STATE_HOTKEY:
 		nResult = m_cfgAppConfig.bLockStateHotkey;
 		nTempResult = m_cfgTempConfig.bLockStateHotkey;
 		break;
-	case OPTIONID_ENABLEPWRREMINDER:
+	case OPTIONID_ENABLE_PWRREMINDER:
 		nResult = m_cfgAppConfig.bEnablePowerReminder;
 		nTempResult = m_cfgTempConfig.bEnablePowerReminder;
 		break;
-	case OPTIONID_SCHEDULEACTIVE:
+	case OPTIONID_SCHEDULE_ACTIVE:
 		nResult = m_schScheduleData.GetDefaultItem().bEnable;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SCHEDULEACTION:
+	case OPTIONID_SCHEDULE_ACTION:
 		nResult = m_schScheduleData.GetDefaultItem().nAction;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SCHEDULEREPEAT:
+	case OPTIONID_SCHEDULE_REPEAT:
 		nResult = m_schScheduleData.GetDefaultItem().IsRepeatEnable();
 		nTempResult = nResult;		// No temp data
 		break;
@@ -2264,6 +2269,7 @@ void CPowerPlusDlg::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 	UINT nCmbSel = 0;
 
 	if (bSaveAndValidate == FALSE) {
+
 	/*----------------------------<Bind config data to dialog items>----------------------------*/
 
 		// Left mouse button action combo-box
@@ -2280,7 +2286,7 @@ void CPowerPlusDlg::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 		// Right mouse button action combo-box
 		nCmbSel = (m_bRMBShowMenu == TRUE) ? APP_ACTION_SHOWMENU : m_cfgTempConfig.nRMBAction;
 		m_cmbRMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
-		EnableControl(IDC_RMBACTION_LIST, !m_bRMBShowMenu);
+		EnableItem(IDC_RMBACTION_LIST, !m_bRMBShowMenu);
 
 		// Update other checkbox-es
 		m_bShowDlgAtStartup = m_cfgTempConfig.bShowDlgAtStartup;
@@ -2300,16 +2306,18 @@ void CPowerPlusDlg::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 		m_cmbLanguages.SetCurSel(nCmbSel);
 
 		// Update buttons
-		EnableControl(IDC_LOGVIEWER_BTN, m_bSaveAppEventLog);
-		EnableControl(IDC_HOTKEYSET_BTN, m_bEnableBackgroundHotkey);
-		EnableControl(IDC_PWRREMINDER_BTN, m_bEnablePowerReminder);
+		EnableItem(IDC_LOGVIEWER_BTN, m_bSaveAppEventLog);
+		EnableItem(IDC_HOTKEYSET_BTN, m_bEnableBackgroundHotkey);
+		EnableItem(IDC_PWRREMINDER_BTN, m_bEnablePowerReminder);
 
 		// Update dialog items
 		UpdateData(FALSE);
 
 	/*------------------------------------------------------------------------------------------*/
+
 	}
 	else {
+
 	/*----------------------------<Bind dialog items data to config>----------------------------*/
 
 		// Update dialog items
@@ -2348,11 +2356,12 @@ void CPowerPlusDlg::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 		nCmbSel = m_cmbLanguages.GetCurSel();
 		m_cfgTempConfig.nLanguageID = Sel2Opt(APP_LANGUAGE, nCmbSel);
 
-		// Update data for dialog control management
-		UpdateDialogManagement();
-
 	/*------------------------------------------------------------------------------------------*/
+
 	}
+
+	// Update base dialog data
+	SDialog::UpdateDialogData(bSaveAndValidate);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2404,25 +2413,25 @@ int CPowerPlusDlg::GetFlagValue(APPFLAGID eFlagID) const
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGEFLAG:						// Data/setting change flag
+	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
 		nValue = m_bChangeFlag;
 		break;
-	case FLAGID_DLGEXPANDED:					// Dialog expanded/collapsed
+	case FLAGID_DLG_EXPANDED:					// Dialog expanded/collapsed
 		nValue = m_bDlgExpanded;
 		break;
-	case FLAGID_NOTIFYICONSHOWED:				// Notify icon showing flag
+	case FLAGID_NOTIFY_ICON_SHOWED:				// Notify icon showing flag
 		nValue = m_bNotifyIconShowed;
 		break;
-	case FLAGID_HOTKEYREGISTERED:				// Hotkey registered
+	case FLAGID_HOTKEY_REGISTERED:				// Hotkey registered
 		nValue = m_bHotkeyRegistered;
 		break;
-	case FLAGID_RESTARTASADMIN:					// Restart as admin flag
+	case FLAGID_RESTART_AS_ADMIN:				// Restart as admin flag
 		nValue = m_bRestartAsAdminFlag;
 		break;
-	case FLAGID_PWRBROADCASTSKIPCOUNT:			// Power Broadcase event skip counter
+	case FLAGID_PWRBROADCAST_SKIP_COUNT:		// Power Broadcase event skip counter
 		nValue = m_nPwrBroadcastSkipCount;
 		break;
-	case FLAGID_WTSSESSIONNOTIFYREG:			// WTS Session Change State Notification registered
+	case FLAGID_WTSSESSIONNOTIFY_REG:			// WTS Session Change State Notification registered
 		nValue = m_bWTSSessionNotifyRegistered;
 		break;
 	default:
@@ -2452,25 +2461,25 @@ void CPowerPlusDlg::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGEFLAG:						// Data/setting change flag
+	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
 		m_bChangeFlag = nValue;
 		break;
-	case FLAGID_DLGEXPANDED:					// Dialog expanded/collapsed
+	case FLAGID_DLG_EXPANDED:					// Dialog expanded/collapsed
 		m_bDlgExpanded = nValue;
 		break;
-	case FLAGID_NOTIFYICONSHOWED:				// Notify icon showing flag
+	case FLAGID_NOTIFY_ICON_SHOWED:				// Notify icon showing flag
 		m_bNotifyIconShowed = nValue;
 		break;
-	case FLAGID_HOTKEYREGISTERED:				// Hotkey registered
+	case FLAGID_HOTKEY_REGISTERED:				// Hotkey registered
 		m_bHotkeyRegistered = nValue;
 		break;
-	case FLAGID_RESTARTASADMIN:					// Restart as admin flag
+	case FLAGID_RESTART_AS_ADMIN:				// Restart as admin flag
 		m_bRestartAsAdminFlag = nValue;
 		break;
-	case FLAGID_PWRBROADCASTSKIPCOUNT:			// Power Broadcase event skip counter
+	case FLAGID_PWRBROADCAST_SKIP_COUNT:		// Power Broadcase event skip counter
 		m_nPwrBroadcastSkipCount = nValue;
 		break;
-	case FLAGID_WTSSESSIONNOTIFYREG:			// WTS Session Change State Notification registered
+	case FLAGID_WTSSESSIONNOTIFY_REG:			// WTS Session Change State Notification registered
 		m_bWTSSessionNotifyRegistered = nValue;
 		break;
 	default:
@@ -2520,7 +2529,7 @@ void CPowerPlusDlg::SetupLanguage(void)
 		case IDC_EXPAND_BTN:
 		{
 			// Check dialog current state
-			int nState = GetFlagValue(FLAGID_DLGEXPANDED);
+			int nState = GetFlagValue(FLAGID_DLG_EXPANDED);
 			if (nState == TRUE)	nID = IDC_COLLAPSE_BTN;
 			else nID = IDC_EXPAND_BTN;
 			SetControlText(pWndChild, nID, pAppLang);
@@ -2530,64 +2539,70 @@ void CPowerPlusDlg::SetupLanguage(void)
 			break;
 		}
 	}
+
+	// Default
+	SDialog::SetupLanguage();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	SetupComboBox
 //	Description:	Setup data for combo-boxes
-//  Arguments:		nComboID - ID of combo box
-//					pLanguage - Language package pointer
+//  Arguments:		nComboID	- ID of combo box
+//					ptrLanguage - Language package pointer
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR pLanguage)
+void CPowerPlusDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	switch (nComboID)
 	{
 	case IDC_LMBACTION_LIST:
 		// Left mouse button action list
 		m_cmbLMBAction.ResetContent();
-		m_cmbLMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_DISPLAYOFF));			// Turn off display
-		m_cmbLMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SLEEP));				// Sleep
-		m_cmbLMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbLMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbLMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbLMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_HIBERNATE));			// Hibernate
+		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
 
 	case IDC_MMBACTION_LIST:
 		// Middle mouse button action list
 		m_cmbMMBAction.ResetContent();
-		m_cmbMMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_DISPLAYOFF));			// Turn off display
-		m_cmbMMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SLEEP));				// Sleep
-		m_cmbMMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbMMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbMMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbMMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_HIBERNATE));			// Hibernate
+		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
 
 	case IDC_RMBACTION_LIST:
 		// Right mouse button action list
 		m_cmbRMBAction.ResetContent();
-		m_cmbRMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_DISPLAYOFF));			// Turn off display
-		m_cmbRMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SLEEP));				// Sleep
-		m_cmbRMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbRMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbRMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbRMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_HIBERNATE));			// Hibernate
-		m_cmbRMBAction.AddString(GetLanguageString(pLanguage, COMBOBOX_ACTION_SHOWMENU));			// Just show menu
+		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHOWMENU));			// Just show menu
 		break;
 
 	case IDC_LANGUAGE_LIST:
 		// App language list
 		m_cmbLanguages.ResetContent();
-		m_cmbLanguages.AddString(GetLanguageString(pLanguage, COMBOBOX_LANGUAGE_ENGLISH));			// English
-		m_cmbLanguages.AddString(GetLanguageString(pLanguage, COMBOBOX_LANGUAGE_VIETNAMESE));		// Vietnamese
-		m_cmbLanguages.AddString(GetLanguageString(pLanguage, COMBOBOX_LANGUAGE_SIMPCHINESE));		// Chinese
+		m_cmbLanguages.AddString(GetLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_ENGLISH));		// English
+		m_cmbLanguages.AddString(GetLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_VIETNAMESE));		// Vietnamese
+		m_cmbLanguages.AddString(GetLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_SIMPCHINESE));	// Chinese
 		break;
 	}
+
+	// Default
+	SDialog::SetupComboBox(nComboID, ptrLanguage);
 }
 
 
@@ -2623,10 +2638,10 @@ void CPowerPlusDlg::EnableLogViewer(BOOL bEnable)
 	BOOL bCheck = bEnable;
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		bCheck = pApp->GetAppOption(OPTIONID_SAVEAPPEVENTLOG);
+		bCheck = pApp->GetAppOption(OPTIONID_SAVE_APP_EVENT_LOG);
 	}
 	if (bCheck == FALSE) {
-		EnableControl(IDC_LOGVIEWER_BTN, bCheck);
+		EnableItem(IDC_LOGVIEWER_BTN, bCheck);
 		return;
 	}
 
@@ -2673,13 +2688,13 @@ void CPowerPlusDlg::EnablePowerReminder(BOOL bEnable)
 void CPowerPlusDlg::UpdateRestartAsAdminFlag(BOOL bFlag)
 {
 	// Check current set app data option
-	BOOL bCheck = GetAppOption(OPTIONID_RUNASADMIN);
+	BOOL bCheck = GetAppOption(OPTIONID_RUN_AS_ADMIN);
 
 	// If option is currently ON, do not update flag
 	if (bCheck == TRUE)	return;
 
 	// Update flag
-	SetFlagValue(FLAGID_RESTARTASADMIN, bFlag);
+	SetFlagValue(FLAGID_RESTART_AS_ADMIN, bFlag);
 }
 
 
@@ -2748,15 +2763,15 @@ void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 		switch (nID)
 		{
 		case IDM_NOTIFY_OPENDLG_LOGVIEWER:
-			bShowItem = GetAppOption(OPTIONID_SAVEAPPEVENTLOG);
+			bShowItem = GetAppOption(OPTIONID_SAVE_APP_EVENT_LOG);
 			if (bShowItem == TRUE)
-				bShowItem = GetAppOption(OPTIONID_SAVEAPPEVENTLOG, TRUE);
+				bShowItem = GetAppOption(OPTIONID_SAVE_APP_EVENT_LOG, TRUE);
 			break;
 		case IDM_NOTIFY_OPENDLG_HOTKEYSET:
-			bShowItem = GetAppOption(OPTIONID_ENABLEHOTKEYSET, TRUE);
+			bShowItem = GetAppOption(OPTIONID_ENABLE_HOTKEYSET, TRUE);
 			break;
 		case IDM_NOTIFY_OPENDLG_PWRREMINDER:
-			bShowItem = GetAppOption(OPTIONID_ENABLEPWRREMINDER, TRUE);
+			bShowItem = GetAppOption(OPTIONID_ENABLE_PWRREMINDER, TRUE);
 			break;
 		default:
 			continue;
@@ -2778,8 +2793,8 @@ void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 		switch (nID)
 		{
 		case IDM_NOTIFY_ACTION_SCHEDULE:
-			bShowItem = GetAppOption(OPTIONID_SCHEDULEACTIVE);
-			bShowItem &= (GetAppOption(OPTIONID_SCHEDULEACTION) != APP_ACTION_NOTHING);
+			bShowItem = GetAppOption(OPTIONID_SCHEDULE_ACTIVE);
+			bShowItem &= (GetAppOption(OPTIONID_SCHEDULE_ACTION) != APP_ACTION_NOTHING);
 			break;
 		default:
 			continue;
@@ -2918,11 +2933,11 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 	{
 	case APP_MACRO_LEFT_MOUSE:
 		// Get action ID: Left mouse
-		nActionID = GetAppOption(OPTIONID_LMBACTION);
+		nActionID = GetAppOption(OPTIONID_LMB_ACTION);
 		break;
 	case APP_MACRO_MIDDLE_MOUSE:
 		// Get action ID: Middle mouse
-		nActionID = GetAppOption(OPTIONID_MMBACTION);
+		nActionID = GetAppOption(OPTIONID_MMB_ACTION);
 		break;
 	case APP_MACRO_ACTION_SCHEDULE:
 		// Get action ID from param
@@ -2931,11 +2946,11 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 		break;
 	case APP_MACRO_RIGHT_MOUSE:
 		// If right mouse action is set to show notify menu
-		if ((GetAppOption(OPTIONID_RMBACTION) == APP_ACTION_SHOWMENU) ||
-			(GetAppOption(OPTIONID_RMBSHOWMENU) == TRUE))
+		if ((GetAppOption(OPTIONID_RMB_ACTION) == APP_ACTION_SHOWMENU) ||
+			(GetAppOption(OPTIONID_RMB_SHOW_MENU) == TRUE))
 			return ShowNotifyMenu();
 		// Otherwise, get action ID: Right mouse
-		nActionID = GetAppOption(OPTIONID_RMBACTION);
+		nActionID = GetAppOption(OPTIONID_RMB_ACTION);
 		break;
 	case APP_MACRO_ACTION_MENU:
 	case APP_MACRO_ACTION_HOTKEY:
@@ -3073,7 +3088,7 @@ void CPowerPlusDlg::ApplySettings(BOOL bMinimize)
 	}
 
 	// Restart as admin privileges if triggered
-	BOOL bRestartTrigger = GetFlagValue(FLAGID_RESTARTASADMIN);
+	BOOL bRestartTrigger = GetFlagValue(FLAGID_RESTART_AS_ADMIN);
 	if (bRestartTrigger == TRUE) {
 		RequestRestartApp(IDC_APPLY_BTN, TRUE);
 	}
@@ -3082,7 +3097,7 @@ void CPowerPlusDlg::ApplySettings(BOOL bMinimize)
 	SetupBackgroundHotkey(MODE_UPDATE);
 
 	// Disable Power Reminder snooze queue if feature's disabled
-	if (GetAppOption(OPTIONID_ENABLEPWRREMINDER) == NULL) {
+	if (GetAppOption(OPTIONID_ENABLE_PWRREMINDER) == NULL) {
 		UpdatePwrReminderSnooze(MODE_DISABLE);
 	}
 
@@ -3118,7 +3133,7 @@ void CPowerPlusDlg::ReloadSettings(void)
 	UpdateDialogData(FALSE);
 
 	// Reset data change flag
-	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
+	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3221,7 +3236,7 @@ void CPowerPlusDlg::ShowDialog(CWnd* pWnd, BOOL bShowFlag /* = TRUE */)
 // 
 //	Function name:	OpenChildDialogEx
 //	Description:	Open child dialog with corresponding ID
-//  Arguments:		nDialogID	  - Dialog ID
+//  Arguments:		nDialogID - Child dialog ID
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
@@ -3356,6 +3371,9 @@ void CPowerPlusDlg::OpenChildDialogEx(UINT nDialogID)
 			}
 		}
 	}
+
+	// Base class processing
+	SDialog::OpenChildDialogEx(nDialogID);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3553,7 +3571,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 		if (bSkipProcess != TRUE) {
 
 			// Check for time matching and trigger schedule notifying if enabled
-			if (GetAppOption(OPTIONID_NOTIFYSCHEDULE) == TRUE) {
+			if (GetAppOption(OPTIONID_NOTIFY_SCHEDULE) == TRUE) {
 				BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, schDefaultItem.stTime, -30);
 				if (bTriggerNotify == TRUE) {
 					// Do notify schedule (and check for trigger reupdate)
@@ -3613,7 +3631,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 			continue;
 
 		// Check for time matching and trigger schedule notifying if enabled
-		if (GetAppOption(OPTIONID_NOTIFYSCHEDULE) == TRUE) {
+		if (GetAppOption(OPTIONID_NOTIFY_SCHEDULE) == TRUE) {
 			BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, schExtraItem.stTime, -30);
 			if (bTriggerNotify == TRUE) {
 				// Do notify schedule (and check for trigger reupdate)
@@ -3991,8 +4009,8 @@ BOOL CPowerPlusDlg::GetActionScheduleSnoozeStatus(UINT nItemID, SYSTEMTIME& curS
 void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 {
 	// If background hotkey feature is disabled and no hotkey registered, do nothing
-	BOOL bHKSEnable = GetAppOption(OPTIONID_ENABLEHOTKEYSET);
-	BOOL bHKRegisterFlag = GetFlagValue(FLAGID_HOTKEYREGISTERED);
+	BOOL bHKSEnable = GetAppOption(OPTIONID_ENABLE_HOTKEYSET);
+	BOOL bHKRegisterFlag = GetFlagValue(FLAGID_HOTKEY_REGISTERED);
 
 	if ((bHKSEnable == FALSE) &&											// HotkeySet option OFF
 		(bHKRegisterFlag == FALSE) &&										// Hotkey registered flag OFF
@@ -4025,7 +4043,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 					OutputDebugLogFormat(_T("Unregistered hotkey: %d"), nHKID);
 					m_arrCurRegHKeyList.RemoveAt(nIndex);
 					if (nIndex == 0) {										// Last item unregistered
-						SetFlagValue(FLAGID_HOTKEYREGISTERED, FALSE);		// Reset hotkey registered flag
+						SetFlagValue(FLAGID_HOTKEY_REGISTERED, FALSE);		// Reset hotkey registered flag
 						m_arrCurRegHKeyList.RemoveAll();					// Cleanup registered hotkey list
 						m_arrCurRegHKeyList.FreeExtra();
 					}
@@ -4066,7 +4084,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 		if (nItemNum <= 0) return;
 
 		// Reset flag and re-initialize registered hotkey list
-		SetFlagValue(FLAGID_HOTKEYREGISTERED, FALSE);
+		SetFlagValue(FLAGID_HOTKEY_REGISTERED, FALSE);
 		m_arrCurRegHKeyList.RemoveAll();
 		m_arrCurRegHKeyList.FreeExtra();
 
@@ -4115,7 +4133,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 
 			// Trigger flag
 			bRegistered |= bRet;
-			SetFlagValue(FLAGID_HOTKEYREGISTERED, bRegistered);
+			SetFlagValue(FLAGID_HOTKEY_REGISTERED, bRegistered);
 
 			if (bRet == TRUE) {
 				// Register successfully
@@ -4153,7 +4171,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 BOOL CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 {
 	// If "Background hotkey" option is not enabled, do nothing
-	if (GetAppOption(OPTIONID_ENABLEHOTKEYSET) == FALSE)
+	if (GetAppOption(OPTIONID_ENABLE_HOTKEYSET) == FALSE)
 		return FALSE;
 
 	// Output debug log
@@ -4242,11 +4260,11 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	if ((nMode == MODE_DISABLE) || (nMode == MODE_UPDATE)) {
 
 		// Only unregister if the flag is not OFF
-		if (GetFlagValue(FLAGID_WTSSESSIONNOTIFYREG)) {
+		if (GetFlagValue(FLAGID_WTSSESSIONNOTIFY_REG)) {
 
 			if (WTSUnRegisterSessionNotification(hCurWnd)) {
 				// Mark flag as OFF
-				SetFlagValue(FLAGID_WTSSESSIONNOTIFYREG, FALSE);
+				SetFlagValue(FLAGID_WTSSESSIONNOTIFY_REG, FALSE);
 			}
 			else {
 				// Unregister failed
@@ -4272,11 +4290,11 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	if ((nMode == MODE_INIT) || (nMode == MODE_UPDATE)) {
 
 		// Only register if the flag is not ON
-		if (!GetFlagValue(FLAGID_WTSSESSIONNOTIFYREG)) {
+		if (!GetFlagValue(FLAGID_WTSSESSIONNOTIFY_REG)) {
 
 			if (WTSRegisterSessionNotification(hCurWnd, NOTIFY_FOR_THIS_SESSION)) {
 				// Mark flag as ON
-				SetFlagValue(FLAGID_WTSSESSIONNOTIFYREG, TRUE);
+				SetFlagValue(FLAGID_WTSSESSIONNOTIFY_REG, TRUE);
 			}
 			else {
 				// Register failed
@@ -4309,8 +4327,8 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 {
 	// Only process if both options are enabled
-	if ((GetAppOption(OPTIONID_ENABLEHOTKEYSET) != TRUE) ||
-		(GetAppOption(OPTIONID_LOCKSTATEHOTKEY) != TRUE))
+	if ((GetAppOption(OPTIONID_ENABLE_HOTKEYSET) != TRUE) ||
+		(GetAppOption(OPTIONID_LOCK_STATE_HOTKEY) != TRUE))
 		return FALSE;
 
 	// Convert hotkey param back into keycode
@@ -4337,7 +4355,7 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 	OutputDebugLogFormat(_T("Lockstate Hotkey found: HKeyID=%d"), nHKActionID);
 		
 	// Check if HotkeyID is registered
-	if (GetFlagValue(FLAGID_HOTKEYREGISTERED) != TRUE)
+	if (GetFlagValue(FLAGID_HOTKEY_REGISTERED) != TRUE)
 		return FALSE;
 
 	// Only process if HotkeyID is registered
@@ -4368,7 +4386,7 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 {
 	// If "Power Reminder" option is not enabled, do nothing
-	if (GetAppOption(OPTIONID_ENABLEPWRREMINDER) == FALSE)
+	if (GetAppOption(OPTIONID_ENABLE_PWRREMINDER) == FALSE)
 		return FALSE;
 
 	// If there's no item, do nothing
@@ -5177,7 +5195,7 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 int CPowerPlusDlg::ConfirmActionExec(UINT nActionType, UINT nActionID)
 {
 	// If "Confirm action" option is not enabled, return YES
-	if (GetAppOption(OPTIONID_CONFIRMACTION) == FALSE)
+	if (GetAppOption(OPTIONID_CONFIRM_ACTION) == FALSE)
 		return IDYES;
 
 	// Allowed action IDs --> Bypass confirmation
@@ -5228,7 +5246,7 @@ int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
 	strMsgContent.Format(strMsgTemplate, strMsgScheduleAction);
 
 	// Allow cancelling schedule when notify
-	BOOL bAllowCancel = GetAppOption(OPTIONID_ALLOWCANCELSCHED);
+	BOOL bAllowCancel = GetAppOption(OPTIONID_ALLOW_CANCEL_SCHEDULE);
 	if (bAllowCancel == TRUE)
 	{
 		// Update message content
@@ -5273,7 +5291,7 @@ int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
 void CPowerPlusDlg::ShowErrorMessage(DWORD dwError)
 {
 	// If option is not enabled, do nothing
-	if (GetAppOption(OPTIONID_SHOWERRORMSG) == FALSE)
+	if (GetAppOption(OPTIONID_SHOW_ERROR_MSG) == FALSE)
 		return;
 
 	// Get window handle and language ID
@@ -5302,7 +5320,7 @@ void CPowerPlusDlg::RequestRestartApp(UINT uiCmdSenderID, BOOL bRestartAsAdmin)
 
 	// Request from [Apply] button
 	if (uiCmdSenderID == IDC_APPLY_BTN) {
-		BOOL bRestartTrigger = GetFlagValue(FLAGID_RESTARTASADMIN);
+		BOOL bRestartTrigger = GetFlagValue(FLAGID_RESTART_AS_ADMIN);
 		reqRestart.bRequest = bRestartTrigger;
 		reqRestart.bAdminCheck = TRUE;
 		reqRestart.bNotAdminShowMsg = TRUE;
@@ -5401,7 +5419,7 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 
 		if (reqRestart.bResetFlag == TRUE) {
 			// Reset flag
-			SetFlagValue(FLAGID_RESTARTASADMIN, FALSE);
+			SetFlagValue(FLAGID_RESTART_AS_ADMIN, FALSE);
 		}
 	}
 }

@@ -117,9 +117,6 @@ CPowerPlusApp::~CPowerPlusApp()
 	ReleaseTraceErrorLogFile();
 	ReleaseTraceDebugLogFile();
 	ReleaseDebugInfoLogFile();
-
-	IDMAP_CLEAR()
-	DESTROY_APP_IDMAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -129,8 +126,7 @@ CPowerPlusApp::~CPowerPlusApp()
 //
 //////////////////////////////////////////////////////////////////////////
 
-CPowerPlusApp theApp; 
-INIT_APP_IDMAP(CPowerPlusApp)
+CPowerPlusApp theApp;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -153,7 +149,7 @@ BOOL CPowerPlusApp::InitInstance()
 	SetAppLaunchTime(GetCurSysTime());
 
 	// Set application window caption (with product version number)
-	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, GetProductVersion(FALSE))) {
+	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, TRUE)) {
 
 		// Set title string failed
 		TRCLOG("Error: Set app window caption failed");
@@ -253,7 +249,7 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 
 	// Initialize application language
-	SetAppLanguageOption(GetAppOption(OPTIONID_LANGUAGEID));
+	SetAppLanguageOption(GetAppOption(OPTIONID_LANGUAGE_ID));
 	if (!InitAppLanguage()) {
 
 		// Trace log
@@ -309,7 +305,7 @@ BOOL CPowerPlusApp::InitInstance()
 	m_pMainWnd = pMainDlg;
 
 	// Show/hide main dialog at startup
-	if (GetAppOption(OPTIONID_SHOWDLGATSTARTUP) == FALSE) {
+	if (GetAppOption(OPTIONID_SHOW_DLG_AT_STARTUP) == FALSE) {
 
 		// Hide dialog
 		pMainDlg->Create(IDD_POWERPLUS_DIALOG, NULL);
@@ -390,12 +386,12 @@ int CPowerPlusApp::ExitInstance()
 	OutputEventLog(LOG_EVENT_EXIT_INSTANCE);
 
 	// Write application event logging data to file if enabled
-	if (GetAppOption(OPTIONID_SAVEAPPEVENTLOG) == TRUE) {
+	if (GetAppOption(OPTIONID_SAVE_APP_EVENT_LOG) == TRUE) {
 		GetAppEventLog()->Write();
 	}
 
 	// Write action history logging data to file if enabled
-	if (GetAppOption(OPTIONID_SAVEHISTORYLOG) == TRUE) {
+	if (GetAppOption(OPTIONID_SAVE_HISTORY_LOG) == TRUE) {
 		GetAppHistoryLog()->Write();
 	}
 
@@ -473,8 +469,8 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 
 				// Only process if both options are enabled
 				if ((pApp != NULL) &&
-					(pApp->GetAppOption(OPTIONID_ENABLEHOTKEYSET) == TRUE) &&		// Enable background action hotkeys
-					(pApp->GetAppOption(OPTIONID_LOCKSTATEHOTKEY) == TRUE)) {		// Allow background hotkeys on lockscreen
+					(pApp->GetAppOption(OPTIONID_ENABLE_HOTKEYSET) == TRUE) &&		// Enable background action hotkeys
+					(pApp->GetAppOption(OPTIONID_LOCK_STATE_HOTKEY) == TRUE)) {		// Allow background hotkeys on lockscreen
 
 					// Keycode param
 					DWORD dwHKeyParam = NULL;
@@ -2266,87 +2262,87 @@ int CPowerPlusApp::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE 
 
 	switch (eAppOptionID)
 	{
-	case OPTIONID_LMBACTION:					
+	case OPTIONID_LMB_ACTION:					
 		nResult = m_pcfgAppConfig->nLMBAction;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_MMBACTION:
+	case OPTIONID_MMB_ACTION:
 		nResult = m_pcfgAppConfig->nMMBAction;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_RMBACTION:
+	case OPTIONID_RMB_ACTION:
 		nResult = m_pcfgAppConfig->nRMBAction;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_RMBSHOWMENU:
+	case OPTIONID_RMB_SHOW_MENU:
 		nResult = m_pcfgAppConfig->bRMBShowMenu;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_LANGUAGEID:
+	case OPTIONID_LANGUAGE_ID:
 		nResult = m_pcfgAppConfig->nLanguageID;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_CURDISPLANGUAGE:
+	case OPTIONID_CUR_DISP_LANGUAGE:
 		nResult = SWinApp::GetAppLanguageOption(TRUE);
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SHOWDLGATSTARTUP:
+	case OPTIONID_SHOW_DLG_AT_STARTUP:
 		nResult = m_pcfgAppConfig->bShowDlgAtStartup;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_STARTUPENABLE:
+	case OPTIONID_STARTUP_ENABLE:
 		nResult = m_pcfgAppConfig->bStartupEnabled;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_CONFIRMACTION:
+	case OPTIONID_CONFIRM_ACTION:
 		nResult = m_pcfgAppConfig->bConfirmAction;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SAVEHISTORYLOG:
+	case OPTIONID_SAVE_HISTORY_LOG:
 		nResult = m_pcfgAppConfig->bSaveHistoryLog;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SAVEAPPEVENTLOG:
+	case OPTIONID_SAVE_APP_EVENT_LOG:
 		nResult = m_pcfgAppConfig->bSaveAppEventLog;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_RUNASADMIN:
+	case OPTIONID_RUN_AS_ADMIN:
 		nResult = m_pcfgAppConfig->bRunAsAdmin;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SHOWERRORMSG:
+	case OPTIONID_SHOW_ERROR_MSG:
 		nResult = m_pcfgAppConfig->bShowErrorMsg;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_NOTIFYSCHEDULE:
+	case OPTIONID_NOTIFY_SCHEDULE:
 		nResult = m_pcfgAppConfig->bNotifySchedule;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_ALLOWCANCELSCHED:
+	case OPTIONID_ALLOW_CANCEL_SCHEDULE:
 		nResult = m_pcfgAppConfig->bAllowCancelSchedule;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_ENABLEHOTKEYSET:
+	case OPTIONID_ENABLE_HOTKEYSET:
 		nResult = m_pcfgAppConfig->bEnableBackgroundHotkey;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_LOCKSTATEHOTKEY:
+	case OPTIONID_LOCK_STATE_HOTKEY:
 		nResult = m_pcfgAppConfig->bLockStateHotkey;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_ENABLEPWRREMINDER:
+	case OPTIONID_ENABLE_PWRREMINDER:
 		nResult = m_pcfgAppConfig->bEnablePowerReminder;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SCHEDULEACTIVE:
+	case OPTIONID_SCHEDULE_ACTIVE:
 		nResult = m_pschScheduleData->GetDefaultItem().bEnable;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SCHEDULEACTION:
+	case OPTIONID_SCHEDULE_ACTION:
 		nResult = m_pschScheduleData->GetDefaultItem().nAction;
 		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SCHEDULEREPEAT:
+	case OPTIONID_SCHEDULE_REPEAT:
 		nResult = m_pschScheduleData->GetDefaultItem().IsRepeatEnable();
 		nTempResult = nResult;		// No temp data
 		break;
@@ -2379,13 +2375,13 @@ int CPowerPlusApp::GetFlagValue(APPFLAGID eFlagID) const
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGEFLAG:						// Data/setting change flag
+	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
 		nValue = SWinApp::GetChangeFlagValue();
 		break;
-	case FLAGID_READONLYMODE:					// Read-only mode
+	case FLAGID_READ_ONLY_MODE:					// Read-only mode
 		nValue = SWinApp::GetReadOnlyMode();
 		break;
-	case FLAGID_FORCECLOSING:					// Force closing by request
+	case FLAGID_FORCE_CLOSING:					// Force closing by request
 		nValue = SWinApp::IsForceClosingByRequest();
 		break;
 	default:
@@ -2415,13 +2411,13 @@ void CPowerPlusApp::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGEFLAG:						// Data/setting change flag
+	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
 		SWinApp::SetChangeFlagValue(nValue);
 		break;
-	case FLAGID_READONLYMODE:					// Read-only mode
+	case FLAGID_READ_ONLY_MODE:					// Read-only mode
 		SWinApp::SetReadOnlyMode(nValue);
 		break;
-	case FLAGID_FORCECLOSING:					// Force closing by request
+	case FLAGID_FORCE_CLOSING:					// Force closing by request
 		m_bForceClose = nValue;
 		break;
 	default:
@@ -2490,7 +2486,7 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 	SLogging* ptrAppHistoryLog = GetAppHistoryLog();
 	
 	// Only output log if option is ON
-	if ((ptrAppHistoryLog != NULL) && (GetAppOption(OPTIONID_SAVEHISTORYLOG) != FALSE)) {
+	if ((ptrAppHistoryLog != NULL) && (GetAppOption(OPTIONID_SAVE_HISTORY_LOG) != FALSE)) {
 		ptrAppHistoryLog->OutputItem(logItem);
 	}
 }

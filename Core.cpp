@@ -3644,7 +3644,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
 						// Get error code
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
+						TRCFMT("Error: Cannot execute action, OpenProcessToken failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
@@ -3653,7 +3653,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkPrivileges.Privileges[0].Luid)) {
 						// Get error code
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
+						TRCFMT("Error: Cannot execute action, LookupPrivilegeValue failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
@@ -3664,7 +3664,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
 						// Adjust token privileges failed
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
+						TRCFMT("Error: Cannot execute action, AdjustTokenPrivileges failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
@@ -3673,7 +3673,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!ExitWindowsEx(uExitWinExFlags, 0)) {
 						// Get exit Windows error
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
+						TRCFMT("Error: Cannot execute action, ExitWindowsEx failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
@@ -3684,7 +3684,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					// Sleep mode
 					if (!SetSuspendState(FALSE, FALSE, FALSE)) {		// Stand by (sleep)
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
+						TRCFMT("Error: Cannot execute action, SetSuspendState failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
@@ -3694,7 +3694,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					// Hibernate mode
 					if (!SetSuspendState(TRUE, FALSE, FALSE)) {			// Hibernate
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
+						TRCFMT("Error: Cannot execute action, SetSuspendState failed (Code: 0x%08X)", dwErrCode);
 						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
@@ -3705,7 +3705,7 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 	default:
 		// Wrong argument
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-		TRCFMT("Error: Execute action failed (Code: 0x%08X)", dwErrCode);
+		TRCFMT("Error: Cannot execute action, wrong argument (Code: 0x%08X)", dwErrCode);
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		bRet = FALSE;
 		break;
@@ -5487,8 +5487,12 @@ BOOL CoreFuncs::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
 
 	// Get resource handle
 	HINSTANCE hResInstance = AfxGetResourceHandle();
-	if (hResInstance == NULL)
+	if (hResInstance == NULL) {
+		// Trace error
+		TRCLOG("Error: Get resource handle failed!!!");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
+	}
 
 	// Find resource file by ID
 	HRSRC hRes = FindResource(hResInstance, MAKEINTRESOURCE(nResourceFileID), RT_RCDATA);
@@ -5960,8 +5964,12 @@ LPCTSTR CoreFuncs::GetApplicationPath(BOOL bIncludeExeName)
 
 	// Get the full path of the executable file of the module
 	TCHAR tcAppPath[MAX_PATH];
-	if (!GetModuleFileName(hModule, tcAppPath, MAX_PATH))
+	if (!GetModuleFileName(hModule, tcAppPath, MAX_PATH)) {
+		// Trace error
+		TRCFMT("Error: Get module file name failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return STRING_EMPTY;
+	}
 
 	// Full path result
 	static CString strRetAppPath;
@@ -5995,39 +6003,67 @@ CString CoreFuncs::GetProductVersion(BOOL bFullVersion)
 {
 	// Get product file name
 	CString strProductFileName;
-	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE))
+	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE)) {
+		// Trace error
+		TRCLOG("Error: Make file path failed");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return STRING_EMPTY;
+	}
 
-	// Get product version
+	// Get file version info size
 	CString strProductVersion;
 	DWORD dwHandle;
 	DWORD dwSize = GetFileVersionInfoSize(strProductFileName, &dwHandle);
-	if (dwSize > 0) {
-		BYTE* pVersionInfo = new BYTE[dwSize];
-		if (GetFileVersionInfo(strProductFileName, dwHandle, dwSize, pVersionInfo)) {
-			UINT uLen;
-			VS_FIXEDFILEINFO* lpFfi;
-			if (VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
-				DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
-				DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
-				if (bFullVersion == TRUE) {
-					// Get full product version number (x.x.x.x)
-					strProductVersion.Format(_T("%d.%d.%d.%d"),
-						HIWORD(dwProductVersionMS),
-						LOWORD(dwProductVersionMS),
-						HIWORD(dwProductVersionLS),
-						LOWORD(dwProductVersionLS));
-				}
-				else {
-					// Get short product version number (x.x)
-					strProductVersion.Format(_T("%d.%d"),
-						HIWORD(dwProductVersionMS),
-						LOWORD(dwProductVersionMS));
-				}
-			}
-		}
-		delete[] pVersionInfo;
+	if (dwSize <= 0) {
+		// Trace error
+		TRCFMT("Error: Get file version info size failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		return STRING_EMPTY;
 	}
+
+	// Get file verision info structure
+	BYTE* pVersionInfo = new BYTE[dwSize];
+	if (!GetFileVersionInfo(strProductFileName, dwHandle, dwSize, pVersionInfo)) {
+		// Trace error
+		TRCFMT("Error: Get file version info failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+
+		delete[] pVersionInfo;
+		return STRING_EMPTY;
+	}
+
+	// Querry version value
+	UINT uLen;
+	VS_FIXEDFILEINFO* lpFfi;
+	if (!VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
+		// Trace error
+		TRCFMT("Error: Querry version value failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+
+		delete[] pVersionInfo;
+		return FALSE;
+	}
+
+	// Get product version successfully
+	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
+	DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
+	if (bFullVersion == TRUE) {
+		// Get full product version number (x.x.x.x)
+		strProductVersion.Format(_T("%d.%d.%d.%d"),
+			HIWORD(dwProductVersionMS),
+			LOWORD(dwProductVersionMS),
+			HIWORD(dwProductVersionLS),
+			LOWORD(dwProductVersionLS));
+	}
+	else {
+		// Get short product version number (x.x)
+		strProductVersion.Format(_T("%d.%d"),
+			HIWORD(dwProductVersionMS),
+			LOWORD(dwProductVersionMS));
+	}
+
+	delete[] pVersionInfo;
+
 	return strProductVersion;
 }
 
@@ -6045,30 +6081,47 @@ BOOL CoreFuncs::GetProductVersion(CString& strFullVersion, CString& strShortVers
 {
 	// Get product file name
 	CString strProductFileName;
-	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE))
+	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE)) {
+		// Trace error
+		TRCLOG("Error: Make file path failed");
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
+	}
 
 	// Get product version info size
 	DWORD dwHandle;
 	DWORD dwSize = GetFileVersionInfoSize(strProductFileName, &dwHandle);
-	if (dwSize <= 0)
+	if (dwSize <= 0) {
+		// Trace error
+		TRCFMT("Error: Get file version info size failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
+	}
 
-	// Get product version info
+	// Get product version info structure
 	BYTE* pVersionInfo = new BYTE[dwSize];
 	if (!GetFileVersionInfo(strProductFileName, dwHandle, dwSize, pVersionInfo)) {
+		// Trace error
+		TRCFMT("Error: Get file version info structure failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+
 		delete[] pVersionInfo;
 		return FALSE;
 	}
 
+	// Querry version value
 	UINT uLen;
 	VS_FIXEDFILEINFO* lpFfi;
 	if (!VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
+		// Trace error
+		TRCFMT("Error: Querry version value failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+
 		delete[] pVersionInfo;
 		return FALSE;
 	}
 
-	// Get product version number
+	// Get product version successfully
 	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
 	DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
 
@@ -6104,12 +6157,18 @@ UINT CoreFuncs::GetWindowsOSVersion(void)
 	OSVERSIONINFOEX oviOSVersion;
 	oviOSVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
+	// Get function address
 	NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFOEXW);
 	*(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
+	if (RtlGetVersion == NULL) {
+		// Trace error
+		TRCFMT("Error: Get RtlGetVersion function address failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		return INT_NULL;
+	}
 
 	// Get Window OS version
-	if (RtlGetVersion != NULL)
-		RtlGetVersion(&oviOSVersion);
+	RtlGetVersion(&oviOSVersion);
 
 	// Return Windows OS version macro
 	UINT nRetWinVer = WINDOWS_VERSION_NONE;
@@ -6156,8 +6215,12 @@ BOOL CoreFuncs::GetDeviceName(CString& strDeviceName)
 	// Get the computer device name
 	TCHAR tcDeviceName[MAX_COMPUTERNAME_LENGTH + 1];
 	DWORD dwNameLength = sizeof(tcDeviceName) / sizeof(TCHAR);
-	if (!GetComputerName(tcDeviceName, &dwNameLength))
+	if (!GetComputerName(tcDeviceName, &dwNameLength)) {
+		// Trace error
+		TRCFMT("Error: Get computer name failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
+	}
 
 	// Return the computer name
 	strDeviceName = tcDeviceName;
@@ -6181,8 +6244,12 @@ BOOL CoreFuncs::GetCurrentUserName(CString& strUserName)
 	// Get the current user name
 	TCHAR tcUserName[UNLEN + 1];
 	DWORD dwNameLength = sizeof(tcUserName) / sizeof(TCHAR);
-	if (!GetUserName(tcUserName, &dwNameLength))
+	if (!GetUserName(tcUserName, &dwNameLength)) {
+		// Trace error
+		TRCFMT("Error: Get user name failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
+	}
 
 	// Return the user name
 	strUserName = tcUserName;
@@ -6228,32 +6295,52 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 {
 	// Check root key info validity
 	if (bIncRootKey != FALSE) {
-		if ((regInfo.hRootKey == NULL) && (regInfo.strRootKey.IsEmpty()))
+		if ((regInfo.hRootKey == NULL) && (regInfo.strRootKey.IsEmpty())) {
+			// Trace error
+			TRCLOG("Error: Make registry path failed, rootkey name is invalid!!!");
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
+		}
 	}
 
 	// Check sub-key path validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SUBPATH)) {
-		if (regInfo.astrSubkeyPath.IsEmpty())
+		if (regInfo.astrSubkeyPath.IsEmpty()) {
+			// Trace error
+			TRCLOG("Error: Make registry path failed, subkey info is invalid!!!");
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
+		}
 	}
 
 	// Check profile key validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_PROFILEKEY)) {
-		if (regInfo.strProfileName.IsEmpty())
+		if (regInfo.strProfileName.IsEmpty()) {
+			// Trace error
+			TRCLOG("Error: Make registry path failed, profile key name is invalid!!!");
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
+		}
 	}
 
 	// Check app name validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_APPNAME)) {
-		if (regInfo.strAppName.IsEmpty())
+		if (regInfo.strAppName.IsEmpty()) {
+			// Trace error
+			TRCLOG("Error: Make registry path failed, application name is invalid!!!");
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
+		}
 	}
 
 	// Check section name array validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SECTIONNAME)) {
-		if (regInfo.astrSectionArray.IsEmpty())
+		if (regInfo.astrSectionArray.IsEmpty()) {
+			// Trace error
+			TRCLOG("Error: Make registry path failed, section name is invalid!!!");
+			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
+		}
 	}
 
 	// Root key (string)
@@ -6570,14 +6657,22 @@ BOOL CoreFuncs::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 {
 	// Load theme library
 	HMODULE hUxTheme = LoadLibraryEx(_T("uxtheme.dll"), nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-	if (hUxTheme == NULL)
+	if (hUxTheme == NULL) {
+		// Trace error
+		TRCFMT("Error: Load UXTheme library failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
+	}
 
 	// Get function pointer
 	using fnAllowDarkMode = BOOL (WINAPI*)(HWND hWND, BOOL bAllow);
 	static const fnAllowDarkMode AllowDarkModeForWindow = (fnAllowDarkMode)GetProcAddress(hUxTheme, MAKEINTRESOURCEA(133));
-	if (AllowDarkModeForWindow == NULL)
+	if (AllowDarkModeForWindow == NULL) {
+		// Trace error
+		TRCFMT("Error: Get AllowDarkModeForWindow function address failed (Code: 0x%08X)", GetLastError());
+		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
+	}
 
 	// Set dark mode for each dialog item
 	CWnd* pWndChild = NULL;
@@ -6691,6 +6786,7 @@ BOOL CoreFuncs::ValidateFontName(LPCTSTR lpszFontName)
 	// Enumerate all currently available fonts
 	BOOL bRet = EnumFontNames(fontNames);
 	if (bRet == FALSE) {
+		// Trace error
 		TRCLOG("Error: Enumerate fonts failed!");
 		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;

@@ -39,33 +39,33 @@
 // Flags for SetDialogAlign
 //
 
-#define SDA_LEFTALIGN					0x0001L
-#define SDA_RIGHTALIGN					0x0002L
-#define SDA_TOPALIGN					0x0004L
-#define SDA_BOTTOMALIGN					0x0008L
+#define SDA_LEFTALIGN						0x0001L
+#define SDA_RIGHTALIGN						0x0002L
+#define SDA_TOPALIGN						0x0004L
+#define SDA_BOTTOMALIGN						0x0008L
 
-#define SDA_HCENTERALIGN				0x0010L
-#define SDA_VCENTERALIGN				0x0020L
+#define SDA_HCENTERALIGN					0x0010L
+#define SDA_VCENTERALIGN					0x0020L
 
-#define SDA_LEFTBUTTON					0x0100L
-#define SDA_RIGHTBUTTON					0x0200L
+#define SDA_LEFTBUTTON						0x0100L
+#define SDA_RIGHTBUTTON						0x0200L
 
 
 // Flags for moving functions
 //
 
-#define MOVDIR_HORIZONTAL				0x0001L
-#define MOVDIR_VERTICAL					0x0002L
+#define MOVDIR_HORIZONTAL					0x0001L
+#define MOVDIR_VERTICAL						0x0002L
 
 
 // Flags and default values for dialog properties
 //
 
-#define POINT_NULL						CPoint(0,0)
-#define SIZE_NULL						CSize(0,0)
-#define SIZE_UNDEFINED					CSize(-1,-1)
-#define MARGIN_NULL						CRect(0,0,0,0)
-#define MARGIN_DEFAULT					CRect(10,10,10,10)
+#define POINT_NULL							CPoint(0,0)
+#define SIZE_NULL							CSize(0,0)
+#define SIZE_UNDEFINED						CSize(-1,-1)
+#define MARGIN_NULL							CRect(0,0,0,0)
+#define MARGIN_DEFAULT						CRect(10,10,10,10)
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -75,26 +75,28 @@
 //////////////////////////////////////////////////////////////////////////
 
 
-#define SCM_DIALOG						(WM_USER+2000)
+#define SCM_NOTIFY_DIALOG_EVENT				(WM_USER+2000)
 
-#define SCM_NOTIFY_DIALOGINIT			(SCM_DIALOG+1)
-#define SCM_NOTIFY_DIALOGSHOWED			(SCM_DIALOG+2)
-#define SCM_NOTIFY_DIALOGHIDDEN			(SCM_DIALOG+3)
-#define SCM_NOTIFY_DIALOGEXPAND			(SCM_DIALOG+4)
-#define SCM_NOTIFY_DIALOGCOLLAPSE		(SCM_DIALOG+5)
-#define SCM_NOTIFY_DIALOGACTIVE			(SCM_DIALOG+6)
-#define SCM_NOTIFY_DIALOGINACTIVE		(SCM_DIALOG+7)
-#define SCM_NOTIFY_DIALOGCLOSE			(SCM_DIALOG+8)
-#define SCM_NOTIFY_DIALOGDESTROY		(SCM_DIALOG+9)
+#define SCM_NOTIFY_DIALOG_INIT				(SCM_NOTIFY_DIALOG_EVENT+1)
+#define SCM_NOTIFY_DIALOG_SHOWED			(SCM_NOTIFY_DIALOG_EVENT+2)
+#define SCM_NOTIFY_DIALOG_HIDDEN			(SCM_NOTIFY_DIALOG_EVENT+3)
+#define SCM_NOTIFY_DIALOG_EXPAND			(SCM_NOTIFY_DIALOG_EVENT+4)
+#define SCM_NOTIFY_DIALOG_COLLAPSE			(SCM_NOTIFY_DIALOG_EVENT+5)
+#define SCM_NOTIFY_DIALOG_ACTIVE			(SCM_NOTIFY_DIALOG_EVENT+6)
+#define SCM_NOTIFY_DIALOG_INACTIVE			(SCM_NOTIFY_DIALOG_EVENT+7)
+#define SCM_NOTIFY_DIALOG_RESIZE			(SCM_NOTIFY_DIALOG_EVENT+8)
+#define SCM_NOTIFY_DIALOG_MOVE				(SCM_NOTIFY_DIALOG_EVENT+9)
+#define SCM_NOTIFY_DIALOG_CLOSE				(SCM_NOTIFY_DIALOG_EVENT+10)
+#define SCM_NOTIFY_DIALOG_DESTROY			(SCM_NOTIFY_DIALOG_EVENT+11)
 
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 //
 //	Class name:	 SDialog
 //  Description: Custom base class for dialogs
 //  Base class:	 CDialogEx
 //
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 class SDialog : public CDialogEx
 {
@@ -108,7 +110,12 @@ public:
 	virtual ~SDialog();														// destructor
 
 protected:
+	// Dialog resource ID mapping
+	static const INT_PTR PASCAL UpdateThisResourceIDMap();
+	virtual const INT_PTR UpdateResourceIDMap();
+
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
+
 	DECLARE_MESSAGE_MAP()
 
 protected:
@@ -125,6 +132,7 @@ protected:
 	BOOL m_bForceClose;
 	BOOL m_bUseEscape;
 	BOOL m_bUseEnter;
+	UINT m_nDescendantCount;
 
 	// Properties set flags
 	BOOL m_bBkgrdColorSet;
@@ -174,10 +182,15 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg LRESULT OnChildDialogInit(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnChildDialogDestroy(WPARAM wParam, LPARAM lParam);
 	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual int	 PreDestroyDialog();
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
+	// Modal processing
+	virtual INT_PTR DoModal(void);
 
 	// Parent window functions
 	virtual CWnd* GetParentWnd(void);
@@ -293,9 +306,12 @@ public:
 	virtual void SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLanguage = NULL);
 	virtual void MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPosition);
 	virtual void MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, int nDistance);
-	virtual void EnableControl(UINT nCtrlID, BOOL bEnable);
-	virtual void SetupDlgItemState(void);
-	virtual void RefreshDlgItemState(void);
+	virtual void ShowItem(UINT nDlgItemID, BOOL bVisible);
+	virtual void ShowItem(CWnd* pDlgItemWnd, BOOL bVisible);
+	virtual void EnableItem(UINT nDlgItemID, BOOL bEnabled);
+	virtual void EnableItem(CWnd* pDlgItemWnd, BOOL bEnabled);
+	virtual void SetupDialogItemState(void);
+	virtual void RefreshDialogItemState(BOOL bRecheckState = FALSE);
 
 	// Layout functions
 	virtual void UpdateLayoutInfo(void);
@@ -315,6 +331,11 @@ public:
 
 	// Request processing functions
 	virtual LRESULT RequestCloseDialog(void);
+
+	// Descendant dialog functions
+	virtual void OpenChildDialogEx(UINT nDialogID);
+	virtual void OpenChildDialogEx(SDialog* pChildDialog);
+	virtual UINT GetDescendantCount(void) const;
 };
 
 #endif	// ifndef _STUPIDFRAMEWORK_SDIALOG_H_INCLUDED

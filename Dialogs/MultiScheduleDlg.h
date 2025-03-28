@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		MultiScheduleDlg.h
@@ -56,7 +56,7 @@ protected:
 	// Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
-	DECLARE_CLASS_IDMAP()
+	DECLARE_RESOURCEID_MAP()
 
 private:
 	// Dialog control item
@@ -98,11 +98,11 @@ public:
 	void SaveLayoutInfo(void);
 
 	// Dialog item properties functions
-	void SetupDlgItemState();
+	void SetupDialogItemState();
 	void UpdateDataItemList();
 	void DisableDataTable(BOOL bDisable);
 	void RedrawDataTable(BOOL bReadOnly = FALSE);
-	void RefreshDlgItemState(BOOL bRecheckState);
+	void RefreshDialogItemState(BOOL bRecheckState = FALSE);
 	void UpdateCheckAllBtnState(BOOL bRecheck = FALSE);
 
 	// Data processing functions

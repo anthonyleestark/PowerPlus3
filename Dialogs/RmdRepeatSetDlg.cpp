@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		RmdRepeatSetDlg.cpp
@@ -120,8 +120,8 @@ BOOL CRmdRepeatSetDlg::OnInitDialog()
 
 	// Setup display
 	SetupLanguage();
-	SetupDlgItemState();
-	RefreshDlgItemState();
+	SetupDialogItemState();
+	RefreshDialogItemState();
 
 	return TRUE;
 }
@@ -199,7 +199,7 @@ void CRmdRepeatSetDlg::OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 
 void CRmdRepeatSetDlg::OnCheckboxClicked(UINT nID)
 {
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -235,18 +235,21 @@ void CRmdRepeatSetDlg::SetupLanguage()
 			break;
 		}
 	}
+
+	// Default
+	SDialog::SetupLanguage();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetupDlgItemState
+//	Function name:	SetupDialogItemState
 //	Description:	Setup properties and values for dialog items
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CRmdRepeatSetDlg::SetupDlgItemState()
+void CRmdRepeatSetDlg::SetupDialogItemState()
 {
 	// Initialize dialog items
 	if (m_pSnoozeIntervalEdit == NULL) {
@@ -357,18 +360,21 @@ void CRmdRepeatSetDlg::SetupDlgItemState()
 		// Set snooze interval value
 		SetSnoozeInterval(DEF_REPEATSET_DEFAULT_SNOOZE);
 	}
+
+	// Default
+	SDialog::SetupDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	RefreshDlgItemState
+//	Function name:	RefreshDialogItemState
 //	Description:	Refresh and update state for dialog items
-//  Arguments:		None
+//  Arguments:		bRecheckState - Recheck all item's state
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CRmdRepeatSetDlg::RefreshDlgItemState()
+void CRmdRepeatSetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
 	int nRepeatState = INT_NULL;
 	int nSnoozeState = INT_NULL;
@@ -420,6 +426,9 @@ void CRmdRepeatSetDlg::RefreshDlgItemState()
 			}
 		}
 	}
+
+	// Default
+	SDialog::RefreshDialogItemState(bRecheckState);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -641,7 +650,7 @@ void CRmdRepeatSetDlg::UpdateDialogData(PWRREMINDERITEM& pwrItemData, BOOL bUpda
 
 		// Update data
 		UpdateData(FALSE);
-		RefreshDlgItemState();
+		RefreshDialogItemState();
 	}
 }
 

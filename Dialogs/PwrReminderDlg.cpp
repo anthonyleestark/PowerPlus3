@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		PwrReminderDlg.cpp
@@ -98,8 +98,6 @@ CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
 	m_nCurSelIndex = -1;
 	m_nCurDispIndex = -2;
 	m_stDispTimeBak = SYSTEMTIME_ZERO;
-
-	INIT_CLASS_IDMAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -190,33 +188,33 @@ INT_PTR CPwrReminderDlg::RegisterDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_ITEM_LISTBOX, CTRL_TYPE_LISTCTRL);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_ADD_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EDIT_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_REMOVE_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_REMOVEALL_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_CHECKALL_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_UNCHECKALL_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_PREVIEW_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_APPLY_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_CANCEL_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_DETAIL_STATIC, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_EDITBOX, CTRL_TYPE_EDITBOX);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_COUNTER, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN, CTRL_TYPE_RADIOBTN);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX, CTRL_TYPE_EDITBOX);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_SPIN, CTRL_TYPE_SPINCTRL);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_REPEATSET_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN, CTRL_TYPE_RADIOBTN);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN, CTRL_TYPE_RADIOBTN);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN, CTRL_TYPE_RADIOBTN);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN, CTRL_TYPE_RADIOBTN);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN, CTRL_TYPE_RADIOBTN);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN, CTRL_TYPE_RADIOBTN);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN, CTRL_TYPE_RADIOBTN);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_ITEM_LISTBOX, List_Control);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_ADD_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EDIT_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_REMOVE_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_REMOVEALL_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_CHECKALL_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_UNCHECKALL_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_PREVIEW_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_APPLY_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_CANCEL_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_DETAIL_STATIC, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_EDITBOX, Edit_Control);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_COUNTER, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX, Edit_Control);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_SPIN, Spin_Control);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_REPEATSET_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN, Radio_Button);
 	}
 
 	return nRet;
@@ -276,36 +274,36 @@ BOOL CPwrReminderDlg::UnregisterDialogManagement(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BEGIN_ID_MAPPING(CPwrReminderDlg)
-	IDMAP_ADD(IDD_PWRREMINDER_DLG,							"PwrReminderDlg")
-	IDMAP_ADD(IDC_PWRREMINDER_ITEM_LISTBOX,					"PwrReminderItemList")
-	IDMAP_ADD(IDC_PWRREMINDER_ADD_BTN,						"AddButton")
-	IDMAP_ADD(IDC_PWRREMINDER_EDIT_BTN,						"EditButton")
-	IDMAP_ADD(IDC_PWRREMINDER_REMOVE_BTN,					"RemoveButton")
-	IDMAP_ADD(IDC_PWRREMINDER_REMOVEALL_BTN,				"RemoveAllButton")
-	IDMAP_ADD(IDC_PWRREMINDER_CHECKALL_BTN,					"CheckAllButton")
-	IDMAP_ADD(IDC_PWRREMINDER_UNCHECKALL_BTN,				"UncheckAllButton")
-	IDMAP_ADD(IDC_PWRREMINDER_PREVIEW_BTN,					"PreviewButton")
-	IDMAP_ADD(IDC_PWRREMINDER_APPLY_BTN,					"ApplyButton")
-	IDMAP_ADD(IDC_PWRREMINDER_CANCEL_BTN,					"CancelButton")
-	IDMAP_ADD(IDC_PWRREMINDER_DETAIL_STATIC,				"DetailGroup")
-	IDMAP_ADD(IDC_PWRREMINDER_MSGSTRING_TITLE,				"MsgContentTitle")
-	IDMAP_ADD(IDC_PWRREMINDER_MSGSTRING_EDITBOX,			"MsgContentEdit")
-	IDMAP_ADD(IDC_PWRREMINDER_MSGSTRING_COUNTER,			"MsgCounter")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_TITLE,					"EventGroup")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN,			"EventSetTimeRadio")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX,		"EventSetTimeEdit")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_SETTIME_SPIN,			"EventSetTimeSpin")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_REPEATSET_BTN,			"RepeatSetButton")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN,		"EventAppStartupRadio")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN,		"EventSysWakeupRadio")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN,	"EventBfrPwrActionRadio")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN,	"EventPwrActionWakeRadio")
-	IDMAP_ADD(IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN,		"EventAtAppExitRadio")
-	IDMAP_ADD(IDC_PWRREMINDER_MSGSTYLE_TITLE,				"MsgStyleGroup")
-	IDMAP_ADD(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,		"StyleMessageBoxRadio")
-	IDMAP_ADD(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,		"StyleDialogBoxRadio")
-END_ID_MAPPING()
+BEGIN_RESOURCEID_MAP(CPwrReminderDlg)
+	ON_ID_DIALOG(IDD_PWRREMINDER_DLG,							"PwrReminderDlg")
+	ON_ID_CONTROL(IDC_PWRREMINDER_ITEM_LISTBOX,					"PwrReminderItemList")
+	ON_ID_CONTROL(IDC_PWRREMINDER_ADD_BTN,						"AddButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EDIT_BTN,						"EditButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_REMOVE_BTN,					"RemoveButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_REMOVEALL_BTN,				"RemoveAllButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_CHECKALL_BTN,					"CheckAllButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_UNCHECKALL_BTN,				"UncheckAllButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_PREVIEW_BTN,					"PreviewButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_APPLY_BTN,					"ApplyButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_CANCEL_BTN,					"CancelButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_DETAIL_STATIC,				"DetailGroup")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTRING_TITLE,				"MsgContentTitle")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTRING_EDITBOX,			"MsgContentEdit")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTRING_COUNTER,			"MsgCounter")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_TITLE,					"EventGroup")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN,			"EventSetTimeRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX,		"EventSetTimeEdit")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_SETTIME_SPIN,			"EventSetTimeSpin")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_REPEATSET_BTN,			"RepeatSetButton")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN,		"EventAppStartupRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN,		"EventSysWakeupRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN,	"EventBfrPwrActionRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN,	"EventPwrActionWakeRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN,		"EventAtAppExitRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_TITLE,				"MsgStyleGroup")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,		"StyleMessageBoxRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,		"StyleDialogBoxRadio")
+END_RESOURCEID_MAP()
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -374,7 +372,7 @@ BOOL CPwrReminderDlg::OnInitDialog()
 	// Update data
 	UpdateDataItemList();
 	DisplayItemDetails(INT_INVALID);
-	RefreshDlgItemState(TRUE);
+	RefreshDialogItemState(TRUE);
 
 	// Save dialog event log if enabled
 	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
@@ -769,7 +767,7 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Display item details
 	DisplayItemDetails(m_nCurSelIndex);
-	RefreshDlgItemState(TRUE);
+	RefreshDialogItemState(TRUE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -806,7 +804,7 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Refresh button states
-	RefreshDlgItemState(TRUE);
+	RefreshDialogItemState(TRUE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -843,7 +841,7 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Refresh button states
-	RefreshDlgItemState(TRUE);
+	RefreshDialogItemState(TRUE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1276,6 +1274,9 @@ void CPwrReminderDlg::SetupLanguage()
 
 	// Setup data item list
 	SetupDataItemList(pAppLang);
+
+	// Default
+	SDialog::SetupLanguage();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1533,6 +1534,9 @@ void CPwrReminderDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 	default:
 		break;
 	}
+
+	// Default
+	SDialog::SetupComboBox(nComboID, ptrLanguage);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1562,7 +1566,7 @@ void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 		RefreshDetailView(MODE_INIT);
 
 		// Refresh dialog item states
-		RefreshDlgItemState(TRUE);
+		RefreshDialogItemState(TRUE);
 	}
 	else if (nCurMode == MODE_VIEW) {
 		// Lock dialog items
@@ -1580,21 +1584,21 @@ void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 		DisplayItemDetails(m_nCurSelIndex);
 
 		// Refresh dialog item states
-		RefreshDlgItemState(TRUE);
+		RefreshDialogItemState(TRUE);
 	}
 	else if (nCurMode == MODE_ADD) {
 		// Lock dialog items
 		SetLockState(TRUE);
 
 		// Enable/disable controls
-		EnableControl(IDC_PWRREMINDER_ADD_BTN,		  TRUE);
-		EnableControl(IDC_PWRREMINDER_EDIT_BTN,		  FALSE);
-		EnableControl(IDC_PWRREMINDER_REMOVE_BTN,	  FALSE);
-		EnableControl(IDC_PWRREMINDER_REMOVEALL_BTN,  FALSE);
-		EnableControl(IDC_PWRREMINDER_CHECKALL_BTN,   FALSE);
-		EnableControl(IDC_PWRREMINDER_UNCHECKALL_BTN, FALSE);
-		EnableControl(IDC_PWRREMINDER_PREVIEW_BTN,	  FALSE);
-		EnableControl(IDC_PWRREMINDER_APPLY_BTN,	  FALSE);
+		EnableItem(IDC_PWRREMINDER_ADD_BTN,			TRUE);
+		EnableItem(IDC_PWRREMINDER_EDIT_BTN,		FALSE);
+		EnableItem(IDC_PWRREMINDER_REMOVE_BTN,		FALSE);
+		EnableItem(IDC_PWRREMINDER_REMOVEALL_BTN,	FALSE);
+		EnableItem(IDC_PWRREMINDER_CHECKALL_BTN,	FALSE);
+		EnableItem(IDC_PWRREMINDER_UNCHECKALL_BTN,	FALSE);
+		EnableItem(IDC_PWRREMINDER_PREVIEW_BTN,		FALSE);
+		EnableItem(IDC_PWRREMINDER_APPLY_BTN,		FALSE);
 
 		// Change [Add] button title to [Save]
 		UpdateItemText(IDC_PWRREMINDER_ADD_BTN, BTN_PWRRMDDLG_SAVECHANGES);
@@ -1611,14 +1615,14 @@ void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 		SetLockState(TRUE);
 
 		// Enable/disable controls
-		EnableControl(IDC_PWRREMINDER_ADD_BTN,		  FALSE);
-		EnableControl(IDC_PWRREMINDER_EDIT_BTN,		  TRUE);
-		EnableControl(IDC_PWRREMINDER_REMOVE_BTN,	  FALSE);
-		EnableControl(IDC_PWRREMINDER_REMOVEALL_BTN,  FALSE);
-		EnableControl(IDC_PWRREMINDER_CHECKALL_BTN,	  FALSE);
-		EnableControl(IDC_PWRREMINDER_UNCHECKALL_BTN, FALSE);
-		EnableControl(IDC_PWRREMINDER_PREVIEW_BTN,	  FALSE);
-		EnableControl(IDC_PWRREMINDER_APPLY_BTN,	  FALSE);
+		EnableItem(IDC_PWRREMINDER_ADD_BTN,			FALSE);
+		EnableItem(IDC_PWRREMINDER_EDIT_BTN,		TRUE);
+		EnableItem(IDC_PWRREMINDER_REMOVE_BTN,		FALSE);
+		EnableItem(IDC_PWRREMINDER_REMOVEALL_BTN,	FALSE);
+		EnableItem(IDC_PWRREMINDER_CHECKALL_BTN,	FALSE);
+		EnableItem(IDC_PWRREMINDER_UNCHECKALL_BTN,	FALSE);
+		EnableItem(IDC_PWRREMINDER_PREVIEW_BTN,		FALSE);
+		EnableItem(IDC_PWRREMINDER_APPLY_BTN,		FALSE);
 
 		// Change [Edit] button title to [Save]
 		UpdateItemText(IDC_PWRREMINDER_EDIT_BTN, BTN_PWRRMDDLG_SAVECHANGES);
@@ -1641,7 +1645,7 @@ void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
 		DisableTable(TRUE);
 
 		// Refresh dialog item states
-		RefreshDlgItemState(TRUE);
+		RefreshDialogItemState(TRUE);
 	}
 }
 
@@ -1871,6 +1875,9 @@ void CPwrReminderDlg::SetupDialogItemState()
 
 	// Initialize counter display
 	UpdateMsgCounter(0);
+
+	// Default
+	SDialog::SetupDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2054,14 +2061,14 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	RefreshDlgItemState
+//	Function name:	RefreshDialogItemState
 //	Description:	Refresh and update state for dialog items
-//  Arguments:		bRecheckState - Recheck all items state
+//  Arguments:		bRecheckState - Recheck all item's state
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPwrReminderDlg::RefreshDlgItemState(BOOL bRecheckState)
+void CPwrReminderDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
 	CWnd* pBtn = NULL;
 
@@ -2123,6 +2130,9 @@ void CPwrReminderDlg::RefreshDlgItemState(BOOL bRecheckState)
 
 	// Update [Check/Uncheck All] button state
 	UpdateCheckAllBtnState(bRecheckState);
+
+	// Default
+	SDialog::RefreshDialogItemState(bRecheckState);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2391,7 +2401,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 	m_pwrReminderDataTemp.Copy(m_pwrReminderData);
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
+	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
 
 	// Validate data and auto-correction
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
@@ -2399,7 +2409,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 		if (!Validate(pwrItem, TRUE, TRUE)) {
 			// Update temp data
 			m_pwrReminderDataTemp.Update(pwrItem);
-			SetFlagValue(FLAGID_CHANGEFLAG, TRUE);	// Update change flag
+			SetFlagValue(FLAGID_CHANGE_FLAG, TRUE);	// Update change flag
 		}
 	}
 
@@ -2435,7 +2445,7 @@ BOOL CPwrReminderDlg::SavePwrReminderData()
 	pMainDlg->PostMessage(SM_APP_UPDATE_PWRREMINDERDATA, NULL, NULL);
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
+	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
 	
 	return TRUE;
 }
@@ -2539,7 +2549,7 @@ void CPwrReminderDlg::Add()
 	RedrawDataTable();
 
 	// Refresh button state
-	RefreshDlgItemState(TRUE);
+	RefreshDialogItemState(TRUE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2579,7 +2589,7 @@ void CPwrReminderDlg::Edit(int nIndex)
 	RedrawDataTable();
 
 	// Refresh button state
-	RefreshDlgItemState(TRUE);
+	RefreshDialogItemState(TRUE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2600,7 +2610,7 @@ void CPwrReminderDlg::Remove(int nIndex)
 	RedrawDataTable();
 
 	// Refresh button state
-	RefreshDlgItemState(TRUE);
+	RefreshDialogItemState(TRUE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2621,7 +2631,7 @@ void CPwrReminderDlg::RemoveAll()
 	RedrawDataTable();
 
 	// Refresh button state
-	RefreshDlgItemState(TRUE);
+	RefreshDialogItemState(TRUE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2651,7 +2661,7 @@ void CPwrReminderDlg::SetAllItemState(BOOL bState)
 	UpdateDataItemList();
 
 	// Refresh button state
-	RefreshDlgItemState(FALSE);
+	RefreshDialogItemState(FALSE);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		IDMapping.h
@@ -22,113 +22,203 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//	Define macros for ID Mapping, these macros will be used elsewhere in the program
+//	Define macros for ID Mapping function, these macros will be used elsewhere in the program
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define DECLARE_APP_IDMAP()	\
-	public: \
-		static SIDMapping* _pAppIDMap;	\
-		static SIDMapping* GetAppIDMap();
-#define INIT_APP_IDMAP(theAppClass)	\
-	PTM_WARNING_DISABLE \
-	SIDMapping* theAppClass::_pAppIDMap = new SIDMapping; \
-	__pragma(warning(push)) \
-	__pragma(warning(disable: 4640)) \
-	SIDMapping* theAppClass::GetAppIDMap() { \
-		VERIFY (_pAppIDMap != NULL); \
-		return theAppClass::_pAppIDMap; \
-	} \
-	PTM_WARNING_RESTORE
-#define DESTROY_APP_IDMAP()	\
-		if (_pAppIDMap != NULL) { \
-			delete _pAppIDMap; \
-			_pAppIDMap = NULL; \
-		}
-#define DECLARE_CLASS_IDMAP()	\
+
+// Get application-managed resource ID map data pointer
+#define GET_RESOURCEID_MAP()	\
+		SResourceIDMap::GetResourceIDMap()
+
+// Destroy and clean-up application-managed resource ID map data
+#define DESTROY_RESOURCEID_MAP()	\
+		SResourceIDMap::DestroyResourceIDMap();
+
+// Declare descendant-class-level resource ID map
+#define DECLARE_RESOURCEID_MAP()	\
 	protected: \
-		static void UpdateClassIDMap();
-#define INIT_CLASS_IDMAP() \
-	UpdateClassIDMap();
-#define BEGIN_ID_MAPPING(theClass) \
+		static const INT_PTR PASCAL UpdateThisResourceIDMap(); \
+		const INT_PTR UpdateResourceIDMap() override;
+
+// Begin the sequece of updating class resource ID map data
+#define BEGIN_RESOURCEID_MAP(theClass) \
 	PTM_WARNING_DISABLE \
-	void theClass::UpdateClassIDMap() {	\
-		SIDMapping *_classIDMap = ((SWinApp*)AfxGetApp())->GetAppIDMap(); \
-		if (_classIDMap == NULL) return;
-#define IDMAP_ADD(nID, lpszStringID) \
-		if (_classIDMap->FindID(nID) == -1) _classIDMap->Add(nID, lpszStringID);
-#define IDMAP_MODIFY(nID, lpszStringID) \
-		((SWinApp*)AfxGetApp())->GetAppIDMap()->Modify(nID, lpszStringID);
-#define IDMAP_REMOVE(nID) \
-		((SWinApp*)AfxGetApp())->GetAppIDMap()->Remove(nID);
-#define IDMAP_GET \
-		((SWinApp*)AfxGetApp())->GetAppIDMap()->GetID
-#define IDMAP_CLEAR() \
-		((SWinApp*)AfxGetApp())->GetAppIDMap()->Clear();
-#define END_ID_MAPPING() \
+	const INT_PTR theClass::UpdateResourceIDMap() \
+	{ \
+		return UpdateThisResourceIDMap(); \
+	} \
+	const INT_PTR theClass::UpdateThisResourceIDMap() \
+	{ \
+		__pragma(warning(push))	\
+		__pragma(warning(disable: 4640)) \
+		static const RESOURCE_ID_MAP_ENTRY _mapEntries[] = \
+		{
+
+// Making entry of dialog ID
+#define ON_ID_DIALOG(resourceID, nameID) \
+		{ \
+			Dialog, resourceID, nameID \
+		},
+
+// Making entry of control ID
+#define ON_ID_CONTROL(resourceID, nameID) \
+		{ \
+			Control, resourceID, nameID \
+		},
+
+// Making entry of menu item ID
+#define ON_ID_MENU(resourceID, nameID) \
+		{ \
+			Menu, resourceID, nameID \
+		},
+
+// Add resource ID to map
+#define ADD_RESOURCE_ID(typeID, resourceID, nameID) \
+		if (GET_RESOURCEID_MAP()->FindResourceID(resourceID) == -1) \
+			GET_RESOURCEID_MAP()->Add(typeID, resourceID, nameID);
+
+// Modify resource name ID
+#define MODIFY_RESOURCE_ID(resourceID, newNameID) \
+		GET_RESOURCEID_MAP()->Modify(resourceID, newNameID);
+
+// Remove resource ID from map
+#define REMOVE_RESOURCE_ID(resourceID) \
+		GET_RESOURCEID_MAP()->Remove(resourceID);
+
+// Get control name ID from map
+#define GET_RESOURCE_ID(nameID) \
+		GET_RESOURCEID_MAP()->GetResourceID(nameID)
+
+// Get resource name ID from map
+#define GET_NAME_ID(resourceID) \
+		GET_RESOURCEID_MAP()->GetNameID(resourceID)
+
+// Clean-up resource ID map data
+#define CLEAR_RESOURCE_ID_MAP() \
+		GET_RESOURCEID_MAP()->RemoveAll();
+
+// End the sequece of updating class resource ID map data
+#define END_RESOURCEID_MAP() \
+		{ Resource_Null, 0, "#NULL" } \
+		}; \
+		__pragma(warning(pop)) \
+		INT_PTR _resourceIDMapCount = 0;	\
+		SResourceIDMap* _pResourceIDMap = GET_RESOURCEID_MAP(); \
+		ASSERT(_pResourceIDMap != NULL); \
+		if (_pResourceIDMap != NULL) \
+		{ \
+			INT_PTR _srcMapSize = sizeof(_mapEntries) / sizeof(_mapEntries[0]); \
+			_pResourceIDMap->Append(&_mapEntries[0], --(_srcMapSize)); \
+			_resourceIDMapCount = _pResourceIDMap->GetMapCount(); \
+		} \
+		return _resourceIDMapCount; \
 	} \
 	PTM_WARNING_RESTORE
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//	Define data types for ID mapping
+//	Define enum datas for ID Mapping function, these datas will be used elsewhere in the programs
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////// ********************
+// 
+// ResourceType - Resource type ID
+//
+//////////////////// ********************
+
+enum ResourceType {
+	Resource_Null = 0,					// Invalid resource type
+	Dialog,								// Dialog
+	Control,							// Control
+	Menu,								// Menu item
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	Define data types for ID mapping function
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	IDMAPPAIR
-//  Description:	Using for ID pair mapping function
+//	Data type name:	RESOURCE_ID_MAP_ENTRY
+//  Description:	Using for resource ID mapping function
 //  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagIDMAPPAIR
+typedef struct tagRESOURCE_ID_MAP_ENTRY
 {
-	DWORD	dwResourceID;	// Resource ID (integer type)
-	LPCSTR  lpszStringID;	// String ID
-} IDMAPPAIR, *PIDMAPPAIR;
+	BYTE	 byTypeID;					// Resource type ID
+	DWORD	 dwResourceID;				// Resource ID (integer type)
+	CStringA strNameID;					// Resource mapped name string ID
+} RESOURCE_ID_MAP_ENTRY, *RESOURCE_ID_MAP;
+
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	IDMAPDATA
-//  Description:	Store list of ID map data
-//  Derivered from: MFC CArray class
+//	Class name:	 SResourceIDMap
+//  Description: Using for resource ID mapping function
+//	Base class:	 CObject
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef CArray<IDMAPPAIR, IDMAPPAIR>	IDMAPDATA;
-
-
-////////////////////////////////////////////////////////
-//
-//	Class name:	 SIDMapping
-//  Description: Using for app ID mapping function
-//
-////////////////////////////////////////////////////////
-
-class SIDMapping
+class SResourceIDMap : public CObject
 {
+	DECLARE_DYNAMIC(SResourceIDMap)
+
 private:
 	// Data container
-	IDMAPDATA IDMapData;
+	RESOURCE_ID_MAP m_pIDMapData;
+	INT_PTR			m_nSize;
+
+	// Single instance and thread safety guard
+	static SResourceIDMap*	m_thisInstance;
+	static std::mutex		m_mutexLockGuard;
+
+private:
+	// Singleton
+	SResourceIDMap();												// constructor
+	SResourceIDMap(const SResourceIDMap&) = delete;					// no copy constructor
+	~SResourceIDMap();												// destructor
 
 public:
+	// Operators
+	SResourceIDMap& operator=(const SResourceIDMap&) = delete;		// no copy assignment operator
+	const RESOURCE_ID_MAP_ENTRY& operator[](INT_PTR nIndex);
+
+public:
+	// Get the single map instance:
+	// Because the resource ID map will be applied for the entire program,
+	// there must be one and only instance of it
+	static SResourceIDMap* GetResourceIDMap(void);
+	static void DestroyResourceIDMap(void);
+
+	// Initialization
+	void Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize);
+	void Append(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize);
+
 	// Data processing functions
-	void Add(DWORD dwID, LPCSTR lpszStringID);
-	void Modify(DWORD dwID, LPCSTR lpszStringID);
-	void Remove(DWORD dwID);
-	void Clear(void);
+	void Add(BYTE byTypeID, DWORD dwResID, LPCSTR lpszNameID);
+	void Modify(DWORD dwResID, LPCSTR lpszNewNameID);
+	void Remove(DWORD dwResID);
+	void RemoveAll(void);
 	
 	// Data acquirement functions
-	UINT	GetID(LPCSTR lpszStringID) const;
-	LPCSTR	GetID(DWORD dwID) const;
-	int		FindID(DWORD dwID) const;
-	int		FindID(LPCSTR lpszStringID) const;
+	UINT	GetResourceID(LPCSTR lpszNameID) const;
+	LPCSTR	GetNameID(DWORD dwResID) const;
+	INT_PTR	FindResourceID(DWORD dwResID) const;
+	INT_PTR	FindNameID(LPCSTR lpszNameID) const;
 
 	// Attributes get/set functions
-	inline int GetMapCount(void) const;
+	const RESOURCE_ID_MAP_ENTRY& GetAt(INT_PTR nIndex) const;
+	INT_PTR GetMapCount(void) const;
 };
 
 #endif		// ifndef _IDMAPPING_H_INCLUDED

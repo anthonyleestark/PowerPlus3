@@ -31,7 +31,6 @@ using namespace CoreFuncs;
 //////////////////////////////////////////////////////////////////////////
 
 IMPLEMENT_DYNAMIC(SWinApp, CWinAppEx)
-INIT_APP_IDMAP(SWinApp)
 
 //////////////////////////////////////////////////////////////////////////
 // 
@@ -97,8 +96,8 @@ SWinApp::~SWinApp()
 		m_pAppEventLog = NULL;
 	}
 
-	IDMAP_CLEAR()
-	DESTROY_APP_IDMAP()
+	// Destroy resource ID map
+	DESTROY_RESOURCEID_MAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -396,9 +395,17 @@ void SWinApp::GetAppWindowCaption(CString& strWindowCaption) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SWinApp::SetAppWindowCaption(LPCTSTR lpszWindowCaption)
+void SWinApp::SetAppWindowCaption(LPCTSTR lpszWindowCaption, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
 {
+	// Set caption
 	m_strWindowCaption = lpszWindowCaption;
+
+	// Show product version
+	if (bShowProdVersion == TRUE) {
+		CString strTemp;
+		strTemp.Format(_T(" %s"), GetProductVersion(bFullVersion));
+		m_strWindowCaption.Append(strTemp);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -410,41 +417,14 @@ void SWinApp::SetAppWindowCaption(LPCTSTR lpszWindowCaption)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID)
+BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
 {
-	CString strTemp;
-	BOOL bRet = strTemp.LoadString(nResourceStringID);
-	ASSERT(!strTemp.IsEmpty());
-	if ((bRet == TRUE) && (!strTemp.IsEmpty())) {
+	CString strWindowCaption;
+	BOOL bRet = strWindowCaption.LoadString(nResourceStringID);
+	ASSERT(!strWindowCaption.IsEmpty());
+	if ((bRet == TRUE) && (!strWindowCaption.IsEmpty())) {
 		// Set app window caption 
-		SetAppWindowCaption(strTemp);
-	}
-
-	return bRet;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppWindowCaption
-//	Description:	Set application window common caption by resource string ID
-//  Arguments:		nResourceStringID  - Resource string ID
-//					lpszProductVersion - Product version (string)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID, LPCTSTR lpszProductVersion)
-{
-	CString strTemp;
-	BOOL bRet = strTemp.LoadString(nResourceStringID);
-	ASSERT(!strTemp.IsEmpty());
-	if ((bRet == TRUE) && (!strTemp.IsEmpty())) {
-		// Format title by adding product version
-		CString strAppWindowCaption;
-		strAppWindowCaption.Format(strTemp, lpszProductVersion);
-		
-		// Set app window caption 
-		SetAppWindowCaption(strAppWindowCaption);
+		SetAppWindowCaption(strWindowCaption, bShowProdVersion, bFullVersion);
 	}
 
 	return bRet;
@@ -733,13 +713,13 @@ int SWinApp::GetFlagValue(APPFLAGID eFlagID) const
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGEFLAG:						// Data/setting change flag
+	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
 		nValue = m_bChangeFlag;
 		break;
-	case FLAGID_READONLYMODE:					// Read-only mode
+	case FLAGID_READ_ONLY_MODE:					// Read-only mode
 		nValue = m_bReadOnlyMode;
 		break;
-	case FLAGID_FORCECLOSING:					// Force closing by request
+	case FLAGID_FORCE_CLOSING:					// Force closing by request
 		nValue = m_bForceClose;
 		break;
 	}
@@ -765,13 +745,13 @@ void SWinApp::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGEFLAG:						// Data/setting change flag
+	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
 		m_bChangeFlag = nValue;
 		break;
-	case FLAGID_READONLYMODE:					// Read-only mode
+	case FLAGID_READ_ONLY_MODE:					// Read-only mode
 		m_bReadOnlyMode = nValue;
 		break;
-	case FLAGID_FORCECLOSING:					// Force closing by request
+	case FLAGID_FORCE_CLOSING:					// Force closing by request
 		m_bForceClose = nValue;
 		break;
 	}

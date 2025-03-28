@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		RmdRepeatSetDlg.h
@@ -75,8 +75,8 @@ public:
 protected:
 	// Dialog and items setup functions
 	virtual void SetupLanguage();
-	virtual void SetupDlgItemState();
-	virtual void RefreshDlgItemState();
+	virtual void SetupDialogItemState();
+	virtual void RefreshDialogItemState(BOOL bRecheckState = FALSE);
 
 	void SetSnoozeIntervalEdit(int nValue);
 	

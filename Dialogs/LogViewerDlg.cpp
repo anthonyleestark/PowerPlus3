@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		LogViewerDlg.cpp
@@ -73,8 +73,6 @@ CLogViewerDlg::CLogViewerDlg(CWnd* pParent /*=nullptr*/)
 	m_nCurMode = 0;
 	m_nCheckCount = 0;
 	m_nCurSelIndex = -1;
-
-	INIT_CLASS_IDMAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -122,13 +120,13 @@ void CLogViewerDlg::DoDataExchange(CDataExchange* pDX)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BEGIN_ID_MAPPING(CLogViewerDlg)
-	IDMAP_ADD(IDD_LOGVIEWER_DLG,			 "LogViewerDlg")
-	IDMAP_ADD(IDC_LOGVIEWER_LOGDATA_LISTBOX, "LogViewerList")
-	IDMAP_ADD(IDC_LOGVIEWER_REMOVEALL_BTN,   "RemoveAllButton")
-	IDMAP_ADD(IDC_LOGVIEWER_DETAILS_BTN,	 "DetailButton")
-	IDMAP_ADD(IDC_LOGVIEWER_CLOSE_BTN,		 "CloseButton")
-END_ID_MAPPING()
+BEGIN_RESOURCEID_MAP(CLogViewerDlg)
+	ON_ID_DIALOG(IDD_LOGVIEWER_DLG,				 "LogViewerDlg")
+	ON_ID_CONTROL(IDC_LOGVIEWER_LOGDATA_LISTBOX, "LogViewerList")
+	ON_ID_CONTROL(IDC_LOGVIEWER_REMOVEALL_BTN,   "RemoveAllButton")
+	ON_ID_CONTROL(IDC_LOGVIEWER_DETAILS_BTN,	 "DetailButton")
+	ON_ID_CONTROL(IDC_LOGVIEWER_CLOSE_BTN,		 "CloseButton")
+END_RESOURCEID_MAP()
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -341,6 +339,9 @@ void CLogViewerDlg::SetupLanguage(void)
 
 	// Setup LogViewer list
 	SetupLogViewerList(pAppLang);
+
+	// Default
+	SDialog::SetupLanguage();
 }
 
 //////////////////////////////////////////////////////////////////////////

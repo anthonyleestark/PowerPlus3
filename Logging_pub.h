@@ -171,7 +171,7 @@ typedef enum eBASELOGINFO {
 
 typedef enum eEVENTDETAILCATE {
 	EVENTLOG_DETAIL_RESOURCEID = 0x0200,		// UI component resource ID
-	EVENTLOG_DETAIL_MAPTEXTID,					// Mapped text ID
+	EVENTLOG_DETAIL_NAMEID,						// Name ID
 	EVENTLOG_DETAIL_DIALOGCAPTION,				// Dialog caption
 	EVENTLOG_DETAIL_CTRLCAPTION,				// Control caption
 	EVENTLOG_DETAIL_CHKSTATE,					// Checkbox/radio button, ... checked state

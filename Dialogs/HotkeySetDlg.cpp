@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		HotkeySetDlg.cpp
@@ -78,8 +78,6 @@ CHotkeySetDlg::CHotkeySetDlg(CWnd* pParent /*=nullptr*/)
 	// Other variables
 	m_nCheckCount = 0;
 	m_nCurSelIndex = -1;
-
-	INIT_CLASS_IDMAP()
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -152,23 +150,23 @@ INT_PTR CHotkeySetDlg::RegisterDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ITEM_LISTBOX, CTRL_TYPE_LISTBOX);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ADD_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVE_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVEALL_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CHECKALL_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_UNCHECKALL_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_EXPORT_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_APPLY_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CANCEL_BTN, CTRL_TYPE_BUTTON);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_LIST, CTRL_TYPE_COMBOBOX);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CONTROLKEY_STATIC, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CTRLKEY_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ALTKEY_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_WINKEY_CHK, CTRL_TYPE_CHECKBOX);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_TITLE, CTRL_TYPE_STATIC);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_LIST, CTRL_TYPE_COMBOBOX);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ITEM_LISTBOX, List_Box);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ADD_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVE_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVEALL_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CHECKALL_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_UNCHECKALL_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_EXPORT_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_APPLY_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CANCEL_BTN, Button);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_LIST, Combo_Box);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CONTROLKEY_STATIC, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CTRLKEY_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ALTKEY_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_WINKEY_CHK, Check_Box);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_LIST, Combo_Box);
 	}
 
 	return nRet;
@@ -218,26 +216,26 @@ BOOL CHotkeySetDlg::UnregisterDialogManagement(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BEGIN_ID_MAPPING(CHotkeySetDlg)
-	IDMAP_ADD(IDD_HOTKEYSET_DLG,				"HotkeySetDlg")
-	IDMAP_ADD(IDC_HOTKEYSET_ITEM_LISTBOX,		"HotkeySetList")
-	IDMAP_ADD(IDC_HOTKEYSET_ADD_BTN,			"AddButton")
-	IDMAP_ADD(IDC_HOTKEYSET_REMOVE_BTN,			"RemoveButton")
-	IDMAP_ADD(IDC_HOTKEYSET_REMOVEALL_BTN,		"RemoveAllButton")
-	IDMAP_ADD(IDC_HOTKEYSET_CHECKALL_BTN,		"CheckAllButton")
-	IDMAP_ADD(IDC_HOTKEYSET_UNCHECKALL_BTN,		"UncheckAllButton")
-	IDMAP_ADD(IDC_HOTKEYSET_EXPORT_BTN,			"ExportButton")
-	IDMAP_ADD(IDC_HOTKEYSET_APPLY_BTN,			"ApplyButton")
-	IDMAP_ADD(IDC_HOTKEYSET_CANCEL_BTN,			"CancelButton")
-	IDMAP_ADD(IDC_HOTKEYSET_ACTION_TITLE,		"ActionTitle")
-	IDMAP_ADD(IDC_HOTKEYSET_ACTION_LIST,		"ActionListCombo")
-	IDMAP_ADD(IDC_HOTKEYSET_CONTROLKEY_STATIC,	"ControlKeyTitle")
-	IDMAP_ADD(IDC_HOTKEYSET_CTRLKEY_CHK,		"CtrlKeyCheck")
-	IDMAP_ADD(IDC_HOTKEYSET_ALTKEY_CHK,			"AltKeyCheck")
-	IDMAP_ADD(IDC_HOTKEYSET_WINKEY_CHK,			"WinKeyCheck")
-	IDMAP_ADD(IDC_HOTKEYSET_FUNCKEY_TITLE,		"FunctionKeyTitle")
-	IDMAP_ADD(IDC_HOTKEYSET_FUNCKEY_LIST,		"FunctionKeyListCombo")
-END_ID_MAPPING()
+BEGIN_RESOURCEID_MAP(CHotkeySetDlg)
+	ON_ID_DIALOG(IDD_HOTKEYSET_DLG,					"HotkeySetDlg")
+	ON_ID_CONTROL(IDC_HOTKEYSET_ITEM_LISTBOX,		"HotkeySetList")
+	ON_ID_CONTROL(IDC_HOTKEYSET_ADD_BTN,			"AddButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_REMOVE_BTN,			"RemoveButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_REMOVEALL_BTN,		"RemoveAllButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_CHECKALL_BTN,		"CheckAllButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_UNCHECKALL_BTN,		"UncheckAllButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_EXPORT_BTN,			"ExportButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_APPLY_BTN,			"ApplyButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_CANCEL_BTN,			"CancelButton")
+	ON_ID_CONTROL(IDC_HOTKEYSET_ACTION_TITLE,		"ActionTitle")
+	ON_ID_CONTROL(IDC_HOTKEYSET_ACTION_LIST,		"ActionListCombo")
+	ON_ID_CONTROL(IDC_HOTKEYSET_CONTROLKEY_STATIC,	"ControlKeyTitle")
+	ON_ID_CONTROL(IDC_HOTKEYSET_CTRLKEY_CHK,		"CtrlKeyCheck")
+	ON_ID_CONTROL(IDC_HOTKEYSET_ALTKEY_CHK,			"AltKeyCheck")
+	ON_ID_CONTROL(IDC_HOTKEYSET_WINKEY_CHK,			"WinKeyCheck")
+	ON_ID_CONTROL(IDC_HOTKEYSET_FUNCKEY_TITLE,		"FunctionKeyTitle")
+	ON_ID_CONTROL(IDC_HOTKEYSET_FUNCKEY_LIST,		"FunctionKeyListCombo")
+END_RESOURCEID_MAP()
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -298,7 +296,7 @@ BOOL CHotkeySetDlg::OnInitDialog()
 	// Update data
 	UpdateHotkeySet();
 	DisplayHotkeyDetails(INT_INVALID);
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 
 	// Save dialog event log if enabled
 	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
@@ -601,7 +599,7 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Display item details
 	DisplayHotkeyDetails(GetListCurSel());
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -620,7 +618,7 @@ void CHotkeySetDlg::OnClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Refresh button states
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -639,7 +637,7 @@ void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Refresh button states
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -712,6 +710,9 @@ void CHotkeySetDlg::SetupLanguage()
 
 	// Setup HotkeySet list table
 	SetupHotkeySetList(pAppLang);
+
+	// Default
+	SDialog::SetupLanguage();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -966,30 +967,36 @@ void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 	default:
 		break;
 	}
+
+	// Default
+	SDialog::SetupComboBox(nComboID, ptrLanguage);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	RefreshDlgItemState
+//	Function name:	RefreshDialogItemState
 //	Description:	Refresh and update state for dialog items
-//  Arguments:		None
+//  Arguments:		bRecheckState - Recheck all item's state
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::RefreshDlgItemState()
+void CHotkeySetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
 	// Enable/disable buttons if data is all empty or not
 	BOOL bIsAllEmpty = m_hksHotkeySetTemp.IsAllEmpty();
-	EnableControl(IDC_HOTKEYSET_REMOVE_BTN, !bIsAllEmpty);
-	EnableControl(IDC_HOTKEYSET_REMOVEALL_BTN, !bIsAllEmpty);
+	EnableItem(IDC_HOTKEYSET_REMOVE_BTN, !bIsAllEmpty);
+	EnableItem(IDC_HOTKEYSET_REMOVEALL_BTN, !bIsAllEmpty);
 
 	// Enable/disable buttons if data changed or not
 	m_bChangeFlag = CheckDataChangeState();
-	EnableControl(IDC_HOTKEYSET_APPLY_BTN, m_bChangeFlag);
+	EnableItem(IDC_HOTKEYSET_APPLY_BTN, m_bChangeFlag);
 
 	// Update "Check All" button state
 	UpdateCheckAllBtnState();
+
+	// Default
+	SDialog::RefreshDialogItemState(bRecheckState);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1326,7 +1333,7 @@ BOOL CHotkeySetDlg::LoadHotkeySetData()
 	m_hksHotkeySetTemp.Copy(m_hksHotkeySet);
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
+	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
 	return TRUE;
 }
 
@@ -1346,7 +1353,7 @@ BOOL CHotkeySetDlg::SaveHotkeySetData()
 	m_hksHotkeySet.Adjust();
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGEFLAG, FALSE);
+	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
 
 	// Save app HotkeySet data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
@@ -1457,7 +1464,7 @@ void CHotkeySetDlg::Add(void)
 	m_hksHotkeySetTemp.Update(hksTemp);
 
 	// Refresh button state
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1475,7 +1482,7 @@ void CHotkeySetDlg::Remove(int nIndex)
 	m_hksHotkeySetTemp.Remove(nIndex);
 
 	// Refresh button state
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1493,7 +1500,7 @@ void CHotkeySetDlg::RemoveAll(void)
 	m_hksHotkeySetTemp.RemoveAll();
 
 	// Refresh button state
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1520,7 +1527,7 @@ void CHotkeySetDlg::SwitchAllItemState(BOOL bState)
 	UpdateHotkeySet();
 
 	// Refresh button state
-	RefreshDlgItemState();
+	RefreshDialogItemState();
 }
 
 //////////////////////////////////////////////////////////////////////////
