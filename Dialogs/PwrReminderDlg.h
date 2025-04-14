@@ -17,6 +17,8 @@
 
 #include "Core.h"
 #include "Config.h"
+#include "MapTable.h"
+
 #include "Logging.h"
 #include "IDMapping.h"
 #include "SDialog.h"
@@ -91,8 +93,8 @@ private:
 	BOOL m_bStyleDialogRad;
 
 	// Data container variables
-	PWRREMINDERDATA m_pwrReminderData;
-	PWRREMINDERDATA m_pwrReminderDataTemp;
+	PwrReminderData m_pwrReminderData;
+	PwrReminderData m_pwrReminderDataTemp;
 
 	// Table format and properties
 	int m_nColNum;

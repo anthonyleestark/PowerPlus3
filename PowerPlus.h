@@ -20,6 +20,7 @@
 
 #include "Core.h"
 #include "Config.h"
+#include "MapTable.h"
 
 #include "Logging.h"
 #include "Logging_pub.h"
@@ -43,17 +44,18 @@ class CDebugTestDlg;
 class CPowerPlusApp : public SWinApp
 {
 public:
-	CPowerPlusApp();	// constructor
-	~CPowerPlusApp();	// destructor
+	// Construction
+	CPowerPlusApp();			// constructor
+	~CPowerPlusApp();			// destructor
 
 private:
-	// Member variables for app data
-	PCONFIGDATA			m_pcfgAppConfig;
-	PSCHEDULEDATA		m_pschScheduleData;
-	PHOTKEYSETDATA		m_phksHotkeySetData;
-	PPWRREMINDERDATA	m_ppwrReminderData;
+	// Application data
+	ConfigData*			m_pcfgAppConfig;
+	ScheduleData*		m_pschScheduleData;
+	HotkeySetData*		m_phksHotkeySetData;
+	PwrReminderData*	m_ppwrReminderData;
 
-#ifdef _CONFIG_FILE_TEST
+#ifdef _CONFIG_FILE_TEST_ACTIVE
 	INIFile m_fileConfigData;
 #endif
 
@@ -65,9 +67,6 @@ private:
 
 	// DebugTest dialog
 	CDebugTestDlg* m_pDebugTestDlg;
-
-	// Other variables
-	CString m_strLastSysEvtRegPath;
 
 public:
 	// Instance functions
@@ -91,7 +90,7 @@ public:
 	BOOL LoadGlobalData(void);
 	BOOL SaveGlobalData(BYTE byCateID = 0xFF);
 
-#ifdef _CONFIG_FILE_TEST
+#ifdef _CONFIG_FILE_TEST_ACTIVE
 	// File data serialization functions
 	void InitFileData();
 	void LoadFileAppData();
@@ -101,14 +100,14 @@ public:
 #endif
 
 	// App data processing functions
-	PCONFIGDATA GetAppConfigData();
-	void SetAppConfigData(PCONFIGDATA pcfgData);
-	PSCHEDULEDATA GetAppScheduleData();
-	void SetAppScheduleData(PSCHEDULEDATA pschData);
-	PHOTKEYSETDATA GetAppHotkeySetData();
-	void SetAppHotkeySetData(PHOTKEYSETDATA phksData);
-	PPWRREMINDERDATA GetAppPwrReminderData();
-	void SetAppPwrReminderData(PPWRREMINDERDATA ppwrData);
+	ConfigData* GetAppConfigData();
+	void SetAppConfigData(ConfigData* pcfgData);
+	ScheduleData* GetAppScheduleData();
+	void SetAppScheduleData(ScheduleData* pschData);
+	HotkeySetData* GetAppHotkeySetData();
+	void SetAppHotkeySetData(HotkeySetData* phksData);
+	PwrReminderData* GetAppPwrReminderData();
+	void SetAppPwrReminderData(PwrReminderData* ppwrData);
 
 	// Data options and flags get/set functions
 	int  GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp = FALSE) const;
@@ -141,9 +140,8 @@ public:
 	int EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin);
 	int GetAutoStartRegisterStatus(void);
 
-	void InitLastSysEventRegistryInfo(void);
 	BOOL GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEvent);
-	BOOL SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEvent);
+	BOOL SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& timeSysEvent);
 
 protected:
 	// Application message handlers
@@ -154,21 +152,6 @@ protected:
 };
 
 extern CPowerPlusApp theApp;
-
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#ifndef _POWERPLUS_ENABLES_INLINE
-		#define _POWERPLUS_ENABLES_INLINE
-		#include "PowerPlus.inl"
-		#pragma message("--Power++ inline enabled")
-	#endif
-#endif
 
 
 ////////////////////////////////////////////////////////

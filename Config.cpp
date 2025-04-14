@@ -16,6 +16,10 @@
 #include "stdafx.h"
 #include "Config.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 /////////////////////////////////////////////////////////////////////////
 //// Implementations
 
@@ -39,7 +43,7 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT RegFuncs::GetRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName)
+UINT AppRegistry::GetRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName)
 {
 	// Format section name
 	CString strSectionFormat;
@@ -56,7 +60,7 @@ UINT RegFuncs::GetRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSubSecti
 	return AfxGetApp()->GetProfileInt(strSectionFormat, lpszKeyName, UINT_MAX);
 }
 
-BOOL RegFuncs::WriteRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, int nValue)
 {
 	// Format section name
 	CString strSectionFormat;
@@ -87,7 +91,7 @@ BOOL RegFuncs::WriteRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSubSec
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString RegFuncs::GetRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName)
+CString AppRegistry::GetRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName)
 {
 	// Format section name
 	CString strSectionFormat;
@@ -104,7 +108,7 @@ CString RegFuncs::GetRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSu
 	return AfxGetApp()->GetProfileString(strSectionFormat, lpszKeyName, STRING_NULL);
 }
 
-BOOL RegFuncs::WriteRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, LPCTSTR lpszValue)
+BOOL AppRegistry::WriteRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, LPCTSTR lpszValue)
 {
 	// Format section name
 	CString strSectionFormat;
@@ -135,7 +139,7 @@ BOOL RegFuncs::WriteRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSub
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT RegFuncs::GetRegistryValueInt(UINT nSectionName, UINT nSubSectionName, UINT nKeyName)
+UINT AppRegistry::GetRegistryValueInt(UINT nSectionName, UINT nSubSectionName, UINT nKeyName)
 {
 	// Get name string
 	CString strSectionName, strSubSectionName, strKeyName;
@@ -152,7 +156,7 @@ UINT RegFuncs::GetRegistryValueInt(UINT nSectionName, UINT nSubSectionName, UINT
 	}
 }
 
-BOOL RegFuncs::WriteRegistryValueInt(UINT nSectionName, UINT nSubSectionName, UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteRegistryValueInt(UINT nSectionName, UINT nSubSectionName, UINT nKeyName, int nValue)
 {
 	// Get name string
 	CString strSectionName, strSubSectionName, strKeyName;
@@ -183,7 +187,7 @@ BOOL RegFuncs::WriteRegistryValueInt(UINT nSectionName, UINT nSubSectionName, UI
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString RegFuncs::GetRegistryValueString(UINT nSectionName, UINT nSubSectionName, UINT nKeyName)
+CString AppRegistry::GetRegistryValueString(UINT nSectionName, UINT nSubSectionName, UINT nKeyName)
 {
 	// Get name string
 	CString strSectionName, strSubSectionName, strKeyName;
@@ -200,7 +204,7 @@ CString RegFuncs::GetRegistryValueString(UINT nSectionName, UINT nSubSectionName
 	}
 }
 
-BOOL RegFuncs::WriteRegistryValueString(UINT nSectionName, UINT nSubSectionName, UINT nKeyName, LPCTSTR lpszValue)
+BOOL AppRegistry::WriteRegistryValueString(UINT nSectionName, UINT nSubSectionName, UINT nKeyName, LPCTSTR lpszValue)
 {
 	// Get name string
 	CString strSectionName, strSubSectionName, strKeyName;
@@ -229,7 +233,7 @@ BOOL RegFuncs::WriteRegistryValueString(UINT nSectionName, UINT nSubSectionName,
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::DeleteRegistrySection(UINT nSectionName, UINT nSubSectionName /* = NULL */)
+BOOL AppRegistry::DeleteRegistrySection(UINT nSectionName, UINT nSubSectionName /* = NULL */)
 {
 	// Get name string
 	CString strSectionName, strSubSectionName;
@@ -245,7 +249,7 @@ BOOL RegFuncs::DeleteRegistrySection(UINT nSectionName, UINT nSubSectionName /* 
 	}
 }
 
-BOOL RegFuncs::DeleteRegistrySection(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName /* = NULL */)
+BOOL AppRegistry::DeleteRegistrySection(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName /* = NULL */)
 {
 	// Get name string
 	CString strSectionFormat;
@@ -280,7 +284,7 @@ BOOL RegFuncs::DeleteRegistrySection(LPCTSTR lpszSectionName, LPCTSTR lpszSubSec
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetProfileInfo(UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetProfileInfo(UINT nKeyName, int& nRef)
 {
 	// Key name
 	CString strKeyName;
@@ -293,7 +297,7 @@ BOOL RegFuncs::GetProfileInfo(UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteProfileInfo(UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteProfileInfo(UINT nKeyName, int nValue)
 {
 	// Key name
 	CString strKeyName;
@@ -314,7 +318,7 @@ BOOL RegFuncs::WriteProfileInfo(UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetProfileInfo(UINT nKeyName, CString& strRef)
+BOOL AppRegistry::GetProfileInfo(UINT nKeyName, CString& strRef)
 {
 	// Get name string
 	CString strKeyName;
@@ -327,7 +331,7 @@ BOOL RegFuncs::GetProfileInfo(UINT nKeyName, CString& strRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteProfileInfo(UINT nKeyName, CString strValue)
+BOOL AppRegistry::WriteProfileInfo(UINT nKeyName, CString strValue)
 {
 	// Key name
 	CString strKeyName;
@@ -355,7 +359,7 @@ BOOL RegFuncs::WriteProfileInfo(UINT nKeyName, CString strValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetConfig(UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetConfig(UINT nKeyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(IDS_REGSECTION_CONFIG, NULL, nKeyName);
@@ -364,7 +368,7 @@ BOOL RegFuncs::GetConfig(UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteConfig(UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteConfig(UINT nKeyName, int nValue)
 {
 	return WriteRegistryValueInt(IDS_REGSECTION_CONFIG, NULL, nKeyName, nValue);
 }
@@ -378,7 +382,7 @@ BOOL RegFuncs::WriteConfig(UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::DeleteConfigSection(void)
+BOOL AppRegistry::DeleteConfigSection(void)
 {
 	return DeleteRegistrySection(IDS_REGSECTION_CONFIG);
 }
@@ -394,7 +398,7 @@ BOOL RegFuncs::DeleteConfigSection(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetDefaultSchedule(UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetDefaultSchedule(UINT nKeyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(IDS_REGSECTION_SCHEDULE, NULL, nKeyName);
@@ -403,7 +407,7 @@ BOOL RegFuncs::GetDefaultSchedule(UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteDefaultSchedule(UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteDefaultSchedule(UINT nKeyName, int nValue)
 {
 	return WriteRegistryValueInt(IDS_REGSECTION_SCHEDULE, NULL, nKeyName, nValue);
 }
@@ -420,7 +424,7 @@ BOOL RegFuncs::WriteDefaultSchedule(UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetScheduleExtraItemNum(UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetScheduleExtraItemNum(UINT nKeyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(IDS_REGSECTION_SCHEDULE, NULL, nKeyName);
@@ -429,7 +433,7 @@ BOOL RegFuncs::GetScheduleExtraItemNum(UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteScheduleExtraItemNum(UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteScheduleExtraItemNum(UINT nKeyName, int nValue)
 {
 	return WriteRegistryValueInt(IDS_REGSECTION_SCHEDULE, NULL, nKeyName, nValue);
 }
@@ -446,7 +450,7 @@ BOOL RegFuncs::WriteScheduleExtraItemNum(UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetScheduleExtra(int nItemIndex, UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetScheduleExtra(int nItemIndex, UINT nKeyName, int& nRef)
 {
 	// Get name string
 	CString strSectionName;
@@ -465,7 +469,7 @@ BOOL RegFuncs::GetScheduleExtra(int nItemIndex, UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteScheduleExtra(int nItemIndex, UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteScheduleExtra(int nItemIndex, UINT nKeyName, int nValue)
 {
 	// Get name string
 	CString strSectionName;
@@ -489,7 +493,7 @@ BOOL RegFuncs::WriteScheduleExtra(int nItemIndex, UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::DeleteScheduleSection(void)
+BOOL AppRegistry::DeleteScheduleSection(void)
 {
 	BOOL bRet = TRUE;
 
@@ -530,7 +534,7 @@ BOOL RegFuncs::DeleteScheduleSection(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetHotkeyItemNum(UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetHotkeyItemNum(UINT nKeyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(IDS_REGSECTION_HOTKEYSET, NULL, nKeyName);
@@ -539,7 +543,7 @@ BOOL RegFuncs::GetHotkeyItemNum(UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteHotkeyItemNum(UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteHotkeyItemNum(UINT nKeyName, int nValue)
 {
 	return WriteRegistryValueInt(IDS_REGSECTION_HOTKEYSET, NULL, nKeyName, nValue);
 }
@@ -556,7 +560,7 @@ BOOL RegFuncs::WriteHotkeyItemNum(UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetHotkeySet(int nItemIndex, UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetHotkeySet(int nItemIndex, UINT nKeyName, int& nRef)
 {
 	// Get name string
 	CString strSectionName;
@@ -575,7 +579,7 @@ BOOL RegFuncs::GetHotkeySet(int nItemIndex, UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteHotkeySet(int nItemIndex, UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteHotkeySet(int nItemIndex, UINT nKeyName, int nValue)
 {
 	// Get name string
 	CString strSectionName;
@@ -599,7 +603,7 @@ BOOL RegFuncs::WriteHotkeySet(int nItemIndex, UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::DeleteHotkeySetSection(void)
+BOOL AppRegistry::DeleteHotkeySetSection(void)
 {
 	BOOL bRet = TRUE;
 
@@ -640,7 +644,7 @@ BOOL RegFuncs::DeleteHotkeySetSection(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetPwrReminderItemNum(UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetPwrReminderItemNum(UINT nKeyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(IDS_REGSECTION_PWRREMINDER, NULL, nKeyName);
@@ -649,7 +653,7 @@ BOOL RegFuncs::GetPwrReminderItemNum(UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WritePwrReminderItemNum(UINT nKeyName, int nValue)
+BOOL AppRegistry::WritePwrReminderItemNum(UINT nKeyName, int nValue)
 {
 	return WriteRegistryValueInt(IDS_REGSECTION_PWRREMINDER, NULL, nKeyName, nValue);
 }
@@ -666,7 +670,7 @@ BOOL RegFuncs::WritePwrReminderItemNum(UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetPwrReminder(int nItemIndex, UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetPwrReminder(int nItemIndex, UINT nKeyName, int& nRef)
 {
 	// Get name string
 	CString strSectionName;
@@ -685,7 +689,7 @@ BOOL RegFuncs::GetPwrReminder(int nItemIndex, UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WritePwrReminder(int nItemIndex, UINT nKeyName, int nValue)
+BOOL AppRegistry::WritePwrReminder(int nItemIndex, UINT nKeyName, int nValue)
 {
 	// Get name string
 	CString strSectionName;
@@ -712,7 +716,7 @@ BOOL RegFuncs::WritePwrReminder(int nItemIndex, UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetPwrReminder(int nItemIndex, UINT nKeyName, CString& strRef)
+BOOL AppRegistry::GetPwrReminder(int nItemIndex, UINT nKeyName, CString& strRef)
 {
 	// Get name string
 	CString strSectionName;
@@ -731,7 +735,7 @@ BOOL RegFuncs::GetPwrReminder(int nItemIndex, UINT nKeyName, CString& strRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WritePwrReminder(int nItemIndex, UINT nKeyName, CString strValue)
+BOOL AppRegistry::WritePwrReminder(int nItemIndex, UINT nKeyName, CString strValue)
 {
 	// Get name string
 	CString strSectionName;
@@ -754,7 +758,7 @@ BOOL RegFuncs::WritePwrReminder(int nItemIndex, UINT nKeyName, CString strValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::DeletePwrReminderSection(void)
+BOOL AppRegistry::DeletePwrReminderSection(void)
 {
 	BOOL bRet = TRUE;
 
@@ -795,7 +799,7 @@ BOOL RegFuncs::DeletePwrReminderSection(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetLayoutInfo(UINT nSectionName, UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetLayoutInfo(UINT nSectionName, UINT nKeyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(IDS_REGSECTION_LAYOUTINFO, nSectionName, nKeyName);
@@ -804,7 +808,7 @@ BOOL RegFuncs::GetLayoutInfo(UINT nSectionName, UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteLayoutInfo(UINT nSectionName, UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteLayoutInfo(UINT nSectionName, UINT nKeyName, int nValue)
 {
 	return WriteRegistryValueInt(IDS_REGSECTION_LAYOUTINFO, nSectionName, nKeyName, nValue);
 }
@@ -821,7 +825,7 @@ BOOL RegFuncs::WriteLayoutInfo(UINT nSectionName, UINT nKeyName, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int& nRef)
 {
 	// Get name string
 	CString strSectionName;
@@ -836,7 +840,7 @@ BOOL RegFuncs::GetLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int nValue)
 {
 	// Get name string
 	CString strSectionName;
@@ -856,7 +860,7 @@ BOOL RegFuncs::WriteLayoutInfo(UINT nSectionName, LPCTSTR lpszKeyName, int nValu
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::DeleteLayoutInfoSection(void)
+BOOL AppRegistry::DeleteLayoutInfoSection(void)
 {
 	return DeleteRegistrySection(IDS_REGSECTION_LAYOUTINFO);
 }
@@ -875,7 +879,7 @@ BOOL RegFuncs::DeleteLayoutInfoSection(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL RegFuncs::GetGlobalData(UINT nSubSection, UINT nKeyName, int& nRef)
+BOOL AppRegistry::GetGlobalData(UINT nSubSection, UINT nKeyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName);
@@ -884,12 +888,12 @@ BOOL RegFuncs::GetGlobalData(UINT nSubSection, UINT nKeyName, int& nRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteGlobalData(UINT nSubSection, UINT nKeyName, int nValue)
+BOOL AppRegistry::WriteGlobalData(UINT nSubSection, UINT nKeyName, int nValue)
 {
 	return WriteRegistryValueInt(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName, nValue);
 }
 
-BOOL RegFuncs::GetGlobalData(UINT nSubSection, UINT nKeyName, CString& strRef)
+BOOL AppRegistry::GetGlobalData(UINT nSubSection, UINT nKeyName, CString& strRef)
 {
 	// Get registry value
 	CString strRet = GetRegistryValueString(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName);
@@ -898,7 +902,7 @@ BOOL RegFuncs::GetGlobalData(UINT nSubSection, UINT nKeyName, CString& strRef)
 	return TRUE;
 }
 
-BOOL RegFuncs::WriteGlobalData(UINT nSubSection, UINT nKeyName, CString strValue)
+BOOL AppRegistry::WriteGlobalData(UINT nSubSection, UINT nKeyName, CString strValue)
 {
 	return WriteRegistryValueString(IDS_REGSECTION_GLBDATA, nSubSection, nKeyName, strValue);
 }
@@ -949,8 +953,8 @@ BOOL SConfigBackup::AutoRegistryExport()
 	CString strDestFilePath;
 	if (!MakeFilePath(strDestFilePath, NULL, FILENAME_BAKCONFIG, FILEEXT_REGFILE)) {
 		// Make file path failed
-		TRCLOG("Error: AutoRegistryExport fail to make destination file path!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: AutoRegistryExport fail to make destination file path!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -959,8 +963,8 @@ BOOL SConfigBackup::AutoRegistryExport()
 	strExecCommand.Format(COMMAND_REGISTRY_EXPORT, MakeRegistryPath(regInfo, REGPATH_APPNAME), strDestFilePath);
 	if (!ExecuteCommand(strExecCommand, FALSE, FALSE)) {
 		// Execute command failed
-		TRCLOG("Error: AutoRegistryExport fail to execute export command!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: AutoRegistryExport fail to execute export command!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -979,8 +983,8 @@ BOOL SConfigBackup::AutoRegistryExport()
 BOOL SConfigBackup::PrepareBakFile()
 {
 	if (m_pBakFile == NULL) {
-		TRCLOG("Error: PrepareBakFile failed, pBakFile is NULL");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Backup file pointer is NULL!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -1077,18 +1081,18 @@ void SConfigBackup::WriteValue(CString strKeyName, UINT nValue)
 void SConfigBackup::UpdateBakFile()
 {
 	if (m_pBakFile == NULL) {
-		TRCLOG("Error: UpdateBakFile failed, pBakFile is NULL");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Backup file pointer is NULL!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 	else if (m_pBakFile->m_hFile == CFile::hFileNull) {
-		TRCLOG("Error: UpdateBakFile failed, backup file is not opening");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Backup file is not opening!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 	else if (m_strContent.IsEmpty()) {
-		TRCLOG("Error: UpdateBakFile failed, content is empty");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Content is empty!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
@@ -1112,7 +1116,7 @@ void SConfigBackup::CloseBakFile()
 }
 
 
-#ifdef _CONFIG_FILE_TEST
+#ifdef _CONFIG_FILE_TEST_ACTIVE
 //////////////////////////////////////////////////////////////////////////
 //
 //	Define methods using for INI file processing

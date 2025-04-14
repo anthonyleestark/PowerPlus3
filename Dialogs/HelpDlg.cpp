@@ -23,8 +23,8 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
+using namespace Language;
+using namespace AppCore;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,8 +86,8 @@ INT_PTR CHelpDlg::RegisterDialogManagement(void)
 {
 	INT_PTR nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
-		TRCLOG("Error: Register dialog management failed!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Register dialog management failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return nRet;
 	}
 
@@ -401,13 +401,13 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
-			TRCLOG("Error: Help file not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Help file not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
 		else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
-			TRCLOG("Error: Changelog file not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Changelog file not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
 	}
 

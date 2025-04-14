@@ -19,9 +19,16 @@
 #define new DEBUG_NEW
 #endif
 
-#define DEFAULT_TEXT2ICON_DISTANCE	10
+using namespace AppCore;
 
-using namespace CoreFuncs;
+
+////////////////////////////////////////////////////////
+//
+//	Define macros for Reminder Message dialog
+//
+////////////////////////////////////////////////////////
+
+#define DEFAULT_TEXT2ICON_DISTANCE	10
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -53,9 +60,9 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	// Message icon
 	m_hMsgIcon = NULL;
 	m_bDispIcon = FALSE;
-	m_byIconPosition = DEFAULT_MSGICONPOS;
-	m_szIconSize.cx = DEFAULT_MSGICONSIZE;
-	m_szIconSize.cy = DEFAULT_MSGICONSIZE;
+	m_byIconPlacement = DEFAULT_MSG_ICONPLACEMENT;
+	m_szIconSize.cx = DEFAULT_MSG_ICONSIZE;
+	m_szIconSize.cy = DEFAULT_MSG_ICONSIZE;
 
 	// Flags
 	m_bTimerSet = FALSE;
@@ -150,13 +157,13 @@ BOOL CReminderMsgDlg::OnInitDialog()
 		// Get current margin
 		CRect rcDialogMargin;
 		this->GetMargin(&rcDialogMargin);
-		if (m_byIconPosition == MSGICONPOS_ONTOP) {
+		if (m_byIconPlacement == IconOnTheTop) {
 			// Shift top margin
 			rcDialogMargin.top += m_szIconSize.cy;
 			rcDialogMargin.top -= DEFAULT_TEXT2ICON_DISTANCE;
 			this->SetTopMargin(rcDialogMargin.top);
 		}
-		else if (m_byIconPosition == MSGICONPOS_ONLEFT) {
+		else if (m_byIconPlacement == IconOnTheLeft) {
 			// Shift left margin
 			rcDialogMargin.left += m_szIconSize.cx;
 			rcDialogMargin.left -= DEFAULT_TEXT2ICON_DISTANCE;
@@ -581,8 +588,8 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 
 	// Load icon failed
 	if ((hResult != S_OK) || (m_hMsgIcon == NULL)) {
-		TRCLOG("Error: Load icon failed!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Load icon failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
@@ -590,8 +597,8 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 	ICONINFO iiIconInfo;
 	BOOL bRet = ::GetIconInfo(m_hMsgIcon, &iiIconInfo);
 	if (bRet == FALSE) {
-		TRCLOG("Error: Get icon info failed!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Get icon info failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
@@ -621,16 +628,16 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetMsgIconPosition
-//	Description:	Set message icon position
-//  Arguments:		byPosition - Icon position (option)
+//	Function name:	SetMsgIconPlacement
+//	Description:	Set message icon placement
+//  Arguments:		byPlacement - Icon placement (option)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE void CReminderMsgDlg::SetMsgIconPosition(BYTE byPosition)
+AFX_INLINE void CReminderMsgDlg::SetMsgIconPlacement(BYTE byPlacement)
 {
-	m_byIconPosition = byPosition;
+	m_byIconPlacement = byPlacement;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -713,11 +720,11 @@ BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon) const
 
 	// Calculate icon top-left point
 	int nText2IconDist = DEFAULT_TEXT2ICON_DISTANCE;
-	if (m_byIconPosition == MSGICONPOS_ONTOP) {
+	if (m_byIconPlacement == IconOnTheTop) {
 		lpptIcon->y = rcCurMargin.top - (m_szIconSize.cy + nText2IconDist);
 		lpptIcon->x = (rcClient.Width() - m_szIconSize.cx) / 2;
 	}
-	else if (m_byIconPosition == MSGICONPOS_ONLEFT) {
+	else if (m_byIconPlacement == IconOnTheLeft) {
 		lpptIcon->x = rcCurMargin.left - (m_szIconSize.cx + nText2IconDist);
 		lpptIcon->y = (rcClient.Height() - m_szIconSize.cy) / 2;
 	}
@@ -761,16 +768,16 @@ void CReminderMsgDlg::TextToClient(LPRECT lpRect) const
 
 	// Invalid font
 	if (pMsgFont == NULL) {
-		TRCLOG("Error: Invalid font");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Invalid font!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Set draw area
 	CWnd* pWnd = this->GetDlgItem(IDC_REMINDERMSG_MSGTEXT_STATIC);
 	if (pWnd == NULL) {
-		TRCLOG("Error: Message text draw area not found!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Message text draw area not found!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 

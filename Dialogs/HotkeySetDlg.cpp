@@ -23,9 +23,10 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
-using namespace RegFuncs;
+using namespace MapTable;
+using namespace Language;
+using namespace AppCore;
+using namespace AppRegistry;
 
 
 ////////////////////////////////////////////////////////
@@ -62,8 +63,8 @@ CHotkeySetDlg::CHotkeySetDlg(CWnd* pParent /*=nullptr*/)
 	m_pHotkeySetListTable = NULL;
 
 	// Data container variables
-	ZeroMemory(&m_hksHotkeySet, sizeof(HOTKEYSETDATA));
-	ZeroMemory(&m_hksHotkeySetTemp, sizeof(HOTKEYSETDATA));
+	m_hksHotkeySet.Init();
+	m_hksHotkeySetTemp.Init();
 
 	// Checkbox variables
 	m_bCtrlBtn = FALSE;
@@ -140,8 +141,8 @@ INT_PTR CHotkeySetDlg::RegisterDialogManagement(void)
 {
 	INT_PTR nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
-		TRCLOG("Error: Register dialog management failed!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Register dialog management failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return nRet;
 	}
 
@@ -961,8 +962,8 @@ void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 		break;
 	case IDC_HOTKEYSET_FUNCKEY_LIST:
 		m_cmbFuncKeyList.ResetContent();
-		for (int nIndex = 0; nIndex < strTableFuncKeyList.size(); nIndex++)
-			m_cmbFuncKeyList.AddString(strTableFuncKeyList.at(nIndex).lpszLangString);
+		for (int nIndex = 0; nIndex < TABLE_SIZE(StringTable::FuncKeyList); nIndex++)
+			m_cmbFuncKeyList.AddString(StringTable::FuncKeyList[nIndex].lpszLangString);
 		break;
 	default:
 		break;
@@ -1037,7 +1038,7 @@ void CHotkeySetDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = TRUE */)
 		// Check for item states
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 			HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
-			if (hksTemp.bEnable == TRUE) {
+			if (hksTemp.IsEnabled() == TRUE) {
 				// Increase counter
 				m_nCheckCount++;
 			}
@@ -1100,11 +1101,11 @@ void CHotkeySetDlg::UpdateHotkeySet()
 		// Enable state
 		pCellCheck = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, HKSCOL_ID_STATE);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(hksItem.bEnable);
+			pCellCheck->SetCheck(hksItem.IsEnabled());
 		}
 
 		// Hotkey action
-		nTemp = GetPairedID(idTableActionName, GetPairedID(idTableHKActionID, hksItem.nHKActionID));
+		nTemp = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hksItem.GetActionID()));
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
 		m_pHotkeySetListTable->SetItemText(nRowIndex, HKSCOL_ID_HKACTIONID, strTemp);
 
@@ -1195,20 +1196,24 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 	// Get item at index
 	HOTKEYSETITEM hksCurItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
 
+	// Get item keycode
+	DWORD dwCtrlKey, dwFuncKey;
+	hksCurItem.GetKeyCode(dwCtrlKey, dwFuncKey);
+
 	// Update checkboxes
 	m_bCtrlBtn = FALSE;
-	if (hksCurItem.dwCtrlKeyCode & MOD_CONTROL)		m_bCtrlBtn = TRUE;
+	if (dwCtrlKey & MOD_CONTROL)		m_bCtrlBtn = TRUE;
 	m_bAltBtn = FALSE;
-	if (hksCurItem.dwCtrlKeyCode & MOD_ALT)			m_bAltBtn = TRUE;
+	if (dwCtrlKey & MOD_ALT)			m_bAltBtn = TRUE;
 	m_bWinKeyBtn = FALSE;
-	if (hksCurItem.dwCtrlKeyCode & MOD_WIN)			m_bWinKeyBtn = TRUE;
+	if (dwCtrlKey & MOD_WIN)			m_bWinKeyBtn = TRUE;
 
 	// Update combo-boxes
-	UINT nActionID = GetPairedID(idTableHKActionID, hksCurItem.nHKActionID);
+	UINT nActionID = GetPairedID(IDTable::HKActionID, hksCurItem.GetActionID());
 	m_cmbActionList.SetCurSel(Opt2Sel(APP_ACTION, nActionID));
 	m_cmbFuncKeyList.SetWindowText(_T("---"));
-	if (hksCurItem.dwFuncKeyCode > 0)
-		m_cmbFuncKeyList.SetCurSel(hksCurItem.dwFuncKeyCode - VK_F1);
+	if (dwFuncKey > 0)
+		m_cmbFuncKeyList.SetCurSel(dwFuncKey - VK_F1);
 
 	UpdateData(FALSE);
 }
@@ -1324,7 +1329,7 @@ BOOL CHotkeySetDlg::LoadHotkeySetData()
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	VERIFY(pApp != NULL);
 	if (pApp == NULL) return FALSE;
-	PHOTKEYSETDATA phksData = pApp->GetAppHotkeySetData();
+	HotkeySetData* phksData = pApp->GetAppHotkeySetData();
 	if (phksData == NULL)
 		return FALSE;
 
@@ -1393,12 +1398,12 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 		if (pCellCheckEnable == NULL) continue;
 
 		// Get checked states
-		BOOL bEnable = pCellCheckEnable->GetCheck();
+		BOOL bEnabled = pCellCheckEnable->GetCheck();
 
 		// Update item checked state
 		nItemIndex = nRowIndex - ROW_INDEX_START;
 		HOTKEYSETITEM& hksTempItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
-		hksTempItem.bEnable = bEnable;
+		hksTempItem.EnableItem(bEnabled);
 	}
 
 	// Check if number of items changed
@@ -1413,10 +1418,8 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 		HOTKEYSETITEM hksTempItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
  
 		// Data comparison
-		bChangeFlag |= (hksTempItem.bEnable != hksCurItem.bEnable);
-		bChangeFlag |= (hksTempItem.nHKActionID != hksCurItem.nHKActionID);
-		bChangeFlag |= (hksTempItem.dwCtrlKeyCode != hksCurItem.dwCtrlKeyCode);
-		bChangeFlag |= (hksTempItem.dwFuncKeyCode != hksCurItem.dwFuncKeyCode);
+		bChangeFlag |= (hksTempItem.IsEnabled() != hksCurItem.IsEnabled());
+		bChangeFlag |= (hksTempItem.Compare(hksCurItem) != TRUE);
 
 		// Stop on the first different item encountered
 		if (bChangeFlag == TRUE) break;
@@ -1442,18 +1445,26 @@ void CHotkeySetDlg::Add(void)
 	// Create temp hotkeyset item
 	HOTKEYSETITEM hksTemp = STRUCT_ZERO;
 
-	if (m_bCtrlBtn == TRUE)		hksTemp.dwCtrlKeyCode |= MOD_CONTROL;
-	if (m_bAltBtn == TRUE)		hksTemp.dwCtrlKeyCode |= MOD_ALT;
-	if (m_bWinKeyBtn == TRUE)	hksTemp.dwCtrlKeyCode |= MOD_WIN;
+	// Keycode
+	DWORD dwCtrlKey = 0, dwFuncKey = 0;
 
-	// Update combo-boxes
+	// Update control keycode
+	if (m_bCtrlBtn == TRUE)		dwCtrlKey |= MOD_CONTROL;
+	if (m_bAltBtn == TRUE)		dwCtrlKey |= MOD_ALT;
+	if (m_bWinKeyBtn == TRUE)	dwCtrlKey |= MOD_WIN;
+
+	// Update action ID
 	int nCurSel = m_cmbActionList.GetCurSel();
 	int nActionID = Sel2Opt(APP_ACTION, nCurSel);
-	int nHKActionID = idTableHKActionID[nCurSel].nFirstID;
-	hksTemp.nHKActionID = nHKActionID;
+	int nHKActionID = IDTable::HKActionID[nCurSel].nFirstID;
+	hksTemp.SetActionID(nHKActionID);
 
+	// Update function keycode
 	nCurSel = m_cmbFuncKeyList.GetCurSel();
-	hksTemp.dwFuncKeyCode = nCurSel + VK_F1;
+	dwFuncKey = nCurSel + VK_F1;
+
+	// Update item hotkey code
+	hksTemp.SetKeyCode(dwCtrlKey, dwFuncKey);
 
 	// Check data validity
 	BOOL bValid = Validate(hksTemp, TRUE);
@@ -1518,8 +1529,8 @@ void CHotkeySetDlg::SwitchAllItemState(BOOL bState)
 	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 		HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
-		if (hksTemp.bEnable != bState) {
-			hksTemp.bEnable = bState;
+		if (hksTemp.IsEnabled() != bState) {
+			hksTemp.EnableItem(bState);
 		}
 	}
 
@@ -1551,42 +1562,44 @@ BOOL CHotkeySetDlg::Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg /* = FALSE */)
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Check action ID
-	if ((hksItem.nHKActionID < HKID_DISPLAYOFF) || (hksItem.nHKActionID > HKID_HIBERNATE)) {
+	if ((hksItem.GetActionID() < HKID_DISPLAYOFF) || (hksItem.GetActionID() > HKID_HIBERNATE)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_ACTIONID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 	}
 
+	// Get item keycode
+	DWORD dwCtrlKey, dwFuncKey;
+	hksItem.GetKeyCode(dwCtrlKey, dwFuncKey);
+
 	// Check control key value
-	if ((hksItem.dwCtrlKeyCode <= 0) || 
-		((hksItem.dwCtrlKeyCode & MOD_CONTROL) == FALSE) && 
-		((hksItem.dwCtrlKeyCode & MOD_ALT) == FALSE) && 
-		((hksItem.dwCtrlKeyCode & MOD_WIN) == FALSE)) {
+	if ((dwCtrlKey <= 0) ||
+		((dwCtrlKey & MOD_CONTROL) == FALSE) && ((dwCtrlKey & MOD_ALT) == FALSE) && ((dwCtrlKey & MOD_WIN) == FALSE)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_CTRLKEY;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 	}
 
 	// Check function key value
-	if ((hksItem.dwFuncKeyCode < VK_F1) || (hksItem.dwFuncKeyCode > VK_F12)) {
+	if ((dwFuncKey < VK_F1) || (dwFuncKey > VK_F12)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 	}
 
 	// Check if system hotkey existed
-	int nExistedSysHotkeyNum = (sizeof(hklExistedSysHotkeyList) / sizeof(HOTKEYINFO));
+	int nExistedSysHotkeyNum = TABLE_SIZE(OtherTable::ExistedSysHotkeyList);
 	for (int nIndex = 0; nIndex < nExistedSysHotkeyNum; nIndex++) {
-		if ((hksItem.dwCtrlKeyCode == hklExistedSysHotkeyList[nIndex].dwCtrlKeyCode) &&
-			(hksItem.dwFuncKeyCode == hklExistedSysHotkeyList[nIndex].dwFuncKeyCode)) {
+		if ((dwCtrlKey == OtherTable::ExistedSysHotkeyList[nIndex].dwCtrlKeyCode) &&
+			(dwFuncKey == OtherTable::ExistedSysHotkeyList[nIndex].dwFuncKeyCode)) {
 			// Hotkey info format
 			CString strKeyStrokes = STRING_EMPTY;
-			if (hksItem.dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
-			if (hksItem.dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
-			if (hksItem.dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
-			strKeyStrokes += GetString(strTableFuncKeyList, hksItem.dwFuncKeyCode);
+			if (dwCtrlKey & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
+			if (dwCtrlKey & MOD_ALT)		strKeyStrokes += _T("Alt + ");
+			if (dwCtrlKey & MOD_WIN)		strKeyStrokes += _T("Win + ");
+			strKeyStrokes += GetString(StringTable::FuncKeyList, dwFuncKey);
 			CString strKeyInfo = STRING_EMPTY;
-			strKeyInfo.Format(_T("%s - %s"), strKeyStrokes, GetLanguageString(pLang, hklExistedSysHotkeyList[nIndex].nHotkeyDescription));
+			strKeyInfo.Format(_T("%s - %s"), strKeyStrokes, GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].nHotkeyDescription));
 
 			// Message format
 			CString strMsgFormat;

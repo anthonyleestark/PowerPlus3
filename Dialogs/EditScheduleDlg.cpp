@@ -23,8 +23,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
+using namespace MapTable;
+using namespace Language;
+using namespace AppCore;
 
 
 ////////////////////////////////////////////////////////
@@ -64,7 +65,7 @@ CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 	m_pActiveDayListTable = NULL;
 
 	// Data variables
-	m_bEnable = FALSE;
+	m_bEnabled = FALSE;
 	m_bRepeat = FALSE;
 	m_nAction = APP_ACTION_NOTHING;
 
@@ -110,7 +111,7 @@ CEditScheduleDlg::~CEditScheduleDlg()
 void CEditScheduleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_EDITSCHEDULE_ENABLE_CHK,		 m_bEnable);
+	DDX_Check(pDX, IDC_EDITSCHEDULE_ENABLE_CHK,		 m_bEnabled);
 	DDX_Check(pDX, IDC_EDITSCHEDULE_REPEATDAILY_CHK, m_bRepeat);
 }
 
@@ -127,8 +128,8 @@ INT_PTR CEditScheduleDlg::RegisterDialogManagement(void)
 {
 	INT_PTR nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
-		TRCLOG("Error: Register dialog management failed!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Register dialog management failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return nRet;
 	}
 
@@ -612,8 +613,8 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 void CEditScheduleDlg::SetupDialogItemState()
 {
 	// Setup checkboxes
-	m_bEnable = m_schScheduleItemTemp.bEnable;
-	m_bRepeat = m_schScheduleItemTemp.IsRepeatEnable();
+	m_bEnabled = m_schScheduleItemTemp.IsEnabled();
+	m_bRepeat = m_schScheduleItemTemp.IsRepeatEnabled();
 
 	// If is currently in read-only or view mode
 	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
@@ -622,10 +623,10 @@ void CEditScheduleDlg::SetupDialogItemState()
 	}
 
 	// Enable/disable sub-items
-	EnableSubItems(m_bEnable);
+	EnableSubItems(m_bEnabled);
 
 	// Setup action list combo value
-	m_nAction = m_schScheduleItemTemp.nAction;
+	m_nAction = m_schScheduleItemTemp.GetAction();
 	if (m_pActionList != NULL) {
 		m_pActionList->SetCurSel(Opt2Sel(APP_ACTION, m_nAction));
 	}
@@ -634,14 +635,14 @@ void CEditScheduleDlg::SetupDialogItemState()
 
 	// Setup time spin button properties
 	int nTimeSpinPos;
-	Time2SpinPos(m_schScheduleItemTemp.stTime, nTimeSpinPos);
+	Time2SpinPos(m_schScheduleItemTemp.GetTime(), nTimeSpinPos);
 
 	// Time spin initialization
 	if (m_pTimeSpin == NULL) {
 		m_pTimeSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_EDITSCHEDULE_TIME_SPIN);
 		if (m_pTimeSpin == NULL) {
-			TRCLOG("Error: Time spin control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time spin control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -654,10 +655,10 @@ void CEditScheduleDlg::SetupDialogItemState()
 	}
 
 	// Setup time editbox
-	UpdateTimeSetting(m_schScheduleItemTemp.stTime, FALSE);
+	UpdateTimeSetting(m_schScheduleItemTemp.GetTime(), FALSE);
 
 	// Enable/disable active day table (also update its display)
-	DisableActiveDayTable(!(m_schScheduleItemTemp.bEnable & m_schScheduleItemTemp.IsRepeatEnable()));
+	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() & m_schScheduleItemTemp.IsRepeatEnabled()));
 
 	// Disable save button at first
 	EnableSaveButton(FALSE);
@@ -709,7 +710,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 		}
 
 		// Day title
-		strTemp = GetLanguageString(ptrLanguage, GetPairedID(idTableDayOfWeek, nDayOfWeekID));
+		strTemp = GetLanguageString(ptrLanguage, GetPairedID(IDTable::DayOfWeek, nDayOfWeekID));
 		m_pActiveDayListTable->SetItemText(nRowIndex, COL_ID_DAYTITLE, strTemp);
 	}
 }
@@ -813,20 +814,19 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	UpdateData(TRUE);
 
 	// Update checkbox values
-	m_schScheduleItemTemp.bEnable = m_bEnable;
-	m_schScheduleItemTemp.rpsRepeatSet.bRepeat = m_bRepeat;
+	m_schScheduleItemTemp.EnableItem(m_bEnabled);
+	m_schScheduleItemTemp.EnableRepeat(m_bRepeat);
 
 	// Update action list combo value
 	int nCurSel = m_pActionList->GetCurSel();
 	m_nAction = Sel2Opt(APP_ACTION, nCurSel);
-	m_schScheduleItemTemp.nAction = m_nAction;
+	m_schScheduleItemTemp.SetAction(m_nAction);
 
 	// Update time value
 	SYSTEMTIME stTimeTemp;
 	UpdateTimeSetting(stTimeTemp, TRUE);
 
-	m_schScheduleItemTemp.stTime.wHour = stTimeTemp.wHour;
-	m_schScheduleItemTemp.stTime.wMinute = stTimeTemp.wMinute;
+	m_schScheduleItemTemp.SetTime(stTimeTemp);
 
 	// Update active day table changes
 	BYTE byRepeatDays = 0;
@@ -845,7 +845,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	}
 
 	// Update active day data
-	m_schScheduleItemTemp.rpsRepeatSet.byRepeatDays = byRepeatDays;
+	m_schScheduleItemTemp.SetActiveDays(byRepeatDays);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -878,16 +878,8 @@ BOOL CEditScheduleDlg::CheckDataChangeState()
 	// Update item
 	UpdateScheduleItem();
 
-	BOOL bChangeFlag = FALSE;
-
-	bChangeFlag |= (m_schScheduleItemTemp.bEnable != m_schScheduleItem.bEnable);
-	bChangeFlag |= (m_schScheduleItemTemp.nAction != m_schScheduleItem.nAction);
-
-	bChangeFlag |= (m_schScheduleItemTemp.stTime.wHour != m_schScheduleItem.stTime.wHour);
-	bChangeFlag |= (m_schScheduleItemTemp.stTime.wMinute != m_schScheduleItem.stTime.wMinute);
-
-	bChangeFlag |= (m_schScheduleItemTemp.IsRepeatEnable() != m_schScheduleItem.IsRepeatEnable());
-	bChangeFlag |= (m_schScheduleItemTemp.GetActiveDays() != m_schScheduleItem.GetActiveDays());
+	// Data comparison
+	BOOL bChangeFlag = (m_schScheduleItemTemp.Compare(m_schScheduleItem) != TRUE);
 
 	return bChangeFlag;
 }
@@ -965,8 +957,8 @@ void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = T
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
-			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -978,12 +970,12 @@ void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = T
 
 		// Get hour value
 		WORD wHour = (WORD)_tstoi(strTimeFormat.Left(2));
-		CString strMiddayFlag = strTimeFormat.Right(2);
-		if (strMiddayFlag == GetLanguageString(pLang, FORMAT_TIME_BEFOREMIDDAY)) {
+		CString strTimePeriod = strTimeFormat.Right(2);
+		if (strTimePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
 			stTime.wHour = wHour;
 		}
-		else if ((strMiddayFlag == GetLanguageString(pLang, FORMAT_TIME_AFTERMIDDAY)) && wHour < 12) {
+		else if ((strTimePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && wHour < 12) {
 			// After midday
 			stTime.wHour = wHour + 12;
 		}
@@ -1153,13 +1145,13 @@ void CEditScheduleDlg::OnEnableSchedule()
 {
 	// Update dialog item state
 	UpdateData(TRUE);
-	EnableSubItems(m_bEnable);
+	EnableSubItems(m_bEnabled);
 
 	// Check for data change
 	m_bChangeFlag = CheckDataChangeState();
 
 	// Enable/disable active day table
-	DisableActiveDayTable(!(m_schScheduleItemTemp.bEnable & m_schScheduleItemTemp.IsRepeatEnable()));
+	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() & m_schScheduleItemTemp.IsRepeatEnabled()));
 
 	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);
@@ -1200,7 +1192,7 @@ void CEditScheduleDlg::OnChangeRepeatDaily()
 	m_bChangeFlag = CheckDataChangeState();
 
 	// Enable/disable active day table
-	DisableActiveDayTable(!m_schScheduleItemTemp.IsRepeatEnable());
+	DisableActiveDayTable(!m_schScheduleItemTemp.IsRepeatEnabled());
 
 	// Enable/disable save button
 	EnableSaveButton(m_bChangeFlag);
@@ -1227,8 +1219,8 @@ void CEditScheduleDlg::OnTimeEditSetFocus()
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
-			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1258,8 +1250,8 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
 		if (m_pTimeEdit == NULL) {
-			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1283,7 +1275,7 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	}
 	else {
 		// Restore old time value
-		UpdateTimeSetting(m_schScheduleItemTemp.stTime, FALSE);
+		UpdateTimeSetting(m_schScheduleItemTemp.GetTime(), FALSE);
 		return;
 	}
 

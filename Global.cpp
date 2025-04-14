@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Global.cpp
@@ -16,6 +16,10 @@
 #include "stdafx.h"
 #include "Global.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -26,10 +30,10 @@
 /*---------------------------------------------Launch-info data----------------------------------------------*/
 
 // Application launch-time
-SYSTEMTIME g_stAppLaunchTime = {0};
+SYSTEMTIME Global::g_stAppLaunchTime = {0};
 
 // Application launch-time counter
-UINT g_uiAppLaunchTimeCounter = 0;
+UINT Global::g_uiAppLaunchTimeCounter = 0;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -43,38 +47,38 @@ UINT g_uiAppLaunchTimeCounter = 0;
 /*----------------------------------------------Debug/Test flags---------------------------------------------*/
 
 // Dummy test mode
-BOOL g_bDummyTest = DEFAULT_DUMMYTEST;
+BOOL Global::g_bDummyTest = DEFAULT_DUMMYTEST;
 
 // Debug mode
-BOOL g_bDebugMode = DEFAULT_DEBUGMODE;
+BOOL Global::g_bDebugMode = DEFAULT_DEBUGMODE;
 
 // Debug log output target flag
-INT g_nDebugOutputTarget = DEFAULT_DEBUGOUTPUT;
+INT Global::g_nDebugOutputTarget = DEFAULT_DEBUGOUTPUT;
 
 // Test feature enable flag
-BOOL g_bTestFeature = DEFAULT_TESTFEATURE;
+BOOL Global::g_bTestFeature = DEFAULT_TESTFEATURE;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*----------------------------------------Debug/Test special variables---------------------------------------*/
 
 // Trace error log file pointer
-CFile* g_pFileLogTraceError = NULL;
+CFile* Global::g_pFileLogTraceError = NULL;
 
 // Trace error log file pointer
-CFile* g_pFileLogTraceDebug = NULL;
+CFile* Global::g_pFileLogTraceDebug = NULL;
 
 // Debug info log file pointer
-CFile* g_pFileLogDebugInfo = NULL;
+CFile* Global::g_pFileLogDebugInfo = NULL;
 
 // Trace error log file exception pointer
-CFileException* g_pExcLogTraceError = NULL;
+CFileException* Global::g_pExcLogTraceError = NULL;
 
 // Trace debug info log file exception pointer
-CFileException* g_pExcLogTraceDebug = NULL;
+CFileException* Global::g_pExcLogTraceDebug = NULL;
 
 // Debug info output log file exception pointer
-CFileException* g_pExcLogDebugInfo = NULL;
+CFileException* Global::g_pExcLogDebugInfo = NULL;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -88,60 +92,60 @@ CFileException* g_pExcLogDebugInfo = NULL;
 /*-------------------------------------------------App flags-------------------------------------------------*/
 
 // Power action trace flag
-BYTE g_byPwrActionFlag = 0;
+BYTE Global::g_byPwrActionFlag = 0;
 
 // System suspended trace flag
-BYTE g_bySystemSuspendFlag = 0;
+BYTE Global::g_bySystemSuspendFlag = 0;
 
 // Session ending trace flag
-BYTE g_bySessionEndFlag = 0;
+BYTE Global::g_bySessionEndFlag = 0;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------------Memory-only flags---------------------------------------------*/
 
 // Session lock trace flag
-BYTE g_bySessionLockFlag = 0;
+BYTE Global::g_bySessionLockFlag = 0;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------Power reminder message styles---------------------------------------*/
 
 // Background color
-COLORREF g_colorMsgBkgrd = DEFAULT_MSGBKGRDCLR;
+COLORREF Global::g_colorMsgBkgrd = DEFAULT_MSG_BKGRDCLR;
 
 // Text color
-COLORREF g_colorMsgText = DEFAULT_MSGTEXTCLR;
+COLORREF Global::g_colorMsgText = DEFAULT_MSG_TEXTCLR;
 
 // Font name
-CString	 g_strMsgFontName = DEFAULT_MSGFONTNAME;
+CString	 Global::g_strMsgFontName = DEFAULT_MSG_FONTNAME;
 
 // Font size
-UINT	 g_uiMsgFontSize = DEFAULT_MSGFONTSIZE;
+UINT	 Global::g_uiMsgFontSize = DEFAULT_MSG_FONTSIZE;
 
 // Timeout (auto-close) interval
-UINT	 g_uiRmdMsgTimeout = DEFAULT_MSGTIMEOUT;
+UINT	 Global::g_uiRmdMsgTimeout = DEFAULT_MSG_TIMEOUT;
 
 // Message icon ID
-UINT	 g_uiRmdMsgIconID = DEFAULT_MSGICONID;
+UINT	 Global::g_uiRmdMsgIconID = DEFAULT_MSG_ICONID;
 
 // Message icon size
-INT		 g_nRmdMsgIconSize = DEFAULT_MSGICONSIZE;
+INT		 Global::g_nRmdMsgIconSize = DEFAULT_MSG_ICONSIZE;
 
-// Message icon position
-BYTE	 g_byRmdMsgIconPos = DEFAULT_MSGICONPOS;
+// Message icon placement
+BYTE	 Global::g_byRmdMsgIconPlacement = DEFAULT_MSG_ICONPLACEMENT;
 
 // Message display position
-BYTE	 g_byRmdMsgDispPos = DEFAULT_MSGDISPPOS;
+BYTE	 Global::g_byRmdMsgDispPos = DEFAULT_MSG_DISPLAYPOS;
 
 // Display area horizontal margin
-UINT	 g_uiRmdMsgHMargin = DEFAULT_MSGHMARGIN;
+UINT	 Global::g_uiRmdMsgHMargin = DEFAULT_MSG_HMARGIN;
 
 // Display area vertical margin
-UINT	 g_uiRmdMsgVMargin = DEFAULT_MSGVMARGIN;
+UINT	 Global::g_uiRmdMsgVMargin = DEFAULT_MSG_VMARGIN;
 
 // Message snooze interval
-UINT	 g_uiRmdMsgSnoozeInterval = DEFAULT_SNOOZETIME;
+UINT	 Global::g_uiRmdMsgSnoozeInterval = DEFAULT_PWRRMD_SNOOZETIME;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

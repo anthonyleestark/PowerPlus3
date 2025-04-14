@@ -24,9 +24,10 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
-using namespace RegFuncs;
+using namespace MapTable;
+using namespace Language;
+using namespace AppCore;
+using namespace AppRegistry;
 
 
 ////////////////////////////////////////////////////////
@@ -178,8 +179,8 @@ INT_PTR CPwrReminderDlg::RegisterDialogManagement(void)
 {
 	INT_PTR nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
-		TRCLOG("Error: Register dialog management failed!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Register dialog management failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return nRet;
 	}
 
@@ -857,8 +858,8 @@ void CPwrReminderDlg::OnMsgContentEditChange()
 {
 	// Check control validity
 	if (m_pMsgStringEdit == NULL) {
-		TRCLOG("Error: Message content edit control not found");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Message content edit control not found!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
@@ -892,8 +893,8 @@ void CPwrReminderDlg::OnTimeEditSetFocus()
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
 		if (m_pEvtSetTimeEdit == NULL) {
-			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -926,8 +927,8 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
 		if (m_pEvtSetTimeEdit == NULL) {
-			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1009,8 +1010,8 @@ void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
 	if (m_pEvtSetTimeRad == NULL) {
 		m_pEvtSetTimeRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN);
 		if (m_pEvtSetTimeRad == NULL) {
-			TRCLOG("Error: Radio button not found (EventSetTimeRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (EventSetTimeRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1026,16 +1027,16 @@ void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
 		if (m_pEvtSetTimeEdit == NULL) {
-			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtSetTimeSpin == NULL) {
 		m_pEvtSetTimeSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_SPIN);
 		if (m_pEvtSetTimeSpin == NULL) {
-			TRCLOG("Error: Time spin control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time spin control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1764,96 +1765,96 @@ void CPwrReminderDlg::SetupDialogItemState()
 	if (m_pMsgStringEdit == NULL) {
 		m_pMsgStringEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_MSGSTRING_EDITBOX);
 		if (m_pMsgStringEdit == NULL) {
-			TRCLOG("Error: Message content edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Message content edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtSetTimeRad == NULL) {
 		m_pEvtSetTimeRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN);
 		if (m_pEvtSetTimeRad == NULL) {
-			TRCLOG("Error: Radio button not found (EventSetTimeRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (EventSetTimeRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
 		if (m_pEvtSetTimeEdit == NULL) {
-			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtSetTimeSpin == NULL) {
 		m_pEvtSetTimeSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_SPIN);
 		if (m_pEvtSetTimeSpin == NULL) {
-			TRCLOG("Error: Time spin control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time spin control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtRepeatSetBtn == NULL) {
 		m_pEvtRepeatSetBtn = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_REPEATSET_BTN);
 		if (m_pEvtRepeatSetBtn == NULL) {
-			TRCLOG("Error: RepeatSet button not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: RepeatSet button not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtAppStartupRad == NULL) {
 		m_pEvtAppStartupRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN);
 		if (m_pEvtAppStartupRad == NULL) {
-			TRCLOG("Error: Radio button not found (EventAppStartupRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (EventAppStartupRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtSysWakeupRad == NULL) {
 		m_pEvtSysWakeupRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN);
 		if (m_pEvtSysWakeupRad == NULL) {
-			TRCLOG("Error: Radio button not found (EventSysWakeupRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (EventSysWakeupRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtBfrPwrActionRad == NULL) {
 		m_pEvtBfrPwrActionRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN);
 		if (m_pEvtBfrPwrActionRad == NULL) {
-			TRCLOG("Error: Radio button not found (EventBfrPwrActionRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (EventBfrPwrActionRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtPwrActionWakeRad == NULL) {
 		m_pEvtPwrActionWakeRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN);
 		if (m_pEvtPwrActionWakeRad == NULL) {
-			TRCLOG("Error: Radio button not found (EventPwrActionWakeRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (EventPwrActionWakeRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pEvtAtAppExitRad == NULL) {
 		m_pEvtAtAppExitRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN);
 		if (m_pEvtAtAppExitRad == NULL) {
-			TRCLOG("Error: Radio button not found (EventAtAppExitRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (EventAtAppExitRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pStyleMsgBoxRad == NULL) {
 		m_pStyleMsgBoxRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN);
 		if (m_pStyleMsgBoxRad == NULL) {
-			TRCLOG("Error: Radio button not found (StyleMsgBoxRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (StyleMsgBoxRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	if (m_pStyleDialogBoxRad == NULL) {
 		m_pStyleDialogBoxRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN);
 		if (m_pStyleDialogBoxRad == NULL) {
-			TRCLOG("Error: Radio button not found (StyleDlgBoxRad)");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Radio button not found (StyleDlgBoxRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1922,36 +1923,36 @@ void CPwrReminderDlg::UpdateDataItemList()
 		// Enable state
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, PWRCOL_ID_STATE);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(pwrItem.bEnable);
+			pCellCheck->SetCheck(pwrItem.IsEnabled());
 		}
 
 		// ItemID
-		strTemp.Format(_T("%d"), pwrItem.nItemID);
+		strTemp.Format(_T("%d"), pwrItem.GetItemID());
 		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_ITEMID, strTemp);
 
 		// Message content
-		strTemp = pwrItem.strMessage;
+		strTemp = pwrItem.GetMessage();
 		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_MESSAGE, strTemp);
 
 		// EventID
-		nTemp = GetPairedID(idTablePwrReminderEvt, pwrItem.nEventID);
+		nTemp = GetPairedID(IDTable::PwrReminderEvent, pwrItem.GetEventID());
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
-		if (pwrItem.nEventID == PREVT_AT_SETTIME) {
+		if (pwrItem.GetEventID() == PREVT_AT_SETTIME) {
 			// Format time string
 			CString strFormat = strTemp;
-			strTemp = FormatDispTime(ptrLanguage, strFormat, pwrItem.stTime);
+			strTemp = FormatDispTime(ptrLanguage, strFormat, pwrItem.GetTime());
 		}
 		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_EVENTID, strTemp);
 
 		// Message style
-		nTemp = GetPairedID(idTablePwrReminderStyle, pwrItem.dwMsgStyle);
+		nTemp = GetPairedID(IDTable::PwrReminderStyle, pwrItem.GetMessageStyle());
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
 		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_STYLE, strTemp);
 
 		// Repeat
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, PWRCOL_ID_REPEAT);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(pwrItem.IsRepeatEnable());
+			pCellCheck->SetCheck(pwrItem.IsRepeatEnabled());
 		}
 	}
 }
@@ -2029,11 +2030,13 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 
 	// Init default data for mode add
 	if (GetCurMode() == MODE_ADD) {
-		pwrItem.strMessage = STRING_EMPTY;
-		pwrItem.nEventID = PREVT_AT_SETTIME;
-		pwrItem.stTime = GetCurSysTime();
-		pwrItem.dwMsgStyle = PRSTYLE_MSGBOX;
-		pwrItem.rpsRepeatSet = PWRREPEATSET();
+		pwrItem.SetMessage(STRING_EMPTY);
+		pwrItem.SetEventID(PREVT_AT_SETTIME);
+		pwrItem.SetTime(GetCurSysTime());
+		pwrItem.SetMessageStyle(PRSTYLE_MSGBOX);
+		pwrItem.EnableCustomStyle(FALSE);
+		pwrItem.ResetRepeatInfo();
+		pwrItem.ResetMessageStyleInfo();
 	}
 
 	// If item is empty
@@ -2170,7 +2173,7 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = FALSE */)
 		m_nCheckCount = 0; // Reset counter
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 			PWRREMINDERITEM& pwrTemp = m_pwrReminderDataTemp.GetItemAt(nIndex);
-			if (pwrTemp.bEnable == TRUE) {
+			if (pwrTemp.IsEnabled() == TRUE) {
 				m_nCheckCount++;
 			}
 		}
@@ -2329,8 +2332,8 @@ void CPwrReminderDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TR
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
 		if (m_pEvtSetTimeEdit == NULL) {
-			TRCLOG("Error: Time edit control not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Time edit control not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -2342,12 +2345,12 @@ void CPwrReminderDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TR
 
 		// Get hour value
 		WORD wHour = (WORD)_tstoi(strTimeFormat.Left(2));
-		CString strMiddayFlag = strTimeFormat.Right(2);
-		if (strMiddayFlag == GetLanguageString(pLang, FORMAT_TIME_BEFOREMIDDAY)) {
+		CString strTimePeriod = strTimeFormat.Right(2);
+		if (strTimePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
 			stTime.wHour = wHour;
 		}
-		else if ((strMiddayFlag == GetLanguageString(pLang, FORMAT_TIME_AFTERMIDDAY)) && wHour < 12) {
+		else if ((strTimePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && wHour < 12) {
 			// After midday
 			stTime.wHour = wHour + 12;
 		}
@@ -2392,7 +2395,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	VERIFY(pApp != NULL);
 	if (pApp == NULL) return FALSE;
-	PPWRREMINDERDATA ppwrData = pApp->GetAppPwrReminderData();
+	PwrReminderData* ppwrData = pApp->GetAppPwrReminderData();
 	if (ppwrData == NULL)
 		return FALSE;
 
@@ -2478,13 +2481,13 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 		if ((pCellCheckEnable == NULL) || (pCellCheckRepeat == NULL)) continue;
 		
 		// Get checked states
-		BOOL bEnable = pCellCheckEnable->GetCheck();
+		BOOL bEnabled = pCellCheckEnable->GetCheck();
 		BOOL bRepeat = pCellCheckRepeat->GetCheck();
 		
 		// Update item enable and repeat states
 		PWRREMINDERITEM& pwrTempItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
-		pwrTempItem.bEnable = bEnable;
-		pwrTempItem.rpsRepeatSet.bRepeat = bRepeat;
+		pwrTempItem.EnableItem(bEnabled);
+		pwrTempItem.EnableRepeat(bRepeat);
 	}
 
 	// Check if number of items changed
@@ -2500,14 +2503,9 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 		PWRREMINDERITEM pwrTempItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
  
 		// Data comparison
-		bChangeFlag |= (pwrTempItem.bEnable != pwrCurItem.bEnable);
-		bChangeFlag |= (pwrTempItem.nItemID != pwrCurItem.nItemID);
-		bChangeFlag |= (pwrTempItem.strMessage != pwrCurItem.strMessage);
-		bChangeFlag |= (pwrTempItem.nEventID != pwrCurItem.nEventID);
-		bChangeFlag |= (pwrTempItem.stTime.wHour != pwrCurItem.stTime.wHour);
-		bChangeFlag |= (pwrTempItem.stTime.wMinute != pwrCurItem.stTime.wMinute);
-		bChangeFlag |= (pwrTempItem.dwMsgStyle != pwrCurItem.dwMsgStyle);
-		bChangeFlag |= (pwrTempItem.rpsRepeatSet.Compare(pwrCurItem.rpsRepeatSet) != TRUE);
+		bChangeFlag |= (pwrTempItem.IsEnabled() != pwrCurItem.IsEnabled());
+		bChangeFlag |= (pwrTempItem.GetItemID() != pwrCurItem.GetItemID());
+		bChangeFlag |= (pwrTempItem.Compare(pwrCurItem) != TRUE);
 
 		// Stop on the first different item encountered
 		if (bChangeFlag == TRUE) break;
@@ -2532,7 +2530,7 @@ void CPwrReminderDlg::Add()
 
 	// Create temp Reminder item
 	PWRREMINDERITEM pwrTemp;
-	pwrTemp.nItemID = m_pwrReminderDataTemp.GetNextID();
+	pwrTemp.SetItemID(m_pwrReminderDataTemp.GetNextID());
 
 	// Update data
 	UpdateItemData(pwrTemp, TRUE);
@@ -2649,8 +2647,8 @@ void CPwrReminderDlg::SetAllItemState(BOOL bState)
 	int nItemNum = GetItemNum();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 		PWRREMINDERITEM& pwrTemp = m_pwrReminderDataTemp.GetItemAt(nIndex);
-		if (pwrTemp.bEnable != bState) {
-			pwrTemp.bEnable = bState;
+		if (pwrTemp.IsEnabled() != bState) {
+			pwrTemp.EnableItem(bState);
 		}
 	}
 
@@ -2684,7 +2682,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	pwrDispItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 
 	// Check message content validity
-	CString strMsgContent = pwrDispItem.strMessage;
+	CString strMsgContent = pwrDispItem.GetMessage();
 	if ((strMsgContent.IsEmpty()) ||
 		(IS_NULL_STRING(strMsgContent))) {
 		// Invalid message content
@@ -2695,14 +2693,14 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Style: MessageBox
-	if (pwrDispItem.dwMsgStyle == PRSTYLE_MSGBOX) {
+	if (pwrDispItem.GetMessageStyle() == PRSTYLE_MSGBOX) {
 		// Display message box
 		CString strCaption = GetLanguageString(pAppLang, IDC_PWRREMINDER_PREVIEW_BTN);
 		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
 		DisplayMessageBox(strMsgContent, strCaption, dwMsgStyle);
 	}
 	// Style: Dialog
-	else if (pwrDispItem.dwMsgStyle == PRSTYLE_DIALOG) {
+	else if (pwrDispItem.GetMessageStyle() == PRSTYLE_DIALOG) {
 		// Destroy preview reminder message dialog if is opening
 		if (m_pRmdPreviewMsgDlg != NULL) {
 			// Destroy dialog
@@ -2730,7 +2728,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			// Message icon info
 			int nIconID = GetReminderMsgIconID();
 			int nIconSize = GetReminderMsgIconSize();
-			BYTE byIconPos = GetReminderMsgIconPosition();
+			BYTE byIconPlacement = GetReminderMsgIconPlacement();
 
 			// Default timeout for previewing
 			int nDefTimeout = DEF_PWRREMINDER_PREVIEW_TIMEOUT;
@@ -2742,7 +2740,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			m_pRmdPreviewMsgDlg->SetTextColor(clrMsgText);
 			m_pRmdPreviewMsgDlg->SetMsgFont(strFontName, nFontSize);
 			m_pRmdPreviewMsgDlg->SetMsgIcon(nIconID, nIconSize);
-			m_pRmdPreviewMsgDlg->SetMsgIconPosition(byIconPos);
+			m_pRmdPreviewMsgDlg->SetMsgIconPlacement(byIconPlacement);
 			m_pRmdPreviewMsgDlg->SetAutoCloseInterval(nDefTimeout);
 
 			// Set notify state flags
@@ -2783,7 +2781,7 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		CString strTemp = STRING_EMPTY;
 		if (m_pMsgStringEdit != NULL) {
 			m_pMsgStringEdit->GetWindowText(strTemp);
-			pwrItem.strMessage = strTemp;
+			pwrItem.SetMessage(strTemp);
 		}
 
 		/*----------------------------Event----------------------------*/
@@ -2794,9 +2792,11 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		if (m_pEvtSetTimeRad != NULL) {
 			bTemp = m_pEvtSetTimeRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.nEventID = PREVT_AT_SETTIME;
+				pwrItem.SetEventID(PREVT_AT_SETTIME);
 				if (m_pEvtSetTimeEdit != NULL) {
-					UpdateTimeSetting(pwrItem.stTime, TRUE);
+					SYSTEMTIME stTimeTemp = SYSTEMTIME_ZERO;
+					UpdateTimeSetting(stTimeTemp, TRUE);
+					pwrItem.SetTime(stTimeTemp);
 				}
 			}
 		}
@@ -2808,35 +2808,35 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		if (m_pEvtAppStartupRad != NULL) {
 			bTemp = m_pEvtAppStartupRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.nEventID = PREVT_AT_APPSTARTUP;
+				pwrItem.SetEventID(PREVT_AT_APPSTARTUP);
 			}
 		}
 		// Event: At system wake
 		if (m_pEvtSysWakeupRad != NULL) {
 			bTemp = m_pEvtSysWakeupRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.nEventID = PREVT_AT_SYSWAKEUP;
+				pwrItem.SetEventID(PREVT_AT_SYSWAKEUP);
 			}
 		}
 		// Event: Before power action
 		if (m_pEvtBfrPwrActionRad != NULL) {
 			bTemp = m_pEvtBfrPwrActionRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.nEventID = PREVT_AT_BFRPWRACTION;
+				pwrItem.SetEventID(PREVT_AT_BFRPWRACTION);
 			}
 		}
 		// Event: Wake after action
 		if (m_pEvtPwrActionWakeRad != NULL) {
 			bTemp = m_pEvtPwrActionWakeRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.nEventID = PREVT_AT_PWRACTIONWAKE;
+				pwrItem.SetEventID(PREVT_AT_PWRACTIONWAKE);
 			}
 		}
 		// Event: Before app exit
 		if (m_pEvtAtAppExitRad != NULL) {
 			bTemp = m_pEvtAtAppExitRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.nEventID = PREVT_AT_APPEXIT;
+				pwrItem.SetEventID(PREVT_AT_APPEXIT);
 			}
 		}
 
@@ -2846,14 +2846,14 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		if (m_pStyleMsgBoxRad != NULL) {
 			bTemp = m_pStyleMsgBoxRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.dwMsgStyle = PRSTYLE_MSGBOX;
+				pwrItem.SetMessageStyle(PRSTYLE_MSGBOX);
 			}
 		}
 		// Style: Dialog Box
 		if (m_pStyleDialogBoxRad != NULL) {
 			bTemp = m_pStyleDialogBoxRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.dwMsgStyle = PRSTYLE_DIALOG;
+				pwrItem.SetMessageStyle(PRSTYLE_DIALOG);
 			}
 		}
 
@@ -2886,10 +2886,10 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 
 		/*----------------------Get item details-----------------------*/
 
-		CString strMessage = pwrItem.strMessage;
-		SYSTEMTIME stTime = pwrItem.stTime;
-		UINT nEventID = pwrItem.nEventID;
-		DWORD dwMsgStyle = pwrItem.dwMsgStyle;
+		CString strMessage = pwrItem.GetMessage();
+		SYSTEMTIME stTime = pwrItem.GetTime();
+		UINT nEventID = pwrItem.GetEventID();
+		DWORD dwMsgStyle = pwrItem.GetMessageStyle();
 
 		/*-----------------------Message content-----------------------*/
 
@@ -3012,7 +3012,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Check item ID
-	if ((pwrItem.nItemID < DEF_PWRREMINDER_MIN_ITEMID) || (pwrItem.nItemID > DEF_PWRREMINDER_MAX_ITEMID)) {
+	if ((pwrItem.GetItemID() < DEF_PWRREMINDER_MIN_ITEMID) || (pwrItem.GetItemID() > DEF_PWRREMINDER_MAX_ITEMID)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ITEMID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3020,27 +3020,29 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Get next item ID
-			pwrItem.nItemID = m_pwrReminderDataTemp.GetNextID();
+			pwrItem.SetItemID(m_pwrReminderDataTemp.GetNextID());
 		}
 	}
 
 	// Check message content
-	if (pwrItem.strMessage.IsEmpty()) {
+	CString strMessage = pwrItem.GetMessage();
+	if (strMessage.IsEmpty()) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_EMPTY;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
-			pwrItem.strMessage = GetLanguageString(pLang, PWRRMD_MSGCONTENT_SAMPLE);
-			if (IS_NOT_NULL_STRING(pwrItem.strMessage)) {
+			pwrItem.SetMessage(GetLanguageString(pLang, PWRRMD_MSGCONTENT_SAMPLE));
+			if (IS_NOT_NULL_STRING(pwrItem.GetMessage())) {
 				// Re-format sample message
-				CString strFormat = pwrItem.strMessage;
-				pwrItem.strMessage.Format(strFormat, pwrItem.nItemID);
+				CString strFormat = pwrItem.GetMessage();
+				strMessage.Format(strFormat, pwrItem.GetItemID());
+				pwrItem.SetMessage(strMessage);
 			}
 		}
 	}
-	else if (pwrItem.strMessage.GetLength() > MAX_STRING_LENGTH) {
+	else if (strMessage.GetLength() > MAX_STRING_LENGTH) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3048,13 +3050,13 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Only get character numbers in range
-			CString strTemp = pwrItem.strMessage.Left(MAX_STRING_LENGTH);
-			pwrItem.strMessage = strTemp;
+			CString strTemp = strMessage.Left(MAX_STRING_LENGTH);
+			pwrItem.SetMessage(strTemp);
 		}
 	}
 
 	// Check event ID
-	if ((pwrItem.nEventID < PREVT_AT_SETTIME) || (pwrItem.nEventID > PREVT_AT_APPEXIT)) {
+	if ((pwrItem.GetEventID() < PREVT_AT_SETTIME) || (pwrItem.GetEventID() > PREVT_AT_APPEXIT)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_EVENTID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3062,12 +3064,12 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default event ID
-			pwrItem.nEventID = PREVT_AT_SETTIME;
+			pwrItem.SetEventID(PREVT_AT_SETTIME);
 		}
 	}
 
 	// Check snooze interval data
-	if ((pwrItem.rpsRepeatSet.nSnoozeInterval < DEF_REPEATSET_MIN_SNOOZE) || (pwrItem.rpsRepeatSet.nSnoozeInterval > DEF_REPEATSET_MAX_SNOOZE)) {
+	if ((pwrItem.GetSnoozeInterval() < DEF_REPEATSET_MIN_SNOOZE) || (pwrItem.GetSnoozeInterval() > DEF_REPEATSET_MAX_SNOOZE)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3075,12 +3077,12 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default snooze interval
-			pwrItem.rpsRepeatSet.nSnoozeInterval = DEF_REPEATSET_DEFAULT_SNOOZE;
+			pwrItem.SetSnoozeInterval(DEF_REPEATSET_DEFAULT_SNOOZE);
 		}
 	}
 
 	// Check repeat set data
-	if ((pwrItem.IsRepeatEnable() == TRUE) && (pwrItem.GetActiveDays() == NULL)) {
+	if ((pwrItem.IsRepeatEnabled() == TRUE) && (pwrItem.GetActiveDays() == NULL)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3088,12 +3090,12 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default data
-			pwrItem.rpsRepeatSet.byRepeatDays = DEF_REPEATSET_DEFAULT_ACTIVEDAYS;
+			pwrItem.SetActiveDays(DEF_REPEATSET_DEFAULT_ACTIVEDAYS);
 		}
 	}
 
 	// Check style ID
-	if ((pwrItem.dwMsgStyle < PRSTYLE_MSGBOX) || (pwrItem.dwMsgStyle > PRSTYLE_DIALOG)) {
+	if ((pwrItem.GetMessageStyle() < PRSTYLE_MSGBOX) || (pwrItem.GetMessageStyle() > PRSTYLE_DIALOG)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_STYLEID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3101,7 +3103,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default style ID
-			pwrItem.dwMsgStyle = PRSTYLE_MSGBOX;
+			pwrItem.SetMessageStyle(PRSTYLE_MSGBOX);
 		}
 	}
 	
@@ -3184,8 +3186,8 @@ void CPwrReminderDlg::DrawRepeatSetButton(void)
 	if (m_pEvtRepeatSetBtn == NULL) {
 		m_pEvtRepeatSetBtn = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_REPEATSET_BTN);
 		if (m_pEvtRepeatSetBtn == NULL) {
-			TRCLOG("Error: RepeatSet button not found");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: RepeatSet button not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}

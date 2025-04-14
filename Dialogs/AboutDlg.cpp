@@ -25,8 +25,8 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
+using namespace Language;
+using namespace AppCore;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,8 +84,8 @@ INT_PTR CAboutDlg::RegisterDialogManagement(void)
 {
 	INT_PTR nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
-		TRCLOG("Error: Register dialog management failed!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Register dialog management failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return nRet;
 	}
 

@@ -25,9 +25,10 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
-using namespace RegFuncs;
+using namespace MapTable;
+using namespace Language;
+using namespace AppCore;
+using namespace AppRegistry;
 
 
 ////////////////////////////////////////////////////////
@@ -68,8 +69,8 @@ CMultiScheduleDlg::CMultiScheduleDlg() : SDialog(IDD_MULTISCHEDULE_DLG)
 	m_pEditScheduleDlg = NULL;
 
 	// Data container variables
-	ZeroMemory(&m_schSchedule, sizeof(SCHEDULEDATA));
-	ZeroMemory(&m_schScheduleTemp, sizeof(SCHEDULEDATA));
+	m_schSchedule.Init();
+	m_schScheduleTemp.Init();
 
 	// Table format and properties
 	m_nColNum = 0;
@@ -146,8 +147,8 @@ INT_PTR CMultiScheduleDlg::RegisterDialogManagement(void)
 {
 	INT_PTR nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
-		TRCLOG("Error: Register dialog management failed!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Register dialog management failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return nRet;
 	}
 
@@ -837,23 +838,23 @@ void CMultiScheduleDlg::UpdateDataItemList()
 		// Enable state
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, SCHCOL_ID_STATE);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(schItem.bEnable);
+			pCellCheck->SetCheck(schItem.IsEnabled());
 		}
 
 		// Action name
-		nTemp = GetPairedID(idTableActionName, schItem.nAction);
+		nTemp = GetPairedID(IDTable::ActionName, schItem.GetAction());
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
 		m_pDataItemListTable->SetItemText(nRowIndex, SCHCOL_ID_ACTIONID, strTemp);
 
 		// Time setting
 		CString strFormat = GetLanguageString(ptrLanguage, GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT);
-		strTemp = FormatDispTime(ptrLanguage, strFormat, schItem.stTime);
+		strTemp = FormatDispTime(ptrLanguage, strFormat, schItem.GetTime());
 		m_pDataItemListTable->SetItemText(nRowIndex, SCHCOL_ID_TIMEVALUE, strTemp);
 
 		// Repeat
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, SCHCOL_ID_REPEAT);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(schItem.IsRepeatEnable());
+			pCellCheck->SetCheck(schItem.IsRepeatEnabled());
 		}
 	}
 }
@@ -1029,14 +1030,14 @@ void CMultiScheduleDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = FALSE */)
 		// Reset counter
 		m_nCheckCount = 0;
 		// Check default item
-		if (m_schScheduleTemp.GetDefaultItem().bEnable == TRUE) {
+		if (m_schScheduleTemp.GetDefaultItem().IsEnabled() == TRUE) {
 			// Increase counter
 			m_nCheckCount++;
 		}
 		// Check extra items
 		for (int nExtraIndex = 0; nExtraIndex < GetExtraItemNum(); nExtraIndex++) {
 			SCHEDULEITEM& schTemp = m_schScheduleTemp.GetItemAt(nExtraIndex);
-			if (schTemp.bEnable == TRUE) {
+			if (schTemp.IsEnabled() == TRUE) {
 				// Increase counter
 				m_nCheckCount++;
 			}
@@ -1078,7 +1079,7 @@ BOOL CMultiScheduleDlg::LoadScheduleSettings()
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	VERIFY(pApp != NULL);
 	if (pApp == NULL) return FALSE;
-	PSCHEDULEDATA pschData = pApp->GetAppScheduleData();
+	ScheduleData* pschData = pApp->GetAppScheduleData();
 	if (pschData == NULL)
 		return FALSE;
 
@@ -1155,21 +1156,21 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 		if ((pCellCheckEnable == NULL) || (pCellCheckRepeat == NULL)) continue;
 
 		// Get checked states
-		BOOL bEnable = pCellCheckEnable->GetCheck();
+		BOOL bEnabled = pCellCheckEnable->GetCheck();
 		BOOL bRepeat = pCellCheckRepeat->GetCheck();
 
 		// Update item enable and repeat states
 		if (nRowIndex == ROW_INDEX_DEFAULT) {
 			// Update default item data
 			SCHEDULEITEM& schTempDefault = m_schScheduleTemp.GetDefaultItem();
-			schTempDefault.bEnable = bEnable;
-			schTempDefault.rpsRepeatSet.bRepeat = bRepeat;
+			schTempDefault.EnableItem(bEnabled);
+			schTempDefault.EnableRepeat(bRepeat);
 		}
 		else {
 			// Update extra item data
 			SCHEDULEITEM& schTempItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
-			schTempItem.bEnable = bEnable;
-			schTempItem.rpsRepeatSet.bRepeat = bRepeat;
+			schTempItem.EnableItem(bEnabled);
+			schTempItem.EnableRepeat(bRepeat);
 		}
 	}
 }
@@ -1197,12 +1198,7 @@ BOOL CMultiScheduleDlg::CheckDataChangeState()
 		return bChangeFlag;
 
 	// Check if default item's data changed
-	bChangeFlag |= (m_schScheduleTemp.GetDefaultItem().bEnable != m_schSchedule.GetDefaultItem().bEnable);
-	bChangeFlag |= (m_schScheduleTemp.GetDefaultItem().nAction != m_schSchedule.GetDefaultItem().nAction);
-	bChangeFlag |= (m_schScheduleTemp.GetDefaultItem().stTime.wHour != m_schSchedule.GetDefaultItem().stTime.wHour);
-	bChangeFlag |= (m_schScheduleTemp.GetDefaultItem().stTime.wMinute != m_schSchedule.GetDefaultItem().stTime.wMinute);
-	bChangeFlag |= (m_schScheduleTemp.GetDefaultItem().IsRepeatEnable() != m_schSchedule.GetDefaultItem().IsRepeatEnable());
-	bChangeFlag |= (m_schScheduleTemp.GetDefaultItem().GetActiveDays() != m_schSchedule.GetDefaultItem().GetActiveDays());
+	bChangeFlag |= (m_schScheduleTemp.GetDefaultItem().Compare(m_schSchedule.GetDefaultItem()) != TRUE);
 	if (bChangeFlag == TRUE)
 		return bChangeFlag;
 
@@ -1213,12 +1209,7 @@ BOOL CMultiScheduleDlg::CheckDataChangeState()
 		SCHEDULEITEM schTempItem = m_schScheduleTemp.GetItemAt(nExtraIndex);
 
 		// Data comparison
-		bChangeFlag |= (schTempItem.bEnable != schCurItem.bEnable);
-		bChangeFlag |= (schTempItem.nAction != schCurItem.nAction);
-		bChangeFlag |= (schTempItem.stTime.wHour != schCurItem.stTime.wHour);
-		bChangeFlag |= (schTempItem.stTime.wMinute != schCurItem.stTime.wMinute);
-		bChangeFlag |= (schTempItem.IsRepeatEnable() != schCurItem.IsRepeatEnable());
-		bChangeFlag |= (schTempItem.GetActiveDays() != schCurItem.GetActiveDays());
+		bChangeFlag |= (schTempItem.Compare(schCurItem) != TRUE);
 
 		// Stop on the first different item encountered
 		if (bChangeFlag == TRUE) break;
@@ -1342,15 +1333,15 @@ void CMultiScheduleDlg::SetAllItemState(BOOL bState)
 {
 	// Check/uncheck all --> Update all items enable state
 	SCHEDULEITEM& schDefTemp = m_schScheduleTemp.GetDefaultItem();
-	if (schDefTemp.bEnable != bState) {
+	if (schDefTemp.IsEnabled() != bState) {
 		// Change checked state
-		schDefTemp.bEnable = bState;
+		schDefTemp.EnableItem(bState);
 	}
 	for (int nExtraIndex = 0; nExtraIndex < GetExtraItemNum(); nExtraIndex++) {
 		SCHEDULEITEM& schTemp = m_schScheduleTemp.GetItemAt(nExtraIndex);
-		if (schTemp.bEnable != bState) {
+		if (schTemp.IsEnabled() != bState) {
 			// Change checked state
-			schTemp.bEnable = bState;
+			schTemp.EnableItem(bState);
 		}
 	}
 
@@ -1387,8 +1378,8 @@ BOOL CMultiScheduleDlg::Validate(SCHEDULEITEM& schItem, BOOL bShowMsg /* = FALSE
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Check item ID
-	if ((schItem.nItemID != DEF_SCHEDULE_DEFAULT_ITEMID) &&
-		((schItem.nItemID < DEF_SCHEDULE_MIN_ITEMID) || (schItem.nItemID > DEF_SCHEDULE_MAX_ITEMID))) {
+	if ((schItem.GetItemID() != DEF_SCHEDULE_DEFAULT_ITEMID) &&
+		((schItem.GetItemID() < DEF_SCHEDULE_MIN_ITEMID) || (schItem.GetItemID() > DEF_SCHEDULE_MAX_ITEMID))) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ITEMID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -1396,12 +1387,12 @@ BOOL CMultiScheduleDlg::Validate(SCHEDULEITEM& schItem, BOOL bShowMsg /* = FALSE
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Get next item ID
-			schItem.nItemID = m_schScheduleTemp.GetNextID();
+			schItem.SetItemID(m_schScheduleTemp.GetNextID());
 		}
 	}
 
 	// Check action ID
-	if ((schItem.nAction < APP_ACTION_NOTHING) || (schItem.nAction > APP_ACTION_HIBERNATE)) {
+	if ((schItem.GetAction() < APP_ACTION_NOTHING) || (schItem.GetAction() > APP_ACTION_HIBERNATE)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIONID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -1409,12 +1400,12 @@ BOOL CMultiScheduleDlg::Validate(SCHEDULEITEM& schItem, BOOL bShowMsg /* = FALSE
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default action
-			schItem.nAction = DEF_SCHEDULE_INIT_ACTION;
+			schItem.SetAction(DEF_SCHEDULE_INIT_ACTION);
 		}
 	}
 
 	// Check repeat data
-	if ((schItem.IsRepeatEnable() == TRUE) && (schItem.GetActiveDays() == NULL)) {
+	if ((schItem.IsRepeatEnabled() == TRUE) && (schItem.GetActiveDays() == NULL)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIVEDAYS;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -1422,7 +1413,7 @@ BOOL CMultiScheduleDlg::Validate(SCHEDULEITEM& schItem, BOOL bShowMsg /* = FALSE
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default data
-			schItem.rpsRepeatSet.byRepeatDays = DEF_REPEATSET_DEFAULT_ACTIVEDAYS;
+			schItem.SetActiveDays(DEF_REPEATSET_DEFAULT_ACTIVEDAYS);
 		}
 	}
 
@@ -1528,8 +1519,8 @@ void CMultiScheduleDlg::OnAdd()
 
 	// Initialize new item template
 	SCHEDULEITEM schTemp;
-	schTemp.nItemID = m_schScheduleTemp.GetNextID();
-	schTemp.nAction = DEF_SCHEDULE_INIT_ACTION;
+	schTemp.SetItemID(m_schScheduleTemp.GetNextID());
+	schTemp.SetAction(DEF_SCHEDULE_INIT_ACTION);
 
 	// Open edit schedule dialog
 	if (m_pEditScheduleDlg == NULL) {
@@ -1817,7 +1808,7 @@ void CMultiScheduleDlg::OnSetDefault()
 			// Overwrite default item data with currently selected extra item data
 			SCHEDULEITEM& schDefaultItem = m_schScheduleTemp.GetDefaultItem();
 			schDefaultItem.Copy(schCurSelItem);
-			schDefaultItem.nItemID = DEF_SCHEDULE_DEFAULT_ITEMID;
+			schDefaultItem.SetItemID(DEF_SCHEDULE_DEFAULT_ITEMID);
 
 			// Remove the selected extra item after changing
 			m_schScheduleTemp.Delete(nExtraItemIndex);

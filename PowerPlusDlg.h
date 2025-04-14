@@ -22,6 +22,8 @@
 
 #include "Core.h"
 #include "Config.h"
+#include "MapTable.h"
+
 #include "Logging.h"
 #include "Logging_pub.h"
 #include "IDMapping.h"
@@ -72,12 +74,12 @@ protected:
 
 private:
 	// App data variables
-	CONFIGDATA		m_cfgAppConfig;
-	CONFIGDATA		m_cfgTempConfig;
-	SCHEDULEDATA	m_schScheduleData;
-	HOTKEYSETDATA	m_hksHotkeySetData;
-	PWRREMINDERDATA m_prdReminderData;
-	HISTORYINFODATA	m_hidHistoryInfoData;
+	ConfigData		m_cfgAppConfig;
+	ConfigData		m_cfgTempConfig;
+	ScheduleData	m_schScheduleData;
+	HotkeySetData	m_hksHotkeySetData;
+	PwrReminderData m_prdReminderData;
+	HistoryInfoData	m_hidHistoryInfoData;
 
 	// Dialog control variables:
 	CComboBox m_cmbLMBAction;

@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		DebugTestDlg.cpp
@@ -19,7 +19,7 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace CoreFuncs;
+using namespace AppCore;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -136,8 +136,8 @@ BOOL CDebugTestDlg::OnInitDialog()
 	// Get DebugTest edit view
 	BOOL bRet = InitDebugEditView(IDC_DEBUGTEST_EDITVIEW);
 	if (bRet == FALSE) {
-		TRCLOG("Error: Debug edit view initialization failed!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Debug edit view initialization failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return bRet;
 	}
 

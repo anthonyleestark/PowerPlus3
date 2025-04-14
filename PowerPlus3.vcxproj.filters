@@ -123,6 +123,9 @@
     <ClInclude Include="Framework\SWinApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MapTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Config.cpp">
@@ -211,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="Framework\SWinApp.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MapTable.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

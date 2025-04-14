@@ -94,6 +94,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\Framework;$(ProjectDir)\Dialogs;$(ProjectDir)\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -119,6 +120,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\Framework;$(ProjectDir)\Dialogs;$(ProjectDir)\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -146,6 +148,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\Framework;$(ProjectDir)\Dialogs;$(ProjectDir)\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -174,7 +177,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)/Framework;$(ProjectDir)/Dialogs;$(ProjectDir)/Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\Framework;$(ProjectDir)\Dialogs;$(ProjectDir)\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>Default</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
@@ -230,6 +233,7 @@
     <ClInclude Include="Framework\SWinApp.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="Logging_pub.h" />
+    <ClInclude Include="MapTable.h" />
     <ClInclude Include="PowerPlus.inl" />
     <ClInclude Include="IDMapping.h" />
     <ClInclude Include="Resource2.h" />
@@ -267,6 +271,7 @@
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="IDMapping.cpp" />
     <ClCompile Include="Logging.cpp" />
+    <ClCompile Include="MapTable.cpp" />
     <ClCompile Include="PowerPlus.cpp" />
     <ClCompile Include="PowerPlusDlg.cpp" />
     <ClCompile Include="PowerPlusDlgFunc.cpp" />

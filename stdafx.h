@@ -18,6 +18,7 @@
 
 // Disable warnings
 #pragma once
+__pragma(warning(disable:4005))
 __pragma(warning(disable:4244))
 __pragma(warning(disable:4267))
 __pragma(warning(disable:4805))

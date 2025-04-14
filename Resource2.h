@@ -88,8 +88,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#define FORMAT_TIME_BEFOREMIDDAY								(RESOURCEID_FORMATSTRING+1)
-#define FORMAT_TIME_AFTERMIDDAY									(RESOURCEID_FORMATSTRING+2)
+#define FORMAT_TIMEPERIOD_ANTE_MERIDIEM							(RESOURCEID_FORMATSTRING+1)
+#define FORMAT_TIMEPERIOD_POST_MERIDIEM							(RESOURCEID_FORMATSTRING+2)
 
 //////////////////////////////////////////////////////////////////////////
 

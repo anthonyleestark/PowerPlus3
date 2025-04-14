@@ -358,12 +358,12 @@
 #define FILENAME_TRACE_ERROR_LOG					_T("TraceError")
 #define FILENAME_TRACE_DEBUG_LOG					_T("TraceDebug")
 #define FILENAME_DEBUG_INFO_LOG						_T("DebugInfo")
-#define FILENAME_HELP_ENG							_T("English")
-#define FILENAME_HELP_VIE							_T("Vietnamese")
-#define FILENAME_HELP_CHS							_T("Chinese")
-#define FILENAME_CHANGELOG_ENG						_T("Change_log.en")
-#define FILENAME_CHANGELOG_VIE						_T("Change_log.vi")
-#define FILENAME_CHANGELOG_CHS						_T("Change_log.ch")
+#define FILENAME_HELP_ENG							_T("help_en")
+#define FILENAME_HELP_VIE							_T("help_vi")
+#define FILENAME_HELP_CHS							_T("help_ch")
+#define FILENAME_CHANGELOG_ENG						_T("changelog_en")
+#define FILENAME_CHANGELOG_VIE						_T("changelog_vi")
+#define FILENAME_CHANGELOG_CHS						_T("changelog_ch")
 
 
 // Define file extensions
@@ -468,31 +468,33 @@
 #define SYSTEMTIME_ZERO								STRUCT_ZERO						// Zero-initialized systemtime data
 
 
-// Define special values
+// Define special string-based values
 //
 
 #define VALUE_TRUE									_T("Yes")						// Boolean value: True (Yes)
 #define VALUE_FALSE									_T("No")						// Boolean value: False (No)
+#define VALUE_NULL									_T("Null")						// Null value
 #define VALUE_UNKNOWN								_T("Unknown")					// Unknown value
 #define VALUE_UNDEFINED								_T("Undefined")					// Undefined value
 
 
-// Define special min/max values
+// Define special minimum/maximum values
 //
 
-#define MIN_SNOOZETIME								1								// Min snooze time: 1 minute
-#define MIN_PASSWORD_LENGTH							6								// Min password length: 6 characters
+#define MIN_SNOOZETIME								1								// Minimum snooze time: 1 minute
+#define MIN_STRING_LENGTH							5								// Minimum string length: 5 characters
+#define MIN_PASSWORD_LENGTH							6								// Minimum password length: 6 characters
 
-#define MAX_SNOOZETIME								30								// Max snooze time: 30 minutes
+#define MAX_SNOOZETIME								30								// Maximum snooze time: 30 minutes
 #define MAX_DAYS_OF_WEEK							7								// Number of days of week: 7 days
-#define MAX_TOKEN_COUNT								50								// Max token number: 50
-#define MAX_BUFFER_LENGTH							512								// Max buffer length: 512 characters
-#define MAX_STRING_LENGTH							1024							// Max string length: 2KB ~ 1024 characters
-#define MAX_TEXT_LENGTH								2097152							// Max text length: 2MB ~ 2097152 characters
-#define MAX_PASSWORD_LENGTH							30								// Max password length: 30 characters
-#define MAX_DISP_LOGSTRING_LENGTH					20								// Max log string displaying length: 20 characters
+#define MAX_TOKEN_COUNT								50								// Maximum token number: 50
+#define MAX_BUFFER_LENGTH							512								// Maximum buffer length: 512 characters
+#define MAX_STRING_LENGTH							1024							// Maximum string length: 2KB ~ 1024 characters
+#define MAX_TEXT_LENGTH								2097152							// Maximum text length: 2MB ~ 2097152 characters
+#define MAX_PASSWORD_LENGTH							30								// Maximum password length: 30 characters
+#define MAX_DISP_LOGSTRING_LENGTH					20								// Maximum log string displaying length: 20 characters
 #define MAX_BAKFILE_COUNT							100								// Maximum backup file number: 100
-#define MAX_LOGFILE_SIZE							1048576							// Max file size: 1MB
+#define MAX_LOGFILE_SIZE							1048576							// Maximum file size: 1MB
 
 #define TIMEOUT_WAIT_MESSAGE						30000							// Wait message timeout (tick-counts): 30s
 
@@ -600,49 +602,69 @@
 // Trace log functions
 //
 
-#define TRCFMT										TraceLogFormat
-#define TRCLOG(logString)							TraceLog(logString)
-#define TRCDBG(func,file,line)						TraceDebugInfo(func,file,line)
+#define TRACE_FORMAT									TraceErrorFormat
+#define TRACE_ERROR(logString)							TraceError(logString)
+#define TRACE_DEBUG(func, file, line)					TraceDebugInfo(func, file, line)
+
+
+// Type-cast macros
+//
+
+#define DEFAULT_CAST(type, variable)					((type)variable)
+#define CONST_CAST(type, variable)						const_cast<type>(variable)
+#define STATIC_CAST(type, variable)						static_cast<type>(variable)
+#define DYNAMIC_CAST(type, variable)					dynamic_cast<type>(variable)
+#define REINTERPRET_CAST(type, variable)				reinterpret_cast<type>(variable)
 
 
 // String processing functions
 //
 
-#define IS_NOT_EMPTY_STRING(string)					(_tcscmp(string, STRING_EMPTY))
-#define IS_EMPTY_STRING(string)						(!IS_NOT_EMPTY_STRING(string))
-#define IS_NOT_NULL_STRING(string)					(_tcscmp(string, STRING_NULL))
-#define IS_NULL_STRING(string)						(!IS_NOT_NULL_STRING(string))
+#define IS_NOT_EMPTY_STRING(string)						(_tcscmp(string, STRING_EMPTY))
+#define IS_EMPTY_STRING(string)							(!IS_NOT_EMPTY_STRING(string))
+#define IS_NOT_NULL_STRING(string)						(_tcscmp(string, STRING_NULL))
+#define IS_NULL_STRING(string)							(!IS_NOT_NULL_STRING(string))
 
-#define MAKEANSI(string)							(CW2A(string).m_psz)
-#define MAKEUNICODE(string)							(CA2W(string).m_psz)
-#define RESOURCESTRING(resourceid)					LoadResourceString(resourceid)
+#define MAKEANSI(string)								(CW2A(string).m_psz)
+#define MAKEUNICODE(string)								(CA2W(string).m_psz)
+#define RESOURCESTRING(resourceid)						LoadResourceString(resourceid)
 
-#define MAKE_WPARAM_STRING(string)					((WPARAM)(_tcslen(string)))
-#define MAKE_LPARAM(type, data)						(reinterpret_cast<LPARAM>((type)data))
-#define MAKE_LPARAM_STRING(string)					MAKE_LPARAM(LPCTSTR, string)
-#define LPARAM_STATIC_CAST(type, lParam)			(static_cast<type>(lParam))
-#define LPARAM_REINTERPRET_CAST(type, lParam)		(reinterpret_cast<type>(lParam))
-#define LPARAM_TO_STRING(lParam)					LPARAM_REINTERPRET_CAST(LPCTSTR, lParam)
+#define MAKE_WPARAM_STRING(string)						DEFAULT_CAST(WPARAM, _tcslen(string))
+#define MAKE_LPARAM(type, data)							REINTERPRET_CAST(LPARAM, ((type)data))
+#define MAKE_LPARAM_STRING(string)						MAKE_LPARAM(LPCTSTR, string)
+#define LPARAM_STATIC_CAST(type, lParam)				STATIC_CAST(type, lParam)
+#define LPARAM_REINTERPRET_CAST(type, lParam)			REINTERPRET_CAST(type, lParam)
+#define LPARAM_TO_STRING(lParam)						LPARAM_REINTERPRET_CAST(LPCTSTR, lParam)
 
 
 // Special expressions
 //
 
-#define GET_HANDLE_MAINWND()						(AfxGetMainWnd()->GetSafeHwnd())
-#define IS_PRESSED(keycode)							(0x8000 & ::GetKeyState(keycode))
-#define __FILENAME__								(strrchr("\\" __FILE__, '\\') + 1)
+#define NOTHING											((void)0)
+#define GET_HANDLE_MAINWND()							(AfxGetMainWnd()->GetSafeHwnd())
+#define IS_PRESSED(keycode)								(0x8000 & ::GetKeyState(keycode))
+#define __FILENAME__									(strrchr("\\" __FILE__, '\\') + 1)
 
 
 // Time value processing expressions
 //
 
-#define FORMAT_REG_TIME(systime)					(INT((systime.wHour * 100) + systime.wMinute))
-#define GET_REGTIME_HOUR(time)						(WORD(time / 100))
-#define GET_REGTIME_MINUTE(time)					(WORD(time % 100))
-#define TIME_TO_SECONDS(time)						(INT((time.wHour * 3600) + (time.wMinute * 60) + time.wSecond))
-#define GET_HOUR(nTotalSecs)						(WORD(nTotalSecs / 3600))
-#define GET_MINUTE(nTotalSecs)						(WORD((nTotalSecs % 3600) / 60))
-#define GET_SECOND(nTotalSecs)						(WORD((nTotalSecs % 3600) % 60))
+#define FORMAT_REG_TIME(systime)						(INT((systime.wHour * 100) + systime.wMinute))
+#define GET_REGTIME_HOUR(time)							(WORD(time / 100))
+#define GET_REGTIME_MINUTE(time)						(WORD(time % 100))
+#define TIME_TO_SECONDS(time)							(INT((time.wHour * 3600) + (time.wMinute * 60) + time.wSecond))
+#define GET_HOUR(totalSecs)								(WORD(totalSecs / 3600))
+#define GET_MINUTE(totalSecs)							(WORD((totalSecs % 3600) / 60))
+#define GET_SECOND(totalSecs)							(WORD((totalSecs % 3600) % 60))
+
+
+// Complex macros
+//
+
+#define NULL_POINTER_BREAK(pointer, ret)				if (pointer == NULL) { return ret; }
+#define VERIFY_POINTER(pointer, type)					VERIFY(((pointer) != NULL) && AfxIsValidAddress((pointer), sizeof(type), FALSE))
+#define ASSERT_INITIALIZATION(pointer, type)			if (pointer == NULL) { pointer = new type(); ASSERT_POINTER(pointer, type); }
+#define VERIFY_INITIALIZATION(pointer, type) 			if (pointer == NULL) { pointer = new type(); VERIFY_POINTER(pointer, type); }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -662,6 +684,7 @@
 // Registry commands
 //
 
+#define COMMAND_REGISTRY_DELETE						_T("reg delete %s /va /f")
 #define COMMAND_REGISTRY_EXPORT						_T("\"reg.exe export \"%s\" \"%s\"\" /y")
 
 
@@ -1021,7 +1044,7 @@ typedef enum eFILETYPE {
 //////////////////////////////////////////////////////////////////////////
 //
 //	Data type name:	CONFIGDATA
-//  Description:	Store app settings and configurations
+//  Description:	Store application settings and configurations
 //  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
@@ -1050,375 +1073,513 @@ typedef struct tagCONFIGDATA
 	BOOL	bEnableBackgroundHotkey;								// Enable background action hotkeys
 	BOOL	bLockStateHotkey;										// Allow background hotkeys on lockscreen
 	BOOL	bEnablePowerReminder;									// Enable Power Peminder feature
-
-	// Member functions
-	void Copy(const tagCONFIGDATA&);								// Copy data
-	BOOL Compare(const tagCONFIGDATA&) const;						// Compare data
 } CONFIGDATA, *PCONFIGDATA;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	PWRREPEATSET
-//  Description:	Store data of a Power++ item repeat set
-//  Derivered from: C++ basic struct
+//	Class name:		ConfigData
+//  Description:	Class for application config data management
+//  Derivered from:	CONFIGDATA
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagPWRREPEATSET
+class ConfigData : public CONFIGDATA
 {
-	// Member variables
-	BOOL		bRepeat;											// Repeat daily
-	BOOL		bAllowSnooze;										// Allow snoozing mode
-	INT			nSnoozeInterval;									// Snooze interval
-	BYTE		byRepeatDays;										// Days of week (for repeating)
+public:
+	// Construction
+	ConfigData();													// Default constructor
+	ConfigData(const CONFIGDATA&);									// Copy constructor
 
+	// Data processing
+	void Copy(const CONFIGDATA&);									// Copy data
+	BOOL Compare(const CONFIGDATA&) const;							// Compare data
+	void SetDefaultData(void);										// Set default data
+
+	// Access data
+	void GetData(CONFIGDATA&) const;								// Get a copy of config data
+};
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Class name:		PwrRepeatSet
+//  Description:	Store and manage data of a Power++ item repeat set
+//
+//////////////////////////////////////////////////////////////////////////
+
+class PwrRepeatSet
+{
+private:
+	// Attributes
+	BOOL m_bRepeat;													// Repeat daily
+	BOOL m_bAllowSnooze;											// Allow snoozing mode
+	INT	 m_nSnoozeInterval;											// Snooze interval
+	BYTE m_byRepeatDays;											// Days of week (for repeating)
+
+public:
 	// Constructor
-	tagPWRREPEATSET();												// Default constructor
-	tagPWRREPEATSET(const tagPWRREPEATSET&);						// Copy constructor
+	PwrRepeatSet();													// Default constructor
+	PwrRepeatSet(const PwrRepeatSet&);								// Copy constructor
 
 	// Operator
-	tagPWRREPEATSET& operator=(const tagPWRREPEATSET&);				// Copy assignment operator
+	PwrRepeatSet& operator=(const PwrRepeatSet&);					// Copy assignment operator
 
-	// Member functions
-	void Copy(const tagPWRREPEATSET&);								// Copy data
-	BOOL Compare(const tagPWRREPEATSET&) const;						// Compare data
-	BOOL IsDayActive(DAYOFWEEK dayOfWeek) const;					// Check if day of week is active
-} PWRREPEATSET, *PPWRREPEATSET;
+	// Data processing
+	void Copy(const PwrRepeatSet&);									// Copy data
+	BOOL Compare(const PwrRepeatSet&) const;						// Compare data
+
+	// Get attributes
+	BOOL IsRepeatEnabled(void) const;								// Check if repeat option is enabled
+	BOOL IsAllowSnoozing(void) const;								// Check if snooze option is enabled
+	INT	 GetSnoozeInterval(void) const;								// Get snooze interval data
+	BYTE GetActiveDays(void) const;									// Get repeat days data
+	BOOL IsDayActive(DAYOFWEEK) const;								// Check if day of week is active
+
+	// Set attributes
+	void EnableRepeat(BOOL);										// Set repeat enable state
+	void EnableSnoozing(BOOL);										// Set allow snoozing state
+	void SetSnoozeInterval(INT);									// Set snooze interval data
+	void SetActiveDays(BYTE);										// Set repeat days data
+	void SetDayActive(DAYOFWEEK, BOOL);								// Set active state for specific day of week
+};
+
+// Define new typenames for RepeatSet data
+using PWRREPEATSET = typename PwrRepeatSet;
+using PPWRREPEATSET = typename PwrRepeatSet*;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	SCHEDULEITEM
+//	Class name:		ScheduleItem
 //  Description:	Store schedule item settings
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagSCHEDULEITEM
+class ScheduleItem
 {
-	// Member variables
-	UINT			nItemID;										// Item ID
-	BOOL			bEnable;										// Enable/disable state
-	UINT			nAction;										// Schedule action
-	SYSTEMTIME		stTime;											// Schedule time
-	PWRREPEATSET	rpsRepeatSet;									// Repeat set data
+private:
+	// Attributes
+	UINT		 m_nItemID;											// Item ID
+	BOOL		 m_bEnabled;										// Enable/disable state
+	UINT		 m_nActionID;										// Schedule action ID
+	SYSTEMTIME	 m_stTime;											// Schedule time
+	PWRREPEATSET m_rpsRepeatSet;									// Repeat set data
 
+public:
 	// Constructor
-	tagSCHEDULEITEM();												// Default constructor
-	tagSCHEDULEITEM(UINT nItemID);									// Overloaded constructor
-	tagSCHEDULEITEM(const tagSCHEDULEITEM&);						// Copy constructor
+	ScheduleItem();													// Default constructor
+	ScheduleItem(UINT nItemID);										// Overloaded constructor
+	ScheduleItem(const ScheduleItem&);								// Copy constructor
 
 	// Operator
-	tagSCHEDULEITEM& operator=(const tagSCHEDULEITEM&);				// Copy assignment operator
+	ScheduleItem& operator=(const ScheduleItem&);					// Copy assignment operator
 
-	// Member functions
-	void Copy(const tagSCHEDULEITEM&);								// Copy data
-	BOOL Compare(const tagSCHEDULEITEM&) const;						// Compare items
-	void SetActiveState(BOOL);										// Set item active state
+	// Data processing
+	void Copy(const ScheduleItem&);									// Copy data
+	BOOL Compare(const ScheduleItem&) const;						// Compare items
 	BOOL IsEmpty(void) const;										// Check if item data is empty
-	BOOL IsRepeatEnable(void) const;								// Check if repeat is enabled
+
+	// Get/set attributes
+	UINT GetItemID(void) const;										// Get schedule item ID
+	void SetItemID(UINT);											// Set schedule item ID
+	BOOL IsEnabled(void) const;										// Check if item is enabled
+	void EnableItem(BOOL);											// Set item active state
+	UINT GetAction(void) const;										// Get item action ID
+	void SetAction(UINT);											// Set item action ID
+	SYSTEMTIME GetTime(void) const;									// Get schedule item time data
+	void SetTime(const SYSTEMTIME&);								// Set schedule item time data
+
+	// Get RepeatSet data
+	BOOL IsRepeatEnabled(void) const;								// Check if repeat is enabled
 	BOOL IsAllowSnoozing(void) const;								// Check if item snooze mode is available
 	BOOL IsDayActive(DAYOFWEEK) const;								// Check if day of week is active
 	BYTE GetActiveDays(void) const;									// Get repeat active days
-	void Print(CString& strOutput);									// Print item data
-} SCHEDULEITEM, *PSCHEDULEITEM;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	SCHEDULEITEMLIST
-//  Description:	Store list of Action Schedule items
-//  Derivered from: MFC CArray class
-//
-//////////////////////////////////////////////////////////////////////////
+	// Set RepeatSet data
+	void EnableRepeat(BOOL);										// Set repeat enable state
+	void EnableSnoozing(BOOL);										// Set allow snoozing state
+	void SetSnoozeInterval(INT);									// Set snooze interval data
+	void SetActiveDays(BYTE);										// Set repeat days data
+	void SetDayActive(DAYOFWEEK, BOOL);								// Set active state for specific day of week
 
+	void Print(CString& strOutput) const;							// Print item data
+};
+
+// Define new typenames for Schedule item data
+using SCHEDULEITEM = typename ScheduleItem;
+using PSCHEDULEITEM = typename ScheduleItem*;
 using SCHEDULEITEMLIST = CArray<SCHEDULEITEM, SCHEDULEITEM>;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	SCHEDULEDATA
+//	Class name:		ScheduleData
 //  Description:	Store app Action Schedule data settings
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagSCHEDULEDATA
+class ScheduleData
 {
-	// Member variables
-	SCHEDULEITEM		schDefaultItem;								// Default schedule item
-	SCHEDULEITEMLIST	arrSchedExtraItemList;						// List of extra schedule items
+private:
+	// Attributes
+	SCHEDULEITEM	 m_schDefaultItem;								// Default schedule item
+	SCHEDULEITEMLIST m_arrSchedExtraItemList;						// List of extra schedule items
 
+public:
 	// Constructor
-	tagSCHEDULEDATA();												// Default constructor
-	tagSCHEDULEDATA(const tagSCHEDULEDATA&);						// Copy constructor
+	ScheduleData();													// Default constructor
+	ScheduleData(const ScheduleData&);								// Copy constructor
 
 	// Operator
-	tagSCHEDULEDATA& operator=(const tagSCHEDULEDATA&);				// Copy assignment operator
+	ScheduleData& operator=(const ScheduleData&);					// Copy assignment operator
 
-	// Member functions
-	void Init();													// Init data
-	void Copy(const tagSCHEDULEDATA&);								// Copy data
+	// Data processing
+	void Init(void);												// Init data
+	void Copy(const ScheduleData&);									// Copy data
+	void SetDefaultData(void);										// Set default data
+
+	// Update items
 	DWORD Add(const SCHEDULEITEM&);									// Add item
 	DWORD Update(const SCHEDULEITEM&);								// Update item
+
+	// Access items
 	const SCHEDULEITEM& GetDefaultItem(void) const;					// Get default item (constant)
 	SCHEDULEITEM& GetDefaultItem(void);								// Get default item
 	const SCHEDULEITEM& GetItemAt(int) const;						// Get item at index (constant)
 	SCHEDULEITEM& GetItemAt(int);									// Get item at index
+
+	// Item processing
 	void Remove(int);												// Remove item at index
 	void RemoveAll(void);											// Remove all item
 	void Adjust();													// Adjust data validity
 	UINT GetNextID();												// Get next item ID (to add new item)
+
+	// Get attributes
 	INT_PTR GetExtraItemNum(void) const;							// Get number of extra items
 	BOOL IsDefaultEmpty(void) const;								// Check if default item is empty
 	BOOL IsEmpty(int) const;										// Check if item at index is empty
 	BOOL IsExtraEmpty(void) const;									// Check if extra data is empty
 	BOOL IsAllEmpty(void) const;									// Check if all items are empty
+
+	// Clean-up
 	void Delete(int);												// Delete item at index
 	void DeleteExtra(void);											// Delete all extra items
 	void DeleteAll(void);											// Delete all data
-} SCHEDULEDATA, *PSCHEDULEDATA;
+};
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	HOTKEYSETITEM
-//  Description:	Store data of a Hotkeyset item
-//  Derivered from: C++ basic struct
+//	Class name:		HotkeySetItem
+//  Description:	Store data of a HotkeySet item
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagHOTKEYSETITEM
+class HotkeySetItem
 {
-	// Member variables
-	BOOL	bEnable;												// Hotkey enabled/disabled
-	UINT	nHKActionID;											// Hotkey action ID
-	DWORD	dwCtrlKeyCode;											// Control Keycode #1
-	DWORD	dwFuncKeyCode;											// Function Keycode #2
+private:
+	// Attributes
+	BOOL	m_bEnabled;												// Hotkey enabled/disabled
+	UINT	m_nHKActionID;											// Hotkey action ID
+	DWORD	m_dwCtrlKeyCode;										// Control Keycode #1
+	DWORD	m_dwFuncKeyCode;										// Function Keycode #2
 
+public:
 	// Constructor
-	tagHOTKEYSETITEM();												// Default constructor
-	tagHOTKEYSETITEM(UINT nHKActionID);								// Overloaded constructor
-	tagHOTKEYSETITEM(const tagHOTKEYSETITEM&);						// Copy constructor
+	HotkeySetItem();												// Default constructor
+	HotkeySetItem(UINT nHKActionID);								// Overloaded constructor
+	HotkeySetItem(const HotkeySetItem&);							// Copy constructor
 
 	// Operator
-	tagHOTKEYSETITEM& operator=(const tagHOTKEYSETITEM&);			// Copy assignment operator
+	HotkeySetItem& operator=(const HotkeySetItem&);					// Copy assignment operator
 
-	// Member functions
-	void Copy(const tagHOTKEYSETITEM&);								// Copy item
+	// Data processing
+	void Copy(const HotkeySetItem&);								// Copy item
 	BOOL IsEmpty(void) const;										// Check if item is empty
-	BOOL Compare(const tagHOTKEYSETITEM&) const;					// Compare items
-	void Print(CString& strOutput);									// Print item data
-	void PrintKeyStrokes(CString& strOutput);						// Print item keystrokes
-} HOTKEYSETITEM, *PHOTKEYSETITEM;
+	BOOL Compare(const HotkeySetItem&) const;						// Compare items
+	BOOL CompareKeycode(const HotkeySetItem&) const;				// Compare item keycodes
+	void Print(CString& strOutput) const;							// Print item data
+	void PrintKeyStrokes(CString& strOutput) const;					// Print item keystrokes
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	HOTKEYSETITEMLIST
-//  Description:	Store list of Hotkeyset items
-//  Derivered from: MFC CArray class
-//
-//////////////////////////////////////////////////////////////////////////
+	// Get/set attributes
+	BOOL IsEnabled(void) const;										// Check if item is enabled
+	void EnableItem(BOOL);											// Set item enable state
+	UINT GetActionID(void) const;									// Get Hotkey action ID
+	void SetActionID(UINT);											// Set Hotkey action ID
+	void GetKeyCode(DWORD&, DWORD&) const;							// Get item keycode data
+	void SetKeyCode(DWORD, DWORD);									// Set item keycode data
+};
 
+// Define new typenames for HotkeySet item data
+using HOTKEYSETITEM = typename HotkeySetItem;
+using PHOTKEYSETITEM = typename HotkeySetItem*;
 using HOTKEYSETITEMLIST = CArray<HOTKEYSETITEM, HOTKEYSETITEM>;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	HOTKEYSETDATA
+//	Class name:		HotkeySetData
 //  Description:	Store app Hotkeyset data settings
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagHOTKEYSETDATA
+class HotkeySetData
 {
-	// Member variables
-	HOTKEYSETITEMLIST arrHotkeySetList;								// Pointer to HotkeySet list
+private:
+	// Attributes
+	HOTKEYSETITEMLIST m_arrHotkeySetList;							// Pointer to HotkeySet list
 
+public:
 	// Constructor
-	tagHOTKEYSETDATA();												// Default constructor
-	tagHOTKEYSETDATA(const tagHOTKEYSETDATA&);						// Copy constructor
+	HotkeySetData();												// Default constructor
+	HotkeySetData(const HotkeySetData&);							// Copy constructor
 
 	// Operator
-	tagHOTKEYSETDATA& operator=(const tagHOTKEYSETDATA&);			// Copy assignment operator
+	HotkeySetData& operator=(const HotkeySetData&);					// Copy assignment operator
 
-	// Member functions
-	void Init();													// Init data
-	void Copy(const tagHOTKEYSETDATA&);								// Copy data
+	// Data processing
+	void Init(void);												// Init data
+	void Copy(const HotkeySetData&);								// Copy data
+	void SetDefaultData(void);										// Set default data
+
+	// Update items
 	void Add(const HOTKEYSETITEM&);									// Add item
 	void Update(const HOTKEYSETITEM&);								// Update item
+
+	// Access items
 	const HOTKEYSETITEM& GetItemAt(int) const;						// Get item at index (const)
 	HOTKEYSETITEM& GetItemAt(int);									// Get item at index
+
+	// Item processing
 	void Remove(int);												// Remove item at index
 	void RemoveAll(void);											// Remove all item
-	void Adjust();													// Adjust data validity
+	void Adjust(void);												// Adjust data validity
+
+	// Get attributes
 	INT_PTR GetItemNum(void) const;									// Get number of items
 	BOOL IsEmpty(int) const;										// Check if item at index is empty
 	BOOL IsAllEmpty() const;										// Check if all items are empty
+
+	// Clean-up
 	void Delete(int);												// Delete item at index
 	void DeleteAll(void);											// Delete all data
-	void PrintKeyStrokes(UINT nHKID, CString& strOutput);			// Print item keystrokes by ID
-} HOTKEYSETDATA, *PHOTKEYSETDATA;
+	void PrintKeyStrokes(UINT nHKID, CString& strOutput) const;		// Print item keystrokes by ID
+};
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	RMDMSGSTYLESET
+//	Class name:		RmdMsgStyleSet
 //  Description:	Store data of a Reminder message style set
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagRMDMSGSTYLESET
+class RmdMsgStyleSet
 {
-	// Member variables
-	COLORREF	colorBkgrd;											// Background color
-	COLORREF	colorText;											// Text color
-	CString		strFontName;										// Font name
-	UINT		uiFontSize;											// Font size
-	UINT		uiTimeout;											// Timeout (auto-close) interval
-	UINT		uiIconID;											// Message icon ID
-	INT			nIconSize;											// Message icon size
-	BYTE		byIconPos;											// Message icon position
-	BYTE		byDisplayPos;										// Message display position
-	UINT		uiHMargin;											// Display area horizontal margin
-	UINT		uiVMargin;											// Display area vertical margin
+private:
+	// Attributes
+	COLORREF	m_colorBkgrd;										// Background color
+	COLORREF	m_colorText;										// Text color
+	CString		m_strFontName;										// Font name
+	UINT		m_uiFontSize;										// Font size
+	UINT		m_uiTimeout;										// Timeout (auto-close) interval
+	UINT		m_uiIconID;											// Message icon ID
+	INT			m_nIconSize;										// Message icon size
+	BYTE		m_byIconPos;										// Message icon position
+	BYTE		m_byDisplayPos;										// Message display position
+	UINT		m_uiHMargin;										// Display area horizontal margin
+	UINT		m_uiVMargin;										// Display area vertical margin
 
+public:
 	// Constructor
-	tagRMDMSGSTYLESET();											// Default constructor
-	tagRMDMSGSTYLESET(const tagRMDMSGSTYLESET&);					// Copy constructor
+	RmdMsgStyleSet();												// Default constructor
+	RmdMsgStyleSet(const RmdMsgStyleSet&);							// Copy constructor
 
 	// Operator
-	tagRMDMSGSTYLESET& operator=(const tagRMDMSGSTYLESET&);			// Copy assignment operator
+	RmdMsgStyleSet& operator=(const RmdMsgStyleSet&);				// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagRMDMSGSTYLESET&);							// Copy data
-	BOOL Compare(const tagRMDMSGSTYLESET&) const;					// Compare data
-} RMDMSGSTYLESET, *PRMDMSGSTYLESET;
+	void Copy(const RmdMsgStyleSet&);								// Copy data
+	BOOL Compare(const RmdMsgStyleSet&) const;						// Compare data
+};
+
+// Define new typenames for Reminder message style data
+using RMDMSGSTYLESET = typename RmdMsgStyleSet;
+using PRMDMSGSTYLESET = typename RmdMsgStyleSet*;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	PWRREMINDERITEM
+//	Class name:		PwrReminderItem
 //  Description:	Store data of a Power Reminder item
 //  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagPWRREMINDERITEM
+class PwrReminderItem
 {
-	// Member variables
-	BOOL			bEnable;										// Enable state
-	UINT			nItemID;										// Item ID
-	CString			strMessage;										// Message content
-	UINT			nEventID;										// Event ID
-	SYSTEMTIME		stTime;											// Event time
-	DWORD			dwMsgStyle;										// Reminder style
-	PWRREPEATSET	rpsRepeatSet;									// Repeat set data
-	BOOL			bUseCustomStyle;								// Use message custom style
-	RMDMSGSTYLESET	rmsMsgStyleSet;									// Reminder message style set
+private:
+	// Attributes
+	BOOL			m_bEnabled;										// Enable state
+	UINT			m_nItemID;										// Item ID
+	CString			m_strMessage;									// Message content
+	UINT			m_nEventID;										// Event ID
+	SYSTEMTIME		m_stTime;										// Event time
+	DWORD			m_dwMsgStyle;									// Reminder style
+	PWRREPEATSET	m_rpsRepeatSet;									// Repeat set data
+	BOOL			m_bUseCustomStyle;								// Use message custom style
+	RMDMSGSTYLESET	m_rmsMsgStyleSet;								// Reminder message style set
 
+public:
 	// Constructor
-	tagPWRREMINDERITEM();											// Default constructor
-	tagPWRREMINDERITEM(const tagPWRREMINDERITEM&);					// Copy constructor
+	PwrReminderItem();												// Default constructor
+	PwrReminderItem(const PwrReminderItem&);						// Copy constructor
 
 	// Operator
-	tagPWRREMINDERITEM& operator=(const tagPWRREMINDERITEM&);		// Copy assignment operator
+	PwrReminderItem& operator=(const PwrReminderItem&);				// Copy assignment operator
 
-	// Member functions
-	void Copy(const tagPWRREMINDERITEM&);							// Copy item
-	BOOL IsEmpty() const;											// Check if item is empty
-	BOOL Compare(const tagPWRREMINDERITEM&) const;					// Compare items
-	void SetEnableState(BOOL);										// Set item enable state
-	BOOL IsRepeatEnable(void) const;								// Check if item repeat mode is enabled
+	// Data processing
+	void Copy(const PwrReminderItem&);								// Copy item
+	BOOL IsEmpty(void) const;										// Check if item is empty
+	BOOL Compare(const PwrReminderItem&) const;						// Compare items
+
+	// Access data
+	PWRREPEATSET& GetRepeatSetData(void);							// Get access to item RepeatSet info data
+	void ResetRepeatInfo(void);										// Reset RepeatSet info data
+	RMDMSGSTYLESET& GetMessageStyleData(void);						// Get access to item Message Style info data
+	void ResetMessageStyleInfo(void);								// Reset Message Style info data
+
+	// Get/set attributes
+	BOOL IsEnabled(void) const;										// Check if item is enabled
+	void EnableItem(BOOL);											// Set item enable state
+	UINT GetItemID(void) const;										// Get Power Reminder item ID
+	void SetItemID(UINT);											// Set Power Reminder item ID
+	LPCTSTR GetMessage(void) const;									// Get item message content
+	void SetMessage(LPCTSTR);										// Set item message content
+	UINT GetEventID(void) const;									// Get Power Reminder item event ID
+	void SetEventID(UINT);											// Set Power Reminder item event ID
+	SYSTEMTIME GetTime(void) const;									// Get Power Reminder item time data
+	void SetTime(const SYSTEMTIME&);								// Set Power Reminder item time data
+	DWORD GetMessageStyle(void) const;								// Get item message style ID
+	void SetMessageStyle(DWORD);									// Set item message style ID
+	BOOL IsCustomStyleEnabled(void) const;							// Check if item message custom style is enabled
+	void EnableCustomStyle(BOOL);									// Set item message custom style enable state
+
+	// Get RepeatSet data
+	BOOL IsRepeatEnabled(void) const;								// Check if item repeat mode is enabled
 	BOOL IsDayActive(DAYOFWEEK dayOfWeek) const;					// Check if day of week is active
 	BOOL IsAllowSnoozing(void) const;								// Check if item snooze mode is available
+	INT  GetSnoozeInterval(void) const;								// Get item snooze interval value
 	BYTE GetActiveDays(void) const;									// Get repeat active days
-	void Print(CString& strOutput);									// Print item data
-} PWRREMINDERITEM, *PPWRREMINDERITEM;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	PWRREMINDERITEMLIST
-//  Description:	Store list of Power Reminder items
-//  Derivered from: MFC CArray class
-//
-//////////////////////////////////////////////////////////////////////////
+	// Set RepeatSet data
+	void EnableRepeat(BOOL);										// Set repeat enable state
+	void EnableSnoozing(BOOL);										// Set allow snoozing state
+	void SetSnoozeInterval(INT);									// Set snooze interval data
+	void SetActiveDays(BYTE);										// Set repeat days data
+	void SetDayActive(DAYOFWEEK, BOOL);								// Set active state for specific day of week
 
+	void Print(CString& strOutput) const;							// Print item data
+};
+
+// Define new typenames for Reminder message style data
+using PWRREMINDERITEM = typename PwrReminderItem;
+using PPWRREMINDERITEM = typename PwrReminderItem*;
 using PWRREMINDERITEMLIST = CArray<PWRREMINDERITEM, PWRREMINDERITEM>;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	PWRREMINDERDATA
+//	Class name:		PwrReminderData
 //  Description:	Store app Power Reminder data settings
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagPWRREMINDERDATA
+class PwrReminderData
 {
-	// Member variables
-	PWRREMINDERITEMLIST	arrRmdItemList;								// List of reminder items
-	RMDMSGSTYLESET		rmdCommonStyle;								// Common message style set
+private:
+	// Attributes
+	PWRREMINDERITEMLIST	m_arrRmdItemList;							// List of reminder items
+	RMDMSGSTYLESET		m_rmdCommonStyle;							// Common message style set
 
+public:
 	// Constructor
-	tagPWRREMINDERDATA();											// Default constructor
-	tagPWRREMINDERDATA(const tagPWRREMINDERDATA&);					// Copy constructor
+	PwrReminderData();												// Default constructor
+	PwrReminderData(const PwrReminderData&);						// Copy constructor
 
 	// Operator
-	tagPWRREMINDERDATA& operator=(const tagPWRREMINDERDATA&);		// Copy assignment operator
+	PwrReminderData& operator=(const PwrReminderData&);				// Copy assignment operator
 
 	// Member functions
-	void Init();													// Init data
-	void Copy(const tagPWRREMINDERDATA&);							// Copy data
+	void Init(void);												// Init data
+	void Copy(const PwrReminderData&);								// Copy data
+	void SetDefaultData(void);										// Set default data
+
+	// Update items
 	void Add(const PWRREMINDERITEM&);								// Add item
 	void Update(const PWRREMINDERITEM&);							// Update item
+
+	// Access items
 	const PWRREMINDERITEM& GetItemAt(int) const;					// Get item at index (constant)
 	PWRREMINDERITEM& GetItemAt(int);								// Get item at index
+
+	// Item processing
 	void Remove(int);												// Remove item at index
 	void RemoveAll(void);											// Remove all item
-	void Adjust();													// Adjust data validity
-	UINT GetNextID();												// Get next item ID (to add new item)
+	void Adjust(void);												// Adjust data validity
+	UINT GetNextID(void);											// Get next item ID (to add new item)
+
+	// Get attributes
 	INT_PTR GetItemNum(void) const;									// Get number of items
 	BOOL IsEmpty(int) const;										// Check if item at index is empty
-	BOOL IsAllEmpty() const;										// Check if all items are empty
+	BOOL IsAllEmpty(void) const;									// Check if all items are empty
+
+	// Clean-up
 	void Delete(int);												// Delete item at index
 	void DeleteAll(void);											// Delete all data
-} PWRREMINDERDATA, *PPWRREMINDERDATA;
+};
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	PWRRUNTIMEITEM
+//  Class name:		PwrRuntimeItem
 //  Description:	Store data of a runtime info item
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagPWRRUNTIMEITEM
+class PwrRuntimeItem
 {
-	// Member variables
-	INT			nCategory;											// Item category
-	UINT		nItemID;											// Power Reminder item ID
-	INT			nDisplayFlag;										// Item displaying flag
-	INT			nSkipFlag;											// Item skip flag
-	INT			nSnoozeFlag;										// Item snooze trigger flag
-	SYSTEMTIME	stNextSnoozeTime;									// Next snooze trigger time
+private:
+	// Attributes
+	INT			m_nCategory;										// Item category
+	UINT		m_nItemID;											// Power Reminder item ID
+	INT			m_nDisplayFlag;										// Item displaying flag
+	INT			m_nSkipFlag;										// Item skip flag
+	INT			m_nSnoozeFlag;										// Item snooze trigger flag
+	SYSTEMTIME	m_stNextSnoozeTime;									// Next snooze trigger time
 
+public:
 	// Constructor
-	tagPWRRUNTIMEITEM();											// Default constructor
-	tagPWRRUNTIMEITEM(const tagPWRRUNTIMEITEM&);					// Copy constructor
+	PwrRuntimeItem();												// Default constructor
+	PwrRuntimeItem(const PwrRuntimeItem&);							// Copy constructor
 
 	// Operator
-	tagPWRRUNTIMEITEM& operator=(const tagPWRRUNTIMEITEM&);			// Copy assignment operator
+	PwrRuntimeItem& operator=(const PwrRuntimeItem&);				// Copy assignment operator
 
-	// Member functions
-	void Copy(const tagPWRRUNTIMEITEM&);							// Copy data
+	// Data processing
+	void Copy(const PwrRuntimeItem&);								// Copy data
 	void CalcNextSnoozeTime(int nInterval);							// Calculate next snooze time
-} PWRRUNTIMEITEM, *PPWRRUNTIMEITEM;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	PWRRUNTIMEQUEUE
-//  Description:	Store list of Power++ runtime item queue
-//  Derivered from: MFC CArray class
-//
-//////////////////////////////////////////////////////////////////////////
+	// Get/set attributes
+	INT			GetCategory(void) const;							// Get item category
+	void		SetCategory(INT);									// Set item category
+	UINT		GetItemID(void) const;								// Get item ID
+	void		SetItemID(UINT);									// Set item ID
+	INT			GetDisplayFlag(void) const;							// Get item displaying flag
+	void		SetDisplayFlag(INT);								// Set item displaying flag
+	INT			GetSkipFlag(void) const;							// Get item skip flag
+	void		SetSkipFlag(INT);									// Set item skip flag
+	INT			GetSnoozeFlag(void) const;							// Get item snooze trigger flag
+	void		SetSnoozeFlag(INT);									// Set item snooze trigger flag
+	SYSTEMTIME  GetTime(void) const;								// Get next snooze trigger time
+	void		SetTime(const SYSTEMTIME&);							// Set next snooze trigger time
+};
 
-typedef CArray<PWRRUNTIMEITEM, PWRRUNTIMEITEM> PWRRUNTIMEQUEUE;
+// Define new typenames for runtime info item data
+using PWRRUNTIMEITEM = typename PwrRuntimeItem;
+using PPWRRUNTIMEITEM = typename PwrRuntimeItem*;
+using PWRRUNTIMEQUEUE = CArray<PWRRUNTIMEITEM, PWRRUNTIMEITEM>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1430,28 +1591,39 @@ typedef CArray<PWRRUNTIMEITEM, PWRRUNTIMEITEM> PWRRUNTIMEQUEUE;
 
 typedef struct tagHISTORYINFODATA
 {
-	// Member variables
-	BOOL		bInitState;										// Init state flag
-	UINT		nCategoryID;									// Category ID
-	SYSTEMTIME	stTimestamp;									// Timestamp of history
-	UINT		nItemID;										// Item ID
-	UINT		nActionNameID;									// Name of action (string ID)
-	BOOL		bActionResult;									// Action result
-	DWORD		dwErrorCode;									// Returned error code
-	CString		strDescription;									// History description (attached info)
+	// Attributes
+	BOOL		m_bInitState;									// Init state flag
+	UINT		m_nCategoryID;									// Category ID
+	SYSTEMTIME	m_stTimestamp;									// Timestamp of history
+	UINT		m_nItemID;										// Item ID
+	UINT		m_nActionNameID;								// Name of action (string ID)
+	BOOL		m_bActionResult;								// Action result
+	DWORD		m_dwErrorCode;									// Returned error code
+	CString		m_strDescription;								// History description (attached info)
+} HISTORYINFODATA, *PHISTORYINFODATA;
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	Class name:		HistoryInfoData
+//  Description:	Manage app action history info data
+//
+//////////////////////////////////////////////////////////////////////////
+
+class HistoryInfoData : public HISTORYINFODATA
+{
+public:
 	// Constructor
-	tagHISTORYINFODATA();										// Default constructor
-	tagHISTORYINFODATA(const tagHISTORYINFODATA&);				// Copy constructor
+	HistoryInfoData();											// Default constructor
+	HistoryInfoData(const HistoryInfoData&);					// Copy constructor
 
 	// Operator
-	tagHISTORYINFODATA& operator=(const tagHISTORYINFODATA&);	// Copy assignment operator
+	HistoryInfoData& operator=(const HistoryInfoData&);			// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagHISTORYINFODATA&);						// Copy data
+	void Copy(const HistoryInfoData&);							// Copy data
 	void Init(UINT nCategoryID);								// Initialization
 	void RemoveAll(void);										// Remove all data
-} HISTORYINFODATA, *PHISTORYINFODATA;
+};
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1561,43 +1733,65 @@ typedef struct tagREGISTRYKEY
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	REGISTRYINFO
+//	Class name:		RegistryInfo
 //  Description:	Store data of a registry key info
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagREGISTRYINFO
+class RegistryInfo
 {
-	// Member variables
-	HKEY			hRootKey;								// Root key (HKEY)
-	CString			strRootKey;								// Root key (string)
-	CStringArray	astrSubkeyPath;							// Subkey path (string array)
-	CString			strProfileName;							// Profile key name (string)
-	CString			strAppName;								// App name (string)
-	CStringArray	astrSectionArray;						// Section array (string)
-	REGISTRYKEY		regKeyInfo;								// Registry key info
+private:
+	// Attributes
+	HKEY			m_hRootKey;								// Root key (HKEY)
+	CString			m_strRootKey;							// Root key (string)
+	CStringArray	m_astrSubkeyPath;						// Subkey path (string array)
+	CString			m_strProfileName;						// Profile key name (string)
+	CString			m_strAppName;							// App name (string)
+	CStringArray	m_astrSectionArray;						// Section array (string)
+	REGISTRYKEY		m_regKeyInfo;							// Registry key info
 
+public:
 	// Constructor
-	tagREGISTRYINFO();										// Default constructor
-	tagREGISTRYINFO(const tagREGISTRYINFO&);				// Copy constructor
+	RegistryInfo();											// Default constructor
+	RegistryInfo(const RegistryInfo&);						// Copy constructor
 
 	// Operator
-	tagREGISTRYINFO& operator=(const tagREGISTRYINFO&);		// Copy assignment operator
+	RegistryInfo& operator=(const RegistryInfo&);			// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagREGISTRYINFO&);						// Copy data
+	void Copy(const RegistryInfo&);							// Copy data
 	void RemoveAll(void);									// Remove all data
 
-	// Set properties
+	// Get data
+	HKEY GetRootKey(void) const;							// Get root key
+	const REGISTRYKEY& GetRegistryKey(void) const;			// Get registry key info data
+
+	// Get attributes
+	LPCTSTR GetRootKeyName(void) const;						// Get root key name
+	void GetSubkeyPath(CStringArray&) const;				// Get Subkey path array
+	LPCTSTR GetProfileName(void) const;						// Get Profile key name
+	LPCTSTR GetAppName(void) const;							// Get App name
+	void GetSectionName(CStringArray&) const;				// Get Section name array
+
+	// Set attributes
+	void SetRootKey(HKEY);									// Set root key
 	void SetRootKeyName(UINT);								// Set root key name (resource ID)
+	void SetRootKeyName(LPCTSTR);							// Set root key name (string)
 	void SetSubkeyPath(UINT);								// Set Subkey path (resource ID)
+	void SetSubkeyPath(LPCTSTR);							// Set Subkey path (string)
 	void SetSubkeyPath(CStringArray&);						// Set Subkey path (string array)
 	void SetProfileName(UINT);								// Set Profile key name (resource ID)
+	void SetProfileName(LPCTSTR);							// Set Profile key name (string)
 	void SetAppName(UINT);									// Set App name (resource ID)
-	void SetSectionName(UINT);								// Set Section array (resource ID)
+	void SetAppName(LPCTSTR);								// Set App name (string)
+	void SetSectionName(UINT);								// Set Section name (resource ID)
+	void SetSectionName(LPCTSTR);							// Set Section name (string)
 	void SetSectionName(CStringArray&);						// Set Section array (string array)
-} REGISTRYINFO, *PREGISTRYINFO;
+};
+
+// Define new typenames for Registry info class
+using REGISTRYINFO = typename RegistryInfo;
+using PREGISTRYINFO = typename RegistryInfo*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1685,18 +1879,6 @@ typedef struct tagACTIONDEF
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	IDMAPTABLE
-//					ACTIONDEFCOMBTABLE
-//  Description:	Data mapping table
-//  Derivered from: C++ vector type
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef std::vector<IDPAIR>		IDMAPTABLE;
-typedef std::vector<ACTIONDEF>	ACTIONDEFTABLE;
-
-//////////////////////////////////////////////////////////////////////////
-//
 //	Data type name:	BUFFER
 //  Description:	Using for string buffer processing (debug command, etc)
 //  Derivered from: C++ basic struct
@@ -1731,445 +1913,70 @@ typedef struct tagRESTARTREQ
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	SUBSTRING
+//	Class name:		Substring
 //  Description:	Using for getting substrings
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagSUBSTRING
+class Substring
 {
+private:
 	// Member variables
-	CString strLeft;										// Left part
-	CString strMid;											// Middle part
-	CString strRight;										// Right part
+	CString m_strLeft;										// Left part
+	CString m_strMid;										// Middle part
+	CString m_strRight;										// Right part
 
+public:
 	// Constructor
-	tagSUBSTRING();											// Default constructor
-	tagSUBSTRING(const tagSUBSTRING&);						// Copy constructor
+	Substring();											// Default constructor
+	Substring(const Substring&);							// Copy constructor
 
 	// Operator
-	tagSUBSTRING& operator=(const tagSUBSTRING&);			// Copy assignment operator
+	Substring& operator=(const Substring&);					// Copy assignment operator
 
-	// Member functions
-	void Copy(const tagSUBSTRING&);							// Copy data
+	// Data processing
+	void Copy(const Substring&);							// Copy data
 	void RemoveAll(void);									// Remove all data
 	BOOL IsEmpty(void) const;								// Check if data is empty
+	void TrimLeft(void);									// Trim spaces for left part
+	void TrimMid(void);										// Trim spaces for middle part
+	void TrimRight(void);									// Trim spaces for right part
+	void TrimAll(void);										// Trim spaces for all parts
 
+	// Get substrings
 	LPCTSTR	Left(void) const;								// Get left part
 	LPCTSTR	Mid(void) const;								// Get middle part
 	LPCTSTR	Right(void) const;								// Get right part
-} SUBSTRING, *PSUBSTRING;
+
+	// Set substrings
+	void SetLeft(LPCTSTR);									// Set left part
+	void SetMid(LPCTSTR);									// Set middle part
+	void SetRight(LPCTSTR);									// Set right part
+};
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	PERFORMANCECOUNTER
+//	Class name:		PerformanceCounter
 //  Description:	Using for querrying performance counter of functions
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagPERFORMANCECOUNTER
+class PerformanceCounter
 {
+private:
 	// Member variables
-	LARGE_INTEGER startTime;								// Start time
-	LARGE_INTEGER endTime;									// End time
-	LARGE_INTEGER frequency;								// Performance frequency
+	LARGE_INTEGER m_liStartTime;							// Start time
+	LARGE_INTEGER m_liEndTime;								// End time
+	LARGE_INTEGER m_liFrequency;							// Performance frequency
 
+public:
 	// Constructor
-	tagPERFORMANCECOUNTER();								// Default constructor
+	PerformanceCounter();									// Default constructor
 
 	// Member functions
 	void Start(void);										// Start performance counter
 	void Stop(void);										// Stop performance counter
 	double GetElapsedTime(BOOL) const;						// Get function execution elapsed time
-} PERFORMANCECOUNTER, *PPERFORMANCECOUNTER;
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define global static data tables for program, these data will be used elsewhere in the program
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idTableActionName
-//  Description:	Using for pairing action macro IDs and action name IDs
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableActionName
-{
-/*----------Action ID----------------------------Action Name ID---------------------*/
-	{ APP_ACTION_NOTHING,					ACTION_NAME_NOTHING					},
-	{ APP_ACTION_DISPLAYOFF,				ACTION_NAME_DISPLAYOFF				},
-	{ APP_ACTION_SLEEP,						ACTION_NAME_SLEEP					},
-	{ APP_ACTION_SHUTDOWN,					ACTION_NAME_SHUTDOWN				},
-	{ APP_ACTION_RESTART,					ACTION_NAME_RESTART					},
-	{ APP_ACTION_SIGNOUT,					ACTION_NAME_SIGNOUT					},
-	{ APP_ACTION_HIBERNATE,					ACTION_NAME_HIBERNATE				},
-	{ APP_ACTION_SHOWMENU,					ACTION_NAME_SHOWMENU				},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idTableActionMsg
-//  Description:	Using for pairing action macro IDs and action message IDs
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableActionMsg
-{
-/*----------Action ID---------------------------Message String ID-------------------*/
-	{ APP_ACTION_DISPLAYOFF,				MESSAGE_ACTION_DISPLAYOFF			},
-	{ APP_ACTION_SLEEP,						MESSAGE_ACTION_SLEEP				},
-	{ APP_ACTION_SHUTDOWN,					MESSAGE_ACTION_SHUTDOWN				},
-	{ APP_ACTION_RESTART,					MESSAGE_ACTION_RESTART				},
-	{ APP_ACTION_SIGNOUT,					MESSAGE_ACTION_SIGNOUT				},
-	{ APP_ACTION_HIBERNATE,					MESSAGE_ACTION_HIBERNATE			},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idTableNotifyTip
-//  Description:	Using for pairing action macro IDs and string IDs for
-//					notify icon tip text
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableNotifyTip
-{
-/*---------Action ID---------------------------Notify String ID---------------------*/
-	{ APP_ACTION_DISPLAYOFF,				NOTIFY_TIP_DISPLAYOFF				},
-	{ APP_ACTION_SLEEP,						NOTIFY_TIP_SLEEP					},
-	{ APP_ACTION_SHUTDOWN,					NOTIFY_TIP_SHUTDOWN					},
-	{ APP_ACTION_RESTART,					NOTIFY_TIP_RESTART					},
-	{ APP_ACTION_SIGNOUT,					NOTIFY_TIP_SIGNOUT					},
-	{ APP_ACTION_HIBERNATE,					NOTIFY_TIP_HIBERNATE				},
-	{ APP_ACTION_SHOWMENU,					NOTIFY_TIP_SHOWMENU					},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idplBalloonTip
-//  Description:	Using for pairing action macro IDs and string IDs for
-//					notify icon balloon tip text
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableBalloonTip
-{
-/*---------Action ID---------------------------Balloon String ID--------------------*/
-	{ APP_ACTION_DISPLAYOFF,				BALLOON_TIP_DISPLAYOFF				},
-	{ APP_ACTION_SLEEP,						BALLOON_TIP_SLEEP					},
-	{ APP_ACTION_SHUTDOWN,					BALLOON_TIP_SHUTDOWN				},
-	{ APP_ACTION_RESTART,					BALLOON_TIP_RESTART					},
-	{ APP_ACTION_SIGNOUT,					BALLOON_TIP_SIGNOUT					},
-	{ APP_ACTION_HIBERNATE,					BALLOON_TIP_HIBERNATE				},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idTableErrorCode
-//  Description:	Using for pairing application-defined error codes and
-//					system-defined error codes
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableErrorCode
-{
-/*----------Action ID----------------------------Action Name ID---------------------*/
-	{ APP_ERROR_SUCCESS,					ERROR_SUCCESS						},
-	{ APP_ERROR_INVALID_FUNCTION,			ERROR_INVALID_FUNCTION				},
-	{ APP_ERROR_FILE_NOT_FOUND,				ERROR_FILE_NOT_FOUND				},
-	{ APP_ERROR_PATH_NOT_FOUND,				ERROR_PATH_NOT_FOUND				},
-	{ APP_ERROR_ACCESS_DENIED,				ERROR_ACCESS_DENIED					},
-	{ APP_ERROR_INVALID_HANDLE,				ERROR_INVALID_HANDLE				},
-	{ APP_ERROR_INVALID_DATA,				ERROR_INVALID_DATA					},
-	{ APP_ERROR_NO_MORE_FILES,				ERROR_NO_MORE_FILES					},
-	{ APP_ERROR_FILE_EXISTS,				ERROR_FILE_EXISTS					},
-	{ APP_ERROR_CANNOT_MAKE,				ERROR_CANNOT_MAKE					},
-	{ APP_ERROR_INVALID_PARAMETER,			ERROR_INVALID_PARAMETER				},
-	{ APP_ERROR_OPEN_FAILED,				ERROR_OPEN_FAILED					},
-	{ APP_ERROR_BUFFER_OVERFLOW,			ERROR_BUFFER_OVERFLOW				},
-	{ APP_ERROR_INVALID_NAME,				ERROR_INVALID_NAME					},
-	{ APP_ERROR_DIR_NOT_EMPTY,				ERROR_DIR_NOT_EMPTY					},
-	{ APP_ERROR_FAIL_SHUTDOWN,				ERROR_FAIL_SHUTDOWN					},
-	{ APP_ERROR_FAIL_RESTART,				ERROR_FAIL_RESTART					},
-	{ APP_ERROR_INVALID_ADDRESS,			ERROR_INVALID_ADDRESS				},
-	{ APP_ERROR_APP_INIT_FAILURE,			ERROR_APP_INIT_FAILURE				},
-	{ APP_ERROR_CANNOT_LOAD_REGISTRY,		ERROR_CANNOT_LOAD_REGISTRY_FILE		},
-	{ APP_ERROR_REGISTRY_QUOTA_LIMIT,		ERROR_REGISTRY_QUOTA_LIMIT			},
-	{ APP_ERROR_SYSTEM_SHUTDOWN,			ERROR_SYSTEM_SHUTDOWN				},
-	{ APP_ERROR_HIBERNATED,					ERROR_HIBERNATED					},
-	{ APP_ERROR_RESUME_HIBERNATION,			ERROR_RESUME_HIBERNATION			},
-	{ APP_ERROR_WAKE_SYSTEM,				ERROR_WAKE_SYSTEM					},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idTableErrorMessage
-//  Description:	Using for pairing application-defined error codes and
-//					error message string IDs
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableErrorMessage
-{
-/*----------Action ID----------------------------Action Name ID---------------------*/
-	{ APP_ERROR_SUCCESS,					INT_NULL,							},
-	{ APP_ERROR_FAILED,						MSGBOX_ERROR_FAILED					},
-	{ APP_ERROR_WRONG_ARGUMENT,				MSGBOX_ERROR_WRONG_ARGUMENT			},
-	{ APP_ERROR_INVALID_FUNCTION,			MSGBOX_ERROR_INVALID_FUNCTION		},
-	{ APP_ERROR_FILE_NOT_FOUND,				MSGBOX_ERROR_FILE_NOT_FOUND			},
-	{ APP_ERROR_PATH_NOT_FOUND,				MSGBOX_ERROR_PATH_NOT_FOUND			},
-	{ APP_ERROR_ACCESS_DENIED,				MSGBOX_ERROR_ACCESS_DENIED			},
-	{ APP_ERROR_INVALID_HANDLE,				MSGBOX_ERROR_INVALID_HANDLE			},
-	{ APP_ERROR_INVALID_DATA,				MSGBOX_ERROR_INVALID_DATA			},
-	{ APP_ERROR_NO_MORE_FILES,				MSGBOX_ERROR_NO_MORE_FILES			},
-	{ APP_ERROR_FILE_EXISTS,				MSGBOX_ERROR_FILE_EXISTS			},
-	{ APP_ERROR_CANNOT_MAKE,				MSGBOX_ERROR_CANNOT_MAKE			},
-	{ APP_ERROR_INVALID_PARAMETER,			MSGBOX_ERROR_INVALID_PARAMETER		},
-	{ APP_ERROR_OPEN_FAILED,				MSGBOX_ERROR_OPEN_FAILED			},
-	{ APP_ERROR_BUFFER_OVERFLOW,			MSGBOX_ERROR_BUFFER_OVERFLOW		},
-	{ APP_ERROR_INVALID_NAME,				MSGBOX_ERROR_INVALID_NAME			},
-	{ APP_ERROR_DIR_NOT_EMPTY,				MSGBOX_ERROR_DIR_NOT_EMPTY			},
-	{ APP_ERROR_FAIL_SHUTDOWN,				MSGBOX_ERROR_FAIL_SHUTDOWN			},
-	{ APP_ERROR_FAIL_RESTART,				MSGBOX_ERROR_FAIL_RESTART			},
-	{ APP_ERROR_INVALID_ADDRESS,			MSGBOX_ERROR_INVALID_ADDRESS		},
-	{ APP_ERROR_APP_INIT_FAILURE,			MSGBOX_ERROR_APP_INIT_FAILURE		},
-	{ APP_ERROR_CANNOT_LOAD_REGISTRY,		MSGBOX_ERROR_CANNOT_LOAD_REGISTRY	},
-	{ APP_ERROR_REGISTRY_QUOTA_LIMIT,		MSGBOX_ERROR_REGISTRY_QUOTA_LIMIT	},
-	{ APP_ERROR_SYSTEM_SHUTDOWN,			MSGBOX_ERROR_SYSTEM_SHUTDOWN		},
-	{ APP_ERROR_HIBERNATED,					MSGBOX_ERROR_HIBERNATED				},
-	{ APP_ERROR_RESUME_HIBERNATION,			MSGBOX_ERROR_RESUME_HIBERNATION		},
-	{ APP_ERROR_BACKUP_REG_FAILED,			MSGBOX_ERROR_BACKUP_REG_FAILED		},
-	{ APP_ERROR_LOAD_CFG_INVALID,			MSGBOX_ERROR_LOAD_CFG_FAILED		},
-	{ APP_ERROR_LOAD_CFG_FAILED,			MSGBOX_ERROR_LOAD_CFG_FAILED		},
-	{ APP_ERROR_SAVE_CFG_INVALID,			MSGBOX_ERROR_SAVE_CFG_FAILED		},
-	{ APP_ERROR_SAVE_CFG_FAILED,			MSGBOX_ERROR_SAVE_CFG_FAILED		},
-	{ APP_ERROR_LOAD_SCHED_INVALID,			MSGBOX_ERROR_LOAD_SCHED_FAILED		},
-	{ APP_ERROR_LOAD_SCHED_FAILED,			MSGBOX_ERROR_LOAD_SCHED_FAILED		},
-	{ APP_ERROR_SAVE_SCHED_INVALID,			MSGBOX_ERROR_SAVE_SCHED_FAILED		},
-	{ APP_ERROR_SAVE_SCHED_FAILED,			MSGBOX_ERROR_SAVE_SCHED_FAILED		},
-	{ APP_ERROR_LOAD_HKEYSET_INVALID,		MSGBOX_ERROR_LOAD_HKEYSET_FAILED	},
-	{ APP_ERROR_LOAD_HKEYSET_FAILED,		MSGBOX_ERROR_LOAD_HKEYSET_FAILED	},
-	{ APP_ERROR_SAVE_HKEYSET_INVALID,		MSGBOX_ERROR_SAVE_HKEYSET_FAILED	},
-	{ APP_ERROR_SAVE_HKEYSET_FAILED,		MSGBOX_ERROR_SAVE_HKEYSET_FAILED	},
-	{ APP_ERROR_LOAD_PWRRMD_INVALID,		MSGBOX_ERROR_LOAD_PWRRMD_FAILED		},
-	{ APP_ERROR_LOAD_PWRRMD_FAILED,			MSGBOX_ERROR_LOAD_PWRRMD_FAILED		},
-	{ APP_ERROR_SAVE_PWRRMD_INVALID,		MSGBOX_ERROR_SAVE_PWRRMD_FAILED		},
-	{ APP_ERROR_SAVE_PWRRMD_FAILED,			MSGBOX_ERROR_SAVE_PWRRMD_FAILED		},
-	{ APP_ERROR_WRITE_LOG_FAILED,			MSGBOX_ERROR_WRITE_LOG_FAILED		},
-	{ APP_ERROR_OUTPUT_LOG_FAILED,			MSGBOX_ERROR_OUTPUT_LOG_FAILED		},
-	{ APP_ERROR_UNKNOWN,					MSGBOX_ERROR_UNKNOWN				},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idTableSchedNotifyMsg
-//  Description:	Using for pairing action macro IDs and message box
-//					string IDs for Notify Schedule function
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableSchedNotifyMsg
-{
-/*---------Action ID------------------------------Message String ID-----------------*/
-	{ APP_ACTION_DISPLAYOFF,				MESSAGE_SCHEDNOTIFY_DISPLAYOFF		},
-	{ APP_ACTION_SLEEP,						MESSAGE_SCHEDNOTIFY_SLEEP			},
-	{ APP_ACTION_SHUTDOWN,					MESSAGE_SCHEDNOTIFY_SHUTDOWN		},
-	{ APP_ACTION_RESTART,					MESSAGE_SCHEDNOTIFY_RESTART			},
-	{ APP_ACTION_SIGNOUT,					MESSAGE_SCHEDNOTIFY_SIGNOUT			},
-	{ APP_ACTION_HIBERNATE,					MESSAGE_SCHEDNOTIFY_HIBERNATE		},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idplHKActionID
-//  Description:	Using for pairing Hotkey ID and action macro IDs
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableHKActionID
-{
-/*----HotKey Action ID----------------------------Action ID-------------------------*/
-	{ HKID_DISPLAYOFF,						APP_ACTION_DISPLAYOFF				},
-	{ HKID_SLEEP,							APP_ACTION_SLEEP					},
-	{ HKID_SHUTDOWN,						APP_ACTION_SHUTDOWN					},
-	{ HKID_RESTART,							APP_ACTION_RESTART					},
-	{ HKID_SIGNOUT,							APP_ACTION_SIGNOUT					},
-	{ HKID_HIBERNATE,						APP_ACTION_HIBERNATE				},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idplPwrReminderEvt
-//  Description:	Using for pairing Power Reminder event IDs and string IDs 
-//					which will display in Power Reminder data table
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTablePwrReminderEvt
-{
-/*--------Event ID-----------------------------Event String ID----------------------*/
-	{ PREVT_AT_SETTIME,						PWRRMD_EVENT_AT_SETTIME				},
-	{ PREVT_AT_APPSTARTUP,					PWRRMD_EVENT_AT_APPSTARTUP			},
-	{ PREVT_AT_SYSWAKEUP,					PWRRMD_EVENT_AT_SYSWAKEUP			},
-	{ PREVT_AT_BFRPWRACTION,				PWRRMD_EVENT_AT_BFRPWRACTION		},
-	{ PREVT_AT_PWRACTIONWAKE,				PWRRMD_EVENT_AT_PWRACTIONWAKE		},
-	{ PREVT_AT_APPEXIT,						PWRRMD_EVENT_AT_APPEXIT				},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idplPwrReminderStyle
-//  Description:	Using for pairing Power Reminder style IDs and string IDs 
-//					which will display in Power Reminder data table
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTablePwrReminderStyle
-{
-/*-----Style ID--------------------------------Style String ID----------------------*/
-	{ PRSTYLE_MSGBOX,						PWRRMD_STYLE_MESSAGEBOX				},
-	{ PRSTYLE_DIALOG,						PWRRMD_STYLE_DIALOG					},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		idplDayOfWeek
-//  Description:	Using for pairing day-of-week macro IDs and title IDs
-//  Table type:		IDMAPTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static IDMAPTABLE idTableDayOfWeek
-{
-/*----Day ID---------------------------------Day title string ID--------------------*/
-	{ MONDAY,								DAYOFWEEK_TITLE_MONDAY				},
-	{ TUESDAY,								DAYOFWEEK_TITLE_TUESDAY				},
-	{ WEDNESDAY,							DAYOFWEEK_TITLE_WEDNESDAY			},
-	{ THURSDAY,								DAYOFWEEK_TITLE_THURSDAY			},
-	{ FRIDAY,								DAYOFWEEK_TITLE_FRIDAY				},
-	{ SATURDAY,								DAYOFWEEK_TITLE_SATURDAY			},
-	{ SUNDAY,								DAYOFWEEK_TITLE_SUNDAY				},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		strTableFuncKeyList
-//  Description:	Using for pairing function key macros and key names
-//  Table type:		STRINGTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static STRINGTABLE strTableFuncKeyList 
-{
-/*----------------------------------------------------------------------------------*/
-	{ VK_F1,  _T("F1")	},		{ VK_F2,  _T("F2")  },		{ VK_F3,  _T("F3")	}, 
-	{ VK_F4,  _T("F4")	},		{ VK_F5,  _T("F5")  },		{ VK_F6,  _T("F6")	}, 
-	{ VK_F7,  _T("F7")  },		{ VK_F8,  _T("F8")  },		{ VK_F9,  _T("F9")	}, 
-	{ VK_F10, _T("F10") },		{ VK_F11, _T("F11") },		{ VK_F12, _T("F12") },
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		strTableColorName
-//  Description:	Using for pairing color macro IDs and color names
-//  Table type:		STRINGTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static STRINGTABLE strTableColorName
-{
-/*-------Color ID----------------------------Color name-----------------------------*/
-	{ COLOR_RED,							_T("Red")							},
-	{ COLOR_GREEN,							_T("Green")							},
-	{ COLOR_YELLOW,							_T("Yellow")						},
-	{ COLOR_BLUE,							_T("Blue")							},
-	{ COLOR_WHITE,							_T("White")							},
-	{ COLOR_BLACK,							_T("Black")							},
-	{ COLOR_PINK,							_T("Pink")							},
-	{ COLOR_SAKURA_PINK,					_T("Sakura pink")					},
-	{ COLOR_ORANGE,							_T("Orange")						},
-	{ COLOR_UMARINE_BLUE,					_T("Ultramarine blue")				},
-	{ COLOR_INDIGO,							_T("Indigo")						},
-	{ COLOR_VIOLET,							_T("Violet")						},
-	{ COLOR_PURPLE,							_T("Purple")						},
-	{ COLOR_SCARLET,						_T("Scarlet")						},
-	{ COLOR_JADE,							_T("Jade")							},
-	{ COLOR_EMERALD,						_T("Emerald")						},
-	{ COLOR_GRAY,							_T("Gray")							},
-	{ COLOR_DARK_GRAY,						_T("Dark gray")						},
-	{ COLOR_BRIGHT_GRAY,					_T("Bright gray")					},
-/*----------------------------------------------------------------------------------*/
-};
-
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		strTableMsgIconName
-//  Description:	Using for pairing message icon IDs and icon names
-//  Table type:		STRINGTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static STRINGTABLE strTableMsgIconName
-{
-/*--------Icon ID---------------------------Icon name-------------------------------*/
-	{ IDI_MSGICON_APPLICATION,				_T("App")							},
-	{ IDI_MSGICON_HAND,						_T("Hand")							},
-	{ IDI_MSGICON_QUESTION,					_T("Question")						},
-	{ IDI_MSGICON_EXCLAMATION,				_T("Exclamation")					},
-	{ IDI_MSGICON_ASTERISK,					_T("Asterisk")						},
-	{ IDI_MSGICON_WARNING,					_T("Warning")						},
-	{ IDI_MSGICON_ERROR,					_T("Error")							},
-	{ IDI_MSGICON_INFORMATION,				_T("Information")					},
-/*----------------------------------------------------------------------------------*/
-};
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		hklExistedSysHotkeyList
-//  Description:	Using to define list of existed system-defined keystrokes 
-//  Table type:		HOTKEYINFO Table
-//
-//////////////////////////////////////////////////////////////////////////
-
-static const HOTKEYINFO hklExistedSysHotkeyList[] =
-{
-/*---------Control Key-----------Function Key----------Hotkey description-----------*/
-	{ MOD_ALT,						VK_F4,			HKEYSET_EXISTED_ALT_F4		},
-	{ MOD_ALT,						VK_F8,			HKEYSET_EXISTED_ALT_F8		},
-	{ MOD_CONTROL,					VK_F3,			HKEYSET_EXISTED_CTRL_F3		},
-	{ MOD_CONTROL,					VK_F4,			HKEYSET_EXISTED_CTRL_F4		},
-	{ MOD_CONTROL,					VK_F5,			HKEYSET_EXISTED_CTRL_F5		},
-	{ MOD_CONTROL | MOD_WIN,		VK_F4,			HKEYSET_EXISTED_CTRL_WIN_F4 },
-/*----------------------------------------------------------------------------------*/
 };
 
 
@@ -2179,36 +1986,25 @@ static const HOTKEYINFO hklExistedSysHotkeyList[] =
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace TableFuncs
-{
-	// Pair list processing functions
-	UINT		  GetPairedID(IDMAPTABLE& idTableRef, UINT nID, BOOL bReverse = FALSE);
-	UINT		  GetStringID(STRINGTABLE& strTableRef, LPCTSTR lpszInput);
-	LPCTSTR		  GetString(STRINGTABLE& strTableRef, UINT nID, LPTSTR pszResult = NULL);
-
-	// Language table package processing functions
-	LPCTSTR		  GetLanguageName(UINT nCurLanguage, BOOL bGetDescription = FALSE, LPTSTR pszResult = NULL);
-	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangName = NULL, int* pnSize = NULL);
-	LPCTSTR		  GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult = NULL);
-};
-
-namespace CoreFuncs
+namespace AppCore
 {
 	// Power action execution functions (main core)
 	BOOL ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
 	BOOL ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
 
+#ifdef _LEGACY_CODE_ACTIVE
 	// Default data initialization
 	void SetDefaultData(PCONFIGDATA pcfgData);
 	void SetDefaultData(PSCHEDULEDATA pschData);
 	void SetDefaultData(PHOTKEYSETDATA phksData);
 	void SetDefaultData(PPWRREMINDERDATA ppwrData);
+#endif
 
 	// Trace logging functions
-	void TraceLog(LPCSTR lpszTraceLogA);
-	void TraceLog(LPCTSTR lpszTraceLogW);
-	void TraceLogFormat(LPCSTR lpszTraceLogFormat, ...);
-	void TraceLogFormat(LPCTSTR lpszTraceLogFormat, ...);
+	void TraceError(LPCSTR lpszTraceLogA);
+	void TraceError(LPCTSTR lpszTraceLogW);
+	void TraceErrorFormat(LPCSTR lpszTraceLogFormatA, ...);
+	void TraceErrorFormat(LPCTSTR lpszTraceLogFormatW, ...);
 	void TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex);
 
 	// Debug logging functions
@@ -2244,6 +2040,7 @@ namespace CoreFuncs
 
 	// Time data processing functions
 	SYSTEMTIME	GetCurSysTime(void);
+	void		GetCurSysTime(SYSTEMTIME& stTime);
 	void		CalcTimeOffset(SYSTEMTIME& stTime, int nOffset);
 	BOOL		CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffset = 0);
 	CString		FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal);
@@ -2262,7 +2059,7 @@ namespace CoreFuncs
 
 	LPCTSTR StringFormat(UINT nFormatTemplateID, ...);
 	LPCTSTR StringFormat(LPCTSTR lpszFormatTemplate, ...);
-	BOOL	SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL bIncSepChar = FALSE);
+	BOOL	SubString(LPCTSTR lpszSrc, Substring& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL bIncSepChar = FALSE);
 
 	// Additional functions
 	LPCTSTR GetApplicationPath(BOOL bIncludeExeName);
@@ -2289,5 +2086,20 @@ namespace CoreFuncs
 	BOOL	EnumFontNames(std::vector<std::wstring>& fontNames);
 	BOOL	ValidateFontName(LPCTSTR lpszFontName);
 };
+
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#ifndef _POWERPLUS_ENABLES_INLINE
+		#define _POWERPLUS_ENABLES_INLINE
+		#include "PowerPlus.inl"
+		#pragma message("--Power++ inline enabled")
+	#endif
+#endif
 
 #endif	// ifndef _CORE_H_INCLUDED

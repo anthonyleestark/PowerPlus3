@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		ReminderMsgDlg.h
@@ -51,7 +51,7 @@ private:
 	// Message icon
 	HICON	m_hMsgIcon;
 	BOOL	m_bDispIcon;
-	BYTE	m_byIconPosition;
+	BYTE	m_byIconPlacement;
 	CSize	m_szIconSize;
 
 	// Flags
@@ -104,7 +104,7 @@ public:
 
 	// Icon and margin
 	virtual void SetMsgIcon(UINT nIconID, int nIconSqrSize);
-	virtual void SetMsgIconPosition(BYTE byPosition);
+	virtual void SetMsgIconPlacement(BYTE byPlacement);
 
 	// Other properties
 	virtual BOOL GetAllowSnoozeMode(void) const;

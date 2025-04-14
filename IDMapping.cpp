@@ -14,6 +14,10 @@
 #include "stdafx.h"
 #include "IDMapping.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
 
 ///////////////////////////
 /// Implementations

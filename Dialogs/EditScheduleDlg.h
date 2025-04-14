@@ -19,6 +19,8 @@
 
 #include "Core.h"
 #include "Config.h"
+#include "MapTable.h"
+
 #include "Logging.h"
 #include "IDMapping.h"
 #include "SDialog.h"
@@ -63,7 +65,7 @@ private:
 	CGridCtrl*		 m_pActiveDayListTable;
 
 	// Data variables
-	BOOL m_bEnable;
+	BOOL m_bEnabled;
 	BOOL m_bRepeat;
 	UINT m_nAction;
 

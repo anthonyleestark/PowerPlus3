@@ -26,9 +26,9 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
-using namespace RegFuncs;
+using namespace Language;
+using namespace AppCore;
+using namespace AppRegistry;
 
 
 ////////////////////////////////////////////////////////
@@ -596,15 +596,15 @@ void CLogViewerDlg::UpdateLogViewer(void)
 {
 	// Check list table validity
 	if (m_pLogViewerList == NULL) {
-		TRCLOG("Error: LogViewer list control not found");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: LogViewer list control not found!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Get app event logging pointer
 	if (!LoadAppEventLogData()) {
-		TRCLOG("Error: Load app event log data failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Load app event log data failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 

@@ -20,8 +20,8 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
+using namespace Language;
+using namespace AppCore;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -189,8 +189,8 @@ BOOL SWinApp::InitAppLanguage(void)
 
 	// Check validity after loading
 	if (m_pAppLangPtr == NULL) {
-		TRCLOG("Error: Language pointer acquiring failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Language pointer acquiring failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -622,8 +622,8 @@ void SWinApp::InitAppEventLog(void)
 
 	// Check validity after allocating
 	if (m_pAppEventLog == NULL) {
-		TRCLOG("Error: AppEventLog initialization failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: AppEventLog initialization failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 

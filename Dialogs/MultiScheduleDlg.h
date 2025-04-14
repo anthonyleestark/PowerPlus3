@@ -17,6 +17,8 @@
 
 #include "Core.h"
 #include "Config.h"
+#include "MapTable.h"
+
 #include "Logging.h"
 #include "IDMapping.h"
 #include "SDialog.h"
@@ -66,8 +68,8 @@ private:
 	CEditScheduleDlg* m_pEditScheduleDlg;
 
 	// Data container variables
-	SCHEDULEDATA m_schSchedule;
-	SCHEDULEDATA m_schScheduleTemp;
+	ScheduleData m_schSchedule;
+	ScheduleData m_schScheduleTemp;
 
 	// Table format and properties
 	int	m_nColNum;

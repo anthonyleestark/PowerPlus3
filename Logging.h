@@ -18,10 +18,8 @@
 
 #include "stdafx.h"
 #include "Core.h"
+#include "MapTable.h"
 #include "Logging_pub.h"
-
-using namespace TableFuncs;
-using namespace CoreFuncs;
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,94 +138,6 @@ static SIZE_T GetSizeByType(BYTE byDataType);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//	Define static data tables for logging, these data will be used for logging feature only
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		strTableLogInfoIDTitle
-//  Description:	Using for pairing logging info IDs and the titles when
-//					writing log files
-//  Table type:		STRINGTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static STRINGTABLE strTableLogInfoIDTitle
-{
-/*-----Base log info IDs-----------------------------Log Info Titles----------------*/
-	{ BASELOG_INFO_TIME,							_T("time")					},
-	{ BASELOG_INFO_PID,								_T("pid")					},
-	{ BASELOG_INFO_CATEGORY,						_T("category")				},
-	{ BASELOG_INFO_DESCRIPTION,						_T("description")			},
-	{ BASELOG_INFO_DETAILS,							_T("details")				},
-/*----------------------------------------------------------------------------------*/
-
-/*-----Base log info IDs-----------------------------Log Info Titles----------------*/
-	{ EVENTLOG_DETAIL_RESOURCEID,					_T("resourceid")			},
-	{ EVENTLOG_DETAIL_NAMEID,						_T("nameid")				},
-	{ EVENTLOG_DETAIL_DIALOGCAPTION,				_T("dialogcaption")			},
-	{ EVENTLOG_DETAIL_CTRLCAPTION,					_T("ctrlcaption")			},
-	{ EVENTLOG_DETAIL_CHKSTATE,						_T("checkstate")			},
-	{ EVENTLOG_DETAIL_SELECTION,					_T("selection")				},
-	{ EVENTLOG_DETAIL_DATAVALUE,					_T("datavalue")				},
-	{ EVENTLOG_DETAIL_DATACHANGE,					_T("datachange")			},
-	{ EVENTLOG_DETAIL_CONTENTID,					_T("contentid")				},
-	{ EVENTLOG_DETAIL_MESSAGETEXT,					_T("messagetext")			},
-	{ EVENTLOG_DETAIL_ERRORCODE,					_T("errorcode")				},
-/*----------------------------------------------------------------------------------*/
-
-/*-----History log info IDs--------------------------Log Info Titles----------------*/
-	{ HISTORYLOG_DETAIL_CATEGORY,					_T("category")				},
-	{ HISTORYLOG_DETAIL_ACTION,						_T("action")				},
-	{ HISTORYLOG_DETAIL_KEYSTROKES,					_T("keystrokes")			},
-	{ HISTORYLOG_DETAIL_ITEMID,						_T("itemid")				},
-	{ HISTORYLOG_DETAIL_MESSAGE,					_T("message")				},
-	{ HISTORYLOG_DETAIL_RESULT,						_T("result")				},
-	{ HISTORYLOG_DETAIL_ERRORCODE,					_T("errorcode")				},
-/*----------------------------------------------------------------------------------*/
-};
-
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Table name:		strplHistoryLogDetail
-//  Description:	Using for pairing history log detail info IDs and the
-//					titles when writing log files
-//  Table type:		STRINGTABLE
-//
-//////////////////////////////////////////////////////////////////////////
-
-static STRINGTABLE strTableHistoryLogDetail
-{
-/*-----History category IDs--------------------------Log Info Titles----------------*/
-	{ HISTORYLOG_CATE_PWRACTION,			_T("Power Action")					},
-	{ HISTORYLOG_CATE_SCHEDULE,				_T("Schedule")						},
-	{ HISTORYLOG_CATE_HOTKEYSET,			_T("HotkeySet")						},
-	{ HISTORYLOG_CATE_PWRREMINDER,			_T("Power Reminder")				},
-/*----------------------------------------------------------------------------------*/
-
-/*-----History log action IDs------------------------Log Info Titles----------------*/
-	{ HISTORYLOG_ACTION_NOTHING,			_T("Do nothing")					},
-	{ HISTORYLOG_ACTION_DISPLAYOFF,			_T("Turn off display")				},
-	{ HISTORYLOG_ACTION_SLEEP,				_T("Sleep")							},
-	{ HISTORYLOG_ACTION_SHUTDOWN,			_T("Shutdown")						},
-	{ HISTORYLOG_ACTION_RESTART,			_T("Restart")						},
-	{ HISTORYLOG_ACTION_SIGNOUT,			_T("Sign out")						},
-	{ HISTORYLOG_ACTION_HIBERNATE,			_T("Hibernate")						},
-/*----------------------------------------------------------------------------------*/
-
-/*-----History log action IDs------------------------Log Info Titles----------------*/
-	{ HISTORYLOG_RESULT_SUCCESS,			_T("Success")						},
-	{ HISTORYLOG_RESULT_FAILED_UNKNOWN,		_T("Failed (Unknown error)")		},
-	{ HISTORYLOG_RESULT_FAILED_ERRCODE,		_T("Failed (Error code: 0x%08X)")	},
-/*----------------------------------------------------------------------------------*/
-};
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 //	Define neccessary classes for logging feature
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,7 +197,7 @@ public:
 	void PrintYAML(CString&);								// Print data in YAML format
 };
 
-// Define new names for JSON class object
+// Define new typenames for JSON class object
 using JSONDATA = typename JSON;
 using PJSONDATA = typename JSONDATA*;
 

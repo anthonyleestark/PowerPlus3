@@ -18,6 +18,8 @@
 
 #include "Core.h"
 #include "Config.h"
+#include "MapTable.h"
+
 #include "Logging.h"
 #include "IDMapping.h"
 #include "SDialog.h"

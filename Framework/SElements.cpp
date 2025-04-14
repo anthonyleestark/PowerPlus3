@@ -20,8 +20,8 @@
 #define new DEBUG_NEW
 #endif
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
+using namespace MapTable;
+using namespace AppCore;
 
 
 //////////////////////////////////////////////////////////////////////////

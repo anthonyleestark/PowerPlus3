@@ -18,6 +18,11 @@
 #include "stdafx.h"
 
 #include "Core.h"
+#include "MapTable.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 
 ///////////////////////////////////////////////////////
@@ -26,9 +31,69 @@
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Define member functions of data structures
+//	Define member functions of data structures/classes
 //
 //////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	ConfigData
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+ConfigData::ConfigData()
+{
+	// Main settings
+	this->nLMBAction = APP_ACTION_DISPLAYOFF;							// Left mouse button action
+	this->nMMBAction = APP_ACTION_SLEEP;								// Middle mouse button action
+	this->nRMBAction = APP_ACTION_SHOWMENU;								// Right mouse button action
+	this->bRMBShowMenu = TRUE;											// Right mouse button: Only show menu
+
+	// Display setting
+	this->nLanguageID = APP_LANGUAGE_ENGLISH;							// Language setting
+
+	// System settings
+	this->bShowDlgAtStartup = TRUE;										// Show dialog at startup
+	this->bStartupEnabled = TRUE;										// Startup with Windows
+	this->bConfirmAction = TRUE;										// Show confirm message before doing action
+	this->bSaveHistoryLog = FALSE;										// Save app history log
+	this->bSaveAppEventLog = TRUE;										// Save app event log
+	this->bRunAsAdmin = FALSE;											// Run with admin privileges
+	this->bShowErrorMsg = TRUE;											// Show action error message
+	this->bNotifySchedule = TRUE;										// Show notify tip for schedule action
+	this->bAllowCancelSchedule = FALSE;									// Allow canceling schedule when notify
+	this->bEnableBackgroundHotkey = FALSE;								// Enable background action hotkeys
+	this->bLockStateHotkey = TRUE;										// Allow background hotkeys on lockscreen
+	this->bEnablePowerReminder = TRUE;									// Enable Power Peminder feature
+}
+
+ConfigData::ConfigData(const CONFIGDATA& pData)
+{
+	// Main settings
+	this->nLMBAction = pData.nLMBAction;								// Left mouse button action
+	this->nMMBAction = pData.nMMBAction;								// Middle mouse button action
+	this->nRMBAction = pData.nRMBAction;								// Right mouse button action
+	this->bRMBShowMenu = pData.bRMBShowMenu;							// Right mouse button: Only show menu
+
+	// Display setting
+	this->nLanguageID = pData.nLanguageID;								// Language setting
+
+	// System advanced settings
+	this->bShowDlgAtStartup = pData.bShowDlgAtStartup;					// Show dialog at startup
+	this->bStartupEnabled = pData.bStartupEnabled;						// Startup with Windows
+	this->bConfirmAction = pData.bConfirmAction;						// Show confirm message before doing action
+	this->bSaveHistoryLog = pData.bSaveHistoryLog;						// Save app history log
+	this->bSaveAppEventLog = pData.bSaveAppEventLog;					// Save app event log
+	this->bRunAsAdmin = pData.bRunAsAdmin;								// Run with admin privileges
+	this->bShowErrorMsg = pData.bShowErrorMsg;							// Show action error message
+	this->bNotifySchedule = pData.bNotifySchedule;						// Show notify tip for schedule action
+	this->bAllowCancelSchedule = pData.bAllowCancelSchedule;			// Allow canceling schedule when notify
+	this->bEnableBackgroundHotkey = pData.bEnableBackgroundHotkey;		// Enable background action hotkeys
+	this->bLockStateHotkey = pData.bLockStateHotkey;					// Allow background hotkeys on lockscreen
+	this->bEnablePowerReminder = pData.bEnablePowerReminder;			// Enable Power Peminder feature
+}
 
 //////////////////////////////////////////////////////////////////////////
 // 
@@ -39,7 +104,7 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagCONFIGDATA::Copy(const tagCONFIGDATA& pData)
+void ConfigData::Copy(const CONFIGDATA& pData)
 {
 	// Main settings
 	this->nLMBAction = pData.nLMBAction;								// Left mouse button action
@@ -74,9 +139,9 @@ void tagCONFIGDATA::Copy(const tagCONFIGDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagCONFIGDATA::Compare(const tagCONFIGDATA& pData) const
+BOOL ConfigData::Compare(const CONFIGDATA& pData) const
 {
-	BOOL bRet = FALSE;
+	BOOL bRet = TRUE;
 
 	// Compare Main settings
 	bRet &= (this->nLMBAction == pData.nLMBAction);								// Left mouse button action
@@ -106,29 +171,80 @@ BOOL tagCONFIGDATA::Compare(const tagCONFIGDATA& pData) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagPWRREPEATSET
-//	Description:	Constructor
-//  Arguments:		Default
+//	Function name:	GetData
+//	Description:	Get a clone copy of config data
+//  Arguments:		pData - Output config data (out)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRREPEATSET::tagPWRREPEATSET()
+void ConfigData::GetData(CONFIGDATA& pData) const
 {
-	// Init data
-	this->bRepeat = FALSE;									// Repeat daily
-	this->bAllowSnooze = TRUE;								// Allow snoozing mode
-	this->nSnoozeInterval = DEF_REPEATSET_DEFAULT_SNOOZE;	// Snooze interval
-	this->byRepeatDays = DEF_REPEATSET_DEFAULT_ACTIVEDAYS;	// Default repeat: All days of week
+	// Main settings
+	pData.nLMBAction = this->nLMBAction;								// Left mouse button action
+	pData.nMMBAction = this->nMMBAction;								// Middle mouse button action
+	pData.nRMBAction = this->nRMBAction;								// Right mouse button action
+	pData.bRMBShowMenu = this->bRMBShowMenu;							// Right mouse button: Only show menu
+
+	// Display setting
+	pData.nLanguageID = this->nLanguageID;								// Language setting
+
+	// System advanced settings
+	pData.bShowDlgAtStartup = this->bShowDlgAtStartup;					// Show dialog at startup
+	pData.bStartupEnabled = this->bStartupEnabled;						// Startup with Windows
+	pData.bConfirmAction = this->bConfirmAction;						// Show confirm message before doing action
+	pData.bSaveHistoryLog = this->bSaveHistoryLog;						// Save app history log
+	pData.bSaveAppEventLog = this->bSaveAppEventLog;					// Save app event log
+	pData.bRunAsAdmin = this->bRunAsAdmin;								// Run with admin privileges
+	pData.bShowErrorMsg = this->bShowErrorMsg;							// Show action error message
+	pData.bNotifySchedule = this->bNotifySchedule;						// Show notify tip for schedule action
+	pData.bAllowCancelSchedule = this->bAllowCancelSchedule;			// Allow canceling schedule when notify
+	pData.bEnableBackgroundHotkey = this->bEnableBackgroundHotkey;		// Enable background action hotkeys
+	pData.bLockStateHotkey = this->bLockStateHotkey;					// Allow background hotkeys on lockscreen
+	pData.bEnablePowerReminder = this->bEnablePowerReminder;			// Enable Power Peminder feature
 }
 
-tagPWRREPEATSET::tagPWRREPEATSET(const tagPWRREPEATSET& pItem)
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDefaultData
+//	Description:	Set default for config data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ConfigData::SetDefaultData(void)
+{
+	// Create a new default data
+	static const CONFIGDATA defaultConfig;
+
+	// Copy and overwrite current config data
+	this->Copy(defaultConfig);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	PwrRepeatSet
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+PwrRepeatSet::PwrRepeatSet()
+{
+	// Init data
+	m_bRepeat = FALSE;										// Repeat daily
+	m_bAllowSnooze = TRUE;									// Allow snoozing mode
+	m_nSnoozeInterval = DEF_REPEATSET_DEFAULT_SNOOZE;		// Snooze interval
+	m_byRepeatDays = DEF_REPEATSET_DEFAULT_ACTIVEDAYS;		// Default repeat: All days of week
+}
+
+PwrRepeatSet::PwrRepeatSet(const PwrRepeatSet& pItem)
 {
 	// Copy data
-	this->bRepeat = pItem.bRepeat;							// Repeat daily
-	this->bAllowSnooze = pItem.bAllowSnooze;				// Allow snoozing mode
-	this->nSnoozeInterval = pItem.nSnoozeInterval;			// Snooze interval
-	this->byRepeatDays = pItem.byRepeatDays;				// Default repeat: All days of week
+	this->m_bRepeat = pItem.m_bRepeat;						// Repeat daily
+	this->m_bAllowSnooze = pItem.m_bAllowSnooze;			// Allow snoozing mode
+	this->m_nSnoozeInterval = pItem.m_nSnoozeInterval;		// Snooze interval
+	this->m_byRepeatDays = pItem.m_byRepeatDays;			// Days of week (for repeating)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -140,13 +256,13 @@ tagPWRREPEATSET::tagPWRREPEATSET(const tagPWRREPEATSET& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRREPEATSET& tagPWRREPEATSET::operator=(const tagPWRREPEATSET& pItem)
+PwrRepeatSet& PwrRepeatSet::operator=(const PwrRepeatSet& pItem)
 {
 	// Copy data
-	this->bRepeat = pItem.bRepeat;							// Repeat daily
-	this->bAllowSnooze = pItem.bAllowSnooze;				// Allow snoozing mode
-	this->nSnoozeInterval = pItem.nSnoozeInterval;			// Snooze interval
-	this->byRepeatDays = pItem.byRepeatDays;				// Default repeat: All days of week
+	this->m_bRepeat = pItem.m_bRepeat;						// Repeat daily
+	this->m_bAllowSnooze = pItem.m_bAllowSnooze;			// Allow snoozing mode
+	this->m_nSnoozeInterval = pItem.m_nSnoozeInterval;		// Snooze interval
+	this->m_byRepeatDays = pItem.m_byRepeatDays;			// Days of week (for repeating)
 
 	return *this;
 }
@@ -160,13 +276,13 @@ tagPWRREPEATSET& tagPWRREPEATSET::operator=(const tagPWRREPEATSET& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREPEATSET::Copy(const tagPWRREPEATSET& pItem)
+void PwrRepeatSet::Copy(const PwrRepeatSet& pItem)
 {
 	// Copy data
-	this->bRepeat = pItem.bRepeat;							// Repeat daily
-	this->bAllowSnooze = pItem.bAllowSnooze;				// Allow snoozing mode
-	this->nSnoozeInterval = pItem.nSnoozeInterval;			// Snooze interval
-	this->byRepeatDays = pItem.byRepeatDays;				// Days of week (for repeating)
+	this->m_bRepeat = pItem.m_bRepeat;						// Repeat daily
+	this->m_bAllowSnooze = pItem.m_bAllowSnooze;			// Allow snoozing mode
+	this->m_nSnoozeInterval = pItem.m_nSnoozeInterval;		// Snooze interval
+	this->m_byRepeatDays = pItem.m_byRepeatDays;			// Days of week (for repeating)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -178,17 +294,73 @@ void tagPWRREPEATSET::Copy(const tagPWRREPEATSET& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREPEATSET::Compare(const tagPWRREPEATSET& pItem) const
+BOOL PwrRepeatSet::Compare(const PwrRepeatSet& pItem) const
 {
 	BOOL bRetCompare = TRUE;
 
 	// Compare data
-	bRetCompare &= (this->bRepeat == pItem.bRepeat);					// Repeat daily
-	bRetCompare &= (this->bAllowSnooze == pItem.bAllowSnooze);			// Allow snoozing mode
-	bRetCompare &= (this->nSnoozeInterval == pItem.nSnoozeInterval);	// Snooze interval
-	bRetCompare &= (this->byRepeatDays == pItem.byRepeatDays);			// Days of week (for repeating)
+	bRetCompare &= (this->m_bRepeat == pItem.m_bRepeat);					// Repeat daily
+	bRetCompare &= (this->m_bAllowSnooze == pItem.m_bAllowSnooze);			// Allow snoozing mode
+	bRetCompare &= (this->m_nSnoozeInterval == pItem.m_nSnoozeInterval);	// Snooze interval
+	bRetCompare &= (this->m_byRepeatDays == pItem.m_byRepeatDays);			// Days of week (for repeating)
 
 	return bRetCompare;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsRepeatEnabled
+//	Description:	Check if repeat option is enabled
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL PwrRepeatSet::IsRepeatEnabled(void) const
+{
+	return m_bRepeat;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsAllowSnoozing
+//	Description:	Check if snooze option is enabled
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL PwrRepeatSet::IsAllowSnoozing(void) const
+{
+	return m_bAllowSnooze;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSnoozeInterval
+//	Description:	Get snooze interval data
+//  Arguments:		None
+//  Return value:	INT
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT PwrRepeatSet::GetSnoozeInterval(void) const
+{
+	return m_nSnoozeInterval;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetActiveDays
+//	Description:	Get repeat days data
+//  Arguments:		None
+//  Return value:	BYTE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BYTE PwrRepeatSet::GetActiveDays(void) const
+{
+	return m_byRepeatDays;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -200,52 +372,124 @@ BOOL tagPWRREPEATSET::Compare(const tagPWRREPEATSET& pItem) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREPEATSET::IsDayActive(DAYOFWEEK dayOfWeek) const
+BOOL PwrRepeatSet::IsDayActive(DAYOFWEEK dayOfWeek) const
 {
 	// Invalid day of week
 	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
 		return FALSE;
 
-	return ((this->byRepeatDays & (1 << dayOfWeek)) >> dayOfWeek);
+	return ((m_byRepeatDays & (1 << dayOfWeek)) >> dayOfWeek);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagSCHEDULEITEM
-//	Description:	Constructor
-//  Arguments:		Default
+//	Function name:	EnableRepeat
+//	Description:	Set repeat enable state
+//  Arguments:		bEnabled - Enable or disable
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagSCHEDULEITEM::tagSCHEDULEITEM()
+void PwrRepeatSet::EnableRepeat(BOOL bEnabled)
 {
-	// Initialize
-	this->nItemID = DEF_SCHEDULE_MIN_ITEMID;			// Item ID
-	this->bEnable = FALSE;								// Enable/disable status
-	this->nAction = APP_ACTION_NOTHING;					// Schedule action
-	this->stTime = SYSTEMTIME_ZERO;						// Schedule time
-	this->rpsRepeatSet = PWRREPEATSET();				// Repeat set data
+	m_bRepeat = bEnabled;
 }
 
-tagSCHEDULEITEM::tagSCHEDULEITEM(UINT nItemID)
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableSnoozing
+//	Description:	Set allow snoozing state
+//  Arguments:		bEnabled - Enable or disable
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRepeatSet::EnableSnoozing(BOOL bEnabled)
 {
-	// Initialize
-	this->nItemID = nItemID;							// Item ID
-	this->bEnable = FALSE;								// Enable/disable status
-	this->nAction = APP_ACTION_NOTHING;					// Schedule action
-	this->stTime = SYSTEMTIME_ZERO;						// Schedule time
-	this->rpsRepeatSet = PWRREPEATSET();				// Repeat set data
+	m_bAllowSnooze = bEnabled;
 }
 
-tagSCHEDULEITEM::tagSCHEDULEITEM(const tagSCHEDULEITEM& pItem)
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetSnoozeInterval
+//	Description:	Set snooze interval data
+//  Arguments:		nValue - Interval value
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRepeatSet::SetSnoozeInterval(INT nValue)
+{
+	m_nSnoozeInterval = nValue;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetActiveDays
+//	Description:	Set repeat days data
+//  Arguments:		byActiveDays - Active days
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRepeatSet::SetActiveDays(BYTE byActiveDays)
+{
+	m_byRepeatDays = byActiveDays;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDayActive
+//	Description:	Set active state for specific day of week
+//  Arguments:		byActiveDays - Active days
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRepeatSet::SetDayActive(DAYOFWEEK dayOfWeek, BOOL bActive)
+{
+	// Invalid day of week
+	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
+		return;
+
+	m_byRepeatDays |= bActive << dayOfWeek;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	ScheduleItem
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+ScheduleItem::ScheduleItem()
+{
+	// Initialize
+	m_nItemID = DEF_SCHEDULE_MIN_ITEMID;				// Item ID
+	m_bEnabled = FALSE;									// Enable/disable status
+	m_nActionID = APP_ACTION_NOTHING;					// Schedule action ID
+	m_stTime = SYSTEMTIME_ZERO;							// Schedule time
+	m_rpsRepeatSet = PwrRepeatSet();					// Repeat set data
+}
+
+ScheduleItem::ScheduleItem(UINT nItemID)
+{
+	// Initialize
+	m_nItemID = nItemID;								// Item ID
+	m_bEnabled = FALSE;									// Enable/disable status
+	m_nActionID = APP_ACTION_NOTHING;					// Schedule action
+	m_stTime = SYSTEMTIME_ZERO;							// Schedule time
+	m_rpsRepeatSet = PwrRepeatSet();					// Repeat set data
+}
+
+ScheduleItem::ScheduleItem(const ScheduleItem& pItem)
 {
 	// Copy data
-	this->nItemID = pItem.nItemID;						// Item ID
-	this->bEnable = pItem.bEnable;						// Enable/disable status
-	this->nAction = pItem.nAction;						// Schedule action
-	this->stTime = pItem.stTime;						// Schedule time
-	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);		// Repeat set data
+	this->m_nItemID = pItem.m_nItemID;					// Item ID
+	this->m_bEnabled = pItem.m_bEnabled;				// Enable/disable status
+	this->m_nActionID = pItem.m_nActionID;				// Schedule action ID
+	this->m_stTime = pItem.m_stTime;					// Schedule time
+	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);	// Repeat set data
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -257,14 +501,14 @@ tagSCHEDULEITEM::tagSCHEDULEITEM(const tagSCHEDULEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagSCHEDULEITEM& tagSCHEDULEITEM::operator=(const tagSCHEDULEITEM& pItem)
+ScheduleItem& ScheduleItem::operator=(const ScheduleItem& pItem)
 {
 	// Copy data
-	this->nItemID = pItem.nItemID;						// Item ID
-	this->bEnable = pItem.bEnable;						// Enable/disable status
-	this->nAction = pItem.nAction;						// Schedule action
-	this->stTime = pItem.stTime;						// Schedule time
-	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);		// Repeat set data
+	this->m_nItemID = pItem.m_nItemID;					// Item ID
+	this->m_bEnabled = pItem.m_bEnabled;				// Enable/disable status
+	this->m_nActionID = pItem.m_nActionID;				// Schedule action ID
+	this->m_stTime = pItem.m_stTime;					// Schedule time
+	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);	// Repeat set data
 
 	return *this;
 }
@@ -278,14 +522,14 @@ tagSCHEDULEITEM& tagSCHEDULEITEM::operator=(const tagSCHEDULEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEITEM::Copy(const tagSCHEDULEITEM& pItem)
+void ScheduleItem::Copy(const ScheduleItem& pItem)
 {
 	// Copy data
-	this->nItemID = pItem.nItemID;						// Item ID
-	this->bEnable = pItem.bEnable;						// Enable/disable status
-	this->nAction = pItem.nAction;						// Schedule action
-	this->stTime = pItem.stTime;						// Schedule time
-	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);		// Repeat set data
+	this->m_nItemID = pItem.m_nItemID;					// Item ID
+	this->m_bEnabled = pItem.m_bEnabled;				// Enable/disable status
+	this->m_nActionID = pItem.m_nActionID;				// Schedule action ID
+	this->m_stTime = pItem.m_stTime;					// Schedule time
+	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);	// Repeat set data
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -297,32 +541,18 @@ void tagSCHEDULEITEM::Copy(const tagSCHEDULEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEITEM::Compare(const tagSCHEDULEITEM& pItem) const
+BOOL ScheduleItem::Compare(const ScheduleItem& pItem) const
 {
-	BOOL bRet = FALSE;
+	BOOL bRet = TRUE;
 
 	// Compare item (do not compare item ID)
-	bRet &= (this->bEnable == pItem.bEnable);
-	bRet &= (this->nAction == pItem.nAction);
-	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
-	bRet &= (this->stTime.wMinute == pItem.stTime.wMinute);
-	bRet &= (this->rpsRepeatSet.Compare(pItem.rpsRepeatSet));
+	bRet &= (this->m_bEnabled == pItem.m_bEnabled);
+	bRet &= (this->m_nActionID == pItem.m_nActionID);
+	bRet &= (this->m_stTime.wHour == pItem.m_stTime.wHour);
+	bRet &= (this->m_stTime.wMinute == pItem.m_stTime.wMinute);
+	bRet &= (this->m_rpsRepeatSet.Compare(pItem.m_rpsRepeatSet));
 
 	return bRet;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetActiveState
-//	Description:	Set/change item active state
-//  Arguments:		bActive - New active state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void tagSCHEDULEITEM::SetActiveState(BOOL bActive)
-{
-	this->bEnable = bActive;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -334,7 +564,7 @@ void tagSCHEDULEITEM::SetActiveState(BOOL bActive)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEITEM::IsEmpty(void) const
+BOOL ScheduleItem::IsEmpty(void) const
 {
 	// Initialize an empty item
 	static const SCHEDULEITEM schDummyItem;
@@ -345,16 +575,128 @@ BOOL tagSCHEDULEITEM::IsEmpty(void) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	IsRepeatEnable
+//	Function name:	GetItemID
+//	Description:	Get schedule item ID
+//  Arguments:		None
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT ScheduleItem::GetItemID(void) const
+{
+	return m_nItemID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetItemID
+//	Description:	Set schedule item ID
+//  Arguments:		nItemID - Item ID
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::SetItemID(UINT nItemID)
+{
+	m_nItemID = nItemID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEnabled
+//	Description:	Check if item is enabled
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL ScheduleItem::IsEnabled(void) const
+{
+	return m_bEnabled;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableItem
+//	Description:	Set/change item active state
+//  Arguments:		bEnabled - New active state
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::EnableItem(BOOL bEnabled)
+{
+	m_bEnabled = bEnabled;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetAction
+//	Description:	Get schedule item action ID
+//  Arguments:		None
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT ScheduleItem::GetAction(void) const
+{
+	return m_nActionID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetAction
+//	Description:	Set schedule item action ID
+//  Arguments:		nActionID - Action ID
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::SetAction(UINT nActionID)
+{
+	m_nActionID = nActionID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetTime
+//	Description:	Get schedule item time data
+//  Arguments:		None
+//  Return value:	SYSTEMTIME
+//
+//////////////////////////////////////////////////////////////////////////
+
+SYSTEMTIME ScheduleItem::GetTime(void) const
+{
+	return m_stTime;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetTime
+//	Description:	Set schedule item time data
+//  Arguments:		stTime - Time data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::SetTime(const SYSTEMTIME& stTime)
+{
+	m_stTime = stTime;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsRepeatEnabled
 //	Description:	Check if repeat is enabled
 //  Arguments:		None
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEITEM::IsRepeatEnable(void) const
+BOOL ScheduleItem::IsRepeatEnabled(void) const
 {
-	return (this->rpsRepeatSet.bRepeat);
+	return (m_rpsRepeatSet.IsRepeatEnabled());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -366,15 +708,15 @@ BOOL tagSCHEDULEITEM::IsRepeatEnable(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEITEM::IsAllowSnoozing(void) const
+BOOL ScheduleItem::IsAllowSnoozing(void) const
 {
 	// If repeat option is currently OFF
-	if (this->IsRepeatEnable() != TRUE) {
+	if (IsRepeatEnabled() != TRUE) {
 		// Not allow snooze mode
 		return FALSE;
 	}
 	// If allow snooze option is OFF
-	if (this->rpsRepeatSet.bAllowSnooze != TRUE) {
+	if (m_rpsRepeatSet.IsAllowSnoozing() != TRUE) {
 		// Not allow snooze mode
 		return FALSE;
 	}
@@ -391,9 +733,9 @@ BOOL tagSCHEDULEITEM::IsAllowSnoozing(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEITEM::IsDayActive(DAYOFWEEK dayOfWeek) const
+BOOL ScheduleItem::IsDayActive(DAYOFWEEK dayOfWeek) const
 {
-	return (this->rpsRepeatSet.IsDayActive(dayOfWeek));
+	return (m_rpsRepeatSet.IsDayActive(dayOfWeek));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -405,9 +747,79 @@ BOOL tagSCHEDULEITEM::IsDayActive(DAYOFWEEK dayOfWeek) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BYTE tagSCHEDULEITEM::GetActiveDays(void) const
+BYTE ScheduleItem::GetActiveDays(void) const
 {
-	return (this->rpsRepeatSet.byRepeatDays);
+	return (m_rpsRepeatSet.GetActiveDays());
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableRepeat
+//	Description:	Set repeat enable state
+//  Arguments:		bEnabled - Enable or disable
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::EnableRepeat(BOOL bEnabled)
+{
+	m_rpsRepeatSet.EnableRepeat(bEnabled);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableSnoozing
+//	Description:	Set allow snoozing state
+//  Arguments:		bEnabled - Enable or disable
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::EnableSnoozing(BOOL bEnabled)
+{
+	m_rpsRepeatSet.EnableSnoozing(bEnabled);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetSnoozeInterval
+//	Description:	Set snooze interval data
+//  Arguments:		nValue - Interval value
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::SetSnoozeInterval(INT nValue)
+{
+	m_rpsRepeatSet.SetSnoozeInterval(nValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetActiveDays
+//	Description:	Set repeat days data
+//  Arguments:		byActiveDays - Active days
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::SetActiveDays(BYTE byActiveDays)
+{
+	m_rpsRepeatSet.SetActiveDays(byActiveDays);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDayActive
+//	Description:	Set active state for specific day of week
+//  Arguments:		byActiveDays - Active days
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleItem::SetDayActive(DAYOFWEEK dayOfWeek, BOOL bActive)
+{
+	m_rpsRepeatSet.SetDayActive(dayOfWeek, bActive);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -419,54 +831,54 @@ BYTE tagSCHEDULEITEM::GetActiveDays(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEITEM::Print(CString& strOutput)
+void ScheduleItem::Print(CString& strOutput) const
 {
-	using namespace TableFuncs;
-	using namespace CoreFuncs;
+	// Use table, language and core functions
+	using namespace MapTable;
+	using namespace Language;
+	using namespace AppCore;
 
 	// Get language table
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format schedule data
-	CString strActive = (this->bEnable == TRUE) ? VALUE_TRUE : VALUE_FALSE;						// Enable/disable state
-	UINT nActionStringID = GetPairedID(idTableActionName, this->nAction);
+	CString strActive = (m_bEnabled == TRUE) ? VALUE_TRUE : VALUE_FALSE;						// Enable/disable state
+	UINT nActionStringID = GetPairedID(IDTable::ActionName, m_nActionID);
 	CString strAction = GetLanguageString(ptrLanguage, nActionStringID);						// Schedule action
-	CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, this->stTime);	// Schedule time
-	CString strRepeat = (this->rpsRepeatSet.bRepeat == TRUE) ? VALUE_TRUE : VALUE_FALSE;		// Repeat daily
+	CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, m_stTime);	// Schedule time
+	CString strRepeat = (m_rpsRepeatSet.IsRepeatEnabled() == TRUE) ? VALUE_TRUE : VALUE_FALSE;		// Repeat daily
 
 	// Print item
 	strOutput.Format(_T("Active=(%s), ItemID=%d, Action=(%s), Time=(%s), Repeat=(%s)"),
-						strActive, this->nItemID, strAction, strTimeFormat, strRepeat);
+						strActive, m_nItemID, strAction, strTimeFormat, strRepeat);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagSCHEDULEDATA
+//	Function name:	ScheduleData
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagSCHEDULEDATA::tagSCHEDULEDATA()
+ScheduleData::ScheduleData()
 {
 	// Initialize
-	this->schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
-	this->arrSchedExtraItemList.RemoveAll();
+	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	m_arrSchedExtraItemList.RemoveAll();
 }
 
-tagSCHEDULEDATA::tagSCHEDULEDATA(const tagSCHEDULEDATA& pData)
+ScheduleData::ScheduleData(const ScheduleData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy default item
-	this->schDefaultItem.Copy(pData.schDefaultItem);
+	this->m_schDefaultItem.Copy(pData.m_schDefaultItem);
 
 	// Copy extra data
 	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = pData.arrSchedExtraItemList.GetAt(nIndex);
-		this->arrSchedExtraItemList.Add(schItem);
+		SCHEDULEITEM schItem = pData.m_arrSchedExtraItemList.GetAt(nIndex);
+		this->m_arrSchedExtraItemList.Add(schItem);
 	}
 }
 
@@ -479,18 +891,18 @@ tagSCHEDULEDATA::tagSCHEDULEDATA(const tagSCHEDULEDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagSCHEDULEDATA& tagSCHEDULEDATA::operator=(const tagSCHEDULEDATA& pData)
+ScheduleData& ScheduleData::operator=(const ScheduleData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy default item
-	this->schDefaultItem.Copy(pData.schDefaultItem);
+	this->m_schDefaultItem.Copy(pData.m_schDefaultItem);
 
 	// Copy extra data
 	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = pData.arrSchedExtraItemList.GetAt(nIndex);
-		this->arrSchedExtraItemList.Add(schItem);
+		SCHEDULEITEM schItem = pData.m_arrSchedExtraItemList.GetAt(nIndex);
+		this->m_arrSchedExtraItemList.Add(schItem);
 	}
 
 	return *this;
@@ -505,11 +917,11 @@ tagSCHEDULEDATA& tagSCHEDULEDATA::operator=(const tagSCHEDULEDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::Init()
+void ScheduleData::Init()
 {
 	// Initialize
-	this->schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
-	this->arrSchedExtraItemList.RemoveAll();
+	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	m_arrSchedExtraItemList.RemoveAll();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -521,19 +933,34 @@ void tagSCHEDULEDATA::Init()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::Copy(const tagSCHEDULEDATA& pData)
+void ScheduleData::Copy(const ScheduleData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy default item
-	this->schDefaultItem.Copy(pData.schDefaultItem);
+	this->m_schDefaultItem.Copy(pData.m_schDefaultItem);
 
 	// Copy extra data
 	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = pData.arrSchedExtraItemList.GetAt(nIndex);
-		this->arrSchedExtraItemList.Add(schItem);
+		SCHEDULEITEM schItem = pData.m_arrSchedExtraItemList.GetAt(nIndex);
+		this->m_arrSchedExtraItemList.Add(schItem);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDefaultData
+//	Description:	Set default for schedule data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ScheduleData::SetDefaultData(void)
+{
+	// Reset data
+	this->Init();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -545,40 +972,40 @@ void tagSCHEDULEDATA::Copy(const tagSCHEDULEDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-DWORD tagSCHEDULEDATA::Add(const SCHEDULEITEM& pItem)
+DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 {
 	// If item is empty, can not update
 	if (pItem.IsEmpty())
 		return DEF_SCHEDULE_ERROR_EMPTY;
 
 	// If default item is currently empty
-	if (this->schDefaultItem.IsEmpty()) {
+	if (m_schDefaultItem.IsEmpty()) {
 		// Make item as default
-		SCHEDULEITEM schDefault(pItem);
-		schDefault.nItemID = DEF_SCHEDULE_DEFAULT_ITEMID;
-		this->schDefaultItem.Copy(schDefault);
+		SCHEDULEITEM schDefaultTemp(pItem);
+		schDefaultTemp.SetItemID(DEF_SCHEDULE_DEFAULT_ITEMID);
+		m_schDefaultItem.Copy(schDefaultTemp);
 		return DEF_SCHEDULE_ERROR_SUCCESS;
 	}
 
 	// If extra schedule data is currently empty
-	if (this->arrSchedExtraItemList.IsEmpty()) {
+	if (m_arrSchedExtraItemList.IsEmpty()) {
 		// Just add the item
-		this->arrSchedExtraItemList.Add(pItem);
+		m_arrSchedExtraItemList.Add(pItem);
 		return DEF_SCHEDULE_ERROR_SUCCESS;
 	}
 
 	// If number of items exceeded limit
-	if (this->GetExtraItemNum() >= DEF_SCHEDULE_ERROR_MAXITEM)
+	if (GetExtraItemNum() >= DEF_SCHEDULE_ERROR_MAXITEM)
 		return DEF_SCHEDULE_ERROR_MAXITEM;
 
 	// Check if item is duplicated, if yes, do not add
-	for (int nIndex = 0; nIndex < (this->GetExtraItemNum()); nIndex++) {
-		SCHEDULEITEM pItemTemp = this->GetItemAt(nIndex);
+	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
+		SCHEDULEITEM pItemTemp = GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE) {
 			// All data is duplicated
 			return DEF_SCHEDULE_ERROR_DUPLICATE;
 		}
-		else if (CoreFuncs::CheckTimeMatch(pItemTemp.stTime, pItem.stTime)) {
+		else if (AppCore::CheckTimeMatch(pItemTemp.GetTime(), pItem.GetTime())) {
 			// Time value is duplicated
 			// Can not execute multiple action at the same time
 			return DEF_SCHEDULE_ERROR_DUPLICATETIME;
@@ -586,18 +1013,18 @@ DWORD tagSCHEDULEDATA::Add(const SCHEDULEITEM& pItem)
 	}
 
 	// Create new temporary data
-	PSCHEDULEDATA pNew = new SCHEDULEDATA;
-	pNew->arrSchedExtraItemList.RemoveAll();
+	ScheduleData* pNew = new ScheduleData;
+	pNew->m_arrSchedExtraItemList.RemoveAll();
 
 	// Copy old data to new one
-	pNew->schDefaultItem.Copy(this->schDefaultItem);
+	pNew->m_schDefaultItem.Copy(this->m_schDefaultItem);
 	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
 		SCHEDULEITEM schItem = this->GetItemAt(nIndex);
-		pNew->arrSchedExtraItemList.Add(schItem);
+		pNew->m_arrSchedExtraItemList.Add(schItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->arrSchedExtraItemList.Add(pItem);
+	pNew->m_arrSchedExtraItemList.Add(pItem);
 	this->Copy(*pNew);
 
 	// Delete data
@@ -619,12 +1046,12 @@ DWORD tagSCHEDULEDATA::Add(const SCHEDULEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-DWORD tagSCHEDULEDATA::Update(const SCHEDULEITEM& pItem)
+DWORD ScheduleData::Update(const SCHEDULEITEM& pItem)
 {
 	// If default item or extra schedule data is currently empty
-	if ((this->GetDefaultItem().IsEmpty()) || (this->IsAllEmpty())) {
+	if (GetDefaultItem().IsEmpty() || IsAllEmpty()) {
 		// Just add item
-		return this->Add(pItem);
+		return Add(pItem);
 	}
 
 	// If item is empty, can not update
@@ -632,16 +1059,16 @@ DWORD tagSCHEDULEDATA::Update(const SCHEDULEITEM& pItem)
 		return DEF_SCHEDULE_ERROR_EMPTY;
 
 	// If item ID is matching with default item
-	if (pItem.nItemID == DEF_SCHEDULE_DEFAULT_ITEMID) {
+	if (pItem.GetItemID() == DEF_SCHEDULE_DEFAULT_ITEMID) {
 		// Update default item
-		this->GetDefaultItem().Copy(pItem);
+		GetDefaultItem().Copy(pItem);
 		return DEF_SCHEDULE_ERROR_SUCCESS;
 	}
 
 	// Find extra item with matching ID
 	int nRetItemIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
-		if (this->GetItemAt(nIndex).nItemID == pItem.nItemID) {
+	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
+		if (GetItemAt(nIndex).GetItemID() == pItem.GetItemID()) {
 			nRetItemIndex = nIndex;
 			break;
 		}
@@ -649,14 +1076,14 @@ DWORD tagSCHEDULEDATA::Update(const SCHEDULEITEM& pItem)
 
 	// Update item if found
 	if (nRetItemIndex != INT_INVALID) {
-		SCHEDULEITEM& schTemp = this->GetItemAt(nRetItemIndex);
+		SCHEDULEITEM& schTemp = GetItemAt(nRetItemIndex);
 		schTemp.Copy(pItem);
 		return DEF_SCHEDULE_ERROR_SUCCESS;
 	}
 	// Otherwise,
 	else {
 		// Just add new
-		return this->Add(pItem);
+		return Add(pItem);
 	}
 }
 
@@ -670,9 +1097,9 @@ DWORD tagSCHEDULEDATA::Update(const SCHEDULEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-const SCHEDULEITEM& tagSCHEDULEDATA::GetDefaultItem(void) const
+const SCHEDULEITEM& ScheduleData::GetDefaultItem(void) const
 {
-	return this->schDefaultItem;
+	return m_schDefaultItem;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -684,9 +1111,9 @@ const SCHEDULEITEM& tagSCHEDULEDATA::GetDefaultItem(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-SCHEDULEITEM& tagSCHEDULEDATA::GetDefaultItem(void)
+SCHEDULEITEM& ScheduleData::GetDefaultItem(void)
 {
-	return this->schDefaultItem;
+	return m_schDefaultItem;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -699,11 +1126,11 @@ SCHEDULEITEM& tagSCHEDULEDATA::GetDefaultItem(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-const SCHEDULEITEM& tagSCHEDULEDATA::GetItemAt(int nIndex) const
+const SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex) const
 {
-	ASSERT((nIndex >= 0) && (nIndex < this->GetExtraItemNum()));
-	if ((nIndex >= 0) && (nIndex < this->GetExtraItemNum()))
-		return this->arrSchedExtraItemList.GetAt(nIndex);
+	ASSERT((nIndex >= 0) && (nIndex < GetExtraItemNum()));
+	if ((nIndex >= 0) && (nIndex < GetExtraItemNum()))
+		return m_arrSchedExtraItemList.GetAt(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -718,11 +1145,11 @@ const SCHEDULEITEM& tagSCHEDULEDATA::GetItemAt(int nIndex) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-SCHEDULEITEM& tagSCHEDULEDATA::GetItemAt(int nIndex)
+SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex)
 {
-	ASSERT((nIndex >= 0) && (nIndex < this->GetExtraItemNum()));
-	if ((nIndex >= 0) && (nIndex < this->GetExtraItemNum()))
-		return this->arrSchedExtraItemList.GetAt(nIndex);
+	ASSERT((nIndex >= 0) && (nIndex < GetExtraItemNum()));
+	if ((nIndex >= 0) && (nIndex < GetExtraItemNum()))
+		return m_arrSchedExtraItemList.GetAt(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -737,14 +1164,14 @@ SCHEDULEITEM& tagSCHEDULEDATA::GetItemAt(int nIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::Remove(int nAtIndex)
+void ScheduleData::Remove(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= this->GetExtraItemNum()))
+	if ((nAtIndex < 0) || (nAtIndex >= GetExtraItemNum()))
 		return;
 
 	// Get item data
-	SCHEDULEITEM& schItem = this->GetItemAt(nAtIndex);
+	SCHEDULEITEM& schItem = GetItemAt(nAtIndex);
 
 	// Reset item value
 	schItem.Copy(SCHEDULEITEM());
@@ -759,10 +1186,10 @@ void tagSCHEDULEDATA::Remove(int nAtIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::RemoveAll(void)
+void ScheduleData::RemoveAll(void)
 {
 	// Remove each item
-	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
+	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
 		Remove(nIndex);
 	}
 }
@@ -776,25 +1203,25 @@ void tagSCHEDULEDATA::RemoveAll(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::Adjust(void)
+void ScheduleData::Adjust(void)
 {
 	// If default item is empty but extra data is not
-	if ((this->IsDefaultEmpty()) && (this->IsExtraEmpty() == FALSE)) {
+	if (IsDefaultEmpty() && IsExtraEmpty() == FALSE) {
 		// Make first extra item default
-		this->schDefaultItem.Copy(this->GetItemAt(0));
-		this->schDefaultItem.nItemID = DEF_SCHEDULE_DEFAULT_ITEMID;
+		m_schDefaultItem.Copy(GetItemAt(0));
+		m_schDefaultItem.SetItemID(DEF_SCHEDULE_DEFAULT_ITEMID);
 
 		// Remove that extra item
-		this->Delete(0);
+		Delete(0);
 	}
 
 	// Check and remove empty extra items
-	for (int nIndex = (this->GetExtraItemNum() - 1); nIndex >= 0; nIndex--) {
-		SCHEDULEITEM schTemp = this->GetItemAt(nIndex);
+	for (int nIndex = (GetExtraItemNum() - 1); nIndex >= 0; nIndex--) {
+		SCHEDULEITEM schTemp = GetItemAt(nIndex);
 		if (!schTemp.IsEmpty()) continue;
 
 		// Remove item
-		this->Delete(nIndex);
+		Delete(nIndex);
 	}
 }
 
@@ -807,14 +1234,14 @@ void tagSCHEDULEDATA::Adjust(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT tagSCHEDULEDATA::GetNextID(void)
+UINT ScheduleData::GetNextID(void)
 {
 	// Get currently max ID
 	UINT nRetNextID = DEF_SCHEDULE_MIN_ITEMID;
-	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = this->GetItemAt(nIndex);
-		if (schItem.nItemID > nRetNextID) {
-			nRetNextID = schItem.nItemID;
+	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
+		SCHEDULEITEM schItem = GetItemAt(nIndex);
+		if (schItem.GetItemID() > nRetNextID) {
+			nRetNextID = schItem.GetItemID();
 		}
 	}
 
@@ -833,9 +1260,9 @@ UINT tagSCHEDULEDATA::GetNextID(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE INT_PTR tagSCHEDULEDATA::GetExtraItemNum(void) const
+INT_PTR ScheduleData::GetExtraItemNum(void) const
 {
-	return this->arrSchedExtraItemList.GetSize();
+	return m_arrSchedExtraItemList.GetSize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -847,9 +1274,9 @@ AFX_INLINE INT_PTR tagSCHEDULEDATA::GetExtraItemNum(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsDefaultEmpty(void) const
+BOOL ScheduleData::IsDefaultEmpty(void) const
 {
-	return this->schDefaultItem.IsEmpty();
+	return m_schDefaultItem.IsEmpty();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -861,14 +1288,14 @@ BOOL tagSCHEDULEDATA::IsDefaultEmpty(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsEmpty(int nIndex) const
+BOOL ScheduleData::IsEmpty(int nIndex) const
 {
 	// Check index validity
-	if ((nIndex < 0) || (nIndex >= this->GetExtraItemNum()))
+	if ((nIndex < 0) || (nIndex >= GetExtraItemNum()))
 		return TRUE;
 
 	// Check if item is empty
-	SCHEDULEITEM schItem = this->GetItemAt(nIndex);
+	SCHEDULEITEM schItem = GetItemAt(nIndex);
 	return schItem.IsEmpty();
 }
 
@@ -881,16 +1308,16 @@ BOOL tagSCHEDULEDATA::IsEmpty(int nIndex) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsExtraEmpty(void) const
+BOOL ScheduleData::IsExtraEmpty(void) const
 {
 	// If there's no item, return TRUE
-	if (this->arrSchedExtraItemList.IsEmpty())
+	if (m_arrSchedExtraItemList.IsEmpty())
 		return TRUE;
 
 	// Check each item
 	BOOL bExtraEmpty = TRUE;
-	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
-		if (this->IsEmpty(nIndex) == FALSE) {
+	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
+		if (IsEmpty(nIndex) == FALSE) {
 			bExtraEmpty = FALSE;
 			break;
 		}
@@ -908,9 +1335,9 @@ BOOL tagSCHEDULEDATA::IsExtraEmpty(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagSCHEDULEDATA::IsAllEmpty(void) const
+BOOL ScheduleData::IsAllEmpty(void) const
 {
-	return ((this->IsDefaultEmpty()) && (this->IsExtraEmpty()));
+	return (IsDefaultEmpty() && IsExtraEmpty());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -922,21 +1349,21 @@ BOOL tagSCHEDULEDATA::IsAllEmpty(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::Delete(int nAtIndex)
+void ScheduleData::Delete(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= this->GetExtraItemNum()))
+	if ((nAtIndex < 0) || (nAtIndex >= GetExtraItemNum()))
 		return;
 
 	// Create new temporary data
-	PSCHEDULEDATA pNew = new SCHEDULEDATA;
-	pNew->arrSchedExtraItemList.RemoveAll();
+	ScheduleData* pNew = new ScheduleData;
+	pNew->m_arrSchedExtraItemList.RemoveAll();
 
 	// Copy old data to new one (except the AtIndex item)
-	pNew->schDefaultItem.Copy(this->schDefaultItem);
+	pNew->m_schDefaultItem.Copy(this->m_schDefaultItem);
 	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
 		if (nIndex == nAtIndex) continue;
-		pNew->arrSchedExtraItemList.Add(this->arrSchedExtraItemList.GetAt(nIndex));
+		pNew->m_arrSchedExtraItemList.Add(this->m_arrSchedExtraItemList.GetAt(nIndex));
 	}
 
 	// Copy back to old data
@@ -959,11 +1386,11 @@ void tagSCHEDULEDATA::Delete(int nAtIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::DeleteExtra(void)
+void ScheduleData::DeleteExtra(void)
 {
 	// Reset data
-	this->arrSchedExtraItemList.RemoveAll();
-	this->arrSchedExtraItemList.FreeExtra();
+	m_arrSchedExtraItemList.RemoveAll();
+	m_arrSchedExtraItemList.FreeExtra();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -975,48 +1402,46 @@ void tagSCHEDULEDATA::DeleteExtra(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSCHEDULEDATA::DeleteAll(void)
+void ScheduleData::DeleteAll(void)
 {
 	// Reset data
-	this->schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
-	this->arrSchedExtraItemList.RemoveAll();
-	this->arrSchedExtraItemList.FreeExtra();
+	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	m_arrSchedExtraItemList.RemoveAll();
+	m_arrSchedExtraItemList.FreeExtra();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagHOTKEYSETITEM
+//	Function name:	HotkeySetItem
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagHOTKEYSETITEM::tagHOTKEYSETITEM()
+HotkeySetItem::HotkeySetItem()
 {
 	// Initialize
-	this->bEnable = FALSE;							// Hotkey enabled/disabled
-	this->nHKActionID = 0;							// Hotkey action ID
-	this->dwCtrlKeyCode = 0;						// Control Keycode #1
-	this->dwFuncKeyCode = 0;						// Function Keycode #2
+	m_bEnabled = FALSE;								// Hotkey enabled/disabled
+	m_nHKActionID = 0;								// Hotkey action ID
+	m_dwCtrlKeyCode = 0;							// Control Keycode #1
+	m_dwFuncKeyCode = 0;							// Function Keycode #2
 }
 
-tagHOTKEYSETITEM::tagHOTKEYSETITEM(UINT nHKActionID)
+HotkeySetItem::HotkeySetItem(UINT nHKActionID)
 {
 	// Initialize
-	this->bEnable = FALSE;							// Hotkey enabled/disabled
-	this->nHKActionID = nHKActionID;				// Hotkey action ID
-	this->dwCtrlKeyCode = 0;						// Control Keycode #1
-	this->dwFuncKeyCode = 0;						// Function Keycode #2
+	m_bEnabled = FALSE;								// Hotkey enabled/disabled
+	m_nHKActionID = nHKActionID;					// Hotkey action ID
+	m_dwCtrlKeyCode = 0;							// Control Keycode #1
+	m_dwFuncKeyCode = 0;							// Function Keycode #2
 }
 
-tagHOTKEYSETITEM::tagHOTKEYSETITEM(const tagHOTKEYSETITEM& pItem)
+HotkeySetItem::HotkeySetItem(const HotkeySetItem& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;					// Hotkey enabled/disabled
-	this->nHKActionID = pItem.nHKActionID;			// Hotkey action ID
-	this->dwCtrlKeyCode = pItem.dwCtrlKeyCode;		// Control Keycode #1
-	this->dwFuncKeyCode = pItem.dwFuncKeyCode;		// Function Keycode #2
+	this->m_bEnabled = pItem.m_bEnabled;			// Hotkey enabled/disabled
+	this->m_nHKActionID = pItem.m_nHKActionID;		// Hotkey action ID
+	this->m_dwCtrlKeyCode = pItem.m_dwCtrlKeyCode;	// Control Keycode #1
+	this->m_dwFuncKeyCode = pItem.m_dwFuncKeyCode;	// Function Keycode #2
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1028,13 +1453,13 @@ tagHOTKEYSETITEM::tagHOTKEYSETITEM(const tagHOTKEYSETITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagHOTKEYSETITEM& tagHOTKEYSETITEM::operator=(const tagHOTKEYSETITEM& pItem)
+HotkeySetItem& HotkeySetItem::operator=(const HotkeySetItem& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;					// Hotkey enabled/disabled
-	this->nHKActionID = pItem.nHKActionID;			// Hotkey action ID
-	this->dwCtrlKeyCode = pItem.dwCtrlKeyCode;		// Control Keycode #1
-	this->dwFuncKeyCode = pItem.dwFuncKeyCode;		// Function Keycode #2
+	this->m_bEnabled = pItem.m_bEnabled;			// Hotkey enabled/disabled
+	this->m_nHKActionID = pItem.m_nHKActionID;		// Hotkey action ID
+	this->m_dwCtrlKeyCode = pItem.m_dwCtrlKeyCode;	// Control Keycode #1
+	this->m_dwFuncKeyCode = pItem.m_dwFuncKeyCode;	// Function Keycode #2
 
 	return *this;
 }
@@ -1048,13 +1473,13 @@ tagHOTKEYSETITEM& tagHOTKEYSETITEM::operator=(const tagHOTKEYSETITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETITEM::Copy(const tagHOTKEYSETITEM& pItem)
+void HotkeySetItem::Copy(const HotkeySetItem& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;					// Hotkey enabled/disabled
-	this->nHKActionID = pItem.nHKActionID;			// Hotkey action ID
-	this->dwCtrlKeyCode = pItem.dwCtrlKeyCode;		// Control Keycode #1
-	this->dwFuncKeyCode = pItem.dwFuncKeyCode;		// Function Keycode #2
+	this->m_bEnabled = pItem.m_bEnabled;			// Hotkey enabled/disabled
+	this->m_nHKActionID = pItem.m_nHKActionID;		// Hotkey action ID
+	this->m_dwCtrlKeyCode = pItem.m_dwCtrlKeyCode;	// Control Keycode #1
+	this->m_dwFuncKeyCode = pItem.m_dwFuncKeyCode;	// Function Keycode #2
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1066,13 +1491,13 @@ void tagHOTKEYSETITEM::Copy(const tagHOTKEYSETITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETITEM::IsEmpty(void) const
+BOOL HotkeySetItem::IsEmpty(void) const
 {
 	BOOL bIsEmpty = FALSE;
 
 	// Check if keystroke value is empty
-	bIsEmpty &= (this->dwCtrlKeyCode == 0);
-	bIsEmpty &= (this->dwFuncKeyCode == 0);
+	bIsEmpty &= (m_dwCtrlKeyCode == 0);
+	bIsEmpty &= (m_dwFuncKeyCode == 0);
 
 	return bIsEmpty;
 }
@@ -1086,14 +1511,33 @@ BOOL tagHOTKEYSETITEM::IsEmpty(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETITEM::Compare(const tagHOTKEYSETITEM& pItem) const
+BOOL HotkeySetItem::Compare(const HotkeySetItem& pItem) const
 {
-	BOOL bRet = FALSE;
+	BOOL bRet = TRUE;
 
 	// Compare item
-	bRet &= (this->nHKActionID == pItem.nHKActionID);
-	bRet &= (this->dwCtrlKeyCode == pItem.dwCtrlKeyCode);
-	bRet &= (this->dwFuncKeyCode == pItem.dwFuncKeyCode);
+	bRet &= (this->m_nHKActionID == pItem.m_nHKActionID);
+	bRet &= this->CompareKeycode(pItem);
+
+	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CompareKeycode
+//	Description:	Compare item keycode with another given item
+//  Arguments:		pItem - Pointer of given item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL HotkeySetItem::CompareKeycode(const HotkeySetItem& pItem) const
+{
+	BOOL bRet = TRUE;
+
+	// Compare item keycode
+	bRet &= (this->m_dwCtrlKeyCode == pItem.m_dwCtrlKeyCode);
+	bRet &= (this->m_dwFuncKeyCode == pItem.m_dwFuncKeyCode);
 
 	return bRet;
 }
@@ -1107,16 +1551,18 @@ BOOL tagHOTKEYSETITEM::Compare(const tagHOTKEYSETITEM& pItem) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETITEM::Print(CString& strOutput)
+void HotkeySetItem::Print(CString& strOutput) const
 {
-	using namespace TableFuncs;
+	// Use table and language functions
+	using namespace MapTable;
+	using namespace Language;
 
 	// Get language table
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	CString strEnable = (this->bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
-	UINT nActionNameID = GetPairedID(idTableActionName, GetPairedID(idTableHKActionID, this->nHKActionID));
+	CString strEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
+	UINT nActionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, m_nHKActionID));
 	CString strAction = GetLanguageString(ptrLanguage, nActionNameID);
 	CString strKeyStrokes = STRING_EMPTY;
 	PrintKeyStrokes(strKeyStrokes);
@@ -1134,19 +1580,21 @@ void tagHOTKEYSETITEM::Print(CString& strOutput)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETITEM::PrintKeyStrokes(CString& strOutput)
+void HotkeySetItem::PrintKeyStrokes(CString& strOutput) const
 {
-	using namespace TableFuncs;
+	// Use table and language functions
+	using namespace MapTable;
+	using namespace Language;
 
 	// Get language table
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format keystrokes
 	CString strKeyStrokes = STRING_EMPTY;
-	if (this->dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
-	if (this->dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
-	if (this->dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
-	strKeyStrokes += GetString(strTableFuncKeyList, this->dwFuncKeyCode);
+	if (m_dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
+	if (m_dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
+	if (m_dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
+	strKeyStrokes += GetString(StringTable::FuncKeyList, m_dwFuncKeyCode);
 
 	// Output string
 	strOutput.Empty();
@@ -1155,28 +1603,114 @@ void tagHOTKEYSETITEM::PrintKeyStrokes(CString& strOutput)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagHOTKEYSETDATA
-//	Description:	Constructor
-//  Arguments:		Default
+//	Function name:	IsEnabled
+//	Description:	Check if item is enabled
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL HotkeySetItem::IsEnabled(void) const
+{
+	return m_bEnabled;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableItem
+//	Description:	Set item enable state
+//  Arguments:		bEnabled - Enable or disable
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagHOTKEYSETDATA::tagHOTKEYSETDATA()
+void HotkeySetItem::EnableItem(BOOL bEnabled)
 {
-	// Initialize
-	this->arrHotkeySetList.RemoveAll();
+	m_bEnabled = bEnabled;
 }
 
-tagHOTKEYSETDATA::tagHOTKEYSETDATA(const tagHOTKEYSETDATA& pData)
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetActionID
+//	Description:	Get Hotkey action ID
+//  Arguments:		None
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT HotkeySetItem::GetActionID(void) const
+{
+	return m_nHKActionID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetActionID
+//	Description:	Set Hotkey action ID
+//  Arguments:		nHKActionID - Hotkey action ID
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void HotkeySetItem::SetActionID(UINT nHKActionID)
+{
+	m_nHKActionID = nHKActionID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetKeyCode
+//	Description:	Get item keycode data
+//  Arguments:		dwCtrlKey - Control keycode
+//					dwFuncKey - Function keycode
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void HotkeySetItem::GetKeyCode(DWORD& dwCtrlKey, DWORD& dwFuncKey) const
+{
+	dwCtrlKey = m_dwCtrlKeyCode;
+	dwFuncKey = m_dwFuncKeyCode;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetKeyCode
+//	Description:	Set item keycode data
+//  Arguments:		dwCtrlKey - Control keycode
+//					dwFuncKey - Function keycode
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void HotkeySetItem::SetKeyCode(DWORD dwCtrlKey, DWORD dwFuncKey)
+{
+	m_dwCtrlKeyCode = dwCtrlKey;
+	m_dwFuncKeyCode = dwFuncKey;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	HotkeySetData
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+HotkeySetData::HotkeySetData()
+{
+	// Initialize
+	m_arrHotkeySetList.RemoveAll();
+}
+
+HotkeySetData::HotkeySetData(const HotkeySetData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksItem = pData.arrHotkeySetList.GetAt(nIndex);
-		this->arrHotkeySetList.Add(hksItem);
+		HOTKEYSETITEM hksItem = pData.m_arrHotkeySetList.GetAt(nIndex);
+		this->m_arrHotkeySetList.Add(hksItem);
 	}
 }
 
@@ -1189,15 +1723,15 @@ tagHOTKEYSETDATA::tagHOTKEYSETDATA(const tagHOTKEYSETDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagHOTKEYSETDATA& tagHOTKEYSETDATA::operator=(const tagHOTKEYSETDATA& pData)
+HotkeySetData& HotkeySetData::operator=(const HotkeySetData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksItem = pData.arrHotkeySetList.GetAt(nIndex);
-		this->arrHotkeySetList.Add(hksItem);
+		HOTKEYSETITEM hksItem = pData.m_arrHotkeySetList.GetAt(nIndex);
+		this->m_arrHotkeySetList.Add(hksItem);
 	}
 
 	return *this;
@@ -1212,10 +1746,10 @@ tagHOTKEYSETDATA& tagHOTKEYSETDATA::operator=(const tagHOTKEYSETDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::Init()
+void HotkeySetData::Init()
 {
 	// Initialize
-	this->arrHotkeySetList.RemoveAll();
+	m_arrHotkeySetList.RemoveAll();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1227,16 +1761,39 @@ void tagHOTKEYSETDATA::Init()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::Copy(const tagHOTKEYSETDATA& pData)
+void HotkeySetData::Copy(const HotkeySetData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksItem = pData.arrHotkeySetList.GetAt(nIndex);
-		this->arrHotkeySetList.Add(hksItem);
+		HOTKEYSETITEM hksItem = pData.m_arrHotkeySetList.GetAt(nIndex);
+		this->m_arrHotkeySetList.Add(hksItem);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDefaultData
+//	Description:	Set default for HotkeySet data
+//  Arguments:		pcfgData - Pointer of HotkeySet data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void HotkeySetData::SetDefaultData(void)
+{
+	// Re-initialize data
+	this->Init();
+
+	// Create default data
+	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_DISPLAYOFF));
+	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SLEEP));
+	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SHUTDOWN));
+	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_RESTART));
+	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SIGNOUT));
+	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_HIBERNATE));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1248,34 +1805,34 @@ void tagHOTKEYSETDATA::Copy(const tagHOTKEYSETDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::Add(const HOTKEYSETITEM& pItem)
+void HotkeySetData::Add(const HOTKEYSETITEM& pItem)
 {
 	// If data list is current empty
-	if (this->arrHotkeySetList.IsEmpty()) {
+	if (m_arrHotkeySetList.IsEmpty()) {
 		// Just add item
-		this->arrHotkeySetList.Add(pItem);
+		m_arrHotkeySetList.Add(pItem);
 		return;
 	}
 
 	// Check if item exists, if yes, do not add
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		HOTKEYSETITEM pItemTemp = this->GetItemAt(nIndex);
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
+		HOTKEYSETITEM pItemTemp = GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE)
 			return;
 	}
 
 	// Create new temporary data
-	PHOTKEYSETDATA pNew = new HOTKEYSETDATA;
-	pNew->arrHotkeySetList.RemoveAll();
+	HotkeySetData* pNew = new HotkeySetData;
+	pNew->m_arrHotkeySetList.RemoveAll();
 	
 	// Copy old data to new one
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		HOTKEYSETITEM hksItem = this->GetItemAt(nIndex);
-		pNew->arrHotkeySetList.Add(hksItem);
+		pNew->m_arrHotkeySetList.Add(hksItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->arrHotkeySetList.Add(pItem);
+	pNew->m_arrHotkeySetList.Add(pItem);
 	this->Copy(*pNew);
 	
 	// Delete temporary data
@@ -1295,12 +1852,12 @@ void tagHOTKEYSETDATA::Add(const HOTKEYSETITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
+void HotkeySetData::Update(const HOTKEYSETITEM& pItem)
 {
 	// If data list is current empty
-	if (this->arrHotkeySetList.IsEmpty()) {
+	if (m_arrHotkeySetList.IsEmpty()) {
 		// Just add item
-		this->Add(pItem);
+		Add(pItem);
 		return;
 	}
 
@@ -1308,14 +1865,13 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 	int nDupActionIndex = INT_INVALID;
 	int nDupKeyIndex = INT_INVALID;
 
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksTemp = this->GetItemAt(nIndex);
-		if (hksTemp.nHKActionID == pItem.nHKActionID) {
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
+		HOTKEYSETITEM hksTemp = GetItemAt(nIndex);
+		if (hksTemp.GetActionID() == pItem.GetActionID()) {
 			// Duplicate action ID found
 			nDupActionIndex = nIndex;
 		}
-		if ((hksTemp.dwCtrlKeyCode == pItem.dwCtrlKeyCode) &&
-			(hksTemp.dwFuncKeyCode == pItem.dwFuncKeyCode)) {
+		if (hksTemp.CompareKeycode(pItem) == TRUE) {
 			// Duplicate keystrokes found
 			nDupKeyIndex = nIndex;
 		}
@@ -1323,24 +1879,24 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 
 	// If same item existed (same action ID and same keystrokes), update its state
 	if (nDupActionIndex == nDupKeyIndex) {
-		HOTKEYSETITEM& hksTemp = this->GetItemAt(nDupActionIndex);
-		hksTemp.bEnable = pItem.bEnable;
+		HOTKEYSETITEM& hksTemp = GetItemAt(nDupActionIndex);
+		hksTemp.EnableItem(pItem.IsEnabled());
 		return;
 	}
 
 	// Delete existed duplicate keystrokes
 	if (nDupKeyIndex != INT_INVALID) {
-		this->Remove(nDupKeyIndex);
+		Remove(nDupKeyIndex);
 	}
 
 	// If item with same action ID existed, update its data
 	if (nDupActionIndex != INT_INVALID) {
-		HOTKEYSETITEM& hksTemp = this->GetItemAt(nDupActionIndex);
+		HOTKEYSETITEM& hksTemp = GetItemAt(nDupActionIndex);
 		hksTemp.Copy(pItem);
 	}
 	// Otherwise, add new
 	else {
-		this->Add(pItem);
+		Add(pItem);
 	}
 }
 
@@ -1354,11 +1910,11 @@ void tagHOTKEYSETDATA::Update(const HOTKEYSETITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-const HOTKEYSETITEM& tagHOTKEYSETDATA::GetItemAt(int nIndex) const
+const HOTKEYSETITEM& HotkeySetData::GetItemAt(int nIndex) const
 {
-	ASSERT((nIndex >= 0) && (nIndex < this->GetItemNum()));
-	if ((nIndex >= 0) && (nIndex < this->GetItemNum()))
-		return this->arrHotkeySetList.GetAt(nIndex);
+	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
+	if ((nIndex >= 0) && (nIndex < GetItemNum()))
+		return m_arrHotkeySetList.GetAt(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -1373,11 +1929,11 @@ const HOTKEYSETITEM& tagHOTKEYSETDATA::GetItemAt(int nIndex) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-HOTKEYSETITEM& tagHOTKEYSETDATA::GetItemAt(int nIndex)
+HOTKEYSETITEM& HotkeySetData::GetItemAt(int nIndex)
 {
-	ASSERT((nIndex >= 0) && (nIndex < this->GetItemNum()));
-	if ((nIndex >= 0) && (nIndex < this->GetItemNum()))
-		return this->arrHotkeySetList.GetAt(nIndex);
+	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
+	if ((nIndex >= 0) && (nIndex < GetItemNum()))
+		return m_arrHotkeySetList.GetAt(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -1392,19 +1948,18 @@ HOTKEYSETITEM& tagHOTKEYSETDATA::GetItemAt(int nIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::Remove(int nAtIndex)
+void HotkeySetData::Remove(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= this->GetItemNum()))
+	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
 		return;
 
 	// Get item data
-	HOTKEYSETITEM& hksItem = this->GetItemAt(nAtIndex);
+	HOTKEYSETITEM& hksItem = GetItemAt(nAtIndex);
 
 	// Reset item value
-	hksItem.bEnable = FALSE;
-	hksItem.dwCtrlKeyCode = 0;
-	hksItem.dwFuncKeyCode = 0;
+	hksItem.EnableItem(FALSE);
+	hksItem.SetKeyCode(NULL, NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1416,10 +1971,10 @@ void tagHOTKEYSETDATA::Remove(int nAtIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::RemoveAll(void)
+void HotkeySetData::RemoveAll(void)
 {
 	// Remove each item
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
 		Remove(nIndex);
 	}
 }
@@ -1433,18 +1988,19 @@ void tagHOTKEYSETDATA::RemoveAll(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::Adjust(void)
+void HotkeySetData::Adjust(void)
 {
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
+	DWORD dwCtrlKey, dwFuncKey;
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
 
-		// Get hotkeyset item
-		HOTKEYSETITEM& hksItem = this->GetItemAt(nIndex);
+		// Get hotkeyset item keycode
+		HOTKEYSETITEM& hksItem = GetItemAt(nIndex);
+		hksItem.GetKeyCode(dwCtrlKey, dwFuncKey);
 
 		// Not enable hotkeyset item if no keystroke data
-		if ((hksItem.dwCtrlKeyCode == 0) || (hksItem.dwFuncKeyCode == 0)) {
-			hksItem.bEnable = FALSE;
-			hksItem.dwCtrlKeyCode = 0;
-			hksItem.dwFuncKeyCode = 0;
+		if ((dwCtrlKey == 0) || (dwFuncKey == 0)) {
+			hksItem.EnableItem(FALSE);
+			hksItem.SetKeyCode(NULL, NULL);
 		}
 	}
 }
@@ -1458,9 +2014,9 @@ void tagHOTKEYSETDATA::Adjust(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE INT_PTR tagHOTKEYSETDATA::GetItemNum(void) const
+INT_PTR HotkeySetData::GetItemNum(void) const
 {
-	return this->arrHotkeySetList.GetSize();
+	return m_arrHotkeySetList.GetSize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1472,14 +2028,14 @@ AFX_INLINE INT_PTR tagHOTKEYSETDATA::GetItemNum(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETDATA::IsEmpty(int nIndex) const
+BOOL HotkeySetData::IsEmpty(int nIndex) const
 {
 	// Check index validity
-	if ((nIndex < 0) || (nIndex >= this->GetItemNum()))
+	if ((nIndex < 0) || (nIndex >= GetItemNum()))
 		return TRUE;
 
 	// Get item data
-	HOTKEYSETITEM hksItem = this->GetItemAt(nIndex);
+	HOTKEYSETITEM hksItem = GetItemAt(nIndex);
 
 	// Check if item keystroke value is empty
 	return hksItem.IsEmpty();
@@ -1494,16 +2050,16 @@ BOOL tagHOTKEYSETDATA::IsEmpty(int nIndex) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagHOTKEYSETDATA::IsAllEmpty() const
+BOOL HotkeySetData::IsAllEmpty() const
 {
 	// If there's no item, return TRUE
-	if (this->arrHotkeySetList.IsEmpty())
+	if (m_arrHotkeySetList.IsEmpty())
 		return TRUE;
 
 	// Check each item
 	BOOL bAllEmpty = TRUE;
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		if (this->IsEmpty(nIndex) == FALSE) {
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
+		if (IsEmpty(nIndex) == FALSE) {
 			bAllEmpty = FALSE;
 			break;
 		}
@@ -1521,20 +2077,20 @@ BOOL tagHOTKEYSETDATA::IsAllEmpty() const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::Delete(int nAtIndex)
+void HotkeySetData::Delete(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= this->GetItemNum()))
+	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
 		return;
 
 	// Create new temporary data
-	PHOTKEYSETDATA pNew = new HOTKEYSETDATA;
-	pNew->arrHotkeySetList.RemoveAll();
+	HotkeySetData* pNew = new HotkeySetData;
+	pNew->m_arrHotkeySetList.RemoveAll();
 
 	// Copy old data to new one (except the AtIndex item)
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (nIndex == nAtIndex) continue;
-		pNew->arrHotkeySetList.Add(this->GetItemAt(nIndex));
+		pNew->m_arrHotkeySetList.Add(this->GetItemAt(nIndex));
 	}
 
 	// Copy back to old data
@@ -1557,11 +2113,11 @@ void tagHOTKEYSETDATA::Delete(int nAtIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::DeleteAll(void)
+void HotkeySetData::DeleteAll(void)
 {
 	// Reset data
-	this->arrHotkeySetList.RemoveAll();
-	this->arrHotkeySetList.FreeExtra();
+	m_arrHotkeySetList.RemoveAll();
+	m_arrHotkeySetList.FreeExtra();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1574,13 +2130,13 @@ void tagHOTKEYSETDATA::DeleteAll(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHOTKEYSETDATA::PrintKeyStrokes(UINT nHKID, CString& strOutput)
+void HotkeySetData::PrintKeyStrokes(UINT nHKID, CString& strOutput) const
 {
 	// Search for hotkey ID and get keystrokes string
 	CString strKeyStrokes = STRING_EMPTY;
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		HOTKEYSETITEM hksItem = this->GetItemAt(nIndex);
-		if (hksItem.nHKActionID == nHKID) {
+		if (hksItem.GetActionID() == nHKID) {
 			hksItem.PrintKeyStrokes(strKeyStrokes);
 			break;
 		}
@@ -1593,43 +2149,41 @@ void tagHOTKEYSETDATA::PrintKeyStrokes(UINT nHKID, CString& strOutput)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagRMDMSGSTYLESET
+//	Function name:	RmdMsgStyleSet
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagRMDMSGSTYLESET::tagRMDMSGSTYLESET()
+RmdMsgStyleSet::RmdMsgStyleSet()
 {
 	// Init data
-	this->colorBkgrd = DEFAULT_MSGBKGRDCLR;						// Background color
-	this->colorText = DEFAULT_MSGTEXTCLR;						// Text color
-	this->strFontName = DEFAULT_MSGFONTNAME;					// Font name
-	this->uiFontSize = DEFAULT_MSGFONTSIZE;						// Font size
-	this->uiTimeout = DEFAULT_MSGTIMEOUT;						// Timeout (auto-close) interval
-	this->uiIconID = DEFAULT_MSGICONID;							// Message icon ID
-	this->nIconSize = DEFAULT_MSGICONSIZE;						// Message icon size
-	this->byIconPos = DEFAULT_MSGICONPOS;						// Message icon position
-	this->byDisplayPos = DEFAULT_MSGDISPPOS;					// Message display position
-	this->uiHMargin = DEFAULT_MSGHMARGIN;						// Display area horizontal margin
-	this->uiVMargin = DEFAULT_MSGVMARGIN;						// Display area vertical margin
+	m_colorBkgrd = DEFAULT_MSG_BKGRDCLR;						// Background color
+	m_colorText = DEFAULT_MSG_TEXTCLR;							// Text color
+	m_strFontName = DEFAULT_MSG_FONTNAME;						// Font name
+	m_uiFontSize = DEFAULT_MSG_FONTSIZE;						// Font size
+	m_uiTimeout = DEFAULT_MSG_TIMEOUT;							// Timeout (auto-close) interval
+	m_uiIconID = DEFAULT_MSG_ICONID;							// Message icon ID
+	m_nIconSize = DEFAULT_MSG_ICONSIZE;							// Message icon size
+	m_byIconPos = DEFAULT_MSG_ICONPLACEMENT;					// Message icon position
+	m_byDisplayPos = DEFAULT_MSG_DISPLAYPOS;					// Message display position
+	m_uiHMargin = DEFAULT_MSG_HMARGIN;							// Display area horizontal margin
+	m_uiVMargin = DEFAULT_MSG_VMARGIN;							// Display area vertical margin
 }
 
-tagRMDMSGSTYLESET::tagRMDMSGSTYLESET(const tagRMDMSGSTYLESET& pItem)
+RmdMsgStyleSet::RmdMsgStyleSet(const RmdMsgStyleSet& pItem)
 {
 	// Copy data
-	this->colorBkgrd = pItem.colorBkgrd;						// Background color
-	this->colorText = pItem.colorText;							// Text color
-	this->strFontName = pItem.strFontName;						// Font name
-	this->uiFontSize = pItem.uiFontSize;						// Font size
-	this->uiTimeout = pItem.uiTimeout;							// Timeout (auto-close) interval
-	this->uiIconID = pItem.uiIconID;							// Message icon ID
-	this->nIconSize = pItem.nIconSize;							// Message icon size
-	this->byIconPos = pItem.byIconPos;							// Message icon position
-	this->byDisplayPos = pItem.byDisplayPos;					// Message display position
-	this->uiHMargin = pItem.uiHMargin;							// Display area horizontal margin
-	this->uiVMargin = pItem.uiVMargin;							// Display area vertical margin
+	this->m_colorBkgrd = pItem.m_colorBkgrd;					// Background color
+	this->m_colorText = pItem.m_colorText;						// Text color
+	this->m_strFontName = pItem.m_strFontName;					// Font name
+	this->m_uiFontSize = pItem.m_uiFontSize;					// Font size
+	this->m_uiTimeout = pItem.m_uiTimeout;						// Timeout (auto-close) interval
+	this->m_uiIconID = pItem.m_uiIconID;						// Message icon ID
+	this->m_nIconSize = pItem.m_nIconSize;						// Message icon size
+	this->m_byIconPos = pItem.m_byIconPos;						// Message icon position
+	this->m_byDisplayPos = pItem.m_byDisplayPos;				// Message display position
+	this->m_uiHMargin = pItem.m_uiHMargin;						// Display area horizontal margin
+	this->m_uiVMargin = pItem.m_uiVMargin;						// Display area vertical margin
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1641,20 +2195,20 @@ tagRMDMSGSTYLESET::tagRMDMSGSTYLESET(const tagRMDMSGSTYLESET& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagRMDMSGSTYLESET& tagRMDMSGSTYLESET::operator=(const tagRMDMSGSTYLESET& pItem)
+RmdMsgStyleSet& RmdMsgStyleSet::operator=(const RmdMsgStyleSet& pItem)
 {
 	// Copy data
-	this->colorBkgrd = pItem.colorBkgrd;						// Background color
-	this->colorText = pItem.colorText;							// Text color
-	this->strFontName = pItem.strFontName;						// Font name
-	this->uiFontSize = pItem.uiFontSize;						// Font size
-	this->uiTimeout = pItem.uiTimeout;							// Timeout (auto-close) interval
-	this->uiIconID = pItem.uiIconID;							// Message icon ID
-	this->nIconSize = pItem.nIconSize;							// Message icon size
-	this->byIconPos = pItem.byIconPos;							// Message icon position
-	this->byDisplayPos = pItem.byDisplayPos;					// Message display position
-	this->uiHMargin = pItem.uiHMargin;							// Display area horizontal margin
-	this->uiVMargin = pItem.uiVMargin;							// Display area vertical margin
+	this->m_colorBkgrd = pItem.m_colorBkgrd;					// Background color
+	this->m_colorText = pItem.m_colorText;						// Text color
+	this->m_strFontName = pItem.m_strFontName;					// Font name
+	this->m_uiFontSize = pItem.m_uiFontSize;					// Font size
+	this->m_uiTimeout = pItem.m_uiTimeout;						// Timeout (auto-close) interval
+	this->m_uiIconID = pItem.m_uiIconID;						// Message icon ID
+	this->m_nIconSize = pItem.m_nIconSize;						// Message icon size
+	this->m_byIconPos = pItem.m_byIconPos;						// Message icon position
+	this->m_byDisplayPos = pItem.m_byDisplayPos;				// Message display position
+	this->m_uiHMargin = pItem.m_uiHMargin;						// Display area horizontal margin
+	this->m_uiVMargin = pItem.m_uiVMargin;						// Display area vertical margin
 
 	return *this;
 }
@@ -1668,20 +2222,20 @@ tagRMDMSGSTYLESET& tagRMDMSGSTYLESET::operator=(const tagRMDMSGSTYLESET& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagRMDMSGSTYLESET::Copy(const tagRMDMSGSTYLESET& pItem)
+void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& pItem)
 {
 	// Copy data
-	this->colorBkgrd = pItem.colorBkgrd;						// Background color
-	this->colorText = pItem.colorText;							// Text color
-	this->strFontName = pItem.strFontName;						// Font name
-	this->uiFontSize = pItem.uiFontSize;						// Font size
-	this->uiTimeout = pItem.uiTimeout;							// Timeout (auto-close) interval
-	this->uiIconID = pItem.uiIconID;							// Message icon ID
-	this->nIconSize = pItem.nIconSize;							// Message icon size
-	this->byIconPos = pItem.byIconPos;							// Message icon position
-	this->byDisplayPos = pItem.byDisplayPos;					// Message display position
-	this->uiHMargin = pItem.uiHMargin;							// Display area horizontal margin
-	this->uiVMargin = pItem.uiVMargin;							// Display area vertical margin
+	this->m_colorBkgrd = pItem.m_colorBkgrd;					// Background color
+	this->m_colorText = pItem.m_colorText;						// Text color
+	this->m_strFontName = pItem.m_strFontName;					// Font name
+	this->m_uiFontSize = pItem.m_uiFontSize;					// Font size
+	this->m_uiTimeout = pItem.m_uiTimeout;						// Timeout (auto-close) interval
+	this->m_uiIconID = pItem.m_uiIconID;						// Message icon ID
+	this->m_nIconSize = pItem.m_nIconSize;						// Message icon size
+	this->m_byIconPos = pItem.m_byIconPos;						// Message icon position
+	this->m_byDisplayPos = pItem.m_byDisplayPos;				// Message display position
+	this->m_uiHMargin = pItem.m_uiHMargin;						// Display area horizontal margin
+	this->m_uiVMargin = pItem.m_uiVMargin;						// Display area vertical margin
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1693,61 +2247,61 @@ void tagRMDMSGSTYLESET::Copy(const tagRMDMSGSTYLESET& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagRMDMSGSTYLESET::Compare(const tagRMDMSGSTYLESET& pItem) const
+BOOL RmdMsgStyleSet::Compare(const RmdMsgStyleSet& pItem) const
 {
 	BOOL bRetCompare = TRUE;
 
 	// Compare data
-	bRetCompare &= (this->colorBkgrd == pItem.colorBkgrd);		// Background color
-	bRetCompare &= (this->colorText == pItem.colorText);		// Text color
-	bRetCompare &= (this->strFontName == pItem.strFontName);	// Font name
-	bRetCompare &= (this->uiFontSize == pItem.uiFontSize);		// Font size
-	bRetCompare &= (this->uiTimeout == pItem.uiTimeout);		// Timeout (auto-close) interval
-	bRetCompare &= (this->uiIconID == pItem.uiIconID);			// Message icon ID
-	bRetCompare &= (this->nIconSize == pItem.nIconSize);		// Message icon size
-	bRetCompare &= (this->byIconPos == pItem.byIconPos);		// Message icon position
-	bRetCompare &= (this->byDisplayPos == pItem.byDisplayPos);	// Message display position
-	bRetCompare &= (this->uiHMargin == pItem.uiHMargin);		// Display area horizontal margin
-	bRetCompare &= (this->uiVMargin == pItem.uiVMargin);		// Display area vertical margin
+	bRetCompare &= (this->m_colorBkgrd == pItem.m_colorBkgrd);		// Background color
+	bRetCompare &= (this->m_colorText == pItem.m_colorText);		// Text color
+	bRetCompare &= (this->m_strFontName == pItem.m_strFontName);	// Font name
+	bRetCompare &= (this->m_uiFontSize == pItem.m_uiFontSize);		// Font size
+	bRetCompare &= (this->m_uiTimeout == pItem.m_uiTimeout);		// Timeout (auto-close) interval
+	bRetCompare &= (this->m_uiIconID == pItem.m_uiIconID);			// Message icon ID
+	bRetCompare &= (this->m_nIconSize == pItem.m_nIconSize);		// Message icon size
+	bRetCompare &= (this->m_byIconPos == pItem.m_byIconPos);		// Message icon position
+	bRetCompare &= (this->m_byDisplayPos == pItem.m_byDisplayPos);	// Message display position
+	bRetCompare &= (this->m_uiHMargin == pItem.m_uiHMargin);		// Display area horizontal margin
+	bRetCompare &= (this->m_uiVMargin == pItem.m_uiVMargin);		// Display area vertical margin
 
 	return bRetCompare;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagPWRREMINDERITEM
+//	Function name:	PwrReminderItem
 //	Description:	Constructor
 //  Arguments:		Default
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRREMINDERITEM::tagPWRREMINDERITEM()
+PwrReminderItem::PwrReminderItem()
 {
 	// Init data
-	this->bEnable = FALSE;								// Enable state
-	this->nItemID = DEF_PWRREMINDER_MIN_ITEMID;			// Item ID
-	this->strMessage = STRING_EMPTY;					// Message content
-	this->nEventID = PREVT_AT_SETTIME;					// Event ID
-	this->stTime = SYSTEMTIME_ZERO;						// Event time
-	this->dwMsgStyle = PRSTYLE_MSGBOX;					// Reminder style
-	this->rpsRepeatSet = PWRREPEATSET();				// Repeat set
-	this->bUseCustomStyle = FALSE;						// Use message custom style
-	this->rmsMsgStyleSet = RMDMSGSTYLESET();			// Reminder message style set
+	m_bEnabled = FALSE;										// Enable state
+	m_nItemID = DEF_PWRREMINDER_MIN_ITEMID;					// Item ID
+	m_strMessage = STRING_EMPTY;							// Message content
+	m_nEventID = PREVT_AT_SETTIME;							// Event ID
+	m_stTime = SYSTEMTIME_ZERO;								// Event time
+	m_dwMsgStyle = PRSTYLE_MSGBOX;							// Reminder style
+	m_rpsRepeatSet = PWRREPEATSET();						// Repeat set
+	m_bUseCustomStyle = FALSE;								// Use message custom style
+	m_rmsMsgStyleSet = RMDMSGSTYLESET();					// Reminder message style set
 }
 
-tagPWRREMINDERITEM::tagPWRREMINDERITEM(const tagPWRREMINDERITEM& pItem)
+PwrReminderItem::PwrReminderItem(const PwrReminderItem& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;						// Enable state
-	this->nItemID = pItem.nItemID;						// Item ID
-	this->strMessage = pItem.strMessage;				// Message content
-	this->nEventID = pItem.nEventID;					// Event ID
-	this->stTime = pItem.stTime;						// Event time
-	this->dwMsgStyle = pItem.dwMsgStyle;				// Reminder style
-	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);		// Repeat set
-	this->bUseCustomStyle = pItem.bUseCustomStyle;		// Use message custom style
-	this->rmsMsgStyleSet.Copy(pItem.rmsMsgStyleSet);	// Reminder message style set
+	this->m_bEnabled = pItem.m_bEnabled;					// Enable state
+	this->m_nItemID = pItem.m_nItemID;						// Item ID
+	this->m_strMessage = pItem.m_strMessage;				// Message content
+	this->m_nEventID = pItem.m_nEventID;					// Event ID
+	this->m_stTime = pItem.m_stTime;						// Event time
+	this->m_dwMsgStyle = pItem.m_dwMsgStyle;				// Reminder style
+	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);		// Repeat set
+	this->m_bUseCustomStyle = pItem.m_bUseCustomStyle;		// Use message custom style
+	this->m_rmsMsgStyleSet.Copy(pItem.m_rmsMsgStyleSet);	// Reminder message style set
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1759,18 +2313,18 @@ tagPWRREMINDERITEM::tagPWRREMINDERITEM(const tagPWRREMINDERITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRREMINDERITEM& tagPWRREMINDERITEM::operator=(const tagPWRREMINDERITEM& pItem)
+PwrReminderItem& PwrReminderItem::operator=(const PwrReminderItem& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;						// Enable state
-	this->nItemID = pItem.nItemID;						// Item ID
-	this->strMessage = pItem.strMessage;				// Message content
-	this->nEventID = pItem.nEventID;					// Event ID
-	this->stTime = pItem.stTime;						// Event time
-	this->dwMsgStyle = pItem.dwMsgStyle;				// Reminder style
-	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);		// Repeat set
-	this->bUseCustomStyle = pItem.bUseCustomStyle;		// Use message custom style
-	this->rmsMsgStyleSet.Copy(pItem.rmsMsgStyleSet);	// Reminder message style set
+	this->m_bEnabled = pItem.m_bEnabled;					// Enable state
+	this->m_nItemID = pItem.m_nItemID;						// Item ID
+	this->m_strMessage = pItem.m_strMessage;				// Message content
+	this->m_nEventID = pItem.m_nEventID;					// Event ID
+	this->m_stTime = pItem.m_stTime;						// Event time
+	this->m_dwMsgStyle = pItem.m_dwMsgStyle;				// Reminder style
+	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);		// Repeat set
+	this->m_bUseCustomStyle = pItem.m_bUseCustomStyle;		// Use message custom style
+	this->m_rmsMsgStyleSet.Copy(pItem.m_rmsMsgStyleSet);	// Reminder message style set
 
 	return *this;
 }
@@ -1784,18 +2338,18 @@ tagPWRREMINDERITEM& tagPWRREMINDERITEM::operator=(const tagPWRREMINDERITEM& pIte
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERITEM::Copy(const tagPWRREMINDERITEM& pItem)
+void PwrReminderItem::Copy(const PwrReminderItem& pItem)
 {
 	// Copy data
-	this->bEnable = pItem.bEnable;						// Enable state
-	this->nItemID = pItem.nItemID;						// Item ID
-	this->strMessage = pItem.strMessage;				// Message content
-	this->nEventID = pItem.nEventID;					// Event ID
-	this->stTime = pItem.stTime;						// Event time
-	this->dwMsgStyle = pItem.dwMsgStyle;				// Reminder style
-	this->rpsRepeatSet.Copy(pItem.rpsRepeatSet);		// Repeat set
-	this->bUseCustomStyle = pItem.bUseCustomStyle;		// Use message custom style
-	this->rmsMsgStyleSet.Copy(pItem.rmsMsgStyleSet);	// Reminder message style set
+	this->m_bEnabled = pItem.m_bEnabled;					// Enable state
+	this->m_nItemID = pItem.m_nItemID;						// Item ID
+	this->m_strMessage = pItem.m_strMessage;				// Message content
+	this->m_nEventID = pItem.m_nEventID;					// Event ID
+	this->m_stTime = pItem.m_stTime;						// Event time
+	this->m_dwMsgStyle = pItem.m_dwMsgStyle;				// Reminder style
+	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);		// Repeat set
+	this->m_bUseCustomStyle = pItem.m_bUseCustomStyle;		// Use message custom style
+	this->m_rmsMsgStyleSet.Copy(pItem.m_rmsMsgStyleSet);	// Reminder message style set
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1807,7 +2361,7 @@ void tagPWRREMINDERITEM::Copy(const tagPWRREMINDERITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::IsEmpty() const
+BOOL PwrReminderItem::IsEmpty() const
 {
 	// Initialize an empty item
 	static const PWRREMINDERITEM pwrDummyItem;
@@ -1825,48 +2379,295 @@ BOOL tagPWRREMINDERITEM::IsEmpty() const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::Compare(const tagPWRREMINDERITEM& pItem) const
+BOOL PwrReminderItem::Compare(const PwrReminderItem& pItem) const
 {
 	BOOL bRet = TRUE;
 
 	// Compare item (do not compare item ID)
-	bRet &= (this->strMessage == pItem.strMessage);
-	bRet &= (this->nEventID == pItem.nEventID);
-	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
-	bRet &= (this->stTime.wMinute == pItem.stTime.wMinute);
-	bRet &= (this->dwMsgStyle == pItem.dwMsgStyle);
-	bRet &= (this->rpsRepeatSet.Compare(pItem.rpsRepeatSet));
-	bRet &= (this->rmsMsgStyleSet.Compare(pItem.rmsMsgStyleSet));
+	bRet &= (this->m_strMessage == pItem.m_strMessage);
+	bRet &= (this->m_nEventID == pItem.m_nEventID);
+	bRet &= (this->m_stTime.wHour == pItem.m_stTime.wHour);
+	bRet &= (this->m_stTime.wMinute == pItem.m_stTime.wMinute);
+	bRet &= (this->m_dwMsgStyle == pItem.m_dwMsgStyle);
+	bRet &= (this->m_rpsRepeatSet.Compare(pItem.m_rpsRepeatSet));
+	bRet &= (this->m_bUseCustomStyle == pItem.m_bUseCustomStyle);
+	bRet &= (this->m_rmsMsgStyleSet.Compare(pItem.m_rmsMsgStyleSet));
 
 	return bRet;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetEnableState
-//	Description:	Set/change item enable state
-//  Arguments:		bEnable - New enable state
-//  Return value:	None
+//	Function name:	GetRepeatSetData
+//	Description:	Get access to item RepeatSet info data
+//  Arguments:		None
+//  Return value:	PWRREPEATSET&
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERITEM::SetEnableState(BOOL bEnable)
+PWRREPEATSET& PwrReminderItem::GetRepeatSetData(void)
 {
-	this->bEnable = bEnable;
+	return this->m_rpsRepeatSet;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	IsRepeatEnable
+//	Function name:	ResetRepeatInfo
+//	Description:	Reset RepeatSet info data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::ResetRepeatInfo(void)
+{
+	// Create a new default RepeatSet info data
+	const PwrRepeatSet emptyData = PWRREPEATSET();
+
+	// Copy and overwrite current data
+	this->m_rpsRepeatSet.Copy(emptyData);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetMessageStyleData
+//	Description:	Get access to item Message Style info data
+//  Arguments:		None
+//  Return value:	RMDMSGSTYLESET&
+//
+//////////////////////////////////////////////////////////////////////////
+
+RMDMSGSTYLESET& PwrReminderItem::GetMessageStyleData(void)
+{
+	return this->m_rmsMsgStyleSet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	ResetMessageStyleInfo
+//	Description:	Reset Message Style info data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::ResetMessageStyleInfo(void)
+{
+	// Create a new default Message Style info data
+	const RmdMsgStyleSet emptyData = RMDMSGSTYLESET();
+
+	// Copy and overwrite current data
+	this->m_rmsMsgStyleSet.Copy(emptyData);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsEnabled
+//	Description:	Check if item is enabled
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL PwrReminderItem::IsEnabled(void) const
+{
+	return m_bEnabled;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableItem
+//	Description:	Set/change item enable state
+//  Arguments:		bEnabled - New enable state
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::EnableItem(BOOL bEnabled)
+{
+	m_bEnabled = bEnabled;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetItemID
+//	Description:	Get Power Reminder item ID
+//  Arguments:		None
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT PwrReminderItem::GetItemID(void) const
+{
+	return m_nItemID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetItemID
+//	Description:	Set Power Reminder item ID
+//  Arguments:		nItemID - Item ID
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::SetItemID(UINT nItemID)
+{
+	m_nItemID = nItemID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetMessage
+//	Description:	Get Power Reminder item message content
+//  Arguments:		None
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+LPCTSTR PwrReminderItem::GetMessage(void) const
+{
+	return m_strMessage.GetString();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetMessage
+//	Description:	Set Power Reminder item message content
+//  Arguments:		lpszMessage - Message content
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::SetMessage(LPCTSTR lpszMessage)
+{
+	m_strMessage = lpszMessage;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetEventID
+//	Description:	Get Power Reminder item event ID
+//  Arguments:		None
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT PwrReminderItem::GetEventID(void) const
+{
+	return m_nEventID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetEventID
+//	Description:	Set Power Reminder item event ID
+//  Arguments:		nEventID - Item event ID
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::SetEventID(UINT nEventID)
+{
+	m_nEventID = nEventID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetTime
+//	Description:	Get Power Reminder item time data
+//  Arguments:		None
+//  Return value:	SYSTEMTIME
+//
+//////////////////////////////////////////////////////////////////////////
+
+SYSTEMTIME PwrReminderItem::GetTime(void) const
+{
+	return m_stTime;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetTime
+//	Description:	Set Power Reminder item time data
+//  Arguments:		stTime - Time data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::SetTime(const SYSTEMTIME& stTime)
+{
+	m_stTime = stTime;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetMessageStyle
+//	Description:	Get Power Reminder item message style ID
+//  Arguments:		None
+//  Return value:	DWORD
+//
+//////////////////////////////////////////////////////////////////////////
+
+DWORD PwrReminderItem::GetMessageStyle(void) const
+{
+	return m_dwMsgStyle;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetMessageStyle
+//	Description:	Set Power Reminder item message style ID
+//  Arguments:		nMsgStyleID - Item message style ID
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::SetMessageStyle(DWORD nMsgStyleID)
+{
+	m_dwMsgStyle = nMsgStyleID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsCustomStyleEnabled
+//	Description:	Check if item message custom style is enabled
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL PwrReminderItem::IsCustomStyleEnabled(void) const
+{
+	return m_bUseCustomStyle;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableCustomStyle
+//	Description:	Set/change item message custom style enable state
+//  Arguments:		bEnabled - New enable state
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::EnableCustomStyle(BOOL bEnabled)
+{
+	m_bUseCustomStyle = bEnabled;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsRepeatEnabled
 //	Description:	Check if item repeat mode is enabled
 //  Arguments:		None
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE BOOL tagPWRREMINDERITEM::IsRepeatEnable(void) const
+BOOL PwrReminderItem::IsRepeatEnabled(void) const
 {
-	return (this->rpsRepeatSet.bRepeat);
+	return m_rpsRepeatSet.IsRepeatEnabled();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1878,9 +2679,9 @@ AFX_INLINE BOOL tagPWRREMINDERITEM::IsRepeatEnable(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::IsDayActive(DAYOFWEEK dayOfWeek) const
+BOOL PwrReminderItem::IsDayActive(DAYOFWEEK dayOfWeek) const
 {
-	return (this->rpsRepeatSet.IsDayActive(dayOfWeek));
+	return m_rpsRepeatSet.IsDayActive(dayOfWeek);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1892,25 +2693,39 @@ BOOL tagPWRREMINDERITEM::IsDayActive(DAYOFWEEK dayOfWeek) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERITEM::IsAllowSnoozing(void) const
+BOOL PwrReminderItem::IsAllowSnoozing(void) const
 {
 	// If current eventID is not at settime
-	if (this->nEventID != PREVT_AT_SETTIME) {
+	if (m_nEventID != PREVT_AT_SETTIME) {
 		// Not allow snooze mode
 		return FALSE;
 	}
 	// If repeat option is currently OFF
-	if (this->IsRepeatEnable() != TRUE) {
+	if (IsRepeatEnabled() != TRUE) {
 		// Not allow snooze mode
 		return FALSE;
 	}
 	// If allow snooze option is OFF
-	if (this->rpsRepeatSet.bAllowSnooze != TRUE) {
+	if (m_rpsRepeatSet.IsAllowSnoozing() != TRUE) {
 		// Not allow snooze mode
 		return FALSE;
 	}
 
 	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSnoozeInterval
+//	Description:	Get item snooze interval value
+//  Arguments:		None
+//  Return value:	INT
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT PwrReminderItem::GetSnoozeInterval(void) const
+{
+	return m_rpsRepeatSet.GetSnoozeInterval();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1922,9 +2737,79 @@ BOOL tagPWRREMINDERITEM::IsAllowSnoozing(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BYTE tagPWRREMINDERITEM::GetActiveDays(void) const
+BYTE PwrReminderItem::GetActiveDays(void) const
 {
-	return (this->rpsRepeatSet.byRepeatDays);
+	return m_rpsRepeatSet.GetActiveDays();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableRepeat
+//	Description:	Set repeat enable state
+//  Arguments:		bEnabled - Enable or disable
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::EnableRepeat(BOOL bEnabled)
+{
+	m_rpsRepeatSet.EnableRepeat(bEnabled);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	EnableSnoozing
+//	Description:	Set allow snoozing state
+//  Arguments:		bEnabled - Enable or disable
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::EnableSnoozing(BOOL bEnabled)
+{
+	m_rpsRepeatSet.EnableSnoozing(bEnabled);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetSnoozeInterval
+//	Description:	Set snooze interval data
+//  Arguments:		nValue - Interval value
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::SetSnoozeInterval(INT nValue)
+{
+	m_rpsRepeatSet.SetSnoozeInterval(nValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetActiveDays
+//	Description:	Set repeat days data
+//  Arguments:		byActiveDays - Active days
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::SetActiveDays(BYTE byActiveDays)
+{
+	m_rpsRepeatSet.SetActiveDays(byActiveDays);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDayActive
+//	Description:	Set active state for specific day of week
+//  Arguments:		byActiveDays - Active days
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderItem::SetDayActive(DAYOFWEEK dayOfWeek, BOOL bActive)
+{
+	m_rpsRepeatSet.SetDayActive(dayOfWeek, bActive);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1936,64 +2821,64 @@ BYTE tagPWRREMINDERITEM::GetActiveDays(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERITEM::Print(CString& strOutput)
+void PwrReminderItem::Print(CString& strOutput) const
 {
-	using namespace TableFuncs;
-	using namespace CoreFuncs;
+	// Use table, language and core functions
+	using namespace MapTable;
+	using namespace Language;
+	using namespace AppCore;
 
 	// Get language table
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	CString strEnable = (this->bEnable == TRUE) ? _T("Enabled") : _T("Disabled");
-	CString strMsg = this->strMessage;
+	CString strEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
+	CString strMsg = m_strMessage;
 	if (strMsg.GetLength() > (MAX_DISP_LOGSTRING_LENGTH + 3)) {
-		strMsg = this->strMessage.Left(MAX_DISP_LOGSTRING_LENGTH) + _T("...");
+		strMsg = m_strMessage.Left(MAX_DISP_LOGSTRING_LENGTH) + _T("...");
 	}
-	int nTemp = GetPairedID(idTablePwrReminderEvt, this->nEventID);
+	int nTemp = GetPairedID(IDTable::PwrReminderEvent, m_nEventID);
 	CString strEvent = GetLanguageString(ptrLanguage, nTemp);
-	if (this->nEventID == PREVT_AT_SETTIME) {
+	if (m_nEventID == PREVT_AT_SETTIME) {
 		// Format time string
 		CString strFormat = strEvent;
-		strEvent = FormatDispTime(ptrLanguage, strFormat, this->stTime);
+		strEvent = FormatDispTime(ptrLanguage, strFormat, m_stTime);
 	}
-	nTemp = GetPairedID(idTablePwrReminderStyle, this->dwMsgStyle);
+	nTemp = GetPairedID(IDTable::PwrReminderStyle, m_dwMsgStyle);
 	CString strStyle = GetLanguageString(ptrLanguage, nTemp);
 
 	// Print item
 	strOutput.Format(_T("State=(%s), ItemID=%d, Msg=(%s), Event=(%s), Style=(%s), Repeat=%d"),
-				strEnable, this->nItemID, strMsg, strEvent, strStyle, this->rpsRepeatSet.bRepeat);
+				strEnable, m_nItemID, strMsg, strEvent, strStyle, m_rpsRepeatSet.IsRepeatEnabled());
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagPWRREMINDERDATA
+//	Function name:	PwrReminderData
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRREMINDERDATA::tagPWRREMINDERDATA()
+PwrReminderData::PwrReminderData()
 {
 	// Initialize
-	this->arrRmdItemList.RemoveAll();
-	this->rmdCommonStyle = RMDMSGSTYLESET();
+	m_arrRmdItemList.RemoveAll();
+	m_rmdCommonStyle = RMDMSGSTYLESET();
 }
 
-tagPWRREMINDERDATA::tagPWRREMINDERDATA(const tagPWRREMINDERDATA& pData)
+PwrReminderData::PwrReminderData(const PwrReminderData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy reminder data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = pData.arrRmdItemList.GetAt(nIndex);
-		this->arrRmdItemList.Add(pwrItem);
+		PWRREMINDERITEM pwrItem = pData.m_arrRmdItemList.GetAt(nIndex);
+		this->m_arrRmdItemList.Add(pwrItem);
 	}
 
 	// Copy common message style data
-	this->rmdCommonStyle.Copy(pData.rmdCommonStyle);
+	this->m_rmdCommonStyle.Copy(pData.m_rmdCommonStyle);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2005,19 +2890,19 @@ tagPWRREMINDERDATA::tagPWRREMINDERDATA(const tagPWRREMINDERDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRREMINDERDATA& tagPWRREMINDERDATA::operator=(const tagPWRREMINDERDATA& pData)
+PwrReminderData& PwrReminderData::operator=(const PwrReminderData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy reminder data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = pData.arrRmdItemList.GetAt(nIndex);
-		this->arrRmdItemList.Add(pwrItem);
+		PWRREMINDERITEM pwrItem = pData.m_arrRmdItemList.GetAt(nIndex);
+		this->m_arrRmdItemList.Add(pwrItem);
 	}
 
 	// Copy common message style data
-	this->rmdCommonStyle.Copy(pData.rmdCommonStyle);
+	this->m_rmdCommonStyle.Copy(pData.m_rmdCommonStyle);
 
 	return *this;
 }
@@ -2031,11 +2916,11 @@ tagPWRREMINDERDATA& tagPWRREMINDERDATA::operator=(const tagPWRREMINDERDATA& pDat
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::Init()
+void PwrReminderData::Init()
 {
 	// Initialize
-	this->arrRmdItemList.RemoveAll();
-	this->rmdCommonStyle = RMDMSGSTYLESET();
+	m_arrRmdItemList.RemoveAll();
+	m_rmdCommonStyle = RMDMSGSTYLESET();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2047,19 +2932,34 @@ void tagPWRREMINDERDATA::Init()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::Copy(const tagPWRREMINDERDATA& pData)
+void PwrReminderData::Copy(const PwrReminderData& pData)
 {
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy reminder data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = pData.arrRmdItemList.GetAt(nIndex);
-		this->arrRmdItemList.Add(pwrItem);
+		PWRREMINDERITEM pwrItem = pData.m_arrRmdItemList.GetAt(nIndex);
+		this->m_arrRmdItemList.Add(pwrItem);
 	}
 
 	// Copy common message style data
-	this->rmdCommonStyle.Copy(pData.rmdCommonStyle);
+	this->m_rmdCommonStyle.Copy(pData.m_rmdCommonStyle);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDefaultData
+//	Description:	Set default for Power Reminder data
+//  Arguments:		ppwrData - Pointer of Power Reminder data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrReminderData::SetDefaultData(void)
+{
+	// Re-initialize data
+	this->Init();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2071,37 +2971,37 @@ void tagPWRREMINDERDATA::Copy(const tagPWRREMINDERDATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::Add(const PWRREMINDERITEM& pItem)
+void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
 {
 	// If data list is current empty
-	if (this->arrRmdItemList.IsEmpty()) {
+	if (m_arrRmdItemList.IsEmpty()) {
 		// Just add item
-		this->arrRmdItemList.Add(pItem);
+		m_arrRmdItemList.Add(pItem);
 		return;
 	}
 
 	// Check if item exists, if yes, do not add
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pItemTemp = this->GetItemAt(nIndex);
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
+		PWRREMINDERITEM pItemTemp = GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE)
 			return;
 	}
 
 	// Create new temporary data
-	PPWRREMINDERDATA pNew = new PWRREMINDERDATA;
-	pNew->arrRmdItemList.RemoveAll();
+	PwrReminderData* pNew = new PwrReminderData;
+	pNew->m_arrRmdItemList.RemoveAll();
 
 	// Copy common message style data
-	pNew->rmdCommonStyle.Copy(this->rmdCommonStyle);
+	pNew->m_rmdCommonStyle.Copy(this->m_rmdCommonStyle);
 
 	// Copy old data to new one
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		PWRREMINDERITEM pwrItem = this->GetItemAt(nIndex);
-		pNew->arrRmdItemList.Add(pwrItem);
+		pNew->m_arrRmdItemList.Add(pwrItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->arrRmdItemList.Add(pItem);
+	pNew->m_arrRmdItemList.Add(pItem);
 	this->Copy(*pNew);
 
 	// Delete data
@@ -2121,19 +3021,19 @@ void tagPWRREMINDERDATA::Add(const PWRREMINDERITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::Update(const PWRREMINDERITEM& pItem)
+void PwrReminderData::Update(const PWRREMINDERITEM& pItem)
 {
 	// If data list is current empty
-	if (this->arrRmdItemList.IsEmpty()) {
+	if (m_arrRmdItemList.IsEmpty()) {
 		// Just add item
-		this->Add(pItem);
+		Add(pItem);
 		return;
 	}
 
 	// Find item index
 	int nRetItemIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		if (this->GetItemAt(nIndex).nItemID == pItem.nItemID) {
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
+		if (GetItemAt(nIndex).GetItemID() == pItem.GetItemID()) {
 			nRetItemIndex = nIndex;
 			break;
 		}
@@ -2141,12 +3041,12 @@ void tagPWRREMINDERDATA::Update(const PWRREMINDERITEM& pItem)
 
 	// Update item if found
 	if (nRetItemIndex != INT_INVALID) {
-		PWRREMINDERITEM& pwrTemp = this->GetItemAt(nRetItemIndex);
+		PWRREMINDERITEM& pwrTemp = GetItemAt(nRetItemIndex);
 		pwrTemp.Copy(pItem);
 	}
 	// Otherwise, add new
 	else {
-		this->Add(pItem);
+		Add(pItem);
 	}
 }
 
@@ -2160,11 +3060,11 @@ void tagPWRREMINDERDATA::Update(const PWRREMINDERITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-const PWRREMINDERITEM& tagPWRREMINDERDATA::GetItemAt(int nIndex) const
+const PWRREMINDERITEM& PwrReminderData::GetItemAt(int nIndex) const
 {
-	ASSERT((nIndex >= 0) && (nIndex < this->GetItemNum()));
-	if ((nIndex >= 0) && (nIndex < this->GetItemNum()))
-		return this->arrRmdItemList.GetAt(nIndex);
+	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
+	if ((nIndex >= 0) && (nIndex < GetItemNum()))
+		return m_arrRmdItemList.GetAt(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -2179,11 +3079,11 @@ const PWRREMINDERITEM& tagPWRREMINDERDATA::GetItemAt(int nIndex) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-PWRREMINDERITEM& tagPWRREMINDERDATA::GetItemAt(int nIndex)
+PWRREMINDERITEM& PwrReminderData::GetItemAt(int nIndex)
 {
-	ASSERT((nIndex >= 0) && (nIndex < this->GetItemNum()));
-	if ((nIndex >= 0) && (nIndex < this->GetItemNum()))
-		return this->arrRmdItemList.GetAt(nIndex);
+	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
+	if ((nIndex >= 0) && (nIndex < GetItemNum()))
+		return m_arrRmdItemList.GetAt(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -2198,14 +3098,14 @@ PWRREMINDERITEM& tagPWRREMINDERDATA::GetItemAt(int nIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::Remove(int nAtIndex)
+void PwrReminderData::Remove(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= this->GetItemNum()))
+	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
 		return;
 
 	// Get item data
-	PWRREMINDERITEM& pwrItem = this->GetItemAt(nAtIndex);
+	PWRREMINDERITEM& pwrItem = GetItemAt(nAtIndex);
 
 	// Reset item value
 	pwrItem.Copy(PWRREMINDERITEM());
@@ -2220,10 +3120,10 @@ void tagPWRREMINDERDATA::Remove(int nAtIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::RemoveAll(void)
+void PwrReminderData::RemoveAll(void)
 {
 	// Remove each item
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
 		Remove(nIndex);
 	}
 }
@@ -2237,16 +3137,16 @@ void tagPWRREMINDERDATA::RemoveAll(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::Adjust(void)
+void PwrReminderData::Adjust(void)
 {
 	// Remove garbage items
-	for (int nIndex = (this->GetItemNum() - 1); nIndex >= 0; nIndex--) {
+	for (int nIndex = (GetItemNum() - 1); nIndex >= 0; nIndex--) {
 		// Get item
-		PWRREMINDERITEM pwrTemp = this->GetItemAt(nIndex);
+		PWRREMINDERITEM pwrTemp = GetItemAt(nIndex);
 		if (!pwrTemp.IsEmpty()) continue;
 
 		// Remove empty if item
-		this->Delete(nIndex);
+		Delete(nIndex);
 	}
 }
 
@@ -2259,14 +3159,14 @@ void tagPWRREMINDERDATA::Adjust(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT tagPWRREMINDERDATA::GetNextID(void)
+UINT PwrReminderData::GetNextID(void)
 {
 	// Get max ID
 	UINT nRetNextID = DEF_PWRREMINDER_MIN_ITEMID;
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = this->GetItemAt(nIndex);
-		if (pwrItem.nItemID > nRetNextID) {
-			nRetNextID = pwrItem.nItemID;
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
+		PWRREMINDERITEM pwrItem = GetItemAt(nIndex);
+		if (pwrItem.GetItemID() > nRetNextID) {
+			nRetNextID = pwrItem.GetItemID();
 		}
 	}
 
@@ -2285,9 +3185,9 @@ UINT tagPWRREMINDERDATA::GetNextID(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE INT_PTR tagPWRREMINDERDATA::GetItemNum(void) const
+INT_PTR PwrReminderData::GetItemNum(void) const
 {
-	return this->arrRmdItemList.GetSize();
+	return m_arrRmdItemList.GetSize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2299,14 +3199,14 @@ AFX_INLINE INT_PTR tagPWRREMINDERDATA::GetItemNum(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERDATA::IsEmpty(int nIndex) const
+BOOL PwrReminderData::IsEmpty(int nIndex) const
 {
 	// Check index validity
-	if ((nIndex < 0) || (nIndex >= this->GetItemNum()))
+	if ((nIndex < 0) || (nIndex >= GetItemNum()))
 		return TRUE;
 
 	// Check if item is empty
-	PWRREMINDERITEM pwrItem = this->GetItemAt(nIndex);
+	PWRREMINDERITEM pwrItem = GetItemAt(nIndex);
 	return pwrItem.IsEmpty();
 }
 
@@ -2319,16 +3219,16 @@ BOOL tagPWRREMINDERDATA::IsEmpty(int nIndex) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagPWRREMINDERDATA::IsAllEmpty() const
+BOOL PwrReminderData::IsAllEmpty() const
 {
 	// If there's no item, return TRUE
-	if (this->arrRmdItemList.IsEmpty())
+	if (m_arrRmdItemList.IsEmpty())
 		return TRUE;
 
 	// Check each item
 	BOOL bAllEmpty = TRUE;
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		if (this->IsEmpty(nIndex) == FALSE) {
+	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
+		if (IsEmpty(nIndex) == FALSE) {
 			bAllEmpty = FALSE;
 			break;
 		}
@@ -2346,23 +3246,23 @@ BOOL tagPWRREMINDERDATA::IsAllEmpty() const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::Delete(int nAtIndex)
+void PwrReminderData::Delete(int nAtIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= this->GetItemNum()))
+	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
 		return;
 
 	// Create new temporary data
-	PPWRREMINDERDATA pNew = new PWRREMINDERDATA;
-	pNew->arrRmdItemList.RemoveAll();
+	PwrReminderData* pNew = new PwrReminderData;
+	pNew->m_arrRmdItemList.RemoveAll();
 
 	// Copy common message style data
-	pNew->rmdCommonStyle.Copy(this->rmdCommonStyle);
+	pNew->m_rmdCommonStyle.Copy(this->m_rmdCommonStyle);
 
 	// Copy old data to new one (except the AtIndex item)
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (nIndex == nAtIndex) continue;
-		pNew->arrRmdItemList.Add(this->arrRmdItemList.GetAt(nIndex));
+		pNew->m_arrRmdItemList.Add(this->m_arrRmdItemList.GetAt(nIndex));
 	}
 
 	// Copy back to old data
@@ -2385,43 +3285,41 @@ void tagPWRREMINDERDATA::Delete(int nAtIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRREMINDERDATA::DeleteAll(void)
+void PwrReminderData::DeleteAll(void)
 {
 	// Reset data
-	this->arrRmdItemList.RemoveAll();
-	this->arrRmdItemList.FreeExtra();
-	this->rmdCommonStyle = RMDMSGSTYLESET();
+	m_arrRmdItemList.RemoveAll();
+	m_arrRmdItemList.FreeExtra();
+	m_rmdCommonStyle = RMDMSGSTYLESET();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagPWRRUNTIMEITEM
+//	Function name:	PwrRuntimeItem
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRRUNTIMEITEM::tagPWRRUNTIMEITEM()
+PwrRuntimeItem::PwrRuntimeItem()
 {
 	// Init data
-	this->nCategory = INT_INVALID;							// Item category
-	this->nItemID = INT_NULL;								// Power Reminder item ID
-	this->nDisplayFlag = FLAG_OFF;							// Item displaying flag
-	this->nSkipFlag = FLAG_OFF;								// Item skip flag
-	this->nSnoozeFlag = FLAG_OFF;							// Item snooze trigger flag
-	this->stNextSnoozeTime = SYSTEMTIME_ZERO;				// Next snooze trigger time
+	m_nCategory = INT_INVALID;								// Item category
+	m_nItemID = INT_NULL;									// Power Reminder item ID
+	m_nDisplayFlag = FLAG_OFF;								// Item displaying flag
+	m_nSkipFlag = FLAG_OFF;									// Item skip flag
+	m_nSnoozeFlag = FLAG_OFF;								// Item snooze trigger flag
+	m_stNextSnoozeTime = SYSTEMTIME_ZERO;					// Next snooze trigger time
 }
 
-tagPWRRUNTIMEITEM::tagPWRRUNTIMEITEM(const tagPWRRUNTIMEITEM& pItem)
+PwrRuntimeItem::PwrRuntimeItem(const PwrRuntimeItem& pItem)
 {
 	// Copy data
-	this->nCategory = pItem.nCategory;						// Item category
-	this->nItemID = pItem.nItemID;							// Power Reminder item ID
-	this->nDisplayFlag = pItem.nDisplayFlag;				// Item displaying flag
-	this->nSkipFlag = pItem.nSkipFlag;						// Item skip flag
-	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Item snooze trigger flag
-	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
+	this->m_nCategory = pItem.m_nCategory;					// Item category
+	this->m_nItemID = pItem.m_nItemID;						// Power Reminder item ID
+	this->m_nDisplayFlag = pItem.m_nDisplayFlag;			// Item displaying flag
+	this->m_nSkipFlag = pItem.m_nSkipFlag;					// Item skip flag
+	this->m_nSnoozeFlag = pItem.m_nSnoozeFlag;				// Item snooze trigger flag
+	this->m_stNextSnoozeTime = pItem.m_stNextSnoozeTime;	// Next snooze trigger time
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2433,15 +3331,15 @@ tagPWRRUNTIMEITEM::tagPWRRUNTIMEITEM(const tagPWRRUNTIMEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPWRRUNTIMEITEM& tagPWRRUNTIMEITEM::operator=(const tagPWRRUNTIMEITEM& pItem)
+PwrRuntimeItem& PwrRuntimeItem::operator=(const PwrRuntimeItem& pItem)
 {
 	// Copy data
-	this->nCategory = pItem.nCategory;						// Item category
-	this->nItemID = pItem.nItemID;							// Power Reminder item ID
-	this->nDisplayFlag = pItem.nDisplayFlag;				// Item displaying flag
-	this->nSkipFlag = pItem.nSkipFlag;						// Item skip flag
-	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Item snooze trigger flag
-	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
+	this->m_nCategory = pItem.m_nCategory;					// Item category
+	this->m_nItemID = pItem.m_nItemID;						// Power Reminder item ID
+	this->m_nDisplayFlag = pItem.m_nDisplayFlag;			// Item displaying flag
+	this->m_nSkipFlag = pItem.m_nSkipFlag;					// Item skip flag
+	this->m_nSnoozeFlag = pItem.m_nSnoozeFlag;				// Item snooze trigger flag
+	this->m_stNextSnoozeTime = pItem.m_stNextSnoozeTime;	// Next snooze trigger time
 
 	return *this;
 }
@@ -2455,15 +3353,15 @@ tagPWRRUNTIMEITEM& tagPWRRUNTIMEITEM::operator=(const tagPWRRUNTIMEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRRUNTIMEITEM::Copy(const tagPWRRUNTIMEITEM& pItem)
+void PwrRuntimeItem::Copy(const PwrRuntimeItem& pItem)
 {
 	// Copy data
-	this->nCategory = pItem.nCategory;						// Item category
-	this->nItemID = pItem.nItemID;							// Item ID
-	this->nDisplayFlag = pItem.nDisplayFlag;				// Item displaying flag
-	this->nSkipFlag = pItem.nSkipFlag;						// Item skip flag
-	this->nSnoozeFlag = pItem.nSnoozeFlag;					// Item snooze trigger flag
-	this->stNextSnoozeTime = pItem.stNextSnoozeTime;		// Next snooze trigger time
+	this->m_nCategory = pItem.m_nCategory;					// Item category
+	this->m_nItemID = pItem.m_nItemID;						// Power Reminder item ID
+	this->m_nDisplayFlag = pItem.m_nDisplayFlag;			// Item displaying flag
+	this->m_nSkipFlag = pItem.m_nSkipFlag;					// Item skip flag
+	this->m_nSnoozeFlag = pItem.m_nSnoozeFlag;				// Item snooze trigger flag
+	this->m_stNextSnoozeTime = pItem.m_stNextSnoozeTime;	// Next snooze trigger time
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2475,10 +3373,178 @@ void tagPWRRUNTIMEITEM::Copy(const tagPWRRUNTIMEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPWRRUNTIMEITEM::CalcNextSnoozeTime(int nInterval)
+void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval)
 {
 	// Calculate time with offset
-	CoreFuncs::CalcTimeOffset(this->stNextSnoozeTime, nInterval);
+	AppCore::CalcTimeOffset(m_stNextSnoozeTime, nInterval);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetCategory
+//	Description:	Get item category
+//  Arguments:		None
+//  Return value:	INT
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT PwrRuntimeItem::GetCategory(void) const
+{
+	return m_nCategory;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetCategory
+//	Description:	Set item category
+//  Arguments:		nValue - Value to set
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRuntimeItem::SetCategory(INT nValue)
+{
+	m_nCategory = nValue;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetItemID
+//	Description:	Get item ID
+//  Arguments:		None
+//  Return value:	UINT
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT PwrRuntimeItem::GetItemID(void) const
+{
+	return m_nItemID;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetItemID
+//	Description:	Set item ID
+//  Arguments:		nValue - Value to set
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRuntimeItem::SetItemID(UINT nValue)
+{
+	m_nItemID = nValue;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDisplayFlag
+//	Description:	Get item displaying flag
+//  Arguments:		None
+//  Return value:	INT
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT PwrRuntimeItem::GetDisplayFlag(void) const
+{
+	return m_nDisplayFlag;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetDisplayFlag
+//	Description:	Set item displaying flag
+//  Arguments:		nValue - Value to set
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRuntimeItem::SetDisplayFlag(INT nValue)
+{
+	m_nDisplayFlag = nValue;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSkipFlag
+//	Description:	Get item skip flag
+//  Arguments:		None
+//  Return value:	INT
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT PwrRuntimeItem::GetSkipFlag(void) const
+{
+	return m_nSkipFlag;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetSkipFlag
+//	Description:	Set item skip flag
+//  Arguments:		nValue - Value to set
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRuntimeItem::SetSkipFlag(INT nValue)
+{
+	m_nSkipFlag = nValue;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSnoozeFlag
+//	Description:	Get item snooze flag
+//  Arguments:		None
+//  Return value:	INT
+//
+//////////////////////////////////////////////////////////////////////////
+
+INT PwrRuntimeItem::GetSnoozeFlag(void) const
+{
+	return m_nSnoozeFlag;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetSnoozeFlag
+//	Description:	Set item snooze flag
+//  Arguments:		nValue - Value to set
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRuntimeItem::SetSnoozeFlag(INT nValue)
+{
+	m_nSnoozeFlag = nValue;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetTime
+//	Description:	Get next snooze trigger time
+//  Arguments:		None
+//  Return value:	SYSTEMTIME
+//
+//////////////////////////////////////////////////////////////////////////
+
+SYSTEMTIME PwrRuntimeItem::GetTime(void) const
+{
+	return m_stNextSnoozeTime;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetTime
+//	Description:	Set next snooze trigger time
+//  Arguments:		stTime - Time data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void PwrRuntimeItem::SetTime(const SYSTEMTIME& stTime)
+{
+	m_stNextSnoozeTime = stTime;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2490,30 +3556,30 @@ void tagPWRRUNTIMEITEM::CalcNextSnoozeTime(int nInterval)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagHISTORYINFODATA::tagHISTORYINFODATA()
+HistoryInfoData::HistoryInfoData()
 {
 	// Init data
-	this->bInitState = FALSE;								// Init state
-	this->nCategoryID = INT_NULL;							// Category ID
-	this->stTimestamp = SYSTEMTIME_ZERO;					// Timestamp of history
-	this->nItemID = INT_NULL;								// Item ID
-	this->nActionNameID = INT_NULL;							// Name of action (string ID)
-	this->bActionResult = FALSE;							// Action result
-	this->dwErrorCode = INT_NULL;							// Returned error code
-	this->strDescription = STRING_EMPTY;					// History description (attached info)
+	m_bInitState = FALSE;									// Init state
+	m_nCategoryID = INT_NULL;								// Category ID
+	m_stTimestamp = SYSTEMTIME_ZERO;						// Timestamp of history
+	m_nItemID = INT_NULL;									// Item ID
+	m_nActionNameID = INT_NULL;								// Name of action (string ID)
+	m_bActionResult = FALSE;								// Action result
+	m_dwErrorCode = INT_NULL;								// Returned error code
+	m_strDescription = STRING_EMPTY;						// History description (attached info)
 }
 
-tagHISTORYINFODATA::tagHISTORYINFODATA(const tagHISTORYINFODATA& pData)
+HistoryInfoData::HistoryInfoData(const HistoryInfoData& pData)
 {
 	// Copy data
-	this->bInitState = pData.bInitState;					// Init state
-	this->nCategoryID = pData.nCategoryID;					// Category ID
-	this->stTimestamp = pData.stTimestamp;					// Timestamp of history
-	this->nItemID = pData.nItemID;							// Item ID
-	this->nActionNameID = pData.nActionNameID;				// Name of action (string ID)
-	this->bActionResult = pData.bActionResult;				// Action result
-	this->dwErrorCode = pData.dwErrorCode;					// Returned error code
-	this->strDescription = pData.strDescription;			// History description (attached info)
+	this->m_bInitState = pData.m_bInitState;				// Init state
+	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
+	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
+	this->m_nItemID = pData.m_nItemID;						// Item ID
+	this->m_nActionNameID = pData.m_nActionNameID;			// Name of action (string ID)
+	this->m_bActionResult = pData.m_bActionResult;			// Action result
+	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
+	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2525,17 +3591,17 @@ tagHISTORYINFODATA::tagHISTORYINFODATA(const tagHISTORYINFODATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagHISTORYINFODATA& tagHISTORYINFODATA::operator=(const tagHISTORYINFODATA& pData)
+HistoryInfoData& HistoryInfoData::operator=(const HistoryInfoData& pData)
 {
 	// Copy data
-	this->bInitState = pData.bInitState;					// Init state
-	this->nCategoryID = pData.nCategoryID;					// Category ID
-	this->stTimestamp = pData.stTimestamp;					// Timestamp of history
-	this->nItemID = pData.nItemID;							// Item ID
-	this->nActionNameID = pData.nActionNameID;				// Name of action (string ID)
-	this->bActionResult = pData.bActionResult;				// Action result
-	this->dwErrorCode = pData.dwErrorCode;					// Returned error code
-	this->strDescription = pData.strDescription;			// History description (attached info)
+	this->m_bInitState = pData.m_bInitState;				// Init state
+	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
+	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
+	this->m_nItemID = pData.m_nItemID;						// Item ID
+	this->m_nActionNameID = pData.m_nActionNameID;			// Name of action (string ID)
+	this->m_bActionResult = pData.m_bActionResult;			// Action result
+	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
+	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
 
 	return *this;
 }
@@ -2549,17 +3615,17 @@ tagHISTORYINFODATA& tagHISTORYINFODATA::operator=(const tagHISTORYINFODATA& pDat
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHISTORYINFODATA::Copy(const tagHISTORYINFODATA& pData)
+void HistoryInfoData::Copy(const HistoryInfoData& pData)
 {
 	// Copy data
-	this->bInitState = pData.bInitState;					// Init state
-	this->nCategoryID = pData.nCategoryID;					// Category ID
-	this->stTimestamp = pData.stTimestamp;					// Timestamp of history
-	this->nItemID = pData.nItemID;							// Item ID
-	this->nActionNameID = pData.nActionNameID;				// Name of action (string ID)
-	this->bActionResult = pData.bActionResult;				// Action result
-	this->dwErrorCode = pData.dwErrorCode;					// Returned error code
-	this->strDescription = pData.strDescription;			// History description (attached info)
+	this->m_bInitState = pData.m_bInitState;				// Init state
+	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
+	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
+	this->m_nItemID = pData.m_nItemID;						// Item ID
+	this->m_nActionNameID = pData.m_nActionNameID;			// Name of action (string ID)
+	this->m_bActionResult = pData.m_bActionResult;			// Action result
+	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
+	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2571,13 +3637,13 @@ void tagHISTORYINFODATA::Copy(const tagHISTORYINFODATA& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHISTORYINFODATA::Init(UINT nCategoryID)
+void HistoryInfoData::Init(UINT nCategoryID)
 {
 	// Reset data
-	this->RemoveAll();
-	this->bInitState = TRUE;								// Init state
-	this->nCategoryID = nCategoryID;						// Category ID
-	this->stTimestamp = CoreFuncs::GetCurSysTime();			// Timestamp of history
+	RemoveAll();
+	m_bInitState = TRUE;									// Init state
+	m_nCategoryID = nCategoryID;							// Category ID
+	m_stTimestamp = AppCore::GetCurSysTime();				// Timestamp of history
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2589,17 +3655,13 @@ void tagHISTORYINFODATA::Init(UINT nCategoryID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagHISTORYINFODATA::RemoveAll(void)
+void HistoryInfoData::RemoveAll(void)
 {
-	// Reset data
-	this->bInitState = FALSE;								// Init state
-	this->nCategoryID = INT_NULL;							// Category ID
-	this->stTimestamp = SYSTEMTIME_ZERO;					// Timestamp of history
-	this->nItemID = INT_NULL;								// Item ID
-	this->nActionNameID = INT_NULL;							// Name of action (string ID)
-	this->bActionResult = FALSE;							// Action result
-	this->dwErrorCode = INT_NULL;							// Returned error code
-	this->strDescription.Empty();							// History description (attached info)
+	// Create an empty item
+	const HistoryInfoData emptyItem;
+
+	// Copy and overwrite current data
+	this->Copy(emptyItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2957,35 +4019,33 @@ void tagREGISTRYKEY::SetMultiStringValue(CStringArray& astrValue)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagREGISTRYINFO
+//	Function name:	RegistryInfo
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagREGISTRYINFO::tagREGISTRYINFO()
+RegistryInfo::RegistryInfo()
 {
 	// Initialize
-	this->hRootKey = NULL;									// Root key (HKEY)
-	this->strRootKey = STRING_EMPTY;						// Root key (string)
-	this->astrSubkeyPath.RemoveAll();						// Subkey path (string array)
-	this->strProfileName = STRING_EMPTY;					// Profile key name (string)
-	this->strAppName = STRING_EMPTY;						// App name (string)
-	this->astrSectionArray.RemoveAll();						// Section array (string)
-	this->regKeyInfo = REGISTRYKEY();						// Registry key info
+	m_hRootKey = NULL;										// Root key (HKEY)
+	m_strRootKey = STRING_EMPTY;							// Root key (string)
+	m_astrSubkeyPath.RemoveAll();							// Subkey path (string array)
+	m_strProfileName = STRING_EMPTY;						// Profile key name (string)
+	m_strAppName = STRING_EMPTY;							// App name (string)
+	m_astrSectionArray.RemoveAll();							// Section array (string)
+	m_regKeyInfo = REGISTRYKEY();							// Registry key info
 }
 
-tagREGISTRYINFO::tagREGISTRYINFO(const tagREGISTRYINFO& pItem)
+RegistryInfo::RegistryInfo(const RegistryInfo& pItem)
 {
 	// Copy data
-	this->hRootKey = pItem.hRootKey;						// Root key (HKEY)
-	this->strRootKey = pItem.strRootKey;					// Root key (string)
-	this->astrSubkeyPath.Copy(pItem.astrSubkeyPath);		// Subkey path (string array)
-	this->strProfileName = pItem.strProfileName;			// Profile key name (string)
-	this->strAppName = pItem.strAppName;					// App name (string)
-	this->astrSectionArray.Copy(pItem.astrSectionArray);	// Section array (string)
-	this->regKeyInfo.Copy(pItem.regKeyInfo);				// Registry key info
+	m_hRootKey = pItem.m_hRootKey;							// Root key (HKEY)
+	m_strRootKey = pItem.m_strRootKey;						// Root key (string)
+	m_astrSubkeyPath.Copy(pItem.m_astrSubkeyPath);			// Subkey path (string array)
+	m_strProfileName = pItem.m_strProfileName;				// Profile key name (string)
+	m_strAppName = pItem.m_strAppName;						// App name (string)
+	m_astrSectionArray.Copy(pItem.m_astrSectionArray);		// Section array (string)
+	m_regKeyInfo.Copy(pItem.m_regKeyInfo);					// Registry key info
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2997,16 +4057,16 @@ tagREGISTRYINFO::tagREGISTRYINFO(const tagREGISTRYINFO& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagREGISTRYINFO& tagREGISTRYINFO::operator=(const tagREGISTRYINFO& pItem)
+RegistryInfo& RegistryInfo::operator=(const RegistryInfo& pItem)
 {
 	// Copy data
-	this->hRootKey = pItem.hRootKey;						// Root key (HKEY)
-	this->strRootKey = pItem.strRootKey;					// Root key (string)
-	this->astrSubkeyPath.Copy(pItem.astrSubkeyPath);		// Subkey path (string array)
-	this->strProfileName = pItem.strProfileName;			// Profile key name (string)
-	this->strAppName = pItem.strAppName;					// App name (string)
-	this->astrSectionArray.Copy(pItem.astrSectionArray);	// Section array (string)
-	this->regKeyInfo.Copy(pItem.regKeyInfo);				// Registry key info
+	m_hRootKey = pItem.m_hRootKey;							// Root key (HKEY)
+	m_strRootKey = pItem.m_strRootKey;						// Root key (string)
+	m_astrSubkeyPath.Copy(pItem.m_astrSubkeyPath);			// Subkey path (string array)
+	m_strProfileName = pItem.m_strProfileName;				// Profile key name (string)
+	m_strAppName = pItem.m_strAppName;						// App name (string)
+	m_astrSectionArray.Copy(pItem.m_astrSectionArray);		// Section array (string)
+	m_regKeyInfo.Copy(pItem.m_regKeyInfo);					// Registry key info
 
 	return *this;
 }
@@ -3020,16 +4080,16 @@ tagREGISTRYINFO& tagREGISTRYINFO::operator=(const tagREGISTRYINFO& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYINFO::Copy(const tagREGISTRYINFO& pItem)
+void RegistryInfo::Copy(const RegistryInfo& pItem)
 {
 	// Copy data
-	this->hRootKey = pItem.hRootKey;						// Root key (HKEY)
-	this->strRootKey = pItem.strRootKey;					// Root key (string)
-	this->astrSubkeyPath.Copy(pItem.astrSubkeyPath);		// Subkey path (string array)
-	this->strProfileName = pItem.strProfileName;			// Profile key name (string)
-	this->strAppName = pItem.strAppName;					// App name (string)
-	this->astrSectionArray.Copy(pItem.astrSectionArray);	// Section array (string)
-	this->regKeyInfo.Copy(pItem.regKeyInfo);				// Registry key info
+	m_hRootKey = pItem.m_hRootKey;							// Root key (HKEY)
+	m_strRootKey = pItem.m_strRootKey;						// Root key (string)
+	m_astrSubkeyPath.Copy(pItem.m_astrSubkeyPath);			// Subkey path (string array)
+	m_strProfileName = pItem.m_strProfileName;				// Profile key name (string)
+	m_strAppName = pItem.m_strAppName;						// App name (string)
+	m_astrSectionArray.Copy(pItem.m_astrSectionArray);		// Section array (string)
+	m_regKeyInfo.Copy(pItem.m_regKeyInfo);					// Registry key info
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3041,37 +4101,166 @@ void tagREGISTRYINFO::Copy(const tagREGISTRYINFO& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYINFO::RemoveAll(void)
+void RegistryInfo::RemoveAll(void)
 {
 	// Reset data
-	this->hRootKey = NULL;									// Root key (HKEY)
-	this->strRootKey = STRING_EMPTY;						// Root key (string)
-	this->astrSubkeyPath.RemoveAll();						// Subkey path (string array)
-	this->strProfileName = STRING_EMPTY;					// Profile key name (string)
-	this->strAppName = STRING_EMPTY;						// App name (string)
-	this->astrSectionArray.RemoveAll();						// Section array (string)
-	this->regKeyInfo.RemoveAll();							// Registry key info
+	m_hRootKey = NULL;										// Root key (HKEY)
+	m_strRootKey = STRING_EMPTY;							// Root key (string)
+	m_astrSubkeyPath.RemoveAll();							// Subkey path (string array)
+	m_strProfileName = STRING_EMPTY;						// Profile key name (string)
+	m_strAppName = STRING_EMPTY;							// App name (string)
+	m_astrSectionArray.RemoveAll();							// Section array (string)
+	m_regKeyInfo.RemoveAll();								// Registry key info
 
-	// Cleanup array data
-	this->astrSubkeyPath.FreeExtra();						// Subkey path (string array)
-	this->astrSectionArray.FreeExtra();						// Section array (string)
+	// Cleanup extra memory for array data
+	m_astrSubkeyPath.FreeExtra();							// Subkey path (string array)
+	m_astrSectionArray.FreeExtra();							// Section array (string)
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetRootKey
+//	Description:	Get root key
+//  Arguments:		None
+//  Return value:	HKEY
+//
+//////////////////////////////////////////////////////////////////////////
+
+HKEY RegistryInfo::GetRootKey(void) const
+{
+	return m_hRootKey;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetRegistryKey
+//	Description:	Get registry key info data
+//  Arguments:		None
+//  Return value:	const REGISTRYKEY&
+//
+//////////////////////////////////////////////////////////////////////////
+
+const REGISTRYKEY& RegistryInfo::GetRegistryKey(void) const
+{
+	return m_regKeyInfo;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetRootKeyName
+//	Description:	Get root key name
+//  Arguments:		None
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+LPCTSTR RegistryInfo::GetRootKeyName(void) const
+{
+	return m_strRootKey;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSubkeyPath
+//	Description:	Get Subkey path array
+//  Arguments:		arrOutput - Output string array
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void RegistryInfo::GetSubkeyPath(CStringArray& arrOutput) const
+{
+	// Empty destination output array
+	arrOutput.RemoveAll();
+	arrOutput.FreeExtra();
+
+	// Copy data
+	arrOutput.Copy(m_astrSubkeyPath);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetProfileName
+//	Description:	Get Profile key name part
+//  Arguments:		None
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+LPCTSTR RegistryInfo::GetProfileName(void) const
+{
+	return m_strProfileName;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetAppName
+//	Description:	Get application name part
+//  Arguments:		None
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+LPCTSTR RegistryInfo::GetAppName(void) const
+{
+	return m_strAppName;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSectionName
+//	Description:	Get Section name array
+//  Arguments:		arrOutput - Output string array
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void RegistryInfo::GetSectionName(CStringArray& arrOutput) const
+{
+	// Empty destination output array
+	arrOutput.RemoveAll();
+	arrOutput.FreeExtra();
+
+	// Copy data
+	arrOutput.Copy(m_astrSectionArray);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetRootKey
+//	Description:	Set registry info root key
+//  Arguments:		hRootKey - Root key handle
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void RegistryInfo::SetRootKey(HKEY hRootKey)
+{
+	m_hRootKey = hRootKey;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	SetRootKeyName
 //	Description:	Set registry info root key name
-//  Arguments:		nResourceID - Root key name resource string ID (in)
+//  Arguments:		nResourceID		- Root key name resource string ID (in)
+//					lpszRootkeyName - Root key name (string) (in)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYINFO::SetRootKeyName(UINT nResourceID)
+void RegistryInfo::SetRootKeyName(UINT nResourceID)
 {
 	// Set root key name (by resource ID)
 	CString strKeyName;
 	VERIFY(strKeyName.LoadString(nResourceID));
-	this->strRootKey = strKeyName;
+	SetRootKeyName(strKeyName);
+}
+
+void RegistryInfo::SetRootKeyName(LPCTSTR lpszRootkeyName)
+{
+	// Set root key name (string)
+	m_strRootKey = lpszRootkeyName;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3079,23 +4268,30 @@ void tagREGISTRYINFO::SetRootKeyName(UINT nResourceID)
 //	Function name:	SetSubkeyPath
 //	Description:	Set registry info sub-key path
 //  Arguments:		nResourceID	   - Sub-key path resource string ID (in)
+//					lpszSubKeyName - Sub-key name (string) (in)
 //					astrSubkeyPath - Sub-key path array
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYINFO::SetSubkeyPath(UINT nResourceID)
+void RegistryInfo::SetSubkeyPath(UINT nResourceID)
 {
-	// Set sub-key path (by resource ID)
-	CString strKeyName;
-	VERIFY(strKeyName.LoadString(nResourceID));
-	this->astrSubkeyPath.Add(strKeyName);
+	// Add sub-key path (by resource ID)
+	CString strSubKeyName;
+	VERIFY(strSubKeyName.LoadString(nResourceID));
+	SetRootKeyName(strSubKeyName);
 }
 
-void tagREGISTRYINFO::SetSubkeyPath(CStringArray& astrSubkeyPath)
+void RegistryInfo::SetSubkeyPath(LPCTSTR lpszSubKeyName)
+{
+	// Add sub-key path (string)
+	m_astrSubkeyPath.Add(lpszSubKeyName);
+}
+
+void RegistryInfo::SetSubkeyPath(CStringArray& astrSubkeyPath)
 {
 	// Set sub-key path
-	this->astrSubkeyPath.Copy(astrSubkeyPath);
+	m_astrSubkeyPath.Copy(astrSubkeyPath);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3107,12 +4303,18 @@ void tagREGISTRYINFO::SetSubkeyPath(CStringArray& astrSubkeyPath)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYINFO::SetProfileName(UINT nResourceID)
+void RegistryInfo::SetProfileName(UINT nResourceID)
 {
 	// Set profile key name (by resource ID)
 	CString strKeyName;
 	VERIFY(strKeyName.LoadString(nResourceID));
-	this->strProfileName = strKeyName;
+	SetProfileName(strKeyName);
+}
+
+void RegistryInfo::SetProfileName(LPCTSTR lpszProfileName)
+{
+	// Set profile key name (string)
+	m_strProfileName = lpszProfileName;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3120,16 +4322,23 @@ void tagREGISTRYINFO::SetProfileName(UINT nResourceID)
 //	Function name:	SetAppName
 //	Description:	Set registry info app name
 //  Arguments:		nResourceID - App name resource string ID (in)
+//					lpszAppName - App name (string) (in)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYINFO::SetAppName(UINT nResourceID)
+void RegistryInfo::SetAppName(UINT nResourceID)
 {
 	// Set app name (by resource ID)
-	CString strKeyName;
-	VERIFY(strKeyName.LoadString(nResourceID));
-	this->strAppName = strKeyName;
+	CString strAppName;
+	VERIFY(strAppName.LoadString(nResourceID));
+	SetAppName(strAppName);
+}
+
+void RegistryInfo::SetAppName(LPCTSTR lpszAppName)
+{
+	// Set app name (string)
+	m_strAppName = lpszAppName;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3137,46 +4346,53 @@ void tagREGISTRYINFO::SetAppName(UINT nResourceID)
 //	Function name:	SetSectionName
 //	Description:	Set registry info section name
 //  Arguments:		nResourceID		 - Section name resource string ID (in)
-//					astrSectionArray - Section name array
+//					lpszSectionName  - Section name (string) (in)
+//					astrSectionArray - Section name array (in)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYINFO::SetSectionName(UINT nResourceID)
+void RegistryInfo::SetSectionName(UINT nResourceID)
 {
-	// Set section name (by resource ID)
+	// Add section name (by resource ID)
 	CString strKeyName;
 	VERIFY(strKeyName.LoadString(nResourceID));
-	this->astrSectionArray.Add(strKeyName);
+	m_astrSectionArray.Add(strKeyName);
 }
 
-void tagREGISTRYINFO::SetSectionName(CStringArray& astrSectionArray)
+void RegistryInfo::SetSectionName(LPCTSTR lpszSectionName)
+{
+	// Add section name (string)
+	m_astrSectionArray.Add(lpszSectionName);
+}
+
+void RegistryInfo::SetSectionName(CStringArray& astrSectionArray)
 {
 	// Set section name array
-	this->astrSectionArray.Copy(astrSectionArray);
+	m_astrSectionArray.Copy(astrSectionArray);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagSUBSTRING
+//	Function name:	Substring
 //	Description:	Constructor
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagSUBSTRING::tagSUBSTRING()
+Substring::Substring()
 {
 	// Initialization
-	strLeft = STRING_EMPTY;					// Left part
-	strMid = STRING_EMPTY;					// Middle part
-	strRight = STRING_EMPTY;				// Right part
+	m_strLeft = STRING_EMPTY;				// Left part
+	m_strMid = STRING_EMPTY;				// Middle part
+	m_strRight = STRING_EMPTY;				// Right part
 }
 
-tagSUBSTRING::tagSUBSTRING(const tagSUBSTRING& pData)
+Substring::Substring(const Substring& pData)
 {
 	// Copy data
-	strLeft = pData.strLeft;				// Left part
-	strMid = pData.strMid;					// Middle part
-	strRight = pData.strRight;				// Right part
+	m_strLeft = pData.m_strLeft;			// Left part
+	m_strMid = pData.m_strMid;				// Middle part
+	m_strRight = pData.m_strRight;			// Right part
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3188,12 +4404,12 @@ tagSUBSTRING::tagSUBSTRING(const tagSUBSTRING& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagSUBSTRING& tagSUBSTRING::operator=(const tagSUBSTRING& pData)
+Substring& Substring::operator=(const Substring& pData)
 {
 	// Copy data
-	strLeft = pData.strLeft;				// Left part
-	strMid = pData.strMid;					// Middle part
-	strRight = pData.strRight;				// Right part
+	m_strLeft = pData.m_strLeft;			// Left part
+	m_strMid = pData.m_strMid;				// Middle part
+	m_strRight = pData.m_strRight;			// Right part
 
 	return *this;
 }
@@ -3207,12 +4423,12 @@ tagSUBSTRING& tagSUBSTRING::operator=(const tagSUBSTRING& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSUBSTRING::Copy(const tagSUBSTRING& pData)
+void Substring::Copy(const Substring& pData)
 {
 	// Copy data
-	strLeft = pData.strLeft;				// Left part
-	strMid = pData.strMid;					// Middle part
-	strRight = pData.strRight;				// Right part
+	m_strLeft = pData.m_strLeft;			// Left part
+	m_strMid = pData.m_strMid;				// Middle part
+	m_strRight = pData.m_strRight;			// Right part
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3224,12 +4440,12 @@ void tagSUBSTRING::Copy(const tagSUBSTRING& pData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagSUBSTRING::RemoveAll(void)
+void Substring::RemoveAll(void)
 {
 	// Reset data
-	strLeft.Empty();						// Left part
-	strMid.Empty();							// Middle part
-	strRight.Empty();						// Right part
+	m_strLeft.Empty();						// Left part
+	m_strMid.Empty();						// Middle part
+	m_strRight.Empty();						// Right part
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3241,9 +4457,67 @@ void tagSUBSTRING::RemoveAll(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE BOOL tagSUBSTRING::IsEmpty(void) const
+AFX_INLINE BOOL Substring::IsEmpty(void) const
 {
-	return (strLeft.IsEmpty() && strMid.IsEmpty() && strRight.IsEmpty());
+	return (m_strLeft.IsEmpty() && m_strMid.IsEmpty() && m_strRight.IsEmpty());
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	TrimLeft
+//	Description:	Trim spaces for left part
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE void Substring::TrimLeft(void)
+{
+	m_strLeft.Trim();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	TrimMid
+//	Description:	Trim spaces for middle part
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE void Substring::TrimMid(void)
+{
+	m_strMid.Trim();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	TrimAll
+//	Description:	Trim spaces for all parts
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE void Substring::TrimAll(void)
+{
+	m_strLeft.Trim();
+	m_strMid.Trim();
+	m_strRight.Trim();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Right
+//	Description:	Trim spaces for right part
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE void Substring::TrimRight(void)
+{
+	m_strRight.Trim();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3255,9 +4529,9 @@ AFX_INLINE BOOL tagSUBSTRING::IsEmpty(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE LPCTSTR tagSUBSTRING::Left(void) const
+AFX_INLINE LPCTSTR Substring::Left(void) const
 {
-	return (this->strLeft.GetString());
+	return (m_strLeft.GetString());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3269,9 +4543,9 @@ AFX_INLINE LPCTSTR tagSUBSTRING::Left(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE LPCTSTR tagSUBSTRING::Mid(void) const
+AFX_INLINE LPCTSTR Substring::Mid(void) const
 {
-	return (this->strMid.GetString());
+	return (m_strMid.GetString());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3283,22 +4557,64 @@ AFX_INLINE LPCTSTR tagSUBSTRING::Mid(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-AFX_INLINE LPCTSTR tagSUBSTRING::Right(void) const
+AFX_INLINE LPCTSTR Substring::Right(void) const
 {
-	return (this->strRight.GetString());
+	return (m_strRight.GetString());
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagPERFORMANCECOUNTER
+//	Function name:	SetLeft
+//	Description:	Set left part
+//  Arguments:		lpszSrc - Source string
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE void Substring::SetLeft(LPCTSTR lpszSrc)
+{
+	m_strLeft = lpszSrc;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetMid
+//	Description:	Set middle part
+//  Arguments:		lpszSrc - Source string
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE void Substring::SetMid(LPCTSTR lpszSrc)
+{
+	m_strMid = lpszSrc;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SetRight
+//	Description:	Set right part
+//  Arguments:		lpszSrc - Source string
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+AFX_INLINE void Substring::SetRight(LPCTSTR lpszSrc)
+{
+	m_strRight = lpszSrc;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	PerformanceCounter
 //	Description:	Constructor
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagPERFORMANCECOUNTER::tagPERFORMANCECOUNTER()
+PerformanceCounter::PerformanceCounter()
 {
 	// Initialization
-	QueryPerformanceFrequency(&this->frequency);
+	QueryPerformanceFrequency(&m_liFrequency);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3310,10 +4626,10 @@ tagPERFORMANCECOUNTER::tagPERFORMANCECOUNTER()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPERFORMANCECOUNTER::Start(void)
+void PerformanceCounter::Start(void)
 {
 	// Start performance counter
-	QueryPerformanceCounter(&this->startTime);
+	QueryPerformanceCounter(&m_liStartTime);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3325,10 +4641,10 @@ void tagPERFORMANCECOUNTER::Start(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagPERFORMANCECOUNTER::Stop(void)
+void PerformanceCounter::Stop(void)
 {
 	// Stop performance counter
-	QueryPerformanceCounter(&this->endTime);
+	QueryPerformanceCounter(&m_liEndTime);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3340,10 +4656,10 @@ void tagPERFORMANCECOUNTER::Stop(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-double tagPERFORMANCECOUNTER::GetElapsedTime(BOOL bToMillisecs) const
+double PerformanceCounter::GetElapsedTime(BOOL bToMillisecs) const
 {
 	// Get elapsed time
-	double dRetCounter = static_cast<double>(this->endTime.QuadPart - this->startTime.QuadPart) / this->frequency.QuadPart;
+	double dRetCounter = static_cast<double>(m_liEndTime.QuadPart - m_liStartTime.QuadPart) / m_liFrequency.QuadPart;
 	if (bToMillisecs == TRUE) {
 		dRetCounter *= 1000;
 	}
@@ -3359,124 +4675,6 @@ double tagPERFORMANCECOUNTER::GetElapsedTime(BOOL bToMillisecs) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetPairedID
-//	Description:	Find and return ID paired with specified macro ID
-//  Arguments:		idTableRef  - Reference ID mapping table
-//					nID			- First ID
-//					bReverse	- Reverse search
-//  Return value:	UINT - Second paired ID
-//
-//////////////////////////////////////////////////////////////////////////
-
-UINT TableFuncs::GetPairedID(IDMAPTABLE& idTableRef, UINT nID, BOOL bReverse /* = FALSE */)
-{
-	// Return INVALID if ID mapping table is empty
-	int nSize = idTableRef.size();
-	if (nSize == 0) {
-		return (UINT)INT_INVALID;
-	}
-
-	// Find and return corresponding ID paired with specified macro ID
-	for (int nIndex = 0; nIndex < nSize; nIndex++) {
-		IDPAIR idPair = idTableRef[nIndex];
-
-		// Reverse search
-		if (bReverse == TRUE) {
-			if (idPair.nSecondID == nID)
-				return idPair.nFirstID;
-		}
-		else {
-			if (idPair.nFirstID == nID)
-				return idPair.nSecondID;
-		}
-	}
-
-	// Return INVALID if not found
-	return (UINT)INT_INVALID;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetStringID
-//	Description:	Find and return ID paired with given string
-//  Arguments:		strTableRef  - Reference string table
-//					lpszInput	 - Given string
-//  Return value:	UINT - String ID
-//
-//////////////////////////////////////////////////////////////////////////
-
-UINT TableFuncs::GetStringID(STRINGTABLE& strTableRef, LPCTSTR lpszInput)
-{
-	// Return NULL string if language table is empty
-	int nSize = strTableRef.size();
-	if (nSize == 0) {
-		return (UINT)INT_INVALID;
-	}
-
-	// Convert input string to lowercase
-	CString strInput = lpszInput;
-	strInput.MakeLower();
-
-	// Find and return corresponding ID paired with specified string
-	CString strPairedString = STRING_EMPTY;
-	for (int nIndex = 0; nIndex < nSize; nIndex++) {
-		LANGTEXT strPair = strTableRef[nIndex];
-
-		// Also convert language string to lower for easier comparison
-		strPairedString = strPair.lpszLangString;
-		strPairedString.MakeLower();
-
-		if (!_tcscmp(strPairedString, strInput)) {
-			return strPair.dwLangStringID;
-		}
-	}
-
-	// Return INVALID if not found
-	return (UINT)INT_INVALID;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetString
-//	Description:	Find and return string paired with specified ID
-//  Arguments:		strplRef  - Reference string table
-//					nID		  - First ID
-//					pszResult - Result string (reference type)
-//  Return value:	LPCTSTR - Paired string
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR	TableFuncs::GetString(STRINGTABLE& strTableRef, UINT nID, LPTSTR pszResult /* = NULL */)
-{
-	// Return NULL string if language table is empty
-	int nSize = strTableRef.size();
-	if (nSize == 0) {
-		if (pszResult != NULL) pszResult = STRING_NULL;
-		return STRING_NULL;
-	}
-
-	// Find and return corresponding string paired with specified ID
-	for (int nIndex = 0; nIndex < nSize; nIndex++) {
-		LANGTEXT strPair = strTableRef[nIndex];
-
-		if (strPair.dwLangStringID == nID) {
-			if (pszResult != NULL) {
-				_tcscpy(pszResult, strPair.lpszLangString);
-			}
-			return strPair.lpszLangString;
-		}
-	}
-
-	// Return NULL string if not found
-	if (pszResult != NULL) {
-		pszResult = STRING_NULL;
-	}
-
-	return STRING_NULL;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	GetLanguageName
 //	Description:	Get the title name of current language
 //  Arguments:		nCurLanguage	- Current language ID
@@ -3486,7 +4684,7 @@ LPCTSTR	TableFuncs::GetString(STRINGTABLE& strTableRef, UINT nID, LPTSTR pszResu
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR TableFuncs::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = FALSE */, LPTSTR pszResult /* = NULL */)
+LPCTSTR Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = FALSE */, LPTSTR pszResult /* = NULL */)
 {
 	// Load language table package
 	LANGTABLE_PTR ptrLangTable = LoadLanguageTable(nCurLanguage);
@@ -3523,7 +4721,7 @@ LPCTSTR TableFuncs::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* =
 //
 //////////////////////////////////////////////////////////////////////////
 
-LANGTABLE_PTR TableFuncs::LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangName /* = NULL */, int* pnSize /* = NULL */)
+LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangName /* = NULL */, int* pnSize /* = NULL */)
 {
 	LANGTABLE_PTR ptrLangTable = NULL;
 
@@ -3572,7 +4770,7 @@ LANGTABLE_PTR TableFuncs::LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLang
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR TableFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult /* = NULL */)
+LPCTSTR Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult /* = NULL */)
 {
 	// Return NULL string if language table is empty
 	if ((ptLanguage == NULL) || (ptLanguage->empty())) {
@@ -3610,7 +4808,7 @@ LPCTSTR TableFuncs::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
+BOOL AppCore::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
 	BOOL bRet = TRUE;
 
@@ -3644,8 +4842,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
 						// Get error code
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Cannot execute action, OpenProcessToken failed (Code: 0x%08X)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+						TRACE_FORMAT("Error: Cannot execute action, OpenProcessToken failed!!! (Code: 0x%08X)", dwErrCode);
+						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
@@ -3653,8 +4851,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkPrivileges.Privileges[0].Luid)) {
 						// Get error code
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Cannot execute action, LookupPrivilegeValue failed (Code: 0x%08X)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+						TRACE_FORMAT("Error: Cannot execute action, LookupPrivilegeValue failed!!! (Code: 0x%08X)", dwErrCode);
+						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
@@ -3664,8 +4862,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
 						// Adjust token privileges failed
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Cannot execute action, AdjustTokenPrivileges failed (Code: 0x%08X)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+						TRACE_FORMAT("Error: Cannot execute action, AdjustTokenPrivileges failed!!! (Code: 0x%08X)", dwErrCode);
+						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
@@ -3673,8 +4871,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					if (!ExitWindowsEx(uExitWinExFlags, 0)) {
 						// Get exit Windows error
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Cannot execute action, ExitWindowsEx failed (Code: 0x%08X)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+						TRACE_FORMAT("Error: Cannot execute action, ExitWindowsEx failed!!! (Code: 0x%08X)", dwErrCode);
+						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 
@@ -3684,8 +4882,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					// Sleep mode
 					if (!SetSuspendState(FALSE, FALSE, FALSE)) {		// Stand by (sleep)
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Cannot execute action, SetSuspendState failed (Code: 0x%08X)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+						TRACE_FORMAT("Error: Cannot execute action, SetSuspendState failed!!! (Code: 0x%08X)", dwErrCode);
+						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 					break;
@@ -3694,8 +4892,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 					// Hibernate mode
 					if (!SetSuspendState(TRUE, FALSE, FALSE)) {			// Hibernate
 						dwErrCode = GetLastError();
-						TRCFMT("Error: Cannot execute action, SetSuspendState failed (Code: 0x%08X)", dwErrCode);
-						TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+						TRACE_FORMAT("Error: Cannot execute action, SetSuspendState failed!!! (Code: 0x%08X)", dwErrCode);
+						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return FALSE;
 					}
 					break;
@@ -3705,8 +4903,8 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 	default:
 		// Wrong argument
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-		TRCFMT("Error: Cannot execute action, wrong argument (Code: 0x%08X)", dwErrCode);
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Cannot execute action, wrong argument!!! (Code: 0x%08X)", dwErrCode);
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		bRet = FALSE;
 		break;
 	}
@@ -3725,12 +4923,15 @@ BOOL CoreFuncs::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErr
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
+BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
+	// Get action execution time
+	SYSTEMTIME sysExecTime = GetCurSysTime();
+
+	// Get action name
 	CString strAction;
-	strAction.Format(_T("ExecutePowerAction: "));
 	if (nActionType == APP_ACTIONTYPE_MONITOR) {
-		strAction += _T("Turn off display");
+		strAction.SetString(_T("Turn off display"));
 		dwErrCode = ERROR_SUCCESS;
 	}
 	else if (nActionType == APP_ACTIONTYPE_POWER && 
@@ -3739,17 +4940,17 @@ BOOL CoreFuncs::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& 
 		{
 		case APP_MESSAGE_SHUTDOWN:
 			// Shutdown
-			strAction += _T("Shutdown");
+			strAction.SetString(_T("Shutdown"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 		case APP_MESSAGE_REBOOT:
 			// Restart
-			strAction += _T("Restart");
+			strAction.SetString(_T("Restart"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 		case APP_MESSAGE_SIGNOUT:
 			// Sign out
-			strAction += _T("Sign out");
+			strAction.SetString(_T("Sign out"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 		}
@@ -3760,27 +4961,45 @@ BOOL CoreFuncs::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& 
 		{
 		case APP_MESSAGE_SLEEP:
 			// Sleep
-			strAction += _T("Sleep");
+			strAction.SetString(_T("Sleep"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 		case APP_MESSAGE_HIBERNATE:
 			// Hibernate
-			strAction += _T("Hibernate");
+			strAction.SetString(_T("Hibernate"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 		}
 	}
 	else {
 		// Wrong argument
+		strAction.SetString(_T("Invalid"));
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 	}
 
+	// Time format
+	CString strTimeFormat;
+	CString strTimePeriod = (sysExecTime.wHour < 12) ? SYMBOL_ANTE_MERIDIEM : SYMBOL_POST_MERIDIEM;
+	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, sysExecTime.wYear,
+												  sysExecTime.wMonth,
+												  sysExecTime.wDay,
+												  sysExecTime.wHour,
+												  sysExecTime.wMinute,
+												  sysExecTime.wSecond,
+												  sysExecTime.wMilliseconds,
+												  strTimePeriod);
+
+	// Message format
+	CString strMsgFormat;
+	strMsgFormat.Format(_T("[ExecutePowerAction]\nAction: %s\nTime: %s"), strAction, strTimeFormat);
+
 	// Show dummy test message
 	HWND hWnd = GET_HANDLE_MAINWND();
-	MessageBox(hWnd, strAction, _T("DummyTest"), MB_OK | MB_ICONINFORMATION);
+	MessageBox(hWnd, strMsgFormat, _T("DummyTest"), MB_OK | MB_ICONINFORMATION);
 	return TRUE;
 }
 
+#ifdef _LEGACY_CODE_ACTIVE
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	SetDefaultData
@@ -3790,7 +5009,7 @@ BOOL CoreFuncs::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& 
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::SetDefaultData(PCONFIGDATA pcfgData)
+void AppCore::SetDefaultData(PCONFIGDATA pcfgData)
 {
 	// Check data validity
 	if (pcfgData == NULL)
@@ -3833,7 +5052,7 @@ void CoreFuncs::SetDefaultData(PCONFIGDATA pcfgData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::SetDefaultData(PSCHEDULEDATA pschData)
+void AppCore::SetDefaultData(PSCHEDULEDATA pschData)
 {
 	// Check data validity
 	if (pschData == NULL)
@@ -3842,7 +5061,7 @@ void CoreFuncs::SetDefaultData(PSCHEDULEDATA pschData)
 	// Initialize data
 	pschData->Init();
 
-#ifdef DEBUG
+#ifdef _DEBUG_CODE_ACTIVE
 	// Create default data
 	const SCHEDULEITEM schDefItemList[] = {
 	//-----Item ID----Enable state------Repeat----------Schedule action---------Time setting---------------Active days-----------------
@@ -3873,7 +5092,7 @@ void CoreFuncs::SetDefaultData(PSCHEDULEDATA pschData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::SetDefaultData(PHOTKEYSETDATA phksData)
+void AppCore::SetDefaultData(PHOTKEYSETDATA phksData)
 {
 	// Check data validity
 	if (phksData == NULL)
@@ -3890,7 +5109,7 @@ void CoreFuncs::SetDefaultData(PHOTKEYSETDATA phksData)
 	phksData->arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SIGNOUT));
 	phksData->arrHotkeySetList.Add(HOTKEYSETITEM(HKID_HIBERNATE));
 
-#ifdef DEBUG
+#ifdef _DEBUG_CODE_ACTIVE
 	// Create default data
 	const HOTKEYSETITEM hksDefItemList[] = {
 	//----Enable state-----Hotkey action ID------Control key code----Function key code---
@@ -3921,7 +5140,7 @@ void CoreFuncs::SetDefaultData(PHOTKEYSETDATA phksData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::SetDefaultData(PPWRREMINDERDATA ppwrData)
+void AppCore::SetDefaultData(PPWRREMINDERDATA ppwrData)
 {
 	// Check data validity
 	if (ppwrData == NULL)
@@ -3930,7 +5149,7 @@ void CoreFuncs::SetDefaultData(PPWRREMINDERDATA ppwrData)
 	// Initialize data
 	ppwrData->Init();
 
-#ifdef DEBUG
+#ifdef _DEBUG_CODE_ACTIVE
 	// Create default data
 	const PWRREMINDERITEM pwrDefItemList[] = {
 	//---Enable state---Item ID------------Message content----------------------Event ID-------------Event time-----Reminder style----Repeat daily---
@@ -3951,33 +5170,34 @@ void CoreFuncs::SetDefaultData(PPWRREMINDERDATA ppwrData)
 	}
 #endif
 }
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	TraceLog
-//	Description:	Output exception trace log string to file
+//	Function name:	TraceError
+//	Description:	Output exception/error trace log string to log file
 //  Arguments:		lpszTraceLogA - Output trace log string (ANSI)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::TraceLog(LPCSTR lpszTraceLogA)
+void AppCore::TraceError(LPCSTR lpszTraceLogA)
 {
 	// Convert ANSI string to UNICODE
 	LPCTSTR lpszTraceLogW = MAKEUNICODE(lpszTraceLogA);
-	TraceLog(lpszTraceLogW);
+	TraceError(lpszTraceLogW);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	TraceLog
-//	Description:	Output exception trace log string to file
+//	Function name:	TraceError
+//	Description:	Output exception/error trace log string to log file
 //  Arguments:		lpszTraceLogW - Output trace log string (Unicode)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::TraceLog(LPCTSTR lpszTraceLogW)
+void AppCore::TraceError(LPCTSTR lpszTraceLogW)
 {
 	// Write trace log file: TraceError.log
 	WriteTraceErrorLogFile(lpszTraceLogW);
@@ -3985,54 +5205,54 @@ void CoreFuncs::TraceLog(LPCTSTR lpszTraceLogW)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	TraceLogFormat
-//	Description:	Output exception trace log string to file
-//  Arguments:		lpszTraceLogFormat - Trace log format string (ANSI)
-//					...				   - Same as default MFC Format function
+//	Function name:	TraceErrorFormat
+//	Description:	Format and output exception/error trace log string to log file
+//  Arguments:		lpszTraceLogFormatA - Trace log format string (ANSI)
+//					...				    - Same as default MFC Format function
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::TraceLogFormat(LPCSTR lpszTraceLogFormat, ...)
+void AppCore::TraceErrorFormat(LPCSTR lpszTraceLogFormatA, ...)
 {
-	ATLASSERT(AtlIsValidString(lpszTraceLogFormat));
+	ATLASSERT(AtlIsValidString(lpszTraceLogFormatA));
 
-	// Format source string
-	CStringA strLogFormat;
+	// Format source string (ANSI)
+	CStringA strLogFormatA;
 
 	va_list argList;
-	va_start(argList, lpszTraceLogFormat);
-	strLogFormat.FormatV(lpszTraceLogFormat, argList);
+	va_start(argList, lpszTraceLogFormatA);
+	strLogFormatA.FormatV(lpszTraceLogFormatA, argList);
 	va_end(argList);
 
 	// Output trace log
-	TraceLog(strLogFormat);
+	TraceError(strLogFormatA);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	TraceLogFormat
-//	Description:	Output exception trace log string to file
-//  Arguments:		lpszTraceLogFormat - Trace log format string (Unicode)
-//					...				   - Same as default MFC Format function
+//	Function name:	TraceErrorFormat
+//	Description:	Format and output exception/error trace log string to log file
+//  Arguments:		lpszTraceLogFormatW - Trace log format string (Unicode)
+//					...				    - Same as default MFC Format function
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::TraceLogFormat(LPCTSTR lpszTraceLogFormat, ...)
+void AppCore::TraceErrorFormat(LPCTSTR lpszTraceLogFormatW, ...)
 {
-	ATLASSERT(AtlIsValidString(lpszTraceLogFormat));
+	ATLASSERT(AtlIsValidString(lpszTraceLogFormatW));
 
-	// Format source string
-	CString strLogFormat;
+	// Format source string (Unicode)
+	CString strLogFormatW;
 
 	va_list argList;
-	va_start(argList, lpszTraceLogFormat);
-	strLogFormat.FormatV(lpszTraceLogFormat, argList);
+	va_start(argList, lpszTraceLogFormatW);
+	strLogFormatW.FormatV(lpszTraceLogFormatW, argList);
 	va_end(argList);
 
 	// Output trace log
-	TraceLog(strLogFormat);
+	TraceError(strLogFormatW);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4046,7 +5266,7 @@ void CoreFuncs::TraceLogFormat(LPCTSTR lpszTraceLogFormat, ...)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex)
+void AppCore::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex)
 {
 	// Debug trace info
 	CString strFuncName = MAKEUNICODE(lpszFuncName);
@@ -4070,7 +5290,7 @@ void CoreFuncs::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLi
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = INT_INVALID */)
+void AppCore::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = INT_INVALID */)
 {
 	// Get debug mode enable state
 	BOOL bDebugModeEnable = GetDebugMode();
@@ -4091,7 +5311,7 @@ void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = INT_I
 		// Force enable debug mode and
 		// prefer output target to DebugTest tool if it's displaying
 		bDebugModeEnable = TRUE;
-		nDebugOutputTarget = DBOUT_DEBUGTESTTOOL;
+		nDebugOutputTarget = DebugTestTool;
 	}
 
 	// If debug mode not enabled, do nothing
@@ -4099,16 +5319,16 @@ void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = INT_I
 		return;
 
 	// Output debug string
-	if (nDebugOutputTarget == DBOUT_DEFAULT) {
+	if (nDebugOutputTarget == DefaultOutput) {
 		// Default output target: OutputDebugString
 		// Debug strings can be watched by using VS Output screen or DebugView tool
 		OutputDebugString(strDebugLog);
 	}
-	else if (nDebugOutputTarget == DBOUT_DEBUGINFOFILE) {
+	else if (nDebugOutputTarget == DebugInfoFile) {
 		// Ouput debug log to file: DebugInfo.log
 		WriteDebugInfoLogFile(strDebugLog);
 	}
-	else if (nDebugOutputTarget == DBOUT_DEBUGTESTTOOL) {
+	else if (nDebugOutputTarget == DebugTestTool) {
 		// Output debug log to DebugTest tool
 		if (hDebugTestWnd == NULL) return;
 		WPARAM wParam = MAKE_WPARAM_STRING(strDebugLog);
@@ -4127,7 +5347,7 @@ void CoreFuncs::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = INT_I
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...)
+void AppCore::OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...)
 {
 	ATLASSERT(AtlIsValidString(lpszDebugLogFormat));
 
@@ -4154,7 +5374,7 @@ void CoreFuncs::OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::OutputDebugStringFormat(LPCTSTR lpszDebugStringFormat, ...)
+void AppCore::OutputDebugStringFormat(LPCTSTR lpszDebugStringFormat, ...)
 {
 	ATLASSERT(AtlIsValidString(lpszDebugStringFormat));
 
@@ -4183,20 +5403,19 @@ void CoreFuncs::OutputDebugStringFormat(LPCTSTR lpszDebugStringFormat, ...)
 
 static BOOL InitTraceErrorLogFile(void)
 {
-	// If global trace error log file is not initialized
-	if (g_pFileLogTraceError == NULL) {
-		// Initialize global trace error log file
-		g_pFileLogTraceError = new CFile();
-		if (g_pFileLogTraceError == NULL)
-			return FALSE;
-	}
+	// Get access to Global data
+	using namespace Global;
+
+	// Verify global trace error log file pointer initialization
+	VERIFY_INITIALIZATION(g_pFileLogTraceError, CFile);
 
 	// Get trace error log file pointer
 	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
+	NULL_POINTER_BREAK(pTraceErrorLogFile, FALSE);
 
 	// Log file path
 	CString strFilePath;
-	CoreFuncs::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+	AppCore::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	if (pTraceErrorLogFile->m_hFile == CFile::hFileNull) {
@@ -4205,7 +5424,7 @@ static BOOL InitTraceErrorLogFile(void)
 			if (!pTraceErrorLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
 				// Show error message
 				DWORD dwErrorCode = GetLastError();
-				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
+				AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
 				return FALSE;
 			}
 		}
@@ -4220,7 +5439,7 @@ static BOOL InitTraceErrorLogFile(void)
 			pTraceErrorLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!CoreFuncs::BackupOldLogFile(strFilePath, FILENAME_TRACE_ERROR_LOG))
+			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_TRACE_ERROR_LOG))
 				return FALSE;
 
 			// Step3: Create new file and reopen
@@ -4244,6 +5463,9 @@ static BOOL InitTraceErrorLogFile(void)
 
 inline void ReleaseTraceErrorLogFile(void)
 {
+	// Get access to Global data
+	using namespace Global;
+
 	// Clean up trace error log file pointer
 	if (g_pFileLogTraceError != NULL) {
 		// Close file if is opening
@@ -4270,20 +5492,19 @@ inline void ReleaseTraceErrorLogFile(void)
 
 static BOOL InitTraceDebugLogFile(void)
 {
-	// If global trace debug log file is not initialized
-	if (g_pFileLogTraceDebug == NULL) {
-		// Initialize global trace debug log file
-		g_pFileLogTraceDebug = new CFile();
-		if (g_pFileLogTraceDebug == NULL)
-			return FALSE;
-	}
+	// Get access to Global data
+	using namespace Global;
+
+	// Verify global trace debug log file pointer initialization
+	VERIFY_INITIALIZATION(g_pFileLogTraceDebug, CFile);
 
 	// Get trace debug log file pointer
 	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
+	NULL_POINTER_BREAK(pTraceDebugLogFile, FALSE);
 
 	// Log file path
 	CString strFilePath;
-	CoreFuncs::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
+	AppCore::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	if (pTraceDebugLogFile->m_hFile == CFile::hFileNull) {
@@ -4292,7 +5513,7 @@ static BOOL InitTraceDebugLogFile(void)
 			if (!pTraceDebugLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
 				// Show error message
 				DWORD dwErrorCode = GetLastError();
-				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
+				AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
 				return FALSE;
 			}
 		}
@@ -4307,7 +5528,7 @@ static BOOL InitTraceDebugLogFile(void)
 			pTraceDebugLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!CoreFuncs::BackupOldLogFile(strFilePath, FILENAME_TRACE_DEBUG_LOG))
+			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_TRACE_DEBUG_LOG))
 				return FALSE;
 
 			// Step3: Create new file and reopen
@@ -4332,6 +5553,9 @@ static BOOL InitTraceDebugLogFile(void)
 
 inline void ReleaseTraceDebugLogFile(void)
 {
+	// Get access to Global data
+	using namespace Global;
+
 	// Clean up trace debug info log file pointer
 	if (g_pFileLogTraceDebug != NULL) {
 		// Close file if is opening
@@ -4358,20 +5582,19 @@ inline void ReleaseTraceDebugLogFile(void)
 
 static BOOL InitDebugInfoLogFile(void)
 {
-	// If global debug info log file is not initialized
-	if (g_pFileLogDebugInfo == NULL) {
-		// Initialize global debug info log file
-		g_pFileLogDebugInfo = new CFile();
-		if (g_pFileLogDebugInfo == NULL)
-			return FALSE;
-	}
+	// Get access to Global data
+	using namespace Global;
+
+	// Verify global debug info log file pointer initialization
+	VERIFY_INITIALIZATION(g_pFileLogDebugInfo, CFile);
 
 	// Get debug info log file pointer
 	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
+	NULL_POINTER_BREAK(pDebugInfoLogFile, FALSE);
 
 	// Log file path
 	CString strFilePath;
-	CoreFuncs::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
+	AppCore::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	if (pDebugInfoLogFile->m_hFile == CFile::hFileNull) {
@@ -4380,7 +5603,7 @@ static BOOL InitDebugInfoLogFile(void)
 			if (!pDebugInfoLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
 				// Show error message
 				DWORD dwErrorCode = GetLastError();
-				CoreFuncs::ShowErrorMessage(NULL, NULL, dwErrorCode);
+				AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
 				return FALSE;
 			}
 		}
@@ -4395,7 +5618,7 @@ static BOOL InitDebugInfoLogFile(void)
 			pDebugInfoLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!CoreFuncs::BackupOldLogFile(strFilePath, FILENAME_DEBUG_INFO_LOG))
+			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_DEBUG_INFO_LOG))
 				return FALSE;
 
 			// Step3: Create new file and reopen
@@ -4420,6 +5643,9 @@ static BOOL InitDebugInfoLogFile(void)
 
 inline void ReleaseDebugInfoLogFile(void)
 {
+	// Get access to Global data
+	using namespace Global;
+
 	// Clean up debug info log file pointer
 	if (g_pFileLogDebugInfo != NULL) {
 		// Close file if is opening
@@ -4442,7 +5668,7 @@ inline void ReleaseDebugInfoLogFile(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
+BOOL AppCore::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 {
 	CFileFind Finder;
 	CString strBakFilePath;
@@ -4491,7 +5717,7 @@ BOOL CoreFuncs::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
+void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 {
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
@@ -4519,6 +5745,7 @@ void CoreFuncs::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 
 	// Re-acquire trace log file pointer
 	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
+	NULL_POINTER_BREAK(pTraceErrorLogFile, NOTHING);
 	{
 		// Write log string to file
 		pTraceErrorLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
@@ -4562,7 +5789,7 @@ void CoreFuncs::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
+void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 {
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
@@ -4589,6 +5816,7 @@ void CoreFuncs::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 
 	// Re-acquire trace debug log file pointer
 	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
+	NULL_POINTER_BREAK(pTraceDebugLogFile, NOTHING);
 	{
 		// Write log string to file
 		pTraceDebugLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
@@ -4632,7 +5860,7 @@ void CoreFuncs::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
+void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 {
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
@@ -4659,6 +5887,7 @@ void CoreFuncs::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 
 	// Re-acquire debug info log file pointer
 	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
+	NULL_POINTER_BREAK(pDebugInfoLogFile, NOTHING);
 	{
 		// Write log string to file
 		pDebugInfoLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
@@ -4701,7 +5930,7 @@ void CoreFuncs::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW)
+void AppCore::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW)
 {
 	// Log file path
 	CString strFilePath;
@@ -4788,7 +6017,7 @@ void CoreFuncs::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLo
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT	CoreFuncs::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOUT */)
+LRESULT	AppCore::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOUT */)
 {
 	LRESULT lResult = RESULT_SUCCESS;
 
@@ -4832,20 +6061,21 @@ LRESULT	CoreFuncs::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIME
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
+void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
 {
-	// Use table functions
-	using namespace TableFuncs;
+	// Use table and language functions
+	using namespace MapTable;
+	using namespace Language;
 
 	// Get application-defined error code from system-defined error code
-	DWORD dwAppErrCode = GetPairedID(idTableErrorCode, dwErrorCode, TRUE);
+	DWORD dwAppErrCode = GetPairedID(IDTable::ErrorCode, dwErrorCode, TRUE);
 	if (dwAppErrCode != INT_INVALID) {
 		// Replace with application-defined error code
 		dwErrorCode = dwAppErrCode;
 	}
 
 	// Get error message string ID
-	int nErrMsgID = GetPairedID(idTableErrorMessage, dwErrorCode);
+	int nErrMsgID = GetPairedID(IDTable::ErrorMessage, dwErrorCode);
 
 	// Invalid error message ID
 	if (nErrMsgID == INT_INVALID) {
@@ -4905,7 +6135,7 @@ void CoreFuncs::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwEr
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT CoreFuncs::Sel2Opt(UINT nOptionMacro, UINT nSelection)
+UINT AppCore::Sel2Opt(UINT nOptionMacro, UINT nSelection)
 {
 	VERIFY(nOptionMacro > 0x00 && nOptionMacro < UINT_MAX);
 	VERIFY(nSelection >= 0 && nSelection < UINT_MAX);
@@ -4922,7 +6152,7 @@ UINT CoreFuncs::Sel2Opt(UINT nOptionMacro, UINT nSelection)
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT CoreFuncs::Opt2Sel(UINT nOptionMacro, UINT nCurOption)
+UINT AppCore::Opt2Sel(UINT nOptionMacro, UINT nCurOption)
 {
 	VERIFY(nOptionMacro > 0x00 && nOptionMacro < UINT_MAX);
 	VERIFY(nCurOption >= 0 && nCurOption < UINT_MAX);
@@ -4939,7 +6169,7 @@ UINT CoreFuncs::Opt2Sel(UINT nOptionMacro, UINT nCurOption)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::Text2Time(SYSTEMTIME& stTime, CString strText)
+BOOL AppCore::Text2Time(SYSTEMTIME& stTime, CString strText)
 {
 	// Check input text validity
 	int nLength = strText.GetLength();
@@ -5025,7 +6255,7 @@ BOOL CoreFuncs::Text2Time(SYSTEMTIME& stTime, CString strText)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
+BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
 {
 	// Check input text validity
 	int nLength = strText.GetLength();
@@ -5096,7 +6326,7 @@ BOOL CoreFuncs::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::SpinPos2Time(SYSTEMTIME& stTime, int nPos)
+void AppCore::SpinPos2Time(SYSTEMTIME& stTime, int nPos)
 {
 	// Invalid input position
 	if (nPos < TIMESPIN_MIN)
@@ -5125,7 +6355,7 @@ void CoreFuncs::SpinPos2Time(SYSTEMTIME& stTime, int nPos)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::Time2SpinPos(SYSTEMTIME stTime, int& nPos)
+void AppCore::Time2SpinPos(SYSTEMTIME stTime, int& nPos)
 {
 	// Convert
 	nPos = (stTime.wHour * 60) + stTime.wMinute;
@@ -5146,7 +6376,7 @@ void CoreFuncs::Time2SpinPos(SYSTEMTIME stTime, int& nPos)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CoreFuncs::GetListCurSel(CListCtrl& pListCtrl)
+int AppCore::GetListCurSel(CListCtrl& pListCtrl)
 {
 	int nResult = INT_INVALID;
 
@@ -5171,7 +6401,7 @@ int CoreFuncs::GetListCurSel(CListCtrl& pListCtrl)
 //
 //////////////////////////////////////////////////////////////////////////
 
-HWND CoreFuncs::FindDebugTestDlg()
+HWND AppCore::FindDebugTestDlg()
 {
 	CString strDebugDlgTitle;
 	strDebugDlgTitle.LoadString(IDS_APP_DEBUGTESTDLG_TITLE);
@@ -5188,7 +6418,7 @@ HWND CoreFuncs::FindDebugTestDlg()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
+void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 {
 	/*
 	CString strFontname;
@@ -5232,7 +6462,7 @@ void CoreFuncs::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int nRowNum, int nColNum, GRIDCTRLCOLFORMAT* apGrdColFormat)
+void AppCore::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int nRowNum, int nColNum, GRIDCTRLCOLFORMAT* apGrdColFormat)
 {
 	// Check control validity
 	if (pGridCtrl == NULL) return;
@@ -5293,12 +6523,12 @@ void CoreFuncs::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int nRowNum, in
 // 
 //	Function name:	GetCurSysTime
 //	Description:	Get current time with milliseconds and return SYSTEMTIME
-//  Arguments:		None
+//  Arguments:		stTime - Current system time (out)
 //  Return value:	SYSTEMTIME - Return time data
 //
 //////////////////////////////////////////////////////////////////////////
 
-SYSTEMTIME CoreFuncs::GetCurSysTime(void)
+SYSTEMTIME AppCore::GetCurSysTime(void)
 {
 	// Get system time
 	SYSTEMTIME tsSysTimeTemp;
@@ -5317,6 +6547,12 @@ SYSTEMTIME CoreFuncs::GetCurSysTime(void)
 	return tsSysTimeTemp;
 }
 
+void AppCore::GetCurSysTime(SYSTEMTIME& stTime)
+{
+	// Get current system time
+	stTime = GetCurSysTime();
+}
+
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	CalcTimeOffset
@@ -5327,7 +6563,7 @@ SYSTEMTIME CoreFuncs::GetCurSysTime(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::CalcTimeOffset(SYSTEMTIME& stTime, int nOffset)
+void AppCore::CalcTimeOffset(SYSTEMTIME& stTime, int nOffset)
 {
 	// Convert to seconds and calculate offset
 	UINT nTotalSecs = TIME_TO_SECONDS(stTime);
@@ -5360,7 +6596,7 @@ void CoreFuncs::CalcTimeOffset(SYSTEMTIME& stTime, int nOffset)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffset /* = 0 */)
+BOOL AppCore::CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffset /* = 0 */)
 {
 	// Second is 0
 	timePar.wSecond = 0;
@@ -5390,7 +6626,7 @@ BOOL CoreFuncs::CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOff
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString	CoreFuncs::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal)
+CString	AppCore::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal)
 {
 	// Load format string
 	CString strFormat;
@@ -5410,16 +6646,16 @@ CString	CoreFuncs::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIM
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString	CoreFuncs::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString, SYSTEMTIME timeVal)
+CString	AppCore::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString, SYSTEMTIME timeVal)
 {
 	// Format time string
-	UINT nMiddayFlag = (timeVal.wHour < 12) ? FORMAT_TIME_BEFOREMIDDAY : FORMAT_TIME_AFTERMIDDAY;
-	CString strMiddayFormat = TableFuncs::GetLanguageString(pLang, nMiddayFlag);
+	UINT nTimePeriod = (timeVal.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	CString strTimePeriodFormat = Language::GetLanguageString(pLang, nTimePeriod);
 	WORD wHour = (timeVal.wHour > 12) ? (timeVal.wHour - 12) : timeVal.wHour;
 	WORD wMinute = timeVal.wMinute;
 
 	CString strResult;
-	strResult.Format(lpszFormatString, wHour, wMinute, strMiddayFormat);
+	strResult.Format(lpszFormatString, wHour, wMinute, strTimePeriodFormat);
 
 	return strResult;
 }
@@ -5433,7 +6669,7 @@ CString	CoreFuncs::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString,
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR CoreFuncs::LoadResourceString(UINT nResStringID)
+LPCTSTR AppCore::LoadResourceString(UINT nResStringID)
 {
 	// Output result
 	static CString strResult;
@@ -5459,7 +6695,7 @@ LPCTSTR CoreFuncs::LoadResourceString(UINT nResStringID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::LoadResourceString(CString& strResult, UINT nResStringID)
+BOOL AppCore::LoadResourceString(CString& strResult, UINT nResStringID)
 {
 	BOOL bRet = strResult.LoadString(nResStringID);
 	if (bRet == FALSE) {
@@ -5480,7 +6716,7 @@ BOOL CoreFuncs::LoadResourceString(CString& strResult, UINT nResStringID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
+BOOL AppCore::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
 {
 	// Empty result text data
 	strTextData.Empty();
@@ -5489,8 +6725,8 @@ BOOL CoreFuncs::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
 	HINSTANCE hResInstance = AfxGetResourceHandle();
 	if (hResInstance == NULL) {
 		// Trace error
-		TRCLOG("Error: Get resource handle failed!!!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Get resource handle failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -5527,7 +6763,7 @@ BOOL CoreFuncs::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars)
+int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars)
 {
 	// Get length
 	int nBuffLength = _tcslen(lpszBuff);
@@ -5630,7 +6866,7 @@ int	CoreFuncs::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyCha
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::UpperEachWord(CString& strInput, BOOL bTrim)
+void AppCore::UpperEachWord(CString& strInput, BOOL bTrim)
 {
 	// Get string
 	LPTSTR lpszString = strInput.GetBuffer();
@@ -5693,7 +6929,7 @@ void CoreFuncs::UpperEachWord(CString& strInput, BOOL bTrim)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension)
+BOOL AppCore::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension)
 {
 	// Format file path
 	CString strFilePath;
@@ -5736,7 +6972,7 @@ BOOL CoreFuncs::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR 
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::StringValidate(LPCTSTR lpszSrc, DWORD& dwError)
+BOOL AppCore::StringValidate(LPCTSTR lpszSrc, DWORD& dwError)
 {
 	BOOL bResult = TRUE;
 	CString strInvalidKey = STRING_EMPTY;
@@ -5790,7 +7026,7 @@ BOOL CoreFuncs::StringValidate(LPCTSTR lpszSrc, DWORD& dwError)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR CoreFuncs::StringFormat(UINT nFormatTemplateID, ...)
+LPCTSTR AppCore::StringFormat(UINT nFormatTemplateID, ...)
 {
 	// Load resource format template string
 	CString strTemplate;
@@ -5823,7 +7059,7 @@ LPCTSTR CoreFuncs::StringFormat(UINT nFormatTemplateID, ...)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR CoreFuncs::StringFormat(LPCTSTR lpszFormatTemplate, ...)
+LPCTSTR AppCore::StringFormat(LPCTSTR lpszFormatTemplate, ...)
 {
 	// Template string validation
 	ATLASSERT(AtlIsValidString(lpszFormatTemplate));
@@ -5854,7 +7090,7 @@ LPCTSTR CoreFuncs::StringFormat(LPCTSTR lpszFormatTemplate, ...)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL bIncSepChar /* = FALSE */)
+BOOL AppCore::SubString(LPCTSTR lpszSrc, Substring& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL bIncSepChar /* = FALSE */)
 {
 	CString strSrc(lpszSrc);
 
@@ -5863,7 +7099,8 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar
 
 	// If source string is empty
 	if (strSrc.IsEmpty()) {
-		TRCLOG("Function: CoreFuncs::GetSubString(), Error: Source string is empty");
+		TRACE_ERROR("Error: Source string is empty!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -5875,7 +7112,7 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar
 	OutputDebugStringFormat(_T("[ALSTest] ==> GetSubString: nFirstIndex=%d, nLastIndex=%d"), nFirstIndex, nLastIndex);
 
 	// Temporary output data
-	SUBSTRING subResult;
+	Substring subResult;
 
 	/**********************************************************************************************************/
 	/*                                                                                                        */
@@ -5910,23 +7147,23 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar
 	if ((nFirstIndex != INT_INVALID) && (nLastIndex != INT_INVALID)) {
 
 		// Case #1:
-		subResult.strLeft = strSrc.Left(nFirstIndex);
-		subResult.strMid = strSrc.Mid((nFirstIndex + 1), (nLastIndex - nFirstIndex));
-		subResult.strRight = strSrc.Right(strSrc.GetLength() - (nLastIndex + 1));
+		subResult.SetLeft(strSrc.Left(nFirstIndex));
+		subResult.SetMid(strSrc.Mid((nFirstIndex + 1), (nLastIndex - nFirstIndex)));
+		subResult.SetRight(strSrc.Right(strSrc.GetLength() - (nLastIndex + 1)));
 	}
 	else if ((nFirstIndex == INT_INVALID) && (nLastIndex != INT_INVALID)) {
 
 		// Case #2:
-		subResult.strLeft = strSrc.Left(nLastIndex);
-		subResult.strMid = STRING_EMPTY;
-		subResult.strRight = strSrc.Right(strSrc.GetLength() - (nLastIndex + 1));
+		subResult.SetLeft(strSrc.Left(nLastIndex));
+		subResult.SetMid(STRING_EMPTY);
+		subResult.SetRight(strSrc.Right(strSrc.GetLength() - (nLastIndex + 1)));
 	}
 	else if ((nFirstIndex != INT_INVALID) && (nLastIndex == INT_INVALID)) {
 
 		// Case #3:
-		subResult.strLeft = strSrc.Left(nFirstIndex);
-		subResult.strMid = STRING_EMPTY;
-		subResult.strRight = strSrc.Right(strSrc.GetLength() - (nFirstIndex + 1));
+		subResult.SetLeft(strSrc.Left(nFirstIndex));
+		subResult.SetMid(STRING_EMPTY);
+		subResult.SetRight(strSrc.Right(strSrc.GetLength() - (nFirstIndex + 1)));
 	}
 
 	// Get result
@@ -5934,9 +7171,7 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar
 	if (bRet != FALSE) {
 
 		// Trim spaces
-		subResult.strLeft.Trim();
-		subResult.strMid.Trim();
-		subResult.strRight.Trim();
+		subResult.TrimAll();
 
 		// Copy output result
 		subDest.Copy(subResult);
@@ -5957,7 +7192,7 @@ BOOL CoreFuncs::SubString(LPCTSTR lpszSrc, SUBSTRING& subDest, TCHAR tcFirstChar
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR CoreFuncs::GetApplicationPath(BOOL bIncludeExeName)
+LPCTSTR AppCore::GetApplicationPath(BOOL bIncludeExeName)
 {
 	// Get the application's module handle
 	HMODULE hModule = GetModuleHandle(NULL);
@@ -5966,8 +7201,8 @@ LPCTSTR CoreFuncs::GetApplicationPath(BOOL bIncludeExeName)
 	TCHAR tcAppPath[MAX_PATH];
 	if (!GetModuleFileName(hModule, tcAppPath, MAX_PATH)) {
 		// Trace error
-		TRCFMT("Error: Get module file name failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get module file name failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return STRING_EMPTY;
 	}
 
@@ -5999,14 +7234,14 @@ LPCTSTR CoreFuncs::GetApplicationPath(BOOL bIncludeExeName)
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString CoreFuncs::GetProductVersion(BOOL bFullVersion)
+CString AppCore::GetProductVersion(BOOL bFullVersion)
 {
 	// Get product file name
 	CString strProductFileName;
 	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE)) {
 		// Trace error
-		TRCLOG("Error: Make file path failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Make file path failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return STRING_EMPTY;
 	}
 
@@ -6016,8 +7251,8 @@ CString CoreFuncs::GetProductVersion(BOOL bFullVersion)
 	DWORD dwSize = GetFileVersionInfoSize(strProductFileName, &dwHandle);
 	if (dwSize <= 0) {
 		// Trace error
-		TRCFMT("Error: Get file version info size failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return STRING_EMPTY;
 	}
 
@@ -6025,8 +7260,8 @@ CString CoreFuncs::GetProductVersion(BOOL bFullVersion)
 	BYTE* pVersionInfo = new BYTE[dwSize];
 	if (!GetFileVersionInfo(strProductFileName, dwHandle, dwSize, pVersionInfo)) {
 		// Trace error
-		TRCFMT("Error: Get file version info failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get file version info failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		delete[] pVersionInfo;
 		return STRING_EMPTY;
@@ -6037,8 +7272,8 @@ CString CoreFuncs::GetProductVersion(BOOL bFullVersion)
 	VS_FIXEDFILEINFO* lpFfi;
 	if (!VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
 		// Trace error
-		TRCFMT("Error: Querry version value failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		delete[] pVersionInfo;
 		return FALSE;
@@ -6077,14 +7312,14 @@ CString CoreFuncs::GetProductVersion(BOOL bFullVersion)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::GetProductVersion(CString& strFullVersion, CString& strShortVersion)
+BOOL AppCore::GetProductVersion(CString& strFullVersion, CString& strShortVersion)
 {
 	// Get product file name
 	CString strProductFileName;
 	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE)) {
 		// Trace error
-		TRCLOG("Error: Make file path failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Make file path failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -6093,8 +7328,8 @@ BOOL CoreFuncs::GetProductVersion(CString& strFullVersion, CString& strShortVers
 	DWORD dwSize = GetFileVersionInfoSize(strProductFileName, &dwHandle);
 	if (dwSize <= 0) {
 		// Trace error
-		TRCFMT("Error: Get file version info size failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -6102,8 +7337,8 @@ BOOL CoreFuncs::GetProductVersion(CString& strFullVersion, CString& strShortVers
 	BYTE* pVersionInfo = new BYTE[dwSize];
 	if (!GetFileVersionInfo(strProductFileName, dwHandle, dwSize, pVersionInfo)) {
 		// Trace error
-		TRCFMT("Error: Get file version info structure failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get file version info structure failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		delete[] pVersionInfo;
 		return FALSE;
@@ -6114,8 +7349,8 @@ BOOL CoreFuncs::GetProductVersion(CString& strFullVersion, CString& strShortVers
 	VS_FIXEDFILEINFO* lpFfi;
 	if (!VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
 		// Trace error
-		TRCFMT("Error: Querry version value failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		delete[] pVersionInfo;
 		return FALSE;
@@ -6151,7 +7386,7 @@ BOOL CoreFuncs::GetProductVersion(CString& strFullVersion, CString& strShortVers
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT CoreFuncs::GetWindowsOSVersion(void)
+UINT AppCore::GetWindowsOSVersion(void)
 {
 	// Init info data
 	OSVERSIONINFOEX oviOSVersion;
@@ -6162,8 +7397,8 @@ UINT CoreFuncs::GetWindowsOSVersion(void)
 	*(FARPROC*)&RtlGetVersion = GetProcAddress(GetModuleHandleA("ntdll"), "RtlGetVersion");
 	if (RtlGetVersion == NULL) {
 		// Trace error
-		TRCFMT("Error: Get RtlGetVersion function address failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get RtlGetVersion function address failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return INT_NULL;
 	}
 
@@ -6207,7 +7442,7 @@ UINT CoreFuncs::GetWindowsOSVersion(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::GetDeviceName(CString& strDeviceName)
+BOOL AppCore::GetDeviceName(CString& strDeviceName)
 {
 	// Empty the output string
 	strDeviceName.Empty();
@@ -6217,8 +7452,8 @@ BOOL CoreFuncs::GetDeviceName(CString& strDeviceName)
 	DWORD dwNameLength = sizeof(tcDeviceName) / sizeof(TCHAR);
 	if (!GetComputerName(tcDeviceName, &dwNameLength)) {
 		// Trace error
-		TRCFMT("Error: Get computer name failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get computer name failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -6236,7 +7471,7 @@ BOOL CoreFuncs::GetDeviceName(CString& strDeviceName)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::GetCurrentUserName(CString& strUserName)
+BOOL AppCore::GetCurrentUserName(CString& strUserName)
 {
 	// Empty the output string
 	strUserName.Empty();
@@ -6246,8 +7481,8 @@ BOOL CoreFuncs::GetCurrentUserName(CString& strUserName)
 	DWORD dwNameLength = sizeof(tcUserName) / sizeof(TCHAR);
 	if (!GetUserName(tcUserName, &dwNameLength)) {
 		// Trace error
-		TRCFMT("Error: Get user name failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get user name failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -6265,14 +7500,15 @@ BOOL CoreFuncs::GetCurrentUserName(CString& strUserName)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::AddRegistryKey(const REGISTRYINFO& regInfo)
+BOOL AppCore::AddRegistryKey(const REGISTRYINFO& regInfo)
 {
 	CRegKey regKey;
-	LONG lResult = regKey.Open(regInfo.hRootKey, regInfo.regKeyInfo.strKeyName, KEY_ALL_ACCESS);
+	REGISTRYKEY regKeyInfo = regInfo.GetRegistryKey();
+	LONG lResult = regKey.Open(regInfo.GetRootKey(), regKeyInfo.strKeyName, KEY_ALL_ACCESS);
 	if (lResult != ERROR_SUCCESS) {
 		// Create register key if not found
 		if (lResult == ERROR_NOT_FOUND) {
-			regKey.Create(regInfo.hRootKey, regInfo.regKeyInfo.strKeyName, REG_NONE,
+			regKey.Create(regInfo.GetRootKey(), regKeyInfo.strKeyName, REG_NONE,
 					 REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, NULL);
 		}
 	}
@@ -6291,99 +7527,115 @@ BOOL CoreFuncs::AddRegistryKey(const REGISTRYINFO& regInfo)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType /* = REGPATH_FULL */, BOOL bIncRootKey /* = TRUE */)
+LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType /* = REGPATH_FULL */, BOOL bIncRootKey /* = TRUE */)
 {
 	// Check root key info validity
 	if (bIncRootKey != FALSE) {
-		if ((regInfo.hRootKey == NULL) && (regInfo.strRootKey.IsEmpty())) {
+		CString strRootKey = regInfo.GetRootKeyName();
+		if ((regInfo.GetRootKey() == NULL) && (strRootKey.IsEmpty())) {
 			// Trace error
-			TRCLOG("Error: Make registry path failed, rootkey name is invalid!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Make registry path failed, rootkey name is invalid!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
 		}
 	}
 
 	// Check sub-key path validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SUBPATH)) {
-		if (regInfo.astrSubkeyPath.IsEmpty()) {
+		CStringArray astrSubkeyPath;
+		regInfo.GetSubkeyPath(astrSubkeyPath);
+		if (astrSubkeyPath.IsEmpty()) {
 			// Trace error
-			TRCLOG("Error: Make registry path failed, subkey info is invalid!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Make registry path failed, subkey info is invalid!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
 		}
 	}
 
 	// Check profile key validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_PROFILEKEY)) {
-		if (regInfo.strProfileName.IsEmpty()) {
+		CString strProfileName = regInfo.GetProfileName();
+		if (strProfileName.IsEmpty()) {
 			// Trace error
-			TRCLOG("Error: Make registry path failed, profile key name is invalid!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Make registry path failed, profile key name is invalid!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
 		}
 	}
 
 	// Check app name validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_APPNAME)) {
-		if (regInfo.strAppName.IsEmpty()) {
+		CString strAppName = regInfo.GetAppName();
+		if (strAppName.IsEmpty()) {
 			// Trace error
-			TRCLOG("Error: Make registry path failed, application name is invalid!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Make registry path failed, application name is invalid!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
 		}
 	}
 
 	// Check section name array validity
 	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SECTIONNAME)) {
-		if (regInfo.astrSectionArray.IsEmpty()) {
+		CStringArray astrSectionArray;
+		regInfo.GetSubkeyPath(astrSectionArray);
+		if (astrSectionArray.IsEmpty()) {
 			// Trace error
-			TRCLOG("Error: Make registry path failed, section name is invalid!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Make registry path failed, section name is invalid!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return STRING_NULL;
 		}
 	}
 
 	// Root key (string)
-	CString strRootKey;
-	if (regInfo.strRootKey != STRING_EMPTY) {
-		strRootKey.Format(regInfo.strRootKey);
+	CString strRootKeyNameTemp;
+	CString strRootKeyName = regInfo.GetRootKeyName();
+	if (!strRootKeyName.IsEmpty()) {
+		strRootKeyNameTemp.Format(strRootKeyName);
 	}
 
 	// Sub-key path
-	CString strSubPath;
-	for (int nIndex = 0; nIndex < regInfo.astrSubkeyPath.GetSize(); nIndex++) {
+	CString strSubKeyPathTemp;
+	CStringArray astrSubkeyPath;
+	regInfo.GetSubkeyPath(astrSubkeyPath);
+	for (int nIndex = 0; nIndex < astrSubkeyPath.GetSize(); nIndex++) {
 		if (nIndex > 0) {
-			strSubPath.Append(SYMBOL_BACKSLASH);
+			strSubKeyPathTemp.Append(SYMBOL_BACKSLASH);
 		}
-		strSubPath.Append(regInfo.astrSubkeyPath.GetAt(nIndex));
+		strSubKeyPathTemp.Append(astrSubkeyPath.GetAt(nIndex));
 	}
 
 	// Profile key name
-	CString strProfileKeyName;
-	if (regInfo.strProfileName != STRING_EMPTY) {
-		strProfileKeyName.Format(regInfo.strProfileName);
+	CString strProfileKeyNameTemp;
+	CString strProfileKeyName = regInfo.GetProfileName();
+	if (!strProfileKeyName.IsEmpty()) {
+		strProfileKeyNameTemp.Format(strProfileKeyName);
 	}
 
 	// App name
-	CString strAppName;
-	if (regInfo.strAppName != STRING_EMPTY) {
-		strAppName.Format(regInfo.strAppName);
+	CString strAppNameTemp;
+	CString strAppName = regInfo.GetAppName();
+	if (!strAppName.IsEmpty()) {
+		strAppNameTemp.Format(strAppName);
 	}
 
 	// Section name
-	CString strSectionName;
-	for (int nIndex = 0; nIndex < regInfo.astrSectionArray.GetSize(); nIndex++) {
+	CString strSectionNameTemp;
+	CStringArray astrSectionArray;
+	regInfo.GetSubkeyPath(astrSectionArray);
+	for (int nIndex = 0; nIndex < astrSectionArray.GetSize(); nIndex++) {
 		if (nIndex > 0) {
-			strSectionName.Append(SYMBOL_BACKSLASH);
+			strSectionNameTemp.Append(SYMBOL_BACKSLASH);
 		}
-		strSectionName.Append(regInfo.astrSectionArray.GetAt(nIndex));
+		strSectionNameTemp.Append(astrSectionArray.GetAt(nIndex));
 	}
 
 
 	// Key name
-	CString strKeyName;
-	if (regInfo.regKeyInfo.strKeyName != STRING_EMPTY) {
-		strKeyName.Format(regInfo.regKeyInfo.strKeyName);
+	CString strKeyNameTemp;
+	REGISTRYKEY regKeyInfo = regInfo.GetRegistryKey();
+	CString strKeyName = regKeyInfo.GetKeyName();
+	if (!strKeyName.IsEmpty()) {
+		strKeyNameTemp.Format(strKeyName);
 	}
 
 	// Result string
@@ -6392,22 +7644,22 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 
 	// Make registry path by type
 	int nRetFailedFlag = FLAG_OFF;
-	if (!strRootKey.IsEmpty()) {
+	if (!strRootKeyNameTemp.IsEmpty()) {
 
 		// Initialize and include root key name
 		strRegFullPath.Empty();
-		if ((bIncRootKey != FALSE) && (!strRootKey.IsEmpty())) {
-			strRegFullPath.Append(strRootKey);
+		if (bIncRootKey != FALSE) {
+			strRegFullPath.Append(strRootKeyNameTemp);
 		}
 
 		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SUBPATH)) {
-			if ((nRetFailedFlag != FLAG_ON) && (!strSubPath.IsEmpty())) {
+			if ((nRetFailedFlag != FLAG_ON) && (!strSubKeyPathTemp.IsEmpty())) {
 				// Include separator character if rootkey is included
-				if ((bIncRootKey != FALSE) && (!strRootKey.IsEmpty())) {
+				if (bIncRootKey != FALSE) {
 					strRegFullPath.Append(SYMBOL_BACKSLASH);
 				}
 				// Include sub-key path
-				strRegFullPath.Append(strSubPath);
+				strRegFullPath.Append(strSubKeyPathTemp);
 			}
 			else {
 				// Turn failed flag ON
@@ -6440,10 +7692,10 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 		}
 
 		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SECTIONNAME)) {
-			if ((nRetFailedFlag != FLAG_ON) && (!strSectionName.IsEmpty())) {
+			if ((nRetFailedFlag != FLAG_ON) && (!strSectionNameTemp.IsEmpty())) {
 				// Include section name
 				strRegFullPath.Append(SYMBOL_BACKSLASH);
-				strRegFullPath.Append(strSectionName);
+				strRegFullPath.Append(strSectionNameTemp);
 			}
 			else {
 				// Turn failed flag ON
@@ -6452,10 +7704,10 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 		}
 
 		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_KEYNAME)) {
-			if ((nRetFailedFlag != FLAG_ON) && (!strKeyName.IsEmpty())) {
+			if ((nRetFailedFlag != FLAG_ON) && (!strKeyNameTemp.IsEmpty())) {
 				// Include key name
 				strRegFullPath.Append(SYMBOL_BACKSLASH);
-				strRegFullPath.Append(strKeyName);
+				strRegFullPath.Append(strKeyNameTemp);
 			}
 			else {
 				// Turn failed flag ON
@@ -6482,7 +7734,7 @@ LPCTSTR CoreFuncs::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathTy
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
+void AppCore::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 {
 	// If sound is not enabled, do nothing
 	if (!bSoundEnable)
@@ -6510,7 +7762,7 @@ void CoreFuncs::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
+BOOL AppCore::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
 {
 	CString strAppPath = STRING_EMPTY;
 
@@ -6540,7 +7792,7 @@ BOOL CoreFuncs::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::OpenWebURL(LPCTSTR lpszWebUrl)
+BOOL AppCore::OpenWebURL(LPCTSTR lpszWebUrl)
 {
 	// Run a web browser instance
 	HINSTANCE hInstance = ShellExecute(0, 0, lpszWebUrl, NULL, NULL, SW_NORMAL);
@@ -6558,7 +7810,7 @@ BOOL CoreFuncs::OpenWebURL(LPCTSTR lpszWebUrl)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CoreFuncs::RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin /* = FALSE */, BOOL bShowFlag /* = TRUE */)
+LRESULT AppCore::RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin /* = FALSE */, BOOL bShowFlag /* = TRUE */)
 {
 	// Param set
 	CString strRunAs = (bRunAsAdmin) ? COMMAND_FLAG_RUNAS : COMMAND_FLAG_OPEN;
@@ -6580,7 +7832,7 @@ LRESULT CoreFuncs::RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin /* = FALSE */, B
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CoreFuncs::ExecuteCommand(LPCTSTR lpszCommand, BOOL bRunAsAdmin /* = TRUE */, BOOL bShowFlag /* = TRUE */)
+LRESULT AppCore::ExecuteCommand(LPCTSTR lpszCommand, BOOL bRunAsAdmin /* = TRUE */, BOOL bShowFlag /* = TRUE */)
 {
 	// Format input command
 	CString strCommandFormat;
@@ -6607,7 +7859,7 @@ LRESULT CoreFuncs::ExecuteCommand(LPCTSTR lpszCommand, BOOL bRunAsAdmin /* = TRU
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT nStyle, DWORD& dwErrorCode)
+BOOL AppCore::CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT nStyle, DWORD& dwErrorCode)
 {
 	// Startup info
 	STARTUPINFO StartupInfo;
@@ -6625,8 +7877,8 @@ BOOL CoreFuncs::CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT n
 	if (bResult == FALSE) {
 		// Get error code
 		dwErrorCode = GetLastError();
-		TRCFMT("Error: Create app process failed (Code: 0x%08X)", dwErrorCode);
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Create app process failed!!! (Code: 0x%08X)", dwErrorCode);
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return bResult;
 	}
 
@@ -6653,14 +7905,14 @@ BOOL CoreFuncs::CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT n
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
+BOOL AppCore::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 {
 	// Load theme library
 	HMODULE hUxTheme = LoadLibraryEx(_T("uxtheme.dll"), nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 	if (hUxTheme == NULL) {
 		// Trace error
-		TRCFMT("Error: Load UXTheme library failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Load UXTheme library failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -6669,8 +7921,8 @@ BOOL CoreFuncs::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 	static const fnAllowDarkMode AllowDarkModeForWindow = (fnAllowDarkMode)GetProcAddress(hUxTheme, MAKEINTRESOURCEA(133));
 	if (AllowDarkModeForWindow == NULL) {
 		// Trace error
-		TRCFMT("Error: Get AllowDarkModeForWindow function address failed (Code: 0x%08X)", GetLastError());
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Get AllowDarkModeForWindow function address failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -6698,7 +7950,7 @@ BOOL CoreFuncs::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CoreFuncs::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* = STRING_EMPTY */)
+void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* = STRING_EMPTY */)
 {
 	// Check validity
 	if (pBtn == NULL)
@@ -6751,7 +8003,7 @@ BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* lpn
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::EnumFontNames(std::vector<std::wstring>& fontNames)
+BOOL AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 {
 	// Define temp font
 	LOGFONT logfont = STRUCT_ZERO;
@@ -6778,7 +8030,7 @@ BOOL CoreFuncs::EnumFontNames(std::vector<std::wstring>& fontNames)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CoreFuncs::ValidateFontName(LPCTSTR lpszFontName)
+BOOL AppCore::ValidateFontName(LPCTSTR lpszFontName)
 {
 	// Array to get returned font names
 	std::vector<std::wstring> fontNames;
@@ -6787,8 +8039,8 @@ BOOL CoreFuncs::ValidateFontName(LPCTSTR lpszFontName)
 	BOOL bRet = EnumFontNames(fontNames);
 	if (bRet == FALSE) {
 		// Trace error
-		TRCLOG("Error: Enumerate fonts failed!");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Enumerate fonts failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 

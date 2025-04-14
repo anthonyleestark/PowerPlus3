@@ -16,6 +16,15 @@
 #include "stdafx.h"
 #include "Logging.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+using namespace MapTable;
+using namespace Language;
+using namespace AppCore;
+
+
 ///////////////////////////////////////////////////////
 
 //// Implementations
@@ -556,20 +565,20 @@ CString tagLOGITEM::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log time
-	strLogInfoIDTitle = GetString(strTableLogInfoIDTitle, BASELOG_INFO_TIME);
+	strLogInfoIDTitle = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_TIME);
 	jsonOutputData.AddString(strLogInfoIDTitle, this->FormatDateTime());
 
 	// Process ID
-	strLogInfoIDTitle = GetString(strTableLogInfoIDTitle, BASELOG_INFO_PID);
+	strLogInfoIDTitle = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_PID);
 	jsonOutputData.AddInteger(strLogInfoIDTitle, this->dwProcessID);
 
 	// Log category
-	strLogInfoIDTitle = GetString(strTableLogInfoIDTitle, BASELOG_INFO_CATEGORY);
+	strLogInfoIDTitle = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_CATEGORY);
 	strLogInfoValue = GetLanguageString(pDefLang, this->usCategory);
 	jsonOutputData.AddString(strLogInfoIDTitle, strLogInfoValue);
 
 	// Log description string
-	strLogInfoIDTitle = GetString(strTableLogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
+	strLogInfoIDTitle = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
 	jsonOutputData.AddString(strLogInfoIDTitle, this->strLogString);
 
 	/*********************************************************************/
@@ -587,7 +596,7 @@ CString tagLOGITEM::FormatOutput(void) const
 		CString strLogDetailTitle;
 
 		// Set object name: Detail
-		jsonDetailData.SetObjectName(GetString(strTableLogInfoIDTitle, BASELOG_INFO_DETAILS));
+		jsonDetailData.SetObjectName(GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_DETAILS));
 
 		// Convert data
 		for (int nIndex = 0; nIndex < (this->arrDetailInfo.GetSize()); nIndex++) {
@@ -596,7 +605,7 @@ CString tagLOGITEM::FormatOutput(void) const
 			LOGDETAIL logDetail = this->arrDetailInfo.GetAt(nIndex);
 
 			// Detail info category
-			strLogDetailTitle = GetString(strTableLogInfoIDTitle, logDetail.usCategory);
+			strLogDetailTitle = GetString(StringTable::LogInfoIDTitle, logDetail.usCategory);
 
 			// Detail info value
 			if (logDetail.uiDetailInfo != INT_NULL) {
@@ -751,8 +760,8 @@ void JSON::CopyPtrData(const JSON& pObj)
 		// Allocation and initialization
 		this->m_apChildObjectList = new PJSONDATA[this->m_nChildObjectCount];
 		if (this->m_apChildObjectList == NULL) {
-			TRCLOG("Error: JSON child object array data allocation failed!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: Destination JSON child object array allocation failed!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 
@@ -762,23 +771,18 @@ void JSON::CopyPtrData(const JSON& pObj)
 			// Allocate memory
 			this->m_apChildObjectList[nCount] = new JSONDATA;
 			if (this->m_apChildObjectList[nCount] == NULL) {
-				TRCFMT("Error: JSON new child object data allocation failed!!! (Index=%d)", nCount);
-				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+				TRACE_FORMAT("Error: Destination JSON child object allocation failed!!! (Index=%d)", nCount);
+				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
 			}
 
 			// Get source data
 			PJSONDATA pSrcData = pObj.m_apChildObjectList[nCount];
 			if (pSrcData == NULL) {
-				TRCFMT("Error: JSON child object is skipped when copying!!! (Index=%d)", nCount);
-				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+				TRACE_FORMAT("Error: Invalid JSON child object is skipped when copying!!! (Index=%d)", nCount);
+				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
 			}
-
-			std::auto_ptr<int>		auto_int_ptr;
-			std::unique_ptr<int>	unique_int_ptr;
-			std::shared_ptr<int>	share_int_ptr;
-			std::weak_ptr<int>		weak_int_ptr;
 
 			// Copy object data (do not use 'memcpy' in here)
 			*(this->m_apChildObjectList[nCount]) = *pSrcData;
@@ -1066,8 +1070,8 @@ void JSON::AddChildObject(JSON* pSrc)
 	if (this->m_apChildObjectList == NULL) {
 		this->m_apChildObjectList = new PJSONDATA;
 		if (this->m_apChildObjectList == NULL) {
-			TRCLOG("Error: JSON child object array data allocation failed!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Error: JSON child object array data allocation failed!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1078,8 +1082,8 @@ void JSON::AddChildObject(JSON* pSrc)
 	// Allocated destination child object memory
 	this->m_apChildObjectList[nIndex] = new JSONDATA;
 	if (this->m_apChildObjectList[nIndex] == NULL) {
-		TRCFMT("Error: JSON new child object data allocation failed!!! (Index=%d)", nIndex);
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: JSON new child object data allocation failed!!! (Index=%d)", nIndex);
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
@@ -1443,8 +1447,8 @@ void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
 	if (m_pItemDefTemplate == NULL) {
 		m_pItemDefTemplate = new LOGITEM;
 		if (m_pItemDefTemplate == NULL) {
-			TRCLOG("Default item initialization failed!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Default item initialization failed!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
@@ -1476,7 +1480,7 @@ void SLogging::OutputItem(const LOGITEM& logItem)
 		INT_PTR nMaxSize = GetMaxSize();
 		if ((nMaxSize != INT_INFINITE) && (GetLogCount() >= nMaxSize)) {
 			// Can not output log item --> Trace info
-			TRCLOG("Output log item failed: Log data exceeded max size!!!");
+			TRACE_ERROR("Output log item failed: Log data exceeded max size!!!");
 			return;
 		}
 
@@ -1513,7 +1517,7 @@ void SLogging::OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate /* = TR
 			// Use last log item as template
 			if (this->IsEmpty()) {
 				// Can not output log string --> Trace info
-				TRCLOG("Output log string failed: No item to use as template!!!");
+				TRACE_ERROR("Output log string failed: No item to use as template!!!");
 				return;
 			}
 			else {
@@ -1525,7 +1529,7 @@ void SLogging::OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate /* = TR
 			// Use default template
 			if (this->GetDefaultTemplate() == NULL) {
 				// Can not output log string --> Trace info
-				TRCLOG("Output log string failed: Default template not set!!!");
+				TRACE_ERROR("Output log string failed: Default template not set!!!");
 				return;
 			}
 			else {
@@ -1572,7 +1576,7 @@ BOOL SLogging::Write(void)
 	CString strLogFormat;
 
 	// Setup performance counter for tracking
-	PERFORMANCECOUNTER counter;
+	PerformanceCounter counter;
 	counter.Start();
 
 	for (int nIndex = 0; nIndex < GetLogCount(); nIndex++)
@@ -1620,8 +1624,8 @@ BOOL SLogging::Write(void)
 			break;
 		default:
 			// Wrong argument
-			TRCLOG("Write log failed: Invalid log type!!!");
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_ERROR("Write log failed: Invalid log type!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			// Show error message
 			dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
@@ -1638,8 +1642,8 @@ BOOL SLogging::Write(void)
 				dwErrCode = GetLastError();
 
 				// Trace error
-				TRCFMT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
-				TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+				TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 				// Show error message
 				PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
@@ -1715,8 +1719,8 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 		break;
 	default:
 		// Wrong argument
-		TRCLOG("Error: Invalid log type");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Invalid log type!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 		return FALSE;
@@ -1736,8 +1740,8 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 			dwErrCode = GetLastError();
 
 			// Trace error
-			TRCFMT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
 			dwErrCode = GetLastError();
@@ -1808,8 +1812,8 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 		break;
 	default:
 		// Wrong argument
-		TRCLOG("Error: Invalid log type");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Invalid log type!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		// Show error message
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
@@ -1830,8 +1834,8 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 			dwErrCode = GetLastError();
 
 			// Trace error
-			TRCFMT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
 			dwErrCode = GetLastError();

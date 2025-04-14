@@ -22,13 +22,14 @@
 #include "PowerPlusDlg.h"
 #include "DebugTestDlg.h"
 
-using namespace TableFuncs;
-using namespace CoreFuncs;
-using namespace RegFuncs;
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+using namespace Language;
+using namespace AppCore;
+using namespace AppRegistry;
+
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -52,7 +53,7 @@ CPowerPlusApp::CPowerPlusApp() : SWinApp()
 	// RestartManagerSupport
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
 
-	// Init app data pointers
+	// Init application data pointers
 	m_pcfgAppConfig = NULL;
 	m_pschScheduleData = NULL;
 	m_phksHotkeySetData = NULL;
@@ -66,9 +67,6 @@ CPowerPlusApp::CPowerPlusApp() : SWinApp()
 
 	// Init DebugTest dialog
 	m_pDebugTestDlg = NULL;
-
-	// Other variables
-	m_strLastSysEvtRegPath.Empty();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -152,8 +150,8 @@ BOOL CPowerPlusApp::InitInstance()
 	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, TRUE)) {
 
 		// Set title string failed
-		TRCLOG("Error: Set app window caption failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Set app window caption failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
@@ -190,8 +188,8 @@ BOOL CPowerPlusApp::InitInstance()
 	if (!SWinApp::InitInstance()) {
 
 		// Trace log
-		TRCLOG("Error: Init instance failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Init instance failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
@@ -212,7 +210,6 @@ BOOL CPowerPlusApp::InitInstance()
 
 	// Setup registry key info
 	SetRegistryKey(IDS_APP_REGISTRY_PROFILENAME);
-	InitLastSysEventRegistryInfo();
 
 	// Update application profile info data
 	UpdateAppProfileInfo();
@@ -227,8 +224,8 @@ BOOL CPowerPlusApp::InitInstance()
 	if (!InitAppData()) {
 
 		// Trace log
-		TRCLOG("Error: Init app data failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Init app data failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
@@ -236,16 +233,16 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 	
 	// Initialize default data
-	SetDefaultData(m_pcfgAppConfig);
-	SetDefaultData(m_pschScheduleData);
-	SetDefaultData(m_phksHotkeySetData);
-	SetDefaultData(m_ppwrReminderData);
+	m_pcfgAppConfig->SetDefaultData();
+	m_pschScheduleData->SetDefaultData();
+	m_phksHotkeySetData->SetDefaultData();
+	m_ppwrReminderData->SetDefaultData();
 
 	// Load registry app data
 	if (!LoadRegistryAppData()) {
 		// Trace log
-		TRCLOG("Error: Load registry app data failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Load registry app data failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 
 	// Initialize application language
@@ -253,8 +250,8 @@ BOOL CPowerPlusApp::InitInstance()
 	if (!InitAppLanguage()) {
 
 		// Trace log
-		TRCLOG("Error: Init app language failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Init app language failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
@@ -278,8 +275,8 @@ BOOL CPowerPlusApp::InitInstance()
 
 	if (dwErrorCode != ERROR_SUCCESS) {
 		// Handle error and show message
-		TRCFMT("Error: Power event notification register failed (Code: 0x%08X)", dwErrorCode);
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_FORMAT("Error: Power event notification register failed!!! (Code: 0x%08X)", dwErrorCode);
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		PostErrorMessage(dwErrorCode);
 	}
 
@@ -293,8 +290,8 @@ BOOL CPowerPlusApp::InitInstance()
 	CPowerPlusDlg* pMainDlg = new CPowerPlusDlg;
 	if (pMainDlg == NULL) {
 		// Trace error
-		TRCLOG("Error: Main dialog pointer allocation failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Main dialog pointer allocation failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
@@ -349,8 +346,8 @@ BOOL CPowerPlusApp::InitInstance()
 		dwErrorCode = PowerUnregisterSuspendResumeNotification(hPowerNotify);
 		if (dwErrorCode != ERROR_SUCCESS) {
 			// Handle error and show message
-			TRCFMT("Error: Power event notification unregister failed (Code: 0x%08X)", dwErrorCode);
-			TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+			TRACE_FORMAT("Error: Power event notification unregister failed!!! (Code: 0x%08X)", dwErrorCode);
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			PostErrorMessage(dwErrorCode);
 		}
 	}
@@ -488,7 +485,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 						dwHKeyParam = MAKELONG(wControlKey, wFunctionKey);
 
 						// Output debug log
-						OutputDebugLogFormat(_T("Lockstate Hotkey pressed: ControlKey=%d, FunctionKey=%d"), wControlKey, wFunctionKey);
+						OutputDebugLogFormat(_T("Lockstate Hotkey pressed: ControlKey=0x%04X, FunctionKey=0x%04X"), wControlKey, wFunctionKey);
 					}
 
 					// Post message to main dialog window
@@ -639,19 +636,19 @@ BOOL CPowerPlusApp::InitAppData()
 {
 	// Initialize app config data
 	if (m_pcfgAppConfig == NULL) {
-		m_pcfgAppConfig = new CONFIGDATA;
+		m_pcfgAppConfig = new ConfigData;
 	}
 	// Initialize schedule data
 	if (m_pschScheduleData == NULL) {
-		m_pschScheduleData = new SCHEDULEDATA;
+		m_pschScheduleData = new ScheduleData;
 	}
 	// Initialize HotkeySet data
 	if (m_phksHotkeySetData == NULL) {
-		m_phksHotkeySetData = new HOTKEYSETDATA;
+		m_phksHotkeySetData = new HotkeySetData;
 	}
 	// Initialize Power Reminder data
 	if (m_ppwrReminderData == NULL) {
-		m_ppwrReminderData = new PWRREMINDERDATA;
+		m_ppwrReminderData = new PwrReminderData;
 	}
 
 	// Check data validity
@@ -660,26 +657,26 @@ BOOL CPowerPlusApp::InitAppData()
 	// Check app config data
 	if (m_pcfgAppConfig == NULL) {
 		bResult = FALSE;
-		TRCLOG("Error: App config data init failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: App config data init failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check schedule data
 	if (m_pschScheduleData == NULL) {
 		bResult = FALSE;
-		TRCLOG("Error: Schedule data init failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Schedule data init failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check HotkeySet data
 	if (m_phksHotkeySetData == NULL) {
 		bResult = FALSE;
-		TRCLOG("Error: HotkeySet data init failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: HotkeySet data init failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check Power Reminder data
 	if (m_ppwrReminderData == NULL) {
 		bResult = FALSE;
-		TRCLOG("Error: Power Reminder data init failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Power Reminder data init failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 
 	return bResult;
@@ -699,7 +696,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	BOOL bResult = TRUE;
 	BOOL bFinalResult = TRUE;
 	WORD wLoadRet = APP_ERROR_SUCCESS;
+
+	int nDataTemp = INT_INVALID;
 	int nTimeTemp = INT_INVALID;
+	CString strTemp = STRING_EMPTY;
+	SYSTEMTIME stTimeTemp = SYSTEMTIME_ZERO;
 
 	// Check data validity first
 	if (!DataSerializeCheck(MODE_LOAD))
@@ -707,9 +708,9 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 	// Create temporary data
 	PCONFIGDATA pcfgTempData = new CONFIGDATA;
-	PSCHEDULEDATA pschTempData = new SCHEDULEDATA;
-	PHOTKEYSETDATA phksTempData = new HOTKEYSETDATA;
-	PPWRREMINDERDATA ppwrTempData = new PWRREMINDERDATA;
+	ScheduleData* pschTempData = new ScheduleData;
+	HotkeySetData* phksTempData = new HotkeySetData;
+	PwrReminderData* ppwrTempData = new PwrReminderData;
 
 
 	/***********************************************************************************************/
@@ -782,16 +783,34 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		{
 			// Read default schedule item
 			int nDefSchedRet = INT_NULL;
-			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_ENABLE,		schDefaultTemp.bEnable);
-			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_ACTION,		(int&)schDefaultTemp.nAction);
-			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEAT,		schDefaultTemp.rpsRepeatSet.bRepeat);
-			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEATDAYS,  (int&)schDefaultTemp.rpsRepeatSet.byRepeatDays);
-			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_TIMEVALUE,	nTimeTemp);
 
-			// Convert time value
+			// Enable state
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_ENABLE, nDataTemp);
+			schDefaultTemp.EnableItem(nDataTemp);
+
+			// Action ID
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_ACTION, nDataTemp);
+			schDefaultTemp.SetAction(nDataTemp);
+
+			// Repeat enable state
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEAT, nDataTemp);
+			schDefaultTemp.EnableRepeat(nDataTemp);
+
+			// Repeat days
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEATDAYS, nDataTemp);
+			schDefaultTemp.SetActiveDays(BYTE(nDataTemp));
+
+			// Time value
+			nDefSchedRet += GetDefaultSchedule(IDS_REGKEY_SCHEDULE_TIMEVALUE, nTimeTemp);
 			if (nTimeTemp != INT_INVALID) {
-				schDefaultTemp.stTime.wHour = GET_REGTIME_HOUR(nTimeTemp);
-				schDefaultTemp.stTime.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
+
+				// Convert time value and set time
+				stTimeTemp.wHour = GET_REGTIME_HOUR(nTimeTemp);
+				stTimeTemp.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
+				schDefaultTemp.SetTime(stTimeTemp);
+
+				// Reset temp data
+				stTimeTemp = SYSTEMTIME_ZERO;
 				nTimeTemp = INT_INVALID;
 			}
 
@@ -826,17 +845,38 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 				// Read extra item
 				int nSchedRet = INT_NULL;
-				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ENABLE,		schExtraTemp.bEnable);
-				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ITEMID,		(int&)schExtraTemp.nItemID);
-				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ACTION,		(int&)schExtraTemp.nAction);
-				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEAT,		schExtraTemp.rpsRepeatSet.bRepeat);
-				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEATDAYS,  (int&)schExtraTemp.rpsRepeatSet.byRepeatDays);
-				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_TIMEVALUE,	nTimeTemp);
 
-				// Convert time value
+				// Enable state
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ENABLE, nDataTemp);
+				schExtraTemp.EnableItem(nDataTemp);
+
+				// Item ID
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ITEMID, nDataTemp);
+				schExtraTemp.SetItemID(nDataTemp);
+
+				// Action ID
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ACTION, nDataTemp);
+				schExtraTemp.SetAction(nDataTemp);
+
+				// Repeat enable state
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEAT, nDataTemp);
+				schExtraTemp.EnableRepeat(nDataTemp);
+
+				// Repeat days
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEATDAYS, nDataTemp);
+				schExtraTemp.SetActiveDays(BYTE(nDataTemp));
+
+				// Time value
+				nSchedRet += GetScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_TIMEVALUE, nTimeTemp);
 				if (nTimeTemp != INT_INVALID) {
-					schExtraTemp.stTime.wHour = GET_REGTIME_HOUR(nTimeTemp);
-					schExtraTemp.stTime.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
+
+					// Convert time value and set time
+					stTimeTemp.wHour = GET_REGTIME_HOUR(nTimeTemp);
+					stTimeTemp.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
+					schExtraTemp.SetTime(stTimeTemp);
+
+					// Reset temp data
+					stTimeTemp = SYSTEMTIME_ZERO;
 					nTimeTemp = INT_INVALID;
 				}
 
@@ -907,10 +947,20 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 			// Read item data
 			int nItemRet = INT_NULL;
-			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE,		(int&)hksTemp.bEnable);
-			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID,	(int&)hksTemp.nHKActionID);
-			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY,	(int&)hksTemp.dwCtrlKeyCode);
-			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_FUNCKEY,	(int&)hksTemp.dwFuncKeyCode);
+
+			// Enable state
+			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE, nDataTemp);
+			hksTemp.EnableItem(nDataTemp);
+
+			// Action ID
+			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID, nDataTemp);
+			hksTemp.SetActionID(nDataTemp);
+
+			// Keycode
+			int nCtrlKeyTemp, nFuncKeyTemp;
+			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY, nCtrlKeyTemp);
+			nItemRet += GetHotkeySet(nIndex, IDS_REGKEY_HKEYSET_FUNCKEY, nFuncKeyTemp);
+			hksTemp.SetKeyCode(nCtrlKeyTemp, nFuncKeyTemp);
 
 			// Mark the item as reading failed
 			// only if all values were read unsuccessfully
@@ -975,21 +1025,54 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 				// Read item data
 				int nItemRet = INT_NULL;
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID,		 (int&)pwrTemp.nItemID);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE,		 (int&)pwrTemp.bEnable);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING,		 pwrTemp.strMessage);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID,		 (int&)pwrTemp.nEventID);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE,		 (int&)pwrTemp.dwMsgStyle);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT,		 (int&)pwrTemp.rpsRepeatSet.bRepeat);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ALLOWSNOOZE,	 (int&)pwrTemp.rpsRepeatSet.bAllowSnooze);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_SNOOZEINTERVAL, (int&)pwrTemp.rpsRepeatSet.nSnoozeInterval);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEATDAYS,	 (int&)pwrTemp.rpsRepeatSet.byRepeatDays);
-				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIMEVALUE,		 nTimeTemp);
 
-				// Convert time value
+				// Item ID
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID, nDataTemp);
+				pwrTemp.SetItemID(nDataTemp);
+
+				// Enable state
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE, nDataTemp);
+				pwrTemp.EnableItem(nDataTemp);
+
+				// Message content
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING, strTemp);
+				pwrTemp.SetMessage(strTemp);
+
+				// Event ID
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID, nDataTemp);
+				pwrTemp.SetEventID(nDataTemp);
+
+				// Message style
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE, nDataTemp);
+				pwrTemp.SetMessageStyle(nDataTemp);
+
+				// Repeat enable state
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT, nDataTemp);
+				pwrTemp.EnableRepeat(nDataTemp);
+
+				// Allow snoozing
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_ALLOWSNOOZE, nDataTemp);
+				pwrTemp.EnableSnoozing(nDataTemp);
+
+				// Snooze interval
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_SNOOZEINTERVAL, nDataTemp);
+				pwrTemp.SetSnoozeInterval(nDataTemp);
+
+				// Repeat days
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEATDAYS, nDataTemp);
+				pwrTemp.SetActiveDays(nDataTemp);
+
+				// Time value
+				nItemRet += GetPwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIMEVALUE,	nTimeTemp);
 				if (nTimeTemp != INT_INVALID) {
-					pwrTemp.stTime.wHour = GET_REGTIME_HOUR(nTimeTemp);
-					pwrTemp.stTime.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
+
+					// Convert time value and set time
+					stTimeTemp.wHour = GET_REGTIME_HOUR(nTimeTemp);
+					stTimeTemp.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
+					pwrTemp.SetTime(stTimeTemp);
+
+					// Reset temp data
+					stTimeTemp = SYSTEMTIME_ZERO;
 					nTimeTemp = INT_INVALID;
 				}
 
@@ -1079,24 +1162,30 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		// Delete old data before writing
 		DeleteConfigSection();
 
+		// Get a copy of config data
+		CONFIGDATA cfgConfigTemp;
+		if (m_pcfgAppConfig != NULL) {
+			m_pcfgAppConfig->GetData(cfgConfigTemp);
+		}
+
 		// Save registry data
-		bResult &= WriteConfig(IDS_REGKEY_CFG_ACTIONLMB,		m_pcfgAppConfig->nLMBAction);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_ACTIONMMB,		m_pcfgAppConfig->nMMBAction);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_ACTIONRMB,		m_pcfgAppConfig->nRMBAction);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_RMBSHOWMENU,		m_pcfgAppConfig->bRMBShowMenu);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_LANGUAGEID,		m_pcfgAppConfig->nLanguageID);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_SHOWATSTARTUP,	m_pcfgAppConfig->bShowDlgAtStartup);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_STARTUPENABLE,	m_pcfgAppConfig->bStartupEnabled);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_CONFIRMACTION,	m_pcfgAppConfig->bConfirmAction);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_SAVEACTIONLOG,	m_pcfgAppConfig->bSaveHistoryLog);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_SAVEAPPEVENTLOG,	m_pcfgAppConfig->bSaveAppEventLog);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_RUNASADMIN,		m_pcfgAppConfig->bRunAsAdmin);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_SHOWERROR,		m_pcfgAppConfig->bShowErrorMsg);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_SCHEDULENOTIFY,	m_pcfgAppConfig->bNotifySchedule);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_SCHEDALLOWCANCEL, m_pcfgAppConfig->bAllowCancelSchedule);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_ENBBKGRDHOTKEYS,	m_pcfgAppConfig->bEnableBackgroundHotkey);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_LOCKSTATEHOTKEY,	m_pcfgAppConfig->bLockStateHotkey);
-		bResult &= WriteConfig(IDS_REGKEY_CFG_ENBPWRREMINDER,	m_pcfgAppConfig->bEnablePowerReminder);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_ACTIONLMB,		cfgConfigTemp.nLMBAction);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_ACTIONMMB,		cfgConfigTemp.nMMBAction);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_ACTIONRMB,		cfgConfigTemp.nRMBAction);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_RMBSHOWMENU,		cfgConfigTemp.bRMBShowMenu);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_LANGUAGEID,		cfgConfigTemp.nLanguageID);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_SHOWATSTARTUP,	cfgConfigTemp.bShowDlgAtStartup);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_STARTUPENABLE,	cfgConfigTemp.bStartupEnabled);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_CONFIRMACTION,	cfgConfigTemp.bConfirmAction);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_SAVEACTIONLOG,	cfgConfigTemp.bSaveHistoryLog);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_SAVEAPPEVENTLOG,	cfgConfigTemp.bSaveAppEventLog);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_RUNASADMIN,		cfgConfigTemp.bRunAsAdmin);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_SHOWERROR,		cfgConfigTemp.bShowErrorMsg);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_SCHEDULENOTIFY,	cfgConfigTemp.bNotifySchedule);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_SCHEDALLOWCANCEL, cfgConfigTemp.bAllowCancelSchedule);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_ENBBKGRDHOTKEYS,	cfgConfigTemp.bEnableBackgroundHotkey);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_LOCKSTATEHOTKEY,	cfgConfigTemp.bLockStateHotkey);
+		bResult &= WriteConfig(IDS_REGKEY_CFG_ENBPWRREMINDER,	cfgConfigTemp.bEnablePowerReminder);
 
 		// Trace error
 		if (bResult == FALSE) {
@@ -1123,13 +1212,13 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		SCHEDULEITEM schTempDefault = m_pschScheduleData->GetDefaultItem();
 		{
 			// Convert time data
-			nTimeTemp = FORMAT_REG_TIME(schTempDefault.stTime);
+			nTimeTemp = FORMAT_REG_TIME(schTempDefault.GetTime());
 
 			// Save registry data
-			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_ENABLE,		schTempDefault.bEnable);
-			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_ACTION,		schTempDefault.nAction);
-			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEAT,		schTempDefault.rpsRepeatSet.bRepeat);
-			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEATDAYS, schTempDefault.rpsRepeatSet.byRepeatDays);
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_ENABLE,		schTempDefault.IsEnabled());
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_ACTION,		schTempDefault.GetAction());
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEAT,		schTempDefault.IsRepeatEnabled());
+			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_REPEATDAYS, schTempDefault.GetActiveDays());
 			bResult &= WriteDefaultSchedule(IDS_REGKEY_SCHEDULE_TIMEVALUE,  nTimeTemp);
 
 			// Trace error
@@ -1150,14 +1239,14 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 			SCHEDULEITEM schTempExtra = m_pschScheduleData->GetItemAt(nExtraIndex);
 
 			// Convert time data
-			nTimeTemp = FORMAT_REG_TIME(schTempExtra.stTime);
+			nTimeTemp = FORMAT_REG_TIME(schTempExtra.GetTime());
 
 			// Save registry data
-			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ENABLE,		schTempExtra.bEnable);
-			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ITEMID,		schTempExtra.nItemID);
-			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ACTION,		schTempExtra.nAction);
-			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEAT,		schTempExtra.rpsRepeatSet.bRepeat);
-			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEATDAYS,  schTempExtra.rpsRepeatSet.byRepeatDays);
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ENABLE,		schTempExtra.IsEnabled());
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ITEMID,		schTempExtra.GetItemID());
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_ACTION,		schTempExtra.GetAction());
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEAT,		schTempExtra.IsRepeatEnabled());
+			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_REPEATDAYS,  schTempExtra.GetActiveDays());
 			bResult &= WriteScheduleExtra(nExtraIndex, IDS_REGKEY_SCHEDULE_TIMEVALUE,	nTimeTemp);
 
 			// Trace error
@@ -1213,11 +1302,15 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 			// Get HotkeySet item
 			HOTKEYSETITEM hksTemp = m_phksHotkeySetData->GetItemAt(nIndex);
 
+			// Get keycode
+			DWORD dwCtrlKeyTemp, dwFuncKeyTemp;
+			hksTemp.GetKeyCode(dwCtrlKeyTemp, dwFuncKeyTemp);
+
 			// Write item data
-			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE,	hksTemp.bEnable);
-			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID,	hksTemp.nHKActionID);
-			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY,	hksTemp.dwCtrlKeyCode);
-			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_FUNCKEY,	hksTemp.dwFuncKeyCode);
+			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ENABLE,	hksTemp.IsEnabled());
+			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_ACTIONID,	hksTemp.GetActionID());
+			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_CTRLKEY,	dwCtrlKeyTemp);
+			bResult &= WriteHotkeySet(nIndex, IDS_REGKEY_HKEYSET_FUNCKEY,	dwFuncKeyTemp);
 		}
 
 		// Trace error
@@ -1250,19 +1343,19 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 			PWRREMINDERITEM pwrTemp = m_ppwrReminderData->GetItemAt(nIndex);
 
 			// Convert time data
-			nTimeTemp = FORMAT_REG_TIME(pwrTemp.stTime);
+			nTimeTemp = FORMAT_REG_TIME(pwrTemp.GetTime());
 
 			// Write item data
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID,			pwrTemp.nItemID);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE,			pwrTemp.bEnable);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING,		pwrTemp.strMessage);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID,			pwrTemp.nEventID);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ITEMID,			pwrTemp.GetItemID());
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ENABLE,			pwrTemp.IsEnabled());
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTRING,		pwrTemp.GetMessage());
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_EVENTID,			pwrTemp.GetEventID());
 			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_TIMEVALUE,		nTimeTemp);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE,			pwrTemp.dwMsgStyle);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT,			pwrTemp.rpsRepeatSet.bRepeat);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ALLOWSNOOZE,		pwrTemp.rpsRepeatSet.bAllowSnooze);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_SNOOZEINTERVAL,	pwrTemp.rpsRepeatSet.nSnoozeInterval);
-			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEATDAYS,		pwrTemp.rpsRepeatSet.byRepeatDays);
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_MSGSTYLE,			pwrTemp.GetMessageStyle());
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEAT,			pwrTemp.IsRepeatEnabled());
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_ALLOWSNOOZE,		pwrTemp.IsAllowSnoozing());
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_SNOOZEINTERVAL,	pwrTemp.GetSnoozeInterval());
+			bResult &= WritePwrReminder(nIndex, IDS_REGKEY_PWRRMD_REPEATDAYS,		pwrTemp.GetActiveDays());
 		}
 
 		// Trace error
@@ -1289,9 +1382,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 BOOL CPowerPlusApp::BackupRegistryAppData()
 {
 	// Auto backup using Registry Export
-	SConfigBackup::AutoRegistryExport();
-
-	return TRUE;
+	return SConfigBackup::AutoRegistryExport();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1333,10 +1424,10 @@ BOOL CPowerPlusApp::UpdateAppProfileInfo(void)
 	// Format launch-time
 	CString strDateTimeFormat;
 	SYSTEMTIME stLaunchTime = GetAppLaunchTime();
-	UINT nMiddayFlag = (stLaunchTime.wHour < 12) ? FORMAT_TIME_BEFOREMIDDAY : FORMAT_TIME_AFTERMIDDAY;
-	CString strMiddayFlag = TableFuncs::GetLanguageString(LoadLanguageTable(NULL), nMiddayFlag);
+	UINT nTimePeriod = (stLaunchTime.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	CString strTimePeriodFormat = GetLanguageString(LoadLanguageTable(NULL), nTimePeriod);
 	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stLaunchTime.wYear, stLaunchTime.wMonth, stLaunchTime.wDay,
-		stLaunchTime.wHour, stLaunchTime.wMinute, stLaunchTime.wSecond, stLaunchTime.wMilliseconds, strMiddayFlag);
+		stLaunchTime.wHour, stLaunchTime.wMinute, stLaunchTime.wSecond, stLaunchTime.wMilliseconds, strTimePeriodFormat);
 
 	// Store launch-time info data
 	if (!WriteProfileInfo(IDS_REGKEY_PROFILE_LAUNCHTIME, strDateTimeFormat)) {
@@ -1532,9 +1623,9 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 		SetReminderMsgIconSize(nGlbValue);
 		bRet |= TRUE;
 	}
-	// Reminder message icon position
+	// Reminder message icon placement
 	if (GetGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_ICONPOS, nGlbValue)) {
-		SetReminderMsgIconPosition(nGlbValue);
+		SetReminderMsgIconPlacement(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message display position
@@ -1679,8 +1770,8 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 		if (!WriteGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_ICONSIZE, dwGlbValue)) {
 			bRet = FALSE;
 		}
-		// Reminder message icon position
-		dwGlbValue = GetReminderMsgIconPosition();
+		// Reminder message icon placement
+		dwGlbValue = GetReminderMsgIconPlacement();
 		if (!WriteGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_ICONPOS, dwGlbValue)) {
 			bRet = FALSE;
 		}
@@ -1710,7 +1801,7 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	return bRet;
 }
 
-#ifdef _CONFIG_FILE_TEST
+#ifdef _CONFIG_FILE_TEST_ACTIVE
 //////////////////////////////////////////////////////////////////////////
 // File data serialization functions
 
@@ -2070,11 +2161,11 @@ BOOL CPowerPlusApp::WriteFile()
 //	Function name:	GetAppConfigData
 //	Description:	Get app configuration data
 //  Arguments:		None
-//  Return value:	PCONFIGDATA - Config data pointer
+//  Return value:	ConfigData* - Config data pointer
 //
 //////////////////////////////////////////////////////////////////////////
 
-PCONFIGDATA CPowerPlusApp::GetAppConfigData()
+ConfigData* CPowerPlusApp::GetAppConfigData()
 {
 	// Check validity
 	ASSERT(m_pcfgAppConfig != NULL);
@@ -2085,12 +2176,12 @@ PCONFIGDATA CPowerPlusApp::GetAppConfigData()
 // 
 //	Function name:	SetAppConfigData
 //	Description:	Set app configuration data
-//  Arguments:		PCONFIGDATA - Config data pointer
+//  Arguments:		pcfgData - Config data pointer
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusApp::SetAppConfigData(PCONFIGDATA pcfgData)
+void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
 {
 	// Check data validity
 	ASSERT(pcfgData != NULL);
@@ -2098,7 +2189,7 @@ void CPowerPlusApp::SetAppConfigData(PCONFIGDATA pcfgData)
 
 	// Backup data
 	CONFIGDATA BakData;
-	BakData.Copy(*GetAppConfigData());
+	GetAppConfigData()->GetData(BakData);
 
 	// Copy value of data pointer
 	GetAppConfigData()->Copy(*pcfgData);
@@ -2114,11 +2205,11 @@ void CPowerPlusApp::SetAppConfigData(PCONFIGDATA pcfgData)
 //	Function name:	GetAppScheduleData
 //	Description:	Get app schedule data
 //  Arguments:		None
-//  Return value:	PSCHEDULEDATA - Schedule data pointer
+//  Return value:	ScheduleData* - Schedule data pointer
 //
 //////////////////////////////////////////////////////////////////////////
 
-PSCHEDULEDATA CPowerPlusApp::GetAppScheduleData()
+ScheduleData* CPowerPlusApp::GetAppScheduleData()
 {
 	// Check validity
 	ASSERT(m_pschSheduleData != NULL);
@@ -2129,19 +2220,19 @@ PSCHEDULEDATA CPowerPlusApp::GetAppScheduleData()
 // 
 //	Function name:	SetAppScheduleData
 //	Description:	Set app schedule data
-//  Arguments:		PSCHEDULEDATA - Schedule data pointer
+//  Arguments:		pschData - Schedule data pointer
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusApp::SetAppScheduleData(PSCHEDULEDATA pschData)
+void CPowerPlusApp::SetAppScheduleData(ScheduleData* pschData)
 {
 	// Check data validity
 	ASSERT(pschData != NULL);
 	if (pschData == NULL) return;
 
 	// Backup data
-	SCHEDULEDATA BakData;
+	ScheduleData BakData;
 	BakData.Copy(*GetAppScheduleData());
 
 	// Copy value of data pointer
@@ -2158,11 +2249,11 @@ void CPowerPlusApp::SetAppScheduleData(PSCHEDULEDATA pschData)
 //	Function name:	GetAppHotkeySetData
 //	Description:	Get app hotkeyset data
 //  Arguments:		None
-//  Return value:	PHOTKEYSETDATA - HotkeySet data pointer
+//  Return value:	HotkeySetData* - HotkeySet data pointer
 //
 //////////////////////////////////////////////////////////////////////////
 
-PHOTKEYSETDATA CPowerPlusApp::GetAppHotkeySetData()
+HotkeySetData* CPowerPlusApp::GetAppHotkeySetData()
 {
 	// Check validity
 	ASSERT(m_phksHotkeySetData != NULL);
@@ -2173,19 +2264,19 @@ PHOTKEYSETDATA CPowerPlusApp::GetAppHotkeySetData()
 // 
 //	Function name:	SetAppHotkeySetData
 //	Description:	Set app hotkeyset data
-//  Arguments:		PHOTKEYSETDATA - HotkeySet data pointer
+//  Arguments:		phksData - HotkeySet data pointer
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusApp::SetAppHotkeySetData(PHOTKEYSETDATA phksData)
+void CPowerPlusApp::SetAppHotkeySetData(HotkeySetData* phksData)
 {
 	// Check data validity
 	ASSERT(phksData != NULL);
 	if (phksData == NULL) return;
 
 	// Backup data
-	HOTKEYSETDATA BakData;
+	HotkeySetData BakData;
 	BakData.Copy(*GetAppHotkeySetData());
 
 	// Copy value of data pointer
@@ -2202,11 +2293,11 @@ void CPowerPlusApp::SetAppHotkeySetData(PHOTKEYSETDATA phksData)
 //	Function name:	GetAppPwrReminderData
 //	Description:	Get app Power Reminder data
 //  Arguments:		None
-//  Return value:	PPWRREMINDERDATA - Power Reminder data pointer
+//  Return value:	PwrReminderData* - Power Reminder data pointer
 //
 //////////////////////////////////////////////////////////////////////////
 
-PPWRREMINDERDATA CPowerPlusApp::GetAppPwrReminderData()
+PwrReminderData* CPowerPlusApp::GetAppPwrReminderData()
 {
 	// Check validity
 	ASSERT(m_ppwrReminderData != NULL);
@@ -2217,19 +2308,19 @@ PPWRREMINDERDATA CPowerPlusApp::GetAppPwrReminderData()
 // 
 //	Function name:	SetAppPwrReminderData
 //	Description:	Set app Power Reminder data
-//  Arguments:		PPWRREMINDERDATA - Power Reminder data pointer
+//  Arguments:		ppwrData - Power Reminder data pointer
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusApp::SetAppPwrReminderData(PPWRREMINDERDATA ppwrData)
+void CPowerPlusApp::SetAppPwrReminderData(PwrReminderData* ppwrData)
 {
 	// Check data validity
 	ASSERT(ppwrData != NULL);
 	if (ppwrData == NULL) return;
 
 	// Backup data
-	PWRREMINDERDATA BakData;
+	PwrReminderData BakData;
 	BakData.Copy(*GetAppPwrReminderData());
 
 	// Copy value of data pointer
@@ -2335,15 +2426,15 @@ int CPowerPlusApp::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE 
 		nTempResult = nResult;		// No temp data
 		break;
 	case OPTIONID_SCHEDULE_ACTIVE:
-		nResult = m_pschScheduleData->GetDefaultItem().bEnable;
+		nResult = m_pschScheduleData->GetDefaultItem().IsEnabled();
 		nTempResult = nResult;		// No temp data
 		break;
 	case OPTIONID_SCHEDULE_ACTION:
-		nResult = m_pschScheduleData->GetDefaultItem().nAction;
+		nResult = m_pschScheduleData->GetDefaultItem().GetAction();
 		nTempResult = nResult;		// No temp data
 		break;
 	case OPTIONID_SCHEDULE_REPEAT:
-		nResult = m_pschScheduleData->GetDefaultItem().IsRepeatEnable();
+		nResult = m_pschScheduleData->GetDefaultItem().IsRepeatEnabled();
 		nTempResult = nResult;		// No temp data
 		break;
 	default:
@@ -2445,8 +2536,8 @@ void CPowerPlusApp::InitAppHistoryLog()
 	
 	// Check validity after allocating
 	if (m_pAppHistoryLog == NULL) {
-		TRCLOG("Error: AppHistoryLog initialization failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: AppHistoryLog initialization failed");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
@@ -2921,7 +3012,7 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 
 	// Output trace error log
 	if (!strTrcLogFormat.IsEmpty()) {
-		TRCLOG(strTrcLogFormat);
+		TRACE_ERROR(strTrcLogFormat);
 	}
 
 	// Show error message
@@ -3031,8 +3122,8 @@ BOOL CPowerPlusApp::InitDebugTestDlg(void)
 	BOOL bResult = TRUE;
 	if (m_pDebugTestDlg == NULL) {
 		bResult = FALSE;
-		TRCLOG("Error: DebugTest dialog init failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: DebugTest dialog init failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 
 	return bResult;
@@ -3138,8 +3229,8 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 
 	// Registry key creation failed
 	if (lRes != ERROR_SUCCESS) {
-		TRCLOG("Error: Registry key creation failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Registry key creation failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return 0;
 	}
 
@@ -3203,8 +3294,8 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 	strAutoStartRegPath.LoadString(IDS_REGSECTION_AUTOSTART);
 	lRes = RegOpenKeyEx(hRootKey, strAutoStartRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hKey);
 	if (lRes != ERROR_SUCCESS) {
-		TRCLOG("Error: Registry key open failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Registry key open failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return 0;
 	}
 
@@ -3214,32 +3305,6 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 	// Close key
 	RegCloseKey(hKey);
 	return (lRes == ERROR_SUCCESS);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitLastSysEventRegistryInfo
-//	Description:	Initialize last system event registry info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void CPowerPlusApp::InitLastSysEventRegistryInfo(void)
-{
-	// Initialize registry info data
-	REGISTRYINFO regInfoLastSysEvt;
-	regInfoLastSysEvt.SetRootKeyName(IDS_APP_REGISTRY_HKEY);
-	regInfoLastSysEvt.SetSubkeyPath(IDS_APP_REGISTRY_SUBKEYPATH);
-	regInfoLastSysEvt.SetProfileName(IDS_APP_REGISTRY_PROFILENAME);
-	regInfoLastSysEvt.SetAppName(IDS_APP_REGISTRY_APPNAME);
-	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA);
-
-	// Set subsection
-	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA_TRACKING);
-
-	// Get registry path
-	m_strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, REGPATH_SECTIONNAME, FALSE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3258,13 +3323,27 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	HKEY hRegOpenKey;
 	BOOL bRet = TRUE;
 
+	// Initialize registry info data
+	REGISTRYINFO regInfoLastSysEvt;
+	regInfoLastSysEvt.SetRootKeyName(IDS_APP_REGISTRY_HKEY);
+	regInfoLastSysEvt.SetSubkeyPath(IDS_APP_REGISTRY_SUBKEYPATH);
+	regInfoLastSysEvt.SetProfileName(IDS_APP_REGISTRY_PROFILENAME);
+	regInfoLastSysEvt.SetAppName(IDS_APP_REGISTRY_APPNAME);
+	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA);
+
+	// Set subsection
+	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA_TRACKING);
+
+	// Get registry path
+	CString strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, REGPATH_SECTIONNAME, FALSE);
+
 	// Open registry key
-	lRes = RegOpenKeyEx(HKEY_CURRENT_USER, m_strLastSysEvtRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hRegOpenKey);
+	lRes = RegOpenKeyEx(HKEY_CURRENT_USER, strLastSysEvtRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hRegOpenKey);
 
 	// Registry key open failed
 	if (lRes != ERROR_SUCCESS) {
-		TRCLOG("Error: Registry key open failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Registry key open failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -3297,8 +3376,8 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	// Get registry key value failed
 	if (lRes != ERROR_SUCCESS) {
 		// Trace error
-		TRCLOG("Error: Registry key query value failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Registry key query value failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Close key and exit
 		RegCloseKey(hRegOpenKey);
@@ -3306,11 +3385,11 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	}
 
 	// Extract time data from string
-	TCHAR tcMiddayFlag[5];
+	TCHAR tcTimePeriod[5];
 	CString strDateTimeFormat;
 	strDateTimeFormat.LoadString(IDS_FORMAT_FULLDATETIME);
 	_stscanf_s(tcBuffer, strDateTimeFormat, &timeSysEvent.wYear, &timeSysEvent.wMonth, &timeSysEvent.wDay,
-		&timeSysEvent.wHour, &timeSysEvent.wMinute, &timeSysEvent.wSecond, &timeSysEvent.wMilliseconds, tcMiddayFlag, (unsigned)_countof(tcMiddayFlag));
+		&timeSysEvent.wHour, &timeSysEvent.wMinute, &timeSysEvent.wSecond, &timeSysEvent.wMilliseconds, tcTimePeriod, (unsigned)_countof(tcTimePeriod));
 
 	// Close key
 	RegCloseKey(hRegOpenKey);
@@ -3328,29 +3407,36 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEvent)
+BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& timeSysEvent)
 {
 	long lRes;
 	HKEY hRegOpenKey;
 	DWORD dwState;
 	BOOL bRet = TRUE;
 
+	// Initialize registry info data
+	REGISTRYINFO regInfoLastSysEvt;
+	regInfoLastSysEvt.SetRootKeyName(IDS_APP_REGISTRY_HKEY);
+	regInfoLastSysEvt.SetSubkeyPath(IDS_APP_REGISTRY_SUBKEYPATH);
+	regInfoLastSysEvt.SetProfileName(IDS_APP_REGISTRY_PROFILENAME);
+	regInfoLastSysEvt.SetAppName(IDS_APP_REGISTRY_APPNAME);
+	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA);
+
+	// Set subsection
+	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA_TRACKING);
+
+	// Get registry path
+	CString strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, REGPATH_SECTIONNAME, FALSE);
+
 	// Create registry key (open if key exists)
-	lRes = RegCreateKeyEx(HKEY_CURRENT_USER, m_strLastSysEvtRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hRegOpenKey, &dwState);
+	lRes = RegCreateKeyEx(HKEY_CURRENT_USER, strLastSysEvtRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hRegOpenKey, &dwState);
 
 	// Registry key creation failed
 	if (lRes != ERROR_SUCCESS) {
-		TRCLOG("Error: Registry key creation failed");
-		TRCDBG(__FUNCTION__, __FILENAME__, __LINE__);
+		TRACE_ERROR("Error: Registry key creation failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
-
-	// Format time
-	CString strDateTimeFormat;
-	UINT nMiddayFlag = (timeSysEvent.wHour < 12) ? FORMAT_TIME_BEFOREMIDDAY : FORMAT_TIME_AFTERMIDDAY;
-	CString strMiddayFlag = TableFuncs::GetLanguageString(GetAppLanguage(), nMiddayFlag);
-	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
-		timeSysEvent.wHour, timeSysEvent.wMinute, timeSysEvent.wSecond, timeSysEvent.wMilliseconds, strMiddayFlag);
 
 	// Get key name
 	CString strKeyName;
@@ -3371,6 +3457,13 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEve
 		RegCloseKey(hRegOpenKey);
 		return FALSE;
 	}
+
+	// Format date/time
+	CString strDateTimeFormat;
+	UINT nTimePeriod = (timeSysEvent.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	CString strTimePeriodFormat = GetLanguageString(GetAppLanguage(), nTimePeriod);
+	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
+		timeSysEvent.wHour, timeSysEvent.wMinute, timeSysEvent.wSecond, timeSysEvent.wMilliseconds, strTimePeriodFormat);
 
 	// Save registry value
 	DWORD dwDataSize = (strDateTimeFormat.GetLength() + 1) * sizeof(TCHAR);
@@ -3399,7 +3492,7 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, SYSTEMTIME timeSysEve
 void CPowerPlusApp::OnExecuteDebugCommand(WPARAM wParam, LPARAM lParam)
 {
 	// If debug command is empty, do nothing
-	CString strDebugCommand((LPCTSTR)lParam);
+	CString strDebugCommand(LPARAM_TO_STRING(lParam));
 	if (strDebugCommand.IsEmpty())
 		return;
 

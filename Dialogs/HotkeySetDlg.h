@@ -18,6 +18,8 @@
 
 #include "Core.h"
 #include "Config.h"
+#include "MapTable.h"
+
 #include "Logging.h"
 #include "IDMapping.h"
 #include "SDialog.h"
@@ -66,8 +68,8 @@ private:
 	BOOL m_bWinKeyBtn;
 
 	// Data container variables
-	HOTKEYSETDATA m_hksHotkeySet;
-	HOTKEYSETDATA m_hksHotkeySetTemp;
+	HotkeySetData m_hksHotkeySet;
+	HotkeySetData m_hksHotkeySetTemp;
 
 	// Table format and properties
 	int	m_nColNum;
