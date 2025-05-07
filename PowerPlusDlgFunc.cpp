@@ -511,14 +511,15 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				strKeyName = _T("AppEventLog");
 			}
 			CFileFind Finder;
-			CString strFileName = (CString)SUBFOLDER_LOG + SYMBOL_BACKSLASH + _T("*.log");
+			CString strFileName;
+			MakeFilePath(strFileName, GetSubFolderPath(SUBFOLDER_LOG), _T("*"), FILEEXT_LOGFILE);
 			BOOL bFindRet = Finder.FindFile(strFileName);
 			if (!strKeyName.IsEmpty()) {
 				int nDelFileCount = 0;
 				while (bFindRet == TRUE) {
 					bFindRet = Finder.FindNextFile();
 					strFileName = Finder.GetFileName();
-					if (strFileName.Find(strKeyName) != -1) {
+					if (strFileName.Find(strKeyName) != INT_INVALID) {
 						// Delete file
 						CFile::Remove(Finder.GetFilePath());
 						nDelFileCount++;	// Increase counter
@@ -1484,6 +1485,23 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("off")))) {
 				SetSessionLockFlag(FLAG_OFF);
 				OutputDebugLog(_T("Session lock flag: OFF"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				// Invalid command
+				bInvalidCmdFlag = TRUE;
+			}
+		}
+		else if (!_tcscmp(retBuff[1].tcToken, _T("safetermination"))) {
+			// Turn ON/OFF previously safe termination trace flag
+			if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("on")))) {
+				SetSafeTerminationFlag(FLAG_ON);
+				OutputDebugLog(_T("Previously safe termination trace flag: ON"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("off")))) {
+				SetSafeTerminationFlag(FLAG_OFF);
+				OutputDebugLog(_T("Previously safe termination trace flag: OFF"));
 				bNoReply = FALSE;	// Reset flag
 			}
 			else {

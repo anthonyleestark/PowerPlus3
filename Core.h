@@ -341,10 +341,10 @@
 // Define subdirectory names
 //
 
-#define SUBFOLDER_LOG								_T(".\\Log")
-#define SUBFOLDER_HELP								_T(".\\Help")
-#define SUBFOLDER_BACKUP							_T(".\\Backup")
-#define SUBFOLDER_TEMP								_T(".\\Temp")
+#define SUBFOLDER_LOG								_T("Log")
+#define SUBFOLDER_HELP								_T("Help")
+#define SUBFOLDER_BACKUP							_T("Backup")
+#define SUBFOLDER_TEMP								_T("Temp")
 
 
 // Define file names
@@ -650,8 +650,8 @@
 //
 
 #define FORMAT_REG_TIME(systime)						(INT((systime.wHour * 100) + systime.wMinute))
-#define GET_REGTIME_HOUR(time)							(WORD(time / 100))
-#define GET_REGTIME_MINUTE(time)						(WORD(time % 100))
+#define GET_REGTIME_HOUR(reg_time)						(WORD(reg_time / 100))
+#define GET_REGTIME_MINUTE(reg_time)					(WORD(reg_time % 100))
 #define TIME_TO_SECONDS(time)							(INT((time.wHour * 3600) + (time.wMinute * 60) + time.wSecond))
 #define GET_HOUR(totalSecs)								(WORD(totalSecs / 3600))
 #define GET_MINUTE(totalSecs)							(WORD((totalSecs % 3600) / 60))
@@ -661,7 +661,7 @@
 // Complex macros
 //
 
-#define NULL_POINTER_BREAK(pointer, ret)				if (pointer == NULL) { return ret; }
+#define NULL_POINTER_BREAK(pointer, ret_expr)			if (pointer == NULL) { ret_expr; }
 #define VERIFY_POINTER(pointer, type)					VERIFY(((pointer) != NULL) && AfxIsValidAddress((pointer), sizeof(type), FALSE))
 #define ASSERT_INITIALIZATION(pointer, type)			if (pointer == NULL) { pointer = new type(); ASSERT_POINTER(pointer, type); }
 #define VERIFY_INITIALIZATION(pointer, type) 			if (pointer == NULL) { pointer = new type(); VERIFY_POINTER(pointer, type); }
@@ -1964,14 +1964,18 @@ public:
 class PerformanceCounter
 {
 private:
-	// Member variables
+	// Attributes
 	LARGE_INTEGER m_liStartTime;							// Start time
 	LARGE_INTEGER m_liEndTime;								// End time
 	LARGE_INTEGER m_liFrequency;							// Performance frequency
 
+	// Counting flag
+	BOOL m_bIsRunning;										// Counter is running
+
 public:
 	// Constructor
 	PerformanceCounter();									// Default constructor
+	~PerformanceCounter();									// Destructor
 
 	// Member functions
 	void Start(void);										// Start performance counter
@@ -2053,6 +2057,7 @@ namespace AppCore
 
 	int		GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars);
 	void	UpperEachWord(CString& strInput, BOOL bTrim);
+	LPCTSTR GetSubFolderPath(LPCTSTR lpszSubFolderName);
 	BOOL	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
 
 	BOOL	StringValidate(LPCTSTR lpszSrc, DWORD& dwError);

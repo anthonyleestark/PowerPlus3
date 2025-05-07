@@ -336,21 +336,24 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	UINT nCurLanguage = pApp->GetAppLanguageOption(TRUE);
 
-	// Get help file name
-	CString strHelpFileName;
+	// Get help folder path
+	CString strFolderPath = GetSubFolderPath(SUBFOLDER_HELP);
+
+	// Get help file path
+	CString strHelpFilePath;
 
 	// View help file mode
 	if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_HELP_ENG, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_HELP_ENG, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_HELP_VIE, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_HELP_VIE, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_HELP_CHS, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_HELP_CHS, FILEEXT_HELPFILE);
 			break;
 		}
 	}
@@ -359,13 +362,13 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_CHANGELOG_ENG, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_CHANGELOG_ENG, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_CHANGELOG_VIE, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_CHANGELOG_VIE, FILEEXT_HELPFILE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			MakeFilePath(strHelpFileName, SUBFOLDER_HELP, FILENAME_CHANGELOG_CHS, FILEEXT_HELPFILE);
+			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_CHANGELOG_CHS, FILEEXT_HELPFILE);
 			break;
 		}
 	}
@@ -379,11 +382,11 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		strFileData.Empty();
 
 	// Check if file exists
-	bRet = CFile::GetStatus(strHelpFileName, fsStatus);
+	bRet = CFile::GetStatus(strHelpFilePath, fsStatus);
 	if (bRet == TRUE)
 	{
 		// Open file
-		bRet = fHelpFile.Open(strHelpFileName, CFile::modeRead | CFile::typeText | CFile::typeUnicode);
+		bRet = fHelpFile.Open(strHelpFilePath, CFile::modeRead | CFile::typeText | CFile::typeUnicode);
 		if (bRet == TRUE)
 		{
 			// Read file buffer

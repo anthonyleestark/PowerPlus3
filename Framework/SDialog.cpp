@@ -1160,7 +1160,7 @@ void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
 	UINT nAlign = GetAlignment();
 
 	// Calculate moving delta by alignments
-	int dx = 0, dy = 0;
+	LONG dx = 0, dy = 0;
 
 	// --> Calculate horizontal delta
 	if (nAlign & SDA_LEFTALIGN) {
@@ -1173,7 +1173,7 @@ void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
 	}
 	else if (nAlign & SDA_HCENTERALIGN) {
 		// Move center rect
-		int nHCenter = rcCurPos.right - rcCurPos.left;
+		LONG nHCenter = rcCurPos.right - rcCurPos.left;
 		dx = ptPosition.x - nHCenter;
 	}
 
@@ -1188,7 +1188,7 @@ void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
 	}
 	else if (nAlign & SDA_VCENTERALIGN) {
 		// Move center rect
-		int nVCenter = rcCurPos.bottom - rcCurPos.top;
+		LONG nVCenter = rcCurPos.bottom - rcCurPos.top;
 		dy = ptPosition.y - nVCenter;
 	}
 
@@ -1207,7 +1207,7 @@ void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::MoveDialog(int dx, int dy, LPRECT lpNewRect /* = NULL */)
+void SDialog::MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect /* = NULL */)
 {
 	// Get current dialog rectangle
 	CRect rcCurPos;
@@ -1228,8 +1228,8 @@ void SDialog::MoveDialog(int dx, int dy, LPRECT lpNewRect /* = NULL */)
 	// Move dialog
 	if ((dx != 0) || (dy != 0)) {
 		// Top-left point
-		int x = rcCurPos.left;
-		int y = rcCurPos.top;
+		LONG x = rcCurPos.left;
+		LONG y = rcCurPos.top;
 		// Set dialog position
 		BOOL bRet = this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		// If moving successfully, update new rectangle 
@@ -1258,7 +1258,7 @@ void SDialog::ResizeDialog(BOOL bCenterDialog)
 	this->GetWindowRect(&rectDlg);
 
 	// Set new rectangle
-	if ((m_szRegisterSize.cx > -1) && (m_szRegisterSize.cy > -1)) {
+	if ((m_szRegisterSize.cx > INT_INVALID) && (m_szRegisterSize.cy > INT_INVALID)) {
 		rectDlg.right = (rectDlg.left + m_szRegisterSize.cx);
 		rectDlg.bottom = (rectDlg.top + m_szRegisterSize.cy);
 	}
@@ -1295,9 +1295,9 @@ void SDialog::ResetDialogSize(void)
 	this->GetWindowRect(&rcCurRect);
 
 	// If current size is default size, do nothing
-	int nCurWidth = (rcCurRect.right - rcCurRect.left);
-	int nCurHeight = (rcCurRect.bottom - rcCurRect.top);
-	if ((nCurWidth == m_szDefaultSize.cx) && (nCurHeight == m_szDefaultSize.cy))
+	LONG lCurWidth = (rcCurRect.right - rcCurRect.left);
+	LONG lCurHeight = (rcCurRect.bottom - rcCurRect.top);
+	if ((lCurWidth == m_szDefaultSize.cx) && (lCurHeight == m_szDefaultSize.cy))
 		return;
 
 	// Reset to default
@@ -2485,7 +2485,7 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPositio
 
 	RECT rcCtrlWnd;
 	CWnd* pCtrlWnd = NULL;
-	int nOrgX = INT_INVALID, nOrgY = INT_INVALID;
+	LONG lOrgX = INT_INVALID, lOrgY = INT_INVALID;
 
 	// Find the original point
 	for (int nIndex = 0; nIndex < arrCtrlIDGroup.GetSize(); nIndex++)
@@ -2499,19 +2499,19 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPositio
 		pCtrlWnd->GetWindowRect(&rcCtrlWnd);
 
 		// Find smallest X
-		if ((nOrgX == INT_INVALID) || (rcCtrlWnd.left <= nOrgX)) {
-			nOrgX = rcCtrlWnd.left;
+		if ((lOrgX == INT_INVALID) || (rcCtrlWnd.left <= lOrgX)) {
+			lOrgX = rcCtrlWnd.left;
 		}
 
 		// Find smallest Y
-		if ((nOrgY == INT_INVALID) || (rcCtrlWnd.top <= nOrgY)) {
-			nOrgY = rcCtrlWnd.top;
+		if ((lOrgY == INT_INVALID) || (rcCtrlWnd.top <= lOrgY)) {
+			lOrgY = rcCtrlWnd.top;
 		}
 	}
 
 	// Calculate moving distance
-	int nDeltaX = ptNewPosition.x - nOrgX;
-	int nDeltaY = ptNewPosition.y - nOrgY;
+	int nDeltaX = ptNewPosition.x - lOrgX;
+	int nDeltaY = ptNewPosition.y - lOrgY;
 
 	// Move all items to new position
 	int nNewX = 0, nNewY = 0;
@@ -2551,7 +2551,7 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, in
 
 	RECT rcCtrlWnd;
 	CWnd* pCtrlWnd = NULL;
-	int nNewX = 0, nNewY = 0;
+	LONG lNewX = 0, lNewY = 0;
 
 	// Loop through each item and move
 	for (int nIndex = 0; nIndex < arrCtrlIDGroup.GetSize(); nIndex++)
@@ -2566,16 +2566,16 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, in
 
 		// Move horizontal direction
 		if (nDirection == MOVDIR_HORIZONTAL) {
-			nNewX = rcCtrlWnd.left + nDistance;
-			nNewY = rcCtrlWnd.top;
-			pCtrlWnd->SetWindowPos(NULL, nNewX, nNewY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			lNewX = rcCtrlWnd.left + nDistance;
+			lNewY = rcCtrlWnd.top;
+			pCtrlWnd->SetWindowPos(NULL, lNewX, lNewY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		}
 
 		// Move vertical direction
 		else if (nDirection == MOVDIR_VERTICAL) {
-			nNewX = rcCtrlWnd.left;
-			nNewY = rcCtrlWnd.top + nDistance;
-			pCtrlWnd->SetWindowPos(NULL, nNewX, nNewY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			lNewX = rcCtrlWnd.left;
+			lNewY = rcCtrlWnd.top + nDistance;
+			pCtrlWnd->SetWindowPos(NULL, lNewX, lNewY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 }
@@ -2699,7 +2699,7 @@ void SDialog::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 
 void SDialog::UpdateLayoutInfo(void)
 {
-	// TODO: Deriver this function for custom actions
+	// TODO: Override this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2713,7 +2713,7 @@ void SDialog::UpdateLayoutInfo(void)
 
 void SDialog::LoadLayoutInfo(void)
 {
-	// TODO: Deriver this function for custom actions
+	// TODO: Override this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2727,7 +2727,7 @@ void SDialog::LoadLayoutInfo(void)
 
 void SDialog::SaveLayoutInfo(void)
 {
-	// TODO: Deriver this function for custom actions
+	// TODO: Override this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2992,7 +2992,7 @@ LRESULT SDialog::RequestCloseDialog(void)
 
 void SDialog::OpenChildDialogEx(UINT nDialogID)
 {
-	// TODO: Deriver this function for custom actions
+	// TODO: Override this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3006,7 +3006,7 @@ void SDialog::OpenChildDialogEx(UINT nDialogID)
 
 void SDialog::OpenChildDialogEx(SDialog* pChildDialog)
 {
-	// TODO: Deriver this function for custom actions
+	// TODO: Override this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////

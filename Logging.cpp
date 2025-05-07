@@ -1571,6 +1571,9 @@ BOOL SLogging::Write(void)
 	CString strCurFileName;
 	CFile fLogFile;
 
+	// Log folder path
+	CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
+
 	LOGITEM logItem;
 	SYSTEMTIME stTemp;
 	CString strLogFormat;
@@ -1591,7 +1594,7 @@ BOOL SLogging::Write(void)
 		case LOGTYPE_APP_EVENT:
 			// Format app event log filename
 			strFileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth, stTemp.wDay);
-			MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
+			MakeFilePath(strFilePath, strFolderPath, strFileName, FILEEXT_LOGFILE);
 			if (strCurFileName.IsEmpty()) {
 				// Set current file name
 				strCurFileName = strFileName;
@@ -1620,7 +1623,7 @@ BOOL SLogging::Write(void)
 		case LOGTYPE_HISTORY_LOG:
 			// App history log
 			strFileName = FILENAME_HISTORY_LOG;
-			MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
+			MakeFilePath(strFilePath, strFolderPath, strFileName, FILEEXT_LOGFILE);
 			break;
 		default:
 			// Wrong argument
@@ -1727,8 +1730,11 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 		break;
 	}
 
+	// Log folder path
+	CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
+
 	// Get file path
-	MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
+	MakeFilePath(strFilePath, strFolderPath, strFileName, FILEEXT_LOGFILE);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -1821,8 +1827,11 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 		break;
 	}
 
+	// Log folder path
+	CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
+
 	// Get file path
-	MakeFilePath(strFilePath, SUBFOLDER_LOG, strFileName, FILEEXT_LOGFILE);
+	MakeFilePath(strFilePath, strFolderPath, strFileName, FILEEXT_LOGFILE);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)

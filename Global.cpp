@@ -100,6 +100,9 @@ BYTE Global::g_bySystemSuspendFlag = 0;
 // Session ending trace flag
 BYTE Global::g_bySessionEndFlag = 0;
 
+// Previously safe termination trace flag
+BYTE Global::g_bySafeTerminationFlag = 0;
+
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------------Memory-only flags---------------------------------------------*/

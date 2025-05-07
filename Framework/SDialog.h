@@ -235,7 +235,7 @@ public:
 
 	// Move and resize dialog
 	virtual void MoveDialog(POINT ptPosition, LPRECT lpNewRect = NULL);
-	virtual void MoveDialog(int dx, int dy, LPRECT lpNewRect = NULL);
+	virtual void MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect = NULL);
 	virtual void ResizeDialog(BOOL bCenterDialog);
 	virtual void ResetDialogSize(void);
 

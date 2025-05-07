@@ -4614,7 +4614,21 @@ AFX_INLINE void Substring::SetRight(LPCTSTR lpszSrc)
 PerformanceCounter::PerformanceCounter()
 {
 	// Initialization
+	this->m_bIsRunning = FALSE;
 	QueryPerformanceFrequency(&m_liFrequency);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	~PerformanceCounter
+//	Description:	Destructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+PerformanceCounter::~PerformanceCounter()
+{
+	// Stop counting
+	this->Stop();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4629,7 +4643,10 @@ PerformanceCounter::PerformanceCounter()
 void PerformanceCounter::Start(void)
 {
 	// Start performance counter
-	QueryPerformanceCounter(&m_liStartTime);
+	if (!m_bIsRunning) {
+		QueryPerformanceCounter(&m_liStartTime);
+		this->m_bIsRunning = TRUE;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4644,7 +4661,10 @@ void PerformanceCounter::Start(void)
 void PerformanceCounter::Stop(void)
 {
 	// Stop performance counter
-	QueryPerformanceCounter(&m_liEndTime);
+	if (m_bIsRunning) {
+		QueryPerformanceCounter(&m_liEndTime);
+		this->m_bIsRunning = FALSE;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5411,11 +5431,14 @@ static BOOL InitTraceErrorLogFile(void)
 
 	// Get trace error log file pointer
 	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
-	NULL_POINTER_BREAK(pTraceErrorLogFile, FALSE);
+	NULL_POINTER_BREAK(pTraceErrorLogFile, return FALSE);
+
+	// Log folder path
+	CString strFolderPath = AppCore::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Log file path
 	CString strFilePath;
-	AppCore::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	if (pTraceErrorLogFile->m_hFile == CFile::hFileNull) {
@@ -5500,11 +5523,14 @@ static BOOL InitTraceDebugLogFile(void)
 
 	// Get trace debug log file pointer
 	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
-	NULL_POINTER_BREAK(pTraceDebugLogFile, FALSE);
+	NULL_POINTER_BREAK(pTraceDebugLogFile, return FALSE);
+
+	// Log folder path
+	CString strFolderPath = AppCore::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Log file path
 	CString strFilePath;
-	AppCore::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
+	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	if (pTraceDebugLogFile->m_hFile == CFile::hFileNull) {
@@ -5590,11 +5616,14 @@ static BOOL InitDebugInfoLogFile(void)
 
 	// Get debug info log file pointer
 	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
-	NULL_POINTER_BREAK(pDebugInfoLogFile, FALSE);
+	NULL_POINTER_BREAK(pDebugInfoLogFile, return FALSE);
+
+	// Log folder path
+	CString strFolderPath = AppCore::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Log file path
 	CString strFilePath;
-	AppCore::MakeFilePath(strFilePath, SUBFOLDER_LOG, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
+	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	if (pDebugInfoLogFile->m_hFile == CFile::hFileNull) {
@@ -5677,11 +5706,14 @@ BOOL AppCore::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 	// If file path is not specified, do nothing
 	if (strFilePath.IsEmpty()) return FALSE;
 
+	// Log folder path
+	CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
+
 	// Search for backup file list
 	for (int nNum = 0; nNum < MAX_BAKFILE_COUNT; nNum++) {
 		
 		// Make backup file path template
-		if (!MakeFilePath(strFilePathTemp, SUBFOLDER_LOG, lpszLogFileName, FILEEXT_BAKLOGFILE))
+		if (!MakeFilePath(strFilePathTemp, strFolderPath, lpszLogFileName, FILEEXT_BAKLOGFILE))
 			return FALSE;
 
 		// If backup file path template is empty, do nothing
@@ -5745,7 +5777,7 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 
 	// Re-acquire trace log file pointer
 	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
-	NULL_POINTER_BREAK(pTraceErrorLogFile, NOTHING);
+	NULL_POINTER_BREAK(pTraceErrorLogFile, return NOTHING);
 	{
 		// Write log string to file
 		pTraceErrorLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
@@ -5765,7 +5797,8 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 
 			// Step2: Rename file extension to BAK
 			CString strOrgFilePath;
-			MakeFilePath(strOrgFilePath, SUBFOLDER_LOG, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+			CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
+			MakeFilePath(strOrgFilePath, strFolderPath, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
 			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_ERROR_LOG))
 				return;
 
@@ -5816,7 +5849,7 @@ void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 
 	// Re-acquire trace debug log file pointer
 	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
-	NULL_POINTER_BREAK(pTraceDebugLogFile, NOTHING);
+	NULL_POINTER_BREAK(pTraceDebugLogFile, return NOTHING);
 	{
 		// Write log string to file
 		pTraceDebugLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
@@ -5836,7 +5869,8 @@ void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 
 			// Step2: Rename file extension to BAK
 			CString strOrgFilePath;
-			MakeFilePath(strOrgFilePath, SUBFOLDER_LOG, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
+			CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
+			MakeFilePath(strOrgFilePath, strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
 			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_DEBUG_LOG))
 				return;
 
@@ -5887,7 +5921,7 @@ void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 
 	// Re-acquire debug info log file pointer
 	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
-	NULL_POINTER_BREAK(pDebugInfoLogFile, NOTHING);
+	NULL_POINTER_BREAK(pDebugInfoLogFile, return NOTHING);
 	{
 		// Write log string to file
 		pDebugInfoLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
@@ -5907,7 +5941,8 @@ void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 
 			// Step2: Rename file extension to BAK
 			CString strOrgFilePath;
-			MakeFilePath(strOrgFilePath, SUBFOLDER_LOG, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
+			CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
+			MakeFilePath(strOrgFilePath, strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
 			if (!BackupOldLogFile(strOrgFilePath, FILENAME_DEBUG_INFO_LOG))
 				return;
 
@@ -6770,17 +6805,20 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 	int nKeyLength = _tcslen(lpszKeyChars);
 
 	// Re-format given string buffer
-	int nBuffIdx = 0;
+	int nBuffIndex = 0;
 	for (int nIndex = 0; nIndex < nBuffLength; nIndex++) {
+
 		// Invalid characters
 		if ((lpszBuff[nIndex] == CHAR_ENDLINE) ||
 			(lpszBuff[nIndex] == CHAR_RETURN))
 			continue;
+
 		// Keep valid characters only
-		lpszBuff[nBuffIdx] = lpszBuff[nIndex];
-		nBuffIdx++;
+		lpszBuff[nBuffIndex] = lpszBuff[nIndex];
+		nBuffIndex++;
+
 		// End string
-		if (lpszBuff[nBuffIdx] == CHAR_ENDSTRING)
+		if (lpszBuff[nBuffIndex] == CHAR_ENDSTRING)
 			break;
 	}
 
@@ -6791,52 +6829,73 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 
 	// Loop through given string buffer and separate tokens
 	while ((nCurCharIndex <= nBuffLength) && (nCurCharIndex < MAX_BUFFER_LENGTH)) {
+
 		// Init flag OFF
 		int nKeyFlag = FLAG_OFF;
+
 		// Get current character
 		TCHAR tcCurChar = lpszBuff[nCurCharIndex];
+
 		// In case of newline character
-		if ((tcCurChar == CHAR_ENDLINE) || (tcCurChar == CHAR_RETURN))
+		if ((tcCurChar == CHAR_ENDLINE) || (tcCurChar == CHAR_RETURN)) {
+
+			// Go to next character
+			nCurCharIndex++;
 			continue;
+		}
+
 		// In case of quotation mark
 		if (tcCurChar == CHAR_QUOTAMARK) {
+
 			// Change flag
-			nQuoteFlag = (nQuoteFlag == 0) ? FLAG_ON : FLAG_OFF;
+			nQuoteFlag = (nQuoteFlag == FLAG_OFF) ? FLAG_ON : FLAG_OFF;
 		}
+
 		// If not in a quotation
 		if (nQuoteFlag == FLAG_OFF) {
+
 			// Loop through key string and find keychar match
 			for (int nKeyIndex = 0; nKeyIndex < nKeyLength; nKeyIndex++) {
+
 				// If key letter is matched
 				if (tcCurChar == lpszKeyChars[nKeyIndex]) {
+
 					// Mark as ON
 					nKeyFlag = FLAG_ON;
 				}
 			}
 		}
+
 		// If current character is a key letter or end of string
 		if ((nKeyFlag == FLAG_ON) || (tcCurChar == CHAR_ENDSTRING)) {
+
 			// Empty token means continuous key letters
 			if (nTokenCharIndex > 0) {
+
 				// End current token
 				retBuff[nTokenCount].tcToken[nTokenCharIndex] = CHAR_ENDSTRING;
 				retBuff[nTokenCount].nLength = _tcsclen(retBuff[nTokenCount].tcToken);
 				nTokenCharIndex = 0;
-				// Token number count-up
+
+				// Increase token number counter
 				nTokenCount++;
 			}
 		}
+
 		// Current character is the quotation mark itself
 		else if (tcCurChar == CHAR_QUOTAMARK) {
-			// If token number exceeds max count, stop
+
+			// If token number exceeds max count, stop processing
 			if (nTokenCount > MAX_TOKEN_COUNT)
 				break;
+
 			else {
-				// Index count-up
+				// Go to next character
 				nCurCharIndex++;
 				continue;
 			}
 		}
+
 		// Current character is not a key letter or is in a quotation
 		else {
 			// Add character to current token
@@ -6844,10 +6903,10 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 			nTokenCharIndex++;
 		}
 
-		// Index count-up
+		// Go to next character
 		nCurCharIndex++;
 
-		// If end of string or token number exceeds max count, stop
+		// If end of string or token number exceeds maximum limitation, stop processing
 		if ((tcCurChar == CHAR_ENDSTRING) || (nTokenCount > MAX_TOKEN_COUNT))
 			break;
 	}
@@ -6877,8 +6936,8 @@ void AppCore::UpperEachWord(CString& strInput, BOOL bTrim)
 		return;
 
 	// Lambda functions
-	auto IsNotSpace = [](TCHAR tcChar) { return (!std::isspace(tcChar)); };
-	auto BothSpaces = [](TCHAR tcFirst, TCHAR tcSecond) {
+	static auto IsNotSpace = [](TCHAR tcChar) { return (!std::isspace(tcChar)); };
+	static auto BothSpaces = [](TCHAR tcFirst, TCHAR tcSecond) {
 		return ((tcFirst == tcSecond) && (tcFirst == CHAR_SPACE));
 		};
 
@@ -6902,9 +6961,9 @@ void AppCore::UpperEachWord(CString& strInput, BOOL bTrim)
 
 	// Capitalize first character of each word
 	for (int nIndex = 0; nIndex < nLength; nIndex++) {
-		if (lpszString[nIndex] != _T(' ')) {
+		if (lpszString[nIndex] != CHAR_SPACE) {
 			if ((nIndex == 0)	/* First character */ ||
-				/* Not the first character and standing after a space */
+				/* Not the first character and standing right next to a space */
 				((nIndex > 0) && (lpszString[nIndex - 1] == CHAR_SPACE))) {
 				// Convert to uppercase
 				lpszString[nIndex] = std::toupper(lpszString[nIndex]);
@@ -6915,6 +6974,37 @@ void AppCore::UpperEachWord(CString& strInput, BOOL bTrim)
 	// Return result
 	strInput.SetString(lpszString);
 	strInput.ReleaseBuffer();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSubFolderPath
+//	Description:	Get full sub-folder path
+//  Arguments:		lpszSubFolderName - Subfolder name
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+LPCTSTR AppCore::GetSubFolderPath(LPCTSTR lpszSubFolderName)
+{
+	// Get application executable file path
+	static CString strAppPath;
+	if (strAppPath.IsEmpty()) {
+		strAppPath = GetApplicationPath(FALSE);
+	}
+
+	// Initialize result string
+	static CString strRetSubFolderPath;
+	strRetSubFolderPath.Empty();
+
+	// Make sub-folder path
+	strRetSubFolderPath.SetString(strAppPath);
+	if (lpszSubFolderName != NULL) {
+		strRetSubFolderPath.Append(SYMBOL_BACKSLASH);
+		strRetSubFolderPath.Append(lpszSubFolderName);
+	}
+
+	return strRetSubFolderPath.GetString();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -7213,7 +7303,7 @@ LPCTSTR AppCore::GetApplicationPath(BOOL bIncludeExeName)
 
 	// If not including the executable file name
 	if (bIncludeExeName != TRUE) {
-		// Remove the executable file name from the path
+		// Remove the executable file name (and the last '\' as well)
 		int nPos = strRetAppPath.ReverseFind(CHAR_BACKSLASH);
 		if (nPos != INT_INVALID) {
 			CString strTemp = strRetAppPath.Left(nPos);
@@ -7989,7 +8079,8 @@ void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* =
 
 BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* lpntme, DWORD FontType, LPARAM lParam) 
 {
-	std::vector<std::wstring>* fontNames = reinterpret_cast<std::vector<std::wstring>*>(lParam);
+	using wstring_vector = typename std::vector<std::wstring>;
+	wstring_vector* fontNames = reinterpret_cast<wstring_vector*>(lParam);
 	fontNames->push_back(lpelfe->elfLogFont.lfFaceName);
 	return TRUE;
 }

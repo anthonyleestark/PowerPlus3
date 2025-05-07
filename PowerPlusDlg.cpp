@@ -3623,7 +3623,8 @@ BOOL CPowerPlusDlg::OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtensi
 	// If sub-directory name is not empty
 	if (IS_NOT_EMPTY_STRING(lpszSubDir)) {
 		// Format file path with sub-directory
-		MakeFilePath(strFilePath, lpszSubDir, lpszFileName, lpszExtension);
+		CString strFolderPath = GetSubFolderPath(lpszSubDir);
+		MakeFilePath(strFilePath, strFolderPath, lpszFileName, lpszExtension);
 	}
 
 	// Standard file view
@@ -5531,9 +5532,9 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 	CString strCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowCaption();
 	CString strMsgFormat = strRequestMsg;
 
+	// Check if the application is currently running as admin
 	BOOL bIsAdmin = FALSE;
 	if (reqRestart.bAdminCheck == TRUE) {
-		// Check if the application is currently running as admin
 		bIsAdmin = IsUserAnAdmin();
 		if (bIsAdmin == TRUE) {
 			// If already running as admin, do nothing

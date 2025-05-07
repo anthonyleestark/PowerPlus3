@@ -615,7 +615,7 @@ BOOL CDebugTestDlg::SendDebugCommand(void)
 
 	// Prepare params
 	WPARAM wParam = MAKE_WPARAM_STRING(strDebugCommand);
-	LPARAM lParam = MAKE_LPARAM_STRING(strDebugCommand);
+	LPARAM lParam = MAKE_LPARAM_STRING(strDebugCommand.GetString());
 	
 	// Send debug command message to parent window
 	this->NotifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);

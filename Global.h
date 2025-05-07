@@ -156,6 +156,7 @@ namespace Global {
 	extern BYTE g_byPwrActionFlag;
 	extern BYTE g_bySystemSuspendFlag;
 	extern BYTE g_bySessionEndFlag;
+	extern BYTE g_bySafeTerminationFlag;
 };
 
 // Power action trace flag
@@ -169,6 +170,10 @@ static inline void SetSystemSuspendFlag(BYTE byValue) { Global::g_bySystemSuspen
 // Session ended trace flag
 static inline const BYTE GetSessionEndFlag(void) { return Global::g_bySessionEndFlag; }
 static inline void SetSessionEndFlag(BYTE byValue) { Global::g_bySessionEndFlag = byValue; }
+
+// Previously safe termination trace flag
+static inline const BYTE GetSafeTerminationFlag(void) { return Global::g_bySafeTerminationFlag; }
+static inline void SetSafeTerminationFlag(BYTE byValue) { Global::g_bySafeTerminationFlag = byValue; }
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

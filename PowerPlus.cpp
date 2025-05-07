@@ -215,7 +215,7 @@ BOOL CPowerPlusApp::InitInstance()
 	UpdateAppProfileInfo();
 
 	// Create neccessary sub-folders
-	CreateDirectory(SUBFOLDER_LOG, NULL);
+	CreateDirectory(GetSubFolderPath(SUBFOLDER_LOG), NULL);
 
 	// Setup low-level keyboard hook
 	m_hAppKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
@@ -405,6 +405,11 @@ int CPowerPlusApp::ExitInstance()
 	// Unhook keyboard
 	UnhookWindowsHookEx(m_hAppKeyboardHook);
 
+	// Mark as safe-termination
+	SetSafeTerminationFlag(FLAG_ON);
+	SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+
+	// Default
 	return SWinApp::ExitInstance();
 }
 
@@ -1581,6 +1586,12 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 		bRet |= TRUE;
 	}
 
+	// Previously safe termination trace flag
+	if (GetGlobalData(nSubSection, IDS_REGKEY_APPFLAG_SAFETERMINATION, nGlbValue)) {
+		SetSafeTerminationFlag((BYTE)nGlbValue);
+		bRet |= TRUE;
+	}
+
 	/*-----------------------------------------------------------------------------------*/
 
 	/*-------------------------<Load special feature variables>--------------------------*/
@@ -1725,6 +1736,12 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 		// Session ending trace flag
 		byGlbValue = GetSessionEndFlag();
 		if (!WriteGlobalData(nSubSection, IDS_REGKEY_APPFLAG_SESSIONENDFLAG, byGlbValue)) {
+			bRet = FALSE;
+		}
+
+		// Previously safe termination trace flag
+		byGlbValue = GetSafeTerminationFlag();
+		if (!WriteGlobalData(nSubSection, IDS_REGKEY_APPFLAG_SAFETERMINATION, byGlbValue)) {
 			bRet = FALSE;
 		}
 	}

@@ -149,7 +149,7 @@ int SWinApp::ExitInstance()
 
 int SWinApp::PreExitInstance()
 {
-	// TODO: Deriver this function for custom actions
+	// TODO: Override this function for custom actions
 
 	return RESULT_SUCCESS;
 }
