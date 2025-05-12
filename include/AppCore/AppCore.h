@@ -497,6 +497,7 @@
 #define MAX_BAKFILE_COUNT							100								// Maximum backup file number: 100
 #define MAX_LOGFILE_SIZE							1048576							// Maximum file size: 1MB
 
+#define MAX_RETRY_TIMES								10								// Max retry times: 5
 #define TIMEOUT_WAIT_MESSAGE						30000							// Wait message timeout (tick-counts): 30s
 
 
@@ -722,6 +723,7 @@ typedef enum eFLAG {
 //////////////////// ********************
 
 typedef enum eAPPEXITCODE {
+	EXITCODE_ERROR = -1,				// Exit because of error occurs
 	EXITCODE_NORMAL = 0,				// Normal exitting (no reason)
 	EXITCODE_EXITBUTTON,				// Exit by pressing [Exit] button
 	EXITCODE_NOTIFYMENU,				// Exit by selecting "Exit App" from notify menu selection

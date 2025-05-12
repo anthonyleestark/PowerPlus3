@@ -556,7 +556,15 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	// Setup main dialog
 	SetupLanguage();
 	UpdateDialogData(FALSE);
-	SetNotifyIcon();
+
+	// Create notify icon
+	if (!CreateNotifyIcon()) {
+
+		// Exit if failed to create notify icon
+		TRACE("Failed to create notify icon!!!");
+		ExitApp(EXITCODE_ERROR);
+		return FALSE;
+	}
 
 	// Update dialog control management
 	UpdateDialogManagement();
@@ -2006,19 +2014,19 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetNotifyIcon
-//	Description:	Setup notify icon
+//	Function name:	CreateNotifyIcon
+//	Description:	Setup and create notify icon
 //  Arguments:		None
-//  Return value:	None
+//  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetNotifyIcon(void)
+BOOL CPowerPlusDlg::CreateNotifyIcon(void)
 {
 	// If notify icon is showed, do nothing
 	if (GetFlagValue(FLAGID_NOTIFY_ICON_SHOWED)) {
 		TRACE("Notify icon is already showed!!!");
-		return;
+		return TRUE;
 	}
 
 	// Init notify icon
@@ -2028,7 +2036,7 @@ void CPowerPlusDlg::SetNotifyIcon(void)
 			// Initialization failed
 			TRACE_ERROR("Error: Notify icon initialization failed!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-			return;
+			return FALSE;
 		}
 	}
 
@@ -2041,11 +2049,25 @@ void CPowerPlusDlg::SetNotifyIcon(void)
 	m_pNotifyIconData->uID = 500;
 	SetNotifyTipText(m_pNotifyIconData);
 
-	// Show notify icon
-	Shell_NotifyIcon(NIM_ADD, m_pNotifyIconData);
+	// Create and show notify icon
+	BOOL bRetCreate = FALSE;
+	for (int nRetry = 0; nRetry < MAX_RETRY_TIMES; nRetry++) {
+		bRetCreate = Shell_NotifyIcon(NIM_ADD, m_pNotifyIconData);
+		if (bRetCreate != FALSE) break;
+	}
+
+	// Failed to create notify icon
+	if (bRetCreate != TRUE) {
+		// Failed to create notify icon
+		TRACE_ERROR("Error: Failed to create notify icon!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return FALSE;
+	}
 
 	// Update flag
-	SetFlagValue(FLAGID_NOTIFY_ICON_SHOWED, TRUE);
+	SetFlagValue(FLAGID_NOTIFY_ICON_SHOWED, bRetCreate);
+
+	return TRUE;
 }
 
 //////////////////////////////////////////////////////////////////////////

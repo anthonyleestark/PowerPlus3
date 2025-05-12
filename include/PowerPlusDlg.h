@@ -181,7 +181,7 @@ protected:
 	void ExpandDialog(BOOL bExpand);
 
 	// Notify icon functions
-	void SetNotifyIcon(void);
+	BOOL CreateNotifyIcon(void);
 	void UpdateNotifyIcon(void);
 	void RemoveNotifyIcon(void);
 	BOOL ShowNotifyMenu(void);
