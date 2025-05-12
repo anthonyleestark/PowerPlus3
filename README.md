@@ -3,7 +3,7 @@ Based on Power++ v2.0 STL, upgraded since Apr-2024.
 [Click here](https://github.com/anthonyleestark/PowerPlus) to see the original source code of version v2.0
 
 ## Changes and updates
-###Version: 3.0 (v3.0.1.0) - Release Date: June 2024  
+### Version: 3.0 (v3.0.1.0) - Release Date: June 2024  
 
 **Improvements and corrections:**
 - Fixed a bug that action schedule did not executed correctly sometimes
@@ -24,7 +24,7 @@ Based on Power++ v2.0 STL, upgraded since Apr-2024.
 - System background hotkey feature
 - Restart with admin privileges feature
 
-####Version: 3.1 (v3.1.1.0) - Release Date: Oct 2024  
+### Version: 3.1 (v3.1.1.0) - Release Date: Oct 2024  
 
 **Improvements and corrections:**
 - Improvement: Changed caption of some dialog items
@@ -45,7 +45,7 @@ Based on Power++ v2.0 STL, upgraded since Apr-2024.
 - Support Chinese language interface
 - Debug command functions
 
-####Version: 3.2 (v3.2.1.0) - In development  
+### Version: 3.2 (v3.2.1.0) - In development  
 
 ## Build & usage
 - Download the source code and open the solution/project file (.sln/.vcxproj) with Visual Studio.
