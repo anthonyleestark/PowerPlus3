@@ -3077,6 +3077,12 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 	// Get action info
 	switch (nActionID)
 	{
+	case APP_ACTION_NOTHING:
+		// Do nothing (litterally)
+		// Pretend that the action completes successfully
+		TRACE("[ExecuteAction] Do nothing -> Successfully");
+		return TRUE;
+		break;
 	case APP_ACTION_DISPLAYOFF:
 		// Turn off display
 		nAction = APP_ACTIONTYPE_MONITOR;

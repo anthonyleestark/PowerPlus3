@@ -4279,7 +4279,7 @@ void RegistryInfo::SetSubkeyPath(UINT nResourceID)
 	// Add sub-key path (by resource ID)
 	CString strSubKeyName;
 	VERIFY(strSubKeyName.LoadString(nResourceID));
-	SetRootKeyName(strSubKeyName);
+	SetSubkeyPath(strSubKeyName);
 }
 
 void RegistryInfo::SetSubkeyPath(LPCTSTR lpszSubKeyName)
