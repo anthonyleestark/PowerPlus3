@@ -94,7 +94,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\Framework;$(ProjectDir)\Dialogs;$(ProjectDir)\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\Framework;$(ProjectDir)\Dialogs;$(ProjectDir)\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -148,7 +148,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\Framework;$(ProjectDir)\Dialogs;$(ProjectDir)\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -177,7 +177,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\Framework;$(ProjectDir)\Dialogs;$(ProjectDir)\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>Default</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
@@ -204,77 +204,94 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClInclude Include="include\AppCore\AppCore.h" />
+    <ClInclude Include="include\AppCore\Config.h" />
+    <ClInclude Include="include\AppCore\Global.h" />
+    <ClInclude Include="include\AppCore\IDMapping.h" />
+    <ClInclude Include="include\AppCore\Language.h" />
+    <ClInclude Include="include\AppCore\Logging.h" />
+    <ClInclude Include="include\AppCore\Logging_pub.h" />
+    <ClInclude Include="include\AppCore\MapTable.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Components\CellRange.h" />
-    <ClInclude Include="Components\GridCell.h" />
-    <ClInclude Include="Components\GridCellBase.h" />
-    <ClInclude Include="Components\GridCellCheck.h" />
-    <ClInclude Include="Components\GridCtrl.h" />
-    <ClInclude Include="Components\InPlaceEdit.h" />
-    <ClInclude Include="Components\MemDC.h" />
-    <ClInclude Include="Components\TitleTip.h" />
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="Core.h" />
-    <ClInclude Include="Dialogs\AboutDlg.h" />
-    <ClInclude Include="Dialogs\CustomMsgDlg.h" />
-    <ClInclude Include="Dialogs\DebugTestDlg.h" />
-    <ClInclude Include="Dialogs\EditScheduleDlg.h" />
-    <ClInclude Include="Dialogs\HelpDlg.h" />
-    <ClInclude Include="Dialogs\HotkeySetDlg.h" />
-    <ClInclude Include="Dialogs\LogViewerDlg.h" />
-    <ClInclude Include="Dialogs\MultiScheduleDlg.h" />
-    <ClInclude Include="Dialogs\PwrReminderDlg.h" />
-    <ClInclude Include="Dialogs\ReminderMsgDlg.h" />
-    <ClInclude Include="Dialogs\RmdRepeatSetDlg.h" />
-    <ClInclude Include="Framework\SDialog.h" />
-    <ClInclude Include="Framework\SElements.h" />
-    <ClInclude Include="Framework\SWinApp.h" />
-    <ClInclude Include="Global.h" />
-    <ClInclude Include="Logging_pub.h" />
-    <ClInclude Include="MapTable.h" />
-    <ClInclude Include="PowerPlus.inl" />
-    <ClInclude Include="IDMapping.h" />
-    <ClInclude Include="Resource2.h" />
-    <ClInclude Include="Language.h" />
-    <ClInclude Include="Logging.h" />
-    <ClInclude Include="PowerPlus.h" />
-    <ClInclude Include="PowerPlusDlg.h" />
+    <ClInclude Include="include\Components\CellRange.h" />
+    <ClInclude Include="include\Components\GridCell.h" />
+    <ClInclude Include="include\Components\GridCellBase.h" />
+    <ClInclude Include="include\Components\GridCellCheck.h" />
+    <ClInclude Include="include\Components\GridCtrl.h" />
+    <ClInclude Include="include\Components\InPlaceEdit.h" />
+    <ClInclude Include="include\Components\MemDC.h" />
+    <ClInclude Include="include\Components\TitleTip.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Dialogs\AboutDlg.h" />
+    <ClInclude Include="include\Dialogs\CustomMsgDlg.h" />
+    <ClInclude Include="include\Dialogs\DebugTestDlg.h" />
+    <ClInclude Include="include\Dialogs\EditScheduleDlg.h" />
+    <ClInclude Include="include\Dialogs\HelpDlg.h" />
+    <ClInclude Include="include\Dialogs\HotkeySetDlg.h" />
+    <ClInclude Include="include\Dialogs\LogViewerDlg.h" />
+    <ClInclude Include="include\Dialogs\MultiScheduleDlg.h" />
+    <ClInclude Include="include\Dialogs\PwrReminderDlg.h" />
+    <ClInclude Include="include\Dialogs\ReminderMsgDlg.h" />
+    <ClInclude Include="include\Dialogs\RmdRepeatSetDlg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Framework\SDialog.h" />
+    <ClInclude Include="include\Framework\SElements.h" />
+    <ClInclude Include="include\Framework\SWinApp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\PowerPlus.inl" />
+    <ClInclude Include="include\PowerPlus.h" />
+    <ClInclude Include="include\PowerPlusDlg.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Resource2.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Components\GridCell.cpp" />
-    <ClCompile Include="Components\GridCellBase.cpp" />
-    <ClCompile Include="Components\GridCellCheck.cpp" />
-    <ClCompile Include="Components\GridCtrl.cpp" />
-    <ClCompile Include="Components\InPlaceEdit.cpp" />
-    <ClCompile Include="Components\TitleTip.cpp" />
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="Core.cpp" />
-    <ClCompile Include="Dialogs\AboutDlg.cpp" />
-    <ClCompile Include="Dialogs\CustomMsgDlg.cpp" />
-    <ClCompile Include="Dialogs\DebugTestDlg.cpp" />
-    <ClCompile Include="Dialogs\EditScheduleDlg.cpp" />
-    <ClCompile Include="Dialogs\HelpDlg.cpp" />
-    <ClCompile Include="Dialogs\HotkeySetDlg.cpp" />
-    <ClCompile Include="Dialogs\LogViewerDlg.cpp" />
-    <ClCompile Include="Dialogs\MultiScheduleDlg.cpp" />
-    <ClCompile Include="Dialogs\PwrReminderDlg.cpp" />
-    <ClCompile Include="Dialogs\ReminderMsgDlg.cpp" />
-    <ClCompile Include="Dialogs\RmdRepeatSetDlg.cpp" />
-    <ClCompile Include="Framework\SDialog.cpp" />
-    <ClCompile Include="Framework\SElements.cpp" />
-    <ClCompile Include="Framework\SWinApp.cpp" />
-    <ClCompile Include="Global.cpp" />
-    <ClCompile Include="IDMapping.cpp" />
-    <ClCompile Include="Logging.cpp" />
-    <ClCompile Include="MapTable.cpp" />
-    <ClCompile Include="PowerPlus.cpp" />
-    <ClCompile Include="PowerPlusDlg.cpp" />
-    <ClCompile Include="PowerPlusDlgFunc.cpp" />
+    <ClCompile Include="source\AppCore\AppCore.cpp" />
+    <ClCompile Include="source\AppCore\Config.cpp" />
+    <ClCompile Include="source\AppCore\Global.cpp" />
+    <ClCompile Include="source\AppCore\IDMapping.cpp" />
+    <ClCompile Include="source\AppCore\Logging.cpp" />
+    <ClCompile Include="source\AppCore\MapTable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Components\GridCell.cpp" />
+    <ClCompile Include="source\Components\GridCellBase.cpp" />
+    <ClCompile Include="source\Components\GridCellCheck.cpp" />
+    <ClCompile Include="source\Components\GridCtrl.cpp" />
+    <ClCompile Include="source\Components\InPlaceEdit.cpp" />
+    <ClCompile Include="source\Components\TitleTip.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Dialogs\AboutDlg.cpp" />
+    <ClCompile Include="source\Dialogs\CustomMsgDlg.cpp" />
+    <ClCompile Include="source\Dialogs\DebugTestDlg.cpp" />
+    <ClCompile Include="source\Dialogs\EditScheduleDlg.cpp" />
+    <ClCompile Include="source\Dialogs\HelpDlg.cpp" />
+    <ClCompile Include="source\Dialogs\HotkeySetDlg.cpp" />
+    <ClCompile Include="source\Dialogs\LogViewerDlg.cpp" />
+    <ClCompile Include="source\Dialogs\MultiScheduleDlg.cpp" />
+    <ClCompile Include="source\Dialogs\PwrReminderDlg.cpp" />
+    <ClCompile Include="source\Dialogs\ReminderMsgDlg.cpp" />
+    <ClCompile Include="source\Dialogs\RmdRepeatSetDlg.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Framework\SDialog.cpp" />
+    <ClCompile Include="source\Framework\SElements.cpp" />
+    <ClCompile Include="source\Framework\SWinApp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\PowerPlus.cpp" />
+    <ClCompile Include="source\PowerPlusDlg.cpp" />
+    <ClCompile Include="source\PowerPlusDlgFunc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
