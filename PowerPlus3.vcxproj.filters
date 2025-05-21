@@ -11,7 +11,7 @@
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;txt;hlps;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -220,22 +220,81 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PowerPlus.rc">
+    <ResourceCompile Include="PowerPlus3.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\PowerPlus.rc2">
+    <None Include="res\PowerPlus3.rc2">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\PowerPlus.ico">
+    <Image Include="res\icon\power-plus-app.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\about-big.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\about-small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\help-big.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\help-small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\ok-big.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\ok-small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\cancel-small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\arrow-expand.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\arrow-collapse.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\collapse.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\repeat.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\power-bold.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\power-slim.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon\draft.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <Text Include="res\txt\help-eng.hlps">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="res\txt\change-log-eng.hlps">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="res\txt\help-vie.hlps">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="res\txt\change-log-vie.hlps">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="res\txt\help-chs.hlps">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="res\txt\change-log-chs.hlps">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="PowerPlus3.exe.manifest" />

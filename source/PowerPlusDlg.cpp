@@ -523,7 +523,7 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	}
 
 	// Load app default icon
-	SetIcon(IDI_ICON_DEFAULT);
+	SetIcon(IDI_ICON_APP);
 
 	// Set icon
 	SetIcon(m_hDefaultIcon, TRUE);		// Set big icon

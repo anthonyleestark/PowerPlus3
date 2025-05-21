@@ -246,7 +246,7 @@ void CAboutDlg::SetupLanguage(void)
 		UINT nID = pWndChild->GetDlgCtrlID();
 		switch (nID)
 		{
-		case IDI_ICON_DEFAULT:
+		case IDI_ICON_APP:
 		case IDC_STATIC:
 			// Skip these items
 			continue;

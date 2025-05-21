@@ -300,13 +300,36 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PowerPlus.rc" />
+    <ResourceCompile Include="PowerPlus3.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\PowerPlus.rc2" />
+    <None Include="res\PowerPlus3.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\PowerPlus.ico" />
+    <Image Include="res\icon\power-plus-app.ico" />
+    <Image Include="res\icon\about-big.ico" />
+    <Image Include="res\icon\about-small.ico" />
+    <Image Include="res\icon\help-big.ico" />
+    <Image Include="res\icon\help-small.ico" />
+    <Image Include="res\icon\ok-big.ico" />
+    <Image Include="res\icon\ok-small.ico" />
+    <Image Include="res\icon\cancel-small.ico" />
+    <Image Include="res\icon\arrow-expand.ico" />
+    <Image Include="res\icon\arrow-collapse.ico" />
+    <Image Include="res\icon\collapse.ico" />
+    <Image Include="res\icon\repeat.ico" />
+    <Image Include="res\icon\power-bold.ico" />
+    <Image Include="res\icon\power-slim.ico" />
+    <Image Include="res\icon\draft.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\txt\help-eng.hlps" />
+    <Text Include="res\txt\change-log-eng.hlps" />
+    <Text Include="res\txt\help-vie.hlps" />
+    <Text Include="res\txt\change-log-vie.hlps" />
+    <Text Include="res\txt\help-chs.hlps" />
+    <Text Include="res\txt\change-log-chs.hlps" />
+    <Text Include="res\txt\debug-cmd-list.hlps" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="PowerPlus3.exe.manifest" />
