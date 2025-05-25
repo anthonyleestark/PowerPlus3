@@ -2374,6 +2374,44 @@ void SDialog::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	SetButtonIcon
+//	Description:	Set icon for dialog button
+//  Arguments:		nButtonID	   - ID of button
+//					nIconID		   - ID of icon resource
+//					bReUpdateTitle - Whether to reupdate button title
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void SDialog::SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle /* = FALSE */)
+{
+	// Backup title
+	CString strButtonTitle;
+	if (bReUpdateTitle == TRUE) {
+		GetDlgItemText(nButtonID, strButtonTitle);
+	}
+
+	// Icon size
+	int cx = BUTTON_ICON_WIDTH;
+	int cy = BUTTON_ICON_HEIGHT;
+
+	// Load icon from resource
+	HINSTANCE hInstance = AfxGetApp()->m_hInstance;
+	HICON hIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(nIconID), IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR);
+	if (hIcon == NULL)
+		return;
+
+	// Draw button icon
+	SendDlgItemMessage(nButtonID, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+
+	// Restore title
+	if (bReUpdateTitle == TRUE) {
+		SetDlgItemText(nButtonID, strButtonTitle);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	UpdateItemText
 //	Description:	Update control text label
 //  Arguments:		nCtrlID		   - ID of control item

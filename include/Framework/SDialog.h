@@ -301,6 +301,7 @@ public:
 	// Dialog and items setup functions
 	virtual void SetupLanguage(void);
 	virtual void SetupComboBox(UINT nComboID, LANGTABLE_PTR pLanguage);
+	virtual void SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle = FALSE);
 	virtual void UpdateItemText(UINT nCtrlID, LPCTSTR lpszNewCaption);
 	virtual void UpdateItemText(UINT nCtrlID, UINT nNewCaptionID = NULL, LANGTABLE_PTR ptrLanguage = NULL);
 	virtual void SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLanguage = NULL);

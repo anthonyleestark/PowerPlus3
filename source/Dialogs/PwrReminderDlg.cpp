@@ -3196,8 +3196,10 @@ void CPwrReminderDlg::DrawRepeatSetButton(void)
 	if (m_pEvtRepeatSetBtn != NULL) {
 
 		// Load icon
+		int cx = BUTTON_ICON_WIDTH;
+		int cy = BUTTON_ICON_HEIGHT;
 		HINSTANCE hInstance = AfxGetApp()->m_hInstance;
-		HICON hRepeatIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON_REPEAT), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+		HICON hRepeatIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON_REPEAT), IMAGE_ICON, cx, cx, LR_DEFAULTCOLOR);
 		if (hRepeatIcon == NULL)
 			return;
 

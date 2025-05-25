@@ -527,6 +527,10 @@
 // Define specific/default values for controls or items
 //
 
+#define BUTTON_ICON_WIDTH							20								// Button icon width: 20px
+#define BUTTON_ICON_HEIGHT							20								// Button icon height: 20px
+#define BUTTON_ICON_SIZE							20								// Button icon size (square): 20x20 (px)
+
 #define TIMESPIN_MIN								0								// Equals to 00:00
 #define TIMESPIN_MAX								1439							// Equals to 23:59
 #define TIMESPIN_DEFAULT							0								// Equals to 00:00
