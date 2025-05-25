@@ -258,7 +258,7 @@ void CHelpDlg::OnSwitchViewMode()
 	}
 
 	// Reupdate file data
-	LoadFileData(m_strFileData);
+	LoadRCFileData(m_strFileData);
 	CEdit* pEdit = (CEdit*)GetDlgItem(IDC_HELPINFO_EDITBOX);
 	if (pEdit != NULL)
 		pEdit->SetWindowText(m_strFileData);
@@ -295,7 +295,7 @@ void CHelpDlg::SetupLanguage()
 	UpdateSwitchViewModeButton();
 
 	// Load help contents by default
-	LoadFileData(m_strFileData);
+	LoadRCFileData(m_strFileData);
 	pWnd = GetDlgItem(IDC_HELPINFO_EDITBOX);
 	if (pWnd != NULL) {
 		pWnd->SetWindowText(m_strFileData);
@@ -323,10 +323,11 @@ void CHelpDlg::SetupEditbox(CEdit& pEdit)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	LoadHelpInfo
-//	Description:	Load help contents
+//	Function name:	LoadFileData
+//	Description:	Load help content from external file
 //  Arguments:		strFileData - File data result (ref-value)
 //  Return value:	BOOL - Result of file loading process
+//  Note:			No longer used - Replaced with LoadRCFileData()
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -403,12 +404,18 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		// Load app language package
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
+			// Can not load help file
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
+
+			// Trace error
 			TRACE_ERROR("Error: Help file not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
 		else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
+			// Can not load change log file
 			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
+
+			// Trace error
 			TRACE_ERROR("Error: Changelog file not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
@@ -418,6 +425,84 @@ BOOL CHelpDlg::LoadFileData(CString& strFileData)
 		fHelpFile.Close();
 
 	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	LoadRCFileData
+//	Description:	Load help content from Resource-embeded text data
+//  Arguments:		strRCFileData - File data result (ref-value)
+//  Return value:	BOOL - Result of file loading process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
+{
+	// Get currently displaying language
+	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
+	UINT nCurLanguage = pApp->GetAppLanguageOption(TRUE);
+
+	BOOL bResLoadRCData = FALSE;
+
+	// Remove existing data
+	if (!strRCFileData.IsEmpty())
+		strRCFileData.Empty();
+
+	// View help file mode
+	if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
+		switch (nCurLanguage)
+		{
+		case APP_LANGUAGE_ENGLISH:
+			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_HELP_ENG);
+			break;
+		case APP_LANGUAGE_VIETNAMESE:
+			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_HELP_VIE);
+			break;
+		case APP_LANGUAGE_SIMPCHINESE:
+			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_HELP_CHS);
+			break;
+		}
+	}
+	//View changelog mode
+	else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
+		switch (nCurLanguage)
+		{
+		case APP_LANGUAGE_ENGLISH:
+			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_CHANGELOG_ENG);
+			break;
+		case APP_LANGUAGE_VIETNAMESE:
+			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_CHANGELOG_VIE);
+			break;
+		case APP_LANGUAGE_SIMPCHINESE:
+			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_CHANGELOG_CHS);
+			break;
+		}
+	}
+
+	// Load RCData failed
+	if (bResLoadRCData != TRUE) {
+
+		// Load app language package
+		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
+			// Can not load help file
+			strRCFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
+
+			// Trace error
+			TRACE_ERROR("Error: [RCData] Help file not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		}
+		else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
+			// Can not load change log file
+			strRCFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
+
+			// Trace error
+			TRACE_ERROR("Error: [RCData] Changelog file not found!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		}
+	}
+
+	return (bResLoadRCData && (!strRCFileData.IsEmpty()));
 }
 
 //////////////////////////////////////////////////////////////////////////

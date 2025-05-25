@@ -6777,7 +6777,7 @@ BOOL AppCore::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
 			DWORD dwSize = SizeofResource(hResInstance, hRes);
 
 			// Convert data to text data
-			LPCSTR lpData = static_cast<LPCSTR>(LockResource(hData));
+			LPCTSTR lpData = static_cast<LPCTSTR>(LockResource(hData));
 			strTextData = CString(lpData, dwSize);
 
 			return TRUE;

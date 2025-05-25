@@ -71,6 +71,7 @@ protected:
 	void SetupLanguage(void);
 	void SetupEditbox(CEdit& pEdit);
 	BOOL LoadFileData(CString& strFileData);
+	BOOL LoadRCFileData(CString& strRCFileData);
 	void UpdateSwitchViewModeButton(void);
 
 	// Get/set properties
