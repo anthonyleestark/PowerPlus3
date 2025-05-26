@@ -2560,7 +2560,7 @@ void CPowerPlusApp::InitAppHistoryLog()
 
 	// Set properties
 	m_pAppHistoryLog->Init();
-	m_pAppHistoryLog->SetWriteMode(LOG_WRITEMODE_INSTANT);
+	m_pAppHistoryLog->SetWriteMode(WriteInstantly);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3233,7 +3233,7 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 	long lRes;
 	HKEY hRootKey, hKey;
 	DWORD dwState;
-	TCHAR tcPath[_MAX_PATH];
+	TCHAR tcPath[MAX_PATH];
 	int nRet;
 
 	// Get root key
@@ -3386,7 +3386,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 
 	// Get registry key value
 	DWORD dwType = REG_SZ;
-	TCHAR tcBuffer[_MAX_PATH];
+	TCHAR tcBuffer[MAX_PATH];
 	DWORD dwBufferSize = sizeof(tcBuffer);
 	lRes = RegQueryValueEx(hRegOpenKey, strKeyName, 0, &dwType, (LPBYTE)tcBuffer, &dwBufferSize);
 	
@@ -3542,13 +3542,13 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 
 	// Error code ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_ERRORCODE;
+	logDetail.usCategory = EventDetail::EventError;
 	logDetail.uiDetailInfo = dwErrCode;
 	logDetailInfo.Add(logDetail);
 
 	// Message content detail info
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_MESSAGETEXT;
+	logDetail.usCategory = EventDetail::MessageText;
 	logDetail.strDetailInfo = LPARAM_TO_STRING(lParam);
 	logDetailInfo.Add(logDetail);
 

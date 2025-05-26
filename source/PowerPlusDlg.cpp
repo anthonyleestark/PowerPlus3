@@ -3009,26 +3009,27 @@ void CPowerPlusDlg::SetBalloonTipText(UINT nCurLanguage, UINT nScheduleAction, U
 // 
 //	Function name:	ExecuteAction
 //	Description:	Execute action as config/schedule/menu selection
-//  Arguments:		nActionType - Action type
-//					wParam		- First param (HIWORD)
-//					lParam		- Second param (LOWORD)
+//  Arguments:		nActionMacro - Action macro
+//					wParam		 - First param (HIWORD)
+//					lParam		 - Second param (LOWORD)
 //  Return value:	BOOL - Result of action execution
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, LPARAM lParam /* = NULL */)
+BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */, LPARAM lParam /* = NULL */)
 {
-	UINT nAction = 0;
+	UINT nActionType = 0;
 	UINT nActionID = 0;
+	UINT nHistoryActionID = 0;
 	UINT nActionNameResID = 0;
 	UINT nActionNameLangID = 0;
 	UINT nMessage = 0;
 
 	// Output debug log
-	OutputDebugLogFormat(_T("Execute action: Type=0x%04X, Param=0x%04X"), nActionType, (UINT)wParam);
+	OutputDebugLogFormat(_T("Execute action: Type=0x%04X, Param=0x%04X"), nActionMacro, (UINT)wParam);
 
 	// Get action ID
-	switch (nActionType)
+	switch (nActionMacro)
 	{
 	case APP_MACRO_LEFT_MOUSE:
 		// Get action ID: Left mouse
@@ -3085,43 +3086,49 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 		break;
 	case APP_ACTION_DISPLAYOFF:
 		// Turn off display
-		nAction = APP_ACTIONTYPE_MONITOR;
+		nActionType = APP_ACTIONTYPE_MONITOR;
 		nMessage = APP_MESSAGE_DISPLAYOFF;
+		nHistoryActionID = HistoryAction::DisplayOff;
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_DISPLAYOFF;
 		nActionNameLangID = ACTION_NAME_DISPLAYOFF;
 		break;
 	case APP_ACTION_SLEEP:
 		// Sleep
-		nAction = APP_ACTIONTYPE_POWER;
+		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_SLEEP;
+		nHistoryActionID = HistoryAction::SleepMode;
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SLEEP;
 		nActionNameLangID = ACTION_NAME_SLEEP;
 		break;
 	case APP_ACTION_SHUTDOWN:
 		// Shutdown
-		nAction = APP_ACTIONTYPE_POWER;
+		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_SHUTDOWN;
+		nHistoryActionID = HistoryAction::Shutdown;
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SHUTDOWN;
 		nActionNameLangID = ACTION_NAME_SHUTDOWN;
 		break;
 	case APP_ACTION_RESTART:
 		// Restart
-		nAction = APP_ACTIONTYPE_POWER;
+		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_REBOOT;
+		nHistoryActionID = HistoryAction::Restart;
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_RESTART;
 		nActionNameLangID = ACTION_NAME_RESTART;
 		break;
 	case APP_ACTION_SIGNOUT:
 		// Sign out
-		nAction = APP_ACTIONTYPE_POWER;
+		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_SIGNOUT;
+		nHistoryActionID = HistoryAction::SignOut;
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SIGNOUT;
 		nActionNameLangID = ACTION_NAME_SIGNOUT;
 		break;
 	case APP_ACTION_HIBERNATE:
 		// Hibernate
-		nAction = APP_ACTIONTYPE_POWER;
+		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_HIBERNATE;
+		nHistoryActionID = HistoryAction::Hibernate;
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_HIBERNATE;
 		nActionNameLangID = ACTION_NAME_HIBERNATE;
 		break;
@@ -3137,7 +3144,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 	DWORD dwErrorCode = APP_ERROR_SUCCESS;
 
 	// Confirm before executing action
-	if (ConfirmActionExec(nActionType, nActionID) == IDYES) {
+	if (ConfirmActionExec(nActionMacro, nActionID) == IDYES) {
 
 		// Execute Power Reminder before doing action
 		ExecutePowerReminder(PREVT_AT_BFRPWRACTION);
@@ -3147,11 +3154,11 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 
 		if (bDummyTestMode != TRUE) {
 			// Normal mode
-			bResult = ExecutePowerAction(nAction, nMessage, dwErrorCode);
+			bResult = ExecutePowerAction(nActionType, nMessage, dwErrorCode);
 		}
 		else {
 			// DummyTest mode
-			bResult = ExecutePowerActionDummy(nAction, nMessage, dwErrorCode);
+			bResult = ExecutePowerActionDummy(nActionType, nMessage, dwErrorCode);
 		}
 
 		// Save Power Action trace flag
@@ -3162,7 +3169,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionType, WPARAM wParam /* = NULL */, 
 		}
 
 		// Collect power action history info
-		InitPwrActionHistoryInfo(nActionNameResID, bResult, dwErrorCode);
+		InitPwrActionHistoryInfo(nHistoryActionID, bResult, dwErrorCode);
 		SaveHistoryInfoData();
 
 		// Show error message
@@ -5072,7 +5079,7 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const SCHEDULEITEM& s
 
 	// Detail info
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_CONTENTID;
+	logDetail.usCategory = STATIC_CAST(USHORT, EventDetail::ContentID);
 	logDetail.uiDetailInfo = schItem.GetItemID();
 	LOGDETAILINFO logDetailInfo;
 	logDetailInfo.Add(logDetail);
@@ -5101,7 +5108,7 @@ void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PWRREMINDERI
 
 	// Item ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_CONTENTID;
+	logDetail.usCategory = STATIC_CAST(USHORT, EventDetail::ContentID);
 	logDetail.uiDetailInfo = pwrItem.GetItemID();
 	logDetailInfo.Add(logDetail);
 
@@ -5113,7 +5120,7 @@ void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PWRREMINDERI
 // 
 //	Function name:	InitPwrActionHistoryInfo
 //	Description:	Initialize Power Action history info data
-//  Arguments:		nActionID	- Action macro ID
+//  Arguments:		nActionID	- History action ID
 //					bResult		- Result of execution
 //					dwErrorCode	- Error code
 //  Return value:	None
@@ -5123,8 +5130,8 @@ void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PWRREMINDERI
 void CPowerPlusDlg::InitPwrActionHistoryInfo(UINT nActionID, BOOL bResult, DWORD dwErrorCode)
 {
 	// Initialize action history info data to save logs
-	m_hidHistoryInfoData.Init(HISTORYLOG_CATE_PWRACTION);
-	m_hidHistoryInfoData.m_nActionNameID = nActionID;
+	m_hidHistoryInfoData.Init(PowerAction);
+	m_hidHistoryInfoData.m_nActionID = nActionID;
 
 	// Collect action result
 	m_hidHistoryInfoData.m_bActionResult = bResult;
@@ -5147,36 +5154,36 @@ void CPowerPlusDlg::InitScheduleHistoryInfo(const SCHEDULEITEM& schItem)
 		return;
 
 	// Get schedule action name ID
-	UINT nActionNameID = NULL;
+	UINT nActionID = NULL;
 	switch (schItem.GetAction())
 	{
 	case APP_ACTION_NOTHING:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_DONOTHING;
+		nActionID = HistoryAction::DoNothing;
 		break;
 	case APP_ACTION_DISPLAYOFF:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_DISPLAYOFF;
+		nActionID = HistoryAction::DisplayOff;
 		break;
 	case APP_ACTION_SLEEP:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_SLEEP;
+		nActionID = HistoryAction::SleepMode;
 		break;
 	case APP_ACTION_SHUTDOWN:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_SHUTDOWN;
+		nActionID = HistoryAction::Shutdown;
 		break;
 	case APP_ACTION_RESTART:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_RESTART;
+		nActionID = HistoryAction::Restart;
 		break;
 	case APP_ACTION_SIGNOUT:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_SIGNOUT;
+		nActionID = HistoryAction::SignOut;
 		break;
 	case APP_ACTION_HIBERNATE:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_HIBERNATE;
+		nActionID = HistoryAction::Hibernate;
 		break;
 	}
 
 	// Initialize schedule history info data
-	m_hidHistoryInfoData.Init(HISTORYLOG_CATE_SCHEDULE);
+	m_hidHistoryInfoData.Init(ScheduleAction);
 	m_hidHistoryInfoData.m_nItemID = schItem.GetItemID();
-	m_hidHistoryInfoData.m_nActionNameID = nActionNameID;
+	m_hidHistoryInfoData.m_nActionID = nActionID;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5205,34 +5212,34 @@ void CPowerPlusDlg::InitHotkeyHistoryInfo(UINT nHKID)
 		return;
 
 	// Get hotkey action name ID
-	UINT nActionNameID = NULL;
+	UINT nActionID = NULL;
 	switch (hksItem.GetActionID())
 	{
 	case HKID_DISPLAYOFF:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_DISPLAYOFF;
+		nActionID = HistoryAction::DisplayOff;
 		break;
 	case HKID_SLEEP:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_SLEEP;
+		nActionID = HistoryAction::SleepMode;
 		break;
 	case HKID_SHUTDOWN:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_SHUTDOWN;
+		nActionID = HistoryAction::Shutdown;
 		break;
 	case HKID_RESTART:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_RESTART;
+		nActionID = HistoryAction::Restart;
 		break;
 	case HKID_SIGNOUT:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_SIGNOUT;
+		nActionID = HistoryAction::SignOut;
 		break;
 	case HKID_HIBERNATE:
-		nActionNameID = IDS_HISTORYLOG_PWRACTION_HIBERNATE;
+		nActionID = HistoryAction::Hibernate;
 		break;
 	default:
 		break;
 	}
 
 	// Initialize hotkey action history info
-	m_hidHistoryInfoData.Init(HISTORYLOG_CATE_HOTKEYSET);
-	m_hidHistoryInfoData.m_nActionNameID = nActionNameID;
+	m_hidHistoryInfoData.Init(HotkeySet);
+	m_hidHistoryInfoData.m_nActionID = nActionID;
 	hksItem.PrintKeyStrokes(m_hidHistoryInfoData.m_strDescription);
 }
 
@@ -5251,9 +5258,9 @@ void CPowerPlusDlg::InitPwrReminderHistoryInfo(const PWRREMINDERITEM& pwrItem)
 	if (pwrItem.IsEmpty()) return;
 
 	// Initialize history info data
-	m_hidHistoryInfoData.Init(HISTORYLOG_CATE_PWRREMINDER);
+	m_hidHistoryInfoData.Init(PowerReminder);
 	m_hidHistoryInfoData.m_nItemID = pwrItem.GetItemID();
-	m_hidHistoryInfoData.m_strDescription.Format(STRING_QUOTEFORMAT, pwrItem.GetMessage());
+	m_hidHistoryInfoData.m_strDescription = pwrItem.GetMessage();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5278,61 +5285,107 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 	// Get current process ID
 	actionLogItem.dwProcessID = GetCurrentProcessId();
 
-	// Get action name string
-	CString strActionName = STRING_NULL;
-	LoadResourceString(strActionName, m_hidHistoryInfoData.m_nActionNameID);
-
-	// In case of power action history
-	CString strActionResult = STRING_NULL;
-	if (m_hidHistoryInfoData.m_nCategoryID == HISTORYLOG_CATE_PWRACTION) {
-
-		// Get action result string
-		if (m_hidHistoryInfoData.m_bActionResult == TRUE) {
-			// Action succeed
-			LoadResourceString(strActionResult, IDS_HISTORYLOG_RESULT_SUCCESS);
-		}
-		else {
-			// Action failed
-			CString strTemp;
-			if (LoadResourceString(strTemp, IDS_HISTORYLOG_RESULT_FAILED_ERRCODE)) {
-				// Attach error code
-				strActionResult.Format(strTemp, m_hidHistoryInfoData.m_dwErrorCode);
-			}
-		}
-	}
-
-	// Prepare log string by category ID
-	CString strTemplate = STRING_NULL;
-	CString strLogString = STRING_NULL;
+	// Attach history detail info by category ID
+	LOGDETAIL actionLogDetail;
 	switch (m_hidHistoryInfoData.m_nCategoryID)
 	{
-	case HISTORYLOG_CATE_PWRACTION:
-		actionLogItem.usCategory = LOG_HISTORY_EXEC_PWRACTION;
-		strTemplate.LoadString(IDS_HISTORYLOG_PWRACTION_TEMPLATE);
-		strLogString.Format(strTemplate, strActionName, strActionResult);
-		actionLogItem.strLogString = strLogString;
-		break;
-	case HISTORYLOG_CATE_SCHEDULE:
-		actionLogItem.usCategory = LOG_HISTORY_EXEC_SCHEDULE;
-		strTemplate.LoadString(IDS_HISTORYLOG_SCHEDULE_TEMPLATE);
-		strLogString.Format(strTemplate, m_hidHistoryInfoData.m_nItemID, strActionName);
-		actionLogItem.strLogString = strLogString;
-		break;
-	case HISTORYLOG_CATE_HOTKEYSET:
-		actionLogItem.usCategory = LOG_HISTORY_EXEC_HOTKEY;
-		strTemplate.LoadString(IDS_HISTORYLOG_HOTKEYSET_TEMPLATE);
-		strLogString.Format(strTemplate, m_hidHistoryInfoData.m_strDescription, strActionName);
-		actionLogItem.strLogString = strLogString;
-		break;
-	case HISTORYLOG_CATE_PWRREMINDER:
-		actionLogItem.usCategory = LOG_HISTORY_DISP_PWRREMINDER;
-		strTemplate.LoadString(IDS_HISTORYLOG_PWRREMINDER_TEMPLATE);
-		strLogString.Format(strTemplate, m_hidHistoryInfoData.m_nItemID, m_hidHistoryInfoData.m_strDescription);
-		actionLogItem.strLogString = strLogString;
-		break;
-	default:
-		break;
-	}	
+		case HistoryCategory::PowerAction:
+		{
+			// History category
+			actionLogItem.usCategory = LOG_HISTORY_EXEC_PWRACTION;
+
+			// Action ID
+			actionLogDetail.Init();
+			actionLogDetail.usCategory = HistoryDetail::Action;
+			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nActionID;
+			actionLogItem.AddDetail(actionLogDetail);
+		} break;
+
+		case HistoryCategory::ScheduleAction:
+		{
+			// History category
+			actionLogItem.usCategory = LOG_HISTORY_EXEC_SCHEDULE;
+
+			// Item ID
+			actionLogDetail.Init();
+			actionLogDetail.usCategory = HistoryDetail::ItemID;
+			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nItemID;
+			actionLogItem.AddDetail(actionLogDetail);
+
+			// Action ID
+			actionLogDetail.Init();
+			actionLogDetail.usCategory = HistoryDetail::Action;
+			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nActionID;
+			actionLogItem.AddDetail(actionLogDetail);
+		} break;
+
+		case HistoryCategory::HotkeySet:
+		{
+			// History category
+			actionLogItem.usCategory = LOG_HISTORY_EXEC_HOTKEY;
+
+			// Action ID
+			actionLogDetail.Init();
+			actionLogDetail.usCategory = HistoryDetail::Action;
+			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nActionID;
+			actionLogItem.AddDetail(actionLogDetail);
+
+			// Keystrokes
+			actionLogDetail.Init();
+			actionLogDetail.usCategory = HistoryDetail::Keystrokes;
+			actionLogDetail.strDetailInfo = m_hidHistoryInfoData.m_strDescription;
+			actionLogItem.AddDetail(actionLogDetail);
+		} break;
+
+		case HistoryCategory::PowerReminder:
+		{
+			// History category
+			actionLogItem.usCategory = LOG_HISTORY_DISP_PWRREMINDER;
+
+			// Item ID
+			actionLogDetail.Init();
+			actionLogDetail.usCategory = HistoryDetail::ItemID;
+			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nItemID;
+			actionLogItem.AddDetail(actionLogDetail);
+
+			// Message content
+			actionLogDetail.Init();
+			actionLogDetail.usCategory = HistoryDetail::Message;
+			actionLogDetail.strDetailInfo = m_hidHistoryInfoData.m_strDescription;
+			actionLogItem.AddDetail(actionLogDetail);
+		} break;
+
+		default:
+			break;
+	}
+
+	// Attach history action result detail info
+	actionLogDetail.Init();
+	actionLogDetail.usCategory = HistoryDetail::Result;
+	if (m_hidHistoryInfoData.m_bActionResult == TRUE) {
+		actionLogDetail.uiDetailInfo = HistoryResult::Success;
+		actionLogItem.AddDetail(actionLogDetail);
+	}
+	else {
+		if ((m_hidHistoryInfoData.m_dwErrorCode == INT_NULL) ||
+			(m_hidHistoryInfoData.m_dwErrorCode == APP_ERROR_UNKNOWN)) {
+
+			// If error code is NULL or unknown, set as failed with unknown reason
+			actionLogDetail.uiDetailInfo = HistoryResult::FailedUnknown;
+			actionLogItem.AddDetail(actionLogDetail);
+		}
+		else {
+			// If error code is available, set as failed with error code
+			actionLogDetail.uiDetailInfo = HistoryResult::FailedWithErrorCode;
+			actionLogItem.AddDetail(actionLogDetail);
+
+			// Attach error code detail info
+			actionLogDetail.Init();
+			actionLogDetail.usCategory = HistoryDetail::ActionError;
+			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_dwErrorCode;
+			actionLogItem.AddDetail(actionLogDetail);
+		}
+	}
 
 	// Output action history log if enabled
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();

@@ -106,11 +106,11 @@
 //
 //////////////////// ********************
 
-typedef enum eLOGWRITEMODE {
-	LOG_WRITEMODE_NONE = 0,						// Read-only log data (do not write)
-	LOG_WRITEMODE_ONCALL,						// Write log on-call mode
-	LOG_WRITEMODE_INSTANT,						// Write log instantly mode
-} LOGWRITEMODE;
+enum LogWriteMode {
+	ReadOnly = 0,				// Read-only log data (do not write)
+	WriteOnCall,				// Write log on-call mode
+	WriteInstantly,				// Write log instantly mode
+};
 
 
 //////////////////// ********************
@@ -119,26 +119,26 @@ typedef enum eLOGWRITEMODE {
 //
 //////////////////// ********************
 
-typedef enum eLOGDATATYPE {
-	DATA_TYPE_UNSPECIFIED = -1,					// Unspecified type
-	DATA_TYPE_VOID = 0,							// No type (unusable)
-	DATA_TYPE_NUM_U1,							// Unsigned integer (1-byte)
-	DATA_TYPE_NUM_U2,							// Unsigned integer (2-byte)
-	DATA_TYPE_NUM_U4,							// Unsigned integer (4-byte)
-	DATA_TYPE_NUM_U8,							// Unsigned integer (8-byte)
-	DATA_TYPE_NUM_I1,							// Signed integer (1-byte)
-	DATA_TYPE_NUM_I2,							// Signed integer (2-byte)
-	DATA_TYPE_NUM_I4,							// Signed integer (4-byte)
-	DATA_TYPE_NUM_I8,							// Signed integer (8-byte)
-	DATA_TYPE_NUM_F1,							// Float number (1-byte)
-	DATA_TYPE_NUM_F2,							// Float number (2-byte)
-	DATA_TYPE_NUM_F4,							// Float number (4-byte)
-	DATA_TYPE_NUM_F8,							// Float number (8-byte)
-	DATA_TYPE_NUM_BOOLEAN,						// Boolean number (TRUE/FALSE)
-	DATA_TYPE_TEXT_ASCII,						// Text value (ASCII)
-	DATA_TYPE_TEXT_UNICODE,						// Text value (Unicode)
-	DATA_TYPE_SYSTEMTIME,						// SYSTEMTIME struct
-} LOGDATATYPE;
+enum LogDataType {
+	Unspecified = -1,			// Unspecified type
+	Void = 0,					// No type (unusable)
+	Num_U1,						// Unsigned integer (1-byte)
+	Num_U2,						// Unsigned integer (2-byte)
+	Num_U4,						// Unsigned integer (4-byte)
+	Num_U8,						// Unsigned integer (8-byte)
+	Num_I1,						// Signed integer (1-byte)
+	Num_I2,						// Signed integer (2-byte)
+	Num_I4,						// Signed integer (4-byte)
+	Num_I8,						// Signed integer (8-byte)
+	Num_F1,						// Float number (1-byte)
+	Num_F2,						// Float number (2-byte)
+	Num_F4,						// Float number (4-byte)
+	Num_F8,						// Float number (8-byte)
+	Boolean,					// Boolean number (TRUE/FALSE)
+	Text_ANSI,					// Text value (ANSI)
+	Text_Unicode,				// Text value (Unicode)
+	SystemTime,					// SYSTEMTIME struct
+};
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,17 +150,17 @@ typedef enum eLOGDATATYPE {
 
 //////////////////// ********************
 // 
-// Base log info IDs
+// Base log key IDs
 //
 //////////////////// ********************
 
-typedef enum eBASELOGINFO {
-	BASELOG_INFO_TIME = 0x0100,					// Log time
-	BASELOG_INFO_PID,							// Process ID
-	BASELOG_INFO_CATEGORY,						// Log category
-	BASELOG_INFO_DESCRIPTION,					// Log description string
-	BASELOG_INFO_DETAILS,						// Log detail info
-} BASELOGINFO;
+enum BaseLog {
+	Time = 0x0100,				// Log time
+	PID,						// Process ID
+	LogCategory,				// Log category
+	Description,				// Log description string
+	Details,					// Log details info
+};
 
 
 //////////////////// ********************
@@ -169,36 +169,36 @@ typedef enum eBASELOGINFO {
 //
 //////////////////// ********************
 
-typedef enum eEVENTDETAILCATE {
-	EVENTLOG_DETAIL_RESOURCEID = 0x0200,		// UI component resource ID
-	EVENTLOG_DETAIL_NAMEID,						// Name ID
-	EVENTLOG_DETAIL_DIALOGCAPTION,				// Dialog caption
-	EVENTLOG_DETAIL_CTRLCAPTION,				// Control caption
-	EVENTLOG_DETAIL_CHKSTATE,					// Checkbox/radio button, ... checked state
-	EVENTLOG_DETAIL_SELECTION,					// Combo-box/listbox, ... selection
-	EVENTLOG_DETAIL_DATAVALUE,					// Data value
-	EVENTLOG_DETAIL_DATACHANGE,					// Data change state
-	EVENTLOG_DETAIL_CONTENTID,					// Content ID
-	EVENTLOG_DETAIL_MESSAGETEXT,				// Message box text
-	EVENTLOG_DETAIL_ERRORCODE,					// Error code
-} EVENTDETAILCATE;
+enum EventDetail {
+	ResourceID = 0x0200,		// UI component resource ID
+	NameID,						// Name ID
+	DialogCaption,				// Dialog caption
+	ControlCaption,				// Control caption
+	CheckState,					// Checkbox/radio button, ... checked state
+	Selection,					// Combo-box/listbox, ... selection
+	DataValue,					// Data value
+	DataChangeState,			// Data change state
+	ContentID,					// Content ID
+	MessageText,				// Message box text
+	EventError,					// Error code
+};
 
 
 //////////////////// ********************
 // 
-// Action history log detail item IDs
+// Action history log detail IDs
 //
 //////////////////// ********************
 
-typedef enum eHISTORYDETAILITEM {
-	HISTORYLOG_DETAIL_CATEGORY = 0x0300,		// Category
-	HISTORYLOG_DETAIL_ACTION,					// Action
-	HISTORYLOG_DETAIL_KEYSTROKES,				// Keystrokes
-	HISTORYLOG_DETAIL_ITEMID,					// Item ID
-	HISTORYLOG_DETAIL_MESSAGE,					// Message
-	HISTORYLOG_DETAIL_RESULT,					// Result
-	HISTORYLOG_DETAIL_ERRORCODE					// Error code
-} HISTORYDETAILITEM;
+enum HistoryDetail {
+	Category = 0x0300,			// Category
+	Action,						// Action
+	Keystrokes,					// Keystrokes
+	ItemID,						// Item ID
+	Message,					// Message
+	Result,						// Result
+	ActionError					// Error code
+};
 
 
 //////////////////// ********************
@@ -207,42 +207,42 @@ typedef enum eHISTORYDETAILITEM {
 //
 //////////////////// ********************
 
-typedef enum eHISTORYCATEGORY {
-	HISTORYLOG_CATE_PWRACTION = 0x0400,			// Power action
-	HISTORYLOG_CATE_SCHEDULE,					// Schedule
-	HISTORYLOG_CATE_HOTKEYSET,					// HotkeySet
-	HISTORYLOG_CATE_PWRREMINDER,				// Power Reminder
-} HISTORYCATEGORY;
+enum HistoryCategory {
+	PowerAction = 0x0400,		// Power action
+	ScheduleAction ,			// Schedule
+	HotkeySet,					// HotkeySet
+	PowerReminder,				// Power Reminder
+};
 
 
 //////////////////// ********************
 // 
-// Action history log action IDs
+// Action history action IDs
 //
 //////////////////// ********************
 
-typedef enum eHISTORYACTION {
-	HISTORYLOG_ACTION_NOTHING = 0x0500,			// Do nothing
-	HISTORYLOG_ACTION_DISPLAYOFF,				// Turn off display
-	HISTORYLOG_ACTION_SLEEP,					// Sleep
-	HISTORYLOG_ACTION_SHUTDOWN,					// Shutdown
-	HISTORYLOG_ACTION_RESTART,					// Restart
-	HISTORYLOG_ACTION_SIGNOUT,					// Sign out
-	HISTORYLOG_ACTION_HIBERNATE,				// Hibernate
-} HISTORYACTION;
+enum HistoryAction {
+	DoNothing = 0x0500,			// Do nothing
+	DisplayOff,					// Turn off display
+	SleepMode,					// Sleep
+	Shutdown,					// Shutdown
+	Restart,					// Restart
+	SignOut,					// Sign out
+	Hibernate,					// Hibernate
+};
 
 
 //////////////////// ********************
 // 
-// Action history log result IDs
+// Action history result IDs
 //
 //////////////////// ********************
 
-typedef enum eHISTORYRESULT {
-	HISTORYLOG_RESULT_SUCCESS = 0x0600,			// Success
-	HISTORYLOG_RESULT_FAILED_UNKNOWN,			// Failed (Unknown error)
-	HISTORYLOG_RESULT_FAILED_ERRCODE,			// Failed (Error code: 0x%08X)
-} HISTORYRESULT;
+enum HistoryResult {
+	Success = 0x0600,			// Success
+	FailedUnknown,				// Failed (Unknown error)
+	FailedWithErrorCode,		// Failed (Error code: 0x%08X)
+};
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

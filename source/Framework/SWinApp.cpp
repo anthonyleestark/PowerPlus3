@@ -629,7 +629,7 @@ void SWinApp::InitAppEventLog(void)
 
 	// Set properties
 	m_pAppEventLog->Init();
-	m_pAppEventLog->SetWriteMode(LOG_WRITEMODE_ONCALL);
+	m_pAppEventLog->SetWriteMode(WriteOnCall);
 }
 
 //////////////////////////////////////////////////////////////////////////

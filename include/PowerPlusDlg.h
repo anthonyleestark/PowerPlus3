@@ -214,7 +214,7 @@ protected:
 
 private:
 	// Core functions
-	BOOL ExecuteAction(UINT nActionType, WPARAM wParam = NULL, LPARAM lParam = NULL);
+	BOOL ExecuteAction(UINT nActionMacro, WPARAM wParam = NULL, LPARAM lParam = NULL);
 	void ApplySettings(BOOL bMinimize);
 	void ReloadSettings(void);
 	void SetDefaultConfig(void);

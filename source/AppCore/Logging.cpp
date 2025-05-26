@@ -59,33 +59,33 @@ SIZE_T GetSizeByType(BYTE byDataType)
 	SIZE_T retSize = 0;
 	switch (byDataType)
 	{
-	case DATA_TYPE_VOID:				// No type (unusable)
+	case LogDataType::Void:				// No type (unusable)
 		retSize = INT_NULL;
 		break;
-	case DATA_TYPE_NUM_U1:				// Unsigned integer (1-byte)
-	case DATA_TYPE_NUM_I1:				// Signed integer (1-byte)
-	case DATA_TYPE_NUM_F1:				// Float number (1-byte)
+	case LogDataType::Num_U1:			// Unsigned integer (1-byte)
+	case LogDataType::Num_I1:			// Signed integer (1-byte)
+	case LogDataType::Num_F1:			// Float number (1-byte)
 		retSize = sizeof(UCHAR);
 		break;
-	case DATA_TYPE_NUM_U2:				// Unsigned integer (2-byte)
-	case DATA_TYPE_NUM_I2:				// Signed integer (2-byte)
-	case DATA_TYPE_NUM_F2:				// Float number (2-byte)
+	case LogDataType::Num_U2:			// Unsigned integer (2-byte)
+	case LogDataType::Num_I2:			// Signed integer (2-byte)
+	case LogDataType::Num_F2:			// Float number (2-byte)
 		retSize = sizeof(USHORT);
 		break;
-	case DATA_TYPE_NUM_U4:				// Unsigned integer (4-byte)
-	case DATA_TYPE_NUM_I4:				// Signed integer (4-byte)
-	case DATA_TYPE_NUM_F4:				// Float number (4-byte)
+	case LogDataType::Num_U4:			// Unsigned integer (4-byte)
+	case LogDataType::Num_I4:			// Signed integer (4-byte)
+	case LogDataType::Num_F4:			// Float number (4-byte)
 		retSize = sizeof(ULONG);
 		break;
-	case DATA_TYPE_NUM_U8:				// Unsigned integer (8-byte)
-	case DATA_TYPE_NUM_I8:				// Signed integer (8-byte)
-	case DATA_TYPE_NUM_F8:				// Float number (8-byte)
+	case LogDataType::Num_U8:			// Unsigned integer (8-byte)
+	case LogDataType::Num_I8:			// Signed integer (8-byte)
+	case LogDataType::Num_F8:			// Float number (8-byte)
 		retSize = sizeof(ULONGLONG);
 		break;
-	case DATA_TYPE_NUM_BOOLEAN:			// Boolean number (TRUE/FALSE)
+	case LogDataType::Boolean:			// Boolean number (TRUE/FALSE)
 		retSize = sizeof(BOOL);
 		break;
-	case DATA_TYPE_SYSTEMTIME:			// SYSTEMTIME struct
+	case LogDataType::SystemTime:		// SYSTEMTIME struct
 		retSize = sizeof(SYSTEMTIME);
 		break;
 	default:
@@ -112,7 +112,7 @@ tagLOGDETAIL::tagLOGDETAIL()
 	this->uiDetailInfo = 0;										// Detail info (integer)
 	this->strDetailInfo.Empty();								// Detail info (string)
 	this->ptrDetailInfo = NULL;									// Detail info (pointer)
-	this->byPointerType = DATA_TYPE_VOID;						// Detail info pointer data type
+	this->byPointerType = LogDataType::Void;					// Detail info pointer data type
 	this->szPointerSize = INT_NULL;								// Detail info pointer data size
 }
 
@@ -161,7 +161,7 @@ void tagLOGDETAIL::Init()
 	this->uiDetailInfo = 0;										// Detail info (integer)
 	this->strDetailInfo.Empty();								// Detail info (string)
 	this->ptrDetailInfo = NULL;									// Detail info (pointer)
-	this->byPointerType = DATA_TYPE_VOID;						// Detail info pointer data type
+	this->byPointerType = LogDataType::Void;					// Detail info pointer data type
 	this->szPointerSize = INT_NULL;								// Detail info pointer data size
 }
 
@@ -281,11 +281,11 @@ BOOL tagLOGDETAIL::IsEmpty(void) const
 BOOL tagLOGDETAIL::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_UNSPECIFIED */, SIZE_T szDataSize /* = 0 */)
 {
 	// If data type is void (unusable), do nothing
-	if (byDataType == DATA_TYPE_VOID)
+	if (byDataType == LogDataType::Void)
 		return FALSE;
 
 	// If both data type and size are not specified, do nothing
-	if ((byDataType == DATA_TYPE_UNSPECIFIED) && (szDataSize == 0))
+	if ((byDataType == LogDataType::Unspecified) && (szDataSize == 0))
 		return FALSE;
 
 	// If size is not specified,
@@ -552,8 +552,8 @@ CString tagLOGITEM::FormatOutput(void) const
 	// Create JSON data object
 	JSONDATA jsonData;
 
-	CString strLogInfoID;
-	CString strLogInfoValue;
+	CString strLogKey;
+	CString strLogValue;
 
 	// Load default language table package
 	LANGTABLE_PTR pDefLang = LoadLanguageTable(NULL);
@@ -565,21 +565,21 @@ CString tagLOGITEM::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log time
-	strLogInfoID = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_TIME);
-	jsonData.AddString(strLogInfoID, this->FormatDateTime());
+	strLogKey = GetString(StringTable::LogKey, BaseLog::Time);
+	jsonData.AddString(strLogKey, this->FormatDateTime());
 
 	// Process ID
-	strLogInfoID = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_PID);
-	jsonData.AddInteger(strLogInfoID, this->dwProcessID);
+	strLogKey = GetString(StringTable::LogKey, BaseLog::PID);
+	jsonData.AddInteger(strLogKey, this->dwProcessID);
 
 	// Log category
-	strLogInfoID = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_CATEGORY);
-	strLogInfoValue = GetLanguageString(pDefLang, this->usCategory);
-	jsonData.AddString(strLogInfoID, strLogInfoValue);
+	strLogKey = GetString(StringTable::LogKey, BaseLog::LogCategory);
+	strLogValue = GetLanguageString(pDefLang, this->usCategory);
+	jsonData.AddString(strLogKey, strLogValue);
 
 	// Log description string
-	strLogInfoID = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
-	jsonData.AddString(strLogInfoID, this->strLogString);
+	strLogKey = GetString(StringTable::LogKey, BaseLog::Description);
+	jsonData.AddString(strLogKey, this->strLogString);
 
 	/*********************************************************************/
 	/*																	 */
@@ -595,8 +595,8 @@ CString tagLOGITEM::FormatOutput(void) const
 
 		CString strLogDetailID;
 
-		// Set object name: Detail
-		jsonDetailData.SetObjectName(GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_DETAILS));
+		// Set object name: Details
+		jsonDetailData.SetObjectName(GetString(StringTable::LogKey, BaseLog::Details));
 
 		// Convert data
 		for (int nIndex = 0; nIndex < (this->arrDetailInfo.GetSize()); nIndex++) {
@@ -605,7 +605,7 @@ CString tagLOGITEM::FormatOutput(void) const
 			LOGDETAIL logDetail = this->arrDetailInfo.GetAt(nIndex);
 
 			// Detail info category
-			strLogDetailID = GetString(StringTable::LogInfoIDTitle, logDetail.usCategory);
+			strLogDetailID = GetString(StringTable::LogKey, logDetail.usCategory);
 
 			// Detail info value
 			if (logDetail.uiDetailInfo != INT_NULL) {
@@ -1237,7 +1237,7 @@ SLogging::SLogging(BYTE byLogType)
 
 	// Properties
 	m_byLogType = byLogType;
-	m_byWriteMode = LOG_WRITEMODE_NONE;
+	m_byWriteMode = LogWriteMode::ReadOnly;
 	m_nMaxSize = INT_INFINITE;
 	m_strFilePath = STRING_EMPTY;
 	m_pItemDefTemplate = NULL;
@@ -1480,7 +1480,7 @@ void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
 
 void SLogging::OutputItem(const LOGITEM& logItem)
 {
-	if (GetWriteMode() == LOG_WRITEMODE_INSTANT) {
+	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
 		Write(logItem);
 	}
@@ -1511,7 +1511,7 @@ void SLogging::OutputItem(const LOGITEM& logItem)
 
 void SLogging::OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate /* = TRUE */)
 {
-	if (GetWriteMode() == LOG_WRITEMODE_INSTANT) {
+	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
 		Write(lpszLogString);
 	}
@@ -1571,8 +1571,8 @@ BOOL SLogging::Write(void)
 
 	// Quit if current log is set as Read-only
 	// or current log mode is write instantly mode
-	if ((this->GetWriteMode() == LOG_WRITEMODE_NONE) ||
-		(this->GetWriteMode() == LOG_WRITEMODE_INSTANT))
+	if ((this->GetWriteMode() == LogWriteMode::ReadOnly) ||
+		(this->GetWriteMode() == LogWriteMode::WriteInstantly))
 		return FALSE;
 
 	CString strFileName;
@@ -1705,7 +1705,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 	HWND hMainWnd = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
-	if (this->GetWriteMode() != LOG_WRITEMODE_INSTANT)
+	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
 		return FALSE;
 
 	CString strFileName;
@@ -1801,7 +1801,7 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 	HWND hMainWnd = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
-	if (this->GetWriteMode() != LOG_WRITEMODE_INSTANT)
+	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
 		return FALSE;
 
 	CString strFileName;

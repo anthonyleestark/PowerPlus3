@@ -3563,7 +3563,7 @@ HistoryInfoData::HistoryInfoData()
 	m_nCategoryID = INT_NULL;								// Category ID
 	m_stTimestamp = SYSTEMTIME_ZERO;						// Timestamp of history
 	m_nItemID = INT_NULL;									// Item ID
-	m_nActionNameID = INT_NULL;								// Name of action (string ID)
+	m_nActionID = INT_NULL;									// History action ID
 	m_bActionResult = FALSE;								// Action result
 	m_dwErrorCode = INT_NULL;								// Returned error code
 	m_strDescription = STRING_EMPTY;						// History description (attached info)
@@ -3576,7 +3576,7 @@ HistoryInfoData::HistoryInfoData(const HistoryInfoData& pData)
 	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
 	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
 	this->m_nItemID = pData.m_nItemID;						// Item ID
-	this->m_nActionNameID = pData.m_nActionNameID;			// Name of action (string ID)
+	this->m_nActionID = pData.m_nActionID;					// History action ID
 	this->m_bActionResult = pData.m_bActionResult;			// Action result
 	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
 	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
@@ -3598,7 +3598,7 @@ HistoryInfoData& HistoryInfoData::operator=(const HistoryInfoData& pData)
 	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
 	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
 	this->m_nItemID = pData.m_nItemID;						// Item ID
-	this->m_nActionNameID = pData.m_nActionNameID;			// Name of action (string ID)
+	this->m_nActionID = pData.m_nActionID;					// History action ID
 	this->m_bActionResult = pData.m_bActionResult;			// Action result
 	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
 	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
@@ -3622,7 +3622,7 @@ void HistoryInfoData::Copy(const HistoryInfoData& pData)
 	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
 	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
 	this->m_nItemID = pData.m_nItemID;						// Item ID
-	this->m_nActionNameID = pData.m_nActionNameID;			// Name of action (string ID)
+	this->m_nActionID = pData.m_nActionID;					// History action ID
 	this->m_bActionResult = pData.m_bActionResult;			// Action result
 	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
 	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
@@ -3644,6 +3644,8 @@ void HistoryInfoData::Init(UINT nCategoryID)
 	m_bInitState = TRUE;									// Init state
 	m_nCategoryID = nCategoryID;							// Category ID
 	m_stTimestamp = AppCore::GetCurSysTime();				// Timestamp of history
+	m_dwErrorCode = INT_NULL;								// Returned error code
+	m_strDescription = STRING_EMPTY;						// History description (attached info)
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -1984,13 +1984,13 @@ void SDialog::OutputButtonLog(USHORT usEvent, UINT nButtonID)
 
 	// Button ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EventDetail::ResourceID;
 	logDetail.uiDetailInfo = nButtonID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.usCategory = EventDetail::NameID;
 	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nButtonID));
 	logDetailInfo.Add(logDetail);
 
@@ -2021,19 +2021,19 @@ void SDialog::OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID)
 
 	// Checkbox ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EventDetail::ResourceID;
 	logDetail.uiDetailInfo = nCheckboxID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.usCategory = EventDetail::NameID;
 	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nCheckboxID));
 	logDetailInfo.Add(logDetail);
 
 	// Checkbox checked state
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_CHKSTATE;
+	logDetail.usCategory = EventDetail::CheckState;
 	logDetail.uiDetailInfo = pChkBtn->GetCheck();
 	logDetailInfo.Add(logDetail);
 
@@ -2064,19 +2064,19 @@ void SDialog::OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID)
 
 	// Radio button ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EventDetail::ResourceID;
 	logDetail.uiDetailInfo = nRadButtonID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.usCategory = EventDetail::NameID;
 	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nRadButtonID));
 	logDetailInfo.Add(logDetail);
 
 	// Radio button checked state
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_CHKSTATE;
+	logDetail.usCategory = EventDetail::CheckState;
 	logDetail.uiDetailInfo = pRadBtn->GetCheck();
 	logDetailInfo.Add(logDetail);
 
@@ -2105,13 +2105,13 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 
 	// Combo-box ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EventDetail::ResourceID;
 	logDetail.uiDetailInfo = nComboID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.usCategory = EventDetail::NameID;
 	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nComboID));
 	logDetailInfo.Add(logDetail);
 
@@ -2130,7 +2130,7 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 			pComboWrap->GetStringArray(arrDataList);
 			if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
 				logDetail.Init();
-				logDetail.usCategory = EVENTLOG_DETAIL_SELECTION;
+				logDetail.usCategory = EventDetail::Selection;
 				logDetail.strDetailInfo = arrDataList.GetAt(nCurSel);
 				logDetailInfo.Add(logDetail);
 			}
@@ -2162,13 +2162,13 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 
 	// Edit box ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EventDetail::ResourceID;
 	logDetail.uiDetailInfo = nEditID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.usCategory = EventDetail::NameID;
 	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nEditID));
 	logDetailInfo.Add(logDetail);
 
@@ -2183,7 +2183,7 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 			
 			// Edit box content
 			logDetail.Init();
-			logDetail.usCategory = EVENTLOG_DETAIL_DATAVALUE;
+			logDetail.usCategory = EventDetail::DataValue;
 			pEditBoxWrap->GetString(logDetail.strDetailInfo);
 			logDetailInfo.Add(logDetail);
 		}
@@ -2214,13 +2214,13 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 
 	// List box ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EventDetail::ResourceID;
 	logDetail.uiDetailInfo = nListBoxID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.usCategory = EventDetail::NameID;
 	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nListBoxID));
 	logDetailInfo.Add(logDetail);
 
@@ -2239,7 +2239,7 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 			pListBoxWrap->GetStringArray(arrDataList);
 			if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
 				logDetail.Init();
-				logDetail.usCategory = EVENTLOG_DETAIL_SELECTION;
+				logDetail.usCategory = EventDetail::Selection;
 				logDetail.strDetailInfo = arrDataList.GetAt(nCurSel);
 				logDetailInfo.Add(logDetail);
 			}
@@ -2271,13 +2271,13 @@ void SDialog::OutputSpinCtrlLog(USHORT usEvent, UINT nSpinCtrlID)
 
 	// Spin control ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EventDetail::ResourceID;
 	logDetail.uiDetailInfo = nSpinCtrlID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.usCategory = EventDetail::NameID;
 	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nSpinCtrlID));
 	logDetailInfo.Add(logDetail);
 
@@ -2310,13 +2310,13 @@ void SDialog::OutputMenuLog(USHORT usEvent, UINT nMenuItemID)
 
 	// Menu item ID
 	LOGDETAIL logDetail;
-	logDetail.usCategory = EVENTLOG_DETAIL_RESOURCEID;
+	logDetail.usCategory = EventDetail::ResourceID;
 	logDetail.uiDetailInfo = nMenuItemID;
 	logDetailInfo.Add(logDetail);
 
 	// Mapped ID
 	logDetail.Init();
-	logDetail.usCategory = EVENTLOG_DETAIL_NAMEID;
+	logDetail.usCategory = EventDetail::NameID;
 	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nMenuItemID));
 	logDetailInfo.Add(logDetail);
 

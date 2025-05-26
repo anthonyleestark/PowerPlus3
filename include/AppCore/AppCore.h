@@ -220,7 +220,7 @@
 #define APP_SOUND_SUCCESS							((APP_SOUND << 8) + 0x0002)
 
 
-// Macros definition
+// Define app action macros
 //
 
 #define APP_MACRO									0x09
@@ -1605,7 +1605,7 @@ typedef struct tagHISTORYINFODATA
 	UINT		m_nCategoryID;									// Category ID
 	SYSTEMTIME	m_stTimestamp;									// Timestamp of history
 	UINT		m_nItemID;										// Item ID
-	UINT		m_nActionNameID;								// Name of action (string ID)
+	UINT		m_nActionID;									// Action ID
 	BOOL		m_bActionResult;								// Action result
 	DWORD		m_dwErrorCode;									// Returned error code
 	CString		m_strDescription;								// History description (attached info)

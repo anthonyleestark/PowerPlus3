@@ -451,79 +451,79 @@ namespace MapTable
 	{
 		//////////////////////////////////////////////////////////////////////////
 		//
-		//	Table name:		LogInfoIDTitle
-		//  Description:	Using for pairing logging info IDs and the titles when
-		//					writing log files
+		//	Table name:		LogKey
+		//  Description:	Using for pairing log key IDs and output texts
+		//					when writing log files
 		//  Table type:		STRINGTABLE
 		//
 		//////////////////////////////////////////////////////////////////////////
 
-		INITIALIZE_STRINGMAPTABLE(LogInfoIDTitle)
-		/*----Base log info IDs------------------------Log Info Titles---------------*/
-			BASELOG_INFO_TIME,					_T("time"),
-			BASELOG_INFO_PID,					_T("pid"),
-			BASELOG_INFO_CATEGORY,				_T("category"),
-			BASELOG_INFO_DESCRIPTION,			_T("description"),
-			BASELOG_INFO_DETAILS,				_T("details"),
+		INITIALIZE_STRINGMAPTABLE(LogKey)
+		/*----Base log key ID--------------------Output Text-------------------------*/
+			BaseLog::Time,						_T("time"),
+			BaseLog::PID,						_T("pid"),
+			BaseLog::LogCategory,				_T("category"),
+			BaseLog::Description,				_T("description"),
+			BaseLog::Details,					_T("details"),
 		/*---------------------------------------------------------------------------*/
 
-		/*----Base log info IDs------------------------Log Info Titles---------------*/
-			EVENTLOG_DETAIL_RESOURCEID,			_T("resourceid"),
-			EVENTLOG_DETAIL_NAMEID,				_T("nameid"),
-			EVENTLOG_DETAIL_DIALOGCAPTION,		_T("dialogcaption"),
-			EVENTLOG_DETAIL_CTRLCAPTION,		_T("ctrlcaption"),
-			EVENTLOG_DETAIL_CHKSTATE,			_T("checkstate"),
-			EVENTLOG_DETAIL_SELECTION,			_T("selection"),
-			EVENTLOG_DETAIL_DATAVALUE,			_T("datavalue"),
-			EVENTLOG_DETAIL_DATACHANGE,			_T("datachange"),
-			EVENTLOG_DETAIL_CONTENTID,			_T("contentid"),
-			EVENTLOG_DETAIL_MESSAGETEXT,		_T("messagetext"),
-			EVENTLOG_DETAIL_ERRORCODE,			_T("errorcode"),
+		/*--Event log detail category ID---------Output Text-------------------------*/
+			EventDetail::ResourceID,			_T("resourceid"),
+			EventDetail::NameID,				_T("nameid"),
+			EventDetail::DialogCaption,			_T("dialogcaption"),
+			EventDetail::ControlCaption,		_T("ctrlcaption"),
+			EventDetail::CheckState,			_T("checkstate"),
+			EventDetail::Selection,				_T("selection"),
+			EventDetail::DataValue,				_T("datavalue"),
+			EventDetail::DataChangeState,		_T("datachange"),
+			EventDetail::ContentID,				_T("contentid"),
+			EventDetail::MessageText,			_T("messagetext"),
+			EventDetail::EventError,			_T("errorcode"),
 		/*---------------------------------------------------------------------------*/
 
-		/*----History log info IDs---------------------Log Info Titles---------------*/
-			HISTORYLOG_DETAIL_CATEGORY,			_T("category"),
-			HISTORYLOG_DETAIL_ACTION,			_T("action"),
-			HISTORYLOG_DETAIL_KEYSTROKES,		_T("keystrokes"),
-			HISTORYLOG_DETAIL_ITEMID,			_T("itemid"),
-			HISTORYLOG_DETAIL_MESSAGE,			_T("message"),
-			HISTORYLOG_DETAIL_RESULT,			_T("result"),
-			HISTORYLOG_DETAIL_ERRORCODE,		_T("errorcode")
+		/*-Action history log detail ID----------Output Text-------------------------*/
+			HistoryDetail::Category,			_T("category"),
+			HistoryDetail::Action,				_T("action"),
+			HistoryDetail::Keystrokes,			_T("keystrokes"),
+			HistoryDetail::ItemID,				_T("itemid"),
+			HistoryDetail::Message,				_T("message"),
+			HistoryDetail::Result,				_T("result"),
+			HistoryDetail::ActionError,			_T("errorcode")
 		/*---------------------------------------------------------------------------*/
 		END_STRINGMAPTABLE()
 
 
 		//////////////////////////////////////////////////////////////////////////
 		//
-		//	Table name:		HistoryLogDetail
-		//  Description:	Using for pairing history log detail info IDs and the
-		//					titles when writing log files
+		//	Table name:		LogValue
+		//  Description:	Using for pairing log value IDs and output texts
+		//					when writing log files
 		//  Table type:		STRINGTABLE
 		//
 		//////////////////////////////////////////////////////////////////////////
 
-		INITIALIZE_STRINGMAPTABLE(HistoryLogDetail)
-		/*---History category IDs-----------------------Log Info Titles--------------*/
-			HISTORYLOG_CATE_PWRACTION,			_T("Power Action"),
-			HISTORYLOG_CATE_SCHEDULE,			_T("Schedule"),
-			HISTORYLOG_CATE_HOTKEYSET,			_T("HotkeySet"),
-			HISTORYLOG_CATE_PWRREMINDER,		_T("Power Reminder"),
+		INITIALIZE_STRINGMAPTABLE(LogValue)
+		/*--Action history category ID-----------Output Text-------------------------*/
+			HistoryCategory::PowerAction,		_T("Power Action"),
+			HistoryCategory::ScheduleAction,	_T("Schedule"),
+			HistoryCategory::HotkeySet,			_T("HotkeySet"),
+			HistoryCategory::PowerReminder,		_T("Power Reminder"),
 		/*---------------------------------------------------------------------------*/
 
-		/*---History log action IDs---------------------Log Info Titles--------------*/
-			HISTORYLOG_ACTION_NOTHING,			_T("Do nothing"),
-			HISTORYLOG_ACTION_DISPLAYOFF,		_T("Turn off display"),
-			HISTORYLOG_ACTION_SLEEP,			_T("Sleep"),
-			HISTORYLOG_ACTION_SHUTDOWN,			_T("Shutdown"),
-			HISTORYLOG_ACTION_RESTART,			_T("Restart"),
-			HISTORYLOG_ACTION_SIGNOUT,			_T("Sign out"),
-			HISTORYLOG_ACTION_HIBERNATE,		_T("Hibernate"),
+		/*---Action history action ID------------Output Text-------------------------*/
+			HistoryAction::DoNothing,			_T("Do nothing"),
+			HistoryAction::DisplayOff,			_T("Turn off display"),
+			HistoryAction::SleepMode,			_T("Sleep"),
+			HistoryAction::Shutdown,			_T("Shutdown"),
+			HistoryAction::Restart,				_T("Restart"),
+			HistoryAction::SignOut,				_T("Sign out"),
+			HistoryAction::Hibernate,			_T("Hibernate"),
 		/*---------------------------------------------------------------------------*/
 
-		/*---History log action IDs---------------------Log Info Titles--------------*/
-			HISTORYLOG_RESULT_SUCCESS,			_T("Success"),
-			HISTORYLOG_RESULT_FAILED_UNKNOWN,	_T("Failed (Unknown error)"),
-			HISTORYLOG_RESULT_FAILED_ERRCODE,	_T("Failed (Error code: 0x%08X)")
+		/*---Action history result ID------------Output Text-------------------------*/
+			HistoryResult::Success,				_T("Success"),
+			HistoryResult::FailedUnknown,		_T("Failed (Unknown error)"),
+			HistoryResult::FailedWithErrorCode,	_T("Failed (Error code: 0x%08X)")
 		/*---------------------------------------------------------------------------*/
 		END_STRINGMAPTABLE()
 	};
