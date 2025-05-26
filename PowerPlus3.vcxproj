@@ -214,6 +214,10 @@
     <ClInclude Include="include\AppCore\MapTable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AppCore\AppCore.inl" />
+    <ClInclude Include="include\AppCore\Logging.inl" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="include\Components\CellRange.h" />
     <ClInclude Include="include\Components\GridCell.h" />
     <ClInclude Include="include\Components\GridCellBase.h" />
@@ -242,7 +246,6 @@
     <ClInclude Include="include\Framework\SWinApp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\PowerPlus.inl" />
     <ClInclude Include="include\PowerPlus.h" />
     <ClInclude Include="include\PowerPlusDlg.h" />
   </ItemGroup>

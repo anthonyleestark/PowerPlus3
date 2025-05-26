@@ -1938,12 +1938,12 @@ void SDialog::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 {
 	// Prepare event log info
 	LOGITEM logItemDialogEvent;
-	logItemDialogEvent.usCategory = usEvent;
-	logItemDialogEvent.stTime = GetCurSysTime();
-	logItemDialogEvent.dwProcessID = GetCurrentProcessId();
+	logItemDialogEvent.SetCategory(usEvent);
+	logItemDialogEvent.SetTime(GetCurSysTime());
+	logItemDialogEvent.SetProcessID();
 	if (lpszDescription != NULL) {
 		// Include event description
-		logItemDialogEvent.strLogString = lpszDescription;
+		logItemDialogEvent.SetLogString(lpszDescription);
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data

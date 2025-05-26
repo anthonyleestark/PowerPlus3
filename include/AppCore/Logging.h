@@ -75,34 +75,47 @@ typedef CArray<LOGDETAIL, LOGDETAIL> LOGDETAILINFO;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	LOGITEM
+//	Class name:		LogItem
 //  Description:	Store app log item data
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagLOGITEM
+class LogItem
 {
+private:
 	// Member variables
-	SYSTEMTIME		stTime;									// Log time
-	DWORD			dwProcessID;							// Process ID
-	USHORT			usCategory;								// Log category
-	CString			strLogString;							// Log description string
-	LOGDETAILINFO	arrDetailInfo;							// Log detail info
+	SYSTEMTIME		m_stTime;								// Log time
+	DWORD			m_dwProcessID;							// Process ID
+	USHORT			m_usCategory;							// Log category
+	CString			m_strLogString;							// Log description string
+	LOGDETAILINFO	m_arrDetailInfo;						// Log detail info
 
-	// Constructor
-	tagLOGITEM();											// Default constructor
-	tagLOGITEM(const tagLOGITEM&);							// Copy constructor
+public:
+	// Construction
+	LogItem();												// Default constructor
+	LogItem(const LogItem&);								// Copy constructor
 
 	// Operator
-	tagLOGITEM& operator=(const tagLOGITEM&);				// Copy assignment operator
+	LogItem& operator=(const LogItem&);						// Copy assignment operator
 
+public:
 	// Member functions
-	void Copy(const tagLOGITEM&);							// Copy item
-	BOOL Compare(const tagLOGITEM&) const;					// Compare items
+	void Copy(const LogItem&);								// Copy item
+	BOOL Compare(const LogItem&) const;						// Compare items
 	BOOL IsEmpty(void) const;								// Check if item data is empty
 	void RemoveDetailInfo(void);							// Remove all log detail info data
 	void RemoveAll(void);									// Remove all log item data
+
+public:
+	// Get/set functions
+	SYSTEMTIME GetTime(void) const;							// Get log time
+	void SetTime(const SYSTEMTIME& stTime);					// Set log time
+	DWORD GetProcessID(void) const;							// Get process ID
+	void SetProcessID(void);								// Set process ID
+	USHORT GetCategory(void) const;							// Get log category
+	void SetCategory(USHORT usCategory);					// Set log category
+	CString GetLogString(void) const;						// Get log description string
+	void SetLogString(LPCTSTR lpszLogString);				// Set log description string
 
 	// Detail info functions
 	void AddDetail(const LOGDETAIL&);						// Add detail data
@@ -113,7 +126,11 @@ typedef struct tagLOGITEM
 	// Format data functions
 	CString	FormatDateTime(void) const;						// Format date/time value
 	CString FormatOutput(void) const;						// Format log item output
-} LOGITEM, *PLOGITEM;
+};
+
+// Define new typenames for LogItem
+using LOGITEM = typename LogItem;
+using PLOGITEM = typename LogItem*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -177,9 +194,7 @@ struct JSON_ENTRY
 };
 
 // Define new typenames for JSON entry data
-using JSONENTRY = typename JSON_ENTRY;
-using PJSONENTRY = typename JSONENTRY*;
-using JSON_ENTRY_DATA = typename CArray<JSONENTRY, JSONENTRY>;
+using JSON_ENTRY_DATA = typename CArray<JSON_ENTRY, JSON_ENTRY>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -294,5 +309,22 @@ public:
 	BOOL Write(const LOGITEM& logItem, LPCTSTR lpszFilePath = NULL);
 	BOOL Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath = NULL);
 };
+
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#ifndef _LOGGING_ENABLES_INLINE
+		#define _LOGGING_ENABLES_INLINE
+		#include "Logging.inl"
+		#ifdef _LOGGING_INL_INCLUDED
+			#pragma message("--Logging inline library included")
+		#endif
+	#endif
+#endif
 
 #endif	// ifndef _LOGGING_H_INCLUDED

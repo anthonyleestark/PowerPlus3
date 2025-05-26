@@ -307,31 +307,29 @@ BOOL tagLOGDETAIL::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYP
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagLOGITEM
+//	Function name:	LogItem
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagLOGITEM::tagLOGITEM()
+LogItem::LogItem()
 {
 	// Initialization
-	this->stTime = SYSTEMTIME_ZERO;								// Log time
-	this->dwProcessID = INT_NULL;								// Process ID
-	this->usCategory = LOG_MACRO_NONE;							// Log category
-	this->strLogString = STRING_EMPTY;							// Log string
-	this->arrDetailInfo.RemoveAll();							// Log detail info
+	m_stTime = SYSTEMTIME_ZERO;								// Log time
+	m_dwProcessID = INT_NULL;								// Process ID
+	m_usCategory = LOG_MACRO_NONE;							// Log category
+	m_strLogString = STRING_EMPTY;							// Log string
+	m_arrDetailInfo.RemoveAll();							// Log detail info
 }
 
-tagLOGITEM::tagLOGITEM(const tagLOGITEM& pItem)
+LogItem::LogItem(const LogItem& pItem)
 {
 	// Copy data
-	this->stTime = pItem.stTime;								// Log time
-	this->dwProcessID = pItem.dwProcessID;						// Process ID
-	this->usCategory = pItem.usCategory;						// Log category
-	this->strLogString = pItem.strLogString;					// Log string
-	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
+	m_stTime = pItem.m_stTime;								// Log time
+	m_dwProcessID = pItem.m_dwProcessID;					// Process ID
+	m_usCategory = pItem.m_usCategory;						// Log category
+	m_strLogString = pItem.m_strLogString;					// Log string
+	m_arrDetailInfo.Copy(pItem.m_arrDetailInfo);			// Log detail info
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -339,18 +337,18 @@ tagLOGITEM::tagLOGITEM(const tagLOGITEM& pItem)
 //	Function name:	operator=
 //	Description:	Copy assignment operator
 //  Arguments:		Default
-//  Return value:	tagLOGITEM&
+//  Return value:	LogItem&
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagLOGITEM& tagLOGITEM::operator=(const tagLOGITEM& pItem)
+LogItem& LogItem::operator=(const LogItem& pItem)
 {
 	// Copy data
-	this->stTime = pItem.stTime;								// Log time
-	this->dwProcessID = pItem.dwProcessID;						// Process ID
-	this->usCategory = pItem.usCategory;						// Log category
-	this->strLogString = pItem.strLogString;					// Log string
-	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
+	m_stTime = pItem.m_stTime;								// Log time
+	m_dwProcessID = pItem.m_dwProcessID;					// Process ID
+	m_usCategory = pItem.m_usCategory;						// Log category
+	m_strLogString = pItem.m_strLogString;					// Log string
+	m_arrDetailInfo.Copy(pItem.m_arrDetailInfo);			// Log detail info
 
 	return *this;
 }
@@ -364,14 +362,14 @@ tagLOGITEM& tagLOGITEM::operator=(const tagLOGITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagLOGITEM::Copy(const tagLOGITEM& pItem)
+void LogItem::Copy(const LogItem& pItem)
 {
 	// Copy data
-	this->stTime = pItem.stTime;								// Log time
-	this->dwProcessID = pItem.dwProcessID;						// Process ID
-	this->usCategory = pItem.usCategory;						// Log category
-	this->strLogString = pItem.strLogString;					// Log string
-	this->arrDetailInfo.Copy(pItem.arrDetailInfo);				// Log detail info
+	m_stTime = pItem.m_stTime;								// Log time
+	m_dwProcessID = pItem.m_dwProcessID;					// Process ID
+	m_usCategory = pItem.m_usCategory;						// Log category
+	m_strLogString = pItem.m_strLogString;					// Log string
+	m_arrDetailInfo.Copy(pItem.m_arrDetailInfo);			// Log detail info
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -383,25 +381,25 @@ void tagLOGITEM::Copy(const tagLOGITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagLOGITEM::Compare(const tagLOGITEM& pItem) const
+BOOL LogItem::Compare(const LogItem& pItem) const
 {
 	BOOL bRet = FALSE;
 
 	// Compare item
-	bRet &= (this->stTime.wHour == pItem.stTime.wHour);
-	bRet &= (this->stTime.wMinute == pItem.stTime.wMinute);
-	bRet &= (this->dwProcessID == pItem.dwProcessID);
-	bRet &= (this->usCategory == pItem.usCategory);
-	bRet &= (this->strLogString == pItem.strLogString);
+	bRet &= (m_stTime.wHour == pItem.m_stTime.wHour);
+	bRet &= (m_stTime.wMinute == pItem.m_stTime.wMinute);
+	bRet &= (m_dwProcessID == pItem.m_dwProcessID);
+	bRet &= (m_usCategory == pItem.m_usCategory);
+	bRet &= (m_strLogString == pItem.m_strLogString);
 
 	// Compare log detail info
 	BOOL bDetailInfoCompare = TRUE;
-	if (this->arrDetailInfo.GetSize() != pItem.arrDetailInfo.GetSize()) {
+	if (this->m_arrDetailInfo.GetSize() != pItem.m_arrDetailInfo.GetSize()) {
 		bDetailInfoCompare = FALSE;
 	}
 	else {
-		for (int nIndex = 0; nIndex < this->arrDetailInfo.GetSize(); nIndex++) {
-			if (this->arrDetailInfo.GetAt(nIndex).Compare(pItem.arrDetailInfo.GetAt(nIndex)) != TRUE) {
+		for (int nIndex = 0; nIndex < this->m_arrDetailInfo.GetSize(); nIndex++) {
+			if (this->m_arrDetailInfo.GetAt(nIndex).Compare(pItem.m_arrDetailInfo.GetAt(nIndex)) != TRUE) {
 				bDetailInfoCompare = FALSE;
 				break;
 			}
@@ -421,7 +419,7 @@ BOOL tagLOGITEM::Compare(const tagLOGITEM& pItem) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagLOGITEM::IsEmpty(void) const
+BOOL LogItem::IsEmpty(void) const
 {
 	// Initialize an empty item
 	static const LOGITEM logDummyItem;
@@ -439,11 +437,11 @@ BOOL tagLOGITEM::IsEmpty(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagLOGITEM::RemoveDetailInfo(void)
+void LogItem::RemoveDetailInfo(void)
 {
 	// Clean up log detail info data
-	this->arrDetailInfo.RemoveAll();
-	this->arrDetailInfo.FreeExtra();
+	m_arrDetailInfo.RemoveAll();
+	m_arrDetailInfo.FreeExtra();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -455,13 +453,13 @@ void tagLOGITEM::RemoveDetailInfo(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagLOGITEM::RemoveAll(void)
+void LogItem::RemoveAll(void)
 {
 	// Reset data
-	this->stTime = SYSTEMTIME_ZERO;								// Log time
-	this->dwProcessID = INT_NULL;								// Process ID
-	this->usCategory = LOG_MACRO_NONE;							// Log category
-	this->strLogString = STRING_EMPTY;							// Log string
+	m_stTime = SYSTEMTIME_ZERO;									// Log time
+	m_dwProcessID = INT_NULL;									// Process ID
+	m_usCategory = LOG_MACRO_NONE;								// Log category
+	m_strLogString = STRING_EMPTY;								// Log string
 
 	// Clean up log detail info data
 	this->RemoveDetailInfo();									// Log detail info
@@ -479,13 +477,13 @@ void tagLOGITEM::RemoveAll(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagLOGITEM::AddDetail(const LOGDETAIL& logDetailInfo)
+void LogItem::AddDetail(const LOGDETAIL& logDetailInfo)
 {
 	// Add detail info data
-	this->arrDetailInfo.Add(logDetailInfo);
+	m_arrDetailInfo.Add(logDetailInfo);
 }
 
-void tagLOGITEM::AddDetail(USHORT usCategory, UINT nDetailInfo)
+void LogItem::AddDetail(USHORT usCategory, UINT nDetailInfo)
 {
 	// Prepare detail info data
 	LOGDETAIL logDetailInfo;
@@ -496,7 +494,7 @@ void tagLOGITEM::AddDetail(USHORT usCategory, UINT nDetailInfo)
 	this->AddDetail(logDetailInfo);
 }
 
-void tagLOGITEM::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo)
+void LogItem::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo)
 {
 	// Prepare detail info data
 	LOGDETAIL logDetailInfo;
@@ -507,7 +505,7 @@ void tagLOGITEM::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo)
 	this->AddDetail(logDetailInfo);
 }
 
-void tagLOGITEM::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo)
+void LogItem::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo)
 {
 	// Prepare detail info data
 	LOGDETAIL logDetailInfo;
@@ -528,12 +526,12 @@ void tagLOGITEM::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDeta
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString tagLOGITEM::FormatDateTime(void) const
+CString LogItem::FormatDateTime(void) const
 {
 	CString strTimeFormat;
-	CString strMiddayFlag = (stTime.wHour >= 12) ? SYMBOL_POST_MERIDIEM : SYMBOL_ANTE_MERIDIEM;
-	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
-						stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
+	CString strMiddayFlag = (m_stTime.wHour >= 12) ? SYMBOL_POST_MERIDIEM : SYMBOL_ANTE_MERIDIEM;
+	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, m_stTime.wYear, m_stTime.wMonth, m_stTime.wDay,
+		m_stTime.wHour, m_stTime.wMinute, m_stTime.wSecond, m_stTime.wMilliseconds, strMiddayFlag);
 
 	return strTimeFormat;
 }
@@ -547,7 +545,7 @@ CString tagLOGITEM::FormatDateTime(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString tagLOGITEM::FormatOutput(void) const
+CString LogItem::FormatOutput(void) const
 {
 	// Create JSON data object
 	JSONDATA jsonData;
@@ -566,20 +564,20 @@ CString tagLOGITEM::FormatOutput(void) const
 
 	// Log time
 	strLogKey = GetString(StringTable::LogKey, BaseLog::Time);
-	jsonData.AddString(strLogKey, this->FormatDateTime());
+	jsonData.AddString(strLogKey, FormatDateTime());
 
 	// Process ID
 	strLogKey = GetString(StringTable::LogKey, BaseLog::PID);
-	jsonData.AddInteger(strLogKey, this->dwProcessID);
+	jsonData.AddInteger(strLogKey, m_dwProcessID);
 
 	// Log category
 	strLogKey = GetString(StringTable::LogKey, BaseLog::LogCategory);
-	strLogValue = GetLanguageString(pDefLang, this->usCategory);
+	strLogValue = GetLanguageString(pDefLang, m_usCategory);
 	jsonData.AddString(strLogKey, strLogValue);
 
 	// Log description string
 	strLogKey = GetString(StringTable::LogKey, BaseLog::Description);
-	jsonData.AddString(strLogKey, this->strLogString);
+	jsonData.AddString(strLogKey, m_strLogString);
 
 	/*********************************************************************/
 	/*																	 */
@@ -588,7 +586,7 @@ CString tagLOGITEM::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log detail info
-	if (!this->arrDetailInfo.IsEmpty()) {
+	if (!m_arrDetailInfo.IsEmpty()) {
 
 		// Create JSON detail data object
 		JSONDATA jsonDetailData;
@@ -599,10 +597,10 @@ CString tagLOGITEM::FormatOutput(void) const
 		jsonDetailData.SetObjectName(GetString(StringTable::LogKey, BaseLog::Details));
 
 		// Convert data
-		for (int nIndex = 0; nIndex < (this->arrDetailInfo.GetSize()); nIndex++) {
+		for (int nIndex = 0; nIndex < (m_arrDetailInfo.GetSize()); nIndex++) {
 
 			// Get detail info item
-			LOGDETAIL logDetail = this->arrDetailInfo.GetAt(nIndex);
+			LOGDETAIL logDetail = m_arrDetailInfo.GetAt(nIndex);
 
 			// Detail info category
 			strLogDetailID = GetString(StringTable::LogKey, logDetail.usCategory);
@@ -974,7 +972,7 @@ void JSON::AddString(LPCTSTR lpszKeyName, LPCTSTR lpszValue)
 {
 	// Search if key name already existed
 	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.GetSize()); nIndex++) {
-		JSONENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
+		JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
 		if (jsonEntry.strKey == lpszKeyName) {
 			// Replace existed value with new value
 			jsonEntry.strValue = lpszValue;
@@ -1129,7 +1127,7 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 		strOutput.Append(strIndent);
 
 		// Get key and value
-		const JSONENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
+		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
 
 		// Format properties
 		if ((nIndex == (nItemNum - 1)) &&
@@ -1206,7 +1204,7 @@ void JSON::PrintYAML(CString& strOutput, int nIndent)
 
 	// Print key-value pairs
 	for (int nIndex = 0; nIndex < this->m_arrKeyValuePairs.GetSize(); nIndex++) {
-		const JSONENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
+		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
 		strOutput.AppendFormat(_T("%s%s: \"%s\"\n"), strIndent.GetString(), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
 	}
 
@@ -1548,8 +1546,8 @@ void SLogging::OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate /* = TR
 		}
 
 		// Update log item data
-		logItem.stTime = stLogTime;
-		logItem.strLogString = lpszLogString;
+		logItem.SetTime(stLogTime);
+		logItem.SetLogString(lpszLogString);
 		OutputItem(logItem);
 	}
 }
@@ -1595,7 +1593,7 @@ BOOL SLogging::Write(void)
 	{
 		// Get log item
 		logItem = GetLogItem(nIndex);
-		stTemp = logItem.stTime;
+		stTemp = logItem.GetTime();
 
 		// Get filename according to type of logs
 		switch (m_byLogType)
@@ -1716,7 +1714,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 
 	// Get log time
 	SYSTEMTIME stTimeTemp;
-	stTimeTemp = logItem.stTime;
+	stTimeTemp = logItem.GetTime();
 
 	// Get filename according to type of logs
 	switch (m_byLogType)
@@ -1867,8 +1865,8 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 
 	// Format output log strings
 	LOGITEM logItem;
-	logItem.stTime = stCurTime;
-	logItem.strLogString = lpszLogString;
+	logItem.SetTime(stCurTime);
+	logItem.SetLogString(lpszLogString);
 	strLogFormat = logItem.FormatOutput();
 
 	if (!strLogFormat.IsEmpty()) {

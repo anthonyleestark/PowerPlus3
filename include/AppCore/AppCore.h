@@ -2109,10 +2109,12 @@ namespace AppCore
 ////////////////////////////////////////////////////////
 
 #ifdef _AFX_ENABLE_INLINES
-	#ifndef _POWERPLUS_ENABLES_INLINE
-		#define _POWERPLUS_ENABLES_INLINE
-		#include "PowerPlus.inl"
-		#pragma message("--Power++ inline enabled")
+	#ifndef _APPCORE_ENABLES_INLINE
+		#define _APPCORE_ENABLES_INLINE
+		#include "AppCore.inl"
+		#ifdef _APPCORE_INL_INCLUDED
+			#pragma message("--AppCore inline library included")
+		#endif
 	#endif
 #endif
 

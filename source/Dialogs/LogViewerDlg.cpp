@@ -631,11 +631,11 @@ void CLogViewerDlg::UpdateLogViewer(void)
 		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_DATETIME, strTemp);
 
 		// Category
-		strTemp = GetLanguageString(ptrLanguage, logItem.usCategory);
+		strTemp = GetLanguageString(ptrLanguage, logItem.GetCategory());
 		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_CATEGORY, strTemp);
 
 		// Additional description
-		strTemp = logItem.strLogString;
+		strTemp = logItem.GetLogString();
 		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_DESCRIPTION, strTemp);
 	}
 }

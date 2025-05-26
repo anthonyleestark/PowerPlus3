@@ -5280,10 +5280,10 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 
 	// Prepare common history log info
 	LOGITEM actionLogItem;
-	actionLogItem.stTime = m_hidHistoryInfoData.m_stTimestamp;
+	actionLogItem.SetTime(m_hidHistoryInfoData.m_stTimestamp);
 
 	// Get current process ID
-	actionLogItem.dwProcessID = GetCurrentProcessId();
+	actionLogItem.SetProcessID();
 
 	// Attach history detail info by category ID
 	LOGDETAIL actionLogDetail;
@@ -5292,7 +5292,7 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 		case HistoryCategory::PowerAction:
 		{
 			// History category
-			actionLogItem.usCategory = LOG_HISTORY_EXEC_PWRACTION;
+			actionLogItem.SetCategory(LOG_HISTORY_EXEC_PWRACTION);
 
 			// Action ID
 			actionLogDetail.Init();
@@ -5304,7 +5304,7 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 		case HistoryCategory::ScheduleAction:
 		{
 			// History category
-			actionLogItem.usCategory = LOG_HISTORY_EXEC_SCHEDULE;
+			actionLogItem.SetCategory(LOG_HISTORY_EXEC_SCHEDULE);
 
 			// Item ID
 			actionLogDetail.Init();
@@ -5322,7 +5322,7 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 		case HistoryCategory::HotkeySet:
 		{
 			// History category
-			actionLogItem.usCategory = LOG_HISTORY_EXEC_HOTKEY;
+			actionLogItem.SetCategory(LOG_HISTORY_EXEC_HOTKEY);
 
 			// Action ID
 			actionLogDetail.Init();
@@ -5340,7 +5340,7 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 		case HistoryCategory::PowerReminder:
 		{
 			// History category
-			actionLogItem.usCategory = LOG_HISTORY_DISP_PWRREMINDER;
+			actionLogItem.SetCategory(LOG_HISTORY_DISP_PWRREMINDER);
 
 			// Item ID
 			actionLogDetail.Init();

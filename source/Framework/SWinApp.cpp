@@ -663,12 +663,12 @@ void SWinApp::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 {
 	// Prepare event log info
 	LOGITEM logItemAppEvent;
-	logItemAppEvent.usCategory = usEvent;
-	logItemAppEvent.stTime = GetCurSysTime();
-	logItemAppEvent.dwProcessID = GetCurrentProcessId();
+	logItemAppEvent.SetCategory(usEvent);
+	logItemAppEvent.SetTime(GetCurSysTime());
+	logItemAppEvent.SetProcessID();
 	if (lpszDescription != NULL) {
 		// Include event description
-		logItemAppEvent.strLogString = lpszDescription;
+		logItemAppEvent.SetLogString(lpszDescription);
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data
