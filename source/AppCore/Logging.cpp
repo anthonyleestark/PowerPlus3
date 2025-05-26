@@ -32,21 +32,6 @@ using namespace AppCore;
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetSizeByValue
-//	Description:	Get size of data by data value
-//  Arguments:		dataValue - Data value
-//  Return value:	SIZE_T
-//
-//////////////////////////////////////////////////////////////////////////
-
-template <typename DATA>
-SIZE_T GetSizeByValue(DATA dataValue)
-{
-	return sizeof(dataValue);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	GetSizeByType
 //	Description:	Get size of data by data type
 //  Arguments:		byDataType - Data type
@@ -426,22 +411,6 @@ BOOL LogItem::IsEmpty(void) const
 
 	// Compare with this item and return result
 	return this->Compare(logDummyItem);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveDetailInfo
-//	Description:	Remove all log detail info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void LogItem::RemoveDetailInfo(void)
-{
-	// Clean up log detail info data
-	m_arrDetailInfo.RemoveAll();
-	m_arrDetailInfo.FreeExtra();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -866,25 +835,6 @@ BOOL JSON::IsEmpty(void) const
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	RemoveProperty
-//	Description:	Remove property by index
-//  Arguments:		nIndex - Property index
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void JSON::RemoveProperty(INT_PTR nIndex)
-{
-	// Invalid index
-	if ((nIndex < 0) || (nIndex >= this->m_arrKeyValuePairs.GetSize()))
-		return;
-
-	// Remove property by index
-	this->m_arrKeyValuePairs.RemoveAt(nIndex);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveProperty
 //	Description:	Remove property by its key name
 //  Arguments:		lpszKeyName - Key name
 //  Return value:	None
@@ -941,20 +891,6 @@ void JSON::RemoveAll(void)
 		// Reset child object counter
 		this->m_nChildObjectCount = 0;
 	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetObjectName
-//	Description:	Set JSON object name
-//  Arguments:		lpszObjectName - Object name
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void JSON::SetObjectName(LPCTSTR lpszObjectName)
-{
-	this->m_strObjectName = lpszObjectName;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1263,66 +1199,6 @@ SLogging::~SLogging()
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Init
-//	Description:	Initialize log data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE void SLogging::Init()
-{
-	// Initialize empty log data
-	m_arrLogData.RemoveAll();
-	m_arrLogData.FreeExtra();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DeleteAll
-//	Description:	Delete all log data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE void SLogging::DeleteAll()
-{
-	// Clean up log data
-	m_arrLogData.RemoveAll();
-	m_arrLogData.FreeExtra();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsEmpty
-//	Description:	Check if current log data is empty
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SLogging::IsEmpty(void) const
-{
-	return m_arrLogData.IsEmpty();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetLogCount
-//	Description:	Return the number of items of log data
-//  Arguments:		None
-//  Return value:	INT_PTR - Number of log items
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE INT_PTR SLogging::GetLogCount() const
-{
-	return m_arrLogData.GetSize();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	GetLogItem
 //	Description:	Return a specific log item of log list
 //  Arguments:		nIndex - Item index
@@ -1376,77 +1252,12 @@ const LOGITEM& SLogging::GetLogItem(int nIndex) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Get/SetMaxSize
-//	Description:	Get/set maximum log data size
-//  Arguments:		nMaxSize - Max log data size
-//  Return value:	INT_PTR
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE INT_PTR SLogging::GetMaxSize(void) const
-{
-	return m_nMaxSize;
-}
-
-void SLogging::SetMaxSize(INT_PTR nMaxSize)
-{
-	// Max size can only be larger than current log data size
-	if (nMaxSize > (this->m_arrLogData.GetSize())) {
-		m_nMaxSize = nMaxSize;
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetWriteMode
-//	Description:	Get/set log write mode
-//  Arguments:		byWriteMode - Log write mode
-//  Return value:	BYTE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BYTE SLogging::GetWriteMode(void) const
-{
-	return m_byWriteMode;
-}
-
-AFX_INLINE void SLogging::SetWriteMode(BYTE byWriteMode)
-{
-	m_byWriteMode = byWriteMode;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetFilePath
-//	Description:	Get/set log output file path
-//  Arguments:		strFilePath/lpszFilePath - Log file path
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE void SLogging::GetFilePath(CString& strFilePath)
-{
-	strFilePath = m_strFilePath;
-}
-
-AFX_INLINE void SLogging::SetFilePath(LPCTSTR lpszFilePath)
-{
-	m_strFilePath = lpszFilePath;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	Get/SetDefaultTemplate
 //	Description:	Get/set log default template
 //  Arguments:		logItemTemplate - Log item template
 //  Return value:	BYTE
 //
 //////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE PLOGITEM SLogging::GetDefaultTemplate(void)
-{
-	return m_pItemDefTemplate;
-}
 
 void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
 {
