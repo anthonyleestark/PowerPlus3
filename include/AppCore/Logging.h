@@ -142,6 +142,44 @@ static SIZE_T GetSizeByType(BYTE byDataType);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////
+//
+//	Data type name:	JSON_ENTRY
+//  Description:	Store JSON key-value pair data
+//  Derivered from: C++ basic struct
+//
+//////////////////////////////////////////////////////////////////////////
+
+struct JSON_ENTRY
+{
+	// Member variables
+	CString strKey;			// Key name
+	CString strValue;		// Value (string)
+
+	// Construction
+	JSON_ENTRY() : strKey(STRING_EMPTY), strValue(STRING_EMPTY) {};
+	JSON_ENTRY(const CString& key, const CString& value) : strKey(key), strValue(value) {};
+
+	// Operators
+	bool operator==(const JSON_ENTRY& other) const {
+		return ((strKey == other.strKey) && (strValue == other.strValue));
+	};
+	bool operator!=(const JSON_ENTRY& other) const {
+		return !(*this == other);
+	};
+	JSON_ENTRY& operator=(const JSON_ENTRY& other) {
+		if (this != &other) {
+			strKey = other.strKey;
+			strValue = other.strValue;
+		}
+		return *this;
+	};
+};
+
+// Define new typenames for JSON entry data
+using JSONENTRY = typename JSON_ENTRY;
+using PJSONENTRY = typename JSONENTRY*;
+using JSON_ENTRY_DATA = typename CArray<JSONENTRY, JSONENTRY>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -157,8 +195,7 @@ private:
 	CString m_strObjectName;								// JSON object name
 
 	// Properties
-	CStringArray m_astrKeyList;								// List of keys
-	CStringArray m_astrValueList;							// List of values (string)
+	JSON_ENTRY_DATA m_arrKeyValuePairs;						// Key-value pairs (array)
 
 	// Children
 	INT_PTR	m_nChildObjectCount;							// Number of child objects
@@ -194,7 +231,7 @@ public:
 
 	// Printing functions
 	void Print(CString&, int, BOOL, BOOL = TRUE);			// Print data in JSON format (with indentation)
-	void PrintYAML(CString&);								// Print data in YAML format
+	void PrintYAML(CString&, int);							// Print data in YAML format
 };
 
 // Define new typenames for JSON class object

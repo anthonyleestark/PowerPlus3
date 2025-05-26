@@ -428,7 +428,9 @@
 
 #define SYMBOL_SPACE								_T(" ")							// Space
 #define SYMBOL_DOUBLE_SPACE							_T("  ")						// Double spaces
-#define SYMBOL_INDENT								_T("\t")						// Indentation (tab character)
+#define SYMBOL_DEFAULT_INDENT						_T("\t")						// Default indentation (tab character)
+#define SYMBOL_JSON_INDENT							SYMBOL_DEFAULT_INDENT			// JSON indentation (tab character)
+#define SYMBOL_YAML_INDENT							SYMBOL_DOUBLE_SPACE				// YAML indentation (double spaces)
 
 #define SYMBOL_ANTE_MERIDIEM						_T("AM")						// Ante meridiem (AM)
 #define SYMBOL_POST_MERIDIEM						_T("PM")						// Post meridiem (PM)

@@ -550,9 +550,9 @@ CString tagLOGITEM::FormatDateTime(void) const
 CString tagLOGITEM::FormatOutput(void) const
 {
 	// Create JSON data object
-	JSONDATA jsonOutputData;
+	JSONDATA jsonData;
 
-	CString strLogInfoIDTitle;
+	CString strLogInfoID;
 	CString strLogInfoValue;
 
 	// Load default language table package
@@ -565,21 +565,21 @@ CString tagLOGITEM::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log time
-	strLogInfoIDTitle = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_TIME);
-	jsonOutputData.AddString(strLogInfoIDTitle, this->FormatDateTime());
+	strLogInfoID = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_TIME);
+	jsonData.AddString(strLogInfoID, this->FormatDateTime());
 
 	// Process ID
-	strLogInfoIDTitle = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_PID);
-	jsonOutputData.AddInteger(strLogInfoIDTitle, this->dwProcessID);
+	strLogInfoID = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_PID);
+	jsonData.AddInteger(strLogInfoID, this->dwProcessID);
 
 	// Log category
-	strLogInfoIDTitle = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_CATEGORY);
+	strLogInfoID = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_CATEGORY);
 	strLogInfoValue = GetLanguageString(pDefLang, this->usCategory);
-	jsonOutputData.AddString(strLogInfoIDTitle, strLogInfoValue);
+	jsonData.AddString(strLogInfoID, strLogInfoValue);
 
 	// Log description string
-	strLogInfoIDTitle = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
-	jsonOutputData.AddString(strLogInfoIDTitle, this->strLogString);
+	strLogInfoID = GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_DESCRIPTION);
+	jsonData.AddString(strLogInfoID, this->strLogString);
 
 	/*********************************************************************/
 	/*																	 */
@@ -593,7 +593,7 @@ CString tagLOGITEM::FormatOutput(void) const
 		// Create JSON detail data object
 		JSONDATA jsonDetailData;
 
-		CString strLogDetailTitle;
+		CString strLogDetailID;
 
 		// Set object name: Detail
 		jsonDetailData.SetObjectName(GetString(StringTable::LogInfoIDTitle, BASELOG_INFO_DETAILS));
@@ -605,29 +605,30 @@ CString tagLOGITEM::FormatOutput(void) const
 			LOGDETAIL logDetail = this->arrDetailInfo.GetAt(nIndex);
 
 			// Detail info category
-			strLogDetailTitle = GetString(StringTable::LogInfoIDTitle, logDetail.usCategory);
+			strLogDetailID = GetString(StringTable::LogInfoIDTitle, logDetail.usCategory);
 
 			// Detail info value
 			if (logDetail.uiDetailInfo != INT_NULL) {
-				jsonDetailData.AddInteger(strLogDetailTitle, logDetail.uiDetailInfo);
+				jsonDetailData.AddInteger(strLogDetailID, logDetail.uiDetailInfo);
 			}
 			else if (!logDetail.strDetailInfo.IsEmpty()) {
-				jsonDetailData.AddString(strLogDetailTitle, logDetail.strDetailInfo);
+				jsonDetailData.AddString(strLogDetailID, logDetail.strDetailInfo);
 			}
 		}
 
 		// Output detail JSON data
-		jsonOutputData.AddChildObject(&jsonDetailData);
+		jsonData.AddChildObject(&jsonDetailData);
 	}
 
 	/*********************************************************************/
 	/*																	 */
-	/*			    Format JSON data into output string					 */
+	/*				  Output JSON data under YAML format				 */
 	/*																	 */
 	/*********************************************************************/
 
 	CString strLogFormat;
-	jsonOutputData.Print(strLogFormat, 0, TRUE, TRUE);
+	jsonData.PrintYAML(strLogFormat, 0);
+	strLogFormat.Append(STRING_NEWLINE);
 
 	return strLogFormat;
 }
@@ -643,8 +644,7 @@ JSON::JSON()
 {
 	// Initialization
 	this->m_strObjectName = STRING_EMPTY;			// JSON object name
-	this->m_astrKeyList.RemoveAll();				// List of keys
-	this->m_astrValueList.RemoveAll();				// List of values (string)
+	this->m_arrKeyValuePairs.RemoveAll();			// Key-value pairs
 	this->m_nChildObjectCount = 0;					// Number of child objects
 	this->m_apChildObjectList = NULL;				// List of child objects
 }
@@ -718,25 +718,20 @@ void JSON::Copy(const JSON& pObj)
 void JSON::CopyArrayData(const JSON& pObj)
 {
 	// Remove all existing array data
-	this->m_astrKeyList.RemoveAll();
-	this->m_astrValueList.RemoveAll();
-
-	// Free destination array data memory
-	this->m_astrKeyList.FreeExtra();
-	this->m_astrValueList.FreeExtra();
+	this->m_arrKeyValuePairs.RemoveAll();
+	this->m_arrKeyValuePairs.FreeExtra();
 
 	// Set destination array data size
-	this->m_astrKeyList.SetSize(pObj.m_astrKeyList.GetSize());
-	this->m_astrValueList.SetSize(pObj.m_astrValueList.GetSize());
+	this->m_arrKeyValuePairs.SetSize(pObj.m_arrKeyValuePairs.GetSize());
 
 	// Copy list of keys
-	for (int nIndex = 0; nIndex < pObj.m_astrKeyList.GetSize(); nIndex++) {
-		this->m_astrKeyList.SetAt(nIndex, pObj.m_astrKeyList.GetAt(nIndex));
+	for (int nIndex = 0; nIndex < pObj.m_arrKeyValuePairs.GetSize(); nIndex++) {
+		this->m_arrKeyValuePairs.SetAt(nIndex, pObj.m_arrKeyValuePairs.GetAt(nIndex));
 	}
 
 	// Copy list of values
-	for (int nIndex = 0; nIndex < pObj.m_astrValueList.GetSize(); nIndex++) {
-		this->m_astrValueList.SetAt(nIndex, pObj.m_astrValueList.GetAt(nIndex));
+	for (int nIndex = 0; nIndex < pObj.m_arrKeyValuePairs.GetSize(); nIndex++) {
+		this->m_arrKeyValuePairs.SetAt(nIndex, pObj.m_arrKeyValuePairs.GetAt(nIndex));
 	}
 }
 
@@ -808,21 +803,12 @@ BOOL JSON::Compare(const JSON& pObj) const
 
 	// Compare detail item info
 	BOOL bRetCompareDetail = TRUE;
-	if ((this->m_astrKeyList.GetSize() != pObj.m_astrKeyList.GetSize()) ||
-		(this->m_astrValueList.GetSize() != pObj.m_astrValueList.GetSize())) {
+	if (this->m_arrKeyValuePairs.GetSize() != pObj.m_arrKeyValuePairs.GetSize()) {
 		bRetCompareDetail = FALSE;
 	}
 	if (bRetCompareDetail != FALSE) {
-		for (int nIndex = 0; nIndex < (this->m_astrKeyList.GetSize()); nIndex++) {
-			if (this->m_astrKeyList.GetAt(nIndex) != pObj.m_astrKeyList.GetAt(nIndex)) {
-				bRetCompareDetail = FALSE;
-				break;
-			}
-		}
-	}
-	if (bRetCompareDetail != FALSE) {
-		for (int nIndex = 0; nIndex < (this->m_astrValueList.GetSize()); nIndex++) {
-			if (this->m_astrValueList.GetAt(nIndex) != pObj.m_astrValueList.GetAt(nIndex)) {
+		for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.GetSize()); nIndex++) {
+			if (this->m_arrKeyValuePairs.GetAt(nIndex) != pObj.m_arrKeyValuePairs.GetAt(nIndex)) {
 				bRetCompareDetail = FALSE;
 				break;
 			}
@@ -891,12 +877,11 @@ BOOL JSON::IsEmpty(void) const
 void JSON::RemoveProperty(INT_PTR nIndex)
 {
 	// Invalid index
-	if ((nIndex < 0) || (nIndex >= this->m_astrKeyList.GetSize()))
+	if ((nIndex < 0) || (nIndex >= this->m_arrKeyValuePairs.GetSize()))
 		return;
 
 	// Remove property by index
-	this->m_astrKeyList.RemoveAt(nIndex);
-	this->m_astrValueList.RemoveAt(nIndex);
+	this->m_arrKeyValuePairs.RemoveAt(nIndex);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -911,13 +896,13 @@ void JSON::RemoveProperty(INT_PTR nIndex)
 void JSON::RemoveProperty(LPCTSTR lpszKeyName)
 {
 	// If property data is empty, do nothing
-	if (this->m_astrKeyList.IsEmpty())
+	if (this->m_arrKeyValuePairs.IsEmpty())
 		return;
 
 	// Search for key name
 	int nFoundIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < (this->m_astrKeyList.GetSize()); nIndex++) {
-		if (this->m_astrKeyList.GetAt(nIndex) == lpszKeyName) {
+	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.GetSize()); nIndex++) {
+		if (this->m_arrKeyValuePairs.GetAt(nIndex).strKey == lpszKeyName) {
 			nFoundIndex = nIndex;
 			break;
 		}
@@ -940,12 +925,8 @@ void JSON::RemoveAll(void)
 {
 	// Reset data
 	this->m_strObjectName.Empty();					// JSON object name
-	this->m_astrKeyList.RemoveAll();					// List of keys
-	this->m_astrValueList.RemoveAll();				// List of values (string)
-
-	// Free extra memory
-	this->m_astrKeyList.FreeExtra();					// List of keys
-	this->m_astrValueList.FreeExtra();				// List of values (string)
+	this->m_arrKeyValuePairs.RemoveAll();			// Key-value pairs
+	this->m_arrKeyValuePairs.FreeExtra();			// Free extra memory
 
 	// Remove all child objects
 	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
@@ -992,18 +973,17 @@ void JSON::SetObjectName(LPCTSTR lpszObjectName)
 void JSON::AddString(LPCTSTR lpszKeyName, LPCTSTR lpszValue)
 {
 	// Search if key name already existed
-	for (int nIndex = 0; nIndex < (this->m_astrKeyList.GetSize()); nIndex++) {
-		const CString& strKeyName = this->m_astrKeyList.GetAt(nIndex);
-		if (strKeyName == lpszKeyName) {
+	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.GetSize()); nIndex++) {
+		JSONENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
+		if (jsonEntry.strKey == lpszKeyName) {
 			// Replace existed value with new value
-			this->m_astrValueList.SetAt(nIndex, lpszValue);
+			jsonEntry.strValue = lpszValue;
 			return;
 		}
 	}
 
 	// Add property
-	this->m_astrKeyList.Add(lpszKeyName);
-	this->m_astrValueList.Add(lpszValue);
+	this->m_arrKeyValuePairs.Add({ lpszKeyName, lpszValue });
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1115,7 +1095,7 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	CString strIndent = STRING_EMPTY;
 	for (int nTabCount = 1; nTabCount <= nIndent; nTabCount++) {
 		// Add indent (tab character)
-		strIndent.Append(SYMBOL_INDENT);
+		strIndent.Append(SYMBOL_JSON_INDENT);
 	}
 
 	// Do not use indentation if printing in single line
@@ -1142,25 +1122,21 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	}
 
 	// Print list of properties
-	INT_PTR nItemNum = this->m_astrKeyList.GetSize();
+	INT_PTR nItemNum = this->m_arrKeyValuePairs.GetSize();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 		// Add indentation
 		strOutput.Append(strIndent);
 
 		// Get key and value
-		CString strKeyName = this->m_astrKeyList.GetAt(nIndex);
-		CString strValue = STRING_EMPTY;
-		if (nIndex < this->m_astrValueList.GetSize()) {
-			strValue = this->m_astrValueList.GetAt(nIndex);
-		}
+		const JSONENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
 
 		// Format properties
 		if ((nIndex == (nItemNum - 1)) &&
 			((this->m_nChildObjectCount <= 0) || (this->m_apChildObjectList == NULL))) {
 
 			// Last property (no other child object following) has no comma in the end
-			strFormat.Format(_T("\t\"%s\": \"%s\" "), strKeyName, strValue);
+			strFormat.Format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey, jsonEntry.strValue);
 			strOutput.Append(strFormat);
 			if (bMultiline == TRUE) {
 				strOutput.Append(STRING_ENDLINE);
@@ -1168,7 +1144,7 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 		}
 		else {
 			// Add comma character at the end of each property
-			strFormat.Format(_T("\t\"%s\": \"%s\", "), strKeyName, strValue);
+			strFormat.Format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey, jsonEntry.strValue);
 			strOutput.Append(strFormat);
 			if (bMultiline == TRUE) {
 				strOutput.Append(STRING_ENDLINE);
@@ -1206,12 +1182,45 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 //	Function name:	PrintYAML
 //	Description:	Print JSON object data in YAML format
 //  Arguments:		strOutput  - Output printed result string
+//					nIndent	   - Indentation
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void JSON::PrintYAML(CString& strOutput)
+void JSON::PrintYAML(CString& strOutput, int nIndent)
 {
+	// Empty output result string
+	strOutput.Empty();
+
+	// Indentation
+	CString strIndent = STRING_EMPTY;
+	for (int nCount = 1; nCount < nIndent; nCount++) {
+		strIndent.Append(SYMBOL_YAML_INDENT);
+	}
+
+	// Print object name (if set)
+	if (!this->m_strObjectName.IsEmpty()) {
+		strOutput.AppendFormat(_T("%s%s:\n"), strIndent.GetString(), this->m_strObjectName.GetString());
+		strIndent.Append(SYMBOL_YAML_INDENT); // Add one more indent for properties
+	}
+
+	// Print key-value pairs
+	for (int nIndex = 0; nIndex < this->m_arrKeyValuePairs.GetSize(); nIndex++) {
+		const JSONENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
+		strOutput.AppendFormat(_T("%s%s: \"%s\"\n"), strIndent.GetString(), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
+	}
+
+	// Print child objects
+	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
+		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
+			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
+			if (pSubItem != NULL) {
+				CString strSubItemOutput;
+				pSubItem->PrintYAML(strSubItemOutput, nIndent + 1);
+				strOutput.Append(strSubItemOutput);
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
