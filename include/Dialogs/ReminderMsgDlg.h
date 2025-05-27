@@ -123,4 +123,24 @@ protected:
 	void TextToClient(LPRECT lpRect) const;
 };
 
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _REMINDERMSGDLG_ENABLE_INLINES
+	#include "Dialogs.inl"
+	#ifdef _REMINDERMSGDLG_INLINE_INCLUDED
+		#pragma message("-- Dialogs inline library included (ReminderMsgDlg.h)")
+	#else
+		#pragma error("-- Linking error in ReminderMsgDlg.h: Unable to link to inline header!")
+	#endif
+	#undef _REMINDERMSGDLG_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in ReminderMsgDlg.h: Inline is not enabled!")
+#endif
+
 #endif	// ifndef _REMINDERMSGDLG_H_INCLUDED

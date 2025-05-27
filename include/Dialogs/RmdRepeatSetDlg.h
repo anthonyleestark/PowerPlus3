@@ -89,4 +89,24 @@ public:
 	void UpdateDialogData(PWRREMINDERITEM& pwrItemData, BOOL bUpdate);
 };
 
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _RMDREPEATSETDLG_ENABLE_INLINES
+	#include "Dialogs.inl"
+	#ifdef _RMDREPEATSETDLG_INLINE_INCLUDED
+		#pragma message("-- Dialogs inline library included (RmdRepeatSetDlg.h)")
+	#else
+		#pragma error("-- Linking error in RmdRepeatSetDlg.h: Unable to link to inline header!")
+	#endif
+	#undef _RMDREPEATSETDLG_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in RmdRepeatSetDlg.h: Inline is not enabled!")
+#endif
+
 #endif	// ifndef _RMDREPEATSETDLG_H_INCLUDED

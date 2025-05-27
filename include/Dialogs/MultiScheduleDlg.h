@@ -143,4 +143,24 @@ protected:
 	int GetExtraItemNum(void) const;
 };
 
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _MULTISCHEDULEDLG_ENABLE_INLINES
+	#include "Dialogs.inl"
+	#ifdef _MULTISCHEDULEDLG_INLINE_INCLUDED
+		#pragma message("-- Dialogs inline library included (MultiScheduleDlg.h)")
+	#else
+		#pragma error("-- Linking error in MultiScheduleDlg.h: Unable to link to inline header!")
+	#endif
+	#undef _MULTISCHEDULEDLG_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in MultiScheduleDlg.h: Inline is not enabled!")
+#endif
+
 #endif	// ifndef _MULTISCHEDULEDLG_H_INCLUDED

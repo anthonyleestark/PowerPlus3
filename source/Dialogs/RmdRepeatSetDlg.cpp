@@ -472,25 +472,6 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Get/SetSnoozeInterval
-//	Description:	Get/set snooze interval current value
-//  Arguments:		nValue - Value to set (in seconds)
-//  Return value:	int - Value to get
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE int CRmdRepeatSetDlg::GetSnoozeInterval() const
-{
-	return m_nSnoozeInterval;
-}
-
-AFX_INLINE void CRmdRepeatSetDlg::SetSnoozeInterval(int nValue)
-{
-	m_nSnoozeInterval = nValue;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	UpdateDialogData
 //	Description:	Update repeat set data from/to dialog controls
 //  Arguments:		pwrItemData - Power Reminder item

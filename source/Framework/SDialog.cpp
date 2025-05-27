@@ -258,26 +258,6 @@ void SDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateResourceIDMap
-//					UpdateThisResourceIDMap
-//	Description:	Base functions for implementing dialog resource ID map
-//
-//////////////////////////////////////////////////////////////////////////
-
-const INT_PTR SDialog::UpdateResourceIDMap()
-{
-	// Default
-	return UpdateThisResourceIDMap();
-}
-
-const INT_PTR PASCAL SDialog::UpdateThisResourceIDMap()
-{
-	// Default
-	return GET_RESOURCEID_MAP()->GetMapCount();
-}
-
-//////////////////////////////////////////////////////////////////////////
 //
 //	SDialog dialog message map
 //
@@ -528,8 +508,6 @@ void SDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 
 void SDialog::OnMouseMove(UINT nFlags, CPoint point)
 {
-//	CWnd* pHitTestWnd = ChildWindowFromPoint(point);
-
 	// Default
 	CDialogEx::OnMouseMove(nFlags, point);
 }
@@ -688,48 +666,6 @@ INT_PTR SDialog::DoModal()
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetParentWnd
-//	Description:	Get current dialog's parent window
-//  Arguments:		None
-//  Return value:	CWnd*
-//
-//////////////////////////////////////////////////////////////////////////
-
-CWnd* SDialog::GetParentWnd(void)
-{
-	return m_pParentWnd;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetParentWnd
-//	Description:	Set parent window for current dialog
-//  Arguments:		pParentWnd - Parent window
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetParentWnd(CWnd* pParentWnd)
-{
-	m_pParentWnd = pParentWnd;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsParentWndAvailable
-//	Description:	Check if parent window (pointer) is available
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SDialog::IsParentWndAvailable(void) const
-{
-	return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	NotifyParent
 //	Description:	Post a message to parent window for notifying some
 //					special events
@@ -796,48 +732,6 @@ LRESULT SDialog::SendMessageToParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return lRetNotify;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetToolTipCtrl
-//	Description:	Get current dialog's tooltip control window
-//  Arguments:		None
-//  Return value:	CToolTipCtrl*
-//
-//////////////////////////////////////////////////////////////////////////
-
-CToolTipCtrl* SDialog::GetToolTipCtrl(void)
-{
-	return m_pToolTip;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsToolTipCtrlAvailable
-//	Description:	Check if tooltip control window (pointer) is available
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SDialog::IsToolTipCtrlAvailable(void) const
-{
-	return ((m_pToolTip != NULL) && (m_pToolTip->GetSafeHwnd() != NULL));
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetControlManager
-//	Description:	Get dialog control manager pointer
-//  Arguments:		None
-//  Return value:	SControlManager*
-//
-//////////////////////////////////////////////////////////////////////////
-
-SControlManager* SDialog::GetControlManager(void)
-{
-	return m_pCtrlManager;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -945,86 +839,6 @@ BOOL SDialog::RemoveStyle(DWORD dwRemoveStyle)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetDialogID
-//	Description:	Get dialog ID
-//  Arguments:		None
-//  Return value:	UINT
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE UINT SDialog::GetDialogID(void) const
-{
-	return m_nIDHelp;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetReadOnlyMode
-//	Description:	Get/set read-only mode
-//  Arguments:		bReadOnly - Read-only mode flag
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SDialog::GetReadOnlyMode(void) const
-{
-	return m_bReadOnlyMode;
-}
-
-void SDialog::SetReadOnlyMode(BOOL bReadOnly)
-{
-	m_bReadOnlyMode = bReadOnly;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetLockState
-//	Description:	Get/set current item lock state
-//  Arguments:		bIsLock - Lock or not
-//  Return value:	BOOL - Current state
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SDialog::GetLockState(void) const
-{
-	return m_bLockState;
-}
-
-void SDialog::SetLockState(BOOL bIsLock)
-{
-	m_bLockState = bIsLock;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetUseEnter
-//	Description:	Set use Enter button flag
-//  Arguments:		bUseEnter - Flag value
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetUseEnter(BOOL bUseEnter)
-{
-	m_bUseEnter = bUseEnter;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetUseEscape
-//	Description:	Set use Escape button flag
-//  Arguments:		bUseEscape - Flag value
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetUseEscape(BOOL bUseEscape)
-{
-	m_bUseEscape = bUseEscape;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	AddLockStateException
 //	Description:	Add a control ID to lock state exception list
 //  Arguments:		nID - Control ID
@@ -1092,52 +906,6 @@ void SDialog::ResetLockStateExceptionList(void)
 		m_paLockExceptionIDList->RemoveAll();
 		m_paLockExceptionIDList->FreeExtra();
 	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetAlignment
-//	Description:	Get/set dialog alignment
-//  Arguments:		nAlignment - Dialog alignment
-//  Return value:	UINT
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE UINT SDialog::GetAlignment(void) const
-{
-	return m_nAlignment;
-}
-
-void SDialog::SetAlignment(UINT nAlignment)
-{
-	m_nAlignment = nAlignment;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetPosition
-//	Description:	Get/set dialog position
-//  Arguments:		lpPosition - Dialog position (anchor point) (OUT)
-//					ptPosition - Dialog position (anchor point) (IN)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::GetPosition(LPPOINT lpPosition) const
-{
-	// Get position
-	lpPosition->x = m_ptPosition.x;
-	lpPosition->y = m_ptPosition.y;
-}
-
-void SDialog::SetPosition(POINT ptPosition)
-{
-	// Set position
-	m_ptPosition.x = ptPosition.x;
-	m_ptPosition.y = ptPosition.y;
-
-	// Move dialog
-	MoveDialog(m_ptPosition);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1310,182 +1078,6 @@ void SDialog::ResetDialogSize(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Get/SetSize
-//	Description:	Get/set dialog size
-//  Arguments:		lpRegSize - Dialog size
-//					szRegSize - Dialog size
-//					lWidth	  - Dialog width
-//					lHeight	  - Dialog height
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::GetSize(LPSIZE lpRegSize) const
-{
-	// If size is not set, return default
-	if ((m_szRegisterSize.cx <= 0) && (m_szRegisterSize.cy <= 0)) {
-		lpRegSize->cx = m_szDefaultSize.cx;
-		lpRegSize->cy = m_szDefaultSize.cy;
-	}
-
-	// Return dialog size
-	lpRegSize->cx = m_szRegisterSize.cx;
-	lpRegSize->cy = m_szRegisterSize.cy;
-}
-
-void SDialog::SetSize(SIZE szRegSize)
-{
-	// Copy data
-	m_szRegisterSize.cx = szRegSize.cx;
-	m_szRegisterSize.cy = szRegSize.cy;
-}
-
-void SDialog::SetSize(LONG lWidth, LONG lHeight)
-{
-	// Create dialog size data
-	CSize szDialogSize(lWidth, lHeight);
-
-	// Set dialog size
-	this->SetSize(szDialogSize);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetMin/MaxSize
-//	Description:	Set dialog min/max size
-//  Arguments:		lMinWidth	- Dialog min width
-//					lMinHeight  - Dialog min height
-//					lMaxWidth	- Dialog max width
-//					lMaxHeight	- Dialog max height
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetMinSize(LONG lMinWidth, LONG lMinHeight)
-{
-	// Set min size
-	m_szMinSize = CSize(lMinWidth, lMinHeight);
-}
-
-void SDialog::SetMaxSize(LONG lMaxWidth, LONG lMaxHeight)
-{
-	// Set min size
-	m_szMaxSize = CSize(lMaxWidth, lMaxHeight);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetTopMost
-//	Description:	Set dialog top-most flag
-//  Arguments:		bTopMost - Flag value
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetTopMost(BOOL bTopMost)
-{
-	m_bTopMostSet = bTopMost;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetInitSound
-//	Description:	Set dialog init sound enable flag
-//  Arguments:		bInitSound - Flag value
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetInitSound(BOOL bInitSound)
-{
-	m_bInitSoundSet = bInitSound;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetTop/Left/Bottom/RightMargin
-//	Description:	Set content display margin: top/left/bottom/right
-//  Arguments:		lMargin	- Corresponding margin value
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetLeftMargin(LONG lMargin)
-{
-	m_rcClientMargin.left = lMargin;
-}
-
-void SDialog::SetTopMargin(LONG lMargin)
-{
-	m_rcClientMargin.top = lMargin;
-}
-
-void SDialog::SetRightMargin(LONG lMargin)
-{
-	m_rcClientMargin.right = lMargin;
-}
-
-void SDialog::SetBottomMargin(LONG lMargin)
-{
-	m_rcClientMargin.bottom = lMargin;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetCenterMargin
-//	Description:	Set content display center margin
-//  Arguments:		ptMargin - Display margin
-//					lHMargin - Horizontal margin
-//					lVMargin - Vertical margin
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetCenterMargin(POINT ptMargin)
-{
-	// Top left
-	m_rcClientMargin.left = ptMargin.x;
-	m_rcClientMargin.top = ptMargin.y;
-	
-	// Bottom right
-	m_rcClientMargin.right = ptMargin.x;
-	m_rcClientMargin.bottom = ptMargin.y;
-}
-
-void SDialog::SetCenterMargin(LONG lHMargin, LONG lVMargin)
-{
-	// Top left
-	m_rcClientMargin.left = lHMargin;
-	m_rcClientMargin.top = lVMargin;
-
-	// Bottom right
-	m_rcClientMargin.right = lHMargin;
-	m_rcClientMargin.bottom = lVMargin;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetDisplayArea
-//	Description:	Get content display area
-//  Arguments:		lpRect - Display area rectangle
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::GetDisplayArea(LPRECT lpDispAreaRect) const
-{
-	// Get client rect
-	this->GetClientRect(lpDispAreaRect);
-
-	// Calculate display area with margin
-	lpDispAreaRect->left += m_rcClientMargin.left;
-	lpDispAreaRect->top += m_rcClientMargin.top;
-	lpDispAreaRect->right -= m_rcClientMargin.right;
-	lpDispAreaRect->bottom -= m_rcClientMargin.bottom;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	SetDisplayArea
 //	Description:	Set new display area, update margin and resize dialog
 //  Arguments:		rcNewDispArea - New display area rectangle
@@ -1615,74 +1207,6 @@ void SDialog::SetDisplayArea(RECT rcNewDispArea, BOOL bResizeDialog, BOOL bCente
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetMargin
-//	Description:	Get content display margin
-//  Arguments:		lpDialogMargin - Dialog display margin
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::GetMargin(LPRECT lpDialogMargin) const
-{
-	// Top left
-	lpDialogMargin->left = m_rcClientMargin.left;
-	lpDialogMargin->top = m_rcClientMargin.top;
-
-	// Bottom right
-	lpDialogMargin->right = m_rcClientMargin.right;
-	lpDialogMargin->bottom = m_rcClientMargin.bottom;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCaption
-//	Description:	Get dialog caption
-//  Arguments:		None
-//  Return value:	LPCTSTR - Dialog caption string
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR SDialog::GetCaption(void) const
-{
-	return m_strCaption;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCaption
-//	Description:	Get dialog caption
-//  Arguments:		strCaption - Dialog caption
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::GetCaption(CString& strCaption) const
-{
-	strCaption = m_strCaption;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetCaption
-//	Description:	Set dialog caption
-//  Arguments:		lpszDlgTitle - Dialog caption
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetCaption(LPCTSTR lpszCaption)
-{
-	// Set caption
-	m_strCaption = lpszCaption;
-
-	// If dialog is already initialized, trigger updating title
-	if (IsWindow(this->m_hWnd)) {
-		this->SetWindowText(m_strCaption);
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	SetCaptionFromResource
 //	Description:	Set dialog caption by resource string ID
 //  Arguments:		nResourceStringID - Resource string ID
@@ -1720,77 +1244,6 @@ void SDialog::SetCaptionFromLanguage(UINT nLangStringID)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetIcon
-//	Description:	Set icon by resource ID
-//  Arguments:		nIconResourceID - Icon resource ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetIcon(UINT nIconResourceID)
-{
-	// Reset icon
-	::DeleteObject(m_hDefaultIcon);
-	m_hDefaultIcon = AfxGetApp()->LoadIcon(nIconResourceID);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetIcon
-//	Description:	Set icon (same as CDialogEx base method)
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SetIcon(HICON hIcon, BOOL bBigIcon)
-{
-	// Use default method
-	CDialogEx::SetIcon(hIcon, bBigIcon);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetBkgrdColor
-//	Description:	Get/set background color
-//  Arguments:		clBkgrdColor - Background color
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::GetBkgrdColor(COLORREF& clBkgrdColor) const
-{
-	clBkgrdColor = m_clBkgrdColor;
-}
-
-void SDialog::SetBkgrdColor(COLORREF clBkgrdColor)
-{
-	m_clBkgrdColor = clBkgrdColor;
-	m_bBkgrdColorSet = TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetTextColor
-//	Description:	Get/set text color
-//  Arguments:		clTextColor - Text color
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::GetTextColor(COLORREF& clTextColor) const
-{
-	clTextColor = m_clTextColor;
-}
-
-void SDialog::SetTextColor(COLORREF clTextColor)
-{
-	m_clTextColor = clTextColor;
-	m_bTextColorSet = TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	RegisterMessageBoxCaption
 //	Description:	Register default caption for message box-es
 //  Arguments:		nCaptionID  - ID of message caption string
@@ -1822,26 +1275,6 @@ void SDialog::RegisterMessageBoxCaption(UINT nCaptionID)
 
 	// Register message box caption
 	RegisterMessageBoxCaption(strCaption);
-}
-
-void SDialog::RegisterMessageBoxCaption(LPCTSTR lpszCaption)
-{
-	// Register message box caption
-	m_strMsgCaption = lpszCaption;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetMessageBoxCaption
-//	Description:	Get registered message box caption string
-//  Arguments:		strRegMsgBoxCap - Registered message box caption
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::GetMessageBoxCaption(CString& strRegMsgBoxCap) const
-{
-	strRegMsgBoxCap = m_strMsgCaption;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2622,21 +2055,6 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, in
 // 
 //	Function name:	ShowItem
 //	Description:	Show/hide dialog item with corresponding ID
-//  Arguments:		nDlgItemID - Dialog item ID
-//					bVisible   - Visible state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::ShowItem(UINT nDlgItemID, BOOL bVisible)
-{
-	ShowItem(GetDlgItem(nDlgItemID), bVisible);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ShowItem
-//	Description:	Show/hide dialog item with corresponding ID
 //  Arguments:		pDlgItemWnd - Dialog item window pointer
 //					bVisible	- Visible state
 //  Return value:	None
@@ -2655,21 +2073,6 @@ void SDialog::ShowItem(CWnd* pDlgItemWnd, BOOL bVisible)
 
 	// Show/hide control
 	pDlgItemWnd->ShowWindow(bVisible);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnableItem
-//	Description:	Enable/disable dialog item with corresponding ID
-//  Arguments:		pDlgItemWnd - Dialog item window pointer
-//					bEnabled	- Enable or disable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::EnableItem(UINT nDlgItemID, BOOL bEnabled)
-{
-	EnableItem(GetDlgItem(nDlgItemID), bEnabled);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2724,48 +2127,6 @@ void SDialog::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
 	// Update dialog control attributes
 	UpdateDialogManagement();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateLayoutInfo
-//	Description:	Update layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::UpdateLayoutInfo(void)
-{
-	// TODO: Override this function for custom actions
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadLayoutInfo
-//	Description:	Load layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::LoadLayoutInfo(void)
-{
-	// TODO: Override this function for custom actions
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveLayoutInfo
-//	Description:	Save layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::SaveLayoutInfo(void)
-{
-	// TODO: Override this function for custom actions
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2939,67 +2300,6 @@ void SDialog::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Get/SetChangeFlagValue
-//	Description:	Get/set change flag value
-//  Arguments:		bChangeFlag - Change flag
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SDialog::GetChangeFlagValue(void) const
-{
-	return m_bChangeFlag;
-}
-
-AFX_INLINE void SDialog::SetChangeFlagValue(BOOL bChangeFlag)
-{
-	m_bChangeFlag = bChangeFlag;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckDataChangeState
-//	Description:	Check if data changed
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL SDialog::CheckDataChangeState(void)
-{
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckSettingChangeState
-//	Description:	Check if settings changed
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL SDialog::CheckSettingChangeState(void)
-{
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsForceClosingByRequest
-//	Description:	Check dialog force closing flag
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SDialog::IsForceClosingByRequest(void) const
-{
-	return m_bForceClose;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	RequestCloseDialog
 //	Description:	Request current dialog to close
 //  Arguments:		None
@@ -3017,46 +2317,4 @@ LRESULT SDialog::RequestCloseDialog(void)
 
 	// Request accepted
 	return LRESULT(RESULT_SUCCESS);	// ERROR_SUCCESS
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OpenChildDialogEx
-//	Description:	Open a child dialog with corresponding ID
-//  Arguments:		nDialogID - Child dialog ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::OpenChildDialogEx(UINT nDialogID)
-{
-	// TODO: Override this function for custom actions
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OpenChildDialogEx
-//	Description:	Open a child dialog via its pointer
-//  Arguments:		pChildDialog - Child dialog pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SDialog::OpenChildDialogEx(SDialog* pChildDialog)
-{
-	// TODO: Override this function for custom actions
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetDescendantCount
-//	Description:	Get the number of descendant dialogs
-//  Arguments:		None
-//  Return value:	UINT
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE UINT SDialog::GetDescendantCount(void) const
-{
-	return m_nDescendantCount;
 }

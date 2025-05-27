@@ -20,6 +20,8 @@
 ///////////////////////////////////////////////////////
 //// Implementations
 
+#ifdef _APPCORE_ENABLE_INLINES
+
 // Check if repeat option is enabled
 inline BOOL PwrRepeatSet::IsRepeatEnabled(void) const {
 	return m_bRepeat;
@@ -848,4 +850,8 @@ inline void AppCore::GetCurSysTime(SYSTEMTIME& stTime) {
 	stTime = GetCurSysTime();
 }
 
-#endif		// ifndef _APPCORE_INL_INCLUDED
+#endif		// ifdef _APPCORE_ENABLE_INLINES
+
+///////////////////////////////////////////////////////
+
+#endif		// !ifdef _APPCORE_INL_INCLUDED

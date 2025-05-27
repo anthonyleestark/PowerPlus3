@@ -541,22 +541,3 @@ void CHelpDlg::UpdateSwitchViewModeButton(void)
 		pBtn->SetWindowText(strTitle);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetViewMode
-//	Description:	Get/set view mode
-//  Arguments:		nViewMode - View mode
-//  Return value:	UINT
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE UINT CHelpDlg::GetViewMode() const
-{
-	return m_nViewMode;
-}
-
-AFX_INLINE void CHelpDlg::SetViewMode(UINT nViewMode)
-{
-	m_nViewMode = nViewMode;
-}
-

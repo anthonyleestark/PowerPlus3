@@ -131,6 +131,12 @@
     <ClInclude Include="include\AppCore\Logging.inl">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Dialogs\Dialogs.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Framework\Framework.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -241,9 +241,15 @@
     <ClInclude Include="include\Dialogs\RmdRepeatSetDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Dialogs\Dialogs.inl" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="include\Framework\SDialog.h" />
     <ClInclude Include="include\Framework\SElements.h" />
     <ClInclude Include="include\Framework\SWinApp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Framework\Framework.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\PowerPlus.h" />

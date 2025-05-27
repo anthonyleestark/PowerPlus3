@@ -79,4 +79,24 @@ protected:
 	void SetViewMode(UINT nViewMode);
 };
 
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _HELPDLG_ENABLE_INLINES
+	#include "Dialogs.inl"
+	#ifdef _HELPDLG_INLINE_INCLUDED
+		#pragma message("-- Dialogs inline library included (HelpDlg.h)")
+	#else
+		#pragma error("-- Linking error in HelpDlg.h: Unable to link to inline header!")
+	#endif
+	#undef _HELPDLG_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in HelpDlg.h: Inline is not enabled!")
+#endif
+
 #endif		// ifndef _HELPDLG_H_INCLUDED

@@ -19,6 +19,8 @@
 ///////////////////////////////////////////////////////
 //// Implementations
 
+#ifdef _LOGGING_ENABLE_INLINES
+
 // Get size of data by data value
 template <typename DATA>
 inline SIZE_T GetSizeByValue(DATA dataValue) {
@@ -151,4 +153,8 @@ inline PLOGITEM SLogging::GetDefaultTemplate(void) {
 	return m_pItemDefTemplate;
 }
 
-#endif		// ifndef _LOGGING_INL_INCLUDED
+#endif		// ifdef _LOGGING_ENABLE_INLINES
+
+///////////////////////////////////////////////////////
+
+#endif		// !ifdef _LOGGING_INL_INCLUDED

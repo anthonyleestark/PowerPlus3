@@ -103,4 +103,24 @@ private:
 	inline void SetHistoryCurrentDispIndex(INT_PTR nCurIndex);
 };
 
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _DEBUGTESTDLG_ENABLE_INLINES
+	#include "Dialogs.inl"
+	#ifdef _DEBUGTESTDLG_INLINE_INCLUDED
+		#pragma message("-- Dialogs inline library included (DebugTestDlg.h)")
+	#else
+		#pragma error("-- Linking error in DebugTestDlg.h: Unable to link to inline header!")
+	#endif
+	#undef _DEBUGTESTDLG_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in DebugTestDlg.h: Inline is not enabled!")
+#endif
+
 #endif	// ifndef _DEBUGTESTDLG_H_INCLUDED

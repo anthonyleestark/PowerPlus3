@@ -2109,13 +2109,16 @@ namespace AppCore
 ////////////////////////////////////////////////////////
 
 #ifdef _AFX_ENABLE_INLINES
-	#ifndef _APPCORE_ENABLES_INLINE
-		#define _APPCORE_ENABLES_INLINE
-		#include "AppCore.inl"
-		#ifdef _APPCORE_INL_INCLUDED
-			#pragma message("--AppCore inline library included")
-		#endif
+	#define _APPCORE_ENABLE_INLINES
+	#include "AppCore.inl"
+	#ifdef _APPCORE_INL_INCLUDED
+		#pragma message("-- AppCore inline library included")
+	#else
+		#pragma error("-- Linking error in AppCore.h: Unable to link to inline header!")
 	#endif
+	#undef _APPCORE_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in AppCore.h: Inline is not enabled!")
 #endif
 
 #endif	// ifndef _CORE_H_INCLUDED

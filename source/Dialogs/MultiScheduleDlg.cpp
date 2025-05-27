@@ -1990,31 +1990,3 @@ LRESULT CMultiScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam
 	return SDialog::WindowProc(message, wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetTotalItemNum
-//	Description:	Get data table total item number (including default item)
-//  Arguments:		None
-//  Return value:	int - Number of total items
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE int CMultiScheduleDlg::GetTotalItemNum() const
-{
-	return GetExtraItemNum() + DEF_SCHEDULE_DEFAULT_ITEMNUM;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetExtraItemNum
-//	Description:	Get data table extra item number only
-//  Arguments:		None
-//  Return value:	int - Number of extra items only
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE int CMultiScheduleDlg::GetExtraItemNum() const
-{
-	return m_schScheduleTemp.GetExtraItemNum();
-}
-

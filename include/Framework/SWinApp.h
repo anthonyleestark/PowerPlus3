@@ -13,6 +13,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#pragma once
 #ifndef _STUPIDFRAMEWORK_SWINAPP_H_INCLUDED
 #define _STUPIDFRAMEWORK_SWINAPP_H_INCLUDED
 
@@ -134,5 +135,25 @@ public:
 	virtual void PostErrorMessage(HWND hRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL);
 	virtual void PostErrorMessage(CWnd* pRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL);
 };
+
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _SWINAPP_ENABLE_INLINES
+	#include "Framework.inl"
+	#ifdef _SWINAPP_INLINE_INCLUDED
+		#pragma message("-- Framework inline library included (SWinApp.h)")
+	#else
+		#pragma error("-- Linking error in SWinApp.h: Unable to link to inline header!")
+	#endif
+	#undef _SWINAPP_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in SWinApp.h: Inline is not enabled!")
+#endif
 
 #endif	// ifndef _STUPIDFRAMEWORK_SWINAPP_H_INCLUDED

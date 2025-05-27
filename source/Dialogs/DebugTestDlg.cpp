@@ -666,40 +666,6 @@ BOOL CDebugTestDlg::InitDebugEditView(UINT nCtrlID)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	IsDebugEditViewValid
-//	Description:	Check if the DebugTest edit view (pointer) is valid
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-inline BOOL CDebugTestDlg::IsDebugEditViewValid(void)
-{
-	return (GetDebugEditView() != NULL);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsDebugViewFocus
-//	Description:	Check if the DebugTest edit view is focused
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-inline BOOL CDebugTestDlg::IsDebugEditViewFocus(void)
-{
-	// Check DebugTest edit view validity
-	if (!IsDebugEditViewValid())
-		return FALSE;
-
-	// Check if it is focused
-	HWND hCurFocusWnd = GetFocus()->GetSafeHwnd();
-	return (hCurFocusWnd == GetDebugEditView()->GetSafeHwnd());
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	GetCaretPosition
 //	Description:	Get the caret's current position
 //  Arguments:		None
@@ -803,21 +769,6 @@ BOOL CDebugTestDlg::ShowDebugTestEditViewMenu(void)
 	BOOL bResult = pContextMenu->TrackPopupMenu(nFlags, ptCursor.x, ptCursor.y, (CWnd*)this, NULL);
 
 	return bResult;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	BackupDebugViewBuffer
-//	Description:	Backup debug view screen buffer content
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-inline void CDebugTestDlg::BackupDebugViewBuffer(void)
-{
-	// Backup buffer
-	m_strBufferBak = m_strBuffer;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1044,104 +995,5 @@ void CDebugTestDlg::DispDebugCommandHistory(int nHistoryIndex)
 			SetCurrentlyDispHistoryState(TRUE);
 		}
 	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ClearDebugCommandHistory
-//	Description:	Clear current debug command history
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void CDebugTestDlg::ClearDebugCommandHistory(void)
-{
-	m_astrCommandHistory.RemoveAll();
-	m_astrCommandHistory.FreeExtra();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetDebugCommandHistoryCount
-//	Description:	Get debug command history item count
-//  Arguments:		None
-//  Return value:	INT_PTR
-//
-//////////////////////////////////////////////////////////////////////////
-
-INT_PTR CDebugTestDlg::GetDebugCommandHistoryCount(void) const
-{
-	return m_astrCommandHistory.GetSize();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsDebugCommandHistoryEmpty
-//	Description:	Check if current command history is empty or not
-//  Arguments:		bSeekToEnd - Move cursor to end of view
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL CDebugTestDlg::IsDebugCommandHistoryEmpty(void) const
-{
-	return m_astrCommandHistory.IsEmpty();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsCurrentlyDispHistory
-//	Description:	Check if currently displaying command history or not
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-inline BOOL CDebugTestDlg::IsCurrentlyDispHistory(void) const
-{
-	return m_bCurDispHistory;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetCurrentlyDispHistoryState
-//	Description:	Set currently displaying command history state
-//  Arguments:		bState - State flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-inline void CDebugTestDlg::SetCurrentlyDispHistoryState(BOOL bState)
-{
-	m_bCurDispHistory = bState;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetHistoryCurrentDispIndex
-//	Description:	Get command history current displaying index
-//  Arguments:		None
-//  Return value:	INT_PTR
-//
-//////////////////////////////////////////////////////////////////////////
-
-inline INT_PTR CDebugTestDlg::GetHistoryCurrentDispIndex(void) const
-{
-	return m_nHistoryCurIndex;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetHistoryCurrentDispIndex
-//	Description:	Set command history current displaying index
-//  Arguments:		INT_PTR
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-inline void CDebugTestDlg::SetHistoryCurrentDispIndex(INT_PTR nCurIndex)
-{
-	m_nHistoryCurIndex = nCurIndex;
 }
 

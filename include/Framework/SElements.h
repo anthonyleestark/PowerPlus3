@@ -12,6 +12,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#pragma once
 #ifndef _STUPIDFRAMEWORK_SELEMENTS_H_INCLUDED
 #define _STUPIDFRAMEWORK_SELEMENTS_H_INCLUDED
 
@@ -341,5 +342,25 @@ public:
 	BOOL SetBuddy(UINT nBaseCtrlID, UINT nBuddyCtrlID);
 	void UpdateData(UINT nCtrlID = NULL);
 };
+
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _SELEMENTS_ENABLE_INLINES
+	#include "Framework.inl"
+	#ifdef _SELEMENTS_INLINE_INCLUDED
+		#pragma message("-- Framework inline library included (SElements.h)")
+	#else
+		#pragma error("-- Linking error in SElements.h: Unable to link to inline header!")
+	#endif
+	#undef _SELEMENTS_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in SElements.h: Inline is not enabled!")
+#endif
 
 #endif	// ifndef _STUPIDFRAMEWORK_SELEMENTS_H_INCLUDED

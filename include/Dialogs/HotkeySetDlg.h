@@ -136,4 +136,24 @@ protected:
 	void SetListCurSel(int nSelIndex);
 };
 
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _HOTKEYSETDLG_ENABLE_INLINES
+	#include "Dialogs.inl"
+	#ifdef _HOTKEYSETDLG_INLINE_INCLUDED
+		#pragma message("-- Dialogs inline library included (HotkeySetDlg.h)")
+	#else
+		#pragma error("-- Linking error in HotkeySetDlg.h: Unable to link to inline header!")
+	#endif
+	#undef _HOTKEYSETDLG_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in HotkeySetDlg.h: Inline is not enabled!")
+#endif
+
 #endif	// ifndef _HOTKEYSETDLG_H_INCLUDED

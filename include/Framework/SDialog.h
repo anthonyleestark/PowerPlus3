@@ -13,6 +13,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#pragma once
 #ifndef _STUPIDFRAMEWORK_SDIALOG_H_INCLUDED
 #define _STUPIDFRAMEWORK_SDIALOG_H_INCLUDED
 
@@ -338,5 +339,25 @@ public:
 	virtual void OpenChildDialogEx(SDialog* pChildDialog);
 	virtual UINT GetDescendantCount(void) const;
 };
+
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _SDIALOG_ENABLE_INLINES
+	#include "Framework.inl"
+	#ifdef _SDIALOG_INLINE_INCLUDED
+		#pragma message("-- Framework inline library included (SDialog.h)")
+	#else
+		#pragma error("-- Linking error in SDialog.h: Unable to link to inline header!")
+	#endif
+	#undef _SDIALOG_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in SDialog.h: Inline is not enabled!")
+#endif
 
 #endif	// ifndef _STUPIDFRAMEWORK_SDIALOG_H_INCLUDED

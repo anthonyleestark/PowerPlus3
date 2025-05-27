@@ -239,104 +239,6 @@ BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetAppLanguage
-//	Description:	Get application current language package pointer
-//  Arguments:		None
-//  Return value:	LANGTABLE_PTR - Language package pointer
-//
-//////////////////////////////////////////////////////////////////////////
-
-LANGTABLE_PTR SWinApp::GetAppLanguage(void)
-{
-	// Check validity
-	VERIFY(m_pAppLangPtr != NULL);
-	if (m_pAppLangPtr == NULL)
-		return NULL;
-
-	return m_pAppLangPtr;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppLanguageOption
-//	Description:	Get application current language option
-//  Arguments:		bCurDispLang - Flag to get current displaying language
-//  Return value:	UINT - Language ID
-//
-//////////////////////////////////////////////////////////////////////////
-
-UINT_PTR SWinApp::GetAppLanguageOption(BOOL bCurDispLang /* = FALSE */) const
-{
-	// Return currently displaying language
-	if (bCurDispLang == TRUE)
-		return m_nCurDispLang;
-
-	// Return current setting language
-	return m_nCurSetLang;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppLanguageOption
-//	Description:	Set application current language option
-//  Arguments:		nSetLanguage - Language setting
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SWinApp::SetAppLanguageOption(UINT nSetLanguage)
-{
-	m_nCurSetLang = nSetLanguage;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppName
-//	Description:	Get application name
-//  Arguments:		None
-//  Return value:	LPCTSTR - App name string
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR SWinApp::GetAppName(void) const
-{
-	return m_pszAppName;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppName
-//	Description:	Get application name
-//  Arguments:		strAppName - Application name
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SWinApp::GetAppName(CString& strAppName) const
-{
-	strAppName = m_pszAppName;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppName
-//	Description:	Set application name
-//  Arguments:		lpszAppName - Application name
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SWinApp::SetAppName(LPCTSTR lpszAppName)
-{
-	// First, free default allocated string
-	free((void*)m_pszAppName);
-
-	// Assign new application name string
-	m_pszAppName = _tcsdup(lpszAppName);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	SetAppName
 //	Description:	Set application name by resource string ID
 //  Arguments:		nResourceStringID - Resource string ID
@@ -356,34 +258,6 @@ BOOL SWinApp::SetAppName(UINT nResourceStringID)
 	}
 
 	return bRet;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppWindowCaption
-//	Description:	Get application window common caption
-//  Arguments:		None
-//  Return value:	LPCTSTR - App caption string
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR SWinApp::GetAppWindowCaption(void) const
-{
-	return m_strWindowCaption.GetString();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppWindowCaption
-//	Description:	Get application window common caption
-//  Arguments:		strAppWndTitle - Application window caption
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SWinApp::GetAppWindowCaption(CString& strWindowCaption) const
-{
-	strWindowCaption = m_strWindowCaption;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -463,26 +337,6 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 
 	// Register message box caption
 	RegisterMessageBoxCaption(strCaption);
-}
-
-void SWinApp::RegisterMessageBoxCaption(LPCTSTR lpszCaption)
-{
-	// Register message box caption
-	m_strMessageCaption = lpszCaption;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetRegisterdMsgBoxCaption
-//	Description:	Get registered message box caption string
-//  Arguments:		strRegMsgBoxCap - Registered message box caption
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SWinApp::GetRegisterdMsgBoxCaption(CString& strRegMsgBoxCap) const
-{
-	strRegMsgBoxCap = m_strMessageCaption;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -634,22 +488,6 @@ void SWinApp::InitAppEventLog(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetAppEventLog
-//	Description:	Get application event logging pointer
-//  Arguments:		None
-//  Return value:	SLogging - Application event logging pointer
-//
-//////////////////////////////////////////////////////////////////////////
-
-SLogging* SWinApp::GetAppEventLog(void)
-{
-	// Check validity
-	VERIFY(m_pAppEventLog != NULL);
-	return m_pAppEventLog;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	OutputEventLog
 //	Description:	Output application event log
 //  Arguments:		usEvent			- Event ID
@@ -681,21 +519,6 @@ void SWinApp::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 	if (SLogging* ptrAppEventLog = GetAppEventLog()) {
 		ptrAppEventLog->OutputItem(logItemAppEvent);
 	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppOption
-//	Description:	Return option value by ID
-//  Arguments:		eAppOptionID - ID of specific option
-//					bTemp		 - Temp value or saved value (saved value by default)
-//  Return value:	int - Option value
-//
-//////////////////////////////////////////////////////////////////////////
-
-int SWinApp::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE */) const
-{
-	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -759,86 +582,6 @@ void SWinApp::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Get/SetChangeFlagValue
-//	Description:	Get/set change flag value
-//  Arguments:		bChangeFlag - Change flag
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SWinApp::GetChangeFlagValue(void) const
-{
-	return m_bChangeFlag;
-}
-
-void SWinApp::SetChangeFlagValue(BOOL bChangeFlag)
-{
-	m_bChangeFlag = bChangeFlag;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckDataChangeState
-//	Description:	Check if data changed
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL SWinApp::CheckDataChangeState(void)
-{
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckSettingChangeState
-//	Description:	Check if settings changed
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL SWinApp::CheckSettingChangeState(void)
-{
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetReadOnlyMode
-//	Description:	Get/set read-only mode
-//  Arguments:		bReadOnly - Read-only mode flag
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SWinApp::GetReadOnlyMode(void) const
-{
-	return m_bReadOnlyMode;
-}
-
-void SWinApp::SetReadOnlyMode(BOOL bReadOnly)
-{
-	m_bReadOnlyMode = bReadOnly;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsForceClosingByRequest
-//	Description:	Check application force closing flag
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-AFX_INLINE BOOL SWinApp::IsForceClosingByRequest(void) const
-{
-	return m_bForceClose;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	RequestCloseDialog
 //	Description:	Request current dialog to close
 //  Arguments:		nDialogID  - Dialog ID
@@ -857,31 +600,4 @@ LRESULT SWinApp::RequestCloseDialog(HWND hDialogWnd)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PostErrorMessage
-//	Description:	Post error message to specified window
-//  Arguments:		hRcvWnd		- Receive window handle
-//					pRcvWnd		- Receive window pointer
-//					dwErrorCode	- Error code (as First param)
-//					lParam		- Additional param (Second param)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void SWinApp::PostErrorMessage(DWORD dwErrorCode, LPARAM lParam /* = NULL */)
-{
-	PostMessage(NULL, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
-}
-
-void SWinApp::PostErrorMessage(HWND hRcvWnd, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
-{
-	PostMessage(hRcvWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
-}
-
-void SWinApp::PostErrorMessage(CWnd* pRcvWnd, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
-{
-	pRcvWnd->PostMessage(SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
 }

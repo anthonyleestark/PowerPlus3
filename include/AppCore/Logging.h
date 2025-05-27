@@ -318,13 +318,16 @@ public:
 ////////////////////////////////////////////////////////
 
 #ifdef _AFX_ENABLE_INLINES
-	#ifndef _LOGGING_ENABLES_INLINE
-		#define _LOGGING_ENABLES_INLINE
-		#include "Logging.inl"
-		#ifdef _LOGGING_INL_INCLUDED
-			#pragma message("--Logging inline library included")
-		#endif
+	#define _LOGGING_ENABLE_INLINES
+	#include "Logging.inl"
+	#ifdef _LOGGING_INL_INCLUDED
+		#pragma message("-- Logging inline library included")
+	#else
+		#pragma error("-- Linking error in Logging.h: Unable to link to inline header!")
 	#endif
+	#undef _LOGGING_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in Logging.h: Inline is not enabled!")
 #endif
 
 #endif	// ifndef _LOGGING_H_INCLUDED
