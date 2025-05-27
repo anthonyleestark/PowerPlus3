@@ -37,14 +37,24 @@ inline void LogDetail::SetCategory(USHORT usCategory) {
 	m_usCategory = usCategory;
 };
 
+// Get detail flag
+inline INT LogDetail::GetFlag(void) const {
+	return m_nFlag;
+};
+
+// Set detail flag
+inline void LogDetail::SetFlag(INT nFlag) {
+	m_nFlag = nFlag;
+};
+
 // Get detail info (integer)
-inline UINT LogDetail::GetDetailValue(void) const {
-	return m_uiDetailInfo;
+inline INT LogDetail::GetDetailValue(void) const {
+	return m_nDetailValue;
 };
 
 // Set detail info (integer)
-inline void LogDetail::SetDetailValue(UINT uiDetailInfo) {
-	m_uiDetailInfo = uiDetailInfo;
+inline void LogDetail::SetDetailValue(INT nDetailValue) {
+	m_nDetailValue = nDetailValue;
 };
 
 // Get detail info (string)
@@ -59,7 +69,7 @@ inline void LogDetail::SetDetailString(LPCTSTR lpszDetailInfo) {
 
 // Get detail info (pointer)
 inline PVOID LogDetail::GetPointerData(void) const {
-	return m_ptrDetailInfo;
+	return m_ptrDetailData;
 };
 
 // Get detail info pointer type
@@ -133,18 +143,18 @@ inline void LogItem::AddDetail(const LOGDETAIL& logDetail) {
 }
 
 // Add log detail info item
-inline void LogItem::AddDetail(USHORT usCategory, UINT nDetailInfo) {
-	m_arrDetailInfo.AddDetail(usCategory, nDetailInfo);
+inline void LogItem::AddDetail(USHORT usCategory, INT nDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */) {
+	m_arrDetailInfo.AddDetail(usCategory, nDetailInfo, nFlag);
 }
 
 // Add log detail info item
-inline void LogItem::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo) {
-	m_arrDetailInfo.AddDetail(usCategory, lpszDetailInfo);
+inline void LogItem::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */) {
+	m_arrDetailInfo.AddDetail(usCategory, lpszDetailInfo, nFlag);
 }
 
 // Add log detail info item
-inline void LogItem::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo) {
-	m_arrDetailInfo.AddDetail(usCategory, nDetailInfo, lpszDetailInfo);
+inline void LogItem::AddDetail(USHORT usCategory, INT nDetailInfo, LPCTSTR lpszDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */) {
+	m_arrDetailInfo.AddDetail(usCategory, nDetailInfo, lpszDetailInfo, nFlag);
 }
 
 // Remove all log detail info data

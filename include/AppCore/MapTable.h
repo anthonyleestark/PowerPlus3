@@ -465,6 +465,8 @@ namespace MapTable
 			BaseLog::LogCategory,				_T("category"),
 			BaseLog::Description,				_T("description"),
 			BaseLog::Details,					_T("details"),
+			BaseLog::DetailNumeric,				_T("value"),
+			BaseLog::DetailString,				_T("text"),
 		/*---------------------------------------------------------------------------*/
 
 		/*--Event log detail category ID---------Output Text-------------------------*/
@@ -523,7 +525,7 @@ namespace MapTable
 		/*---Action history result ID------------Output Text-------------------------*/
 			HistoryResult::Success,				_T("Success"),
 			HistoryResult::FailedUnknown,		_T("Failed (Unknown error)"),
-			HistoryResult::FailedWithErrorCode,	_T("Failed (Error code: 0x%08X)")
+			HistoryResult::FailedWithErrorCode,	_T("Failed (With determined error)")
 		/*---------------------------------------------------------------------------*/
 		END_STRINGMAPTABLE()
 	};

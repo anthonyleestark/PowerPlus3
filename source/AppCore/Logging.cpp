@@ -91,10 +91,11 @@ SIZE_T GetSizeByType(BYTE byDataType)
 LogDetail::LogDetail()
 {
 	// Initialization
-	m_usCategory = 0;										// Detail category
-	m_uiDetailInfo = 0;										// Detail info (integer)
+	m_usCategory = INT_NULL;								// Detail category
+	m_nFlag = LogDetailFlag::Flag_Null;						// Detail info flag
+	m_nDetailValue = INT_NULL;								// Detail value (integer)
 	m_strDetailInfo.Empty();								// Detail info (string)
-	m_ptrDetailInfo = NULL;									// Detail info (pointer)
+	m_ptrDetailData = NULL;									// Detail data (pointer)
 	m_byPointerType = LogDataType::Void;					// Detail info pointer data type
 	m_szPointerSize = INT_NULL;								// Detail info pointer data size
 }
@@ -103,9 +104,10 @@ LogDetail::LogDetail(const LogDetail& pItem)
 {
 	// Copy data
 	m_usCategory = pItem.m_usCategory;						// Detail category
-	m_uiDetailInfo = pItem.m_uiDetailInfo;					// Detail info (integer)
+	m_nFlag = pItem.m_nFlag;								// Detail flag
+	m_nDetailValue = pItem.m_nDetailValue;					// Detail value (integer)
 	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
-	PointerCopy(pItem);										// Detail info (pointer)
+	PointerCopy(pItem);										// Detail data (pointer)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,9 +123,10 @@ LogDetail& LogDetail::operator=(const LogDetail& pItem)
 {
 	// Copy data
 	m_usCategory = pItem.m_usCategory;						// Detail category
-	m_uiDetailInfo = pItem.m_uiDetailInfo;					// Detail info (integer)
+	m_nFlag = pItem.m_nFlag;								// Detail flag
+	m_nDetailValue = pItem.m_nDetailValue;					// Detail value (integer)
 	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
-	PointerCopy(pItem);										// Detail info (pointer)
+	PointerCopy(pItem);										// Detail data (pointer)
 
 	return *this;
 }
@@ -140,12 +143,13 @@ LogDetail& LogDetail::operator=(const LogDetail& pItem)
 void LogDetail::Init()
 {
 	// Initialization
-	m_usCategory = 0;										// Detail category
-	m_uiDetailInfo = 0;										// Detail info (integer)
+	m_usCategory = INT_NULL;								// Detail category
+	m_nFlag = LogDetailFlag::Flag_Null;						// Detail info flag
+	m_nDetailValue = INT_NULL;								// Detail value (integer)
 	m_strDetailInfo.Empty();								// Detail info (string)
-	m_ptrDetailInfo = NULL;									// Detail info (pointer)
+	m_ptrDetailData = NULL;									// Detail data (pointer)
 	m_byPointerType = LogDataType::Void;					// Detail info pointer data type
-	m_szPointerSize = INT_NULL;								// Detail info pointer data size
+	m_szPointerSize = INT_NULL;								// Detail info pointer data sizesize
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -161,9 +165,10 @@ void LogDetail::Copy(const LogDetail& pItem)
 {
 	// Copy data
 	m_usCategory = pItem.m_usCategory;						// Detail category
-	m_uiDetailInfo = pItem.m_uiDetailInfo;					// Detail info (integer)
+	m_nFlag = pItem.m_nFlag;								// Detail flag
+	m_nDetailValue = pItem.m_nDetailValue;					// Detail value (integer)
 	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
-	PointerCopy(pItem);										// Detail info (pointer)
+	PointerCopy(pItem);										// Detail data (pointer)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -182,7 +187,7 @@ void LogDetail::PointerCopy(const LogDetail& pItem)
 	m_szPointerSize = pItem.m_szPointerSize;					// Detail info pointer data size
 
 	// Copy pointer data
-	memcpy(m_ptrDetailInfo, pItem.m_ptrDetailInfo, pItem.m_szPointerSize);
+	memcpy(m_ptrDetailData, pItem.m_ptrDetailData, pItem.m_szPointerSize);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -200,9 +205,10 @@ BOOL LogDetail::Compare(const LogDetail& pItem) const
 
 	// Compare items
 	bRet &= (m_usCategory == pItem.m_usCategory);				// Detail category
-	bRet &= (m_uiDetailInfo == pItem.m_uiDetailInfo);			// Detail info (integer)
+	bRet &= (m_nFlag == pItem.m_nFlag);							// Detail flag
+	bRet &= (m_nDetailValue == pItem.m_nDetailValue);			// Detail value (integer)
 	bRet &= (m_strDetailInfo == pItem.m_strDetailInfo);			// Detail info (string)
-	bRet &= PointerCompare(pItem);								// Detail info (pointer)
+	bRet &= PointerCompare(pItem);								// Detail data (pointer)
 
 	return bRet;
 }
@@ -226,7 +232,7 @@ BOOL LogDetail::PointerCompare(const LogDetail& pItem) const
 
 	// Only compare pointer values if properties are matching
 	if (bRet != FALSE) {
-		bRet &= memcmp(m_ptrDetailInfo, pItem.m_ptrDetailInfo, m_szPointerSize);
+		bRet &= memcmp(m_ptrDetailData, pItem.m_ptrDetailData, m_szPointerSize);
 	}
 
 	return bRet;
@@ -284,7 +290,7 @@ BOOL LogDetail::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_U
 	// Otherwise, set normally
 	m_byPointerType = byDataType;
 	m_szPointerSize = szDataSize;
-	memcpy(m_ptrDetailInfo, pDataBuff, szDataSize);
+	memcpy(m_ptrDetailData, pDataBuff, szDataSize);
 	return TRUE;
 }
 
@@ -365,39 +371,43 @@ void LogDetailInfo::CopyData(const LogDetailInfo& pData)
 //					usCategory	  - Detail category
 //					nDetailInfo	  - Detail info (integer)
 //					strDetailInfo - Detail info (string)
+//					nFlag		  - Detail flag
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void LogDetailInfo::AddDetail(USHORT usCategory, UINT nDetailInfo)
+void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
 	logDetail.SetCategory(usCategory);
 	logDetail.SetDetailValue(nDetailInfo);
+	logDetail.SetFlag(nFlag);
 
 	// Add detail info item
 	this->AddDetail(logDetail);
 }
 
-void LogDetailInfo::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo)
+void LogDetailInfo::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
 	logDetail.SetCategory(usCategory);
 	logDetail.SetDetailString(lpszDetailInfo);
+	logDetail.SetFlag(nFlag);
 
 	// Add detail info item
 	this->AddDetail(logDetail);
 }
 
-void LogDetailInfo::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo)
+void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, LPCTSTR lpszDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
 	logDetail.SetCategory(usCategory);
 	logDetail.SetDetailValue(nDetailInfo);
 	logDetail.SetDetailString(lpszDetailInfo);
+	logDetail.SetFlag(nFlag);
 
 	// Add detail info item
 	this->AddDetail(logDetail);
@@ -621,7 +631,8 @@ CString LogItem::FormatOutput(void) const
 		// Create JSON detail data object
 		JSONDATA jsonDetailData;
 
-		CString strLogDetailID;
+		CString strDetailKey;
+		CString strDetailValue;
 
 		// Set object name: Details
 		jsonDetailData.SetObjectName(GetString(StringTable::LogKey, BaseLog::Details));
@@ -632,15 +643,38 @@ CString LogItem::FormatOutput(void) const
 			// Get detail info item
 			LOGDETAIL logDetail = m_arrDetailInfo.GetAt(nIndex);
 
+			// Skip if detail item is read-only
+			int nDetailFlag = logDetail.GetFlag();
+			if (nDetailFlag & LogDetailFlag::ReadOnly_Data)
+				continue;
+
+			// NULL flag --> apply default flags
+			if (nDetailFlag == LogDetailFlag::Flag_Null) {
+				nDetailFlag = LogDetailFlag::Write_Int;
+			}
+
 			// Detail info category
-			strLogDetailID = GetString(StringTable::LogKey, logDetail.GetCategory());
+			strDetailKey = GetString(StringTable::LogKey, logDetail.GetCategory());
 
 			// Detail info value
-			if (logDetail.GetDetailValue() != INT_NULL) {
-				jsonDetailData.AddInteger(strLogDetailID, logDetail.GetDetailValue());
+			int nDetailValue = logDetail.GetDetailValue();
+			if (nDetailFlag & LogDetailFlag::Write_Int) {
+				jsonDetailData.AddInteger(strDetailKey, logDetail.GetDetailValue());
 			}
-			else if (!logDetail.GetDetailString().IsEmpty()) {
-				jsonDetailData.AddString(strLogDetailID, logDetail.GetDetailString());
+			else if (nDetailFlag & LogDetailFlag::LookUp_Dict) {
+				strDetailValue = GetString(StringTable::LogValue, nDetailValue);
+				jsonDetailData.AddString(strDetailKey, strDetailValue);
+			}
+			else if (nDetailFlag & LogDetailFlag::Write_String) {
+				jsonDetailData.AddString(strDetailKey, logDetail.GetDetailString());
+			}
+			else if (nDetailFlag & (LogDetailFlag::Write_Int & LogDetailFlag::Write_String)) {
+				JSONDATA jsonSubDetail;
+				strDetailKey = GetString(StringTable::LogKey, BaseLog::DetailNumeric);
+				jsonSubDetail.AddInteger(strDetailKey, logDetail.GetDetailValue());
+				strDetailKey = GetString(StringTable::LogKey, BaseLog::DetailString);
+				jsonSubDetail.AddString(strDetailKey, logDetail.GetDetailString());
+				jsonDetailData.AddChildObject(&jsonSubDetail);
 			}
 		}
 
@@ -752,12 +786,7 @@ void JSON::CopyArrayData(const JSON& pObj)
 	// Set destination array data size
 	this->m_arrKeyValuePairs.SetSize(pObj.m_arrKeyValuePairs.GetSize());
 
-	// Copy list of keys
-	for (int nIndex = 0; nIndex < pObj.m_arrKeyValuePairs.GetSize(); nIndex++) {
-		this->m_arrKeyValuePairs.SetAt(nIndex, pObj.m_arrKeyValuePairs.GetAt(nIndex));
-	}
-
-	// Copy list of values
+	// Copy list of key-value pairs
 	for (int nIndex = 0; nIndex < pObj.m_arrKeyValuePairs.GetSize(); nIndex++) {
 		this->m_arrKeyValuePairs.SetAt(nIndex, pObj.m_arrKeyValuePairs.GetAt(nIndex));
 	}

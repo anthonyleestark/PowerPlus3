@@ -38,11 +38,14 @@
 class LogDetail
 {
 private:
-	// Member variables
+	// Attributes
 	USHORT	m_usCategory;									// Detail category
-	UINT	m_uiDetailInfo;									// Detail info (integer)
+	INT		m_nFlag;										// Detail flag
+
+	// Data
+	INT		m_nDetailValue;									// Detail value (integer)
 	CString	m_strDetailInfo;								// Detail info (string)
-	PVOID	m_ptrDetailInfo;								// Detail info (pointer)
+	PVOID	m_ptrDetailData;								// Detail data (pointer)
 	BYTE	m_byPointerType;								// Detail info pointer data type
 	SIZE_T	m_szPointerSize;								// Detail info pointer data size
 
@@ -67,16 +70,18 @@ public:
 	// Get/set functions
 	USHORT GetCategory(void) const;							// Get detail category
 	void SetCategory(USHORT);								// Set detail category
-	UINT GetDetailValue(void) const;						// Get detail info (integer)
-	void SetDetailValue(UINT);								// Set detail info (integer)
+	INT GetFlag(void) const;								// Get detail flag
+	void SetFlag(INT nFlag);								// Set detail flag
+	INT GetDetailValue(void) const;							// Get detail value (integer)
+	void SetDetailValue(INT);								// Set detail value (integer)
 	CString GetDetailString(void) const;					// Get detail info (string)
 	void SetDetailString(LPCTSTR);							// Set detail info (string)
-	PVOID GetPointerData(void) const;						// Get detail info pointer data
-	BOOL SetPointerData(PVOID, BYTE = -1, SIZE_T = 0);		// Set detail info pointer data
-	BYTE GetPointerType(void) const;						// Get detail info pointer type
-	void SetPointerType(BYTE byType);						// Set detail info pointer type
-	SIZE_T GetPointerSize(void) const;						// Get detail info pointer size
-	void SetPointerSize(SIZE_T szSize);						// Set detail info pointer size
+	PVOID GetPointerData(void) const;						// Get detail data pointer data
+	BOOL SetPointerData(PVOID, BYTE = -1, SIZE_T = 0);		// Set detail data pointer data
+	BYTE GetPointerType(void) const;						// Get detail data pointer type
+	void SetPointerType(BYTE byType);						// Set detail data pointer type
+	SIZE_T GetPointerSize(void) const;						// Get detail data pointer size
+	void SetPointerSize(SIZE_T szSize);						// Set detail data pointer size
 };
 
 // Define new typenames for LogData
@@ -110,9 +115,9 @@ public:
 public:
 	// Update data functions
 	void AddDetail(const LOGDETAIL&);						// Add detail item
-	void AddDetail(USHORT, UINT);							// Add detail item (integer data only)
-	void AddDetail(USHORT, LPCTSTR);						// Add detail item (string data only)
-	void AddDetail(USHORT, UINT, LPCTSTR);					// Add detail item (both integer and string data)
+	void AddDetail(USHORT, INT, INT = 0);					// Add detail item (integer data only)
+	void AddDetail(USHORT, LPCTSTR, INT = 0);				// Add detail item (string data only)
+	void AddDetail(USHORT, INT, LPCTSTR, INT = 0);			// Add detail item (both integer and string data)
 };
 
 // Define new typenames for LogDetailInfo
@@ -166,9 +171,9 @@ public:
 
 	// Detail info functions
 	void AddDetail(const LOGDETAIL&);						// Add detail data
-	void AddDetail(USHORT, UINT);							// Add detail (integer data only)
-	void AddDetail(USHORT, LPCTSTR);						// Add detail (string data only)
-	void AddDetail(USHORT, UINT, LPCTSTR);					// Add detail (both integer and string data)
+	void AddDetail(USHORT, INT, INT = 0);					// Add detail (integer data only)
+	void AddDetail(USHORT, LPCTSTR, INT = 0);				// Add detail (string data only)
+	void AddDetail(USHORT, INT, LPCTSTR, INT = 0);			// Add detail (both integer and string data)
 
 	// Format data functions
 	CString	FormatDateTime(void) const;						// Format date/time value

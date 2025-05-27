@@ -5299,18 +5299,18 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 	{
 	case HistoryCategory::PowerAction:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_PWRACTION);
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID);
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID, LogDetailFlag::LookUp_Dict);
 		break;
 
 	case HistoryCategory::ScheduleAction:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_SCHEDULE);
 		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.m_nItemID);
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID);
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID, LogDetailFlag::LookUp_Dict);
 		break;
 
 	case HistoryCategory::HotkeySet:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_HOTKEY);
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID);
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID, LogDetailFlag::LookUp_Dict);
 		actionLogItem.AddDetail(HistoryDetail::Keystrokes, m_hidHistoryInfoData.m_strDescription);
 		break;
 
@@ -5326,18 +5326,18 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 
 	// Attach history action result detail info
 	if (m_hidHistoryInfoData.m_bActionResult == TRUE) {
-		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::Success);
+		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::Success, LogDetailFlag::LookUp_Dict);
 	}
 	else {
 		if ((m_hidHistoryInfoData.m_dwErrorCode == INT_NULL) ||
 			(m_hidHistoryInfoData.m_dwErrorCode == APP_ERROR_UNKNOWN)) {
 
 			// If error code is NULL or unknown, set as failed with unknown reason
-			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedUnknown);
+			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedUnknown, LogDetailFlag::LookUp_Dict);
 		}
 		else {
 			// If error code is available, set as failed with error code
-			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedWithErrorCode);
+			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedWithErrorCode, LogDetailFlag::LookUp_Dict);
 
 			// Attach error code detail info
 			actionLogItem.AddDetail(HistoryDetail::ActionError, m_hidHistoryInfoData.m_dwErrorCode);

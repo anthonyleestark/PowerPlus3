@@ -107,9 +107,9 @@
 //////////////////// ********************
 
 enum LogWriteMode {
-	ReadOnly = 0,				// Read-only log data (do not write)
-	WriteOnCall,				// Write log on-call mode
-	WriteInstantly,				// Write log instantly mode
+	ReadOnly = 0,						// Read-only log data (do not write)
+	WriteOnCall,						// Write log on-call mode
+	WriteInstantly,						// Write log instantly mode
 };
 
 
@@ -120,24 +120,34 @@ enum LogWriteMode {
 //////////////////// ********************
 
 enum LogDataType {
-	Unspecified = -1,			// Unspecified type
-	Void = 0,					// No type (unusable)
-	Num_U1,						// Unsigned integer (1-byte)
-	Num_U2,						// Unsigned integer (2-byte)
-	Num_U4,						// Unsigned integer (4-byte)
-	Num_U8,						// Unsigned integer (8-byte)
-	Num_I1,						// Signed integer (1-byte)
-	Num_I2,						// Signed integer (2-byte)
-	Num_I4,						// Signed integer (4-byte)
-	Num_I8,						// Signed integer (8-byte)
-	Num_F1,						// Float number (1-byte)
-	Num_F2,						// Float number (2-byte)
-	Num_F4,						// Float number (4-byte)
-	Num_F8,						// Float number (8-byte)
-	Boolean,					// Boolean number (TRUE/FALSE)
-	Text_ANSI,					// Text value (ANSI)
-	Text_Unicode,				// Text value (Unicode)
-	SystemTime,					// SYSTEMTIME struct
+	Unspecified = -1,					// Unspecified type
+	Void = 0,							// No type (unusable)
+	Num_U1,								// Unsigned integer (1-byte)
+	Num_U2,								// Unsigned integer (2-byte)
+	Num_U4,								// Unsigned integer (4-byte)
+	Num_U8,								// Unsigned integer (8-byte)
+	Num_I1,								// Signed integer (1-byte)
+	Num_I2,								// Signed integer (2-byte)
+	Num_I4,								// Signed integer (4-byte)
+	Num_I8,								// Signed integer (8-byte)
+	Num_F1,								// Float number (1-byte)
+	Num_F2,								// Float number (2-byte)
+	Num_F4,								// Float number (4-byte)
+	Num_F8,								// Float number (8-byte)
+	Boolean,							// Boolean number (TRUE/FALSE)
+	Text_ANSI,							// Text value (ANSI)
+	Text_Unicode,						// Text value (Unicode)
+	SystemTime,							// SYSTEMTIME struct
+};
+
+enum LogDetailFlag
+{
+	Flag_Null			= (int)0x000,	// NULL flag (apply default behavior)
+	ReadOnly_Data		= (int)0x001,	// Read-only & do not write to file (applied for all data)
+	ReadOnly_Pointer	= (int)0x002,	// Read-only but applied for pointer data only
+	Write_Int			= (int)0x004,	// Use numeric integer value when write to file
+	Write_String		= (int)0x008,	// Use string value when write to file
+	LookUp_Dict			= (int)0x010,	// Use numeric value as a key to look up for string from dictionary
 };
 
 
@@ -160,6 +170,8 @@ enum BaseLog {
 	LogCategory,				// Log category
 	Description,				// Log description string
 	Details,					// Log details info
+	DetailNumeric,				// Log detail numeric value
+	DetailString,				// Log detail string value
 };
 
 
