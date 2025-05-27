@@ -2070,6 +2070,7 @@ namespace AppCore
 	BOOL	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
 
 	BOOL	StringValidate(LPCTSTR lpszSrc, DWORD& dwError);
+	int		PrintCharList(LPCTSTR lpszSrc, CString& strOutput);
 
 	LPCTSTR StringFormat(UINT nFormatTemplateID, ...);
 	LPCTSTR StringFormat(LPCTSTR lpszFormatTemplate, ...);

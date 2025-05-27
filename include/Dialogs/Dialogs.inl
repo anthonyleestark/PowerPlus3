@@ -208,6 +208,11 @@ inline void CRmdRepeatSetDlg::SetSnoozeInterval(int nValue) {
 #define _DEBUGTESTDLG_INLINE_INCLUDED
 #endif
 
+// Get access to the DebugTest edit view pointer
+inline CEdit* CDebugTestDlg::GetDebugEditView(void) const {
+	return m_pDebugEditView;
+}
+
 // Check if the DebugTest edit view (pointer) is valid
 inline BOOL CDebugTestDlg::IsDebugEditViewValid(void) {
 	return (GetDebugEditView() != NULL);

@@ -1484,8 +1484,23 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 
 		// Reply failed message
 		if (dwErrorCode == APP_ERROR_DBG_INVALID_COMMAND) {
+
 			// Error: Invalid command
 			OutputDebugLog(_T("Invalid command!!!"));
+		}
+		else if (dwErrorCode == APP_ERROR_DBG_TOKENIZATION_FAILED) {
+
+			// Trace error
+			TRACE_ERROR(_T("Error: Debug command tokenization failed!!!"));
+
+			// Get command character list
+			CString strCommandCharList;
+			PrintCharList(strDebugCommand, strCommandCharList);
+
+			// Output debug info (to file)
+			CString strDebugLog;
+			strDebugLog.Format(_T("Failed debug command: %s"), strCommandCharList);
+			OutputDebugLog(strDebugLog, DebugInfoFile);
 		}
 		else {
 			// Reply corresponding error code
@@ -3526,6 +3541,9 @@ void CPowerPlusDlg::OpenChildDialogEx(UINT nDialogID)
 				pDialog->ShowWindow(SW_SHOW);
 			}
 		}
+
+		// Bring to top (by default)
+		pDialog->PostMessage(SM_WND_SHOWDIALOG, TRUE);
 	}
 
 	// Base class processing

@@ -29,8 +29,8 @@ using namespace AppCore;
 //////////////////////////////////////////////////////////////////////////
 
 // Default min/max size
-#define DEFAULT_MIN_WIDTH		720
-#define DEFAULT_MIN_HEIGHT		480
+#define DEFAULT_MIN_WIDTH		840
+#define DEFAULT_MIN_HEIGHT		500
 #define DEFAULT_MAX_WIDTH		1600
 #define DEFAULT_MAX_HEIGHT		900
 
@@ -56,6 +56,8 @@ CDebugTestDlg::CDebugTestDlg() : SDialog(IDD_DEBUGTEST_DLG)
 {
 	// Edit view
 	m_pDebugEditView = NULL;
+	m_pDebugViewFont = NULL;
+	m_pDebugViewBrush = NULL;
 
 	// Buffer content
 	m_strBuffer = STRING_EMPTY;
@@ -78,6 +80,20 @@ CDebugTestDlg::~CDebugTestDlg()
 {
 	// Clean-up debug command history
 	ClearDebugCommandHistory();
+
+	// Delete font
+	if (m_pDebugViewFont != NULL) {
+		m_pDebugViewFont->DeleteObject();
+		delete m_pDebugViewFont;
+		m_pDebugViewFont = NULL;
+	}
+
+	// Delete brush
+	if (m_pDebugViewBrush != NULL) {
+		m_pDebugViewBrush->DeleteObject();
+		delete m_pDebugViewBrush;
+		m_pDebugViewBrush = NULL;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -106,8 +122,10 @@ BEGIN_MESSAGE_MAP(CDebugTestDlg, SDialog)
 	ON_MESSAGE(SM_APP_DEBUG_OUTPUT,		 &CDebugTestDlg::OnDebugOutput)
 	ON_MESSAGE(SM_APP_DEBUGCMD_NOREPLY,	 &CDebugTestDlg::OnDebugCmdNoReply)
 	ON_MESSAGE(SM_WND_DEBUGVIEW_CLRSCR,	 &CDebugTestDlg::OnDebugViewClear)
+	ON_MESSAGE(SM_WND_SHOWDIALOG,		 &CDebugTestDlg::OnShowDialog)
 	ON_WM_GETMINMAXINFO()
 	ON_WM_SIZE()
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -152,6 +170,7 @@ BOOL CDebugTestDlg::OnInitDialog()
 
 	// Bring window to top
 	this->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+	this->SetForegroundWindow();
 
 	// Clear buffer
 	ClearViewBuffer();
@@ -209,6 +228,35 @@ void CDebugTestDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 
 	// Default
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnCtlColor
+//	Description:	Set background and text color
+//  Arguments:		Default
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+HBRUSH CDebugTestDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	if (nCtlColor == CTLCOLOR_EDIT)
+	{
+		// Text color: Yellow
+		pDC->SetTextColor(COLOR_YELLOW);
+
+		// Background color: Black
+		pDC->SetBkColor(COLOR_BLACK);
+
+		// Use our custom background brush
+		if (m_pDebugViewBrush != NULL)
+			return *m_pDebugViewBrush;
+	}
+
+	return hBrush;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -347,6 +395,44 @@ LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM wParam, LPARAM lParam)
 	// Clear buffer
 	ClearViewBuffer();
 
+	return LRESULT(RESULT_SUCCESS);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	OnShowDialog
+//	Description:	Show/hide dialog when receiving message
+//  Arguments:		wParam - Show/hide flag
+//					lParam - Not used
+//  Return value:	LRESULT
+//
+//////////////////////////////////////////////////////////////////////////
+
+LRESULT CDebugTestDlg::OnShowDialog(WPARAM wParam, LPARAM lParam)
+{
+	// Get flag value
+	BOOL bShowFlag = TRUE;
+	if (wParam != NULL) {
+		bShowFlag = (BOOL)wParam;
+	}
+
+	// Show/hide dialog
+	if (bShowFlag == TRUE) {
+
+		// Show dialog
+		this->ShowWindow(SW_SHOW);
+
+		// Bring window to top
+		this->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+		this->SetForegroundWindow();
+	}
+	else {
+		// Hide dialog
+		this->ShowWindow(SW_HIDE);
+	}
+
+	// Default: Always success
 	return LRESULT(RESULT_SUCCESS);
 }
 
@@ -632,20 +718,6 @@ BOOL CDebugTestDlg::SendDebugCommand(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetDebugEditView
-//	Description:	Get access to the DebugTest edit view pointer
-//  Arguments:		None
-//  Return value:	CEdit* pointer
-//
-//////////////////////////////////////////////////////////////////////////
-
-CEdit* CDebugTestDlg::GetDebugEditView(void)
-{
-	return m_pDebugEditView;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	InitDebugEditView
 //	Description:	Initialize the DebugTest edit view pointer
 //  Arguments:		nCtrlID - Dialog control ID
@@ -661,7 +733,89 @@ BOOL CDebugTestDlg::InitDebugEditView(UINT nCtrlID)
 
 	// Initialize
 	m_pDebugEditView = (CEdit*)GetDlgItem(nCtrlID);
+
+	// Set DebugView font & background color
+	if (IsDebugEditViewValid()) {
+		if (CreateDebugViewFont()) {
+			m_pDebugEditView->SetFont(m_pDebugViewFont);
+		}
+		if (!CreateDebugViewBrush())
+			return FALSE;
+	}
+
 	return IsDebugEditViewValid();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CreateDebugViewFont
+//	Description:	Initialize font for DebugTest edit view
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::CreateDebugViewFont(void)
+{
+	// Initialization
+	if (m_pDebugViewFont == NULL) {
+		m_pDebugViewFont = new CFont();
+		if (m_pDebugViewFont == NULL) {
+			// Trace error
+			TRACE_ERROR("Error: Failed to create font!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+			return FALSE;
+		}
+	}
+
+	// Setup font properties
+	LOGFONT lf = STRUCT_ZERO;
+	_tcscpy_s(lf.lfFaceName, _T("Cascadia Mono"));
+	lf.lfHeight = -16;
+	lf.lfWeight = FW_SEMIBOLD;
+	lf.lfItalic = FALSE;
+	lf.lfUnderline = FALSE;
+	lf.lfCharSet = ANSI_CHARSET;
+	lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
+
+	// Create font
+	BOOL bRet = FALSE;
+	if (m_pDebugViewFont != NULL) {
+		bRet = m_pDebugViewFont->CreateFontIndirect(&lf);
+	}
+
+	return bRet;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CreateDebugViewBrush
+//	Description:	Initialize brush for adjust DebugTest edit view color
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CDebugTestDlg::CreateDebugViewBrush(void)
+{
+	// Initialization
+	if (m_pDebugViewBrush == NULL) {
+		m_pDebugViewBrush = new CBrush();
+		if (m_pDebugViewBrush == NULL) {
+			// Trace error
+			TRACE_ERROR("Error: Failed to create brush!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+			return FALSE;
+		}
+	}
+
+	// Create brush
+	BOOL bRet = FALSE;
+	if (m_pDebugViewBrush != NULL) {
+		bRet = m_pDebugViewBrush->CreateSolidBrush(COLOR_BLACK);
+	}
+
+	return bRet;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -790,23 +944,26 @@ int CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 	strDebugCommand.Trim();
 
 	// Initialize a temporary string buffer
-	LPTSTR lpszBuffTemp = new TCHAR[MAX_BUFFER_LENGTH];
-	_tcscpy(lpszBuffTemp, strDebugCommand.operator LPCWSTR());
+	int nSrcLength = strDebugCommand.GetLength();
+	LPTSTR lpszBuffTemp = new TCHAR[nSrcLength + 1];
 
 	// Remove invalid characters
-	int nBuffIndex = 0;
-	int nSrcLength = _tcslen(lpszBuffTemp);
+	int nBuffCount = 0;
 	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
-		// If not an invalid character
-		switch (lpszBuffTemp[nIndex])
+
+		TCHAR tch = strDebugCommand.GetAt(nIndex);
+		switch (tch)
 		{
 		case CHAR_RETURN:
 		case CHAR_ENDLINE:
 			break;
+		case CHAR_TAB:
+			// Replace with space
+			lpszBuffTemp[nBuffCount++] = CHAR_SPACE;
+			break;
 		default:
 			// Add to buffer
-			lpszBuffTemp[nBuffIndex] = lpszBuffTemp[nIndex];
-			nBuffIndex++;
+			lpszBuffTemp[nBuffCount++] = tch;
 			break;
 		}
 	}
@@ -814,7 +971,7 @@ int CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 	// Copy back formatted string
 	strDebugCommand.Empty();
 	strDebugCommand.FreeExtra();
-	strDebugCommand.SetString(lpszBuffTemp);
+	strDebugCommand.SetString(lpszBuffTemp, nBuffCount);
 
 	// Clean-up temporary string buffer
 	delete[] lpszBuffTemp;

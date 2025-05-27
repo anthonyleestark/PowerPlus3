@@ -5221,6 +5221,62 @@ BOOL AppCore::StringValidate(LPCTSTR lpszSrc, DWORD& dwError)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	PrintCharList
+//	Description:	Print list of characters of given string
+//  Arguments:		lpszSrc	  - Given string
+//					strOutput - Result string
+//  Return value:	int - Number of characters
+//
+//////////////////////////////////////////////////////////////////////////
+
+int AppCore::PrintCharList(LPCTSTR lpszSrc, CString& strOutput)
+{
+	// Invalid source string
+	if (lpszSrc == NULL)
+		return INT_INVALID;
+
+	// Prepare output string
+	strOutput.Empty();
+	strOutput.Append(_T("{ "));
+
+	// Print character list
+	CString strReplace = STRING_EMPTY;
+	int nSrcLength = _tcslen(lpszSrc);
+	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
+		TCHAR tch = lpszSrc[nIndex];
+		switch (tch)
+		{
+		case CHAR_TAB:
+			strReplace = _T("#TAB");
+			strOutput.Append(strReplace);
+			break;
+		case CHAR_RETURN:
+			strReplace = _T("#RET");
+			strOutput.Append(strReplace);
+			break;
+		case CHAR_ENDLINE:
+			strReplace = _T("#ENDL");
+			strOutput.Append(strReplace);
+			break;
+		default:
+			strOutput.AppendChar(tch);
+			break;
+		}
+
+		// Add separator
+		if (nIndex < nSrcLength - 1) {
+			strOutput.Append(_T(", "));
+		}
+	}
+
+	// End result
+	strOutput.Append(_T(" }"));
+
+	return nSrcLength;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	StringFormat
 //	Description:	Format string (same as default MFC Format function)
 //  Arguments:		nFormatTemplateID  - ID of resource format template string

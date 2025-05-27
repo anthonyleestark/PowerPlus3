@@ -41,6 +41,8 @@ public:
 private:
 	// Edit view
 	CEdit* m_pDebugEditView;
+	CFont* m_pDebugViewFont;
+	CBrush* m_pDebugViewBrush;
 
 	// Buffer content
 	CString m_strBuffer;
@@ -64,19 +66,23 @@ public:
 	virtual void OnClose();
 	virtual void OnDestroy();
 	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
+	virtual HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	virtual void OnSize(UINT nType, int nWidth, int nHeight);
 	afx_msg void OnDebugViewEditChange(void);
 	afx_msg LRESULT OnDebugOutput(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugCmdNoReply(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugViewClear(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnShowDialog(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL PreTranslateMessage(MSG *pMsg);
 	virtual BOOL SendDebugCommand(void);
 
 private:
 	// Member functions
-	CEdit* GetDebugEditView(void);
+	CEdit* GetDebugEditView(void) const;
 	BOOL InitDebugEditView(UINT nCtrlID);
+	BOOL CreateDebugViewFont(void);
+	BOOL CreateDebugViewBrush(void);
 
 	inline BOOL IsDebugEditViewValid(void);
 	inline BOOL IsDebugEditViewFocus(void);
