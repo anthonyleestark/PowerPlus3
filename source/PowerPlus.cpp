@@ -3539,18 +3539,13 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 
 	// Event log detail info
 	LOGDETAILINFO logDetailInfo;
+	{
+		// Error code ID
+		logDetailInfo.AddDetail(EventDetail::EventError, dwErrCode);
 
-	// Error code ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::EventError;
-	logDetail.uiDetailInfo = dwErrCode;
-	logDetailInfo.Add(logDetail);
-
-	// Message content detail info
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::MessageText;
-	logDetail.strDetailInfo = LPARAM_TO_STRING(lParam);
-	logDetailInfo.Add(logDetail);
+		// Message content detail info
+		logDetailInfo.AddDetail(EventDetail::MessageText, LPARAM_TO_STRING(lParam));
+	}
 
 	// Output event log
 	OutputEventLog(LOG_EVENT_ERROR_MESSAGE, strDescription, &logDetailInfo);

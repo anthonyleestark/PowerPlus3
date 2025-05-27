@@ -1414,18 +1414,13 @@ void SDialog::OutputButtonLog(USHORT usEvent, UINT nButtonID)
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
+	{
+		// Button ID
+		logDetailInfo.AddDetail(EventDetail::ResourceID, nButtonID);
 
-	// Button ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::ResourceID;
-	logDetail.uiDetailInfo = nButtonID;
-	logDetailInfo.Add(logDetail);
-
-	// Mapped ID
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::NameID;
-	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nButtonID));
-	logDetailInfo.Add(logDetail);
+		// Mapped ID
+		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(nButtonID)));
+	}
 
 	// Output button event log
 	OutputEventLog(usEvent, strButtonCaption, &logDetailInfo);
@@ -1451,24 +1446,16 @@ void SDialog::OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID)
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
+	{
+		// Checkbox ID
+		logDetailInfo.AddDetail(EventDetail::ResourceID, nCheckboxID);
 
-	// Checkbox ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::ResourceID;
-	logDetail.uiDetailInfo = nCheckboxID;
-	logDetailInfo.Add(logDetail);
+		// Mapped ID
+		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(nCheckboxID)));
 
-	// Mapped ID
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::NameID;
-	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nCheckboxID));
-	logDetailInfo.Add(logDetail);
-
-	// Checkbox checked state
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::CheckState;
-	logDetail.uiDetailInfo = pChkBtn->GetCheck();
-	logDetailInfo.Add(logDetail);
+		// Checkbox checked state
+		logDetailInfo.AddDetail(EventDetail::CheckState, pChkBtn->GetCheck());
+	}
 
 	// Output checkbox event log
 	OutputEventLog(usEvent, strChkCaption, &logDetailInfo);
@@ -1494,24 +1481,16 @@ void SDialog::OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID)
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
+	{
+		// Radio button ID
+		logDetailInfo.AddDetail(EventDetail::ResourceID, nRadButtonID);
 
-	// Radio button ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::ResourceID;
-	logDetail.uiDetailInfo = nRadButtonID;
-	logDetailInfo.Add(logDetail);
+		// Mapped ID
+		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(nRadButtonID)));
 
-	// Mapped ID
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::NameID;
-	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nRadButtonID));
-	logDetailInfo.Add(logDetail);
-
-	// Radio button checked state
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::CheckState;
-	logDetail.uiDetailInfo = pRadBtn->GetCheck();
-	logDetailInfo.Add(logDetail);
+		// Radio button checked state
+		logDetailInfo.AddDetail(EventDetail::CheckState, pRadBtn->GetCheck());
+	}
 
 	// Output radio button event log
 	OutputEventLog(usEvent, strRadCaption, &logDetailInfo);
@@ -1534,38 +1513,30 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 	if (pCombo == NULL) return;
 
 	// Detail info
-	LOGDETAILINFO logDetailInfo;
-
-	// Combo-box ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::ResourceID;
-	logDetail.uiDetailInfo = nComboID;
-	logDetailInfo.Add(logDetail);
-
-	// Mapped ID
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::NameID;
-	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nComboID));
-	logDetailInfo.Add(logDetail);
-
-	// Combo-box control info
 	CString strComboCaption;
-	SControlManager* pCtrlMan = GetControlManager();
-	if (pCtrlMan != NULL) {
-		SCtrlInfoWrap* pComboWrap = pCtrlMan->GetControl(nComboID);
-		if (pComboWrap != NULL) {
-			// Combo-box caption
-			pComboWrap->GetCaption(strComboCaption);
+	LOGDETAILINFO logDetailInfo;
+	{
+		// Combo-box ID
+		logDetailInfo.AddDetail(EventDetail::ResourceID, nComboID);
 
-			// Combo-box current selection string
-			INT_PTR nCurSel = pComboWrap->GetInteger();
-			CStringArray arrDataList;
-			pComboWrap->GetStringArray(arrDataList);
-			if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
-				logDetail.Init();
-				logDetail.usCategory = EventDetail::Selection;
-				logDetail.strDetailInfo = arrDataList.GetAt(nCurSel);
-				logDetailInfo.Add(logDetail);
+		// Mapped ID
+		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(nComboID)));
+
+		// Combo-box control info
+		SControlManager* pCtrlMan = GetControlManager();
+		if (pCtrlMan != NULL) {
+			SCtrlInfoWrap* pComboWrap = pCtrlMan->GetControl(nComboID);
+			if (pComboWrap != NULL) {
+				// Combo-box caption
+				pComboWrap->GetCaption(strComboCaption);
+
+				// Combo-box current selection string
+				INT_PTR nCurSel = pComboWrap->GetInteger();
+				CStringArray arrDataList;
+				pComboWrap->GetStringArray(arrDataList);
+				if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
+					logDetailInfo.AddDetail(EventDetail::Selection, arrDataList.GetAt(nCurSel));
+				}
 			}
 		}
 	}
@@ -1591,34 +1562,28 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 	if (pEdit == NULL) return;
 
 	// Detail info
-	LOGDETAILINFO logDetailInfo;
-
-	// Edit box ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::ResourceID;
-	logDetail.uiDetailInfo = nEditID;
-	logDetailInfo.Add(logDetail);
-
-	// Mapped ID
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::NameID;
-	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nEditID));
-	logDetailInfo.Add(logDetail);
-
-	// Edit box control info
 	CString strEditBoxCaption;
-	SControlManager* pCtrlMan = GetControlManager();
-	if (pCtrlMan != NULL) {
-		SCtrlInfoWrap* pEditBoxWrap = pCtrlMan->GetControl(nEditID);
-		if (pEditBoxWrap != NULL) {
-			// Edit box caption
-			pEditBoxWrap->GetCaption(strEditBoxCaption);
-			
-			// Edit box content
-			logDetail.Init();
-			logDetail.usCategory = EventDetail::DataValue;
-			pEditBoxWrap->GetString(logDetail.strDetailInfo);
-			logDetailInfo.Add(logDetail);
+	LOGDETAILINFO logDetailInfo;
+	{
+		// Edit box ID
+		logDetailInfo.AddDetail(EventDetail::ResourceID, nEditID);
+
+		// Mapped ID
+		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(nEditID)));
+
+		// Edit box control info
+		SControlManager* pCtrlMan = GetControlManager();
+		if (pCtrlMan != NULL) {
+			SCtrlInfoWrap* pEditBoxWrap = pCtrlMan->GetControl(nEditID);
+			if (pEditBoxWrap != NULL) {
+				// Edit box caption
+				pEditBoxWrap->GetCaption(strEditBoxCaption);
+
+				// Edit box content
+				CString strContent;
+				pEditBoxWrap->GetString(strContent);
+				logDetailInfo.AddDetail(EventDetail::DataValue, strContent);
+			}
 		}
 	}
 
@@ -1643,38 +1608,30 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 	if (pListBox == NULL) return;
 
 	// Detail info
-	LOGDETAILINFO logDetailInfo;
-
-	// List box ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::ResourceID;
-	logDetail.uiDetailInfo = nListBoxID;
-	logDetailInfo.Add(logDetail);
-
-	// Mapped ID
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::NameID;
-	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nListBoxID));
-	logDetailInfo.Add(logDetail);
-
-	// List box control info
 	CString strListBoxCaption;
-	SControlManager* pCtrlMan = GetControlManager();
-	if (pCtrlMan != NULL) {
-		SCtrlInfoWrap* pListBoxWrap = pCtrlMan->GetControl(nListBoxID);
-		if (pListBoxWrap != NULL) {
-			// List box caption
-			pListBoxWrap->GetCaption(strListBoxCaption);
+	LOGDETAILINFO logDetailInfo;
+	{
+		// List box ID
+		logDetailInfo.AddDetail(EventDetail::ResourceID, nListBoxID);
 
-			// List box current selection string
-			INT_PTR nCurSel = pListBoxWrap->GetInteger();
-			CStringArray arrDataList;
-			pListBoxWrap->GetStringArray(arrDataList);
-			if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
-				logDetail.Init();
-				logDetail.usCategory = EventDetail::Selection;
-				logDetail.strDetailInfo = arrDataList.GetAt(nCurSel);
-				logDetailInfo.Add(logDetail);
+		// Mapped ID
+		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(nListBoxID)));
+
+		// List box control info
+		SControlManager* pCtrlMan = GetControlManager();
+		if (pCtrlMan != NULL) {
+			SCtrlInfoWrap* pListBoxWrap = pCtrlMan->GetControl(nListBoxID);
+			if (pListBoxWrap != NULL) {
+				// List box caption
+				pListBoxWrap->GetCaption(strListBoxCaption);
+
+				// List box current selection string
+				INT_PTR nCurSel = pListBoxWrap->GetInteger();
+				CStringArray arrDataList;
+				pListBoxWrap->GetStringArray(arrDataList);
+				if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
+					logDetailInfo.AddDetail(EventDetail::Selection, arrDataList.GetAt(nCurSel));
+				}
 			}
 		}
 	}
@@ -1701,18 +1658,13 @@ void SDialog::OutputSpinCtrlLog(USHORT usEvent, UINT nSpinCtrlID)
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
+	{
+		// Spin control ID
+		logDetailInfo.AddDetail(EventDetail::ResourceID, nSpinCtrlID);
 
-	// Spin control ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::ResourceID;
-	logDetail.uiDetailInfo = nSpinCtrlID;
-	logDetailInfo.Add(logDetail);
-
-	// Mapped ID
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::NameID;
-	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nSpinCtrlID));
-	logDetailInfo.Add(logDetail);
+		// Mapped ID
+		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(nSpinCtrlID)));
+	}
 
 	// Output spin control event log
 	OutputEventLog(usEvent, NULL, &logDetailInfo);
@@ -1740,18 +1692,13 @@ void SDialog::OutputMenuLog(USHORT usEvent, UINT nMenuItemID)
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
+	{
+		// Menu item ID
+		logDetailInfo.AddDetail(EventDetail::ResourceID, nMenuItemID);
 
-	// Menu item ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = EventDetail::ResourceID;
-	logDetail.uiDetailInfo = nMenuItemID;
-	logDetailInfo.Add(logDetail);
-
-	// Mapped ID
-	logDetail.Init();
-	logDetail.usCategory = EventDetail::NameID;
-	logDetail.strDetailInfo = MAKEUNICODE(GET_NAME_ID(nMenuItemID));
-	logDetailInfo.Add(logDetail);
+		// Mapped ID
+		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(nMenuItemID)));
+	}
 
 	// Output menu event log
 	OutputEventLog(usEvent, strMenuItemCaption, &logDetailInfo);

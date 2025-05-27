@@ -83,31 +83,29 @@ SIZE_T GetSizeByType(BYTE byDataType)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagLOGDETAIL
+//	Function name:	LogDetail
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagLOGDETAIL::tagLOGDETAIL()
+LogDetail::LogDetail()
 {
 	// Initialization
-	this->usCategory = 0;										// Detail category
-	this->uiDetailInfo = 0;										// Detail info (integer)
-	this->strDetailInfo.Empty();								// Detail info (string)
-	this->ptrDetailInfo = NULL;									// Detail info (pointer)
-	this->byPointerType = LogDataType::Void;					// Detail info pointer data type
-	this->szPointerSize = INT_NULL;								// Detail info pointer data size
+	m_usCategory = 0;										// Detail category
+	m_uiDetailInfo = 0;										// Detail info (integer)
+	m_strDetailInfo.Empty();								// Detail info (string)
+	m_ptrDetailInfo = NULL;									// Detail info (pointer)
+	m_byPointerType = LogDataType::Void;					// Detail info pointer data type
+	m_szPointerSize = INT_NULL;								// Detail info pointer data size
 }
 
-tagLOGDETAIL::tagLOGDETAIL(const tagLOGDETAIL& pItem)
+LogDetail::LogDetail(const LogDetail& pItem)
 {
 	// Copy data
-	this->usCategory = pItem.usCategory;						// Detail category
-	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
-	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
-	this->PointerCopy(pItem);									// Detail info (pointer)
+	m_usCategory = pItem.m_usCategory;						// Detail category
+	m_uiDetailInfo = pItem.m_uiDetailInfo;					// Detail info (integer)
+	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
+	PointerCopy(pItem);										// Detail info (pointer)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -115,17 +113,17 @@ tagLOGDETAIL::tagLOGDETAIL(const tagLOGDETAIL& pItem)
 //	Function name:	operator=
 //	Description:	Copy assignment operator
 //  Arguments:		Default
-//  Return value:	tagLOGDETAIL&
+//  Return value:	LogDetail&
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagLOGDETAIL& tagLOGDETAIL::operator=(const tagLOGDETAIL& pItem)
+LogDetail& LogDetail::operator=(const LogDetail& pItem)
 {
 	// Copy data
-	this->usCategory = pItem.usCategory;						// Detail category
-	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
-	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
-	this->PointerCopy(pItem);									// Detail info (pointer)
+	m_usCategory = pItem.m_usCategory;						// Detail category
+	m_uiDetailInfo = pItem.m_uiDetailInfo;					// Detail info (integer)
+	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
+	PointerCopy(pItem);										// Detail info (pointer)
 
 	return *this;
 }
@@ -139,15 +137,15 @@ tagLOGDETAIL& tagLOGDETAIL::operator=(const tagLOGDETAIL& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagLOGDETAIL::Init()
+void LogDetail::Init()
 {
 	// Initialization
-	this->usCategory = 0;										// Detail category
-	this->uiDetailInfo = 0;										// Detail info (integer)
-	this->strDetailInfo.Empty();								// Detail info (string)
-	this->ptrDetailInfo = NULL;									// Detail info (pointer)
-	this->byPointerType = LogDataType::Void;					// Detail info pointer data type
-	this->szPointerSize = INT_NULL;								// Detail info pointer data size
+	m_usCategory = 0;										// Detail category
+	m_uiDetailInfo = 0;										// Detail info (integer)
+	m_strDetailInfo.Empty();								// Detail info (string)
+	m_ptrDetailInfo = NULL;									// Detail info (pointer)
+	m_byPointerType = LogDataType::Void;					// Detail info pointer data type
+	m_szPointerSize = INT_NULL;								// Detail info pointer data size
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -159,13 +157,13 @@ void tagLOGDETAIL::Init()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagLOGDETAIL::Copy(const tagLOGDETAIL& pItem)
+void LogDetail::Copy(const LogDetail& pItem)
 {
 	// Copy data
-	this->usCategory = pItem.usCategory;						// Detail category
-	this->uiDetailInfo = pItem.uiDetailInfo;					// Detail info (integer)
-	this->strDetailInfo = pItem.strDetailInfo;					// Detail info (string)
-	this->PointerCopy(pItem);									// Detail info (pointer)
+	m_usCategory = pItem.m_usCategory;						// Detail category
+	m_uiDetailInfo = pItem.m_uiDetailInfo;					// Detail info (integer)
+	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
+	PointerCopy(pItem);										// Detail info (pointer)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -177,14 +175,14 @@ void tagLOGDETAIL::Copy(const tagLOGDETAIL& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagLOGDETAIL::PointerCopy(const tagLOGDETAIL& pItem)
+void LogDetail::PointerCopy(const LogDetail& pItem)
 {
 	// Copy pointer properties
-	this->byPointerType = pItem.byPointerType;					// Detail info pointer data type
-	this->szPointerSize = pItem.szPointerSize;					// Detail info pointer data size
+	m_byPointerType = pItem.m_byPointerType;					// Detail info pointer data type
+	m_szPointerSize = pItem.m_szPointerSize;					// Detail info pointer data size
 
 	// Copy pointer data
-	memcpy(this->ptrDetailInfo, pItem.ptrDetailInfo, pItem.szPointerSize);
+	memcpy(m_ptrDetailInfo, pItem.m_ptrDetailInfo, pItem.m_szPointerSize);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -196,15 +194,15 @@ void tagLOGDETAIL::PointerCopy(const tagLOGDETAIL& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagLOGDETAIL::Compare(const tagLOGDETAIL& pItem) const
+BOOL LogDetail::Compare(const LogDetail& pItem) const
 {
 	BOOL bRet = FALSE;
 
 	// Compare items
-	bRet &= (this->usCategory == pItem.usCategory);				// Detail category
-	bRet &= (this->uiDetailInfo == pItem.uiDetailInfo);			// Detail info (integer)
-	bRet &= (this->strDetailInfo == pItem.strDetailInfo);		// Detail info (string)
-	bRet &= this->PointerCompare(pItem);						// Detail info (pointer)
+	bRet &= (m_usCategory == pItem.m_usCategory);				// Detail category
+	bRet &= (m_uiDetailInfo == pItem.m_uiDetailInfo);			// Detail info (integer)
+	bRet &= (m_strDetailInfo == pItem.m_strDetailInfo);			// Detail info (string)
+	bRet &= PointerCompare(pItem);								// Detail info (pointer)
 
 	return bRet;
 }
@@ -218,17 +216,17 @@ BOOL tagLOGDETAIL::Compare(const tagLOGDETAIL& pItem) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagLOGDETAIL::PointerCompare(const tagLOGDETAIL& pItem) const
+BOOL LogDetail::PointerCompare(const LogDetail& pItem) const
 {
 	BOOL bRet = FALSE;
 
 	// Compare properties
-	bRet &= (this->byPointerType == pItem.byPointerType);		// Detail info pointer data type
-	bRet &= (this->szPointerSize == pItem.szPointerSize);		// Detail info pointer data size
+	bRet &= (m_byPointerType == pItem.m_byPointerType);			// Detail info pointer data type
+	bRet &= (m_szPointerSize == pItem.m_szPointerSize);			// Detail info pointer data size
 
 	// Only compare pointer values if properties are matching
 	if (bRet != FALSE) {
-		bRet &= memcmp(this->ptrDetailInfo, pItem.ptrDetailInfo, this->szPointerSize);
+		bRet &= memcmp(m_ptrDetailInfo, pItem.m_ptrDetailInfo, m_szPointerSize);
 	}
 
 	return bRet;
@@ -243,7 +241,7 @@ BOOL tagLOGDETAIL::PointerCompare(const tagLOGDETAIL& pItem) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagLOGDETAIL::IsEmpty(void) const
+BOOL LogDetail::IsEmpty(void) const
 {
 	// Initialize empty detail info
 	static const LOGDETAIL logDummyDetail;
@@ -263,7 +261,7 @@ BOOL tagLOGDETAIL::IsEmpty(void) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL tagLOGDETAIL::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_UNSPECIFIED */, SIZE_T szDataSize /* = 0 */)
+BOOL LogDetail::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_UNSPECIFIED */, SIZE_T szDataSize /* = 0 */)
 {
 	// If data type is void (unusable), do nothing
 	if (byDataType == LogDataType::Void)
@@ -284,10 +282,125 @@ BOOL tagLOGDETAIL::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYP
 	}
 
 	// Otherwise, set normally
-	this->byPointerType = byDataType;
-	this->szPointerSize = szDataSize;
-	memcpy(this->ptrDetailInfo, pDataBuff, szDataSize);
+	m_byPointerType = byDataType;
+	m_szPointerSize = szDataSize;
+	memcpy(m_ptrDetailInfo, pDataBuff, szDataSize);
 	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	LogDetailInfo
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+LogDetailInfo::LogDetailInfo() : LOGDETAILARRAY()
+{
+	// Initialization
+	this->RemoveAll();
+}
+
+LogDetailInfo::LogDetailInfo(const LogDetailInfo& pData)
+{
+	// Copy data
+	this->Copy(pData);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		Default
+//  Return value:	LogDetailInfo&
+//
+//////////////////////////////////////////////////////////////////////////
+
+LogDetailInfo& LogDetailInfo::operator=(const LogDetailInfo& pData)
+{
+	// Copy data
+	this->Copy(pData);
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Init
+//	Description:	Initialize/reset data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void LogDetailInfo::Init(void)
+{
+	// Reset data
+	this->RemoveAll();
+	this->FreeExtra();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CopyData
+//	Description:	Copy data from another log detail info data
+//  Arguments:		pData - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void LogDetailInfo::CopyData(const LogDetailInfo& pData)
+{
+	// Remove all data first
+	this->Init();
+
+	// Copy data
+	this->Copy(pData);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	AddDetail
+//	Description:	Add log detail info item
+//  Arguments:		logDetail	  - Log detail item
+//					usCategory	  - Detail category
+//					nDetailInfo	  - Detail info (integer)
+//					strDetailInfo - Detail info (string)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void LogDetailInfo::AddDetail(USHORT usCategory, UINT nDetailInfo)
+{
+	// Prepare detail info item
+	LOGDETAIL logDetail;
+	logDetail.SetCategory(usCategory);
+	logDetail.SetDetailValue(nDetailInfo);
+
+	// Add detail info item
+	this->AddDetail(logDetail);
+}
+
+void LogDetailInfo::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo)
+{
+	// Prepare detail info item
+	LOGDETAIL logDetail;
+	logDetail.SetCategory(usCategory);
+	logDetail.SetDetailString(lpszDetailInfo);
+
+	// Add detail info item
+	this->AddDetail(logDetail);
+}
+
+void LogDetailInfo::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo)
+{
+	// Prepare detail info item
+	LOGDETAIL logDetail;
+	logDetail.SetCategory(usCategory);
+	logDetail.SetDetailValue(nDetailInfo);
+	logDetail.SetDetailString(lpszDetailInfo);
+
+	// Add detail info item
+	this->AddDetail(logDetail);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -436,58 +549,6 @@ void LogItem::RemoveAll(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	AddDetail
-//	Description:	Add log detail info data
-//  Arguments:		logDetailInfo	- Log detail info data
-//					usCategory		- Detail category
-//					nDetailInfo		- Detail info (integer)
-//					strDetailInfo	- Detail info (string)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void LogItem::AddDetail(const LOGDETAIL& logDetailInfo)
-{
-	// Add detail info data
-	m_arrDetailInfo.Add(logDetailInfo);
-}
-
-void LogItem::AddDetail(USHORT usCategory, UINT nDetailInfo)
-{
-	// Prepare detail info data
-	LOGDETAIL logDetailInfo;
-	logDetailInfo.usCategory = usCategory;
-	logDetailInfo.uiDetailInfo = nDetailInfo;
-
-	// Add detail info data
-	this->AddDetail(logDetailInfo);
-}
-
-void LogItem::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo)
-{
-	// Prepare detail info data
-	LOGDETAIL logDetailInfo;
-	logDetailInfo.usCategory = usCategory;
-	logDetailInfo.strDetailInfo = lpszDetailInfo;
-
-	// Add detail info data
-	this->AddDetail(logDetailInfo);
-}
-
-void LogItem::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo)
-{
-	// Prepare detail info data
-	LOGDETAIL logDetailInfo;
-	logDetailInfo.usCategory = usCategory;
-	logDetailInfo.uiDetailInfo = nDetailInfo;
-	logDetailInfo.strDetailInfo = lpszDetailInfo;
-
-	// Add detail info data
-	this->AddDetail(logDetailInfo);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	FormatDateTime
 //	Description:	Return a formatted logitem date/time string
 //  Arguments:		None
@@ -572,14 +633,14 @@ CString LogItem::FormatOutput(void) const
 			LOGDETAIL logDetail = m_arrDetailInfo.GetAt(nIndex);
 
 			// Detail info category
-			strLogDetailID = GetString(StringTable::LogKey, logDetail.usCategory);
+			strLogDetailID = GetString(StringTable::LogKey, logDetail.GetCategory());
 
 			// Detail info value
-			if (logDetail.uiDetailInfo != INT_NULL) {
-				jsonDetailData.AddInteger(strLogDetailID, logDetail.uiDetailInfo);
+			if (logDetail.GetDetailValue() != INT_NULL) {
+				jsonDetailData.AddInteger(strLogDetailID, logDetail.GetDetailValue());
 			}
-			else if (!logDetail.strDetailInfo.IsEmpty()) {
-				jsonDetailData.AddString(strLogDetailID, logDetail.strDetailInfo);
+			else if (!logDetail.GetDetailString().IsEmpty()) {
+				jsonDetailData.AddString(strLogDetailID, logDetail.GetDetailString());
 			}
 		}
 

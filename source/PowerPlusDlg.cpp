@@ -5078,11 +5078,8 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const SCHEDULEITEM& s
 	CString strActionName = GetLanguageString(pAppLang, nActionNameID);
 
 	// Detail info
-	LOGDETAIL logDetail;
-	logDetail.usCategory = STATIC_CAST(USHORT, EventDetail::ContentID);
-	logDetail.uiDetailInfo = schItem.GetItemID();
 	LOGDETAILINFO logDetailInfo;
-	logDetailInfo.Add(logDetail);
+	logDetailInfo.AddDetail(EventDetail::ContentID, schItem.GetItemID());
 
 	// Output event log
 	OutputEventLog(usEvent, strActionName, &logDetailInfo);
@@ -5105,12 +5102,7 @@ void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PWRREMINDERI
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
-
-	// Item ID
-	LOGDETAIL logDetail;
-	logDetail.usCategory = STATIC_CAST(USHORT, EventDetail::ContentID);
-	logDetail.uiDetailInfo = pwrItem.GetItemID();
-	logDetailInfo.Add(logDetail);
+	logDetailInfo.AddDetail(EventDetail::ContentID, pwrItem.GetItemID());
 
 	// Output event log
 	OutputEventLog(usEvent, strMsgContent, &logDetailInfo);
@@ -5286,104 +5278,52 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 	actionLogItem.SetProcessID();
 
 	// Attach history detail info by category ID
-	LOGDETAIL actionLogDetail;
 	switch (m_hidHistoryInfoData.m_nCategoryID)
 	{
-		case HistoryCategory::PowerAction:
-		{
-			// History category
-			actionLogItem.SetCategory(LOG_HISTORY_EXEC_PWRACTION);
+	case HistoryCategory::PowerAction:
+		actionLogItem.SetCategory(LOG_HISTORY_EXEC_PWRACTION);
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID);
+		break;
 
-			// Action ID
-			actionLogDetail.Init();
-			actionLogDetail.usCategory = HistoryDetail::Action;
-			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nActionID;
-			actionLogItem.AddDetail(actionLogDetail);
-		} break;
+	case HistoryCategory::ScheduleAction:
+		actionLogItem.SetCategory(LOG_HISTORY_EXEC_SCHEDULE);
+		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.m_nItemID);
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID);
+		break;
 
-		case HistoryCategory::ScheduleAction:
-		{
-			// History category
-			actionLogItem.SetCategory(LOG_HISTORY_EXEC_SCHEDULE);
+	case HistoryCategory::HotkeySet:
+		actionLogItem.SetCategory(LOG_HISTORY_EXEC_HOTKEY);
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.m_nActionID);
+		actionLogItem.AddDetail(HistoryDetail::Keystrokes, m_hidHistoryInfoData.m_strDescription);
+		break;
 
-			// Item ID
-			actionLogDetail.Init();
-			actionLogDetail.usCategory = HistoryDetail::ItemID;
-			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nItemID;
-			actionLogItem.AddDetail(actionLogDetail);
+	case HistoryCategory::PowerReminder:
+		actionLogItem.SetCategory(LOG_HISTORY_DISP_PWRREMINDER);
+		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.m_nItemID);
+		actionLogItem.AddDetail(HistoryDetail::Message, m_hidHistoryInfoData.m_strDescription);
+		break;
 
-			// Action ID
-			actionLogDetail.Init();
-			actionLogDetail.usCategory = HistoryDetail::Action;
-			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nActionID;
-			actionLogItem.AddDetail(actionLogDetail);
-		} break;
-
-		case HistoryCategory::HotkeySet:
-		{
-			// History category
-			actionLogItem.SetCategory(LOG_HISTORY_EXEC_HOTKEY);
-
-			// Action ID
-			actionLogDetail.Init();
-			actionLogDetail.usCategory = HistoryDetail::Action;
-			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nActionID;
-			actionLogItem.AddDetail(actionLogDetail);
-
-			// Keystrokes
-			actionLogDetail.Init();
-			actionLogDetail.usCategory = HistoryDetail::Keystrokes;
-			actionLogDetail.strDetailInfo = m_hidHistoryInfoData.m_strDescription;
-			actionLogItem.AddDetail(actionLogDetail);
-		} break;
-
-		case HistoryCategory::PowerReminder:
-		{
-			// History category
-			actionLogItem.SetCategory(LOG_HISTORY_DISP_PWRREMINDER);
-
-			// Item ID
-			actionLogDetail.Init();
-			actionLogDetail.usCategory = HistoryDetail::ItemID;
-			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_nItemID;
-			actionLogItem.AddDetail(actionLogDetail);
-
-			// Message content
-			actionLogDetail.Init();
-			actionLogDetail.usCategory = HistoryDetail::Message;
-			actionLogDetail.strDetailInfo = m_hidHistoryInfoData.m_strDescription;
-			actionLogItem.AddDetail(actionLogDetail);
-		} break;
-
-		default:
-			break;
+	default:
+		break;
 	}
 
 	// Attach history action result detail info
-	actionLogDetail.Init();
-	actionLogDetail.usCategory = HistoryDetail::Result;
 	if (m_hidHistoryInfoData.m_bActionResult == TRUE) {
-		actionLogDetail.uiDetailInfo = HistoryResult::Success;
-		actionLogItem.AddDetail(actionLogDetail);
+		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::Success);
 	}
 	else {
 		if ((m_hidHistoryInfoData.m_dwErrorCode == INT_NULL) ||
 			(m_hidHistoryInfoData.m_dwErrorCode == APP_ERROR_UNKNOWN)) {
 
 			// If error code is NULL or unknown, set as failed with unknown reason
-			actionLogDetail.uiDetailInfo = HistoryResult::FailedUnknown;
-			actionLogItem.AddDetail(actionLogDetail);
+			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedUnknown);
 		}
 		else {
 			// If error code is available, set as failed with error code
-			actionLogDetail.uiDetailInfo = HistoryResult::FailedWithErrorCode;
-			actionLogItem.AddDetail(actionLogDetail);
+			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedWithErrorCode);
 
 			// Attach error code detail info
-			actionLogDetail.Init();
-			actionLogDetail.usCategory = HistoryDetail::ActionError;
-			actionLogDetail.uiDetailInfo = m_hidHistoryInfoData.m_dwErrorCode;
-			actionLogItem.AddDetail(actionLogDetail);
+			actionLogItem.AddDetail(HistoryDetail::ActionError, m_hidHistoryInfoData.m_dwErrorCode);
 		}
 	}
 

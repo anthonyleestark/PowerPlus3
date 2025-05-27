@@ -30,48 +30,95 @@
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	LOGDETAIL
+//	Class name:		LogDetail
 //  Description:	Store log detail info item
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagLOGDETAIL
+class LogDetail
 {
+private:
 	// Member variables
-	USHORT	usCategory;										// Detail category
-	UINT	uiDetailInfo;									// Detail info (integer)
-	CString	strDetailInfo;									// Detail info (string)
-	PVOID	ptrDetailInfo;									// Detail info (pointer)
-	BYTE	byPointerType;									// Detail info pointer data type
-	SIZE_T	szPointerSize;									// Detail info pointer data size
+	USHORT	m_usCategory;									// Detail category
+	UINT	m_uiDetailInfo;									// Detail info (integer)
+	CString	m_strDetailInfo;								// Detail info (string)
+	PVOID	m_ptrDetailInfo;								// Detail info (pointer)
+	BYTE	m_byPointerType;								// Detail info pointer data type
+	SIZE_T	m_szPointerSize;								// Detail info pointer data size
 
-	// Constructor
-	tagLOGDETAIL();											// Default constructor
-	tagLOGDETAIL(const tagLOGDETAIL&);						// Copy constructor
+public:
+	// Construction
+	LogDetail();											// Default constructor
+	LogDetail(const LogDetail&);							// Copy constructor
 
 	// Operator
-	tagLOGDETAIL& operator=(const tagLOGDETAIL&);			// Copy assignment operator
+	LogDetail& operator=(const LogDetail&);					// Copy assignment operator
 
+public:
 	// Member functions
 	void Init();											// Initialize/reset item data
-	void Copy(const tagLOGDETAIL&);							// Copy item data
-	void PointerCopy(const tagLOGDETAIL&);					// Copy detail info pointers
-	BOOL Compare(const tagLOGDETAIL&) const;				// Compare items
-	BOOL PointerCompare(const tagLOGDETAIL&) const;			// Compare detail info pointer
+	void Copy(const LogDetail&);							// Copy item data
+	void PointerCopy(const LogDetail&);						// Copy detail info pointers
+	BOOL Compare(const LogDetail&) const;					// Compare items
+	BOOL PointerCompare(const LogDetail&) const;			// Compare detail info pointer
 	BOOL IsEmpty(void) const;								// Check if item data is empty
+
+public:
+	// Get/set functions
+	USHORT GetCategory(void) const;							// Get detail category
+	void SetCategory(USHORT);								// Set detail category
+	UINT GetDetailValue(void) const;						// Get detail info (integer)
+	void SetDetailValue(UINT);								// Set detail info (integer)
+	CString GetDetailString(void) const;					// Get detail info (string)
+	void SetDetailString(LPCTSTR);							// Set detail info (string)
+	PVOID GetPointerData(void) const;						// Get detail info pointer data
 	BOOL SetPointerData(PVOID, BYTE = -1, SIZE_T = 0);		// Set detail info pointer data
-} LOGDETAIL, *PLOGDETAIL;
+	BYTE GetPointerType(void) const;						// Get detail info pointer type
+	void SetPointerType(BYTE byType);						// Set detail info pointer type
+	SIZE_T GetPointerSize(void) const;						// Get detail info pointer size
+	void SetPointerSize(SIZE_T szSize);						// Set detail info pointer size
+};
+
+// Define new typenames for LogData
+using LOGDETAIL = typename LogDetail;
+using PLOGDETAIL = typename LogDetail*;
+using LOGDETAILARRAY = typename CArray<LogDetail, LogDetail>;
+
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	LOGDETAILINFO
-//  Description:	Store log detail info data
-//  Derivered from: MFC CArray class
+//	Class name:		LogDetailInfo
+//  Description:	Store app log data detail info
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef CArray<LOGDETAIL, LOGDETAIL> LOGDETAILINFO;
+class LogDetailInfo : public LOGDETAILARRAY
+{
+public:
+	// Construction
+	LogDetailInfo();										// Default constructor
+	LogDetailInfo(const LogDetailInfo&);					// Copy constructor
+
+	// Operator
+	LogDetailInfo& operator=(const LogDetailInfo&);			// Copy assignment operator
+
+public:
+	// Member functions
+	void Init(void);										// Initialize/reset data
+	void CopyData(const LogDetailInfo&);					// Copy log detail info data
+
+public:
+	// Update data functions
+	void AddDetail(const LOGDETAIL&);						// Add detail item
+	void AddDetail(USHORT, UINT);							// Add detail item (integer data only)
+	void AddDetail(USHORT, LPCTSTR);						// Add detail item (string data only)
+	void AddDetail(USHORT, UINT, LPCTSTR);					// Add detail item (both integer and string data)
+};
+
+// Define new typenames for LogDetailInfo
+using LOGDETAILINFO = typename LogDetailInfo;
+using PLOGDETAILINFO = typename LogDetailInfo*;
+
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -131,16 +178,9 @@ public:
 // Define new typenames for LogItem
 using LOGITEM = typename LogItem;
 using PLOGITEM = typename LogItem*;
+using LOGDATA = typename CArray<LogItem, LogItem>;
+using PLOGDATA = typename LOGDATA*;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	LOGARRAY
-//  Description:	Store app log data
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef CArray<LOGITEM, LOGITEM> LOGARRAY;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -195,6 +235,7 @@ struct JSON_ENTRY
 
 // Define new typenames for JSON entry data
 using JSON_ENTRY_DATA = typename CArray<JSON_ENTRY, JSON_ENTRY>;
+
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -265,7 +306,7 @@ class SLogging
 {
 private:
 	// Log data array
-	LOGARRAY m_arrLogData;
+	LOGDATA m_arrLogData;
 
 	// Properties
 	BYTE	 m_byLogType;					// Log type

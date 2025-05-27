@@ -27,6 +27,66 @@ inline SIZE_T GetSizeByValue(DATA dataValue) {
 	return sizeof(dataValue);
 }
 
+// Get detail category
+inline USHORT LogDetail::GetCategory(void) const {
+	return m_usCategory;
+};
+
+// Set detail category
+inline void LogDetail::SetCategory(USHORT usCategory) {
+	m_usCategory = usCategory;
+};
+
+// Get detail info (integer)
+inline UINT LogDetail::GetDetailValue(void) const {
+	return m_uiDetailInfo;
+};
+
+// Set detail info (integer)
+inline void LogDetail::SetDetailValue(UINT uiDetailInfo) {
+	m_uiDetailInfo = uiDetailInfo;
+};
+
+// Get detail info (string)
+inline CString LogDetail::GetDetailString(void) const {
+	return m_strDetailInfo;
+};
+
+// Set detail info (string)
+inline void LogDetail::SetDetailString(LPCTSTR lpszDetailInfo) {
+	m_strDetailInfo = lpszDetailInfo;
+};
+
+// Get detail info (pointer)
+inline PVOID LogDetail::GetPointerData(void) const {
+	return m_ptrDetailInfo;
+};
+
+// Get detail info pointer type
+inline BYTE LogDetail::GetPointerType(void) const {
+	return m_byPointerType;
+};
+
+// Set detail info pointer type
+inline void LogDetail::SetPointerType(BYTE byPointerType) {
+	m_byPointerType = byPointerType;
+};
+
+// Get detail info pointer size
+inline SIZE_T LogDetail::GetPointerSize(void) const {
+	return m_szPointerSize;
+};
+
+// Set detail info pointer size
+inline void LogDetail::SetPointerSize(SIZE_T szPointerSize) {
+	m_szPointerSize = szPointerSize;
+};
+
+// Add log detail item
+inline void LogDetailInfo::AddDetail(const LOGDETAIL& logDetail) {
+	this->Add(logDetail);
+}
+
 // Get log time
 inline SYSTEMTIME LogItem::GetTime(void) const {
 	return m_stTime;
@@ -66,6 +126,26 @@ inline CString LogItem::GetLogString(void) const {
 inline void LogItem::SetLogString(LPCTSTR lpszLogString) {
 	m_strLogString = lpszLogString;
 };
+
+// Add log detail info item
+inline void LogItem::AddDetail(const LOGDETAIL& logDetail) {
+	m_arrDetailInfo.AddDetail(logDetail);
+}
+
+// Add log detail info item
+inline void LogItem::AddDetail(USHORT usCategory, UINT nDetailInfo) {
+	m_arrDetailInfo.AddDetail(usCategory, nDetailInfo);
+}
+
+// Add log detail info item
+inline void LogItem::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo) {
+	m_arrDetailInfo.AddDetail(usCategory, lpszDetailInfo);
+}
+
+// Add log detail info item
+inline void LogItem::AddDetail(USHORT usCategory, UINT nDetailInfo, LPCTSTR lpszDetailInfo) {
+	m_arrDetailInfo.AddDetail(usCategory, nDetailInfo, lpszDetailInfo);
+}
 
 // Remove all log detail info data
 inline void LogItem::RemoveDetailInfo(void) {
