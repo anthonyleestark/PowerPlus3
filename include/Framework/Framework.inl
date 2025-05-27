@@ -405,31 +405,40 @@ inline void SDialog::SetUseEscape(BOOL bUseEscape) {
 	m_bUseEscape = bUseEscape;
 }
 
-// Get dialog alignment
+// Get dialog alignment flags
 inline UINT SDialog::GetAlignment(void) const {
 	return m_nAlignment;
 }
 
-// Set dialog alignment
+// Set dialog alignment flags
 inline void SDialog::SetAlignment(UINT nAlignment) {
 	m_nAlignment = nAlignment;
 }
 
-// Get dialog position
-inline void SDialog::GetPosition(LPPOINT lpPosition) const {
-	lpPosition->x = m_ptPosition.x;
-	lpPosition->y = m_ptPosition.y;
+// Get dialog anchor point
+inline void SDialog::GetAnchorPoint(LPPOINT lpAnchorPoint) const {
+	ASSERT(lpAnchorPoint != NULL);
+	if (lpAnchorPoint != NULL) {
+		lpAnchorPoint->x = m_ptAnchorPoint.x;
+		lpAnchorPoint->y = m_ptAnchorPoint.y;
+	}
 }
 
-// Set dialog position
-inline void SDialog::SetPosition(POINT ptPosition)
+// Set dialog anchor point
+inline void SDialog::SetAnchorPoint(POINT ptAnchorPoint)
 {
 	// Set position
-	m_ptPosition.x = ptPosition.x;
-	m_ptPosition.y = ptPosition.y;
+	m_ptAnchorPoint.x = ptAnchorPoint.x;
+	m_ptAnchorPoint.y = ptAnchorPoint.y;
 
 	// Move dialog
-	MoveDialog(m_ptPosition);
+	MoveDialog(m_ptAnchorPoint);
+}
+
+// Set dialog position (combine of anchor point and alignment flags)
+inline void SDialog::SetDialogPosition(POINT ptAnchorPoint, UINT nAlignment) {
+	SetAlignment(nAlignment);
+	SetAnchorPoint(ptAnchorPoint);
 }
 
 // Get dialog size

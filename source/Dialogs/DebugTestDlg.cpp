@@ -426,6 +426,7 @@ LRESULT CDebugTestDlg::OnShowDialog(WPARAM wParam, LPARAM lParam)
 		// Bring window to top
 		this->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
 		this->SetForegroundWindow();
+		this->BringWindowToTop();
 	}
 	else {
 		// Hide dialog

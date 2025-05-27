@@ -140,6 +140,13 @@ enum LogDataType {
 	SystemTime,							// SYSTEMTIME struct
 };
 
+
+//////////////////// ********************
+// 
+// Log detail flags
+//
+//////////////////// ********************
+
 enum LogDetailFlag
 {
 	Flag_Null			= (int)0x000,	// NULL flag (apply default behavior)

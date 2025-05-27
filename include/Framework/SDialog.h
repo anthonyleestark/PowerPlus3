@@ -144,8 +144,8 @@ protected:
 	// Lock state exception ID list
 	CUIntArray* m_paLockExceptionIDList;
 
-	// Dialog position
-	CPoint m_ptPosition;
+	// Dialog anchor point
+	CPoint m_ptAnchorPoint;
 
 	// Dialog alignment
 	UINT m_nAlignment;
@@ -231,8 +231,9 @@ public:
 	// Dialog align and position
 	virtual UINT GetAlignment(void) const;
 	virtual void SetAlignment(UINT nAlignment);
-	virtual void GetPosition(LPPOINT lpPosition) const;
-	virtual void SetPosition(POINT ptPosition);
+	virtual void GetAnchorPoint(LPPOINT lpAnchorPoint) const;
+	virtual void SetAnchorPoint(POINT ptAnchorPoint);
+	virtual void SetDialogPosition(POINT ptAnchorPoint, UINT nAlignment);
 
 	// Move and resize dialog
 	virtual void MoveDialog(POINT ptPosition, LPRECT lpNewRect = NULL);

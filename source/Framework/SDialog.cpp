@@ -69,8 +69,8 @@ SDialog::SDialog() : CDialogEx()
 	// Lock state exception IDs
 	m_paLockExceptionIDList = NULL;
 
-	// Dialog position
-	m_ptPosition = POINT_NULL;
+	// Dialog anchor point
+	m_ptAnchorPoint = POINT_NULL;
 
 	// Dialog alignment
 	m_nAlignment = SDA_LEFTALIGN | SDA_TOPALIGN;
@@ -125,8 +125,8 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogEx(nI
 	// Lock state exception IDs
 	m_paLockExceptionIDList = NULL;
 
-	// Dialog position
-	m_ptPosition = POINT_NULL;
+	// Dialog anchor point
+	m_ptAnchorPoint = POINT_NULL;
 
 	// Dialog alignment
 	m_nAlignment = SDA_LEFTALIGN | SDA_TOPALIGN;
@@ -181,8 +181,8 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd /* = NULL */) : CDia
 	// Lock state exception IDs
 	m_paLockExceptionIDList = NULL;
 
-	// Dialog position
-	m_ptPosition = POINT_NULL;
+	// Dialog anchor point
+	m_ptAnchorPoint = POINT_NULL;
 
 	// Dialog alignment
 	m_nAlignment = SDA_LEFTALIGN | SDA_TOPALIGN;

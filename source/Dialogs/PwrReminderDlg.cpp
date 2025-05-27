@@ -1100,8 +1100,8 @@ void CPwrReminderDlg::OnRepeatSet()
 			ptBtnTopRight.x = rcButton.right;
 			ptBtnTopRight.y = rcButton.top;
 
-			// Set dialog position
-			m_pRepeatSetDlg->SetPosition(ptBtnTopRight);
+			// Set dialog anchor point
+			m_pRepeatSetDlg->SetAnchorPoint(ptBtnTopRight);
 
 			// Show dialog
 			m_pRepeatSetDlg->ShowWindow(SW_SHOW);
