@@ -37,6 +37,16 @@ using namespace MapTable;
 using namespace Language;
 using namespace AppCore;
 
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Define local macros and constants
+//
+//////////////////////////////////////////////////////////////////////////
+
+const UINT WM_TASKBARCREATED = ::RegisterWindowMessage(_T("TaskbarCreated"));
+
+
 //////////////////////////////////////////////////////////////////////////
 //
 //	Implement methods for CPowerPlusDlg
@@ -1871,6 +1881,13 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 
+	// Special messages
+	if (message == WM_TASKBARCREATED) {
+		// Re-create notify icon
+		CreateNotifyIcon();
+		return TRUE;
+	}
+
 	// Default
 	return SDialog::WindowProc(message, wParam, lParam);
 }
@@ -2023,10 +2040,10 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 
 BOOL CPowerPlusDlg::CreateNotifyIcon(void)
 {
-	// If notify icon is showed, do nothing
+	// If notify icon is showed, re-create it
 	if (GetFlagValue(FLAGID_NOTIFY_ICON_SHOWED)) {
-		TRACE("Notify icon is already showed!!!");
-		return TRUE;
+		TRACE("Notify icon is showed, now it will be removed and re-created!!!");
+		RemoveNotifyIcon();
 	}
 
 	// Init notify icon
