@@ -302,7 +302,7 @@ inline BOOL HotkeySetData::IsEmpty(int nIndex) const
 		return TRUE;
 
 	// Get item data
-	const HOTKEYSETITEM& hksItem = GetItemAt(nIndex);
+	const Item& hksItem = GetItemAt(nIndex);
 
 	// Check if item keystroke value is empty
 	return hksItem.IsEmpty();
@@ -336,6 +336,116 @@ inline void HotkeySetData::DeleteAll(void)
 	// Reset data
 	m_arrHotkeySetList.RemoveAll();
 	m_arrHotkeySetList.FreeExtra();
+}
+
+// Get background color
+inline COLORREF RmdMsgStyleSet::GetBkgrdColor(void) const {
+	return m_colorBkgrd;
+}
+
+// Set background color
+inline void RmdMsgStyleSet::SetBkgrdColor(COLORREF color) {
+	m_colorBkgrd = color;
+}
+
+// Get text color
+inline COLORREF RmdMsgStyleSet::GetTextColor(void) const {
+	return m_colorText;
+}
+
+// Set text color
+inline void RmdMsgStyleSet::SetTextColor(COLORREF color) {
+	m_colorText = color;
+}
+
+// Get font name
+inline CString RmdMsgStyleSet::GetFontName(void) const {
+	return m_strFontName;
+}
+
+// Set font name
+inline void RmdMsgStyleSet::SetFontName(LPCTSTR lpszFontName) {
+	m_strFontName = lpszFontName;
+}
+
+// Get font size
+inline UINT RmdMsgStyleSet::GetFontSize(void) const {
+	return m_uiFontSize;
+}
+
+// Set font size
+inline void RmdMsgStyleSet::SetFontSize(UINT uiFontSize) {
+	m_uiFontSize = uiFontSize;
+}
+
+// Get timeout interval
+inline UINT RmdMsgStyleSet::GetTimeout(void) const {
+	return m_uiTimeout;
+}
+
+// Set timeout interval
+inline void RmdMsgStyleSet::SetTimeout(UINT uiTimeout) {
+	m_uiTimeout = uiTimeout;
+}
+
+// Get message icon ID
+inline UINT RmdMsgStyleSet::GetIconID(void) const {
+	return m_uiIconID;
+}
+
+// Set message icon ID
+inline void RmdMsgStyleSet::SetIconID(UINT uiIconID) {
+	m_uiIconID = uiIconID;
+}
+
+// Get message icon size
+inline INT RmdMsgStyleSet::GetIconSize(void) const {
+	return m_nIconSize;
+}
+
+// Set message icon size
+inline void RmdMsgStyleSet::SetIconSize(INT nIconSize) {
+	m_nIconSize = nIconSize;
+}
+
+// Get message icon position
+inline BYTE RmdMsgStyleSet::GetIconPosition(void) const {
+	return m_byIconPos;
+}
+
+// Set message icon position
+inline void RmdMsgStyleSet::SetIconPosition(BYTE byIconPos) {
+	m_byIconPos = byIconPos;
+}
+
+// Get message display position
+inline BYTE RmdMsgStyleSet::GetDisplayPosition(void) const {
+	return m_byDisplayPos;
+}
+
+// Set message display position
+inline void RmdMsgStyleSet::SetDisplayPosition(BYTE byDisplayPos) {
+	m_byDisplayPos = byDisplayPos;
+}
+
+// Get message display horizontal margin
+inline UINT RmdMsgStyleSet::GetHorizontalMargin(void) const {
+	return m_uiHMargin;
+}
+
+// Set message display horizontal margin
+inline void RmdMsgStyleSet::SetHorizontalMargin(UINT uiHMargin) {
+	m_uiHMargin = uiHMargin;
+}
+
+// Get message display vertical margin
+inline UINT RmdMsgStyleSet::GetVerticalMargin(void) const {
+	return m_uiVMargin;
+}
+
+// Set message display vertical margin
+inline void RmdMsgStyleSet::SetVerticalMargin(UINT uiVMargin) {
+	m_uiVMargin = uiVMargin;
 }
 
 // Get access to item RepeatSet info data
@@ -608,38 +718,242 @@ inline void HistoryInfoData::RemoveAll(void)
 	this->Copy(emptyItem);
 }
 
-// Get registry key name
-inline void tagREGISTRYKEY::GetKeyName(CString& strKeyName) const {
-	strKeyName = this->strKeyName;
+// Check if data is initialized
+inline BOOL HistoryInfoData::IsInit(void) const {
+	return m_bInitState;
+}
+
+// Get category ID
+inline UINT HistoryInfoData::GetCategoryID(void) const {
+	return m_nCategoryID;
+}
+
+// Set category ID
+inline void HistoryInfoData::SetCategoryID(UINT nCategoryID) {
+	m_nCategoryID = nCategoryID;
+}
+
+// Get timestamp of history
+inline SYSTEMTIME HistoryInfoData::GetTime(void) const {
+	return m_stTimestamp;
+}
+
+// Set timestamp of history
+inline void HistoryInfoData::SetTime(const SYSTEMTIME& stTime) {
+	m_stTimestamp = stTime;
+}
+
+// Get item ID
+inline UINT HistoryInfoData::GetItemID(void) const {
+	return m_nItemID;
+}
+
+// Set item ID
+inline void HistoryInfoData::SetItemID(UINT nItemID) {
+	m_nItemID = nItemID;
+}
+
+// Get action ID
+inline UINT HistoryInfoData::GetActionID(void) const {
+	return m_nActionID;
+}
+
+// Set action ID
+inline void HistoryInfoData::SetActionID(UINT nActionID) {
+	m_nActionID = nActionID;
+}
+
+// Get action result
+inline BOOL HistoryInfoData::IsSuccess(void) const {
+	return m_bActionResult;
+}
+
+// Set action result
+inline void HistoryInfoData::SetResult(BOOL bResult) {
+	m_bActionResult = bResult;
+}
+
+// Get error code
+inline DWORD HistoryInfoData::GetErrorCode(void) const {
+	return m_dwErrorCode;
+}
+
+// Set error code
+inline void HistoryInfoData::SetErrorCode(DWORD dwErrorCode) {
+	m_dwErrorCode = dwErrorCode;
+}
+
+// Get history description (attached info)
+inline LPCTSTR HistoryInfoData::GetDescription(void) const {
+	return m_strDescription.GetString();
+}
+
+// Get history description (attached info)
+inline void HistoryInfoData::GetDescription(CString& strDescription) const {
+	strDescription = m_strDescription;
+}
+
+// Set history description (attached info)
+inline void HistoryInfoData::SetDescription(LPCTSTR lpszDescription) {
+	m_strDescription = lpszDescription;
+}
+
+// Check if data is empty
+inline BOOL RegistryValue::IsEmpty(void) const {
+	return (IsType(REGTYPE_NONE));
+}
+
+// Check if current type is matching
+inline BOOL RegistryValue::IsType(UINT nType) const {
+	return (GetType() == nType);
+}
+
+// Get String value
+inline void RegistryValue::GetString(CString& strValue) const {
+	if (!IsType(REGTYPE_STRING)) { strValue.Empty(); }
+	else { strValue = *m_pstrValue; }
+}
+
+// Get String value
+inline LPCTSTR RegistryValue::GetString(void) const {
+	if (!IsType(REGTYPE_STRING)) { return STRING_EMPTY; }
+	else return m_pstrValue->GetString();
+}
+
+// Set String value
+inline void RegistryValue::SetString(LPCTSTR lpszValue) {
+	if (Init(REGTYPE_STRING)) { *m_pstrValue = lpszValue; }
+}
+
+// Get DWORD (32-bit) value
+inline DWORD RegistryValue::GetDWord(void) const {
+	if (!IsType(REGTYPE_DWORD32)) { return INT_NULL; }
+	else return *m_pdwValue;
+}
+
+// Set DWORD (32-bit) value
+inline void RegistryValue::SetDWord(DWORD dwValue) {
+	if (Init(REGTYPE_DWORD32)) { *m_pdwValue = dwValue; }
+}
+
+// Get QWORD (64-bit) value
+inline QWORD RegistryValue::GetQWord(void) const {
+	if (!IsType(REGTYPE_QWORD64)) { return INT_NULL; }
+	else return *m_pqwValue;
+}
+
+// Set QWORD (64-bit) value
+inline void RegistryValue::SetQWord(QWORD qwValue) {
+	if (Init(REGTYPE_QWORD64)) { *m_pqwValue = qwValue; }
+}
+
+// Get multi-string value
+inline void RegistryValue::GetMultiString(CStringArray& astrValue) const {
+	if (!IsType(REGTYPE_QWORD64)) return;
+	else { astrValue.Copy(*m_pastrValue); }
+}
+
+// Set multi-string value
+inline void RegistryValue::SetMultiString(CStringArray& astrValue) {
+	if (Init(REGTYPE_MULTISTRING)) { m_pastrValue->Copy(astrValue); }
+}
+
+// Add string value to Multi-string data
+inline BOOL RegistryValue::AddString(LPCTSTR lpszValue)
+{
+	if (!IsEmpty() && !IsType(REGTYPE_MULTISTRING)) return FALSE;
+	if (IsEmpty() && !Init(REGTYPE_MULTISTRING)) return FALSE;
+	m_pastrValue->Add(lpszValue);
+	return TRUE;
+}
+
+// Check if registry key is empty
+inline BOOL RegistryKey::IsEmpty(void) const {
+	return (m_strKeyName.IsEmpty() || m_regValue.IsEmpty());
 }
 
 // Get registry key name
-inline LPCTSTR tagREGISTRYKEY::GetKeyName(void) const {
-	return this->strKeyName.GetString();
+inline void RegistryKey::GetName(CString& strKeyName) const {
+	strKeyName = m_strKeyName;
+}
+
+// Get registry key name
+inline LPCTSTR RegistryKey::GetName(void) const {
+	return m_strKeyName.GetString();
 }
 
 // Set registry key name
-inline void tagREGISTRYKEY::SetKeyName(UINT nResourceID)
+inline void RegistryKey::SetName(UINT nResourceID)
 {
 	// Set key name (by resource ID)
 	CString strKeyName;
 	VERIFY(strKeyName.LoadString(nResourceID));
-	this->SetKeyName(strKeyName);
+	SetName(strKeyName);
 }
 
 // Set registry key name
-inline void tagREGISTRYKEY::SetKeyName(LPCTSTR lpszKeyName) {
-	this->strKeyName = lpszKeyName;
+inline void RegistryKey::SetName(LPCTSTR lpszKeyName) {
+	m_strKeyName = lpszKeyName;
 }
 
 // Get registry key value type
-inline UINT tagREGISTRYKEY::GetValueType(void) const {
-	return this->nValueType;
+inline UINT RegistryKey::GetType(void) const {
+	return m_regValue.GetType();
 }
 
 // Set registry key value type
-inline void tagREGISTRYKEY::SetValueType(UINT nValueType) {
-	this->nValueType = nValueType;
+inline void RegistryKey::SetType(UINT nValueType) {
+	m_regValue.Init(nValueType);
+}
+
+// Get String value
+inline void RegistryKey::GetString(CString& strValue) const {
+	m_regValue.GetString(strValue);
+}
+
+// Get String value
+inline LPCTSTR RegistryKey::GetString(void) const {
+	return m_regValue.GetString();
+}
+
+// Set String value
+inline void RegistryKey::SetString(LPCTSTR lpszValue) {
+	m_regValue.SetString(lpszValue);
+}
+
+// Get DWORD (32-bit) value
+inline DWORD RegistryKey::GetDWord(void) const {
+	return m_regValue.GetDWord();
+}
+
+// Set DWORD (32-bit) value
+inline void RegistryKey::SetDWord(DWORD dwValue) {
+	m_regValue.SetDWord(dwValue);
+}
+
+// Get QWORD (64-bit) value
+inline QWORD RegistryKey::GetQWord(void) const {
+	return m_regValue.GetQWord();
+}
+
+// Set QWORD (64-bit) value
+inline void RegistryKey::SetQWord(QWORD qwValue) {
+	m_regValue.SetQWord(qwValue);
+}
+
+// Get multi-string value
+inline void RegistryKey::GetMultiString(CStringArray& astrValue) const {
+	m_regValue.GetMultiString(astrValue);
+}
+
+// Set multi-string value
+inline void RegistryKey::SetMultiString(CStringArray& astrValue) {
+	m_regValue.SetMultiString(astrValue);
+}
+
+// Add string value to Multi-string data
+inline BOOL RegistryKey::AddString(LPCTSTR lpszValue) {
+	return m_regValue.AddString(lpszValue);
 }
 
 // Get root key
@@ -654,17 +968,17 @@ inline const REGISTRYKEY& RegistryInfo::GetRegistryKey(void) const {
 
 // Get root key name
 inline LPCTSTR RegistryInfo::GetRootKeyName(void) const {
-	return m_strRootKey;
+	return m_strRootKey.GetString();
 }
 
 // Get Profile key name part
 inline LPCTSTR RegistryInfo::GetProfileName(void) const {
-	return m_strProfileName;
+	return m_strProfileName.GetString();
 }
 
 // Get application name part
 inline LPCTSTR RegistryInfo::GetAppName(void) const {
-	return m_strAppName;
+	return m_strAppName.GetString();
 }
 
 // Set registry info root key
@@ -705,51 +1019,29 @@ inline void RegistryInfo::SetSubkeyPath(CStringArray& astrSubkeyPath) {
 	m_astrSubkeyPath.Copy(astrSubkeyPath);
 }
 
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetProfileName
-//	Description:	Set registry info profile key name
-//  Arguments:		nResourceID - Profile key name resource string ID (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Set registry info profile key name (from resource ID)
 inline void RegistryInfo::SetProfileName(UINT nResourceID)
 {
-	// Set profile key name (by resource ID)
 	CString strKeyName;
 	VERIFY(strKeyName.LoadString(nResourceID));
 	SetProfileName(strKeyName);
 }
 
-inline void RegistryInfo::SetProfileName(LPCTSTR lpszProfileName)
-{
-	// Set profile key name (string)
+// Set registry info profile key name (from string)
+inline void RegistryInfo::SetProfileName(LPCTSTR lpszProfileName) {
 	m_strProfileName = lpszProfileName;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppName
-//	Description:	Set registry info app name
-//  Arguments:		nResourceID - App name resource string ID (in)
-//					lpszAppName - App name (string) (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Set registry info app name (from resource ID)
 inline void RegistryInfo::SetAppName(UINT nResourceID)
 {
-	// Set app name (by resource ID)
 	CString strAppName;
 	VERIFY(strAppName.LoadString(nResourceID));
 	SetAppName(strAppName);
 }
 
-inline void RegistryInfo::SetAppName(LPCTSTR lpszAppName)
-{
-	// Set app name (string)
+// Set registry info app name (from string)
+inline void RegistryInfo::SetAppName(LPCTSTR lpszAppName) {
 	m_strAppName = lpszAppName;
 }
 

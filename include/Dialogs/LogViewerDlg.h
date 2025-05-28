@@ -34,8 +34,17 @@ class CLogViewerDlg : public SDialog
 	DECLARE_DYNAMIC(CLogViewerDlg)
 
 public:
-	CLogViewerDlg(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~CLogViewerDlg();				  // destructor
+	using Item = typename const LogItem&;
+	using Data = typename SLogging*;
+	enum ColumnID {
+		DateTime = 0,								// Date/Time
+		CategoryID,									// Event ID (category ID)
+		Description,								// Additional description
+	};
+
+public:
+	CLogViewerDlg(CWnd* pParent = nullptr);			// standard constructor
+	virtual ~CLogViewerDlg();						// destructor
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -45,8 +54,8 @@ public:
 private:
 	// Member variables
 	CGridCtrl* m_pLogViewerList;
-	SLogging* m_ptrAppEventLog;
-	INT_PTR	  m_nLogCount;
+	Data m_ptrAppEventLog;
+	INT_PTR	m_nLogCount;
 
 	// Table format and properties
 	int	m_nColNum;

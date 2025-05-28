@@ -246,7 +246,7 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 
 	// Initialize application language
-	SetAppLanguageOption(GetAppOption(OPTIONID_LANGUAGE_ID));
+	SetAppLanguageOption(GetAppOption(AppOptionID::languageID));
 	if (!InitAppLanguage()) {
 
 		// Trace log
@@ -302,7 +302,7 @@ BOOL CPowerPlusApp::InitInstance()
 	m_pMainWnd = pMainDlg;
 
 	// Show/hide main dialog at startup
-	if (GetAppOption(OPTIONID_SHOW_DLG_AT_STARTUP) == FALSE) {
+	if (GetAppOption(AppOptionID::showDlgAtStartup) == FALSE) {
 
 		// Hide dialog
 		pMainDlg->Create(IDD_POWERPLUS_DIALOG, NULL);
@@ -383,12 +383,12 @@ int CPowerPlusApp::ExitInstance()
 	OutputEventLog(LOG_EVENT_EXIT_INSTANCE);
 
 	// Write application event logging data to file if enabled
-	if (GetAppOption(OPTIONID_SAVE_APP_EVENT_LOG) == TRUE) {
+	if (GetAppOption(AppOptionID::saveAppEventLog) == TRUE) {
 		GetAppEventLog()->Write();
 	}
 
 	// Write action history logging data to file if enabled
-	if (GetAppOption(OPTIONID_SAVE_HISTORY_LOG) == TRUE) {
+	if (GetAppOption(AppOptionID::saveAppHistoryLog) == TRUE) {
 		GetAppHistoryLog()->Write();
 	}
 
@@ -471,8 +471,8 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 
 				// Only process if both options are enabled
 				if ((pApp != NULL) &&
-					(pApp->GetAppOption(OPTIONID_ENABLE_HOTKEYSET) == TRUE) &&		// Enable background action hotkeys
-					(pApp->GetAppOption(OPTIONID_LOCK_STATE_HOTKEY) == TRUE)) {		// Allow background hotkeys on lockscreen
+					(pApp->GetAppOption(AppOptionID::backgroundHotkeyEnabled) == TRUE) &&		// Enable background action hotkeys
+					(pApp->GetAppOption(AppOptionID::lockStateHotkeyEnabled) == TRUE)) {		// Allow background hotkeys on lockscreen
 
 					// Keycode param
 					DWORD dwHKeyParam = NULL;
@@ -2358,112 +2358,32 @@ void CPowerPlusApp::SetAppPwrReminderData(PwrReminderData* ppwrData)
 //	Function name:	GetAppOption
 //	Description:	Return option value by ID
 //  Arguments:		eAppOptionID - ID of specific option
-//					bTemp		 - Temp value or saved value (saved value by default)
 //  Return value:	int - Option value
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CPowerPlusApp::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE */) const
+int CPowerPlusApp::GetAppOption(AppOptionID eAppOptionID) const
 {
 	int nResult = INT_INVALID;
-	int nTempResult = INT_INVALID;
 
 	switch (eAppOptionID)
 	{
-	case OPTIONID_LMB_ACTION:					
-		nResult = m_pcfgAppConfig->nLMBAction;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_MMB_ACTION:
-		nResult = m_pcfgAppConfig->nMMBAction;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_RMB_ACTION:
-		nResult = m_pcfgAppConfig->nRMBAction;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_RMB_SHOW_MENU:
-		nResult = m_pcfgAppConfig->bRMBShowMenu;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_LANGUAGE_ID:
-		nResult = m_pcfgAppConfig->nLanguageID;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_CUR_DISP_LANGUAGE:
+	case AppOptionID::curDispLanguage:
 		nResult = SWinApp::GetAppLanguageOption(TRUE);
-		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SHOW_DLG_AT_STARTUP:
-		nResult = m_pcfgAppConfig->bShowDlgAtStartup;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_STARTUP_ENABLE:
-		nResult = m_pcfgAppConfig->bStartupEnabled;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_CONFIRM_ACTION:
-		nResult = m_pcfgAppConfig->bConfirmAction;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_SAVE_HISTORY_LOG:
-		nResult = m_pcfgAppConfig->bSaveHistoryLog;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_SAVE_APP_EVENT_LOG:
-		nResult = m_pcfgAppConfig->bSaveAppEventLog;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_RUN_AS_ADMIN:
-		nResult = m_pcfgAppConfig->bRunAsAdmin;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_SHOW_ERROR_MSG:
-		nResult = m_pcfgAppConfig->bShowErrorMsg;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_NOTIFY_SCHEDULE:
-		nResult = m_pcfgAppConfig->bNotifySchedule;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_ALLOW_CANCEL_SCHEDULE:
-		nResult = m_pcfgAppConfig->bAllowCancelSchedule;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_ENABLE_HOTKEYSET:
-		nResult = m_pcfgAppConfig->bEnableBackgroundHotkey;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_LOCK_STATE_HOTKEY:
-		nResult = m_pcfgAppConfig->bLockStateHotkey;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_ENABLE_PWRREMINDER:
-		nResult = m_pcfgAppConfig->bEnablePowerReminder;
-		nTempResult = nResult;		// No temp data
-		break;
-	case OPTIONID_SCHEDULE_ACTIVE:
+	case AppOptionID::defaultScheduleActiveState:
 		nResult = m_pschScheduleData->GetDefaultItem().IsEnabled();
-		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SCHEDULE_ACTION:
+	case AppOptionID::defaultScheduleActionID:
 		nResult = m_pschScheduleData->GetDefaultItem().GetAction();
-		nTempResult = nResult;		// No temp data
 		break;
-	case OPTIONID_SCHEDULE_REPEAT:
+	case AppOptionID::defaultScheduleRepeat:
 		nResult = m_pschScheduleData->GetDefaultItem().IsRepeatEnabled();
-		nTempResult = nResult;		// No temp data
 		break;
 	default:
-		// Get application-base-class option value
-		nResult = SWinApp::GetAppOption(eAppOptionID, FALSE);
-		nTempResult = SWinApp::GetAppOption(eAppOptionID, TRUE);
+		nResult = m_pcfgAppConfig->GetAppOption(eAppOptionID);
 		break;
 	}
-
-	// Return temp data if required and the result is valid
-	if ((bTemp == TRUE) && (nTempResult != INT_INVALID))
-		return nTempResult;
 
 	return nResult;
 }
@@ -2594,7 +2514,7 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 	SLogging* ptrAppHistoryLog = GetAppHistoryLog();
 	
 	// Only output log if option is ON
-	if ((ptrAppHistoryLog != NULL) && (GetAppOption(OPTIONID_SAVE_HISTORY_LOG) != FALSE)) {
+	if ((ptrAppHistoryLog != NULL) && (GetAppOption(AppOptionID::saveAppHistoryLog) != FALSE)) {
 		ptrAppHistoryLog->OutputItem(logItem);
 	}
 }

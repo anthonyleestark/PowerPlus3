@@ -785,38 +785,6 @@ typedef enum eSYSTEMEVENTID {
 
 //////////////////// ********************
 // 
-// App option IDs - use to get/set application data option values
-//
-//////////////////// ********************
-
-typedef enum eAPPOPTIONID {
-	OPTIONID_INVALID = -1,				// *** Invalid option ***
-	OPTIONID_LMB_ACTION = 0,			// Left mouse button action
-	OPTIONID_MMB_ACTION,				// Middle mouse button action
-	OPTIONID_RMB_ACTION,				// Right mouse button action
-	OPTIONID_RMB_SHOW_MENU,				// Right mouse button: Only show menu
-	OPTIONID_LANGUAGE_ID,				// Language setting
-	OPTIONID_CUR_DISP_LANGUAGE,			// Currently displaying language
-	OPTIONID_SHOW_DLG_AT_STARTUP,		// Show dialog at startup
-	OPTIONID_STARTUP_ENABLE,			// Startup with Windows
-	OPTIONID_CONFIRM_ACTION,			// Show confirm message before doing action
-	OPTIONID_SAVE_APP_EVENT_LOG,		// Save app event log
-	OPTIONID_SAVE_HISTORY_LOG,			// Save action history log
-	OPTIONID_RUN_AS_ADMIN,				// Run with admin privileges
-	OPTIONID_SHOW_ERROR_MSG,			// Show action error message
-	OPTIONID_NOTIFY_SCHEDULE,			// Show notify tip for schedule action
-	OPTIONID_ALLOW_CANCEL_SCHEDULE,		// Allow canceling schedule when notify
-	OPTIONID_ENABLE_HOTKEYSET,			// Enable background action hotkeys
-	OPTIONID_LOCK_STATE_HOTKEY,			// Allow background hotkeys on lockscreen
-	OPTIONID_ENABLE_PWRREMINDER,		// Enable Power Peminder feature
-	OPTIONID_SCHEDULE_ACTIVE,			// Default schedule active state
-	OPTIONID_SCHEDULE_ACTION,			// Default schedule action ID
-	OPTIONID_SCHEDULE_REPEAT			// Default schedule repeat option
-} APPOPTIONID;
-
-
-//////////////////// ********************
-// 
 // App flag IDs - use to get/set application flag values
 //
 //////////////////// ********************
@@ -846,64 +814,6 @@ typedef enum eAPPFLAGID {
 
 //////////////////// ********************
 // 
-// App feature item category IDs
-//
-//////////////////// ********************
-
-typedef enum eFEATUREITEMCATEID {
-	FID_POWERACTION = 0,				// Power action
-	FID_SCHEDULEITEM,					// Action schedule item
-	FID_HOTKEYITEM,						// HotkeySet item
-	FID_PWRREMINDERITEM,				// Power Reminder item
-} FEATUREITEMCATEID;
-
-
-//////////////////// ********************
-// 
-// Hotkey IDs - use for HotkeySet features
-//
-//////////////////// ********************
-
-typedef enum eHOTKEYID {
-	HKID_DISPLAYOFF = 0x1a01,			// Turn off display
-	HKID_SLEEP,							// Sleep
-	HKID_SHUTDOWN,						// Shut down
-	HKID_RESTART,						// Restart
-	HKID_SIGNOUT,						// Sign out
-	HKID_HIBERNATE,						// Hibernate
-} HOTKEYID;
-
-
-//////////////////// ********************
-// 
-// Power Reminder event IDs - use for Power Reminder features
-//
-//////////////////// ********************
-
-typedef enum ePWRREMINDEREVENT {
-	PREVT_AT_SETTIME = 0x1b01,			// At set time
-	PREVT_AT_APPSTARTUP,				// At app startup
-	PREVT_AT_SYSWAKEUP,					// At system wake
-	PREVT_AT_BFRPWRACTION,				// Before power action
-	PREVT_AT_PWRACTIONWAKE,				// Wake after action
-	PREVT_AT_APPEXIT,					// Before app exit
-} PWRREMINDEREVENT;
-
-
-//////////////////// ********************
-// 
-// Power Reminder message styles - use for Power Reminder features
-//
-//////////////////// ********************
-
-typedef enum ePWRREMIDERSTYLE {
-	PRSTYLE_MSGBOX = 0x1c01,			// Message Box
-	PRSTYLE_DIALOG,						// Dialog Box
-} PWRREMINDERSTYLE;
-
-
-//////////////////// ********************
-// 
 // List view column size units
 //
 //////////////////// ********************
@@ -925,64 +835,6 @@ typedef enum eGRIDCOLSTYLE {
 	COLSTYLE_CHECKBOX,					// Checkbox cell
 	COLSTYLE_NORMAL,					// Normal cell
 } GRIDCOLSTYLE;
-
-
-//////////////////// ********************
-// 
-// LogViewer table column IDs
-//
-//////////////////// ********************
-
-typedef enum eLOGVWERTABLECOLID {
-	LGVCOL_ID_DATETIME = 0,				// Date/Time
-	LGVCOL_ID_CATEGORY,					// Event ID (category ID)
-	LGVCOL_ID_DESCRIPTION,				// Additional description
-} LOGVWERTABLECOLID;
-
-
-//////////////////// ********************
-// 
-// Schedule data table column IDs
-//
-//////////////////// ********************
-
-typedef enum eSCHTABLECOLID {
-	SCHCOL_ID_INDEX = 0,				// Index
-	SCHCOL_ID_STATE,					// Enable/active state
-	SCHCOL_ID_ACTIONID,					// Action ID
-	SCHCOL_ID_TIMEVALUE,				// Time value
-	SCHCOL_ID_REPEAT,					// Repeat daily
-} SCHTABLECOLID;
-
-
-//////////////////// ********************
-// 
-// HotkeySet table column IDs
-//
-//////////////////// ********************
-
-typedef enum eHKEYTABLECOLID {
-	HKSCOL_ID_STATE = 0,				// Enable state
-	HKSCOL_ID_HKACTIONID,				// Hotkey action ID
-	HKSCOL_ID_KEYSTROKES,				// Keystrokes
-} HKEYTABLECOLID;
-
-
-//////////////////// ********************
-// 
-// Power Reminder table column IDs
-//
-//////////////////// ********************
-
-typedef enum ePWRTABLECOLID {
-	PWRCOL_ID_INDEX = 0,				// Index
-	PWRCOL_ID_STATE,					// Enable state
-	PWRCOL_ID_ITEMID,					// Item ID
-	PWRCOL_ID_MESSAGE,					// Message content
-	PWRCOL_ID_EVENTID,					// Event ID
-	PWRCOL_ID_STYLE,					// Reminder style
-	PWRCOL_ID_REPEAT					// Repeat daily
-} PWRTABLECOLID;
 
 
 //////////////////// ********************
@@ -1061,13 +913,13 @@ typedef enum eFILETYPE {
 typedef struct tagCONFIGDATA
 {
 	// Main settings
-	UINT	nLMBAction;												// Left mouse button action
-	UINT	nMMBAction;												// Middle mouse button action
-	UINT	nRMBAction;												// Right mouse button action
+	INT		nLMBAction;												// Left mouse button action
+	INT		nMMBAction;												// Middle mouse button action
+	INT		nRMBAction;												// Right mouse button action
 	BOOL	bRMBShowMenu;											// Right mouse button: Only show menu
 
 	// Display setting
-	UINT	nLanguageID;											// Language setting
+	INT		nLanguageID;											// Language setting
 
 	// System settings
 	BOOL	bShowDlgAtStartup;										// Show dialog at startup
@@ -1095,6 +947,32 @@ typedef struct tagCONFIGDATA
 class ConfigData : public CONFIGDATA
 {
 public:
+	enum AppOptionID {
+		invalid = -1,												// *** Invalid option ***
+		leftMouseAction = 0,										// Left mouse button action
+		middleMouseAction,											// Middle mouse button action
+		rightMouseAction,											// Right mouse button action
+		rightMouseShowMenu,											// Right mouse button: Only show menu
+		languageID,													// Language setting
+		curDispLanguage,											// Currently displaying language
+		showDlgAtStartup,											// Show dialog at startup
+		startupEnabled,												// Startup with Windows
+		confirmBeforeExecuting,										// Show confirm message before doing action
+		saveAppEventLog,											// Save app event log
+		saveAppHistoryLog,											// Save action history log
+		runAsAdmin,													// Run with admin privileges
+		showErrorMessage,											// Show action error message
+		notifySchedule,												// Show notify tip for schedule action
+		allowCancelingSchedule,										// Allow canceling schedule when notify
+		backgroundHotkeyEnabled,									// Enable background action hotkeys
+		lockStateHotkeyEnabled,										// Allow background hotkeys on lockscreen
+		pwrReminderEnabled,											// Enable Power Peminder feature
+		defaultScheduleActiveState,									// Default schedule active state
+		defaultScheduleActionID,									// Default schedule action ID
+		defaultScheduleRepeat										// Default schedule repeat option
+	};
+
+public:
 	// Construction
 	ConfigData();													// Default constructor
 	ConfigData(const CONFIGDATA&);									// Copy constructor
@@ -1106,7 +984,11 @@ public:
 
 	// Access data
 	void GetData(CONFIGDATA&) const;								// Get a copy of config data
+	int  GetAppOption(AppOptionID) const;							// Get application option data by ID
 };
+
+// Define new global typenames for the enum attributes of Application config data
+using AppOptionID = typename ConfigData::AppOptionID;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1136,6 +1018,7 @@ public:
 	void Copy(const PwrRepeatSet&);									// Copy data
 	BOOL Compare(const PwrRepeatSet&) const;						// Compare data
 
+public:
 	// Get attributes
 	BOOL IsRepeatEnabled(void) const;								// Check if repeat option is enabled
 	BOOL IsAllowSnoozing(void) const;								// Check if snooze option is enabled
@@ -1186,6 +1069,7 @@ public:
 	BOOL Compare(const ScheduleItem&) const;						// Compare items
 	BOOL IsEmpty(void) const;										// Check if item data is empty
 
+public:
 	// Get/set attributes
 	UINT GetItemID(void) const;										// Get schedule item ID
 	void SetItemID(UINT);											// Set schedule item ID
@@ -1282,6 +1166,16 @@ public:
 
 class HotkeySetItem
 {
+public:
+	enum HKID {
+		displayOff = 0x1a01,										// Turn off display
+		sleep,														// Sleep
+		shutdown,													// Shut down
+		restart,													// Restart
+		signOut,													// Sign out
+		hibernate,													// Hibernate
+	};
+
 private:
 	// Attributes
 	BOOL	m_bEnabled;												// Hotkey enabled/disabled
@@ -1306,6 +1200,7 @@ public:
 	void Print(CString& strOutput) const;							// Print item data
 	void PrintKeyStrokes(CString& strOutput) const;					// Print item keystrokes
 
+public:
 	// Get/set attributes
 	BOOL IsEnabled(void) const;										// Check if item is enabled
 	void EnableItem(BOOL);											// Set item enable state
@@ -1320,6 +1215,9 @@ using HOTKEYSETITEM = typename HotkeySetItem;
 using PHOTKEYSETITEM = typename HotkeySetItem*;
 using HOTKEYSETITEMLIST = CArray<HOTKEYSETITEM, HOTKEYSETITEM>;
 
+// Define new global typenames for the enum attributes of HotkeySet items
+using HotkeyID = typename HotkeySetItem::HKID;
+
 //////////////////////////////////////////////////////////////////////////
 //
 //	Class name:		HotkeySetData
@@ -1329,9 +1227,14 @@ using HOTKEYSETITEMLIST = CArray<HOTKEYSETITEM, HOTKEYSETITEM>;
 
 class HotkeySetData
 {
+public:
+	using Item = typename HotkeySetItem;
+	using HKID = typename Item::HKID;
+	using DataList = typename HOTKEYSETITEMLIST;
+
 private:
 	// Attributes
-	HOTKEYSETITEMLIST m_arrHotkeySetList;							// Pointer to HotkeySet list
+	DataList m_arrHotkeySetList;									// Pointer to HotkeySet list
 
 public:
 	// Constructor
@@ -1347,12 +1250,12 @@ public:
 	void SetDefaultData(void);										// Set default data
 
 	// Update items
-	void Add(const HOTKEYSETITEM&);									// Add item
-	void Update(const HOTKEYSETITEM&);								// Update item
+	void Add(const Item&);											// Add item
+	void Update(const Item&);										// Update item
 
 	// Access items
-	const HOTKEYSETITEM& GetItemAt(int) const;						// Get item at index (const)
-	HOTKEYSETITEM& GetItemAt(int);									// Get item at index
+	const Item& GetItemAt(int) const;								// Get item at index (const)
+	Item& GetItemAt(int);											// Get item at index
 
 	// Item processing
 	void Remove(int);												// Remove item at index
@@ -1404,6 +1307,31 @@ public:
 	// Member functions
 	void Copy(const RmdMsgStyleSet&);								// Copy data
 	BOOL Compare(const RmdMsgStyleSet&) const;						// Compare data
+
+public:
+	// Get/set functions
+	COLORREF GetBkgrdColor(void) const;								// Get background color
+	void SetBkgrdColor(COLORREF);									// Set background color
+	COLORREF GetTextColor(void) const;								// Get text color
+	void SetTextColor(COLORREF);									// Set text color
+	CString GetFontName(void) const;								// Get font name
+	void SetFontName(LPCTSTR);										// Set font name
+	UINT GetFontSize(void) const;									// Get font size
+	void SetFontSize(UINT);											// Set font size
+	UINT GetTimeout(void) const;									// Get timeout interval
+	void SetTimeout(UINT);											// Set timeout interval
+	UINT GetIconID(void) const;										// Get message icon ID
+	void SetIconID(UINT);											// Set message icon ID
+	INT GetIconSize(void) const;									// Get message icon size
+	void SetIconSize(INT);											// Set message icon size
+	BYTE GetIconPosition(void) const;								// Get message icon position
+	void SetIconPosition(BYTE);										// Set message icon position
+	BYTE GetDisplayPosition(void) const;							// Get message display position
+	void SetDisplayPosition(BYTE);									// Set message display position
+	UINT GetHorizontalMargin(void) const;							// Get horizontal margin
+	void SetHorizontalMargin(UINT);									// Set horizontal margin
+	UINT GetVerticalMargin(void) const;								// Get vertical margin
+	void SetVerticalMargin(UINT);									// Set vertical margin
 };
 
 // Define new typenames for Reminder message style data
@@ -1420,6 +1348,20 @@ using PRMDMSGSTYLESET = typename RmdMsgStyleSet*;
 
 class PwrReminderItem
 {
+public:
+	enum Event {
+		atSetTime = 0x1b01,											// At set time
+		atAppStartup,												// At app startup
+		atSysWakeUp,												// At system wake
+		beforePwrAction,											// Before power action
+		wakeAfterAction,											// Wake after action
+		atAppExit,													// Before app exit
+	};
+	enum Style {
+		messageBox = 0x1c01,										// Message Box
+		dialogBox,													// Dialog Box
+	};
+
 private:
 	// Attributes
 	BOOL			m_bEnabled;										// Enable state
@@ -1451,6 +1393,7 @@ public:
 	RMDMSGSTYLESET& GetMessageStyleData(void);						// Get access to item Message Style info data
 	void ResetMessageStyleInfo(void);								// Reset Message Style info data
 
+public:
 	// Get/set attributes
 	BOOL IsEnabled(void) const;										// Check if item is enabled
 	void EnableItem(BOOL);											// Set item enable state
@@ -1484,10 +1427,14 @@ public:
 	void Print(CString& strOutput) const;							// Print item data
 };
 
-// Define new typenames for Reminder message style data
+// Define new typenames for Power Reminder Item data
 using PWRREMINDERITEM = typename PwrReminderItem;
 using PPWRREMINDERITEM = typename PwrReminderItem*;
 using PWRREMINDERITEMLIST = CArray<PWRREMINDERITEM, PWRREMINDERITEM>;
+
+// Define new global typenames for the enum attributes of Power Reminder items
+using PwrReminderEvent = typename PwrReminderItem::Event;
+using PwrReminderStyle = typename PwrReminderItem::Style;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1549,6 +1496,14 @@ public:
 
 class PwrRuntimeItem
 {
+public:
+	enum FeatureCategoryID {
+		powerAction = 0,											// Power action
+		schedule,													// Action schedule
+		hotkeySet,													// HotkeySet
+		pwrReminder,												// Power Reminder
+	};
+
 private:
 	// Attributes
 	INT			m_nCategory;										// Item category
@@ -1570,6 +1525,7 @@ public:
 	void Copy(const PwrRuntimeItem&);								// Copy data
 	void CalcNextSnoozeTime(int nInterval);							// Calculate next snooze time
 
+public:
 	// Get/set attributes
 	INT			GetCategory(void) const;							// Get item category
 	void		SetCategory(INT);									// Set item category
@@ -1590,16 +1546,19 @@ using PWRRUNTIMEITEM = typename PwrRuntimeItem;
 using PPWRRUNTIMEITEM = typename PwrRuntimeItem*;
 using PWRRUNTIMEQUEUE = CArray<PWRRUNTIMEITEM, PWRRUNTIMEITEM>;
 
+// Define new global typenames for the enum attributes of runtime info items
+using PwrFeatureID = typename PwrRuntimeItem::FeatureCategoryID;
+
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	HISTORYINFODATA
-//  Description:	Store app action history info data
-//  Derivered from: C++ basic struct
+//	Class name:		HistoryInfoData
+//  Description:	Manage app action history info data
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagHISTORYINFODATA
+class HistoryInfoData
 {
+private:
 	// Attributes
 	BOOL		m_bInitState;									// Init state flag
 	UINT		m_nCategoryID;									// Category ID
@@ -1609,17 +1568,7 @@ typedef struct tagHISTORYINFODATA
 	BOOL		m_bActionResult;								// Action result
 	DWORD		m_dwErrorCode;									// Returned error code
 	CString		m_strDescription;								// History description (attached info)
-} HISTORYINFODATA, *PHISTORYINFODATA;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		HistoryInfoData
-//  Description:	Manage app action history info data
-//
-//////////////////////////////////////////////////////////////////////////
-
-class HistoryInfoData : public HISTORYINFODATA
-{
 public:
 	// Constructor
 	HistoryInfoData();											// Default constructor
@@ -1632,7 +1581,30 @@ public:
 	void Copy(const HistoryInfoData&);							// Copy data
 	void Init(UINT nCategoryID);								// Initialization
 	void RemoveAll(void);										// Remove all data
+
+public:
+	// Get/set properties
+	BOOL IsInit(void) const;									// Check if data is initialized
+	UINT GetCategoryID(void) const;								// Get category ID
+	void SetCategoryID(UINT);									// Set category ID
+	SYSTEMTIME GetTime(void) const;								// Get timestamp
+	void SetTime(const SYSTEMTIME&);							// Set timestamp
+	UINT GetItemID(void) const;									// Get item ID
+	void SetItemID(UINT);										// Set item ID
+	UINT GetActionID(void) const;								// Get action ID
+	void SetActionID(UINT);										// Set action ID
+	BOOL IsSuccess(void) const;									// Check if action is successful
+	void SetResult(BOOL);										// Set action result
+	DWORD GetErrorCode(void) const;								// Get error code
+	void SetErrorCode(DWORD);									// Set error code
+	void GetDescription(CString&) const;						// Get description
+	LPCTSTR GetDescription(void) const;							// Get description
+	void SetDescription(LPCTSTR);								// Set description
 };
+
+// Define new typenames for History info data
+using HISTORYINFODATA = typename HistoryInfoData;
+using PHISTORYINFODATA = typename HistoryInfoData*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1667,78 +1639,108 @@ typedef struct tagUSERMENU
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	REGISTRYVALUE
+//	Class name:		RegistryValue
 //  Description:	Store data values of a registry key 
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagREGISTRYVALUE
+class RegistryValue
 {
-	// Member data values
-	CString			strValue;								// String value
-	DWORD			dwValue;								// DWORD (32-bit) value
-	QWORD			qwValue;								// QWORD (64-bit) value
-	CStringArray	astrStringValue;						// Multi-string value
+private:
+	// Data values
+	CString*		m_pstrValue;							// String value
+	DWORD*			m_pdwValue;								// DWORD (32-bit) value
+	QWORD*			m_pqwValue;								// QWORD (64-bit) value
+	CStringArray*	m_pastrValue;							// Multi-string value
 
-	// Construction functions
-	tagREGISTRYVALUE();										// Default constructor
-	tagREGISTRYVALUE(const tagREGISTRYVALUE&);				// Copy constructor	
-	~tagREGISTRYVALUE();									// Default destructor
+public:
+	// Construction
+	RegistryValue();										// Default constructor
+	RegistryValue(const RegistryValue&);					// Copy constructor	
+	~RegistryValue();										// Default destructor
 
 	// Operator
-	tagREGISTRYVALUE& operator=(const tagREGISTRYVALUE&);	// Copy assignment operator
+	RegistryValue& operator=(const RegistryValue&);			// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagREGISTRYVALUE&);						// Copy data
-	void RemoveAll(void);									// Remove all data
-} REGISTRYVALUE, *PREGISTRYVALUE;
+	BOOL Init(UINT);										// Initialize with type
+	void Copy(const RegistryValue&);						// Copy data
+	void Reset(void);										// Remove data
+	void Refactor(void);									// Refactor data and optimize
+	BOOL IsEmpty(void) const;								// Check if data is empty
+	BOOL IsType(UINT) const;								// Check if current type is matching
+
+public:
+	// Get/set values
+	UINT GetType(void) const;								// Get value type
+	void GetString(CString&) const;							// Get String value
+	LPCTSTR GetString(void) const;							// Get String value
+	void SetString(LPCTSTR);								// Set String value
+	DWORD GetDWord(void) const;								// Get DWORD (32-bit) value
+	void SetDWord(DWORD);									// Set DWORD (32-bit) value
+	QWORD GetQWord(void) const;								// Get QWORD (64-bit) value
+	void SetQWord(QWORD);									// Set QWORD (64-bit) value
+	void GetMultiString(CStringArray&) const;				// Get Multi-string value
+	void SetMultiString(CStringArray&);						// Set Multi-string value
+	BOOL AddString(LPCTSTR);								// Add string value to Multi-string data
+};
+
+// Define new typenames for Registry value data
+using REGISTRYVALUE = typename RegistryValue;
+using PREGISTRYVALUE = typename RegistryValue*;
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	REGISTRYKEY
+//	Class name:		RegistryKey
 //  Description:	Store data of a registry key info
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagREGISTRYKEY
+class RegistryKey
 {
+private:
 	// Member variables
-	CString			strKeyName;								// Key name (string)
-	UINT			nValueType;								// Value type
-	REGISTRYVALUE	regValue;								// Registry value data
+	CString			m_strKeyName;							// Key name (string)
+	REGISTRYVALUE	m_regValue;								// Registry value data
 
+public:
 	// Constructor
-	tagREGISTRYKEY();										// Default constructor
-	tagREGISTRYKEY(const tagREGISTRYKEY&);					// Copy constructor
+	RegistryKey();											// Default constructor
+	RegistryKey(const RegistryKey&);						// Copy constructor
 
 	// Operator
-	tagREGISTRYKEY& operator=(const tagREGISTRYKEY&);		// Copy assignment operator
+	RegistryKey& operator=(const RegistryKey&);				// Copy assignment operator
 
 	// Member functions
-	void Copy(const tagREGISTRYKEY&);						// Copy data
-	void RemoveAll(void);									// Remove all data
+	void Copy(const RegistryKey&);							// Copy data
+	void Clear(void);										// Remove all data
+	BOOL IsEmpty(void) const;								// Check if registry key is empty
 
+public:
 	// Get/set properties
-	void GetKeyName(CString&) const;						// Get key name
-	LPCTSTR GetKeyName(void) const;							// Get key name
-	void SetKeyName(UINT);									// Set key name
-	void SetKeyName(LPCTSTR);								// Set key name
-	UINT GetValueType(void) const;							// Get value type
-	void SetValueType(UINT);								// Set value type
+	void GetName(CString&) const;							// Get key name
+	LPCTSTR GetName(void) const;							// Get key name
+	void SetName(UINT);										// Set key name
+	void SetName(LPCTSTR);									// Set key name
+	UINT GetType(void) const;								// Get value type
+	void SetType(UINT);										// Set value type
 
 	// Get/set value
-	void GetStringValue(CString&) const;					// Get String value
-	LPCTSTR GetStringValue(void) const;						// Get String value
-	void SetStringValue(LPCTSTR);							// Set String value
-	DWORD GetDWordValue(void) const;						// Get DWORD (32-bit) value
-	void SetDWordValue(DWORD);								// Set DWORD (32-bit) value
-	QWORD GetQWordValue(void) const;						// Get QWORD (64-bit) value
-	void SetQWordValue(QWORD);								// Set QWORD (64-bit) value
-	void GetMultiStringValue(CStringArray&) const;			// Get Multi-string value
-	void SetMultiStringValue(CStringArray&);				// Set Multi-string value
-} REGISTRYKEY, *PREGISTRYKEY;
+	void GetString(CString&) const;							// Get String value
+	LPCTSTR GetString(void) const;							// Get String value
+	void SetString(LPCTSTR);								// Set String value
+	DWORD GetDWord(void) const;								// Get DWORD (32-bit) value
+	void SetDWord(DWORD);									// Set DWORD (32-bit) value
+	QWORD GetQWord(void) const;								// Get QWORD (64-bit) value
+	void SetQWord(QWORD);									// Set QWORD (64-bit) value
+	void GetMultiString(CStringArray&) const;				// Get Multi-string value
+	void SetMultiString(CStringArray&);						// Set Multi-string value
+	BOOL AddString(LPCTSTR);								// Add string value to Multi-string data
+};
+
+// Define new typenames for Registry key info data
+using REGISTRYKEY = typename RegistryKey;
+using PREGISTRYKEY = typename RegistryKey*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1771,6 +1773,7 @@ public:
 	void Copy(const RegistryInfo&);							// Copy data
 	void RemoveAll(void);									// Remove all data
 
+public:
 	// Get data
 	HKEY GetRootKey(void) const;							// Get root key
 	const REGISTRYKEY& GetRegistryKey(void) const;			// Get registry key info data

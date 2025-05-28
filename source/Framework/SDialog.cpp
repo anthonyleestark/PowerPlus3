@@ -2101,20 +2101,16 @@ void SDialog::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SDialog::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE */) const
+int SDialog::GetAppOption(AppOptionID eAppOptionID, BOOL bTemp /* = FALSE */) const
 {
 	int nResult = INT_INVALID;
 	int nTempResult = INT_INVALID;
 
-	switch (eAppOptionID)
-	{
-	case OPTIONID_INVALID:		// *** Invalid option ***
-		break;
-	default:
-		// Get application-base-class option value
-		nResult = ((SWinApp*)AfxGetApp())->GetAppOption(eAppOptionID, FALSE);
-		nTempResult = ((SWinApp*)AfxGetApp())->GetAppOption(eAppOptionID, TRUE);
-		break;
+	// Acquire option value from application main window
+	SDialog* pMainDlg = (SDialog*)AfxGetMainWnd();
+	if (pMainDlg != NULL) {
+		nResult = pMainDlg->GetAppOption(eAppOptionID, FALSE);
+		nTempResult = pMainDlg->GetAppOption(eAppOptionID, TRUE);
 	}
 
 	// Return temp data if required and the result is valid

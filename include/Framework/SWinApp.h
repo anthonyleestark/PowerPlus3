@@ -117,7 +117,6 @@ public:
 	virtual void OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription = NULL, LOGDETAILINFO* pDetailInfo = NULL);
 
 	// Data processing and flags get/set functions
-	virtual int  GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp = FALSE) const;
 	virtual int  GetFlagValue(APPFLAGID eFlagID) const;
 	virtual void SetFlagValue(APPFLAGID eFlagID, int nValue);
 	virtual BOOL GetChangeFlagValue(void) const;

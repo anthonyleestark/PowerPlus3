@@ -277,12 +277,12 @@ namespace MapTable
 
 		INITIALIZE_IDMAPTABLE(HKActionID)
 		/*--HotKey Action ID-----------------------------Action ID--------------------*/
-			HKID_DISPLAYOFF,					APP_ACTION_DISPLAYOFF,
-			HKID_SLEEP,							APP_ACTION_SLEEP,
-			HKID_SHUTDOWN,						APP_ACTION_SHUTDOWN,
-			HKID_RESTART,						APP_ACTION_RESTART,
-			HKID_SIGNOUT,						APP_ACTION_SIGNOUT,
-			HKID_HIBERNATE,						APP_ACTION_HIBERNATE
+			HotkeyID::displayOff,				APP_ACTION_DISPLAYOFF,
+			HotkeyID::sleep,					APP_ACTION_SLEEP,
+			HotkeyID::shutdown,					APP_ACTION_SHUTDOWN,
+			HotkeyID::restart,					APP_ACTION_RESTART,
+			HotkeyID::signOut,					APP_ACTION_SIGNOUT,
+			HotkeyID::hibernate,				APP_ACTION_HIBERNATE
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
@@ -297,12 +297,12 @@ namespace MapTable
 
 		INITIALIZE_IDMAPTABLE(PwrReminderEvent)
 		/*-----Event ID--------------------------------Event String ID----------------*/
-			PREVT_AT_SETTIME,					PWRRMD_EVENT_AT_SETTIME,
-			PREVT_AT_APPSTARTUP,				PWRRMD_EVENT_AT_APPSTARTUP,
-			PREVT_AT_SYSWAKEUP,					PWRRMD_EVENT_AT_SYSWAKEUP,
-			PREVT_AT_BFRPWRACTION,				PWRRMD_EVENT_AT_BFRPWRACTION,
-			PREVT_AT_PWRACTIONWAKE,				PWRRMD_EVENT_AT_PWRACTIONWAKE,
-			PREVT_AT_APPEXIT,					PWRRMD_EVENT_AT_APPEXIT
+			PwrReminderEvent::atSetTime,		PWRRMD_EVENT_AT_SETTIME,
+			PwrReminderEvent::atAppStartup,		PWRRMD_EVENT_AT_APPSTARTUP,
+			PwrReminderEvent::atSysWakeUp,		PWRRMD_EVENT_AT_SYSWAKEUP,
+			PwrReminderEvent::beforePwrAction,	PWRRMD_EVENT_AT_BFRPWRACTION,
+			PwrReminderEvent::wakeAfterAction,	PWRRMD_EVENT_AT_PWRACTIONWAKE,
+			PwrReminderEvent::atAppExit,		PWRRMD_EVENT_AT_APPEXIT
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
@@ -317,8 +317,8 @@ namespace MapTable
 
 		INITIALIZE_IDMAPTABLE(PwrReminderStyle)
 		/*----Style ID---------------------------------Style String ID----------------*/
-			PRSTYLE_MSGBOX,						PWRRMD_STYLE_MESSAGEBOX,
-			PRSTYLE_DIALOG,						PWRRMD_STYLE_DIALOG
+			PwrReminderStyle::messageBox,		PWRRMD_STYLE_MESSAGEBOX,
+			PwrReminderStyle::dialogBox,		PWRRMD_STYLE_DIALOG
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 

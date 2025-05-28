@@ -323,7 +323,7 @@ public:
 
 	// Data processing functions
 	virtual void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
-	virtual int  GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp = FALSE) const;
+	virtual int  GetAppOption(AppOptionID eAppOptionID, BOOL bTemp = FALSE) const;
 	virtual int  GetFlagValue(APPFLAGID eFlagID) const;
 	virtual void SetFlagValue(APPFLAGID eFlagID, int nValue);
 	virtual BOOL GetChangeFlagValue(void) const;

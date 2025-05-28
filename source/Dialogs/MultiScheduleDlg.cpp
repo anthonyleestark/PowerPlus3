@@ -706,11 +706,11 @@ void CMultiScheduleDlg::LoadLayoutInfo(void)
 	// Define default table columns format
 	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
 	//-----------ID------------------------Header title ID---------------Width(px)---Column style--------Align Center---
-		{	SCHCOL_ID_INDEX,		GRIDCOLUMN_MULTISCHEDULE_INDEX,			26,		COLSTYLE_FIXED,			TRUE,	},
-		{	SCHCOL_ID_STATE,		GRIDCOLUMN_MULTISCHEDULE_STATE,			52,		COLSTYLE_CHECKBOX,		TRUE,	},
-		{	SCHCOL_ID_ACTIONID,		GRIDCOLUMN_MULTISCHEDULE_ACTIONID,		140,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	SCHCOL_ID_TIMEVALUE,	GRIDCOLUMN_MULTISCHEDULE_TIMEVALUE,		135,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	SCHCOL_ID_REPEAT,		GRIDCOLUMN_MULTISCHEDULE_REPEAT,		-1,		COLSTYLE_CHECKBOX,		TRUE,	},
+		{	ColumnID::Index,		GRIDCOLUMN_MULTISCHEDULE_INDEX,			26,		COLSTYLE_FIXED,			TRUE,	},
+		{	ColumnID::EnableState,	GRIDCOLUMN_MULTISCHEDULE_STATE,			52,		COLSTYLE_CHECKBOX,		TRUE,	},
+		{	ColumnID::ActionID,		GRIDCOLUMN_MULTISCHEDULE_ACTIONID,		140,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	ColumnID::TimeValue,	GRIDCOLUMN_MULTISCHEDULE_TIMEVALUE,		135,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	ColumnID::Repeat,		GRIDCOLUMN_MULTISCHEDULE_REPEAT,		-1,		COLSTYLE_CHECKBOX,		TRUE,	},
 	//------------------------------------------------------------------------------------------------------------------
 	};
 
@@ -817,7 +817,7 @@ void CMultiScheduleDlg::UpdateDataItemList()
 	for (int nRowIndex = ROW_INDEX_DEFAULT; nRowIndex <= nItemNum; nRowIndex++) {
 		
 		// Get schedule item
-		SCHEDULEITEM schItem;
+		Item schItem;
 		if (nRowIndex == ROW_INDEX_DEFAULT) {
 			// Get schedule default item
 			schItem = m_schScheduleTemp.GetDefaultItem();
@@ -833,10 +833,10 @@ void CMultiScheduleDlg::UpdateDataItemList()
 
 		// Item index
 		strTemp.Format(_T("%d"), nRowIndex);
-		m_pDataItemListTable->SetItemText(nRowIndex, SCHCOL_ID_INDEX, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::Index, strTemp);
 
 		// Enable state
-		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, SCHCOL_ID_STATE);
+		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(schItem.IsEnabled());
 		}
@@ -844,15 +844,15 @@ void CMultiScheduleDlg::UpdateDataItemList()
 		// Action name
 		nTemp = GetPairedID(IDTable::ActionName, schItem.GetAction());
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
-		m_pDataItemListTable->SetItemText(nRowIndex, SCHCOL_ID_ACTIONID, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ActionID, strTemp);
 
 		// Time setting
 		CString strFormat = GetLanguageString(ptrLanguage, GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT);
 		strTemp = FormatDispTime(ptrLanguage, strFormat, schItem.GetTime());
-		m_pDataItemListTable->SetItemText(nRowIndex, SCHCOL_ID_TIMEVALUE, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::TimeValue, strTemp);
 
 		// Repeat
-		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, SCHCOL_ID_REPEAT);
+		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(schItem.IsRepeatEnabled());
 		}
@@ -1036,7 +1036,7 @@ void CMultiScheduleDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = FALSE */)
 		}
 		// Check extra items
 		for (int nExtraIndex = 0; nExtraIndex < GetExtraItemNum(); nExtraIndex++) {
-			SCHEDULEITEM& schTemp = m_schScheduleTemp.GetItemAt(nExtraIndex);
+			const Item& schTemp = m_schScheduleTemp.GetItemAt(nExtraIndex);
 			if (schTemp.IsEnabled() == TRUE) {
 				// Increase counter
 				m_nCheckCount++;
@@ -1079,7 +1079,7 @@ BOOL CMultiScheduleDlg::LoadScheduleSettings()
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	VERIFY(pApp != NULL);
 	if (pApp == NULL) return FALSE;
-	ScheduleData* pschData = pApp->GetAppScheduleData();
+	Data* pschData = pApp->GetAppScheduleData();
 	if (pschData == NULL)
 		return FALSE;
 
@@ -1151,8 +1151,8 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 		}
 
 		// Get checkbox cells
-		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, SCHCOL_ID_STATE);
-		pCellCheckRepeat = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, SCHCOL_ID_REPEAT);
+		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
+		pCellCheckRepeat = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
 		if ((pCellCheckEnable == NULL) || (pCellCheckRepeat == NULL)) continue;
 
 		// Get checked states
@@ -1162,13 +1162,13 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 		// Update item enable and repeat states
 		if (nRowIndex == ROW_INDEX_DEFAULT) {
 			// Update default item data
-			SCHEDULEITEM& schTempDefault = m_schScheduleTemp.GetDefaultItem();
+			Item& schTempDefault = m_schScheduleTemp.GetDefaultItem();
 			schTempDefault.EnableItem(bEnabled);
 			schTempDefault.EnableRepeat(bRepeat);
 		}
 		else {
 			// Update extra item data
-			SCHEDULEITEM& schTempItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
+			Item& schTempItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
 			schTempItem.EnableItem(bEnabled);
 			schTempItem.EnableRepeat(bRepeat);
 		}
@@ -1205,8 +1205,8 @@ BOOL CMultiScheduleDlg::CheckDataChangeState()
 	// Check if each extra item's data changed
 	for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
 		// Get current item and temp item
-		SCHEDULEITEM schCurItem = m_schSchedule.GetItemAt(nExtraIndex);
-		SCHEDULEITEM schTempItem = m_schScheduleTemp.GetItemAt(nExtraIndex);
+		const Item& schCurItem = m_schSchedule.GetItemAt(nExtraIndex);
+		const Item& schTempItem = m_schScheduleTemp.GetItemAt(nExtraIndex);
 
 		// Data comparison
 		bChangeFlag |= (schTempItem.Compare(schCurItem) != TRUE);
@@ -1227,7 +1227,7 @@ BOOL CMultiScheduleDlg::CheckDataChangeState()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CMultiScheduleDlg::Add(SCHEDULEITEM& schItem)
+void CMultiScheduleDlg::Add(Item& schItem)
 {
 	// If item is empty, do nothing
 	if (schItem.IsEmpty())
@@ -1257,7 +1257,7 @@ void CMultiScheduleDlg::Add(SCHEDULEITEM& schItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CMultiScheduleDlg::Update(SCHEDULEITEM& schItem)
+void CMultiScheduleDlg::Update(Item& schItem)
 {
 	// If item is empty, do nothing
 	if (schItem.IsEmpty())
@@ -1332,13 +1332,13 @@ void CMultiScheduleDlg::RemoveAll()
 void CMultiScheduleDlg::SetAllItemState(BOOL bState)
 {
 	// Check/uncheck all --> Update all items enable state
-	SCHEDULEITEM& schDefTemp = m_schScheduleTemp.GetDefaultItem();
+	Item& schDefTemp = m_schScheduleTemp.GetDefaultItem();
 	if (schDefTemp.IsEnabled() != bState) {
 		// Change checked state
 		schDefTemp.EnableItem(bState);
 	}
 	for (int nExtraIndex = 0; nExtraIndex < GetExtraItemNum(); nExtraIndex++) {
-		SCHEDULEITEM& schTemp = m_schScheduleTemp.GetItemAt(nExtraIndex);
+		Item& schTemp = m_schScheduleTemp.GetItemAt(nExtraIndex);
 		if (schTemp.IsEnabled() != bState) {
 			// Change checked state
 			schTemp.EnableItem(bState);
@@ -1366,7 +1366,7 @@ void CMultiScheduleDlg::SetAllItemState(BOOL bState)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CMultiScheduleDlg::Validate(SCHEDULEITEM& schItem, BOOL bShowMsg /* = FALSE */, BOOL bAutoCorrect /* = FALSE */)
+BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOOL bAutoCorrect /* = FALSE */)
 {
 	BOOL bResult = TRUE;
 
@@ -1518,7 +1518,7 @@ void CMultiScheduleDlg::OnAdd()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_MULTISCHEDULE_ADD_BTN);
 
 	// Initialize new item template
-	SCHEDULEITEM schTemp;
+	Item schTemp;
 	schTemp.SetItemID(m_schScheduleTemp.GetNextID());
 	schTemp.SetAction(DEF_SCHEDULE_INIT_ACTION);
 
@@ -1563,7 +1563,7 @@ void CMultiScheduleDlg::OnEdit()
 		int nSelRowIndex = m_nCurSelIndex + ROW_FIXED_NUM;
 
 		// Get selected item
-		SCHEDULEITEM schItem;
+		Item schItem;
 		if (nSelRowIndex == ROW_INDEX_DEFAULT) {
 			// Get default item
 			schItem = m_schScheduleTemp.GetDefaultItem();
@@ -1737,7 +1737,7 @@ void CMultiScheduleDlg::OnViewDetails()
 		int nSelRowIndex = m_nCurSelIndex + ROW_FIXED_NUM;
 
 		// Get selected item
-		SCHEDULEITEM schItem;
+		Item schItem;
 		if (nSelRowIndex == ROW_INDEX_DEFAULT) {
 			// Get default item
 			schItem = m_schScheduleTemp.GetDefaultItem();
@@ -1801,12 +1801,12 @@ void CMultiScheduleDlg::OnSetDefault()
 		if (nConfirm == IDYES) {
 			// Check if currently selected item is empty
 			int nExtraItemIndex = nSelRowIndex - ROW_INDEX_EXTRASTART;
-			SCHEDULEITEM& schCurSelItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
+			const Item& schCurSelItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
 			if (schCurSelItem.IsEmpty())
 				return;
 			
 			// Overwrite default item data with currently selected extra item data
-			SCHEDULEITEM& schDefaultItem = m_schScheduleTemp.GetDefaultItem();
+			Item& schDefaultItem = m_schScheduleTemp.GetDefaultItem();
 			schDefaultItem.Copy(schCurSelItem);
 			schDefaultItem.SetItemID(DEF_SCHEDULE_DEFAULT_ITEMID);
 
@@ -1938,7 +1938,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 	if (nDialogID == IDD_EDITSCHEDULE_DLG) {
 
 		// Initialize info data
-		SCHEDULEITEM schItemTemp;
+		Item schItemTemp;
 		int nMode = MODE_INIT;
 		int nRetFlag = RETFLAG_INVALID;
 

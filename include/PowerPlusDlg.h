@@ -188,7 +188,7 @@ protected:
 
 	// Data processing functions
 	void GetAppData(UINT dwDataType = APPDATA_ALL);
-	int  GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp = FALSE) const;
+	int  GetAppOption(AppOptionID eAppOptionID, BOOL bTemp = FALSE) const;
 	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 	BOOL CheckSettingChangeState(void);
 	int  GetFlagValue(APPFLAGID eFlagID) const;

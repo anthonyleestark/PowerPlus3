@@ -147,8 +147,14 @@ void SResourceIDMap::Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize)
 	if ((pSrc == NULL) || (nSize <= 0))
 		return;
 
-	// If the destination data is not empty, clean it up first
+	// If the destination data is not empty
 	if (m_pIDMapData != NULL) {
+
+		// Do not copy itself
+		if (m_pIDMapData == pSrc)
+			return;
+
+		// Clean it up to prepare for copying
 		delete[] m_pIDMapData;
 		m_pIDMapData = NULL;
 	}

@@ -103,11 +103,7 @@ LogDetail::LogDetail()
 LogDetail::LogDetail(const LogDetail& pItem)
 {
 	// Copy data
-	m_usCategory = pItem.m_usCategory;						// Detail category
-	m_nFlag = pItem.m_nFlag;								// Detail flag
-	m_nDetailValue = pItem.m_nDetailValue;					// Detail value (integer)
-	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
-	PointerCopy(pItem);										// Detail data (pointer)
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -122,12 +118,7 @@ LogDetail::LogDetail(const LogDetail& pItem)
 LogDetail& LogDetail::operator=(const LogDetail& pItem)
 {
 	// Copy data
-	m_usCategory = pItem.m_usCategory;						// Detail category
-	m_nFlag = pItem.m_nFlag;								// Detail flag
-	m_nDetailValue = pItem.m_nDetailValue;					// Detail value (integer)
-	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
-	PointerCopy(pItem);										// Detail data (pointer)
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -163,6 +154,9 @@ void LogDetail::Init()
 
 void LogDetail::Copy(const LogDetail& pItem)
 {
+	// Do not copy itself
+	if (this == &pItem) return;
+
 	// Copy data
 	m_usCategory = pItem.m_usCategory;						// Detail category
 	m_nFlag = pItem.m_nFlag;								// Detail flag
@@ -310,7 +304,7 @@ LogDetailInfo::LogDetailInfo() : LOGDETAILARRAY()
 LogDetailInfo::LogDetailInfo(const LogDetailInfo& pData)
 {
 	// Copy data
-	this->Copy(pData);
+	this->CopyData(pData);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -325,7 +319,7 @@ LogDetailInfo::LogDetailInfo(const LogDetailInfo& pData)
 LogDetailInfo& LogDetailInfo::operator=(const LogDetailInfo& pData)
 {
 	// Copy data
-	this->Copy(pData);
+	this->CopyData(pData);
 	return *this;
 }
 
@@ -433,11 +427,7 @@ LogItem::LogItem()
 LogItem::LogItem(const LogItem& pItem)
 {
 	// Copy data
-	m_stTime = pItem.m_stTime;								// Log time
-	m_dwProcessID = pItem.m_dwProcessID;					// Process ID
-	m_usCategory = pItem.m_usCategory;						// Log category
-	m_strLogString = pItem.m_strLogString;					// Log string
-	m_arrDetailInfo.Copy(pItem.m_arrDetailInfo);			// Log detail info
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -452,12 +442,7 @@ LogItem::LogItem(const LogItem& pItem)
 LogItem& LogItem::operator=(const LogItem& pItem)
 {
 	// Copy data
-	m_stTime = pItem.m_stTime;								// Log time
-	m_dwProcessID = pItem.m_dwProcessID;					// Process ID
-	m_usCategory = pItem.m_usCategory;						// Log category
-	m_strLogString = pItem.m_strLogString;					// Log string
-	m_arrDetailInfo.Copy(pItem.m_arrDetailInfo);			// Log detail info
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -714,9 +699,7 @@ JSON::JSON()
 JSON::JSON(const JSON& pObj)
 {
 	// Copy data
-	this->m_strObjectName = pObj.m_strObjectName;	// JSON object name
-	this->CopyArrayData(pObj);						// Property (array) data
-	this->CopyPtrData(pObj);						// Child object (pointer) data
+	this->Copy(pObj);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -744,10 +727,7 @@ JSON::~JSON()
 JSON& JSON::operator=(const JSON& pObj)
 {
 	// Copy data
-	this->m_strObjectName = pObj.m_strObjectName;	// JSON object name
-	this->CopyArrayData(pObj);						// Property (array) data
-	this->CopyPtrData(pObj);						// Child object (pointer) data
-
+	this->Copy(pObj);
 	return *this;
 }
 
@@ -762,6 +742,9 @@ JSON& JSON::operator=(const JSON& pObj)
 
 void JSON::Copy(const JSON& pObj)
 {
+	// Do not copy itself
+	if (this == &pObj) return;
+
 	// Copy data
 	this->m_strObjectName = pObj.m_strObjectName;	// JSON object name
 	this->CopyArrayData(pObj);						// Property (array) data

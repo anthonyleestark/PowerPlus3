@@ -42,8 +42,23 @@ class CPwrReminderDlg : public SDialog
 	DECLARE_DYNAMIC(CPwrReminderDlg)
 
 public:
-	CPwrReminderDlg(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~CPwrReminderDlg();					// destructor
+	using Item = typename PwrReminderItem;
+	using Event = typename Item::Event;
+	using Style = typename Item::Style;
+	using Data = typename PwrReminderData;
+	enum ColumnID {
+		Index = 0,										// Index
+		EnableState,									// Enable state
+		ItemID,											// Item ID
+		MessageContent,									// Message content
+		EventID,										// Event ID
+		MsgStyle,										// Reminder style
+		Repeat											// Repeat daily
+	};
+
+public:
+	CPwrReminderDlg(CWnd* pParent = nullptr);			// standard constructor
+	virtual ~CPwrReminderDlg();							// destructor
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -94,8 +109,8 @@ private:
 	BOOL m_bStyleDialogRad;
 
 	// Data container variables
-	PwrReminderData m_pwrReminderData;
-	PwrReminderData m_pwrReminderDataTemp;
+	Data m_pwrReminderData;
+	Data m_pwrReminderDataTemp;
 
 	// Table format and properties
 	int m_nColNum;
@@ -173,15 +188,35 @@ private:
 	void RemoveAll();
 	void SetAllItemState(BOOL bState);
 	void PreviewItem(int nIndex);
-	void UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate);
-	BOOL Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg = FALSE, BOOL bAutoCorrect = FALSE);
+	void UpdateItemData(Item& pwrItem, BOOL bUpdate);
+	BOOL Validate(Item& pwrItem, BOOL bShowMsg = FALSE, BOOL bAutoCorrect = FALSE);
 
 protected:
 	// Get/set functions
-	int GetItemNum(void);
-	int GetCurMode(void);
+	int GetItemNum(void) const;
+	int GetCurMode(void) const;
 	void SetCurMode(int nMode);
 	void DrawRepeatSetButton(void);
 };
+
+
+////////////////////////////////////////////////////////
+//
+//	Include inline file for inline functions
+//
+////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _PWRREMINDERDLG_ENABLE_INLINES
+	#include "Dialogs.inl"
+	#ifdef _PWRREMINDERDLG_INLINE_INCLUDED
+		#pragma message("-- Dialogs inline library included (PwrReminderDlg.h)")
+	#else
+		#pragma error("-- Linking error in PwrReminderDlg.h: Unable to link to inline header!")
+	#endif
+	#undef _PWRREMINDERDLG_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in PwrReminderDlg.h: Inline is not enabled!")
+#endif
 
 #endif	// ifndef _PWRREMINDERDLG_H_INCLUDED

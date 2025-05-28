@@ -71,28 +71,8 @@ ConfigData::ConfigData()
 
 ConfigData::ConfigData(const CONFIGDATA& pData)
 {
-	// Main settings
-	this->nLMBAction = pData.nLMBAction;								// Left mouse button action
-	this->nMMBAction = pData.nMMBAction;								// Middle mouse button action
-	this->nRMBAction = pData.nRMBAction;								// Right mouse button action
-	this->bRMBShowMenu = pData.bRMBShowMenu;							// Right mouse button: Only show menu
-
-	// Display setting
-	this->nLanguageID = pData.nLanguageID;								// Language setting
-
-	// System advanced settings
-	this->bShowDlgAtStartup = pData.bShowDlgAtStartup;					// Show dialog at startup
-	this->bStartupEnabled = pData.bStartupEnabled;						// Startup with Windows
-	this->bConfirmAction = pData.bConfirmAction;						// Show confirm message before doing action
-	this->bSaveHistoryLog = pData.bSaveHistoryLog;						// Save app history log
-	this->bSaveAppEventLog = pData.bSaveAppEventLog;					// Save app event log
-	this->bRunAsAdmin = pData.bRunAsAdmin;								// Run with admin privileges
-	this->bShowErrorMsg = pData.bShowErrorMsg;							// Show action error message
-	this->bNotifySchedule = pData.bNotifySchedule;						// Show notify tip for schedule action
-	this->bAllowCancelSchedule = pData.bAllowCancelSchedule;			// Allow canceling schedule when notify
-	this->bEnableBackgroundHotkey = pData.bEnableBackgroundHotkey;		// Enable background action hotkeys
-	this->bLockStateHotkey = pData.bLockStateHotkey;					// Allow background hotkeys on lockscreen
-	this->bEnablePowerReminder = pData.bEnablePowerReminder;			// Enable Power Peminder feature
+	// Copy data
+	this->Copy(pData);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -106,6 +86,9 @@ ConfigData::ConfigData(const CONFIGDATA& pData)
 
 void ConfigData::Copy(const CONFIGDATA& pData)
 {
+	// Do not copy itself
+	if (this == &pData) return;
+
 	// Main settings
 	this->nLMBAction = pData.nLMBAction;								// Left mouse button action
 	this->nMMBAction = pData.nMMBAction;								// Middle mouse button action
@@ -206,6 +189,80 @@ void ConfigData::GetData(CONFIGDATA& pData) const
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetAppOption
+//	Description:	Get application option data by ID
+//  Arguments:		eAppOptionID - Option ID
+//  Return value:	int - Option value
+//
+//////////////////////////////////////////////////////////////////////////
+
+int ConfigData::GetAppOption(AppOptionID eAppOptionID) const
+{
+	int nResult = INT_INVALID;
+
+	switch (eAppOptionID)
+	{
+	case AppOptionID::invalid:
+		nResult = INT_INVALID;
+		break;
+	case AppOptionID::leftMouseAction:
+		nResult = this->nLMBAction;
+		break;
+	case AppOptionID::middleMouseAction:
+		nResult = this->nMMBAction;
+		break;
+	case AppOptionID::rightMouseAction:
+		nResult = this->nRMBAction;
+		break;
+	case AppOptionID::rightMouseShowMenu:
+		nResult = this->bRMBShowMenu;
+		break;
+	case AppOptionID::languageID:
+		nResult = this->nLanguageID;
+		break;
+	case AppOptionID::showDlgAtStartup:
+		nResult = this->bShowDlgAtStartup;
+		break;
+	case AppOptionID::startupEnabled:
+		nResult = this->bStartupEnabled;
+		break;
+	case AppOptionID::confirmBeforeExecuting:
+		nResult = this->bConfirmAction;
+		break;
+	case AppOptionID::saveAppEventLog:
+		nResult = this->bSaveAppEventLog;
+		break;
+	case AppOptionID::saveAppHistoryLog:
+		nResult = this->bSaveHistoryLog;
+		break;
+	case AppOptionID::runAsAdmin:
+		nResult = this->bRunAsAdmin;
+		break;
+	case AppOptionID::showErrorMessage:
+		nResult = this->bShowErrorMsg;
+		break;
+	case AppOptionID::notifySchedule:
+		nResult = this->bNotifySchedule;
+		break;
+	case AppOptionID::allowCancelingSchedule:
+		nResult = this->bAllowCancelSchedule;
+		break;
+	case AppOptionID::backgroundHotkeyEnabled:
+		nResult = this->bEnableBackgroundHotkey;
+		break;
+	case AppOptionID::lockStateHotkeyEnabled:
+		nResult = this->bLockStateHotkey;
+		break;
+	case AppOptionID::pwrReminderEnabled:
+		nResult = this->bEnablePowerReminder;
+		break;
+	}
+
+	return nResult;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	SetDefaultData
 //	Description:	Set default for config data
 //  Arguments:		None
@@ -241,10 +298,7 @@ PwrRepeatSet::PwrRepeatSet()
 PwrRepeatSet::PwrRepeatSet(const PwrRepeatSet& pItem)
 {
 	// Copy data
-	this->m_bRepeat = pItem.m_bRepeat;						// Repeat daily
-	this->m_bAllowSnooze = pItem.m_bAllowSnooze;			// Allow snoozing mode
-	this->m_nSnoozeInterval = pItem.m_nSnoozeInterval;		// Snooze interval
-	this->m_byRepeatDays = pItem.m_byRepeatDays;			// Days of week (for repeating)
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -259,11 +313,7 @@ PwrRepeatSet::PwrRepeatSet(const PwrRepeatSet& pItem)
 PwrRepeatSet& PwrRepeatSet::operator=(const PwrRepeatSet& pItem)
 {
 	// Copy data
-	this->m_bRepeat = pItem.m_bRepeat;						// Repeat daily
-	this->m_bAllowSnooze = pItem.m_bAllowSnooze;			// Allow snoozing mode
-	this->m_nSnoozeInterval = pItem.m_nSnoozeInterval;		// Snooze interval
-	this->m_byRepeatDays = pItem.m_byRepeatDays;			// Days of week (for repeating)
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -278,11 +328,14 @@ PwrRepeatSet& PwrRepeatSet::operator=(const PwrRepeatSet& pItem)
 
 void PwrRepeatSet::Copy(const PwrRepeatSet& pItem)
 {
+	// Do not copy itself
+	if (this == &pItem) return;
+
 	// Copy data
-	this->m_bRepeat = pItem.m_bRepeat;						// Repeat daily
-	this->m_bAllowSnooze = pItem.m_bAllowSnooze;			// Allow snoozing mode
-	this->m_nSnoozeInterval = pItem.m_nSnoozeInterval;		// Snooze interval
-	this->m_byRepeatDays = pItem.m_byRepeatDays;			// Days of week (for repeating)
+	m_bRepeat = pItem.m_bRepeat;							// Repeat daily
+	m_bAllowSnooze = pItem.m_bAllowSnooze;					// Allow snoozing mode
+	m_nSnoozeInterval = pItem.m_nSnoozeInterval;			// Snooze interval
+	m_byRepeatDays = pItem.m_byRepeatDays;					// Days of week (for repeating)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -337,11 +390,7 @@ ScheduleItem::ScheduleItem(UINT nItemID)
 ScheduleItem::ScheduleItem(const ScheduleItem& pItem)
 {
 	// Copy data
-	this->m_nItemID = pItem.m_nItemID;					// Item ID
-	this->m_bEnabled = pItem.m_bEnabled;				// Enable/disable status
-	this->m_nActionID = pItem.m_nActionID;				// Schedule action ID
-	this->m_stTime = pItem.m_stTime;					// Schedule time
-	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);	// Repeat set data
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -356,12 +405,7 @@ ScheduleItem::ScheduleItem(const ScheduleItem& pItem)
 ScheduleItem& ScheduleItem::operator=(const ScheduleItem& pItem)
 {
 	// Copy data
-	this->m_nItemID = pItem.m_nItemID;					// Item ID
-	this->m_bEnabled = pItem.m_bEnabled;				// Enable/disable status
-	this->m_nActionID = pItem.m_nActionID;				// Schedule action ID
-	this->m_stTime = pItem.m_stTime;					// Schedule time
-	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);	// Repeat set data
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -376,12 +420,15 @@ ScheduleItem& ScheduleItem::operator=(const ScheduleItem& pItem)
 
 void ScheduleItem::Copy(const ScheduleItem& pItem)
 {
+	// Do not copy itself
+	if (this == &pItem) return;
+
 	// Copy data
-	this->m_nItemID = pItem.m_nItemID;					// Item ID
-	this->m_bEnabled = pItem.m_bEnabled;				// Enable/disable status
-	this->m_nActionID = pItem.m_nActionID;				// Schedule action ID
-	this->m_stTime = pItem.m_stTime;					// Schedule time
-	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);	// Repeat set data
+	m_nItemID = pItem.m_nItemID;						// Item ID
+	m_bEnabled = pItem.m_bEnabled;						// Enable/disable status
+	m_nActionID = pItem.m_nActionID;					// Schedule action ID
+	m_stTime = pItem.m_stTime;							// Schedule time
+	m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);			// Repeat set data
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -472,17 +519,8 @@ ScheduleData::ScheduleData()
 
 ScheduleData::ScheduleData(const ScheduleData& pData)
 {
-	// Remove existing data
-	this->DeleteAll();
-
-	// Copy default item
-	this->m_schDefaultItem.Copy(pData.m_schDefaultItem);
-
-	// Copy extra data
-	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = pData.m_arrSchedExtraItemList.GetAt(nIndex);
-		this->m_arrSchedExtraItemList.Add(schItem);
-	}
+	// Copy data
+	this->Copy(pData);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -496,18 +534,8 @@ ScheduleData::ScheduleData(const ScheduleData& pData)
 
 ScheduleData& ScheduleData::operator=(const ScheduleData& pData)
 {
-	// Remove existing data
-	this->DeleteAll();
-
-	// Copy default item
-	this->m_schDefaultItem.Copy(pData.m_schDefaultItem);
-
-	// Copy extra data
-	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = pData.m_arrSchedExtraItemList.GetAt(nIndex);
-		this->m_arrSchedExtraItemList.Add(schItem);
-	}
-
+	// Copy data
+	this->Copy(pData);
 	return *this;
 }
 
@@ -538,6 +566,9 @@ void ScheduleData::Init()
 
 void ScheduleData::Copy(const ScheduleData& pData)
 {
+	// Do not copy itself
+	if (this == &pData) return;
+
 	// Remove existing data
 	this->DeleteAll();
 
@@ -911,10 +942,7 @@ HotkeySetItem::HotkeySetItem(UINT nHKActionID)
 HotkeySetItem::HotkeySetItem(const HotkeySetItem& pItem)
 {
 	// Copy data
-	this->m_bEnabled = pItem.m_bEnabled;			// Hotkey enabled/disabled
-	this->m_nHKActionID = pItem.m_nHKActionID;		// Hotkey action ID
-	this->m_dwCtrlKeyCode = pItem.m_dwCtrlKeyCode;	// Control Keycode #1
-	this->m_dwFuncKeyCode = pItem.m_dwFuncKeyCode;	// Function Keycode #2
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -929,11 +957,7 @@ HotkeySetItem::HotkeySetItem(const HotkeySetItem& pItem)
 HotkeySetItem& HotkeySetItem::operator=(const HotkeySetItem& pItem)
 {
 	// Copy data
-	this->m_bEnabled = pItem.m_bEnabled;			// Hotkey enabled/disabled
-	this->m_nHKActionID = pItem.m_nHKActionID;		// Hotkey action ID
-	this->m_dwCtrlKeyCode = pItem.m_dwCtrlKeyCode;	// Control Keycode #1
-	this->m_dwFuncKeyCode = pItem.m_dwFuncKeyCode;	// Function Keycode #2
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -948,11 +972,14 @@ HotkeySetItem& HotkeySetItem::operator=(const HotkeySetItem& pItem)
 
 void HotkeySetItem::Copy(const HotkeySetItem& pItem)
 {
+	// Do not copy itself
+	if (this == &pItem) return;
+
 	// Copy data
-	this->m_bEnabled = pItem.m_bEnabled;			// Hotkey enabled/disabled
-	this->m_nHKActionID = pItem.m_nHKActionID;		// Hotkey action ID
-	this->m_dwCtrlKeyCode = pItem.m_dwCtrlKeyCode;	// Control Keycode #1
-	this->m_dwFuncKeyCode = pItem.m_dwFuncKeyCode;	// Function Keycode #2
+	m_bEnabled = pItem.m_bEnabled;					// Hotkey enabled/disabled
+	m_nHKActionID = pItem.m_nHKActionID;			// Hotkey action ID
+	m_dwCtrlKeyCode = pItem.m_dwCtrlKeyCode;		// Control Keycode #1
+	m_dwFuncKeyCode = pItem.m_dwFuncKeyCode;		// Function Keycode #2
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1069,14 +1096,8 @@ HotkeySetData::HotkeySetData()
 
 HotkeySetData::HotkeySetData(const HotkeySetData& pData)
 {
-	// Remove existing data
-	this->DeleteAll();
-
 	// Copy data
-	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksItem = pData.m_arrHotkeySetList.GetAt(nIndex);
-		this->m_arrHotkeySetList.Add(hksItem);
-	}
+	this->Copy(pData);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1090,15 +1111,8 @@ HotkeySetData::HotkeySetData(const HotkeySetData& pData)
 
 HotkeySetData& HotkeySetData::operator=(const HotkeySetData& pData)
 {
-	// Remove existing data
-	this->DeleteAll();
-
 	// Copy data
-	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksItem = pData.m_arrHotkeySetList.GetAt(nIndex);
-		this->m_arrHotkeySetList.Add(hksItem);
-	}
-
+	this->Copy(pData);
 	return *this;
 }
 
@@ -1113,12 +1127,15 @@ HotkeySetData& HotkeySetData::operator=(const HotkeySetData& pData)
 
 void HotkeySetData::Copy(const HotkeySetData& pData)
 {
+	// Do not copy itself
+	if (this == &pData) return;
+
 	// Remove existing data
 	this->DeleteAll();
 
 	// Copy data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksItem = pData.m_arrHotkeySetList.GetAt(nIndex);
+		const Item& hksItem = pData.m_arrHotkeySetList.GetAt(nIndex);
 		this->m_arrHotkeySetList.Add(hksItem);
 	}
 }
@@ -1138,12 +1155,12 @@ void HotkeySetData::SetDefaultData(void)
 	this->Init();
 
 	// Create default data
-	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_DISPLAYOFF));
-	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SLEEP));
-	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SHUTDOWN));
-	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_RESTART));
-	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_SIGNOUT));
-	m_arrHotkeySetList.Add(HOTKEYSETITEM(HKID_HIBERNATE));
+	m_arrHotkeySetList.Add(Item(HKID::displayOff));
+	m_arrHotkeySetList.Add(Item(HKID::sleep));
+	m_arrHotkeySetList.Add(Item(HKID::shutdown));
+	m_arrHotkeySetList.Add(Item(HKID::restart));
+	m_arrHotkeySetList.Add(Item(HKID::signOut));
+	m_arrHotkeySetList.Add(Item(HKID::hibernate));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1155,7 +1172,7 @@ void HotkeySetData::SetDefaultData(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void HotkeySetData::Add(const HOTKEYSETITEM& pItem)
+void HotkeySetData::Add(const Item& pItem)
 {
 	// If data list is current empty
 	if (m_arrHotkeySetList.IsEmpty()) {
@@ -1166,7 +1183,7 @@ void HotkeySetData::Add(const HOTKEYSETITEM& pItem)
 
 	// Check if item exists, if yes, do not add
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		HOTKEYSETITEM pItemTemp = GetItemAt(nIndex);
+		const Item& pItemTemp = GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE)
 			return;
 	}
@@ -1177,7 +1194,7 @@ void HotkeySetData::Add(const HOTKEYSETITEM& pItem)
 	
 	// Copy old data to new one
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksItem = this->GetItemAt(nIndex);
+		const Item& hksItem = this->GetItemAt(nIndex);
 		pNew->m_arrHotkeySetList.Add(hksItem);
 	}
 
@@ -1202,7 +1219,7 @@ void HotkeySetData::Add(const HOTKEYSETITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void HotkeySetData::Update(const HOTKEYSETITEM& pItem)
+void HotkeySetData::Update(const Item& pItem)
 {
 	// If data list is current empty
 	if (m_arrHotkeySetList.IsEmpty()) {
@@ -1216,7 +1233,7 @@ void HotkeySetData::Update(const HOTKEYSETITEM& pItem)
 	int nDupKeyIndex = INT_INVALID;
 
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksTemp = GetItemAt(nIndex);
+		const Item& hksTemp = GetItemAt(nIndex);
 		if (hksTemp.GetActionID() == pItem.GetActionID()) {
 			// Duplicate action ID found
 			nDupActionIndex = nIndex;
@@ -1229,7 +1246,7 @@ void HotkeySetData::Update(const HOTKEYSETITEM& pItem)
 
 	// If same item existed (same action ID and same keystrokes), update its state
 	if (nDupActionIndex == nDupKeyIndex) {
-		HOTKEYSETITEM& hksTemp = GetItemAt(nDupActionIndex);
+		Item& hksTemp = GetItemAt(nDupActionIndex);
 		hksTemp.EnableItem(pItem.IsEnabled());
 		return;
 	}
@@ -1241,7 +1258,7 @@ void HotkeySetData::Update(const HOTKEYSETITEM& pItem)
 
 	// If item with same action ID existed, update its data
 	if (nDupActionIndex != INT_INVALID) {
-		HOTKEYSETITEM& hksTemp = GetItemAt(nDupActionIndex);
+		Item& hksTemp = GetItemAt(nDupActionIndex);
 		hksTemp.Copy(pItem);
 	}
 	// Otherwise, add new
@@ -1266,7 +1283,7 @@ void HotkeySetData::Remove(int nAtIndex)
 		return;
 
 	// Get item data
-	HOTKEYSETITEM& hksItem = GetItemAt(nAtIndex);
+	Item& hksItem = GetItemAt(nAtIndex);
 
 	// Reset item value
 	hksItem.EnableItem(FALSE);
@@ -1305,7 +1322,7 @@ void HotkeySetData::Adjust(void)
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
 
 		// Get hotkeyset item keycode
-		HOTKEYSETITEM& hksItem = GetItemAt(nIndex);
+		Item& hksItem = GetItemAt(nIndex);
 		hksItem.GetKeyCode(dwCtrlKey, dwFuncKey);
 
 		// Not enable hotkeyset item if no keystroke data
@@ -1394,7 +1411,7 @@ void HotkeySetData::PrintKeyStrokes(UINT nHKID, CString& strOutput) const
 	// Search for hotkey ID and get keystrokes string
 	CString strKeyStrokes = STRING_EMPTY;
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		HOTKEYSETITEM hksItem = this->GetItemAt(nIndex);
+		Item hksItem = this->GetItemAt(nIndex);
 		if (hksItem.GetActionID() == nHKID) {
 			hksItem.PrintKeyStrokes(strKeyStrokes);
 			break;
@@ -1432,17 +1449,7 @@ RmdMsgStyleSet::RmdMsgStyleSet()
 RmdMsgStyleSet::RmdMsgStyleSet(const RmdMsgStyleSet& pItem)
 {
 	// Copy data
-	this->m_colorBkgrd = pItem.m_colorBkgrd;					// Background color
-	this->m_colorText = pItem.m_colorText;						// Text color
-	this->m_strFontName = pItem.m_strFontName;					// Font name
-	this->m_uiFontSize = pItem.m_uiFontSize;					// Font size
-	this->m_uiTimeout = pItem.m_uiTimeout;						// Timeout (auto-close) interval
-	this->m_uiIconID = pItem.m_uiIconID;						// Message icon ID
-	this->m_nIconSize = pItem.m_nIconSize;						// Message icon size
-	this->m_byIconPos = pItem.m_byIconPos;						// Message icon position
-	this->m_byDisplayPos = pItem.m_byDisplayPos;				// Message display position
-	this->m_uiHMargin = pItem.m_uiHMargin;						// Display area horizontal margin
-	this->m_uiVMargin = pItem.m_uiVMargin;						// Display area vertical margin
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1457,18 +1464,7 @@ RmdMsgStyleSet::RmdMsgStyleSet(const RmdMsgStyleSet& pItem)
 RmdMsgStyleSet& RmdMsgStyleSet::operator=(const RmdMsgStyleSet& pItem)
 {
 	// Copy data
-	this->m_colorBkgrd = pItem.m_colorBkgrd;					// Background color
-	this->m_colorText = pItem.m_colorText;						// Text color
-	this->m_strFontName = pItem.m_strFontName;					// Font name
-	this->m_uiFontSize = pItem.m_uiFontSize;					// Font size
-	this->m_uiTimeout = pItem.m_uiTimeout;						// Timeout (auto-close) interval
-	this->m_uiIconID = pItem.m_uiIconID;						// Message icon ID
-	this->m_nIconSize = pItem.m_nIconSize;						// Message icon size
-	this->m_byIconPos = pItem.m_byIconPos;						// Message icon position
-	this->m_byDisplayPos = pItem.m_byDisplayPos;				// Message display position
-	this->m_uiHMargin = pItem.m_uiHMargin;						// Display area horizontal margin
-	this->m_uiVMargin = pItem.m_uiVMargin;						// Display area vertical margin
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -1483,18 +1479,21 @@ RmdMsgStyleSet& RmdMsgStyleSet::operator=(const RmdMsgStyleSet& pItem)
 
 void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& pItem)
 {
+	// Do not copy itself
+	if (this == &pItem) return;
+
 	// Copy data
-	this->m_colorBkgrd = pItem.m_colorBkgrd;					// Background color
-	this->m_colorText = pItem.m_colorText;						// Text color
-	this->m_strFontName = pItem.m_strFontName;					// Font name
-	this->m_uiFontSize = pItem.m_uiFontSize;					// Font size
-	this->m_uiTimeout = pItem.m_uiTimeout;						// Timeout (auto-close) interval
-	this->m_uiIconID = pItem.m_uiIconID;						// Message icon ID
-	this->m_nIconSize = pItem.m_nIconSize;						// Message icon size
-	this->m_byIconPos = pItem.m_byIconPos;						// Message icon position
-	this->m_byDisplayPos = pItem.m_byDisplayPos;				// Message display position
-	this->m_uiHMargin = pItem.m_uiHMargin;						// Display area horizontal margin
-	this->m_uiVMargin = pItem.m_uiVMargin;						// Display area vertical margin
+	m_colorBkgrd = pItem.m_colorBkgrd;							// Background color
+	m_colorText = pItem.m_colorText;							// Text color
+	m_strFontName = pItem.m_strFontName;						// Font name
+	m_uiFontSize = pItem.m_uiFontSize;							// Font size
+	m_uiTimeout = pItem.m_uiTimeout;							// Timeout (auto-close) interval
+	m_uiIconID = pItem.m_uiIconID;								// Message icon ID
+	m_nIconSize = pItem.m_nIconSize;							// Message icon size
+	m_byIconPos = pItem.m_byIconPos;							// Message icon position
+	m_byDisplayPos = pItem.m_byDisplayPos;						// Message display position
+	m_uiHMargin = pItem.m_uiHMargin;							// Display area horizontal margin
+	m_uiVMargin = pItem.m_uiVMargin;							// Display area vertical margin
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1541,9 +1540,9 @@ PwrReminderItem::PwrReminderItem()
 	m_bEnabled = FALSE;										// Enable state
 	m_nItemID = DEF_PWRREMINDER_MIN_ITEMID;					// Item ID
 	m_strMessage = STRING_EMPTY;							// Message content
-	m_nEventID = PREVT_AT_SETTIME;							// Event ID
+	m_nEventID = Event::atSetTime;							// Event ID
 	m_stTime = SYSTEMTIME_ZERO;								// Event time
-	m_dwMsgStyle = PRSTYLE_MSGBOX;							// Reminder style
+	m_dwMsgStyle = Style::messageBox;						// Reminder style
 	m_rpsRepeatSet = PWRREPEATSET();						// Repeat set
 	m_bUseCustomStyle = FALSE;								// Use message custom style
 	m_rmsMsgStyleSet = RMDMSGSTYLESET();					// Reminder message style set
@@ -1552,15 +1551,7 @@ PwrReminderItem::PwrReminderItem()
 PwrReminderItem::PwrReminderItem(const PwrReminderItem& pItem)
 {
 	// Copy data
-	this->m_bEnabled = pItem.m_bEnabled;					// Enable state
-	this->m_nItemID = pItem.m_nItemID;						// Item ID
-	this->m_strMessage = pItem.m_strMessage;				// Message content
-	this->m_nEventID = pItem.m_nEventID;					// Event ID
-	this->m_stTime = pItem.m_stTime;						// Event time
-	this->m_dwMsgStyle = pItem.m_dwMsgStyle;				// Reminder style
-	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);		// Repeat set
-	this->m_bUseCustomStyle = pItem.m_bUseCustomStyle;		// Use message custom style
-	this->m_rmsMsgStyleSet.Copy(pItem.m_rmsMsgStyleSet);	// Reminder message style set
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1575,16 +1566,7 @@ PwrReminderItem::PwrReminderItem(const PwrReminderItem& pItem)
 PwrReminderItem& PwrReminderItem::operator=(const PwrReminderItem& pItem)
 {
 	// Copy data
-	this->m_bEnabled = pItem.m_bEnabled;					// Enable state
-	this->m_nItemID = pItem.m_nItemID;						// Item ID
-	this->m_strMessage = pItem.m_strMessage;				// Message content
-	this->m_nEventID = pItem.m_nEventID;					// Event ID
-	this->m_stTime = pItem.m_stTime;						// Event time
-	this->m_dwMsgStyle = pItem.m_dwMsgStyle;				// Reminder style
-	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);		// Repeat set
-	this->m_bUseCustomStyle = pItem.m_bUseCustomStyle;		// Use message custom style
-	this->m_rmsMsgStyleSet.Copy(pItem.m_rmsMsgStyleSet);	// Reminder message style set
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -1599,16 +1581,19 @@ PwrReminderItem& PwrReminderItem::operator=(const PwrReminderItem& pItem)
 
 void PwrReminderItem::Copy(const PwrReminderItem& pItem)
 {
+	// Do not copy itself
+	if (this == &pItem) return;
+
 	// Copy data
-	this->m_bEnabled = pItem.m_bEnabled;					// Enable state
-	this->m_nItemID = pItem.m_nItemID;						// Item ID
-	this->m_strMessage = pItem.m_strMessage;				// Message content
-	this->m_nEventID = pItem.m_nEventID;					// Event ID
-	this->m_stTime = pItem.m_stTime;						// Event time
-	this->m_dwMsgStyle = pItem.m_dwMsgStyle;				// Reminder style
-	this->m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);		// Repeat set
-	this->m_bUseCustomStyle = pItem.m_bUseCustomStyle;		// Use message custom style
-	this->m_rmsMsgStyleSet.Copy(pItem.m_rmsMsgStyleSet);	// Reminder message style set
+	m_bEnabled = pItem.m_bEnabled;							// Enable state
+	m_nItemID = pItem.m_nItemID;							// Item ID
+	m_strMessage = pItem.m_strMessage;						// Message content
+	m_nEventID = pItem.m_nEventID;							// Event ID
+	m_stTime = pItem.m_stTime;								// Event time
+	m_dwMsgStyle = pItem.m_dwMsgStyle;						// Reminder style
+	m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);				// Repeat set
+	m_bUseCustomStyle = pItem.m_bUseCustomStyle;			// Use message custom style
+	m_rmsMsgStyleSet.Copy(pItem.m_rmsMsgStyleSet);			// Reminder message style set
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1667,7 +1652,7 @@ BOOL PwrReminderItem::Compare(const PwrReminderItem& pItem) const
 BOOL PwrReminderItem::IsAllowSnoozing(void) const
 {
 	// If current eventID is not at settime
-	if (m_nEventID != PREVT_AT_SETTIME) {
+	if (m_nEventID != Event::atSetTime) {
 		// Not allow snooze mode
 		return FALSE;
 	}
@@ -1712,7 +1697,7 @@ void PwrReminderItem::Print(CString& strOutput) const
 	}
 	int nTemp = GetPairedID(IDTable::PwrReminderEvent, m_nEventID);
 	CString strEvent = GetLanguageString(ptrLanguage, nTemp);
-	if (m_nEventID == PREVT_AT_SETTIME) {
+	if (m_nEventID == Event::atSetTime) {
 		// Format time string
 		CString strFormat = strEvent;
 		strEvent = FormatDispTime(ptrLanguage, strFormat, m_stTime);
@@ -1741,17 +1726,8 @@ PwrReminderData::PwrReminderData()
 
 PwrReminderData::PwrReminderData(const PwrReminderData& pData)
 {
-	// Remove existing data
-	this->DeleteAll();
-
-	// Copy reminder data
-	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = pData.m_arrRmdItemList.GetAt(nIndex);
-		this->m_arrRmdItemList.Add(pwrItem);
-	}
-
-	// Copy common message style data
-	this->m_rmdCommonStyle.Copy(pData.m_rmdCommonStyle);
+	// Copy data
+	this->Copy(pData);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1765,18 +1741,8 @@ PwrReminderData::PwrReminderData(const PwrReminderData& pData)
 
 PwrReminderData& PwrReminderData::operator=(const PwrReminderData& pData)
 {
-	// Remove existing data
-	this->DeleteAll();
-
-	// Copy reminder data
-	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = pData.m_arrRmdItemList.GetAt(nIndex);
-		this->m_arrRmdItemList.Add(pwrItem);
-	}
-
-	// Copy common message style data
-	this->m_rmdCommonStyle.Copy(pData.m_rmdCommonStyle);
-
+	// Copy data
+	this->Copy(pData);
 	return *this;
 }
 
@@ -1807,6 +1773,9 @@ void PwrReminderData::Init()
 
 void PwrReminderData::Copy(const PwrReminderData& pData)
 {
+	// Do not copy itself
+	if (this == &pData) return;
+
 	// Remove existing data
 	this->DeleteAll();
 
@@ -2097,12 +2066,7 @@ PwrRuntimeItem::PwrRuntimeItem()
 PwrRuntimeItem::PwrRuntimeItem(const PwrRuntimeItem& pItem)
 {
 	// Copy data
-	this->m_nCategory = pItem.m_nCategory;					// Item category
-	this->m_nItemID = pItem.m_nItemID;						// Power Reminder item ID
-	this->m_nDisplayFlag = pItem.m_nDisplayFlag;			// Item displaying flag
-	this->m_nSkipFlag = pItem.m_nSkipFlag;					// Item skip flag
-	this->m_nSnoozeFlag = pItem.m_nSnoozeFlag;				// Item snooze trigger flag
-	this->m_stNextSnoozeTime = pItem.m_stNextSnoozeTime;	// Next snooze trigger time
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2117,13 +2081,7 @@ PwrRuntimeItem::PwrRuntimeItem(const PwrRuntimeItem& pItem)
 PwrRuntimeItem& PwrRuntimeItem::operator=(const PwrRuntimeItem& pItem)
 {
 	// Copy data
-	this->m_nCategory = pItem.m_nCategory;					// Item category
-	this->m_nItemID = pItem.m_nItemID;						// Power Reminder item ID
-	this->m_nDisplayFlag = pItem.m_nDisplayFlag;			// Item displaying flag
-	this->m_nSkipFlag = pItem.m_nSkipFlag;					// Item skip flag
-	this->m_nSnoozeFlag = pItem.m_nSnoozeFlag;				// Item snooze trigger flag
-	this->m_stNextSnoozeTime = pItem.m_stNextSnoozeTime;	// Next snooze trigger time
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -2138,13 +2096,16 @@ PwrRuntimeItem& PwrRuntimeItem::operator=(const PwrRuntimeItem& pItem)
 
 void PwrRuntimeItem::Copy(const PwrRuntimeItem& pItem)
 {
+	// Do not copy itself
+	if (this == &pItem) return;
+
 	// Copy data
-	this->m_nCategory = pItem.m_nCategory;					// Item category
-	this->m_nItemID = pItem.m_nItemID;						// Power Reminder item ID
-	this->m_nDisplayFlag = pItem.m_nDisplayFlag;			// Item displaying flag
-	this->m_nSkipFlag = pItem.m_nSkipFlag;					// Item skip flag
-	this->m_nSnoozeFlag = pItem.m_nSnoozeFlag;				// Item snooze trigger flag
-	this->m_stNextSnoozeTime = pItem.m_stNextSnoozeTime;	// Next snooze trigger time
+	m_nCategory = pItem.m_nCategory;						// Item category
+	m_nItemID = pItem.m_nItemID;							// Power Reminder item ID
+	m_nDisplayFlag = pItem.m_nDisplayFlag;					// Item displaying flag
+	m_nSkipFlag = pItem.m_nSkipFlag;						// Item skip flag
+	m_nSnoozeFlag = pItem.m_nSnoozeFlag;					// Item snooze trigger flag
+	m_stNextSnoozeTime = pItem.m_stNextSnoozeTime;			// Next snooze trigger time
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2172,14 +2133,7 @@ HistoryInfoData::HistoryInfoData()
 HistoryInfoData::HistoryInfoData(const HistoryInfoData& pData)
 {
 	// Copy data
-	this->m_bInitState = pData.m_bInitState;				// Init state
-	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
-	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
-	this->m_nItemID = pData.m_nItemID;						// Item ID
-	this->m_nActionID = pData.m_nActionID;					// History action ID
-	this->m_bActionResult = pData.m_bActionResult;			// Action result
-	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
-	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
+	this->Copy(pData);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2194,15 +2148,7 @@ HistoryInfoData::HistoryInfoData(const HistoryInfoData& pData)
 HistoryInfoData& HistoryInfoData::operator=(const HistoryInfoData& pData)
 {
 	// Copy data
-	this->m_bInitState = pData.m_bInitState;				// Init state
-	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
-	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
-	this->m_nItemID = pData.m_nItemID;						// Item ID
-	this->m_nActionID = pData.m_nActionID;					// History action ID
-	this->m_bActionResult = pData.m_bActionResult;			// Action result
-	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
-	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
-
+	this->Copy(pData);
 	return *this;
 }
 
@@ -2217,15 +2163,18 @@ HistoryInfoData& HistoryInfoData::operator=(const HistoryInfoData& pData)
 
 void HistoryInfoData::Copy(const HistoryInfoData& pData)
 {
+	// Do not copy itself
+	if (this == &pData) return;
+
 	// Copy data
-	this->m_bInitState = pData.m_bInitState;				// Init state
-	this->m_nCategoryID = pData.m_nCategoryID;				// Category ID
-	this->m_stTimestamp = pData.m_stTimestamp;				// Timestamp of history
-	this->m_nItemID = pData.m_nItemID;						// Item ID
-	this->m_nActionID = pData.m_nActionID;					// History action ID
-	this->m_bActionResult = pData.m_bActionResult;			// Action result
-	this->m_dwErrorCode = pData.m_dwErrorCode;				// Returned error code
-	this->m_strDescription = pData.m_strDescription;		// History description (attached info)
+	m_bInitState = pData.m_bInitState;						// Init state
+	m_nCategoryID = pData.m_nCategoryID;					// Category ID
+	m_stTimestamp = pData.m_stTimestamp;					// Timestamp of history
+	m_nItemID = pData.m_nItemID;							// Item ID
+	m_nActionID = pData.m_nActionID;						// History action ID
+	m_bActionResult = pData.m_bActionResult;				// Action result
+	m_dwErrorCode = pData.m_dwErrorCode;					// Returned error code
+	m_strDescription = pData.m_strDescription;				// History description (attached info)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2250,70 +2199,37 @@ void HistoryInfoData::Init(UINT nCategoryID)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagREGISTRYKEY
+//	Function name:	RegistryValue
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagREGISTRYKEY::tagREGISTRYKEY()
+RegistryValue::RegistryValue()
 {
 	// Initialize
-	this->strKeyName = STRING_EMPTY;						// Key name (string)
-	this->nValueType = REGTYPE_NONE;						// Value type
-	this->regValue = REGISTRYVALUE();						// Data values
+	m_pstrValue = NULL;										// String value
+	m_pdwValue = NULL;										// DWORD (32-bit) value
+	m_pqwValue = NULL;										// QWORD (64-bit) value
+	m_pastrValue = NULL;									// Multi-string value
 }
 
-tagREGISTRYKEY::tagREGISTRYKEY(const tagREGISTRYKEY& pItem)
+RegistryValue::RegistryValue(const RegistryValue& pItem)
 {
 	// Copy data
-	this->strKeyName = pItem.strKeyName;					// Key name (string)
-	this->nValueType = pItem.nValueType;					// Value type
-	this->regValue = pItem.regValue;						// Data values
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagREGISTRYVALUE
-//	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-tagREGISTRYVALUE::tagREGISTRYVALUE()
-{
-	// Initialize
-	this->strValue = STRING_EMPTY;							// String value
-	this->dwValue = INT_NULL;								// DWORD (32-bit) value
-	this->qwValue = INT_NULL;								// QWORD (64-bit) value
-	this->astrStringValue.RemoveAll();						// Multi-string value
-}
-
-tagREGISTRYVALUE::tagREGISTRYVALUE(const tagREGISTRYVALUE& pItem)
-{
-	// Copy data
-	this->strValue = pItem.strValue;						// String value
-	this->dwValue = pItem.dwValue;							// DWORD (32-bit) value
-	this->qwValue = pItem.qwValue;							// QWORD (64-bit) value
-	this->astrStringValue.Copy(pItem.astrStringValue);		// Multi-string value
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~REGISTRYVALUE
+//	Function name:	~RegistryValue
 //	Description:	Destructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagREGISTRYVALUE::~tagREGISTRYVALUE()
+RegistryValue::~RegistryValue()
 {
-	// Cleanup array data
-	this->astrStringValue.RemoveAll();
-	this->astrStringValue.FreeExtra();
+	// Remove all data
+	this->Reset();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2325,24 +2241,237 @@ tagREGISTRYVALUE::~tagREGISTRYVALUE()
 //
 //////////////////////////////////////////////////////////////////////////
 
-tagREGISTRYKEY& tagREGISTRYKEY::operator=(const tagREGISTRYKEY& pItem)
+RegistryValue& RegistryValue::operator=(const RegistryValue& pItem)
 {
 	// Copy data
-	this->strKeyName = pItem.strKeyName;					// Key name (string)
-	this->nValueType = pItem.nValueType;					// Value type
-	this->regValue = pItem.regValue;						// Data values
-
+	this->Copy(pItem);
 	return *this;
 }
 
-tagREGISTRYVALUE& tagREGISTRYVALUE::operator=(const tagREGISTRYVALUE& pItem)
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Init
+//	Description:	Initialize with specific data type
+//  Arguments:		nType - Value type
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL RegistryValue::Init(UINT nRegValueType)
+{
+	// Reset data
+	this->Reset();
+
+	// Initialize with specific data type
+	switch (nRegValueType)
+	{
+	case REGTYPE_STRING:
+		m_pstrValue = new CString(STRING_EMPTY);
+		return (m_pstrValue != NULL);
+
+	case REGTYPE_DWORD32:
+		m_pdwValue = new DWORD(INT_NULL);
+		return (m_pdwValue != NULL);
+
+	case REGTYPE_QWORD64:
+		m_pqwValue = new QWORD(INT_NULL);
+		return (m_pqwValue != NULL);
+
+	case REGTYPE_MULTISTRING:
+		m_pastrValue = new CStringArray();
+		return (m_pastrValue != NULL);
+
+	default:
+		return FALSE;
+	}
+
+	return FALSE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Copy
+//	Description:	Copy data from another registry value item
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void RegistryValue::Copy(const RegistryValue& pItem)
+{
+	// Do not copy itself
+	if (this == &pItem) return;
+
+	// Copy data (one value only)
+	if (pItem.m_pstrValue != NULL) {
+		if (m_pstrValue != NULL) {
+			delete m_pstrValue;
+		}
+		// Copy string value
+		m_pstrValue = new CString(*pItem.m_pstrValue);
+	}
+	else if (pItem.m_pdwValue != NULL) {
+		if (m_pdwValue != NULL) {
+			delete m_pdwValue;
+		}
+		// Copy DWORD (32-bit) value
+		m_pdwValue = new DWORD(*pItem.m_pdwValue);
+	}
+	else if (pItem.m_pqwValue != NULL) {
+		if (m_pqwValue != NULL) {
+			delete m_pqwValue;
+		}
+		// Copy QWORD (64-bit) value
+		m_pqwValue = new QWORD(*pItem.m_pqwValue);
+	}
+	else if (pItem.m_pastrValue != NULL) {
+		if (m_pastrValue != NULL) {
+			m_pastrValue->RemoveAll();
+			m_pastrValue->FreeExtra();
+			delete m_pastrValue;
+		}
+		// Copy Multi-string value
+		m_pastrValue = new CStringArray;
+		m_pastrValue->Copy(*pItem.m_pastrValue);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Reset
+//	Description:	Remove all registry value data
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void RegistryValue::Reset(void)
+{
+	// Cleanup string data
+	if (m_pstrValue != NULL) {
+		delete m_pstrValue;
+		m_pstrValue = NULL;
+	}
+
+	// Cleanup numeric data
+	if (m_pdwValue != NULL) {
+		delete m_pdwValue;
+		m_pdwValue = NULL;
+	}
+	if (m_pqwValue != NULL) {
+		delete m_pqwValue;
+		m_pqwValue = NULL;
+	}
+
+	// Cleanup array data
+	if (m_pastrValue != NULL) {
+		m_pastrValue->RemoveAll();
+		m_pastrValue->FreeExtra();
+		delete m_pastrValue;
+		m_pastrValue = NULL;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Refactor
+//	Description:	Refactor data and optimize by keeping current value
+//					and reset the other data pointers
+//  Arguments:		None
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void RegistryValue::Refactor(void)
+{
+	UINT nType = GetType();
+	if (nType == REGTYPE_STRING) {
+		CString strTemp = *m_pstrValue;
+		if (Init(REGTYPE_STRING)) {
+			*m_pstrValue = strTemp;
+		}
+	}
+	else if (nType == REGTYPE_DWORD32) {
+		DWORD dwTemp = *m_pdwValue;
+		if (Init(REGTYPE_DWORD32)) {
+			*m_pdwValue = dwTemp;
+		}
+	}
+	else if (nType == REGTYPE_QWORD64) {
+		QWORD qwTemp = *m_pqwValue;
+		if (Init(REGTYPE_QWORD64)) {
+			*m_pqwValue = qwTemp;
+		}
+	}
+	else if (nType == REGTYPE_MULTISTRING) {
+		CStringArray astrTemp;
+		astrTemp.Copy(*m_pastrValue);
+		if (Init(REGTYPE_MULTISTRING)) {
+			m_pastrValue->Copy(astrTemp);
+		}
+	}
+	else {
+		// Reset all data
+		this->Reset();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetType
+//	Description:	Get current data value type
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+UINT RegistryValue::GetType(void) const
+{
+	if (m_pstrValue != NULL)
+		return REGTYPE_STRING;
+	else if (m_pdwValue != NULL)
+		return REGTYPE_DWORD32;
+	else if (m_pqwValue != NULL)
+		return REGTYPE_QWORD64;
+	else if (m_pastrValue)
+		return REGTYPE_MULTISTRING;
+	else
+		return REGTYPE_NONE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	RegistryKey
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+RegistryKey::RegistryKey()
+{
+	// Initialize
+	m_strKeyName = STRING_EMPTY;							// Key name (string)
+	m_regValue = REGISTRYVALUE();							// Register value data
+}
+
+RegistryKey::RegistryKey(const RegistryKey& pItem)
 {
 	// Copy data
-	this->strValue = pItem.strValue;						// String value
-	this->dwValue = pItem.dwValue;							// DWORD (32-bit) value
-	this->qwValue = pItem.qwValue;							// QWORD (64-bit) value
-	this->astrStringValue.Copy(pItem.astrStringValue);		// Multi-string value
+	this->Copy(pItem);
+}
 
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+RegistryKey& RegistryKey::operator=(const RegistryKey& pItem)
+{
+	// Copy data
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -2355,192 +2484,27 @@ tagREGISTRYVALUE& tagREGISTRYVALUE::operator=(const tagREGISTRYVALUE& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYKEY::Copy(const tagREGISTRYKEY& pItem)
+void RegistryKey::Copy(const RegistryKey& pItem)
 {
 	// Copy data
-	this->strKeyName = pItem.strKeyName;					// Key name (string)
-	this->nValueType = pItem.nValueType;					// Value type
-	this->regValue = pItem.regValue;						// Data values
-}
-
-void tagREGISTRYVALUE::Copy(const tagREGISTRYVALUE& pItem)
-{
-	// Copy data
-	this->strValue = pItem.strValue;						// String value
-	this->dwValue = pItem.dwValue;							// DWORD (32-bit) value
-	this->qwValue = pItem.qwValue;							// QWORD (64-bit) value
-	this->astrStringValue.Copy(pItem.astrStringValue);		// Multi-string value
+	m_strKeyName = pItem.m_strKeyName;						// Key name (string)
+	m_regValue = pItem.m_regValue;							// Register value data
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	RemoveAll
+//	Function name:	Clear
 //	Description:	Remove all registry key info data
 //  Arguments:		None
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void tagREGISTRYKEY::RemoveAll(void)
+void RegistryKey::Clear(void)
 {
 	// Reset data
-	this->strKeyName = STRING_EMPTY;						// Key name (string)
-	this->nValueType = REGTYPE_NONE;						// Value type
-	this->regValue.RemoveAll();								// Data values
-}
-
-void tagREGISTRYVALUE::RemoveAll(void)
-{
-	// Cleanup array data
-	this->astrStringValue.RemoveAll();
-	this->astrStringValue.FreeExtra();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetStringValue
-//	Description:	Get/set registry key string value
-//  Arguments:		strValue  - String value (out)
-//					lpszValue - String value (in)
-//  Return value:	LPCTSTR
-//
-//////////////////////////////////////////////////////////////////////////
-
-void tagREGISTRYKEY::GetStringValue(CString& strValue) const
-{
-	// If registry key data type is not string
-	if (this->nValueType != REGTYPE_STRING) {
-		// Return empty string
-		strValue.Empty();
-	}
-	else {
-		// Return string value
-		strValue = this->regValue.strValue;
-	}
-}
-
-LPCTSTR tagREGISTRYKEY::GetStringValue(void) const
-{
-	// If registry key data type is not string
-	if (this->nValueType != REGTYPE_STRING) {
-		// Return empty string
-		return STRING_EMPTY;
-	}
-	else {
-		// Return string value
-		return this->regValue.strValue.GetString();
-	}
-}
-
-void tagREGISTRYKEY::SetStringValue(LPCTSTR lpszValue)
-{
-	// If registry key data type is not set
-	if (this->nValueType == REGTYPE_NONE) {
-		this->nValueType = REGTYPE_STRING;
-	}
-
-	// Set string value
-	this->regValue.strValue = lpszValue;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetDWordValue
-//	Description:	Get/set registry key DWORD (32-bit) value
-//  Arguments:		dwValue - DWORD (32-bit) value (in)
-//  Return value:	DWORD
-//
-//////////////////////////////////////////////////////////////////////////
-
-DWORD tagREGISTRYKEY::GetDWordValue(void) const
-{
-	// If registry key data type is not DWORD (32-bit)
-	if (this->nValueType != REGTYPE_DWORD32) {
-		// Return zero (NULL)
-		return INT_NULL;
-	}
-	else {
-		// Return DWORD (32-bit) value
-		return this->regValue.dwValue;
-	}
-}
-
-void tagREGISTRYKEY::SetDWordValue(DWORD dwValue)
-{
-	// If registry key data type is not set
-	if (this->nValueType == REGTYPE_NONE) {
-		this->nValueType = REGTYPE_DWORD32;
-	}
-
-	// Set DWORD (32-bit) value
-	this->regValue.dwValue = dwValue;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetQWordValue
-//	Description:	Get/set registry key QWORD (64-bit) value
-//  Arguments:		qwValue - QWORD (64-bit) value (in)
-//  Return value:	QWORD
-//
-//////////////////////////////////////////////////////////////////////////
-
-QWORD tagREGISTRYKEY::GetQWordValue(void) const
-{
-	// If registry key data type is not QWORD (64-bit)
-	if (this->nValueType != REGTYPE_QWORD64) {
-		// Return zero (NULL)
-		return INT_NULL;
-	}
-	else {
-		// Return QWORD (64-bit) value
-		return this->regValue.qwValue;
-	}
-}
-
-void tagREGISTRYKEY::SetQWordValue(QWORD qwValue)
-{
-	// If registry key data type is not set
-	if (this->nValueType == REGTYPE_NONE) {
-		this->nValueType = REGTYPE_QWORD64;
-	}
-
-	// Set QWORD (64-bit) value
-	this->regValue.qwValue = qwValue;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetMultiStringValue
-//	Description:	Get/set registry key Multi-string value
-//  Arguments:		astrValue - Multi-string value (in/out)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void tagREGISTRYKEY::GetMultiStringValue(CStringArray& astrValue) const
-{
-	// If registry key data type is not Multi-string
-	if (this->nValueType != REGTYPE_MULTISTRING) {
-		// Return empty value
-		astrValue.RemoveAll();
-		astrValue.FreeExtra();
-	}
-	else {
-		// Return Multi-string value
-		astrValue.Copy(this->regValue.astrStringValue);
-	}
-}
-
-void tagREGISTRYKEY::SetMultiStringValue(CStringArray& astrValue)
-{
-	// If registry key data type is not set
-	if (this->nValueType == REGTYPE_NONE) {
-		this->nValueType = REGTYPE_MULTISTRING;
-	}
-
-	// Set Multi-string value
-	this->regValue.astrStringValue.Copy(astrValue);
+	m_strKeyName = STRING_EMPTY;							// Key name (string)
+	m_regValue.Reset();										// Data values
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2565,13 +2529,7 @@ RegistryInfo::RegistryInfo()
 RegistryInfo::RegistryInfo(const RegistryInfo& pItem)
 {
 	// Copy data
-	m_hRootKey = pItem.m_hRootKey;							// Root key (HKEY)
-	m_strRootKey = pItem.m_strRootKey;						// Root key (string)
-	m_astrSubkeyPath.Copy(pItem.m_astrSubkeyPath);			// Subkey path (string array)
-	m_strProfileName = pItem.m_strProfileName;				// Profile key name (string)
-	m_strAppName = pItem.m_strAppName;						// App name (string)
-	m_astrSectionArray.Copy(pItem.m_astrSectionArray);		// Section array (string)
-	m_regKeyInfo.Copy(pItem.m_regKeyInfo);					// Registry key info
+	this->Copy(pItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2586,14 +2544,7 @@ RegistryInfo::RegistryInfo(const RegistryInfo& pItem)
 RegistryInfo& RegistryInfo::operator=(const RegistryInfo& pItem)
 {
 	// Copy data
-	m_hRootKey = pItem.m_hRootKey;							// Root key (HKEY)
-	m_strRootKey = pItem.m_strRootKey;						// Root key (string)
-	m_astrSubkeyPath.Copy(pItem.m_astrSubkeyPath);			// Subkey path (string array)
-	m_strProfileName = pItem.m_strProfileName;				// Profile key name (string)
-	m_strAppName = pItem.m_strAppName;						// App name (string)
-	m_astrSectionArray.Copy(pItem.m_astrSectionArray);		// Section array (string)
-	m_regKeyInfo.Copy(pItem.m_regKeyInfo);					// Registry key info
-
+	this->Copy(pItem);
 	return *this;
 }
 
@@ -2608,6 +2559,9 @@ RegistryInfo& RegistryInfo::operator=(const RegistryInfo& pItem)
 
 void RegistryInfo::Copy(const RegistryInfo& pItem)
 {
+	// Do not copy itself
+	if (this == &pItem) return;
+
 	// Copy data
 	m_hRootKey = pItem.m_hRootKey;							// Root key (HKEY)
 	m_strRootKey = pItem.m_strRootKey;						// Root key (string)
@@ -2636,7 +2590,7 @@ void RegistryInfo::RemoveAll(void)
 	m_strProfileName = STRING_EMPTY;						// Profile key name (string)
 	m_strAppName = STRING_EMPTY;							// App name (string)
 	m_astrSectionArray.RemoveAll();							// Section array (string)
-	m_regKeyInfo.RemoveAll();								// Registry key info
+	m_regKeyInfo.Clear();									// Registry key info
 
 	// Cleanup extra memory for array data
 	m_astrSubkeyPath.FreeExtra();							// Subkey path (string array)
@@ -2699,9 +2653,7 @@ Substring::Substring()
 Substring::Substring(const Substring& pData)
 {
 	// Copy data
-	m_strLeft = pData.m_strLeft;			// Left part
-	m_strMid = pData.m_strMid;				// Middle part
-	m_strRight = pData.m_strRight;			// Right part
+	this->Copy(pData);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2716,10 +2668,7 @@ Substring::Substring(const Substring& pData)
 Substring& Substring::operator=(const Substring& pData)
 {
 	// Copy data
-	m_strLeft = pData.m_strLeft;			// Left part
-	m_strMid = pData.m_strMid;				// Middle part
-	m_strRight = pData.m_strRight;			// Right part
-
+	this->Copy(pData);
 	return *this;
 }
 
@@ -2734,6 +2683,9 @@ Substring& Substring::operator=(const Substring& pData)
 
 void Substring::Copy(const Substring& pData)
 {
+	// Do not copy itself
+	if (this == &pData) return;
+
 	// Copy data
 	m_strLeft = pData.m_strLeft;			// Left part
 	m_strMid = pData.m_strMid;				// Middle part
@@ -5763,11 +5715,11 @@ BOOL AppCore::AddRegistryKey(const REGISTRYINFO& regInfo)
 {
 	CRegKey regKey;
 	REGISTRYKEY regKeyInfo = regInfo.GetRegistryKey();
-	LONG lResult = regKey.Open(regInfo.GetRootKey(), regKeyInfo.strKeyName, KEY_ALL_ACCESS);
+	LONG lResult = regKey.Open(regInfo.GetRootKey(), regKeyInfo.GetName(), KEY_ALL_ACCESS);
 	if (lResult != ERROR_SUCCESS) {
 		// Create register key if not found
 		if (lResult == ERROR_NOT_FOUND) {
-			regKey.Create(regInfo.GetRootKey(), regKeyInfo.strKeyName, REG_NONE,
+			regKey.Create(regInfo.GetRootKey(), regKeyInfo.GetName(), REG_NONE,
 					 REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, NULL);
 		}
 	}
@@ -5892,7 +5844,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	// Key name
 	CString strKeyNameTemp;
 	REGISTRYKEY regKeyInfo = regInfo.GetRegistryKey();
-	CString strKeyName = regKeyInfo.GetKeyName();
+	CString strKeyName = regKeyInfo.GetName();
 	if (!strKeyName.IsEmpty()) {
 		strKeyNameTemp.Format(strKeyName);
 	}

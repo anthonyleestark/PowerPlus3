@@ -1037,7 +1037,7 @@ void CHotkeySetDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = TRUE */)
 		m_nCheckCount = 0;
 		// Check for item states
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-			HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
+			const Item& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
 			if (hksTemp.IsEnabled() == TRUE) {
 				// Increase counter
 				m_nCheckCount++;
@@ -1096,10 +1096,10 @@ void CHotkeySetDlg::UpdateHotkeySet()
 
 		// Get item
 		nItemIndex = nRowIndex - ROW_INDEX_START;
-		HOTKEYSETITEM hksItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
+		const Item& hksItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
 
 		// Enable state
-		pCellCheck = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, HKSCOL_ID_STATE);
+		pCellCheck = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, ColumnID::EnableState);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(hksItem.IsEnabled());
 		}
@@ -1107,7 +1107,7 @@ void CHotkeySetDlg::UpdateHotkeySet()
 		// Hotkey action
 		nTemp = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hksItem.GetActionID()));
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
-		m_pHotkeySetListTable->SetItemText(nRowIndex, HKSCOL_ID_HKACTIONID, strTemp);
+		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::HKActionID, strTemp);
 
 		// Keystrokes
 		hksItem.PrintKeyStrokes(strTemp);
@@ -1115,7 +1115,7 @@ void CHotkeySetDlg::UpdateHotkeySet()
 			// Undefined keystrokes
 			strTemp = GetLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
 		}
-		m_pHotkeySetListTable->SetItemText(nRowIndex, HKSCOL_ID_KEYSTROKES, strTemp);
+		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::Keystrokes, strTemp);
 	}
 }
 
@@ -1194,7 +1194,7 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 	}
 
 	// Get item at index
-	HOTKEYSETITEM hksCurItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
+	const Item& hksCurItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
 
 	// Get item keycode
 	DWORD dwCtrlKey, dwFuncKey;
@@ -1259,9 +1259,9 @@ void CHotkeySetDlg::LoadLayoutInfo(void)
 	// Define default table columns format
 	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
 	//-----------ID------------------------Header title ID---------------Width(px)----Column style-------Align Center---
-		{	HKSCOL_ID_STATE,		GRIDCOLUMN_HOTKEYSET_STATE,				28,		COLSTYLE_CHECKBOX,		TRUE,	},
-		{	HKSCOL_ID_HKACTIONID,	GRIDCOLUMN_HOTKEYSET_HKACTIONID,		122,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	HKSCOL_ID_KEYSTROKES,	GRIDCOLUMN_HOTKEYSET_KEYSTROKES,		-1,		COLSTYLE_NORMAL,		TRUE,	},
+		{	ColumnID::EnableState,		GRIDCOLUMN_HOTKEYSET_STATE,			28,		COLSTYLE_CHECKBOX,		TRUE,	},
+		{	ColumnID::HKActionID,		GRIDCOLUMN_HOTKEYSET_HKACTIONID,	122,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	ColumnID::Keystrokes,		GRIDCOLUMN_HOTKEYSET_KEYSTROKES,	-1,		COLSTYLE_NORMAL,		TRUE,	},
 	//------------------------------------------------------------------------------------------------------------------
 	};
 
@@ -1394,7 +1394,7 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 	CGridCellCheck* pCellCheckEnable = NULL;
 	for (int nRowIndex = ROW_INDEX_START; nRowIndex <= GetItemNum(); nRowIndex++) {
 		// Get checkbox cell
-		pCellCheckEnable = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, HKSCOL_ID_STATE);
+		pCellCheckEnable = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, ColumnID::EnableState);
 		if (pCellCheckEnable == NULL) continue;
 
 		// Get checked states
@@ -1402,7 +1402,7 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 
 		// Update item checked state
 		nItemIndex = nRowIndex - ROW_INDEX_START;
-		HOTKEYSETITEM& hksTempItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
+		Item& hksTempItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
 		hksTempItem.EnableItem(bEnabled);
 	}
 
@@ -1414,8 +1414,8 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 	// Check if each item's data changed
 	for (int nIndex = 0; nIndex < m_hksHotkeySetTemp.GetItemNum(); nIndex++) {
 		// Get current item and temp item
-		HOTKEYSETITEM hksCurItem = m_hksHotkeySet.GetItemAt(nIndex);
-		HOTKEYSETITEM hksTempItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
+		const Item& hksCurItem = m_hksHotkeySet.GetItemAt(nIndex);
+		const Item& hksTempItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
  
 		// Data comparison
 		bChangeFlag |= (hksTempItem.IsEnabled() != hksCurItem.IsEnabled());
@@ -1443,7 +1443,7 @@ void CHotkeySetDlg::Add(void)
 	UpdateData(TRUE);
 
 	// Create temp hotkeyset item
-	HOTKEYSETITEM hksTemp = STRUCT_ZERO;
+	Item hksTemp = STRUCT_ZERO;
 
 	// Keycode
 	DWORD dwCtrlKey = 0, dwFuncKey = 0;
@@ -1528,7 +1528,7 @@ void CHotkeySetDlg::SwitchAllItemState(BOOL bState)
 	// Check/uncheck all --> Update all item enable state
 	int nItemNum = m_hksHotkeySetTemp.GetItemNum();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		HOTKEYSETITEM& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
+		Item& hksTemp = m_hksHotkeySetTemp.GetItemAt(nIndex);
 		if (hksTemp.IsEnabled() != bState) {
 			hksTemp.EnableItem(bState);
 		}
@@ -1551,7 +1551,7 @@ void CHotkeySetDlg::SwitchAllItemState(BOOL bState)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CHotkeySetDlg::Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg /* = FALSE */)
+BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 {
 	BOOL bResult = TRUE;
 	int nMsgStringID;
@@ -1562,7 +1562,7 @@ BOOL CHotkeySetDlg::Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg /* = FALSE */)
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Check action ID
-	if ((hksItem.GetActionID() < HKID_DISPLAYOFF) || (hksItem.GetActionID() > HKID_HIBERNATE)) {
+	if ((hksItem.GetActionID() < HKID::displayOff) || (hksItem.GetActionID() > HKID::hibernate)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_ACTIONID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;

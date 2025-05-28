@@ -35,8 +35,18 @@ class CHotkeySetDlg : public SDialog
 	DECLARE_DYNAMIC(CHotkeySetDlg)
 
 public:
-	CHotkeySetDlg(CWnd* pParent = nullptr);   // standard constructor
-	virtual ~CHotkeySetDlg();				  // destructor
+	using Item = typename HotkeySetItem;
+	using HKID = typename Item::HKID;
+	using Data = typename HotkeySetData;
+	enum ColumnID {
+		EnableState = 0,								// Enable state
+		HKActionID,										// Hotkey action ID
+		Keystrokes,										// Keystrokes
+	};
+
+public:
+	CHotkeySetDlg(CWnd* pParent = nullptr);				// standard constructor
+	virtual ~CHotkeySetDlg();							// destructor
 
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -67,8 +77,8 @@ private:
 	BOOL m_bWinKeyBtn;
 
 	// Data container variables
-	HotkeySetData m_hksHotkeySet;
-	HotkeySetData m_hksHotkeySetTemp;
+	Data m_hksHotkeySet;
+	Data m_hksHotkeySetTemp;
 
 	// Table format and properties
 	int	m_nColNum;
@@ -127,7 +137,7 @@ protected:
 	void Remove(int nIndex);
 	void RemoveAll(void);
 	void SwitchAllItemState(BOOL bState);
-	BOOL Validate(HOTKEYSETITEM hksItem, BOOL bShowMsg = FALSE);
+	BOOL Validate(const Item& hksItem, BOOL bShowMsg = FALSE);
 
 protected:
 	// Get/set functions

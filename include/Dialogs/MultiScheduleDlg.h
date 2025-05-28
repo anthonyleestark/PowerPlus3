@@ -39,7 +39,18 @@ class CMultiScheduleDlg : public SDialog
 	DECLARE_DYNAMIC(CMultiScheduleDlg)
 
 public:
-	CMultiScheduleDlg();				// standard constructor
+	using Item = typename ScheduleItem;
+	using Data = typename ScheduleData;
+	enum ColumnID {
+		Index = 0,										// Index
+		EnableState,									// Enable/active state
+		ActionID,										// Action ID
+		TimeValue,										// Time value
+		Repeat,											// Repeat daily
+	};
+
+public:
+	CMultiScheduleDlg();								// standard constructor
 	virtual ~CMultiScheduleDlg();
 
 	// Dialog Data
@@ -67,8 +78,8 @@ private:
 	CEditScheduleDlg* m_pEditScheduleDlg;
 
 	// Data container variables
-	ScheduleData m_schSchedule;
-	ScheduleData m_schScheduleTemp;
+	Data m_schSchedule;
+	Data m_schScheduleTemp;
 
 	// Table format and properties
 	int	m_nColNum;
@@ -113,12 +124,12 @@ public:
 	BOOL CheckDataChangeState();
 
 	// Data processing handlers
-	void Add(SCHEDULEITEM& schItem);
-	void Update(SCHEDULEITEM& schItem);
+	void Add(Item& schItem);
+	void Update(Item& schItem);
 	void Remove(int nIndex);
 	void RemoveAll();
 	void SetAllItemState(BOOL bState);
-	BOOL Validate(SCHEDULEITEM& schItem, BOOL bShowMsg = FALSE, BOOL bAutoCorrect = FALSE);
+	BOOL Validate(Item& schItem, BOOL bShowMsg = FALSE, BOOL bAutoCorrect = FALSE);
 
 	// Message handlers
 	afx_msg void OnApply();

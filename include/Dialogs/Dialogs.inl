@@ -86,6 +86,25 @@ inline void CHotkeySetDlg::SetListCurSel(int nSelIndex) {
 
 ///////////////////////////////////////////////////////
 
+#ifdef _PWRREMINDERDLG_ENABLE_INLINES
+
+#ifndef _PWRREMINDERDLG_INLINE_INCLUDED
+#define _PWRREMINDERDLG_INLINE_INCLUDED
+#endif
+
+// Get data table item number
+inline int CPwrReminderDlg::GetItemNum() const {
+	return m_pwrReminderDataTemp.GetItemNum();
+}
+
+inline int CPwrReminderDlg::GetCurMode() const {
+	return m_nCurMode;
+}
+
+#endif		// ifdef _PWRREMINDERDLG_ENABLE_INLINES
+
+///////////////////////////////////////////////////////
+
 #ifdef _REMINDERMSGDLG_ENABLE_INLINES
 
 #ifndef _REMINDERMSGDLG_INLINE_INCLUDED

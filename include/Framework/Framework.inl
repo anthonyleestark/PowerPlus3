@@ -267,11 +267,6 @@ inline SLogging* SWinApp::GetAppEventLog(void)
 	return m_pAppEventLog;
 }
 
-// Return option value by ID
-inline int SWinApp::GetAppOption(APPOPTIONID eAppOptionID, BOOL bTemp /* = FALSE */) const {
-	return 0;
-}
-
 // Get change flag value
 inline BOOL SWinApp::GetChangeFlagValue(void) const {
 	return m_bChangeFlag;

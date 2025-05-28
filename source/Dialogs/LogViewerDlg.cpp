@@ -621,22 +621,22 @@ void CLogViewerDlg::UpdateLogViewer(void)
 		
 		// Get log item
 		nItemIndex = nRowIndex - ROW_INDEX_START;
-		LOGITEM logItem = m_ptrAppEventLog->GetLogItem(nItemIndex);
+		Item logItem = m_ptrAppEventLog->GetLogItem(nItemIndex);
 
 		// If log item is empty
 		if (logItem.IsEmpty()) continue;
 
 		// Date/time
 		strTemp = logItem.FormatDateTime();
-		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_DATETIME, strTemp);
+		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::DateTime, strTemp);
 
 		// Category
 		strTemp = GetLanguageString(ptrLanguage, logItem.GetCategory());
-		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_CATEGORY, strTemp);
+		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::CategoryID, strTemp);
 
 		// Additional description
 		strTemp = logItem.GetLogString();
-		m_pLogViewerList->SetItemText(nRowIndex, LGVCOL_ID_DESCRIPTION, strTemp);
+		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::Description, strTemp);
 	}
 }
 
@@ -696,7 +696,7 @@ void CLogViewerDlg::DisplayLogDetails(int nIndex)
 	if (m_ptrAppEventLog == NULL) return;
 
 	// Get log item by index
-	LOGITEM logItem = m_ptrAppEventLog->GetLogItem(nIndex);
+	Item logItem = m_ptrAppEventLog->GetLogItem(nIndex);
 
 	// Display details
 }
@@ -742,9 +742,9 @@ void CLogViewerDlg::LoadLayoutInfo(void)
 	// Define default table columns format
 	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
 	//-----------ID------------------------Header title ID---------------Width(px)---Column style--------Align Center---
-		{	LGVCOL_ID_DATETIME,		GRIDCOLUMN_LOGVIEWER_DATETIME,			220,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	LGVCOL_ID_CATEGORY,		GRIDCOLUMN_LOGVIEWER_CATEGORY,			220,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	LGVCOL_ID_DESCRIPTION,	GRIDCOLUMN_LOGVIEWER_DESCRIPTION,		-1,		COLSTYLE_NORMAL,		FALSE,	},
+		{	ColumnID::DateTime,		GRIDCOLUMN_LOGVIEWER_DATETIME,			220,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	ColumnID::CategoryID,	GRIDCOLUMN_LOGVIEWER_CATEGORY,			220,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	ColumnID::Description,	GRIDCOLUMN_LOGVIEWER_DESCRIPTION,		-1,		COLSTYLE_NORMAL,		FALSE,	},
 	//------------------------------------------------------------------------------------------------------------------
 	};
 

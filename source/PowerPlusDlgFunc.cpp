@@ -456,7 +456,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// Test show error message
 			int nErrCode = _tstoi(retBuff[2].tcToken);
 			if (nErrCode >= 0) {
-				if (GetAppOption(OPTIONID_SHOW_ERROR_MSG) == FALSE) {
+				if (GetAppOption(AppOptionID::showErrorMessage) == FALSE) {
 					OutputDebugLog(_T("Show error message OFF"));
 					bNoReply = FALSE;	// Reset flag
 				}
@@ -1229,7 +1229,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Get runtime item from queue
 					pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
 					// Skip if it's not Power Reminder item
-					if (pwrRuntimeItem.GetCategory() != FID_PWRREMINDERITEM) continue;
+					if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info
 					SYSTEMTIME stNextSnoozeTime = pwrRuntimeItem.GetTime();
 					OutputDebugLogFormat(_T("Item%03d: ID=%d, Snooze=%d, NextTrigger=%02d:%02d"), nIndex, pwrRuntimeItem.GetItemID(),
@@ -1293,7 +1293,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Get runtime item from queue
 					pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
 					// Skip if it's not Power Reminder item
-					if (pwrRuntimeItem.GetCategory() != FID_PWRREMINDERITEM) continue;
+					if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info
 					SYSTEMTIME stNextSnoozeTime = pwrRuntimeItem.GetTime();
 					OutputDebugLogFormat(_T("Item%03d: ID=%d, Display=%d, Snooze=%d, NextTrigger=%02d:%02d"), nIndex, pwrRuntimeItem.GetItemID(),

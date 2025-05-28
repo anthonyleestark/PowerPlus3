@@ -1690,15 +1690,15 @@ void CPwrReminderDlg::LoadLayoutInfo(void)
 {
 	// Define default table columns format
 	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
-	//-----------ID----------------------Header title ID-------------Width(px)---Column style--------Align Center---
-		{	PWRCOL_ID_INDEX,		GRIDCOLUMN_PWRREMINDER_INDEX,		26,		COLSTYLE_FIXED,			TRUE,	},
-		{	PWRCOL_ID_STATE,		GRIDCOLUMN_PWRREMINDER_STATE,		55,		COLSTYLE_CHECKBOX,		TRUE,	},
-		{	PWRCOL_ID_ITEMID,		GRIDCOLUMN_PWRREMINDER_ITEMID,		75,		COLSTYLE_NORMAL,		TRUE,	},
-		{ 	PWRCOL_ID_MESSAGE,		GRIDCOLUMN_PWRREMINDER_MESSAGE,		237,	COLSTYLE_NORMAL,		FALSE,	},
-		{ 	PWRCOL_ID_EVENTID,		GRIDCOLUMN_PWRREMINDER_EVENTID,		140,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	PWRCOL_ID_STYLE,		GRIDCOLUMN_PWRREMINDER_STYLE,		107,	COLSTYLE_NORMAL,		TRUE,	},
-		{ 	PWRCOL_ID_REPEAT,		GRIDCOLUMN_PWRREMINDER_REPEAT,		56,		COLSTYLE_CHECKBOX,		TRUE,	},
-	//--------------------------------------------------------------------------------------------------------------
+	//-----------ID--------------------------Header title ID-------------Width(px)---Column style--------Align Center---
+		{	ColumnID::Index,			GRIDCOLUMN_PWRREMINDER_INDEX,		26,		COLSTYLE_FIXED,			TRUE,	},
+		{	ColumnID::EnableState,		GRIDCOLUMN_PWRREMINDER_STATE,		55,		COLSTYLE_CHECKBOX,		TRUE,	},
+		{	ColumnID::ItemID,			GRIDCOLUMN_PWRREMINDER_ITEMID,		75,		COLSTYLE_NORMAL,		TRUE,	},
+		{ 	ColumnID::MessageContent,	GRIDCOLUMN_PWRREMINDER_MESSAGE,		237,	COLSTYLE_NORMAL,		FALSE,	},
+		{ 	ColumnID::EventID,			GRIDCOLUMN_PWRREMINDER_EVENTID,		140,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	ColumnID::MsgStyle,			GRIDCOLUMN_PWRREMINDER_STYLE,		107,	COLSTYLE_NORMAL,		TRUE,	},
+		{ 	ColumnID::Repeat,			GRIDCOLUMN_PWRREMINDER_REPEAT,		56,		COLSTYLE_CHECKBOX,		TRUE,	},
+	//------------------------------------------------------------------------------------------------------------------
 	};
 
 	// Backup format data
@@ -1914,43 +1914,43 @@ void CPwrReminderDlg::UpdateDataItemList()
 		nRowIndex = nIndex + ROW_FIXED_NUM;
 
 		// Get item
-		PWRREMINDERITEM pwrItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
+		const Item& pwrItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 
 		// Item index
 		strTemp.Format(_T("%d"), nRowIndex);
-		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_INDEX, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::Index, strTemp);
 
 		// Enable state
-		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, PWRCOL_ID_STATE);
+		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(pwrItem.IsEnabled());
 		}
 
 		// ItemID
 		strTemp.Format(_T("%d"), pwrItem.GetItemID());
-		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_ITEMID, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ItemID, strTemp);
 
 		// Message content
 		strTemp = pwrItem.GetMessage();
-		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_MESSAGE, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MessageContent, strTemp);
 
 		// EventID
 		nTemp = GetPairedID(IDTable::PwrReminderEvent, pwrItem.GetEventID());
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
-		if (pwrItem.GetEventID() == PREVT_AT_SETTIME) {
+		if (pwrItem.GetEventID() == Event::atSetTime) {
 			// Format time string
 			CString strFormat = strTemp;
 			strTemp = FormatDispTime(ptrLanguage, strFormat, pwrItem.GetTime());
 		}
-		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_EVENTID, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::EventID, strTemp);
 
 		// Message style
 		nTemp = GetPairedID(IDTable::PwrReminderStyle, pwrItem.GetMessageStyle());
 		strTemp = GetLanguageString(ptrLanguage, nTemp);
-		m_pDataItemListTable->SetItemText(nRowIndex, PWRCOL_ID_STYLE, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MsgStyle, strTemp);
 
 		// Repeat
-		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, PWRCOL_ID_REPEAT);
+		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(pwrItem.IsRepeatEnabled());
 		}
@@ -2023,7 +2023,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 		return;
 
 	// Get item at index
-	PWRREMINDERITEM pwrItem;
+	Item pwrItem;
 	if (nIndex != INT_INVALID) {
 		pwrItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 	}
@@ -2031,9 +2031,9 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	// Init default data for mode add
 	if (GetCurMode() == MODE_ADD) {
 		pwrItem.SetMessage(STRING_EMPTY);
-		pwrItem.SetEventID(PREVT_AT_SETTIME);
+		pwrItem.SetEventID(Event::atSetTime);
 		pwrItem.SetTime(GetCurSysTime());
-		pwrItem.SetMessageStyle(PRSTYLE_MSGBOX);
+		pwrItem.SetMessageStyle(Style::messageBox);
 		pwrItem.EnableCustomStyle(FALSE);
 		pwrItem.ResetRepeatInfo();
 		pwrItem.ResetMessageStyleInfo();
@@ -2172,7 +2172,7 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = FALSE */)
 	if (bRecheck == TRUE) {
 		m_nCheckCount = 0; // Reset counter
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-			PWRREMINDERITEM& pwrTemp = m_pwrReminderDataTemp.GetItemAt(nIndex);
+			const Item& pwrTemp = m_pwrReminderDataTemp.GetItemAt(nIndex);
 			if (pwrTemp.IsEnabled() == TRUE) {
 				m_nCheckCount++;
 			}
@@ -2395,7 +2395,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	VERIFY(pApp != NULL);
 	if (pApp == NULL) return FALSE;
-	PwrReminderData* ppwrData = pApp->GetAppPwrReminderData();
+	Data* ppwrData = pApp->GetAppPwrReminderData();
 	if (ppwrData == NULL)
 		return FALSE;
 
@@ -2408,7 +2408,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 
 	// Validate data and auto-correction
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		PWRREMINDERITEM& pwrItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
+		Item& pwrItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 		if (!Validate(pwrItem, TRUE, TRUE)) {
 			// Update temp data
 			m_pwrReminderDataTemp.Update(pwrItem);
@@ -2476,8 +2476,8 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 		nRowIndex = (nIndex + ROW_FIXED_NUM);
 
 		// Get checkbox cells
-		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, PWRCOL_ID_STATE);
-		pCellCheckRepeat = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, PWRCOL_ID_REPEAT);
+		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
+		pCellCheckRepeat = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
 		if ((pCellCheckEnable == NULL) || (pCellCheckRepeat == NULL)) continue;
 		
 		// Get checked states
@@ -2485,7 +2485,7 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 		BOOL bRepeat = pCellCheckRepeat->GetCheck();
 		
 		// Update item enable and repeat states
-		PWRREMINDERITEM& pwrTempItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
+		Item& pwrTempItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 		pwrTempItem.EnableItem(bEnabled);
 		pwrTempItem.EnableRepeat(bRepeat);
 	}
@@ -2499,8 +2499,8 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 	// Check if each item's data changed
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 		// Get current item and temp item
-		PWRREMINDERITEM pwrCurItem = m_pwrReminderData.GetItemAt(nIndex);
-		PWRREMINDERITEM pwrTempItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
+		const Item& pwrCurItem = m_pwrReminderData.GetItemAt(nIndex);
+		const Item& pwrTempItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
  
 		// Data comparison
 		bChangeFlag |= (pwrTempItem.IsEnabled() != pwrCurItem.IsEnabled());
@@ -2529,7 +2529,7 @@ void CPwrReminderDlg::Add()
 	UpdateData(TRUE);
 
 	// Create temp Reminder item
-	PWRREMINDERITEM pwrTemp;
+	Item pwrTemp;
 	pwrTemp.SetItemID(m_pwrReminderDataTemp.GetNextID());
 
 	// Update data
@@ -2569,8 +2569,7 @@ void CPwrReminderDlg::Edit(int nIndex)
 		return;
 
 	// Get item at given index
-	PWRREMINDERITEM pwrTemp;
-	pwrTemp = m_pwrReminderDataTemp.GetItemAt(nIndex);
+	Item pwrTemp = m_pwrReminderDataTemp.GetItemAt(nIndex);
 
 	// Update data
 	UpdateItemData(pwrTemp, TRUE);
@@ -2646,7 +2645,7 @@ void CPwrReminderDlg::SetAllItemState(BOOL bState)
 	// Check/uncheck all --> Update all items enable state
 	int nItemNum = GetItemNum();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		PWRREMINDERITEM& pwrTemp = m_pwrReminderDataTemp.GetItemAt(nIndex);
+		Item& pwrTemp = m_pwrReminderDataTemp.GetItemAt(nIndex);
 		if (pwrTemp.IsEnabled() != bState) {
 			pwrTemp.EnableItem(bState);
 		}
@@ -2678,8 +2677,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 		return;
 
 	// Get item
-	PWRREMINDERITEM pwrDispItem;
-	pwrDispItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
+	const Item& pwrDispItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 
 	// Check message content validity
 	CString strMsgContent = pwrDispItem.GetMessage();
@@ -2693,14 +2691,14 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Style: MessageBox
-	if (pwrDispItem.GetMessageStyle() == PRSTYLE_MSGBOX) {
+	if (pwrDispItem.GetMessageStyle() == Style::messageBox) {
 		// Display message box
 		CString strCaption = GetLanguageString(pAppLang, IDC_PWRREMINDER_PREVIEW_BTN);
 		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
 		DisplayMessageBox(strMsgContent, strCaption, dwMsgStyle);
 	}
 	// Style: Dialog
-	else if (pwrDispItem.GetMessageStyle() == PRSTYLE_DIALOG) {
+	else if (pwrDispItem.GetMessageStyle() == Style::dialogBox) {
 		// Destroy preview reminder message dialog if is opening
 		if (m_pRmdPreviewMsgDlg != NULL) {
 			// Destroy dialog
@@ -2766,7 +2764,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
+void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 {
 	if (bUpdate == TRUE) {
 
@@ -2792,7 +2790,7 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		if (m_pEvtSetTimeRad != NULL) {
 			bTemp = m_pEvtSetTimeRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.SetEventID(PREVT_AT_SETTIME);
+				pwrItem.SetEventID(Event::atSetTime);
 				if (m_pEvtSetTimeEdit != NULL) {
 					SYSTEMTIME stTimeTemp = SYSTEMTIME_ZERO;
 					UpdateTimeSetting(stTimeTemp, TRUE);
@@ -2808,35 +2806,35 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		if (m_pEvtAppStartupRad != NULL) {
 			bTemp = m_pEvtAppStartupRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.SetEventID(PREVT_AT_APPSTARTUP);
+				pwrItem.SetEventID(Event::atAppStartup);
 			}
 		}
 		// Event: At system wake
 		if (m_pEvtSysWakeupRad != NULL) {
 			bTemp = m_pEvtSysWakeupRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.SetEventID(PREVT_AT_SYSWAKEUP);
+				pwrItem.SetEventID(Event::atSysWakeUp);
 			}
 		}
 		// Event: Before power action
 		if (m_pEvtBfrPwrActionRad != NULL) {
 			bTemp = m_pEvtBfrPwrActionRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.SetEventID(PREVT_AT_BFRPWRACTION);
+				pwrItem.SetEventID(Event::beforePwrAction);
 			}
 		}
 		// Event: Wake after action
 		if (m_pEvtPwrActionWakeRad != NULL) {
 			bTemp = m_pEvtPwrActionWakeRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.SetEventID(PREVT_AT_PWRACTIONWAKE);
+				pwrItem.SetEventID(Event::wakeAfterAction);
 			}
 		}
 		// Event: Before app exit
 		if (m_pEvtAtAppExitRad != NULL) {
 			bTemp = m_pEvtAtAppExitRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.SetEventID(PREVT_AT_APPEXIT);
+				pwrItem.SetEventID(Event::atAppExit);
 			}
 		}
 
@@ -2846,14 +2844,14 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		if (m_pStyleMsgBoxRad != NULL) {
 			bTemp = m_pStyleMsgBoxRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.SetMessageStyle(PRSTYLE_MSGBOX);
+				pwrItem.SetMessageStyle(Style::messageBox);
 			}
 		}
 		// Style: Dialog Box
 		if (m_pStyleDialogBoxRad != NULL) {
 			bTemp = m_pStyleDialogBoxRad->GetCheck();
 			if (bTemp == TRUE) {
-				pwrItem.SetMessageStyle(PRSTYLE_DIALOG);
+				pwrItem.SetMessageStyle(Style::dialogBox);
 			}
 		}
 
@@ -2920,7 +2918,7 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		// Event: At set time
 		if (m_pEvtSetTimeRad != NULL) {
 			m_pEvtSetTimeRad->EnableWindow(bEnable);
-			bTemp = (nEventID == PREVT_AT_SETTIME);
+			bTemp = (nEventID == Event::atSetTime);
 			m_pEvtSetTimeRad->SetCheck(bTemp);
 
 			// Set time edit and spin value
@@ -2940,31 +2938,31 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		// Event: At app startup
 		if (m_pEvtAppStartupRad != NULL) {
 			m_pEvtAppStartupRad->EnableWindow(bEnable);
-			bTemp = (nEventID == PREVT_AT_APPSTARTUP);
+			bTemp = (nEventID == Event::atAppStartup);
 			m_pEvtAppStartupRad->SetCheck(bTemp);
 		}
 		// Event: At system wake
 		if (m_pEvtSysWakeupRad != NULL) {
 			m_pEvtSysWakeupRad->EnableWindow(bEnable);
-			bTemp = (nEventID == PREVT_AT_SYSWAKEUP);
+			bTemp = (nEventID == Event::atSysWakeUp);
 			m_pEvtSysWakeupRad->SetCheck(bTemp);
 		}
 		// Event: Before power action
 		if (m_pEvtBfrPwrActionRad != NULL) {
 			m_pEvtBfrPwrActionRad->EnableWindow(bEnable);
-			bTemp = (nEventID == PREVT_AT_BFRPWRACTION);
+			bTemp = (nEventID == Event::beforePwrAction);
 			m_pEvtBfrPwrActionRad->SetCheck(bTemp);
 		}
 		// Event: Wake after action
 		if (m_pEvtPwrActionWakeRad != NULL) {
 			m_pEvtPwrActionWakeRad->EnableWindow(bEnable);
-			bTemp = (nEventID == PREVT_AT_PWRACTIONWAKE);
+			bTemp = (nEventID == Event::wakeAfterAction);
 			m_pEvtPwrActionWakeRad->SetCheck(bTemp);
 		}
 		// Event: Before app exit
 		if (m_pEvtAtAppExitRad != NULL) {
 			m_pEvtAtAppExitRad->EnableWindow(bEnable);
-			bTemp = (nEventID == PREVT_AT_APPEXIT);
+			bTemp = (nEventID == Event::atAppExit);
 			m_pEvtAtAppExitRad->SetCheck(bTemp);
 		}
 
@@ -2976,12 +2974,12 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 		}
 		if (m_pStyleMsgBoxRad != NULL) {
 			m_pStyleMsgBoxRad->EnableWindow(bEnable);
-			bTemp = (dwMsgStyle == PRSTYLE_MSGBOX);
+			bTemp = (dwMsgStyle == Style::messageBox);
 			m_pStyleMsgBoxRad->SetCheck(bTemp);
 		}
 		if (m_pStyleDialogBoxRad != NULL) {
 			m_pStyleDialogBoxRad->EnableWindow(bEnable);
-			bTemp = (dwMsgStyle == PRSTYLE_DIALOG);
+			bTemp = (dwMsgStyle == Style::dialogBox);
 			m_pStyleDialogBoxRad->SetCheck(bTemp);
 		}
 
@@ -3000,7 +2998,7 @@ void CPwrReminderDlg::UpdateItemData(PWRREMINDERITEM& pwrItem, BOOL bUpdate)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL bAutoCorrect /* = FALSE */)
+BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL bAutoCorrect /* = FALSE */)
 {
 	BOOL bResult = TRUE;
 
@@ -3056,7 +3054,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 	}
 
 	// Check event ID
-	if ((pwrItem.GetEventID() < PREVT_AT_SETTIME) || (pwrItem.GetEventID() > PREVT_AT_APPEXIT)) {
+	if ((pwrItem.GetEventID() < Event::atSetTime) || (pwrItem.GetEventID() > Event::atAppExit)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_EVENTID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3064,7 +3062,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default event ID
-			pwrItem.SetEventID(PREVT_AT_SETTIME);
+			pwrItem.SetEventID(Event::atSetTime);
 		}
 	}
 
@@ -3095,7 +3093,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 	}
 
 	// Check style ID
-	if ((pwrItem.GetMessageStyle() < PRSTYLE_MSGBOX) || (pwrItem.GetMessageStyle() > PRSTYLE_DIALOG)) {
+	if ((pwrItem.GetMessageStyle() < Style::messageBox) || (pwrItem.GetMessageStyle() > Style::dialogBox)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_STYLEID;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3103,7 +3101,7 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default style ID
-			pwrItem.SetMessageStyle(PRSTYLE_MSGBOX);
+			pwrItem.SetMessageStyle(Style::messageBox);
 		}
 	}
 	
@@ -3133,31 +3131,12 @@ BOOL CPwrReminderDlg::Validate(PWRREMINDERITEM& pwrItem, BOOL bShowMsg /* = FALS
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetItemNum
-//	Description:	Get data table item number
-//  Arguments:		None
-//  Return value:	int - Number of items
-//
-//////////////////////////////////////////////////////////////////////////
-
-int CPwrReminderDlg::GetItemNum()
-{
-	return m_pwrReminderDataTemp.GetItemNum();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetCurMode
-//	Description:	Get/set current mode
+//	Function name:	SetCurMode
+//	Description:	Set current mode
 //  Arguments:		nMode - Mode to set
-//  Return value:	int - Current mode
+//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
-
-int CPwrReminderDlg::GetCurMode()
-{
-	return m_nCurMode;
-}
 
 void CPwrReminderDlg::SetCurMode(int nMode)
 {
