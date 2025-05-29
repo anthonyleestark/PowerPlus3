@@ -746,9 +746,7 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR ptrLanguage)
 	}
 
 	// Initialization
-	if (m_pHotkeySetListTable == NULL) {
-		m_pHotkeySetListTable = new CGridCtrl();
-	}
+	VERIFY_INITIALIZATION(m_pHotkeySetListTable, CGridCtrl)
 
 	// Create table
 	if (m_pHotkeySetListTable == NULL) return;

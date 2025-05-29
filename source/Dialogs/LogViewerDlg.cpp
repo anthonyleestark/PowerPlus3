@@ -370,9 +370,7 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR ptrLanguage)
 	}
 
 	// Initialization
-	if (m_pLogViewerList == NULL) {
-		m_pLogViewerList = new CGridCtrl();
-	}
+	VERIFY_INITIALIZATION(m_pLogViewerList, CGridCtrl)
 
 	// Create table
 	if (m_pLogViewerList == NULL) return;

@@ -2000,8 +2000,7 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Initialize dialog size pointer
-	if (m_pDialogSize == NULL)
-		m_pDialogSize = new CSize;
+	VERIFY_INITIALIZATION(m_pDialogSize, CSize);
 
 	// Expand/collapse dialog
 	if (!bExpand) {

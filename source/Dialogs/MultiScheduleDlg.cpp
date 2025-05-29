@@ -459,9 +459,7 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	}
 
 	// Initialization
-	if (m_pDataItemListTable == NULL) {
-		m_pDataItemListTable = new CGridCtrl();
-	}
+	VERIFY_INITIALIZATION(m_pDataItemListTable, CGridCtrl)
 
 	// Create table
 	if (m_pDataItemListTable == NULL) return;

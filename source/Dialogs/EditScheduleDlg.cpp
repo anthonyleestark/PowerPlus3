@@ -473,9 +473,7 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
 	}
 
 	// Initialization
-	if (m_pActiveDayListTable == NULL) {
-		m_pActiveDayListTable = new CGridCtrl();
-	}
+	VERIFY_INITIALIZATION(m_pActiveDayListTable, CGridCtrl)
 
 	// Create table
 	if (m_pActiveDayListTable == NULL) return;
