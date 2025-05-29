@@ -13,9 +13,9 @@
 
 #include "stdafx.h"
 #include "TCHAR.h"
-#include "Components\InPlaceEdit.h"
+#include "Components\GridCtrl\InPlaceEdit.h"
 
-#include "Components\GridCtrl.h"
+#include "Components\GridCtrl\GridCtrl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

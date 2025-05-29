@@ -12,9 +12,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Components\GridCell.h"
-#include "Components\InPlaceEdit.h"
-#include "Components\GridCtrl.h"
+#include "Components\GridCtrl\GridCell.h"
+#include "Components\GridCtrl\InPlaceEdit.h"
+#include "Components\GridCtrl\GridCtrl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

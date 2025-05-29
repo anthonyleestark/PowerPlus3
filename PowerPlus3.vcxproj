@@ -219,14 +219,14 @@
     <ClInclude Include="include\AppCore\Logging.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Components\CellRange.h" />
-    <ClInclude Include="include\Components\GridCell.h" />
-    <ClInclude Include="include\Components\GridCellBase.h" />
-    <ClInclude Include="include\Components\GridCellCheck.h" />
-    <ClInclude Include="include\Components\GridCtrl.h" />
-    <ClInclude Include="include\Components\InPlaceEdit.h" />
-    <ClInclude Include="include\Components\MemDC.h" />
-    <ClInclude Include="include\Components\TitleTip.h" />
+    <ClInclude Include="include\Components\GridCtrl\CellRange.h" />
+    <ClInclude Include="include\Components\GridCtrl\GridCell.h" />
+    <ClInclude Include="include\Components\GridCtrl\GridCellBase.h" />
+    <ClInclude Include="include\Components\GridCtrl\GridCellCheck.h" />
+    <ClInclude Include="include\Components\GridCtrl\GridCtrl.h" />
+    <ClInclude Include="include\Components\GridCtrl\InPlaceEdit.h" />
+    <ClInclude Include="include\Components\GridCtrl\MemDC.h" />
+    <ClInclude Include="include\Components\GridCtrl\TitleTip.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Dialogs\AboutDlg.h" />
@@ -271,12 +271,12 @@
     <ClCompile Include="source\AppCore\MapTable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Components\GridCell.cpp" />
-    <ClCompile Include="source\Components\GridCellBase.cpp" />
-    <ClCompile Include="source\Components\GridCellCheck.cpp" />
-    <ClCompile Include="source\Components\GridCtrl.cpp" />
-    <ClCompile Include="source\Components\InPlaceEdit.cpp" />
-    <ClCompile Include="source\Components\TitleTip.cpp" />
+    <ClCompile Include="source\Components\GridCtrl\GridCell.cpp" />
+    <ClCompile Include="source\Components\GridCtrl\GridCellBase.cpp" />
+    <ClCompile Include="source\Components\GridCtrl\GridCellCheck.cpp" />
+    <ClCompile Include="source\Components\GridCtrl\GridCtrl.cpp" />
+    <ClCompile Include="source\Components\GridCtrl\InPlaceEdit.cpp" />
+    <ClCompile Include="source\Components\GridCtrl\TitleTip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Dialogs\AboutDlg.cpp" />

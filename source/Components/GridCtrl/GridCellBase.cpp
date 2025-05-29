@@ -12,8 +12,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Components\GridCtrl.h"
-#include "Components\GridCellBase.h"
+#include "Components\GridCtrl\GridCtrl.h"
+#include "Components\GridCtrl\GridCellBase.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

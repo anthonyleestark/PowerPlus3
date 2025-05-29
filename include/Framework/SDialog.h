@@ -24,8 +24,8 @@
 #include "AppCore\IDMapping.h"
 #include "AppCore\Logging.h"
 
-#include "Components\GridCtrl.h"
-#include "Components\GridCellCheck.h"
+#include "Components\GridCtrl\GridCtrl.h"
+#include "Components\GridCtrl\GridCellCheck.h"
 
 #include "SElements.h"
 #include "SWinApp.h"

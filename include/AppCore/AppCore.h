@@ -22,8 +22,8 @@
 
 #include "Language.h"
 
-#include "Components\GridCtrl.h"
-#include "Components\GridCellCheck.h"
+#include "Components\GridCtrl\GridCtrl.h"
+#include "Components\GridCtrl\GridCellCheck.h"
 
 /////////////////////////////////////
 

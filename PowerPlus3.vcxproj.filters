@@ -51,28 +51,28 @@
     <ClInclude Include="include\AppCore\MapTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Components\CellRange.h">
+    <ClInclude Include="include\Components\GridCtrl\CellRange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Components\GridCell.h">
+    <ClInclude Include="include\Components\GridCtrl\GridCell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Components\GridCellBase.h">
+    <ClInclude Include="include\Components\GridCtrl\GridCellBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Components\GridCellCheck.h">
+    <ClInclude Include="include\Components\GridCtrl\GridCellCheck.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Components\GridCtrl.h">
+    <ClInclude Include="include\Components\GridCtrl\GridCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Components\InPlaceEdit.h">
+    <ClInclude Include="include\Components\GridCtrl\InPlaceEdit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Components\MemDC.h">
+    <ClInclude Include="include\Components\GridCtrl\MemDC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Components\TitleTip.h">
+    <ClInclude Include="include\Components\GridCtrl\TitleTip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Dialogs\AboutDlg.h">
@@ -163,22 +163,22 @@
     <ClCompile Include="source\AppCore\MapTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Components\GridCell.cpp">
+    <ClCompile Include="source\Components\GridCtrl\GridCell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Components\GridCellBase.cpp">
+    <ClCompile Include="source\Components\GridCtrl\GridCellBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Components\GridCellCheck.cpp">
+    <ClCompile Include="source\Components\GridCtrl\GridCellCheck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Components\GridCtrl.cpp">
+    <ClCompile Include="source\Components\GridCtrl\GridCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Components\InPlaceEdit.cpp">
+    <ClCompile Include="source\Components\GridCtrl\InPlaceEdit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Components\TitleTip.cpp">
+    <ClCompile Include="source\Components\GridCtrl\TitleTip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Dialogs\AboutDlg.cpp">
