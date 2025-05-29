@@ -18,6 +18,7 @@
 #include "stdafx.h"
 
 #include "AppCore\AppCore.h"
+#include "AppCore\Global.h"
 #include "AppCore\MapTable.h"
 
 #ifdef _DEBUG
@@ -2265,19 +2266,19 @@ BOOL RegistryValue::Init(UINT nRegValueType)
 	// Initialize with specific data type
 	switch (nRegValueType)
 	{
-	case REGTYPE_STRING:
+	case Type::String:
 		m_pstrValue = new CString(STRING_EMPTY);
 		return (m_pstrValue != NULL);
 
-	case REGTYPE_DWORD32:
+	case Type::DWORD_32:
 		m_pdwValue = new DWORD(INT_NULL);
 		return (m_pdwValue != NULL);
 
-	case REGTYPE_QWORD64:
+	case Type::QWORD_64:
 		m_pqwValue = new QWORD(INT_NULL);
 		return (m_pqwValue != NULL);
 
-	case REGTYPE_MULTISTRING:
+	case Type::Multi_String:
 		m_pastrValue = new CStringArray();
 		return (m_pastrValue != NULL);
 
@@ -2385,28 +2386,28 @@ void RegistryValue::Reset(void)
 void RegistryValue::Refactor(void)
 {
 	UINT nType = GetType();
-	if (nType == REGTYPE_STRING) {
+	if (nType == Type::String) {
 		CString strTemp = *m_pstrValue;
-		if (Init(REGTYPE_STRING)) {
+		if (Init(Type::String)) {
 			*m_pstrValue = strTemp;
 		}
 	}
-	else if (nType == REGTYPE_DWORD32) {
+	else if (nType == Type::DWORD_32) {
 		DWORD dwTemp = *m_pdwValue;
-		if (Init(REGTYPE_DWORD32)) {
+		if (Init(Type::DWORD_32)) {
 			*m_pdwValue = dwTemp;
 		}
 	}
-	else if (nType == REGTYPE_QWORD64) {
+	else if (nType == Type::QWORD_64) {
 		QWORD qwTemp = *m_pqwValue;
-		if (Init(REGTYPE_QWORD64)) {
+		if (Init(Type::QWORD_64)) {
 			*m_pqwValue = qwTemp;
 		}
 	}
-	else if (nType == REGTYPE_MULTISTRING) {
+	else if (nType == Type::Multi_String) {
 		CStringArray astrTemp;
 		astrTemp.Copy(*m_pastrValue);
-		if (Init(REGTYPE_MULTISTRING)) {
+		if (Init(Type::Multi_String)) {
 			m_pastrValue->Copy(astrTemp);
 		}
 	}
@@ -2428,15 +2429,15 @@ void RegistryValue::Refactor(void)
 UINT RegistryValue::GetType(void) const
 {
 	if (m_pstrValue != NULL)
-		return REGTYPE_STRING;
+		return Type::String;
 	else if (m_pdwValue != NULL)
-		return REGTYPE_DWORD32;
+		return Type::DWORD_32;
 	else if (m_pqwValue != NULL)
-		return REGTYPE_QWORD64;
+		return Type::QWORD_64;
 	else if (m_pastrValue)
-		return REGTYPE_MULTISTRING;
+		return Type::Multi_String;
 	else
-		return REGTYPE_NONE;
+		return Type::None;
 }
 
 //////////////////////////////////////////////////////////////////////////

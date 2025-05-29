@@ -104,24 +104,16 @@ private:
 	// Notify icon variables
 	HICON			m_hNotifyIcon;
 	PNOTIFYICONDATA	m_pNotifyIconData;
-	BOOL			m_bNotifyIconShowed;
 	CMenu*			m_pNotifyMenu;
 
 	// Member variables using for resizing dialog
-	BOOL	m_bDlgExpanded;
 	CSize*	m_pDialogSize;
 
 	// Hotkey register data
-	BOOL		m_bHotkeyRegistered;
 	CUIntArray	m_arrCurRegHKeyList;
 
 	// Power++ runtime queue data
 	PWRRUNTIMEQUEUE m_arrRuntimeQueue;
-
-	// Other flags
-	BOOL m_bRestartAsAdminFlag;
-	INT  m_nPwrBroadcastSkipCount;
-	BOOL m_bWTSSessionNotifyRegistered;
 
 	// Child dialogs
 	CAboutDlg*			m_pAboutDlg;
@@ -191,8 +183,8 @@ protected:
 	int  GetAppOption(AppOptionID eAppOptionID, BOOL bTemp = FALSE) const;
 	void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 	BOOL CheckSettingChangeState(void);
-	int  GetFlagValue(APPFLAGID eFlagID) const;
-	void SetFlagValue(APPFLAGID eFlagID, int nValue);
+	int  GetFlagValue(AppFlagID eFlagID) const;
+	void SetFlagValue(AppFlagID eFlagID, int nValue);
 
 	// Dialog setup functions
 	void SetupLanguage(void);

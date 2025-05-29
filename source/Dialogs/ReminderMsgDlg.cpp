@@ -389,7 +389,7 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	if (pWnd == this) {
-		if ((GetFlagValue(FLAGID_BKGRDCLR_SET) == TRUE) && (m_pBkgrdBrush != NULL)) {
+		if ((GetFlagValue(AppFlagID::dialogSetBackgroundColor) == TRUE) && (m_pBkgrdBrush != NULL)) {
 			// Get brush
 			hBrush = (HBRUSH)(*m_pBkgrdBrush);
 		}
@@ -397,12 +397,12 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	if (nCtlColor == CTLCOLOR_STATIC) {
 		// Set background color
-		if ((GetFlagValue(FLAGID_BKGRDCLR_SET) == TRUE) && (m_pBkgrdBrush != NULL)) {
+		if ((GetFlagValue(AppFlagID::dialogSetBackgroundColor) == TRUE) && (m_pBkgrdBrush != NULL)) {
 			hBrush = (HBRUSH)(*m_pBkgrdBrush);
 			pDC->SetBkColor(m_clBkgrdColor);
 		}
 		// Set text color
-		if (GetFlagValue(FLAGID_TEXTCLR_SET) == TRUE) {
+		if (GetFlagValue(AppFlagID::dialogSetTextColor) == TRUE) {
 			pDC->SetTextColor(m_clTextColor);
 		}
 	}

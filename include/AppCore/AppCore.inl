@@ -22,6 +22,24 @@
 
 #ifdef _APPCORE_ENABLE_INLINES
 
+// Check if a flag value exists
+inline int FlagManager::IsFlagPresent(AppFlagID eFlagID) const {
+	auto it = m_mapUniqueFlags.find(eFlagID);
+	return (it != m_mapUniqueFlags.end());
+}
+
+// Get application flag value
+inline int FlagManager::GetFlagValue(AppFlagID eFlagID) const {
+	auto it = m_mapUniqueFlags.find(eFlagID);
+	if (it != m_mapUniqueFlags.end()) return it->second;
+	else return FLAG_OFF;
+}
+
+// Get application flag value
+inline void FlagManager::SetFlagValue(AppFlagID eFlagID, int nValue) {
+	m_mapUniqueFlags[eFlagID] = nValue;
+}
+
 // Check if repeat option is enabled
 inline BOOL PwrRepeatSet::IsRepeatEnabled(void) const {
 	return m_bRepeat;
@@ -800,7 +818,7 @@ inline void HistoryInfoData::SetDescription(LPCTSTR lpszDescription) {
 
 // Check if data is empty
 inline BOOL RegistryValue::IsEmpty(void) const {
-	return (IsType(REGTYPE_NONE));
+	return (IsType(Type::None));
 }
 
 // Check if current type is matching
@@ -810,59 +828,59 @@ inline BOOL RegistryValue::IsType(UINT nType) const {
 
 // Get String value
 inline void RegistryValue::GetString(CString& strValue) const {
-	if (!IsType(REGTYPE_STRING)) { strValue.Empty(); }
+	if (!IsType(Type::String)) { strValue.Empty(); }
 	else { strValue = *m_pstrValue; }
 }
 
 // Get String value
 inline LPCTSTR RegistryValue::GetString(void) const {
-	if (!IsType(REGTYPE_STRING)) { return STRING_EMPTY; }
+	if (!IsType(Type::String)) { return STRING_EMPTY; }
 	else return m_pstrValue->GetString();
 }
 
 // Set String value
 inline void RegistryValue::SetString(LPCTSTR lpszValue) {
-	if (Init(REGTYPE_STRING)) { *m_pstrValue = lpszValue; }
+	if (Init(Type::String)) { *m_pstrValue = lpszValue; }
 }
 
 // Get DWORD (32-bit) value
 inline DWORD RegistryValue::GetDWord(void) const {
-	if (!IsType(REGTYPE_DWORD32)) { return INT_NULL; }
+	if (!IsType(Type::DWORD_32)) { return INT_NULL; }
 	else return *m_pdwValue;
 }
 
 // Set DWORD (32-bit) value
 inline void RegistryValue::SetDWord(DWORD dwValue) {
-	if (Init(REGTYPE_DWORD32)) { *m_pdwValue = dwValue; }
+	if (Init(Type::DWORD_32)) { *m_pdwValue = dwValue; }
 }
 
 // Get QWORD (64-bit) value
 inline QWORD RegistryValue::GetQWord(void) const {
-	if (!IsType(REGTYPE_QWORD64)) { return INT_NULL; }
+	if (!IsType(Type::QWORD_64)) { return INT_NULL; }
 	else return *m_pqwValue;
 }
 
 // Set QWORD (64-bit) value
 inline void RegistryValue::SetQWord(QWORD qwValue) {
-	if (Init(REGTYPE_QWORD64)) { *m_pqwValue = qwValue; }
+	if (Init(Type::QWORD_64)) { *m_pqwValue = qwValue; }
 }
 
 // Get multi-string value
 inline void RegistryValue::GetMultiString(CStringArray& astrValue) const {
-	if (!IsType(REGTYPE_QWORD64)) return;
+	if (!IsType(Type::QWORD_64)) return;
 	else { astrValue.Copy(*m_pastrValue); }
 }
 
 // Set multi-string value
 inline void RegistryValue::SetMultiString(CStringArray& astrValue) {
-	if (Init(REGTYPE_MULTISTRING)) { m_pastrValue->Copy(astrValue); }
+	if (Init(Type::Multi_String)) { m_pastrValue->Copy(astrValue); }
 }
 
 // Add string value to Multi-string data
 inline BOOL RegistryValue::AddString(LPCTSTR lpszValue)
 {
-	if (!IsEmpty() && !IsType(REGTYPE_MULTISTRING)) return FALSE;
-	if (IsEmpty() && !Init(REGTYPE_MULTISTRING)) return FALSE;
+	if (!IsEmpty() && !IsType(Type::Multi_String)) return FALSE;
+	if (IsEmpty() && !Init(Type::Multi_String)) return FALSE;
 	m_pastrValue->Add(lpszValue);
 	return TRUE;
 }

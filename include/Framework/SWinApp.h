@@ -58,6 +58,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 protected:
+	// Application flag manager
+	FlagManager m_flagManager;
+
 	// Title and caption
 	CString m_strTemplateName;
 	CString	m_strWindowCaption;
@@ -116,9 +119,13 @@ public:
 	virtual SLogging* GetAppEventLog(void);
 	virtual void OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription = NULL, LOGDETAILINFO* pDetailInfo = NULL);
 
-	// Data processing and flags get/set functions
-	virtual int  GetFlagValue(APPFLAGID eFlagID) const;
-	virtual void SetFlagValue(APPFLAGID eFlagID, int nValue);
+	// Flag management functions
+	virtual int  GetFlagValue(AppFlagID eFlagID) const;
+	virtual void SetFlagValue(AppFlagID eFlagID, int nValue);
+	virtual FlagManager& GetAppFlagManager(void);
+	virtual const FlagManager& GetAppFlagManager(void) const;
+
+	// Directly access flag values
 	virtual BOOL GetChangeFlagValue(void) const;
 	virtual void SetChangeFlagValue(BOOL bChangeFlag);
 	virtual BOOL CheckDataChangeState(void);

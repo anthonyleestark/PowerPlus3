@@ -215,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AppCore\AppCore.inl" />
+    <ClInclude Include="include\AppCore\Global.inl" />
     <ClInclude Include="include\AppCore\Logging.inl" />
   </ItemGroup>
   <ItemGroup>

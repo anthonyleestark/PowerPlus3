@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 #include "AppCore.h"
+#include "Global.h"
 
 namespace MapTable
 {

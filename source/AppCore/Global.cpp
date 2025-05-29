@@ -38,27 +38,21 @@ UINT Global::g_uiAppLaunchTimeCounter = 0;
 /*-----------------------------------------------------------------------------------------------------------*/
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Initialize global data, objects, variables and methods which are used during the application's runtime
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Application global/shared flag manager
+FlagManager g_sharedFlagManager;
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Initialize global variables which are used for debugging/testing
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*----------------------------------------------Debug/Test flags---------------------------------------------*/
-
-// Dummy test mode
-BOOL Global::g_bDummyTest = DEFAULT_DUMMYTEST;
-
-// Debug mode
-BOOL Global::g_bDebugMode = DEFAULT_DEBUGMODE;
-
-// Debug log output target flag
-INT Global::g_nDebugOutputTarget = DEFAULT_DEBUGOUTPUT;
-
-// Test feature enable flag
-BOOL Global::g_bTestFeature = DEFAULT_TESTFEATURE;
-
-/*-----------------------------------------------------------------------------------------------------------*/
 
 /*----------------------------------------Debug/Test special variables---------------------------------------*/
 
@@ -88,29 +82,6 @@ CFileException* Global::g_pExcLogDebugInfo = NULL;
 // Initialize global variables which are used for other special purposes
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*-------------------------------------------------App flags-------------------------------------------------*/
-
-// Power action trace flag
-BYTE Global::g_byPwrActionFlag = 0;
-
-// System suspended trace flag
-BYTE Global::g_bySystemSuspendFlag = 0;
-
-// Session ending trace flag
-BYTE Global::g_bySessionEndFlag = 0;
-
-// Previously safe termination trace flag
-BYTE Global::g_bySafeTerminationFlag = 0;
-
-/*-----------------------------------------------------------------------------------------------------------*/
-
-/*---------------------------------------------Memory-only flags---------------------------------------------*/
-
-// Session lock trace flag
-BYTE Global::g_bySessionLockFlag = 0;
-
-/*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------Power reminder message styles---------------------------------------*/
 

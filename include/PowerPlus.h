@@ -110,9 +110,7 @@ public:
 	void SetAppPwrReminderData(PwrReminderData* ppwrData);
 
 	// Data options and flags get/set functions
-	int  GetAppOption(AppOptionID eAppOptionID) const;
-	int  GetFlagValue(APPFLAGID eFlagID) const;
-	void SetFlagValue(APPFLAGID eFlagID, int nValue);
+	int GetAppOption(AppOptionID eAppOptionID) const;
 
 	// App history logging functions
 	void InitAppHistoryLog();

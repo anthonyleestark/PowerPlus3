@@ -2,7 +2,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		Global.h
-//		Description:	Define global objects which will be used everywhere in program
+//		Description:	Define global data and objects which will be used everywhere in program
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2024.01.27:		Create new
@@ -17,6 +17,7 @@
 #define _GLOBAL_H_INCLUDED
 
 #include "stdafx.h"
+#include "AppCore.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,16 +49,28 @@ namespace Global {
 };
 
 // Access application launch-time data
-static inline const SYSTEMTIME GetAppLaunchTime(void) { return Global::g_stAppLaunchTime; }
-static inline void SetAppLaunchTime(SYSTEMTIME stTime) { Global::g_stAppLaunchTime = stTime; }
+static inline const SYSTEMTIME GetAppLaunchTime(void);
+static inline void SetAppLaunchTime(SYSTEMTIME stTime);
 
 // Access application launch-time counter data
-static inline const UINT GetAppLaunchTimeCounter(void) { return Global::g_uiAppLaunchTimeCounter; }
-static inline const BOOL IsAppFirstLaunch(void) { return (Global::g_uiAppLaunchTimeCounter <= 1); }
-static inline void SetAppLaunchTimeCounter(UINT uiValue) { Global::g_uiAppLaunchTimeCounter = uiValue; }
-static inline void UpdateAppLaunchTimeCounter(void) { ++Global::g_uiAppLaunchTimeCounter; }
+static inline const UINT GetAppLaunchTimeCounter(void);
+static inline const BOOL IsAppFirstLaunch(void);
+static inline void SetAppLaunchTimeCounter(UINT uiValue);
+static inline void UpdateAppLaunchTimeCounter(void);
 
 /*-----------------------------------------------------------------------------------------------------------*/
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Define global data, objects, variables and methods which are used during the application's runtime.
+// These variables are not grouped into any specific category and are serialized independently.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Application global/shared flag manager
+extern FlagManager g_sharedFlagManager;
+extern inline FlagManager& GetGlobalFlagManager(void);
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,20 +88,13 @@ static inline void UpdateAppLaunchTimeCounter(void) { ++Global::g_uiAppLaunchTim
 #define DEFAULT_DEBUGOUTPUT			DefaultOutput
 #define DEFAULT_TESTFEATURE			FALSE
 
-namespace Global {
-	extern BOOL	 g_bDummyTest;
-	extern BOOL	 g_bDebugMode;
-	extern INT	 g_nDebugOutputTarget;
-	extern BOOL  g_bTestFeature;
-};
-
 // Dummy test mode flag
-static inline const BOOL GetDummyTestMode(void) { return Global::g_bDummyTest; }
-static inline void SetDummyTestMode(BOOL bValue) { Global::g_bDummyTest = bValue; }
+static inline const BOOL GetDummyTestMode(void);
+static inline void SetDummyTestMode(BOOL bValue);
 
 // Debug mode flag
-static inline const BOOL GetDebugMode(void) { return Global::g_bDebugMode; }
-static inline void SetDebugMode(BOOL bValue) { Global::g_bDebugMode = bValue; }
+static inline const BOOL GetDebugMode(void);
+static inline void SetDebugMode(BOOL bValue);
 
 // Debug log output target flag
 enum DebugOutput {
@@ -96,12 +102,12 @@ enum DebugOutput {
 	DebugInfoFile,
 	DebugTestTool,
 };
-static inline const INT GetDebugOutputTarget(void) { return Global::g_nDebugOutputTarget; }
-static inline void SetDebugOutputTarget(int nValue) { Global::g_nDebugOutputTarget = nValue; }
+static inline const INT GetDebugOutputTarget(void);
+static inline void SetDebugOutputTarget(int nValue);
 
 // Test feature enable flag
-static inline const BOOL GetTestFeatureEnable(void) { return Global::g_bTestFeature; }
-static inline void SetTestFeatureEnable(BOOL bValue) { Global::g_bTestFeature = bValue; }
+static inline const BOOL GetTestFeatureEnable(void);
+static inline void SetTestFeatureEnable(BOOL bValue);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -117,28 +123,28 @@ namespace Global {
 };
 
 // Trace error log file pointer
-static inline CFile* GetTraceErrorLogFile(void) { return Global::g_pFileLogTraceError; }
+static inline CFile* GetTraceErrorLogFile(void);
 static BOOL InitTraceErrorLogFile(void);
 inline void ReleaseTraceErrorLogFile(void);
 
 //Trace debug info log file pointer
-static inline CFile* GetTraceDebugLogFile(void) { return Global::g_pFileLogTraceDebug; }
+static inline CFile* GetTraceDebugLogFile(void);
 static BOOL InitTraceDebugLogFile(void);
 inline void ReleaseTraceDebugLogFile(void);
 
 // Debug info output log file pointer
-static inline CFile* GetDebugInfoLogFile(void) { return Global::g_pFileLogDebugInfo; }
+static inline CFile* GetDebugInfoLogFile(void);
 static BOOL InitDebugInfoLogFile(void);
 inline void ReleaseDebugInfoLogFile(void);
 
 // Trace error log file exception pointer
-static inline CFileException* GetTraceErrorException(void) { return Global::g_pExcLogTraceError; }
+static inline CFileException* GetTraceErrorException(void);
 
 // Trace debug info log file exception pointer
-static inline CFileException* GetTraceDebugException(void) { return Global::g_pExcLogTraceDebug; }
+static inline CFileException* GetTraceDebugException(void);
 
 // Debug info output log file exception pointer
-static inline CFileException* GetDebugInfoException(void) { return Global::g_pExcLogDebugInfo; }
+static inline CFileException* GetDebugInfoException(void);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -150,50 +156,39 @@ static inline CFileException* GetDebugInfoException(void) { return Global::g_pEx
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*-------------------------------------------------App flags-------------------------------------------------*/
-
-namespace Global {
-	extern BYTE g_byPwrActionFlag;
-	extern BYTE g_bySystemSuspendFlag;
-	extern BYTE g_bySessionEndFlag;
-	extern BYTE g_bySafeTerminationFlag;
-};
+/*---------------------------------------------App tracing flags---------------------------------------------*/
 
 // Power action trace flag
-static inline const BYTE GetPwrActionFlag(void) { return Global::g_byPwrActionFlag; }
-static inline void SetPwrActionFlag(BYTE byValue) { Global::g_byPwrActionFlag = byValue; }
+static inline const BYTE GetPwrActionFlag(void);
+static inline void SetPwrActionFlag(BYTE byValue);
 
 // System suspended trace flag
-static inline const BYTE GetSystemSuspendFlag(void) { return Global::g_bySystemSuspendFlag; }
-static inline void SetSystemSuspendFlag(BYTE byValue) { Global::g_bySystemSuspendFlag = byValue; }
+static inline const BYTE GetSystemSuspendFlag(void);
+static inline void SetSystemSuspendFlag(BYTE byValue);
 
 // Session ended trace flag
-static inline const BYTE GetSessionEndFlag(void) { return Global::g_bySessionEndFlag; }
-static inline void SetSessionEndFlag(BYTE byValue) { Global::g_bySessionEndFlag = byValue; }
+static inline const BYTE GetSessionEndFlag(void);
+static inline void SetSessionEndFlag(BYTE byValue);
 
 // Previously safe termination trace flag
-static inline const BYTE GetSafeTerminationFlag(void) { return Global::g_bySafeTerminationFlag; }
-static inline void SetSafeTerminationFlag(BYTE byValue) { Global::g_bySafeTerminationFlag = byValue; }
+static inline const BYTE GetSafeTerminationFlag(void);
+static inline void SetSafeTerminationFlag(BYTE byValue);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------------Memory-only flags---------------------------------------------*/
 
-namespace Global {
-	extern BYTE g_bySessionLockFlag;
-};
-
 // Session lock trace flag
-static inline const BYTE GetSessionLockFlag(void) { return Global::g_bySessionLockFlag; }
-static inline void SetSessionLockFlag(BYTE byValue) { Global::g_bySessionLockFlag = byValue; }
+static inline const BYTE GetSessionLockFlag(void);
+static inline void SetSessionLockFlag(BYTE byValue);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------Power reminder message styles---------------------------------------*/
 
 // Define default value
-#define DEFAULT_MSG_BKGRDCLR		RGB(230,190,200)			// Default background color: Bright pink
-#define DEFAULT_MSG_TEXTCLR			RGB(255,0,0)				// Default text color: Red
+#define DEFAULT_MSG_BKGRDCLR		COLOR_PINK					// Default background color: Bright pink
+#define DEFAULT_MSG_TEXTCLR			COLOR_RED					// Default text color: Red
 #define DEFAULT_MSG_FONTNAME		_T("Arial")					// Default font name: Arial
 #define DEFAULT_MSG_FONTSIZE		20							// Default font size: 20pt
 #define DEFAULT_MSG_TIMEOUT			0							// Default time-out: None
@@ -221,24 +216,24 @@ namespace Global {
 };
 
 // Background color
-static inline const COLORREF GetReminderMsgBkgrdColor(void) { return Global::g_colorMsgBkgrd; }
-static inline void SetReminderMsgBkgrdColor(COLORREF colorValue) { Global::g_colorMsgBkgrd = colorValue; }
+static inline const COLORREF GetReminderMsgBkgrdColor(void);
+static inline void SetReminderMsgBkgrdColor(COLORREF colorValue);
 
 // Text color
-static inline const COLORREF GetReminderMsgTextColor(void) { return Global::g_colorMsgText; }
-static inline void SetReminderMsgTextColor(COLORREF colorValue) { Global::g_colorMsgText = colorValue; }
+static inline const COLORREF GetReminderMsgTextColor(void);
+static inline void SetReminderMsgTextColor(COLORREF colorValue);
 
 // Font name
-static inline BOOL GetReminderMsgFontName(CString& strFontName) { strFontName = Global::g_strMsgFontName; return (!strFontName.IsEmpty()); }
-static inline void SetReminderMsgFontName(LPCTSTR lpszValue) { if (_tcscmp(lpszValue, _T(""))) Global::g_strMsgFontName = lpszValue; }
+static inline BOOL GetReminderMsgFontName(CString& strFontName);
+static inline void SetReminderMsgFontName(LPCTSTR lpszValue);
 
 // Font size
-static inline const UINT GetReminderMsgFontSize(void) { return Global::g_uiMsgFontSize; }
-static inline void SetReminderMsgFontSize(UINT uiValue) { Global::g_uiMsgFontSize = uiValue; }
+static inline const UINT GetReminderMsgFontSize(void);
+static inline void SetReminderMsgFontSize(UINT uiValue);
 
 // Timeout (auto-close) interval
-static inline const UINT GetReminderMsgTimeout(void) { return Global::g_uiRmdMsgTimeout; }
-static inline void SetReminderMsgTimeout(UINT uiValue) { Global::g_uiRmdMsgTimeout = uiValue; }
+static inline const UINT GetReminderMsgTimeout(void);
+static inline void SetReminderMsgTimeout(UINT uiValue);
 
 // Define Message icon IDs
 #define IDI_MSGICON_NOICON				0
@@ -260,20 +255,20 @@ static inline void SetReminderMsgTimeout(UINT uiValue) { Global::g_uiRmdMsgTimeo
 #endif /* WINVER >= 0x0400 */
 
 // Message icon ID
-static inline const UINT GetReminderMsgIconID(void) { return Global::g_uiRmdMsgIconID; }
-static inline void SetReminderMsgIconID(UINT uiValue) { Global::g_uiRmdMsgIconID = uiValue; };
+static inline const UINT GetReminderMsgIconID(void);
+static inline void SetReminderMsgIconID(UINT uiValue);
 
 // Message icon size
-static inline const INT GetReminderMsgIconSize(void) { return Global::g_nRmdMsgIconSize; }
-static inline void SetReminderMsgIconSize(int nValue) { Global::g_nRmdMsgIconSize = nValue; };
+static inline const INT GetReminderMsgIconSize(void);
+static inline void SetReminderMsgIconSize(int nValue);
 
 // Message icon placement
 enum MsgIconPlacement {
 	IconOnTheTop = 0,
 	IconOnTheLeft,
 };
-static inline const BYTE GetReminderMsgIconPlacement(void) { return Global::g_byRmdMsgIconPlacement; }
-static inline void SetReminderMsgIconPlacement(BYTE byValue) { Global::g_byRmdMsgIconPlacement = byValue; };
+static inline const BYTE GetReminderMsgIconPlacement(void);
+static inline void SetReminderMsgIconPlacement(BYTE byValue);
 
 // Message display position
 enum MsgDisplayPosition {
@@ -283,22 +278,41 @@ enum MsgDisplayPosition {
 	OnBottomLeft,
 	OnBottomRight,
 };
-static inline const BYTE GetReminderMsgDispPosition(void) { return Global::g_byRmdMsgDispPos; }
-static inline void SetReminderMsgDispPosition(BYTE byValue) { Global::g_byRmdMsgDispPos = byValue; };
+static inline const BYTE GetReminderMsgDispPosition(void);
+static inline void SetReminderMsgDispPosition(BYTE byValue);
 
 // Display area horizontal margin
-static inline const UINT GetReminderMsgHMargin(void) { return Global::g_uiRmdMsgHMargin; }
-static inline void SetReminderMsgHMargin(UINT uiValue) { Global::g_uiRmdMsgHMargin = uiValue; }
+static inline const UINT GetReminderMsgHMargin(void);
+static inline void SetReminderMsgHMargin(UINT uiValue);
 
 // Display area vertical margin
-static inline const UINT GetReminderMsgVMargin(void) { return Global::g_uiRmdMsgVMargin; }
-static inline void SetReminderMsgVMargin(UINT uiValue) { Global::g_uiRmdMsgVMargin = uiValue; }
+static inline const UINT GetReminderMsgVMargin(void);
+static inline void SetReminderMsgVMargin(UINT uiValue);
 
 // Message snooze interval
-static inline const UINT GetReminderMsgSnoozeInterval(void) { return Global::g_uiRmdMsgSnoozeInterval; }
-static inline void SetReminderMsgSnoozeInterval(UINT uiValue) { Global::g_uiRmdMsgSnoozeInterval = uiValue; }
+static inline const UINT GetReminderMsgSnoozeInterval(void);
+static inline void SetReminderMsgSnoozeInterval(UINT uiValue);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//	Include inline file for global inline functions
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef _AFX_ENABLE_INLINES
+	#define _GLOBAL_ENABLE_INLINES
+	#include "Global.inl"
+	#ifdef _GLOBAL_INL_INCLUDED
+		#pragma message("-- Global inline library included")
+	#else
+		#pragma error("-- Linking error in Global.h: Unable to link to inline header!")
+	#endif
+	#undef _GLOBAL_ENABLE_INLINES
+#else
+	#pragma	error("-- Fatal error in Global.h: Inline is not enabled!")
+#endif
 
 #endif	// ifndef _GLOBAL_H_INCLUDED

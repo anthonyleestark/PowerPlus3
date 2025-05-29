@@ -267,6 +267,16 @@ inline SLogging* SWinApp::GetAppEventLog(void)
 	return m_pAppEventLog;
 }
 
+// Get application flag manager (for writing)
+inline FlagManager& SWinApp::GetAppFlagManager(void) {
+	return m_flagManager;
+}
+
+// Get application flag manager (for read-only)
+inline const FlagManager& SWinApp::GetAppFlagManager(void) const {
+	return m_flagManager;
+}
+
 // Get change flag value
 inline BOOL SWinApp::GetChangeFlagValue(void) const {
 	return m_bChangeFlag;
@@ -374,30 +384,30 @@ inline UINT SDialog::GetDialogID(void) const {
 
 // Get/set read-only mode
 inline BOOL SDialog::GetReadOnlyMode(void) const {
-	return m_bReadOnlyMode;
+	return m_flagManager.GetFlagValue(AppFlagID::dialogReadOnlyMode);
 }
 
 inline void SDialog::SetReadOnlyMode(BOOL bReadOnly) {
-	m_bReadOnlyMode = bReadOnly;
+	m_flagManager.SetFlagValue(AppFlagID::dialogReadOnlyMode, bReadOnly);
 }
 
 // Get/set current item lock state
 inline BOOL SDialog::GetLockState(void) const {
-	return m_bLockState;
+	return m_flagManager.GetFlagValue(AppFlagID::dialogLockState);
 }
 
-inline void SDialog::SetLockState(BOOL bIsLock) {
-	m_bLockState = bIsLock;
+inline void SDialog::SetLockState(BOOL bIsLocked) {
+	m_flagManager.SetFlagValue(AppFlagID::dialogLockState, bIsLocked);
 }
 
 // Set use Enter button flag
 inline void SDialog::SetUseEnter(BOOL bUseEnter) {
-	m_bUseEnter = bUseEnter;
+	m_flagManager.SetFlagValue(AppFlagID::dialogUseEnterKey, bUseEnter);
 }
 
 // Set use Escape button flag
 inline void SDialog::SetUseEscape(BOOL bUseEscape) {
-	m_bUseEscape = bUseEscape;
+	m_flagManager.SetFlagValue(AppFlagID::dialogUseEscapeKey, bUseEscape);
 }
 
 // Get dialog alignment flags
@@ -648,14 +658,34 @@ inline void SDialog::LoadLayoutInfo(void) {}
 // TODO: Override this function for custom actions
 inline void SDialog::SaveLayoutInfo(void) {}
 
+// Get application flag manager (for writing)
+inline FlagManager& SDialog::GetAppFlagManager(void) {
+	return ((SWinApp*)AfxGetApp())->GetAppFlagManager();
+}
+
+// Get application flag manager (for read-only)
+inline const FlagManager& SDialog::GetAppFlagManager(void) const {
+	return ((SWinApp*)AfxGetApp())->GetAppFlagManager();
+}
+
+// Get dialog-owned flag manager (for writing)
+inline FlagManager& SDialog::GetDialogFlagManager(void) {
+	return m_flagManager;
+}
+
+// Get dialog-owned flag manager (for read-only)
+inline const FlagManager& SDialog::GetDialogFlagManager(void) const {
+	return m_flagManager;
+}
+
 // Get change flag value
 inline BOOL SDialog::GetChangeFlagValue(void) const {
-	return m_bChangeFlag;
+	return m_flagManager.GetFlagValue(AppFlagID::dialogDataChanged);
 }
 
 // Set change flag value
-inline void SDialog::SetChangeFlagValue(BOOL bChangeFlag) {
-	m_bChangeFlag = bChangeFlag;
+inline void SDialog::SetChangeFlagValue(BOOL bValue) {
+	m_flagManager.SetFlagValue(AppFlagID::dialogDataChanged, bValue);
 }
 
 // Check if data changed
@@ -670,7 +700,7 @@ inline BOOL SDialog::CheckSettingChangeState(void) {
 
 // Check dialog force closing flag
 inline BOOL SDialog::IsForceClosingByRequest(void) const {
-	return m_bForceClose;
+	return m_flagManager.GetFlagValue(AppFlagID::dialogForceClosing);
 }
 
 // Open a child dialog with corresponding ID

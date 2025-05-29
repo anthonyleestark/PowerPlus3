@@ -275,7 +275,7 @@ void CEditScheduleDlg::OnClose()
 	if (!IsForceClosingByRequest()) {
 
 		// If data changed, ask for saving before closing dialog
-		if (GetFlagValue(FLAGID_CHANGE_FLAG) == TRUE) {
+		if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -336,7 +336,7 @@ void CEditScheduleDlg::OnDestroy()
 LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 {
 	// If data changed, ask for saving before closing dialog
-	if (GetFlagValue(FLAGID_CHANGE_FLAG) == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -1066,7 +1066,7 @@ void CEditScheduleDlg::OnApply()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_APPLY_BTN);
 
 	// Save data if changed
-	if (GetFlagValue(FLAGID_CHANGE_FLAG) == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 
 		// Update data
 		SaveScheduleItem();
@@ -1101,7 +1101,7 @@ void CEditScheduleDlg::OnExit()
 		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_CANCEL_BTN);
 
 		// If data changed, ask for saving before closing dialog
-		if (GetFlagValue(FLAGID_CHANGE_FLAG) == TRUE) {
+		if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -1148,13 +1148,13 @@ void CEditScheduleDlg::OnEnableSchedule()
 	EnableSubItems(m_bEnabled);
 
 	// Check for data change
-	m_bChangeFlag = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable active day table
 	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() & m_schScheduleItemTemp.IsRepeatEnabled()));
 
 	// Enable/disable save button
-	EnableSaveButton(m_bChangeFlag);
+	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1173,8 +1173,8 @@ void CEditScheduleDlg::OnChangeAction()
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_EDITSCHEDULE_ACTION_LIST);
 
 	// Check for value change and enable/disable save button
-	m_bChangeFlag = CheckDataChangeState();
-	EnableSaveButton(m_bChangeFlag);
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1189,13 +1189,13 @@ void CEditScheduleDlg::OnChangeAction()
 void CEditScheduleDlg::OnChangeRepeatDaily()
 {
 	// Check for data change
-	m_bChangeFlag = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable active day table
 	DisableActiveDayTable(!m_schScheduleItemTemp.IsRepeatEnabled());
 
 	// Enable/disable save button
-	EnableSaveButton(m_bChangeFlag);
+	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1280,8 +1280,8 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	}
 
 	// Check for value change and enable/disable save button
-	m_bChangeFlag = CheckDataChangeState();
-	EnableSaveButton(m_bChangeFlag);
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1307,8 +1307,8 @@ void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Check for value change and enable/disable save button
-	m_bChangeFlag = CheckDataChangeState();
-	EnableSaveButton(m_bChangeFlag);
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1327,10 +1327,10 @@ void CEditScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Update data (also check change state)
-	m_bChangeFlag = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable save button
-	EnableSaveButton(m_bChangeFlag);
+	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1349,10 +1349,10 @@ void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult
 	*pResult = NULL;
 
 	// Update data (also check change state)
-	m_bChangeFlag = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable save button
-	EnableSaveButton(m_bChangeFlag);
+	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
 //////////////////////////////////////////////////////////////////////////

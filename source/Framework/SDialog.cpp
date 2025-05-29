@@ -14,6 +14,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+
+#include "Framework\SElements.h"
 #include "Framework\SWinApp.h"
 #include "Framework\SDialog.h"
 
@@ -52,13 +54,9 @@ SDialog::SDialog() : CDialogEx()
 	m_pCtrlManager = NULL;
 
 	// Dialog special flags
-	m_bReadOnlyMode = FALSE;
-	m_bChangeFlag = FALSE;
-	m_bLockState = FALSE;
-	m_bForceClose = FALSE;
-	m_bUseEnter = TRUE;
-	m_bUseEscape = TRUE;
 	m_nDescendantCount = INT_NULL;
+	SetFlagValue(AppFlagID::dialogUseEnterKey, TRUE);
+	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -108,13 +106,9 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogEx(nI
 	m_pCtrlManager = NULL;
 
 	// Dialog special flags
-	m_bReadOnlyMode = FALSE;
-	m_bChangeFlag = FALSE;
-	m_bLockState = FALSE;
-	m_bForceClose = FALSE;
-	m_bUseEnter = TRUE;
-	m_bUseEscape = TRUE;
 	m_nDescendantCount = INT_NULL;
+	SetFlagValue(AppFlagID::dialogUseEnterKey, TRUE);
+	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -164,13 +158,9 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd /* = NULL */) : CDia
 	m_pCtrlManager = NULL;
 
 	// Dialog special flags
-	m_bReadOnlyMode = FALSE;
-	m_bChangeFlag = FALSE;
-	m_bLockState = FALSE;
-	m_bForceClose = FALSE;
-	m_bUseEnter = TRUE;
-	m_bUseEscape = TRUE;
 	m_nDescendantCount = INT_NULL;
+	SetFlagValue(AppFlagID::dialogUseEnterKey, TRUE);
+	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -562,11 +552,11 @@ LRESULT SDialog::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
-	if (GetFlagValue(FLAGID_MIN_SIZE_SET) == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogSetMinSize) == TRUE) {
 		pMinMaxInfo->ptMinTrackSize.x = m_szMinSize.cx;
 		pMinMaxInfo->ptMinTrackSize.y = m_szMinSize.cy;
 	}
-	if (GetFlagValue(FLAGID_MAX_SIZE_SET) == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogSetMaxSize) == TRUE) {
 		pMinMaxInfo->ptMaxTrackSize.x = m_szMaxSize.cx;
 		pMinMaxInfo->ptMaxTrackSize.y = m_szMaxSize.cy;
 	}
@@ -591,13 +581,13 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 		switch (pMsg->wParam) 
 		{
 		case VK_ESCAPE:
-			if (m_bUseEscape != TRUE) {
+			if (GetFlagValue(AppFlagID::dialogUseEscapeKey) != TRUE) {
 				// Do not use Escape button
 				return TRUE;
 			}
 			break;
 		case VK_RETURN:
-			if (m_bUseEnter != TRUE) {
+			if (GetFlagValue(AppFlagID::dialogUseEnterKey) != TRUE) {
 				// Do not use Enter button
 				return TRUE;
 			}
@@ -2129,54 +2119,39 @@ int SDialog::GetAppOption(AppOptionID eAppOptionID, BOOL bTemp /* = FALSE */) co
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SDialog::GetFlagValue(APPFLAGID eFlagID) const
+int SDialog::GetFlagValue(AppFlagID eFlagID) const
 {
-	int nValue = INT_INVALID;
+	int nValue = FLAG_OFF;
 
 	switch (eFlagID)
 	{
-	case FLAGID_INVALID:					// *** Invalid flag ID ***
-		break;
-	case FLAGID_CHANGE_FLAG:				// Data/setting change flag
-		nValue = m_bChangeFlag;
-		break;
-	case FLAGID_READ_ONLY_MODE:				// Read-only mode
-		nValue = m_bReadOnlyMode;
-		break;
-	case FLAGID_LOCK_STATE:					// Lock state
-		nValue = m_bLockState;
-		break;
-	case FLAGID_FORCE_CLOSING:				// Force closing by request
-		nValue = m_bForceClose;
-		break;
-	case FLAGID_USE_ESCAPE:					// Use Escape key
-		nValue = m_bUseEscape;
-		break;
-	case FLAGID_USE_ENTER:					// Use Enter key
-		nValue = m_bUseEnter;
-		break;
-	case FLAGID_BKGRDCLR_SET:				// Dialog background color is set
-		nValue = m_bBkgrdColorSet;
-		break;
-	case FLAGID_TEXTCLR_SET:				// Dialog text color is set
-		nValue = m_bTextColorSet;
-		break;
-	case FLAGID_MIN_SIZE_SET:				// Dialog minimum size is set
+	// Special dialog-base flags (not managed by FlagManager)
+	case AppFlagID::dialogSetMinSize:
 		nValue = ((m_szMinSize.cx >= 0) &&
-				  (m_szMinSize.cy >= 0));
+			(m_szMinSize.cy >= 0));
 		break;
-	case FLAGID_MAX_SIZE_SET:				// Dialog maximum size is set
+	case AppFlagID::dialogSetMaxSize:
 		nValue = ((m_szMaxSize.cx > m_szMinSize.cx) &&
-				  (m_szMaxSize.cy > m_szMinSize.cy));
+			(m_szMaxSize.cy > m_szMinSize.cy));
 		break;
-	case FLAGID_TOPMOST_SET:				// Dialog top-most position is set
-		nValue = m_bTopMostSet;
+
+	// Dialog-base properties/flags
+	case AppFlagID::dialogDataChanged:
+	case AppFlagID::dialogReadOnlyMode:
+	case AppFlagID::dialogExpanded:
+	case AppFlagID::dialogLockState:
+	case AppFlagID::dialogForceClosing:
+	case AppFlagID::dialogUseEscapeKey:
+	case AppFlagID::dialogUseEnterKey:
+	case AppFlagID::dialogSetBackgroundColor:
+	case AppFlagID::dialogSetTextColor:
+	case AppFlagID::dialogSetTopMost:
+	case AppFlagID::dialogSetInitSound:
+		nValue = m_flagManager.GetFlagValue(eFlagID);
 		break;
-	case FLAGID_INIT_SOUND_SET:				// Dialog initialize sound is set
-		nValue = m_bInitSoundSet;
-		break;
+
 	default:
-		// Get application-base-class flag value
+		// Request the flag value from application
 		nValue = ((SWinApp*)AfxGetApp())->GetFlagValue(eFlagID);
 		break;
 	}
@@ -2194,7 +2169,7 @@ int SDialog::GetFlagValue(APPFLAGID eFlagID) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::SetFlagValue(APPFLAGID eFlagID, int nValue)
+void SDialog::SetFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
 	if (nValue == INT_INVALID)
@@ -2202,40 +2177,28 @@ void SDialog::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 	switch (eFlagID)
 	{
-	case FLAGID_INVALID:				// *** Invalid flag ID ***
+	// Special flags (not managed by FlagManager)
+	case AppFlagID::dialogSetMinSize:
+	case AppFlagID::dialogSetMaxSize:
 		break;
-	case FLAGID_CHANGE_FLAG:			// Data/setting change flag
-		m_bChangeFlag = nValue;
+
+	// Dialog-base properties/flags
+	case AppFlagID::dialogDataChanged:
+	case AppFlagID::dialogReadOnlyMode:
+	case AppFlagID::dialogExpanded:
+	case AppFlagID::dialogLockState:
+	case AppFlagID::dialogForceClosing:
+	case AppFlagID::dialogUseEscapeKey:
+	case AppFlagID::dialogUseEnterKey:
+	case AppFlagID::dialogSetBackgroundColor:
+	case AppFlagID::dialogSetTextColor:
+	case AppFlagID::dialogSetTopMost:
+	case AppFlagID::dialogSetInitSound:
+		m_flagManager.SetFlagValue(eFlagID, nValue);
 		break;
-	case FLAGID_READ_ONLY_MODE:			// Read-only mode
-		m_bReadOnlyMode = nValue;
-		break;
-	case FLAGID_LOCK_STATE:				// Lock state
-		m_bLockState = nValue;
-		break;
-	case FLAGID_FORCE_CLOSING:			// Force closing by request
-		m_bForceClose = nValue;
-		break;
-	case FLAGID_USE_ESCAPE:				// Use Escape key
-		m_bUseEscape = nValue;
-		break;
-	case FLAGID_USE_ENTER:				// Use Enter key
-		m_bUseEnter = nValue;
-		break;
-	case FLAGID_BKGRDCLR_SET:			// Dialog background color is set
-		m_bBkgrdColorSet = nValue;
-		break;
-	case FLAGID_TEXTCLR_SET:			// Dialog text color is set
-		m_bTextColorSet = nValue;
-		break;
-	case FLAGID_TOPMOST_SET:			// Dialog top-most position is set
-		m_bTopMostSet = nValue;
-		break;
-	case FLAGID_INIT_SOUND_SET:			// Dialog initialize sound is set
-		m_bInitSoundSet = nValue;
-		break;
+
 	default:
-		// Set application-base-class flag value
+		// Let the application manage the flags
 		((SWinApp*)AfxGetApp())->SetFlagValue(eFlagID, nValue);
 		break;
 	}
@@ -2253,7 +2216,7 @@ void SDialog::SetFlagValue(APPFLAGID eFlagID, int nValue)
 LRESULT SDialog::RequestCloseDialog(void)
 {
 	// Set force closing flag
-	m_bForceClose = TRUE;
+	SetFlagValue(AppFlagID::dialogForceClosing, TRUE);
 
 	// Default: Close the dialog
 	this->PostMessage(WM_CLOSE);

@@ -310,7 +310,7 @@ void CMultiScheduleDlg::OnClose()
 	if (!IsForceClosingByRequest()) {
 
 		// If data changed, ask for saving before closing dialog
-		if (GetFlagValue(FLAGID_CHANGE_FLAG) == TRUE) {
+		if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			CString strMessage = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
@@ -371,7 +371,7 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 	}
 
 	// If data changed, ask for saving before closing dialog
-	if (GetFlagValue(FLAGID_CHANGE_FLAG) == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		CString strMessage = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
@@ -979,12 +979,13 @@ void CMultiScheduleDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	}
 
 	// Check if data is changed or not
-	m_bChangeFlag = CheckDataChangeState();
+	BOOL bIsChanged = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 
 	// Enable [Apply] button if data is changed
 	pBtn = GetDlgItem(IDC_MULTISCHEDULE_APPLY_BTN);
 	if (pBtn != NULL) {
-		pBtn->EnableWindow(m_bChangeFlag);
+		pBtn->EnableWindow(bIsChanged);
 	}
 
 	// Update [Check/Uncheck All] button state
@@ -1088,7 +1089,7 @@ BOOL CMultiScheduleDlg::LoadScheduleSettings()
 	m_schScheduleTemp.Copy(m_schSchedule);
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
+	SetFlagValue(AppFlagID::dialogDataChanged, FALSE);
 
 	return TRUE;
 }
@@ -1121,7 +1122,7 @@ BOOL CMultiScheduleDlg::SaveScheduleSettings()
 	pMainDlg->PostMessage(SM_APP_UPDATE_SCHEDULEDATA, NULL, NULL);
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
+	SetFlagValue(AppFlagID::dialogDataChanged, FALSE);
 
 	return TRUE;
 }
@@ -1456,8 +1457,9 @@ void CMultiScheduleDlg::OnApply()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_MULTISCHEDULE_APPLY_BTN);
 
 	// Save data if changed
-	m_bChangeFlag = CheckDataChangeState();
-	if (m_bChangeFlag == TRUE) {
+	BOOL bIsChanged = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	if (bIsChanged == TRUE) {
 		SaveScheduleSettings();
 	}
 
@@ -1483,8 +1485,9 @@ void CMultiScheduleDlg::OnExit()
 		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_MULTISCHEDULE_CANCEL_BTN);
 
 		// If data changed, ask for saving before closing dialog
-		m_bChangeFlag = CheckDataChangeState();
-		if (m_bChangeFlag == TRUE) {
+		BOOL bIsChanged = CheckDataChangeState();
+		SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+		if (bIsChanged == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			CString strMessage = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);

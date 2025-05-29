@@ -20,7 +20,6 @@
 
 #include "stdafx.h"
 
-#include "Global.h"
 #include "Language.h"
 
 #include "Components\GridCtrl.h"
@@ -785,35 +784,6 @@ typedef enum eSYSTEMEVENTID {
 
 //////////////////// ********************
 // 
-// App flag IDs - use to get/set application flag values
-//
-//////////////////// ********************
-
-typedef enum eAPPFLAGID {
-	FLAGID_INVALID = -1,				// *** Invalid flag ID ***
-	FLAGID_CHANGE_FLAG = 0,				// Data/setting change flag
-	FLAGID_READ_ONLY_MODE,				// Read-only mode
-	FLAGID_LOCK_STATE,					// Lock state
-	FLAGID_FORCE_CLOSING,				// Force closing by request
-	FLAGID_USE_ESCAPE,					// Use Escape key
-	FLAGID_USE_ENTER,					// Use Enter key
-	FLAGID_BKGRDCLR_SET,				// Dialog background color is set
-	FLAGID_TEXTCLR_SET,					// Dialog text color is set
-	FLAGID_MIN_SIZE_SET,				// Dialog minimum size is set
-	FLAGID_MAX_SIZE_SET,				// Dialog maximum size is set
-	FLAGID_TOPMOST_SET,					// Dialog top-most position is set
-	FLAGID_INIT_SOUND_SET,				// Dialog initialize sound is set
-	FLAGID_DLG_EXPANDED,				// Dialog expanded/collapsed
-	FLAGID_NOTIFY_ICON_SHOWED,			// Notify icon showing flag
-	FLAGID_HOTKEY_REGISTERED,			// Hotkey registered
-	FLAGID_RESTART_AS_ADMIN,			// Restart as admin flag
-	FLAGID_PWRBROADCAST_SKIP_COUNT,		// Power Broadcase event skip counter
-	FLAGID_WTSSESSIONNOTIFY_REG,		// WTS Session Change State Notification registered
-} APPFLAGID;
-
-
-//////////////////// ********************
-// 
 // List view column size units
 //
 //////////////////// ********************
@@ -852,21 +822,6 @@ typedef enum eREGPATHTYPE {
 	REGPATH_SECTIONNAME,				// Including section name
 	REGPATH_KEYNAME,					// Including key name
 } REGPATHTYPE;
-
-
-//////////////////// ********************
-// 
-// Registry value type
-//
-//////////////////// ********************
-
-typedef enum eREGVALUETYPE {
-	REGTYPE_NONE = 0,					// Undefined type
-	REGTYPE_STRING,						// String value
-	REGTYPE_DWORD32,					// DWORD (32-bit) value
-	REGTYPE_QWORD64,					// QWORD (64-bit) value
-	REGTYPE_MULTISTRING,				// Multi-string value
-} REGVALUETYPE;
 
 
 //////////////////// ********************
@@ -989,6 +944,101 @@ public:
 
 // Define new global typenames for the enum attributes of Application config data
 using AppOptionID = typename ConfigData::AppOptionID;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Class name:		FlagManager
+//  Description:	Class for application flag data management
+//
+//////////////////////////////////////////////////////////////////////////
+
+class FlagManager final
+{
+public:
+	enum AppFlagID {
+	// Application-wide tracing flags: Globally managed
+		pwrActionFlag,												// Power action trace flag
+		systemSuspendFlag,											// System suspended trace flag
+		sessionEndFlag,												// Session ended trace flag
+		safeTerminationFlag,										// Previously safe termination trace flag
+		sessionLockFlag,											// Session lock trace flag
+
+	// Application DebugTest flags: Globally managed
+		dummyTestMode,												// Dummy test mode enabled flag
+		debugMode,													// Debug mode enabled flag
+		debugOutputTarget,											// Debug log output target flag
+		testFeatureEnabled,											// Test feature enable flag
+
+	// Application-base flags: Application managed
+		appDataChanged,												// Application data/setting change flag
+		appReadOnlyMode,											// Application read-only mode
+		appForceClosing,											// Force closing application by request
+
+	// Dialog-base properties/flags: Dialog managed
+		dialogDataChanged,											// Dialog data/setting change flag
+		dialogExpanded,												// Dialog expanded/collapsed
+		dialogReadOnlyMode,											// Dialog read-only mode
+		dialogLockState,											// Dialog item lock state
+		dialogForceClosing,											// Force closing dialog by request
+		dialogUseEscapeKey,											// Use Escape key
+		dialogUseEnterKey,											// Use Enter key
+		dialogSetBackgroundColor,									// Dialog background color is set
+		dialogSetTextColor,											// Dialog text color is set
+		dialogSetMinSize,											// Dialog minimum size is set
+		dialogSetMaxSize,											// Dialog maximum size is set
+		dialogSetTopMost,											// Dialog top-most position is set
+		dialogSetInitSound,											// Dialog initialize sound is set
+
+	// Application main window runtime flags: Application managed
+		notifyIconShowed,											// Notify icon showing flag
+		hotkeyRegistered,											// Hotkey registered
+		restartAsAdmin,												// Restart as admin flag
+		pwrBroadcastSkipCount,										// Power Broadcase event skip counter
+		wtsSessionNotifyRegistered,									// WTS Session Change State Notification registered
+	};
+	enum ManagerID {
+		dialogFlagManager,											// Dialog-owned flag manager
+		applicationFlagManager,										// Application flag manager
+		globalFlagManager,											// Global/shared flag manager
+	};
+	enum ManagementMethod {
+		dialogSelfManaged,											// For flags managed directly by the dialog itself
+		applicationManaged,											// For flags managed by the broader application logic
+		globallyManaged,											// For flags managed centrally by a global/shared manager
+	};
+
+private:
+	// Define private typenames/aliases
+	using UniqueFlagMap = typename std::unordered_map<AppFlagID, INT>;
+
+private:
+	// Attributes
+	UniqueFlagMap m_mapUniqueFlags;
+
+public:
+	// Constructor
+	FlagManager(void) = default;									// Default constructor
+
+private:
+	// No copyable
+	FlagManager(const FlagManager&) = delete;
+	FlagManager& operator=(const FlagManager&) = delete;
+
+	// No movable
+	FlagManager(const FlagManager&&) = delete;
+	FlagManager& operator=(const FlagManager&&) = delete;
+
+public:
+	// Member functions
+	BOOL IsFlagPresent(AppFlagID) const;							// Check if a flag value exists
+	int  GetFlagValue(AppFlagID) const;								// Get flag value by ID
+	void SetFlagValue(AppFlagID, int);								// Set flag value by ID
+};
+
+// Define new global typenames for the enum attributes of Application flag data
+using AppFlagID = typename FlagManager::AppFlagID;
+using FlagManagerID = typename FlagManager::ManagerID;
+using FlagManagementMethod = typename FlagManager::ManagementMethod;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1646,6 +1696,15 @@ typedef struct tagUSERMENU
 
 class RegistryValue
 {
+public:
+	enum Type {
+		None = 0,											// Undefined/invalid type/no data
+		String,												// String value
+		DWORD_32,											// DWORD (32-bit) value
+		QWORD_64,											// QWORD (64-bit) value
+		Multi_String,										// Multi-string value
+	};
+
 private:
 	// Data values
 	CString*		m_pstrValue;							// String value
@@ -1688,6 +1747,9 @@ public:
 // Define new typenames for Registry value data
 using REGISTRYVALUE = typename RegistryValue;
 using PREGISTRYVALUE = typename RegistryValue*;
+
+// Define new global typenames for the enum attributes of RegistryValue
+using RegValueType = typename RegistryValue::Type;
 
 //////////////////////////////////////////////////////////////////////////
 //

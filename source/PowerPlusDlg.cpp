@@ -85,24 +85,16 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	// Initialize notify icon variables
 	m_hNotifyIcon = NULL;
 	m_pNotifyIconData = NULL;
-	m_bNotifyIconShowed = FALSE;
 	m_pNotifyMenu = NULL;
 
 	// Init member variables for resizing dialog
-	m_bDlgExpanded = TRUE;
 	m_pDialogSize = NULL;
 
 	// Init hotkey register data
-	m_bHotkeyRegistered = FALSE;
 	m_arrCurRegHKeyList.RemoveAll();
 
 	// Init Power++ runtime queue data
 	m_arrRuntimeQueue.RemoveAll();
-
-	// Init other flags
-	m_bRestartAsAdminFlag = FALSE;
-	m_nPwrBroadcastSkipCount = 0;
-	m_bWTSSessionNotifyRegistered = FALSE;
 
 	// Init child dialogs
 	m_pAboutDlg = NULL;
@@ -580,6 +572,7 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	UpdateDialogManagement();
 
 	// Initialize dialog state as collapsed
+	SetFlagValue(AppFlagID::dialogExpanded, TRUE);
 	ExpandDialog(FALSE);
 
 	// Initialize Power++ runtime queue
@@ -837,8 +830,9 @@ void CPowerPlusDlg::OnReload()
 	UINT nCaptionID = MSGBOX_CONFIG_RELOAD_CAPTION;
 
 	// Check for setting changed
-	m_bChangeFlag = CheckSettingChangeState();
-	if (m_bChangeFlag == TRUE) {
+	BOOL bIsChanged = CheckSettingChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	if (bIsChanged == TRUE) {
 		int nRet = DisplayMessageBox(MSGBOX_CONFIG_CHANGED_CONTENT, nCaptionID, MB_YESNO | MB_ICONINFORMATION);
 		if (nRet == IDYES) {
 			// Reload all settings
@@ -881,8 +875,9 @@ void CPowerPlusDlg::OnExit()
 void CPowerPlusDlg::OnClose()
 {
 	// Check for setting changed
-	m_bChangeFlag = CheckSettingChangeState();
-	if (m_bChangeFlag == TRUE) {
+	BOOL bIsChanged = CheckSettingChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	if (bIsChanged == TRUE) {
 		// Apply settings and hide dialog
 		ApplySettings(TRUE);
 	}
@@ -907,7 +902,7 @@ void CPowerPlusDlg::OnExpand()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EXPAND_BTN);
 
 	// Expand/collapse dialog
-	BOOL bCurState = GetFlagValue(FLAGID_DLG_EXPANDED);
+	BOOL bCurState = GetFlagValue(AppFlagID::dialogExpanded);
 	ExpandDialog(!bCurState);
 	UpdateDialogData(FALSE);
 }
@@ -982,7 +977,7 @@ void CPowerPlusDlg::OnChangeLMBAction()
 	int nCurSel = m_cmbLMBAction.GetCurSel();
 
 	// Check for settings change
-	m_bChangeFlag = CheckSettingChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Save app event log if enabled
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_LMBACTION_LIST);
@@ -1004,7 +999,7 @@ void CPowerPlusDlg::OnChangeMMBAction()
 	int nCurSel = m_cmbMMBAction.GetCurSel();
 
 	// Check for settings change
-	m_bChangeFlag = CheckSettingChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Save app event log if enabled
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_MMBACTION_LIST);
@@ -1026,7 +1021,7 @@ void CPowerPlusDlg::OnChangeRMBAction()
 	int nCurSel = m_cmbRMBAction.GetCurSel();
 
 	// Check for settings change
-	m_bChangeFlag = CheckSettingChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Save app event log if enabled
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_RMBACTION_LIST);
@@ -1059,7 +1054,7 @@ void CPowerPlusDlg::OnChangeLanguage()
 	((CPowerPlusApp*)AfxGetApp())->ReloadAppLanguage(nCurLanguage);
 
 	// Check for settings change
-	m_bChangeFlag = CheckSettingChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Refresh dialog display
 	SetupLanguage();
@@ -1101,7 +1096,7 @@ void CPowerPlusDlg::OnCheckboxClicked(UINT nChkBoxID)
 	int nState = pChkCtrl->GetCheck();
 
 	// Update setting change flag
-	m_bChangeFlag = CheckSettingChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Save app event log if enabled
 	OutputCheckBoxLog(LOG_EVENT_CHK_CLICKED, nChkBoxID);
@@ -1295,10 +1290,10 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 	// Timer ID: Event skip counter
 	else if (nIDEvent == TIMERID_STD_EVENTSKIPCOUNTER) {
 		// Process Power Broadcast event skip counter
-		int nCounter = GetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT);
+		int nCounter = GetFlagValue(AppFlagID::pwrBroadcastSkipCount);
 		if (nCounter > 0) {
 			// Count down (decrease value by 1)
-			SetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT, --nCounter);
+			SetFlagValue(AppFlagID::pwrBroadcastSkipCount, --nCounter);
 		}
 	}
 
@@ -1583,7 +1578,7 @@ LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
 {
 	// Check if event skip counter is triggered
-	if (GetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT) > 0) {
+	if (GetFlagValue(AppFlagID::pwrBroadcastSkipCount) > 0) {
 		TRACE("Power Broadcast Event will be skipped!!!");
 		return LRESULT(RESULT_FAILED);
 	}
@@ -1602,7 +1597,7 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
 
 		// Trigger skip event counter
 		// Temporarily skip processing PowerBroadcastEvent in 3 seconds
-		SetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT, 3);
+		SetFlagValue(AppFlagID::pwrBroadcastSkipCount, 3);
 
 		// If Power action flag is triggered, 
 		// handle it like a wakeup event after power action
@@ -1923,7 +1918,7 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 {
 	// If new state is the same as current state, do nothing
-	BOOL bCurState = GetFlagValue(FLAGID_DLG_EXPANDED);
+	BOOL bCurState = GetFlagValue(AppFlagID::dialogExpanded);
 	if (bExpand == bCurState) {
 		TRACE("State doesn't change, do not process!!!");
 		return;
@@ -2004,15 +1999,17 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
+	// Initialize dialog size pointer
+	if (m_pDialogSize == NULL)
+		m_pDialogSize = new CSize;
+
+	// Expand/collapse dialog
 	if (!bExpand) {
 
 		// Calculate dialog size
 		GetWindowRect(&rcWnd);
-		if (m_pDialogSize == NULL) {
-			m_pDialogSize = new CSize;
-			m_pDialogSize->cx = rcWnd.right - rcWnd.left;
-			m_pDialogSize->cy = rcWnd.bottom - rcWnd.top;
-		}
+		m_pDialogSize->cx = rcWnd.right - rcWnd.left;
+		m_pDialogSize->cy = rcWnd.bottom - rcWnd.top;
 
 		// Resize dialog
 		SetWindowPos(NULL, 0, 0, rcWnd.right - rcWnd.left, rcFrameWnd.bottom - rcWnd.top, SWP_NOMOVE | SWP_NOZORDER);
@@ -2037,7 +2034,7 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 
 	// Update flag
 	BOOL bNewState = !bCurState;
-	SetFlagValue(FLAGID_DLG_EXPANDED, bNewState);
+	SetFlagValue(AppFlagID::dialogExpanded, bNewState);
 }
 
 
@@ -2056,7 +2053,7 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 BOOL CPowerPlusDlg::CreateNotifyIcon(void)
 {
 	// If notify icon is showed, re-create it
-	if (GetFlagValue(FLAGID_NOTIFY_ICON_SHOWED)) {
+	if (GetFlagValue(AppFlagID::notifyIconShowed)) {
 		TRACE("Notify icon is showed, now it will be removed and re-created!!!");
 		RemoveNotifyIcon();
 	}
@@ -2097,7 +2094,7 @@ BOOL CPowerPlusDlg::CreateNotifyIcon(void)
 	}
 
 	// Update flag
-	SetFlagValue(FLAGID_NOTIFY_ICON_SHOWED, bRetCreate);
+	SetFlagValue(AppFlagID::notifyIconShowed, bRetCreate);
 
 	return TRUE;
 }
@@ -2180,7 +2177,7 @@ void CPowerPlusDlg::UpdateNotifyIcon(void)
 void CPowerPlusDlg::RemoveNotifyIcon(void)
 {
 	// If notify icon is not showed, do nothing
-	if (!GetFlagValue(FLAGID_NOTIFY_ICON_SHOWED)) {
+	if (!GetFlagValue(AppFlagID::notifyIconShowed)) {
 		TRACE("Notify icon is not showed!!!");
 		return;
 	}
@@ -2198,7 +2195,7 @@ void CPowerPlusDlg::RemoveNotifyIcon(void)
 	Shell_NotifyIcon(NIM_DELETE, m_pNotifyIconData);
 
 	// Update flag
-	SetFlagValue(FLAGID_NOTIFY_ICON_SHOWED, FALSE);
+	SetFlagValue(AppFlagID::notifyIconShowed, FALSE);
 }
 
 
@@ -2456,35 +2453,23 @@ BOOL CPowerPlusDlg::CheckSettingChangeState(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CPowerPlusDlg::GetFlagValue(APPFLAGID eFlagID) const
+int CPowerPlusDlg::GetFlagValue(AppFlagID eFlagID) const
 {
-	int nValue = INT_INVALID;
+	int nValue = FLAG_OFF;
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
-		nValue = m_bChangeFlag;
+	// Application main window runtime flags
+	case AppFlagID::notifyIconShowed:
+	case AppFlagID::hotkeyRegistered:
+	case AppFlagID::restartAsAdmin:
+	case AppFlagID::pwrBroadcastSkipCount:
+	case AppFlagID::wtsSessionNotifyRegistered:
+		nValue = GetAppFlagManager().GetFlagValue(eFlagID);
 		break;
-	case FLAGID_DLG_EXPANDED:					// Dialog expanded/collapsed
-		nValue = m_bDlgExpanded;
-		break;
-	case FLAGID_NOTIFY_ICON_SHOWED:				// Notify icon showing flag
-		nValue = m_bNotifyIconShowed;
-		break;
-	case FLAGID_HOTKEY_REGISTERED:				// Hotkey registered
-		nValue = m_bHotkeyRegistered;
-		break;
-	case FLAGID_RESTART_AS_ADMIN:				// Restart as admin flag
-		nValue = m_bRestartAsAdminFlag;
-		break;
-	case FLAGID_PWRBROADCAST_SKIP_COUNT:		// Power Broadcase event skip counter
-		nValue = m_nPwrBroadcastSkipCount;
-		break;
-	case FLAGID_WTSSESSIONNOTIFY_REG:			// WTS Session Change State Notification registered
-		nValue = m_bWTSSessionNotifyRegistered;
-		break;
+
 	default:
-		// Get dialog-base-class flag value
+		// Get dialog-base flag value and others
 		nValue = SDialog::GetFlagValue(eFlagID);
 		break;
 	}
@@ -2502,7 +2487,7 @@ int CPowerPlusDlg::GetFlagValue(APPFLAGID eFlagID) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetFlagValue(APPFLAGID eFlagID, int nValue)
+void CPowerPlusDlg::SetFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
 	if (nValue == INT_INVALID)
@@ -2510,27 +2495,15 @@ void CPowerPlusDlg::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
-		m_bChangeFlag = nValue;
+	// Application main window runtime flags
+	case AppFlagID::notifyIconShowed:
+	case AppFlagID::hotkeyRegistered:
+	case AppFlagID::restartAsAdmin:
+	case AppFlagID::pwrBroadcastSkipCount:
+	case AppFlagID::wtsSessionNotifyRegistered:
+		GetAppFlagManager().SetFlagValue(eFlagID, nValue);
 		break;
-	case FLAGID_DLG_EXPANDED:					// Dialog expanded/collapsed
-		m_bDlgExpanded = nValue;
-		break;
-	case FLAGID_NOTIFY_ICON_SHOWED:				// Notify icon showing flag
-		m_bNotifyIconShowed = nValue;
-		break;
-	case FLAGID_HOTKEY_REGISTERED:				// Hotkey registered
-		m_bHotkeyRegistered = nValue;
-		break;
-	case FLAGID_RESTART_AS_ADMIN:				// Restart as admin flag
-		m_bRestartAsAdminFlag = nValue;
-		break;
-	case FLAGID_PWRBROADCAST_SKIP_COUNT:		// Power Broadcase event skip counter
-		m_nPwrBroadcastSkipCount = nValue;
-		break;
-	case FLAGID_WTSSESSIONNOTIFY_REG:			// WTS Session Change State Notification registered
-		m_bWTSSessionNotifyRegistered = nValue;
-		break;
+
 	default:
 		// Set dialog-base-class flag value
 		SDialog::SetFlagValue(eFlagID, nValue);
@@ -2578,7 +2551,7 @@ void CPowerPlusDlg::SetupLanguage(void)
 		case IDC_EXPAND_BTN:
 		{
 			// Check dialog current state
-			int nState = GetFlagValue(FLAGID_DLG_EXPANDED);
+			int nState = GetFlagValue(AppFlagID::dialogExpanded);
 			if (nState == TRUE)	nID = IDC_COLLAPSE_BTN;
 			else nID = IDC_EXPAND_BTN;
 			SetControlText(pWndChild, nID, pAppLang);
@@ -2744,7 +2717,7 @@ void CPowerPlusDlg::UpdateRestartAsAdminFlag(BOOL bFlag)
 	if (bCheck == TRUE)	return;
 
 	// Update flag
-	SetFlagValue(FLAGID_RESTART_AS_ADMIN, bFlag);
+	SetFlagValue(AppFlagID::restartAsAdmin, bFlag);
 }
 
 
@@ -3183,7 +3156,7 @@ void CPowerPlusDlg::ApplySettings(BOOL bMinimize)
 	}
 
 	// Restart as admin privileges if triggered
-	BOOL bRestartTrigger = GetFlagValue(FLAGID_RESTART_AS_ADMIN);
+	BOOL bRestartTrigger = GetFlagValue(AppFlagID::restartAsAdmin);
 	if (bRestartTrigger == TRUE) {
 		RequestRestartApp(IDC_APPLY_BTN, TRUE);
 	}
@@ -3228,7 +3201,7 @@ void CPowerPlusDlg::ReloadSettings(void)
 	UpdateDialogData(FALSE);
 
 	// Reset data change flag
-	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
+	SetFlagValue(AppFlagID::dialogDataChanged, FALSE);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4121,7 +4094,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 {
 	// Get option and flag values
 	BOOL bHKSEnable = GetAppOption(AppOptionID::backgroundHotkeyEnabled);
-	BOOL bHKRegisterFlag = GetFlagValue(FLAGID_HOTKEY_REGISTERED);
+	BOOL bHKRegisterFlag = GetFlagValue(AppFlagID::hotkeyRegistered);
 
 	// If background hotkey feature is disabled and no hotkey registered, do nothing
 	if ((bHKSEnable == FALSE) &&											// HotkeySet option OFF
@@ -4157,7 +4130,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 					OutputDebugLogFormat(_T("Unregistered hotkey: %d"), nHKID);
 					m_arrCurRegHKeyList.RemoveAt(nIndex);
 					if (nIndex == 0) {										// Last item unregistered
-						SetFlagValue(FLAGID_HOTKEY_REGISTERED, FALSE);		// Reset hotkey registered flag
+						SetFlagValue(AppFlagID::hotkeyRegistered, FALSE);		// Reset hotkey registered flag
 						m_arrCurRegHKeyList.RemoveAll();					// Cleanup registered hotkey list
 						m_arrCurRegHKeyList.FreeExtra();
 					}
@@ -4204,7 +4177,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 		}
 
 		// Reset flag and re-initialize registered hotkey list
-		SetFlagValue(FLAGID_HOTKEY_REGISTERED, FALSE);
+		SetFlagValue(AppFlagID::hotkeyRegistered, FALSE);
 		m_arrCurRegHKeyList.RemoveAll();
 		m_arrCurRegHKeyList.FreeExtra();
 
@@ -4249,7 +4222,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 
 			// Trigger flag
 			bRegistered |= bRet;
-			SetFlagValue(FLAGID_HOTKEY_REGISTERED, bRegistered);
+			SetFlagValue(AppFlagID::hotkeyRegistered, bRegistered);
 
 			if (bRet == TRUE) {
 				// Register successfully
@@ -4383,11 +4356,11 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	if ((nMode == MODE_DISABLE) || (nMode == MODE_UPDATE)) {
 
 		// Only unregister if the flag is not OFF
-		if (GetFlagValue(FLAGID_WTSSESSIONNOTIFY_REG)) {
+		if (GetFlagValue(AppFlagID::wtsSessionNotifyRegistered)) {
 
 			if (WTSUnRegisterSessionNotification(hCurWnd)) {
 				// Mark flag as OFF
-				SetFlagValue(FLAGID_WTSSESSIONNOTIFY_REG, FALSE);
+				SetFlagValue(AppFlagID::wtsSessionNotifyRegistered, FALSE);
 			}
 			else {
 				// Unregister failed
@@ -4413,11 +4386,11 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	if ((nMode == MODE_INIT) || (nMode == MODE_UPDATE)) {
 
 		// Only register if the flag is not ON
-		if (!GetFlagValue(FLAGID_WTSSESSIONNOTIFY_REG)) {
+		if (!GetFlagValue(AppFlagID::wtsSessionNotifyRegistered)) {
 
 			if (WTSRegisterSessionNotification(hCurWnd, NOTIFY_FOR_THIS_SESSION)) {
 				// Mark flag as ON
-				SetFlagValue(FLAGID_WTSSESSIONNOTIFY_REG, TRUE);
+				SetFlagValue(AppFlagID::wtsSessionNotifyRegistered, TRUE);
 			}
 			else {
 				// Register failed
@@ -4484,7 +4457,7 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 	OutputDebugLogFormat(_T("[LockState Hotkey] HotkeyID found: HKeyID=0x%04X (%d)"), nHKActionID, nHKActionID);
 		
 	// Check if HotkeyID is registered
-	if (GetFlagValue(FLAGID_HOTKEY_REGISTERED) != TRUE) {
+	if (GetFlagValue(AppFlagID::hotkeyRegistered) != TRUE) {
 		// Trace error
 		TRACE_ERROR("[LockState Hotkey] No hotkey registered!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -5461,7 +5434,7 @@ void CPowerPlusDlg::RequestRestartApp(UINT uiCmdSenderID, BOOL bRestartAsAdmin)
 
 	// Request from [Apply] button
 	if (uiCmdSenderID == IDC_APPLY_BTN) {
-		BOOL bRestartTrigger = GetFlagValue(FLAGID_RESTART_AS_ADMIN);
+		BOOL bRestartTrigger = GetFlagValue(AppFlagID::restartAsAdmin);
 		reqRestart.bRequest = bRestartTrigger;
 		reqRestart.bAdminCheck = TRUE;
 		reqRestart.bNotAdminShowMsg = TRUE;
@@ -5562,7 +5535,7 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 
 		if (reqRestart.bResetFlag == TRUE) {
 			// Reset flag
-			SetFlagValue(FLAGID_RESTART_AS_ADMIN, FALSE);
+			SetFlagValue(AppFlagID::restartAsAdmin, FALSE);
 		}
 	}
 }

@@ -128,6 +128,9 @@
     <ClInclude Include="include\AppCore.inl">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\AppCore\Global.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\AppCore\Logging.inl">
       <Filter>Header Files</Filter>
     </ClInclude>

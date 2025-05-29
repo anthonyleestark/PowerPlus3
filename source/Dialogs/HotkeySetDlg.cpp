@@ -329,8 +329,9 @@ void CHotkeySetDlg::OnClose()
 	if (!IsForceClosingByRequest()) {
 
 		// Ask for saving before exiting if data changed
-		m_bChangeFlag = CheckDataChangeState();
-		if (m_bChangeFlag == TRUE) {
+		BOOL bIsChanged = CheckDataChangeState();
+		SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+		if (bIsChanged == TRUE) {
 			// Show save confirmation message
 			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
@@ -381,8 +382,9 @@ void CHotkeySetDlg::OnApply()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_APPLY_BTN);
 
 	// Save data if changed
-	m_bChangeFlag = CheckDataChangeState();
-	if (m_bChangeFlag == TRUE) {
+	BOOL bIsChanged = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	if (bIsChanged == TRUE) {
 		// Save data
 		SaveHotkeySetData();
 	}
@@ -409,8 +411,9 @@ void CHotkeySetDlg::OnCancel()
 		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_CANCEL_BTN);
 
 		// Ask for saving before exiting if data changed
-		m_bChangeFlag = CheckDataChangeState();
-		if (m_bChangeFlag == TRUE) {
+		BOOL bIsChanged = CheckDataChangeState();
+		SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+		if (bIsChanged == TRUE) {
 			// Show save confirmation message
 			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
@@ -653,8 +656,9 @@ void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
 LRESULT CHotkeySetDlg::RequestCloseDialog(void)
 {
 	// Ask for saving before exiting if data changed
-	m_bChangeFlag = CheckDataChangeState();
-	if (m_bChangeFlag == TRUE) {
+	BOOL bIsChanged = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	if (bIsChanged == TRUE) {
 		int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Save data
@@ -990,8 +994,9 @@ void CHotkeySetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	EnableItem(IDC_HOTKEYSET_REMOVEALL_BTN, !bIsAllEmpty);
 
 	// Enable/disable buttons if data changed or not
-	m_bChangeFlag = CheckDataChangeState();
-	EnableItem(IDC_HOTKEYSET_APPLY_BTN, m_bChangeFlag);
+	BOOL bIsChanged = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	EnableItem(IDC_HOTKEYSET_APPLY_BTN, bIsChanged);
 
 	// Update "Check All" button state
 	UpdateCheckAllBtnState();
@@ -1338,7 +1343,7 @@ BOOL CHotkeySetDlg::LoadHotkeySetData()
 	m_hksHotkeySetTemp.Copy(m_hksHotkeySet);
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
+	SetFlagValue(AppFlagID::dialogDataChanged, FALSE);
 	return TRUE;
 }
 
@@ -1358,7 +1363,7 @@ BOOL CHotkeySetDlg::SaveHotkeySetData()
 	m_hksHotkeySet.Adjust();
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
+	SetFlagValue(AppFlagID::dialogDataChanged, FALSE);
 
 	// Save app HotkeySet data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();

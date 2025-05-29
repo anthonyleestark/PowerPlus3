@@ -139,6 +139,7 @@ __pragma(warning(disable:28159))
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <utility>
 #include <iterator>
 #include <stdlib.h>

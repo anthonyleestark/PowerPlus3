@@ -530,20 +530,22 @@ void SWinApp::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SWinApp::GetFlagValue(APPFLAGID eFlagID) const
+int SWinApp::GetFlagValue(AppFlagID eFlagID) const
 {
-	int nValue = INT_INVALID;
+	int nValue = FLAG_OFF;
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
-		nValue = m_bChangeFlag;
+	// Application-base flags
+	case AppFlagID::appDataChanged:
+	case AppFlagID::appReadOnlyMode:
+	case AppFlagID::appForceClosing:
+		nValue = m_flagManager.GetFlagValue(eFlagID);
 		break;
-	case FLAGID_READ_ONLY_MODE:					// Read-only mode
-		nValue = m_bReadOnlyMode;
-		break;
-	case FLAGID_FORCE_CLOSING:					// Force closing by request
-		nValue = m_bForceClose;
+
+	default:
+		// Request the flag value from global flag manager
+		nValue = GetGlobalFlagManager().GetFlagValue(eFlagID);
 		break;
 	}
 
@@ -560,7 +562,7 @@ int SWinApp::GetFlagValue(APPFLAGID eFlagID) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SWinApp::SetFlagValue(APPFLAGID eFlagID, int nValue)
+void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
 	if (nValue == INT_INVALID)
@@ -568,14 +570,16 @@ void SWinApp::SetFlagValue(APPFLAGID eFlagID, int nValue)
 
 	switch (eFlagID)
 	{
-	case FLAGID_CHANGE_FLAG:					// Data/setting change flag
-		m_bChangeFlag = nValue;
+	// Application-base flags
+	case AppFlagID::appDataChanged:
+	case AppFlagID::appReadOnlyMode:
+	case AppFlagID::appForceClosing:
+		m_flagManager.SetFlagValue(eFlagID, nValue);
 		break;
-	case FLAGID_READ_ONLY_MODE:					// Read-only mode
-		m_bReadOnlyMode = nValue;
-		break;
-	case FLAGID_FORCE_CLOSING:					// Force closing by request
-		m_bForceClose = nValue;
+
+	default:
+		// Let the global flag manager do its job
+		GetGlobalFlagManager().SetFlagValue(eFlagID, nValue);
 		break;
 	}
 }

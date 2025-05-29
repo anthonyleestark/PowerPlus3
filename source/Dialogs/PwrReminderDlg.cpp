@@ -418,8 +418,9 @@ void CPwrReminderDlg::OnClose()
 		}
 
 		// Ask for saving before exiting if data changed
-		m_bChangeFlag = CheckDataChangeState();
-		if (m_bChangeFlag == TRUE) {
+		BOOL bIsChanged = CheckDataChangeState();
+		SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+		if (bIsChanged == TRUE) {
 			// Show save confirmation message
 			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
@@ -470,8 +471,9 @@ void CPwrReminderDlg::OnApply()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_APPLY_BTN);
 
 	// Save data if changed
-	m_bChangeFlag = CheckDataChangeState();
-	if (m_bChangeFlag == TRUE) {
+	BOOL bIsChanged = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	if (bIsChanged == TRUE) {
 		// Save data
 		SavePwrReminderData();
 	}
@@ -511,8 +513,9 @@ void CPwrReminderDlg::OnCancel()
 		}
 
 		// Ask for saving before exiting if data changed
-		m_bChangeFlag = CheckDataChangeState();
-		if (m_bChangeFlag == TRUE) {
+		BOOL bIsChanged = CheckDataChangeState();
+		SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+		if (bIsChanged == TRUE) {
 			// Show save confirmation message
 			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
@@ -957,7 +960,7 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	}
 
 	// Check for value change and enable/disable save button
-	m_bChangeFlag = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -987,7 +990,7 @@ void CPwrReminderDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Check for value change and enable/disable save button
-	m_bChangeFlag = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1154,8 +1157,9 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	}
 
 	// Ask for saving before exiting if data changed
-	m_bChangeFlag = CheckDataChangeState();
-	if (m_bChangeFlag == TRUE) {
+	BOOL bIsChanged = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	if (bIsChanged == TRUE) {
 		nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Save data
@@ -2123,12 +2127,13 @@ void CPwrReminderDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	}
 
 	// Check if data is changed or not
-	m_bChangeFlag = CheckDataChangeState();
+	BOOL bIsChanged = CheckDataChangeState();
+	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 
 	// Enable [Apply] button if data is changed
 	pBtn = GetDlgItem(IDC_PWRREMINDER_APPLY_BTN);
 	if (pBtn != NULL) {
-		pBtn->EnableWindow(m_bChangeFlag);
+		pBtn->EnableWindow(bIsChanged);
 	}
 
 	// Update [Check/Uncheck All] button state
@@ -2404,7 +2409,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 	m_pwrReminderDataTemp.Copy(m_pwrReminderData);
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
+	SetFlagValue(AppFlagID::dialogDataChanged, FALSE);
 
 	// Validate data and auto-correction
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
@@ -2412,7 +2417,7 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 		if (!Validate(pwrItem, TRUE, TRUE)) {
 			// Update temp data
 			m_pwrReminderDataTemp.Update(pwrItem);
-			SetFlagValue(FLAGID_CHANGE_FLAG, TRUE);	// Update change flag
+			SetFlagValue(AppFlagID::dialogDataChanged, TRUE);	// Update change flag
 		}
 	}
 
@@ -2448,7 +2453,7 @@ BOOL CPwrReminderDlg::SavePwrReminderData()
 	pMainDlg->PostMessage(SM_APP_UPDATE_PWRREMINDERDATA, NULL, NULL);
 
 	// Reset change flag
-	SetFlagValue(FLAGID_CHANGE_FLAG, FALSE);
+	SetFlagValue(AppFlagID::dialogDataChanged, FALSE);
 	
 	return TRUE;
 }

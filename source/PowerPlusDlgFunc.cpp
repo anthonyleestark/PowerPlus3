@@ -1413,7 +1413,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			}
 			else {
 				// Set skip counter
-				SetFlagValue(FLAGID_PWRBROADCAST_SKIP_COUNT, nSkipCount);
+				SetFlagValue(AppFlagID::pwrBroadcastSkipCount, nSkipCount);
 				OutputDebugLogFormat(_T("Skip PowerBroadcast event: Counter=%d"), nSkipCount);
 				bNoReply = FALSE;	// Reset flag
 			}

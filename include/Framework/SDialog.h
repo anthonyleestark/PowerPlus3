@@ -28,6 +28,7 @@
 #include "Components\GridCellCheck.h"
 
 #include "SElements.h"
+#include "SWinApp.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -126,13 +127,10 @@ protected:
 	// Dialog control management
 	SControlManager* m_pCtrlManager;
 
+	// Dialog flag manager
+	FlagManager m_flagManager;
+
 	// Dialog special flags
-	BOOL m_bChangeFlag;
-	BOOL m_bReadOnlyMode;
-	BOOL m_bLockState;
-	BOOL m_bForceClose;
-	BOOL m_bUseEscape;
-	BOOL m_bUseEnter;
 	UINT m_nDescendantCount;
 
 	// Properties set flags
@@ -219,7 +217,7 @@ public:
 	virtual BOOL GetReadOnlyMode(void) const;
 	virtual void SetReadOnlyMode(BOOL bReadOnly);
 	virtual BOOL GetLockState(void) const;
-	virtual void SetLockState(BOOL bIsLock);
+	virtual void SetLockState(BOOL bIsLocked);
 	virtual void SetUseEnter(BOOL bUseEnter);
 	virtual void SetUseEscape(BOOL bUseEscape);
 
@@ -324,10 +322,16 @@ public:
 	// Data processing functions
 	virtual void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
 	virtual int  GetAppOption(AppOptionID eAppOptionID, BOOL bTemp = FALSE) const;
-	virtual int  GetFlagValue(APPFLAGID eFlagID) const;
-	virtual void SetFlagValue(APPFLAGID eFlagID, int nValue);
+	virtual int  GetFlagValue(AppFlagID eFlagID) const;
+	virtual void SetFlagValue(AppFlagID eFlagID, int nValue);
+	virtual FlagManager& GetAppFlagManager(void);
+	virtual const FlagManager& GetAppFlagManager(void) const;
+	virtual FlagManager& GetDialogFlagManager(void);
+	virtual const FlagManager& GetDialogFlagManager(void) const;
+
+	// Directly access flag values
 	virtual BOOL GetChangeFlagValue(void) const;
-	virtual void SetChangeFlagValue(BOOL bChangeFlag);
+	virtual void SetChangeFlagValue(BOOL bValue);
 	virtual BOOL CheckDataChangeState(void);
 	virtual BOOL CheckSettingChangeState(void);
 	virtual BOOL IsForceClosingByRequest(void) const;
