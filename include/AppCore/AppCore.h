@@ -2027,14 +2027,6 @@ namespace AppCore
 	BOOL ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
 	BOOL ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
 
-#ifdef _LEGACY_CODE_ACTIVE
-	// Default data initialization
-	void SetDefaultData(PCONFIGDATA pcfgData);
-	void SetDefaultData(PSCHEDULEDATA pschData);
-	void SetDefaultData(PHOTKEYSETDATA phksData);
-	void SetDefaultData(PPWRREMINDERDATA ppwrData);
-#endif
-
 	// Trace logging functions
 	void TraceError(LPCSTR lpszTraceLogA);
 	void TraceError(LPCTSTR lpszTraceLogW);
