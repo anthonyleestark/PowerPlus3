@@ -1943,7 +1943,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 		// Initialize info data
 		Item schItemTemp;
 		int nMode = MODE_INIT;
-		int nRetFlag = RETFLAG_INVALID;
+		int nRetFlag = ReturnFlag::Invalid;
 
 		// Update info data
 		if (m_pEditScheduleDlg != NULL) {
@@ -1953,7 +1953,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 		}
 
 		// Validate return info
-		if ((!schItemTemp.IsEmpty()) && (nRetFlag == RETFLAG_UPDATE)) {
+		if ((!schItemTemp.IsEmpty()) && (nRetFlag == ReturnFlag::Update)) {
 			// Update data by mode
 			if (nMode == MODE_ADD) {
 				// Add item

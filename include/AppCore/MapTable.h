@@ -333,13 +333,13 @@ namespace MapTable
 
 		INITIALIZE_IDMAPTABLE(DayOfWeek)
 		/*--Day ID-----------------------------------Day title string ID--------------*/
-			MONDAY,								DAYOFWEEK_TITLE_MONDAY,
-			TUESDAY,							DAYOFWEEK_TITLE_TUESDAY,
-			WEDNESDAY,							DAYOFWEEK_TITLE_WEDNESDAY,
-			THURSDAY,							DAYOFWEEK_TITLE_THURSDAY,
-			FRIDAY,								DAYOFWEEK_TITLE_FRIDAY,
-			SATURDAY,							DAYOFWEEK_TITLE_SATURDAY,
-			SUNDAY,								DAYOFWEEK_TITLE_SUNDAY
+			DayOfWeek::Monday,					DAYOFWEEK_TITLE_MONDAY,
+			DayOfWeek::Tuesday,					DAYOFWEEK_TITLE_TUESDAY,
+			DayOfWeek::Wednesday,				DAYOFWEEK_TITLE_WEDNESDAY,
+			DayOfWeek::Thursday,				DAYOFWEEK_TITLE_THURSDAY,
+			DayOfWeek::Friday,					DAYOFWEEK_TITLE_FRIDAY,
+			DayOfWeek::Saturday,				DAYOFWEEK_TITLE_SATURDAY,
+			DayOfWeek::Sunday,					DAYOFWEEK_TITLE_SUNDAY
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 	};

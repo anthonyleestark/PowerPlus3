@@ -723,54 +723,6 @@ typedef enum eFLAG {
 
 //////////////////// ********************
 // 
-// Application exit codes - use for PostQuitMessage function
-//
-//////////////////// ********************
-
-typedef enum eAPPEXITCODE {
-	EXITCODE_ERROR = -1,				// Exit because of error occurs
-	EXITCODE_NORMAL = 0,				// Normal exitting (no reason)
-	EXITCODE_EXITBUTTON,				// Exit by pressing [Exit] button
-	EXITCODE_NOTIFYMENU,				// Exit by selecting "Exit App" from notify menu selection
-	EXITCODE_RESTARTAPP,				// Exit triggerred by Restart function
-	EXITCODE_DEBUGCOMMAND,				// Exit by debug command
-} APPEXITCODE;
-
-
-//////////////////// ********************
-// 
-// Return flag value - use when return a flag from a child dialog
-//
-//////////////////// ********************
-
-typedef enum eRETFLAG {
-	RETFLAG_INVALID = -1,				// Return flag: Invalid
-	RETFLAG_OK,							// Return flag: OK
-	RETFLAG_CANCEL,						// Return flag: Cancel
-	RETFLAG_UPDATE,						// Return flag: Update
-	RETFLAG_CLOSE,						// Return flag: Close
-} RETFLAG;
-
-
-//////////////////// ********************
-// 
-// Days of week - use in time/date calculation and display
-//
-//////////////////// ********************
-
-typedef enum eDAYOFWEEK {
-	SUNDAY,								// Sunday
-	MONDAY,								// Monday
-	TUESDAY,							// Tuesday
-	WEDNESDAY,							// Wednesday
-	THURSDAY,							// Thursday
-	FRIDAY,								// Friday
-	SATURDAY,							// Saturday
-} DAYOFWEEK;
-
-
-//////////////////// ********************
-// 
 // System events - use in system event time tracing and logging
 //
 //////////////////// ********************
@@ -805,23 +757,6 @@ typedef enum eGRIDCOLSTYLE {
 	COLSTYLE_CHECKBOX,					// Checkbox cell
 	COLSTYLE_NORMAL,					// Normal cell
 } GRIDCOLSTYLE;
-
-
-//////////////////// ********************
-// 
-// Registry path type
-//
-//////////////////// ********************
-
-typedef enum eREGPATHTYPE {
-	REGPATH_FULL = 0,					// Full path
-	REGPATH_ROOTKEY,					// Root key only
-	REGPATH_SUBPATH,					// Including sub-key path
-	REGPATH_PROFILEKEY,					// Including profile key name
-	REGPATH_APPNAME,					// Including app name
-	REGPATH_SECTIONNAME,				// Including section name
-	REGPATH_KEYNAME,					// Including key name
-} REGPATHTYPE;
 
 
 //////////////////// ********************
@@ -973,9 +908,11 @@ public:
 		appDataChanged,												// Application data/setting change flag
 		appReadOnlyMode,											// Application read-only mode
 		appForceClosing,											// Force closing application by request
+		appExitCode,												// Application exit code
 
 	// Dialog-base properties/flags: Dialog managed
 		dialogDataChanged,											// Dialog data/setting change flag
+		dialogReturnFlag,											// Dialog returned flag
 		dialogExpanded,												// Dialog expanded/collapsed
 		dialogReadOnlyMode,											// Dialog read-only mode
 		dialogLockState,											// Dialog item lock state
@@ -1049,6 +986,9 @@ using FlagManagementMethod = typename FlagManager::ManagementMethod;
 
 class PwrRepeatSet
 {
+public:
+	enum DayOfWeek { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday	};
+
 private:
 	// Attributes
 	BOOL m_bRepeat;													// Repeat daily
@@ -1074,19 +1014,22 @@ public:
 	BOOL IsAllowSnoozing(void) const;								// Check if snooze option is enabled
 	INT	 GetSnoozeInterval(void) const;								// Get snooze interval data
 	BYTE GetActiveDays(void) const;									// Get repeat days data
-	BOOL IsDayActive(DAYOFWEEK) const;								// Check if day of week is active
+	BOOL IsDayActive(DayOfWeek) const;								// Check if day of week is active
 
 	// Set attributes
 	void EnableRepeat(BOOL);										// Set repeat enable state
 	void EnableSnoozing(BOOL);										// Set allow snoozing state
 	void SetSnoozeInterval(INT);									// Set snooze interval data
 	void SetActiveDays(BYTE);										// Set repeat days data
-	void SetDayActive(DAYOFWEEK, BOOL);								// Set active state for specific day of week
+	void SetDayActive(DayOfWeek, BOOL);								// Set active state for specific day of week
 };
 
 // Define new typenames for RepeatSet data
 using PWRREPEATSET = typename PwrRepeatSet;
 using PPWRREPEATSET = typename PwrRepeatSet*;
+
+// Define new global typenames for the enum attributes of RepeatSet data
+using DayOfWeek = typename PwrRepeatSet::DayOfWeek;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1133,7 +1076,7 @@ public:
 	// Get RepeatSet data
 	BOOL IsRepeatEnabled(void) const;								// Check if repeat is enabled
 	BOOL IsAllowSnoozing(void) const;								// Check if item snooze mode is available
-	BOOL IsDayActive(DAYOFWEEK) const;								// Check if day of week is active
+	BOOL IsDayActive(DayOfWeek) const;								// Check if day of week is active
 	BYTE GetActiveDays(void) const;									// Get repeat active days
 
 	// Set RepeatSet data
@@ -1141,7 +1084,7 @@ public:
 	void EnableSnoozing(BOOL);										// Set allow snoozing state
 	void SetSnoozeInterval(INT);									// Set snooze interval data
 	void SetActiveDays(BYTE);										// Set repeat days data
-	void SetDayActive(DAYOFWEEK, BOOL);								// Set active state for specific day of week
+	void SetDayActive(DayOfWeek, BOOL);								// Set active state for specific day of week
 
 	void Print(CString& strOutput) const;							// Print item data
 };
@@ -1462,7 +1405,7 @@ public:
 
 	// Get RepeatSet data
 	BOOL IsRepeatEnabled(void) const;								// Check if item repeat mode is enabled
-	BOOL IsDayActive(DAYOFWEEK dayOfWeek) const;					// Check if day of week is active
+	BOOL IsDayActive(DayOfWeek dayOfWeek) const;					// Check if day of week is active
 	BOOL IsAllowSnoozing(void) const;								// Check if item snooze mode is available
 	INT  GetSnoozeInterval(void) const;								// Get item snooze interval value
 	BYTE GetActiveDays(void) const;									// Get repeat active days
@@ -1472,7 +1415,7 @@ public:
 	void EnableSnoozing(BOOL);										// Set allow snoozing state
 	void SetSnoozeInterval(INT);									// Set snooze interval data
 	void SetActiveDays(BYTE);										// Set repeat days data
-	void SetDayActive(DAYOFWEEK, BOOL);								// Set active state for specific day of week
+	void SetDayActive(DayOfWeek, BOOL);								// Set active state for specific day of week
 
 	void Print(CString& strOutput) const;							// Print item data
 };
@@ -1813,6 +1756,17 @@ using PREGISTRYKEY = typename RegistryKey*;
 
 class RegistryInfo
 {
+public:
+	enum RegistryPathType {
+		fullPath = 0,										// Full path
+		rootKeyOnly,										// Root key only
+		includingSubKeyPath,								// Including sub-key path
+		includingProfileKey,								// Including profile key name
+		includingAppName,									// Including app name
+		includingSectionName,								// Including section name
+		includingKeyName,									// Including key name
+	};
+
 private:
 	// Attributes
 	HKEY			m_hRootKey;								// Root key (HKEY)
@@ -1866,6 +1820,9 @@ public:
 // Define new typenames for Registry info class
 using REGISTRYINFO = typename RegistryInfo;
 using PREGISTRYINFO = typename RegistryInfo*;
+
+// Define new global typenames for the enum attributes of RegistryValue
+using RegistryPathType = typename RegistryInfo::RegistryPathType;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -2151,7 +2108,7 @@ namespace AppCore
 	BOOL	GetCurrentUserName(CString& strUserName);
 
 	BOOL	AddRegistryKey(const REGISTRYINFO& regInfo);
-	LPCTSTR MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType = REGPATH_FULL, BOOL bIncRootKey = TRUE);
+	LPCTSTR MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType = RegistryPathType::fullPath, BOOL bIncRootKey = TRUE);
 
 	void	PlaySound(BOOL bSoundEnable, UINT nTypeOfSound);
 	BOOL	FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath);

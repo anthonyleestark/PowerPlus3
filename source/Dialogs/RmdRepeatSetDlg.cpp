@@ -521,49 +521,49 @@ void CRmdRepeatSetDlg::UpdateDialogData(PWRREMINDERITEM& pwrItemData, BOOL bUpda
 				nState = m_pActiveSundayChk->GetCheck();
 				bSundayEnable = (nState == 1) ? TRUE : FALSE;
 			}
-			byRepeatDays |= bSundayEnable << SUNDAY;
+			byRepeatDays |= bSundayEnable << DayOfWeek::Sunday;
 
 			BOOL bMondayEnable = FALSE;
 			if (m_pActiveMondayChk != NULL) {
 				nState = m_pActiveMondayChk->GetCheck();
 				bMondayEnable = (nState == 1) ? TRUE : FALSE;
 			}
-			byRepeatDays |= bMondayEnable << MONDAY;
+			byRepeatDays |= bMondayEnable << DayOfWeek::Monday;
 
 			BOOL bTuesdayEnable = FALSE;
 			if (m_pActiveTuesdayChk != NULL) {
 				nState = m_pActiveTuesdayChk->GetCheck();
 				bTuesdayEnable = (nState == 1) ? TRUE : FALSE;
 			}
-			byRepeatDays |= bTuesdayEnable << TUESDAY;
+			byRepeatDays |= bTuesdayEnable << DayOfWeek::Tuesday;
 
 			BOOL bWednesdayEnable = FALSE;
 			if (m_pActiveWednesdayChk != NULL) {
 				nState = m_pActiveWednesdayChk->GetCheck();
 				bWednesdayEnable = (nState == 1) ? TRUE : FALSE;
 			}
-			byRepeatDays |= bWednesdayEnable << WEDNESDAY;
+			byRepeatDays |= bWednesdayEnable << DayOfWeek::Wednesday;
 
 			BOOL bThursdayEnable = FALSE;
 			if (m_pActiveThursdayChk != NULL) {
 				nState = m_pActiveThursdayChk->GetCheck();
 				bThursdayEnable = (nState == 1) ? TRUE : FALSE;
 			}
-			byRepeatDays |= bThursdayEnable << THURSDAY;
+			byRepeatDays |= bThursdayEnable << DayOfWeek::Thursday;
 
 			BOOL bFridayEnable = FALSE;
 			if (m_pActiveFridayChk != NULL) {
 				nState = m_pActiveFridayChk->GetCheck();
 				bFridayEnable = (nState == 1) ? TRUE : FALSE;
 			}
-			byRepeatDays |= bFridayEnable << FRIDAY;
+			byRepeatDays |= bFridayEnable << DayOfWeek::Friday;
 
 			BOOL bSaturdayEnable = FALSE;
 			if (m_pActiveSaturdayChk != NULL) {
 				nState = m_pActiveSaturdayChk->GetCheck();
 				bSaturdayEnable = (nState == 1) ? TRUE : FALSE;
 			}
-			byRepeatDays |= bSaturdayEnable << SATURDAY;
+			byRepeatDays |= bSaturdayEnable << DayOfWeek::Saturday;
 		}
 		rpsRepeatData.SetActiveDays(byRepeatDays);
 	}
@@ -602,31 +602,31 @@ void CRmdRepeatSetDlg::UpdateDialogData(PWRREMINDERITEM& pwrItemData, BOOL bUpda
 		// Note: Bind data from Monday first
 
 		if (m_pActiveMondayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(MONDAY)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Monday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveMondayChk->SetCheck(nState);
 		}
 		if (m_pActiveTuesdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(TUESDAY)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Tuesday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveTuesdayChk->SetCheck(nState);
 		}
 		if (m_pActiveWednesdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(WEDNESDAY)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Wednesday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveWednesdayChk->SetCheck(nState);
 		}
 		if (m_pActiveThursdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(THURSDAY)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Thursday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveThursdayChk->SetCheck(nState);
 		}
 		if (m_pActiveFridayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(FRIDAY)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Friday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveFridayChk->SetCheck(nState);
 		}
 		if (m_pActiveSaturdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(SATURDAY)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Saturday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveSaturdayChk->SetCheck(nState);
 		}
 		if (m_pActiveSundayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(SUNDAY)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Sunday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveSundayChk->SetCheck(nState);
 		}
 

@@ -5739,7 +5739,7 @@ BOOL AppCore::AddRegistryKey(const REGISTRYINFO& regInfo)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType /* = REGPATH_FULL */, BOOL bIncRootKey /* = TRUE */)
+LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType /* = RegistryPathType::fullPath */, BOOL bIncRootKey /* = TRUE */)
 {
 	// Check root key info validity
 	if (bIncRootKey != FALSE) {
@@ -5753,7 +5753,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	}
 
 	// Check sub-key path validity
-	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SUBPATH)) {
+	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSubKeyPath)) {
 		CStringArray astrSubkeyPath;
 		regInfo.GetSubkeyPath(astrSubkeyPath);
 		if (astrSubkeyPath.IsEmpty()) {
@@ -5765,7 +5765,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	}
 
 	// Check profile key validity
-	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_PROFILEKEY)) {
+	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProfileKey)) {
 		CString strProfileName = regInfo.GetProfileName();
 		if (strProfileName.IsEmpty()) {
 			// Trace error
@@ -5776,7 +5776,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	}
 
 	// Check app name validity
-	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_APPNAME)) {
+	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingAppName)) {
 		CString strAppName = regInfo.GetAppName();
 		if (strAppName.IsEmpty()) {
 			// Trace error
@@ -5787,7 +5787,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	}
 
 	// Check section name array validity
-	if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SECTIONNAME)) {
+	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSectionName)) {
 		CStringArray astrSectionArray;
 		regInfo.GetSubkeyPath(astrSectionArray);
 		if (astrSectionArray.IsEmpty()) {
@@ -5864,7 +5864,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			strRegFullPath.Append(strRootKeyNameTemp);
 		}
 
-		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SUBPATH)) {
+		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSubKeyPath)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strSubKeyPathTemp.IsEmpty())) {
 				// Include separator character if rootkey is included
 				if (bIncRootKey != FALSE) {
@@ -5879,7 +5879,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			}
 		}
 
-		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_PROFILEKEY)) {
+		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProfileKey)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strProfileKeyName.IsEmpty())) {
 				// Include profile key name
 				strRegFullPath.Append(SYMBOL_BACKSLASH);
@@ -5891,7 +5891,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			}
 		}
 
-		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_APPNAME)) {
+		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingAppName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strAppName.IsEmpty())) {
 				// Include application name
 				strRegFullPath.Append(SYMBOL_BACKSLASH);
@@ -5903,7 +5903,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			}
 		}
 
-		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_SECTIONNAME)) {
+		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSectionName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strSectionNameTemp.IsEmpty())) {
 				// Include section name
 				strRegFullPath.Append(SYMBOL_BACKSLASH);
@@ -5915,7 +5915,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			}
 		}
 
-		if ((nRegPathType == REGPATH_FULL) || (nRegPathType >= REGPATH_KEYNAME)) {
+		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingKeyName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strKeyNameTemp.IsEmpty())) {
 				// Include key name
 				strRegFullPath.Append(SYMBOL_BACKSLASH);

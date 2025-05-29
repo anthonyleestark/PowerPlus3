@@ -74,7 +74,6 @@ CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 	ZeroMemory(&m_schScheduleItemTemp, sizeof(SCHEDULEITEM));
 
 	// Other variables
-	m_nRetFlag = RETFLAG_INVALID;
 	m_nDispMode = MODE_INIT;
 	m_pszActiveTableFrameSize = NULL;
 }
@@ -289,17 +288,17 @@ void CEditScheduleDlg::OnClose()
 				SaveScheduleItem();
 
 				// Return UPDATE flag
-				SetReturnFlag(RETFLAG_UPDATE);
+				SetReturnFlag(ReturnFlag::Update);
 			}
 			else {
 				// Return CLOSE flag
-				SetReturnFlag(RETFLAG_CLOSE);
+				SetReturnFlag(ReturnFlag::Close);
 			}
 		}
 	}
 	else {
 		// Return CLOSE flag
-		SetReturnFlag(RETFLAG_CLOSE);
+		SetReturnFlag(ReturnFlag::Close);
 	}
 
 	// Close dialog
@@ -349,7 +348,7 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 			SaveScheduleItem();
 
 			// Return UPDATE flag
-			SetReturnFlag(RETFLAG_UPDATE);
+			SetReturnFlag(ReturnFlag::Update);
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
@@ -358,7 +357,7 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 	}
 	else {
 		// Return CLOSE flag
-		SetReturnFlag(RETFLAG_CLOSE);
+		SetReturnFlag(ReturnFlag::Close);
 	}
 
 	// Request accepted
@@ -703,7 +702,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 		nDayOfWeekID = nRowIndex;
 
 		// Active state
-		BOOL bActive = (m_schScheduleItemTemp.IsDayActive((DAYOFWEEK)nDayOfWeekID)) ? TRUE : FALSE;
+		BOOL bActive = (m_schScheduleItemTemp.IsDayActive((DayOfWeek)nDayOfWeekID)) ? TRUE : FALSE;
 		pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, COL_ID_CHECKBOX);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(bActive);
@@ -997,34 +996,6 @@ void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = T
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetReturnFlag
-//	Description:	Get dialog return flag
-//  Arguments:		None
-//  Return value:	int - Return flag
-//
-//////////////////////////////////////////////////////////////////////////
-
-int CEditScheduleDlg::GetReturnFlag(void) const
-{
-	return m_nRetFlag;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetReturnFlag
-//	Description:	Set dialog return flag
-//  Arguments:		nRetFlag - Return flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void CEditScheduleDlg::SetReturnFlag(int nRetFlag)
-{
-	m_nRetFlag = nRetFlag;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	GetDispMode
 //	Description:	Get dialog display mode
 //  Arguments:		None
@@ -1072,11 +1043,11 @@ void CEditScheduleDlg::OnApply()
 		SaveScheduleItem();
 
 		// Return UPDATE flag
-		SetReturnFlag(RETFLAG_UPDATE);
+		SetReturnFlag(ReturnFlag::Update);
 	}
 	else {
 		// Return OK flag
-		SetReturnFlag(RETFLAG_OK);
+		SetReturnFlag(ReturnFlag::OK);
 	}
 
 	// Close dialog
@@ -1115,17 +1086,17 @@ void CEditScheduleDlg::OnExit()
 				SaveScheduleItem();
 
 				// Return UPDATE flag
-				SetReturnFlag(RETFLAG_UPDATE);
+				SetReturnFlag(ReturnFlag::Update);
 			}
 			else {
 				// Return CANCEL flag
-				SetReturnFlag(RETFLAG_CANCEL);
+				SetReturnFlag(ReturnFlag::Cancel);
 			}
 		}
 	}
 	else {
 		// Return CANCEL flag
-		SetReturnFlag(RETFLAG_CANCEL);
+		SetReturnFlag(ReturnFlag::Cancel);
 	}
 
 	// Close dialog

@@ -57,6 +57,7 @@ SDialog::SDialog() : CDialogEx()
 	m_nDescendantCount = INT_NULL;
 	SetFlagValue(AppFlagID::dialogUseEnterKey, TRUE);
 	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
+	SetReturnFlag(ReturnFlag::Invalid);
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -109,6 +110,7 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogEx(nI
 	m_nDescendantCount = INT_NULL;
 	SetFlagValue(AppFlagID::dialogUseEnterKey, TRUE);
 	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
+	SetReturnFlag(ReturnFlag::Invalid);
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -161,6 +163,7 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd /* = NULL */) : CDia
 	m_nDescendantCount = INT_NULL;
 	SetFlagValue(AppFlagID::dialogUseEnterKey, TRUE);
 	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
+	SetReturnFlag(ReturnFlag::Invalid);
 
 	// Properties set flags
 	m_bBkgrdColorSet = FALSE;
@@ -2137,6 +2140,7 @@ int SDialog::GetFlagValue(AppFlagID eFlagID) const
 
 	// Dialog-base properties/flags
 	case AppFlagID::dialogDataChanged:
+	case AppFlagID::dialogReturnFlag:
 	case AppFlagID::dialogReadOnlyMode:
 	case AppFlagID::dialogExpanded:
 	case AppFlagID::dialogLockState:
@@ -2184,6 +2188,7 @@ void SDialog::SetFlagValue(AppFlagID eFlagID, int nValue)
 
 	// Dialog-base properties/flags
 	case AppFlagID::dialogDataChanged:
+	case AppFlagID::dialogReturnFlag:
 	case AppFlagID::dialogReadOnlyMode:
 	case AppFlagID::dialogExpanded:
 	case AppFlagID::dialogLockState:

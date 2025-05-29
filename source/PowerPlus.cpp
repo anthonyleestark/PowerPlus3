@@ -3205,7 +3205,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA_TRACKING);
 
 	// Get registry path
-	CString strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, REGPATH_SECTIONNAME, FALSE);
+	CString strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, RegistryPathType::includingSectionName, FALSE);
 
 	// Open registry key
 	lRes = RegOpenKeyEx(HKEY_CURRENT_USER, strLastSysEvtRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hRegOpenKey);
@@ -3296,7 +3296,7 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 	regInfoLastSysEvt.SetSectionName(IDS_REGSECTION_GLBDATA_TRACKING);
 
 	// Get registry path
-	CString strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, REGPATH_SECTIONNAME, FALSE);
+	CString strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, RegistryPathType::includingSectionName, FALSE);
 
 	// Create registry key (open if key exists)
 	lRes = RegCreateKeyEx(HKEY_CURRENT_USER, strLastSysEvtRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hRegOpenKey, &dwState);

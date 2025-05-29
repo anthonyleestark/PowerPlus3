@@ -89,7 +89,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 
 	if (!_tcscmp(strDebugCommand, _T("exit"))) {
 		// Exit application
-		ExitApp(EXITCODE_DEBUGCOMMAND);
+		ExitApp(ExitCode::FromDebugCommand);
 		return TRUE;
 	}
 	else if (!_tcscmp(strDebugCommand, _T("reload"))) {

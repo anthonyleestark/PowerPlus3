@@ -61,10 +61,10 @@ inline BYTE PwrRepeatSet::GetActiveDays(void) const {
 }
 
 // Check if day of week is active
-inline BOOL PwrRepeatSet::IsDayActive(DAYOFWEEK dayOfWeek) const
+inline BOOL PwrRepeatSet::IsDayActive(DayOfWeek dayOfWeek) const
 {
 	// Invalid day of week
-	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
+	if ((dayOfWeek < Sunday) || (dayOfWeek > Saturday))
 		return FALSE;
 
 	return ((m_byRepeatDays & (1 << dayOfWeek)) >> dayOfWeek);
@@ -91,10 +91,10 @@ inline void PwrRepeatSet::SetActiveDays(BYTE byActiveDays) {
 }
 
 // Set active state for specific day of week
-inline void PwrRepeatSet::SetDayActive(DAYOFWEEK dayOfWeek, BOOL bActive)
+inline void PwrRepeatSet::SetDayActive(DayOfWeek dayOfWeek, BOOL bActive)
 {
 	// Invalid day of week
-	if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY))
+	if ((dayOfWeek < Sunday) || (dayOfWeek > Saturday))
 		return;
 
 	m_byRepeatDays |= bActive << dayOfWeek;
@@ -163,7 +163,7 @@ inline BOOL ScheduleItem::IsAllowSnoozing(void) const
 }
 
 // Check if day of week is active
-inline BOOL ScheduleItem::IsDayActive(DAYOFWEEK dayOfWeek) const {
+inline BOOL ScheduleItem::IsDayActive(DayOfWeek dayOfWeek) const {
 	return (m_rpsRepeatSet.IsDayActive(dayOfWeek));
 }
 
@@ -193,7 +193,7 @@ inline void ScheduleItem::SetActiveDays(BYTE byActiveDays) {
 }
 
 // Set active state for specific day of week
-inline void ScheduleItem::SetDayActive(DAYOFWEEK dayOfWeek, BOOL bActive) {
+inline void ScheduleItem::SetDayActive(DayOfWeek dayOfWeek, BOOL bActive) {
 	m_rpsRepeatSet.SetDayActive(dayOfWeek, bActive);
 }
 
@@ -572,7 +572,7 @@ inline BOOL PwrReminderItem::IsRepeatEnabled(void) const {
 }
 
 // Check if day of week is active
-inline BOOL PwrReminderItem::IsDayActive(DAYOFWEEK dayOfWeek) const {
+inline BOOL PwrReminderItem::IsDayActive(DayOfWeek dayOfWeek) const {
 	return m_rpsRepeatSet.IsDayActive(dayOfWeek);
 }
 
@@ -607,7 +607,7 @@ inline void PwrReminderItem::SetActiveDays(BYTE byActiveDays) {
 }
 
 // Set active state for specific day of week
-inline void PwrReminderItem::SetDayActive(DAYOFWEEK dayOfWeek, BOOL bActive) {
+inline void PwrReminderItem::SetDayActive(DayOfWeek dayOfWeek, BOOL bActive) {
 	m_rpsRepeatSet.SetDayActive(dayOfWeek, bActive);
 }
 

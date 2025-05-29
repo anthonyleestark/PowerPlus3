@@ -703,6 +703,16 @@ inline BOOL SDialog::IsForceClosingByRequest(void) const {
 	return m_flagManager.GetFlagValue(AppFlagID::dialogForceClosing);
 }
 
+// Get dialog returned flag
+inline int SDialog::GetReturnFlag(void) const {
+	return m_flagManager.GetFlagValue(AppFlagID::dialogReturnFlag);
+}
+
+// Set dialog returned flag
+inline void SDialog::SetReturnFlag(int nValue) {
+	m_flagManager.SetFlagValue(AppFlagID::dialogReturnFlag, nValue);
+}
+
 // Open a child dialog with corresponding ID
 // TODO: Override this function for custom actions
 inline void SDialog::OpenChildDialogEx(UINT nDialogID) {}

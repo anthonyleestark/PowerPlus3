@@ -73,7 +73,6 @@ private:
 	SCHEDULEITEM m_schScheduleItemTemp;
 
 	// Other variables
-	int		m_nRetFlag;
 	int		m_nDispMode;
 	CSize*  m_pszActiveTableFrameSize;
 
@@ -109,8 +108,6 @@ public:
 
 public:
 	// Get/set functions
-	int	GetReturnFlag(void) const;
-	void SetReturnFlag(int nRetFlag);
 	int	GetDispMode(void) const;
 	void SetDispMode(int nMode);
 

@@ -540,6 +540,7 @@ int SWinApp::GetFlagValue(AppFlagID eFlagID) const
 	case AppFlagID::appDataChanged:
 	case AppFlagID::appReadOnlyMode:
 	case AppFlagID::appForceClosing:
+	case AppFlagID::appExitCode:
 		nValue = m_flagManager.GetFlagValue(eFlagID);
 		break;
 
@@ -574,6 +575,7 @@ void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
 	case AppFlagID::appDataChanged:
 	case AppFlagID::appReadOnlyMode:
 	case AppFlagID::appForceClosing:
+	case AppFlagID::appExitCode:
 		m_flagManager.SetFlagValue(eFlagID, nValue);
 		break;
 

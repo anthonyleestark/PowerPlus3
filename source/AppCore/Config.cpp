@@ -960,7 +960,7 @@ BOOL SConfigBackup::AutoRegistryExport()
 
 	// Execute registry export command
 	CString strExecCommand;
-	strExecCommand.Format(COMMAND_REGISTRY_EXPORT, MakeRegistryPath(regInfo, REGPATH_APPNAME), strDestFilePath);
+	strExecCommand.Format(COMMAND_REGISTRY_EXPORT, MakeRegistryPath(regInfo, RegistryPathType::includingAppName), strDestFilePath);
 	if (!ExecuteCommand(strExecCommand, FALSE, FALSE)) {
 		// Execute command failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to execute export command!!!");

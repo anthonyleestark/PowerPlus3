@@ -105,6 +105,16 @@ class SDialog : public CDialogEx
 	DECLARE_DYNAMIC(SDialog)
 
 public:
+	using ExitCode = typename SWinApp::ExitCode;
+	enum ReturnFlag {
+		Invalid = -1,
+		OK,
+		Cancel,
+		Update,
+		Close,
+	};
+
+public:
 	// Construction
 	SDialog();																// default constructor
 	explicit SDialog(UINT nIDTemplate, CWnd* pParentWnd = NULL);			// custom constructor
@@ -335,6 +345,8 @@ public:
 	virtual BOOL CheckDataChangeState(void);
 	virtual BOOL CheckSettingChangeState(void);
 	virtual BOOL IsForceClosingByRequest(void) const;
+	virtual int  GetReturnFlag(void) const;
+	virtual void SetReturnFlag(int nRetFlag);
 
 	// Request processing functions
 	virtual LRESULT RequestCloseDialog(void);

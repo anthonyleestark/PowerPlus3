@@ -48,8 +48,18 @@ class SWinApp : public CWinAppEx
 {
 	DECLARE_DYNAMIC(SWinApp)
 
-	// Construction
 public:
+	enum ExitCode {
+		Error = -1,							// Exit because of error occurs
+		NormalExit = 0,						// Normal exitting (no reason)
+		PressExitButton,					// Exit by pressing [Exit] button
+		FromNotifyIcon,						// Exit by selecting "Exit App" from notify menu selection
+		RestartApp,							// Exit triggerred by Restart function
+		FromDebugCommand,					// Exit by debug command
+	};
+
+public:
+	// Construction
 	SWinApp();								// constructor
 	SWinApp(LPCTSTR lpszTemplateName);		// custom constructor
 	virtual ~SWinApp();						// destructor

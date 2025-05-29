@@ -564,7 +564,7 @@ BOOL CPowerPlusDlg::OnInitDialog()
 
 		// Exit if failed to create notify icon
 		TRACE("Failed to create notify icon!!!");
-		ExitApp(EXITCODE_ERROR);
+		ExitApp(ExitCode::Error);
 		return FALSE;
 	}
 
@@ -860,7 +860,7 @@ void CPowerPlusDlg::OnExit()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EXIT_BTN);
 
 	// Destroy dialog and exit
-	ExitApp(EXITCODE_EXITBUTTON);
+	ExitApp(ExitCode::PressExitButton);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1828,7 +1828,7 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 	case IDM_NOTIFY_EXIT_APP:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_EXIT_APP);
-		ExitApp(EXITCODE_NOTIFYMENU);
+		ExitApp(ExitCode::FromNotifyIcon);
 		break;
 	default:
 		break;
@@ -3241,7 +3241,7 @@ void CPowerPlusDlg::RestartApp(BOOL bRestartAsAdmin)
 	this->SetWindowText(STRING_NULL);
 
 	// Exit the current application instance
-	ExitApp(EXITCODE_RESTARTAPP);
+	ExitApp(ExitCode::RestartApp);
 
 	// Restart immediately
 	RunApp(GetApplicationPath(TRUE), bRestartAsAdmin);
@@ -3263,6 +3263,9 @@ void CPowerPlusDlg::ExitApp(int nExitCode)
 		TRACE("Request close application denied!!!");
 		return;
 	}
+
+	// Tell the application by updating flag value
+	SetFlagValue(AppFlagID::appExitCode, nExitCode);
 
 	// Termination
 	// Trigger exitting by posting quit message
@@ -3646,7 +3649,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 		}
 
 		// If repeat option is ON and is set as active in current day of week
-		if ((schDefaultItem.IsRepeatEnabled() == TRUE) && (!schDefaultItem.IsDayActive((DAYOFWEEK)stCurrentTime.wDayOfWeek))) {
+		if ((schDefaultItem.IsRepeatEnabled() == TRUE) && (!schDefaultItem.IsDayActive((DayOfWeek)stCurrentTime.wDayOfWeek))) {
 			// Do not process
 			bSkipProcess = TRUE;
 		}
@@ -3711,7 +3714,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 		SCHEDULEITEM& schExtraItem = m_schScheduleData.GetItemAt(nExtraIndex);
 
 		// Do not process if repeat option is ON but is not set as active in current day of week
-		if ((schExtraItem.IsRepeatEnabled() == TRUE) && (!schExtraItem.IsDayActive((DAYOFWEEK)stCurrentTime.wDayOfWeek)))
+		if ((schExtraItem.IsRepeatEnabled() == TRUE) && (!schExtraItem.IsDayActive((DayOfWeek)stCurrentTime.wDayOfWeek)))
 			continue;
 
 		// Check for time matching and trigger schedule notifying if enabled
@@ -4535,7 +4538,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 		{
 		case PwrReminderEvent::atSetTime:
 			// If item is set to repeat but not set active in current day of week
-			if ((pwrCurItem.IsRepeatEnabled() == TRUE) && (!pwrCurItem.IsDayActive((DAYOFWEEK)curSysTime.wDayOfWeek)))
+			if ((pwrCurItem.IsRepeatEnabled() == TRUE) && (!pwrCurItem.IsDayActive((DayOfWeek)curSysTime.wDayOfWeek)))
 				continue;
 			// If set time matching or snooze time is triggered
 			if ((CheckTimeMatch(curSysTime, pwrCurItem.GetTime())) ||
