@@ -1674,7 +1674,7 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM wParam, LPARAM lParam)
 
 	// Save last session ending time
 	SYSTEMTIME stCurSysTime = GetCurSysTime();
-	pApp->SaveLastSysEventTime(SYSEVT_SESSIONEND, stCurSysTime);
+	pApp->SaveLastSysEventTime(SystemEventID::SessionEnded, stCurSysTime);
 
 	// Save action history if remaining unsaved
 	SaveHistoryInfoData();

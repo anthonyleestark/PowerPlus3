@@ -723,19 +723,6 @@ typedef enum eFLAG {
 
 //////////////////// ********************
 // 
-// System events - use in system event time tracing and logging
-//
-//////////////////// ********************
-
-typedef enum eSYSTEMEVENTID {
-	SYSEVT_SUSPEND = 0,					// System suspend event
-	SYSEVT_WAKEUP,						// System wakeup event
-	SYSEVT_SESSIONEND,					// Session end event
-} SYSTEMEVENTID;
-
-
-//////////////////// ********************
-// 
 // List view column size units
 //
 //////////////////// ********************
@@ -785,7 +772,7 @@ typedef enum eFILETYPE {
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagCONFIGDATA
+struct CONFIGDATA
 {
 	// Main settings
 	INT		nLMBAction;												// Left mouse button action
@@ -809,7 +796,10 @@ typedef struct tagCONFIGDATA
 	BOOL	bEnableBackgroundHotkey;								// Enable background action hotkeys
 	BOOL	bLockStateHotkey;										// Allow background hotkeys on lockscreen
 	BOOL	bEnablePowerReminder;									// Enable Power Peminder feature
-} CONFIGDATA, *PCONFIGDATA;
+};
+
+// Define typename
+using PCONFIGDATA = typename CONFIGDATA*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -852,6 +842,7 @@ public:
 	ConfigData();													// Default constructor
 	ConfigData(const CONFIGDATA&);									// Copy constructor
 
+public:
 	// Data processing
 	void Copy(const CONFIGDATA&);									// Copy data
 	BOOL Compare(const CONFIGDATA&) const;							// Compare data
@@ -989,6 +980,7 @@ public:
 	// Operator
 	PwrRepeatSet& operator=(const PwrRepeatSet&);					// Copy assignment operator
 
+public:
 	// Data processing
 	void Copy(const PwrRepeatSet&);									// Copy data
 	BOOL Compare(const PwrRepeatSet&) const;						// Compare data
@@ -1042,6 +1034,7 @@ public:
 	// Operator
 	ScheduleItem& operator=(const ScheduleItem&);					// Copy assignment operator
 
+public:
 	// Data processing
 	void Copy(const ScheduleItem&);									// Copy data
 	BOOL Compare(const ScheduleItem&) const;						// Compare items
@@ -1101,6 +1094,7 @@ public:
 	// Operator
 	ScheduleData& operator=(const ScheduleData&);					// Copy assignment operator
 
+public:
 	// Data processing
 	void Init(void);												// Init data
 	void Copy(const ScheduleData&);									// Copy data
@@ -1170,6 +1164,7 @@ public:
 	// Operator
 	HotkeySetItem& operator=(const HotkeySetItem&);					// Copy assignment operator
 
+public:
 	// Data processing
 	void Copy(const HotkeySetItem&);								// Copy item
 	BOOL IsEmpty(void) const;										// Check if item is empty
@@ -1223,6 +1218,7 @@ public:
 	// Operator
 	HotkeySetData& operator=(const HotkeySetData&);					// Copy assignment operator
 
+public:
 	// Data processing
 	void Init(void);												// Init data
 	void Copy(const HotkeySetData&);								// Copy data
@@ -1283,6 +1279,7 @@ public:
 	// Operator
 	RmdMsgStyleSet& operator=(const RmdMsgStyleSet&);				// Copy assignment operator
 
+public:
 	// Member functions
 	void Copy(const RmdMsgStyleSet&);								// Copy data
 	BOOL Compare(const RmdMsgStyleSet&) const;						// Compare data
@@ -1360,6 +1357,7 @@ public:
 	// Operator
 	PwrReminderItem& operator=(const PwrReminderItem&);				// Copy assignment operator
 
+public:
 	// Data processing
 	void Copy(const PwrReminderItem&);								// Copy item
 	BOOL IsEmpty(void) const;										// Check if item is empty
@@ -1436,6 +1434,7 @@ public:
 	// Operator
 	PwrReminderData& operator=(const PwrReminderData&);				// Copy assignment operator
 
+public:
 	// Member functions
 	void Init(void);												// Init data
 	void Copy(const PwrReminderData&);								// Copy data
@@ -1538,51 +1537,130 @@ class HistoryInfoData
 {
 private:
 	// Attributes
-	BOOL		m_bInitState;									// Init state flag
-	UINT		m_nCategoryID;									// Category ID
-	SYSTEMTIME	m_stTimestamp;									// Timestamp of history
-	UINT		m_nItemID;										// Item ID
-	UINT		m_nActionID;									// Action ID
-	BOOL		m_bActionResult;								// Action result
-	DWORD		m_dwErrorCode;									// Returned error code
-	CString		m_strDescription;								// History description (attached info)
+	BOOL		m_bInitState;										// Init state flag
+	UINT		m_nCategoryID;										// Category ID
+	SYSTEMTIME	m_stTimestamp;										// Timestamp of history
+	UINT		m_nItemID;											// Item ID
+	UINT		m_nActionID;										// Action ID
+	BOOL		m_bActionResult;									// Action result
+	DWORD		m_dwErrorCode;										// Returned error code
+	CString		m_strDescription;									// History description (attached info)
 
 public:
 	// Constructor
-	HistoryInfoData();											// Default constructor
-	HistoryInfoData(const HistoryInfoData&);					// Copy constructor
+	HistoryInfoData();												// Default constructor
+	HistoryInfoData(const HistoryInfoData&);						// Copy constructor
 
 	// Operator
-	HistoryInfoData& operator=(const HistoryInfoData&);			// Copy assignment operator
+	HistoryInfoData& operator=(const HistoryInfoData&);				// Copy assignment operator
 
 	// Member functions
-	void Copy(const HistoryInfoData&);							// Copy data
-	void Init(UINT nCategoryID);								// Initialization
-	void RemoveAll(void);										// Remove all data
+	void Copy(const HistoryInfoData&);								// Copy data
+	void Init(UINT nCategoryID);									// Initialization
+	void RemoveAll(void);											// Remove all data
 
 public:
 	// Get/set properties
-	BOOL IsInit(void) const;									// Check if data is initialized
-	UINT GetCategoryID(void) const;								// Get category ID
-	void SetCategoryID(UINT);									// Set category ID
-	SYSTEMTIME GetTime(void) const;								// Get timestamp
-	void SetTime(const SYSTEMTIME&);							// Set timestamp
-	UINT GetItemID(void) const;									// Get item ID
-	void SetItemID(UINT);										// Set item ID
-	UINT GetActionID(void) const;								// Get action ID
-	void SetActionID(UINT);										// Set action ID
-	BOOL IsSuccess(void) const;									// Check if action is successful
-	void SetResult(BOOL);										// Set action result
-	DWORD GetErrorCode(void) const;								// Get error code
-	void SetErrorCode(DWORD);									// Set error code
-	void GetDescription(CString&) const;						// Get description
-	LPCTSTR GetDescription(void) const;							// Get description
-	void SetDescription(LPCTSTR);								// Set description
+	BOOL IsInit(void) const;										// Check if data is initialized
+	UINT GetCategoryID(void) const;									// Get category ID
+	void SetCategoryID(UINT);										// Set category ID
+	SYSTEMTIME GetTime(void) const;									// Get timestamp
+	void SetTime(const SYSTEMTIME&);								// Set timestamp
+	UINT GetItemID(void) const;										// Get item ID
+	void SetItemID(UINT);											// Set item ID
+	UINT GetActionID(void) const;									// Get action ID
+	void SetActionID(UINT);											// Set action ID
+	BOOL IsSuccess(void) const;										// Check if action is successful
+	void SetResult(BOOL);											// Set action result
+	DWORD GetErrorCode(void) const;									// Get error code
+	void SetErrorCode(DWORD);										// Set error code
+	void GetDescription(CString&) const;							// Get description
+	LPCTSTR GetDescription(void) const;								// Get description
+	void SetDescription(LPCTSTR);									// Set description
 };
 
 // Define new typenames for History info data
 using HISTORYINFODATA = typename HistoryInfoData;
 using PHISTORYINFODATA = typename HistoryInfoData*;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Class name:		SystemEvent
+//  Description:	Store data of System Event info
+//
+//////////////////////////////////////////////////////////////////////////
+
+class SystemEvent
+{
+public:
+	enum EventID {
+		SystemSuspend = 0,											// System suspend event
+		SystemWakeUp,												// System wakeup event
+		SessionEnded,												// Session end event
+		SessionLocked,												// Session locked event
+		SessionUnlocked,											// Session unlocked event
+	};
+
+private:
+	// Attributes
+	EventID		m_sysEventID;										// System event ID
+	SYSTEMTIME  m_timeStamp;										// Event timestamp
+
+public:
+	// Construction
+	SystemEvent(EventID);											// Constructor (with event ID)
+	SystemEvent(const SystemEvent&);								// Copy constructor
+
+	// Operators
+	SystemEvent& operator=(const SystemEvent&);						// Copy assignment operator
+
+public:
+	// Get/set functions
+	EventID GetEventID(void) const;									// Get system event ID
+	SYSTEMTIME GetTimestamp(void) const;							// Get system event timestamp
+	void SetTimestamp(SYSTEMTIME);									// Set system event timestamp
+};
+
+// Define new typenames for Power System Event info data
+using SystemEventData = typename std::vector<SystemEvent>;
+
+// Define new global typenames for the enum attributes of System Event info
+using SystemEventID = typename SystemEvent::EventID;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Class name:		SystemEventTracker
+//  Description:	Store and manage System Event tracking data
+//
+//////////////////////////////////////////////////////////////////////////
+
+class SystemEventTracker
+{
+private:
+	// Attributes
+	SystemEventData m_arrTrackingData;								// System event tracking data
+
+public:
+	// Construction
+	SystemEventTracker();											// Constructor (with event ID)
+	SystemEventTracker(const SystemEventTracker&);					// Copy constructor
+
+	// Operators
+	SystemEventTracker& operator=(const SystemEventTracker&);		// Copy assignment operator
+
+public:
+	// Validation
+	BOOL IsEmpty(void) const;										// Check if tracking data is empty
+	INT_PTR GetTrackedCount(void) const;							// Get number of tracked events
+
+	// Update data
+	void AddEvent(const SystemEvent&);								// Add system event info
+	void RemoveAll(SystemEventID);									// Remove all tracking data of specific event ID
+	void RemoveAll(void);											// Remove all event tracking data
+
+	// Access items
+	const SystemEvent& GetAt(int) const;							// Get system event info data by index
+};
 
 //////////////////////////////////////////////////////////////////////////
 //

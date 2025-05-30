@@ -1351,7 +1351,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		CString strDateTimeFormat;
 		strDateTimeFormat.LoadString(IDS_FORMAT_FULLDATETIME);
 		// Get last system suspend time
-		if (pApp->GetLastSysEventTime(SYSEVT_SUSPEND, stTimeTemp)) {
+		if (pApp->GetLastSysEventTime(SystemEventID::SystemSuspend, stTimeTemp)) {
 			// Format date time
 			CString strLogTemp;
 			CString strMiddayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
@@ -1367,7 +1367,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			bNoReply = FALSE;	// Reset flag
 		}
 		// Get last system wakeup time
-		if (pApp->GetLastSysEventTime(SYSEVT_WAKEUP, stTimeTemp)) {
+		if (pApp->GetLastSysEventTime(SystemEventID::SystemWakeUp, stTimeTemp)) {
 			// Format date time
 			CString strLogTemp;
 			CString strMiddayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");

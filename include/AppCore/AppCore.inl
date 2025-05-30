@@ -838,6 +838,52 @@ inline void HistoryInfoData::SetDescription(LPCTSTR lpszDescription) {
 	m_strDescription = lpszDescription;
 }
 
+// Get system event ID
+inline SystemEventID SystemEvent::GetEventID(void) const {
+	return m_sysEventID;
+}
+
+// Get system event timestamp
+inline SYSTEMTIME SystemEvent::GetTimestamp(void) const {
+	return m_timeStamp;
+}
+
+// Set system event timestamp
+inline void SystemEvent::SetTimestamp(SYSTEMTIME eventTimestamp) {
+	m_timeStamp = eventTimestamp;
+}
+
+// Check if tracking data is empty
+inline BOOL SystemEventTracker::IsEmpty(void) const {
+	return (m_arrTrackingData.empty());
+}
+
+// Get number of tracked events
+inline INT_PTR SystemEventTracker::GetTrackedCount(void) const {
+	return (m_arrTrackingData.size());
+}
+
+// Add system event info
+inline void SystemEventTracker::AddEvent(const SystemEvent& eventInfo) {
+	m_arrTrackingData.emplace_back(eventInfo);
+}
+
+// Remove all tracking data of specific event ID
+inline void SystemEventTracker::RemoveAll(SystemEventID eventID) {
+	m_arrTrackingData.erase(std::remove_if(m_arrTrackingData.begin(), m_arrTrackingData.end(),
+		[eventID](const SystemEvent& eventInfo) { return (eventInfo.GetEventID() == eventID); }), m_arrTrackingData.end());
+}
+
+// Remove all event tracking data
+inline void SystemEventTracker::RemoveAll(void) {
+	m_arrTrackingData.clear();
+}
+
+// Get system event info data by index
+inline const SystemEvent& SystemEventTracker::GetAt(int nIndex) const {
+	return (m_arrTrackingData.at(nIndex));
+}
+
 // Check if data is empty
 inline BOOL RegistryValue::IsEmpty(void) const {
 	return (IsType(Type::None));

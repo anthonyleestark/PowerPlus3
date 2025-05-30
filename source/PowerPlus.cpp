@@ -528,12 +528,12 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID pContext, ULONG ulType, P
 	{
 	case PBT_APMSUSPEND:					// System suspend event
 		// Save last system suspend time
-		pApp->SaveLastSysEventTime(SYSEVT_SUSPEND, stCurSysTime);
+		pApp->SaveLastSysEventTime(SystemEventID::SystemSuspend, stCurSysTime);
 		break;
 	case PBT_APMRESUMESUSPEND:				// System resume from suspend event
 	case PBT_APMRESUMEAUTOMATIC:			// System automatic resume event
 		// Save last system wakeup time
-		pApp->SaveLastSysEventTime(SYSEVT_WAKEUP, stCurSysTime);
+		pApp->SaveLastSysEventTime(SystemEventID::SystemWakeUp, stCurSysTime);
 		break;
 	default:
 		break;
@@ -3219,15 +3219,15 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 
 	// Get key name
 	CString strKeyName;
-	if (byEventType == SYSEVT_SUSPEND) {
+	if (byEventType == SystemEventID::SystemSuspend) {
 		// Last system suspend
 		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSYSSUSPEND);
 	}
-	else if (byEventType == SYSEVT_WAKEUP) {
+	else if (byEventType == SystemEventID::SystemWakeUp) {
 		// Last system wakeup
 		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSYSWAKEUP);
 	}
-	else if (byEventType == SYSEVT_SESSIONEND) {
+	else if (byEventType == SystemEventID::SessionEnded) {
 		// Last app/system session ending
 		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSESSIONEND);
 	}
@@ -3310,15 +3310,15 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 
 	// Get key name
 	CString strKeyName;
-	if (byEventType == SYSEVT_SUSPEND) {
+	if (byEventType == SystemEventID::SystemSuspend) {
 		// Last system suspend
 		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSYSSUSPEND);
 	}
-	else if (byEventType == SYSEVT_WAKEUP) {
+	else if (byEventType == SystemEventID::SystemWakeUp) {
 		// Last system wakeup
 		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSYSWAKEUP);
 	}
-	else if (byEventType == SYSEVT_SESSIONEND) {
+	else if (byEventType == SystemEventID::SessionEnded) {
 		// Last app/system session ending
 		strKeyName.LoadString(IDS_REGKEY_TRACKING_LASTSESSIONEND);
 	}

@@ -1490,8 +1490,6 @@ BOOL RmdMsgStyleSet::Compare(const RmdMsgStyleSet& pItem) const
 // 
 //	Function name:	PwrReminderItem
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -2071,10 +2069,8 @@ void PwrRuntimeItem::Copy(const PwrRuntimeItem& pItem)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	tagHISTORYINFODATA
+//	Function name:	HistoryInfoData
 //	Description:	Constructor
-//  Arguments:		Default
-//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -2156,6 +2152,77 @@ void HistoryInfoData::Init(UINT nCategoryID)
 	m_stTimestamp = AppCore::GetCurSysTime();				// Timestamp of history
 	m_dwErrorCode = INT_NULL;								// Returned error code
 	m_strDescription = STRING_EMPTY;						// History description (attached info)
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SystemEvent
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+SystemEvent::SystemEvent(EventID eventID)
+{
+	// Initialize
+	m_sysEventID = eventID;									// System event ID
+	m_timeStamp = SYSTEMTIME_ZERO;							// Event timestamp
+}
+
+SystemEvent::SystemEvent(const SystemEvent& pItem)
+{
+	// Copy data
+	m_sysEventID = pItem.m_sysEventID;						// System event ID
+	m_timeStamp = pItem.m_timeStamp;						// Event timestamp
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pItem - Pointer of input item
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+SystemEvent& SystemEvent::operator=(const SystemEvent& pItem)
+{
+	// Copy data
+	m_sysEventID = pItem.m_sysEventID;						// System event ID
+	m_timeStamp = pItem.m_timeStamp;						// Event timestamp
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SystemEventTracker
+//	Description:	Constructor
+//
+//////////////////////////////////////////////////////////////////////////
+
+SystemEventTracker::SystemEventTracker()
+{
+	// Initialize
+	m_arrTrackingData.clear();								// System event tracking data
+}
+
+SystemEventTracker::SystemEventTracker(const SystemEventTracker& pData)
+{
+	// Copy data
+	m_arrTrackingData = pData.m_arrTrackingData;			// System event tracking data
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	operator=
+//	Description:	Copy assignment operator
+//  Arguments:		pData - Pointer of input data
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+SystemEventTracker& SystemEventTracker::operator=(const SystemEventTracker& pData)
+{
+	// Copy data
+	m_arrTrackingData = pData.m_arrTrackingData;			// System event tracking data
 }
 
 //////////////////////////////////////////////////////////////////////////
