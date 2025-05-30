@@ -298,7 +298,7 @@ BOOL LogDetail::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_U
 LogDetailInfo::LogDetailInfo() : LOGDETAILARRAY()
 {
 	// Initialization
-	this->RemoveAll();
+	this->clear();
 }
 
 LogDetailInfo::LogDetailInfo(const LogDetailInfo& pData)
@@ -335,8 +335,7 @@ LogDetailInfo& LogDetailInfo::operator=(const LogDetailInfo& pData)
 void LogDetailInfo::Init(void)
 {
 	// Reset data
-	this->RemoveAll();
-	this->FreeExtra();
+	this->clear();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -354,7 +353,7 @@ void LogDetailInfo::CopyData(const LogDetailInfo& pData)
 	this->Init();
 
 	// Copy data
-	this->Copy(pData);
+	this->assign(pData.begin(), pData.end());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -421,7 +420,7 @@ LogItem::LogItem()
 	m_dwProcessID = INT_NULL;								// Process ID
 	m_usCategory = LOG_MACRO_NONE;							// Log category
 	m_strLogString = STRING_EMPTY;							// Log string
-	m_arrDetailInfo.RemoveAll();							// Log detail info
+	m_arrDetailInfo.clear();								// Log detail info
 }
 
 LogItem::LogItem(const LogItem& pItem)
@@ -462,7 +461,7 @@ void LogItem::Copy(const LogItem& pItem)
 	m_dwProcessID = pItem.m_dwProcessID;					// Process ID
 	m_usCategory = pItem.m_usCategory;						// Log category
 	m_strLogString = pItem.m_strLogString;					// Log string
-	m_arrDetailInfo.Copy(pItem.m_arrDetailInfo);			// Log detail info
+	m_arrDetailInfo = pItem.m_arrDetailInfo;				// Log detail info
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -487,12 +486,12 @@ BOOL LogItem::Compare(const LogItem& pItem) const
 
 	// Compare log detail info
 	BOOL bDetailInfoCompare = TRUE;
-	if (this->m_arrDetailInfo.GetSize() != pItem.m_arrDetailInfo.GetSize()) {
+	if (this->m_arrDetailInfo.size() != pItem.m_arrDetailInfo.size()) {
 		bDetailInfoCompare = FALSE;
 	}
 	else {
-		for (int nIndex = 0; nIndex < this->m_arrDetailInfo.GetSize(); nIndex++) {
-			if (this->m_arrDetailInfo.GetAt(nIndex).Compare(pItem.m_arrDetailInfo.GetAt(nIndex)) != TRUE) {
+		for (int nIndex = 0; nIndex < this->m_arrDetailInfo.size(); nIndex++) {
+			if (this->m_arrDetailInfo.at(nIndex).Compare(pItem.m_arrDetailInfo.at(nIndex)) != TRUE) {
 				bDetailInfoCompare = FALSE;
 				break;
 			}
@@ -611,7 +610,7 @@ CString LogItem::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log detail info
-	if (!m_arrDetailInfo.IsEmpty()) {
+	if (!m_arrDetailInfo.empty()) {
 
 		// Create JSON detail data object
 		JSONDATA jsonDetailData;
@@ -623,10 +622,10 @@ CString LogItem::FormatOutput(void) const
 		jsonDetailData.SetObjectName(GetString(StringTable::LogKey, BaseLog::Details));
 
 		// Convert data
-		for (int nIndex = 0; nIndex < (m_arrDetailInfo.GetSize()); nIndex++) {
+		for (int nIndex = 0; nIndex < (m_arrDetailInfo.size()); nIndex++) {
 
 			// Get detail info item
-			LOGDETAIL logDetail = m_arrDetailInfo.GetAt(nIndex);
+			LOGDETAIL logDetail = m_arrDetailInfo.at(nIndex);
 
 			// Skip if detail item is read-only
 			int nDetailFlag = logDetail.GetFlag();
@@ -691,7 +690,7 @@ JSON::JSON()
 {
 	// Initialization
 	this->m_strObjectName = STRING_EMPTY;			// JSON object name
-	this->m_arrKeyValuePairs.RemoveAll();			// Key-value pairs
+	this->m_arrKeyValuePairs.clear();				// Key-value pairs
 	this->m_nChildObjectCount = 0;					// Number of child objects
 	this->m_apChildObjectList = NULL;				// List of child objects
 }
@@ -763,15 +762,14 @@ void JSON::Copy(const JSON& pObj)
 void JSON::CopyArrayData(const JSON& pObj)
 {
 	// Remove all existing array data
-	this->m_arrKeyValuePairs.RemoveAll();
-	this->m_arrKeyValuePairs.FreeExtra();
+	this->m_arrKeyValuePairs.clear();
 
 	// Set destination array data size
-	this->m_arrKeyValuePairs.SetSize(pObj.m_arrKeyValuePairs.GetSize());
+	this->m_arrKeyValuePairs.reserve(pObj.m_arrKeyValuePairs.size());
 
 	// Copy list of key-value pairs
-	for (int nIndex = 0; nIndex < pObj.m_arrKeyValuePairs.GetSize(); nIndex++) {
-		this->m_arrKeyValuePairs.SetAt(nIndex, pObj.m_arrKeyValuePairs.GetAt(nIndex));
+	for (int nIndex = 0; nIndex < pObj.m_arrKeyValuePairs.size(); nIndex++) {
+		this->m_arrKeyValuePairs.push_back(pObj.m_arrKeyValuePairs.at(nIndex));
 	}
 }
 
@@ -843,12 +841,12 @@ BOOL JSON::Compare(const JSON& pObj) const
 
 	// Compare detail item info
 	BOOL bRetCompareDetail = TRUE;
-	if (this->m_arrKeyValuePairs.GetSize() != pObj.m_arrKeyValuePairs.GetSize()) {
+	if (this->m_arrKeyValuePairs.size() != pObj.m_arrKeyValuePairs.size()) {
 		bRetCompareDetail = FALSE;
 	}
 	if (bRetCompareDetail != FALSE) {
-		for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.GetSize()); nIndex++) {
-			if (this->m_arrKeyValuePairs.GetAt(nIndex) != pObj.m_arrKeyValuePairs.GetAt(nIndex)) {
+		for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
+			if (this->m_arrKeyValuePairs.at(nIndex) != pObj.m_arrKeyValuePairs.at(nIndex)) {
 				bRetCompareDetail = FALSE;
 				break;
 			}
@@ -917,13 +915,13 @@ BOOL JSON::IsEmpty(void) const
 void JSON::RemoveProperty(LPCTSTR lpszKeyName)
 {
 	// If property data is empty, do nothing
-	if (this->m_arrKeyValuePairs.IsEmpty())
+	if (this->m_arrKeyValuePairs.empty())
 		return;
 
 	// Search for key name
 	int nFoundIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.GetSize()); nIndex++) {
-		if (this->m_arrKeyValuePairs.GetAt(nIndex).strKey == lpszKeyName) {
+	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
+		if (this->m_arrKeyValuePairs.at(nIndex).strKey == lpszKeyName) {
 			nFoundIndex = nIndex;
 			break;
 		}
@@ -946,8 +944,7 @@ void JSON::RemoveAll(void)
 {
 	// Reset data
 	this->m_strObjectName.Empty();					// JSON object name
-	this->m_arrKeyValuePairs.RemoveAll();			// Key-value pairs
-	this->m_arrKeyValuePairs.FreeExtra();			// Free extra memory
+	this->m_arrKeyValuePairs.clear();				// Key-value pairs
 
 	// Remove all child objects
 	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
@@ -980,8 +977,8 @@ void JSON::RemoveAll(void)
 void JSON::AddString(LPCTSTR lpszKeyName, LPCTSTR lpszValue)
 {
 	// Search if key name already existed
-	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.GetSize()); nIndex++) {
-		JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
+	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
+		JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
 		if (jsonEntry.strKey == lpszKeyName) {
 			// Replace existed value with new value
 			jsonEntry.strValue = lpszValue;
@@ -990,7 +987,7 @@ void JSON::AddString(LPCTSTR lpszKeyName, LPCTSTR lpszValue)
 	}
 
 	// Add property
-	this->m_arrKeyValuePairs.Add({ lpszKeyName, lpszValue });
+	this->m_arrKeyValuePairs.push_back({ lpszKeyName, lpszValue });
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1129,14 +1126,14 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	}
 
 	// Print list of properties
-	INT_PTR nItemNum = this->m_arrKeyValuePairs.GetSize();
+	INT_PTR nItemNum = this->m_arrKeyValuePairs.size();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 		// Add indentation
 		strOutput.Append(strIndent);
 
 		// Get key and value
-		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
+		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
 
 		// Format properties
 		if ((nIndex == (nItemNum - 1)) &&
@@ -1212,8 +1209,8 @@ void JSON::PrintYAML(CString& strOutput, int nIndent)
 	}
 
 	// Print key-value pairs
-	for (int nIndex = 0; nIndex < this->m_arrKeyValuePairs.GetSize(); nIndex++) {
-		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.GetAt(nIndex);
+	for (int nIndex = 0; nIndex < this->m_arrKeyValuePairs.size(); nIndex++) {
+		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
 		strOutput.AppendFormat(_T("%s%s: \"%s\"\n"), strIndent.GetString(), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
 	}
 
@@ -1240,7 +1237,7 @@ void JSON::PrintYAML(CString& strOutput, int nIndent)
 SLogging::SLogging(BYTE byLogType)
 {
 	// Log data array
-	m_arrLogData.RemoveAll();
+	m_arrLogData.clear();
 
 	// Properties
 	m_byLogType = byLogType;
@@ -1260,8 +1257,7 @@ SLogging::SLogging(BYTE byLogType)
 SLogging::~SLogging()
 {
 	// Clean up log data
-	m_arrLogData.RemoveAll();
-	m_arrLogData.FreeExtra();
+	m_arrLogData.clear();
 
 	// Clean up default item template
 	if (m_pItemDefTemplate != NULL) {
@@ -1298,7 +1294,7 @@ LOGITEM& SLogging::GetLogItem(int nIndex)
 		nIndex = (GetLogCount() - 1);
 	}
 
-	return m_arrLogData.GetAt(nIndex);
+	return m_arrLogData.at(nIndex);
 }
 
 const LOGITEM& SLogging::GetLogItem(int nIndex) const
@@ -1320,7 +1316,7 @@ const LOGITEM& SLogging::GetLogItem(int nIndex) const
 		nIndex = (GetLogCount() - 1);
 	}
 
-	return m_arrLogData.GetAt(nIndex);
+	return m_arrLogData.at(nIndex);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1376,7 +1372,7 @@ void SLogging::OutputItem(const LOGITEM& logItem)
 		}
 
 		// Store log data
-		m_arrLogData.Add(logItem);
+		m_arrLogData.push_back(logItem);
 	}
 }
 

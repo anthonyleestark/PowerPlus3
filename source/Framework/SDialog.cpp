@@ -1373,8 +1373,8 @@ void SDialog::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data
-		for (int nIndex = 0; nIndex < pDetailInfo->GetSize(); nIndex++) {
-			logItemDialogEvent.AddDetail(pDetailInfo->GetAt(nIndex));
+		for (int nIndex = 0; nIndex < pDetailInfo->size(); nIndex++) {
+			logItemDialogEvent.AddDetail(pDetailInfo->at(nIndex));
 		}
 	}
 

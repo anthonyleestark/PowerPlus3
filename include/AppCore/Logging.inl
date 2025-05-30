@@ -94,7 +94,7 @@ inline void LogDetail::SetPointerSize(SIZE_T szPointerSize) {
 
 // Add log detail item
 inline void LogDetailInfo::AddDetail(const LOGDETAIL& logDetail) {
-	this->Add(logDetail);
+	this->push_back(logDetail);
 }
 
 // Get log time
@@ -159,19 +159,18 @@ inline void LogItem::AddDetail(USHORT usCategory, INT nDetailInfo, LPCTSTR lpszD
 
 // Remove all log detail info data
 inline void LogItem::RemoveDetailInfo(void) {
-	m_arrDetailInfo.RemoveAll();
-	m_arrDetailInfo.FreeExtra();
+	m_arrDetailInfo.clear();
 }
 
 // Remove property by index
 inline void JSON::RemoveProperty(INT_PTR nIndex)
 {
 	// Invalid index
-	if ((nIndex < 0) || (nIndex >= this->m_arrKeyValuePairs.GetSize()))
+	if ((nIndex < 0) || (nIndex >= this->m_arrKeyValuePairs.size()))
 		return;
 
 	// Remove property by index
-	this->m_arrKeyValuePairs.RemoveAt(nIndex);
+	m_arrKeyValuePairs.erase(m_arrKeyValuePairs.begin() + nIndex);
 }
 
 // Set JSON object name
@@ -183,25 +182,23 @@ inline void JSON::SetObjectName(LPCTSTR lpszObjectName) {
 inline void SLogging::Init()
 {
 	// Initialize empty log data
-	m_arrLogData.RemoveAll();
-	m_arrLogData.FreeExtra();
+	m_arrLogData.clear();
 }
 
 // Delete all log data
 inline void SLogging::DeleteAll()
 {
-	m_arrLogData.RemoveAll();
-	m_arrLogData.FreeExtra();
+	m_arrLogData.clear();
 }
 
 // Check if current log data is empty
 inline BOOL SLogging::IsEmpty(void) const {
-	return m_arrLogData.IsEmpty();
+	return m_arrLogData.empty();
 }
 
 // Return the number of items of log data
 inline INT_PTR SLogging::GetLogCount() const {
-	return m_arrLogData.GetSize();
+	return m_arrLogData.empty();
 }
 
 // Get maximum log data size
@@ -213,7 +210,7 @@ inline INT_PTR SLogging::GetMaxSize(void) const {
 inline void SLogging::SetMaxSize(INT_PTR nMaxSize)
 {
 	// Max size can only be larger than current log data size
-	if (nMaxSize > (this->m_arrLogData.GetSize())) {
+	if (nMaxSize > (this->m_arrLogData.size())) {
 		m_nMaxSize = nMaxSize;
 	}
 }

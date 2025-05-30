@@ -262,6 +262,9 @@ public:
 	virtual SIZE_T	GetDataSize(void) const;
 };
 
+// Define new typename
+using SCtrlInfoList = typename std::vector<SCtrlInfoWrap*>;
+
 //////////////////////////////////////////////////////////////////////////
 //
 //	Class name:	 SMenu
@@ -283,16 +286,6 @@ protected:
 	// User menu layout
 	PUSERMENU	m_pMenuLayout;
 };
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	SCtrlInfoList
-//  Description:	Store list of dialog/window control info wrappers
-//  Derivered from: MFC CArray class
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef CArray<SCtrlInfoWrap*, SCtrlInfoWrap*> SCtrlInfoList;
 
 //////////////////////////////////////////////////////////////////////////
 //

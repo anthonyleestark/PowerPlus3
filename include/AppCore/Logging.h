@@ -87,7 +87,7 @@ public:
 // Define new typenames for LogData
 using LOGDETAIL = typename LogDetail;
 using PLOGDETAIL = typename LogDetail*;
-using LOGDETAILARRAY = typename CArray<LogDetail, LogDetail>;
+using LOGDETAILARRAY = typename std::vector<LogDetail>;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,7 @@ public:
 // Define new typenames for LogItem
 using LOGITEM = typename LogItem;
 using PLOGITEM = typename LogItem*;
-using LOGDATA = typename CArray<LogItem, LogItem>;
+using LOGDATA = typename std::vector<LogItem>;
 using PLOGDATA = typename LOGDATA*;
 
 
@@ -239,7 +239,7 @@ struct JSON_ENTRY
 };
 
 // Define new typenames for JSON entry data
-using JSON_ENTRY_DATA = typename CArray<JSON_ENTRY, JSON_ENTRY>;
+using JSON_ENTRY_DATA = typename std::vector<JSON_ENTRY>;
 
 
 //////////////////////////////////////////////////////////////////////////

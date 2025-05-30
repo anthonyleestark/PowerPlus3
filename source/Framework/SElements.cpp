@@ -1204,8 +1204,7 @@ BOOL SControlManager::Initialize(void)
 	}
 
 	// Empty array data
-	m_pCtrlInfoArray->RemoveAll();
-	m_pCtrlInfoArray->FreeExtra();
+	m_pCtrlInfoArray->clear();
 
 	return TRUE;
 }
@@ -1226,8 +1225,8 @@ BOOL SControlManager::DeleteAll(void)
 		return FALSE;
 
 	// Delete all control info wrapper pointers
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->GetCount()); nIndex++) {
-		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->ElementAt(nIndex);
+	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
+		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
 		if (pExControl != NULL) {
 			delete pExControl;
 			pExControl = NULL;
@@ -1235,8 +1234,7 @@ BOOL SControlManager::DeleteAll(void)
 	}
 
 	// Empty array data
-	m_pCtrlInfoArray->RemoveAll();
-	m_pCtrlInfoArray->FreeExtra();
+	m_pCtrlInfoArray->clear();
 
 	return TRUE;
 }
@@ -1261,8 +1259,8 @@ INT_PTR SControlManager::AddControl(SCtrlInfoWrap* pControl)
 		return INT_INVALID;
 
 	// Search if control ID had already existed
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->GetCount()); nIndex++) {
-		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->ElementAt(nIndex);
+	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
+		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
 		if (pExControl == NULL) continue;
 		if (pExControl->GetTemplateID() == pControl->GetTemplateID()) {
 			// Return control index
@@ -1271,7 +1269,8 @@ INT_PTR SControlManager::AddControl(SCtrlInfoWrap* pControl)
 	}
 
 	// Add control to list and return list size
-	return (this->m_pCtrlInfoArray->Add(pControl));
+	this->m_pCtrlInfoArray->push_back(pControl);
+	return (this->m_pCtrlInfoArray->size());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1321,20 +1320,19 @@ INT_PTR SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 INT_PTR SControlManager::RemoveControl(UINT nCtrlID)
 {
 	// If data is not initialized or is empty
-	if ((this->m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
+	if ((m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
 		return INT_INVALID;
 
 	// Search for control ID
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->GetCount()); nIndex++) {
-		SCtrlInfoWrap* pExControl = this->m_pCtrlInfoArray->GetAt(nIndex);
+	for (int nIndex = 0; nIndex < (m_pCtrlInfoArray->size()); nIndex++) {
+		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
 		if (pExControl == NULL) continue;
 		if (pExControl->GetTemplateID() == nCtrlID) {
 			delete pExControl;
 
 			// Remove control from list
-			this->m_pCtrlInfoArray->RemoveAt(nIndex);
-			this->m_pCtrlInfoArray->FreeExtra();
-			return (this->m_pCtrlInfoArray->GetUpperBound());
+			m_pCtrlInfoArray->erase(m_pCtrlInfoArray->begin() + nIndex);
+			return (m_pCtrlInfoArray->size());
 		}
 	}
 
@@ -1358,8 +1356,8 @@ SCtrlInfoWrap* SControlManager::GetControl(UINT nCtrlID)
 		return NULL;
 
 	// Search for control ID
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->GetCount()); nIndex++) {
-		SCtrlInfoWrap* pControl = m_pCtrlInfoArray->GetAt(nIndex);
+	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
+		SCtrlInfoWrap* pControl = m_pCtrlInfoArray->at(nIndex);
 		if (pControl == NULL) continue;
 		if (pControl->GetTemplateID() == nCtrlID)
 			return pControl;
@@ -1423,14 +1421,14 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 
 	// Loop through control management list
 	INT nTriggerForceRetFlag = FLAG_OFF;
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->GetCount()); nIndex++) {
+	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
 
 		// If force return flag is ON, break the loop
 		if (nTriggerForceRetFlag == FLAG_ON)
 			break;
 
 		// Get control wrapper pointer
-		SCtrlInfoWrap* pCurControl = m_pCtrlInfoArray->GetAt(nIndex);
+		SCtrlInfoWrap* pCurControl = m_pCtrlInfoArray->at(nIndex);
 		if (pCurControl == NULL) continue;
 
 		// Only update data for specified control

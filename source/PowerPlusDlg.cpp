@@ -94,7 +94,7 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	m_arrCurRegHKeyList.RemoveAll();
 
 	// Init Power++ runtime queue data
-	m_arrRuntimeQueue.RemoveAll();
+	m_arrRuntimeQueue.clear();
 
 	// Init child dialogs
 	m_pAboutDlg = NULL;
@@ -176,8 +176,7 @@ CPowerPlusDlg::~CPowerPlusDlg()
 	m_prdReminderData.DeleteAll();
 
 	// Clean Power++ runtime queue data
-	m_arrRuntimeQueue.RemoveAll();
-	m_arrRuntimeQueue.FreeExtra();
+	m_arrRuntimeQueue.clear();
 
 	// Kill timers
 	KillTimer(TIMERID_STD_ACTIONSCHEDULE);
@@ -3811,10 +3810,10 @@ void CPowerPlusDlg::SetActionScheduleSkip(const SCHEDULEITEM& schItem, int nSkip
 	if (schItem.IsEmpty()) return;
 
 	// Find if item skip mode is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -3835,7 +3834,7 @@ void CPowerPlusDlg::SetActionScheduleSkip(const SCHEDULEITEM& schItem, int nSkip
 	pwrRuntimeItem.SetSkipFlag(nSkipFlag);
 
 	// Add item to runtime queue
-	m_arrRuntimeQueue.Add(pwrRuntimeItem);
+	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3863,10 +3862,10 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const SCHEDULEITEM& schItem, int nSn
 	int nInterval = DEF_REPEATSET_DEFAULT_SNOOZE;
 
 	// Find if item skip mode is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -3898,7 +3897,7 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const SCHEDULEITEM& schItem, int nSn
 	}
 
 	// Add item to runtime queue
-	m_arrRuntimeQueue.Add(pwrRuntimeItem);
+	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3924,10 +3923,10 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 	else if (nMode == MODE_UPDATE) {
 
 		// Update skip queue items
-		for (int nQueueIdx = (m_arrRuntimeQueue.GetSize() - 1); nQueueIdx >= 0; nQueueIdx--) {
+		for (int nQueueIdx = (m_arrRuntimeQueue.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
 
 			// Get runtime item from queue
-			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nQueueIdx);
+			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
 
 			// Skip if it's not an Action Schedule item
 			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -3971,20 +3970,17 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 			// which means item maybe removed and no longer exists
 			if (bItemFound == FALSE) {
 				// Remove item from runtime queue
-				m_arrRuntimeQueue.RemoveAt(nQueueIdx);
+				m_arrRuntimeQueue.erase(m_arrRuntimeQueue.begin() + nQueueIdx);
 			}
 		}
-
-		// Free extra memory
-		m_arrRuntimeQueue.FreeExtra();
 	}
 	else if (nMode == MODE_DISABLE) {
 
 		// Disable skip mode for all items in queue
-		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 			// Get runtime item from queue
-			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 			// Skip if it's not an Action Schedule item
 			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -4010,14 +4006,14 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 BOOL CPowerPlusDlg::GetActionScheduleSkipStatus(UINT nItemID)
 {
 	// If runtime queue data is empty, do not trigger
-	if (m_arrRuntimeQueue.IsEmpty())
+	if (m_arrRuntimeQueue.empty())
 		return FALSE;
 
 	// Find for item ID
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -4049,14 +4045,14 @@ BOOL CPowerPlusDlg::GetActionScheduleSkipStatus(UINT nItemID)
 BOOL CPowerPlusDlg::GetActionScheduleSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime)
 {
 	// If runtime queue data is empty, do not trigger
-	if (m_arrRuntimeQueue.IsEmpty())
+	if (m_arrRuntimeQueue.empty())
 		return FALSE;
 
 	// Find for item ID
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -4760,10 +4756,10 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PWRREMINDERITEM& pwrItem, int nSn
 	int nInterval = pwrItem.GetSnoozeInterval();
 
 	// Find if item snooze mode is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4795,7 +4791,7 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PWRREMINDERITEM& pwrItem, int nSn
 	}
 
 	// Add item to runtime queue
-	m_arrRuntimeQueue.Add(pwrRuntimeItem);
+	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4820,10 +4816,10 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 	else if (nMode == MODE_UPDATE) {
 
 		// Update snooze queue items
-		for (int nQueueIdx = (m_arrRuntimeQueue.GetSize() - 1); nQueueIdx >= 0; nQueueIdx--) {
+		for (int nQueueIdx = (m_arrRuntimeQueue.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
 			
 			// Get runtime item from queue
-			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nQueueIdx);
+			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
 
 			// Skip if it's not Power Reminder item
 			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4850,20 +4846,17 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 			// which means item maybe removed and no longer exists
 			if (bItemFound == FALSE) {
 				// Remove item from snooze queue
-				m_arrRuntimeQueue.RemoveAt(nQueueIdx);
+				m_arrRuntimeQueue.erase(m_arrRuntimeQueue.begin() + nQueueIdx);
 			}
 		}
-
-		// Free extra memory
-		m_arrRuntimeQueue.FreeExtra();
 	}
 	else if (nMode == MODE_DISABLE) {
 
 		// Disable snooze mode for all items in queue
-		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 			// Get runtime item from queue
-			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 			// Skip if it's not Power Reminder item
 			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4887,14 +4880,14 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime)
 {
 	// If runtime queue data is empty, do not trigger
-	if (m_arrRuntimeQueue.IsEmpty())
+	if (m_arrRuntimeQueue.empty())
 		return FALSE;
 
 	// Find for item ID
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4933,10 +4926,10 @@ void CPowerPlusDlg::SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int n
 	if (pwrItem.IsEmpty()) return;
 
 	// Find if item runtime data is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4956,7 +4949,7 @@ void CPowerPlusDlg::SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int n
 	pwrRuntimeItem.SetDisplayFlag(nDispFlag);
 
 	// Add item to runtime queue
-	m_arrRuntimeQueue.Add(pwrRuntimeItem);
+	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4975,14 +4968,14 @@ INT_PTR CPowerPlusDlg::GetPwrReminderDispList(CUIntArray& arrPwrDispList)
 	arrPwrDispList.FreeExtra();
 
 	// If runtime queue data is empty, return no item
-	if (m_arrRuntimeQueue.IsEmpty())
+	if (m_arrRuntimeQueue.empty())
 		return INT_NULL;
 
 	// Get runtime displaying item ID list
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;

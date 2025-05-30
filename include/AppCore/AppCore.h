@@ -1070,7 +1070,7 @@ public:
 // Define new typenames for Schedule item data
 using SCHEDULEITEM = typename ScheduleItem;
 using PSCHEDULEITEM = typename ScheduleItem*;
-using SCHEDULEITEMLIST = CArray<SCHEDULEITEM, SCHEDULEITEM>;
+using SCHEDULEITEMLIST = typename std::vector<SCHEDULEITEM>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1187,7 +1187,7 @@ public:
 // Define new typenames for HotkeySet item data
 using HOTKEYSETITEM = typename HotkeySetItem;
 using PHOTKEYSETITEM = typename HotkeySetItem*;
-using HOTKEYSETITEMLIST = CArray<HOTKEYSETITEM, HOTKEYSETITEM>;
+using HOTKEYSETITEMLIST = typename std::vector<HOTKEYSETITEM>;
 
 // Define new global typenames for the enum attributes of HotkeySet items
 using HotkeyID = typename HotkeySetItem::HKID;
@@ -1406,7 +1406,7 @@ public:
 // Define new typenames for Power Reminder Item data
 using PWRREMINDERITEM = typename PwrReminderItem;
 using PPWRREMINDERITEM = typename PwrReminderItem*;
-using PWRREMINDERITEMLIST = CArray<PWRREMINDERITEM, PWRREMINDERITEM>;
+using PWRREMINDERITEMLIST = typename std::vector<PWRREMINDERITEM>;
 
 // Define new global typenames for the enum attributes of Power Reminder items
 using PwrReminderEvent = typename PwrReminderItem::Event;
@@ -1521,7 +1521,7 @@ public:
 // Define new typenames for runtime info item data
 using PWRRUNTIMEITEM = typename PwrRuntimeItem;
 using PPWRRUNTIMEITEM = typename PwrRuntimeItem*;
-using PWRRUNTIMEQUEUE = CArray<PWRRUNTIMEITEM, PWRRUNTIMEITEM>;
+using PWRRUNTIMEQUEUE = typename std::vector<PWRRUNTIMEITEM>;
 
 // Define new global typenames for the enum attributes of runtime info items
 using PwrFeatureID = typename PwrRuntimeItem::FeatureCategoryID;

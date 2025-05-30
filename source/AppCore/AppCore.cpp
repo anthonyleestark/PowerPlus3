@@ -515,7 +515,7 @@ ScheduleData::ScheduleData()
 {
 	// Initialize
 	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
-	m_arrSchedExtraItemList.RemoveAll();
+	m_arrSchedExtraItemList.clear();
 }
 
 ScheduleData::ScheduleData(const ScheduleData& pData)
@@ -553,7 +553,7 @@ void ScheduleData::Init()
 {
 	// Initialize
 	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
-	m_arrSchedExtraItemList.RemoveAll();
+	m_arrSchedExtraItemList.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -578,8 +578,8 @@ void ScheduleData::Copy(const ScheduleData& pData)
 
 	// Copy extra data
 	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = pData.m_arrSchedExtraItemList.GetAt(nIndex);
-		this->m_arrSchedExtraItemList.Add(schItem);
+		SCHEDULEITEM schItem = pData.m_arrSchedExtraItemList.at(nIndex);
+		this->m_arrSchedExtraItemList.push_back(schItem);
 	}
 }
 
@@ -623,9 +623,9 @@ DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 	}
 
 	// If extra schedule data is currently empty
-	if (m_arrSchedExtraItemList.IsEmpty()) {
+	if (m_arrSchedExtraItemList.empty()) {
 		// Just add the item
-		m_arrSchedExtraItemList.Add(pItem);
+		m_arrSchedExtraItemList.push_back(pItem);
 		return DEF_SCHEDULE_ERROR_SUCCESS;
 	}
 
@@ -649,17 +649,17 @@ DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 
 	// Create new temporary data
 	ScheduleData* pNew = new ScheduleData;
-	pNew->m_arrSchedExtraItemList.RemoveAll();
+	pNew->m_arrSchedExtraItemList.clear();
 
 	// Copy old data to new one
 	pNew->m_schDefaultItem.Copy(this->m_schDefaultItem);
 	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
 		SCHEDULEITEM schItem = this->GetItemAt(nIndex);
-		pNew->m_arrSchedExtraItemList.Add(schItem);
+		pNew->m_arrSchedExtraItemList.push_back(schItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->m_arrSchedExtraItemList.Add(pItem);
+	pNew->m_arrSchedExtraItemList.push_back(pItem);
 	this->Copy(*pNew);
 
 	// Delete data
@@ -830,7 +830,7 @@ UINT ScheduleData::GetNextID(void)
 BOOL ScheduleData::IsExtraEmpty(void) const
 {
 	// If there's no item, return TRUE
-	if (m_arrSchedExtraItemList.IsEmpty())
+	if (m_arrSchedExtraItemList.empty())
 		return TRUE;
 
 	// Check each item
@@ -862,13 +862,13 @@ void ScheduleData::Delete(int nAtIndex)
 
 	// Create new temporary data
 	ScheduleData* pNew = new ScheduleData;
-	pNew->m_arrSchedExtraItemList.RemoveAll();
+	pNew->m_arrSchedExtraItemList.clear();
 
 	// Copy old data to new one (except the AtIndex item)
 	pNew->m_schDefaultItem.Copy(this->m_schDefaultItem);
 	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
 		if (nIndex == nAtIndex) continue;
-		pNew->m_arrSchedExtraItemList.Add(this->m_arrSchedExtraItemList.GetAt(nIndex));
+		pNew->m_arrSchedExtraItemList.push_back(this->m_arrSchedExtraItemList.at(nIndex));
 	}
 
 	// Copy back to old data
@@ -894,8 +894,7 @@ void ScheduleData::Delete(int nAtIndex)
 void ScheduleData::DeleteExtra(void)
 {
 	// Reset data
-	m_arrSchedExtraItemList.RemoveAll();
-	m_arrSchedExtraItemList.FreeExtra();
+	m_arrSchedExtraItemList.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -911,8 +910,7 @@ void ScheduleData::DeleteAll(void)
 {
 	// Reset data
 	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
-	m_arrSchedExtraItemList.RemoveAll();
-	m_arrSchedExtraItemList.FreeExtra();
+	m_arrSchedExtraItemList.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1052,7 +1050,7 @@ void HotkeySetItem::PrintKeyStrokes(CString& strOutput) const
 HotkeySetData::HotkeySetData()
 {
 	// Initialize
-	m_arrHotkeySetList.RemoveAll();
+	m_arrHotkeySetList.clear();
 }
 
 HotkeySetData::HotkeySetData(const HotkeySetData& pData)
@@ -1096,8 +1094,8 @@ void HotkeySetData::Copy(const HotkeySetData& pData)
 
 	// Copy data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		const Item& hksItem = pData.m_arrHotkeySetList.GetAt(nIndex);
-		this->m_arrHotkeySetList.Add(hksItem);
+		const Item& hksItem = pData.m_arrHotkeySetList.at(nIndex);
+		this->m_arrHotkeySetList.push_back(hksItem);
 	}
 }
 
@@ -1116,12 +1114,13 @@ void HotkeySetData::SetDefaultData(void)
 	this->Init();
 
 	// Create default data
-	m_arrHotkeySetList.Add(Item(HKID::displayOff));
-	m_arrHotkeySetList.Add(Item(HKID::sleep));
-	m_arrHotkeySetList.Add(Item(HKID::shutdown));
-	m_arrHotkeySetList.Add(Item(HKID::restart));
-	m_arrHotkeySetList.Add(Item(HKID::signOut));
-	m_arrHotkeySetList.Add(Item(HKID::hibernate));
+	m_arrHotkeySetList.reserve(6);
+	m_arrHotkeySetList.push_back(Item(HKID::displayOff));
+	m_arrHotkeySetList.push_back(Item(HKID::sleep));
+	m_arrHotkeySetList.push_back(Item(HKID::shutdown));
+	m_arrHotkeySetList.push_back(Item(HKID::restart));
+	m_arrHotkeySetList.push_back(Item(HKID::signOut));
+	m_arrHotkeySetList.push_back(Item(HKID::hibernate));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1136,9 +1135,9 @@ void HotkeySetData::SetDefaultData(void)
 void HotkeySetData::Add(const Item& pItem)
 {
 	// If data list is current empty
-	if (m_arrHotkeySetList.IsEmpty()) {
+	if (m_arrHotkeySetList.empty()) {
 		// Just add item
-		m_arrHotkeySetList.Add(pItem);
+		m_arrHotkeySetList.push_back(pItem);
 		return;
 	}
 
@@ -1151,16 +1150,16 @@ void HotkeySetData::Add(const Item& pItem)
 
 	// Create new temporary data
 	HotkeySetData* pNew = new HotkeySetData;
-	pNew->m_arrHotkeySetList.RemoveAll();
+	pNew->m_arrHotkeySetList.clear();
 	
 	// Copy old data to new one
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		const Item& hksItem = this->GetItemAt(nIndex);
-		pNew->m_arrHotkeySetList.Add(hksItem);
+		pNew->m_arrHotkeySetList.push_back(hksItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->m_arrHotkeySetList.Add(pItem);
+	pNew->m_arrHotkeySetList.push_back(pItem);
 	this->Copy(*pNew);
 	
 	// Delete temporary data
@@ -1183,7 +1182,7 @@ void HotkeySetData::Add(const Item& pItem)
 void HotkeySetData::Update(const Item& pItem)
 {
 	// If data list is current empty
-	if (m_arrHotkeySetList.IsEmpty()) {
+	if (m_arrHotkeySetList.empty()) {
 		// Just add item
 		Add(pItem);
 		return;
@@ -1306,7 +1305,7 @@ void HotkeySetData::Adjust(void)
 BOOL HotkeySetData::IsAllEmpty() const
 {
 	// If there's no item, return TRUE
-	if (m_arrHotkeySetList.IsEmpty())
+	if (m_arrHotkeySetList.empty())
 		return TRUE;
 
 	// Check each item
@@ -1338,12 +1337,12 @@ void HotkeySetData::Delete(int nAtIndex)
 
 	// Create new temporary data
 	HotkeySetData* pNew = new HotkeySetData;
-	pNew->m_arrHotkeySetList.RemoveAll();
+	pNew->m_arrHotkeySetList.clear();
 
 	// Copy old data to new one (except the AtIndex item)
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (nIndex == nAtIndex) continue;
-		pNew->m_arrHotkeySetList.Add(this->GetItemAt(nIndex));
+		pNew->m_arrHotkeySetList.push_back(this->GetItemAt(nIndex));
 	}
 
 	// Copy back to old data
@@ -1679,7 +1678,7 @@ void PwrReminderItem::Print(CString& strOutput) const
 PwrReminderData::PwrReminderData()
 {
 	// Initialize
-	m_arrRmdItemList.RemoveAll();
+	m_arrRmdItemList.clear();
 	m_rmdCommonStyle = RMDMSGSTYLESET();
 }
 
@@ -1717,7 +1716,7 @@ PwrReminderData& PwrReminderData::operator=(const PwrReminderData& pData)
 void PwrReminderData::Init()
 {
 	// Initialize
-	m_arrRmdItemList.RemoveAll();
+	m_arrRmdItemList.clear();
 	m_rmdCommonStyle = RMDMSGSTYLESET();
 }
 
@@ -1740,8 +1739,8 @@ void PwrReminderData::Copy(const PwrReminderData& pData)
 
 	// Copy reminder data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = pData.m_arrRmdItemList.GetAt(nIndex);
-		this->m_arrRmdItemList.Add(pwrItem);
+		PWRREMINDERITEM pwrItem = pData.m_arrRmdItemList.at(nIndex);
+		this->m_arrRmdItemList.push_back(pwrItem);
 	}
 
 	// Copy common message style data
@@ -1775,9 +1774,9 @@ void PwrReminderData::SetDefaultData(void)
 void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
 {
 	// If data list is current empty
-	if (m_arrRmdItemList.IsEmpty()) {
+	if (m_arrRmdItemList.empty()) {
 		// Just add item
-		m_arrRmdItemList.Add(pItem);
+		m_arrRmdItemList.push_back(pItem);
 		return;
 	}
 
@@ -1790,7 +1789,7 @@ void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
 
 	// Create new temporary data
 	PwrReminderData* pNew = new PwrReminderData;
-	pNew->m_arrRmdItemList.RemoveAll();
+	pNew->m_arrRmdItemList.clear();
 
 	// Copy common message style data
 	pNew->m_rmdCommonStyle.Copy(this->m_rmdCommonStyle);
@@ -1798,11 +1797,11 @@ void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
 	// Copy old data to new one
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		PWRREMINDERITEM pwrItem = this->GetItemAt(nIndex);
-		pNew->m_arrRmdItemList.Add(pwrItem);
+		pNew->m_arrRmdItemList.push_back(pwrItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->m_arrRmdItemList.Add(pItem);
+	pNew->m_arrRmdItemList.push_back(pItem);
 	this->Copy(*pNew);
 
 	// Delete data
@@ -1825,7 +1824,7 @@ void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
 void PwrReminderData::Update(const PWRREMINDERITEM& pItem)
 {
 	// If data list is current empty
-	if (m_arrRmdItemList.IsEmpty()) {
+	if (m_arrRmdItemList.empty()) {
 		// Just add item
 		Add(pItem);
 		return;
@@ -1950,7 +1949,7 @@ UINT PwrReminderData::GetNextID(void)
 BOOL PwrReminderData::IsAllEmpty() const
 {
 	// If there's no item, return TRUE
-	if (m_arrRmdItemList.IsEmpty())
+	if (m_arrRmdItemList.empty())
 		return TRUE;
 
 	// Check each item
@@ -1982,7 +1981,7 @@ void PwrReminderData::Delete(int nAtIndex)
 
 	// Create new temporary data
 	PwrReminderData* pNew = new PwrReminderData;
-	pNew->m_arrRmdItemList.RemoveAll();
+	pNew->m_arrRmdItemList.clear();
 
 	// Copy common message style data
 	pNew->m_rmdCommonStyle.Copy(this->m_rmdCommonStyle);
@@ -1990,7 +1989,7 @@ void PwrReminderData::Delete(int nAtIndex)
 	// Copy old data to new one (except the AtIndex item)
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		if (nIndex == nAtIndex) continue;
-		pNew->m_arrRmdItemList.Add(this->m_arrRmdItemList.GetAt(nIndex));
+		pNew->m_arrRmdItemList.push_back(this->m_arrRmdItemList.at(nIndex));
 	}
 
 	// Copy back to old data

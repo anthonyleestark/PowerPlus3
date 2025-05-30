@@ -510,8 +510,8 @@ void SWinApp::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL *
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data
-		for (int nIndex = 0; nIndex < pDetailInfo->GetSize(); nIndex++) {
-			logItemAppEvent.AddDetail(pDetailInfo->GetAt(nIndex));
+		for (int nIndex = 0; nIndex < pDetailInfo->size(); nIndex++) {
+			logItemAppEvent.AddDetail(pDetailInfo->at(nIndex));
 		}
 	}
 

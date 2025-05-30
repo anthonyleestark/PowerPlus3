@@ -154,7 +154,7 @@ inline INT_PTR SControlManager::GetCount(void) const
 	if (m_pCtrlInfoArray == NULL)
 		return 0;
 
-	return m_pCtrlInfoArray->GetCount();
+	return m_pCtrlInfoArray->size();
 }
 
 // Check if control management list is empty
@@ -164,7 +164,7 @@ inline BOOL SControlManager::IsEmpty(void) const
 	if (m_pCtrlInfoArray == NULL)
 		return TRUE;
 
-	return m_pCtrlInfoArray->IsEmpty();
+	return m_pCtrlInfoArray->empty();
 }
 
 // Get current control's parent window

@@ -1191,7 +1191,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	else if (!_tcscmp(retBuff[0].tcToken, _T("runtimequeue"))) {
 		if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("print")))) {
 			// Print Power++ runtime queue list
-			if (m_arrRuntimeQueue.IsEmpty()) {
+			if (m_arrRuntimeQueue.empty()) {
 				// Empty list
 				OutputDebugLog(_T("Runtime queue empty!"));
 				bNoReply = FALSE;	// Reset flag
@@ -1199,9 +1199,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Print each item
 				PWRRUNTIMEITEM pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 					// Print runtime item info
 					OutputDebugLogFormat(_T("Item%03d: CategoryID=%d, ItemID=%d, Display=%d, Skip=%d, Snooze=%d"), nIndex, pwrRuntimeItem.GetCategory(),
 						pwrRuntimeItem.GetItemID(), pwrRuntimeItem.GetDisplayFlag(), pwrRuntimeItem.GetSkipFlag(), pwrRuntimeItem.GetSnoozeFlag());
@@ -1217,7 +1217,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	else if (!_tcscmp(retBuff[0].tcToken, _T("rmdsnooze"))) {
 		if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("prntqueue")))) {
 			// Print Power Reminder snooze queue list
-			if (m_arrRuntimeQueue.IsEmpty()) {
+			if (m_arrRuntimeQueue.empty()) {
 				// Empty list
 				OutputDebugLog(_T("Reminder snooze queue empty!"));
 				bNoReply = FALSE;	// Reset flag
@@ -1225,9 +1225,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Print each item
 				PWRRUNTIMEITEM pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 					// Skip if it's not Power Reminder item
 					if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info
@@ -1281,7 +1281,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	else if (!_tcscmp(retBuff[0].tcToken, _T("rmdruntime"))) {
 		if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("prntdata")))) {
 			// Print Power Reminder runtime data list
-			if (m_arrRuntimeQueue.IsEmpty()) {
+			if (m_arrRuntimeQueue.empty()) {
 				// Empty list
 				OutputDebugLog(_T("Reminder runtime data empty!"));
 				bNoReply = FALSE;	// Reset flag
@@ -1289,9 +1289,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			else {
 				// Print each item
 				PWRRUNTIMEITEM pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.GetSize(); nIndex++) {
+				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = m_arrRuntimeQueue.GetAt(nIndex);
+					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 					// Skip if it's not Power Reminder item
 					if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info

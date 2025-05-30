@@ -212,7 +212,7 @@ inline const SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex) const
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetExtraItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetExtraItemNum()))
-		return m_arrSchedExtraItemList.GetAt(nIndex);
+		return m_arrSchedExtraItemList.at(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -223,7 +223,7 @@ inline SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex)
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetExtraItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetExtraItemNum()))
-		return m_arrSchedExtraItemList.GetAt(nIndex);
+		return m_arrSchedExtraItemList.at(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -231,7 +231,7 @@ inline SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex)
 
 // Get number of extra items
 inline INT_PTR ScheduleData::GetExtraItemNum(void) const {
-	return m_arrSchedExtraItemList.GetSize();
+	return m_arrSchedExtraItemList.size();
 }
 
 // Check if default item is empty
@@ -326,12 +326,12 @@ inline BOOL HotkeySetItem::CompareKeycode(DWORD dwModifiers, DWORD dwVirtualKey)
 
 // Init HotkeySet data (NULL)
 inline void HotkeySetData::Init() {
-	m_arrHotkeySetList.RemoveAll();
+	m_arrHotkeySetList.clear();
 }
 
 // Get number of items
 inline INT_PTR HotkeySetData::GetItemNum(void) const {
-	return m_arrHotkeySetList.GetSize();
+	return m_arrHotkeySetList.size();
 }
 
 // Check if item at index is empty
@@ -353,7 +353,7 @@ inline const HOTKEYSETITEM& HotkeySetData::GetItemAt(int nIndex) const
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetItemNum()))
-		return m_arrHotkeySetList.GetAt(nIndex);
+		return m_arrHotkeySetList.at(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -364,7 +364,7 @@ inline HOTKEYSETITEM& HotkeySetData::GetItemAt(int nIndex)
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetItemNum()))
-		return m_arrHotkeySetList.GetAt(nIndex);
+		return m_arrHotkeySetList.at(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -374,8 +374,7 @@ inline HOTKEYSETITEM& HotkeySetData::GetItemAt(int nIndex)
 inline void HotkeySetData::DeleteAll(void)
 {
 	// Reset data
-	m_arrHotkeySetList.RemoveAll();
-	m_arrHotkeySetList.FreeExtra();
+	m_arrHotkeySetList.clear();
 }
 
 // Get background color
@@ -635,7 +634,7 @@ inline void PwrReminderItem::SetDayActive(DayOfWeek dayOfWeek, BOOL bActive) {
 
 // Get number of items
 inline INT_PTR PwrReminderData::GetItemNum(void) const {
-	return m_arrRmdItemList.GetSize();
+	return m_arrRmdItemList.size();
 }
 
 // Get the Power Reminder item at index
@@ -643,7 +642,7 @@ inline PWRREMINDERITEM& PwrReminderData::GetItemAt(int nIndex)
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetItemNum()))
-		return m_arrRmdItemList.GetAt(nIndex);
+		return m_arrRmdItemList.at(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -654,7 +653,7 @@ inline const PWRREMINDERITEM& PwrReminderData::GetItemAt(int nIndex) const
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetItemNum()))
-		return m_arrRmdItemList.GetAt(nIndex);
+		return m_arrRmdItemList.at(nIndex);
 
 	// Invalid argument
 	AfxThrowInvalidArgException();
@@ -676,8 +675,7 @@ inline BOOL PwrReminderData::IsEmpty(int nIndex) const
 inline void PwrReminderData::DeleteAll(void)
 {
 	// Reset data
-	m_arrRmdItemList.RemoveAll();
-	m_arrRmdItemList.FreeExtra();
+	m_arrRmdItemList.clear();
 	m_rmdCommonStyle = RMDMSGSTYLESET();
 }
 
@@ -865,7 +863,7 @@ inline INT_PTR SystemEventTracker::GetTrackedCount(void) const {
 
 // Add system event info
 inline void SystemEventTracker::AddEvent(const SystemEvent& eventInfo) {
-	m_arrTrackingData.emplace_back(eventInfo);
+	m_arrTrackingData.push_back(eventInfo);
 }
 
 // Remove all tracking data of specific event ID
