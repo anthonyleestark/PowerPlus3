@@ -60,7 +60,7 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	// Message icon
 	m_hMsgIcon = NULL;
 	m_bDispIcon = FALSE;
-	m_byIconPlacement = DEFAULT_MSG_ICONPLACEMENT;
+	m_byIconPosition = DEFAULT_MSG_ICONPLACEMENT;
 	m_szIconSize.cx = DEFAULT_MSG_ICONSIZE;
 	m_szIconSize.cy = DEFAULT_MSG_ICONSIZE;
 
@@ -157,13 +157,13 @@ BOOL CReminderMsgDlg::OnInitDialog()
 		// Get current margin
 		CRect rcDialogMargin;
 		this->GetMargin(&rcDialogMargin);
-		if (m_byIconPlacement == IconOnTheTop) {
+		if (m_byIconPosition == IconOnTheTop) {
 			// Shift top margin
 			rcDialogMargin.top += m_szIconSize.cy;
 			rcDialogMargin.top -= DEFAULT_TEXT2ICON_DISTANCE;
 			this->SetTopMargin(rcDialogMargin.top);
 		}
-		else if (m_byIconPlacement == IconOnTheLeft) {
+		else if (m_byIconPosition == IconOnTheLeft) {
 			// Shift left margin
 			rcDialogMargin.left += m_szIconSize.cx;
 			rcDialogMargin.left -= DEFAULT_TEXT2ICON_DISTANCE;
@@ -545,11 +545,11 @@ BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon) const
 
 	// Calculate icon top-left point
 	int nText2IconDist = DEFAULT_TEXT2ICON_DISTANCE;
-	if (m_byIconPlacement == IconOnTheTop) {
+	if (m_byIconPosition == IconOnTheTop) {
 		lpptIcon->y = rcCurMargin.top - (m_szIconSize.cy + nText2IconDist);
 		lpptIcon->x = (rcClient.Width() - m_szIconSize.cx) / 2;
 	}
-	else if (m_byIconPlacement == IconOnTheLeft) {
+	else if (m_byIconPosition == IconOnTheLeft) {
 		lpptIcon->x = rcCurMargin.left - (m_szIconSize.cx + nText2IconDist);
 		lpptIcon->y = (rcClient.Height() - m_szIconSize.cy) / 2;
 	}

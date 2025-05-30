@@ -2729,7 +2729,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			// Message icon info
 			int nIconID = GetReminderMsgIconID();
 			int nIconSize = GetReminderMsgIconSize();
-			BYTE byIconPlacement = GetReminderMsgIconPlacement();
+			BYTE byIconPosition = GetReminderMsgIconPosition();
 
 			// Default timeout for previewing
 			int nDefTimeout = DEF_PWRREMINDER_PREVIEW_TIMEOUT;
@@ -2741,7 +2741,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			m_pRmdPreviewMsgDlg->SetTextColor(clrMsgText);
 			m_pRmdPreviewMsgDlg->SetMsgFont(strFontName, nFontSize);
 			m_pRmdPreviewMsgDlg->SetMsgIcon(nIconID, nIconSize);
-			m_pRmdPreviewMsgDlg->SetMsgIconPlacement(byIconPlacement);
+			m_pRmdPreviewMsgDlg->SetMsgIconPosition(byIconPosition);
 			m_pRmdPreviewMsgDlg->SetAutoCloseInterval(nDefTimeout);
 
 			// Set notify state flags

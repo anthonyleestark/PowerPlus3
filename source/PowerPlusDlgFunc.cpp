@@ -978,15 +978,15 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// Set reminder message icon position
 			CString strIconPos = retBuff[2].tcToken;
 			if (!_tcscmp(strIconPos, _T("left"))) {
-				// Set icon placement: Icon on the Left
-				SetReminderMsgIconPlacement(IconOnTheLeft);
+				// Set icon position: Icon on the Left
+				SetReminderMsgIconPosition(IconOnTheLeft);
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLog(_T("Message icon position set: Left"));
 				bNoReply = FALSE;	// Reset flag
 			}
 			else if (!_tcscmp(strIconPos, _T("top"))) {
-				// Set icon placement: Icon on the Top
-				SetReminderMsgIconPlacement(IconOnTheTop);
+				// Set icon position: Icon on the Top
+				SetReminderMsgIconPosition(IconOnTheTop);
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLog(_T("Message icon position set: Top"));
 				bNoReply = FALSE;	// Reset flag
@@ -1084,8 +1084,8 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconpos")))) {
-			// Reset reminder message icon placement
-			SetReminderMsgIconPlacement(DEFAULT_MSG_ICONPLACEMENT);
+			// Reset reminder message icon position
+			SetReminderMsgIconPosition(DEFAULT_MSG_ICONPLACEMENT);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon position reset"));
 			bNoReply = FALSE;	// Reset flag
@@ -1160,8 +1160,8 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconpos")))) {
-			// Get reminder message icon placement
-			BYTE byIconPlacement = GetReminderMsgIconPlacement();
+			// Get reminder message icon position
+			BYTE byIconPlacement = GetReminderMsgIconPosition();
 			if (byIconPlacement == IconOnTheLeft) {
 				OutputDebugLog(_T("Message icon position: Left"));
 				bNoReply = FALSE;	// Reset flag
@@ -1236,41 +1236,6 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 						pwrRuntimeItem.GetSnoozeFlag(), stNextSnoozeTime.wHour, stNextSnoozeTime.wMinute);
 					bNoReply = FALSE;	// Reset flag
 				}
-			}
-		}
-		else if ((nCount >= 3) && (!_tcscmp(retBuff[1].tcToken, _T("interval")))) {
-			if ((nCount == 4) && (!_tcscmp(retBuff[2].tcToken, _T("set")))) {
-				// Set reminder message snooze interval
-				int nInputInterval = _tstoi(retBuff[3].tcToken);
-				if ((nInputInterval < 1) || (nInputInterval > 60)) {
-					// Invalid argument
-					OutputDebugLog(_T("Invalid value (Value range: 1 -> 60)"));
-					bNoReply = FALSE;	// Reset flag
-				}
-				else {
-					// Set snooze interval
-					int nSnoozeInterval = nInputInterval * 60;
-					SetReminderMsgSnoozeInterval(nSnoozeInterval);
-					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message snooze interval set: %ds"), nSnoozeInterval);
-					bNoReply = FALSE;	// Reset flag
-				}
-			}
-			else if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("get")))) {
-				// Get reminder message snooze interval
-				int nSnoozeInterval = GetReminderMsgSnoozeInterval();
-				OutputDebugLogFormat(_T("Message snooze interval: %ds"), nSnoozeInterval);
-				bNoReply = FALSE;	// Reset flag
-			}
-			else if ((nCount == 3) && (!_tcscmp(retBuff[2].tcToken, _T("reset")))) {
-				// Reset reminder message snooze interval
-				SetReminderMsgSnoozeInterval(DEFAULT_PWRRMD_SNOOZETIME);
-				OutputDebugLog(_T("Message snooze interval reset"));
-				bNoReply = FALSE;	// Reset flag
-			}
-			else {
-				// Invalid command
-				bInvalidCmdFlag = TRUE;
 			}
 		}
 		else {

@@ -166,100 +166,92 @@ inline void SetSessionLockFlag(BYTE byValue) {
 
 // Background color
 inline const COLORREF GetReminderMsgBkgrdColor(void) {
-	return Global::g_colorMsgBkgrd;
+	return g_rmdMsgStyleSet.GetBkgrdColor();
 }
 inline void SetReminderMsgBkgrdColor(COLORREF colorValue) {
-	Global::g_colorMsgBkgrd = colorValue;
+	g_rmdMsgStyleSet.SetBkgrdColor(colorValue);
 }
 
 // Text color
 inline const COLORREF GetReminderMsgTextColor(void) {
-	return Global::g_colorMsgText;
+	return g_rmdMsgStyleSet.GetTextColor();
 }
 inline void SetReminderMsgTextColor(COLORREF colorValue) {
-	Global::g_colorMsgText = colorValue;
+	g_rmdMsgStyleSet.SetTextColor(colorValue);
 }
 
 // Font name
 inline BOOL GetReminderMsgFontName(CString& strFontName) {
-	strFontName = Global::g_strMsgFontName;
+	strFontName = g_rmdMsgStyleSet.GetFontName();
 	return (!strFontName.IsEmpty());
 }
 inline void SetReminderMsgFontName(LPCTSTR lpszValue) {
 	if (_tcscmp(lpszValue, _T("")))
-		Global::g_strMsgFontName = lpszValue;
+		g_rmdMsgStyleSet.SetFontName(lpszValue);
 }
 
 // Font size
 inline const UINT GetReminderMsgFontSize(void) {
-	return Global::g_uiMsgFontSize;
+	return g_rmdMsgStyleSet.GetFontSize();
 }
 inline void SetReminderMsgFontSize(UINT uiValue) {
-	Global::g_uiMsgFontSize = uiValue;
+	g_rmdMsgStyleSet.SetFontSize(uiValue);
 }
 
 // Timeout (auto-close) interval
 inline const UINT GetReminderMsgTimeout(void) {
-	return Global::g_uiRmdMsgTimeout;
+	return g_rmdMsgStyleSet.GetTimeout();
 }
 inline void SetReminderMsgTimeout(UINT uiValue) {
-	Global::g_uiRmdMsgTimeout = uiValue;
+	g_rmdMsgStyleSet.SetTimeout(uiValue);
 }
 
 // Message icon ID
 inline const UINT GetReminderMsgIconID(void) {
-	return Global::g_uiRmdMsgIconID;
+	return g_rmdMsgStyleSet.GetIconID();
 }
 inline void SetReminderMsgIconID(UINT uiValue) {
-	Global::g_uiRmdMsgIconID = uiValue;
+	g_rmdMsgStyleSet.SetIconID(uiValue);
 };
 
 // Message icon size
 inline const INT GetReminderMsgIconSize(void) {
-	return Global::g_nRmdMsgIconSize;
+	return g_rmdMsgStyleSet.GetIconSize();
 }
 inline void SetReminderMsgIconSize(int nValue) {
-	Global::g_nRmdMsgIconSize = nValue;
+	g_rmdMsgStyleSet.SetIconSize(nValue);
 };
 
-// Message icon placement
-inline const BYTE GetReminderMsgIconPlacement(void) {
-	return Global::g_byRmdMsgIconPlacement;
+// Message icon position
+inline const BYTE GetReminderMsgIconPosition(void) {
+	return g_rmdMsgStyleSet.GetIconPosition();
 }
-inline void SetReminderMsgIconPlacement(BYTE byValue) {
-	Global::g_byRmdMsgIconPlacement = byValue;
+inline void SetReminderMsgIconPosition(BYTE byValue) {
+	g_rmdMsgStyleSet.SetIconPosition(byValue);
 };
 
 // Message display position
 inline const BYTE GetReminderMsgDispPosition(void) {
-	return Global::g_byRmdMsgDispPos;
+	return g_rmdMsgStyleSet.GetDisplayPosition();
 }
 inline void SetReminderMsgDispPosition(BYTE byValue) {
-	Global::g_byRmdMsgDispPos = byValue;
+	g_rmdMsgStyleSet.SetDisplayPosition(byValue);
 };
 
 // Display area horizontal margin
 inline const UINT GetReminderMsgHMargin(void) {
-	return Global::g_uiRmdMsgHMargin;
+	return g_rmdMsgStyleSet.GetHorizontalMargin();
 }
 inline void SetReminderMsgHMargin(UINT uiValue) {
-	Global::g_uiRmdMsgHMargin = uiValue;
+	g_rmdMsgStyleSet.SetHorizontalMargin(uiValue);
 }
 
 // Display area vertical margin
 inline const UINT GetReminderMsgVMargin(void) {
-	return Global::g_uiRmdMsgVMargin;
+	return g_rmdMsgStyleSet.GetVerticalMargin();
 }
 inline void SetReminderMsgVMargin(UINT uiValue) {
-	Global::g_uiRmdMsgVMargin = uiValue;
-}
-
-// Message snooze interval
-inline const UINT GetReminderMsgSnoozeInterval(void) {
-	return Global::g_uiRmdMsgSnoozeInterval;
-}
-inline void SetReminderMsgSnoozeInterval(UINT uiValue) {
-	Global::g_uiRmdMsgSnoozeInterval = uiValue;
+	g_rmdMsgStyleSet.SetVerticalMargin(uiValue);
 }
 
 #endif		// ifdef _GLOBAL_ENABLE_INLINES

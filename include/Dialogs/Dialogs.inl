@@ -173,8 +173,8 @@ inline void CReminderMsgDlg::GetMsgFontPoint(float& fFontPoint) const
 }
 
 // Set message icon placement
-inline void CReminderMsgDlg::SetMsgIconPlacement(BYTE byPlacement) {
-	m_byIconPlacement = byPlacement;
+inline void CReminderMsgDlg::SetMsgIconPosition(BYTE byPosition) {
+	m_byIconPosition = byPosition;
 }
 
 // Get allow snoozing mode enable status

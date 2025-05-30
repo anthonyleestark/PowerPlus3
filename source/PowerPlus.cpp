@@ -1634,9 +1634,9 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 		SetReminderMsgIconSize(nGlbValue);
 		bRet |= TRUE;
 	}
-	// Reminder message icon placement
+	// Reminder message icon position
 	if (GetGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_ICONPOS, nGlbValue)) {
-		SetReminderMsgIconPlacement(nGlbValue);
+		SetReminderMsgIconPosition(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message display position
@@ -1652,11 +1652,6 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	// Reminder message display area vertical margin
 	if (GetGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_VMARGIN, nGlbValue)) {
 		SetReminderMsgVMargin((UINT)nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message snooze interval
-	if (GetGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_SNOOZETIME, nGlbValue)) {
-		SetReminderMsgSnoozeInterval((UINT)nGlbValue);
 		bRet |= TRUE;
 	}
 
@@ -1787,8 +1782,8 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 		if (!WriteGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_ICONSIZE, dwGlbValue)) {
 			bRet = FALSE;
 		}
-		// Reminder message icon placement
-		dwGlbValue = GetReminderMsgIconPlacement();
+		// Reminder message icon position
+		dwGlbValue = GetReminderMsgIconPosition();
 		if (!WriteGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_ICONPOS, dwGlbValue)) {
 			bRet = FALSE;
 		}
@@ -1805,11 +1800,6 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 		// Reminder message display area vertical margin
 		dwGlbValue = GetReminderMsgVMargin();
 		if (!WriteGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_VMARGIN, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message snooze interval
-		dwGlbValue = GetReminderMsgSnoozeInterval();
-		if (!WriteGlobalData(nSubSection, IDS_REGKEY_FEATURE_RMDMSG_SNOOZETIME, dwGlbValue)) {
 			bRet = FALSE;
 		}
 	}

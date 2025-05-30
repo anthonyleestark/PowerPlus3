@@ -200,20 +200,8 @@ static inline void SetSessionLockFlag(BYTE byValue);
 #define DEFAULT_MSG_VMARGIN			50							// Default vertical margin: 50px
 #define DEFAULT_PWRRMD_SNOOZETIME	600							// Default snooze time: 10 minutes
 
-namespace Global {
-	extern COLORREF g_colorMsgBkgrd;
-	extern COLORREF g_colorMsgText;
-	extern CString	g_strMsgFontName;
-	extern UINT		g_uiMsgFontSize;
-	extern UINT		g_uiRmdMsgTimeout;
-	extern UINT		g_uiRmdMsgIconID;
-	extern INT		g_nRmdMsgIconSize;
-	extern BYTE		g_byRmdMsgIconPlacement;
-	extern BYTE		g_byRmdMsgDispPos;
-	extern UINT		g_uiRmdMsgHMargin;
-	extern UINT		g_uiRmdMsgVMargin;
-	extern UINT		g_uiRmdMsgSnoozeInterval;
-};
+// Global Power Reminder message style
+extern RmdMsgStyleSet g_rmdMsgStyleSet;
 
 // Background color
 static inline const COLORREF GetReminderMsgBkgrdColor(void);
@@ -263,12 +251,12 @@ static inline const INT GetReminderMsgIconSize(void);
 static inline void SetReminderMsgIconSize(int nValue);
 
 // Message icon placement
-enum MsgIconPlacement {
+enum MsgIconPosition {
 	IconOnTheTop = 0,
 	IconOnTheLeft,
 };
-static inline const BYTE GetReminderMsgIconPlacement(void);
-static inline void SetReminderMsgIconPlacement(BYTE byValue);
+static inline const BYTE GetReminderMsgIconPosition(void);
+static inline void SetReminderMsgIconPosition(BYTE byValue);
 
 // Message display position
 enum MsgDisplayPosition {
@@ -288,10 +276,6 @@ static inline void SetReminderMsgHMargin(UINT uiValue);
 // Display area vertical margin
 static inline const UINT GetReminderMsgVMargin(void);
 static inline void SetReminderMsgVMargin(UINT uiValue);
-
-// Message snooze interval
-static inline const UINT GetReminderMsgSnoozeInterval(void);
-static inline void SetReminderMsgSnoozeInterval(UINT uiValue);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

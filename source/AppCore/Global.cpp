@@ -85,41 +85,8 @@ CFileException* Global::g_pExcLogDebugInfo = NULL;
 
 /*---------------------------------------Power reminder message styles---------------------------------------*/
 
-// Background color
-COLORREF Global::g_colorMsgBkgrd = DEFAULT_MSG_BKGRDCLR;
-
-// Text color
-COLORREF Global::g_colorMsgText = DEFAULT_MSG_TEXTCLR;
-
-// Font name
-CString	 Global::g_strMsgFontName = DEFAULT_MSG_FONTNAME;
-
-// Font size
-UINT	 Global::g_uiMsgFontSize = DEFAULT_MSG_FONTSIZE;
-
-// Timeout (auto-close) interval
-UINT	 Global::g_uiRmdMsgTimeout = DEFAULT_MSG_TIMEOUT;
-
-// Message icon ID
-UINT	 Global::g_uiRmdMsgIconID = DEFAULT_MSG_ICONID;
-
-// Message icon size
-INT		 Global::g_nRmdMsgIconSize = DEFAULT_MSG_ICONSIZE;
-
-// Message icon placement
-BYTE	 Global::g_byRmdMsgIconPlacement = DEFAULT_MSG_ICONPLACEMENT;
-
-// Message display position
-BYTE	 Global::g_byRmdMsgDispPos = DEFAULT_MSG_DISPLAYPOS;
-
-// Display area horizontal margin
-UINT	 Global::g_uiRmdMsgHMargin = DEFAULT_MSG_HMARGIN;
-
-// Display area vertical margin
-UINT	 Global::g_uiRmdMsgVMargin = DEFAULT_MSG_VMARGIN;
-
-// Message snooze interval
-UINT	 Global::g_uiRmdMsgSnoozeInterval = DEFAULT_PWRRMD_SNOOZETIME;
+// Global Power Reminder message style
+RmdMsgStyleSet g_rmdMsgStyleSet;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

@@ -4662,7 +4662,7 @@ int CPowerPlusDlg::DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem)
 		// Message icon info
 		int nIconID = GetReminderMsgIconID();
 		int nIconSize = GetReminderMsgIconSize();
-		BYTE byIconPlacement = GetReminderMsgIconPlacement();
+		BYTE byIconPosition = GetReminderMsgIconPosition();
 
 		// Message auto-close interval
 		int nTimeout = GetReminderMsgTimeout();
@@ -4680,7 +4680,7 @@ int CPowerPlusDlg::DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem)
 		pMsgDlg->SetTextColor(clrMsgText);
 		pMsgDlg->SetMsgFont(strFontName, nFontSize);
 		pMsgDlg->SetMsgIcon(nIconID, nIconSize);
-		pMsgDlg->SetMsgIconPlacement(byIconPlacement);
+		pMsgDlg->SetMsgIconPosition(byIconPosition);
 		pMsgDlg->SetAutoCloseInterval(nTimeout);
 
 		// Set notify state flags

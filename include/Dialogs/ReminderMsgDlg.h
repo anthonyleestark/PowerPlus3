@@ -51,7 +51,7 @@ private:
 	// Message icon
 	HICON	m_hMsgIcon;
 	BOOL	m_bDispIcon;
-	BYTE	m_byIconPlacement;
+	BYTE	m_byIconPosition;
 	CSize	m_szIconSize;
 
 	// Flags
@@ -104,7 +104,7 @@ public:
 
 	// Icon and margin
 	virtual void SetMsgIcon(UINT nIconID, int nIconSqrSize);
-	virtual void SetMsgIconPlacement(BYTE byPlacement);
+	virtual void SetMsgIconPosition(BYTE byPosition);
 
 	// Other properties
 	virtual BOOL GetAllowSnoozeMode(void) const;
