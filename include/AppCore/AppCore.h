@@ -1321,7 +1321,6 @@ using PRMDMSGSTYLESET = typename RmdMsgStyleSet*;
 //
 //	Class name:		PwrReminderItem
 //  Description:	Store data of a Power Reminder item
-//  Derivered from: C++ basic struct
 //
 //////////////////////////////////////////////////////////////////////////
 

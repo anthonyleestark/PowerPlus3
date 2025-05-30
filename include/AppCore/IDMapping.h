@@ -154,12 +154,15 @@ enum ResourceType {
 //
 //////////////////////////////////////////////////////////////////////////
 
-typedef struct tagRESOURCE_ID_MAP_ENTRY
+struct RESOURCE_ID_MAP_ENTRY
 {
 	BYTE	 byTypeID;					// Resource type ID
 	DWORD	 dwResourceID;				// Resource ID (integer type)
 	CStringA strNameID;					// Resource mapped name string ID
-} RESOURCE_ID_MAP_ENTRY, *RESOURCE_ID_MAP;
+};
+
+// Define new typename for Resource ID Map data
+using RESOURCE_ID_MAP = typename RESOURCE_ID_MAP_ENTRY*;
 
 
 //////////////////////////////////////////////////////////////////////////
