@@ -163,7 +163,7 @@ inline void LogItem::RemoveDetailInfo(void) {
 }
 
 // Remove property by index
-inline void JSON::RemoveProperty(INT_PTR nIndex)
+inline void JSON::RemoveProperty(size_t nIndex)
 {
 	// Invalid index
 	if ((nIndex < 0) || (nIndex >= this->m_arrKeyValuePairs.size()))
@@ -197,22 +197,24 @@ inline BOOL SLogging::IsEmpty(void) const {
 }
 
 // Return the number of items of log data
-inline INT_PTR SLogging::GetLogCount() const {
-	return m_arrLogData.empty();
+inline size_t SLogging::GetLogCount() const {
+	return m_arrLogData.size();
 }
 
 // Get maximum log data size
-inline INT_PTR SLogging::GetMaxSize(void) const {
+inline size_t SLogging::GetMaxSize(void) const {
 	return m_nMaxSize;
 }
 
 // Set maximum log data size
-inline void SLogging::SetMaxSize(INT_PTR nMaxSize)
+inline BOOL SLogging::SetMaxSize(size_t nMaxSize)
 {
 	// Max size can only be larger than current log data size
 	if (nMaxSize > (this->m_arrLogData.size())) {
 		m_nMaxSize = nMaxSize;
+		return TRUE;
 	}
+	return FALSE;
 }
 
 // Get log write mode

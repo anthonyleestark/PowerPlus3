@@ -17,9 +17,9 @@
 
 #include "stdafx.h"
 
-#include "AppCore\AppCore.h"
-#include "AppCore\Global.h"
-#include "AppCore\MapTable.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/Global.h"
+#include "AppCore/MapTable.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -2305,7 +2305,7 @@ BOOL RegistryValue::Init(UINT nRegValueType)
 		return (m_pqwValue != NULL);
 
 	case Type::Multi_String:
-		m_pastrValue = new CStringArray();
+		m_pastrValue = new StringArray();
 		return (m_pastrValue != NULL);
 
 	default:
@@ -2353,13 +2353,12 @@ void RegistryValue::Copy(const RegistryValue& pItem)
 	}
 	else if (pItem.m_pastrValue != NULL) {
 		if (m_pastrValue != NULL) {
-			m_pastrValue->RemoveAll();
-			m_pastrValue->FreeExtra();
+			m_pastrValue->clear();
 			delete m_pastrValue;
 		}
 		// Copy Multi-string value
-		m_pastrValue = new CStringArray;
-		m_pastrValue->Copy(*pItem.m_pastrValue);
+		m_pastrValue = new StringArray;
+		m_pastrValue->assign(pItem.m_pastrValue->begin(), pItem.m_pastrValue->end());
 	}
 }
 
@@ -2392,8 +2391,7 @@ void RegistryValue::Reset(void)
 
 	// Cleanup array data
 	if (m_pastrValue != NULL) {
-		m_pastrValue->RemoveAll();
-		m_pastrValue->FreeExtra();
+		m_pastrValue->clear();
 		delete m_pastrValue;
 		m_pastrValue = NULL;
 	}
@@ -2431,10 +2429,10 @@ void RegistryValue::Refactor(void)
 		}
 	}
 	else if (nType == Type::Multi_String) {
-		CStringArray astrTemp;
-		astrTemp.Copy(*m_pastrValue);
+		StringArray astrTemp;
+		astrTemp.assign(m_pastrValue->begin(), m_pastrValue->end());
 		if (Init(Type::Multi_String)) {
-			m_pastrValue->Copy(astrTemp);
+			m_pastrValue->assign(astrTemp.begin(), astrTemp.end());
 		}
 	}
 	else {
@@ -2546,10 +2544,10 @@ RegistryInfo::RegistryInfo()
 	// Initialize
 	m_hRootKey = NULL;										// Root key (HKEY)
 	m_strRootKey = STRING_EMPTY;							// Root key (string)
-	m_astrSubkeyPath.RemoveAll();							// Subkey path (string array)
+	m_astrSubkeyPath.clear();								// Subkey path (string array)
 	m_strProfileName = STRING_EMPTY;						// Profile key name (string)
 	m_strAppName = STRING_EMPTY;							// App name (string)
-	m_astrSectionArray.RemoveAll();							// Section array (string)
+	m_astrSectionArray.clear();								// Section array (string)
 	m_regKeyInfo = REGISTRYKEY();							// Registry key info
 }
 
@@ -2592,10 +2590,10 @@ void RegistryInfo::Copy(const RegistryInfo& pItem)
 	// Copy data
 	m_hRootKey = pItem.m_hRootKey;							// Root key (HKEY)
 	m_strRootKey = pItem.m_strRootKey;						// Root key (string)
-	m_astrSubkeyPath.Copy(pItem.m_astrSubkeyPath);			// Subkey path (string array)
+	m_astrSubkeyPath = pItem.m_astrSubkeyPath;				// Subkey path (string array)
 	m_strProfileName = pItem.m_strProfileName;				// Profile key name (string)
 	m_strAppName = pItem.m_strAppName;						// App name (string)
-	m_astrSectionArray.Copy(pItem.m_astrSectionArray);		// Section array (string)
+	m_astrSectionArray = pItem.m_astrSectionArray;			// Section array (string)
 	m_regKeyInfo.Copy(pItem.m_regKeyInfo);					// Registry key info
 }
 
@@ -2613,15 +2611,11 @@ void RegistryInfo::RemoveAll(void)
 	// Reset data
 	m_hRootKey = NULL;										// Root key (HKEY)
 	m_strRootKey = STRING_EMPTY;							// Root key (string)
-	m_astrSubkeyPath.RemoveAll();							// Subkey path (string array)
+	m_astrSubkeyPath.clear();								// Subkey path (string array)
 	m_strProfileName = STRING_EMPTY;						// Profile key name (string)
 	m_strAppName = STRING_EMPTY;							// App name (string)
-	m_astrSectionArray.RemoveAll();							// Section array (string)
+	m_astrSectionArray.clear();								// Section array (string)
 	m_regKeyInfo.Clear();									// Registry key info
-
-	// Cleanup extra memory for array data
-	m_astrSubkeyPath.FreeExtra();							// Subkey path (string array)
-	m_astrSectionArray.FreeExtra();							// Section array (string)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2633,14 +2627,13 @@ void RegistryInfo::RemoveAll(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void RegistryInfo::GetSubkeyPath(CStringArray& arrOutput) const
+void RegistryInfo::GetSubkeyPath(StringArray& arrOutput) const
 {
 	// Empty destination output array
-	arrOutput.RemoveAll();
-	arrOutput.FreeExtra();
+	arrOutput.clear();
 
 	// Copy data
-	arrOutput.Copy(m_astrSubkeyPath);
+	arrOutput = m_astrSubkeyPath;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2652,14 +2645,13 @@ void RegistryInfo::GetSubkeyPath(CStringArray& arrOutput) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void RegistryInfo::GetSectionName(CStringArray& arrOutput) const
+void RegistryInfo::GetSectionName(StringArray& arrOutput) const
 {
 	// Empty destination output array
-	arrOutput.RemoveAll();
-	arrOutput.FreeExtra();
+	arrOutput.clear();
 
 	// Copy data
-	arrOutput.Copy(m_astrSectionArray);
+	arrOutput = m_astrSectionArray;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5116,8 +5108,8 @@ BOOL AppCore::SubString(LPCTSTR lpszSrc, Substring& subDest, TCHAR tcFirstChar, 
 	}
 
 	// Find starting and ending character index
-	INT_PTR nFirstIndex = (tcFirstChar != NULL) ? (strSrc.Find(tcFirstChar)) : INT_INVALID;
-	INT_PTR nLastIndex = (tcLastChar != NULL) ? (strSrc.ReverseFind(tcLastChar)) : INT_INVALID;
+	size_t nFirstIndex = (tcFirstChar != NULL) ? (strSrc.Find(tcFirstChar)) : INT_INVALID;
+	size_t nLastIndex = (tcLastChar != NULL) ? (strSrc.ReverseFind(tcLastChar)) : INT_INVALID;
 
 	// Debug log
 	OutputDebugStringFormat(_T("[ALSTest] ==> GetSubString: nFirstIndex=%d, nLastIndex=%d"), nFirstIndex, nLastIndex);
@@ -5553,9 +5545,9 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 
 	// Check sub-key path validity
 	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSubKeyPath)) {
-		CStringArray astrSubkeyPath;
+		StringArray astrSubkeyPath;
 		regInfo.GetSubkeyPath(astrSubkeyPath);
-		if (astrSubkeyPath.IsEmpty()) {
+		if (astrSubkeyPath.empty()) {
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, subkey info is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -5587,9 +5579,9 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 
 	// Check section name array validity
 	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSectionName)) {
-		CStringArray astrSectionArray;
+		StringArray astrSectionArray;
 		regInfo.GetSubkeyPath(astrSectionArray);
-		if (astrSectionArray.IsEmpty()) {
+		if (astrSectionArray.empty()) {
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, section name is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -5606,13 +5598,13 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 
 	// Sub-key path
 	CString strSubKeyPathTemp;
-	CStringArray astrSubkeyPath;
+	StringArray astrSubkeyPath;
 	regInfo.GetSubkeyPath(astrSubkeyPath);
-	for (int nIndex = 0; nIndex < astrSubkeyPath.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < astrSubkeyPath.size(); nIndex++) {
 		if (nIndex > 0) {
 			strSubKeyPathTemp.Append(SYMBOL_BACKSLASH);
 		}
-		strSubKeyPathTemp.Append(astrSubkeyPath.GetAt(nIndex));
+		strSubKeyPathTemp.Append(astrSubkeyPath.at(nIndex));
 	}
 
 	// Profile key name
@@ -5631,13 +5623,13 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 
 	// Section name
 	CString strSectionNameTemp;
-	CStringArray astrSectionArray;
+	StringArray astrSectionArray;
 	regInfo.GetSubkeyPath(astrSectionArray);
-	for (int nIndex = 0; nIndex < astrSectionArray.GetSize(); nIndex++) {
+	for (int nIndex = 0; nIndex < astrSectionArray.size(); nIndex++) {
 		if (nIndex > 0) {
 			strSectionNameTemp.Append(SYMBOL_BACKSLASH);
 		}
-		strSectionNameTemp.Append(astrSectionArray.GetAt(nIndex));
+		strSectionNameTemp.Append(astrSectionArray.at(nIndex));
 	}
 
 

@@ -16,12 +16,12 @@
 #ifndef _LOGVIEWERDLG_H_INCLUDED
 #define _LOGVIEWERDLG_H_INCLUDED
 
-#include "AppCore\AppCore.h"
-#include "AppCore\Config.h"
-#include "AppCore\MapTable.h"
-#include "AppCore\Logging.h"
-#include "AppCore\IDMapping.h"
-#include "Framework\SDialog.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/Config.h"
+#include "AppCore/MapTable.h"
+#include "AppCore/Logging.h"
+#include "AppCore/IDMapping.h"
+#include "Framework/SDialog.h"
 
 ////////////////////////////////////////////////////////
 //
@@ -55,7 +55,7 @@ private:
 	// Member variables
 	CGridCtrl* m_pLogViewerList;
 	Data m_ptrAppEventLog;
-	INT_PTR	m_nLogCount;
+	size_t m_nLogCount;
 
 	// Table format and properties
 	int	m_nColNum;

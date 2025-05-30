@@ -19,9 +19,9 @@
 
 #include "stdafx.h"
 
-#include "AppCore\AppCore.h"
-#include "AppCore\IDMapping.h"
-#include "AppCore\Logging.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/IDMapping.h"
+#include "AppCore/Logging.h"
 
 
 //////////////////////////////////////////////////////////////////////////

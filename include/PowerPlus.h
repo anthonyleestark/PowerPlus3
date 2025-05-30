@@ -18,16 +18,16 @@
 #ifndef _POWERPLUS_APP_H_INCLUDED
 #define _POWERPLUS_APP_H_INCLUDED
 
-#include "AppCore\AppCore.h"
-#include "AppCore\Config.h"
-#include "AppCore\MapTable.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/Config.h"
+#include "AppCore/MapTable.h"
 
-#include "AppCore\Logging.h"
-#include "AppCore\Logging_pub.h"
-#include "AppCore\IDMapping.h"
+#include "AppCore/Logging.h"
+#include "AppCore/Logging_pub.h"
+#include "AppCore/IDMapping.h"
 
-#include "Framework\SWinApp.h"
-#include "Framework\SDialog.h"
+#include "Framework/SWinApp.h"
+#include "Framework/SDialog.h"
 
 
 ////////////////////////////////////////////////////////
@@ -90,6 +90,7 @@ public:
 	BOOL LoadGlobalData(void);
 	BOOL SaveGlobalData(BYTE byCateID = 0xFF);
 
+#ifdef _LEGACY_FEATURE
 #ifdef _CONFIG_FILE_TEST_ACTIVE
 	// File data serialization functions
 	void InitFileData();
@@ -97,6 +98,7 @@ public:
 	void SetFileAppData();
 	BOOL ReadFile();
 	BOOL WriteFile();
+#endif
 #endif
 
 	// App data processing functions
@@ -117,11 +119,13 @@ public:
 	SLogging* GetAppHistoryLog();
 	void OutputAppHistoryLog(LOGITEM logItem);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_FEATURE
+#ifdef _DATA_CHANGE_LOGGING
 	void OutputDataChangeLog(CONFIGDATA& cfgBakData);
 	void OutputDataChangeLog(SCHEDULEDATA& schBakData);
 	void OutputDataChangeLog(HOTKEYSETDATA& hksBakData);
 	void OutputDataChangeLog(PWRREMINDERDATA& pwrBakData);
+#endif
 #endif
 
 	// Data validity checking functions

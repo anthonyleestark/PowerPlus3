@@ -230,7 +230,7 @@ inline SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex)
 }
 
 // Get number of extra items
-inline INT_PTR ScheduleData::GetExtraItemNum(void) const {
+inline size_t ScheduleData::GetExtraItemNum(void) const {
 	return m_arrSchedExtraItemList.size();
 }
 
@@ -330,7 +330,7 @@ inline void HotkeySetData::Init() {
 }
 
 // Get number of items
-inline INT_PTR HotkeySetData::GetItemNum(void) const {
+inline size_t HotkeySetData::GetItemNum(void) const {
 	return m_arrHotkeySetList.size();
 }
 
@@ -633,7 +633,7 @@ inline void PwrReminderItem::SetDayActive(DayOfWeek dayOfWeek, BOOL bActive) {
 }
 
 // Get number of items
-inline INT_PTR PwrReminderData::GetItemNum(void) const {
+inline size_t PwrReminderData::GetItemNum(void) const {
 	return m_arrRmdItemList.size();
 }
 
@@ -857,7 +857,7 @@ inline BOOL SystemEventTracker::IsEmpty(void) const {
 }
 
 // Get number of tracked events
-inline INT_PTR SystemEventTracker::GetTrackedCount(void) const {
+inline size_t SystemEventTracker::GetTrackedCount(void) const {
 	return (m_arrTrackingData.size());
 }
 
@@ -932,14 +932,14 @@ inline void RegistryValue::SetQWord(QWORD qwValue) {
 }
 
 // Get multi-string value
-inline void RegistryValue::GetMultiString(CStringArray& astrValue) const {
+inline void RegistryValue::GetMultiString(StringArray& astrValue) const {
 	if (!IsType(Type::QWORD_64)) return;
-	else { astrValue.Copy(*m_pastrValue); }
+	else { astrValue = *m_pastrValue; }
 }
 
 // Set multi-string value
-inline void RegistryValue::SetMultiString(CStringArray& astrValue) {
-	if (Init(Type::Multi_String)) { m_pastrValue->Copy(astrValue); }
+inline void RegistryValue::SetMultiString(StringArray& astrValue) {
+	if (Init(Type::Multi_String)) { m_pastrValue->assign(astrValue.begin(), astrValue.end()); }
 }
 
 // Add string value to Multi-string data
@@ -947,7 +947,7 @@ inline BOOL RegistryValue::AddString(LPCTSTR lpszValue)
 {
 	if (!IsEmpty() && !IsType(Type::Multi_String)) return FALSE;
 	if (IsEmpty() && !Init(Type::Multi_String)) return FALSE;
-	m_pastrValue->Add(lpszValue);
+	m_pastrValue->push_back(lpszValue);
 	return TRUE;
 }
 
@@ -1026,12 +1026,12 @@ inline void RegistryKey::SetQWord(QWORD qwValue) {
 }
 
 // Get multi-string value
-inline void RegistryKey::GetMultiString(CStringArray& astrValue) const {
+inline void RegistryKey::GetMultiString(StringArray& astrValue) const {
 	m_regValue.GetMultiString(astrValue);
 }
 
 // Set multi-string value
-inline void RegistryKey::SetMultiString(CStringArray& astrValue) {
+inline void RegistryKey::SetMultiString(StringArray& astrValue) {
 	m_regValue.SetMultiString(astrValue);
 }
 
@@ -1095,12 +1095,12 @@ inline void RegistryInfo::SetSubkeyPath(UINT nResourceID)
 
 // Set registry info sub-key path
 inline void RegistryInfo::SetSubkeyPath(LPCTSTR lpszSubKeyName) {
-	m_astrSubkeyPath.Add(lpszSubKeyName);
+	m_astrSubkeyPath.push_back(lpszSubKeyName);
 }
 
 // Set registry info sub-key path
-inline void RegistryInfo::SetSubkeyPath(CStringArray& astrSubkeyPath) {
-	m_astrSubkeyPath.Copy(astrSubkeyPath);
+inline void RegistryInfo::SetSubkeyPath(StringArray& astrSubkeyPath) {
+	m_astrSubkeyPath.assign(astrSubkeyPath.begin(), astrSubkeyPath.end());
 }
 
 // Set registry info profile key name (from resource ID)
@@ -1134,17 +1134,17 @@ inline void RegistryInfo::SetSectionName(UINT nResourceID)
 {
 	CString strKeyName;
 	VERIFY(strKeyName.LoadString(nResourceID));
-	m_astrSectionArray.Add(strKeyName);
+	m_astrSectionArray.push_back(strKeyName);
 }
 
 // Add section name (string)
 inline void RegistryInfo::SetSectionName(LPCTSTR lpszSectionName) {
-	m_astrSectionArray.Add(lpszSectionName);
+	m_astrSectionArray.push_back(lpszSectionName);
 }
 
 // Set section name array
-inline void RegistryInfo::SetSectionName(CStringArray& astrSectionArray) {
-	m_astrSectionArray.Copy(astrSectionArray);
+inline void RegistryInfo::SetSectionName(StringArray& astrSectionArray) {
+	m_astrSectionArray.assign(astrSectionArray.begin(), astrSectionArray.end());
 }
 
 // Check if data is empty

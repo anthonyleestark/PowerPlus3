@@ -17,7 +17,7 @@
 #include "stdafx.h"
 
 #include "PowerPlus.h"
-#include "Dialogs\EditScheduleDlg.h"
+#include "Dialogs/EditScheduleDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -119,13 +119,13 @@ void CEditScheduleDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	INT_PTR - Number of controls added to management
+//  Return value:	size_t - Number of controls added to management
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CEditScheduleDlg::RegisterDialogManagement(void)
+size_t CEditScheduleDlg::RegisterDialogManagement(void)
 {
-	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);

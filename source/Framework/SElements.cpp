@@ -13,8 +13,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Framework\SElements.h"
-#include "Framework\SWinApp.h"
+#include "Framework/SElements.h"
+#include "Framework/SWinApp.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -81,8 +81,8 @@ SCtrlInfoWrap::SCtrlInfoWrap() : CObject()
 	m_pstrReserveValue = NULL;
 
 	// Integer array data
-	m_pauiValueList = NULL;
-	m_pauiReserveValueList = NULL;
+	m_paulValueList = NULL;
+	m_paulReserveValueList = NULL;
 
 	// String array data
 	m_pastrValueList = NULL;
@@ -161,40 +161,36 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
 	}
 
 	// Integer array data
-	if (m_pauiValueList != NULL) {
+	if (m_paulValueList != NULL) {
 		// Cleanup array data
-		if (!m_pauiValueList->IsEmpty()) {
-			m_pauiValueList->RemoveAll();
-			m_pauiValueList->FreeExtra();
+		if (!m_paulValueList->empty()) {
+			m_paulValueList->clear();
 		}
-		delete m_pauiValueList;
-		m_pauiValueList = NULL;
+		delete m_paulValueList;
+		m_paulValueList = NULL;
 	}
-	if (m_pauiReserveValueList != NULL) {
+	if (m_paulReserveValueList != NULL) {
 		// Cleanup reserved array data
-		if (!m_pauiReserveValueList->IsEmpty()) {
-			m_pauiReserveValueList->RemoveAll();
-			m_pauiReserveValueList->FreeExtra();
+		if (!m_paulReserveValueList->empty()) {
+			m_paulReserveValueList->clear();
 		}
-		delete m_pauiReserveValueList;
-		m_pauiReserveValueList = NULL;
+		delete m_paulReserveValueList;
+		m_paulReserveValueList = NULL;
 	}
 
 	// String array data
 	if (m_pastrValueList != NULL) {
 		// Cleanup array data
-		if (!m_pastrValueList->IsEmpty()) {
-			m_pastrValueList->RemoveAll();
-			m_pastrValueList->FreeExtra();
+		if (!m_pastrValueList->empty()) {
+			m_pastrValueList->clear();
 		}
 		delete m_pastrValueList;
 		m_pastrValueList = NULL;
 	}
 	if (m_pastrReserveValueList != NULL) {
 		// Cleanup reserved array data
-		if (!m_pastrReserveValueList->IsEmpty()) {
-			m_pastrReserveValueList->RemoveAll();
-			m_pastrReserveValueList->FreeExtra();
+		if (!m_pastrReserveValueList->empty()) {
+			m_pastrReserveValueList->clear();
 		}
 		delete m_pastrReserveValueList;
 		m_pastrReserveValueList = NULL;
@@ -562,19 +558,18 @@ void SCtrlInfoWrap::GetReserveString(_Out_ CString& strValue) const
 // 
 //	Function name:	GetIntArray
 //	Description:	Get current control's integer array data value
-//  Arguments:		auiValue - Integer array value (out)
-//  Return value:	CUIntArray
+//  Arguments:		aulValue - Integer array value (out)
+//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::GetIntArray(_Out_ CUIntArray& auiValue) const
+void SCtrlInfoWrap::GetIntArray(_Out_ ULongArray& aulValue) const
 {
-	if (this->m_pauiValueList == NULL) {
-		auiValue.RemoveAll();
-		auiValue.FreeExtra();
+	if (this->m_paulValueList == NULL) {
+		aulValue.clear();
 	}
 	else {
-		auiValue.Copy(*(this->m_pauiValueList));
+		aulValue = *(this->m_paulValueList);
 	}
 }
 
@@ -582,19 +577,18 @@ void SCtrlInfoWrap::GetIntArray(_Out_ CUIntArray& auiValue) const
 // 
 //	Function name:	GetReserveIntArray
 //	Description:	Get current control's reserve integer array data value
-//  Arguments:		auiValue - Integer array value (out)
-//  Return value:	CUIntArray
+//  Arguments:		aulValue - Integer array value (out)
+//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::GetReserveIntArray(_Out_ CUIntArray& auiValue) const
+void SCtrlInfoWrap::GetReserveIntArray(_Out_ ULongArray& aulValue) const
 {
-	if (this->m_pauiReserveValueList == NULL) {
-		auiValue.RemoveAll();
-		auiValue.FreeExtra();
+	if (this->m_paulReserveValueList == NULL) {
+		aulValue.clear();
 	}
 	else {
-		auiValue.Copy(*(this->m_pauiReserveValueList));
+		aulValue = *(this->m_paulReserveValueList);
 	}
 }
 
@@ -603,18 +597,17 @@ void SCtrlInfoWrap::GetReserveIntArray(_Out_ CUIntArray& auiValue) const
 //	Function name:	GetStringArray
 //	Description:	Get current control's string array data value
 //  Arguments:		astrValue - String array value (out)
-//  Return value:	CStringArray
+//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::GetStringArray(_Out_ CStringArray& astrValue) const
+void SCtrlInfoWrap::GetStringArray(_Out_ StringArray& astrValue) const
 {
 	if (this->m_pastrValueList == NULL) {
-		astrValue.RemoveAll();
-		astrValue.FreeExtra();
+		astrValue.clear();
 	}
 	else {
-		astrValue.Copy(*(this->m_pastrValueList));
+		astrValue = *(this->m_pastrValueList);
 	}
 }
 
@@ -623,18 +616,17 @@ void SCtrlInfoWrap::GetStringArray(_Out_ CStringArray& astrValue) const
 //	Function name:	GetReserveStringArray
 //	Description:	Get current control's reserve string array data value
 //  Arguments:		astrValue - String array value (out)
-//  Return value:	CStringArray
+//  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::GetReserveStringArray(_Out_ CStringArray& astrValue) const
+void SCtrlInfoWrap::GetReserveStringArray(_Out_ StringArray& astrValue) const
 {
 	if (this->m_pastrReserveValueList == NULL) {
-		astrValue.RemoveAll();
-		astrValue.FreeExtra();
+		astrValue.clear();
 	}
 	else {
-		astrValue.Copy(*(this->m_pastrReserveValueList));
+		astrValue = *(this->m_pastrReserveValueList);
 	}
 }
 
@@ -858,20 +850,19 @@ void SCtrlInfoWrap::SetReserveString(_In_ LPCTSTR lpszValue)
 // 
 //	Function name:	SetIntArray
 //	Description:	Set current control's integer array data value
-//  Arguments:		auiValue - Integer array value (in)
+//  Arguments:		aulValue - Integer array value (in)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::SetIntArray(_In_ const CUIntArray& auiValue)
+void SCtrlInfoWrap::SetIntArray(_In_ const ULongArray& aulValue)
 {
-	if (this->m_pauiValueList == NULL)
-		this->m_pauiValueList = new CUIntArray();
+	if (this->m_paulValueList == NULL)
+		this->m_paulValueList = new ULongArray();
 	
-	if (this->m_pauiValueList != NULL) {
-		this->m_pauiValueList->RemoveAll();
-		this->m_pauiValueList->FreeExtra();
-		this->m_pauiValueList->Copy(auiValue);
+	if (this->m_paulValueList != NULL) {
+		this->m_paulValueList->clear();
+		this->m_paulValueList->assign(aulValue.begin(), aulValue.end());
 	}
 }
 
@@ -879,20 +870,19 @@ void SCtrlInfoWrap::SetIntArray(_In_ const CUIntArray& auiValue)
 // 
 //	Function name:	SetReserveIntArray
 //	Description:	Set current control's reserve integer array data value
-//  Arguments:		auiValue - Integer array value (in)
+//  Arguments:		aulValue - Integer array value (in)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::SetReserveIntArray(_In_ const CUIntArray& auiValue)
+void SCtrlInfoWrap::SetReserveIntArray(_In_ const ULongArray& aulValue)
 {
-	if (this->m_pauiReserveValueList == NULL)
-		this->m_pauiReserveValueList = new CUIntArray();
+	if (this->m_paulReserveValueList == NULL)
+		this->m_paulReserveValueList = new ULongArray();
 
-	if (this->m_pauiReserveValueList != NULL) {
-		this->m_pauiReserveValueList->RemoveAll();
-		this->m_pauiReserveValueList->FreeExtra();
-		this->m_pauiReserveValueList->Copy(auiValue);
+	if (this->m_paulReserveValueList != NULL) {
+		this->m_paulReserveValueList->clear();
+		this->m_paulReserveValueList->assign(aulValue.begin(), aulValue.end());
 	}
 }
 
@@ -905,15 +895,14 @@ void SCtrlInfoWrap::SetReserveIntArray(_In_ const CUIntArray& auiValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::SetStringArray(_In_ const CStringArray& astrValue)
+void SCtrlInfoWrap::SetStringArray(_In_ const StringArray& astrValue)
 {
 	if (this->m_pastrValueList == NULL)
-		this->m_pastrValueList = new CStringArray();
+		this->m_pastrValueList = new StringArray();
 
 	if (this->m_pastrValueList != NULL) {
-		this->m_pastrValueList->RemoveAll();
-		this->m_pastrValueList->FreeExtra();
-		this->m_pastrValueList->Copy(astrValue);
+		this->m_pastrValueList->clear();
+		this->m_pastrValueList->assign(astrValue.begin(), astrValue.end());
 	}
 }
 
@@ -926,15 +915,14 @@ void SCtrlInfoWrap::SetStringArray(_In_ const CStringArray& astrValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::SetReserveStringArray(_In_ const CStringArray& astrValue)
+void SCtrlInfoWrap::SetReserveStringArray(_In_ const StringArray& astrValue)
 {
 	if (this->m_pastrReserveValueList == NULL)
-		this->m_pastrReserveValueList = new CStringArray();
+		this->m_pastrReserveValueList = new StringArray();
 
 	if (this->m_pastrReserveValueList != NULL) {
-		this->m_pastrReserveValueList->RemoveAll();
-		this->m_pastrReserveValueList->FreeExtra();
-		this->m_pastrReserveValueList->Copy(astrValue);
+		this->m_pastrReserveValueList->clear();
+		this->m_pastrReserveValueList->assign(astrValue.begin(), astrValue.end());
 	}
 }
 
@@ -1244,11 +1232,11 @@ BOOL SControlManager::DeleteAll(void)
 //	Function name:	AddControl
 //	Description:	Add dialog/window control to management
 //  Arguments:		pControl - Dialog control item
-//  Return value:	INT_PTR
+//  Return value:	size_t
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR SControlManager::AddControl(SCtrlInfoWrap* pControl)
+size_t SControlManager::AddControl(SCtrlInfoWrap* pControl)
 {
 	// Check for control pointer validity
 	if (pControl == NULL) 
@@ -1279,11 +1267,11 @@ INT_PTR SControlManager::AddControl(SCtrlInfoWrap* pControl)
 //	Description:	Add dialog/window control to management
 //  Arguments:		nCtrlID - Dialog control ID
 //					nTypeID - Control type ID
-//  Return value:	INT_PTR
+//  Return value:	size_t
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
+size_t SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 {
 	// If parent window is not set, do nothing
 	if (this->m_pParentWnd == NULL)
@@ -1299,7 +1287,7 @@ INT_PTR SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 	pControl->Initialize(m_pParentWnd, NULL, nCtrlID, nTypeID);
 
 	// Add control to management list
-	INT_PTR nRetIndex = this->AddControl(pControl);
+	size_t nRetIndex = this->AddControl(pControl);
 	if (nRetIndex != -1)
 		return nRetIndex;
 
@@ -1313,11 +1301,11 @@ INT_PTR SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 //	Function name:	RemoveControl
 //	Description:	Remove dialog/window control from management
 //  Arguments:		nCtrlID - Dialog control ID
-//  Return value:	INT_PTR
+//  Return value:	size_t
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR SControlManager::RemoveControl(UINT nCtrlID)
+size_t SControlManager::RemoveControl(UINT nCtrlID)
 {
 	// If data is not initialized or is empty
 	if ((m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
@@ -1480,16 +1468,16 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case Combo_Box:
 			{
 				// Update control's current selection index
-				INT_PTR nCurSel = ((CComboBox*)pBaseControl)->GetCurSel();
+				size_t nCurSel = ((CComboBox*)pBaseControl)->GetCurSel();
 				pCurControl->SetInteger(nCurSel);
 				// Update all item strings
-				CStringArray arrStringData;
-				arrStringData.RemoveAll();
-				INT_PTR nCount = ((CComboBox*)pBaseControl)->GetCount();
-				for (INT_PTR nIndex = 0; nIndex < nCount; nIndex++) {
+				StringArray arrStringData;
+				size_t nCount = ((CComboBox*)pBaseControl)->GetCount();
+				arrStringData.reserve(nCount);
+				for (size_t nIndex = 0; nIndex < nCount; nIndex++) {
 					CString strTemp;
 					((CComboBox*)pBaseControl)->GetLBText(nIndex, strTemp);
-					arrStringData.Add(strTemp);
+					arrStringData.push_back(strTemp);
 				}
 				pCurControl->SetStringArray(arrStringData);
 			} break;
@@ -1498,16 +1486,16 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case List_Box:
 			{
 				// Update control's current selection index
-				INT_PTR nCurSel = ((CListBox*)pBaseControl)->GetCurSel();
+				size_t nCurSel = ((CListBox*)pBaseControl)->GetCurSel();
 				pCurControl->SetInteger(nCurSel);
 				// Update all item strings
-				CStringArray arrStringData;
-				arrStringData.RemoveAll();
-				INT_PTR nCount = ((CListBox*)pBaseControl)->GetCount();
-				for (INT_PTR nIndex = 0; nIndex < nCount; nIndex++) {
+				StringArray arrStringData;
+				size_t nCount = ((CListBox*)pBaseControl)->GetCount();
+				arrStringData.reserve(nCount);
+				for (size_t nIndex = 0; nIndex < nCount; nIndex++) {
 					CString strTemp;
 					((CListBox*)pBaseControl)->GetText(nIndex, strTemp);
-					arrStringData.Add(strTemp);
+					arrStringData.push_back(strTemp);
 				}
 				pCurControl->SetStringArray(arrStringData);
 			} break;
@@ -1516,33 +1504,33 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case List_Control:
 			{
 				// Update number of items and columns
-				INT_PTR nItemCount = ((CListCtrl*)pBaseControl)->GetItemCount();
+				size_t nItemCount = ((CListCtrl*)pBaseControl)->GetItemCount();
 				pCurControl->SetInteger(nItemCount);
-				INT_PTR nColumnCount = 0;
+				size_t nColumnCount = 0;
 				CHeaderCtrl* pHeaderCtrl = ((CListCtrl*)pBaseControl)->GetHeaderCtrl();
 				if (pHeaderCtrl != NULL) {
 					nColumnCount = pHeaderCtrl->GetItemCount();
 				}
 				pCurControl->SetReserveInteger(nColumnCount);
 				// Update control's data current selection index(es)
-				CUIntArray arrSelection;
-				arrSelection.RemoveAll();
-				for (INT_PTR nIndex = 0; nIndex < nItemCount; nIndex++) {
+				ULongArray arrSelection;
+				arrSelection.reserve(nItemCount);
+				for (size_t nIndex = 0; nIndex < nItemCount; nIndex++) {
 					// Get selection index
 					if ((((CListCtrl*)pBaseControl)->GetItemState(nIndex, LVIS_SELECTED) & LVIS_SELECTED) == LVIS_SELECTED) {
-						arrSelection.Add(nIndex);
+						arrSelection.push_back(nIndex);
 					}
 				}
 				pCurControl->SetIntArray(arrSelection);
 				// Update all item strings
-				CStringArray arrStringData;
-				arrStringData.RemoveAll();
-				for (INT_PTR nIndex = 0; nIndex < nItemCount; nIndex++) {
-					for (INT_PTR nColIndex = 0; nColIndex < nColumnCount; nColIndex++) {
+				StringArray arrStringData;
+				arrStringData.reserve(nItemCount);
+				for (size_t nIndex = 0; nIndex < nItemCount; nIndex++) {
+					for (size_t nColIndex = 0; nColIndex < nColumnCount; nColIndex++) {
 						// Get item text
 						CString strTemp;
 						strTemp = ((CListCtrl*)pBaseControl)->GetItemText(nIndex, nColIndex);
-						arrStringData.Add(strTemp);
+						arrStringData.push_back(strTemp);
 					}
 				}
 				pCurControl->SetStringArray(arrStringData);
@@ -1552,21 +1540,21 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case Tab_Control:
 			{
 				// Update the number of tabs
-				INT_PTR nTabCount = ((CTabCtrl*)pBaseControl)->GetItemCount();
+				size_t nTabCount = ((CTabCtrl*)pBaseControl)->GetItemCount();
 				// Update the currently selected tab index
-				INT_PTR nCurSelTab = ((CTabCtrl*)pBaseControl)->GetCurSel();
+				size_t nCurSelTab = ((CTabCtrl*)pBaseControl)->GetCurSel();
 				pCurControl->SetInteger(nCurSelTab);
 				// Update all tab's title
 				TCITEM tabInfo;
-				CStringArray arrTabTitles;
-				arrTabTitles.RemoveAll();
-				for (INT_PTR nIndex = 0; nIndex < nTabCount; nIndex++) {
+				StringArray arrTabTitles;
+				arrTabTitles.reserve(nTabCount);
+				for (size_t nIndex = 0; nIndex < nTabCount; nIndex++) {
 					CString strTemp = STRING_EMPTY;
 					BOOL bRet = ((CTabCtrl*)pBaseControl)->GetItem(nIndex, &tabInfo);
 					if (bRet == TRUE && ((tabInfo.mask & TCIF_TEXT) != 0)) {
 						strTemp = tabInfo.pszText;
 					}
-					arrTabTitles.Add(strTemp);
+					arrTabTitles.push_back(strTemp);
 				}
 				pCurControl->SetStringArray(arrTabTitles);
 			} break;
@@ -1587,7 +1575,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case Vertical_Scroll_Bar:
 			{
 				// Update control's current position
-				INT_PTR nCurPos = ((CScrollBar*)pBaseControl)->GetScrollPos();
+				size_t nCurPos = ((CScrollBar*)pBaseControl)->GetScrollPos();
 				pCurControl->SetInteger(nCurPos);
 				// Update control's min/max range
 				INT nMin = NULL, nMax = NULL;
@@ -1599,11 +1587,11 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case Slider_Control:
 			{
 				// Update control's current position
-				INT_PTR nCurPos = ((CSliderCtrl*)pBaseControl)->GetPos();
+				size_t nCurPos = ((CSliderCtrl*)pBaseControl)->GetPos();
 				pCurControl->SetInteger(nCurPos);
 				// Update control's min/max range
-				INT_PTR nMin = ((CSliderCtrl*)pBaseControl)->GetRangeMin();
-				INT_PTR nMax = ((CSliderCtrl*)pBaseControl)->GetRangeMax();
+				size_t nMin = ((CSliderCtrl*)pBaseControl)->GetRangeMin();
+				size_t nMax = ((CSliderCtrl*)pBaseControl)->GetRangeMax();
 				pCurControl->SetMinMaxInt(nMin, nMax);
 			} break;
 
@@ -1611,7 +1599,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case Progress_Control:
 			{
 				// Update control's current position
-				INT_PTR nCurPos = ((CProgressCtrl*)pBaseControl)->GetPos();
+				size_t nCurPos = ((CProgressCtrl*)pBaseControl)->GetPos();
 				pCurControl->SetInteger(nCurPos);
 				// Update control's min/max range
 				INT nMin = NULL, nMax = NULL;
@@ -1623,7 +1611,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case Spin_Control:
 			{
 				// Update control's current position
-				INT_PTR nCurPos = ((CSpinButtonCtrl*)pBaseControl)->GetPos();
+				size_t nCurPos = ((CSpinButtonCtrl*)pBaseControl)->GetPos();
 				pCurControl->SetInteger(nCurPos);
 				// Update control's min/max range
 				INT nMin = NULL, nMax = NULL;
@@ -1651,13 +1639,12 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				pCurControl->SetInteger(dwAddress);
 				pCurControl->SetReserveInteger(nNonBlankFieldNum);
 				// Store each field value separately into an integer array
-				CUIntArray arrAddressFields;
-				arrAddressFields.RemoveAll();
-				arrAddressFields.SetSize(4);
-				arrAddressFields.SetAt(0, byField0);	// Field 0
-				arrAddressFields.SetAt(1, byField1);	// Field 1
-				arrAddressFields.SetAt(2, byField2);	// Field 2
-				arrAddressFields.SetAt(3, byField3);	// Field 3
+				ULongArray arrAddressFields;
+				arrAddressFields.resize(4);
+				arrAddressFields[0] = byField0;		// Field 0
+				arrAddressFields[1] = byField1;		// Field 1
+				arrAddressFields[2] = byField2;		// Field 2
+				arrAddressFields[3] = byField3;		// Field 3
 				pCurControl->SetIntArray(arrAddressFields);
 			} break;
 

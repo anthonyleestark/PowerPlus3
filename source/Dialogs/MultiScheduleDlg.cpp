@@ -18,8 +18,8 @@
 
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
-#include "Dialogs\MultiScheduleDlg.h"
-#include "Dialogs\EditScheduleDlg.h"
+#include "Dialogs/MultiScheduleDlg.h"
+#include "Dialogs/EditScheduleDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -139,13 +139,13 @@ void CMultiScheduleDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	INT_PTR - Number of controls added to management
+//  Return value:	size_t - Number of controls added to management
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CMultiScheduleDlg::RegisterDialogManagement(void)
+size_t CMultiScheduleDlg::RegisterDialogManagement(void)
 {
-	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1370,8 +1370,8 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 	BOOL bResult = TRUE;
 
 	int nMsgStringID;
-	CStringArray arrMsgString;
-	arrMsgString.RemoveAll();
+	StringArray arrMsgString;
+	arrMsgString.clear();
 
 	// Get app language package
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -1380,7 +1380,7 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 	if ((schItem.GetItemID() != DEF_SCHEDULE_DEFAULT_ITEMID) &&
 		((schItem.GetItemID() < DEF_SCHEDULE_MIN_ITEMID) || (schItem.GetItemID() > DEF_SCHEDULE_MAX_ITEMID))) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ITEMID;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -1393,7 +1393,7 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 	// Check action ID
 	if ((schItem.GetAction() < APP_ACTION_NOTHING) || (schItem.GetAction() > APP_ACTION_HIBERNATE)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIONID;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -1406,7 +1406,7 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 	// Check repeat data
 	if ((schItem.IsRepeatEnabled() == TRUE) && (schItem.GetActiveDays() == NULL)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIVEDAYS;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -1417,25 +1417,24 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 	}
 
 	// Show error message if enabled
-	if ((bShowMsg == TRUE) && (!arrMsgString.IsEmpty())) {
-		for (int nIndex = 0; nIndex < arrMsgString.GetSize(); nIndex++) {
+	if ((bShowMsg == TRUE) && (!arrMsgString.empty())) {
+		for (int nIndex = 0; nIndex < arrMsgString.size(); nIndex++) {
 			// If auto correction is ON
 			if (bAutoCorrect == TRUE) {
 				// Add "Data will be automatically reset to default"
-				CString strErrMessage = arrMsgString.GetAt(nIndex);
+				CString strErrMessage = arrMsgString.at(nIndex);
 				strErrMessage += GetLanguageString(pLang, MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT);
 				DisplayMessageBox(strErrMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {
 				// Display error message
-				DisplayMessageBox(arrMsgString.GetAt(nIndex), NULL, MB_OK | MB_ICONERROR);
+				DisplayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
 			}
 		}
 	}
 
 	// Remove all message after displaying
-	arrMsgString.RemoveAll();
-	arrMsgString.FreeExtra();
+	arrMsgString.clear();
 
 	return bResult;
 }

@@ -17,12 +17,12 @@
 #ifndef _EDITSCHEDULEDLG_H_INCLUDED
 #define _EDITSCHEDULEDLG_H_INCLUDED
 
-#include "AppCore\AppCore.h"
-#include "AppCore\Config.h"
-#include "AppCore\MapTable.h"
-#include "AppCore\Logging.h"
-#include "AppCore\IDMapping.h"
-#include "Framework\SDialog.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/Config.h"
+#include "AppCore/MapTable.h"
+#include "AppCore/Logging.h"
+#include "AppCore/IDMapping.h"
+#include "Framework/SDialog.h"
 
 
 ////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual INT_PTR RegisterDialogManagement(void);
+	virtual size_t RegisterDialogManagement(void);
 	virtual BOOL UnregisterDialogManagement(void);
 
 	// Implementation

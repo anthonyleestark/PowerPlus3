@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "AppCore\Logging.h"
+#include "AppCore/Logging.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1048,7 +1048,7 @@ void JSON::AddChildObject(JSON* pSrc)
 		return;
 
 	// Index to copy
-	INT_PTR nIndex = 0;
+	size_t nIndex = 0;
 
 	// Allocate child object array data memory if not yet allocated
 	if (this->m_apChildObjectList == NULL) {
@@ -1126,7 +1126,7 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	}
 
 	// Print list of properties
-	INT_PTR nItemNum = this->m_arrKeyValuePairs.size();
+	size_t nItemNum = this->m_arrKeyValuePairs.size();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 		// Add indentation
@@ -1358,13 +1358,16 @@ void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
 
 void SLogging::OutputItem(const LOGITEM& logItem)
 {
+	// Debug output
+	OutputDebugStringFormat(_T("[ALS] => OutputLog: CateID=%d, Log={%s}"), logItem.GetCategory(), logItem.GetLogString());
+
 	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
 		Write(logItem);
 	}
 	else {
 		// If already reached max data size
-		INT_PTR nMaxSize = GetMaxSize();
+		size_t nMaxSize = GetMaxSize();
 		if ((nMaxSize != INT_INFINITE) && (GetLogCount() >= nMaxSize)) {
 			// Can not output log item --> Trace info
 			TRACE_ERROR("Output log item failed: Log data exceeded max size!!!");

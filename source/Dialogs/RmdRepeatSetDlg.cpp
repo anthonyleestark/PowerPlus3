@@ -14,7 +14,7 @@
 
 #include "stdafx.h"
 #include "PowerPlus.h"
-#include "Dialogs\RmdRepeatSetDlg.h"
+#include "Dialogs/RmdRepeatSetDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

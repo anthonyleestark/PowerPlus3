@@ -18,15 +18,15 @@
 #ifndef _POWERPLUSDLG_H_INCLUDED
 #define _POWERPLUSDLG_H_INCLUDED
 
-#include "AppCore\AppCore.h"
-#include "AppCore\Config.h"
-#include "AppCore\MapTable.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/Config.h"
+#include "AppCore/MapTable.h"
 
-#include "AppCore\Logging.h"
-#include "AppCore\Logging_pub.h"
-#include "AppCore\IDMapping.h"
+#include "AppCore/Logging.h"
+#include "AppCore/Logging_pub.h"
+#include "AppCore/IDMapping.h"
 
-#include "Framework\SDialog.h"
+#include "Framework/SDialog.h"
 
 
 ////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 	// Dialog control management
-	virtual INT_PTR RegisterDialogManagement(void);
+	virtual size_t RegisterDialogManagement(void);
 	virtual void UpdateDialogManagement(void);
 	virtual BOOL UnregisterDialogManagement(void);
 
@@ -110,7 +110,7 @@ private:
 	CSize*	m_pDialogSize;
 
 	// Hotkey register data
-	CUIntArray	m_arrCurRegHKeyList;
+	UIntArray m_arrCurRegHKeyList;
 
 	// Power++ runtime queue data
 	PWRRUNTIMEQUEUE m_arrRuntimeQueue;
@@ -242,7 +242,7 @@ private:
 	void UpdatePwrReminderSnooze(int nMode);
 	BOOL GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
 	void SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int nDispFlag);
-	INT_PTR GetPwrReminderDispList(CUIntArray& arrPwrDispList);
+	size_t GetPwrReminderDispList(UIntArray& arrPwrDispList);
 
 	// Debugging functions
 	BOOL ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode);

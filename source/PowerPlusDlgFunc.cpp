@@ -17,13 +17,13 @@
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
 
-#include "Dialogs\AboutDlg.h"
-#include "Dialogs\MultiScheduleDlg.h"
-#include "Dialogs\LogViewerDlg.h"
-#include "Dialogs\HotkeySetDlg.h"
-#include "Dialogs\PwrReminderDlg.h"
-#include "Dialogs\ReminderMsgDlg.h"
-#include "Dialogs\DebugTestDlg.h"
+#include "Dialogs/AboutDlg.h"
+#include "Dialogs/MultiScheduleDlg.h"
+#include "Dialogs/LogViewerDlg.h"
+#include "Dialogs/HotkeySetDlg.h"
+#include "Dialogs/PwrReminderDlg.h"
+#include "Dialogs/ReminderMsgDlg.h"
+#include "Dialogs/DebugTestDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -776,11 +776,11 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				// Prepare for replying
 				bNoReply = FALSE;	// Reset flag
 				// Print number of entries
-				INT_PTR nSize = pResourceIDMap->GetMapCount();
+				size_t nSize = pResourceIDMap->GetMapCount();
 				strOutputResult.Format(_T("Resource ID map count=%lld"), nSize);
 				OutputDebugLog(strOutputResult, DebugTestTool);
 				// Print each resource ID map entry
-				for (INT_PTR nIndex = 0; nIndex < nSize; nIndex++) {
+				for (size_t nIndex = 0; nIndex < nSize; nIndex++) {
 					const RESOURCE_ID_MAP_ENTRY& resourceIDMapEntry = pResourceIDMap->GetAt(nIndex);
 					strOutputResult.Format(_T("Index=%lld: { ResourceID=%d, NameID=%s }"), nIndex, resourceIDMapEntry.dwResourceID, MAKEUNICODE(resourceIDMapEntry.strNameID));
 					OutputDebugLog(strOutputResult, DebugTestTool);

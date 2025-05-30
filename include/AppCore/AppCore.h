@@ -19,11 +19,11 @@
 #define	_CORE_H_INCLUDED
 
 #include "stdafx.h"
-
 #include "Language.h"
 
-#include "Components\GridCtrl\GridCtrl.h"
-#include "Components\GridCtrl\GridCellCheck.h"
+#include "Components/GridCtrl/GridCtrl.h"
+#include "Components/GridCtrl/GridCellCheck.h"
+
 
 /////////////////////////////////////
 
@@ -764,6 +764,13 @@ typedef enum eFILETYPE {
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Define global typenames for basic data types
+using IntArray = typename std::vector<int>;
+using UIntArray = typename std::vector<UINT>;
+using LongArray = typename std::vector<long long>;
+using ULongArray = typename std::vector<size_t>;
+using StringArray = typename std::vector<CString>;
+
 //////////////////////////////////////////////////////////////////////////
 //
 //	Data type name:	CONFIGDATA
@@ -1117,7 +1124,7 @@ public:
 	UINT GetNextID();												// Get next item ID (to add new item)
 
 	// Get attributes
-	INT_PTR GetExtraItemNum(void) const;							// Get number of extra items
+	size_t GetExtraItemNum(void) const;							// Get number of extra items
 	BOOL IsDefaultEmpty(void) const;								// Check if default item is empty
 	BOOL IsEmpty(int) const;										// Check if item at index is empty
 	BOOL IsExtraEmpty(void) const;									// Check if extra data is empty
@@ -1238,7 +1245,7 @@ public:
 	void Adjust(void);												// Adjust data validity
 
 	// Get attributes
-	INT_PTR GetItemNum(void) const;									// Get number of items
+	size_t GetItemNum(void) const;									// Get number of items
 	BOOL IsEmpty(int) const;										// Check if item at index is empty
 	BOOL IsAllEmpty() const;										// Check if all items are empty
 
@@ -1455,7 +1462,7 @@ public:
 	UINT GetNextID(void);											// Get next item ID (to add new item)
 
 	// Get attributes
-	INT_PTR GetItemNum(void) const;									// Get number of items
+	size_t GetItemNum(void) const;									// Get number of items
 	BOOL IsEmpty(int) const;										// Check if item at index is empty
 	BOOL IsAllEmpty(void) const;									// Check if all items are empty
 
@@ -1651,7 +1658,7 @@ public:
 public:
 	// Validation
 	BOOL IsEmpty(void) const;										// Check if tracking data is empty
-	INT_PTR GetTrackedCount(void) const;							// Get number of tracked events
+	size_t GetTrackedCount(void) const;							// Get number of tracked events
 
 	// Update data
 	void AddEvent(const SystemEvent&);								// Add system event info
@@ -1716,7 +1723,7 @@ private:
 	CString*		m_pstrValue;							// String value
 	DWORD*			m_pdwValue;								// DWORD (32-bit) value
 	QWORD*			m_pqwValue;								// QWORD (64-bit) value
-	CStringArray*	m_pastrValue;							// Multi-string value
+	StringArray*	m_pastrValue;							// Multi-string value
 
 public:
 	// Construction
@@ -1745,8 +1752,8 @@ public:
 	void SetDWord(DWORD);									// Set DWORD (32-bit) value
 	QWORD GetQWord(void) const;								// Get QWORD (64-bit) value
 	void SetQWord(QWORD);									// Set QWORD (64-bit) value
-	void GetMultiString(CStringArray&) const;				// Get Multi-string value
-	void SetMultiString(CStringArray&);						// Set Multi-string value
+	void GetMultiString(StringArray&) const;				// Get Multi-string value
+	void SetMultiString(StringArray&);						// Set Multi-string value
 	BOOL AddString(LPCTSTR);								// Add string value to Multi-string data
 };
 
@@ -1801,8 +1808,8 @@ public:
 	void SetDWord(DWORD);									// Set DWORD (32-bit) value
 	QWORD GetQWord(void) const;								// Get QWORD (64-bit) value
 	void SetQWord(QWORD);									// Set QWORD (64-bit) value
-	void GetMultiString(CStringArray&) const;				// Get Multi-string value
-	void SetMultiString(CStringArray&);						// Set Multi-string value
+	void GetMultiString(StringArray&) const;				// Get Multi-string value
+	void SetMultiString(StringArray&);						// Set Multi-string value
 	BOOL AddString(LPCTSTR);								// Add string value to Multi-string data
 };
 
@@ -1834,10 +1841,10 @@ private:
 	// Attributes
 	HKEY			m_hRootKey;								// Root key (HKEY)
 	CString			m_strRootKey;							// Root key (string)
-	CStringArray	m_astrSubkeyPath;						// Subkey path (string array)
+	StringArray		m_astrSubkeyPath;						// Subkey path (string array)
 	CString			m_strProfileName;						// Profile key name (string)
 	CString			m_strAppName;							// App name (string)
-	CStringArray	m_astrSectionArray;						// Section array (string)
+	StringArray		m_astrSectionArray;						// Section array (string)
 	REGISTRYKEY		m_regKeyInfo;							// Registry key info
 
 public:
@@ -1859,10 +1866,10 @@ public:
 
 	// Get attributes
 	LPCTSTR GetRootKeyName(void) const;						// Get root key name
-	void GetSubkeyPath(CStringArray&) const;				// Get Subkey path array
+	void GetSubkeyPath(StringArray&) const;					// Get Subkey path array
 	LPCTSTR GetProfileName(void) const;						// Get Profile key name
 	LPCTSTR GetAppName(void) const;							// Get App name
-	void GetSectionName(CStringArray&) const;				// Get Section name array
+	void GetSectionName(StringArray&) const;				// Get Section name array
 
 	// Set attributes
 	void SetRootKey(HKEY);									// Set root key
@@ -1870,14 +1877,14 @@ public:
 	void SetRootKeyName(LPCTSTR);							// Set root key name (string)
 	void SetSubkeyPath(UINT);								// Set Subkey path (resource ID)
 	void SetSubkeyPath(LPCTSTR);							// Set Subkey path (string)
-	void SetSubkeyPath(CStringArray&);						// Set Subkey path (string array)
+	void SetSubkeyPath(StringArray&);						// Set Subkey path (string array)
 	void SetProfileName(UINT);								// Set Profile key name (resource ID)
 	void SetProfileName(LPCTSTR);							// Set Profile key name (string)
 	void SetAppName(UINT);									// Set App name (resource ID)
 	void SetAppName(LPCTSTR);								// Set App name (string)
 	void SetSectionName(UINT);								// Set Section name (resource ID)
 	void SetSectionName(LPCTSTR);							// Set Section name (string)
-	void SetSectionName(CStringArray&);						// Set Section array (string array)
+	void SetSectionName(StringArray&);						// Set Section array (string array)
 };
 
 // Define new typenames for Registry info class

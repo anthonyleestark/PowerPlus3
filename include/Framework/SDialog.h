@@ -20,12 +20,12 @@
 #include "stdafx.h"
 #include "afxdialogex.h"
 
-#include "AppCore\AppCore.h"
-#include "AppCore\IDMapping.h"
-#include "AppCore\Logging.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/IDMapping.h"
+#include "AppCore/Logging.h"
 
-#include "Components\GridCtrl\GridCtrl.h"
-#include "Components\GridCtrl\GridCellCheck.h"
+#include "Components/GridCtrl/GridCtrl.h"
+#include "Components/GridCtrl/GridCellCheck.h"
 
 #include "SElements.h"
 #include "SWinApp.h"
@@ -123,8 +123,8 @@ public:
 
 protected:
 	// Dialog resource ID mapping
-	static const INT_PTR PASCAL UpdateThisResourceIDMap();
-	virtual const INT_PTR UpdateResourceIDMap();
+	static const size_t PASCAL UpdateThisResourceIDMap();
+	virtual const size_t UpdateResourceIDMap();
 
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
@@ -150,7 +150,7 @@ protected:
 	BOOL m_bInitSoundSet;
 
 	// Lock state exception ID list
-	CUIntArray* m_paLockExceptionIDList;
+	UIntArray* m_paLockExceptionIDList;
 
 	// Dialog anchor point
 	CPoint m_ptAnchorPoint;
@@ -214,7 +214,7 @@ public:
 
 	// Dialog control management functions
 	virtual SControlManager* GetControlManager(void);
-	virtual INT_PTR RegisterDialogManagement(void);
+	virtual size_t RegisterDialogManagement(void);
 	virtual void UpdateDialogManagement(void);
 	virtual BOOL UnregisterDialogManagement(void);
 
@@ -315,8 +315,8 @@ public:
 	virtual void UpdateItemText(UINT nCtrlID, LPCTSTR lpszNewCaption);
 	virtual void UpdateItemText(UINT nCtrlID, UINT nNewCaptionID = NULL, LANGTABLE_PTR ptrLanguage = NULL);
 	virtual void SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLanguage = NULL);
-	virtual void MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPosition);
-	virtual void MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, int nDistance);
+	virtual void MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition);
+	virtual void MoveItemGroup(const UIntArray& arrCtrlIDGroup, int nDirection, int nDistance);
 	virtual void ShowItem(UINT nDlgItemID, BOOL bVisible);
 	virtual void ShowItem(CWnd* pDlgItemWnd, BOOL bVisible);
 	virtual void EnableItem(UINT nDlgItemID, BOOL bEnabled);

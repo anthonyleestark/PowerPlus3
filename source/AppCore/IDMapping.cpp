@@ -12,7 +12,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "AppCore\IDMapping.h"
+#include "AppCore/IDMapping.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -78,7 +78,7 @@ SResourceIDMap::~SResourceIDMap()
 //
 //////////////////////////////////////////////////////////////////////////
 
-const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::operator[](INT_PTR nIndex)
+const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::operator[](size_t nIndex)
 {
 	return this->GetAt(nIndex);
 }
@@ -140,7 +140,7 @@ void SResourceIDMap::DestroyResourceIDMap(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SResourceIDMap::Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize)
+void SResourceIDMap::Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
 {
 	// Check source data validity
 	ASSERT((pSrc != NULL) && (nSize > 0));
@@ -178,7 +178,7 @@ void SResourceIDMap::Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SResourceIDMap::Append(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize)
+void SResourceIDMap::Append(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
 {
 	// Check source data validity
 	ASSERT((pSrc != NULL) && (nSize > 0));
@@ -192,10 +192,10 @@ void SResourceIDMap::Append(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize)
 	}
 
 	// Filter items in source map which doesn't exist in destination map
-	INT_PTR nFilterCount = 0;
+	size_t nFilterCount = 0;
 	RESOURCE_ID_MAP pFilterSrc = new RESOURCE_ID_MAP_ENTRY[nSize];
 	ASSERT(pFilterSrc != NULL);
-	for (INT_PTR nIndex = 0; nIndex < nSize; nIndex++) {
+	for (size_t nIndex = 0; nIndex < nSize; nIndex++) {
 		if (FindResourceID(pSrc[nIndex].dwResourceID) == INT_INVALID) {
 			// Copy item into filter map
 			pFilterSrc[nFilterCount] = pSrc[nIndex];
@@ -209,7 +209,7 @@ void SResourceIDMap::Append(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize)
 		return;
 
 	// Create new map data
-	INT_PTR nNewSize = m_nSize + nFilterCount;
+	size_t nNewSize = m_nSize + nFilterCount;
 	RESOURCE_ID_MAP pNewMapData = new RESOURCE_ID_MAP_ENTRY[nNewSize];
 	ASSERT(pNewMapData != NULL);
 
@@ -310,7 +310,7 @@ void SResourceIDMap::Remove(DWORD dwResID)
 		return;
 
 	// Create a new clone map data
-	INT_PTR nNewSize = m_nSize - 1;
+	size_t nNewSize = (m_nSize - 1);
 	RESOURCE_ID_MAP pNewMapData = new RESOURCE_ID_MAP_ENTRY[nNewSize];
 	ASSERT(pNewMapData != NULL);
 
@@ -406,11 +406,11 @@ LPCSTR SResourceIDMap::GetNameID(DWORD dwResID) const
 //	Description:	Return index of the first item with specific resource ID
 //					and return -1 if resource ID is not found
 //  Arguments:		dwResID - Resource ID
-//  Return value:	INT_PTR
+//  Return value:	size_t
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR SResourceIDMap::FindResourceID(DWORD dwResID) const
+size_t SResourceIDMap::FindResourceID(DWORD dwResID) const
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);
@@ -418,7 +418,7 @@ INT_PTR SResourceIDMap::FindResourceID(DWORD dwResID) const
 		return INT_INVALID;
 
 	// Find ID
-	INT_PTR nResIndex = INT_INVALID;
+	size_t nResIndex = INT_INVALID;
 	for (int nIndex = 0; nIndex < m_nSize; nIndex++) {
 		if (m_pIDMapData[nIndex].dwResourceID == dwResID) {
 			nResIndex = nIndex;	// Index found
@@ -434,11 +434,11 @@ INT_PTR SResourceIDMap::FindResourceID(DWORD dwResID) const
 //	Description:	Return index of the first item with specific name ID
 //					and return -1 if name ID is not found
 //					lpszNameID - Name string ID
-//  Return value:	INT_PTR
+//  Return value:	size_t
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
+size_t SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);
@@ -446,7 +446,7 @@ INT_PTR SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
 		return INT_INVALID;
 
 	// Find ID
-	INT_PTR nResIndex = INT_INVALID;
+	size_t nResIndex = INT_INVALID;
 	for (int nIndex = 0; nIndex < m_nSize; nIndex++) {
 		if (strcmp(m_pIDMapData[nIndex].strNameID, lpszNameID) == 0) {
 			nResIndex = nIndex;	// Index found
@@ -465,7 +465,7 @@ INT_PTR SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::GetAt(INT_PTR nIndex) const
+const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::GetAt(size_t nIndex) const
 {
 	ASSERT((nIndex >= 0) && (nIndex < m_nSize));
 	if ((nIndex >= 0) && (nIndex < m_nSize)) {
@@ -481,11 +481,11 @@ const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::GetAt(INT_PTR nIndex) const
 //	Function name:	GetMapCount
 //	Description:	Return the number of elements of resource ID map
 //  Arguments:		None
-//  Return value:	INT_PTR - Number of resource ID map entries
+//  Return value:	size_t - Number of resource ID map entries
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR SResourceIDMap::GetMapCount(void) const
+size_t SResourceIDMap::GetMapCount(void) const
 {
 	return m_nSize;
 }

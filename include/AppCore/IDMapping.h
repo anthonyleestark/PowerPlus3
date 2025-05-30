@@ -17,7 +17,6 @@
 #define _IDMAPPING_H_INCLUDED
 
 #include "stdafx.h"
-
 #include "AppCore.h"
 
 
@@ -39,17 +38,17 @@
 // Declare descendant-class-level resource ID map
 #define DECLARE_RESOURCEID_MAP()	\
 	protected: \
-		static const INT_PTR PASCAL UpdateThisResourceIDMap(); \
-		const INT_PTR UpdateResourceIDMap() override;
+		static const size_t PASCAL UpdateThisResourceIDMap(); \
+		const size_t UpdateResourceIDMap() override;
 
 // Begin the sequece of updating class resource ID map data
 #define BEGIN_RESOURCEID_MAP(theClass) \
 	PTM_WARNING_DISABLE \
-	const INT_PTR theClass::UpdateResourceIDMap() \
+	const size_t theClass::UpdateResourceIDMap() \
 	{ \
 		return UpdateThisResourceIDMap(); \
 	} \
-	const INT_PTR theClass::UpdateThisResourceIDMap() \
+	const size_t theClass::UpdateThisResourceIDMap() \
 	{ \
 		__pragma(warning(push))	\
 		__pragma(warning(disable: 4640)) \
@@ -104,12 +103,12 @@
 		{ Resource_Null, 0, "#NULL" } \
 		}; \
 		__pragma(warning(pop)) \
-		INT_PTR _resourceIDMapCount = 0;	\
+		size_t _resourceIDMapCount = 0;	\
 		SResourceIDMap* _pResourceIDMap = GET_RESOURCEID_MAP(); \
 		ASSERT(_pResourceIDMap != NULL); \
 		if (_pResourceIDMap != NULL) \
 		{ \
-			INT_PTR _srcMapSize = sizeof(_mapEntries) / sizeof(_mapEntries[0]); \
+			size_t _srcMapSize = sizeof(_mapEntries) / sizeof(_mapEntries[0]); \
 			_pResourceIDMap->Append(&_mapEntries[0], --(_srcMapSize)); \
 			_resourceIDMapCount = _pResourceIDMap->GetMapCount(); \
 		} \
@@ -180,7 +179,7 @@ class SResourceIDMap : public CObject
 private:
 	// Data container
 	RESOURCE_ID_MAP m_pIDMapData;
-	INT_PTR			m_nSize;
+	size_t			m_nSize;
 
 	// Single instance and thread safety guard
 	static SResourceIDMap*	m_thisInstance;
@@ -195,7 +194,7 @@ private:
 public:
 	// Operators
 	SResourceIDMap& operator=(const SResourceIDMap&) = delete;		// no copy assignment operator
-	const RESOURCE_ID_MAP_ENTRY& operator[](INT_PTR nIndex);
+	const RESOURCE_ID_MAP_ENTRY& operator[](size_t nIndex);
 
 public:
 	// Get the single map instance:
@@ -205,8 +204,8 @@ public:
 	static void DestroyResourceIDMap(void);
 
 	// Initialization
-	void Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize);
-	void Append(const RESOURCE_ID_MAP_ENTRY* pSrc, INT_PTR nSize);
+	void Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize);
+	void Append(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize);
 
 	// Data processing functions
 	void Add(BYTE byTypeID, DWORD dwResID, LPCSTR lpszNameID);
@@ -217,12 +216,12 @@ public:
 	// Data acquirement functions
 	UINT	GetResourceID(LPCSTR lpszNameID) const;
 	LPCSTR	GetNameID(DWORD dwResID) const;
-	INT_PTR	FindResourceID(DWORD dwResID) const;
-	INT_PTR	FindNameID(LPCSTR lpszNameID) const;
+	size_t	FindResourceID(DWORD dwResID) const;
+	size_t	FindNameID(LPCSTR lpszNameID) const;
 
 	// Attributes get/set functions
-	const RESOURCE_ID_MAP_ENTRY& GetAt(INT_PTR nIndex) const;
-	INT_PTR GetMapCount(void) const;
+	const RESOURCE_ID_MAP_ENTRY& GetAt(size_t nIndex) const;
+	size_t GetMapCount(void) const;
 };
 
 #endif		// ifndef _IDMAPPING_H_INCLUDED

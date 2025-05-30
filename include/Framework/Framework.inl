@@ -148,7 +148,7 @@ inline void SCtrlInfoWrap::SetFocusedState(_In_ BOOL bFocused) {
 }
 
 // Get number of controls in management
-inline INT_PTR SControlManager::GetCount(void) const
+inline size_t SControlManager::GetCount(void) const
 {
 	// If data is not initialized
 	if (m_pCtrlInfoArray == NULL)
@@ -338,12 +338,12 @@ inline void SWinApp::PostErrorMessage(CWnd* pRcvWnd, DWORD dwErrorCode, LPARAM l
 #endif
 
 // Base functions for implementing dialog resource ID map
-inline const INT_PTR SDialog::UpdateResourceIDMap() {
+inline const size_t SDialog::UpdateResourceIDMap() {
 	return UpdateThisResourceIDMap();
 }
 
 // Base functions for implementing dialog resource ID map
-inline const INT_PTR PASCAL SDialog::UpdateThisResourceIDMap() {
+inline const size_t PASCAL SDialog::UpdateThisResourceIDMap() {
 	return GET_RESOURCEID_MAP()->GetMapCount();
 }
 

@@ -20,14 +20,14 @@
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
 
-#include "Dialogs\AboutDlg.h"
-#include "Dialogs\HelpDlg.h"
-#include "Dialogs\MultiScheduleDlg.h"
-#include "Dialogs\LogViewerDlg.h"
-#include "Dialogs\HotkeySetDlg.h"
-#include "Dialogs\PwrReminderDlg.h"
-#include "Dialogs\ReminderMsgDlg.h"
-#include "Dialogs\DebugTestDlg.h"
+#include "Dialogs/AboutDlg.h"
+#include "Dialogs/HelpDlg.h"
+#include "Dialogs/MultiScheduleDlg.h"
+#include "Dialogs/LogViewerDlg.h"
+#include "Dialogs/HotkeySetDlg.h"
+#include "Dialogs/PwrReminderDlg.h"
+#include "Dialogs/ReminderMsgDlg.h"
+#include "Dialogs/DebugTestDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -91,7 +91,7 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	m_pDialogSize = NULL;
 
 	// Init hotkey register data
-	m_arrCurRegHKeyList.RemoveAll();
+	m_arrCurRegHKeyList.clear();
 
 	// Init Power++ runtime queue data
 	m_arrRuntimeQueue.clear();
@@ -168,12 +168,11 @@ CPowerPlusDlg::~CPowerPlusDlg()
 	// Clear HotkeySet data
 	m_hksHotkeySetData.DeleteAll();
 
-	// Clear registered hotkey list
-	m_arrCurRegHKeyList.RemoveAll();
-	m_arrCurRegHKeyList.FreeExtra();
-
 	// Clear Power Reminder data
 	m_prdReminderData.DeleteAll();
+
+	// Clear registered hotkey list
+	m_arrCurRegHKeyList.clear();
 
 	// Clean Power++ runtime queue data
 	m_arrRuntimeQueue.clear();
@@ -220,13 +219,13 @@ void CPowerPlusDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	INT_PTR - Number of controls added to management
+//  Return value:	size_t - Number of controls added to management
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CPowerPlusDlg::RegisterDialogManagement(void)
+size_t CPowerPlusDlg::RegisterDialogManagement(void)
 {
-	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -671,7 +670,7 @@ int CPowerPlusDlg::PreDestroyDialog()
 	}
 
 	// Can not destroy if Power Reminder messages are currently displaying
-	CUIntArray arrPwrDispItemList;
+	UIntArray arrPwrDispItemList;
 	if (GetPwrReminderDispList(arrPwrDispItemList) > 0) {
 		// Display notify message
 		DisplayMessageBox(MSGBOX_OTHER_PREDESTROY_REMINDERDISP, MSGBOX_PWRREMINDER_CAPTION);
@@ -2879,13 +2878,14 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 
 	CString strTipText;
 	CString strFormat;
-	CStringArray arrTipText;
+	StringArray arrTipText;
+	arrTipText.reserve(3);
 
 	// Load language strings
 	strFormat = GetLanguageString(pAppLang, NOTIFY_TIP_TEMPLATE);
-	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nLMBAction)));
-	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nMMBAction)));
-	arrTipText.Add(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nRMBAction)));
+	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nLMBAction)));
+	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nMMBAction)));
+	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nRMBAction)));
 
 	// Format notify tip text
 	strTipText.Format(strFormat, arrTipText[0], arrTipText[1], arrTipText[2]);
@@ -4097,7 +4097,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 	// If background hotkey feature is disabled and no hotkey registered, do nothing
 	if ((bHKSEnable == FALSE) &&											// HotkeySet option OFF
 		(bHKRegisterFlag == FALSE) &&										// Hotkey registered flag OFF
-		(m_arrCurRegHKeyList.IsEmpty())) {									// Registered hotkey list empty
+		(m_arrCurRegHKeyList.empty())) {									// Registered hotkey list empty
 		TRACE("Background hotkey setup will be skipped!!!");
 		return;
 	}
@@ -4116,21 +4116,20 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 	if ((nMode == MODE_DISABLE) || (nMode == MODE_UPDATE)) {
 
 		if ((bHKRegisterFlag == TRUE) &&									// Hotkey registered flag ON
-			(!m_arrCurRegHKeyList.IsEmpty())) {								// Registered hotkey list is NOT empty
+			(!m_arrCurRegHKeyList.empty())) {								// Registered hotkey list is NOT empty
 
 			// Unregister currently registered hotkeys
-			int nRegItemNum = m_arrCurRegHKeyList.GetSize();
+			int nRegItemNum = m_arrCurRegHKeyList.size();
 			for (int nIndex = (nRegItemNum - 1); nIndex >= 0; nIndex--) {
-				UINT nHKID = m_arrCurRegHKeyList.GetAt(nIndex);
+				UINT nHKID = m_arrCurRegHKeyList.at(nIndex);
 				BOOL bRet = UnregisterHotKey(hWnd, nHKID);
 				if (bRet == TRUE) {
 					// Unregister successfully
 					OutputDebugLogFormat(_T("Unregistered hotkey: %d"), nHKID);
-					m_arrCurRegHKeyList.RemoveAt(nIndex);
+					m_arrCurRegHKeyList.erase(m_arrCurRegHKeyList.begin() + nIndex);
 					if (nIndex == 0) {										// Last item unregistered
 						SetFlagValue(AppFlagID::hotkeyRegistered, FALSE);	// Reset hotkey registered flag
-						m_arrCurRegHKeyList.RemoveAll();					// Cleanup registered hotkey list
-						m_arrCurRegHKeyList.FreeExtra();
+						m_arrCurRegHKeyList.clear();						// Cleanup registered hotkey list
 					}
 				}
 				else {
@@ -4176,8 +4175,8 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 
 		// Reset flag and re-initialize registered hotkey list
 		SetFlagValue(AppFlagID::hotkeyRegistered, FALSE);
-		m_arrCurRegHKeyList.RemoveAll();
-		m_arrCurRegHKeyList.FreeExtra();
+		m_arrCurRegHKeyList.clear();
+		m_arrCurRegHKeyList.reserve(nItemNum);
 
 		// Debug log
 		CString strLogTemp;
@@ -4226,7 +4225,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 			if (bRet == TRUE) {
 				// Register successfully
 				OutputDebugLogFormat(_T("Registered hotkey: %s"), strLogTemp);
-				m_arrCurRegHKeyList.Add(nHKActionID);						// Update registered hotkey list
+				m_arrCurRegHKeyList.push_back(nHKActionID);						// Update registered hotkey list
 			}
 			else {
 				// Register failed
@@ -4434,7 +4433,7 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 
 	// Look for corresponding HotkeyID in HotkeySet data
 	UINT nHKActionID = INT_NULL;
-	for (INT_PTR nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
+	for (size_t nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
 		const HOTKEYSETITEM& hksItem = m_hksHotkeySetData.GetItemAt(nIndex);
 		if ((hksItem.IsEnabled() == TRUE) &&						// HotkeySet item is enabled
 			(hksItem.CompareKeycode(wModifiers, wVirtualKey))) {	// Keycode is matching
@@ -4461,8 +4460,8 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 	}
 
 	// Only process if HotkeyID is registered
-	for (INT_PTR nIndex = 0; nIndex < m_arrCurRegHKeyList.GetSize(); nIndex++) {
-		UINT nRegHKeyID = m_arrCurRegHKeyList.GetAt(nIndex);
+	for (size_t nIndex = 0; nIndex < m_arrCurRegHKeyList.size(); nIndex++) {
+		UINT nRegHKeyID = m_arrCurRegHKeyList.at(nIndex);
 		if (nRegHKeyID == nHKActionID) {
 			// Process Hotkey by ID
 			return ProcessHotkey(nHKActionID);
@@ -4957,21 +4956,21 @@ void CPowerPlusDlg::SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int n
 //	Function name:	GetPwrReminderDispList
 //	Description:	Get Power Reminder runtime displaying item list
 //  Arguments:		arrPwrDispList - Power Reminder displaying item list
-//  Return value:	INT_PTR - Number of displaying items
+//  Return value:	size_t - Number of displaying items
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CPowerPlusDlg::GetPwrReminderDispList(CUIntArray& arrPwrDispList)
+size_t CPowerPlusDlg::GetPwrReminderDispList(UIntArray& arrPwrDispList)
 {
 	// Reset output data list
-	arrPwrDispList.RemoveAll();
-	arrPwrDispList.FreeExtra();
+	arrPwrDispList.clear();
 
 	// If runtime queue data is empty, return no item
 	if (m_arrRuntimeQueue.empty())
 		return INT_NULL;
 
 	// Get runtime displaying item ID list
+	arrPwrDispList.reserve(m_arrRuntimeQueue.size());
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
@@ -4983,12 +4982,13 @@ INT_PTR CPowerPlusDlg::GetPwrReminderDispList(CUIntArray& arrPwrDispList)
 		// If item displaying flag is marked as ON
 		if (pwrRuntimeItem.GetDisplayFlag() == FLAG_ON) {
 			// Add item ID into output data list
-			arrPwrDispList.Add(pwrRuntimeItem.GetItemID());
+			arrPwrDispList.push_back(pwrRuntimeItem.GetItemID());
 		}
 	}
 
 	// Return number of displaying items
-	return arrPwrDispList.GetSize();
+	arrPwrDispList.shrink_to_fit();
+	return arrPwrDispList.size();
 }
 
 

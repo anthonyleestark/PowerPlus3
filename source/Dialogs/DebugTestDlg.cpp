@@ -13,7 +13,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Dialogs\DebugTestDlg.h"
+#include "Dialogs/DebugTestDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -66,7 +66,7 @@ CDebugTestDlg::CDebugTestDlg() : SDialog(IDD_DEBUGTEST_DLG)
 	// Debug command history
 	m_bCurDispHistory = FALSE;
 	m_nHistoryCurIndex = 0;
-	m_astrCommandHistory.RemoveAll();
+	m_astrCommandHistory.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -562,10 +562,10 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 				if (dwKey == VK_BACK) {
 
 					// Get line begin character index
-					INT_PTR nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
+					size_t nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
 
 					// Get last line index
-					INT_PTR nLastLineIndex = GetDebugEditView()->GetLineCount() - 1;
+					size_t nLastLineIndex = GetDebugEditView()->GetLineCount() - 1;
 
 					// If the caret position is not in the last line
 					// or is in the beginning of last line
@@ -620,10 +620,10 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 			else if (dwKey == VK_LEFT) {
 
 				// Get line begin character index
-				INT_PTR nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
+				size_t nLineBeginIndex = GetDebugEditView()->LineIndex(nCaretLineIdx);
 
 				// Get last line index
-				INT_PTR nLastLineIndex = GetDebugEditView()->GetLineCount() - 1;
+				size_t nLastLineIndex = GetDebugEditView()->GetLineCount() - 1;
 
 				// If the caret position is not in the last line
 				// or is in the beginning of last line
@@ -824,11 +824,11 @@ BOOL CDebugTestDlg::CreateDebugViewBrush(void)
 //	Function name:	GetCaretPosition
 //	Description:	Get the caret's current position
 //  Arguments:		None
-//  Return value:	INT_PTR - Caret position
+//  Return value:	size_t - Caret position
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CDebugTestDlg::GetCaretPosition(void)
+size_t CDebugTestDlg::GetCaretPosition(void)
 {
 	// Check DebugTest edit view validity
 	if (!IsDebugEditViewValid())
@@ -1083,15 +1083,15 @@ void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */, BOOL bNotifyPar
 //	Function name:	AddDebugCommandHistory
 //	Description:	Add debug command to history
 //  Arguments:		lpszCommand - Input command
-//  Return value:	INT_PTR - New item count
+//  Return value:	size_t - New item count
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CDebugTestDlg::AddDebugCommandHistory(LPCTSTR lpszCommand)
+size_t CDebugTestDlg::AddDebugCommandHistory(LPCTSTR lpszCommand)
 {
 	// Only add if input command is not empty
 	if (IS_NOT_EMPTY_STRING(lpszCommand)) {
-		m_astrCommandHistory.Add(lpszCommand);
+		m_astrCommandHistory.push_back(lpszCommand);
 
 		// Not currently displaying history
 		if (!IsCurrentlyDispHistory()) {
@@ -1124,7 +1124,7 @@ void CDebugTestDlg::DispDebugCommandHistory(int nHistoryIndex)
 		return;
 
 	// Get command at index
-	CString strCommand = m_astrCommandHistory.GetAt(nHistoryIndex);
+	CString strCommand = m_astrCommandHistory.at(nHistoryIndex);
 	if (strCommand.IsEmpty())
 		return;
 

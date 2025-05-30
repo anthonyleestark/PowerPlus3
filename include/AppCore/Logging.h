@@ -259,7 +259,7 @@ private:
 	JSON_ENTRY_DATA m_arrKeyValuePairs;						// Key-value pairs (array)
 
 	// Children
-	INT_PTR	m_nChildObjectCount;							// Number of child objects
+	size_t m_nChildObjectCount;							// Number of child objects
 	JSON** m_apChildObjectList;								// List of child objects
 
 public:
@@ -278,7 +278,7 @@ protected:
 	void CopyPtrData(const JSON&);							// Copy JSON object pointer data
 	BOOL Compare(const JSON&) const;						// Compare objects
 	BOOL IsEmpty(void) const;								// Check if object data is empty
-	void RemoveProperty(INT_PTR);							// Remove property by index
+	void RemoveProperty(size_t);							// Remove property by index
 	void RemoveProperty(LPCTSTR);							// Remove property by key name
 	void RemoveAll(void);									// Remove all object data
 
@@ -316,7 +316,7 @@ private:
 	// Properties
 	BYTE	 m_byLogType;					// Log type
 	BYTE	 m_byWriteMode;					// Log write mode
-	INT_PTR	 m_nMaxSize;					// Log data max item count
+	size_t	 m_nMaxSize;					// Log data max item count
 	CString  m_strFilePath;					// Log output file path
 	PLOGITEM m_pItemDefTemplate;			// Log default template
 
@@ -332,13 +332,13 @@ public:
 
 	// Get/set data
 	virtual BOOL IsEmpty(void) const;
-	virtual INT_PTR GetLogCount() const;
+	virtual size_t GetLogCount() const;
 	virtual LOGITEM& GetLogItem(int nIndex);
 	virtual const LOGITEM& GetLogItem(int nIndex) const;
 
 	// Get/set properties function
-	virtual INT_PTR GetMaxSize(void) const;
-	virtual void SetMaxSize(INT_PTR nMaxSize);
+	virtual size_t GetMaxSize(void) const;
+	virtual BOOL SetMaxSize(size_t nMaxSize);
 	virtual BYTE GetWriteMode(void) const;
 	virtual void SetWriteMode(BYTE byWriteMode);
 	virtual void GetFilePath(CString& strFilePath);

@@ -14,9 +14,9 @@
 #ifndef _DEBUGTESTDLG_H_INCLUDED
 #define _DEBUGTESTDLG_H_INCLUDED
 
-#include "AppCore\AppCore.h"
-#include "AppCore\Global.h"
-#include "Framework\SDialog.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/Global.h"
+#include "Framework/SDialog.h"
 
 
 ////////////////////////////////////////////////////////
@@ -50,8 +50,8 @@ private:
 
 	// Debug command history
 	BOOL		 m_bCurDispHistory;
-	INT_PTR		 m_nHistoryCurIndex;
-	CStringArray m_astrCommandHistory;
+	size_t		 m_nHistoryCurIndex;
+	StringArray  m_astrCommandHistory;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -87,7 +87,7 @@ private:
 	inline BOOL IsDebugEditViewValid(void);
 	inline BOOL IsDebugEditViewFocus(void);
 
-	INT_PTR GetCaretPosition(void);
+	size_t  GetCaretPosition(void);
 	BOOL	ShowDebugTestEditViewMenu(void);
 
 	inline void BackupDebugViewBuffer(void);
@@ -97,16 +97,16 @@ private:
 	void AddLine(LPCTSTR lpszString, BOOL bNewLine = TRUE);
 	void UpdateDisplay(BOOL bSeekToEnd = FALSE, BOOL bNotifyParent = TRUE);
 
-	INT_PTR AddDebugCommandHistory(LPCTSTR lpszCommand);
+	size_t AddDebugCommandHistory(LPCTSTR lpszCommand);
 	void DispDebugCommandHistory(int nHistoryIndex);
 	void ClearDebugCommandHistory(void);
-	INT_PTR GetDebugCommandHistoryCount(void) const;
+	size_t GetDebugCommandHistoryCount(void) const;
 	BOOL IsDebugCommandHistoryEmpty(void) const;
 
 	inline BOOL IsCurrentlyDispHistory(void) const;
 	inline void SetCurrentlyDispHistoryState(BOOL bState);
-	inline INT_PTR GetHistoryCurrentDispIndex(void) const;
-	inline void SetHistoryCurrentDispIndex(INT_PTR nCurIndex);
+	inline size_t GetHistoryCurrentDispIndex(void) const;
+	inline void SetHistoryCurrentDispIndex(size_t nCurIndex);
 };
 
 

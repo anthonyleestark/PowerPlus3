@@ -13,7 +13,7 @@
 
 #include "stdafx.h"
 //#include "MemDC.h"
-#include "Components\GridCtrl\GridCtrl.h"
+#include "Components/GridCtrl/GridCtrl.h"
 #include <algorithm>
 
 // OLE stuff for clipboard operations

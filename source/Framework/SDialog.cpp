@@ -15,9 +15,9 @@
 
 #include "stdafx.h"
 
-#include "Framework\SElements.h"
-#include "Framework\SWinApp.h"
-#include "Framework\SDialog.h"
+#include "Framework/SElements.h"
+#include "Framework/SWinApp.h"
+#include "Framework/SDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -732,11 +732,11 @@ LRESULT SDialog::SendMessageToParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	INT_PTR - Number of controls added to management
+//  Return value:	size_t - Number of controls added to management
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR SDialog::RegisterDialogManagement(void)
+size_t SDialog::RegisterDialogManagement(void)
 {
 	// Initialize dialog control management
 	if (m_pCtrlManager == NULL) {
@@ -843,21 +843,21 @@ void SDialog::AddLockStateException(UINT nID)
 {
 	// Initialize the list if not yet allocated
 	if (m_paLockExceptionIDList == NULL) {
-		m_paLockExceptionIDList = new CUIntArray;
-		m_paLockExceptionIDList->RemoveAll();
+		m_paLockExceptionIDList = new UIntArray;
+		m_paLockExceptionIDList->clear();
 	}
 
 	// Loop through all list and find if item existed in list
-	int nItemNum = m_paLockExceptionIDList->GetSize();
+	int nItemNum = m_paLockExceptionIDList->size();
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		if (m_paLockExceptionIDList->GetAt(nIndex) == nID) {
+		if (m_paLockExceptionIDList->at(nIndex) == nID) {
 			// No need to add
 			return;
 		}
 	}
 
 	// Add to list
-	m_paLockExceptionIDList->Add(nID);
+	m_paLockExceptionIDList->push_back(nID);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -876,10 +876,10 @@ void SDialog::RemoveLockStateException(UINT nID)
 		return;
 
 	// Loop through all list and remove item
-	int nItemNum = m_paLockExceptionIDList->GetSize();
+	int nItemNum = m_paLockExceptionIDList->size();
 	for (int nIndex = (nItemNum - 1); nIndex >= 0; nIndex--) {
-		if (m_paLockExceptionIDList->GetAt(nIndex) == nID) {
-			m_paLockExceptionIDList->RemoveAt(nIndex);
+		if (m_paLockExceptionIDList->at(nIndex) == nID) {
+			m_paLockExceptionIDList->erase(m_paLockExceptionIDList->begin() + nIndex);
 		}
 	}
 }
@@ -896,8 +896,7 @@ void SDialog::RemoveLockStateException(UINT nID)
 void SDialog::ResetLockStateExceptionList(void)
 {
 	if (m_paLockExceptionIDList != NULL) {
-		m_paLockExceptionIDList->RemoveAll();
-		m_paLockExceptionIDList->FreeExtra();
+		m_paLockExceptionIDList->clear();
 	}
 }
 
@@ -1524,11 +1523,11 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 				pComboWrap->GetCaption(strComboCaption);
 
 				// Combo-box current selection string
-				INT_PTR nCurSel = pComboWrap->GetInteger();
-				CStringArray arrDataList;
+				size_t nCurSel = pComboWrap->GetInteger();
+				StringArray arrDataList;
 				pComboWrap->GetStringArray(arrDataList);
-				if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
-					logDetailInfo.AddDetail(EventDetail::Selection, arrDataList.GetAt(nCurSel));
+				if ((!arrDataList.empty()) && (arrDataList.size() > nCurSel)) {
+					logDetailInfo.AddDetail(EventDetail::Selection, arrDataList.at(nCurSel));
 				}
 			}
 		}
@@ -1619,11 +1618,11 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 				pListBoxWrap->GetCaption(strListBoxCaption);
 
 				// List box current selection string
-				INT_PTR nCurSel = pListBoxWrap->GetInteger();
-				CStringArray arrDataList;
+				size_t nCurSel = pListBoxWrap->GetInteger();
+				StringArray arrDataList;
 				pListBoxWrap->GetStringArray(arrDataList);
-				if ((!arrDataList.IsEmpty()) && (arrDataList.GetCount() > nCurSel)) {
-					logDetailInfo.AddDetail(EventDetail::Selection, arrDataList.GetAt(nCurSel));
+				if ((!arrDataList.empty()) && (arrDataList.size() > nCurSel)) {
+					logDetailInfo.AddDetail(EventDetail::Selection, arrDataList.at(nCurSel));
 				}
 			}
 		}
@@ -1888,10 +1887,10 @@ void SDialog::SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLang
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPosition)
+void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition)
 {
 	// Check data validity
-	if (arrCtrlIDGroup.IsEmpty())
+	if (arrCtrlIDGroup.empty())
 		return;
 
 	RECT rcCtrlWnd;
@@ -1899,10 +1898,10 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPositio
 	LONG lOrgX = INT_INVALID, lOrgY = INT_INVALID;
 
 	// Find the original point
-	for (int nIndex = 0; nIndex < arrCtrlIDGroup.GetSize(); nIndex++)
+	for (int nIndex = 0; nIndex < arrCtrlIDGroup.size(); nIndex++)
 	{
 		// Get item
-		pCtrlWnd = GetDlgItem(arrCtrlIDGroup.GetAt(nIndex));
+		pCtrlWnd = GetDlgItem(arrCtrlIDGroup.at(nIndex));
 		if (pCtrlWnd == NULL)
 			continue;
 
@@ -1926,10 +1925,10 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPositio
 
 	// Move all items to new position
 	int nNewX = 0, nNewY = 0;
-	for (int nIndex = 0; nIndex < arrCtrlIDGroup.GetSize(); nIndex++)
+	for (int nIndex = 0; nIndex < arrCtrlIDGroup.size(); nIndex++)
 	{
 		// Get item
-		pCtrlWnd = GetDlgItem(arrCtrlIDGroup.GetAt(nIndex));
+		pCtrlWnd = GetDlgItem(arrCtrlIDGroup.at(nIndex));
 		if (pCtrlWnd == NULL)
 			continue;
 
@@ -1954,10 +1953,10 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, POINT ptNewPositio
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, int nDistance)
+void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, int nDirection, int nDistance)
 {
 	// Check data validity
-	if (arrCtrlIDGroup.IsEmpty())
+	if (arrCtrlIDGroup.empty())
 		return;
 
 	RECT rcCtrlWnd;
@@ -1965,10 +1964,10 @@ void SDialog::MoveItemGroup(const CUIntArray& arrCtrlIDGroup, int nDirection, in
 	LONG lNewX = 0, lNewY = 0;
 
 	// Loop through each item and move
-	for (int nIndex = 0; nIndex < arrCtrlIDGroup.GetSize(); nIndex++)
+	for (int nIndex = 0; nIndex < arrCtrlIDGroup.size(); nIndex++)
 	{
 		// Get item
-		pCtrlWnd = GetDlgItem(arrCtrlIDGroup.GetAt(nIndex));
+		pCtrlWnd = GetDlgItem(arrCtrlIDGroup.at(nIndex));
 		if (pCtrlWnd == NULL)
 			continue;
 

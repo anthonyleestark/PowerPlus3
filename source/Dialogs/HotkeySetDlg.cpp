@@ -17,7 +17,7 @@
 
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
-#include "Dialogs\HotkeySetDlg.h"
+#include "Dialogs/HotkeySetDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -133,13 +133,13 @@ void CHotkeySetDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	INT_PTR - Number of controls added to management
+//  Return value:	size_t - Number of controls added to management
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CHotkeySetDlg::RegisterDialogManagement(void)
+size_t CHotkeySetDlg::RegisterDialogManagement(void)
 {
-	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1558,8 +1558,8 @@ BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 {
 	BOOL bResult = TRUE;
 	int nMsgStringID;
-	CStringArray arrMsgString;
-	arrMsgString.RemoveAll();
+	StringArray arrMsgString;
+	arrMsgString.clear();
 
 	// Get app language package
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -1567,7 +1567,7 @@ BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 	// Check action ID
 	if ((hksItem.GetActionID() < HKID::displayOff) || (hksItem.GetActionID() > HKID::hibernate)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_ACTIONID;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 	}
 
@@ -1579,14 +1579,14 @@ BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 	if ((dwModifiers <= 0) ||
 		((dwModifiers & MOD_CONTROL) == FALSE) && ((dwModifiers & MOD_ALT) == FALSE) && ((dwModifiers & MOD_WIN) == FALSE)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_CTRLKEY;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 	}
 
 	// Validate virtual key code
 	if ((dwVirtualKey < VK_F1) || (dwVirtualKey > VK_F12)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 	}
 
@@ -1608,20 +1608,19 @@ BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 			CString strMsgFormat;
 			strMsgFormat.Format(GetLanguageString(pLang, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), strKeyInfo);
 
-			arrMsgString.Add(strMsgFormat);
+			arrMsgString.push_back(strMsgFormat);
 			bResult = FALSE;
 		}
 	}
 	
 	// Show error message if enabled
-	if ((bShowMsg == TRUE) && (!arrMsgString.IsEmpty())) {
-		for (int nIndex = 0; nIndex < arrMsgString.GetSize(); nIndex++) {
-			DisplayMessageBox(arrMsgString.GetAt(nIndex), NULL, MB_OK | MB_ICONERROR);
+	if ((bShowMsg == TRUE) && (!arrMsgString.empty())) {
+		for (int nIndex = 0; nIndex < arrMsgString.size(); nIndex++) {
+			DisplayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
 		}
 	}
 
 	// Remove all message after displaying
-	arrMsgString.RemoveAll();
-	arrMsgString.FreeExtra();
+	arrMsgString.clear();
 	return bResult;
 }

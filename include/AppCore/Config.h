@@ -17,10 +17,8 @@
 #define _CONFIG_H_INCLUDED
 
 #include "stdafx.h"
+#include "AppCore/AppCore.h"
 
-#include "AppCore\AppCore.h"
-
-using namespace AppCore;
 
 /////////////////////////////////////
 

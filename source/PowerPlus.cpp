@@ -20,7 +20,7 @@
 
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
-#include "Dialogs\DebugTestDlg.h"
+#include "Dialogs/DebugTestDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -2211,7 +2211,7 @@ void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
 	// Copy value of data pointer
 	GetAppConfigData()->Copy(*pcfgData);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_FEATURE
 	// Output data change log
 	OutputDataChangeLog(BakData);
 #endif
@@ -2255,7 +2255,7 @@ void CPowerPlusApp::SetAppScheduleData(ScheduleData* pschData)
 	// Copy value of data pointer
 	GetAppScheduleData()->Copy(*pschData);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_FEATURE
 	// Output data change log
 	OutputDataChangeLog(BakData);
 #endif
@@ -2299,7 +2299,7 @@ void CPowerPlusApp::SetAppHotkeySetData(HotkeySetData* phksData)
 	// Copy value of data pointer
 	GetAppHotkeySetData()->Copy(*phksData);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_FEATURE
 	// Output data change log
 	OutputDataChangeLog(BakData);
 #endif
@@ -2343,7 +2343,7 @@ void CPowerPlusApp::SetAppPwrReminderData(PwrReminderData* ppwrData)
 	// Copy value of data pointer
 	GetAppPwrReminderData()->Copy(*ppwrData);
 
-#ifdef _DEBUG
+#ifdef _LEGACY_FEATURE
 	// Output data change log
 	OutputDataChangeLog(BakData);
 #endif
@@ -2452,7 +2452,7 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 	}
 }
 
-#ifdef _DEBUG
+#ifdef _LEGACY_FEATURE
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	OutputDataChangeLog

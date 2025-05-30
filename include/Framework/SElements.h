@@ -18,8 +18,8 @@
 
 #include "stdafx.h"
 
-#include "AppCore\AppCore.h"
-#include "AppCore\IDMapping.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/IDMapping.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -134,12 +134,12 @@ protected:
 	CString*		m_pstrReserveValue;
 
 	// Integer array data
-	CUIntArray*		m_pauiValueList;
-	CUIntArray*		m_pauiReserveValueList;
+	ULongArray*		m_paulValueList;
+	ULongArray*		m_paulReserveValueList;
 
 	// String array data
-	CStringArray*	m_pastrValueList;
-	CStringArray*	m_pastrReserveValueList;
+	StringArray*	m_pastrValueList;
+	StringArray*	m_pastrReserveValueList;
 
 	// Time data
 	LPSYSTEMTIME	m_pstTimeValue;
@@ -215,10 +215,10 @@ public:
 	virtual void	 GetReserveString(_Out_ CString& strValue) const;
 
 	// Get array data values
-	virtual void	 GetIntArray(_Out_ CUIntArray& auiValue) const;
-	virtual void	 GetReserveIntArray(_Out_ CUIntArray& auiValue) const;
-	virtual void	 GetStringArray(_Out_ CStringArray& astrValue) const;
-	virtual void	 GetReserveStringArray(_Out_ CStringArray& astrValue) const;
+	virtual void	 GetIntArray(_Out_ ULongArray& aulValue) const;
+	virtual void	 GetReserveIntArray(_Out_ ULongArray& aulValue) const;
+	virtual void	 GetStringArray(_Out_ StringArray& astrValue) const;
+	virtual void	 GetReserveStringArray(_Out_ StringArray& astrValue) const;
 
 	// Get time data value
 	virtual SYSTEMTIME	GetTime(void) const;
@@ -242,10 +242,10 @@ public:
 	virtual void	SetReserveString(_In_ LPCTSTR lpszValue);
 
 	// Set array data values
-	virtual void	SetIntArray(_In_ const CUIntArray& auiValue);
-	virtual void	SetReserveIntArray(_In_ const CUIntArray& auiValue);
-	virtual void	SetStringArray(_In_ const CStringArray& astrValue);
-	virtual void	SetReserveStringArray(_In_ const CStringArray& astrValue);
+	virtual void	SetIntArray(_In_ const ULongArray& auiValue);
+	virtual void	SetReserveIntArray(_In_ const ULongArray& auiValue);
+	virtual void	SetStringArray(_In_ const StringArray& astrValue);
+	virtual void	SetReserveStringArray(_In_ const StringArray& astrValue);
 
 	// Set time data values
 	virtual void	SetTime(_In_ const SYSTEMTIME& timeValue);
@@ -317,7 +317,7 @@ public:
 	BOOL DeleteAll(void);
 
 	// Attributes
-	INT_PTR GetCount(void) const;
+	size_t  GetCount(void) const;
 	BOOL	IsEmpty(void) const;
 
 	// Parent window functions
@@ -326,9 +326,9 @@ public:
 	BOOL	IsParentAvailable(void) const;
 
 	// Add/remove control
-	INT_PTR AddControl(SCtrlInfoWrap* pControl);
-	INT_PTR AddControl(UINT nCtrlID, UINT nTypeID);
-	INT_PTR RemoveControl(UINT nCtrlID);
+	size_t AddControl(SCtrlInfoWrap* pControl);
+	size_t AddControl(UINT nCtrlID, UINT nTypeID);
+	size_t RemoveControl(UINT nCtrlID);
 
 	// Accessing elements
 	SCtrlInfoWrap* GetControl(UINT nCtrlID);

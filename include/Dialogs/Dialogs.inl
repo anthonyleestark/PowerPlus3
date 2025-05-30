@@ -255,20 +255,18 @@ inline void CDebugTestDlg::BackupDebugViewBuffer(void) {
 }
 
 // Clear current debug command history
-inline void CDebugTestDlg::ClearDebugCommandHistory(void)
-{
-	m_astrCommandHistory.RemoveAll();
-	m_astrCommandHistory.FreeExtra();
+inline void CDebugTestDlg::ClearDebugCommandHistory(void) {
+	m_astrCommandHistory.clear();
 }
 
 // Get debug command history item count
-inline INT_PTR CDebugTestDlg::GetDebugCommandHistoryCount(void) const {
-	return m_astrCommandHistory.GetSize();
+inline size_t CDebugTestDlg::GetDebugCommandHistoryCount(void) const {
+	return m_astrCommandHistory.size();
 }
 
 // Check if current command history is empty or not
 inline BOOL CDebugTestDlg::IsDebugCommandHistoryEmpty(void) const {
-	return m_astrCommandHistory.IsEmpty();
+	return m_astrCommandHistory.empty();
 }
 
 // Check if currently displaying command history or not
@@ -282,12 +280,12 @@ inline void CDebugTestDlg::SetCurrentlyDispHistoryState(BOOL bState) {
 }
 
 // Get command history current displaying index
-inline INT_PTR CDebugTestDlg::GetHistoryCurrentDispIndex(void) const {
+inline size_t CDebugTestDlg::GetHistoryCurrentDispIndex(void) const {
 	return m_nHistoryCurIndex;
 }
 
 // Set command history current displaying index
-inline void CDebugTestDlg::SetHistoryCurrentDispIndex(INT_PTR nCurIndex) {
+inline void CDebugTestDlg::SetHistoryCurrentDispIndex(size_t nCurIndex) {
 	m_nHistoryCurIndex = nCurIndex;
 }
 

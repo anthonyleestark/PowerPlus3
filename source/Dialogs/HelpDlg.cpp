@@ -15,7 +15,7 @@
 
 #include "stdafx.h"
 
-#include "Dialogs\HelpDlg.h"
+#include "Dialogs/HelpDlg.h"
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
 
@@ -78,13 +78,13 @@ void CHelpDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	INT_PTR - Number of controls added to management
+//  Return value:	size_t - Number of controls added to management
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CHelpDlg::RegisterDialogManagement(void)
+size_t CHelpDlg::RegisterDialogManagement(void)
 {
-	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);

@@ -12,11 +12,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Components\GridCtrl\GridCtrl.h"
+#include "Components/GridCtrl/GridCtrl.h"
 
 #ifndef GRIDCONTROL_NO_TITLETIPS
 
-#include "Components\GridCtrl\TitleTip.h"
+#include "Components/GridCtrl/TitleTip.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

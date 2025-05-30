@@ -15,12 +15,12 @@
 
 #include "stdafx.h"
 
-#include "AppCore\Logging.h"
-#include "AppCore\Logging_pub.h"
+#include "AppCore/Logging.h"
+#include "AppCore/Logging_pub.h"
 
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
-#include "Dialogs\LogViewerDlg.h"
+#include "Dialogs/LogViewerDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

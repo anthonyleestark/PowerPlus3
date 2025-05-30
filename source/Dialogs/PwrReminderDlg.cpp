@@ -16,9 +16,9 @@
 
 #include "PowerPlus.h"
 #include "PowerPlusDlg.h"
-#include "Dialogs\PwrReminderDlg.h"
-#include "Dialogs\ReminderMsgDlg.h"
-#include "Dialogs\RmdRepeatSetDlg.h"
+#include "Dialogs/PwrReminderDlg.h"
+#include "Dialogs/ReminderMsgDlg.h"
+#include "Dialogs/RmdRepeatSetDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -171,13 +171,13 @@ void CPwrReminderDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	INT_PTR - Number of controls added to management
+//  Return value:	size_t - Number of controls added to management
 //
 //////////////////////////////////////////////////////////////////////////
 
-INT_PTR CPwrReminderDlg::RegisterDialogManagement(void)
+size_t CPwrReminderDlg::RegisterDialogManagement(void)
 {
-	INT_PTR nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -3006,8 +3006,8 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	BOOL bResult = TRUE;
 
 	int nMsgStringID;
-	CStringArray arrMsgString;
-	arrMsgString.RemoveAll();
+	StringArray arrMsgString;
+	arrMsgString.clear();
 
 	// Get app language package
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -3015,7 +3015,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	// Check item ID
 	if ((pwrItem.GetItemID() < DEF_PWRREMINDER_MIN_ITEMID) || (pwrItem.GetItemID() > DEF_PWRREMINDER_MAX_ITEMID)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ITEMID;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -3029,7 +3029,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	CString strMessage = pwrItem.GetMessage();
 	if (strMessage.IsEmpty()) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_EMPTY;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -3045,7 +3045,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	}
 	else if (strMessage.GetLength() > MAX_STRING_LENGTH) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -3059,7 +3059,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	// Check event ID
 	if ((pwrItem.GetEventID() < Event::atSetTime) || (pwrItem.GetEventID() > Event::atAppExit)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_EVENTID;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -3072,7 +3072,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	// Check snooze interval data
 	if ((pwrItem.GetSnoozeInterval() < DEF_REPEATSET_MIN_SNOOZE) || (pwrItem.GetSnoozeInterval() > DEF_REPEATSET_MAX_SNOOZE)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -3085,7 +3085,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	// Check repeat set data
 	if ((pwrItem.IsRepeatEnabled() == TRUE) && (pwrItem.GetActiveDays() == NULL)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -3098,7 +3098,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	// Check style ID
 	if ((pwrItem.GetMessageStyle() < Style::messageBox) || (pwrItem.GetMessageStyle() > Style::dialogBox)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_STYLEID;
-		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 
 		// Auto correction
@@ -3109,25 +3109,24 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	}
 	
 	// Show error message if enabled
-	if ((bShowMsg == TRUE) && (!arrMsgString.IsEmpty())) {
-		for (int nIndex = 0; nIndex < arrMsgString.GetSize(); nIndex++) {
+	if ((bShowMsg == TRUE) && (!arrMsgString.empty())) {
+		for (int nIndex = 0; nIndex < arrMsgString.size(); nIndex++) {
 			// If auto correction is ON
 			if (bAutoCorrect == TRUE) {
 				// Add "Data will be automatically reset to default"
-				CString strErrMessage = arrMsgString.GetAt(nIndex);
+				CString strErrMessage = arrMsgString.at(nIndex);
 				strErrMessage += GetLanguageString(pLang, MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT);
 				DisplayMessageBox(strErrMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {
 				// Display error message
-				DisplayMessageBox(arrMsgString.GetAt(nIndex), NULL, MB_OK | MB_ICONERROR);
+				DisplayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
 			}
 		}
 	}
 
 	// Remove all message after displaying
-	arrMsgString.RemoveAll();
-	arrMsgString.FreeExtra();
+	arrMsgString.clear();
 
 	return bResult;
 }

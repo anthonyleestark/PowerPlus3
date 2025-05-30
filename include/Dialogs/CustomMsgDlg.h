@@ -14,9 +14,9 @@
 #ifndef _CUSTOMMSGDLG_H_INCLUDED
 #define _CUSTOMMSGDLG_H_INCLUDED
 
-#include "AppCore\AppCore.h"
-#include "AppCore\Global.h"
-#include "Framework\SDialog.h"
+#include "AppCore/AppCore.h"
+#include "AppCore/Global.h"
+#include "Framework/SDialog.h"
 
 
 ////////////////////////////////////////////////////////
