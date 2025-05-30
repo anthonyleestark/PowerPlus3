@@ -761,21 +761,6 @@ typedef enum eGRIDCOLSTYLE {
 
 //////////////////// ********************
 // 
-// String validation error codes
-//
-//////////////////// ********************
-
-typedef enum eSTRVALIDERR {
-	STRVAL_ERR_NORMAL = 0,				// Normal/valid string
-	STRVAL_ERR_EMPTY,					// Empty string
-	STRVAL_ERR_OVERSIZE,				// Character number overlimit
-	STRVAL_ERR_INVALIDCHAR,				// Contains invalid character(s)
-	STRVAL_ERR_UNKNOWN,					// Unknown
-} STRVALIDERR;
-
-
-//////////////////// ********************
-// 
 // File types (view file mode)
 //
 //////////////////// ********************
@@ -1173,8 +1158,8 @@ private:
 	// Attributes
 	BOOL	m_bEnabled;												// Hotkey enabled/disabled
 	UINT	m_nHKActionID;											// Hotkey action ID
-	DWORD	m_dwCtrlKeyCode;										// Control Keycode #1
-	DWORD	m_dwFuncKeyCode;										// Function Keycode #2
+	DWORD	m_dwModifiers;											// Modifier keys
+	DWORD	m_dwVirtualKey;											// Virtual key code
 
 public:
 	// Constructor
@@ -1201,6 +1186,7 @@ public:
 	void SetActionID(UINT);											// Set Hotkey action ID
 	void GetKeyCode(DWORD&, DWORD&) const;							// Get item keycode data
 	void SetKeyCode(DWORD, DWORD);									// Set item keycode data
+	BOOL CompareKeycode(DWORD, DWORD) const;						// Compare given keycode with item keystroke
 };
 
 // Define new typenames for HotkeySet item data
@@ -1860,7 +1846,7 @@ typedef struct tagGRIDCTRLCOLFMT
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	HOTKEYLIST
+//	Data type name:	HOTKEYINFO
 //  Description:	Store hotkey info
 //  Derivered from: C++ basic struct
 //
@@ -1869,8 +1855,8 @@ typedef struct tagGRIDCTRLCOLFMT
 typedef struct tagHOTKEYINFO
 {
 	// Member variables
-	DWORD	dwCtrlKeyCode;									// Control Keycode #1
-	DWORD	dwFuncKeyCode;									// Function Keycode #2
+	DWORD	dwModifiers;									// Modifier keys
+	DWORD	dwVirtualKey;									// Virtual key code
 	UINT	nHotkeyDescription;								// Hotkey description (string ID)
 } HOTKEYINFO, *PHOTKEYINFO;
 
@@ -1987,6 +1973,32 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 //
+//	Class name:		StringProcessor
+//  Description:	Using for string processing and validation
+//
+//////////////////////////////////////////////////////////////////////////
+
+class StringProcessor
+{
+public:
+	enum class ValidationError {
+		None = 0,
+		EmptyString,
+		TooShort,
+		TooLong,
+		InvalidCharacters,
+		InvalidFormat,
+		ContainsWhitespace,
+		ContainsProhibitedSymbols,
+		NotAlphanumeric,
+		EncodingError,
+		InjectionDetected,
+		CustomRuleFailed
+	};
+};
+
+//////////////////////////////////////////////////////////////////////////
+//
 //	Class name:		PerformanceCounter
 //  Description:	Using for querrying performance counter of functions
 //
@@ -2082,8 +2094,6 @@ namespace AppCore
 	void	UpperEachWord(CString& strInput, BOOL bTrim);
 	LPCTSTR GetSubFolderPath(LPCTSTR lpszSubFolderName);
 	BOOL	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
-
-	BOOL	StringValidate(LPCTSTR lpszSrc, DWORD& dwError);
 	int		PrintCharList(LPCTSTR lpszSrc, CString& strOutput);
 
 	LPCTSTR StringFormat(UINT nFormatTemplateID, ...);

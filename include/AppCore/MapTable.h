@@ -348,13 +348,13 @@ namespace MapTable
 	{
 		//////////////////////////////////////////////////////////////////////////
 		//
-		//	Table name:		FuncKeyList
+		//	Table name:		FunctionKeys
 		//  Description:	Using for pairing function key macros and key names
 		//  Table type:		STRINGTABLE
 		//
 		//////////////////////////////////////////////////////////////////////////
 
-		INITIALIZE_STRINGMAPTABLE(FuncKeyList)
+		INITIALIZE_STRINGMAPTABLE(FunctionKeys)
 		/*----------------------------------------------------------------------------*/
 			{ VK_F1,  _T("F1") },	{ VK_F2,  _T("F2") },	{ VK_F3,  _T("F3") },
 			{ VK_F4,  _T("F4") },	{ VK_F5,  _T("F5") },	{ VK_F6,  _T("F6") },

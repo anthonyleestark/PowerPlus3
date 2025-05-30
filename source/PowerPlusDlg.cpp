@@ -4132,7 +4132,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 					OutputDebugLogFormat(_T("Unregistered hotkey: %d"), nHKID);
 					m_arrCurRegHKeyList.RemoveAt(nIndex);
 					if (nIndex == 0) {										// Last item unregistered
-						SetFlagValue(AppFlagID::hotkeyRegistered, FALSE);		// Reset hotkey registered flag
+						SetFlagValue(AppFlagID::hotkeyRegistered, FALSE);	// Reset hotkey registered flag
 						m_arrCurRegHKeyList.RemoveAll();					// Cleanup registered hotkey list
 						m_arrCurRegHKeyList.FreeExtra();
 					}
@@ -4200,15 +4200,16 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 			UINT nHKActionID = hksItem.GetActionID();
 
 			// Get keycode
-			DWORD dwCtrlKeyCode, dwFuncKeyCode;
-			hksItem.GetKeyCode(dwCtrlKeyCode, dwFuncKeyCode);
-			if ((dwCtrlKeyCode == 0) || (dwFuncKeyCode == 0))
+			DWORD dwModifiers, dwVirtualKey;
+			hksItem.GetKeyCode(dwModifiers, dwVirtualKey);
+			if ((dwModifiers == 0) || (dwVirtualKey == 0))
 				continue;
 
-			dwCtrlKeyCode |= MOD_NOREPEAT;
+			// No yeild keyboard auto-repeat
+			dwModifiers |= MOD_NOREPEAT;
 
 			// Debug log format
-			strLogTemp.Format(_T("ActionID=%d, CtrlKey=%d, FuncKey=%d"), nHKActionID, dwCtrlKeyCode, dwFuncKeyCode);
+			strLogTemp.Format(_T("ActionID=%d, Modifiers=%d, VirtualKey=%d"), nHKActionID, dwModifiers, dwVirtualKey);
 
 			// Get enable/disable status
 			BOOL bEnabled = hksItem.IsEnabled();
@@ -4220,7 +4221,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 			}
 
 			// Register hotkey item
-			BOOL bRet = RegisterHotKey(hWnd, nHKActionID, dwCtrlKeyCode, dwFuncKeyCode);
+			BOOL bRet = RegisterHotKey(hWnd, nHKActionID, dwModifiers, dwVirtualKey);
 
 			// Trigger flag
 			bRegistered |= bRet;
@@ -4432,18 +4433,15 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 	}
 
 	// Convert hotkey param back into keycode
-	WORD wControlKey  = LOWORD(dwHKeyParam);
-	WORD wFunctionKey = HIWORD(dwHKeyParam);
+	WORD wModifiers  = LOWORD(dwHKeyParam);
+	WORD wVirtualKey = HIWORD(dwHKeyParam);
 
 	// Look for corresponding HotkeyID in HotkeySet data
 	UINT nHKActionID = INT_NULL;
-	DWORD dwCtrlKeyTemp, dwFuncKeyTemp;
 	for (INT_PTR nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
 		const HOTKEYSETITEM& hksItem = m_hksHotkeySetData.GetItemAt(nIndex);
-		hksItem.GetKeyCode(dwCtrlKeyTemp, dwFuncKeyTemp);
-		if ((hksItem.IsEnabled() == TRUE) &&		// HotkeySet item is enabled
-			(dwCtrlKeyTemp == wControlKey) &&		// Control key is matching
-			(dwFuncKeyTemp == wFunctionKey)) {		// Function key is matching
+		if ((hksItem.IsEnabled() == TRUE) &&						// HotkeySet item is enabled
+			(hksItem.CompareKeycode(wModifiers, wVirtualKey))) {	// Keycode is matching
 			nHKActionID = hksItem.GetActionID();
 			break;
 		}

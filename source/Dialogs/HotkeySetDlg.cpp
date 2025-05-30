@@ -964,8 +964,8 @@ void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 		break;
 	case IDC_HOTKEYSET_FUNCKEY_LIST:
 		m_cmbFuncKeyList.ResetContent();
-		for (int nIndex = 0; nIndex < TABLE_SIZE(StringTable::FuncKeyList); nIndex++)
-			m_cmbFuncKeyList.AddString(StringTable::FuncKeyList[nIndex].lpszLangString);
+		for (int nIndex = 0; nIndex < TABLE_SIZE(StringTable::FunctionKeys); nIndex++)
+			m_cmbFuncKeyList.AddString(StringTable::FunctionKeys[nIndex].lpszLangString);
 		break;
 	default:
 		break;
@@ -1200,23 +1200,23 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 	const Item& hksCurItem = m_hksHotkeySetTemp.GetItemAt(nIndex);
 
 	// Get item keycode
-	DWORD dwCtrlKey, dwFuncKey;
-	hksCurItem.GetKeyCode(dwCtrlKey, dwFuncKey);
+	DWORD dwModifiers, dwVirtualKey;
+	hksCurItem.GetKeyCode(dwModifiers, dwVirtualKey);
 
 	// Update checkboxes
 	m_bCtrlBtn = FALSE;
-	if (dwCtrlKey & MOD_CONTROL)		m_bCtrlBtn = TRUE;
+	if (dwModifiers & MOD_CONTROL)		m_bCtrlBtn = TRUE;
 	m_bAltBtn = FALSE;
-	if (dwCtrlKey & MOD_ALT)			m_bAltBtn = TRUE;
+	if (dwModifiers & MOD_ALT)			m_bAltBtn = TRUE;
 	m_bWinKeyBtn = FALSE;
-	if (dwCtrlKey & MOD_WIN)			m_bWinKeyBtn = TRUE;
+	if (dwModifiers & MOD_WIN)			m_bWinKeyBtn = TRUE;
 
 	// Update combo-boxes
 	UINT nActionID = GetPairedID(IDTable::HKActionID, hksCurItem.GetActionID());
 	m_cmbActionList.SetCurSel(Opt2Sel(APP_ACTION, nActionID));
 	m_cmbFuncKeyList.SetWindowText(_T("---"));
-	if (dwFuncKey > 0)
-		m_cmbFuncKeyList.SetCurSel(dwFuncKey - VK_F1);
+	if (dwVirtualKey > 0)
+		m_cmbFuncKeyList.SetCurSel(dwVirtualKey - VK_F1);
 
 	UpdateData(FALSE);
 }
@@ -1449,12 +1449,12 @@ void CHotkeySetDlg::Add(void)
 	Item hksTemp = STRUCT_ZERO;
 
 	// Keycode
-	DWORD dwCtrlKey = 0, dwFuncKey = 0;
+	DWORD dwModifiers = 0, dwVirtualKey = 0;
 
-	// Update control keycode
-	if (m_bCtrlBtn == TRUE)		dwCtrlKey |= MOD_CONTROL;
-	if (m_bAltBtn == TRUE)		dwCtrlKey |= MOD_ALT;
-	if (m_bWinKeyBtn == TRUE)	dwCtrlKey |= MOD_WIN;
+	// Update modifier keys
+	if (m_bCtrlBtn == TRUE)		dwModifiers |= MOD_CONTROL;
+	if (m_bAltBtn == TRUE)		dwModifiers |= MOD_ALT;
+	if (m_bWinKeyBtn == TRUE)	dwModifiers |= MOD_WIN;
 
 	// Update action ID
 	int nCurSel = m_cmbActionList.GetCurSel();
@@ -1462,12 +1462,12 @@ void CHotkeySetDlg::Add(void)
 	int nHKActionID = IDTable::HKActionID[nCurSel].nFirstID;
 	hksTemp.SetActionID(nHKActionID);
 
-	// Update function keycode
+	// Update virtual key code
 	nCurSel = m_cmbFuncKeyList.GetCurSel();
-	dwFuncKey = nCurSel + VK_F1;
+	dwVirtualKey = (nCurSel + VK_F1);
 
 	// Update item hotkey code
-	hksTemp.SetKeyCode(dwCtrlKey, dwFuncKey);
+	hksTemp.SetKeyCode(dwModifiers, dwVirtualKey);
 
 	// Check data validity
 	BOOL bValid = Validate(hksTemp, TRUE);
@@ -1572,19 +1572,19 @@ BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 	}
 
 	// Get item keycode
-	DWORD dwCtrlKey, dwFuncKey;
-	hksItem.GetKeyCode(dwCtrlKey, dwFuncKey);
+	DWORD dwModifiers, dwVirtualKey;
+	hksItem.GetKeyCode(dwModifiers, dwVirtualKey);
 
-	// Check control key value
-	if ((dwCtrlKey <= 0) ||
-		((dwCtrlKey & MOD_CONTROL) == FALSE) && ((dwCtrlKey & MOD_ALT) == FALSE) && ((dwCtrlKey & MOD_WIN) == FALSE)) {
+	// Validate modifier keys
+	if ((dwModifiers <= 0) ||
+		((dwModifiers & MOD_CONTROL) == FALSE) && ((dwModifiers & MOD_ALT) == FALSE) && ((dwModifiers & MOD_WIN) == FALSE)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_CTRLKEY;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
 	}
 
-	// Check function key value
-	if ((dwFuncKey < VK_F1) || (dwFuncKey > VK_F12)) {
+	// Validate virtual key code
+	if ((dwVirtualKey < VK_F1) || (dwVirtualKey > VK_F12)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY;
 		arrMsgString.Add(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -1593,14 +1593,14 @@ BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 	// Check if system hotkey existed
 	int nExistedSysHotkeyNum = TABLE_SIZE(OtherTable::ExistedSysHotkeyList);
 	for (int nIndex = 0; nIndex < nExistedSysHotkeyNum; nIndex++) {
-		if ((dwCtrlKey == OtherTable::ExistedSysHotkeyList[nIndex].dwCtrlKeyCode) &&
-			(dwFuncKey == OtherTable::ExistedSysHotkeyList[nIndex].dwFuncKeyCode)) {
+		if ((dwModifiers == OtherTable::ExistedSysHotkeyList[nIndex].dwModifiers) &&
+			(dwVirtualKey == OtherTable::ExistedSysHotkeyList[nIndex].dwVirtualKey)) {
 			// Hotkey info format
 			CString strKeyStrokes = STRING_EMPTY;
-			if (dwCtrlKey & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
-			if (dwCtrlKey & MOD_ALT)		strKeyStrokes += _T("Alt + ");
-			if (dwCtrlKey & MOD_WIN)		strKeyStrokes += _T("Win + ");
-			strKeyStrokes += GetString(StringTable::FuncKeyList, dwFuncKey);
+			if (dwModifiers & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
+			if (dwModifiers & MOD_ALT)		strKeyStrokes += _T("Alt + ");
+			if (dwModifiers & MOD_WIN)		strKeyStrokes += _T("Win + ");
+			strKeyStrokes += GetString(StringTable::FunctionKeys, dwVirtualKey);
 			CString strKeyInfo = STRING_EMPTY;
 			strKeyInfo.Format(_T("%s - %s"), strKeyStrokes, GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].nHotkeyDescription));
 

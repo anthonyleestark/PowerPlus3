@@ -477,20 +477,20 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 					// Keycode param
 					DWORD dwHKeyParam = NULL;
 					{
-						// Control key code
-						WORD wControlKey = NULL;
-						wControlKey |= ((IS_PRESSED(VK_LCONTROL) || IS_PRESSED(VK_RCONTROL)) ? MOD_CONTROL : NULL);		// Is Ctrl key pressed???
-						wControlKey |= ((dwKeyFlags & LLKHF_ALTDOWN) ? MOD_ALT : 0);									// Is Alt key pressed???
-						wControlKey |= ((IS_PRESSED(VK_LWIN) || IS_PRESSED(VK_RWIN)) ? MOD_WIN : NULL);					// Is Windows key pressed???
+						// Modifier keys
+						WORD wModifiers = NULL;
+						wModifiers |= ((IS_PRESSED(VK_LCONTROL) || IS_PRESSED(VK_RCONTROL)) ? MOD_CONTROL : NULL);		// Is Ctrl key pressed???
+						wModifiers |= ((dwKeyFlags & LLKHF_ALTDOWN) ? MOD_ALT : 0);										// Is Alt key pressed???
+						wModifiers |= ((IS_PRESSED(VK_LWIN) || IS_PRESSED(VK_RWIN)) ? MOD_WIN : NULL);					// Is Windows key pressed???
 
-						// Function key code
-						WORD wFunctionKey = dwKeyCode;
+						// Virtual key code
+						WORD wVirtualKey = dwKeyCode;
 
-						// Make keycode param (combine control and function key codes)
-						dwHKeyParam = MAKELONG(wControlKey, wFunctionKey);
+						// Make keycode param (combine modifiers and virtual key code)
+						dwHKeyParam = MAKELONG(wModifiers, wVirtualKey);
 
 						// Output debug log
-						OutputDebugLogFormat(_T("Lockstate Hotkey pressed: ControlKey=0x%04X, FunctionKey=0x%04X"), wControlKey, wFunctionKey);
+						OutputDebugLogFormat(_T("Lockstate Hotkey pressed: Modifiers=0x%04X, VirtualKey=0x%04X"), wModifiers, wVirtualKey);
 					}
 
 					// Post message to main dialog window

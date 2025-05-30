@@ -262,10 +262,27 @@ inline BOOL HotkeySetItem::IsEmpty(void) const
 	BOOL bIsEmpty = FALSE;
 
 	// Check if keystroke value is empty
-	bIsEmpty &= (m_dwCtrlKeyCode == 0);
-	bIsEmpty &= (m_dwFuncKeyCode == 0);
+	bIsEmpty &= (m_dwModifiers == 0);
+	bIsEmpty &= (m_dwVirtualKey == 0);
 
 	return bIsEmpty;
+}
+
+// Compare with another given item
+inline BOOL HotkeySetItem::Compare(const HotkeySetItem& pItem) const
+{
+	BOOL bRet = TRUE;
+
+	// Compare item
+	bRet &= (this->m_nHKActionID == pItem.m_nHKActionID);
+	bRet &= this->CompareKeycode(pItem);
+
+	return bRet;
+}
+
+// Compare item keycode with another given item
+inline BOOL HotkeySetItem::CompareKeycode(const HotkeySetItem& pItem) const {
+	return CompareKeycode(pItem.m_dwModifiers, pItem.m_dwVirtualKey);
 }
 
 // Check if item is enabled
@@ -289,17 +306,22 @@ inline void HotkeySetItem::SetActionID(UINT nHKActionID) {
 }
 
 // Get item keycode data
-inline void HotkeySetItem::GetKeyCode(DWORD& dwCtrlKey, DWORD& dwFuncKey) const
+inline void HotkeySetItem::GetKeyCode(DWORD& dwModifiers, DWORD& dwVirtualKey) const
 {
-	dwCtrlKey = m_dwCtrlKeyCode;
-	dwFuncKey = m_dwFuncKeyCode;
+	dwModifiers = m_dwModifiers;
+	dwVirtualKey = m_dwVirtualKey;
 }
 
 // Set item keycode data
-inline void HotkeySetItem::SetKeyCode(DWORD dwCtrlKey, DWORD dwFuncKey)
+inline void HotkeySetItem::SetKeyCode(DWORD dwModifiers, DWORD dwVirtualKey)
 {
-	m_dwCtrlKeyCode = dwCtrlKey;
-	m_dwFuncKeyCode = dwFuncKey;
+	m_dwModifiers = dwModifiers;
+	m_dwVirtualKey = dwVirtualKey;
+}
+
+// Compare given keycode with item keystroke
+inline BOOL HotkeySetItem::CompareKeycode(DWORD dwModifiers, DWORD dwVirtualKey) const {
+	return ((m_dwModifiers == dwModifiers) && (m_dwVirtualKey == dwVirtualKey));
 }
 
 // Init HotkeySet data (NULL)

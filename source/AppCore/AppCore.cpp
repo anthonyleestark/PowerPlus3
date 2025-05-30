@@ -927,8 +927,8 @@ HotkeySetItem::HotkeySetItem()
 	// Initialize
 	m_bEnabled = FALSE;								// Hotkey enabled/disabled
 	m_nHKActionID = 0;								// Hotkey action ID
-	m_dwCtrlKeyCode = 0;							// Control Keycode #1
-	m_dwFuncKeyCode = 0;							// Function Keycode #2
+	m_dwModifiers = 0;								// Modifier keys
+	m_dwVirtualKey = 0;								// Virtual key code
 }
 
 HotkeySetItem::HotkeySetItem(UINT nHKActionID)
@@ -936,8 +936,8 @@ HotkeySetItem::HotkeySetItem(UINT nHKActionID)
 	// Initialize
 	m_bEnabled = FALSE;								// Hotkey enabled/disabled
 	m_nHKActionID = nHKActionID;					// Hotkey action ID
-	m_dwCtrlKeyCode = 0;							// Control Keycode #1
-	m_dwFuncKeyCode = 0;							// Function Keycode #2
+	m_dwModifiers = 0;								// Modifier keys
+	m_dwVirtualKey = 0;								// Virtual key code
 }
 
 HotkeySetItem::HotkeySetItem(const HotkeySetItem& pItem)
@@ -979,48 +979,8 @@ void HotkeySetItem::Copy(const HotkeySetItem& pItem)
 	// Copy data
 	m_bEnabled = pItem.m_bEnabled;					// Hotkey enabled/disabled
 	m_nHKActionID = pItem.m_nHKActionID;			// Hotkey action ID
-	m_dwCtrlKeyCode = pItem.m_dwCtrlKeyCode;		// Control Keycode #1
-	m_dwFuncKeyCode = pItem.m_dwFuncKeyCode;		// Function Keycode #2
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare with another given item
-//  Arguments:		pItem - Pointer of given item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL HotkeySetItem::Compare(const HotkeySetItem& pItem) const
-{
-	BOOL bRet = TRUE;
-
-	// Compare item
-	bRet &= (this->m_nHKActionID == pItem.m_nHKActionID);
-	bRet &= this->CompareKeycode(pItem);
-
-	return bRet;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CompareKeycode
-//	Description:	Compare item keycode with another given item
-//  Arguments:		pItem - Pointer of given item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL HotkeySetItem::CompareKeycode(const HotkeySetItem& pItem) const
-{
-	BOOL bRet = TRUE;
-
-	// Compare item keycode
-	bRet &= (this->m_dwCtrlKeyCode == pItem.m_dwCtrlKeyCode);
-	bRet &= (this->m_dwFuncKeyCode == pItem.m_dwFuncKeyCode);
-
-	return bRet;
+	m_dwModifiers = pItem.m_dwModifiers;			// Modifier keys
+	m_dwVirtualKey = pItem.m_dwVirtualKey;			// Virtual key code
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1072,10 +1032,10 @@ void HotkeySetItem::PrintKeyStrokes(CString& strOutput) const
 
 	// Format keystrokes
 	CString strKeyStrokes = STRING_EMPTY;
-	if (m_dwCtrlKeyCode & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
-	if (m_dwCtrlKeyCode & MOD_ALT)		strKeyStrokes += _T("Alt + ");
-	if (m_dwCtrlKeyCode & MOD_WIN)		strKeyStrokes += _T("Win + ");
-	strKeyStrokes += GetString(StringTable::FuncKeyList, m_dwFuncKeyCode);
+	if (m_dwModifiers & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
+	if (m_dwModifiers & MOD_ALT)		strKeyStrokes += _T("Alt + ");
+	if (m_dwModifiers & MOD_WIN)		strKeyStrokes += _T("Win + ");
+	strKeyStrokes += GetString(StringTable::FunctionKeys, m_dwVirtualKey);
 
 	// Output string
 	strOutput.Empty();
@@ -4943,60 +4903,6 @@ BOOL AppCore::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lp
 	strOutput = strFilePath;
 
 	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	StringValidate
-//	Description:	Validate given string value
-//  Arguments:		lpszSrc	 - Given string
-//					dwError	 - Returned error code
-//  Return value:	BOOL - Validation result
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::StringValidate(LPCTSTR lpszSrc, DWORD& dwError)
-{
-	BOOL bResult = TRUE;
-	CString strInvalidKey = STRING_EMPTY;
-	
-	// Mark as normal first
-	dwError = STRVAL_ERR_NORMAL;
-
-	// String validation
-	CString strSrc = CString(lpszSrc);
-	if (strSrc.IsEmpty()) {
-		// String empty
-		bResult = FALSE;
-		dwError = STRVAL_ERR_EMPTY;
-	}
-	else if (strSrc.GetLength() > MAX_STRING_LENGTH) {
-		// String oversize
-		bResult = FALSE;
-		dwError = STRVAL_ERR_OVERSIZE;
-	}
-	else {
-		// Invalid characters
-		if (!strInvalidKey.IsEmpty()) {
-			int nSrcLength = strSrc.GetLength();
-			int nKeyLength = strInvalidKey.GetLength();
-			for (int nKChIdx = 0; nKChIdx < nKeyLength; nKChIdx++) {
-				TCHAR tcKeyChar = strInvalidKey.GetAt(nKChIdx);
-				for (int nSrcIdx = 0; nSrcIdx < nSrcLength; nSrcIdx++) {
-					if (strSrc.GetAt(nSrcIdx) == tcKeyChar) {
-						bResult = FALSE;
-						dwError = STRVAL_ERR_INVALIDCHAR;
-						break;
-					}
-				}
-
-				// Break the loop
-				if (bResult == FALSE) break;
-			}
-		}
-	}
-
-	return bResult;
 }
 
 //////////////////////////////////////////////////////////////////////////
