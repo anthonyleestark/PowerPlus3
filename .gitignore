@@ -360,5 +360,6 @@ MigrationBackup/
 .ionide/
 
 # Fody - auto-generated XML schema
+/build/
 FodyWeavers.xsd
 /PowerPlus3.vcxproj.bak
