@@ -201,11 +201,8 @@ BOOL CPowerPlusApp::InitInstance()
 
 	// Check CTRL key press state and open DebugTest dialog
 	if (IS_PRESSED(VK_CONTROL)) {
-		if (m_pDebugTestDlg != NULL) {
-			// Parent is NULL because main window hasn't been initialized yet
-			m_pDebugTestDlg->Create(IDD_DEBUGTEST_DLG, NULL);
-			m_pDebugTestDlg->ShowWindow(SW_SHOW);
-		}
+		HWND hDebugTestDlg = m_pDebugTestDlg->GetSafeHwnd();
+		PostMessage(hDebugTestDlg, SM_WND_SHOWDIALOG, TRUE, NULL);
 	}
 
 	// Setup registry key info
@@ -530,11 +527,13 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID pContext, ULONG ulType, P
 		// Save last system suspend time
 		pApp->SaveLastSysEventTime(SystemEventID::SystemSuspend, stCurSysTime);
 		break;
+
 	case PBT_APMRESUMESUSPEND:				// System resume from suspend event
 	case PBT_APMRESUMEAUTOMATIC:			// System automatic resume event
 		// Save last system wakeup time
 		pApp->SaveLastSysEventTime(SystemEventID::SystemWakeUp, stCurSysTime);
 		break;
+
 	default:
 		break;
 	}
@@ -2789,76 +2788,91 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 		strTrcTitle = _T("Load config failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
+
 	case APP_ERROR_LOAD_CFG_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load config failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
+
 	case APP_ERROR_LOAD_SCHED_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load schedule failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
+
 	case APP_ERROR_LOAD_SCHED_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load schedule failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
+
 	case APP_ERROR_LOAD_HKEYSET_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load hotkeyset failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
+
 	case APP_ERROR_LOAD_HKEYSET_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load hotkeyset failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
+
 	case APP_ERROR_LOAD_PWRRMD_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load reminder failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
+
 	case APP_ERROR_LOAD_PWRRMD_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load reminder failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
 		break;
+
 	case APP_ERROR_SAVE_CFG_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save config failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
+
 	case APP_ERROR_SAVE_CFG_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save config failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
+
 	case APP_ERROR_SAVE_SCHED_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save schedule failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
+
 	case APP_ERROR_SAVE_SCHED_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save schedule failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
+
 	case APP_ERROR_SAVE_HKEYSET_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save hotkeyset failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
+
 	case APP_ERROR_SAVE_HKEYSET_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save hotkeyset failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
 		break;
+
 	case APP_ERROR_SAVE_PWRRMD_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save reminder failed");
 		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
 		break;
+
 	case APP_ERROR_SAVE_PWRRMD_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save reminder failed");
@@ -2979,14 +2993,16 @@ BOOL CPowerPlusApp::InitDebugTestDlg(void)
 	m_pDebugTestDlg = new CDebugTestDlg();
 
 	// Check initialization validity
-	BOOL bResult = TRUE;
 	if (m_pDebugTestDlg == NULL) {
-		bResult = FALSE;
 		TRACE_ERROR("Error: DebugTest dialog init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
+	else {
+		m_pDebugTestDlg->Create(IDD_DEBUGTEST_DLG, NULL);
+		m_pDebugTestDlg->ShowWindow(SW_HIDE);
+	}
 
-	return bResult;
+	return (m_pDebugTestDlg != NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////

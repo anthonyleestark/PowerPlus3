@@ -395,9 +395,11 @@ void CEditScheduleDlg::SetupLanguage()
 		case IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX:
 			// Skip these items
 			break;
+
 		case IDC_EDITSCHEDULE_ACTION_LIST:
 			SetupComboBox(nID, pAppLang);
 			break;
+
 		default:
 			SetControlText(pWndChild, nID, pAppLang);
 			break;

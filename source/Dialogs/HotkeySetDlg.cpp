@@ -703,10 +703,12 @@ void CHotkeySetDlg::SetupLanguage()
 		case IDC_HOTKEYSET_ITEM_LISTBOX:
 			// Skip these items
 			break;
+
 		case IDC_HOTKEYSET_ACTION_LIST:
 		case IDC_HOTKEYSET_FUNCKEY_LIST:
 			SetupComboBox(nID, pAppLang);
 			break;
+
 		default:
 			SetControlText(pWndChild, nID, pAppLang);
 			break;
@@ -962,11 +964,13 @@ void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 		m_cmbActionList.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Log out
 		m_cmbActionList.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
+
 	case IDC_HOTKEYSET_FUNCKEY_LIST:
 		m_cmbFuncKeyList.ResetContent();
 		for (int nIndex = 0; nIndex < TABLE_SIZE(StringTable::FunctionKeys); nIndex++)
 			m_cmbFuncKeyList.AddString(StringTable::FunctionKeys[nIndex].lpszLangString);
 		break;
+
 	default:
 		break;
 	}

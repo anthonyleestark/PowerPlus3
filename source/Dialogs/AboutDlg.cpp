@@ -250,13 +250,15 @@ void CAboutDlg::SetupLanguage(void)
 		case IDC_STATIC:
 			// Skip these items
 			continue;
-			break;
+
 		case IDC_APPNAME_LABEL:
 			SetAppNameLabel();
 			break;
+
 		case IDC_APPINFO_LABEL:
 			SetAppInfoLabel();
 			break;
+
 		default:
 			SetControlText(pWndChild, nID, pAppLang);
 			break;

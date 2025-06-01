@@ -47,32 +47,39 @@ SIZE_T GetSizeByType(BYTE byDataType)
 	case LogDataType::Void:				// No type (unusable)
 		retSize = INT_NULL;
 		break;
+
 	case LogDataType::Num_U1:			// Unsigned integer (1-byte)
 	case LogDataType::Num_I1:			// Signed integer (1-byte)
 	case LogDataType::Num_F1:			// Float number (1-byte)
 		retSize = sizeof(UCHAR);
 		break;
+
 	case LogDataType::Num_U2:			// Unsigned integer (2-byte)
 	case LogDataType::Num_I2:			// Signed integer (2-byte)
 	case LogDataType::Num_F2:			// Float number (2-byte)
 		retSize = sizeof(USHORT);
 		break;
+
 	case LogDataType::Num_U4:			// Unsigned integer (4-byte)
 	case LogDataType::Num_I4:			// Signed integer (4-byte)
 	case LogDataType::Num_F4:			// Float number (4-byte)
 		retSize = sizeof(ULONG);
 		break;
+
 	case LogDataType::Num_U8:			// Unsigned integer (8-byte)
 	case LogDataType::Num_I8:			// Signed integer (8-byte)
 	case LogDataType::Num_F8:			// Float number (8-byte)
 		retSize = sizeof(ULONGLONG);
 		break;
+
 	case LogDataType::Boolean:			// Boolean number (TRUE/FALSE)
 		retSize = sizeof(BOOL);
 		break;
+
 	case LogDataType::SystemTime:		// SYSTEMTIME struct
 		retSize = sizeof(SYSTEMTIME);
 		break;
+
 	default:
 		retSize = INT_NULL;
 		break;
@@ -1358,9 +1365,6 @@ void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
 
 void SLogging::OutputItem(const LOGITEM& logItem)
 {
-	// Debug output
-	OutputDebugStringFormat(_T("[ALS] => OutputLog: CateID=%d, Log={%s}"), logItem.GetCategory(), logItem.GetLogString());
-
 	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
 		Write(logItem);
@@ -1510,11 +1514,13 @@ BOOL SLogging::Write(void)
 				strCurFileName = strFileName;
 			}
 			break;
+
 		case LOGTYPE_HISTORY_LOG:
 			// App history log
 			strFileName = FILENAME_HISTORY_LOG;
 			MakeFilePath(strFilePath, strFolderPath, strFileName, FILEEXT_LOGFILE);
 			break;
+
 		default:
 			// Wrong argument
 			TRACE_ERROR("Write log failed: Invalid log type!!!");
@@ -1606,10 +1612,12 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 		// Format app event log filename
 		strFileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay);
 		break;
+
 	case LOGTYPE_HISTORY_LOG:
 		// App history log
 		strFileName = FILENAME_HISTORY_LOG;
 		break;
+
 	default:
 		// Wrong argument
 		TRACE_ERROR("Error: Invalid log type!!!");
@@ -1617,7 +1625,6 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 		return FALSE;
-		break;
 	}
 
 	// Log folder path
@@ -1702,10 +1709,12 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 		// Format app event log filename
 		strFileName.Format(FILENAME_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth, stCurTime.wDay);
 		break;
+
 	case LOGTYPE_HISTORY_LOG:
 		// App history log
 		strFileName = FILENAME_HISTORY_LOG;
 		break;
+
 	default:
 		// Wrong argument
 		TRACE_ERROR("Error: Invalid log type!!!");
@@ -1714,7 +1723,6 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
 		return FALSE;
-		break;
 	}
 
 	// Log folder path

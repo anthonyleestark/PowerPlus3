@@ -231,6 +231,7 @@ void CRmdRepeatSetDlg::SetupLanguage()
 		case IDC_RMDREPEATSET_SNOOZE_INTERVAL_SPIN:
 			// Skip these items
 			break;
+
 		default:
 			SetControlText(pWndChild, nID, pAppLang);
 			break;

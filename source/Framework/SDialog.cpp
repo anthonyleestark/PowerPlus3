@@ -589,12 +589,14 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 				return TRUE;
 			}
 			break;
+
 		case VK_RETURN:
 			if (GetFlagValue(AppFlagID::dialogUseEnterKey) != TRUE) {
 				// Do not use Enter button
 				return TRUE;
 			}
 			break;
+
 		default:
 			break;
 		}

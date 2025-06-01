@@ -1267,10 +1267,12 @@ void CPwrReminderDlg::SetupLanguage()
 		case IDC_PWRREMINDER_EVENT_SETTIME_SPIN:
 			// Skip these items
 			break;
+
 		case IDC_PWRREMINDER_EVENT_REPEATSET_BTN:
 			// Draw icon
 			DrawRepeatSetButton();
 			break;
+
 		default:
 			SetControlText(pWndChild, nID, pAppLang);
 			break;
@@ -1534,6 +1536,7 @@ void CPwrReminderDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 		m_pMsgStyleCombo->AddString(GetLanguageString(ptrLanguage, COMBOBOX_MSGSTYLE_MESSAGEBOX));		// Message Box
 		m_pMsgStyleCombo->AddString(GetLanguageString(ptrLanguage, COMBOBOX_MSGSTYLE_DIALOGBOX));		// Dialog Box
 		break;
+
 	default:
 		break;
 	}

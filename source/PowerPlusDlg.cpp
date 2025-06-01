@@ -1703,11 +1703,13 @@ LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM lParam)
 		SetSessionLockFlag(FLAG_ON);
 		OutputDebugLog(_T("The screen is LOCKED!!!"));
 		break;
+
 	case WTS_SESSION_UNLOCK:
 		// Screen unlocked
 		SetSessionLockFlag(FLAG_OFF);
 		OutputDebugLog(_T("The screen is UNLOCKED!!!"));
 		break;
+
 	default:
 		// Trace other notification codes
 		OutputDebugLogFormat(_T("WTS session notification: Code=0x%02X"), wParam);
@@ -1867,8 +1869,8 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			ExecuteAction(APP_MACRO_RIGHT_MOUSE);
 			break;
 		}
-		return 0;
-		break;
+		return TRUE;
+
 	case SM_WND_DEBUGTEST:
 		OpenChildDialogEx(IDD_DEBUGTEST_DLG);
 		break;
@@ -1960,6 +1962,7 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 				// Show/hide these items
 				pWndChild->ShowWindow(bExpand);
 				break;
+
 			case IDC_HELP_BTN:
 			case IDC_ABOUT_BTN:
 			case IDC_DEFAULT_BTN:
@@ -1987,6 +1990,7 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 					pWndChild->MoveWindow(&rcChildNew);
 				}
 				break;
+
 			default:
 				pWndChild->EnableWindow(bExpand);
 				break;
@@ -2539,12 +2543,14 @@ void CPowerPlusDlg::SetupLanguage(void)
 		case IDC_EXPAND_BTNPOS:
 			// Skip these items
 			break;
+
 		case IDC_LMBACTION_LIST:
 		case IDC_MMBACTION_LIST:
 		case IDC_RMBACTION_LIST:
 		case IDC_LANGUAGE_LIST:
 			SetupComboBox(nID, pAppLang);
 			break;
+
 		case IDC_EXPAND_BTN:
 		{
 			// Check dialog current state
@@ -2552,7 +2558,8 @@ void CPowerPlusDlg::SetupLanguage(void)
 			if (nState == TRUE)	nID = IDC_COLLAPSE_BTN;
 			else nID = IDC_EXPAND_BTN;
 			SetControlText(pWndChild, nID, pAppLang);
-		}	break;
+		} break;
+
 		default:
 			SetControlText(pWndChild, nID, pAppLang);
 			break;
@@ -2791,15 +2798,17 @@ void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 			if (bShowItem == TRUE)
 				bShowItem = GetAppOption(AppOptionID::saveAppEventLog, TRUE);
 			break;
+
 		case IDM_NOTIFY_OPENDLG_HOTKEYSET:
 			bShowItem = GetAppOption(AppOptionID::backgroundHotkeyEnabled, TRUE);
 			break;
+
 		case IDM_NOTIFY_OPENDLG_PWRREMINDER:
 			bShowItem = GetAppOption(AppOptionID::pwrReminderEnabled, TRUE);
 			break;
+
 		default:
 			continue;
-			break;
 		}
 
 		// Disable item
@@ -2820,9 +2829,9 @@ void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 			bShowItem = GetAppOption(AppOptionID::defaultScheduleActiveState);
 			bShowItem &= (GetAppOption(AppOptionID::defaultScheduleActionID) != APP_ACTION_NOTHING);
 			break;
+
 		default:
 			continue;
-			break;
 		}
 
 		// Disable item
@@ -2973,10 +2982,12 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		// Get action ID: Left mouse
 		nActionID = GetAppOption(AppOptionID::leftMouseAction);
 		break;
+
 	case APP_MACRO_MIDDLE_MOUSE:
 		// Get action ID: Middle mouse
 		nActionID = GetAppOption(AppOptionID::middleMouseAction);
 		break;
+
 	case APP_MACRO_ACTION_SCHEDULE:
 		// Get action ID from param
 		if (wParam == NULL) {
@@ -2987,14 +2998,17 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		}
 		nActionID = DEFAULT_CAST(UINT, wParam);
 		break;
+
 	case APP_MACRO_RIGHT_MOUSE:
 		// If right mouse action is set to show notify menu
 		if ((GetAppOption(AppOptionID::rightMouseAction) == APP_ACTION_SHOWMENU) ||
 			(GetAppOption(AppOptionID::rightMouseShowMenu) == TRUE))
 			return ShowNotifyMenu();
+
 		// Otherwise, get action ID: Right mouse
 		nActionID = GetAppOption(AppOptionID::rightMouseAction);
 		break;
+
 	case APP_MACRO_ACTION_MENU:
 	case APP_MACRO_ACTION_HOTKEY:
 		// Get action ID from param
@@ -3006,6 +3020,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		}
 		nActionID = DEFAULT_CAST(UINT, wParam);
 		break;
+
 	default:
 		// Trace error
 		TRACE_ERROR("Error: Wrong argument!!!");
@@ -3021,7 +3036,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		// Pretend that the action completes successfully
 		TRACE("[ExecuteAction] Do nothing -> Successfully");
 		return TRUE;
-		break;
+
 	case APP_ACTION_DISPLAYOFF:
 		// Turn off display
 		nActionType = APP_ACTIONTYPE_MONITOR;
@@ -3030,6 +3045,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_DISPLAYOFF;
 		nActionNameLangID = ACTION_NAME_DISPLAYOFF;
 		break;
+
 	case APP_ACTION_SLEEP:
 		// Sleep
 		nActionType = APP_ACTIONTYPE_POWER;
@@ -3038,6 +3054,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SLEEP;
 		nActionNameLangID = ACTION_NAME_SLEEP;
 		break;
+
 	case APP_ACTION_SHUTDOWN:
 		// Shutdown
 		nActionType = APP_ACTIONTYPE_POWER;
@@ -3046,6 +3063,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SHUTDOWN;
 		nActionNameLangID = ACTION_NAME_SHUTDOWN;
 		break;
+
 	case APP_ACTION_RESTART:
 		// Restart
 		nActionType = APP_ACTIONTYPE_POWER;
@@ -3054,6 +3072,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_RESTART;
 		nActionNameLangID = ACTION_NAME_RESTART;
 		break;
+
 	case APP_ACTION_SIGNOUT:
 		// Sign out
 		nActionType = APP_ACTIONTYPE_POWER;
@@ -3062,6 +3081,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SIGNOUT;
 		nActionNameLangID = ACTION_NAME_SIGNOUT;
 		break;
+
 	case APP_ACTION_HIBERNATE:
 		// Hibernate
 		nActionType = APP_ACTIONTYPE_POWER;
@@ -3070,6 +3090,7 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionNameResID = IDS_HISTORYLOG_PWRACTION_HIBERNATE;
 		nActionNameLangID = ACTION_NAME_HIBERNATE;
 		break;
+
 	default:
 		// Trace error
 		TRACE_ERROR("Error: Wrong argument!!!");
@@ -3507,42 +3528,50 @@ void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			break;
+
 		case IDD_HELP_DLG:
 			// Help dialog
 			pDialog = new CHelpDlg;
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			break;
+
 		case IDD_MULTISCHEDULE_DLG:
 			// Multi schedule dialog
 			pDialog = new CMultiScheduleDlg;
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			break;
+
 		case IDD_LOGVIEWER_DLG:
 			// LogViewer dialog
 			pDialog = new CLogViewerDlg;
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			break;
+
 		case IDD_HOTKEYSET_DLG:
 			// HotkeySet dialog
 			pDialog = new CHotkeySetDlg;
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			break;
+
 		case IDD_PWRREMINDER_DLG:
 			// Power Reminder dialog
 			pDialog = new CPwrReminderDlg;
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			break;
+
 		case IDD_DEBUGTEST_DLG:
 			// DebugTest dialog
 			pDialog = new CDebugTestDlg;
 			bSetReadOnly = FALSE;
 			pParentWnd = this;
 			nOpenMode = MODE_OPENDLG_MODELESS;
+			break;
+
 		default:
 			break;
 		}
@@ -4307,6 +4336,7 @@ BOOL CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 	case HotkeyID::hibernate:
 		nActionID = APP_ACTION_HIBERNATE;
 		break;
+
 	default:
 		TRACE("Wrong argument!!!");
 		break;
@@ -4532,6 +4562,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 			// If item is set to repeat but not set active in current day of week
 			if ((pwrCurItem.IsRepeatEnabled() == TRUE) && (!pwrCurItem.IsDayActive((DayOfWeek)curSysTime.wDayOfWeek)))
 				continue;
+
 			// If set time matching or snooze time is triggered
 			if ((CheckTimeMatch(curSysTime, pwrCurItem.GetTime())) ||
 				(GetPwrReminderSnoozeStatus(pwrCurItem.GetItemID(), curSysTime))) {
@@ -4541,27 +4572,30 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 			}
 			else continue;
 			break;
+
 		case PwrReminderEvent::atSysWakeUp:
 			// If System suspend flag and Session ending flag are both OFF, do not display
 			if ((GetSystemSuspendFlag() == FLAG_OFF) && (GetSessionEndFlag() == FLAG_OFF)) continue;
 			// Otherwise, just prepare to display
 			pwrDispItem.Copy(pwrCurItem);
 			break;
+
 		case PwrReminderEvent::wakeAfterAction:
 			// If Power Action flag is OFF, do not display
 			if (GetPwrActionFlag() == FLAG_OFF) continue;
 			// Otherwise, prepare to display
 			pwrDispItem.Copy(pwrCurItem);
 			break;
+
 		case PwrReminderEvent::atAppStartup:
 		case PwrReminderEvent::beforePwrAction:
 		case PwrReminderEvent::atAppExit:
 			// Just prepare to display
 			pwrDispItem.Copy(pwrCurItem);
 			break;
+
 		default:
 			continue;
-			break;
 		}
 
 		// Display reminder

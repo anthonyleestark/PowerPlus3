@@ -2875,14 +2875,17 @@ LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangNa
 		// Language: English (United States)
 		ptrLangTable = &langtable_en_US;
 		break;
+
 	case APP_LANGUAGE_VIETNAMESE:
 		// Language: Vietnamese (Vietnam)
 		ptrLangTable = &langtable_vi_VN;
 		break;
+
 	case APP_LANGUAGE_SIMPCHINESE:
 		// Language: Simplified Chinese (China mainland)
 		ptrLangTable = &langtable_zh_CH;
 		break;
+
 	default:
 		// Default language: English
 		ptrLangTable = &langtable_en_US;
@@ -3087,11 +3090,13 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 			strAction.SetString(_T("Shutdown"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
+
 		case APP_MESSAGE_REBOOT:
 			// Restart
 			strAction.SetString(_T("Restart"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
+
 		case APP_MESSAGE_SIGNOUT:
 			// Sign out
 			strAction.SetString(_T("Sign out"));
@@ -3108,6 +3113,7 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 			strAction.SetString(_T("Sleep"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
+
 		case APP_MESSAGE_HIBERNATE:
 			// Hibernate
 			strAction.SetString(_T("Hibernate"));
@@ -4147,6 +4153,7 @@ BOOL AppCore::Text2Time(SYSTEMTIME& stTime, CString strText)
 		nHour = _tstoi(strTime);			// The given time value will be the hour value
 		nMinute = 0;						// The minute value will be zero (0)
 		break;
+
 	case 2:
 		if ((nLeft1Digit == 0) ||													// Ex: 08 -> 00:08
 			((nLeft1Digit > 2) || ((nLeft1Digit == 2) && (nRight1Digit > 3)))) {	// Ex: 35 -> 03:05, 24 -> 02:04, ...
@@ -4158,6 +4165,7 @@ BOOL AppCore::Text2Time(SYSTEMTIME& stTime, CString strText)
 			nHour = _tstoi(strTime);				// All digits will be the hour value
 			nMinute = 0;							// The minute value will be zero (0)
 		} break;
+
 	case 3:
 		if ((nLeft1Digit == 0) ||								// Ex: 034 -> 00:34, ...
 			((nLeft1Digit > 2) || (nLeft2Digits >= 24)) ||		// Ex: 320 -> 03:20, 250 -> 02:50, ...
@@ -4170,6 +4178,7 @@ BOOL AppCore::Text2Time(SYSTEMTIME& stTime, CString strText)
 			nHour = nLeft2Digits;					// The first 2 digits will be the hour value
 			nMinute = nRight1Digit;					// The remaining will be the minute value
 		} break;
+
 	case 4:
 		// Ex: 1235 -> 12:35, 1840 -> 18:40, ...
 		nHour = nLeft2Digits;						// The first half will be the hour value
@@ -4231,6 +4240,7 @@ BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
 		nHour = nTime;
 		nMinute = 0;
 		break;
+
 	case 2:
 		if ((nTime / 10 > 2) || 
 			((nTime / 10 == 2) && (nTime % 10 > 3))) {	// Ex: 35, 24, ...
@@ -4241,6 +4251,7 @@ BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
 			nHour = nTime;
 			nMinute = 0;
 		} break;
+
 	case 3:
 		if ((nTime / 100 > 2) || (nTime / 10 >= 24)) {	// Ex: 320, 240
 			nHour = nTime / 100;
@@ -4250,6 +4261,7 @@ BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
 			nHour = nTime / 10;
 			nMinute = nTime % 10;
 		} break;
+
 	case 4:
 		nHour = nTime / 100;
 		nMinute = nTime % 100;

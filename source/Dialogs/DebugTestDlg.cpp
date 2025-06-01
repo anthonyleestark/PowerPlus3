@@ -456,6 +456,7 @@ BOOL CDebugTestDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		// Copy selection text to clipboard
 		GetDebugEditView()->Copy();
 		break;
+
 	case IDM_DEBUGTEST_PASTE:
 		// Check if focus belongs to DebugTest edit view
 		if (IsDebugEditViewFocus() == TRUE) {
@@ -471,22 +472,27 @@ BOOL CDebugTestDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			// Paste clipboard text to DebugTest edit view
 			GetDebugEditView()->Paste();
 		} break;
+
 	case IDM_DEBUGTEST_DISP_PREVCOMMAND:
 		// Display previous command
 		DispDebugCommandHistory(GetHistoryCurrentDispIndex() - 1);
 		break;
+
 	case IDM_DEBUGTEST_DISP_NEXTCOMMAND:
 		// Display next command
 		DispDebugCommandHistory(GetHistoryCurrentDispIndex() + 1);
 		break;
+
 	case IDM_DEBUGTEST_CLEAR_BUFFER:
 		// Clear view buffer
 		ClearViewBuffer();
 		break;
+
 	case IDM_DEBUGTEST_CLOSE:
 		// Close DebugTest
 		EndDialog(IDCANCEL);
 		break;
+
 	default:
 		break;
 	}
