@@ -18,8 +18,8 @@
 #include "AppCore/Logging.h"
 #include "AppCore/Logging_pub.h"
 
-#include "PowerPlus.h"
-#include "PowerPlusDlg.h"
+#include "MainApp/PowerPlus.h"
+#include "MainApp/PowerPlusDlg.h"
 #include "Dialogs/LogViewerDlg.h"
 
 #ifdef _DEBUG

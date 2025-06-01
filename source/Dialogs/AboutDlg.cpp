@@ -18,8 +18,8 @@
 #include "stdafx.h"
 
 #include "Dialogs/AboutDlg.h"
-#include "PowerPlus.h"
-#include "PowerPlusDlg.h"
+#include "MainApp/PowerPlus.h"
+#include "MainApp/PowerPlusDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

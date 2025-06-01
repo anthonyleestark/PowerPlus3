@@ -14,8 +14,8 @@
 
 #include "stdafx.h"
 
-#include "PowerPlus.h"
-#include "PowerPlusDlg.h"
+#include "MainApp/PowerPlus.h"
+#include "MainApp/PowerPlusDlg.h"
 #include "Dialogs/PwrReminderDlg.h"
 #include "Dialogs/ReminderMsgDlg.h"
 #include "Dialogs/RmdRepeatSetDlg.h"

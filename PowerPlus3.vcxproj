@@ -253,14 +253,14 @@
     <ClInclude Include="include\Framework\Framework.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\PowerPlus.h" />
-    <ClInclude Include="include\PowerPlusDlg.h" />
+    <ClInclude Include="include\MainApp\PowerPlus.h" />
+    <ClInclude Include="include\MainApp\PowerPlusDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="Resource2.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="include\resource.h" />
+    <ClInclude Include="include\resource2.h" />
+    <ClInclude Include="include\stdafx.h" />
+    <ClInclude Include="include\targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AppCore\AppCore.cpp" />
@@ -297,12 +297,12 @@
     <ClCompile Include="source\Framework\SWinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\PowerPlus.cpp" />
-    <ClCompile Include="source\PowerPlusDlg.cpp" />
-    <ClCompile Include="source\PowerPlusDlgFunc.cpp" />
+    <ClCompile Include="source\MainApp\PowerPlus.cpp" />
+    <ClCompile Include="source\MainApp\PowerPlusDlg.cpp" />
+    <ClCompile Include="source\MainApp\PowerPlusDlgFunc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -310,53 +310,53 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PowerPlus3.rc" />
+    <ResourceCompile Include="res\PowerPlus3.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\PowerPlus3.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\icon\power-plus-app.ico" />
-    <Image Include="res\icon\about-big.ico" />
-    <Image Include="res\icon\about-small.ico" />
-    <Image Include="res\icon\help-big.ico" />
-    <Image Include="res\icon\help-small.ico" />
-    <Image Include="res\icon\default-big.ico" />
-    <Image Include="res\icon\default-small.ico" />
-    <Image Include="res\icon\ok-big.ico" />
-    <Image Include="res\icon\ok-small.ico" />
-    <Image Include="res\icon\cancel-big.ico" />
-    <Image Include="res\icon\cancel-small.ico" />
-    <Image Include="res\icon\reload-big.ico" />
-    <Image Include="res\icon\reload-small.ico" />
-    <Image Include="res\icon\arrow-up-big.ico" />
-    <Image Include="res\icon\arrow-up-small.ico" />
-    <Image Include="res\icon\arrow-down-big.ico" />
-    <Image Include="res\icon\arrow-down-small.ico" />
-    <Image Include="res\icon\collapse.ico" />
-    <Image Include="res\icon\repeat.ico" />
-    <Image Include="res\icon\power-bold.ico" />
-    <Image Include="res\icon\power-slim.ico" />
-    <Image Include="res\icon\draft.ico" />
+    <Image Include="res\icons\default\power-plus-app.ico" />
+    <Image Include="res\icons\default\about-big.ico" />
+    <Image Include="res\icons\default\about-small.ico" />
+    <Image Include="res\icons\default\help-big.ico" />
+    <Image Include="res\icons\default\help-small.ico" />
+    <Image Include="res\icons\default\default-big.ico" />
+    <Image Include="res\icons\default\default-small.ico" />
+    <Image Include="res\icons\default\ok-big.ico" />
+    <Image Include="res\icons\default\ok-small.ico" />
+    <Image Include="res\icons\default\cancel-big.ico" />
+    <Image Include="res\icons\default\cancel-small.ico" />
+    <Image Include="res\icons\default\reload-big.ico" />
+    <Image Include="res\icons\default\reload-small.ico" />
+    <Image Include="res\icons\default\arrow-up-big.ico" />
+    <Image Include="res\icons\default\arrow-up-small.ico" />
+    <Image Include="res\icons\default\arrow-down-big.ico" />
+    <Image Include="res\icons\default\arrow-down-small.ico" />
+    <Image Include="res\icons\default\collapse.ico" />
+    <Image Include="res\icons\default\repeat.ico" />
+    <Image Include="res\icons\default\power-bold.ico" />
+    <Image Include="res\icons\default\power-slim.ico" />
+    <Image Include="res\icons\default\draft.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="res\txt\help-eng.hlps" />
-    <Text Include="res\txt\change-log-eng.hlps" />
-    <Text Include="res\txt\help-vie.hlps" />
-    <Text Include="res\txt\change-log-vie.hlps" />
-    <Text Include="res\txt\help-chs.hlps" />
-    <Text Include="res\txt\change-log-chs.hlps" />
-    <Text Include="res\txt\debug-cmd-list.hlps" />
+    <Text Include="res\texts\help\chinese.hlps" />
+    <Text Include="res\texts\help\english.hlps" />
+    <Text Include="res\texts\help\vietnamese.hlps" />
+    <Text Include="res\texts\changelog\chinese.hlps" />
+    <Text Include="res\texts\changelog\english.hlps" />
+    <Text Include="res\texts\changelog\vietnamese.hlps" />
+    <Text Include="res\texts\debug-cmd-list.hlps" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="PowerPlus3.exe.manifest" />
+    <Manifest Include="res\texts\manifests\PowerPlus3.exe.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="PowerPlus.rc" />
+      <UserProperties RESOURCE_FILE="res\PowerPlus3.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

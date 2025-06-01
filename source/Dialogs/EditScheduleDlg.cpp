@@ -16,7 +16,7 @@
 
 #include "stdafx.h"
 
-#include "PowerPlus.h"
+#include "MainApp/PowerPlus.h"
 #include "Dialogs/EditScheduleDlg.h"
 
 #ifdef _DEBUG

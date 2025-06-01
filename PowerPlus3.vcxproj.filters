@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Resource.h">
+    <ClInclude Include="include\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource2.h">
+    <ClInclude Include="include\resource2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="include\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="include\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AppCore\AppCore.h">
@@ -117,10 +117,10 @@
     <ClInclude Include="include\Framework\SWinApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\PowerPlus.h">
+    <ClInclude Include="include\MainApp\PowerPlus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\PowerPlusDlg.h">
+    <ClInclude Include="include\MainApp\PowerPlusDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -142,7 +142,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="source\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\AppCore\AppCore.cpp">
@@ -223,18 +223,18 @@
     <ClCompile Include="source\Framework\SWinApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\PowerPlus.cpp">
+    <ClCompile Include="source\MainApp\PowerPlus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\PowerPlusDlg.cpp">
+    <ClCompile Include="source\MainApp\PowerPlusDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\PowerPlusDlgFunc.cpp">
+    <ClCompile Include="source\MainApp\PowerPlusDlgFunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PowerPlus3.rc">
+    <ResourceCompile Include="res\PowerPlus3.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -244,97 +244,97 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\icon\power-plus-app.ico">
+    <Image Include="res\icons\default\power-plus-app.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\about-big.ico">
+    <Image Include="res\icons\default\about-big.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\about-small.ico">
+    <Image Include="res\icons\default\about-small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\help-big.ico">
+    <Image Include="res\icons\default\help-big.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\help-small.ico">
+    <Image Include="res\icons\default\help-small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\ok-big.ico">
+    <Image Include="res\icons\default\ok-big.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\ok-small.ico">
+    <Image Include="res\icons\default\ok-small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\cancel-small.ico">
+    <Image Include="res\icons\default\cancel-small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\collapse.ico">
+    <Image Include="res\icons\default\collapse.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\repeat.ico">
+    <Image Include="res\icons\default\repeat.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\power-bold.ico">
+    <Image Include="res\icons\default\power-bold.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\power-slim.ico">
+    <Image Include="res\icons\default\power-slim.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\draft.ico">
+    <Image Include="res\icons\default\draft.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\default-big.ico">
+    <Image Include="res\icons\default\default-big.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\default-small.ico">
+    <Image Include="res\icons\default\default-small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\cancel-big.ico">
+    <Image Include="res\icons\default\cancel-big.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\reload-big.ico">
+    <Image Include="res\icons\default\reload-big.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\reload-small.ico">
+    <Image Include="res\icons\default\reload-small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\arrow-up-big.ico">
+    <Image Include="res\icons\default\arrow-up-big.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\arrow-up-small.ico">
+    <Image Include="res\icons\default\arrow-up-small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\arrow-down-big.ico">
+    <Image Include="res\icons\default\arrow-down-big.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon\arrow-down-small.ico">
+    <Image Include="res\icons\default\arrow-down-small.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="res\txt\help-eng.hlps">
+    <Text Include="res\texts\help\chinese.hlps">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="res\txt\change-log-eng.hlps">
+    <Text Include="res\texts\help\english.hlps">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="res\txt\help-vie.hlps">
+    <Text Include="res\texts\help\vietnamese.hlps">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="res\txt\change-log-vie.hlps">
+    <Text Include="res\texts\changelog\chinese.hlps">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="res\txt\help-chs.hlps">
+    <Text Include="res\texts\changelog\english.hlps">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="res\txt\change-log-chs.hlps">
+    <Text Include="res\texts\changelog\vietnamese.hlps">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="res\txt\debug-cmd-list.hlps">
+    <Text Include="res\texts\debug-cmd-list.hlps">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="PowerPlus3.exe.manifest" />
+    <Manifest Include="res\texts\manifests\PowerPlus3.exe.manifest" />
   </ItemGroup>
 </Project>

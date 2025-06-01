@@ -2,7 +2,7 @@
 // PowerPlus3.rc - Microsoft Visual C++ generated resource script.
 //
 
-#include "resource.h"
+#include "../include/resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -10,7 +10,7 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #ifndef APSTUDIO_INVOKED
-#include "targetver.h"
+#include "../include/targetver.h"
 #endif
 #include "afxres.h"
 #include "verrsrc.h"
@@ -468,24 +468,24 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON_APP				ICON			"res\\icon\\power-plus-app.ico"
-IDI_ICON_ABOUT_LARGE		ICON			"res\\icon\\about-large.ico"
-IDI_ICON_ABOUT_MID			ICON			"res\\icon\\about-mid.ico"
-IDI_ICON_HELP_LARGE			ICON			"res\\icon\\help-large.ico"
-IDI_ICON_HELP_MID			ICON			"res\\icon\\help-mid.ico"
-IDI_ICON_DEFAULT_LARGE		ICON			"res\\icon\\default-large.ico"
-IDI_ICON_DEFAULT_MID		ICON			"res\\icon\\default-mid.ico"
-IDI_ICON_OK_LARGE			ICON			"res\\icon\\ok-large.ico"
-IDI_ICON_OK_MID				ICON			"res\\icon\\ok-mid.ico"
-IDI_ICON_CANCEL_LARGE		ICON			"res\\icon\\cancel-large.ico"
-IDI_ICON_CANCEL_MID			ICON			"res\\icon\\cancel-mid.ico"
-IDI_ICON_RELOAD_LARGE		ICON			"res\\icon\\reload-large.ico"
-IDI_ICON_RELOAD_MID			ICON			"res\\icon\\reload-mid.ico"
-IDI_ICON_ARROW_UP_LARGE		ICON			"res\\icon\\arrow-up-large.ico"
-IDI_ICON_ARROW_UP_MID		ICON			"res\\icon\\arrow-up-mid.ico"
-IDI_ICON_ARROW_DOWN_LARGE	ICON			"res\\icon\\arrow-down-large.ico"
-IDI_ICON_ARROW_DOWN_MID		ICON			"res\\icon\\arrow-down-mid.ico"
-IDI_ICON_REPEAT				ICON			"res\\icon\\repeat.ico"
+IDI_ICON_APP				ICON			"res\\icons\\default\\power-plus-app.ico"
+IDI_ICON_ABOUT_LARGE		ICON			"res\\icons\\default\\about-large.ico"
+IDI_ICON_ABOUT_MID			ICON			"res\\icons\\default\\about-mid.ico"
+IDI_ICON_HELP_LARGE			ICON			"res\\icons\\default\\help-large.ico"
+IDI_ICON_HELP_MID			ICON			"res\\icons\\default\\help-mid.ico"
+IDI_ICON_DEFAULT_LARGE		ICON			"res\\icons\\default\\default-large.ico"
+IDI_ICON_DEFAULT_MID		ICON			"res\\icons\\default\\default-mid.ico"
+IDI_ICON_OK_LARGE			ICON			"res\\icons\\default\\ok-large.ico"
+IDI_ICON_OK_MID				ICON			"res\\icons\\default\\ok-mid.ico"
+IDI_ICON_CANCEL_LARGE		ICON			"res\\icons\\default\\cancel-large.ico"
+IDI_ICON_CANCEL_MID			ICON			"res\\icons\\default\\cancel-mid.ico"
+IDI_ICON_RELOAD_LARGE		ICON			"res\\icons\\default\\reload-large.ico"
+IDI_ICON_RELOAD_MID			ICON			"res\\icons\\default\\reload-mid.ico"
+IDI_ICON_ARROW_UP_LARGE		ICON			"res\\icons\\default\\arrow-up-large.ico"
+IDI_ICON_ARROW_UP_MID		ICON			"res\\icons\\default\\arrow-up-mid.ico"
+IDI_ICON_ARROW_DOWN_LARGE	ICON			"res\\icons\\default\\arrow-down-large.ico"
+IDI_ICON_ARROW_DOWN_MID		ICON			"res\\icons\\default\\arrow-down-mid.ico"
+IDI_ICON_REPEAT				ICON			"res\\icons\\default\\repeat.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -553,12 +553,12 @@ END
 // Text Files
 //
 
-IDR_FILE_HELP_ENG			RCDATA		"res\\txt\help-eng.hlps"
-IDR_FILE_CHANGELOG_ENG		RCDATA		"res\\txt\\change-log-eng.hlps"
-IDR_FILE_HELP_VIE			RCDATA		"res\\txt\help-vie.hlps"
-IDR_FILE_CHANGELOG_VIE		RCDATA		"res\\txt\\change-log-vie.hlps"
-IDR_FILE_HELP_CHS			RCDATA		"res\\txt\help-chs.hlps"
-IDR_FILE_CHANGELOG_CHS		RCDATA		"res\\txt\\change-log-chs.hlps"
+IDR_FILE_HELP_ENG			RCDATA		"res\\texts\\help\\english.hlps"
+IDR_FILE_HELP_VIE			RCDATA		"res\\texts\\help\\vietnamese.hlps"
+IDR_FILE_HELP_CHS			RCDATA		"res\\texts\\help\\chinese.hlps"
+IDR_FILE_CHANGELOG_ENG		RCDATA		"res\\texts\\changelog\\english.hlps"
+IDR_FILE_CHANGELOG_VIE		RCDATA		"res\\texts\\changelog\\vietnamese.hlps"
+IDR_FILE_CHANGELOG_CHS		RCDATA		"res\\texts\\changelog\\chinese.hlps"
 
 
 /////////////////////////////////////////////////////////////////////////////

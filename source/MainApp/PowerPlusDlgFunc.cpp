@@ -14,8 +14,8 @@
 
 #include "stdafx.h"
 
-#include "PowerPlus.h"
-#include "PowerPlusDlg.h"
+#include "MainApp/PowerPlus.h"
+#include "MainApp/PowerPlusDlg.h"
 
 #include "Dialogs/AboutDlg.h"
 #include "Dialogs/MultiScheduleDlg.h"
