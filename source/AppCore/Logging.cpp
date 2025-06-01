@@ -1487,7 +1487,7 @@ BOOL SLogging::Write(void)
 		{
 		case LOGTYPE_APP_EVENT:
 			// Format app event log filename
-			strFileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth, stTemp.wDay);
+			strFileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth);
 			MakeFilePath(strFilePath, strFolderPath, strFileName, FILEEXT_LOGFILE);
 			if (strCurFileName.IsEmpty()) {
 				// Set current file name
@@ -1610,7 +1610,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		strFileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay);
+		strFileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth);
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
@@ -1707,7 +1707,7 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		strFileName.Format(FILENAME_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth, stCurTime.wDay);
+		strFileName.Format(FILENAME_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth);
 		break;
 
 	case LOGTYPE_HISTORY_LOG:

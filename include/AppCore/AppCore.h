@@ -353,7 +353,7 @@
 #define FILENAME_APPEXEFILE							_T("PowerPlus3")
 #define FILENAME_APPCONFIG							_T("Config")
 #define FILENAME_BAKCONFIG							_T("BakConfig")
-#define FILENAME_APPEVENT_LOG						_T("AppEventLog_%d%02d%02d")
+#define FILENAME_APPEVENT_LOG						_T("AppEventLog_%04d_%02d")
 #define FILENAME_HISTORY_LOG						_T("AppHistory")
 #define FILENAME_TRACE_ERROR_LOG					_T("TraceError")
 #define FILENAME_TRACE_DEBUG_LOG					_T("TraceDebug")
