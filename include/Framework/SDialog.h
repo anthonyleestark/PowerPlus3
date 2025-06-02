@@ -143,12 +143,6 @@ protected:
 	// Dialog special flags
 	UINT m_nDescendantCount;
 
-	// Properties set flags
-	BOOL m_bBkgrdColorSet;
-	BOOL m_bTextColorSet;
-	BOOL m_bTopMostSet;
-	BOOL m_bInitSoundSet;
-
 	// Lock state exception ID list
 	UIntArray* m_paLockExceptionIDList;
 
@@ -282,11 +276,12 @@ public:
 	virtual void SetIcon(UINT nIconResourceID);
 	virtual void SetIcon(HICON hIcon, BOOL bBigIcon);
 
-	// Dialog color get/set functions
+	// Dialog color functions
 	virtual void GetBkgrdColor(COLORREF& clBkgrdColor) const;
 	virtual void SetBkgrdColor(COLORREF clBkgrdColor);
 	virtual void GetTextColor(COLORREF& clTextColor) const;
 	virtual void SetTextColor(COLORREF clTextColor);
+	virtual BOOL CreateBrush(void);
 
 	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);

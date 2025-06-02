@@ -164,6 +164,14 @@ inline void SetSessionLockFlag(BYTE byValue) {
 
 ///////////////////////////////////////////////////////
 
+// Message style
+inline const RmdMsgStyleSet& GetReminderMessageStyle(void) {
+	return g_rmdMsgStyleSet;
+}
+inline void SetReminderMessageStyle(const RmdMsgStyleSet& rmdMsgStyle) {
+	g_rmdMsgStyleSet.Copy(rmdMsgStyle);
+}
+
 // Background color
 inline const COLORREF GetReminderMsgBkgrdColor(void) {
 	return g_rmdMsgStyleSet.GetBkgrdColor();

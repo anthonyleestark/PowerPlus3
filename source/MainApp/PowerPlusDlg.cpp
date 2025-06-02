@@ -4688,19 +4688,8 @@ int CPowerPlusDlg::DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem)
 			return INT_INVALID;
 		}
 
-		// Message color
-		COLORREF clrMsgBkgrd = GetReminderMsgBkgrdColor();
-		COLORREF clrMsgText = GetReminderMsgTextColor();
-
-		// Message font info
-		CString strFontName;
-		BOOL bGetFontName = GetReminderMsgFontName(strFontName);
-		int nFontSize = GetReminderMsgFontSize();
-
-		// Message icon info
-		int nIconID = GetReminderMsgIconID();
-		int nIconSize = GetReminderMsgIconSize();
-		BYTE byIconPosition = GetReminderMsgIconPosition();
+		// Message style
+		RmdMsgStyleSet rmdMessageStyle = GetReminderMessageStyle();
 
 		// Message auto-close interval
 		int nTimeout = GetReminderMsgTimeout();
@@ -4714,11 +4703,7 @@ int CPowerPlusDlg::DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem)
 		// Set properties
 		pMsgDlg->SetCaptionFromLanguage(IDD_PWRREMINDER_DLG);
 		pMsgDlg->SetDispMessage(strMsgContent);
-		pMsgDlg->SetBkgrdColor(clrMsgBkgrd);
-		pMsgDlg->SetTextColor(clrMsgText);
-		pMsgDlg->SetMsgFont(strFontName, nFontSize);
-		pMsgDlg->SetMsgIcon(nIconID, nIconSize);
-		pMsgDlg->SetMsgIconPosition(byIconPosition);
+		pMsgDlg->SetMessageStyle(rmdMessageStyle);
 		pMsgDlg->SetAutoCloseInterval(nTimeout);
 
 		// Set notify state flags

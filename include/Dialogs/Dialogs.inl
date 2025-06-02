@@ -115,9 +115,20 @@ inline int CPwrReminderDlg::GetCurMode() const {
 inline LPCTSTR CReminderMsgDlg::GetDispMessage(void) const {
 	return m_strBuffer.GetString();
 }
+
 // Set display message
 inline void CReminderMsgDlg::SetDispMessage(LPCTSTR lpszDispMsg) {
 	m_strBuffer = lpszDispMsg;
+}
+
+// Get message style
+inline void CReminderMsgDlg::GetMessageStyle(RmdMsgStyleSet& rmdMsgStyle) const {
+	rmdMsgStyle.Copy(m_rmdMsgStyleSet);
+}
+
+// Set message style
+inline void CReminderMsgDlg::SetMessageStyle(const RmdMsgStyleSet& rmdMsgStyle) {
+	m_rmdMsgStyleSet.Copy(rmdMsgStyle);
 }
 
 // Get auto closing message interval
@@ -148,33 +159,6 @@ inline void CReminderMsgDlg::SetSize(LONG lWidth, LONG lHeight)
 
 	// Set lock size flag
 	m_bLockDlgSize = TRUE;
-}
-
-// Get message font name
-inline void CReminderMsgDlg::GetMsgFontName(CString& strFontName) const
-{
-	// Do not return if font is invalid
-	if (m_pMsgFont == NULL)
-		return;
-
-	// Return font name
-	strFontName = m_strMsgFontName;
-}
-
-// Get message font point
-inline void CReminderMsgDlg::GetMsgFontPoint(float& fFontPoint) const
-{
-	// Do not return if font is invalid
-	if (m_pMsgFont == NULL)
-		return;
-
-	// Return font point
-	fFontPoint = m_fMsgFontPoint;
-}
-
-// Set message icon placement
-inline void CReminderMsgDlg::SetMsgIconPosition(BYTE byPosition) {
-	m_byIconPosition = byPosition;
 }
 
 // Get allow snoozing mode enable status

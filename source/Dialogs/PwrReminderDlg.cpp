@@ -2720,19 +2720,8 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			m_pRmdPreviewMsgDlg = new CReminderMsgDlg();
 			if (m_pRmdPreviewMsgDlg == NULL) return;
 
-			// Message color
-			COLORREF clrMsgBkgrd = GetReminderMsgBkgrdColor();
-			COLORREF clrMsgText = GetReminderMsgTextColor();
-		
-			// Message font info
-			CString strFontName;
-			BOOL bGetFontName = GetReminderMsgFontName(strFontName);
-			int nFontSize = GetReminderMsgFontSize();
-
-			// Message icon info
-			int nIconID = GetReminderMsgIconID();
-			int nIconSize = GetReminderMsgIconSize();
-			BYTE byIconPosition = GetReminderMsgIconPosition();
+			// Message style
+			RmdMsgStyleSet rmdMessageStyle = GetReminderMessageStyle();
 
 			// Default timeout for previewing
 			int nDefTimeout = DEF_PWRREMINDER_PREVIEW_TIMEOUT;
@@ -2740,11 +2729,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			// Set properties
 			m_pRmdPreviewMsgDlg->SetCaptionFromLanguage(IDC_PWRREMINDER_PREVIEW_BTN);
 			m_pRmdPreviewMsgDlg->SetDispMessage(strMsgContent);
-			m_pRmdPreviewMsgDlg->SetBkgrdColor(clrMsgBkgrd);
-			m_pRmdPreviewMsgDlg->SetTextColor(clrMsgText);
-			m_pRmdPreviewMsgDlg->SetMsgFont(strFontName, nFontSize);
-			m_pRmdPreviewMsgDlg->SetMsgIcon(nIconID, nIconSize);
-			m_pRmdPreviewMsgDlg->SetMsgIconPosition(byIconPosition);
+			m_pRmdPreviewMsgDlg->SetMessageStyle(rmdMessageStyle);
 			m_pRmdPreviewMsgDlg->SetAutoCloseInterval(nDefTimeout);
 
 			// Set notify state flags

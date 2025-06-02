@@ -43,19 +43,17 @@ private:
 	// Message string buffer
 	CString m_strBuffer;
 
-	// Message font
+	// Message font & icon
 	CFont*	m_pMsgFont;
-	CString	m_strMsgFontName;
-	float	m_fMsgFontPoint;
-
-	// Message icon
 	HICON	m_hMsgIcon;
-	BOOL	m_bDispIcon;
-	BYTE	m_byIconPosition;
 	CSize	m_szIconSize;
+
+	// Message style set
+	RmdMsgStyleSet m_rmdMsgStyleSet;
 
 	// Flags
 	BOOL m_bTimerSet;
+	BOOL m_bDispIcon;
 	BOOL m_bLockDlgSize;
 	BOOL m_bLockFontSize;
 	BOOL m_bAllowSnooze;
@@ -83,11 +81,14 @@ public:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
-	// Setup displaying content and properties
-
-	// Display content
+public:
+	// Get/set display content
 	virtual LPCTSTR GetDispMessage(void) const;
 	virtual void SetDispMessage(LPCTSTR lpszDispMsg);
+
+	// Get/set message style
+	virtual void GetMessageStyle(RmdMsgStyleSet& rmdMsgStyle) const;
+	virtual void SetMessageStyle(const RmdMsgStyleSet& rmdMsgStyle);
 	
 	// Auto-close message
 	virtual UINT GetAutoCloseInterval(void) const;
@@ -96,15 +97,6 @@ public:
 	// Dialog size
 	virtual void SetSize(CSize szRegSize);
 	virtual void SetSize(LONG lWidth, LONG lHeight);
-
-	// Message font
-	virtual void GetMsgFontName(CString& strFontName) const;
-	virtual void GetMsgFontPoint(float& fFontPoint) const;
-	virtual void SetMsgFont(LPCTSTR lpszFontName, float fFontPoint);
-
-	// Icon and margin
-	virtual void SetMsgIcon(UINT nIconID, int nIconSqrSize);
-	virtual void SetMsgIconPosition(BYTE byPosition);
 
 	// Other properties
 	virtual BOOL GetAllowSnoozeMode(void) const;
@@ -115,6 +107,9 @@ public:
 	virtual void SetSnoozeTriggerFLag(int nValue);
 
 protected:
+	// Initialize message style
+	BOOL InitMessageStyle(void);
+
 	// Calculate icon position
 	BOOL CalcMsgIconPosition(LPPOINT lpptIcon) const;
 

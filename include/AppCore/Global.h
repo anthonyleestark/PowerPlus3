@@ -203,6 +203,10 @@ static inline void SetSessionLockFlag(BYTE byValue);
 // Global Power Reminder message style
 extern RmdMsgStyleSet g_rmdMsgStyleSet;
 
+// Message style
+static inline const RmdMsgStyleSet& GetReminderMessageStyle(void);
+static inline void SetReminderMessageStyle(const RmdMsgStyleSet& rmdMsgStyle);
+
 // Background color
 static inline const COLORREF GetReminderMsgBkgrdColor(void);
 static inline void SetReminderMsgBkgrdColor(COLORREF colorValue);

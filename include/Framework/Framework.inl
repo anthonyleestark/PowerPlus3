@@ -488,12 +488,12 @@ inline void SDialog::SetMaxSize(LONG lMaxWidth, LONG lMaxHeight) {
 
 // Set dialog top-most flag
 inline void SDialog::SetTopMost(BOOL bTopMost) {
-	m_bTopMostSet = bTopMost;
+	SetFlagValue(AppFlagID::dialogSetTopMost, bTopMost);;
 }
 
 // Set dialog init sound enable flag
 inline void SDialog::SetInitSound(BOOL bInitSound) {
-	m_bInitSoundSet = bInitSound;
+	SetFlagValue(AppFlagID::dialogSetInitSound, bInitSound);
 }
 
 // Set content display margin: left
@@ -611,7 +611,7 @@ inline void SDialog::GetBkgrdColor(COLORREF& clBkgrdColor) const {
 inline void SDialog::SetBkgrdColor(COLORREF clBkgrdColor)
 {
 	m_clBkgrdColor = clBkgrdColor;
-	m_bBkgrdColorSet = TRUE;
+	SetFlagValue(AppFlagID::dialogSetBackgroundColor, TRUE);
 }
 
 // Get text color
@@ -623,7 +623,7 @@ inline void SDialog::GetTextColor(COLORREF& clTextColor) const {
 inline void SDialog::SetTextColor(COLORREF clTextColor)
 {
 	m_clTextColor = clTextColor;
-	m_bTextColorSet = TRUE;
+	SetFlagValue(AppFlagID::dialogSetTextColor, TRUE);
 }
 
 // Register message box caption

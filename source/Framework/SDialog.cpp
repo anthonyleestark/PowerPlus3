@@ -59,12 +59,6 @@ SDialog::SDialog() : CDialogEx()
 	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
 	SetReturnFlag(ReturnFlag::Invalid);
 
-	// Properties set flags
-	m_bBkgrdColorSet = FALSE;
-	m_bTextColorSet = FALSE;
-	m_bTopMostSet = FALSE;
-	m_bInitSoundSet = FALSE;
-
 	// Lock state exception IDs
 	m_paLockExceptionIDList = NULL;
 
@@ -112,12 +106,6 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogEx(nI
 	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
 	SetReturnFlag(ReturnFlag::Invalid);
 
-	// Properties set flags
-	m_bBkgrdColorSet = FALSE;
-	m_bTextColorSet = FALSE;
-	m_bTopMostSet = FALSE;
-	m_bInitSoundSet = FALSE;
-
 	// Lock state exception IDs
 	m_paLockExceptionIDList = NULL;
 
@@ -164,12 +152,6 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd /* = NULL */) : CDia
 	SetFlagValue(AppFlagID::dialogUseEnterKey, TRUE);
 	SetFlagValue(AppFlagID::dialogUseEscapeKey, TRUE);
 	SetReturnFlag(ReturnFlag::Invalid);
-
-	// Properties set flags
-	m_bBkgrdColorSet = FALSE;
-	m_bTextColorSet = FALSE;
-	m_bTopMostSet = FALSE;
-	m_bInitSoundSet = FALSE;
 
 	// Lock state exception IDs
 	m_paLockExceptionIDList = NULL;
@@ -232,6 +214,7 @@ SDialog::~SDialog()
 	// Properties data cleanup
 	::DeleteObject(m_hDefaultIcon);
 	if (m_pBkgrdBrush != NULL) {
+		m_pBkgrdBrush->DeleteObject();
 		delete m_pBkgrdBrush;
 		m_pBkgrdBrush = NULL;
 	}
@@ -385,25 +368,16 @@ BOOL SDialog::OnInitDialog()
 	this->CenterWindow(GetParentWnd());
 
 	// Background color
-	if (m_bBkgrdColorSet == TRUE) {
-		// Initialize
-		if (m_pBkgrdBrush == NULL) {
-			m_pBkgrdBrush = new CBrush;
-		}
-		if (m_pBkgrdBrush != NULL) {
-			// Create background color brush
-			m_pBkgrdBrush->CreateSolidBrush(m_clBkgrdColor);
-		}
-	}
+	this->CreateBrush();
 
 	// If dialog is set as top-most 
-	if (m_bTopMostSet == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogSetTopMost) == TRUE) {
 		// Set window position
 		SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 	}
 
 	// If init sound is set
-	if (m_bInitSoundSet == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogSetInitSound) == TRUE) {
 		MessageBeep(0xFFFFFFFF);
 	}
 	
@@ -1234,6 +1208,38 @@ void SDialog::SetCaptionFromLanguage(UINT nLangStringID)
 
 	CString strTemp = GetLanguageString(pAppLang, nLangStringID);
 	this->SetCaption(strTemp);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CreateBrush
+//	Description:	Create (or re-create) dialog owned brush
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL SDialog::CreateBrush(void)
+{
+	if (GetFlagValue(AppFlagID::dialogSetBackgroundColor)) {
+
+		// Re-create if brush existed
+		if (m_pBkgrdBrush != NULL) {
+			m_pBkgrdBrush->DeleteObject();
+			delete m_pBkgrdBrush;
+			m_pBkgrdBrush = NULL;
+		}
+
+		// Initialization
+		m_pBkgrdBrush = new CBrush();
+		if (m_pBkgrdBrush != NULL) {
+
+			// Create background color brush
+			return m_pBkgrdBrush->CreateSolidBrush(m_clBkgrdColor);
+		}
+	}
+
+	return FALSE;
 }
 
 //////////////////////////////////////////////////////////////////////////

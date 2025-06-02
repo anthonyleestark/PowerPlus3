@@ -52,20 +52,14 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	// Message string buffer
 	m_strBuffer = STRING_EMPTY;
 
-	// Message font
+	// Message font & icon
 	m_pMsgFont = NULL;
-	m_strMsgFontName = STRING_EMPTY;
-	m_fMsgFontPoint = (float)0.0F;
-
-	// Message icon
 	m_hMsgIcon = NULL;
-	m_bDispIcon = FALSE;
-	m_byIconPosition = DEFAULT_MSG_ICONPLACEMENT;
-	m_szIconSize.cx = DEFAULT_MSG_ICONSIZE;
-	m_szIconSize.cy = DEFAULT_MSG_ICONSIZE;
+	m_szIconSize = SIZE_NULL;
 
 	// Flags
 	m_bTimerSet = FALSE;
+	m_bDispIcon = FALSE;
 	m_bLockDlgSize = FALSE;
 	m_bLockFontSize = FALSE;
 	m_bAllowSnooze = FALSE;
@@ -147,23 +141,32 @@ BOOL CReminderMsgDlg::OnInitDialog()
 	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
+	// If message style initialization failed
+	if (!InitMessageStyle())
+		return FALSE;
+
 	// Set margin
-	int nHMargin = GetReminderMsgHMargin();
-	int nVMargin = GetReminderMsgVMargin();
+	int nHMargin = m_rmdMsgStyleSet.GetHorizontalMargin();
+	int nVMargin = m_rmdMsgStyleSet.GetVerticalMargin();
 	SetCenterMargin(nHMargin, nVMargin);
 
 	// Shift margin if icon is displaying
 	if ((m_bDispIcon == TRUE) && (m_hMsgIcon != NULL)) {
+
 		// Get current margin
 		CRect rcDialogMargin;
 		this->GetMargin(&rcDialogMargin);
-		if (m_byIconPosition == IconOnTheTop) {
+
+		BYTE byIconPosition = m_rmdMsgStyleSet.GetIconPosition();
+		if (byIconPosition == IconOnTheTop) {
+
 			// Shift top margin
 			rcDialogMargin.top += m_szIconSize.cy;
 			rcDialogMargin.top -= DEFAULT_TEXT2ICON_DISTANCE;
 			this->SetTopMargin(rcDialogMargin.top);
 		}
-		else if (m_byIconPosition == IconOnTheLeft) {
+		else if (byIconPosition == IconOnTheLeft) {
+
 			// Shift left margin
 			rcDialogMargin.left += m_szIconSize.cx;
 			rcDialogMargin.left -= DEFAULT_TEXT2ICON_DISTANCE;
@@ -412,61 +415,62 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	SetMsgFont
-//	Description:	Set message font
-//  Arguments:		lpszFontName - Font name
-//					fFontPoint	 - Dialog font
-//  Return value:	None
+//	Function name:	InitMessageStyle
+//	Description:	Initialize message style info data
+//  Arguments:		None
+//  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::SetMsgFont(LPCTSTR lpszFontName, float fFontPoint)
+BOOL CReminderMsgDlg::InitMessageStyle(void)
 {
-	// Reset font
-	if (m_pMsgFont != NULL) {
-		delete m_pMsgFont;
+	// Background & text color
+	SetBkgrdColor(m_rmdMsgStyleSet.GetBkgrdColor());
+	SetTextColor(m_rmdMsgStyleSet.GetTextColor());
+	if (!CreateBrush()) {
+
+		// Error: Apply color failed
+		TRACE_ERROR("Error: Apply color failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return FALSE;
 	}
+
+	// Trigger force redrawing
+	this->Invalidate();
+
+	// Reset font
+	if (m_pMsgFont != NULL)
+		delete m_pMsgFont;
 
 	// Reset flag
 	m_bLockFontSize = FALSE;
 
-	// Initialize
+	// Initialize message font
 	m_pMsgFont = new CFont;
 	ASSERT(m_pMsgFont != NULL);
 	if (m_pMsgFont != NULL) {
-		// Create font
-		int nPointSize = int(fFontPoint * 10);
-		BOOL bRet = m_pMsgFont->CreatePointFont(nPointSize, lpszFontName, NULL);
 
-		// If point created successfully, set name and point
-		if (bRet == TRUE) {
-			m_strMsgFontName = lpszFontName;
-			m_fMsgFontPoint = fFontPoint;
+		// Create font
+		int nFontPointSize = int(m_rmdMsgStyleSet.GetFontSize() * 10);
+		CString strFontName = m_rmdMsgStyleSet.GetFontName();
+		if (!m_pMsgFont->CreatePointFont(nFontPointSize, strFontName, NULL)) {
+
+			// Error: Create font failed
+			TRACE_ERROR("Error: Create font failed!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+			return FALSE;
 		}
 	}
 
 	// Set lock font size flag
 	m_bLockFontSize = TRUE;
-}
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetMsgIcon
-//	Description:	Set message icon
-//  Arguments:		nIconID		 - Icon ID
-//					nIconSqrSize - Icon size (square)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
-{
 	// Icon size
-	int cx = nIconSqrSize;
-	int cy = nIconSqrSize;
+	m_szIconSize.cx = m_rmdMsgStyleSet.GetIconSize();
+	m_szIconSize.cy = m_rmdMsgStyleSet.GetIconSize();
 
-	m_szIconSize.cx = cx;
-	m_szIconSize.cy = cy;
+	int cx = m_szIconSize.cx;
+	int cy = m_szIconSize.cy;
 
 	// Invalid input size, reset to system default
 	if ((cx < 30) || (cx > 100)) {
@@ -475,8 +479,11 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 	}
 
 	// If icon ID is not set
-	if (nIconID == NULL)
-		return;
+	int nIconID = m_rmdMsgStyleSet.GetIconID();
+	if (nIconID == NULL) {
+		m_bDispIcon = FALSE;
+		return TRUE;
+	}
 
 	// Load system icon by ID and scale size
 	HRESULT hResult = ::LoadIconWithScaleDown(NULL, MAKEINTRESOURCE(nIconID), cx, cy, &m_hMsgIcon);
@@ -485,7 +492,7 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 	if ((hResult != S_OK) || (m_hMsgIcon == NULL)) {
 		TRACE_ERROR("Error: Load icon failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return;
+		return FALSE;
 	}
 
 	// Get icon info
@@ -494,7 +501,7 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 	if (bRet == FALSE) {
 		TRACE_ERROR("Error: Get icon info failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return;
+		return FALSE;
 	}
 
 	// Update icon size
@@ -519,6 +526,8 @@ void CReminderMsgDlg::SetMsgIcon(UINT nIconID, int nIconSqrSize)
 
 	// Update flag
 	m_bDispIcon = TRUE;
+
+	return TRUE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -545,11 +554,12 @@ BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon) const
 
 	// Calculate icon top-left point
 	int nText2IconDist = DEFAULT_TEXT2ICON_DISTANCE;
-	if (m_byIconPosition == IconOnTheTop) {
+	BYTE byIconPosition = m_rmdMsgStyleSet.GetIconPosition();
+	if (byIconPosition == IconOnTheTop) {
 		lpptIcon->y = rcCurMargin.top - (m_szIconSize.cy + nText2IconDist);
 		lpptIcon->x = (rcClient.Width() - m_szIconSize.cx) / 2;
 	}
-	else if (m_byIconPosition == IconOnTheLeft) {
+	else if (byIconPosition == IconOnTheLeft) {
 		lpptIcon->x = rcCurMargin.left - (m_szIconSize.cx + nText2IconDist);
 		lpptIcon->y = (rcClient.Height() - m_szIconSize.cy) / 2;
 	}
