@@ -495,6 +495,9 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	// First, initialize base dialog class
 	SDialog::OnInitDialog();
 
+	// Prevent flickering on startup
+	this->ShowWindow(SW_HIDE);
+
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
