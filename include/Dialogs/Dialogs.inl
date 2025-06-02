@@ -290,3 +290,90 @@ inline void CDebugTestDlg::SetHistoryCurrentDispIndex(size_t nCurIndex) {
 }
 
 #endif		// ifdef _DEBUGTESTDLG_ENABLE_INLINES
+
+///////////////////////////////////////////////////////
+
+#ifdef _DEBUGTESTV2DLG_ENABLE_INLINES
+
+#ifndef _DEBUGTESTV2DLG_INLINE_INCLUDED
+#define _DEBUGTESTV2DLG_INLINE_INCLUDED
+#endif
+
+// Get access to the DebugTest view pointer
+inline CEdit* CDebugTestV2Dlg::GetDebugView(void) const {
+	return m_pDebugView;
+}
+
+// Get access to the Debug command input pointer
+inline CEdit* CDebugTestV2Dlg::GetDebugCommandInput(void) const {
+	return m_pDebugCommandInput;
+}
+
+// Check if the DebugScreen (DebugView + Debug command input) is valid
+inline BOOL CDebugTestV2Dlg::IsDebugScreenValid(void) {
+	return (IsDebugViewValid() && IsDebugCommandInputValid());
+}
+
+// Check if the DebugTest view (pointer) is valid
+inline BOOL CDebugTestV2Dlg::IsDebugViewValid(void) {
+	return (GetDebugView() != NULL);
+}
+
+// Check if the Debug command input (pointer) is valid
+inline BOOL CDebugTestV2Dlg::IsDebugCommandInputValid(void) {
+	return (GetDebugCommandInput() != NULL);
+}
+
+// Check if the Debug command input is focused
+inline BOOL CDebugTestV2Dlg::IsDebugCommandInputFocused(void)
+{
+	// Check DebugScreen validity
+	if (!IsDebugScreenValid() || !IsDebugCommandInputValid())
+		return FALSE;
+
+	// Get focused control
+	HWND hCurFocusWnd = GetFocus()->GetSafeHwnd();
+	return (hCurFocusWnd == GetDebugCommandInput()->GetSafeHwnd());
+}
+
+// Backup debug view screen buffer content
+inline void CDebugTestV2Dlg::BackupDebugViewBuffer(void) {
+	m_strBackupBuffer = m_strBuffer;
+}
+
+// Clear current debug command history
+inline void CDebugTestV2Dlg::ClearDebugCommandHistory(void) {
+	m_astrCommandHistory.clear();
+}
+
+// Get debug command history item count
+inline size_t CDebugTestV2Dlg::GetDebugCommandHistoryCount(void) const {
+	return m_astrCommandHistory.size();
+}
+
+// Check if current command history is empty or not
+inline BOOL CDebugTestV2Dlg::IsDebugCommandHistoryEmpty(void) const {
+	return m_astrCommandHistory.empty();
+}
+
+// Check if currently displaying command history or not
+inline BOOL CDebugTestV2Dlg::IsCurrentlyDispHistory(void) const {
+	return m_bCurDispHistory;
+}
+
+// Set currently displaying command history state
+inline void CDebugTestV2Dlg::SetCurrentlyDispHistoryState(BOOL bState) {
+	m_bCurDispHistory = bState;
+}
+
+// Get command history current displaying index
+inline size_t CDebugTestV2Dlg::GetHistoryCurrentDispIndex(void) const {
+	return m_nHistoryCurIndex;
+}
+
+// Set command history current displaying index
+inline void CDebugTestV2Dlg::SetHistoryCurrentDispIndex(size_t nCurIndex) {
+	m_nHistoryCurIndex = nCurIndex;
+}
+
+#endif		// ifdef _DEBUGTESTV2DLG_ENABLE_INLINES

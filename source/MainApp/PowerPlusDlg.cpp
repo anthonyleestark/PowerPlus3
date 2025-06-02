@@ -28,6 +28,7 @@
 #include "Dialogs/PwrReminderDlg.h"
 #include "Dialogs/ReminderMsgDlg.h"
 #include "Dialogs/DebugTestDlg.h"
+#include "Dialogs/DebugTestV2Dlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

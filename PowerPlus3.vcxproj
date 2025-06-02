@@ -238,6 +238,7 @@
     <ClInclude Include="include\Dialogs\AboutDlg.h" />
     <ClInclude Include="include\Dialogs\CustomMsgDlg.h" />
     <ClInclude Include="include\Dialogs\DebugTestDlg.h" />
+    <ClInclude Include="include\Dialogs\DebugTestV2Dlg.h" />
     <ClInclude Include="include\Dialogs\EditScheduleDlg.h" />
     <ClInclude Include="include\Dialogs\HelpDlg.h" />
     <ClInclude Include="include\Dialogs\HotkeySetDlg.h" />
@@ -288,6 +289,7 @@
     <ClCompile Include="source\Dialogs\AboutDlg.cpp" />
     <ClCompile Include="source\Dialogs\CustomMsgDlg.cpp" />
     <ClCompile Include="source\Dialogs\DebugTestDlg.cpp" />
+    <ClCompile Include="source\Dialogs\DebugTestV2Dlg.cpp" />
     <ClCompile Include="source\Dialogs\EditScheduleDlg.cpp" />
     <ClCompile Include="source\Dialogs\HelpDlg.cpp" />
     <ClCompile Include="source\Dialogs\HotkeySetDlg.cpp" />

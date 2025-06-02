@@ -21,6 +21,7 @@
 #include "MainApp/PowerPlus.h"
 #include "MainApp/PowerPlusDlg.h"
 #include "Dialogs/DebugTestDlg.h"
+#include "Dialogs/DebugTestV2Dlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

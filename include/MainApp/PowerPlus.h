@@ -31,11 +31,6 @@
 
 
 ////////////////////////////////////////////////////////
-// Declaration of child dialog classes
-
-class CDebugTestDlg;
-
-////////////////////////////////////////////////////////
 //
 //	CPowerPlusApp used for app
 //
@@ -66,7 +61,7 @@ private:
 	HHOOK m_hAppKeyboardHook;
 
 	// DebugTest dialog
-	CDebugTestDlg* m_pDebugTestDlg;
+	SDialog* m_pDebugTestDlg;
 
 public:
 	// Instance functions
