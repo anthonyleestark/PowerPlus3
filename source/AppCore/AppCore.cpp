@@ -5636,14 +5636,13 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	// Section name
 	CString strSectionNameTemp;
 	StringArray astrSectionArray;
-	regInfo.GetSubkeyPath(astrSectionArray);
+	regInfo.GetSectionName(astrSectionArray);
 	for (int nIndex = 0; nIndex < astrSectionArray.size(); nIndex++) {
 		if (nIndex > 0) {
 			strSectionNameTemp.Append(SYMBOL_BACKSLASH);
 		}
 		strSectionNameTemp.Append(astrSectionArray.at(nIndex));
 	}
-
 
 	// Key name
 	CString strKeyNameTemp;

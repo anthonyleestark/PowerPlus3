@@ -1134,7 +1134,7 @@ inline void RegistryInfo::SetSectionName(UINT nResourceID)
 {
 	CString strKeyName;
 	VERIFY(strKeyName.LoadString(nResourceID));
-	m_astrSectionArray.push_back(strKeyName);
+	SetSectionName(strKeyName);
 }
 
 // Add section name (string)
