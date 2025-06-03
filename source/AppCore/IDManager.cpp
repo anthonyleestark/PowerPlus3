@@ -1,18 +1,21 @@
 ﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//		File name:		IDMapping.cpp
-//		Description:	Implement methods for components and items ID mapping
+//		File name:		IDManager.cpp
+//		Description:	Implement methods for components and items ID management
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2024.02.25:		Create new
+//						<1> 2024.07.06:		Update to version 3.1
+//						<2> 2024.12.18:		Update to version 3.2
+//						<3> 2025.06.03:		Rename from IDMapping to IDManager
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

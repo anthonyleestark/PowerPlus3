@@ -14,14 +14,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EDITSCHEDULEDLG_H_INCLUDED
-#define _EDITSCHEDULEDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
-#include "AppCore/Config.h"
 #include "AppCore/MapTable.h"
 #include "AppCore/Logging.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
+#include "AppCore/Serialization.h"
 #include "Framework/SDialog.h"
 
 
@@ -125,5 +124,3 @@ protected:
 	afx_msg void OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 };
-
-#endif	// ifndef _EDITSCHEDULEDLG_H_INCLUDED

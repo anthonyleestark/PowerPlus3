@@ -1,23 +1,24 @@
 ﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//		File name:		Config.h
+//		File name:		Serialization.h
 //		Description:	Define necessary methods to read/write, load/save configurations
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2024.02.03:		Create new
 //						<1> 2024.07.06:		Update to version 3.1
 //						<2> 2024.12.18:		Update to version 3.2
+//						<3> 2025.06.03:		Rename from Config to Serialization
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _CONFIG_H_INCLUDED
-#define _CONFIG_H_INCLUDED
+#pragma once
 
 #include "stdafx.h"
 #include "AppCore/AppCore.h"
+#include "AppCore/Serialization_defs.h"
 
 
 /////////////////////////////////////
@@ -157,5 +158,3 @@ public:
 public:
 	static BOOL RegistryExport();
 };
-
-#endif	// ifndef _CONFIG_H_INCLUDED

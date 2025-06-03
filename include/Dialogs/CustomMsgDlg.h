@@ -11,8 +11,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _CUSTOMMSGDLG_H_INCLUDED
-#define _CUSTOMMSGDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
 #include "AppCore/Global.h"
@@ -55,8 +54,4 @@ public:
 	virtual void OnDestroy();
 	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
 	virtual void OnSize(UINT nType, int nWidth, int nHeight);
-
-private:
 };
-
-#endif	// ifndef _CUSTOMMSGDLG_H_INCLUDED

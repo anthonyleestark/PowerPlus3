@@ -13,13 +13,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _HELPDLG_H_INCLUDED
-#define _HELPDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
-#include "AppCore/Config.h"
 #include "AppCore/Logging.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
+#include "AppCore/Serialization.h"
 #include "Framework/SDialog.h"
 
 
@@ -98,5 +97,3 @@ protected:
 #else
 	#pragma	error("-- Fatal error in HelpDlg.h: Inline is not enabled!")
 #endif
-
-#endif		// ifndef _HELPDLG_H_INCLUDED

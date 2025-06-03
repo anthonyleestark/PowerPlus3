@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include "AppCore/Logging.h"
-#include "AppCore/Logging_pub.h"
 
 #include "MainApp/PowerPlus.h"
 #include "MainApp/PowerPlusDlg.h"

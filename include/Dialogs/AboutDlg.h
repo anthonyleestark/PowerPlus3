@@ -15,13 +15,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _ABOUTDLG_H_INCLUDED
-#define _ABOUTDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
-#include "AppCore/Config.h"
 #include "AppCore/Logging.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
+#include "AppCore/Serialization.h"
 #include "Framework/SDialog.h"
 
 
@@ -70,5 +69,3 @@ protected:
 	void SetAppNameLabel(void);
 	void SetAppInfoLabel(void);
 };
-
-#endif	// ifndef _ABOUTDLG_H_INCLUDED

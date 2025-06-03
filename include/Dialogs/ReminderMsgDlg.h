@@ -12,8 +12,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _REMINDERMSGDLG_H_INCLUDED
-#define _REMINDERMSGDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
 #include "AppCore/Global.h"
@@ -137,5 +136,3 @@ protected:
 #else
 	#pragma	error("-- Fatal error in ReminderMsgDlg.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _REMINDERMSGDLG_H_INCLUDED

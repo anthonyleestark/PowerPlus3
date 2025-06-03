@@ -15,8 +15,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _CORE_H_INCLUDED
-#define	_CORE_H_INCLUDED
+#pragma once
 
 #include "stdafx.h"
 #include "Language.h"
@@ -2265,5 +2264,3 @@ namespace AppCore
 #else
 	#pragma	error("-- Fatal error in AppCore.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _CORE_H_INCLUDED

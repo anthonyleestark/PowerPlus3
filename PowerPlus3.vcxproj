@@ -211,13 +211,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\AppCore\AppCore.h" />
-    <ClInclude Include="include\AppCore\Config.h" />
     <ClInclude Include="include\AppCore\Global.h" />
-    <ClInclude Include="include\AppCore\IDMapping.h" />
+    <ClInclude Include="include\AppCore\IDManager.h" />
     <ClInclude Include="include\AppCore\Language.h" />
     <ClInclude Include="include\AppCore\Logging.h" />
-    <ClInclude Include="include\AppCore\Logging_pub.h" />
+    <ClInclude Include="include\AppCore\Logging_defs.h" />
     <ClInclude Include="include\AppCore\MapTable.h" />
+    <ClInclude Include="include\AppCore\Serialization.h" />
+    <ClInclude Include="include\AppCore\Serialization_defs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AppCore\AppCore.inl" />
@@ -271,11 +272,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AppCore\AppCore.cpp" />
-    <ClCompile Include="source\AppCore\Config.cpp" />
     <ClCompile Include="source\AppCore\Global.cpp" />
-    <ClCompile Include="source\AppCore\IDMapping.cpp" />
+    <ClCompile Include="source\AppCore\IDManager.cpp" />
     <ClCompile Include="source\AppCore\Logging.cpp" />
     <ClCompile Include="source\AppCore\MapTable.cpp" />
+    <ClCompile Include="source\AppCore\Serialization.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Components\GridCtrl\GridCell.cpp" />

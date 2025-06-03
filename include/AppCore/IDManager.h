@@ -1,20 +1,20 @@
 ﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//		File name:		IDMapping.h
-//		Description:	Define variables and methods for components and items ID mapping
+//		File name:		IDManager.h
+//		Description:	Define variables and methods for components and items ID management
 //		Owner:			AnthonyLeeStark
 //		
 //		History:		<0> 2024.02.25:		Create new
 //						<1> 2024.07.06:		Update to version 3.1
 //						<2> 2024.12.18:		Update to version 3.2
+//						<3> 2025.06.03:		Rename from IDMapping to IDManager
 //
 //		Copyright (c) 2015-2024 AnthonyLeeStark
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _IDMAPPING_H_INCLUDED
-#define _IDMAPPING_H_INCLUDED
+#pragma once
 
 #include "stdafx.h"
 #include "AppCore.h"
@@ -223,5 +223,3 @@ public:
 	const RESOURCE_ID_MAP_ENTRY& GetAt(size_t nIndex) const;
 	size_t GetMapCount(void) const;
 };
-
-#endif		// ifndef _IDMAPPING_H_INCLUDED

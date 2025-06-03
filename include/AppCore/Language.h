@@ -13,11 +13,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _LANGUAGE_H_INCLUDED
-#define _LANGUAGE_H_INCLUDED
+#pragma once
 
 #include "stdafx.h"
-#include "Logging_pub.h"
+#include "Logging_defs.h"
 
 #ifdef _RESOURCE2_NOTINCLUDED_
 #pragma message("--Language: Resource2.h not included")
@@ -1467,5 +1466,3 @@ namespace Language
 	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangName = NULL, int* pnSize = NULL);
 	LPCTSTR		  GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult = NULL);
 };
-
-#endif // ifndef _LANGUAGE_H_INCLUDED

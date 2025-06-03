@@ -15,16 +15,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _POWERPLUS_APP_H_INCLUDED
-#define _POWERPLUS_APP_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
-#include "AppCore/Config.h"
 #include "AppCore/MapTable.h"
+#include "AppCore/Serialization.h"
 
 #include "AppCore/Logging.h"
-#include "AppCore/Logging_pub.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
 
 #include "Framework/SWinApp.h"
 #include "Framework/SDialog.h"
@@ -125,8 +123,3 @@ protected:
 };
 
 extern CPowerPlusApp theApp;
-
-
-////////////////////////////////////////////////////////
-
-#endif	// ifndef _POWERPLUS_APP_H_INCLUDED

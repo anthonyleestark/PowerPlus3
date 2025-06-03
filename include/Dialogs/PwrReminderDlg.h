@@ -12,15 +12,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _PWRREMINDERDLG_H_INCLUDED
-#define _PWRREMINDERDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
-#include "AppCore/Config.h"
 #include "AppCore/MapTable.h"
+#include "AppCore/Serialization.h"
 
 #include "AppCore/Logging.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
 
 #include "Framework/SDialog.h"
 
@@ -218,5 +217,3 @@ protected:
 #else
 	#pragma	error("-- Fatal error in PwrReminderDlg.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _PWRREMINDERDLG_H_INCLUDED

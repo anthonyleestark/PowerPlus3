@@ -30,13 +30,10 @@
     <ClInclude Include="include\AppCore\AppCore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AppCore\Config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\AppCore\Global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AppCore\IDMapping.h">
+    <ClInclude Include="include\AppCore\IDManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AppCore\Language.h">
@@ -45,10 +42,16 @@
     <ClInclude Include="include\AppCore\Logging.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AppCore\Logging_pub.h">
+    <ClInclude Include="include\AppCore\Logging_defs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AppCore\MapTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AppCore\Serialization.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AppCore\Serialization_defs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Components\GridCtrl\CellRange.h">
@@ -151,19 +154,19 @@
     <ClCompile Include="source\AppCore\AppCore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\AppCore\Config.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\AppCore\Global.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\AppCore\IDMapping.cpp">
+    <ClCompile Include="source\AppCore\IDManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\AppCore\Logging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\AppCore\MapTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AppCore\Serialization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Components\GridCtrl\GridCell.cpp">

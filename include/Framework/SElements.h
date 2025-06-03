@@ -13,13 +13,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-#ifndef _STUPIDFRAMEWORK_SELEMENTS_H_INCLUDED
-#define _STUPIDFRAMEWORK_SELEMENTS_H_INCLUDED
 
 #include "stdafx.h"
 
 #include "AppCore/AppCore.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -355,5 +353,3 @@ public:
 #else
 	#pragma	error("-- Fatal error in SElements.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _STUPIDFRAMEWORK_SELEMENTS_H_INCLUDED

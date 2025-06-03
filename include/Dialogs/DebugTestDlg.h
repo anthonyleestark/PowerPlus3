@@ -11,8 +11,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _DEBUGTESTDLG_H_INCLUDED
-#define _DEBUGTESTDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
 #include "AppCore/Global.h"
@@ -128,5 +127,3 @@ private:
 #else
 	#pragma	error("-- Fatal error in DebugTestDlg.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _DEBUGTESTDLG_H_INCLUDED

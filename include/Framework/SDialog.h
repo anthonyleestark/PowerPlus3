@@ -14,14 +14,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-#ifndef _STUPIDFRAMEWORK_SDIALOG_H_INCLUDED
-#define _STUPIDFRAMEWORK_SDIALOG_H_INCLUDED
 
 #include "stdafx.h"
 #include "afxdialogex.h"
 
 #include "AppCore/AppCore.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
 #include "AppCore/Logging.h"
 
 #include "Components/GridCtrl/GridCtrl.h"
@@ -371,5 +369,3 @@ public:
 #else
 	#pragma	error("-- Fatal error in SDialog.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _STUPIDFRAMEWORK_SDIALOG_H_INCLUDED

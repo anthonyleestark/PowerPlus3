@@ -12,8 +12,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _RMDREPEATSETDLG_H_INCLUDED
-#define _RMDREPEATSETDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
 #include "AppCore/Global.h"
@@ -108,5 +107,3 @@ public:
 #else
 	#pragma	error("-- Fatal error in RmdRepeatSetDlg.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _RMDREPEATSETDLG_H_INCLUDED

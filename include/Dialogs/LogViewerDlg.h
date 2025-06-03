@@ -13,14 +13,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _LOGVIEWERDLG_H_INCLUDED
-#define _LOGVIEWERDLG_H_INCLUDED
+#pragma once
 
 #include "AppCore/AppCore.h"
-#include "AppCore/Config.h"
 #include "AppCore/MapTable.h"
 #include "AppCore/Logging.h"
-#include "AppCore/IDMapping.h"
+#include "AppCore/IDManager.h"
+#include "AppCore/Serialization.h"
 #include "Framework/SDialog.h"
 
 ////////////////////////////////////////////////////////
@@ -96,5 +95,3 @@ public:
 	void LoadLayoutInfo(void);
 	void SaveLayoutInfo(void);
 };
-
-#endif	// ifndef _LOGVIEWERDLG_H_INCLUDED

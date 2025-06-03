@@ -13,8 +13,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _GLOBAL_H_INCLUDED
-#define _GLOBAL_H_INCLUDED
+#pragma once
 
 #include "stdafx.h"
 #include "AppCore.h"
@@ -258,5 +257,3 @@ static inline void SetReminderMsgVMargin(UINT uiValue);
 #else
 	#pragma	error("-- Fatal error in Global.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _GLOBAL_H_INCLUDED

@@ -13,13 +13,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _LOGGING_H_INCLUDED
-#define _LOGGING_H_INCLUDED
+#pragma once
 
 #include "stdafx.h"
 #include "AppCore.h"
 #include "MapTable.h"
-#include "Logging_pub.h"
+#include "Logging_defs.h"
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,5 +374,3 @@ public:
 #else
 	#pragma	error("-- Fatal error in Logging.h: Inline is not enabled!")
 #endif
-
-#endif	// ifndef _LOGGING_H_INCLUDED
