@@ -3892,7 +3892,7 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const SCHEDULEITEM& schItem, int nSn
 	}
 
 	// Snooze interval
-	int nInterval = DEF_REPEATSET_DEFAULT_SNOOZE;
+	int nInterval = PwrRepeatSet::defaultSnoozeInterval;
 
 	// Find if item skip mode is already setup
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {

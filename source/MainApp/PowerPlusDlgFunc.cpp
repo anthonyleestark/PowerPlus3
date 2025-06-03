@@ -953,7 +953,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		}
 		else if ((nCount == 3) && (!_tcscmp(retBuff[1].tcToken, _T("noicon")))) {
 			// No reminder message icon (default 0)
-			SetReminderMsgIconID(IDI_MSGICON_NOICON);
+			SetReminderMsgIconID(0);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon disabled"));
 			bNoReply = FALSE;	// Reset flag
@@ -979,14 +979,14 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			CString strIconPos = retBuff[2].tcToken;
 			if (!_tcscmp(strIconPos, _T("left"))) {
 				// Set icon position: Icon on the Left
-				SetReminderMsgIconPosition(IconOnTheLeft);
+				SetReminderMsgIconPosition(RmdMsgStyleSet::IconOnTheLeft);
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLog(_T("Message icon position set: Left"));
 				bNoReply = FALSE;	// Reset flag
 			}
 			else if (!_tcscmp(strIconPos, _T("top"))) {
 				// Set icon position: Icon on the Top
-				SetReminderMsgIconPosition(IconOnTheTop);
+				SetReminderMsgIconPosition(RmdMsgStyleSet::IconOnTheTop);
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLog(_T("Message icon position set: Top"));
 				bNoReply = FALSE;	// Reset flag
@@ -1036,70 +1036,70 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	else if (!_tcscmp(retBuff[0].tcToken, _T("rmdmsgreset"))) {
 		if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("bkgclr")))) {
 			// Reset message background color
-			SetReminderMsgBkgrdColor(DEFAULT_MSG_BKGRDCLR);
+			SetReminderMsgBkgrdColor(RmdMsgStyleSet::defaultBkgrdColor);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message background color reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("txtclr")))) {
 			// Set message text color by name
-			SetReminderMsgTextColor(DEFAULT_MSG_TEXTCLR);
+			SetReminderMsgTextColor(RmdMsgStyleSet::defaultTextColor);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message text color reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("fontname")))) {
 			// Set reminder message font name
-			SetReminderMsgFontName(DEFAULT_MSG_FONTNAME);
+			SetReminderMsgFontName(RmdMsgStyleSet::defaultFontName);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message font name reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("fontsize")))) {
 			// Set reminder message font size
-			SetReminderMsgFontSize(DEFAULT_MSG_FONTSIZE);
+			SetReminderMsgFontSize(RmdMsgStyleSet::defaultFontSize);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message font size reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("timeout")))) {
 			// Reset reminder message auto-close interval (time-out)
-			SetReminderMsgTimeout(DEFAULT_MSG_TIMEOUT);
+			SetReminderMsgTimeout(RmdMsgStyleSet::defaultTimeout);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message time-out reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconid")))) {
 			// Reset reminder message icon ID
-			SetReminderMsgIconID(DEFAULT_MSG_ICONID);
+			SetReminderMsgIconID(RmdMsgStyleSet::defaultIconID);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon ID reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconsize")))) {
 			// Reset reminder message icon size
-			SetReminderMsgIconSize(DEFAULT_MSG_ICONSIZE);
+			SetReminderMsgIconSize(RmdMsgStyleSet::defaultIconSize);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon size reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconpos")))) {
 			// Reset reminder message icon position
-			SetReminderMsgIconPosition(DEFAULT_MSG_ICONPLACEMENT);
+			SetReminderMsgIconPosition(RmdMsgStyleSet::defaultIconPosition);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLog(_T("Message icon position reset"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("hmargin")))) {
 			// Reset reminder message horizontal margin
-			SetReminderMsgHMargin(DEFAULT_MSG_HMARGIN);
+			SetReminderMsgHMargin(RmdMsgStyleSet::defaultHorizontalMargin);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message horizontal margin reset)"));
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("vmargin")))) {
 			// Reset reminder message vertical margin
-			SetReminderMsgVMargin(DEFAULT_MSG_VMARGIN);
+			SetReminderMsgVMargin(RmdMsgStyleSet::defaultVerticalMargin);
 			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 			OutputDebugLogFormat(_T("Message vertical margin reset"));
 			bNoReply = FALSE;	// Reset flag
@@ -1162,11 +1162,11 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("iconpos")))) {
 			// Get reminder message icon position
 			BYTE byIconPlacement = GetReminderMsgIconPosition();
-			if (byIconPlacement == IconOnTheLeft) {
+			if (byIconPlacement == RmdMsgStyleSet::IconOnTheLeft) {
 				OutputDebugLog(_T("Message icon position: Left"));
 				bNoReply = FALSE;	// Reset flag
 			}
-			else if (byIconPlacement == IconOnTheTop) {
+			else if (byIconPlacement == RmdMsgStyleSet::IconOnTheTop) {
 				OutputDebugLog(_T("Message icon position: Top"));
 				bNoReply = FALSE;	// Reset flag
 			}

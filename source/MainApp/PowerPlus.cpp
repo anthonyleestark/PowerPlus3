@@ -784,7 +784,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		pschTempData->Init();
 
 		// Initialize default item
-		SCHEDULEITEM schDefaultTemp(DEF_SCHEDULE_DEFAULT_ITEMID);
+		SCHEDULEITEM schDefaultTemp(ScheduleData::defaultItemID);
 		{
 			// Read default schedule item
 			int nDefSchedRet = INT_NULL;

@@ -292,8 +292,8 @@ PwrRepeatSet::PwrRepeatSet()
 	// Init data
 	m_bRepeat = FALSE;										// Repeat daily
 	m_bAllowSnooze = TRUE;									// Allow snoozing mode
-	m_nSnoozeInterval = DEF_REPEATSET_DEFAULT_SNOOZE;		// Snooze interval
-	m_byRepeatDays = DEF_REPEATSET_DEFAULT_ACTIVEDAYS;		// Default repeat: All days of week
+	m_nSnoozeInterval = defaultSnoozeInterval;				// Snooze interval
+	m_byRepeatDays = defaultActiveDays;						// Default repeat: All days of week
 }
 
 PwrRepeatSet::PwrRepeatSet(const PwrRepeatSet& pItem)
@@ -371,7 +371,7 @@ BOOL PwrRepeatSet::Compare(const PwrRepeatSet& pItem) const
 ScheduleItem::ScheduleItem()
 {
 	// Initialize
-	m_nItemID = DEF_SCHEDULE_MIN_ITEMID;				// Item ID
+	m_nItemID = ScheduleData::minItemID;				// Item ID
 	m_bEnabled = FALSE;									// Enable/disable status
 	m_nActionID = APP_ACTION_NOTHING;					// Schedule action ID
 	m_stTime = SYSTEMTIME_ZERO;							// Schedule time
@@ -514,7 +514,7 @@ void ScheduleItem::Print(CString& strOutput) const
 ScheduleData::ScheduleData()
 {
 	// Initialize
-	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	m_schDefaultItem = SCHEDULEITEM(ScheduleData::defaultItemID);
 	m_arrSchedExtraItemList.clear();
 }
 
@@ -552,7 +552,7 @@ ScheduleData& ScheduleData::operator=(const ScheduleData& pData)
 void ScheduleData::Init()
 {
 	// Initialize
-	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	m_schDefaultItem = SCHEDULEITEM(ScheduleData::defaultItemID);
 	m_arrSchedExtraItemList.clear();
 }
 
@@ -611,39 +611,39 @@ DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 {
 	// If item is empty, can not update
 	if (pItem.IsEmpty())
-		return DEF_SCHEDULE_ERROR_EMPTY;
+		return Error::ItemIsEmpty;
 
 	// If default item is currently empty
 	if (m_schDefaultItem.IsEmpty()) {
 		// Make item as default
 		SCHEDULEITEM schDefaultTemp(pItem);
-		schDefaultTemp.SetItemID(DEF_SCHEDULE_DEFAULT_ITEMID);
+		schDefaultTemp.SetItemID(ScheduleData::defaultItemID);
 		m_schDefaultItem.Copy(schDefaultTemp);
-		return DEF_SCHEDULE_ERROR_SUCCESS;
+		return Error::Success;
 	}
 
 	// If extra schedule data is currently empty
 	if (m_arrSchedExtraItemList.empty()) {
 		// Just add the item
 		m_arrSchedExtraItemList.push_back(pItem);
-		return DEF_SCHEDULE_ERROR_SUCCESS;
+		return Error::Success;
 	}
 
 	// If number of items exceeded limit
-	if (GetExtraItemNum() >= DEF_SCHEDULE_ERROR_MAXITEM)
-		return DEF_SCHEDULE_ERROR_MAXITEM;
+	if (GetExtraItemNum() >= ScheduleData::maxItemNum)
+		return Error::MaxItemReached;
 
 	// Check if item is duplicated, if yes, do not add
 	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
 		SCHEDULEITEM pItemTemp = GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE) {
 			// All data is duplicated
-			return DEF_SCHEDULE_ERROR_DUPLICATE;
+			return Error::ItemDuplicated;
 		}
 		else if (AppCore::CheckTimeMatch(pItemTemp.GetTime(), pItem.GetTime())) {
 			// Time value is duplicated
 			// Can not execute multiple action at the same time
-			return DEF_SCHEDULE_ERROR_DUPLICATETIME;
+			return Error::TimeDuplicated;
 		}
 	}
 
@@ -669,7 +669,7 @@ DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 		pNew = NULL;
 	}
 
-	return DEF_SCHEDULE_ERROR_SUCCESS;
+	return Error::Success;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -691,13 +691,13 @@ DWORD ScheduleData::Update(const SCHEDULEITEM& pItem)
 
 	// If item is empty, can not update
 	if (pItem.IsEmpty())
-		return DEF_SCHEDULE_ERROR_EMPTY;
+		return Error::ItemIsEmpty;
 
 	// If item ID is matching with default item
-	if (pItem.GetItemID() == DEF_SCHEDULE_DEFAULT_ITEMID) {
+	if (pItem.GetItemID() == ScheduleData::defaultItemID) {
 		// Update default item
 		GetDefaultItem().Copy(pItem);
-		return DEF_SCHEDULE_ERROR_SUCCESS;
+		return Error::Success;
 	}
 
 	// Find extra item with matching ID
@@ -713,7 +713,7 @@ DWORD ScheduleData::Update(const SCHEDULEITEM& pItem)
 	if (nRetItemIndex != INT_INVALID) {
 		SCHEDULEITEM& schTemp = GetItemAt(nRetItemIndex);
 		schTemp.Copy(pItem);
-		return DEF_SCHEDULE_ERROR_SUCCESS;
+		return Error::Success;
 	}
 	// Otherwise,
 	else {
@@ -776,7 +776,7 @@ void ScheduleData::Adjust(void)
 	if (IsDefaultEmpty() && IsExtraEmpty() == FALSE) {
 		// Make first extra item default
 		m_schDefaultItem.Copy(GetItemAt(0));
-		m_schDefaultItem.SetItemID(DEF_SCHEDULE_DEFAULT_ITEMID);
+		m_schDefaultItem.SetItemID(ScheduleData::defaultItemID);
 
 		// Remove that extra item
 		Delete(0);
@@ -804,7 +804,7 @@ void ScheduleData::Adjust(void)
 UINT ScheduleData::GetNextID(void)
 {
 	// Get currently max ID
-	UINT nRetNextID = DEF_SCHEDULE_MIN_ITEMID;
+	UINT nRetNextID = ScheduleData::minItemID;
 	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
 		SCHEDULEITEM schItem = GetItemAt(nIndex);
 		if (schItem.GetItemID() > nRetNextID) {
@@ -909,7 +909,7 @@ void ScheduleData::DeleteExtra(void)
 void ScheduleData::DeleteAll(void)
 {
 	// Reset data
-	m_schDefaultItem = SCHEDULEITEM(DEF_SCHEDULE_DEFAULT_ITEMID);
+	m_schDefaultItem = SCHEDULEITEM(ScheduleData::defaultItemID);
 	m_arrSchedExtraItemList.clear();
 }
 
@@ -1393,17 +1393,17 @@ void HotkeySetData::PrintKeyStrokes(UINT nHKID, CString& strOutput) const
 RmdMsgStyleSet::RmdMsgStyleSet()
 {
 	// Init data
-	m_colorBkgrd = DEFAULT_MSG_BKGRDCLR;						// Background color
-	m_colorText = DEFAULT_MSG_TEXTCLR;							// Text color
-	m_strFontName = DEFAULT_MSG_FONTNAME;						// Font name
-	m_uiFontSize = DEFAULT_MSG_FONTSIZE;						// Font size
-	m_uiTimeout = DEFAULT_MSG_TIMEOUT;							// Timeout (auto-close) interval
-	m_uiIconID = DEFAULT_MSG_ICONID;							// Message icon ID
-	m_nIconSize = DEFAULT_MSG_ICONSIZE;							// Message icon size
-	m_byIconPos = DEFAULT_MSG_ICONPLACEMENT;					// Message icon position
-	m_byDisplayPos = DEFAULT_MSG_DISPLAYPOS;					// Message display position
-	m_uiHMargin = DEFAULT_MSG_HMARGIN;							// Display area horizontal margin
-	m_uiVMargin = DEFAULT_MSG_VMARGIN;							// Display area vertical margin
+	m_colorBkgrd = defaultBkgrdColor;							// Background color
+	m_colorText = defaultTextColor;								// Text color
+	m_strFontName = defaultFontName;							// Font name
+	m_uiFontSize = defaultFontSize;								// Font size
+	m_uiTimeout = defaultTimeout;								// Timeout (auto-close) interval
+	m_uiIconID = defaultIconID;									// Message icon ID
+	m_nIconSize = defaultIconSize;								// Message icon size
+	m_byIconPos = defaultIconPosition;							// Message icon position
+	m_byDisplayPos = defaultDisplayPosition;					// Message display position
+	m_uiHMargin = defaultHorizontalMargin;						// Display area horizontal margin
+	m_uiVMargin = defaultVerticalMargin;						// Display area vertical margin
 }
 
 RmdMsgStyleSet::RmdMsgStyleSet(const RmdMsgStyleSet& pItem)
@@ -1496,7 +1496,7 @@ PwrReminderItem::PwrReminderItem()
 {
 	// Init data
 	m_bEnabled = FALSE;										// Enable state
-	m_nItemID = DEF_PWRREMINDER_MIN_ITEMID;					// Item ID
+	m_nItemID = PwrReminderData::minItemID;					// Item ID
 	m_strMessage = STRING_EMPTY;							// Message content
 	m_nEventID = Event::atSetTime;							// Event ID
 	m_stTime = SYSTEMTIME_ZERO;								// Event time
@@ -1923,7 +1923,7 @@ void PwrReminderData::Adjust(void)
 UINT PwrReminderData::GetNextID(void)
 {
 	// Get max ID
-	UINT nRetNextID = DEF_PWRREMINDER_MIN_ITEMID;
+	UINT nRetNextID = PwrReminderData::minItemID;
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
 		PWRREMINDERITEM pwrItem = GetItemAt(nIndex);
 		if (pwrItem.GetItemID() > nRetNextID) {

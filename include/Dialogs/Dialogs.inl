@@ -49,7 +49,7 @@ inline void CHelpDlg::SetViewMode(UINT nViewMode) {
 
 // Get data table total item number (including default item)
 inline int CMultiScheduleDlg::GetTotalItemNum() const {
-	return GetExtraItemNum() + DEF_SCHEDULE_DEFAULT_ITEMNUM;
+	return GetExtraItemNum() + ScheduleData::defaultItemNum;
 }
 
 // Get data table extra item number only

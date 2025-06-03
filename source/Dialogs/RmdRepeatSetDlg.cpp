@@ -344,7 +344,7 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
 	}
 
 	// Setup properties
-	int nDefaultSnoozeMin = DEF_REPEATSET_DEFAULT_SNOOZE / 60;
+	int nDefaultSnoozeMin = PwrRepeatSet::defaultSnoozeInterval / 60;
 	if (m_pSnoozeIntervalEdit != NULL) {
 		m_pSnoozeIntervalEdit->SetReadOnly(TRUE);
 	}
@@ -360,7 +360,7 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
 		SetSnoozeIntervalEdit(nDefaultSnoozeMin);
 
 		// Set snooze interval value
-		SetSnoozeInterval(DEF_REPEATSET_DEFAULT_SNOOZE);
+		SetSnoozeInterval(PwrRepeatSet::defaultSnoozeInterval);
 	}
 
 	// Default
@@ -452,8 +452,8 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 	if (IS_NULL_STRING(strFormat)) return;
 
 	// Check validity
-	if (((nValue * 60) < DEF_REPEATSET_MIN_SNOOZE) ||
-		((nValue * 60) > DEF_REPEATSET_MAX_SNOOZE))
+	if (((nValue * 60) < PwrRepeatSet::minSnoozeInterval) ||
+		((nValue * 60) > PwrRepeatSet::maxSnoozeInterval))
 		return;
 
 	// Show snooze interval value

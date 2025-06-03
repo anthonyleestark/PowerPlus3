@@ -406,14 +406,14 @@ namespace MapTable
 
 		INITIALIZE_STRINGMAPTABLE(MsgIconName)
 		/*--------Icon ID---------------------------Icon name-------------------------*/
-			IDI_MSGICON_APPLICATION,			_T("App"),
-			IDI_MSGICON_HAND,					_T("Hand"),
-			IDI_MSGICON_QUESTION,				_T("Question"),
-			IDI_MSGICON_EXCLAMATION,			_T("Exclamation"),
-			IDI_MSGICON_ASTERISK,				_T("Asterisk"),
-			IDI_MSGICON_WARNING,				_T("Warning"),
-			IDI_MSGICON_ERROR,					_T("Error"),
-			IDI_MSGICON_INFORMATION,			_T("Information")
+			SYSICON_APPLICATION,				_T("App"),
+			SYSICON_HAND,						_T("Hand"),
+			SYSICON_QUESTION,					_T("Question"),
+			SYSICON_EXCLAMATION,				_T("Exclamation"),
+			SYSICON_ASTERISK,					_T("Asterisk"),
+			SYSICON_WARNING,					_T("Warning"),
+			SYSICON_ERROR,						_T("Error"),
+			SYSICON_INFORMATION,				_T("Information")
 		/*----------------------------------------------------------------------------*/
 		END_STRINGMAPTABLE()
 	};

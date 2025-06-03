@@ -186,20 +186,6 @@ static inline void SetSessionLockFlag(BYTE byValue);
 
 /*---------------------------------------Power reminder message styles---------------------------------------*/
 
-// Define default value
-#define DEFAULT_MSG_BKGRDCLR		COLOR_PINK					// Default background color: Bright pink
-#define DEFAULT_MSG_TEXTCLR			COLOR_RED					// Default text color: Red
-#define DEFAULT_MSG_FONTNAME		_T("Arial")					// Default font name: Arial
-#define DEFAULT_MSG_FONTSIZE		20							// Default font size: 20pt
-#define DEFAULT_MSG_TIMEOUT			0							// Default time-out: None
-#define DEFAULT_MSG_ICONID			IDI_MSGICON_INFORMATION		// Default icon ID: MB_ICONINFORMATION
-#define DEFAULT_MSG_ICONSIZE		50							// Default icon size: 50x50px
-#define DEFAULT_MSG_ICONPLACEMENT	IconOnTheTop				// Default icon position: On top
-#define DEFAULT_MSG_DISPLAYPOS		AtCenter					// Default display position: Center screen
-#define DEFAULT_MSG_HMARGIN			50							// Default horizontal margin: 50px
-#define DEFAULT_MSG_VMARGIN			50							// Default vertical margin: 50px
-#define DEFAULT_PWRRMD_SNOOZETIME	600							// Default snooze time: 10 minutes
-
 // Global Power Reminder message style
 extern RmdMsgStyleSet g_rmdMsgStyleSet;
 
@@ -227,25 +213,6 @@ static inline void SetReminderMsgFontSize(UINT uiValue);
 static inline const UINT GetReminderMsgTimeout(void);
 static inline void SetReminderMsgTimeout(UINT uiValue);
 
-// Define Message icon IDs
-#define IDI_MSGICON_NOICON				0
-#define IDI_MSGICON_APPLICATION     32512
-#define IDI_MSGICON_HAND            32513
-#define IDI_MSGICON_QUESTION        32514
-#define IDI_MSGICON_EXCLAMATION     32515
-#define IDI_MSGICON_ASTERISK        32516
-#if(WINVER >= 0x0400)
-#define IDI_MSGICON_WINLOGO         32517
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0600)
-#define IDI_MSGICON_SHIELD          32518
-#endif /* WINVER >= 0x0600 */
-#if(WINVER >= 0x0400)
-#define IDI_MSGICON_WARNING			IDI_MSGICON_EXCLAMATION
-#define IDI_MSGICON_ERROR			IDI_MSGICON_HAND
-#define IDI_MSGICON_INFORMATION		IDI_MSGICON_ASTERISK
-#endif /* WINVER >= 0x0400 */
-
 // Message icon ID
 static inline const UINT GetReminderMsgIconID(void);
 static inline void SetReminderMsgIconID(UINT uiValue);
@@ -254,22 +221,11 @@ static inline void SetReminderMsgIconID(UINT uiValue);
 static inline const INT GetReminderMsgIconSize(void);
 static inline void SetReminderMsgIconSize(int nValue);
 
-// Message icon placement
-enum MsgIconPosition {
-	IconOnTheTop = 0,
-	IconOnTheLeft,
-};
+// Message icon position
 static inline const BYTE GetReminderMsgIconPosition(void);
 static inline void SetReminderMsgIconPosition(BYTE byValue);
 
 // Message display position
-enum MsgDisplayPosition {
-	AtCenter = 0,
-	OnTopLeft,
-	OnTopRight,
-	OnBottomLeft,
-	OnBottomRight,
-};
 static inline const BYTE GetReminderMsgDispPosition(void);
 static inline void SetReminderMsgDispPosition(BYTE byValue);
 

@@ -2088,7 +2088,7 @@ void CPwrReminderDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	BOOL bIsSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
 
 	// Check if number of item has reached the limit
-	BOOL bIsMaxNum = (GetItemNum() >= DEF_PWRREMINDER_MAX_ITEMNUM);
+	BOOL bIsMaxNum = (GetItemNum() >= PwrReminderData::maxItemNum);
 
 	// Check if data is all empty or not
 	BOOL bIsAllEmpty = m_pwrReminderDataTemp.IsAllEmpty();
@@ -2724,7 +2724,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			RmdMsgStyleSet rmdMessageStyle = GetReminderMessageStyle();
 
 			// Default timeout for previewing
-			int nDefTimeout = DEF_PWRREMINDER_PREVIEW_TIMEOUT;
+			int nDefTimeout = PwrReminderData::previewTimeout;
 
 			// Set properties
 			m_pRmdPreviewMsgDlg->SetCaptionFromLanguage(IDC_PWRREMINDER_PREVIEW_BTN);
@@ -3001,7 +3001,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Check item ID
-	if ((pwrItem.GetItemID() < DEF_PWRREMINDER_MIN_ITEMID) || (pwrItem.GetItemID() > DEF_PWRREMINDER_MAX_ITEMID)) {
+	if ((pwrItem.GetItemID() < PwrReminderData::minItemID) || (pwrItem.GetItemID() > PwrReminderData::maxItemID)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ITEMID;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3058,7 +3058,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	}
 
 	// Check snooze interval data
-	if ((pwrItem.GetSnoozeInterval() < DEF_REPEATSET_MIN_SNOOZE) || (pwrItem.GetSnoozeInterval() > DEF_REPEATSET_MAX_SNOOZE)) {
+	if ((pwrItem.GetSnoozeInterval() < PwrRepeatSet::minSnoozeInterval) || (pwrItem.GetSnoozeInterval() > PwrRepeatSet::maxSnoozeInterval)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3066,7 +3066,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default snooze interval
-			pwrItem.SetSnoozeInterval(DEF_REPEATSET_DEFAULT_SNOOZE);
+			pwrItem.SetSnoozeInterval(PwrRepeatSet::defaultSnoozeInterval);
 		}
 	}
 
@@ -3079,7 +3079,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default data
-			pwrItem.SetActiveDays(DEF_REPEATSET_DEFAULT_ACTIVEDAYS);
+			pwrItem.SetActiveDays(PwrRepeatSet::defaultActiveDays);
 		}
 	}
 

@@ -931,7 +931,7 @@ void CMultiScheduleDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	BOOL bIsExtraSelected = ((bIsSelected == TRUE) && ((m_nCurSelIndex + ROW_FIXED_NUM) >= ROW_INDEX_EXTRASTART));
 
 	// Check if number of extra item has reached the limit
-	BOOL bIsMaxNum = (GetExtraItemNum() >= DEF_SCHEDULE_MAX_ITEMNUM);
+	BOOL bIsMaxNum = (GetExtraItemNum() >= ScheduleData::maxItemNum);
 
 	// Check if data is all empty or not
 	BOOL bIsAllEmpty = m_schScheduleTemp.IsAllEmpty();
@@ -1377,8 +1377,8 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Check item ID
-	if ((schItem.GetItemID() != DEF_SCHEDULE_DEFAULT_ITEMID) &&
-		((schItem.GetItemID() < DEF_SCHEDULE_MIN_ITEMID) || (schItem.GetItemID() > DEF_SCHEDULE_MAX_ITEMID))) {
+	if ((schItem.GetItemID() != ScheduleData::defaultItemID) &&
+		((schItem.GetItemID() < ScheduleData::minItemID) || (schItem.GetItemID() > ScheduleData::maxItemID))) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ITEMID;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -1399,7 +1399,7 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default action
-			schItem.SetAction(DEF_SCHEDULE_INIT_ACTION);
+			schItem.SetAction(ScheduleData::defaultActionID);
 		}
 	}
 
@@ -1412,7 +1412,7 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Set default data
-			schItem.SetActiveDays(DEF_REPEATSET_DEFAULT_ACTIVEDAYS);
+			schItem.SetActiveDays(PwrRepeatSet::defaultActiveDays);
 		}
 	}
 
@@ -1520,7 +1520,7 @@ void CMultiScheduleDlg::OnAdd()
 	// Initialize new item template
 	Item schTemp;
 	schTemp.SetItemID(m_schScheduleTemp.GetNextID());
-	schTemp.SetAction(DEF_SCHEDULE_INIT_ACTION);
+	schTemp.SetAction(ScheduleData::defaultActionID);
 
 	// Open edit schedule dialog
 	if (m_pEditScheduleDlg == NULL) {
@@ -1808,7 +1808,7 @@ void CMultiScheduleDlg::OnSetDefault()
 			// Overwrite default item data with currently selected extra item data
 			Item& schDefaultItem = m_schScheduleTemp.GetDefaultItem();
 			schDefaultItem.Copy(schCurSelItem);
-			schDefaultItem.SetItemID(DEF_SCHEDULE_DEFAULT_ITEMID);
+			schDefaultItem.SetItemID(ScheduleData::defaultItemID);
 
 			// Remove the selected extra item after changing
 			m_schScheduleTemp.Delete(nExtraItemIndex);

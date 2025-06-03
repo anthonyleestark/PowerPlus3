@@ -327,6 +327,27 @@
 #define COLOR_BRIGHT_GRAY							RGB(240,240,240)				// Color: Bright gray
 
 
+// Define system icon IDs
+//
+
+#define SYSICON_APPLICATION							32512							// Default application icon
+#define SYSICON_HAND								32513							// Error icon
+#define SYSICON_QUESTION							32514							// Question mark icon
+#define SYSICON_EXCLAMATION							32515							// Warning icon
+#define SYSICON_ASTERISK							32516							// Information icon
+#if(WINVER >= 0x0400)
+#define SYSICON_WINLOGO								32517							// Windows logo icon
+#endif /* WINVER >= 0x0400 */
+#if(WINVER >= 0x0600)
+#define SYSICON_SHIELD								32518							// Security shield icon
+#endif /* WINVER >= 0x0600 */
+#if(WINVER >= 0x0400)
+#define SYSICON_WARNING								SYSICON_EXCLAMATION				// Warning icon
+#define SYSICON_ERROR								SYSICON_HAND					// Error icon
+#define SYSICON_INFORMATION							SYSICON_ASTERISK				// Information icon
+#endif /* WINVER >= 0x0400 */
+
+
 // Define log types
 //
 
@@ -552,50 +573,6 @@
 #define GRIDCTRL_HEIGHT_ROW_EX						25								// Grid control row height (extra) = 25px
 #define GRIDCTRL_INDEX_HEADER_ROW					0								// Grid control header row index
 #define GRIDCELL_MARGIN_LEFT						3								// Grid cell left margin = 3px
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define special properties and values for program features
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Define properties for RepeatSet data
-//
-
-#define DEF_REPEATSET_MIN_SNOOZE					60								// Min snooze interval: 1 minutes
-#define DEF_REPEATSET_DEFAULT_SNOOZE				600								// Default snooze interval: 10 minutes
-#define DEF_REPEATSET_MAX_SNOOZE					1800							// Max snooze interval: 30 minutes
-#define DEF_REPEATSET_DEFAULT_ACTIVEDAYS			0b01111111						// Default repeat: All days of weekss
-
-
-// Define properties for Action Schedule function
-//
-
-#define DEF_SCHEDULE_DEFAULT_ITEMNUM				1								// Default item number: 1
-#define DEF_SCHEDULE_MAX_ITEMNUM					100								// Max item number: 100
-#define DEF_SCHEDULE_DEFAULT_ITEMID					0x00							// Default item ID: 0
-#define DEF_SCHEDULE_MIN_ITEMID						10000							// Min item ID: 10000
-#define DEF_SCHEDULE_MAX_ITEMID						19999							// Max item ID: 19999
-#define DEF_SCHEDULE_INIT_ACTION					APP_ACTION_DISPLAYOFF			// Init action (for new item): Turn off display
-
-#define DEF_SCHEDULE_ERROR							3240L
-#define DEF_SCHEDULE_ERROR_SUCCESS					(DEF_SCHEDULE_ERROR + 1)		// Success (no error)
-#define DEF_SCHEDULE_ERROR_ISDEFAULT				(DEF_SCHEDULE_ERROR + 2)		// Item is default (can not remove/delete)
-#define DEF_SCHEDULE_ERROR_EMPTY					(DEF_SCHEDULE_ERROR + 3)		// Schedule data is empty
-#define DEF_SCHEDULE_ERROR_MAXITEM					(DEF_SCHEDULE_ERROR + 4)		// Schedule data item number reaches maximum limit
-#define DEF_SCHEDULE_ERROR_DUPLICATE				(DEF_SCHEDULE_ERROR + 5)		// Item data is duplicated (can not add)
-#define DEF_SCHEDULE_ERROR_DUPLICATETIME			(DEF_SCHEDULE_ERROR + 6)		// Item time value is duplicated (can not add)
-
-
-// Define properties for Power Reminder function
-//
-
-#define DEF_PWRREMINDER_MAX_ITEMNUM					100								// Max item number: 100
-#define DEF_PWRREMINDER_MIN_ITEMID					10000							// Min item ID: 10000
-#define DEF_PWRREMINDER_MAX_ITEMID					19999							// Max item ID: 19999
-#define DEF_PWRREMINDER_PREVIEW_TIMEOUT				10								// Default time-out for preview: 10s
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -972,6 +949,13 @@ class PwrRepeatSet
 public:
 	enum DayOfWeek { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday	};
 
+public:
+	// Define constant values
+	static constexpr int minSnoozeInterval = 60;					// Min snooze interval: 1 minutes
+	static constexpr int defaultSnoozeInterval = 600;				// Default snooze interval: 10 minutes
+	static constexpr int maxSnoozeInterval = 1800;					// Max snooze interval: 30 minutes
+	static constexpr int defaultActiveDays = 0b01111111;			// Default repeat: All days of weekss
+
 private:
 	// Attributes
 	BOOL m_bRepeat;													// Repeat daily
@@ -1088,6 +1072,24 @@ using SCHEDULEITEMLIST = typename std::vector<SCHEDULEITEM>;
 
 class ScheduleData
 {
+public:
+	// Define constant values
+	static constexpr int defaultItemNum = 1;						// Default item number: 1
+	static constexpr int maxItemNum = 100;							// Max item number: 100
+	static constexpr int defaultItemID = 0x00;						// Default item ID: 0
+	static constexpr int minItemID = 10000;							// Min item ID: 10000
+	static constexpr int maxItemID = 19999;							// Max item ID: 19999
+	static constexpr int defaultActionID = APP_ACTION_DISPLAYOFF;	// Default action (for new item): Turn off display
+
+	enum Error {
+		Success = 0,												// Success (no error)
+		ItemIsDefault,												// Item is default (can not remove/delete)
+		ItemIsEmpty,												// Schedule data is empty
+		MaxItemReached,												// Schedule data item number reaches maximum limit
+		ItemDuplicated,												// Item data is duplicated (can not add)
+		TimeDuplicated,												// Item time value is duplicated (can not add)
+	};
+
 private:
 	// Attributes
 	SCHEDULEITEM	 m_schDefaultItem;								// Default schedule item
@@ -1264,6 +1266,33 @@ public:
 
 class RmdMsgStyleSet
 {
+public:
+	enum IconPosition {
+		IconOnTheTop = 0,
+		IconOnTheLeft,
+	};
+	enum DisplayPosition {
+		AtCenter = 0,
+		OnTopLeft,
+		OnTopRight,
+		OnBottomLeft,
+		OnBottomRight,
+	};
+
+public:
+	// Define default style values
+	static constexpr COLORREF defaultBkgrdColor = COLOR_PINK;		// Default background color: Bright pink
+	static constexpr COLORREF defaultTextColor = COLOR_RED;			// Default text color: Red
+	static constexpr wchar_t* defaultFontName = _T("Arial");		// Default font name: Arial
+	static constexpr int defaultFontSize = 20;						// Default font size: 20pt
+	static constexpr int defaultTimeout = 0;						// Default time-out: None
+	static constexpr int defaultIconID = SYSICON_INFORMATION;		// Default icon ID: MB_ICONINFORMATION
+	static constexpr int defaultIconSize = 50;						// Default icon size: 50x50px
+	static constexpr int defaultIconPosition = IconOnTheTop;		// Default icon position: On top
+	static constexpr int defaultDisplayPosition = AtCenter;			// Default display position: Center screen
+	static constexpr int defaultHorizontalMargin = 50;				// Default horizontal margin: 50px
+	static constexpr int defaultVerticalMargin = 50;				// Default vertical margin: 50px
+
 private:
 	// Attributes
 	COLORREF	m_colorBkgrd;										// Background color
@@ -1428,6 +1457,13 @@ using PwrReminderStyle = typename PwrReminderItem::Style;
 
 class PwrReminderData
 {
+public:
+	// Define constant values
+	static constexpr int maxItemNum = 100;							// Max item number: 100
+	static constexpr int minItemID = 10000;							// Min item ID: 10000
+	static constexpr int maxItemID = 19999;							// Max item ID: 19999
+	static constexpr int previewTimeout = 10;						// Default time-out for preview: 10s
+
 private:
 	// Attributes
 	PWRREMINDERITEMLIST	m_arrRmdItemList;							// List of reminder items
