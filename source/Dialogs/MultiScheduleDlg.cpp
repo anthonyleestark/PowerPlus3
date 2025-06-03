@@ -728,8 +728,8 @@ void CMultiScheduleDlg::LoadLayoutInfo(void)
 	int nRet = 0;
 	CString strKeyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		strKeyName.Format(IDS_REGKEY_LAYOUT_GRIDCOLUMNSIZE, nIndex);
-		if (GetLayoutInfo(IDS_REGSECTION_LAYOUT_MULTISCHEDULE, strKeyName, nRet)) {
+		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
+		if (GetLayoutInfo(Section::LayoutInfo::MultiScheduleTable, strKeyName, nRet)) {
 			if (m_apGrdColFormat != NULL) {
 				m_apGrdColFormat[nIndex].nWidth = nRet;
 			}
@@ -756,8 +756,8 @@ void CMultiScheduleDlg::SaveLayoutInfo(void)
 	CString strKeyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
 		nRef = m_apGrdColFormat[nIndex].nWidth;
-		strKeyName.Format(IDS_REGKEY_LAYOUT_GRIDCOLUMNSIZE, nIndex);
-		WriteLayoutInfo(IDS_REGSECTION_LAYOUT_MULTISCHEDULE, strKeyName, nRef);
+		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
+		WriteLayoutInfo(Section::LayoutInfo::MultiScheduleTable, strKeyName, nRef);
 	}
 }
 

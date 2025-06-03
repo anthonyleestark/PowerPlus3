@@ -2545,8 +2545,8 @@ RegistryInfo::RegistryInfo()
 	m_hRootKey = NULL;										// Root key (HKEY)
 	m_strRootKey = STRING_EMPTY;							// Root key (string)
 	m_astrSubkeyPath.clear();								// Subkey path (string array)
-	m_strProfileName = STRING_EMPTY;						// Profile key name (string)
-	m_strAppName = STRING_EMPTY;							// App name (string)
+	m_strCompanyName = STRING_EMPTY;						// Company name (string)
+	m_strProductName = STRING_EMPTY;						// Product name (string)
 	m_astrSectionArray.clear();								// Section array (string)
 	m_regKeyInfo = REGISTRYKEY();							// Registry key info
 }
@@ -2591,8 +2591,8 @@ void RegistryInfo::Copy(const RegistryInfo& pItem)
 	m_hRootKey = pItem.m_hRootKey;							// Root key (HKEY)
 	m_strRootKey = pItem.m_strRootKey;						// Root key (string)
 	m_astrSubkeyPath = pItem.m_astrSubkeyPath;				// Subkey path (string array)
-	m_strProfileName = pItem.m_strProfileName;				// Profile key name (string)
-	m_strAppName = pItem.m_strAppName;						// App name (string)
+	m_strCompanyName = pItem.m_strCompanyName;				// Company name (string)
+	m_strProductName = pItem.m_strProductName;				// Product name (string)
 	m_astrSectionArray = pItem.m_astrSectionArray;			// Section array (string)
 	m_regKeyInfo.Copy(pItem.m_regKeyInfo);					// Registry key info
 }
@@ -2612,8 +2612,8 @@ void RegistryInfo::RemoveAll(void)
 	m_hRootKey = NULL;										// Root key (HKEY)
 	m_strRootKey = STRING_EMPTY;							// Root key (string)
 	m_astrSubkeyPath.clear();								// Subkey path (string array)
-	m_strProfileName = STRING_EMPTY;						// Profile key name (string)
-	m_strAppName = STRING_EMPTY;							// App name (string)
+	m_strCompanyName = STRING_EMPTY;						// Company name (string)
+	m_strProductName = STRING_EMPTY;						// Product name (string)
 	m_astrSectionArray.clear();								// Section array (string)
 	m_regKeyInfo.Clear();									// Registry key info
 }
@@ -4384,19 +4384,6 @@ HWND AppCore::FindDebugTestDlg()
 
 void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 {
-	/*
-	CString strFontname;
-	strFontname.LoadString(IDS_DF_COORDDLG_FONT_NAME);
-
-	// Fonts
-	CFont FontHeader;
-	float fFontPointHeader;
-	fFontPointHeader = CnvFontSize(IDS_CTRL_FONT_POINT);
-	FontHeader.CreatePointFont((int)(fFontPointHeader * 10), strFontname, NULL);
-	LOGFONT lfHeader;
-	FontHeader.GetLogFont(&lfHeader);
-	*/
-
 	// Check control validity
 	if (pGridCtrl == NULL) return;
 
@@ -4405,12 +4392,8 @@ void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 	if (pHeaderCell == NULL) return;
 	pHeaderCell->SetFormat(pHeaderCell->GetFormat() | DT_CENTER);
 	pHeaderCell->SetMargin(0);
-	//lfHeader.lfWeight = FW_BOLD;
-	//pHeaderCell->SetFont(&lfHeader);
 	pHeaderCell->SetBackClr(COLOR_GRAY);
 	pHeaderCell->SetTextClr(COLOR_BLACK);
-
-	//FontHeader.DeleteObject();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5568,8 +5551,8 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	}
 
 	// Check profile key validity
-	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProfileKey)) {
-		CString strProfileName = regInfo.GetProfileName();
+	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingCompanyName)) {
+		CString strProfileName = regInfo.GetCompanyName();
 		if (strProfileName.IsEmpty()) {
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, profile key name is invalid!!!");
@@ -5579,8 +5562,8 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	}
 
 	// Check app name validity
-	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingAppName)) {
-		CString strAppName = regInfo.GetAppName();
+	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProductName)) {
+		CString strAppName = regInfo.GetProductName();
 		if (strAppName.IsEmpty()) {
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, application name is invalid!!!");
@@ -5621,14 +5604,14 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 
 	// Profile key name
 	CString strProfileKeyNameTemp;
-	CString strProfileKeyName = regInfo.GetProfileName();
+	CString strProfileKeyName = regInfo.GetCompanyName();
 	if (!strProfileKeyName.IsEmpty()) {
 		strProfileKeyNameTemp.Format(strProfileKeyName);
 	}
 
 	// App name
 	CString strAppNameTemp;
-	CString strAppName = regInfo.GetAppName();
+	CString strAppName = regInfo.GetProductName();
 	if (!strAppName.IsEmpty()) {
 		strAppNameTemp.Format(strAppName);
 	}
@@ -5681,7 +5664,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			}
 		}
 
-		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProfileKey)) {
+		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingCompanyName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strProfileKeyName.IsEmpty())) {
 				// Include profile key name
 				strRegFullPath.Append(SYMBOL_BACKSLASH);
@@ -5693,7 +5676,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			}
 		}
 
-		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingAppName)) {
+		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProductName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strAppName.IsEmpty())) {
 				// Include application name
 				strRegFullPath.Append(SYMBOL_BACKSLASH);

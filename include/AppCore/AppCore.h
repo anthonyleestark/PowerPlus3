@@ -1280,17 +1280,17 @@ public:
 
 public:
 	// Define default style values
-	static constexpr COLORREF defaultBkgrdColor = COLOR_PINK;		// Default background color: Bright pink
-	static constexpr COLORREF defaultTextColor = COLOR_RED;			// Default text color: Red
-	static constexpr wchar_t* defaultFontName = _T("Arial");		// Default font name: Arial
-	static constexpr int defaultFontSize = 20;						// Default font size: 20pt
-	static constexpr int defaultTimeout = 0;						// Default time-out: None
-	static constexpr int defaultIconID = SYSICON_INFORMATION;		// Default icon ID: MB_ICONINFORMATION
-	static constexpr int defaultIconSize = 50;						// Default icon size: 50x50px
-	static constexpr int defaultIconPosition = IconOnTheTop;		// Default icon position: On top
-	static constexpr int defaultDisplayPosition = AtCenter;			// Default display position: Center screen
-	static constexpr int defaultHorizontalMargin = 50;				// Default horizontal margin: 50px
-	static constexpr int defaultVerticalMargin = 50;				// Default vertical margin: 50px
+	static constexpr COLORREF defaultBkgrdColor = COLOR_PINK;
+	static constexpr COLORREF defaultTextColor = COLOR_RED;
+	static constexpr const wchar_t* defaultFontName = _T("Arial");
+	static constexpr int defaultFontSize = 20;
+	static constexpr int defaultTimeout = 0;
+	static constexpr int defaultIconID = SYSICON_INFORMATION;
+	static constexpr int defaultIconSize = 50;
+	static constexpr int defaultIconPosition = IconOnTheTop;
+	static constexpr int defaultDisplayPosition = AtCenter;
+	static constexpr int defaultHorizontalMargin = 50;
+	static constexpr int defaultVerticalMargin = 50;
 
 private:
 	// Attributes
@@ -1830,7 +1830,6 @@ public:
 	// Get/set properties
 	void GetName(CString&) const;							// Get key name
 	LPCTSTR GetName(void) const;							// Get key name
-	void SetName(UINT);										// Set key name
 	void SetName(LPCTSTR);									// Set key name
 	UINT GetType(void) const;								// Get value type
 	void SetType(UINT);										// Set value type
@@ -1866,8 +1865,8 @@ public:
 		fullPath = 0,										// Full path
 		rootKeyOnly,										// Root key only
 		includingSubKeyPath,								// Including sub-key path
-		includingProfileKey,								// Including profile key name
-		includingAppName,									// Including app name
+		includingCompanyName,								// Including company name
+		includingProductName,								// Including product name
 		includingSectionName,								// Including section name
 		includingKeyName,									// Including key name
 	};
@@ -1877,8 +1876,8 @@ private:
 	HKEY			m_hRootKey;								// Root key (HKEY)
 	CString			m_strRootKey;							// Root key (string)
 	StringArray		m_astrSubkeyPath;						// Subkey path (string array)
-	CString			m_strProfileName;						// Profile key name (string)
-	CString			m_strAppName;							// App name (string)
+	CString			m_strCompanyName;						// Company name (string)
+	CString			m_strProductName;						// Product name (string)
 	StringArray		m_astrSectionArray;						// Section array (string)
 	REGISTRYKEY		m_regKeyInfo;							// Registry key info
 
@@ -1901,25 +1900,20 @@ public:
 
 	// Get attributes
 	LPCTSTR GetRootKeyName(void) const;						// Get root key name
-	void GetSubkeyPath(StringArray&) const;					// Get Subkey path array
-	LPCTSTR GetProfileName(void) const;						// Get Profile key name
-	LPCTSTR GetAppName(void) const;							// Get App name
-	void GetSectionName(StringArray&) const;				// Get Section name array
+	void GetSubkeyPath(StringArray&) const;					// Get subkey path array
+	LPCTSTR GetCompanyName(void) const;						// Get company name
+	LPCTSTR GetProductName(void) const;						// Get product name
+	void GetSectionName(StringArray&) const;				// Get section name array
 
 	// Set attributes
 	void SetRootKey(HKEY);									// Set root key
-	void SetRootKeyName(UINT);								// Set root key name (resource ID)
-	void SetRootKeyName(LPCTSTR);							// Set root key name (string)
-	void SetSubkeyPath(UINT);								// Set Subkey path (resource ID)
-	void SetSubkeyPath(LPCTSTR);							// Set Subkey path (string)
-	void SetSubkeyPath(StringArray&);						// Set Subkey path (string array)
-	void SetProfileName(UINT);								// Set Profile key name (resource ID)
-	void SetProfileName(LPCTSTR);							// Set Profile key name (string)
-	void SetAppName(UINT);									// Set App name (resource ID)
-	void SetAppName(LPCTSTR);								// Set App name (string)
-	void SetSectionName(UINT);								// Set Section name (resource ID)
-	void SetSectionName(LPCTSTR);							// Set Section name (string)
-	void SetSectionName(StringArray&);						// Set Section array (string array)
+	void SetRootKeyName(LPCTSTR);							// Set root key name
+	void SetSubkeyPath(LPCTSTR);							// Set subkey path
+	void SetSubkeyPath(StringArray&);						// Set subkey path (string array)
+	void SetCompanyName(LPCTSTR);							// Set company name
+	void SetProductName(LPCTSTR);							// Set product name
+	void SetSectionName(LPCTSTR);							// Set section name
+	void SetSectionName(StringArray&);						// Set section array (string array)
 };
 
 // Define new typenames for Registry info class
@@ -2255,7 +2249,7 @@ namespace AppCore
 #ifdef _AFX_ENABLE_INLINES
 	#define _APPCORE_ENABLE_INLINES
 	#include "AppCore.inl"
-	#ifdef _APPCORE_INL_INCLUDED
+	#ifdef _APPCORE_INLINE_INCLUDED
 		#pragma message("-- AppCore inline library included")
 	#else
 		#pragma error("-- Linking error in AppCore.h: Unable to link to inline header!")

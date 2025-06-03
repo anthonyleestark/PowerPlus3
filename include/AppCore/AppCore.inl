@@ -13,14 +13,18 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-#ifndef _APPCORE_INL_INCLUDED
-#define _APPCORE_INL_INCLUDED
 
 
 ///////////////////////////////////////////////////////
 //// Implementations
 
 #ifdef _APPCORE_ENABLE_INLINES
+
+#ifndef _APPCORE_INLINE_INCLUDED
+#define _APPCORE_INLINE_INCLUDED
+#endif
+
+///////////////////////////////////////////////////////
 
 // Check if a flag value exists
 inline int FlagManager::IsFlagPresent(AppFlagID eFlagID) const {
@@ -967,15 +971,6 @@ inline LPCTSTR RegistryKey::GetName(void) const {
 }
 
 // Set registry key name
-inline void RegistryKey::SetName(UINT nResourceID)
-{
-	// Set key name (by resource ID)
-	CString strKeyName;
-	VERIFY(strKeyName.LoadString(nResourceID));
-	SetName(strKeyName);
-}
-
-// Set registry key name
 inline void RegistryKey::SetName(LPCTSTR lpszKeyName) {
 	m_strKeyName = lpszKeyName;
 }
@@ -1055,14 +1050,14 @@ inline LPCTSTR RegistryInfo::GetRootKeyName(void) const {
 	return m_strRootKey.GetString();
 }
 
-// Get Profile key name part
-inline LPCTSTR RegistryInfo::GetProfileName(void) const {
-	return m_strProfileName.GetString();
+// Get company name part
+inline LPCTSTR RegistryInfo::GetCompanyName(void) const {
+	return m_strCompanyName.GetString();
 }
 
-// Get application name part
-inline LPCTSTR RegistryInfo::GetAppName(void) const {
-	return m_strAppName.GetString();
+// Get product name part
+inline LPCTSTR RegistryInfo::GetProductName(void) const {
+	return m_strProductName.GetString();
 }
 
 // Set registry info root key
@@ -1071,26 +1066,8 @@ inline void RegistryInfo::SetRootKey(HKEY hRootKey) {
 }
 
 // Set registry info root key name
-inline void RegistryInfo::SetRootKeyName(UINT nResourceID)
-{
-	// Set root key name (by resource ID)
-	CString strKeyName;
-	VERIFY(strKeyName.LoadString(nResourceID));
-	SetRootKeyName(strKeyName);
-}
-
-// Set registry info root key name
 inline void RegistryInfo::SetRootKeyName(LPCTSTR lpszRootkeyName) {
 	m_strRootKey = lpszRootkeyName;
-}
-
-// Set registry info sub-key path
-inline void RegistryInfo::SetSubkeyPath(UINT nResourceID)
-{
-	// Add sub-key path (by resource ID)
-	CString strSubKeyName;
-	VERIFY(strSubKeyName.LoadString(nResourceID));
-	SetSubkeyPath(strSubKeyName);
 }
 
 // Set registry info sub-key path
@@ -1103,41 +1080,17 @@ inline void RegistryInfo::SetSubkeyPath(StringArray& astrSubkeyPath) {
 	m_astrSubkeyPath.assign(astrSubkeyPath.begin(), astrSubkeyPath.end());
 }
 
-// Set registry info profile key name (from resource ID)
-inline void RegistryInfo::SetProfileName(UINT nResourceID)
-{
-	CString strKeyName;
-	VERIFY(strKeyName.LoadString(nResourceID));
-	SetProfileName(strKeyName);
+// Set registry info company name
+inline void RegistryInfo::SetCompanyName(LPCTSTR lpszCompanyName) {
+	m_strCompanyName = lpszCompanyName;
 }
 
-// Set registry info profile key name (from string)
-inline void RegistryInfo::SetProfileName(LPCTSTR lpszProfileName) {
-	m_strProfileName = lpszProfileName;
+// Set registry info product name
+inline void RegistryInfo::SetProductName(LPCTSTR lpszProductName) {
+	m_strProductName = lpszProductName;
 }
 
-// Set registry info app name (from resource ID)
-inline void RegistryInfo::SetAppName(UINT nResourceID)
-{
-	CString strAppName;
-	VERIFY(strAppName.LoadString(nResourceID));
-	SetAppName(strAppName);
-}
-
-// Set registry info app name (from string)
-inline void RegistryInfo::SetAppName(LPCTSTR lpszAppName) {
-	m_strAppName = lpszAppName;
-}
-
-// Add section name (by resource ID)
-inline void RegistryInfo::SetSectionName(UINT nResourceID)
-{
-	CString strKeyName;
-	VERIFY(strKeyName.LoadString(nResourceID));
-	SetSectionName(strKeyName);
-}
-
-// Add section name (string)
+// Add section name
 inline void RegistryInfo::SetSectionName(LPCTSTR lpszSectionName) {
 	m_astrSectionArray.push_back(lpszSectionName);
 }
@@ -1227,7 +1180,3 @@ inline void AppCore::GetCurSysTime(SYSTEMTIME& stTime) {
 }
 
 #endif		// ifdef _APPCORE_ENABLE_INLINES
-
-///////////////////////////////////////////////////////
-
-#endif		// !ifdef _APPCORE_INL_INCLUDED

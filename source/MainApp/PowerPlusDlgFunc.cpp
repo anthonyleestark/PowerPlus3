@@ -623,75 +623,57 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				// Load app language package
 				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
 				// Format and print data
-				CString strKeyName = STRING_EMPTY;
 				CString strValue = STRING_EMPTY;
 				// Left mouse button action
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONLMB);
 				int nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->nLMBAction);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LMBAction, GetLanguageString(ptrLanguage, nActionStringID));
 				// Middle mouse button action
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONMMB);
 				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->nMMBAction);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::MMBAction, GetLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button action
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ACTIONRMB);
 				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->nRMBAction);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageString(ptrLanguage, nActionStringID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBAction, GetLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button: Only show menu
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_RMBSHOWMENU);
 				strValue = ((pcfgDataTemp->bRMBShowMenu) ? VALUE_TRUE : _T("NO"));
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBShowMenu, strValue);
 				// Language setting
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_LANGUAGEID);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, GetLanguageName(pcfgDataTemp->nLanguageID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LanguageID, GetLanguageName(pcfgDataTemp->nLanguageID));
 				// Show dialog at startup
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWATSTARTUP);
 				strValue = ((pcfgDataTemp->bShowDlgAtStartup) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowDlgAtStartup, strValue);
 				// Startup with Windows
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_STARTUPENABLE);
 				strValue = ((pcfgDataTemp->bStartupEnabled) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::StartupEnabled, strValue);
 				// Show confirm message before executing action
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_CONFIRMACTION);
 				strValue = ((pcfgDataTemp->bConfirmAction) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ConfirmAction, strValue);
 				// Save action log
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SAVEACTIONLOG);
 				strValue = ((pcfgDataTemp->bSaveHistoryLog) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveHistoryLog, strValue);
 				// Save app event log
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SAVEAPPEVENTLOG);
 				strValue = ((pcfgDataTemp->bSaveAppEventLog) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveAppEventLog, strValue);
 				// Run with admin privileges
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_RUNASADMIN);
 				strValue = ((pcfgDataTemp->bRunAsAdmin) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RunAsAdmin, strValue);
 				// Show action error message
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SHOWERROR);
 				strValue = ((pcfgDataTemp->bShowErrorMsg) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowErrorMsg, strValue);
 				// Show notify tip for schedule action
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SCHEDULENOTIFY);
 				strValue = ((pcfgDataTemp->bNotifySchedule) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::NotifySchedule, strValue);
 				// Allow canceling schedule when notify
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_SCHEDALLOWCANCEL);
 				strValue = ((pcfgDataTemp->bAllowCancelSchedule) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::AllowCancelSchedule, strValue);
 				// Enable background action hotkeys
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ENBBKGRDHOTKEYS);
 				strValue = ((pcfgDataTemp->bEnableBackgroundHotkey) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnableBackgroundHotkey, strValue);
 				// Allow background hotkeys on lockscreen
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_LOCKSTATEHOTKEY);
 				strValue = ((pcfgDataTemp->bLockStateHotkey) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LockStateHotkey, strValue);
 				// Enable Power Peminder feature
-				LoadResourceString(strKeyName, IDS_REGKEY_CFG_ENBPWRREMINDER);
 				strValue = ((pcfgDataTemp->bEnablePowerReminder) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), strKeyName, strValue);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnablePowerReminder, strValue);
 			}
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("schedule")))) {

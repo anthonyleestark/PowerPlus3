@@ -75,7 +75,7 @@ public:
 	BOOL LoadRegistryAppData();
 	BOOL SaveRegistryAppData(DWORD dwDataType = APPDATA_ALL);
 	BOOL BackupRegistryAppData();
-	BOOL UpdateAppProfileInfo(void);
+	BOOL UpdateAppLaunchTimeProfileInfo(void);
 	BOOL LoadGlobalData(void);
 	BOOL SaveGlobalData(BYTE byCateID = 0xFF);
 

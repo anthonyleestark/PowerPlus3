@@ -248,7 +248,7 @@ static inline void SetReminderMsgVMargin(UINT uiValue);
 #ifdef _AFX_ENABLE_INLINES
 	#define _GLOBAL_ENABLE_INLINES
 	#include "Global.inl"
-	#ifdef _GLOBAL_INL_INCLUDED
+	#ifdef _GLOBAL_INLINE_INCLUDED
 		#pragma message("-- Global inline library included")
 	#else
 		#pragma error("-- Linking error in Global.h: Unable to link to inline header!")

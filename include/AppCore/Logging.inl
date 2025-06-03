@@ -19,6 +19,12 @@
 
 #ifdef _LOGGING_ENABLE_INLINES
 
+#ifndef _LOGGING_INLINE_INCLUDED
+#define _LOGGING_INLINE_INCLUDED
+#endif
+
+///////////////////////////////////////////////////////
+
 // Get size of data by data value
 template <typename DATA>
 inline SIZE_T GetSizeByValue(DATA dataValue) {

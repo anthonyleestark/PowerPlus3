@@ -365,7 +365,7 @@ public:
 #ifdef _AFX_ENABLE_INLINES
 	#define _LOGGING_ENABLE_INLINES
 	#include "Logging.inl"
-	#ifdef _LOGGING_INL_INCLUDED
+	#ifdef _LOGGING_INLINE_INCLUDED
 		#pragma message("-- Logging inline library included")
 	#else
 		#pragma error("-- Linking error in Logging.h: Unable to link to inline header!")

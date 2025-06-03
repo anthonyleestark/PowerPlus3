@@ -19,6 +19,10 @@
 
 #ifdef _GLOBAL_ENABLE_INLINES
 
+#ifndef _GLOBAL_INLINE_INCLUDED
+#define _GLOBAL_INLINE_INCLUDED
+#endif
+
 ///////////////////////////////////////////////////////
 
 // Access application launch-time data
