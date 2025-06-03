@@ -2972,7 +2972,6 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 	UINT nActionType = 0;
 	UINT nActionID = 0;
 	UINT nHistoryActionID = 0;
-	UINT nActionNameResID = 0;
 	UINT nActionNameLangID = 0;
 	UINT nMessage = 0;
 
@@ -3046,7 +3045,6 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionType = APP_ACTIONTYPE_MONITOR;
 		nMessage = APP_MESSAGE_DISPLAYOFF;
 		nHistoryActionID = HistoryAction::DisplayOff;
-		nActionNameResID = IDS_HISTORYLOG_PWRACTION_DISPLAYOFF;
 		nActionNameLangID = ACTION_NAME_DISPLAYOFF;
 		break;
 
@@ -3055,7 +3053,6 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_SLEEP;
 		nHistoryActionID = HistoryAction::SleepMode;
-		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SLEEP;
 		nActionNameLangID = ACTION_NAME_SLEEP;
 		break;
 
@@ -3064,7 +3061,6 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_SHUTDOWN;
 		nHistoryActionID = HistoryAction::Shutdown;
-		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SHUTDOWN;
 		nActionNameLangID = ACTION_NAME_SHUTDOWN;
 		break;
 
@@ -3073,7 +3069,6 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_REBOOT;
 		nHistoryActionID = HistoryAction::Restart;
-		nActionNameResID = IDS_HISTORYLOG_PWRACTION_RESTART;
 		nActionNameLangID = ACTION_NAME_RESTART;
 		break;
 
@@ -3082,7 +3077,6 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_SIGNOUT;
 		nHistoryActionID = HistoryAction::SignOut;
-		nActionNameResID = IDS_HISTORYLOG_PWRACTION_SIGNOUT;
 		nActionNameLangID = ACTION_NAME_SIGNOUT;
 		break;
 
@@ -3091,7 +3085,6 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 		nActionType = APP_ACTIONTYPE_POWER;
 		nMessage = APP_MESSAGE_HIBERNATE;
 		nHistoryActionID = HistoryAction::Hibernate;
-		nActionNameResID = IDS_HISTORYLOG_PWRACTION_HIBERNATE;
 		nActionNameLangID = ACTION_NAME_HIBERNATE;
 		break;
 

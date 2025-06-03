@@ -144,7 +144,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	}
 	else if (!_tcscmp(strDebugCommand, _T("bakconfig"))) {
 		// Backup configuration
-		SConfigBackup::AutoRegistryExport();
+		BackupSystem::RegistryExport();
 		strOutputResult.Format(_T("Config backed-up!!!"));
 		OutputDebugLog(strOutputResult, DebugTestTool);
 		bNoReply = FALSE;	// Reset flag

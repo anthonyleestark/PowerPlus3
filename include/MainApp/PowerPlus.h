@@ -50,10 +50,6 @@ private:
 	HotkeySetData*		m_phksHotkeySetData;
 	PwrReminderData*	m_ppwrReminderData;
 
-#ifdef _CONFIG_FILE_TEST_ACTIVE
-	INIFile m_fileConfigData;
-#endif
-
 	// Logging pointers
 	SLogging* m_pAppHistoryLog;
 
@@ -85,17 +81,6 @@ public:
 	BOOL LoadGlobalData(void);
 	BOOL SaveGlobalData(BYTE byCateID = 0xFF);
 
-#ifdef _LEGACY_FEATURE
-#ifdef _CONFIG_FILE_TEST_ACTIVE
-	// File data serialization functions
-	void InitFileData();
-	void LoadFileAppData();
-	void SetFileAppData();
-	BOOL ReadFile();
-	BOOL WriteFile();
-#endif
-#endif
-
 	// App data processing functions
 	ConfigData* GetAppConfigData();
 	void SetAppConfigData(ConfigData* pcfgData);
@@ -113,15 +98,6 @@ public:
 	void InitAppHistoryLog();
 	SLogging* GetAppHistoryLog();
 	void OutputAppHistoryLog(LOGITEM logItem);
-
-#ifdef _LEGACY_FEATURE
-#ifdef _DATA_CHANGE_LOGGING
-	void OutputDataChangeLog(CONFIGDATA& cfgBakData);
-	void OutputDataChangeLog(SCHEDULEDATA& schBakData);
-	void OutputDataChangeLog(HOTKEYSETDATA& hksBakData);
-	void OutputDataChangeLog(PWRREMINDERDATA& pwrBakData);
-#endif
-#endif
 
 	// Data validity checking functions
 	void TraceSerializeData(WORD wErrCode);

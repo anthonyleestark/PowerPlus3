@@ -143,176 +143,19 @@ namespace AppRegistry
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Class name:	 SConfigBackup
-//  Description: Using for saving backup configurations
+//	Class name:	 BackupSystem
+//  Description: Using for configuration and data backup system
 //
 //////////////////////////////////////////////////////////////////////////
 
-class SConfigBackup
+class BackupSystem
 {
-private:
-//	std::ofstream* ofsConfigFile;
-	CFile* m_pBakFile;
-	CString m_strContent;
+public:
+	BackupSystem();
+	~BackupSystem();
 
 public:
-	SConfigBackup();
-	~SConfigBackup();
-
-	static BOOL AutoRegistryExport();
-	BOOL PrepareBakFile();
-	void WriteLine(UINT nResourceStringID);
-	void WriteLine(CString strText = _T(""));
-	void WriteValue(UINT nKeyID, UINT nValue);
-	void WriteValue(CString strKeyName, UINT nValue);
-	void UpdateBakFile();
-	void CloseBakFile();
+	static BOOL RegistryExport();
 };
-
-#ifdef _CONFIG_FILE_TEST_ACTIVE
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Declare structs and components using for INI file processing
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class INIKey : public CObject
-{
-private:
-	CString m_strKeyName;
-	CString m_strValue;
-	int		m_nValue = -1;
-
-public:
-	INIKey();
-	INIKey(const INIKey&);
-	void operator=(const INIKey&);
-	~INIKey();
-
-public:
-	LPCTSTR GetName();
-	void	SetName(UINT nKeyStringID);
-	void	SetName(LPCTSTR lpszKeyName);
-
-	static INIKey MakeKey(UINT nKeyStringID);
-	static INIKey MakeKey(LPCTSTR lpszKeyName);
-
-	LPCTSTR FormatKey();
-
-	LPCTSTR GetValueString();
-	void	SetValueString(LPCTSTR lpszValue);
-	int		GetValueInt();
-	void	SetValueInt(int nValue);
-};
-
-typedef std::vector<INIKey> KeyList;
-
-class INISection : public CObject
-{
-private:
-	CString m_strSectionName;
-	KeyList m_vtKeyList;
-
-public:
-	INISection();
-	INISection(const INISection&);
-	void operator=(const INISection&);
-	~INISection();
-
-public:
-	LPCTSTR GetName();
-	void	SetName(UINT nSectionStringID);
-	void	SetName(LPCTSTR lpszSectionName);
-
-	static INISection MakeSection(UINT nSectionStringID);
-	static INISection MakeSection(LPCTSTR lpszSectionName);
-
-	LPCTSTR FormatSection();
-
-	INIKey&	GetKey(UINT nIndex);
-	int		SetKey(INIKey sIniKey);
-	int		GetKeyNum();
-
-	LPCTSTR GetKeyValueString(UINT nKeyStringID);
-	LPCTSTR GetKeyValueString(LPCTSTR lpszKeyName);
-	int		GetKeyValueInt(UINT nKeyStringID);
-	int		GetKeyValueInt(LPCTSTR lpszKeyName);
-
-	void AddKey(UINT nKeyStringID);
-	void AddKey(LPCTSTR lpszKeyName);
-	void SetKeyValue(UINT nKeyStringID, LPCTSTR lpszValue);
-	void SetKeyValue(LPCTSTR lpszKeyName, LPCTSTR lpszValue);
-	void SetKeyValue(UINT nKeyStringID, int nValue);
-	void SetKeyValue(LPCTSTR lpszKeyName, int nValue);
-	BOOL FindKey(UINT nKeyStringID, int& nIndex);
-	BOOL FindKey(LPCTSTR lpszKeyName, int& nIndex);
-	void RemoveKey(UINT nKeyStringID);
-	void RemoveKey(LPCTSTR lpszKeyName);
-};
-
-typedef std::vector<INISection> SectionList;
-
-class INIFile : public CObject
-{
-private:
-	CString m_strFileName;
-	SectionList m_vtSectionList;
-
-public:
-	INIFile();
-	INIFile(const INIFile&);
-	void operator=(const INIFile&);
-	~INIFile();
-
-public:
-	LPCTSTR GetName();
-	void	SetName(LPCTSTR lpszFileName);
-
-	INISection&  GetSection(UINT nIndex);
-	int			 SetSection(INISection sIniSection);
-
-	int			 GetSectionNum();
-	INISection&  GetSectionByName(UINT nSectionStringID);
-	INISection&  GetSectionByName(LPCTSTR lpszSectionName);
-
-	void AddSection(UINT nSectionStringID);
-	void AddSection(LPCTSTR lpszSectionName);
-	BOOL FindSection(UINT nSectionStringID, int& nIndex);
-	BOOL FindSection(LPCTSTR lpszSectionName, int& nIndex);
-	void UpdateSectionName(UINT nCurSectionStringID, UINT nNewSectionStringID);
-	void UpdateSectionName(LPCTSTR lpszCurSectionName, LPCTSTR lpszNewSectionName);
-	void RemoveSection(UINT nSectionStringID);
-	void RemoveSection(LPCTSTR lpszSectionName);
-
-	static LPCTSTR MakeSubSectionName(INISection& sIniBaseSection, UINT nSubSectionStringID, int nIndex = -1);
-	static LPCTSTR MakeSubSectionName(INISection& sIniBaseSection, LPCTSTR lpszSubSectionName, int nIndex = -1);
-
-	int			GetSubSectionNum(INISection& sIniBaseSection);
-	INISection& GetSubSectionByName(INISection& sIniBaseSection, UINT nSubSectionStringID, int nIndex = -1);
-	INISection& GetSubSectionByName(INISection& sIniBaseSection, LPCTSTR lpszSubSectionName, int nIndex = -1);
-};
-
-enum eINILINETYPE {
-	INILINE_INVALID,
-	INILINE_SECTIONNAME,
-	INILINE_KEY,
-	INILINE_COMMENT,
-};
-
-class SIniHandler
-{
-private:
-	// String processing methods
-	eINILINETYPE GetLineType(LPCTSTR lpszSrc);
-	INISection ReadSection(LPCTSTR lpszSrc);
-	INIKey ReadKey(LPCTSTR lpszSrc);
-
-public:
-	// File handling methods
-	BOOL Validate(INIFile& iniFile);
-	BOOL ReadFile(INIFile& iniFile);
-	BOOL WriteFile(INIFile& iniFile);
-};
-#endif	// ifdef _CONFIG_FILE_TEST
 
 #endif	// ifndef _CONFIG_H_INCLUDED
