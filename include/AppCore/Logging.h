@@ -15,7 +15,6 @@
 
 #pragma once
 
-#include "stdafx.h"
 #include "AppCore.h"
 #include "MapTable.h"
 #include "Logging_defs.h"

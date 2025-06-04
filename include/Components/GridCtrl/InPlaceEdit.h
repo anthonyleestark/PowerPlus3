@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		InPlaceEdit.h
@@ -37,6 +37,8 @@
 
 #if !defined(AFX_INPLACEEDIT_H__ECD42821_16DF_11D1_992F_895E185F9C72__INCLUDED_)
 #define AFX_INPLACEEDIT_H__ECD42821_16DF_11D1_992F_895E185F9C72__INCLUDED_
+
+#include "AppBase/AppBase.h"
 
 #if _MSC_VER >= 1000
 #pragma once

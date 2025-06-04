@@ -15,16 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\resource.h">
+    <ClInclude Include="include\AppBase\AppBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\resource2.h">
+    <ClInclude Include="include\AppBase\AppMacros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\stdafx.h">
+    <ClInclude Include="include\AppBase\AppCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\targetver.h">
+    <ClInclude Include="include\AppBase\Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AppBase\Resource2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AppBase\WinApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AppCore\AppCore.h">
@@ -129,11 +135,11 @@
     <ClInclude Include="include\MainApp\PowerPlusDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\AppCore.inl">
+    <ClInclude Include="include\AppCore\AppCore.inl">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="include\AppCore\Global.inl">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -148,9 +154,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\AppCore\AppCore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -246,11 +249,6 @@
     <ResourceCompile Include="res\PowerPlus3.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\PowerPlus3.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\icons\default\power-plus-app.ico">

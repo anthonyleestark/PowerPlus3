@@ -11,10 +11,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _MAPTABLE_H_INCLUDED
-#define	_MAPTABLE_H_INCLUDED
+#pragma once
 
-#include "stdafx.h"
 #include "AppCore.h"
 #include "Global.h"
 
@@ -542,5 +540,3 @@ namespace MapTable
 	UINT	GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput);
 	LPCTSTR	GetString(STRINGTABLE_REF pStringTableRef, UINT nID, LPTSTR pszResult = NULL);
 };
-
-#endif		// ifndef _MAPTABLE_H_INCLUDED

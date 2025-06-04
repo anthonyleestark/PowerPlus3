@@ -122,12 +122,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -178,7 +180,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -186,6 +188,8 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>Default</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -209,6 +213,14 @@
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="include\AppBase\AppBase.h" />
+    <ClInclude Include="include\AppBase\AppMacros.h" />
+    <ClInclude Include="include\AppBase\AppCommon.h" />
+    <ClInclude Include="include\AppBase\Resource.h" />
+    <ClInclude Include="include\AppBase\Resource2.h" />
+    <ClInclude Include="include\AppBase\WinApp.h" />
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AppCore\AppCore.h" />
     <ClInclude Include="include\AppCore\Global.h" />
@@ -265,12 +277,6 @@
     <ClInclude Include="include\MainApp\PowerPlusDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\resource.h" />
-    <ClInclude Include="include\resource2.h" />
-    <ClInclude Include="include\stdafx.h" />
-    <ClInclude Include="include\targetver.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="source\AppCore\AppCore.cpp" />
     <ClCompile Include="source\AppCore\Global.cpp" />
     <ClCompile Include="source\AppCore\IDManager.cpp" />
@@ -311,18 +317,7 @@
     <ClCompile Include="source\MainApp\PowerPlusDlgFunc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="res\PowerPlus3.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\PowerPlus3.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\icons\default\power-plus-app.ico" />

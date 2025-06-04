@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include "stdafx.h"
 #include "AppCore.h"
 
 

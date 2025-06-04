@@ -1,4 +1,4 @@
-
+﻿
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //		File name:		GridCellBase.h
@@ -13,6 +13,8 @@
 
 #if !defined(AFX_GRIDCELLBASE_H__519FA702_722C_11D1_ABBA_00A0243D1382__INCLUDED_)
 #define AFX_GRIDCELLBASE_H__519FA702_722C_11D1_ABBA_00A0243D1382__INCLUDED_
+
+#include "AppBase/AppBase.h"
 
 #if _MSC_VER >= 1000
 #pragma once

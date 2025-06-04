@@ -15,8 +15,6 @@
 
 #pragma once
 
-#include "stdafx.h"
-
 #include "AppCore/AppCore.h"
 #include "AppCore/IDManager.h"
 #include "AppCore/Logging.h"

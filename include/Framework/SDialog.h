@@ -15,16 +15,11 @@
 
 #pragma once
 
-#include "stdafx.h"
-#include "afxdialogex.h"
-
 #include "AppCore/AppCore.h"
 #include "AppCore/IDManager.h"
 #include "AppCore/Logging.h"
-
 #include "Components/GridCtrl/GridCtrl.h"
 #include "Components/GridCtrl/GridCellCheck.h"
-
 #include "SElements.h"
 #include "SWinApp.h"
 

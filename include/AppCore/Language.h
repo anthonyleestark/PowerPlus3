@@ -15,7 +15,6 @@
 
 #pragma once
 
-#include "stdafx.h"
 #include "Logging_defs.h"
 
 #ifdef _RESOURCE2_NOTINCLUDED_

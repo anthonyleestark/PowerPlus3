@@ -2,16 +2,14 @@
 // PowerPlus3.rc - Microsoft Visual C++ generated resource script.
 //
 
-#include "../include/resource.h"
+#include "../include/AppBase/Resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#ifndef APSTUDIO_INVOKED
-#include "../include/targetver.h"
-#endif
+
 #include "afxres.h"
 #include "verrsrc.h"
 
@@ -604,7 +602,6 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 
-
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -617,7 +614,6 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE 9, 1
-#include "res\PowerPlus3.rc2"	// non-Microsoft Visual C++ edited resources
 #include "afxres.rc"			// Standard components
 #if !defined(_AFXDLL)
 #include "afxribbon.rc"			// MFC ribbon and control bar resources
