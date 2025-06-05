@@ -17,7 +17,7 @@
 
 #include "Logging_defs.h"
 
-#ifdef _RESOURCE2_NOTINCLUDED_
+#ifndef _RESOURCE2_INCLUDED
 #pragma message("--Language: Resource2.h not included")
 #endif
 
@@ -47,7 +47,7 @@ typedef struct tagLANGTEXT
 //////////////////////////////////////////////////////////////////////////
 
 using LANGTABLE = const std::vector<LANGTEXT>;
-using LANGTABLE_PTR = typename LANGTABLE*;
+using LANGTABLE_PTR = LANGTABLE*;
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1461,7 +1461,7 @@ namespace Language
 	//
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	LPCTSTR		  GetLanguageName(UINT nCurLanguage, BOOL bGetDescription = FALSE, LPTSTR pszResult = NULL);
-	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangName = NULL, int* pnSize = NULL);
-	LPCTSTR		  GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult = NULL);
+	LPCTSTR		  GetLanguageName(UINT nCurLanguage, BOOL bGetDescription = FALSE);
+	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage);
+	LPCTSTR		  GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID);
 };

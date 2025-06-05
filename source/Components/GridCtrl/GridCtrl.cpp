@@ -14,6 +14,7 @@
 //#include "MemDC.h"
 #include "Components/GridCtrl/GridCtrl.h"
 #include <algorithm>
+using namespace std;
 
 // OLE stuff for clipboard operations
 #include <afxadv.h>            // For CSharedFile
@@ -1576,6 +1577,7 @@ void CGridCtrl::OnVScroll(UINT nSBCode, UINT /*nPos*/, CScrollBar* /*pScrollBar*
             SetScrollPos32(SB_VERT, m_nVScrollMax);
             Invalidate();
         }
+		break;
         
     default: 
         break;
@@ -3713,7 +3715,7 @@ BOOL CGridCtrl::GetCellRangeRect(const CCellRange& cellRange, LPRECT lpRect)
 ////////////////////////////////////////////////////////////////////////////////////
 // Grid attribute functions
 
-LRESULT CGridCtrl::OnSetFont(WPARAM hFont, LPARAM /*lParam */)
+LRESULT CGridCtrl::OnSetFont(WPARAM /*hFont*/, LPARAM /*lParam */)
 {
     LRESULT result = Default();
 
@@ -7551,7 +7553,7 @@ BOOL CGridCtrl::Save(LPCTSTR filename, TCHAR chSeparator/*=_T(',')*/)
             for (int j = 0; j < nNumColumns; j++)
             {
                 File.WriteString(GetItemText(i,j));
-                File.WriteString((j==(nNumColumns-1))? _T("\n"): strSeparator);
+                File.WriteString((j==(nNumColumns-1))? CString(Constant::String::EndLine) : strSeparator);
             }
         }
 
@@ -8441,7 +8443,7 @@ BOOL CGridCtrl::GetMergedCellRect(int row, int col, CRect& rect)
 }
 
 // LUC
-BOOL CGridCtrl::IsFocused(CGridCellBase& cell, int nRow, int nCol)
+BOOL CGridCtrl::IsFocused(CGridCellBase& cell, int /*nRow*/, int /*nCol*/)
 {
 	BOOL bRet = cell.IsFocused();
 	if(!bRet && m_bDrawingMergedCell)
@@ -8466,7 +8468,7 @@ BOOL CGridCtrl::IsFocused(CGridCellBase& cell, int nRow, int nCol)
 	return bRet;
 }
 
-BOOL CGridCtrl::IsSelected(CGridCellBase& cell, int nRow, int nCol)
+BOOL CGridCtrl::IsSelected(CGridCellBase& cell, int /*nRow*/, int /*nCol*/)
 {
 	BOOL bRet = cell.IsSelected();
 	if(!bRet && m_bDrawingMergedCell)

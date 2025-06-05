@@ -425,7 +425,7 @@ LogItem::LogItem()
 	m_stTime = SYSTEMTIME_ZERO;								// Log time
 	m_dwProcessID = INT_NULL;								// Process ID
 	m_usCategory = LOG_MACRO_NONE;							// Log category
-	m_strLogString = STRING_EMPTY;							// Log string
+	m_strLogString = Constant::String::Empty;							// Log string
 	m_arrDetailInfo.clear();								// Log detail info
 }
 
@@ -541,7 +541,7 @@ void LogItem::RemoveAll(void)
 	m_stTime = SYSTEMTIME_ZERO;									// Log time
 	m_dwProcessID = INT_NULL;									// Process ID
 	m_usCategory = LOG_MACRO_NONE;								// Log category
-	m_strLogString = STRING_EMPTY;								// Log string
+	m_strLogString = Constant::String::Empty;								// Log string
 
 	// Clean up log detail info data
 	this->RemoveDetailInfo();									// Log detail info
@@ -559,9 +559,9 @@ void LogItem::RemoveAll(void)
 CString LogItem::FormatDateTime(void) const
 {
 	CString strTimeFormat;
-	CString strMiddayFlag = (m_stTime.wHour >= 12) ? SYMBOL_POST_MERIDIEM : SYMBOL_ANTE_MERIDIEM;
+	const wchar_t* middayFlag = (m_stTime.wHour >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
 	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, m_stTime.wYear, m_stTime.wMonth, m_stTime.wDay,
-		m_stTime.wHour, m_stTime.wMinute, m_stTime.wSecond, m_stTime.wMilliseconds, strMiddayFlag);
+		m_stTime.wHour, m_stTime.wMinute, m_stTime.wSecond, m_stTime.wMilliseconds, middayFlag);
 
 	return strTimeFormat;
 }
@@ -680,7 +680,7 @@ CString LogItem::FormatOutput(void) const
 
 	CString strLogFormat;
 	jsonData.PrintYAML(strLogFormat, 0);
-	strLogFormat.Append(STRING_NEWLINE);
+	strLogFormat.Append(Constant::String::NewLine);
 
 	return strLogFormat;
 }
@@ -695,7 +695,7 @@ CString LogItem::FormatOutput(void) const
 JSON::JSON()
 {
 	// Initialization
-	this->m_strObjectName = STRING_EMPTY;			// JSON object name
+	this->m_strObjectName = Constant::String::Empty;			// JSON object name
 	this->m_arrKeyValuePairs.clear();				// Key-value pairs
 	this->m_nChildObjectCount = 0;					// Number of child objects
 	this->m_apChildObjectList = NULL;				// List of child objects
@@ -1102,10 +1102,10 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	strOutput.Empty();
 
 	// Make indentation
-	CString strIndent = STRING_EMPTY;
+	CString strIndent = Constant::String::Empty;
 	for (int nTabCount = 1; nTabCount <= nIndent; nTabCount++) {
 		// Add indent (tab character)
-		strIndent.Append(SYMBOL_JSON_INDENT);
+		strIndent.Append(Constant::Symbol::JSON_Indent);
 	}
 
 	// Do not use indentation if printing in single line
@@ -1117,18 +1117,18 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	// Add indentation
 	strOutput.Append(strIndent);
 
-	CString strFormat = STRING_EMPTY;
+	CString strFormat = Constant::String::Empty;
 
 	// Print object name (if set)
 	if (!this->m_strObjectName.IsEmpty()) {
-		strFormat.Format(_T("\"%s\": "), this->m_strObjectName);
+		strFormat.Format(_T("\"%s\": "), this->m_strObjectName.GetString());
 		strOutput.Append(strFormat);
 	}
 
 	// Opening bracket
 	strOutput.Append(_T("{ "));
 	if (bMultiline == TRUE) {
-		strOutput.Append(STRING_ENDLINE);
+		strOutput.Append(Constant::String::EndLine);
 	}
 
 	// Print list of properties
@@ -1146,24 +1146,24 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 			((this->m_nChildObjectCount <= 0) || (this->m_apChildObjectList == NULL))) {
 
 			// Last property (no other child object following) has no comma in the end
-			strFormat.Format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey, jsonEntry.strValue);
+			strFormat.Format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
 			strOutput.Append(strFormat);
 			if (bMultiline == TRUE) {
-				strOutput.Append(STRING_ENDLINE);
+				strOutput.Append(Constant::String::EndLine);
 			}
 		}
 		else {
 			// Add comma character at the end of each property
-			strFormat.Format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey, jsonEntry.strValue);
+			strFormat.Format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
 			strOutput.Append(strFormat);
 			if (bMultiline == TRUE) {
-				strOutput.Append(STRING_ENDLINE);
+				strOutput.Append(Constant::String::EndLine);
 			}
 		}
 	}
 
 	// Print child objects
-	CString strSubItemOutput = STRING_EMPTY;
+	CString strSubItemOutput = Constant::String::Empty;
 	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
 		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
 			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
@@ -1178,12 +1178,12 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	strOutput.Append(strIndent);
 	strOutput.Append(_T("} "));
 	if (bMultiline == TRUE) {
-		strOutput.Append(STRING_ENDLINE);
+		strOutput.Append(Constant::String::EndLine);
 	}
 
 	// Add a blank line as separator
 	if (bSeparator == TRUE) {
-		strOutput.Append(STRING_ENDLINE);
+		strOutput.Append(Constant::String::EndLine);
 	}
 }
 
@@ -1203,15 +1203,15 @@ void JSON::PrintYAML(CString& strOutput, int nIndent)
 	strOutput.Empty();
 
 	// Indentation
-	CString strIndent = STRING_EMPTY;
+	CString strIndent = Constant::String::Empty;
 	for (int nCount = 1; nCount < nIndent; nCount++) {
-		strIndent.Append(SYMBOL_YAML_INDENT);
+		strIndent.Append(Constant::Symbol::YAML_Indent);
 	}
 
 	// Print object name (if set)
 	if (!this->m_strObjectName.IsEmpty()) {
 		strOutput.AppendFormat(_T("%s%s:\n"), strIndent.GetString(), this->m_strObjectName.GetString());
-		strIndent.Append(SYMBOL_YAML_INDENT); // Add one more indent for properties
+		strIndent.Append(Constant::Symbol::YAML_Indent); // Add one more indent for properties
 	}
 
 	// Print key-value pairs
@@ -1249,7 +1249,7 @@ SLogging::SLogging(BYTE byLogType)
 	m_byLogType = byLogType;
 	m_byWriteMode = LogWriteMode::ReadOnly;
 	m_nMaxSize = INT_INFINITE;
-	m_strFilePath = STRING_EMPTY;
+	m_strFilePath = Constant::String::Empty;
 	m_pItemDefTemplate = NULL;
 }
 
@@ -1584,7 +1584,7 @@ BOOL SLogging::Write(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
+BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR /* lpszFilePath  = NULL */)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
@@ -1681,7 +1681,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR lpszFilePath /* = NULL */)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath /* = NULL */)
+BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR /* lpszFilePath  = NULL */)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;

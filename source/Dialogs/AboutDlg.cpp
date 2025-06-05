@@ -74,11 +74,11 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	size_t - Number of controls added to management
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CAboutDlg::RegisterDialogManagement(void)
+int CAboutDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
@@ -290,12 +290,12 @@ void CAboutDlg::SetAppNameLabel(void)
 
 	// Get app name label format from app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	CString strFormat = GetLanguageString(pAppLang, IDC_APPNAME_LABEL);
-	if (IS_NULL_STRING(strFormat)) return;
+	const wchar_t* formatString = GetLanguageString(pAppLang, IDC_APPNAME_LABEL);
+	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app name label
 	CString strAppNameLabel;
-	strAppNameLabel.Format(strFormat, strShortProductVersion, strFullProductVersion);
+	strAppNameLabel.Format(formatString, strShortProductVersion.GetString(), strFullProductVersion.GetString());
 	pAppNameLabel->SetWindowText(strAppNameLabel);
 }
 
@@ -325,7 +325,7 @@ void CAboutDlg::SetAppInfoLabel(void)
 
 	// Set app info label
 	CString strAppInfoLabel;
-	strAppInfoLabel.Format(strFormat, strProductVersion);
+	strAppInfoLabel.Format(strFormat, strProductVersion.GetString());
 	pAppInfoLabel->SetWindowText(strAppInfoLabel);
 }
 
@@ -357,7 +357,7 @@ void CAboutDlg::OnCloseButton()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CAboutDlg::OnViewFacebookProfileLink(NMHDR* pNMHDR, LRESULT* pResult)
+void CAboutDlg::OnViewFacebookProfileLink(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Save app event log if enabled
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEW_FACEBOOK_PROFILE_LINK);

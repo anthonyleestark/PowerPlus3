@@ -169,11 +169,11 @@ void CPwrReminderDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	size_t - Number of controls added to management
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CPwrReminderDlg::RegisterDialogManagement(void)
+int CPwrReminderDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
@@ -749,7 +749,6 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
 	if (pItem == NULL) return;
-	int nCol = pItem->iColumn;
 	int nRow = pItem->iRow;
 
 	//Get current selection index
@@ -788,7 +787,6 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
 	if (pItem == NULL) return;
-	int nClickedCol = pItem->iColumn;
 	int nClickedRow = pItem->iRow;
 
 	// Check value validity
@@ -825,7 +823,6 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
 	if (pItem == NULL) return;
-	int nClickedCol = pItem->iColumn;
 	int nClickedRow = pItem->iRow;
 
 	// Check value validity
@@ -1434,7 +1431,7 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 		SetFixedCellStyle(m_pDataItemListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = STRING_EMPTY;
+		CString strHdrTitle = Constant::String::Empty;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
 			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
@@ -1457,7 +1454,6 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 
 	// Setup rows
 	int nColStyle = -1;
-	int nCurMode = GetCurMode();
 	UINT nItemState = INT_NULL;
 	for (int nRow = 1; nRow < nRowNum; nRow++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
@@ -1552,7 +1548,7 @@ void CPwrReminderDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPwrReminderDlg::SwitchMode(BOOL bRedraw /* = FALSE */)
+void CPwrReminderDlg::SwitchMode(BOOL /* bRedraw = FALSE */)
 {
 	int nCurMode = GetCurMode();
 	if (nCurMode == MODE_INIT) {
@@ -2033,7 +2029,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 
 	// Init default data for mode add
 	if (GetCurMode() == MODE_ADD) {
-		pwrItem.SetMessage(STRING_EMPTY);
+		pwrItem.SetMessage(Constant::String::Empty);
 		pwrItem.SetEventID(Event::atSetTime);
 		pwrItem.SetTime(GetCurSysTime());
 		pwrItem.SetMessageStyle(Style::messageBox);
@@ -2765,7 +2761,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 
 		/*-----------------------Message content-----------------------*/
 
-		CString strTemp = STRING_EMPTY;
+		CString strTemp = Constant::String::Empty;
 		if (m_pMsgStringEdit != NULL) {
 			m_pMsgStringEdit->GetWindowText(strTemp);
 			pwrItem.SetMessage(strTemp);
@@ -2898,7 +2894,6 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		/*----------------------------Event----------------------------*/
 
 		BOOL bTemp = FALSE;
-		int nTemp = INT_INVALID;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
 		if (pWnd != NULL) {
 			pWnd->EnableWindow(bEnable);
@@ -3166,7 +3161,7 @@ void CPwrReminderDlg::DrawRepeatSetButton(void)
 		int cx = BUTTON_ICON_WIDTH;
 		int cy = BUTTON_ICON_HEIGHT;
 		HINSTANCE hInstance = AfxGetApp()->m_hInstance;
-		HICON hRepeatIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON_REPEAT), IMAGE_ICON, cx, cx, LR_DEFAULTCOLOR);
+		HICON hRepeatIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON_REPEAT), IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR);
 		if (hRepeatIcon == NULL)
 			return;
 

@@ -509,7 +509,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 //
 //////////////////////////////////////////////////////////////////////////
 
-ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID pContext, ULONG ulType, PVOID pSetting)
+ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID /*pContext*/, ULONG ulType, PVOID /*pSetting*/)
 {
 	// Get app pointer
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
@@ -702,7 +702,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 	int nDataTemp = INT_INVALID;
 	int nTimeTemp = INT_INVALID;
-	CString strTemp = STRING_EMPTY;
+	CString strTemp = Constant::String::Empty;
 	SYSTEMTIME stTimeTemp = SYSTEMTIME_ZERO;
 
 	// Check data validity first
@@ -1403,7 +1403,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 
 	int nValue = (int)0;						// Integer type
 	UINT uiValue = (UINT)0;						// Unsigned integer value
-	CString strValue = STRING_EMPTY;			// String value
+	CString strValue = Constant::String::Empty;			// String value
 
 	/*------------------------<Application launch-time counter>--------------------------*/
 
@@ -1428,9 +1428,9 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	CString strDateTimeFormat;
 	SYSTEMTIME stLaunchTime = GetAppLaunchTime();
 	UINT nTimePeriod = (stLaunchTime.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	CString strTimePeriodFormat = GetLanguageString(LoadLanguageTable(NULL), nTimePeriod);
+	const wchar_t* timePeriodFormat = GetLanguageString(LoadLanguageTable(NULL), nTimePeriod);
 	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stLaunchTime.wYear, stLaunchTime.wMonth, stLaunchTime.wDay,
-		stLaunchTime.wHour, stLaunchTime.wMinute, stLaunchTime.wSecond, stLaunchTime.wMilliseconds, strTimePeriodFormat);
+		stLaunchTime.wHour, stLaunchTime.wMinute, stLaunchTime.wSecond, stLaunchTime.wMilliseconds, timePeriodFormat);
 
 	// Store launch-time info data
 	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchTime, strDateTimeFormat)) {
@@ -1523,15 +1523,11 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 {
 	BOOL bRet = FALSE;
 
-	int nGlbValue = (int)0;						// Integer type
-	BOOL bGlbValue = (BOOL)0;					// Boolean type
-	BYTE byGlbValue = (BYTE)0;					// Byte value
-	UINT uiGlbValue = (UINT)0;					// Unsigned integer value
-	DWORD dwGlbValue = (DWORD)0;				// D-WORD value
-	CString strGlbValue = STRING_EMPTY;			// String value
+	int nGlbValue = (int)0;									// Integer type
+	CString strGlbValue = Constant::String::Empty;			// String value
 
 	// Subsection name
-	CString strSubSection = STRING_EMPTY;
+	CString strSubSection = Constant::String::Empty;
 
 	/*------------------------<Load debugging/testing variables>-------------------------*/
 
@@ -1671,15 +1667,14 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 {
 	BOOL bRet = TRUE;
 
-	int nGlbValue = (int)0;						// Integer type
-	BOOL bGlbValue = (BOOL)0;					// Boolean type
-	BYTE byGlbValue = (BYTE)0;					// Byte value
-	UINT uiGlbValue = (UINT)0;					// Unsigned integer value
-	DWORD dwGlbValue = (DWORD)0;				// D-WORD value
-	CString strGlbValue = STRING_EMPTY;			// String value
+	int nGlbValue = (int)0;									// Integer type
+	BOOL bGlbValue = (BOOL)0;								// Boolean type
+	BYTE byGlbValue = (BYTE)0;								// Byte value
+	DWORD dwGlbValue = (DWORD)0;							// D-WORD value
+	CString strGlbValue = Constant::String::Empty;			// String value
 
 	// Subsection name
-	CString strSubSection = STRING_EMPTY;
+	CString strSubSection = Constant::String::Empty;
 
 	/*------------------------<Save debugging/testing variables>-------------------------*/
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_DEBUGTEST)) {
@@ -2079,8 +2074,8 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 
 void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 {
-	CString strTrcTitle = STRING_EMPTY;
-	CString strTrcLogFormat = STRING_EMPTY;
+	CString strTrcTitle = Constant::String::Empty;
+	CString strTrcLogFormat = Constant::String::Empty;
 	LPCTSTR lpszDataNull = _T("Data pointer is NULL");
 	LPCTSTR lpszReadFailed = _T("Registry data is unreadable or invalid");
 	LPCTSTR lpszWriteFailed = _T("Unable to write registry data");
@@ -2094,97 +2089,97 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 	case APP_ERROR_LOAD_CFG_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
 		break;
 
 	case APP_ERROR_LOAD_CFG_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszReadFailed);
 		break;
 
 	case APP_ERROR_LOAD_SCHED_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
 		break;
 
 	case APP_ERROR_LOAD_SCHED_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszReadFailed);
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszReadFailed);
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszReadFailed);
 		break;
 
 	case APP_ERROR_SAVE_CFG_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
 		break;
 
 	case APP_ERROR_SAVE_CFG_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszWriteFailed);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszWriteFailed);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszWriteFailed);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle, lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszWriteFailed);
 		break;
 	}
 
@@ -2364,7 +2359,7 @@ void CPowerPlusApp::DestroyDebugTestDlg(void)
 void CPowerPlusApp::GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
 {
 	// Init info data
-	OSVERSIONINFOEX oviOSVersion;
+	OSVERSIONINFOEX oviOSVersion{};
 	oviOSVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
 	NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFOEXW);
@@ -2434,7 +2429,7 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 
 		// Debug log
 		CString strALSLog;
-		strALSLog.Format(_T("[ALS] => EnableAutoStart: Cmd=(%s)"), strExecCommand);
+		strALSLog.Format(_T("[ALS] => EnableAutoStart: Cmd=(%s)"), strExecCommand.GetString());
 		OutputDebugString(strALSLog);
 
 		// Register to run at startup
@@ -2501,7 +2496,6 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 {
 	long lRes;
 	HKEY hRegOpenKey;
-	BOOL bRet = TRUE;
 
 	// Initialize registry info data
 	REGISTRYINFO regInfoLastSysEvt;
@@ -2641,9 +2635,9 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 	// Format date/time
 	CString strDateTimeFormat;
 	UINT nTimePeriod = (timeSysEvent.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	CString strTimePeriodFormat = GetLanguageString(GetAppLanguage(), nTimePeriod);
+	const wchar_t* timePeriodFormat = GetLanguageString(GetAppLanguage(), nTimePeriod);
 	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
-		timeSysEvent.wHour, timeSysEvent.wMinute, timeSysEvent.wSecond, timeSysEvent.wMilliseconds, strTimePeriodFormat);
+		timeSysEvent.wHour, timeSysEvent.wMinute, timeSysEvent.wSecond, timeSysEvent.wMilliseconds, timePeriodFormat);
 
 	// Save registry value
 	DWORD dwDataSize = (strDateTimeFormat.GetLength() + 1) * sizeof(TCHAR);
@@ -2669,7 +2663,7 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusApp::OnExecuteDebugCommand(WPARAM wParam, LPARAM lParam)
+void CPowerPlusApp::OnExecuteDebugCommand(WPARAM /*wParam*/, LPARAM lParam)
 {
 	// If debug command is empty, do nothing
 	CString strDebugCommand(LPARAM_TO_STRING(lParam));

@@ -18,13 +18,6 @@
 #endif
 
 
-/////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define basic macros, these macros will be used elsewhere in the application
-//
-/////////////////////////////////////////////////////////////////////////////////////
-
-
 // Define languages
 //
 
@@ -405,67 +398,6 @@
 #define PATH_APP_SYSTEMCMD							_T("C:\\Windows\\System32\\cmd.exe")
 
 
-// Define special strings
-//
-
-#define STRING_EMPTY								_T("")							// Empty string
-#define STRING_ENDLINE								_T("\n")						// "End line" string
-#define STRING_NEWLINE								_T("\r\n")						// "New line" string (with 'return' character)
-#define STRING_NULL									_T("#NULL")						// Null/invalid string
-#define STRING_QUOTEFORMAT							_T("\"%s\"")					// Quote string template format
-#define STRING_TEXTCHANGEFORMAT						_T("%s -> %s")					// Text change format string template
-#define STRING_INTCHANGEFORMAT						_T("%d -> %d")					// Integer number change format string template
-#define STRING_FLOATCHANGEFORMAT					_T("%f -> %f")					// Float number change format string template
-
-
-// Define special symbols
-//
-
-#define SYMBOL_DOT									_T(".")							// Dot (.) symbol
-#define SYMBOL_COMMA								_T(",")							// Comma (,) symbol
-#define SYMBOL_COLON								_T(":")							// Colon (:) symbol
-#define SYMBOL_DASH									_T("-")							// Dash (-) symbol
-#define SYMBOL_UNDERSCORE							_T("_")							// Underscore (_) symbol
-#define SYMBOL_BACKSLASH							_T("\\")						// Backslash (typically used as file/folder path separator)
-
-#define SYMBOL_ARROW								_T("->")						// Arrow symbol
-#define SYMBOL_ARROW_EQ								_T("=>")						// Arrow symbol (with equal sign)
-#define SYMBOL_OUTPUT								_T(">> ")						// Output sign
-#define SYMBOL_INPUT								_T(" <<")						// Input sign
-
-#define SYMBOL_SPACE								_T(" ")							// Space
-#define SYMBOL_DOUBLE_SPACE							_T("  ")						// Double spaces
-#define SYMBOL_DEFAULT_INDENT						_T("\t")						// Default indentation (tab character)
-#define SYMBOL_JSON_INDENT							SYMBOL_DEFAULT_INDENT			// JSON indentation (tab character)
-#define SYMBOL_YAML_INDENT							SYMBOL_DOUBLE_SPACE				// YAML indentation (double spaces)
-
-#define SYMBOL_ANTE_MERIDIEM						_T("AM")						// Ante meridiem (AM)
-#define SYMBOL_POST_MERIDIEM						_T("PM")						// Post meridiem (PM)
-
-#define SYMBOL_CUR_FOLDER							_T(".\\")						// Current folder
-#define SYMBOL_PRT_FOLDER							_T("..\\")						// Parent folder
-
-
-// Define special characters
-//
-
-#define CHAR_SPACE									_T(' ')							// Space character
-#define CHAR_DOT									_T('.')							// Dot (.) character
-#define CHAR_COMMA									_T(',')							// Comma (,) character
-#define CHAR_QUOTAMARK								_T('\"')						// 'Quotation mark' character
-#define CHAR_TAB									_T('\t')						// Indentation (tab character)
-
-#define CHAR_COLON									_T(':')							// Colon symbol
-#define CHAR_DASH									_T('-')							// Dash symbol
-#define CHAR_UNDERSCORE								_T('_')							// Underscore symbol
-#define CHAR_BACKSLASH								_T('\\')						// Backslash (typically used as file/folder path separator)
-
-#define CHAR_RETURN									_T('\r')						// 'Return' character
-#define CHAR_ENDLINE								_T('\n')						// 'Endline' character
-#define CHAR_NEWLINE								_T('\r\n')						// 'New line' character
-#define CHAR_ENDSTRING								_T('\0')						// Null-termination (end of string)
-
-
 // Define special numbers and numeric values
 //
 
@@ -476,16 +408,6 @@
 #define FLOAT_NULL									0.0F							// Null float number (equals 0)
 #define STRUCT_ZERO									{0}								// Zero-initialized struct data
 #define SYSTEMTIME_ZERO								STRUCT_ZERO						// Zero-initialized systemtime data
-
-
-// Define special string-based values
-//
-
-#define VALUE_TRUE									_T("Yes")						// Boolean value: True (Yes)
-#define VALUE_FALSE									_T("No")						// Boolean value: False (No)
-#define VALUE_NULL									_T("Null")						// Null value
-#define VALUE_UNKNOWN								_T("Unknown")					// Unknown value
-#define VALUE_UNDEFINED								_T("Undefined")					// Undefined value
 
 
 // Define special minimum/maximum values

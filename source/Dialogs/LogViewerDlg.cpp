@@ -349,7 +349,7 @@ void CLogViewerDlg::SetupLanguage(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR ptrLanguage)
+void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Get parent list frame rect
 	CWnd* pListFrameWnd = GetDlgItem(IDC_LOGVIEWER_LOGDATA_LISTBOX);
@@ -474,7 +474,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 		SetFixedCellStyle(m_pLogViewerList, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = STRING_EMPTY;
+		CString strHdrTitle = Constant::String::Empty;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
 			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
@@ -609,7 +609,6 @@ void CLogViewerDlg::UpdateLogViewer(void)
 
 	// Print items
 	CString strTemp;
-	int nTemp = -1;
 	int nItemIndex = 0;
 	for (int nRowIndex = ROW_INDEX_START; nRowIndex <= m_nLogCount; nRowIndex++) {
 		
@@ -644,7 +643,7 @@ void CLogViewerDlg::UpdateLogViewer(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* pResult)
+void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 {
 	// Check table validity
 	if (m_pLogViewerList == NULL)
@@ -653,7 +652,6 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
 	if (pItem == NULL) return;
-	int nCol = pItem->iColumn;
 	int nRow = pItem->iRow;
 
 	//Get current selection index
@@ -684,15 +682,10 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CLogViewerDlg::DisplayLogDetails(int nIndex)
+void CLogViewerDlg::DisplayLogDetails(int /*nIndex*/)
 {
 	// Get app event logging pointer
 	if (m_ptrAppEventLog == NULL) return;
-
-	// Get log item by index
-	Item logItem = m_ptrAppEventLog->GetLogItem(nIndex);
-
-	// Display details
 }
 
 //////////////////////////////////////////////////////////////////////////

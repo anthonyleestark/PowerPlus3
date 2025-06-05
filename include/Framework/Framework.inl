@@ -709,11 +709,11 @@ inline void SDialog::SetReturnFlag(int nValue) {
 
 // Open a child dialog with corresponding ID
 // TODO: Override this function for custom actions
-inline void SDialog::OpenChildDialogEx(UINT nDialogID) {}
+inline void SDialog::OpenChildDialogEx(UINT nDialogID) { (nDialogID); }
 
 // Open a child dialog via its pointer
 // TODO: Override this function for custom actions
-inline void SDialog::OpenChildDialogEx(SDialog* pChildDialog) {}
+inline void SDialog::OpenChildDialogEx(SDialog* pChildDialog) { (pChildDialog); }
 
 // Get the number of descendant dialogs
 inline UINT SDialog::GetDescendantCount(void) const {

@@ -44,7 +44,7 @@ CHelpDlg::CHelpDlg(CWnd* pParent /*=NULL*/)
 	: SDialog(IDD_HELP_DLG, pParent)
 {
 	// Initialize member variables
-	m_strFileData = STRING_EMPTY;
+	m_strFileData = Constant::String::Empty;
 	m_nViewMode = MODE_HELPVIEW_HELPFILE;
 }
 
@@ -76,11 +76,11 @@ void CHelpDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	size_t - Number of controls added to management
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CHelpDlg::RegisterDialogManagement(void)
+int CHelpDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
@@ -515,7 +515,7 @@ BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
 void CHelpDlg::UpdateSwitchViewModeButton(void)
 {
 	// Language string ID
-	UINT nStringID = INT_INVALID;
+	UINT nStringID = INT_NULL;
 	switch (m_nViewMode)
 	{
 	case MODE_HELPVIEW_HELPFILE:

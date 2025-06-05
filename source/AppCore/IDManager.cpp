@@ -313,13 +313,13 @@ void SResourceIDMap::Remove(DWORD dwResID)
 
 	// Create a new clone map data
 	size_t nNewSize = (m_nSize - 1);
-	RESOURCE_ID_MAP pNewMapData = new RESOURCE_ID_MAP_ENTRY[nNewSize];
+	RESOURCE_ID_MAP pNewMapData = new RESOURCE_ID_MAP_ENTRY[m_nSize];
 	ASSERT(pNewMapData != NULL);
 
 	// Copy old data to new data
 	// except for the item at the index we need to remove
-	int nDestIdx = 0;
-	for (int nSrcIdx = 0; nSrcIdx < m_nSize; nSrcIdx++) {
+	size_t nDestIdx = 0;
+	for (size_t nSrcIdx = 0; nSrcIdx < m_nSize; nSrcIdx++) {
 		if (nSrcIdx == nItemIndex) continue;
 		pNewMapData[nDestIdx] = m_pIDMapData[nSrcIdx];
 		nDestIdx++;
@@ -408,11 +408,11 @@ LPCSTR SResourceIDMap::GetNameID(DWORD dwResID) const
 //	Description:	Return index of the first item with specific resource ID
 //					and return -1 if resource ID is not found
 //  Arguments:		dwResID - Resource ID
-//  Return value:	size_t
+//  Return value:	long long
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t SResourceIDMap::FindResourceID(DWORD dwResID) const
+long long SResourceIDMap::FindResourceID(DWORD dwResID) const
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);
@@ -420,14 +420,14 @@ size_t SResourceIDMap::FindResourceID(DWORD dwResID) const
 		return INT_INVALID;
 
 	// Find ID
-	size_t nResIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < m_nSize; nIndex++) {
-		if (m_pIDMapData[nIndex].dwResourceID == dwResID) {
-			nResIndex = nIndex;	// Index found
+	long long resIndex = INT_INVALID;
+	for (size_t index = 0; index < m_nSize; index++) {
+		if (m_pIDMapData[index].dwResourceID == dwResID) {
+			resIndex = index;	// Index found
 			break;
 		}
 	}
-	return nResIndex;
+	return resIndex;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -436,11 +436,11 @@ size_t SResourceIDMap::FindResourceID(DWORD dwResID) const
 //	Description:	Return index of the first item with specific name ID
 //					and return -1 if name ID is not found
 //					lpszNameID - Name string ID
-//  Return value:	size_t
+//  Return value:	long long
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
+long long SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);
@@ -448,14 +448,14 @@ size_t SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
 		return INT_INVALID;
 
 	// Find ID
-	size_t nResIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < m_nSize; nIndex++) {
-		if (strcmp(m_pIDMapData[nIndex].strNameID, lpszNameID) == 0) {
-			nResIndex = nIndex;	// Index found
+	long long resIndex = INT_INVALID;
+	for (size_t index = 0; index < m_nSize; index++) {
+		if (strcmp(m_pIDMapData[index].strNameID, lpszNameID) == 0) {
+			resIndex = index;	// Index found
 			break;
 		}
 	}
-	return nResIndex;
+	return resIndex;
 }
 
 //////////////////////////////////////////////////////////////////////////

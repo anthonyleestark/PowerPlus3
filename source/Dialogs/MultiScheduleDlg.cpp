@@ -137,11 +137,11 @@ void CMultiScheduleDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	size_t - Number of controls added to management
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CMultiScheduleDlg::RegisterDialogManagement(void)
+int CMultiScheduleDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
@@ -440,7 +440,7 @@ void CMultiScheduleDlg::SetupLanguage()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
+void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Get parent list frame rect
 	CWnd* pListFrameWnd = GetDlgItem(IDC_MULTISCHEDULE_ITEM_LISTBOX);
@@ -573,7 +573,7 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 		SetFixedCellStyle(m_pDataItemListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = STRING_EMPTY;
+		CString strHdrTitle = Constant::String::Empty;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
 			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
@@ -1236,7 +1236,7 @@ void CMultiScheduleDlg::Add(Item& schItem)
 		return;
 
 	// Update item to Action Schedule data item list
-	DWORD dwRet = m_schScheduleTemp.Update(schItem);
+	m_schScheduleTemp.Update(schItem);
 
 	// Update table
 	RedrawDataTable();
@@ -1266,7 +1266,7 @@ void CMultiScheduleDlg::Update(Item& schItem)
 		return;
 
 	// Update item to Action Schedule data item list
-	DWORD dwRet = m_schScheduleTemp.Update(schItem);
+	m_schScheduleTemp.Update(schItem);
 
 	// Update table
 	RedrawDataTable();
@@ -1835,7 +1835,6 @@ void CMultiScheduleDlg::OnSelectScheduleItem(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
 	if (pItem == NULL) return;
-	int nCol = pItem->iColumn;
 	int nRow = pItem->iRow;
 
 	//Get current selection index
@@ -1869,7 +1868,6 @@ void CMultiScheduleDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
 	if (pItem == NULL) return;
-	int nClickedCol = pItem->iColumn;
 	int nClickedRow = pItem->iRow;
 
 	// Check value validity
@@ -1901,7 +1899,6 @@ void CMultiScheduleDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
 	if (pItem == NULL) return;
-	int nClickedCol = pItem->iColumn;
 	int nClickedRow = pItem->iRow;
 
 	// Check value validity
@@ -1927,7 +1924,7 @@ void CMultiScheduleDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
+LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get dialog ID
 	UINT nDialogID = (UINT)wParam;

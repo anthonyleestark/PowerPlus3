@@ -38,8 +38,8 @@ class CMultiScheduleDlg : public SDialog
 	DECLARE_DYNAMIC(CMultiScheduleDlg)
 
 public:
-	using Item = typename ScheduleItem;
-	using Data = typename ScheduleData;
+	using Item = ScheduleItem;
+	using Data = ScheduleData;
 	enum ColumnID {
 		Index = 0,										// Index
 		EnableState,									// Enable/active state
@@ -61,7 +61,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual size_t RegisterDialogManagement(void);
+	virtual int RegisterDialogManagement(void);
 	virtual BOOL UnregisterDialogManagement(void);
 
 	// Implementation

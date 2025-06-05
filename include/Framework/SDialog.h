@@ -98,7 +98,7 @@ class SDialog : public CDialogEx
 	DECLARE_DYNAMIC(SDialog)
 
 public:
-	using ExitCode = typename SWinApp::ExitCode;
+	using ExitCode = SWinApp::ExitCode;
 	enum ReturnFlag {
 		Invalid = -1,
 		OK,
@@ -201,7 +201,7 @@ public:
 
 	// Dialog control management functions
 	virtual SControlManager* GetControlManager(void);
-	virtual size_t RegisterDialogManagement(void);
+	virtual int RegisterDialogManagement(void);
 	virtual void UpdateDialogManagement(void);
 	virtual BOOL UnregisterDialogManagement(void);
 

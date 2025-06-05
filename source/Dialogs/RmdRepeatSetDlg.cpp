@@ -197,7 +197,7 @@ void CRmdRepeatSetDlg::OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CRmdRepeatSetDlg::OnCheckboxClicked(UINT nID)
+void CRmdRepeatSetDlg::OnCheckboxClicked(UINT /*nID*/)
 {
 	RefreshDialogItemState();
 }

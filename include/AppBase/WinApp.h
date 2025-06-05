@@ -18,8 +18,8 @@
 
 #pragma once
 
-#ifndef _WINAPP_LIB_INCLUDED
-	#define _WINAPP_LIB_INCLUDED
+#ifndef _WINAPP_INCLUDED
+	#define _WINAPP_INCLUDED
 #endif
 
 
@@ -28,34 +28,36 @@
 	#define VC_EXTRALEAN
 #endif
 
-// Include windows.h
-#ifndef _WINDOWS_H_INCLUDED
-	#define _WINDOWS_H_INCLUDED
-	#include "windows.h"
-	#include <winver.h>
+
+// Include Windows APIs
+#ifndef _WINDOWS_
+	#ifndef _WINSOCK2API_
+		#include <winsock2.h>
+		#define _WINSOCK2API_INCLUDED
+	#endif
+	#include <windows.h>
+	#define _WINDOWSAPI_INCLUDED
 #endif
 
 
 // Include Power functions
-#ifndef _POWER_FEATURE_INCLUDED
-	#define _POWER_FEATURE_INCLUDED
-	#include <powerbase.h>
-	#include "PowrProf.h"
-	#pragma comment (lib, "PowrProf.lib")
+#ifndef _POWRPROF_H_
+	#include "powrprof.h"
+	#pragma comment (lib, "powrprof.lib")
+	#define _POWERBASEAPI_INCLUDED
 #endif
 
 
 // Support register session state change notification
-#ifndef _SUPPORT_SESSION_NOTIFY
-	#define _SUPPORT_SESSION_NOTIFY
+#ifndef _INC_WTSAPI
 	#include "wtsapi32.h"
-	#pragma comment (lib, "Wtsapi32.lib")
+	#pragma comment (lib, "wtsapi32.lib")
+	#define _WTS_API_INCLUDED
 #endif
 
 
 // Include MFC base libraries
-#ifndef _MFC_BASE_LIB_INCLUDED
-	#define _MFC_BASE_LIB_INCLUDED
+#ifndef _MFC_BASE_INCLUDED
 
 	// some CString constructors will be explicit
 	#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS
@@ -63,6 +65,11 @@
 	// Turns off MFC's hiding of some common 
 	// and often safely ignored warning messages
 	#define _AFX_ALL_WARNINGS
+
+	// Warning: MFC requires Winsock2 included
+	#if !defined _WINSOCK2API_ || !defined _WINSOCK2API_INCLUDED
+		#error "Include <winsock2.h> before <windows.h>"
+	#endif
 
 	// MFC core and standard components
 	#include <afxwin.h>
@@ -74,9 +81,9 @@
 	#include <afxdisp.h>
 
 	// CDialogEx class
-	#include "afxdialogex.h"
-	#include "afxdtctl.h"
-	#include "afxcmn.h"
+	#include <afxdialogex.h>
+	#include <afxdtctl.h>
+	#include <afxcmn.h>
 
 	// MFC support for Internet Explorer 4 Common Controls
 	#ifndef _AFX_NO_OLE_SUPPORT
@@ -91,17 +98,19 @@
 	// MFC support for ribbons and control bars
 	#include <afxcontrolbars.h>
 
+	#define _MFC_BASE_INCLUDED
 #endif
 
 
-// Include advanced libraries
-#ifndef _ADVANCED_LIB_INCLUDED
-	#define _ADVANCED_LIB_INCLUDED
+// Include addtional dependencies
+#ifndef _ADDITIONAL_DEPENDENCIES_INCLUDED
+	#define _ADDITIONAL_DEPENDENCIES_INCLUDED
+
 	#include "mmsystem.h"
 	#include "uxtheme.h"
 
 	#include <cfgmgr32.h>
-	#pragma comment(lib, "Cfgmgr32.lib")
+	#pragma comment(lib, "cfgmgr32.lib")
 
 	#include <setupapi.h>
 	#pragma comment(lib, "setupapi.lib")
@@ -114,6 +123,7 @@
 	#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
 		#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
 	#endif
+
 #endif
 
 
@@ -121,7 +131,7 @@
 #ifndef _SUPPORT_VISUAL_STYLES
 	#define _SUPPORT_VISUAL_STYLES
 	#include "commctrl.h"
-	#pragma comment (lib, "Comctl32.lib")
+	#pragma comment (lib, "comctl32.lib")
 	#ifdef _UNICODE
 		#if defined _M_IX86
 			#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")

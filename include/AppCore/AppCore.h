@@ -56,9 +56,9 @@
 // String processing functions
 //
 
-#define IS_NOT_EMPTY_STRING(string)						(_tcscmp(string, STRING_EMPTY))
+#define IS_NOT_EMPTY_STRING(string)						(_tcscmp(string, Constant::String::Empty))
 #define IS_EMPTY_STRING(string)							(!IS_NOT_EMPTY_STRING(string))
-#define IS_NOT_NULL_STRING(string)						(_tcscmp(string, STRING_NULL))
+#define IS_NOT_NULL_STRING(string)						(_tcscmp(string, Constant::String::Null))
 #define IS_NULL_STRING(string)							(!IS_NOT_NULL_STRING(string))
 
 #define MAKEANSI(string)								(CW2A(string).m_psz)
@@ -235,7 +235,7 @@ struct CONFIGDATA
 };
 
 // Define typename
-using PCONFIGDATA = typename CONFIGDATA*;
+using PCONFIGDATA = CONFIGDATA*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -290,7 +290,7 @@ public:
 };
 
 // Define new global typenames for the enum attributes of Application config data
-using AppOptionID = typename ConfigData::AppOptionID;
+using AppOptionID = ConfigData::AppOptionID;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -385,9 +385,9 @@ public:
 };
 
 // Define new global typenames for the enum attributes of Application flag data
-using AppFlagID = typename FlagManager::AppFlagID;
-using FlagManagerID = typename FlagManager::ManagerID;
-using FlagManagementMethod = typename FlagManager::ManagementMethod;
+using AppFlagID = FlagManager::AppFlagID;
+using FlagManagerID = FlagManager::ManagerID;
+using FlagManagementMethod = FlagManager::ManagementMethod;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -445,11 +445,11 @@ public:
 };
 
 // Define new typenames for RepeatSet data
-using PWRREPEATSET = typename PwrRepeatSet;
-using PPWRREPEATSET = typename PwrRepeatSet*;
+using PWRREPEATSET = PwrRepeatSet;
+using PPWRREPEATSET = PwrRepeatSet*;
 
 // Define new global typenames for the enum attributes of RepeatSet data
-using DayOfWeek = typename PwrRepeatSet::DayOfWeek;
+using DayOfWeek = PwrRepeatSet::DayOfWeek;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -511,8 +511,8 @@ public:
 };
 
 // Define new typenames for Schedule item data
-using SCHEDULEITEM = typename ScheduleItem;
-using PSCHEDULEITEM = typename ScheduleItem*;
+using SCHEDULEITEM = ScheduleItem;
+using PSCHEDULEITEM = ScheduleItem*;
 using SCHEDULEITEMLIST = typename std::vector<SCHEDULEITEM>;
 
 //////////////////////////////////////////////////////////////////////////
@@ -646,12 +646,12 @@ public:
 };
 
 // Define new typenames for HotkeySet item data
-using HOTKEYSETITEM = typename HotkeySetItem;
-using PHOTKEYSETITEM = typename HotkeySetItem*;
+using HOTKEYSETITEM = HotkeySetItem;
+using PHOTKEYSETITEM = HotkeySetItem*;
 using HOTKEYSETITEMLIST = typename std::vector<HOTKEYSETITEM>;
 
 // Define new global typenames for the enum attributes of HotkeySet items
-using HotkeyID = typename HotkeySetItem::HKID;
+using HotkeyID = HotkeySetItem::HKID;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -663,9 +663,9 @@ using HotkeyID = typename HotkeySetItem::HKID;
 class HotkeySetData
 {
 public:
-	using Item = typename HotkeySetItem;
-	using HKID = typename Item::HKID;
-	using DataList = typename HOTKEYSETITEMLIST;
+	using Item = HotkeySetItem;
+	using HKID = Item::HKID;
+	using DataList = HOTKEYSETITEMLIST;
 
 private:
 	// Attributes
@@ -799,8 +799,8 @@ public:
 };
 
 // Define new typenames for Reminder message style data
-using RMDMSGSTYLESET = typename RmdMsgStyleSet;
-using PRMDMSGSTYLESET = typename RmdMsgStyleSet*;
+using RMDMSGSTYLESET = RmdMsgStyleSet;
+using PRMDMSGSTYLESET = RmdMsgStyleSet*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -892,13 +892,13 @@ public:
 };
 
 // Define new typenames for Power Reminder Item data
-using PWRREMINDERITEM = typename PwrReminderItem;
-using PPWRREMINDERITEM = typename PwrReminderItem*;
+using PWRREMINDERITEM = PwrReminderItem;
+using PPWRREMINDERITEM = PwrReminderItem*;
 using PWRREMINDERITEMLIST = typename std::vector<PWRREMINDERITEM>;
 
 // Define new global typenames for the enum attributes of Power Reminder items
-using PwrReminderEvent = typename PwrReminderItem::Event;
-using PwrReminderStyle = typename PwrReminderItem::Style;
+using PwrReminderEvent = PwrReminderItem::Event;
+using PwrReminderStyle = PwrReminderItem::Style;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1014,12 +1014,12 @@ public:
 };
 
 // Define new typenames for runtime info item data
-using PWRRUNTIMEITEM = typename PwrRuntimeItem;
-using PPWRRUNTIMEITEM = typename PwrRuntimeItem*;
+using PWRRUNTIMEITEM = PwrRuntimeItem;
+using PPWRRUNTIMEITEM = PwrRuntimeItem*;
 using PWRRUNTIMEQUEUE = typename std::vector<PWRRUNTIMEITEM>;
 
 // Define new global typenames for the enum attributes of runtime info items
-using PwrFeatureID = typename PwrRuntimeItem::FeatureCategoryID;
+using PwrFeatureID = PwrRuntimeItem::FeatureCategoryID;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1075,8 +1075,8 @@ public:
 };
 
 // Define new typenames for History info data
-using HISTORYINFODATA = typename HistoryInfoData;
-using PHISTORYINFODATA = typename HistoryInfoData*;
+using HISTORYINFODATA = HistoryInfoData;
+using PHISTORYINFODATA = HistoryInfoData*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1120,7 +1120,7 @@ public:
 using SystemEventData = typename std::vector<SystemEvent>;
 
 // Define new global typenames for the enum attributes of System Event info
-using SystemEventID = typename SystemEvent::EventID;
+using SystemEventID = SystemEvent::EventID;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1246,11 +1246,11 @@ public:
 };
 
 // Define new typenames for Registry value data
-using REGISTRYVALUE = typename RegistryValue;
-using PREGISTRYVALUE = typename RegistryValue*;
+using REGISTRYVALUE = RegistryValue;
+using PREGISTRYVALUE = RegistryValue*;
 
 // Define new global typenames for the enum attributes of RegistryValue
-using RegValueType = typename RegistryValue::Type;
+using RegValueType = RegistryValue::Type;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1301,8 +1301,8 @@ public:
 };
 
 // Define new typenames for Registry key info data
-using REGISTRYKEY = typename RegistryKey;
-using PREGISTRYKEY = typename RegistryKey*;
+using REGISTRYKEY = RegistryKey;
+using PREGISTRYKEY = RegistryKey*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1370,11 +1370,11 @@ public:
 };
 
 // Define new typenames for Registry info class
-using REGISTRYINFO = typename RegistryInfo;
-using PREGISTRYINFO = typename RegistryInfo*;
+using REGISTRYINFO = RegistryInfo;
+using PREGISTRYINFO = RegistryInfo*;
 
 // Define new global typenames for the enum attributes of RegistryValue
-using RegistryPathType = typename RegistryInfo::RegistryPathType;
+using RegistryPathType = RegistryInfo::RegistryPathType;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1687,7 +1687,7 @@ namespace AppCore
 	BOOL	CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT nStyle, DWORD& dwErrorCode);
 
 	BOOL	SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode);
-	void	DrawButton(CButton*& pButton, UINT nIconID, LPCTSTR lpszButtonTitle = STRING_EMPTY);
+	void	DrawButton(CButton*& pButton, UINT nIconID, LPCTSTR lpszButtonTitle = Constant::String::Empty);
 	BOOL	EnumFontNames(std::vector<std::wstring>& fontNames);
 	BOOL	ValidateFontName(LPCTSTR lpszFontName);
 };

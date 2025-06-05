@@ -86,8 +86,8 @@ private:
 	inline BOOL IsDebugEditViewValid(void);
 	inline BOOL IsDebugEditViewFocus(void);
 
-	size_t  GetCaretPosition(void);
-	BOOL	ShowDebugTestEditViewMenu(void);
+	int GetCaretPosition(void);
+	BOOL ShowDebugTestEditViewMenu(void);
 
 	inline void BackupDebugViewBuffer(void);
 	int  FormatDebugCommand(CString &strDebugCommand);

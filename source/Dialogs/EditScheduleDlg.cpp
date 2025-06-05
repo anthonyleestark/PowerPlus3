@@ -117,11 +117,11 @@ void CEditScheduleDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	size_t - Number of controls added to management
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CEditScheduleDlg::RegisterDialogManagement(void)
+int CEditScheduleDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
@@ -456,7 +456,7 @@ void CEditScheduleDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR ptrLanguage)
+void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Get parent list frame rect
 	CWnd* pListFrameWnd = GetDlgItem(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX);
@@ -652,7 +652,8 @@ void CEditScheduleDlg::SetupDialogItemState()
 	}
 
 	// Setup time editbox
-	UpdateTimeSetting(m_schScheduleItemTemp.GetTime(), FALSE);
+	SYSTEMTIME sysTimeTemp = m_schScheduleItemTemp.GetTime();
+	UpdateTimeSetting(sysTimeTemp, FALSE);
 
 	// Enable/disable active day table (also update its display)
 	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() & m_schScheduleItemTemp.IsRepeatEnabled()));
@@ -1138,7 +1139,7 @@ void CEditScheduleDlg::OnEnableSchedule()
 void CEditScheduleDlg::OnChangeAction()
 {
 	// Save app event log if enabled
-	int nSel = m_pActionList->GetCurSel();
+	m_pActionList->GetCurSel();
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_EDITSCHEDULE_ACTION_LIST);
 
 	// Check for value change and enable/disable save button
@@ -1244,7 +1245,8 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	}
 	else {
 		// Restore old time value
-		UpdateTimeSetting(m_schScheduleItemTemp.GetTime(), FALSE);
+		stTimeTemp = m_schScheduleItemTemp.GetTime();
+		UpdateTimeSetting(stTimeTemp, FALSE);
 		return;
 	}
 
@@ -1290,7 +1292,7 @@ void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CEditScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
+void CEditScheduleDlg::OnClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Success (return 0)
 	*pResult = NULL;
@@ -1312,7 +1314,7 @@ void CEditScheduleDlg::OnClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* pNMHDR, LRESULT* pResult)
+void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Success (return 0)
 	*pResult = NULL;

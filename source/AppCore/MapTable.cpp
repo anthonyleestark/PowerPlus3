@@ -118,19 +118,16 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput)
 //	Description:	Find and return string paired with specified ID
 //  Arguments:		pStringTableRef  - Reference string table
 //					nID				 - String ID
-//					pszResult		 - Result string (reference type)
 //  Return value:	LPCTSTR - Paired string
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR	MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID, LPTSTR pszResult /* = NULL */)
+LPCTSTR	MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID)
 {
 	// Return NULL string if language table is invalid
 	ASSERT(pStringTableRef != NULL);
-	if (pStringTableRef == NULL) {
-		if (pszResult != NULL) pszResult = STRING_NULL;
-		return STRING_NULL;
-	}
+	if (pStringTableRef == NULL)
+		return Constant::String::Null;
 
 	// Find and return corresponding string paired with specified ID
 	int nIndex = 0;
@@ -143,18 +140,10 @@ LPCTSTR	MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID, LPTSTR ps
 			break;
 
 		// Compare string
-		if (stringPair.dwLangStringID == nID) {
-			if (pszResult != NULL) {
-				_tcscpy(pszResult, stringPair.lpszLangString);
-			}
+		if (stringPair.dwLangStringID == nID)
 			return stringPair.lpszLangString;
-		}
+
 	} while (nIndex < MAX_TABLESIZE);
 
-	// Return NULL string if not found
-	if (pszResult != NULL) {
-		pszResult = STRING_NULL;
-	}
-
-	return STRING_NULL;
+	return Constant::String::Null;
 }

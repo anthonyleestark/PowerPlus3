@@ -904,7 +904,7 @@ inline void RegistryValue::GetString(CString& strValue) const {
 
 // Get String value
 inline LPCTSTR RegistryValue::GetString(void) const {
-	if (!IsType(Type::String)) { return STRING_EMPTY; }
+	if (!IsType(Type::String)) { return Constant::String::Empty; }
 	else return m_pstrValue->GetString();
 }
 

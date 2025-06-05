@@ -491,15 +491,15 @@ void ScheduleItem::Print(CString& strOutput) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format schedule data
-	CString strActive = (m_bEnabled == TRUE) ? VALUE_TRUE : VALUE_FALSE;						// Enable/disable state
+	const wchar_t* enableState = (m_bEnabled == TRUE) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
 	UINT nActionStringID = GetPairedID(IDTable::ActionName, m_nActionID);
-	CString strAction = GetLanguageString(ptrLanguage, nActionStringID);						// Schedule action
-	CString strTimeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, m_stTime);	// Schedule time
-	CString strRepeat = (m_rpsRepeatSet.IsRepeatEnabled() == TRUE) ? VALUE_TRUE : VALUE_FALSE;		// Repeat daily
+	const wchar_t* actionName = GetLanguageString(ptrLanguage, nActionStringID);												// Schedule action
+	const wchar_t* timeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, m_stTime).GetString();						// Schedule time
+	const wchar_t* repeatState = (m_rpsRepeatSet.IsRepeatEnabled() == TRUE) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
 
 	// Print item
 	strOutput.Format(_T("Active=(%s), ItemID=%d, Action=(%s), Time=(%s), Repeat=(%s)"),
-						strActive, m_nItemID, strAction, strTimeFormat, strRepeat);
+					enableState, m_nItemID, actionName, timeFormat, repeatState);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -998,14 +998,14 @@ void HotkeySetItem::Print(CString& strOutput) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	CString strEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
+	const wchar_t* lpszEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
 	UINT nActionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, m_nHKActionID));
-	CString strAction = GetLanguageString(ptrLanguage, nActionNameID);
-	CString strKeyStrokes = STRING_EMPTY;
+	const wchar_t* lpszAction = GetLanguageString(ptrLanguage, nActionNameID);
+	CString strKeyStrokes = Constant::String::Empty;
 	PrintKeyStrokes(strKeyStrokes);
 
 	// Print item
-	strOutput.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  strEnable, strAction, strKeyStrokes);
+	strOutput.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  lpszEnable, lpszAction, strKeyStrokes.GetString());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1023,11 +1023,8 @@ void HotkeySetItem::PrintKeyStrokes(CString& strOutput) const
 	using namespace MapTable;
 	using namespace Language;
 
-	// Get language table
-	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
-
 	// Format keystrokes
-	CString strKeyStrokes = STRING_EMPTY;
+	CString strKeyStrokes = Constant::String::Empty;
 	if (m_dwModifiers & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
 	if (m_dwModifiers & MOD_ALT)		strKeyStrokes += _T("Alt + ");
 	if (m_dwModifiers & MOD_WIN)		strKeyStrokes += _T("Win + ");
@@ -1367,7 +1364,7 @@ void HotkeySetData::Delete(int nAtIndex)
 void HotkeySetData::PrintKeyStrokes(UINT nHKID, CString& strOutput) const
 {
 	// Search for hotkey ID and get keystrokes string
-	CString strKeyStrokes = STRING_EMPTY;
+	CString strKeyStrokes = Constant::String::Empty;
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		Item hksItem = this->GetItemAt(nIndex);
 		if (hksItem.GetActionID() == nHKID) {
@@ -1495,7 +1492,7 @@ PwrReminderItem::PwrReminderItem()
 	// Init data
 	m_bEnabled = FALSE;										// Enable state
 	m_nItemID = PwrReminderData::minItemID;					// Item ID
-	m_strMessage = STRING_EMPTY;							// Message content
+	m_strMessage = Constant::String::Empty;							// Message content
 	m_nEventID = Event::atSetTime;							// Event ID
 	m_stTime = SYSTEMTIME_ZERO;								// Event time
 	m_dwMsgStyle = Style::messageBox;						// Reminder style
@@ -1646,7 +1643,7 @@ void PwrReminderItem::Print(CString& strOutput) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	CString strEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
+	const wchar_t* lpszEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
 	CString strMsg = m_strMessage;
 	if (strMsg.GetLength() > (MAX_DISP_LOGSTRING_LENGTH + 3)) {
 		strMsg = m_strMessage.Left(MAX_DISP_LOGSTRING_LENGTH) + _T("...");
@@ -1659,11 +1656,11 @@ void PwrReminderItem::Print(CString& strOutput) const
 		strEvent = FormatDispTime(ptrLanguage, strFormat, m_stTime);
 	}
 	nTemp = GetPairedID(IDTable::PwrReminderStyle, m_dwMsgStyle);
-	CString strStyle = GetLanguageString(ptrLanguage, nTemp);
+	const wchar_t* lpszStyle = GetLanguageString(ptrLanguage, nTemp);
 
 	// Print item
 	strOutput.Format(_T("State=(%s), ItemID=%d, Msg=(%s), Event=(%s), Style=(%s), Repeat=%d"),
-				strEnable, m_nItemID, strMsg, strEvent, strStyle, m_rpsRepeatSet.IsRepeatEnabled());
+				lpszEnable, m_nItemID, strMsg.GetString(), strEvent.GetString(), lpszStyle, m_rpsRepeatSet.IsRepeatEnabled());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2081,7 +2078,7 @@ HistoryInfoData::HistoryInfoData()
 	m_nActionID = INT_NULL;									// History action ID
 	m_bActionResult = FALSE;								// Action result
 	m_dwErrorCode = INT_NULL;								// Returned error code
-	m_strDescription = STRING_EMPTY;						// History description (attached info)
+	m_strDescription = Constant::String::Empty;						// History description (attached info)
 }
 
 HistoryInfoData::HistoryInfoData(const HistoryInfoData& pData)
@@ -2148,7 +2145,7 @@ void HistoryInfoData::Init(UINT nCategoryID)
 	m_nCategoryID = nCategoryID;							// Category ID
 	m_stTimestamp = AppCore::GetCurSysTime();				// Timestamp of history
 	m_dwErrorCode = INT_NULL;								// Returned error code
-	m_strDescription = STRING_EMPTY;						// History description (attached info)
+	m_strDescription = Constant::String::Empty;						// History description (attached info)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2291,7 +2288,7 @@ BOOL RegistryValue::Init(UINT nRegValueType)
 	switch (nRegValueType)
 	{
 	case Type::String:
-		m_pstrValue = new CString(STRING_EMPTY);
+		m_pstrValue = new CString(Constant::String::Empty);
 		return (m_pstrValue != NULL);
 
 	case Type::DWORD_32:
@@ -2472,7 +2469,7 @@ UINT RegistryValue::GetType(void) const
 RegistryKey::RegistryKey()
 {
 	// Initialize
-	m_strKeyName = STRING_EMPTY;							// Key name (string)
+	m_strKeyName = Constant::String::Empty;							// Key name (string)
 	m_regValue = REGISTRYVALUE();							// Register value data
 }
 
@@ -2526,7 +2523,7 @@ void RegistryKey::Copy(const RegistryKey& pItem)
 void RegistryKey::Clear(void)
 {
 	// Reset data
-	m_strKeyName = STRING_EMPTY;							// Key name (string)
+	m_strKeyName = Constant::String::Empty;							// Key name (string)
 	m_regValue.Reset();										// Data values
 }
 
@@ -2541,10 +2538,10 @@ RegistryInfo::RegistryInfo()
 {
 	// Initialize
 	m_hRootKey = NULL;										// Root key (HKEY)
-	m_strRootKey = STRING_EMPTY;							// Root key (string)
+	m_strRootKey = Constant::String::Empty;							// Root key (string)
 	m_astrSubkeyPath.clear();								// Subkey path (string array)
-	m_strCompanyName = STRING_EMPTY;						// Company name (string)
-	m_strProductName = STRING_EMPTY;						// Product name (string)
+	m_strCompanyName = Constant::String::Empty;						// Company name (string)
+	m_strProductName = Constant::String::Empty;						// Product name (string)
 	m_astrSectionArray.clear();								// Section array (string)
 	m_regKeyInfo = REGISTRYKEY();							// Registry key info
 }
@@ -2608,10 +2605,10 @@ void RegistryInfo::RemoveAll(void)
 {
 	// Reset data
 	m_hRootKey = NULL;										// Root key (HKEY)
-	m_strRootKey = STRING_EMPTY;							// Root key (string)
+	m_strRootKey = Constant::String::Empty;							// Root key (string)
 	m_astrSubkeyPath.clear();								// Subkey path (string array)
-	m_strCompanyName = STRING_EMPTY;						// Company name (string)
-	m_strProductName = STRING_EMPTY;						// Product name (string)
+	m_strCompanyName = Constant::String::Empty;						// Company name (string)
+	m_strProductName = Constant::String::Empty;						// Product name (string)
 	m_astrSectionArray.clear();								// Section array (string)
 	m_regKeyInfo.Clear();									// Registry key info
 }
@@ -2662,9 +2659,9 @@ void RegistryInfo::GetSectionName(StringArray& arrOutput) const
 Substring::Substring()
 {
 	// Initialization
-	m_strLeft = STRING_EMPTY;				// Left part
-	m_strMid = STRING_EMPTY;				// Middle part
-	m_strRight = STRING_EMPTY;				// Right part
+	m_strLeft = Constant::String::Empty;				// Left part
+	m_strMid = Constant::String::Empty;				// Middle part
+	m_strRight = Constant::String::Empty;				// Right part
 }
 
 Substring::Substring(const Substring& pData)
@@ -2821,33 +2818,22 @@ double PerformanceCounter::GetElapsedTime(BOOL bToMillisecs) const
 //	Description:	Get the title name of current language
 //  Arguments:		nCurLanguage	- Current language ID
 //					bGetDescription - Get language package description
-//					pszResult		- Result string pointer (in/out)
 //  Return value:	LPCTSTR - Language name
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = FALSE */, LPTSTR pszResult /* = NULL */)
+LPCTSTR Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = FALSE */)
 {
 	// Load language table package
 	LANGTABLE_PTR ptrLangTable = LoadLanguageTable(nCurLanguage);
-	if (ptrLangTable == NULL) {
-		// Unknown result
-		if (pszResult != NULL)	pszResult = VALUE_UNKNOWN;
-		return VALUE_UNKNOWN;
-	}
+	if (ptrLangTable == NULL)
+		return Constant::Value::Unknown;
 
 	// Get language package info
 	UINT nInfoTargetID = (bGetDescription) ? LANGPACKINFO_DESCRIPTIONFULL : LANGPACKINFO_LANGNAMEID;
 	LPCTSTR lpszRetInfoString = GetLanguageString(ptrLangTable, nInfoTargetID);
-	if (IS_NULL_STRING(lpszRetInfoString)) {
-		// Unknown result
-		lpszRetInfoString = VALUE_UNKNOWN;
-	}
-
-	// Return result
-	if (pszResult != NULL) {
-		_tcscpy(pszResult, lpszRetInfoString);
-	}
+	if (IS_NULL_STRING(lpszRetInfoString)) 
+		lpszRetInfoString = Constant::Value::Unknown;
 
 	return lpszRetInfoString;
 }
@@ -2857,13 +2843,11 @@ LPCTSTR Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = F
 //	Function name:	LoadLanguageTable
 //	Description:	Load language table by specified language option
 //  Arguments:		nCurLanguage   - Current language ID
-//					pszRetLangName - Pointer to return language table name
-//					pnSize		   - Pointer to return language table size
 //  Return value:	LANGTABLE_PTR - Language package pointer
 //
 //////////////////////////////////////////////////////////////////////////
 
-LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangName /* = NULL */, int* pnSize /* = NULL */)
+LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage)
 {
 	LANGTABLE_PTR ptrLangTable = NULL;
 
@@ -2890,17 +2874,6 @@ LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangNa
 		break;
 	}
 
-	// Get language table name ID
-	if ((pszRetLangName != NULL) && (ptrLangTable != NULL)) {
-		LPCTSTR lpszLangName = GetLanguageString(ptrLangTable, LANGPACKINFO_LANGNAMEID);
-		_tcscpy(pszRetLangName, lpszLangName);
-	}
-
-	// Get language table size
-	if ((pnSize != NULL) && (ptrLangTable != NULL)) {
-		*pnSize = ptrLangTable->size();
-	}
-
 	return ptrLangTable;
 }
 
@@ -2915,31 +2888,21 @@ LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage, LPTSTR pszRetLangNa
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID, LPTSTR pszResult /* = NULL */)
+LPCTSTR Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID)
 {
 	// Return NULL string if language table is empty
-	if ((ptLanguage == NULL) || (ptLanguage->empty())) {
-		if (pszResult != NULL) pszResult = STRING_NULL;
-		return STRING_NULL;
-	}
+	if ((ptLanguage == NULL) || (ptLanguage->empty()))
+		return Constant::String::Null;
 
 	// Find and return corresponding language string paired with specified ID
 	for (int nIndex = 0; nIndex < ptLanguage->size(); nIndex++) {
 		LANGTEXT langString = ptLanguage->at(nIndex);
 
-		if (langString.dwLangStringID == nID) {
-			if (pszResult != NULL) {
-				_tcscpy(pszResult, langString.lpszLangString);
-			}
+		if (langString.dwLangStringID == nID)
 			return langString.lpszLangString;
-		}
 	}
 
-	// Return NULL string if not found
-	if (pszResult != NULL) {
-		pszResult = STRING_NULL;
-	}
-	return STRING_NULL;
+	return Constant::String::Null;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3127,7 +3090,7 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 
 	// Time format
 	CString strTimeFormat;
-	CString strTimePeriod = (sysExecTime.wHour < 12) ? SYMBOL_ANTE_MERIDIEM : SYMBOL_POST_MERIDIEM;
+	const wchar_t* lpszTimePeriod = (sysExecTime.wHour < 12) ? Constant::Symbol::AnteMeridiem : Constant::Symbol::PostMeridiem;
 	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, sysExecTime.wYear,
 												  sysExecTime.wMonth,
 												  sysExecTime.wDay,
@@ -3135,11 +3098,11 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 												  sysExecTime.wMinute,
 												  sysExecTime.wSecond,
 												  sysExecTime.wMilliseconds,
-												  strTimePeriod);
+												  lpszTimePeriod);
 
 	// Message format
 	CString strMsgFormat;
-	strMsgFormat.Format(_T("[ExecutePowerAction]\nAction: %s\nTime: %s"), strAction, strTimeFormat);
+	strMsgFormat.Format(_T("[ExecutePowerAction]\nAction: %s\nTime: %s"), strAction.GetString(), strTimeFormat.GetString());
 
 	// Show dummy test message
 	HWND hWnd = GET_HANDLE_MAINWND();
@@ -3244,15 +3207,15 @@ void AppCore::TraceErrorFormat(LPCTSTR lpszTraceLogFormatW, ...)
 void AppCore::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex)
 {
 	// Debug trace info
-	CString strFuncName = MAKEUNICODE(lpszFuncName);
-	CString strFileName = MAKEUNICODE(lpszFileName);
+	const wchar_t* funcName = MAKEUNICODE(lpszFuncName);
+	const wchar_t* fileName = MAKEUNICODE(lpszFileName);
 
 	// Format debug trace log
 	CString strDebugTraceFormat;
-	strDebugTraceFormat.Format(_T("Function: %s, File: %s(%d)"), strFuncName, strFileName, nLineIndex);
+	strDebugTraceFormat.Format(_T("Function: %s, File: %s(%d)"), funcName, fileName, nLineIndex);
 
 	// Write debug trace log: TraceDebug.log
-	WriteTraceDebugLogFile(strDebugTraceFormat);
+	WriteTraceDebugLogFile(strDebugTraceFormat.GetString());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3712,13 +3675,13 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 
 	// Format log date/time
 	CString strTimeFormat;
-	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
 	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
-		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
+		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), lpszLogStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
 	if (strLogFormat.IsEmpty())
@@ -3753,7 +3716,7 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 			// Step2: Rename file extension to BAK
 			CString strOrgFilePath;
 			CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
-			MakeFilePath(strOrgFilePath, strFolderPath, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+			MakeFilePath(strOrgFilePath, strFolderPath.GetString(), FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
 			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_ERROR_LOG))
 				return;
 
@@ -3785,13 +3748,13 @@ void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 
 	// Format log date/time
 	CString strTimeFormat;
-	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
 	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
-		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
+		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), lpszLogStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
 	if (strLogFormat.IsEmpty()) return;
@@ -3857,13 +3820,13 @@ void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 
 	// Format log date/time
 	CString strTimeFormat;
-	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
 	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
-		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
+		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), lpszLogStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
 	if (strLogFormat.IsEmpty()) return;
@@ -3975,13 +3938,13 @@ void AppCore::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogS
 
 	// Format log date/time
 	CString strTimeFormat;
-	CString strMiddayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
 	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
-		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, strMiddayFlag);
+		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat, lpszLogStringW, STRING_EMPTY);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), lpszLogStringW, Constant::String::Empty);
 
 	if (!strLogFormat.IsEmpty()) {
 		// Write log string to file
@@ -4094,7 +4057,7 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErro
 	}
 
 	// Get attached param
-	CString strDescription = STRING_NULL;
+	CString strDescription = Constant::String::Null;
 	if (lParam != NULL) {
 		// Convert to description string
 		strDescription = LPARAM_TO_STRING(lParam);
@@ -4102,7 +4065,7 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErro
 
 	// Attach additional description if available
 	if (IS_NOT_NULL_STRING(strDescription)) {
-		strErrMessage.Append(STRING_NEWLINE);
+		strErrMessage.Append(Constant::String::NewLine);
 		strErrMessage.Append(strDescription);
 	}
 
@@ -4407,7 +4370,7 @@ void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int nRowNum, int nColNum, GRIDCTRLCOLFORMAT* apGrdColFormat)
+void AppCore::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int /*nRowNum*/, int nColNum, GRIDCTRLCOLFORMAT* apGrdColFormat)
 {
 	// Check control validity
 	if (pGridCtrl == NULL) return;
@@ -4568,8 +4531,9 @@ BOOL AppCore::CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffse
 CString	AppCore::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal)
 {
 	// Load format string
-	CString strFormat;
-	BOOL bRet = LoadResourceString(strFormat, nFormatID);
+	static CString strFormat;
+	strFormat.Empty();
+	LoadResourceString(strFormat, nFormatID);
 
 	return FormatDispTime(pLang, strFormat, timeVal);
 }
@@ -4589,12 +4553,13 @@ CString	AppCore::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString, S
 {
 	// Format time string
 	UINT nTimePeriod = (timeVal.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	CString strTimePeriodFormat = Language::GetLanguageString(pLang, nTimePeriod);
+	const wchar_t* timePeriodFormat = Language::GetLanguageString(pLang, nTimePeriod);
 	WORD wHour = (timeVal.wHour > 12) ? (timeVal.wHour - 12) : timeVal.wHour;
 	WORD wMinute = timeVal.wMinute;
 
-	CString strResult;
-	strResult.Format(lpszFormatString, wHour, wMinute, strTimePeriodFormat);
+	static CString strResult;
+	strResult.Empty();
+	strResult.Format(lpszFormatString, wHour, wMinute, timePeriodFormat);
 
 	return strResult;
 }
@@ -4618,7 +4583,7 @@ LPCTSTR AppCore::LoadResourceString(UINT nResStringID)
 	BOOL bRet = strResult.LoadString(nResStringID);
 	if (bRet == FALSE) {
 		// Null string
-		strResult = STRING_NULL;
+		strResult = Constant::String::Null;
 	}
 
 	return strResult.GetString();
@@ -4639,7 +4604,7 @@ BOOL AppCore::LoadResourceString(CString& strResult, UINT nResStringID)
 	BOOL bRet = strResult.LoadString(nResStringID);
 	if (bRet == FALSE) {
 		// Null string
-		strResult = STRING_NULL;
+		strResult = Constant::String::Null;
 	}
 
 	return bRet;
@@ -4713,8 +4678,8 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 	for (int nIndex = 0; nIndex < nBuffLength; nIndex++) {
 
 		// Invalid characters
-		if ((lpszBuff[nIndex] == CHAR_ENDLINE) ||
-			(lpszBuff[nIndex] == CHAR_RETURN))
+		if ((lpszBuff[nIndex] == Constant::Char::EndLine) ||
+			(lpszBuff[nIndex] == Constant::Char::Return))
 			continue;
 
 		// Keep valid characters only
@@ -4722,7 +4687,7 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 		nBuffIndex++;
 
 		// End string
-		if (lpszBuff[nBuffIndex] == CHAR_ENDSTRING)
+		if (lpszBuff[nBuffIndex] == Constant::Char::EndString)
 			break;
 	}
 
@@ -4741,7 +4706,7 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 		TCHAR tcCurChar = lpszBuff[nCurCharIndex];
 
 		// In case of newline character
-		if ((tcCurChar == CHAR_ENDLINE) || (tcCurChar == CHAR_RETURN)) {
+		if ((tcCurChar == Constant::Char::EndLine) || (tcCurChar == Constant::Char::Return)) {
 
 			// Go to next character
 			nCurCharIndex++;
@@ -4749,7 +4714,7 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 		}
 
 		// In case of quotation mark
-		if (tcCurChar == CHAR_QUOTAMARK) {
+		if (tcCurChar == Constant::Char::QuotaMark) {
 
 			// Change flag
 			nQuoteFlag = (nQuoteFlag == FLAG_OFF) ? FLAG_ON : FLAG_OFF;
@@ -4771,13 +4736,13 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 		}
 
 		// If current character is a key letter or end of string
-		if ((nKeyFlag == FLAG_ON) || (tcCurChar == CHAR_ENDSTRING)) {
+		if ((nKeyFlag == FLAG_ON) || (tcCurChar == Constant::Char::EndString)) {
 
 			// Empty token means continuous key letters
 			if (nTokenCharIndex > 0) {
 
 				// End current token
-				retBuff[nTokenCount].tcToken[nTokenCharIndex] = CHAR_ENDSTRING;
+				retBuff[nTokenCount].tcToken[nTokenCharIndex] = Constant::Char::EndString;
 				retBuff[nTokenCount].nLength = _tcsclen(retBuff[nTokenCount].tcToken);
 				nTokenCharIndex = 0;
 
@@ -4787,7 +4752,7 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 		}
 
 		// Current character is the quotation mark itself
-		else if (tcCurChar == CHAR_QUOTAMARK) {
+		else if (tcCurChar == Constant::Char::QuotaMark) {
 
 			// If token number exceeds max count, stop processing
 			if (nTokenCount > MAX_TOKEN_COUNT)
@@ -4811,7 +4776,7 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 		nCurCharIndex++;
 
 		// If end of string or token number exceeds maximum limitation, stop processing
-		if ((tcCurChar == CHAR_ENDSTRING) || (nTokenCount > MAX_TOKEN_COUNT))
+		if ((tcCurChar == Constant::Char::EndString) || (nTokenCount > MAX_TOKEN_COUNT))
 			break;
 	}
 
@@ -4842,7 +4807,7 @@ void AppCore::UpperEachWord(CString& strInput, BOOL bTrim)
 	// Lambda functions
 	static auto IsNotSpace = [](TCHAR tcChar) { return (!std::isspace(tcChar)); };
 	static auto BothSpaces = [](TCHAR tcFirst, TCHAR tcSecond) {
-		return ((tcFirst == tcSecond) && (tcFirst == CHAR_SPACE));
+		return ((tcFirst == tcSecond) && (tcFirst == Constant::Char::Space));
 		};
 
 	// Trim string
@@ -4865,10 +4830,10 @@ void AppCore::UpperEachWord(CString& strInput, BOOL bTrim)
 
 	// Capitalize first character of each word
 	for (int nIndex = 0; nIndex < nLength; nIndex++) {
-		if (lpszString[nIndex] != CHAR_SPACE) {
+		if (lpszString[nIndex] != Constant::Char::Space) {
 			if ((nIndex == 0)	/* First character */ ||
 				/* Not the first character and standing right next to a space */
-				((nIndex > 0) && (lpszString[nIndex - 1] == CHAR_SPACE))) {
+				((nIndex > 0) && (lpszString[nIndex - 1] == Constant::Char::Space))) {
 				// Convert to uppercase
 				lpszString[nIndex] = std::toupper(lpszString[nIndex]);
 			}
@@ -4904,7 +4869,7 @@ LPCTSTR AppCore::GetSubFolderPath(LPCTSTR lpszSubFolderName)
 	// Make sub-folder path
 	strRetSubFolderPath.SetString(strAppPath);
 	if (lpszSubFolderName != NULL) {
-		strRetSubFolderPath.Append(SYMBOL_BACKSLASH);
+		strRetSubFolderPath.Append(Constant::Symbol::Backslash);
 		strRetSubFolderPath.Append(lpszSubFolderName);
 	}
 
@@ -4933,7 +4898,7 @@ BOOL AppCore::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lp
 	if (lpszDirectory != NULL) {
 		// Add directory path
 		strFilePath.Append(lpszDirectory);
-		strFilePath.Append(SYMBOL_BACKSLASH);
+		strFilePath.Append(Constant::Symbol::Backslash);
 	}
 
 	// File name must be specified, if not, do nothing
@@ -4977,21 +4942,21 @@ int AppCore::PrintCharList(LPCTSTR lpszSrc, CString& strOutput)
 	strOutput.Append(_T("{ "));
 
 	// Print character list
-	CString strReplace = STRING_EMPTY;
+	CString strReplace = Constant::String::Empty;
 	int nSrcLength = _tcslen(lpszSrc);
 	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
 		TCHAR tch = lpszSrc[nIndex];
 		switch (tch)
 		{
-		case CHAR_TAB:
+		case Constant::Char::Tab:
 			strReplace = _T("#TAB");
 			strOutput.Append(strReplace);
 			break;
-		case CHAR_RETURN:
+		case Constant::Char::Return:
 			strReplace = _T("#RET");
 			strOutput.Append(strReplace);
 			break;
-		case CHAR_ENDLINE:
+		case Constant::Char::EndLine:
 			strReplace = _T("#ENDL");
 			strOutput.Append(strReplace);
 			break;
@@ -5027,7 +4992,7 @@ LPCTSTR AppCore::StringFormat(UINT nFormatTemplateID, ...)
 	// Load resource format template string
 	CString strTemplate;
 	VERIFY(strTemplate.LoadString(nFormatTemplateID));
-	if (strTemplate.IsEmpty()) return STRING_EMPTY;
+	if (strTemplate.IsEmpty()) return Constant::String::Empty;
 
 	// Template string validation
 	ATLASSERT(AtlIsValidString(strTemplate));
@@ -5038,7 +5003,7 @@ LPCTSTR AppCore::StringFormat(UINT nFormatTemplateID, ...)
 
 	// Format string
 	va_list argList;
-	va_start(argList, strTemplate);
+	va_start(argList, strTemplate.GetString());
 	strResult.FormatV(strTemplate, argList);
 	va_end(argList);
 
@@ -5086,7 +5051,7 @@ LPCTSTR AppCore::StringFormat(LPCTSTR lpszFormatTemplate, ...)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::SubString(LPCTSTR lpszSrc, Substring& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL bIncSepChar /* = FALSE */)
+BOOL AppCore::SubString(LPCTSTR lpszSrc, Substring& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL /* bIncSepChar = FALSE */ )
 {
 	CString strSrc(lpszSrc);
 
@@ -5151,14 +5116,14 @@ BOOL AppCore::SubString(LPCTSTR lpszSrc, Substring& subDest, TCHAR tcFirstChar, 
 
 		// Case #2:
 		subResult.SetLeft(strSrc.Left(nLastIndex));
-		subResult.SetMid(STRING_EMPTY);
+		subResult.SetMid(Constant::String::Empty);
 		subResult.SetRight(strSrc.Right(strSrc.GetLength() - (nLastIndex + 1)));
 	}
 	else if ((nFirstIndex != INT_INVALID) && (nLastIndex == INT_INVALID)) {
 
 		// Case #3:
 		subResult.SetLeft(strSrc.Left(nFirstIndex));
-		subResult.SetMid(STRING_EMPTY);
+		subResult.SetMid(Constant::String::Empty);
 		subResult.SetRight(strSrc.Right(strSrc.GetLength() - (nFirstIndex + 1)));
 	}
 
@@ -5199,7 +5164,7 @@ LPCTSTR AppCore::GetApplicationPath(BOOL bIncludeExeName)
 		// Trace error
 		TRACE_FORMAT("Error: Get module file name failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return STRING_EMPTY;
+		return Constant::String::Empty;
 	}
 
 	// Full path result
@@ -5210,7 +5175,7 @@ LPCTSTR AppCore::GetApplicationPath(BOOL bIncludeExeName)
 	// If not including the executable file name
 	if (bIncludeExeName != TRUE) {
 		// Remove the executable file name (and the last '\' as well)
-		int nPos = strRetAppPath.ReverseFind(CHAR_BACKSLASH);
+		int nPos = strRetAppPath.ReverseFind(Constant::Char::Backslash);
 		if (nPos != INT_INVALID) {
 			CString strTemp = strRetAppPath.Left(nPos);
 			strRetAppPath = strTemp;
@@ -5238,7 +5203,7 @@ CString AppCore::GetProductVersion(BOOL bFullVersion)
 		// Trace error
 		TRACE_ERROR("Error: Make file path failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return STRING_EMPTY;
+		return Constant::String::Empty;
 	}
 
 	// Get file version info size
@@ -5249,7 +5214,7 @@ CString AppCore::GetProductVersion(BOOL bFullVersion)
 		// Trace error
 		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return STRING_EMPTY;
+		return Constant::String::Empty;
 	}
 
 	// Get file verision info structure
@@ -5260,13 +5225,13 @@ CString AppCore::GetProductVersion(BOOL bFullVersion)
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		delete[] pVersionInfo;
-		return STRING_EMPTY;
+		return Constant::String::Empty;
 	}
 
 	// Querry version value
 	UINT uLen;
 	VS_FIXEDFILEINFO* lpFfi;
-	if (!VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
+	if (!VerQueryValue(pVersionInfo, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &uLen)) {
 		// Trace error
 		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -5343,7 +5308,7 @@ BOOL AppCore::GetProductVersion(CString& strFullVersion, CString& strShortVersio
 	// Querry version value
 	UINT uLen;
 	VS_FIXEDFILEINFO* lpFfi;
-	if (!VerQueryValue(pVersionInfo, SYMBOL_BACKSLASH, (LPVOID*)&lpFfi, &uLen)) {
+	if (!VerQueryValue(pVersionInfo, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &uLen)) {
 		// Trace error
 		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -5532,7 +5497,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, rootkey name is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-			return STRING_NULL;
+			return Constant::String::Null;
 		}
 	}
 
@@ -5544,7 +5509,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, subkey info is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-			return STRING_NULL;
+			return Constant::String::Null;
 		}
 	}
 
@@ -5555,7 +5520,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, profile key name is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-			return STRING_NULL;
+			return Constant::String::Null;
 		}
 	}
 
@@ -5566,7 +5531,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, application name is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-			return STRING_NULL;
+			return Constant::String::Null;
 		}
 	}
 
@@ -5578,7 +5543,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, section name is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-			return STRING_NULL;
+			return Constant::String::Null;
 		}
 	}
 
@@ -5595,7 +5560,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	regInfo.GetSubkeyPath(astrSubkeyPath);
 	for (int nIndex = 0; nIndex < astrSubkeyPath.size(); nIndex++) {
 		if (nIndex > 0) {
-			strSubKeyPathTemp.Append(SYMBOL_BACKSLASH);
+			strSubKeyPathTemp.Append(Constant::Symbol::Backslash);
 		}
 		strSubKeyPathTemp.Append(astrSubkeyPath.at(nIndex));
 	}
@@ -5620,7 +5585,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 	regInfo.GetSectionName(astrSectionArray);
 	for (int nIndex = 0; nIndex < astrSectionArray.size(); nIndex++) {
 		if (nIndex > 0) {
-			strSectionNameTemp.Append(SYMBOL_BACKSLASH);
+			strSectionNameTemp.Append(Constant::Symbol::Backslash);
 		}
 		strSectionNameTemp.Append(astrSectionArray.at(nIndex));
 	}
@@ -5651,7 +5616,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 			if ((nRetFailedFlag != FLAG_ON) && (!strSubKeyPathTemp.IsEmpty())) {
 				// Include separator character if rootkey is included
 				if (bIncRootKey != FALSE) {
-					strRegFullPath.Append(SYMBOL_BACKSLASH);
+					strRegFullPath.Append(Constant::Symbol::Backslash);
 				}
 				// Include sub-key path
 				strRegFullPath.Append(strSubKeyPathTemp);
@@ -5665,7 +5630,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingCompanyName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strProfileKeyName.IsEmpty())) {
 				// Include profile key name
-				strRegFullPath.Append(SYMBOL_BACKSLASH);
+				strRegFullPath.Append(Constant::Symbol::Backslash);
 				strRegFullPath.Append(strProfileKeyName);
 			}
 			else {
@@ -5677,7 +5642,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProductName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strAppName.IsEmpty())) {
 				// Include application name
-				strRegFullPath.Append(SYMBOL_BACKSLASH);
+				strRegFullPath.Append(Constant::Symbol::Backslash);
 				strRegFullPath.Append(strAppName);
 			}
 			else {
@@ -5689,7 +5654,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSectionName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strSectionNameTemp.IsEmpty())) {
 				// Include section name
-				strRegFullPath.Append(SYMBOL_BACKSLASH);
+				strRegFullPath.Append(Constant::Symbol::Backslash);
 				strRegFullPath.Append(strSectionNameTemp);
 			}
 			else {
@@ -5701,7 +5666,7 @@ LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingKeyName)) {
 			if ((nRetFailedFlag != FLAG_ON) && (!strKeyNameTemp.IsEmpty())) {
 				// Include key name
-				strRegFullPath.Append(SYMBOL_BACKSLASH);
+				strRegFullPath.Append(Constant::Symbol::Backslash);
 				strRegFullPath.Append(strKeyNameTemp);
 			}
 			else {
@@ -5759,7 +5724,7 @@ void AppCore::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 
 BOOL AppCore::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
 {
-	CString strAppPath = STRING_EMPTY;
+	CString strAppPath = Constant::String::Empty;
 
 	switch (eFileType) 
 	{
@@ -5945,7 +5910,7 @@ BOOL AppCore::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* = STRING_EMPTY */)
+void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* = Constant::String::Empty */)
 {
 	// Check validity
 	if (pBtn == NULL)
@@ -5982,7 +5947,7 @@ void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* =
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* lpntme, DWORD FontType, LPARAM lParam) 
+BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* /*lpntme*/, DWORD /*FontType*/, LPARAM lParam) 
 {
 	using wstring_vector = typename std::vector<std::wstring>;
 	wstring_vector* fontNames = reinterpret_cast<wstring_vector*>(lParam);

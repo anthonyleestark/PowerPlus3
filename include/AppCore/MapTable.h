@@ -42,7 +42,7 @@ namespace MapTable
 	#define INITIALIZE_STRINGMAPTABLE(tableName) \
 		static STRINGTABLE tableName = {
 	#define END_STRINGMAPTABLE() \
-		, INT_NULL, STRING_EMPTY, };
+		, INT_NULL, _T("") };
 
 	// Maximum table size
 	#define MAX_TABLESIZE	1000
@@ -538,5 +538,5 @@ namespace MapTable
 
 	UINT	GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse = FALSE);
 	UINT	GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput);
-	LPCTSTR	GetString(STRINGTABLE_REF pStringTableRef, UINT nID, LPTSTR pszResult = NULL);
+	LPCTSTR	GetString(STRINGTABLE_REF pStringTableRef, UINT nID);
 };

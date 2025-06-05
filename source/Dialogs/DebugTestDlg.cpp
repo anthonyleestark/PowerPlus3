@@ -59,8 +59,8 @@ CDebugTestDlg::CDebugTestDlg() : SDialog(IDD_DEBUGTEST_DLG)
 	m_pDebugViewBrush = NULL;
 
 	// Buffer content
-	m_strBuffer = STRING_EMPTY;
-	m_strBufferBak = STRING_EMPTY;
+	m_strBuffer = Constant::String::Empty;
+	m_strBufferBak = Constant::String::Empty;
 
 	// Debug command history
 	m_bCurDispHistory = FALSE;
@@ -365,10 +365,10 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CDebugTestDlg::OnDebugCmdNoReply(WPARAM wParam, LPARAM lParam)
+LRESULT CDebugTestDlg::OnDebugCmdNoReply(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Add an empty new line
-	AddLine(STRING_EMPTY, FALSE);
+	AddLine(Constant::String::Empty, FALSE);
 
 	// Display log and move cursor to end
 	UpdateDisplay(TRUE, FALSE);
@@ -392,7 +392,7 @@ LRESULT CDebugTestDlg::OnDebugCmdNoReply(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM wParam, LPARAM lParam)
+LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Clear buffer
 	ClearViewBuffer();
@@ -411,7 +411,7 @@ LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CDebugTestDlg::OnShowDialog(WPARAM wParam, LPARAM lParam)
+LRESULT CDebugTestDlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get flag value
 	BOOL bShowFlag = TRUE;
@@ -469,7 +469,7 @@ BOOL CDebugTestDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			// If the caret position is not in the last line
 			if (nCaretLineIdx != (GetDebugEditView()->GetLineCount() - 1)) {
 				// Move caret to end of DebugTest edit view
-				GetDebugEditView()->SetSel(-1);
+				GetDebugEditView()->SetSel(static_cast<DWORD>(-1));
 			}
 			// Paste clipboard text to DebugTest edit view
 			GetDebugEditView()->Paste();
@@ -832,11 +832,11 @@ BOOL CDebugTestDlg::CreateDebugViewBrush(void)
 //	Function name:	GetCaretPosition
 //	Description:	Get the caret's current position
 //  Arguments:		None
-//  Return value:	size_t - Caret position
+//  Return value:	int - Caret position
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CDebugTestDlg::GetCaretPosition(void)
+int CDebugTestDlg::GetCaretPosition(void)
 {
 	// Check DebugTest edit view validity
 	if (!IsDebugEditViewValid())
@@ -963,12 +963,12 @@ int CDebugTestDlg::FormatDebugCommand(CString& strDebugCommand)
 		TCHAR tch = strDebugCommand.GetAt(nIndex);
 		switch (tch)
 		{
-		case CHAR_RETURN:
-		case CHAR_ENDLINE:
+		case Constant::Char::Return:
+		case Constant::Char::EndLine:
 			break;
-		case CHAR_TAB:
+		case Constant::Char::Tab:
 			// Replace with space
-			lpszBuffTemp[nBuffCount++] = CHAR_SPACE;
+			lpszBuffTemp[nBuffCount++] = Constant::Char::Space;
 			break;
 		default:
 			// Add to buffer
@@ -1004,7 +1004,7 @@ void CDebugTestDlg::ClearViewBuffer(void)
 		return;
 
 	// Clear buffer
-	m_strBuffer = STRING_EMPTY;
+	m_strBuffer = Constant::String::Empty;
 	GetDebugEditView()->SetWindowText(m_strBuffer);
 
 	// Backup buffer
@@ -1030,9 +1030,9 @@ void CDebugTestDlg::AddLine(LPCTSTR lpszString, BOOL bNewLine /* = TRUE */)
 		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
 
 		// If end of buffer is not an endline
-		if (tcEndChar != CHAR_RETURN && tcEndChar != CHAR_ENDLINE) {
+		if (tcEndChar != Constant::Char::Return && tcEndChar != Constant::Char::EndLine) {
 			// Add an endline first
-			m_strBuffer.Append(STRING_NEWLINE);
+			m_strBuffer.Append(Constant::String::NewLine);
 		}
 	}
 
@@ -1047,9 +1047,9 @@ void CDebugTestDlg::AddLine(LPCTSTR lpszString, BOOL bNewLine /* = TRUE */)
 		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
 
 		// If end of buffer is not an endline
-		if (tcEndChar != CHAR_RETURN && tcEndChar != CHAR_ENDLINE) {
+		if (tcEndChar != Constant::Char::Return && tcEndChar != Constant::Char::EndLine) {
 			// Add a new empty line
-			m_strBuffer.Append(STRING_NEWLINE);
+			m_strBuffer.Append(Constant::String::NewLine);
 		}
 	}
 }
@@ -1077,7 +1077,7 @@ void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */, BOOL bNotifyPar
 
 	// Move to end
 	if (bSeekToEnd == TRUE) {
-		pDebugEditView->SetSel(-1);
+		pDebugEditView->SetSel(static_cast<DWORD>(-1));
 	}
 
 	// Notify to parent window about display update

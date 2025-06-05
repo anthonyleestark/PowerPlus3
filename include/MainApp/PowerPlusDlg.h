@@ -61,7 +61,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 	// Dialog control management
-	virtual size_t RegisterDialogManagement(void);
+	virtual int RegisterDialogManagement(void);
 	virtual void UpdateDialogManagement(void);
 	virtual BOOL UnregisterDialogManagement(void);
 
@@ -215,7 +215,7 @@ private:
 	void ShowDialog(CWnd* pWnd, BOOL bShowFlag = TRUE);
 	void OpenChildDialogEx(UINT nDialogID);
 	void OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode = FALSE, int nOpenMode = MODE_OPENDLG_MODAL);
-	BOOL OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir = STRING_EMPTY);
+	BOOL OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir = Constant::String::Empty);
 
 	// Action Schedule feature functions
 	BOOL ProcessActionSchedule(void);

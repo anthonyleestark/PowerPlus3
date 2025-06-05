@@ -83,8 +83,8 @@ public:
 };
 
 // Define new typenames for LogData
-using LOGDETAIL = typename LogDetail;
-using PLOGDETAIL = typename LogDetail*;
+using LOGDETAIL = LogDetail;
+using PLOGDETAIL = LogDetail*;
 using LOGDETAILARRAY = typename std::vector<LogDetail>;
 
 
@@ -119,8 +119,8 @@ public:
 };
 
 // Define new typenames for LogDetailInfo
-using LOGDETAILINFO = typename LogDetailInfo;
-using PLOGDETAILINFO = typename LogDetailInfo*;
+using LOGDETAILINFO = LogDetailInfo;
+using PLOGDETAILINFO = LogDetailInfo*;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -179,10 +179,10 @@ public:
 };
 
 // Define new typenames for LogItem
-using LOGITEM = typename LogItem;
-using PLOGITEM = typename LogItem*;
+using LOGITEM = LogItem;
+using PLOGITEM = LogItem*;
 using LOGDATA = typename std::vector<LogItem>;
-using PLOGDATA = typename LOGDATA*;
+using PLOGDATA = LOGDATA*;
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,7 +217,7 @@ struct JSON_ENTRY
 	CString strValue;		// Value (string)
 
 	// Construction
-	JSON_ENTRY() : strKey(STRING_EMPTY), strValue(STRING_EMPTY) {};
+	JSON_ENTRY() : strKey(Constant::String::Empty), strValue(Constant::String::Empty) {};
 	JSON_ENTRY(const CString& key, const CString& value) : strKey(key), strValue(value) {};
 
 	// Operators
@@ -294,8 +294,8 @@ public:
 };
 
 // Define new typenames for JSON class object
-using JSONDATA = typename JSON;
-using PJSONDATA = typename JSONDATA*;
+using JSONDATA = JSON;
+using PJSONDATA = JSONDATA*;
 
 
 //////////////////////////////////////////////////////////////////////////

@@ -119,7 +119,7 @@ void CTitleTip::Show(CRect rectTitle, LPCTSTR lpszTitleText, int xoffset /*=0*/,
 	if( IsWindowVisible() ) 
 		return;
 
-    m_rectHover = (lpHoverRect != NULL)? lpHoverRect : rectTitle;
+    m_rectHover = (lpHoverRect != NULL)? CRect(lpHoverRect) : rectTitle;
     m_rectHover.right++; m_rectHover.bottom++;
 
 	m_pParentWnd->ClientToScreen( m_rectHover );
@@ -243,12 +243,14 @@ BOOL CTitleTip::PreTranslateMessage(MSG* pMsg)
 	switch (pMsg->message)
 	{
 	case WM_LBUTTONDOWN:
-       // Get tick count since last LButtonDown
-        dwTick = GetTickCount();
-        bDoubleClick = ((dwTick - m_dwLastLButtonDown) <= m_dwDblClickMsecs);
-        m_dwLastLButtonDown = dwTick;
-        // NOTE: DO NOT ADD break; STATEMENT HERE! Let code fall through
-
+		{
+			// Get tick count since last LButtonDown
+			dwTick = GetTickCount();
+			bDoubleClick = ((dwTick - m_dwLastLButtonDown) <= m_dwDblClickMsecs);
+			m_dwLastLButtonDown = dwTick;
+			// NOTE: DO NOT ADD break; STATEMENT HERE! Let code fall through
+		}
+		[[fallthrough]];
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 		{

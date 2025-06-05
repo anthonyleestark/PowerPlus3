@@ -50,7 +50,7 @@ struct Section {
 	struct Schedule {
 		static constexpr const wchar_t* ItemFormat								= _T("ScheduleItem_%02d");
 		static const wchar_t* Item(int id) {
-			static wchar_t buffer[32] = STRING_EMPTY;
+			static wchar_t buffer[32] = L"\0";
 			swprintf(buffer, 32, ItemFormat, id);
 			return buffer;
 		};
@@ -60,7 +60,7 @@ struct Section {
 	struct HotkeySet {
 		static constexpr const wchar_t* ItemFormat								= _T("HotkeySetItem_%02d");
 		static const wchar_t* Item(int id) {
-			static wchar_t buffer[32] = STRING_EMPTY;
+			static wchar_t buffer[32] = L"\0";
 			swprintf(buffer, 32, ItemFormat, id);
 			return buffer;
 		};
@@ -70,7 +70,7 @@ struct Section {
 	struct PwrReminder {
 		static constexpr const wchar_t* ItemFormat								= _T("PwrReminderItem_%02d");
 		static const wchar_t* Item(int id) {
-			static wchar_t buffer[32] = STRING_EMPTY;
+			static wchar_t buffer[32] = L"\0";
 			swprintf(buffer, 32, ItemFormat, id);
 			return buffer;
 		};
@@ -225,7 +225,7 @@ struct Key
 	{
 		static constexpr const wchar_t* GridColSizeFormat						= _T("GridColSize_%02d");
 		static const wchar_t* GridColSize(int id) {
-			static wchar_t buffer[32] = STRING_EMPTY;
+			static wchar_t buffer[32] = L"\0";
 			swprintf(buffer, 32, GridColSizeFormat, id);
 			return buffer;
 		};

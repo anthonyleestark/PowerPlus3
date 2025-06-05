@@ -34,9 +34,9 @@ class CHotkeySetDlg : public SDialog
 	DECLARE_DYNAMIC(CHotkeySetDlg)
 
 public:
-	using Item = typename HotkeySetItem;
-	using HKID = typename Item::HKID;
-	using Data = typename HotkeySetData;
+	using Item = HotkeySetItem;
+	using HKID = Item::HKID;
+	using Data = HotkeySetData;
 	enum ColumnID {
 		EnableState = 0,								// Enable state
 		HKActionID,										// Hotkey action ID
@@ -56,7 +56,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual size_t RegisterDialogManagement(void);
+	virtual int RegisterDialogManagement(void);
 	virtual BOOL UnregisterDialogManagement(void);
 
 	// Implementation

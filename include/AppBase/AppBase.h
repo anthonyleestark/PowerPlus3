@@ -37,20 +37,18 @@ __pragma(warning(disable:28159))
 // Include dependencies
 #include "AppCommon.h"
 #include "AppMacros.h"
+#include "AppConstants.h"
 #include "WinApp.h"
 
 
-// Resource
-#ifndef _RESOURCE_LIB
-#define _RESOURCE_LIB
-#define _RESOURCE2_NOTINCLUDED_
-	// Default resource header
+// Resource headers
+#ifndef _RESOURCE_INCLUDED
+
 	#include "Resource.h"
-	#ifdef _RESOURCE2_NOTINCLUDED_
-		// Custom additional resource header
-		#include "Resource2.h"
-		#undef _RESOURCE2_NOTINCLUDED_
-	#endif
+	#define _RESOURCE_INCLUDED
+
+	#include "Resource2.h"
+	#define _RESOURCE2_INCLUDED
 #endif
 
 
@@ -58,6 +56,6 @@ __pragma(warning(disable:28159))
 #ifndef _CPP_STANDARD_INCLUDED
 	#pragma error("(X) Compilation Error: C++ standard libraries are missing or not included!")
 #endif
-#ifndef _WINAPP_LIB_INCLUDED
+#ifndef _WINAPP_INCLUDED
 	#pragma error("(X) Compilation Error: Windows SDK libraries are missing or not included!")
 #endif

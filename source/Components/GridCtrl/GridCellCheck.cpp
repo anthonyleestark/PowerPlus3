@@ -15,6 +15,8 @@
 #include "Components/GridCtrl/GridCtrl.h"
 #include "Components/GridCtrl/GridCellCheck.h"
 
+using namespace std;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -37,7 +39,7 @@ CSize CGridCellCheck::GetCellExtent(CDC* pDC)
     int nWidth = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();	
     CSize	cellSize = CGridCell::GetCellExtent(pDC);	
     cellSize.cx += nWidth;	
-    cellSize.cy = max (cellSize.cy, nWidth);	
+    cellSize.cy = max(cellSize.cy, static_cast<long>(nWidth));	
     return  cellSize;
 }
 

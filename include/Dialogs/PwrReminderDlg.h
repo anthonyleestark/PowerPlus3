@@ -41,10 +41,10 @@ class CPwrReminderDlg : public SDialog
 	DECLARE_DYNAMIC(CPwrReminderDlg)
 
 public:
-	using Item = typename PwrReminderItem;
-	using Event = typename Item::Event;
-	using Style = typename Item::Style;
-	using Data = typename PwrReminderData;
+	using Item = PwrReminderItem;
+	using Event = Item::Event;
+	using Style = Item::Style;
+	using Data = PwrReminderData;
 	enum ColumnID {
 		Index = 0,										// Index
 		EnableState,									// Enable state
@@ -68,7 +68,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual size_t RegisterDialogManagement(void);
+	virtual int RegisterDialogManagement(void);
 	virtual BOOL UnregisterDialogManagement(void);
 
 	// Implementation

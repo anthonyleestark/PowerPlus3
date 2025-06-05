@@ -131,11 +131,11 @@ void CHotkeySetDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	size_t - Number of controls added to management
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CHotkeySetDlg::RegisterDialogManagement(void)
+int CHotkeySetDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
@@ -586,7 +586,6 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get clicked item info
 	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
 	if (pItem == NULL) return;
-	int nCurSelCol = pItem->iColumn;
 	int nCurSelRow = pItem->iRow;
 
 	// Update current selection index
@@ -614,7 +613,7 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::OnClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
+void CHotkeySetDlg::OnClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Success (return 0)
 	*pResult = NULL;
@@ -633,7 +632,7 @@ void CHotkeySetDlg::OnClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult)
+void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Success (return 0)
 	*pResult = NULL;
@@ -729,7 +728,7 @@ void CHotkeySetDlg::SetupLanguage()
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR ptrLanguage)
+void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Get parent list frame rect
 	CWnd* pListFrameWnd = GetDlgItem(IDC_HOTKEYSET_ITEM_LISTBOX);
@@ -860,7 +859,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 		SetFixedCellStyle(m_pHotkeySetListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = STRING_EMPTY;
+		CString strHdrTitle = Constant::String::Empty;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
 			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
@@ -1460,7 +1459,6 @@ void CHotkeySetDlg::Add(void)
 
 	// Update action ID
 	int nCurSel = m_cmbActionList.GetCurSel();
-	int nActionID = Sel2Opt(APP_ACTION, nCurSel);
 	int nHKActionID = IDTable::HKActionID[nCurSel].nFirstID;
 	hksTemp.SetActionID(nHKActionID);
 
@@ -1598,17 +1596,17 @@ BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 		if ((dwModifiers == OtherTable::ExistedSysHotkeyList[nIndex].dwModifiers) &&
 			(dwVirtualKey == OtherTable::ExistedSysHotkeyList[nIndex].dwVirtualKey)) {
 			// Hotkey info format
-			CString strKeyStrokes = STRING_EMPTY;
+			CString strKeyStrokes = Constant::String::Empty;
 			if (dwModifiers & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
 			if (dwModifiers & MOD_ALT)		strKeyStrokes += _T("Alt + ");
 			if (dwModifiers & MOD_WIN)		strKeyStrokes += _T("Win + ");
 			strKeyStrokes += GetString(StringTable::FunctionKeys, dwVirtualKey);
-			CString strKeyInfo = STRING_EMPTY;
-			strKeyInfo.Format(_T("%s - %s"), strKeyStrokes, GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].nHotkeyDescription));
+			CString strKeyInfo = Constant::String::Empty;
+			strKeyInfo.Format(_T("%s - %s"), strKeyStrokes.GetString(), GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].nHotkeyDescription));
 
 			// Message format
 			CString strMsgFormat;
-			strMsgFormat.Format(GetLanguageString(pLang, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), strKeyInfo);
+			strMsgFormat.Format(GetLanguageString(pLang, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), strKeyInfo.GetString());
 
 			arrMsgString.push_back(strMsgFormat);
 			bResult = FALSE;

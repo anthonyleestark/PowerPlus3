@@ -107,7 +107,7 @@ CString AppRegistry::GetRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lps
 	}
 
 	// Get registry value
-	return AfxGetApp()->GetProfileString(strSectionFormat, lpszKeyName, STRING_NULL);
+	return AfxGetApp()->GetProfileString(strSectionFormat, lpszKeyName, Constant::String::Null);
 }
 
 BOOL AppRegistry::WriteRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, LPCTSTR lpszValue)
@@ -175,7 +175,7 @@ BOOL AppRegistry::DeleteRegistrySection(LPCTSTR lpszSectionName, LPCTSTR lpszSub
 BOOL AppRegistry::GetProfileInfo(LPCTSTR lpszKeyName, int& nRef)
 {
 	// Get registry value
-	int nRet = AfxGetApp()->GetProfileInt(STRING_EMPTY, lpszKeyName, UINT_MAX);
+	int nRet = AfxGetApp()->GetProfileInt(Constant::String::Empty, lpszKeyName, UINT_MAX);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
@@ -184,7 +184,7 @@ BOOL AppRegistry::GetProfileInfo(LPCTSTR lpszKeyName, int& nRef)
 BOOL AppRegistry::WriteProfileInfo(LPCTSTR lpszKeyName, int nValue)
 {
 	// Write registry value
-	return AfxGetApp()->WriteProfileInt(STRING_EMPTY, lpszKeyName, nValue);
+	return AfxGetApp()->WriteProfileInt(Constant::String::Empty, lpszKeyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -201,7 +201,7 @@ BOOL AppRegistry::WriteProfileInfo(LPCTSTR lpszKeyName, int nValue)
 BOOL AppRegistry::GetProfileInfo(LPCTSTR lpszKeyName, CString& strRef)
 {
 	// Get registry value
-	CString strRet = AfxGetApp()->GetProfileString(STRING_EMPTY, lpszKeyName, STRING_NULL);
+	CString strRet = AfxGetApp()->GetProfileString(Constant::String::Empty, lpszKeyName, Constant::String::Null);
 	if (IS_NULL_STRING(strRet)) return FALSE;
 	strRef = strRet; // Copy returned value
 	return TRUE;
@@ -210,7 +210,7 @@ BOOL AppRegistry::GetProfileInfo(LPCTSTR lpszKeyName, CString& strRef)
 BOOL AppRegistry::WriteProfileInfo(LPCTSTR lpszKeyName, CString strValue)
 {
 	// Write registry value
-	return AfxGetApp()->WriteProfileString(STRING_EMPTY, lpszKeyName, strValue);
+	return AfxGetApp()->WriteProfileString(Constant::String::Empty, lpszKeyName, strValue);
 }
 
 
@@ -687,7 +687,7 @@ BOOL BackupSystem::RegistryExport()
 
 	// Execute registry export command
 	CString strExecCommand;
-	strExecCommand.Format(COMMAND_REGISTRY_EXPORT, MakeRegistryPath(regInfo, RegistryPathType::includingProductName), strDestFilePath);
+	strExecCommand.Format(COMMAND_REGISTRY_EXPORT, MakeRegistryPath(regInfo, RegistryPathType::includingProductName), strDestFilePath.GetString());
 	if (!ExecuteCommand(strExecCommand, FALSE, FALSE)) {
 		// Execute command failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to execute export command!!!");

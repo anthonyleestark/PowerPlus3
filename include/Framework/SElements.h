@@ -322,9 +322,9 @@ public:
 	BOOL	IsParentAvailable(void) const;
 
 	// Add/remove control
-	size_t AddControl(SCtrlInfoWrap* pControl);
-	size_t AddControl(UINT nCtrlID, UINT nTypeID);
-	size_t RemoveControl(UINT nCtrlID);
+	long long AddControl(SCtrlInfoWrap* pControl);
+	long long AddControl(UINT nCtrlID, UINT nTypeID);
+	long long RemoveControl(UINT nCtrlID);
 
 	// Accessing elements
 	SCtrlInfoWrap* GetControl(UINT nCtrlID);

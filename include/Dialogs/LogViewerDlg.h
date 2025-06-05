@@ -33,8 +33,8 @@ class CLogViewerDlg : public SDialog
 	DECLARE_DYNAMIC(CLogViewerDlg)
 
 public:
-	using Item = typename const LogItem&;
-	using Data = typename SLogging*;
+	using Item = const LogItem&;
+	using Data = SLogging*;
 	enum ColumnID {
 		DateTime = 0,								// Date/Time
 		CategoryID,									// Event ID (category ID)

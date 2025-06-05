@@ -160,7 +160,7 @@ struct RESOURCE_ID_MAP_ENTRY
 };
 
 // Define new typename for Resource ID Map data
-using RESOURCE_ID_MAP = typename RESOURCE_ID_MAP_ENTRY*;
+using RESOURCE_ID_MAP = RESOURCE_ID_MAP_ENTRY*;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -213,10 +213,10 @@ public:
 	void RemoveAll(void);
 	
 	// Data acquirement functions
-	UINT	GetResourceID(LPCSTR lpszNameID) const;
-	LPCSTR	GetNameID(DWORD dwResID) const;
-	size_t	FindResourceID(DWORD dwResID) const;
-	size_t	FindNameID(LPCSTR lpszNameID) const;
+	UINT		GetResourceID(LPCSTR lpszNameID) const;
+	LPCSTR		GetNameID(DWORD dwResID) const;
+	long long	FindResourceID(DWORD dwResID) const;
+	long long	FindNameID(LPCSTR lpszNameID) const;
 
 	// Attributes get/set functions
 	const RESOURCE_ID_MAP_ENTRY& GetAt(size_t nIndex) const;

@@ -41,9 +41,9 @@ IMPLEMENT_DYNAMIC(SWinApp, CWinAppEx)
 SWinApp::SWinApp() : CWinAppEx()
 {
 	// Title and caption
-	m_strTemplateName = STRING_EMPTY;
-	m_strWindowCaption = STRING_EMPTY;
-	m_strMessageCaption = STRING_EMPTY;
+	m_strTemplateName = Constant::String::Empty;
+	m_strWindowCaption = Constant::String::Empty;
+	m_strMessageCaption = Constant::String::Empty;
 
 	// App language function
 	m_pAppLangPtr = NULL;
@@ -63,8 +63,8 @@ SWinApp::SWinApp(LPCTSTR lpszTemplateName) : CWinAppEx()
 {
 	// Title and caption
 	m_strTemplateName = lpszTemplateName;
-	m_strWindowCaption = STRING_EMPTY;
-	m_strMessageCaption = STRING_EMPTY;
+	m_strWindowCaption = Constant::String::Empty;
+	m_strMessageCaption = Constant::String::Empty;
 
 	// App language function
 	m_pAppLangPtr = NULL;
@@ -217,9 +217,9 @@ BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 	if (m_nCurDispLang != nCurLanguage) {
 		// Output event log
 		CString strEventDescription;
-		CString strOldLang = GetLanguageName(m_nCurDispLang);
-		CString strNewLang = GetLanguageName(nCurLanguage);
-		strEventDescription.Format(STRING_TEXTCHANGEFORMAT, strOldLang, strNewLang);
+		const wchar_t* lpszOldLang = GetLanguageName(m_nCurDispLang);
+		const wchar_t* lpszNewLang = GetLanguageName(nCurLanguage);
+		strEventDescription.Format(L"%s -> %s", lpszOldLang, lpszNewLang);
 		OutputEventLog(LOG_EVENT_CHANGE_LANGUAGE, strEventDescription);
 	}
 
@@ -276,7 +276,7 @@ void SWinApp::SetAppWindowCaption(LPCTSTR lpszWindowCaption, BOOL bShowProdVersi
 	// Show product version
 	if (bShowProdVersion == TRUE) {
 		CString strTemp;
-		strTemp.Format(_T(" %s"), GetProductVersion(bFullVersion));
+		strTemp.Format(_T(" %s"), GetProductVersion(bFullVersion).GetString());
 		m_strWindowCaption.Append(strTemp);
 	}
 }
@@ -317,7 +317,7 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
-	CString strCaption = STRING_EMPTY;
+	CString strCaption = Constant::String::Empty;
 	if (nCaptionID != NULL) {
 
 		// Get language string caption
@@ -595,13 +595,13 @@ void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT SWinApp::RequestCloseDialog(UINT nDialogID)
+LRESULT SWinApp::RequestCloseDialog(UINT /*nDialogID*/)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED
 }
 
-LRESULT SWinApp::RequestCloseDialog(HWND hDialogWnd)
+LRESULT SWinApp::RequestCloseDialog(HWND /*hDialogWnd*/)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED

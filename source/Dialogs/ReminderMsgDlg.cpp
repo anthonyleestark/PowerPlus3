@@ -49,7 +49,7 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	: SDialog(IDD_REMINDERMSG_DLG, pParentWnd)
 {
 	// Message string buffer
-	m_strBuffer = STRING_EMPTY;
+	m_strBuffer = Constant::String::Empty;
 
 	// Message font & icon
 	m_pMsgFont = NULL;
@@ -575,7 +575,7 @@ BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CReminderMsgDlg::ClientToText(LPRECT lpRect) const
+void CReminderMsgDlg::ClientToText(LPRECT /*lpRect*/) const
 {
 }
 

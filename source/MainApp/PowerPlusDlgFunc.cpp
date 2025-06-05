@@ -222,8 +222,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		return FALSE;
 	}
 
-	int nTemp = INT_INVALID;
-	CString strTemp = STRING_EMPTY;
+	CString strTemp = Constant::String::Empty;
 
 	// Process debug commands by tokens
 	if (!_tcscmp(retBuff[0].tcToken, _T("test"))) {
@@ -236,7 +235,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			OutputDebugLogFormat(_T("Token number: %d"), nTokenCount);
 			for (int nTokenIndex = 0; nTokenIndex < nTokenCount; nTokenIndex++) {
 				strTemp = retBuff[nTokenIndex + 1].tcToken;
-				OutputDebugLogFormat(_T("Token[%d]: %s"), nTokenIndex, strTemp);
+				OutputDebugLogFormat(_T("Token[%d]: %s"), nTokenIndex, strTemp.GetString());
 			}
 		}
 	}
@@ -544,7 +543,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			int nItemNum = m_prdReminderData.GetItemNum();
 			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 				pwrTemp = m_prdReminderData.GetItemAt(nIndex);
-				if (pwrTemp.GetItemID() == nItemID) {
+				if (pwrTemp.GetItemID() == static_cast<UINT>(nItemID)) {
 					bFindRet = TRUE;
 					DisplayPwrReminder(pwrTemp);
 					OutputDebugLog(_T("Reminder item displayed!!!"));
@@ -620,7 +619,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				// Load app language package
 				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
 				// Format and print data
-				CString strValue = STRING_EMPTY;
+				CString strValue = Constant::String::Empty;
 				// Left mouse button action
 				int nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->nLMBAction);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LMBAction, GetLanguageString(ptrLanguage, nActionStringID));
@@ -631,46 +630,46 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->nRMBAction);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBAction, GetLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button: Only show menu
-				strValue = ((pcfgDataTemp->bRMBShowMenu) ? VALUE_TRUE : _T("NO"));
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBShowMenu, strValue);
+				strValue = ((pcfgDataTemp->bRMBShowMenu) ? Constant::Value::True : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBShowMenu, strValue.GetString());
 				// Language setting
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LanguageID, GetLanguageName(pcfgDataTemp->nLanguageID));
 				// Show dialog at startup
-				strValue = ((pcfgDataTemp->bShowDlgAtStartup) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowDlgAtStartup, strValue);
+				strValue = ((pcfgDataTemp->bShowDlgAtStartup) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowDlgAtStartup, strValue.GetString());
 				// Startup with Windows
-				strValue = ((pcfgDataTemp->bStartupEnabled) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::StartupEnabled, strValue);
+				strValue = ((pcfgDataTemp->bStartupEnabled) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::StartupEnabled, strValue.GetString());
 				// Show confirm message before executing action
-				strValue = ((pcfgDataTemp->bConfirmAction) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ConfirmAction, strValue);
+				strValue = ((pcfgDataTemp->bConfirmAction) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ConfirmAction, strValue.GetString());
 				// Save action log
-				strValue = ((pcfgDataTemp->bSaveHistoryLog) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveHistoryLog, strValue);
+				strValue = ((pcfgDataTemp->bSaveHistoryLog) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveHistoryLog, strValue.GetString());
 				// Save app event log
-				strValue = ((pcfgDataTemp->bSaveAppEventLog) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveAppEventLog, strValue);
+				strValue = ((pcfgDataTemp->bSaveAppEventLog) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveAppEventLog, strValue.GetString());
 				// Run with admin privileges
-				strValue = ((pcfgDataTemp->bRunAsAdmin) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RunAsAdmin, strValue);
+				strValue = ((pcfgDataTemp->bRunAsAdmin) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RunAsAdmin, strValue.GetString());
 				// Show action error message
-				strValue = ((pcfgDataTemp->bShowErrorMsg) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowErrorMsg, strValue);
+				strValue = ((pcfgDataTemp->bShowErrorMsg) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowErrorMsg, strValue.GetString());
 				// Show notify tip for schedule action
-				strValue = ((pcfgDataTemp->bNotifySchedule) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::NotifySchedule, strValue);
+				strValue = ((pcfgDataTemp->bNotifySchedule) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::NotifySchedule, strValue.GetString());
 				// Allow canceling schedule when notify
-				strValue = ((pcfgDataTemp->bAllowCancelSchedule) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::AllowCancelSchedule, strValue);
+				strValue = ((pcfgDataTemp->bAllowCancelSchedule) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::AllowCancelSchedule, strValue.GetString());
 				// Enable background action hotkeys
-				strValue = ((pcfgDataTemp->bEnableBackgroundHotkey) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnableBackgroundHotkey, strValue);
+				strValue = ((pcfgDataTemp->bEnableBackgroundHotkey) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnableBackgroundHotkey, strValue.GetString());
 				// Allow background hotkeys on lockscreen
-				strValue = ((pcfgDataTemp->bLockStateHotkey) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LockStateHotkey, strValue);
+				strValue = ((pcfgDataTemp->bLockStateHotkey) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LockStateHotkey, strValue.GetString());
 				// Enable Power Peminder feature
-				strValue = ((pcfgDataTemp->bEnablePowerReminder) ? VALUE_TRUE : VALUE_FALSE);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnablePowerReminder, strValue);
+				strValue = ((pcfgDataTemp->bEnablePowerReminder) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnablePowerReminder, strValue.GetString());
 			}
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("schedule")))) {
@@ -682,7 +681,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				// Print default schedule
 				CString strDefItemPrint;
 				pSchedDataTemp->GetDefaultItem().Print(strDefItemPrint);
-				strOutputResult.Format(_T("DefaultSchedule: %s"), strDefItemPrint);
+				strOutputResult.Format(_T("DefaultSchedule: %s"), strDefItemPrint.GetString());
 				OutputDebugLog(strOutputResult, DebugTestTool);
 				// Print extra item number
 				int nExtraItemNum = pSchedDataTemp->GetExtraItemNum();
@@ -695,7 +694,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Print item
 					CString strItemPrint;
 					schExtraItem.Print(strItemPrint);
-					strOutputResult.Format(_T("Index=%d, %s"), nExtraIndex, strItemPrint);
+					strOutputResult.Format(_T("Index=%d, %s"), nExtraIndex, strItemPrint.GetString());
 					OutputDebugLog(strOutputResult, DebugTestTool);
 				}
 			}
@@ -710,8 +709,6 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				int nItemNum = pHksDataTemp->GetItemNum();
 				strOutputResult.Format(_T("HotkeySetData: ItemNum = %d"), nItemNum);
 				OutputDebugLog(strOutputResult, DebugTestTool);
-				// Load app language package
-				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
 				// Print each item data
 				for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 					HOTKEYSETITEM hksItem = pHksDataTemp->GetItemAt(nIndex);
@@ -719,7 +716,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Print item
 					CString strItemPrint;
 					hksItem.Print(strItemPrint);
-					strOutputResult.Format(_T("Index=%d, %s"), nIndex, strItemPrint);
+					strOutputResult.Format(_T("Index=%d, %s"), nIndex, strItemPrint.GetString());
 					OutputDebugLog(strOutputResult, DebugTestTool);
 				}
 			}
@@ -734,8 +731,6 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				int nItemNum = pRmdDataTemp->GetItemNum();
 				strOutputResult.Format(_T("PwrReminderData: ItemNum = %d"), nItemNum);
 				OutputDebugLog(strOutputResult, DebugTestTool);
-				// Load app language package
-				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
 				// Print each item data
 				for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 					PWRREMINDERITEM pwrItem = pRmdDataTemp->GetItemAt(nIndex);
@@ -743,7 +738,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Print item
 					CString strItemPrint;
 					pwrItem.Print(strItemPrint);
-					strOutputResult.Format(_T("Index=%d, %s"), nIndex, strItemPrint);
+					strOutputResult.Format(_T("Index=%d, %s"), nIndex, strItemPrint.GetString());
 					OutputDebugLog(strOutputResult, DebugTestTool);
 				}
 			}
@@ -781,7 +776,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Set background color
 					SetReminderMsgBkgrdColor(dwRetColorID);
 					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message background color set: %s"), strColorName.MakeUpper());
+					OutputDebugLogFormat(_T("Message background color set: %s"), strColorName.MakeUpper().GetString());
 					bNoReply = FALSE;	// Reset flag
 				}
 				else {
@@ -822,7 +817,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 					// Set text color
 					SetReminderMsgTextColor(dwRetColorID);
 					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message text color set: %s"), strColorName.MakeUpper());
+					OutputDebugLogFormat(_T("Message text color set: %s"), strColorName.MakeUpper().GetString());
 					bNoReply = FALSE;	// Reset flag
 				}
 				else {
@@ -861,7 +856,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// it needs to be re-formatted by capitalizing first character of each word
 			UpperEachWord(strFontName, TRUE);
 			// Validate font name
-			BOOL bRet = ValidateFontName(strFontName);
+			BOOL bRet = ValidateFontName(strFontName.GetString());
 			if (bRet != TRUE) {
 				// Invalid font name
 				OutputDebugLog(_T("Invalid font name"));
@@ -869,9 +864,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			}
 			else {
 				// Set message font
-				SetReminderMsgFontName(strFontName);
+				SetReminderMsgFontName(strFontName.GetString());
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message font name set: %s"), strFontName);
+				OutputDebugLogFormat(_T("Message font name set: %s"), strFontName.GetString());
 				bNoReply = FALSE;	// Reset flag
 			}
 		}
@@ -922,7 +917,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				// Set icon ID
 				SetReminderMsgIconID(dwRetIconID);
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message icon ID set: %s (%d)"), strIconName.MakeUpper(), dwRetIconID);
+				OutputDebugLogFormat(_T("Message icon ID set: %s (%d)"), strIconName.MakeUpper().GetString(), dwRetIconID);
 				bNoReply = FALSE;	// Reset flag
 			}
 			else {
@@ -1110,8 +1105,8 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("fontname")))) {
 			// Get reminder message font name
 			CString strFontName;
-			BOOL bRet = GetReminderMsgFontName(strFontName);
-			OutputDebugLogFormat(_T("Message font name: %s"), strFontName);
+			GetReminderMsgFontName(strFontName);
+			OutputDebugLogFormat(_T("Message font name: %s"), strFontName.GetString());
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((nCount == 2) && (!_tcscmp(retBuff[1].tcToken, _T("fontsize")))) {
@@ -1252,7 +1247,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			// Upper each word
 			CString strInput = retBuff[2].tcToken;
 			UpperEachWord(strInput, TRUE);
-			OutputDebugLogFormat(_T("Upper: %s"), strInput);
+			OutputDebugLogFormat(_T("Upper: %s"), strInput.GetString());
 			bNoReply = FALSE;	// Reset flag
 		}
 		else {
@@ -1298,10 +1293,10 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		if (pApp->GetLastSysEventTime(SystemEventID::SystemSuspend, stTimeTemp)) {
 			// Format date time
 			CString strLogTemp;
-			CString strMiddayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
+			const wchar_t* middayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
 			strLogTemp.Format(strDateTimeFormat, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay,
-				stTimeTemp.wHour, stTimeTemp.wMinute, stTimeTemp.wSecond, stTimeTemp.wMilliseconds, strMiddayFlag);
-			strOutputResult.Format(_T("Last System Suspend: %s"), strLogTemp);
+				stTimeTemp.wHour, stTimeTemp.wMinute, stTimeTemp.wSecond, stTimeTemp.wMilliseconds, middayFlag);
+			strOutputResult.Format(_T("Last System Suspend: %s"), strLogTemp.GetString());
 			OutputDebugLog(strOutputResult);
 			bNoReply = FALSE;	// Reset flag
 		}
@@ -1314,10 +1309,10 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 		if (pApp->GetLastSysEventTime(SystemEventID::SystemWakeUp, stTimeTemp)) {
 			// Format date time
 			CString strLogTemp;
-			CString strMiddayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
+			const wchar_t* middayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
 			strLogTemp.Format(strDateTimeFormat, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay,
-				stTimeTemp.wHour, stTimeTemp.wMinute, stTimeTemp.wSecond, stTimeTemp.wMilliseconds, strMiddayFlag);
-			strOutputResult.Format(_T("Last System Wakeup: %s"), strLogTemp);
+				stTimeTemp.wHour, stTimeTemp.wMinute, stTimeTemp.wSecond, stTimeTemp.wMilliseconds, middayFlag);
+			strOutputResult.Format(_T("Last System Wakeup: %s"), strLogTemp.GetString());
 			OutputDebugLog(strOutputResult);
 			bNoReply = FALSE;	// Reset flag
 		}

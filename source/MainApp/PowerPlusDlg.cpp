@@ -217,11 +217,11 @@ void CPowerPlusDlg::DoDataExchange(CDataExchange* pDX)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	size_t - Number of controls added to management
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CPowerPlusDlg::RegisterDialogManagement(void)
+int CPowerPlusDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
 	if (nRet != 0) {
@@ -503,13 +503,12 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	if (pSysMenu != NULL)
 	{
 		CString strAboutMenuFormat;
-		BOOL bNameValid = strAboutMenuFormat.LoadString(IDS_APP_SYSMENU_ABOUT);
-		ASSERT(bNameValid);
+		strAboutMenuFormat.LoadString(IDS_APP_SYSMENU_ABOUT);
 		if (!strAboutMenuFormat.IsEmpty())
 		{
 			// Add product version number
 			CString strAboutMenu;
-			strAboutMenu.Format(strAboutMenuFormat, GetProductVersion(FALSE));
+			strAboutMenu.Format(strAboutMenuFormat, GetProductVersion(FALSE).GetString());
 
 			// Add menu item
 			pSysMenu->AppendMenu(MF_SEPARATOR);
@@ -973,7 +972,7 @@ void CPowerPlusDlg::OnChangeLMBAction()
 {
 	// Update data
 	UpdateDialogData(TRUE);
-	int nCurSel = m_cmbLMBAction.GetCurSel();
+	m_cmbLMBAction.GetCurSel();
 
 	// Check for settings change
 	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
@@ -995,7 +994,7 @@ void CPowerPlusDlg::OnChangeMMBAction()
 {
 	// Update data
 	UpdateDialogData(TRUE);
-	int nCurSel = m_cmbMMBAction.GetCurSel();
+	m_cmbMMBAction.GetCurSel();
 
 	// Check for settings change
 	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
@@ -1017,7 +1016,7 @@ void CPowerPlusDlg::OnChangeRMBAction()
 {
 	// Update data
 	UpdateDialogData(TRUE);
-	int nCurSel = m_cmbRMBAction.GetCurSel();
+	m_cmbRMBAction.GetCurSel();
 
 	// Check for settings change
 	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
@@ -1043,7 +1042,7 @@ void CPowerPlusDlg::OnChangeLanguage()
 {
 	// Update data
 	UpdateDialogData(TRUE);
-	int nCurSel = m_cmbLanguages.GetCurSel();
+	m_cmbLanguages.GetCurSel();
 
 	// Save app event log if enabled
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_LANGUAGE_LIST);
@@ -1383,7 +1382,7 @@ LRESULT CPowerPlusDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM wParam, LPARAM lParam)
+LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
@@ -1409,7 +1408,7 @@ LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM wParam, LPARAM lParam)
+LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
@@ -1435,7 +1434,7 @@ LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM wParam, LPARAM lParam)
+LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
@@ -1465,7 +1464,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 {
 	// Check argument validity
 	if ((lParam == NULL) || ((wParam == NULL) && (lParam == NULL))) {
-		OutputDebugLog(STRING_NULL);
+		OutputDebugLog(Constant::String::Null);
 		return LRESULT(RESULT_FAILED);
 	}
 
@@ -1489,11 +1488,11 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 
 			// Get command character list
 			CString strCommandCharList;
-			PrintCharList(strDebugCommand, strCommandCharList);
+			PrintCharList(strDebugCommand.GetString(), strCommandCharList);
 
 			// Output debug info (to file)
 			CString strDebugLog;
-			strDebugLog.Format(_T("Failed debug command: %s"), strCommandCharList);
+			strDebugLog.Format(_T("Failed debug command: %s"), strCommandCharList.GetString());
 			OutputDebugLog(strDebugLog, DebugInfoFile);
 		}
 		else {
@@ -1524,7 +1523,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM lParam)
+LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get flag value
 	BOOL bShowFlag = TRUE;
@@ -1549,7 +1548,7 @@ LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
+LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get error code value
 	DWORD dwErrorCode = NULL;
@@ -1574,7 +1573,7 @@ LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
+LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Check if event skip counter is triggered
 	if (GetFlagValue(AppFlagID::pwrBroadcastSkipCount) > 0) {
@@ -1655,7 +1654,7 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM wParam, LPARAM lParam)
+LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Get app pointer
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
@@ -1694,7 +1693,7 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM lParam)
+LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Process status code
 	switch (wParam)
@@ -2645,7 +2644,7 @@ void CPowerPlusDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::EnableRightMouseMenu(BOOL bEnable)
+void CPowerPlusDlg::EnableRightMouseMenu(BOOL /*bEnable*/)
 {
 	UpdateDialogData(FALSE);
 }
@@ -2685,7 +2684,7 @@ void CPowerPlusDlg::EnableLogViewer(BOOL bEnable)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::EnableBackgroundHotkey(BOOL bEnable)
+void CPowerPlusDlg::EnableBackgroundHotkey(BOOL /*bEnable*/)
 {
 	UpdateDialogData(FALSE);
 }
@@ -2699,7 +2698,7 @@ void CPowerPlusDlg::EnableBackgroundHotkey(BOOL bEnable)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::EnablePowerReminder(BOOL bEnable)
+void CPowerPlusDlg::EnablePowerReminder(BOOL /*bEnable*/)
 {
 	UpdateDialogData(FALSE);
 }
@@ -2858,7 +2857,7 @@ LPCTSTR CPowerPlusDlg::GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 		// Trace error
 		TRACE_ERROR("Error: Notify icon does not exist!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return STRING_NULL;
+		return Constant::String::Null;
 	}
 
 	return pNotifyIconData->szTip;
@@ -2898,7 +2897,7 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nRMBAction)));
 
 	// Format notify tip text
-	strTipText.Format(strFormat, arrTipText[0], arrTipText[1], arrTipText[2]);
+	strTipText.Format(strFormat, arrTipText[0].GetString(), arrTipText[1].GetString(), arrTipText[2].GetString());
 
 	// Set notify tip text
 	StrCpyW(pNotifyIconData->szTip, strTipText.GetString());
@@ -2915,7 +2914,7 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetBalloonTipText(UINT nCurLanguage, UINT nScheduleAction, UINT nSecondLeft)
+void CPowerPlusDlg::SetBalloonTipText(UINT /*nCurLanguage*/, UINT nScheduleAction, UINT nSecondLeft)
 {
 	// If notify icon doesn't exist, do nothing
 	if (m_pNotifyIconData == NULL) {
@@ -2934,14 +2933,12 @@ void CPowerPlusDlg::SetBalloonTipText(UINT nCurLanguage, UINT nScheduleAction, U
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	CString strBalloonTip;
-	CString strFormat;
-	CString strBalloonText;
 
 	// Load language strings
-	strFormat = GetLanguageString(pAppLang, BALLOON_TIP_TEMPLATE);
-	strBalloonText = GetLanguageString(pAppLang, GetPairedID(IDTable::BalloonTip, nScheduleAction));
+	const wchar_t* formatString = GetLanguageString(pAppLang, BALLOON_TIP_TEMPLATE);
+	const wchar_t* balloonText = GetLanguageString(pAppLang, GetPairedID(IDTable::BalloonTip, nScheduleAction));
 
-	strBalloonTip.Format(strFormat, strBalloonText, nSecondLeft);
+	strBalloonTip.Format(formatString, balloonText, nSecondLeft);
 
 	// Set balloon tip text
 	StrCpy(m_pNotifyIconData->szInfoTitle, (PWSTR)(LPCTSTR)GetLanguageString(pAppLang, IDC_APPNAME_LABEL));
@@ -2964,7 +2961,7 @@ void CPowerPlusDlg::SetBalloonTipText(UINT nCurLanguage, UINT nScheduleAction, U
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */, LPARAM lParam /* = NULL */)
+BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */, LPARAM /* lParam = NULL */)
 {
 	UINT nActionType = 0;
 	UINT nActionID = 0;
@@ -3251,7 +3248,7 @@ void CPowerPlusDlg::SetDefaultConfig(void)
 void CPowerPlusDlg::RestartApp(BOOL bRestartAsAdmin)
 {
 	// Remove window title to prevent from startup checking
-	this->SetWindowText(STRING_NULL);
+	this->SetWindowText(Constant::String::Null);
 
 	// Exit the current application instance
 	ExitApp(ExitCode::RestartApp);
@@ -3616,7 +3613,7 @@ void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusDlg::OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir /* = STRING_EMPTY */)
+BOOL CPowerPlusDlg::OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir /* = Constant::String::Empty */)
 {
 	// Get file name
 	VERIFY(lpszFileName != NULL);
@@ -3683,7 +3680,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 				BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, schDefaultItem.GetTime(), -30);
 				if (bTriggerNotify == TRUE) {
 					// Do notify schedule (and check for trigger reupdate)
-					int nRetNotify = NotifySchedule(&schDefaultItem, bTriggerReupdate);
+					NotifySchedule(&schDefaultItem, bTriggerReupdate);
 					bResult = FALSE;
 				}
 			}
@@ -3743,7 +3740,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 			BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, schExtraItem.GetTime(), -30);
 			if (bTriggerNotify == TRUE) {
 				// Do notify schedule (and check for trigger reupdate)
-				int nRetNotify = NotifySchedule(&schExtraItem, bTriggerReupdate);
+				NotifySchedule(&schExtraItem, bTriggerReupdate);
 				bResult = FALSE;
 				continue;
 			}
@@ -4234,7 +4231,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 
 			// Skip registering item if disabled
 			if (bEnabled == FALSE) {
-				OutputDebugLogFormat(_T("Skip registering hotkey (disabled): %s"), strLogTemp);
+				OutputDebugLogFormat(_T("Skip registering hotkey (disabled): %s"), strLogTemp.GetString());
 				continue;
 			}
 
@@ -4247,7 +4244,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 
 			if (bRet == TRUE) {
 				// Register successfully
-				OutputDebugLogFormat(_T("Registered hotkey: %s"), strLogTemp);
+				OutputDebugLogFormat(_T("Registered hotkey: %s"), strLogTemp.GetString());
 				m_arrCurRegHKeyList.push_back(nHKActionID);						// Update registered hotkey list
 			}
 			else {
@@ -4255,7 +4252,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 				dwErrorCode = GetLastError();
 
 				// Output debug log
-				OutputDebugLogFormat(_T("Register hotkey failed: %s"), strLogTemp);
+				OutputDebugLogFormat(_T("Register hotkey failed: %s"), strLogTemp.GetString());
 
 				// Trace error
 				TRACE_FORMAT("Error: Hotkey register failed!!! (Code=0x%X)", dwErrorCode);
@@ -4293,7 +4290,7 @@ BOOL CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 	HOTKEYSETITEM hksItem;
 	for (int nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
 		HOTKEYSETITEM& hksTemp = m_hksHotkeySetData.GetItemAt(nIndex);
-		if (hksTemp.GetActionID() == nHotkeyID) {
+		if (hksTemp.GetActionID() == static_cast<UINT>(nHotkeyID)) {
 			hksItem.Copy(hksTemp);
 			break;
 		}
@@ -4306,7 +4303,7 @@ BOOL CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 	// Output hotkey event log
 	CString strHotkeyDescription;
 	hksItem.PrintKeyStrokes(strHotkeyDescription);
-	OutputEventLog(LOG_EVENT_EXEC_HOTKEY, strHotkeyDescription);
+	OutputEventLog(LOG_EVENT_EXEC_HOTKEY, strHotkeyDescription.GetString());
 
 	// Get Power action ID by HotkeyID
 	UINT nActionID = NULL;
@@ -5356,12 +5353,12 @@ int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Format message
-	CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CAPTION);
-	CString strMsgScheduleAction = GetLanguageString(pAppLang, nActionStringID);
-	CString strMsgTemplate = GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_NOTIFY);
+	const wchar_t* msgCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CAPTION);
+	const wchar_t* msgScheduleAction = GetLanguageString(pAppLang, nActionStringID);
+	const wchar_t* msgTemplate = GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_NOTIFY);
 	
 	CString strMsgContent;
-	strMsgContent.Format(strMsgTemplate, strMsgScheduleAction);
+	strMsgContent.Format(msgTemplate, msgScheduleAction);
 
 	// Allow cancelling schedule when notify
 	BOOL bAllowCancel = GetAppOption(AppOptionID::allowCancelingSchedule);
@@ -5369,7 +5366,7 @@ int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
 	{
 		// Update message content
 		strMsgContent += GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL);
-		int nRespond = DisplayMessageBox(strMsgContent, strMsgCaption, MB_OKCANCEL | MB_ICONINFORMATION);
+		int nRespond = DisplayMessageBox(strMsgContent.GetString(), msgCaption, MB_OKCANCEL | MB_ICONINFORMATION);
 		if (nRespond == IDCANCEL)
 		{
 			// Set item skip flag
@@ -5394,7 +5391,7 @@ int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
 	}
 
 	// Show message
-	return DisplayMessageBox(strMsgContent, strMsgCaption, MB_OK | MB_ICONINFORMATION);
+	return DisplayMessageBox(strMsgContent, msgCaption, MB_OK | MB_ICONINFORMATION);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5500,9 +5497,9 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
-	CString strRequestMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_REQUEST_RESTARTASADMIN);
-	CString strCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowCaption();
-	CString strMsgFormat = strRequestMsg;
+	const wchar_t* requestMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_REQUEST_RESTARTASADMIN);
+	const wchar_t* msgCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowCaption();
+	CString strMsgFormat = requestMsg;
 
 	// Check if the application is currently running as admin
 	BOOL bIsAdmin = FALSE;
@@ -5520,14 +5517,14 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 		else if (bIsAdmin == FALSE) {
 			// Show "not admin" message
 			if (reqRestart.bNotAdminShowMsg == TRUE) {
-				CString strNotAdmin = GetLanguageString(pAppLang, MSGBOX_OTHER_NOTRUNASADMIN);
-				strMsgFormat.Format(_T("%s\n%s"), strNotAdmin, strRequestMsg);
+				const wchar_t* notAdminMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_NOTRUNASADMIN);
+				strMsgFormat.Format(_T("%s\n%s"), notAdminMsg, requestMsg);
 			}
 		}
 	}
 	
 	// Display request message
-	int nRet = DisplayMessageBox(strMsgFormat, strCaption, MB_YESNO | MB_ICONQUESTION);
+	int nRet = DisplayMessageBox(strMsgFormat, msgCaption, MB_YESNO | MB_ICONQUESTION);
 	if (nRet == IDYES) {
 		// Restart as admin
 		RestartApp(TRUE);

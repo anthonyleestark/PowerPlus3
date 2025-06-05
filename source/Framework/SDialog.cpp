@@ -487,7 +487,7 @@ void SDialog::OnMouseMove(UINT nFlags, CPoint point)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT SDialog::OnChildDialogInit(WPARAM wParam, LPARAM lParam)
+LRESULT SDialog::OnChildDialogInit(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update descendant dialog counter
 	++m_nDescendantCount;
@@ -506,7 +506,7 @@ LRESULT SDialog::OnChildDialogInit(WPARAM wParam, LPARAM lParam)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT SDialog::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
+LRESULT SDialog::OnChildDialogDestroy(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update descendant dialog counter
 	--m_nDescendantCount;
@@ -706,11 +706,11 @@ LRESULT SDialog::SendMessageToParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 //	Function name:	RegisterDialogManagement
 //	Description:	Register dialog control management
 //  Arguments:		None
-//  Return value:	size_t - Number of controls added to management
+//  Return value:	int
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t SDialog::RegisterDialogManagement(void)
+int SDialog::RegisterDialogManagement(void)
 {
 	// Initialize dialog control management
 	if (m_pCtrlManager == NULL) {
@@ -1254,7 +1254,7 @@ void SDialog::RegisterMessageBoxCaption(UINT nCaptionID)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
-	CString strCaption = STRING_EMPTY;
+	CString strCaption = Constant::String::Empty;
 	if (nCaptionID != NULL) {
 
 		// Get language string caption
@@ -1744,7 +1744,7 @@ void SDialog::SetupLanguage(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
+void SDialog::SetupComboBox(UINT /*nComboID*/, LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Update dialog control attributes
 	UpdateDialogManagement();
@@ -2068,7 +2068,7 @@ void SDialog::SetupDialogItemState(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
+void SDialog::RefreshDialogItemState(BOOL /* bRecheckState = FALSE */)
 {
 	// Update dialog control attributes
 	UpdateDialogManagement();
@@ -2083,7 +2083,7 @@ void SDialog::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
+void SDialog::UpdateDialogData(BOOL /* bSaveAndValidate = TRUE */)
 {
 	// Update data for dialog control management
 	UpdateDialogManagement();

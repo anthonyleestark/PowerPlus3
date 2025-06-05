@@ -515,7 +515,7 @@ void SCtrlInfoWrap::GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) con
 LPCTSTR SCtrlInfoWrap::GetString(void) const
 {
 	if (this->m_pstrValue == NULL)
-		return STRING_EMPTY;
+		return Constant::String::Empty;
 	else
 		return *(this->m_pstrValue);
 }
@@ -523,7 +523,7 @@ LPCTSTR SCtrlInfoWrap::GetString(void) const
 void SCtrlInfoWrap::GetString(_Out_ CString& strValue) const
 {
 	if (this->m_pstrValue == NULL)
-		strValue = STRING_EMPTY;
+		strValue = Constant::String::Empty;
 	else
 		strValue = *(this->m_pstrValue);
 }
@@ -540,7 +540,7 @@ void SCtrlInfoWrap::GetString(_Out_ CString& strValue) const
 LPCTSTR SCtrlInfoWrap::GetReserveString(void) const
 {
 	if (this->m_pstrReserveValue == NULL)
-		return STRING_EMPTY;
+		return Constant::String::Empty;
 	else
 		return *(this->m_pstrReserveValue);
 }
@@ -548,7 +548,7 @@ LPCTSTR SCtrlInfoWrap::GetReserveString(void) const
 void SCtrlInfoWrap::GetReserveString(_Out_ CString& strValue) const
 {
 	if (this->m_pstrReserveValue == NULL)
-		strValue = STRING_EMPTY;
+		strValue = Constant::String::Empty;
 	else
 		strValue = *(this->m_pstrReserveValue);
 }
@@ -1106,7 +1106,7 @@ IMPLEMENT_DYNAMIC(SMenu, CMenu)
 //
 //////////////////////////////////////////////////////////////////////////
 
-SMenu::SMenu(CWnd* pParentWnd /* = NULL */) : CMenu()
+SMenu::SMenu(CWnd* /* pParentWnd = NULL */) : CMenu()
 {
 	// User menu layout
 	m_pMenuLayout = NULL;
@@ -1231,11 +1231,11 @@ BOOL SControlManager::DeleteAll(void)
 //	Function name:	AddControl
 //	Description:	Add dialog/window control to management
 //  Arguments:		pControl - Dialog control item
-//  Return value:	size_t
+//  Return value:	long long
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t SControlManager::AddControl(SCtrlInfoWrap* pControl)
+long long SControlManager::AddControl(SCtrlInfoWrap* pControl)
 {
 	// Check for control pointer validity
 	if (pControl == NULL) 
@@ -1266,11 +1266,11 @@ size_t SControlManager::AddControl(SCtrlInfoWrap* pControl)
 //	Description:	Add dialog/window control to management
 //  Arguments:		nCtrlID - Dialog control ID
 //					nTypeID - Control type ID
-//  Return value:	size_t
+//  Return value:	long long
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
+long long SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 {
 	// If parent window is not set, do nothing
 	if (this->m_pParentWnd == NULL)
@@ -1304,7 +1304,7 @@ size_t SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t SControlManager::RemoveControl(UINT nCtrlID)
+long long SControlManager::RemoveControl(UINT nCtrlID)
 {
 	// If data is not initialized or is empty
 	if ((m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
@@ -1548,7 +1548,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				StringArray arrTabTitles;
 				arrTabTitles.reserve(nTabCount);
 				for (size_t nIndex = 0; nIndex < nTabCount; nIndex++) {
-					CString strTemp = STRING_EMPTY;
+					CString strTemp = Constant::String::Empty;
 					BOOL bRet = ((CTabCtrl*)pBaseControl)->GetItem(nIndex, &tabInfo);
 					if (bRet == TRUE && ((tabInfo.mask & TCIF_TEXT) != 0)) {
 						strTemp = tabInfo.pszText;

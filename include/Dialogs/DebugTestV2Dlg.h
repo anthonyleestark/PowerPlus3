@@ -104,7 +104,7 @@ private:
 	BOOL ShowDebugScreenContextMenu(void);
 
 	int  FormatDebugCommand(CString& strDebugCommand);
-	void ClearDebugCommandInput(LPCTSTR lpszCmdBuff = STRING_EMPTY);
+	void ClearDebugCommandInput(LPCTSTR lpszCmdBuff = Constant::String::Empty);
 	inline void BackupDebugViewBuffer(void);
 	void ClearDebugViewBuffer(void);
 

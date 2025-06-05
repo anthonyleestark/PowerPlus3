@@ -14,6 +14,8 @@
 #include "Components/GridCtrl/GridCtrl.h"
 #include "Components/GridCtrl/GridCellBase.h"
 
+using namespace std;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -579,7 +581,7 @@ CSize CGridCellBase::GetCellExtent(CDC* pDC)
 
 // EFW - Added to print cells so that grids that use different colors are
 // printed correctly.
-BOOL CGridCellBase::PrintCell(CDC* pDC, int /*nRow*/, int /*nCol*/, CRect rect)
+BOOL CGridCellBase::PrintCell(CDC* /*pDC*/, int /*nRow*/, int /*nCol*/, CRect /*rect*/)
 {
 #if defined(_WIN32_WCE_NO_PRINTING) || defined(GRIDCONTROL_NO_PRINTING)
     return FALSE;
