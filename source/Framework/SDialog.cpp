@@ -83,8 +83,8 @@ SDialog::SDialog() : CDialogEx()
 	m_strMsgCaption.Empty();
 
 	m_pBkgrdBrush = NULL;
-	m_clBkgrdColor = COLOR_WHITE;
-	m_clTextColor = COLOR_BLACK;
+	m_clBkgrdColor = Color::White;
+	m_clTextColor = Color::Black;
 }
 
 SDialog::SDialog(UINT nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogEx(nIDTemplate, pParentWnd)
@@ -130,8 +130,8 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogEx(nI
 	m_strMsgCaption.Empty();
 
 	m_pBkgrdBrush = NULL;
-	m_clBkgrdColor = COLOR_WHITE;
-	m_clTextColor = COLOR_BLACK;
+	m_clBkgrdColor = Color::White;
+	m_clTextColor = Color::Black;
 }
 
 SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd /* = NULL */) : CDialogEx(lpszTemplateName, pParentWnd)
@@ -177,8 +177,8 @@ SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd /* = NULL */) : CDia
 	m_strMsgCaption.Empty();
 
 	m_pBkgrdBrush = NULL;
-	m_clBkgrdColor = COLOR_WHITE;
-	m_clTextColor = COLOR_BLACK;
+	m_clBkgrdColor = Color::White;
+	m_clTextColor = Color::Black;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -493,7 +493,7 @@ LRESULT SDialog::OnChildDialogInit(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	++m_nDescendantCount;
 
 	// Default: Success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -512,7 +512,7 @@ LRESULT SDialog::OnChildDialogDestroy(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	--m_nDescendantCount;
 
 	// Default: Success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -597,7 +597,7 @@ int SDialog::PreDestroyDialog()
 	// Unregister dialog control management
 	UnregisterDialogManagement();
 
-	return RESULT_SUCCESS;
+	return Result::Success;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -680,7 +680,7 @@ BOOL SDialog::NotifyParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 
 LRESULT SDialog::SendMessageToParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
-	LRESULT lRetNotify = RESULT_FAILED;
+	LRESULT lRetNotify = Result::Failure;
 
 	// If parent window is set and available
 	if (IsParentWndAvailable()) {
@@ -2232,5 +2232,5 @@ LRESULT SDialog::RequestCloseDialog(void)
 	this->PostMessage(WM_CLOSE);
 
 	// Request accepted
-	return LRESULT(RESULT_SUCCESS);	// ERROR_SUCCESS
+	return LRESULT(Result::Success);	// ERROR_SUCCESS
 }

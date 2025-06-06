@@ -72,7 +72,7 @@ CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 	ZeroMemory(&m_schScheduleItemTemp, sizeof(SCHEDULEITEM));
 
 	// Other variables
-	m_nDispMode = MODE_INIT;
+	m_nDispMode = Mode::Init;
 	m_pszActiveTableFrameSize = NULL;
 }
 
@@ -350,7 +350,7 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(RESULT_FAILED);
+			return LRESULT(Result::Failure);
 		}
 	}
 	else {
@@ -488,13 +488,13 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(COLOR_WHITE);
-	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetBackClr(Color::White);
+	pCell->SetTextClr(Color::Black);
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
 
 	// Setup table
 	m_pActiveDayListTable->SetColumnCount(2);
-	m_pActiveDayListTable->SetRowCount(MAX_DAYS_OF_WEEK);
+	m_pActiveDayListTable->SetRowCount(Constant::Max::DaysOfWeek);
 
 	// Draw table
 	DrawActiveDayTable(GetReadOnlyMode());
@@ -538,12 +538,12 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 
 	// Read-only mode --> Change cell color
 	if (bReadOnly == TRUE) {
-		pCell->SetBackClr(COLOR_BRIGHT_GRAY);
-		pCell->SetTextClr(COLOR_DARK_GRAY);
+		pCell->SetBackClr(Color::Bright_Gray);
+		pCell->SetTextClr(Color::Dark_Gray);
 	}
 	else {
-		pCell->SetBackClr(COLOR_WHITE);
-		pCell->SetTextClr(COLOR_BLACK);
+		pCell->SetBackClr(Color::White);
+		pCell->SetTextClr(Color::Black);
 	}
 
 	// Setup display size
@@ -557,7 +557,7 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 		// Windows 11 list control offset
 		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
 	}
-	if ((MAX_DAYS_OF_WEEK * GRIDCTRL_HEIGHT_ROW_EX) >= nFrameHeight) {
+	if ((Constant::Max::DaysOfWeek * GRIDCTRL_HEIGHT_ROW_EX) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
 		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
@@ -569,7 +569,7 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 
 	// Setup rows
 	UINT nItemState = INT_NULL;
-	for (int nRow = 0; nRow < MAX_DAYS_OF_WEEK; nRow++) {
+	for (int nRow = 0; nRow < Constant::Max::DaysOfWeek; nRow++) {
 
 		/*------------------------------------- Checkbox column -------------------------------------*/
 
@@ -614,7 +614,7 @@ void CEditScheduleDlg::SetupDialogItemState()
 	m_bRepeat = m_schScheduleItemTemp.IsRepeatEnabled();
 
 	// If is currently in read-only or view mode
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == Mode::View)) {
 		// Disable top checkbox
 		EnableItem(IDC_EDITSCHEDULE_ENABLE_CHK, FALSE);
 	}
@@ -647,7 +647,7 @@ void CEditScheduleDlg::SetupDialogItemState()
 	// Setup properties
 	if (m_pTimeSpin != NULL) {
 		m_pTimeSpin->SetBuddy(GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX));
-		m_pTimeSpin->SetRange(TIMESPIN_MIN, TIMESPIN_MAX);
+		m_pTimeSpin->SetRange(Constant::Min::TimeSpin, Constant::Max::TimeSpin);
 		m_pTimeSpin->SetPos(nTimeSpinPos);
 	}
 
@@ -695,7 +695,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 	CString strTemp;
 	int nDayOfWeekID = INT_INVALID;
 	CGridCellCheck* pCellCheck = NULL;
-	for (int nRowIndex = 0; nRowIndex < MAX_DAYS_OF_WEEK; nRowIndex++) {
+	for (int nRowIndex = 0; nRowIndex < Constant::Max::DaysOfWeek; nRowIndex++) {
 
 		// Day of week
 		nDayOfWeekID = nRowIndex;
@@ -725,7 +725,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 void CEditScheduleDlg::DisableActiveDayTable(BOOL bDisable)
 {
 	// If is currently in read-only or view mode
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == Mode::View)) {
 		// Force disable
 		bDisable = TRUE;
 	}
@@ -830,7 +830,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	BYTE byRepeatDays = 0;
 	CGridCellCheck* pCellCheckActive = NULL;
 	if (m_pActiveDayListTable == NULL) return;
-	for (int nRowIndex = 0; nRowIndex < MAX_DAYS_OF_WEEK; nRowIndex++) {
+	for (int nRowIndex = 0; nRowIndex < Constant::Max::DaysOfWeek; nRowIndex++) {
 		// Get checkbox cell
 		pCellCheckActive = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, COL_ID_CHECKBOX);
 		if (pCellCheckActive == NULL) continue;
@@ -894,7 +894,7 @@ BOOL CEditScheduleDlg::CheckDataChangeState()
 void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == Mode::View)) {
 		// Force disable
 		bEnable = FALSE;
 	}
@@ -922,7 +922,7 @@ void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
 void CEditScheduleDlg::EnableSubItems(BOOL bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == MODE_VIEW)) {
+	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == Mode::View)) {
 		// Force disable
 		bEnable = FALSE;
 	}

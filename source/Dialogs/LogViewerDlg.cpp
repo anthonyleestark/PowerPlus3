@@ -381,8 +381,8 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(COLOR_WHITE);
-	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetBackClr(Color::White);
+	pCell->SetTextClr(Color::Black);
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
 
 	// Table format and properties

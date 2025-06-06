@@ -35,8 +35,8 @@
 
 typedef struct tagLANGTEXT
 {
-	DWORD	dwLangStringID;
-	LPCTSTR lpszLangString;
+	unsigned int	id;
+	const wchar_t*	langString;
 } LANGTEXT, *PLANGTEXT;
 
 //////////////////////////////////////////////////////////////////////////

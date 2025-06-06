@@ -181,7 +181,7 @@ CPowerPlusDlg::~CPowerPlusDlg()
 	KillTimer(TIMERID_STD_EVENTSKIPCOUNTER);
 
 	// Unregister for session state change notifications
-	RegisterSessionNotification(MODE_DISABLE);
+	RegisterSessionNotification(Mode::Disable);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -574,14 +574,14 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	ExpandDialog(FALSE);
 
 	// Initialize Power++ runtime queue
-	UpdateActionScheduleQueue(MODE_INIT);
-	UpdatePwrReminderSnooze(MODE_INIT);
+	UpdateActionScheduleQueue(Mode::Init);
+	UpdatePwrReminderSnooze(Mode::Init);
 
 	// Initialize background hotkeys if enabled
-	SetupBackgroundHotkey(MODE_INIT);
+	SetupBackgroundHotkey(Mode::Init);
 
 	// Register for session state change notifications
-	RegisterSessionNotification(MODE_INIT);
+	RegisterSessionNotification(Mode::Init);
 
 	// Execute Power Reminder at startup
 	ExecutePowerReminder(PwrReminderEvent::atAppStartup);
@@ -630,42 +630,42 @@ int CPowerPlusDlg::PreDestroyDialog()
 	if (m_pAboutDlg != NULL) {
 		// Request close dialog
 		resCloseReq = m_pAboutDlg->RequestCloseDialog();
-		if (resCloseReq != RESULT_SUCCESS)
+		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// Help dialog
 	if (m_pHelpDlg != NULL) {
 		// Request close dialog
 		resCloseReq = m_pHelpDlg->RequestCloseDialog();
-		if (resCloseReq != RESULT_SUCCESS)
+		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// LogViewer dialog
 	if (m_pLogViewerDlg != NULL) {
 		// Request close dialog
 		resCloseReq = m_pLogViewerDlg->RequestCloseDialog();
-		if (resCloseReq != RESULT_SUCCESS)
+		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// Multi schedule dialog
 	if (m_pMultiScheduleDlg != NULL) {
 		// Request close dialog
 		resCloseReq = m_pMultiScheduleDlg->RequestCloseDialog();
-		if (resCloseReq != RESULT_SUCCESS)
+		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// HotkeySet dialog
 	if (m_pHotkeySetDlg != NULL) {
 		// Request close dialog
 		resCloseReq = m_pHotkeySetDlg->RequestCloseDialog();
-		if (resCloseReq != RESULT_SUCCESS)
+		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// Power Reminder dialog
 	if (m_pPwrReminderDlg != NULL) {
 		// Request close dialog
 		resCloseReq = m_pPwrReminderDlg->RequestCloseDialog();
-		if (resCloseReq != RESULT_SUCCESS)
+		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 
@@ -674,7 +674,7 @@ int CPowerPlusDlg::PreDestroyDialog()
 	if (GetPwrReminderDispList(arrPwrDispItemList) > 0) {
 		// Display notify message
 		DisplayMessageBox(MSGBOX_OTHER_PREDESTROY_REMINDERDISP, MSGBOX_PWRREMINDER_CAPTION);
-		return RESULT_FAILED;
+		return Result::Failure;
 	}
 
 	// Destroy components
@@ -687,10 +687,10 @@ int CPowerPlusDlg::PreDestroyDialog()
 	ExecutePowerReminder(PwrReminderEvent::atAppExit);
 
 	// Destroy background hotkeys if enabled
-	SetupBackgroundHotkey(MODE_DISABLE);
+	SetupBackgroundHotkey(Mode::Disable);
 
 	// Unregister for session state change notifications
-	RegisterSessionNotification(MODE_DISABLE);
+	RegisterSessionNotification(Mode::Disable);
 
 	return SDialog::PreDestroyDialog();
 }
@@ -707,10 +707,10 @@ int CPowerPlusDlg::PreDestroyDialog()
 void CPowerPlusDlg::OnDestroy()
 {
 	// Destroy background hotkeys if enabled
-	SetupBackgroundHotkey(MODE_DISABLE);
+	SetupBackgroundHotkey(Mode::Disable);
 
 	// Unregister for session state change notifications
-	RegisterSessionNotification(MODE_DISABLE);
+	RegisterSessionNotification(Mode::Disable);
 
 	// Save app event log if enabled
 	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
@@ -1390,12 +1390,12 @@ LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM /*wParam*/, LPARAM /*lParam*/
 		ScheduleData* pschData = pApp->GetAppScheduleData();
 		if (pschData != NULL) {
 			m_schScheduleData.Copy(*pschData);
-			UpdateActionScheduleQueue(MODE_UPDATE);
+			UpdateActionScheduleQueue(Mode::Update);
 		}
 	}
 
 	// Default: Always success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1416,12 +1416,12 @@ LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM /*wParam*/, LPARAM /*lParam*
 		HotkeySetData* phksData = pApp->GetAppHotkeySetData();
 		if (phksData != NULL) {
 			m_hksHotkeySetData.Copy(*phksData);
-			SetupBackgroundHotkey(MODE_UPDATE);
+			SetupBackgroundHotkey(Mode::Update);
 		}
 	}
 
 	// Default: Always success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1442,12 +1442,12 @@ LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM /*wParam*/, LPARAM /*lPara
 		PwrReminderData* ppwrData = pApp->GetAppPwrReminderData();
 		if (ppwrData != NULL) {
 			m_prdReminderData.Copy(*ppwrData);
-			UpdatePwrReminderSnooze(MODE_UPDATE);
+			UpdatePwrReminderSnooze(Mode::Update);
 		}
 	}
 
 	// Default: Always success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1465,7 +1465,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 	// Check argument validity
 	if ((lParam == NULL) || ((wParam == NULL) && (lParam == NULL))) {
 		OutputDebugLog(Constant::String::Null);
-		return LRESULT(RESULT_FAILED);
+		return LRESULT(Result::Failure);
 	}
 
 	// Get debug command string
@@ -1501,7 +1501,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 		}
 
 		// Result: Failed
-		return LRESULT(RESULT_FAILED);
+		return LRESULT(Result::Failure);
 	}
 
 	// Notify app class about debug command execution
@@ -1510,7 +1510,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 	::PostMessage(NULL, SM_APP_DEBUGCMD_EXEC, wAppNotiParam, lAppNotiParam);
 
 	// Default: Success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1535,7 +1535,7 @@ LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 	ShowDialog(this, bShowFlag);
 
 	// Default: Always success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1560,7 +1560,7 @@ LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM /*lParam*/)
 	ShowErrorMessage(dwErrorCode);
 
 	// Default: Always success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1578,7 +1578,7 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 	// Check if event skip counter is triggered
 	if (GetFlagValue(AppFlagID::pwrBroadcastSkipCount) > 0) {
 		TRACE("Power Broadcast Event will be skipped!!!");
-		return LRESULT(RESULT_FAILED);
+		return LRESULT(Result::Failure);
 	}
 
 	// Get event ID from param
@@ -1641,7 +1641,7 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 	}
 
 	// Default: Success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1661,7 +1661,7 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	if (pApp == NULL) {
 		TRACE_ERROR("Error: Get application pointer failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return LRESULT(RESULT_FAILED);
+		return LRESULT(Result::Failure);
 	}
 
 	/*---------- Process querry ending session event ----------*/
@@ -1680,7 +1680,7 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	/*---------------------------------------------------------*/
 
 	// Default: Success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1717,7 +1717,7 @@ LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM /*lParam*/)
 	}
 
 	// Default: Always success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2081,7 +2081,7 @@ BOOL CPowerPlusDlg::CreateNotifyIcon(void)
 
 	// Create and show notify icon
 	BOOL bRetCreate = FALSE;
-	for (int nRetry = 0; nRetry < MAX_RETRY_TIMES; nRetry++) {
+	for (int nRetry = 0; nRetry < Constant::Max::RetryTime; nRetry++) {
 		bRetCreate = Shell_NotifyIcon(NIM_ADD, m_pNotifyIconData);
 		if (bRetCreate != FALSE) break;
 	}
@@ -3172,11 +3172,11 @@ void CPowerPlusDlg::ApplySettings(BOOL bMinimize)
 	}
 
 	// Update background hotkeys if enabled
-	SetupBackgroundHotkey(MODE_UPDATE);
+	SetupBackgroundHotkey(Mode::Update);
 
 	// Disable Power Reminder snooze queue if feature's disabled
 	if (GetAppOption(AppOptionID::pwrReminderEnabled) == NULL) {
-		UpdatePwrReminderSnooze(MODE_DISABLE);
+		UpdatePwrReminderSnooze(Mode::Disable);
 	}
 
 	// Update notify icon tip text
@@ -3269,7 +3269,7 @@ void CPowerPlusDlg::RestartApp(BOOL bRestartAsAdmin)
 void CPowerPlusDlg::ExitApp(int nExitCode)
 {
 	// Request closing opening dialogs and do clean-up
-	if (PreDestroyDialog() != RESULT_SUCCESS) {
+	if (PreDestroyDialog() != Result::Success) {
 		TRACE("Request close application denied!!!");
 		return;
 	}
@@ -3931,7 +3931,7 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const SCHEDULEITEM& schItem, int nSn
 
 void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 {
-	if (nMode == MODE_INIT) {
+	if (nMode == Mode::Init) {
 
 		// Initialize Action Schedule runtime queue
 		// Set all items as not skipped
@@ -3940,7 +3940,7 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 			SetActionScheduleSkip(m_schScheduleData.GetItemAt(nItemIdx), FLAG_OFF);
 		}
 	}
-	else if (nMode == MODE_UPDATE) {
+	else if (nMode == Mode::Update) {
 
 		// Update skip queue items
 		for (int nQueueIdx = (m_arrRuntimeQueue.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
@@ -3994,7 +3994,7 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 			}
 		}
 	}
-	else if (nMode == MODE_DISABLE) {
+	else if (nMode == Mode::Disable) {
 
 		// Disable skip mode for all items in queue
 		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
@@ -4133,7 +4133,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 	/*																	 */
 	/*********************************************************************/
 
-	if ((nMode == MODE_DISABLE) || (nMode == MODE_UPDATE)) {
+	if ((nMode == Mode::Disable) || (nMode == Mode::Update)) {
 
 		if ((bHKRegisterFlag == TRUE) &&									// Hotkey registered flag ON
 			(!m_arrCurRegHKeyList.empty())) {								// Registered hotkey list is NOT empty
@@ -4178,7 +4178,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 	/*																	 */
 	/*********************************************************************/
 
-	if ((nMode == MODE_INIT) || (nMode == MODE_UPDATE)) {
+	if ((nMode == Mode::Init) || (nMode == Mode::Update)) {
 
 		// If feature not enabled, do nothing
 		if (bHKSEnable == FALSE) {
@@ -4372,7 +4372,7 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	/*																	 */
 	/*********************************************************************/
 
-	if ((nMode == MODE_DISABLE) || (nMode == MODE_UPDATE)) {
+	if ((nMode == Mode::Disable) || (nMode == Mode::Update)) {
 
 		// Only unregister if the flag is not OFF
 		if (GetFlagValue(AppFlagID::wtsSessionNotifyRegistered)) {
@@ -4402,7 +4402,7 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	/*																	 */
 	/*********************************************************************/
 
-	if ((nMode == MODE_INIT) || (nMode == MODE_UPDATE)) {
+	if ((nMode == Mode::Init) || (nMode == Mode::Update)) {
 
 		// Only register if the flag is not ON
 		if (!GetFlagValue(AppFlagID::wtsSessionNotifyRegistered)) {
@@ -4814,7 +4814,7 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PWRREMINDERITEM& pwrItem, int nSn
 
 void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 {
-	if (nMode == MODE_INIT) {
+	if (nMode == Mode::Init) {
 
 		// Initialize Power Reminder runtime snooze queue
 		// Set all items as not snoozed
@@ -4822,7 +4822,7 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 			SetPwrReminderSnooze(m_prdReminderData.GetItemAt(nItemIdx), FLAG_OFF);
 		}
 	}
-	else if (nMode == MODE_UPDATE) {
+	else if (nMode == Mode::Update) {
 
 		// Update snooze queue items
 		for (int nQueueIdx = (m_arrRuntimeQueue.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
@@ -4859,7 +4859,7 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 			}
 		}
 	}
-	else if (nMode == MODE_DISABLE) {
+	else if (nMode == Mode::Disable) {
 
 		// Disable snooze mode for all items in queue
 		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
@@ -5257,7 +5257,7 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 
 	// Attach history action result detail info
 	if (m_hidHistoryInfoData.IsSuccess()) {
-		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::Success, LogDetailFlag::LookUp_Dict);
+		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::SuccessNoError, LogDetailFlag::LookUp_Dict);
 	}
 	else {
 		if ((m_hidHistoryInfoData.GetErrorCode() == INT_NULL) ||

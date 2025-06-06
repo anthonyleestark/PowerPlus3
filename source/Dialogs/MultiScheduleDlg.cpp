@@ -364,7 +364,7 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 	if (m_pEditScheduleDlg != NULL) {
 		// Request close dialog
 		LRESULT resCloseReq = m_pEditScheduleDlg->RequestCloseDialog();
-		if (resCloseReq != RESULT_SUCCESS)
+		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 
@@ -382,7 +382,7 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(RESULT_FAILED);
+			return LRESULT(Result::Failure);
 		}
 	}
 
@@ -472,8 +472,8 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR /*ptrLanguage*/)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(COLOR_WHITE);
-	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetBackClr(Color::White);
+	pCell->SetTextClr(Color::Black);
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
 
 	// Table format and properties
@@ -536,12 +536,12 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 
 	// Read-only mode --> Change cell color
 	if (bReadOnly == TRUE) {
-		pCell->SetBackClr(COLOR_BRIGHT_GRAY);
-		pCell->SetTextClr(COLOR_DARK_GRAY);
+		pCell->SetBackClr(Color::Bright_Gray);
+		pCell->SetTextClr(Color::Dark_Gray);
 	}
 	else {
-		pCell->SetBackClr(COLOR_WHITE);
-		pCell->SetTextClr(COLOR_BLACK);
+		pCell->SetBackClr(Color::White);
+		pCell->SetTextClr(Color::Black);
 	}
 	
 	// Table properties
@@ -610,8 +610,8 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 			if ((nRow == ROW_INDEX_DEFAULT) && (nColStyle != COLSTYLE_FIXED) && (bReadOnly != TRUE)) {
 				CGridCellBase* pCellBase = m_pDataItemListTable->GetCell(nRow, nCol);
 				if (pCellBase != NULL) {
-					pCellBase->SetBackClr(COLOR_YELLOW);
-					pCellBase->SetTextClr(COLOR_RED);
+					pCellBase->SetBackClr(Color::White);
+					pCellBase->SetTextClr(Color::Red);
 				}
 			}
 
@@ -1526,14 +1526,14 @@ void CMultiScheduleDlg::OnAdd()
 		m_pEditScheduleDlg = new CEditScheduleDlg;
 		m_pEditScheduleDlg->SetParentWnd(this);
 		m_pEditScheduleDlg->SetScheduleItem(schTemp);
-		m_pEditScheduleDlg->SetDispMode(MODE_ADD);
+		m_pEditScheduleDlg->SetDispMode(Mode::Add);
 		m_pEditScheduleDlg->DoModal();
 	}
 	else {
 		// Update dialog
 		m_pEditScheduleDlg->SetParentWnd(this);
 		m_pEditScheduleDlg->SetScheduleItem(schTemp);
-		m_pEditScheduleDlg->SetDispMode(MODE_ADD);
+		m_pEditScheduleDlg->SetDispMode(Mode::Add);
 		m_pEditScheduleDlg->ShowWindow(SW_SHOW);
 	}
 }
@@ -1582,14 +1582,14 @@ void CMultiScheduleDlg::OnEdit()
 			m_pEditScheduleDlg = new CEditScheduleDlg;
 			m_pEditScheduleDlg->SetParentWnd(this);
 			m_pEditScheduleDlg->SetScheduleItem(schItem);
-			m_pEditScheduleDlg->SetDispMode(MODE_UPDATE);
+			m_pEditScheduleDlg->SetDispMode(Mode::Update);
 			m_pEditScheduleDlg->DoModal();
 		}
 		else {
 			// Update dialog
 			m_pEditScheduleDlg->SetParentWnd(this);
 			m_pEditScheduleDlg->SetScheduleItem(schItem);
-			m_pEditScheduleDlg->SetDispMode(MODE_UPDATE);
+			m_pEditScheduleDlg->SetDispMode(Mode::Update);
 			m_pEditScheduleDlg->ShowWindow(SW_SHOW);
 		}
 	}
@@ -1756,14 +1756,14 @@ void CMultiScheduleDlg::OnViewDetails()
 			m_pEditScheduleDlg = new CEditScheduleDlg;
 			m_pEditScheduleDlg->SetParentWnd(this);
 			m_pEditScheduleDlg->SetScheduleItem(schItem);
-			m_pEditScheduleDlg->SetDispMode(MODE_VIEW);
+			m_pEditScheduleDlg->SetDispMode(Mode::View);
 			m_pEditScheduleDlg->DoModal();
 		}
 		else {
 			// Update dialog
 			m_pEditScheduleDlg->SetParentWnd(this);
 			m_pEditScheduleDlg->SetScheduleItem(schItem);
-			m_pEditScheduleDlg->SetDispMode(MODE_VIEW);
+			m_pEditScheduleDlg->SetDispMode(Mode::View);
 			m_pEditScheduleDlg->ShowWindow(SW_SHOW);
 		}
 	}
@@ -1934,7 +1934,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM /*lParam*/
 
 		// Initialize info data
 		Item schItemTemp;
-		int nMode = MODE_INIT;
+		int nMode = Mode::Init;
 		int nRetFlag = ReturnFlag::Invalid;
 
 		// Update info data
@@ -1947,11 +1947,11 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM /*lParam*/
 		// Validate return info
 		if ((!schItemTemp.IsEmpty()) && (nRetFlag == ReturnFlag::Update)) {
 			// Update data by mode
-			if (nMode == MODE_ADD) {
+			if (nMode == Mode::Add) {
 				// Add item
 				Add(schItemTemp);
 			}
-			else if (nMode == MODE_UPDATE) {
+			else if (nMode == Mode::Update) {
 				// Edit item --> Update changes
 				Update(schItemTemp);
 			}
@@ -1965,7 +1965,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM /*lParam*/
 		}
 	}
 
-	return LRESULT(RESULT_SUCCESS);	// ERROR_SUCCESS
+	return LRESULT(Result::Success);	// ERROR_SUCCESS
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -36,8 +36,6 @@ __pragma(warning(disable:28159))
 
 // Include dependencies
 #include "AppCommon.h"
-#include "AppMacros.h"
-#include "AppConstants.h"
 #include "WinApp.h"
 
 
@@ -54,8 +52,21 @@ __pragma(warning(disable:28159))
 
 // Re-check dependencies included
 #ifndef _CPP_STANDARD_INCLUDED
-	#pragma error("(X) Compilation Error: C++ standard libraries are missing or not included!")
+	#error("(X) Compilation Error: C++ standard libraries are missing or not included!")
 #endif
 #ifndef _WINAPP_INCLUDED
-	#pragma error("(X) Compilation Error: Windows SDK libraries are missing or not included!")
+	#error("(X) Compilation Error: Windows SDK libraries are missing or not included!")
 #endif
+
+
+// Include application base definitions
+#include "AppMacros.h"
+#include "AppConstants.h"
+
+
+// Define global typenames for basic data types
+using IntArray = typename std::vector<int>;
+using UIntArray = typename std::vector<unsigned int>;
+using LongArray = typename std::vector<long long>;
+using ULongArray = typename std::vector<unsigned long long>;
+using StringArray = typename std::vector<CString>;

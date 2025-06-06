@@ -95,16 +95,16 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput)
 		LANGTEXT stringPair = pStringTableRef[nIndex++];
 
 		// End of table
-		if (stringPair.dwLangStringID == INT_NULL)
+		if (stringPair.id == INT_NULL)
 			break;
 
 		// Also convert language string to lower for easier comparison
-		strPairedString = stringPair.lpszLangString;
+		strPairedString = stringPair.langString;
 		strPairedString.MakeLower();
 
 		// Compare string ID
 		if (!_tcscmp(strPairedString, strInput)) {
-			return stringPair.dwLangStringID;
+			return stringPair.id;
 		}
 	} while (nIndex < MAX_TABLESIZE);
 
@@ -136,12 +136,12 @@ LPCTSTR	MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID)
 		LANGTEXT stringPair = pStringTableRef[nIndex++];
 
 		// End of table
-		if (stringPair.dwLangStringID == INT_NULL)
+		if (stringPair.id == INT_NULL)
 			break;
 
 		// Compare string
-		if (stringPair.dwLangStringID == nID)
-			return stringPair.lpszLangString;
+		if (stringPair.id == nID)
+			return stringPair.langString;
 
 	} while (nIndex < MAX_TABLESIZE);
 

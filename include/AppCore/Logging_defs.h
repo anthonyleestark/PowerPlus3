@@ -256,7 +256,7 @@ enum HistoryAction {
 //////////////////// ********************
 
 enum HistoryResult {
-	Success = 0x0600,			// Success
+	SuccessNoError = 0x0600,	// Success
 	FailedUnknown,				// Failed (Unknown error)
 	FailedWithErrorCode,		// Failed (Error code: 0x%08X)
 };

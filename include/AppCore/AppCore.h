@@ -29,125 +29,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//	Define special function-base, format and expression macros for program, 
-//	these macros will be used elsewhere in the programs for special purposes and calculation
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Trace log functions
-//
-
-#define TRACE_FORMAT									TraceErrorFormat
-#define TRACE_ERROR(logString)							TraceError(logString)
-#define TRACE_DEBUG(func, file, line)					TraceDebugInfo(func, file, line)
-
-
-// Type-cast macros
-//
-
-#define DEFAULT_CAST(type, variable)					((type)variable)
-#define CONST_CAST(type, variable)						const_cast<type>(variable)
-#define STATIC_CAST(type, variable)						static_cast<type>(variable)
-#define DYNAMIC_CAST(type, variable)					dynamic_cast<type>(variable)
-#define REINTERPRET_CAST(type, variable)				reinterpret_cast<type>(variable)
-
-
-// String processing functions
-//
-
-#define IS_NOT_EMPTY_STRING(string)						(_tcscmp(string, Constant::String::Empty))
-#define IS_EMPTY_STRING(string)							(!IS_NOT_EMPTY_STRING(string))
-#define IS_NOT_NULL_STRING(string)						(_tcscmp(string, Constant::String::Null))
-#define IS_NULL_STRING(string)							(!IS_NOT_NULL_STRING(string))
-
-#define MAKEANSI(string)								(CW2A(string).m_psz)
-#define MAKEUNICODE(string)								(CA2W(string).m_psz)
-#define RESOURCESTRING(resourceid)						LoadResourceString(resourceid)
-
-#define MAKE_WPARAM_STRING(string)						DEFAULT_CAST(WPARAM, _tcslen(string))
-#define MAKE_LPARAM(type, data)							REINTERPRET_CAST(LPARAM, ((type)data))
-#define MAKE_LPARAM_STRING(string)						MAKE_LPARAM(LPCTSTR, string)
-#define LPARAM_STATIC_CAST(type, lParam)				STATIC_CAST(type, lParam)
-#define LPARAM_REINTERPRET_CAST(type, lParam)			REINTERPRET_CAST(type, lParam)
-#define LPARAM_TO_STRING(lParam)						LPARAM_REINTERPRET_CAST(LPCTSTR, lParam)
-
-
-// Special expressions
-//
-
-#define NOTHING											((void)0)
-#define GET_HANDLE_MAINWND()							(AfxGetMainWnd()->GetSafeHwnd())
-#define IS_PRESSED(keycode)								(0x8000 & ::GetKeyState(keycode))
-#define __FILENAME__									(strrchr("\\" __FILE__, '\\') + 1)
-
-
-// Time value processing expressions
-//
-
-#define FORMAT_REG_TIME(systime)						(INT((systime.wHour * 100) + systime.wMinute))
-#define GET_REGTIME_HOUR(reg_time)						(WORD(reg_time / 100))
-#define GET_REGTIME_MINUTE(reg_time)					(WORD(reg_time % 100))
-#define TIME_TO_SECONDS(time)							(INT((time.wHour * 3600) + (time.wMinute * 60) + time.wSecond))
-#define GET_HOUR(totalSecs)								(WORD(totalSecs / 3600))
-#define GET_MINUTE(totalSecs)							(WORD((totalSecs % 3600) / 60))
-#define GET_SECOND(totalSecs)							(WORD((totalSecs % 3600) % 60))
-
-
-// Complex macros
-//
-
-#define NULL_POINTER_BREAK(pointer, ret_expr)			if (pointer == NULL) { ret_expr; }
-#define VERIFY_POINTER(pointer, type)					VERIFY(((pointer) != NULL) && AfxIsValidAddress((pointer), sizeof(type), FALSE))
-#define ASSERT_INITIALIZATION(pointer, type)			if (pointer == NULL) { pointer = new type(); ASSERT_POINTER(pointer, type); }
-#define VERIFY_INITIALIZATION(pointer, type) 			if (pointer == NULL) { pointer = new type(); VERIFY_POINTER(pointer, type); }
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define commands for special functions
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Command runas flags
-//
-
-#define COMMAND_FLAG_RUNAS							_T("runas")
-#define COMMAND_FLAG_OPEN							_T("open")
-
-
-// Registry commands
-//
-
-#define COMMAND_REGISTRY_DELETE						_T("reg delete %s /va /f")
-#define COMMAND_REGISTRY_EXPORT						_T("\"reg.exe export \"%s\" \"%s\"\" /y")
-
-
-// Enable/disable startup as admin
-//
-
-#define COMMAND_REGISTER_RUNASADMIN					_T("schtasks /create /sc onlogon /tn %s /rl highest /tr \"%s\" /f")
-#define COMMAND_UNREGISTER_RUNASADMIN				_T("schtasks /delete /tn %s /f")
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 //	Define enum datas for program, these datas will be used elsewhere in the programs
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////// ********************
-// 
-// Flag values - use for numeric and boolean flag-base variables
-//
-//////////////////// ********************
-
-typedef enum eFLAG {
-	FLAG_OFF = 0,						// Flag OFF
-	FLAG_ON	 = 1,						// Flag ON
-} FLAG;
 
 
 //////////////////// ********************
@@ -192,13 +76,6 @@ typedef enum eFILETYPE {
 //	Define data types for program, these data types will be used elsewhere in the program
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Define global typenames for basic data types
-using IntArray = typename std::vector<int>;
-using UIntArray = typename std::vector<UINT>;
-using LongArray = typename std::vector<long long>;
-using ULongArray = typename std::vector<size_t>;
-using StringArray = typename std::vector<CString>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -733,12 +610,12 @@ public:
 
 public:
 	// Define default style values
-	static constexpr COLORREF defaultBkgrdColor = COLOR_PINK;
-	static constexpr COLORREF defaultTextColor = COLOR_RED;
+	static constexpr COLORREF defaultBkgrdColor = Color::Pink;
+	static constexpr COLORREF defaultTextColor = Color::Red;
 	static constexpr const wchar_t* defaultFontName = _T("Arial");
 	static constexpr int defaultFontSize = 20;
 	static constexpr int defaultTimeout = 0;
-	static constexpr int defaultIconID = SYSICON_INFORMATION;
+	static constexpr int defaultIconID = SystemIcon::Information;
 	static constexpr int defaultIconSize = 50;
 	static constexpr int defaultIconPosition = IconOnTheTop;
 	static constexpr int defaultDisplayPosition = AtCenter;
@@ -1472,7 +1349,7 @@ typedef struct tagBUFFER
 {
 	// Member variables
 	INT		nLength;										// Buffer length
-	TCHAR	tcToken[MAX_BUFFER_LENGTH];						// Buffer token
+	TCHAR	tcToken[Constant::Max::BufferLength];			// Buffer token
 } BUFFER, *PBUFFER;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1625,7 +1502,7 @@ namespace AppCore
 	void WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW);
 
 	// Message and notification functions
-	LRESULT	WaitMessage(UINT nMsg, int nTimeout = TIMEOUT_WAIT_MESSAGE);
+	LRESULT	WaitMessage(UINT nMsg, int nTimeout = Constant::Max::Timeout::WaitMessage);
 	void	ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErrorCode, LPARAM lParam = NULL);
 
 	// Data converting functions

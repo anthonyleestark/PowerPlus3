@@ -65,8 +65,8 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	m_nSnoozeFlag = FLAG_OFF;
 
 	// Properties
-	m_clBkgrdColor = COLOR_WHITE;
-	m_clTextColor = COLOR_BLACK;
+	m_clBkgrdColor = Color::White;
+	m_clTextColor = Color::Black;
 	m_nAutoCloseInterval = 0;
 }
 

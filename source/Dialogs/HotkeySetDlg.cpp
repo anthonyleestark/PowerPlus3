@@ -663,7 +663,7 @@ LRESULT CHotkeySetDlg::RequestCloseDialog(void)
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(RESULT_FAILED);
+			return LRESULT(Result::Failure);
 		}
 	}
 
@@ -760,8 +760,8 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(COLOR_WHITE);
-	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetBackClr(Color::White);
+	pCell->SetTextClr(Color::Black);
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW);
 
 	// Table format and properties
@@ -824,12 +824,12 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 
 	// Read-only mode --> Change cell color
 	if (bReadOnly == TRUE) {
-		pCell->SetBackClr(COLOR_BRIGHT_GRAY);
-		pCell->SetTextClr(COLOR_DARK_GRAY);
+		pCell->SetBackClr(Color::Bright_Gray);
+		pCell->SetTextClr(Color::Dark_Gray);
 	}
 	else {
-		pCell->SetBackClr(COLOR_WHITE);
-		pCell->SetTextClr(COLOR_BLACK);
+		pCell->SetBackClr(Color::White);
+		pCell->SetTextClr(Color::Black);
 	}
 
 	// Table properties
@@ -965,7 +965,7 @@ void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 	case IDC_HOTKEYSET_FUNCKEY_LIST:
 		m_cmbFuncKeyList.ResetContent();
 		for (int nIndex = 0; nIndex < TABLE_SIZE(StringTable::FunctionKeys); nIndex++)
-			m_cmbFuncKeyList.AddString(StringTable::FunctionKeys[nIndex].lpszLangString);
+			m_cmbFuncKeyList.AddString(StringTable::FunctionKeys[nIndex].langString);
 		break;
 
 	default:

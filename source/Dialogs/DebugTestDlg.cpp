@@ -248,10 +248,10 @@ HBRUSH CDebugTestDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_EDIT)
 	{
 		// Text color: Yellow
-		pDC->SetTextColor(COLOR_YELLOW);
+		pDC->SetTextColor(Color::Yellow);
 
 		// Background color: Black
-		pDC->SetBkColor(COLOR_BLACK);
+		pDC->SetBkColor(Color::Black);
 
 		// Use our custom background brush
 		if (m_pDebugViewBrush != NULL)
@@ -333,7 +333,7 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 {
 	// Check argument validity
 	if ((wParam == 0) || (lParam == NULL))
-		return LRESULT(RESULT_FAILED);
+		return LRESULT(Result::Failure);
 
 	// Format debug output log string
 	CString strDebugOutputLog;
@@ -351,7 +351,7 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 	// Reset currently displaying history flag
 	SetCurrentlyDispHistoryState(FALSE);
 
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -379,7 +379,7 @@ LRESULT CDebugTestDlg::OnDebugCmdNoReply(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	// Reset currently displaying history flag
 	SetCurrentlyDispHistoryState(FALSE);
 
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -397,7 +397,7 @@ LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	// Clear buffer
 	ClearViewBuffer();
 
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 
@@ -436,7 +436,7 @@ LRESULT CDebugTestDlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 	}
 
 	// Default: Always success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -821,7 +821,7 @@ BOOL CDebugTestDlg::CreateDebugViewBrush(void)
 	// Create brush
 	BOOL bRet = FALSE;
 	if (m_pDebugViewBrush != NULL) {
-		bRet = m_pDebugViewBrush->CreateSolidBrush(COLOR_BLACK);
+		bRet = m_pDebugViewBrush->CreateSolidBrush(Color::Black);
 	}
 
 	return bRet;

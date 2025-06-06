@@ -33,6 +33,12 @@ class CHelpDlg : public SDialog
 	DECLARE_DYNAMIC(CHelpDlg)
 
 private:
+	enum ViewMode {
+		HelpFile = 0,
+		Changelog
+	};
+
+private:
 	CString m_strFileData;
 	UINT	m_nViewMode;
 
@@ -69,7 +75,6 @@ protected:
 	// Member functions
 	void SetupLanguage(void);
 	void SetupEditbox(CEdit& pEdit);
-	BOOL LoadFileData(CString& strFileData);
 	BOOL LoadRCFileData(CString& strRCFileData);
 	void UpdateSwitchViewModeButton(void);
 

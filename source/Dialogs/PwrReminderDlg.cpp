@@ -405,12 +405,12 @@ void CPwrReminderDlg::OnClose()
 		// Exit current mode
 		int nConfirm = -1;
 		int nCurMode = GetCurMode();
-		if ((nCurMode == MODE_ADD) || (nCurMode == MODE_UPDATE)) {
+		if ((nCurMode == Mode::Add) || (nCurMode == Mode::Update)) {
 			// Show switch mode confirmation message
 			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Switch mode
-				SetCurMode(MODE_VIEW);
+				SetCurMode(Mode::View);
 			}
 			return;
 		}
@@ -500,12 +500,12 @@ void CPwrReminderDlg::OnCancel()
 		// Exit current mode
 		int nConfirm = -1;
 		int nCurMode = GetCurMode();
-		if ((nCurMode == MODE_ADD) || (nCurMode == MODE_UPDATE)) {
+		if ((nCurMode & Mode::Add) || (nCurMode & Mode::Update)) {
 			// Show switch mode confirmation message
 			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Switch mode
-				SetCurMode(MODE_VIEW);
+				SetCurMode(Mode::View);
 			}
 			return;
 		}
@@ -545,20 +545,20 @@ void CPwrReminderDlg::OnAdd()
 	int nCurMode = GetCurMode();
 
 	// Current mode: Add
-	if (nCurMode == MODE_ADD) {
+	if (nCurMode & Mode::Add) {
 		// Add item
 		Add();
 
 		// Reset mode
-		SetCurMode(MODE_VIEW);
+		SetCurMode(Mode::View);
 	}
 	// Current mode: Edit
-	else if (nCurMode == MODE_UPDATE) {
+	else if (nCurMode & Mode::Update) {
 		// Do nothing
 	}
 	else {
 		// Switch mode
-		SetCurMode(MODE_ADD);
+		SetCurMode(Mode::Add);
 	}
 }
 
@@ -580,7 +580,7 @@ void CPwrReminderDlg::OnEdit()
 	int nCurMode = GetCurMode();
 
 	// Mode: Edit
-	if (nCurMode == MODE_UPDATE) {
+	if (nCurMode & Mode::Update) {
 		// Check if any item is selected or not
 		BOOL bIsSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
 
@@ -590,15 +590,15 @@ void CPwrReminderDlg::OnEdit()
 		}
 
 		// Reset mode
-		SetCurMode(MODE_VIEW);
+		SetCurMode(Mode::View);
 	}
 	// Mode: Add
-	else if (nCurMode == MODE_ADD) {
+	else if (nCurMode & Mode::Add) {
 		// Do nothing
 	}
 	else {
 		// Switch mode
-		SetCurMode(MODE_UPDATE);
+		SetCurMode(Mode::Update);
 	}
 }
 
@@ -763,7 +763,7 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check read-only mode
 	int nCurMode = GetCurMode();
-	if ((nCurMode != MODE_INIT) && (nCurMode != MODE_VIEW))
+	if ((nCurMode != Mode::Init) && (nCurMode != Mode::View))
 		return;
 
 	// Display item details
@@ -797,7 +797,7 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check read-only mode
 	int nCurMode = GetCurMode();
-	if ((nCurMode != MODE_INIT) && (nCurMode != MODE_VIEW))
+	if ((nCurMode != Mode::Init) && (nCurMode != Mode::View))
 		return;
 
 	// Success (return 0)
@@ -833,7 +833,7 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check read-only mode
 	int nCurMode = GetCurMode();
-	if ((nCurMode != MODE_INIT) && (nCurMode != MODE_VIEW))
+	if ((nCurMode != Mode::Init) && (nCurMode != Mode::View))
 		return;
 
 	// Success (return 0)
@@ -1122,9 +1122,9 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	if (m_pRmdPreviewMsgDlg != NULL) {
 		// Request close message dialog
 		LRESULT resClosePreview = m_pRmdPreviewMsgDlg->RequestCloseDialog();
-		if (resClosePreview != RESULT_SUCCESS) {
+		if (resClosePreview != Result::Success) {
 			// Request denied
-			return LRESULT(RESULT_FAILED);
+			return LRESULT(Result::Failure);
 		}
 	}
 
@@ -1132,22 +1132,22 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	if (m_pRepeatSetDlg != NULL) {
 		// Request close dialog
 		LRESULT resCloseRepeatSet = m_pRepeatSetDlg->RequestCloseDialog();
-		if (resCloseRepeatSet != RESULT_SUCCESS)
+		if (resCloseRepeatSet != Result::Success)
 			return resCloseRepeatSet;
 	}
 
 	// Exit current mode
 	int nConfirm = -1;
 	int nCurMode = GetCurMode();
-	if ((nCurMode == MODE_ADD) || (nCurMode == MODE_UPDATE)) {
+	if ((nCurMode == Mode::Add) || (nCurMode == Mode::Update)) {
 		nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Switch mode
-			SetCurMode(MODE_VIEW);
+			SetCurMode(Mode::View);
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(RESULT_FAILED);
+			return LRESULT(Result::Failure);
 		}
 	}
 
@@ -1162,7 +1162,7 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
-			return LRESULT(RESULT_FAILED);
+			return LRESULT(Result::Failure);
 		}
 	}
 
@@ -1322,8 +1322,8 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
-	pCell->SetBackClr(COLOR_WHITE);
-	pCell->SetTextClr(COLOR_BLACK);
+	pCell->SetBackClr(Color::White);
+	pCell->SetTextClr(Color::Black);
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW);
 
 	// Table format and properties
@@ -1398,12 +1398,12 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 
 	// Read-only mode --> Change cell color
 	if (bReadOnly == TRUE) {
-		pCell->SetBackClr(COLOR_BRIGHT_GRAY);
-		pCell->SetTextClr(COLOR_DARK_GRAY);
+		pCell->SetBackClr(Color::Bright_Gray);
+		pCell->SetTextClr(Color::Dark_Gray);
 	}
 	else {
-		pCell->SetBackClr(COLOR_WHITE);
-		pCell->SetTextClr(COLOR_BLACK);
+		pCell->SetBackClr(Color::White);
+		pCell->SetTextClr(Color::Black);
 	}
 
 	// Setup display size
@@ -1551,7 +1551,7 @@ void CPwrReminderDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 void CPwrReminderDlg::SwitchMode(BOOL /* bRedraw = FALSE */)
 {
 	int nCurMode = GetCurMode();
-	if (nCurMode == MODE_INIT) {
+	if (nCurMode == Mode::Init) {
 		// Unlock dialog items
 		SetLockState(FALSE);
 
@@ -1563,12 +1563,12 @@ void CPwrReminderDlg::SwitchMode(BOOL /* bRedraw = FALSE */)
 		DisableTable(FALSE);
 
 		// Refresh detail view
-		RefreshDetailView(MODE_INIT);
+		RefreshDetailView(Mode::Init);
 
 		// Refresh dialog item states
 		RefreshDialogItemState(TRUE);
 	}
-	else if (nCurMode == MODE_VIEW) {
+	else if (nCurMode == Mode::View) {
 		// Lock dialog items
 		SetLockState(FALSE);
 
@@ -1580,13 +1580,13 @@ void CPwrReminderDlg::SwitchMode(BOOL /* bRedraw = FALSE */)
 		DisableTable(FALSE);
 
 		// Refresh detail view
-		RefreshDetailView(MODE_VIEW);
+		RefreshDetailView(Mode::View);
 		DisplayItemDetails(m_nCurSelIndex);
 
 		// Refresh dialog item states
 		RefreshDialogItemState(TRUE);
 	}
-	else if (nCurMode == MODE_ADD) {
+	else if (nCurMode == Mode::Add) {
 		// Lock dialog items
 		SetLockState(TRUE);
 
@@ -1607,10 +1607,10 @@ void CPwrReminderDlg::SwitchMode(BOOL /* bRedraw = FALSE */)
 		DisableTable(TRUE);
 
 		// Refresh detail view
-		RefreshDetailView(MODE_ADD);
+		RefreshDetailView(Mode::Add);
 		DisplayItemDetails(INT_INVALID);
 	}
-	else if (nCurMode == MODE_UPDATE) {
+	else if (nCurMode == Mode::Update) {
 		// Lock dialog items
 		SetLockState(TRUE);
 
@@ -1631,9 +1631,9 @@ void CPwrReminderDlg::SwitchMode(BOOL /* bRedraw = FALSE */)
 		DisableTable(TRUE);
 
 		// Refresh detail view
-		RefreshDetailView(MODE_UPDATE);
+		RefreshDetailView(Mode::Update);
 	}
-	else if (nCurMode == MODE_DISABLE) {
+	else if (nCurMode == Mode::Disable) {
 		// Lock dialog items
 		SetLockState(TRUE);
 
@@ -1864,7 +1864,7 @@ void CPwrReminderDlg::SetupDialogItemState()
 
 		// Set buddy: Time edit control
 		m_pEvtSetTimeSpin->SetBuddy(m_pEvtSetTimeEdit);
-		m_pEvtSetTimeSpin->SetRange(TIMESPIN_MIN, TIMESPIN_MAX);
+		m_pEvtSetTimeSpin->SetRange(Constant::Min::TimeSpin, Constant::Max::TimeSpin);
 		m_pEvtSetTimeSpin->SetPos(0);
 	}
 
@@ -2028,7 +2028,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	}
 
 	// Init default data for mode add
-	if (GetCurMode() == MODE_ADD) {
+	if (GetCurMode() == Mode::Add) {
 		pwrItem.SetMessage(Constant::String::Empty);
 		pwrItem.SetEventID(Event::atSetTime);
 		pwrItem.SetTime(GetCurSysTime());
@@ -2041,7 +2041,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	// If item is empty
 	if (pwrItem.IsEmpty()) {
 		// TODO: Disable all detail item controls
-		RefreshDetailView(MODE_INIT);
+		RefreshDetailView(Mode::Init);
 	}
 	else {
 		// TODO: Update current displaying item index
@@ -2212,13 +2212,13 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 {
 	// Set state and init value by mode
 	BOOL bEnable = TRUE;
-	if ((nMode == MODE_INIT) || (nMode == MODE_VIEW)) {
+	if ((nMode == Mode::Init) || (nMode == Mode::View)) {
 		bEnable = FALSE;
 	}
-	else if ((nMode == MODE_ADD) || (nMode == MODE_UPDATE)) {
+	else if ((nMode == Mode::Add) || (nMode == Mode::Update)) {
 		bEnable = TRUE;
 	}
-	else if (nMode == MODE_DISABLE) {
+	else if (nMode == Mode::Disable) {
 		bEnable = FALSE;
 	}
 
@@ -2305,11 +2305,11 @@ void CPwrReminderDlg::UpdateMsgCounter(int nCount)
 	if (pCounter == NULL) return;
 
 	// Check counter value validity
-	if ((nCount < 0) || (nCount > MAX_STRING_LENGTH)) return;
+	if ((nCount < 0) || (nCount > Constant::Max::StringLength)) return;
 
 	// Display counter
 	CString strCountFormat;
-	strCountFormat.Format(_T("%d/%d"), nCount, MAX_STRING_LENGTH);
+	strCountFormat.Format(_T("%d/%d"), nCount, Constant::Max::StringLength);
 	pCounter->SetWindowText(strCountFormat);
 }
 
@@ -2854,15 +2854,15 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 
 		BOOL bEnable = TRUE;
 		int nMode = GetCurMode();
-		if ((nMode == MODE_INIT) || (nMode == MODE_VIEW)) {
+		if ((nMode == Mode::Init) || (nMode == Mode::View)) {
 			// Disable items
 			bEnable = FALSE;
 		}
-		else if ((nMode == MODE_ADD) || (nMode == MODE_UPDATE)) {
+		else if ((nMode == Mode::Add) || (nMode == Mode::Update)) {
 			// Enable items
 			bEnable = TRUE;
 		}
-		else if (nMode == MODE_DISABLE) {
+		else if (nMode == Mode::Disable) {
 			// Disable items
 			bEnable = FALSE;
 		}
@@ -3024,7 +3024,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 			}
 		}
 	}
-	else if (strMessage.GetLength() > MAX_STRING_LENGTH) {
+	else if (strMessage.GetLength() > Constant::Max::StringLength) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3032,7 +3032,7 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Only get character numbers in range
-			CString strTemp = strMessage.Left(MAX_STRING_LENGTH);
+			CString strTemp = strMessage.Left(Constant::Max::StringLength);
 			pwrItem.SetMessage(strTemp);
 		}
 	}

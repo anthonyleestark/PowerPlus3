@@ -687,7 +687,7 @@ BOOL BackupSystem::RegistryExport()
 
 	// Execute registry export command
 	CString strExecCommand;
-	strExecCommand.Format(COMMAND_REGISTRY_EXPORT, MakeRegistryPath(regInfo, RegistryPathType::includingProductName), strDestFilePath.GetString());
+	strExecCommand.Format(Constant::Command::Registry::Export, MakeRegistryPath(regInfo, RegistryPathType::includingProductName), strDestFilePath.GetString());
 	if (!ExecuteCommand(strExecCommand, FALSE, FALSE)) {
 		// Execute command failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to execute export command!!!");

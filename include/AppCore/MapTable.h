@@ -371,25 +371,25 @@ namespace MapTable
 
 		INITIALIZE_STRINGMAPTABLE(ColorName)
 		/*-------Color ID----------------------------Color name-----------------------*/
-			COLOR_RED,							_T("Red"),
-			COLOR_GREEN,						_T("Green"),
-			COLOR_YELLOW,						_T("Yellow"),
-			COLOR_BLUE,							_T("Blue"),
-			COLOR_WHITE,						_T("White"),
-			COLOR_BLACK,						_T("Black"),
-			COLOR_PINK,							_T("Pink"),
-			COLOR_SAKURA_PINK,					_T("Sakura pink"),
-			COLOR_ORANGE,						_T("Orange"),
-			COLOR_UMARINE_BLUE,					_T("Ultramarine blue"),
-			COLOR_INDIGO,						_T("Indigo"),
-			COLOR_VIOLET,						_T("Violet"),
-			COLOR_PURPLE,						_T("Purple"),
-			COLOR_SCARLET,						_T("Scarlet"),
-			COLOR_JADE,							_T("Jade"),
-			COLOR_EMERALD,						_T("Emerald"),
-			COLOR_GRAY,							_T("Gray"),
-			COLOR_DARK_GRAY,					_T("Dark gray"),
-			COLOR_BRIGHT_GRAY,					_T("Bright gray")
+			Color::Red,							_T("Red"),
+			Color::Green,						_T("Green"),
+			Color::Yellow,						_T("Yellow"),
+			Color::Blue,						_T("Blue"),
+			Color::White,						_T("White"),
+			Color::Black,						_T("Black"),
+			Color::Pink,						_T("Pink"),
+			Color::Sakura_Pink,					_T("Sakura pink"),
+			Color::Orange,						_T("Orange"),
+			Color::Ultramarine_Blue,			_T("Ultramarine blue"),
+			Color::Indigo,						_T("Indigo"),
+			Color::Violet,						_T("Violet"),
+			Color::Purple,						_T("Purple"),
+			Color::Scarlet,						_T("Scarlet"),
+			Color::Jade,						_T("Jade"),
+			Color::Emerald,						_T("Emerald"),
+			Color::Gray,						_T("Gray"),
+			Color::Dark_Gray,					_T("Dark gray"),
+			Color::Bright_Gray,					_T("Bright gray")
 		/*----------------------------------------------------------------------------*/
 		END_STRINGMAPTABLE()
 
@@ -404,14 +404,14 @@ namespace MapTable
 
 		INITIALIZE_STRINGMAPTABLE(MsgIconName)
 		/*--------Icon ID---------------------------Icon name-------------------------*/
-			SYSICON_APPLICATION,				_T("App"),
-			SYSICON_HAND,						_T("Hand"),
-			SYSICON_QUESTION,					_T("Question"),
-			SYSICON_EXCLAMATION,				_T("Exclamation"),
-			SYSICON_ASTERISK,					_T("Asterisk"),
-			SYSICON_WARNING,					_T("Warning"),
-			SYSICON_ERROR,						_T("Error"),
-			SYSICON_INFORMATION,				_T("Information")
+			SystemIcon::Application,			_T("App"),
+			SystemIcon::Hand,					_T("Hand"),
+			SystemIcon::Question,				_T("Question"),
+			SystemIcon::Exclamation,			_T("Exclamation"),
+			SystemIcon::Asterisk,				_T("Asterisk"),
+			SystemIcon::Warning,				_T("Warning"),
+			SystemIcon::Error,					_T("Error"),
+			SystemIcon::Information,			_T("Information")
 		/*----------------------------------------------------------------------------*/
 		END_STRINGMAPTABLE()
 	};
@@ -522,7 +522,7 @@ namespace MapTable
 		/*---------------------------------------------------------------------------*/
 
 		/*---Action history result ID------------Output Text-------------------------*/
-			HistoryResult::Success,				_T("Success"),
+			HistoryResult::SuccessNoError,		_T("Success"),
 			HistoryResult::FailedUnknown,		_T("Failed (Unknown error)"),
 			HistoryResult::FailedWithErrorCode,	_T("Failed (With determined error)")
 		/*---------------------------------------------------------------------------*/

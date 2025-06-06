@@ -1645,8 +1645,8 @@ void PwrReminderItem::Print(CString& strOutput) const
 	// Format item data
 	const wchar_t* lpszEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
 	CString strMsg = m_strMessage;
-	if (strMsg.GetLength() > (MAX_DISP_LOGSTRING_LENGTH + 3)) {
-		strMsg = m_strMessage.Left(MAX_DISP_LOGSTRING_LENGTH) + _T("...");
+	if (strMsg.GetLength() > (Constant::Max::DisplayLogStringLength + 3)) {
+		strMsg = m_strMessage.Left(Constant::Max::DisplayLogStringLength) + _T("...");
 	}
 	int nTemp = GetPairedID(IDTable::PwrReminderEvent, m_nEventID);
 	CString strEvent = GetLanguageString(ptrLanguage, nTemp);
@@ -2898,8 +2898,8 @@ LPCTSTR Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID)
 	for (int nIndex = 0; nIndex < ptLanguage->size(); nIndex++) {
 		LANGTEXT langString = ptLanguage->at(nIndex);
 
-		if (langString.dwLangStringID == nID)
-			return langString.lpszLangString;
+		if (langString.id == nID)
+			return langString.langString;
 	}
 
 	return Constant::String::Null;
@@ -3374,7 +3374,7 @@ static BOOL InitTraceErrorLogFile(void)
 		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= MAX_LOGFILE_SIZE) {
+		if (ullFileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
 			pTraceErrorLogFile->Close();
@@ -3466,7 +3466,7 @@ static BOOL InitTraceDebugLogFile(void)
 		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= MAX_LOGFILE_SIZE) {
+		if (ullFileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
 			pTraceDebugLogFile->Close();
@@ -3559,7 +3559,7 @@ static BOOL InitDebugInfoLogFile(void)
 		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= MAX_LOGFILE_SIZE) {
+		if (ullFileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
 			pDebugInfoLogFile->Close();
@@ -3628,7 +3628,7 @@ BOOL AppCore::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 	CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Search for backup file list
-	for (int nNum = 0; nNum < MAX_BAKFILE_COUNT; nNum++) {
+	for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
 		
 		// Make backup file path template
 		if (!MakeFilePath(strFilePathTemp, strFolderPath, lpszLogFileName, FILEEXT_BAKLOGFILE))
@@ -3644,7 +3644,7 @@ BOOL AppCore::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 		if (Finder.FindFile(strBakFilePath) == TRUE) {
 
 			// If backup file number exceeded the limit, can not backup more
-			if (nNum == (MAX_BAKFILE_COUNT - 1)) return FALSE;
+			if (nNum == (Constant::Max::BackupFileNumber - 1)) return FALSE;
 			else continue;
 		}
 
@@ -3708,7 +3708,7 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= MAX_LOGFILE_SIZE) {
+		if (ullFileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
 			pTraceErrorLogFile->Close();
@@ -3780,7 +3780,7 @@ void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= MAX_LOGFILE_SIZE) {
+		if (ullFileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
 			pTraceDebugLogFile->Close();
@@ -3852,7 +3852,7 @@ void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= MAX_LOGFILE_SIZE) {
+		if (ullFileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
 			pDebugInfoLogFile->Close();
@@ -3909,7 +3909,7 @@ void AppCore::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogS
 		ULONGLONG ullFileSize = fTrcDbgLogFile.SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= MAX_LOGFILE_SIZE) {
+		if (ullFileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
 			fTrcDbgLogFile.Close();
@@ -3917,10 +3917,10 @@ void AppCore::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogS
 			// Step2: Rename file extension to BAK
 			CFileFind Finder;
 			CString strBakFilePath;
-			for (int nNum = 0; nNum < MAX_BAKFILE_COUNT; nNum++) {
+			for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
 				strBakFilePath.Format((strFilePath + FILEEXT_BAKLOGFILE), nNum);
 				if (Finder.FindFile(strBakFilePath) == TRUE) {
-					if (nNum == (MAX_BAKFILE_COUNT - 1)) return;
+					if (nNum == (Constant::Max::BackupFileNumber - 1)) return;
 					else continue;
 				}
 				CFile::Rename(strFilePath, strBakFilePath);
@@ -3972,7 +3972,7 @@ void AppCore::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogS
 
 LRESULT	AppCore::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOUT */)
 {
-	LRESULT lResult = RESULT_SUCCESS;
+	LRESULT lResult = Result::Success;
 
 	// Get begin timestamp (for timeout counter)
 	ULONGLONG ullBeginTimestamp = GetTickCount64();
@@ -3986,7 +3986,7 @@ LRESULT	AppCore::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOU
 			if (msg.message == nMsg) {
 
 				// Success
-				lResult = RESULT_SUCCESS;
+				lResult = Result::Success;
 				break;
 			}
 		}
@@ -3994,7 +3994,7 @@ LRESULT	AppCore::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOU
 		if (GetTickCount64() - ullBeginTimestamp >= nTimeout) {
 
 			// Timeout --> Failed
-			lResult = RESULT_FAILED;
+			lResult = Result::Failure;
 			break;
 		}
 	}
@@ -4254,10 +4254,10 @@ BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
 void AppCore::SpinPos2Time(SYSTEMTIME& stTime, int nPos)
 {
 	// Invalid input position
-	if (nPos < TIMESPIN_MIN)
-		nPos = TIMESPIN_MIN;
-	else if (nPos > TIMESPIN_MAX)
-		nPos = TIMESPIN_MAX;
+	if (nPos < Constant::Min::TimeSpin)
+		nPos = Constant::Min::TimeSpin;
+	else if (nPos > Constant::Max::TimeSpin)
+		nPos = Constant::Max::TimeSpin;
 
 	// Convert
 	int nHour = nPos / 60;
@@ -4286,10 +4286,10 @@ void AppCore::Time2SpinPos(SYSTEMTIME stTime, int& nPos)
 	nPos = (stTime.wHour * 60) + stTime.wMinute;
 
 	// Invalid result
-	if (nPos < TIMESPIN_MIN)
-		nPos = TIMESPIN_MIN;
-	else if (nPos > TIMESPIN_MAX)
-		nPos = TIMESPIN_MAX;
+	if (nPos < Constant::Min::TimeSpin)
+		nPos = Constant::Min::TimeSpin;
+	else if (nPos > Constant::Max::TimeSpin)
+		nPos = Constant::Max::TimeSpin;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4353,8 +4353,8 @@ void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 	if (pHeaderCell == NULL) return;
 	pHeaderCell->SetFormat(pHeaderCell->GetFormat() | DT_CENTER);
 	pHeaderCell->SetMargin(0);
-	pHeaderCell->SetBackClr(COLOR_GRAY);
-	pHeaderCell->SetTextClr(COLOR_BLACK);
+	pHeaderCell->SetBackClr(Color::Gray);
+	pHeaderCell->SetTextClr(Color::Black);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4697,7 +4697,7 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 	int nQuoteFlag = 0;
 
 	// Loop through given string buffer and separate tokens
-	while ((nCurCharIndex <= nBuffLength) && (nCurCharIndex < MAX_BUFFER_LENGTH)) {
+	while ((nCurCharIndex <= nBuffLength) && (nCurCharIndex < Constant::Max::BufferLength)) {
 
 		// Init flag OFF
 		int nKeyFlag = FLAG_OFF;
@@ -4755,7 +4755,7 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 		else if (tcCurChar == Constant::Char::QuotaMark) {
 
 			// If token number exceeds max count, stop processing
-			if (nTokenCount > MAX_TOKEN_COUNT)
+			if (nTokenCount > Constant::Max::TokenNumber)
 				break;
 
 			else {
@@ -4776,7 +4776,7 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 		nCurCharIndex++;
 
 		// If end of string or token number exceeds maximum limitation, stop processing
-		if ((tcCurChar == Constant::Char::EndString) || (nTokenCount > MAX_TOKEN_COUNT))
+		if ((tcCurChar == Constant::Char::EndString) || (nTokenCount > Constant::Max::TokenNumber))
 			break;
 	}
 
@@ -5739,7 +5739,7 @@ BOOL AppCore::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
 
 	// Run a file viewer instance
 	HWND hWnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
-	HINSTANCE hInstance = ShellExecute(hWnd, COMMAND_FLAG_OPEN, strAppPath, lpszFilePath, NULL, SW_SHOW);
+	HINSTANCE hInstance = ShellExecute(hWnd, Constant::Command::Open, strAppPath, lpszFilePath, NULL, SW_SHOW);
 	return (hInstance != NULL);
 }
 
@@ -5773,7 +5773,7 @@ BOOL AppCore::OpenWebURL(LPCTSTR lpszWebUrl)
 LRESULT AppCore::RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin /* = FALSE */, BOOL bShowFlag /* = TRUE */)
 {
 	// Param set
-	CString strRunAs = (bRunAsAdmin) ? COMMAND_FLAG_RUNAS : COMMAND_FLAG_OPEN;
+	CString strRunAs = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
 	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
 
 	// Run an executable instance
@@ -5799,7 +5799,7 @@ LRESULT AppCore::ExecuteCommand(LPCTSTR lpszCommand, BOOL bRunAsAdmin /* = TRUE 
 	strCommandFormat.Format(_T("/C %s"), lpszCommand);
 
 	// Flag param set
-	CString strRunAsFlag = (bRunAsAdmin) ? COMMAND_FLAG_RUNAS : COMMAND_FLAG_OPEN;
+	CString strRunAsFlag = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
 	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
 
 	// Excute command

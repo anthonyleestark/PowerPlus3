@@ -45,7 +45,7 @@ CHelpDlg::CHelpDlg(CWnd* pParent /*=NULL*/)
 {
 	// Initialize member variables
 	m_strFileData = Constant::String::Empty;
-	m_nViewMode = MODE_HELPVIEW_HELPFILE;
+	m_nViewMode = ViewMode::HelpFile;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -248,11 +248,11 @@ void CHelpDlg::OnSwitchViewMode()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_SWITCHVIEWMODE_BTN);
 
 	// Switch view mode
-	if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
-		SetViewMode(MODE_HELPVIEW_CHANGELOG);
+	if (GetViewMode() == ViewMode::HelpFile) {
+		SetViewMode(ViewMode::Changelog);
 	}
-	else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
-		SetViewMode(MODE_HELPVIEW_HELPFILE);
+	else if (GetViewMode() == ViewMode::Changelog) {
+		SetViewMode(ViewMode::HelpFile);
 	}
 
 	// Reupdate file data
@@ -321,112 +321,6 @@ void CHelpDlg::SetupEditbox(CEdit& pEdit)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	LoadFileData
-//	Description:	Load help content from external file
-//  Arguments:		strFileData - File data result (ref-value)
-//  Return value:	BOOL - Result of file loading process
-//  Note:			No longer used - Replaced with LoadRCFileData()
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL CHelpDlg::LoadFileData(CString& strFileData)
-{
-	// Get currently displaying language
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	UINT nCurLanguage = pApp->GetAppLanguageOption(TRUE);
-
-	// Get help folder path
-	CString strFolderPath = GetSubFolderPath(SUBFOLDER_HELP);
-
-	// Get help file path
-	CString strHelpFilePath;
-
-	// View help file mode
-	if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
-		switch (nCurLanguage)
-		{
-		case APP_LANGUAGE_ENGLISH:
-			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_HELP_ENG, FILEEXT_HELPFILE);
-			break;
-		case APP_LANGUAGE_VIETNAMESE:
-			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_HELP_VIE, FILEEXT_HELPFILE);
-			break;
-		case APP_LANGUAGE_SIMPCHINESE:
-			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_HELP_CHS, FILEEXT_HELPFILE);
-			break;
-		}
-	}
-	//View changelog mode
-	else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
-		switch (nCurLanguage)
-		{
-		case APP_LANGUAGE_ENGLISH:
-			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_CHANGELOG_ENG, FILEEXT_HELPFILE);
-			break;
-		case APP_LANGUAGE_VIETNAMESE:
-			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_CHANGELOG_VIE, FILEEXT_HELPFILE);
-			break;
-		case APP_LANGUAGE_SIMPCHINESE:
-			MakeFilePath(strHelpFilePath, strFolderPath, FILENAME_CHANGELOG_CHS, FILEEXT_HELPFILE);
-			break;
-		}
-	}
-
-	BOOL bRet = FALSE;
-	CFile fHelpFile;
-	CFileStatus fsStatus;
-
-	// Remove existing data
-	if (!strFileData.IsEmpty())
-		strFileData.Empty();
-
-	// Check if file exists
-	bRet = CFile::GetStatus(strHelpFilePath, fsStatus);
-	if (bRet == TRUE)
-	{
-		// Open file
-		bRet = fHelpFile.Open(strHelpFilePath, CFile::modeRead | CFile::typeText | CFile::typeUnicode);
-		if (bRet == TRUE)
-		{
-			// Read file buffer
-			fHelpFile.SeekToBegin();
-			UINT nFileLength = (UINT)fHelpFile.GetLength();
-			int nCharNum = nFileLength / sizeof(TCHAR);
-			nFileLength = fHelpFile.Read(strFileData.GetBuffer(nCharNum), nFileLength);
-			strFileData.ReleaseBuffer(nCharNum);
-		}
-	}
-
-	if (bRet == FALSE)
-	{
-		// Load app language package
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
-			// Can not load help file
-			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
-
-			// Trace error
-			TRACE_ERROR("Error: Help file not found!!!");
-			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		}
-		else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
-			// Can not load change log file
-			strFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
-
-			// Trace error
-			TRACE_ERROR("Error: Changelog file not found!!!");
-			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		}
-	}
-
-	if (fHelpFile.m_hFile != CFile::hFileNull)
-		fHelpFile.Close();
-
-	return bRet;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	LoadRCFileData
 //	Description:	Load help content from Resource-embeded text data
 //  Arguments:		strRCFileData - File data result (ref-value)
@@ -447,7 +341,7 @@ BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
 		strRCFileData.Empty();
 
 	// View help file mode
-	if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
+	if (GetViewMode() == ViewMode::HelpFile) {
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
@@ -462,7 +356,7 @@ BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
 		}
 	}
 	//View changelog mode
-	else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
+	else if (GetViewMode() == ViewMode::Changelog) {
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
@@ -482,7 +376,7 @@ BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
 
 		// Load app language package
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		if (GetViewMode() == MODE_HELPVIEW_HELPFILE) {
+		if (GetViewMode() == ViewMode::HelpFile) {
 			// Can not load help file
 			strRCFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
 
@@ -490,7 +384,7 @@ BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
 			TRACE_ERROR("Error: [RCData] Help file not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
-		else if (GetViewMode() == MODE_HELPVIEW_CHANGELOG) {
+		else if (GetViewMode() == ViewMode::Changelog) {
 			// Can not load change log file
 			strRCFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
 
@@ -518,15 +412,15 @@ void CHelpDlg::UpdateSwitchViewModeButton(void)
 	UINT nStringID = INT_NULL;
 	switch (m_nViewMode)
 	{
-	case MODE_HELPVIEW_HELPFILE:
+	case ViewMode::HelpFile:
 		nStringID = BTN_HELPDLG_VIEWMODE_CHANGELOG;
 		break;
-	case MODE_HELPVIEW_CHANGELOG:
+	case ViewMode::Changelog:
 		nStringID = BTN_HELPDLG_VIEWMODE_HELPFILE;
 		break;
+
 	default:
 		return;
-		break;
 	}
 
 	// Get app current language package

@@ -150,7 +150,7 @@ int SWinApp::PreExitInstance()
 {
 	// TODO: Override this function for custom actions
 
-	return RESULT_SUCCESS;
+	return Result::Success;
 }
 
 //////////////////////////////////////////////////////////////////////////

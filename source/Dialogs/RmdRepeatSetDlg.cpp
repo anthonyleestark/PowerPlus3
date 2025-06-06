@@ -354,7 +354,7 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
 		m_pSnoozeIntervalSpin->SetBuddy(m_pSnoozeIntervalEdit);
 
 		// Set spin edit value
-		m_pSnoozeIntervalSpin->SetRange(MIN_SNOOZETIME, MAX_SNOOZETIME);
+		m_pSnoozeIntervalSpin->SetRange(Constant::Min::SnoozeTime, Constant::Max::SnoozeTime);
 		m_pSnoozeIntervalSpin->SetPos(nDefaultSnoozeMin);
 		SetSnoozeIntervalEdit(nDefaultSnoozeMin);
 

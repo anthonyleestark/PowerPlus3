@@ -514,7 +514,7 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID /*pContext*/, ULONG ulTyp
 	// Get app pointer
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp == NULL) 
-		return ULONG(RESULT_FAILED);
+		return ULONG(Result::Failure);
 
 	// Get current system time
 	SYSTEMTIME stCurSysTime = GetCurSysTime();
@@ -538,7 +538,7 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID /*pContext*/, ULONG ulTyp
 	}
 
 	// Default return
-	return ULONG(RESULT_SUCCESS);		// ERROR_SUCCESS
+	return ULONG(Result::Success);		// ERROR_SUCCESS
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -706,7 +706,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	SYSTEMTIME stTimeTemp = SYSTEMTIME_ZERO;
 
 	// Check data validity first
-	if (!DataSerializeCheck(MODE_LOAD))
+	if (!DataSerializeCheck(Mode::Load))
 		return FALSE;
 
 	// Create temporary data
@@ -1150,7 +1150,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	int nTimeTemp = INT_INVALID;
 
 	// Check data validity first
-	if (!DataSerializeCheck(MODE_SAVE, dwDataType))
+	if (!DataSerializeCheck(Mode::Save, dwDataType))
 		return FALSE;
 
 	/***********************************************************************************************/
@@ -2227,11 +2227,11 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 
 	// Validate app config data
 	if (GetAppConfigData() == NULL) {
-		if (bySerializeMode == MODE_LOAD) {
+		if (bySerializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_CFG_INVALID;
 			TraceSerializeData(wLoadRet);
 		}
-		else if ((bySerializeMode == MODE_SAVE) && ((nSaveFlag & APPDATA_CONFIG) != 0)) {
+		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_CONFIG) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_CFG_INVALID;
 			TraceSerializeData(wSaveRet);
 		}
@@ -2239,11 +2239,11 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 	}
 	// Validate schedule data
 	if (GetAppScheduleData() == NULL) {
-		if (bySerializeMode == MODE_LOAD) {
+		if (bySerializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_SCHED_INVALID;
 			TraceSerializeData(wLoadRet);
 		}
-		else if ((bySerializeMode == MODE_SAVE) && ((nSaveFlag & APPDATA_SCHEDULE) != 0)) {
+		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_SCHEDULE) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_SCHED_INVALID;
 			TraceSerializeData(wSaveRet);
 		}
@@ -2251,11 +2251,11 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 	}
 	// Validate HotkeySet data
 	if (GetAppHotkeySetData() == NULL) {
-		if (bySerializeMode == MODE_LOAD) {
+		if (bySerializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_HKEYSET_INVALID;
 			TraceSerializeData(wLoadRet);
 		}
-		else if ((bySerializeMode == MODE_SAVE) && ((nSaveFlag & APPDATA_HOTKEYSET) != 0)) {
+		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_HOTKEYSET) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_HKEYSET_INVALID;
 			TraceSerializeData(wSaveRet);
 		}
@@ -2263,11 +2263,11 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 	}
 	// Validate Power Reminder data
 	if (GetAppPwrReminderData() == NULL) {
-		if (bySerializeMode == MODE_LOAD) {
+		if (bySerializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_PWRRMD_INVALID;
 			TraceSerializeData(wLoadRet);
 		}
-		else if ((bySerializeMode == MODE_SAVE) && ((nSaveFlag & APPDATA_PWRREMINDER) != 0)) {
+		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_PWRREMINDER) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_PWRRMD_INVALID;
 			TraceSerializeData(wSaveRet);
 		}
@@ -2418,12 +2418,12 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 
 		if (bRunAsAdmin == TRUE) {
 			// Register to run as admin
-			strExecCommand.Format(COMMAND_REGISTER_RUNASADMIN, REG_AFX_PROJECTNAME, GetApplicationPath(TRUE));
+			strExecCommand.Format(Constant::Command::RunAsAdmin::Register, REG_AFX_PROJECTNAME, GetApplicationPath(TRUE));
 			WinExec(MAKEANSI(strExecCommand.GetString()), SW_HIDE);
 		}
 		else {
 			// Unregister to run as admin
-			strExecCommand.Format(COMMAND_UNREGISTER_RUNASADMIN, REG_AFX_PROJECTNAME);
+			strExecCommand.Format(Constant::Command::RunAsAdmin::Unregister, REG_AFX_PROJECTNAME);
 			WinExec(MAKEANSI(strExecCommand.GetString()), SW_HIDE);
 		}
 

@@ -189,7 +189,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	/*********************************************************************/
 
 	// Prepare copy-buffer data
-	LPTSTR lpszCopyBuff = new TCHAR[MAX_BUFFER_LENGTH];
+	LPTSTR lpszCopyBuff = new TCHAR[Constant::Max::BufferLength];
 	if (lpszCopyBuff == NULL) {
 		// Error: Copy-buffer allocation failed
 		dwErrorCode = APP_ERROR_DBG_CPYBUFF_ALLOC_FAILED;
@@ -199,7 +199,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 	_tcscpy(lpszCopyBuff, strDebugCommand.operator LPCTSTR());
 
 	// Prepare return-buffer data
-	PBUFFER retBuff = new BUFFER[MAX_TOKEN_COUNT];
+	PBUFFER retBuff = new BUFFER[Constant::Max::TokenNumber];
 	if (retBuff == NULL) {
 		// Error: Return-buffer allocation failed
 		dwErrorCode = APP_ERROR_DBG_RETBUFF_ALLOC_FAILED;

@@ -254,10 +254,10 @@ HBRUSH CDebugTestV2Dlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (nCtlColor == CTLCOLOR_EDIT || nCtlColor == CTLCOLOR_STATIC)
 	{
 		// Text color: Yellow
-		pDC->SetTextColor(COLOR_YELLOW);
+		pDC->SetTextColor(Color::Yellow);
 
 		// Background color: Black
-		pDC->SetBkColor(COLOR_BLACK);
+		pDC->SetBkColor(Color::Black);
 
 		// Use our custom background brush
 		if (m_pDebugScreenBrush != NULL)
@@ -306,7 +306,7 @@ LRESULT CDebugTestV2Dlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 {
 	// Check argument validity
 	if ((wParam == 0) || (lParam == NULL))
-		return LRESULT(RESULT_FAILED);
+		return LRESULT(Result::Failure);
 
 	// Format debug output log string
 	CString strDebugOutputLog = LPARAM_TO_STRING(lParam);
@@ -323,7 +323,7 @@ LRESULT CDebugTestV2Dlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 	// Reset currently displaying history flag
 	SetCurrentlyDispHistoryState(FALSE);
 
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -351,7 +351,7 @@ LRESULT CDebugTestV2Dlg::OnDebugCmdNoReply(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	// Reset currently displaying history flag
 	SetCurrentlyDispHistoryState(FALSE);
 
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -369,7 +369,7 @@ LRESULT CDebugTestV2Dlg::OnDebugViewClear(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	// Clear buffer
 	ClearDebugViewBuffer();
 
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 
@@ -408,7 +408,7 @@ LRESULT CDebugTestV2Dlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 	}
 
 	// Default: Always success
-	return LRESULT(RESULT_SUCCESS);
+	return LRESULT(Result::Success);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -744,7 +744,7 @@ BOOL CDebugTestV2Dlg::CreateDebugScreenBrush(void)
 	// Create brush
 	BOOL bRet = FALSE;
 	if (m_pDebugScreenBrush != NULL) {
-		bRet = m_pDebugScreenBrush->CreateSolidBrush(COLOR_BLACK);
+		bRet = m_pDebugScreenBrush->CreateSolidBrush(Color::Black);
 	}
 
 	return bRet;

@@ -132,13 +132,6 @@
 #define APP_ERROR_DBG_INVALID_COMMAND				((APP_ERROR_DEBUG_COMMAND << 8) + 0x06)
 
 
-// Define function results
-//
-
-#define RESULT_SUCCESS								0x0000
-#define RESULT_FAILED								0xFFFF
-
-
 // Define menu item types
 //
 
@@ -270,62 +263,8 @@
 // Define modes
 //
 
-#define MODE_INIT									0x000							// Mode: Initialize
-#define MODE_VIEW									0x001							// Mode: View
-#define MODE_ADD									0x002							// Mode: Add
-#define MODE_UPDATE									0x003							// Mode: Update
-#define MODE_LOAD									0x004							// Mode: Load
-#define MODE_SAVE									0x005							// Mode: Save
-#define MODE_DISABLE								0xFFF							// Mode: Disable
-#define MODE_HELPVIEW_HELPFILE						0x0a1							// Mode: View help file
-#define MODE_HELPVIEW_CHANGELOG						0x0a2							// Mode: View changelog file
-#define MODE_BAKREGDATA_MANUAL						0x0a3							// Mode: Registry manually backup
-#define MODE_BAKREGDATA_AUTO						0x0a4							// Mode: Registry auto backup
 #define MODE_OPENDLG_MODAL							0x0a5							// Modal dialog
 #define MODE_OPENDLG_MODELESS						0x0a6							// Modeless dialog
-
-
-// Define colors
-//
-
-#define COLOR_RED									RGB(255,0,0)					// Color: Red
-#define COLOR_GREEN									RGB(0,255,0)					// Color: Green
-#define COLOR_YELLOW								RGB(255,255,0)					// Color: Yellow
-#define COLOR_BLUE									RGB(0,0,255)					// Color: Blue
-#define COLOR_WHITE									RGB(255,255,255)				// Color: White
-#define COLOR_BLACK									RGB(0,0,0)						// Color: Black
-#define COLOR_PINK									RGB(230,190,200)				// Color: Pink
-#define COLOR_SAKURA_PINK							RGB(250,224,216)				// Color: Sakura pink
-#define COLOR_ORANGE								RGB(255,127,40)					// Color: Orange
-#define COLOR_UMARINE_BLUE							RGB(63,72,204)					// Color: Ultramarine blue
-#define COLOR_INDIGO								RGB(75,0,130)					// Color: Indigo
-#define COLOR_VIOLET								RGB(238,130,238)				// Color: Violet
-#define COLOR_PURPLE								RGB(115,43,245)					// Color: Purple
-#define COLOR_SCARLET								RGB(255,36,0)					// Color: Scarlet
-#define COLOR_JADE									RGB(0,168,207)					// Color: Jade
-#define COLOR_EMERALD								RGB(80,200,120)					// Color: Emerald
-#define COLOR_GRAY									RGB(200,200,200)				// Color: Gray
-#define COLOR_DARK_GRAY								RGB(160,160,160)				// Color: Dark gray
-#define COLOR_BRIGHT_GRAY							RGB(240,240,240)				// Color: Bright gray
-
-
-// Define system icon IDs
-//
-
-#define SYSICON_APPLICATION							32512							// Default application icon
-#define SYSICON_HAND								32513							// Error icon
-#define SYSICON_QUESTION							32514							// Question mark icon
-#define SYSICON_EXCLAMATION							32515							// Warning icon
-#define SYSICON_ASTERISK							32516							// Information icon
-#if(WINVER >= 0x0400)
-#define SYSICON_WINLOGO								32517							// Windows logo icon
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0600)
-#define SYSICON_SHIELD								32518							// Security shield icon
-#endif /* WINVER >= 0x0600 */
-#define SYSICON_WARNING								SYSICON_EXCLAMATION				// Warning icon
-#define SYSICON_ERROR								SYSICON_HAND					// Error icon
-#define SYSICON_INFORMATION							SYSICON_ASTERISK				// Information icon
 
 
 // Define log types
@@ -351,7 +290,7 @@
 // Define file names
 //
 
-#define FILENAME_APPEXEFILE							_T("PowerPlus3")
+#define FILENAME_APPEXEFILE							_T("power++")
 #define FILENAME_APPCONFIG							_T("Config")
 #define FILENAME_BAKCONFIG							_T("BakConfig")
 #define FILENAME_APPEVENT_LOG						_T("AppEventLog_%04d_%02d")
@@ -359,12 +298,6 @@
 #define FILENAME_TRACE_ERROR_LOG					_T("TraceError")
 #define FILENAME_TRACE_DEBUG_LOG					_T("TraceDebug")
 #define FILENAME_DEBUG_INFO_LOG						_T("DebugInfo")
-#define FILENAME_HELP_ENG							_T("help_en")
-#define FILENAME_HELP_VIE							_T("help_vi")
-#define FILENAME_HELP_CHS							_T("help_ch")
-#define FILENAME_CHANGELOG_ENG						_T("changelog_en")
-#define FILENAME_CHANGELOG_VIE						_T("changelog_vi")
-#define FILENAME_CHANGELOG_CHS						_T("changelog_ch")
 
 
 // Define file extensions
@@ -392,7 +325,7 @@
 // Other special definitions
 //
 
-#define REG_AFX_PROJECTNAME							_T("PowerPlus3")
+#define REG_AFX_PROJECTNAME							_T("Power++")
 #define REG_STARTUP_VALUENAME						REG_AFX_PROJECTNAME
 #define PATH_APP_NOTEPAD							_T("C:\\Windows\\notepad.exe")
 #define PATH_APP_SYSTEMCMD							_T("C:\\Windows\\System32\\cmd.exe")
@@ -408,28 +341,6 @@
 #define FLOAT_NULL									0.0F							// Null float number (equals 0)
 #define STRUCT_ZERO									{0}								// Zero-initialized struct data
 #define SYSTEMTIME_ZERO								STRUCT_ZERO						// Zero-initialized systemtime data
-
-
-// Define special minimum/maximum values
-//
-
-#define MIN_SNOOZETIME								1								// Minimum snooze time: 1 minute
-#define MIN_STRING_LENGTH							5								// Minimum string length: 5 characters
-#define MIN_PASSWORD_LENGTH							6								// Minimum password length: 6 characters
-
-#define MAX_SNOOZETIME								30								// Maximum snooze time: 30 minutes
-#define MAX_DAYS_OF_WEEK							7								// Number of days of week: 7 days
-#define MAX_TOKEN_COUNT								50								// Maximum token number: 50
-#define MAX_BUFFER_LENGTH							512								// Maximum buffer length: 512 characters
-#define MAX_STRING_LENGTH							1024							// Maximum string length: 2KB ~ 1024 characters
-#define MAX_TEXT_LENGTH								2097152							// Maximum text length: 2MB ~ 2097152 characters
-#define MAX_PASSWORD_LENGTH							30								// Maximum password length: 30 characters
-#define MAX_DISP_LOGSTRING_LENGTH					20								// Maximum log string displaying length: 20 characters
-#define MAX_BAKFILE_COUNT							100								// Maximum backup file number: 100
-#define MAX_LOGFILE_SIZE							1048576							// Maximum file size: 1MB
-
-#define MAX_RETRY_TIMES								10								// Max retry times: 5
-#define TIMEOUT_WAIT_MESSAGE						30000							// Wait message timeout (tick-counts): 30s
 
 
 // Define windows system OS info macros
@@ -462,10 +373,6 @@
 #define BUTTON_ICON_HEIGHT							20								// Button icon height: 20px
 #define BUTTON_ICON_SIZE							20								// Button icon size (square): 20x20 (px)
 
-#define TIMESPIN_MIN								0								// Equals to 00:00
-#define TIMESPIN_MAX								1439							// Equals to 23:59
-#define TIMESPIN_DEFAULT							0								// Equals to 00:00
-
 #define OFFSET_WIDTH_VSCRLBR						3								// Vertical scrollbar width offset = 3px
 #define OFFSET_WIDTH_LISTCTRL						5								// List control width offset = 5px
 #define OFFSET_WIDTH_LISTCTRL_WIN10					16								// List control width offset (on Windows 10) = 16px
@@ -482,3 +389,71 @@
 #define GRIDCTRL_HEIGHT_ROW_EX						25								// Grid control row height (extra) = 25px
 #define GRIDCTRL_INDEX_HEADER_ROW					0								// Grid control header row index
 #define GRIDCELL_MARGIN_LEFT						3								// Grid cell left margin = 3px
+
+
+// Trace log functions
+//
+
+#define TRACE_FORMAT									TraceErrorFormat
+#define TRACE_ERROR(logString)							TraceError(logString)
+#define TRACE_DEBUG(func, file, line)					TraceDebugInfo(func, file, line)
+
+
+// Type-cast macros
+//
+
+#define DEFAULT_CAST(type, variable)					((type)variable)
+#define CONST_CAST(type, variable)						const_cast<type>(variable)
+#define STATIC_CAST(type, variable)						static_cast<type>(variable)
+#define DYNAMIC_CAST(type, variable)					dynamic_cast<type>(variable)
+#define REINTERPRET_CAST(type, variable)				reinterpret_cast<type>(variable)
+
+
+// String processing functions
+//
+
+#define IS_NOT_EMPTY_STRING(string)						(_tcscmp(string, Constant::String::Empty))
+#define IS_EMPTY_STRING(string)							(!IS_NOT_EMPTY_STRING(string))
+#define IS_NOT_NULL_STRING(string)						(_tcscmp(string, Constant::String::Null))
+#define IS_NULL_STRING(string)							(!IS_NOT_NULL_STRING(string))
+
+#define MAKEANSI(string)								(CW2A(string).m_psz)
+#define MAKEUNICODE(string)								(CA2W(string).m_psz)
+#define RESOURCESTRING(resourceid)						LoadResourceString(resourceid)
+
+#define MAKE_WPARAM_STRING(string)						DEFAULT_CAST(WPARAM, _tcslen(string))
+#define MAKE_LPARAM(type, data)							REINTERPRET_CAST(LPARAM, ((type)data))
+#define MAKE_LPARAM_STRING(string)						MAKE_LPARAM(LPCTSTR, string)
+#define LPARAM_STATIC_CAST(type, lParam)				STATIC_CAST(type, lParam)
+#define LPARAM_REINTERPRET_CAST(type, lParam)			REINTERPRET_CAST(type, lParam)
+#define LPARAM_TO_STRING(lParam)						LPARAM_REINTERPRET_CAST(LPCTSTR, lParam)
+
+
+// Special expressions
+//
+
+#define NOTHING											((void)0)
+#define GET_HANDLE_MAINWND()							(AfxGetMainWnd()->GetSafeHwnd())
+#define IS_PRESSED(keycode)								(0x8000 & ::GetKeyState(keycode))
+#define __FILENAME__									(strrchr("\\" __FILE__, '\\') + 1)
+
+
+// Time value processing expressions
+//
+
+#define FORMAT_REG_TIME(systime)						(INT((systime.wHour * 100) + systime.wMinute))
+#define GET_REGTIME_HOUR(reg_time)						(WORD(reg_time / 100))
+#define GET_REGTIME_MINUTE(reg_time)					(WORD(reg_time % 100))
+#define TIME_TO_SECONDS(time)							(INT((time.wHour * 3600) + (time.wMinute * 60) + time.wSecond))
+#define GET_HOUR(totalSecs)								(WORD(totalSecs / 3600))
+#define GET_MINUTE(totalSecs)							(WORD((totalSecs % 3600) / 60))
+#define GET_SECOND(totalSecs)							(WORD((totalSecs % 3600) % 60))
+
+
+// Complex macros
+//
+
+#define NULL_POINTER_BREAK(pointer, ret_expr)			if (pointer == NULL) { ret_expr; }
+#define VERIFY_POINTER(pointer, type)					VERIFY(((pointer) != NULL) && AfxIsValidAddress((pointer), sizeof(type), FALSE))
+#define ASSERT_INITIALIZATION(pointer, type)			if (pointer == NULL) { pointer = new type(); ASSERT_POINTER(pointer, type); }
+#define VERIFY_INITIALIZATION(pointer, type) 			if (pointer == NULL) { pointer = new type(); VERIFY_POINTER(pointer, type); }
