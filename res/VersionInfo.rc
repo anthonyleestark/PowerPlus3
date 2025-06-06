@@ -1,0 +1,41 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// VersionInfo.rc - Application version info resource script
+//
+/////////////////////////////////////////////////////////////////////////////
+
+#pragma code_page(65001)
+
+#include <windows.h>
+#include "../include/AppBase/Resource.h"
+
+// Version information
+VS_VERSION_INFO 	VERSIONINFO
+ FILEVERSION 		VERSION_DIGITAL_VALUE
+ PRODUCTVERSION 	VERSION_DIGITAL_VALUE
+ FILEFLAGSMASK 		0x3fL
+ FILEFLAGS 			0x0L
+ FILEOS 			VOS_NT_WINDOWS32
+ FILETYPE 			VFT_APP
+ FILESUBTYPE 		VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", 		VERSION_COMPANY_NAME
+            VALUE "FileDescription", 	VERSION_FILE_DESCRIPTION
+            VALUE "FileVersion", 		VERSION_PRODUCT_VALUE
+            VALUE "InternalName", 		"power++.exe\0"
+            VALUE "LegalCopyright", 	"Copyright (c) 2015 - 2025 Anthony Lee Stark. All rights reserved.\0"
+            VALUE "OriginalFilename", 	"power++.exe\0"
+            VALUE "ProductName", 		VERSION_PRODUCT_NAME
+            VALUE "ProductVersion", 	VERSION_PRODUCT_VALUE
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+

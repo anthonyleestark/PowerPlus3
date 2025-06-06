@@ -252,6 +252,9 @@
     <ResourceCompile Include="../res/PowerPlusApp.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+    <ResourceCompile Include="../res/VersionInfo.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="../res/icons/default/power-plus-app.ico">

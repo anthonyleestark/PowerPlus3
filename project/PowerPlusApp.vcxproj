@@ -217,6 +217,7 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="../res/PowerPlusApp.rc" />
+    <ResourceCompile Include="../res/VersionInfo.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="../res/icons/default/power-plus-app.ico" />

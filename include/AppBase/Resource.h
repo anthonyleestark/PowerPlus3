@@ -8,8 +8,20 @@
 //////////////////////////////////////////////////////////
 
 
-// Define basic resource IDs
-//
+//************************************* VersionInfo **************************************
+
+#define VERSION_PRODUCT_NAME							L"Power++\0"
+#define VERSION_FILE_DESCRIPTION 						L"Power++ v3.2\0"
+#define VERSION_COMPANY_NAME							L"Stark Personal\0"
+
+#define VERSION_INTERNAL_VALUE 							L"3.2\0"
+#define VERSION_PRODUCT_VALUE 							L"3.2.1\0"
+#define VERSION_DIGITAL_VALUE 							3, 2, 1, 0
+
+//****************************************************************************************
+
+
+//********************************* Basic resource IDs ***********************************
 
 #define IDM_ABOUTBOX		           					100
 
@@ -69,10 +81,9 @@
 #define IDR_FILE_HELP_CHS								304
 #define IDR_FILE_CHANGELOG_CHS							305
 
+//****************************************************************************************
 
-// Define dialog resource IDs
-// Note: Can not use macro expressions for dialog IDs
-//
+//************************************ Dialog IDs ****************************************
 
 #define IDD_POWERPLUS_DIALOG        		    		1000
 #define IDD_ABOUT_DLG       	        	    		1001
@@ -90,16 +101,18 @@
 #define IDD_DEBUGTEST_DLG								1013
 #define IDD_DEBUGTESTV2_DLG								1014
 
+//****************************************************************************************
 
-// Define resource ID groups
+//******************************** Resource ID groups ************************************
 //
 
 #define RESOURCEID_CONTROL								10000
 #define RESOURCEID_MENUITEM								20000
 #define RESOURCEID_STRING								30000
 
+//****************************************************************************************
 
-// Define control resource IDs for Main dialog
+//************************ Cntrol resource IDs for Main dialog ***************************
 //
 
 #define CONTROLID_MAIN_DLG								(RESOURCEID_CONTROL+100)
@@ -146,8 +159,9 @@
 #define IDC_COLLAPSE_BTNPOS     	        			(CONTROLID_MAIN_DLG+41)
 #define IDC_EXPAND_BTNPOS           	    			(CONTROLID_MAIN_DLG+42)
 
+//****************************************************************************************
 
-// Define control resource IDs for About dialog
+//*********************** Control resource IDs for About dialog **************************
 //
 
 #define CONTROLID_ABOUT_DLG								(RESOURCEID_CONTROL+200)
@@ -158,8 +172,9 @@
 #define IDC_APPINFO_LABEL               				(CONTROLID_ABOUT_DLG+5)
 #define IDC_ABOUT_CLOSE_BTN								(CONTROLID_ABOUT_DLG+6)
 
+//****************************************************************************************
 
-// Define control resource IDs for Help dialog
+//*********************** Control resource IDs for Help dialog ***************************
 //
 
 #define CONTROLID_HELP_DLG								(RESOURCEID_CONTROL+300)
@@ -167,8 +182,9 @@
 #define IDC_HELP_CLOSE_BTN								(CONTROLID_HELP_DLG+2)
 #define IDC_HELP_SWITCHVIEWMODE_BTN						(CONTROLID_HELP_DLG+3)
 
+//****************************************************************************************
 
-// Define control resource IDs for MultiSchedule dialog
+//****************** Control resource IDs for MultiSchedule dialog ***********************
 //
 
 #define CONTROLID_MULTISCHEDULE_DLG						(RESOURCEID_CONTROL+400)
@@ -184,8 +200,9 @@
 #define IDC_MULTISCHEDULE_APPLY_BTN          			(CONTROLID_MULTISCHEDULE_DLG+10)
 #define IDC_MULTISCHEDULE_CANCEL_BTN					(CONTROLID_MULTISCHEDULE_DLG+11)
 
+//****************************************************************************************
 
-// Define control resource IDs for EditSchedule dialog
+//******************* Control resource IDs for EditSchedule dialog ***********************
 //
 
 #define CONTROLID_EDITSCHEDULE_DLG						(RESOURCEID_CONTROL+500)
@@ -202,8 +219,9 @@
 #define IDC_EDITSCHEDULE_APPLY_BTN          			(CONTROLID_EDITSCHEDULE_DLG+11)
 #define IDC_EDITSCHEDULE_CANCEL_BTN						(CONTROLID_EDITSCHEDULE_DLG+12)
 
+//****************************************************************************************
 
-// Define control resource IDs for LogViewer dialog
+//********************* Control resource IDs for LogViewer dialog ************************
 //
 
 #define CONTROLID_LOGVIEWER_DLG							(RESOURCEID_CONTROL+600)
@@ -212,8 +230,9 @@
 #define IDC_LOGVIEWER_DETAILS_BTN          				(CONTROLID_LOGVIEWER_DLG+3)
 #define IDC_LOGVIEWER_CLOSE_BTN        					(CONTROLID_LOGVIEWER_DLG+4)
 
+//****************************************************************************************
 
-// Define control resource IDs for LogDetail dialog
+// ******************* Control resource IDs for LogDetail dialog *************************
 //
 
 #define CONTROLID_LOGDETAIL_DLG							(RESOURCEID_CONTROL+700)
@@ -221,8 +240,9 @@
 #define IDC_LOGDETAIL_NEXT_BTN        					(CONTROLID_LOGDETAIL_DLG+2)
 #define IDC_LOGDETAIL_CLOSE_BTN        					(CONTROLID_LOGDETAIL_DLG+3)
 
+//****************************************************************************************
 
-// Define control resource IDs for HotkeySet dialog
+//******************* Control resource IDs for HotkeySet dialog **************************
 //
 
 #define CONTROLID_HOTKEYSET_DLG							(RESOURCEID_CONTROL+800)
@@ -245,8 +265,9 @@
 #define IDC_HOTKEYSET_FUNCKEY_LIST      				(CONTROLID_HOTKEYSET_DLG+17)
 #define IDC_HOTKEYSET_EXPORT_BTN						(CONTROLID_HOTKEYSET_DLG+18)
 
+//****************************************************************************************
 
-// Define control resource IDs for PwrReminder dialog
+//****************** Control resource IDs for PwrReminder dialog *************************
 //
 
 #define CONTROLID_PWRREMINDER_DLG						(RESOURCEID_CONTROL+900)
@@ -279,15 +300,17 @@
 #define IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN			(CONTROLID_PWRREMINDER_DLG+27)
 #define IDC_PWRREMINDER_MSGSTYLE_COMBO					(CONTROLID_PWRREMINDER_DLG+28)
 
+//****************************************************************************************
 
-// Define control resource IDs for ReminderMsg dialog
+//******************** Control resource IDs for ReminderMsg dialog ***********************
 //
 
 #define CONTROLID_REMINDERMSG_DLG						(RESOURCEID_CONTROL+1000)
 #define IDC_REMINDERMSG_MSGTEXT_STATIC					(CONTROLID_REMINDERMSG_DLG+1)
 
+//****************************************************************************************
 
-// Define control resource IDs for RmdRepeatSet dialog
+//******************* Control resource IDs for RmdRepeatSet dialog ***********************
 //
 
 #define CONTROLID_RMDREPEATSET_DLG						(RESOURCEID_CONTROL+1100)
@@ -306,8 +329,9 @@
 #define IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK				(CONTROLID_RMDREPEATSET_DLG+13)
 #define IDC_RMDREPEATSET_DUMMY_BORDER					(CONTROLID_RMDREPEATSET_DLG+14)
 
+//****************************************************************************************
 
-// Define control resource IDs for DebugTest dialog
+//******************** Control resource IDs for DebugTest dialog *************************
 //
 
 #define CONTROLID_DEBUGTEST_DLG							(RESOURCEID_CONTROL+1200)
@@ -315,8 +339,9 @@
 #define IDC_DEBUGTESTV2_VIEW							(CONTROLID_DEBUGTEST_DLG+2)
 #define IDC_DEBUGTESTV2_INPUT							(CONTROLID_DEBUGTEST_DLG+3)
 
+//****************************************************************************************
 
-// Define item resource IDs for notify menu
+//************************ Item resource IDs for notify menu *****************************
 //
 
 #define MENUID_NOTIFY_DLG								(RESOURCEID_MENUITEM+100)
@@ -343,9 +368,9 @@
 #define IDM_NOTIFY_SHOW_WINDOW                 			(MENUID_NOTIFY_DLG+20)
 #define	IDM_NOTIFY_EXIT_APP								(MENUID_NOTIFY_DLG+21)
 
+//****************************************************************************************
 
-// Define item resource IDs for DebugTest menu
-//
+//*********************** Item resource IDs for DebugTest menu ***************************
 
 #define MENUID_DEBUGTEST_DLG							(RESOURCEID_MENUITEM+200)
 #define IDM_DEBUGTEST_COPY                 				(MENUID_DEBUGTEST_DLG+1)
@@ -359,6 +384,7 @@
 #define IDM_DEBUGTEST_STATUS_LINE						(MENUID_DEBUGTEST_DLG+9)
 #define IDM_DEBUGTEST_CLOSE								(MENUID_DEBUGTEST_DLG+10)
 
+//****************************************************************************************
 
 //////////////////////////////////////////////////////////////////////////////////
 //
