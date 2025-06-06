@@ -111,7 +111,7 @@ private:
 	UIntArray m_arrCurRegHKeyList;
 
 	// Power++ runtime queue data
-	PWRRUNTIMEQUEUE m_arrRuntimeQueue;
+	PwrRuntimeQueue m_arrRuntimeQueue;
 
 	// Child dialogs
 	CAboutDlg*			m_pAboutDlg;
@@ -220,8 +220,8 @@ private:
 	// Action Schedule feature functions
 	BOOL ProcessActionSchedule(void);
 	void ReupdateActionScheduleData(void);
-	void SetActionScheduleSkip(const SCHEDULEITEM& schItem, int nSkipFlag);
-	void SetActionScheduleSnooze(const SCHEDULEITEM& schItem, int nSnoozeFlag);
+	void SetActionScheduleSkip(const ScheduleItem& schItem, int nSkipFlag);
+	void SetActionScheduleSnooze(const ScheduleItem& schItem, int nSnoozeFlag);
 	void UpdateActionScheduleQueue(int nMode);
 	BOOL GetActionScheduleSkipStatus(UINT nItemID);
 	BOOL GetActionScheduleSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
@@ -234,29 +234,29 @@ private:
 
 	// Power Reminder feature functions
 	BOOL ExecutePowerReminder(UINT nExecEventID);
-	int  DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem);
+	int  DisplayPwrReminder(const PwrReminderItem& pwrDispItem);
 	void ReupdatePwrReminderData(void);
-	void SetPwrReminderSnooze(const PWRREMINDERITEM& pwrItem, int nSnoozeFlag);
+	void SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSnoozeFlag);
 	void UpdatePwrReminderSnooze(int nMode);
 	BOOL GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
-	void SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int nDispFlag);
+	void SetPwrReminderDispFlag(const PwrReminderItem& pwrItem, int nDispFlag);
 	size_t GetPwrReminderDispList(UIntArray& arrPwrDispList);
 
 	// Debugging functions
 	BOOL ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode);
 
 	// History and logging functions
-	void OutputScheduleEventLog(USHORT usEvent, const SCHEDULEITEM& schItem);
-	void OutputPwrReminderEventLog(USHORT usEvent, const PWRREMINDERITEM& pwrItem);
+	void OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& schItem);
+	void OutputPwrReminderEventLog(USHORT usEvent, const PwrReminderItem& pwrItem);
 	void InitPwrActionHistoryInfo(UINT nActionID, BOOL bResult, DWORD dwErrorCode);
-	void InitScheduleHistoryInfo(const SCHEDULEITEM& schItem);
+	void InitScheduleHistoryInfo(const ScheduleItem& schItem);
 	void InitHotkeyHistoryInfo(UINT nHKID);
-	void InitPwrReminderHistoryInfo(const PWRREMINDERITEM& pwrItem);
+	void InitPwrReminderHistoryInfo(const PwrReminderItem& pwrItem);
 	void SaveHistoryInfoData(void);
 
 	// Notification and error message functions
 	int	 ConfirmActionExec(UINT nActionType, UINT nActionID);
-	int  NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate);
+	int  NotifySchedule(PScheduleItem pschItem, BOOL& bReupdate);
 	void ShowErrorMessage(DWORD dwError);
 	void RequestRestartApp(UINT uiCommandID, BOOL bRestartAsAdmin);
 	void RequestRestartAsAdmin(RESTARTREQ reqRestart);

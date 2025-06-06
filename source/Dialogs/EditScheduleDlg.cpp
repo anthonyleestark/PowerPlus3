@@ -68,8 +68,8 @@ CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 	m_nAction = APP_ACTION_NOTHING;
 
 	// Data container variables
-	ZeroMemory(&m_schScheduleItem, sizeof(SCHEDULEITEM));
-	ZeroMemory(&m_schScheduleItemTemp, sizeof(SCHEDULEITEM));
+	ZeroMemory(&m_schScheduleItem, sizeof(ScheduleItem));
+	ZeroMemory(&m_schScheduleItemTemp, sizeof(ScheduleItem));
 
 	// Other variables
 	m_nDispMode = Mode::Init;
@@ -774,7 +774,7 @@ void CEditScheduleDlg::RedrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CEditScheduleDlg::GetScheduleItem(PSCHEDULEITEM pschItem)
+void CEditScheduleDlg::GetScheduleItem(PScheduleItem pschItem)
 {
 	// Copy data
 	if (pschItem == NULL) return;
@@ -790,7 +790,7 @@ void CEditScheduleDlg::GetScheduleItem(PSCHEDULEITEM pschItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CEditScheduleDlg::SetScheduleItem(const SCHEDULEITEM& pschItem)
+void CEditScheduleDlg::SetScheduleItem(const ScheduleItem& pschItem)
 {
 	// Copy data
 	m_schScheduleItem.Copy(pschItem);

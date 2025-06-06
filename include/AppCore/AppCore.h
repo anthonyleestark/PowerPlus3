@@ -322,8 +322,7 @@ public:
 };
 
 // Define new typenames for RepeatSet data
-using PWRREPEATSET = PwrRepeatSet;
-using PPWRREPEATSET = PwrRepeatSet*;
+using PPwrRepeatSet = PwrRepeatSet*;
 
 // Define new global typenames for the enum attributes of RepeatSet data
 using DayOfWeek = PwrRepeatSet::DayOfWeek;
@@ -343,7 +342,7 @@ private:
 	BOOL		 m_bEnabled;										// Enable/disable state
 	UINT		 m_nActionID;										// Schedule action ID
 	SYSTEMTIME	 m_stTime;											// Schedule time
-	PWRREPEATSET m_rpsRepeatSet;									// Repeat set data
+	PwrRepeatSet m_rpsRepeatSet;									// Repeat set data
 
 public:
 	// Constructor
@@ -388,9 +387,8 @@ public:
 };
 
 // Define new typenames for Schedule item data
-using SCHEDULEITEM = ScheduleItem;
-using PSCHEDULEITEM = ScheduleItem*;
-using SCHEDULEITEMLIST = typename std::vector<SCHEDULEITEM>;
+using PScheduleItem = ScheduleItem*;
+using ScheduleItemList = typename std::vector<ScheduleItem>;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -421,8 +419,8 @@ public:
 
 private:
 	// Attributes
-	SCHEDULEITEM	 m_schDefaultItem;								// Default schedule item
-	SCHEDULEITEMLIST m_arrSchedExtraItemList;						// List of extra schedule items
+	ScheduleItem	 m_schDefaultItem;								// Default schedule item
+	ScheduleItemList m_arrSchedExtraItemList;						// List of extra schedule items
 
 public:
 	// Constructor
@@ -439,14 +437,14 @@ public:
 	void SetDefaultData(void);										// Set default data
 
 	// Update items
-	DWORD Add(const SCHEDULEITEM&);									// Add item
-	DWORD Update(const SCHEDULEITEM&);								// Update item
+	DWORD Add(const ScheduleItem&);									// Add item
+	DWORD Update(const ScheduleItem&);								// Update item
 
 	// Access items
-	const SCHEDULEITEM& GetDefaultItem(void) const;					// Get default item (constant)
-	SCHEDULEITEM& GetDefaultItem(void);								// Get default item
-	const SCHEDULEITEM& GetItemAt(int) const;						// Get item at index (constant)
-	SCHEDULEITEM& GetItemAt(int);									// Get item at index
+	const ScheduleItem& GetDefaultItem(void) const;					// Get default item (constant)
+	ScheduleItem& GetDefaultItem(void);								// Get default item
+	const ScheduleItem& GetItemAt(int) const;						// Get item at index (constant)
+	ScheduleItem& GetItemAt(int);									// Get item at index
 
 	// Item processing
 	void Remove(int);												// Remove item at index
@@ -523,9 +521,8 @@ public:
 };
 
 // Define new typenames for HotkeySet item data
-using HOTKEYSETITEM = HotkeySetItem;
-using PHOTKEYSETITEM = HotkeySetItem*;
-using HOTKEYSETITEMLIST = typename std::vector<HOTKEYSETITEM>;
+using PHotkeySetItem = HotkeySetItem*;
+using HotkeySetItemList = typename std::vector<HotkeySetItem>;
 
 // Define new global typenames for the enum attributes of HotkeySet items
 using HotkeyID = HotkeySetItem::HKID;
@@ -542,7 +539,7 @@ class HotkeySetData
 public:
 	using Item = HotkeySetItem;
 	using HKID = Item::HKID;
-	using DataList = HOTKEYSETITEMLIST;
+	using DataList = HotkeySetItemList;
 
 private:
 	// Attributes
@@ -676,8 +673,7 @@ public:
 };
 
 // Define new typenames for Reminder message style data
-using RMDMSGSTYLESET = RmdMsgStyleSet;
-using PRMDMSGSTYLESET = RmdMsgStyleSet*;
+using PRmdMsgStyleSet = RmdMsgStyleSet*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -710,9 +706,9 @@ private:
 	UINT			m_nEventID;										// Event ID
 	SYSTEMTIME		m_stTime;										// Event time
 	DWORD			m_dwMsgStyle;									// Reminder style
-	PWRREPEATSET	m_rpsRepeatSet;									// Repeat set data
+	PwrRepeatSet	m_rpsRepeatSet;									// Repeat set data
 	BOOL			m_bUseCustomStyle;								// Use message custom style
-	RMDMSGSTYLESET	m_rmsMsgStyleSet;								// Reminder message style set
+	RmdMsgStyleSet	m_rmsMsgStyleSet;								// Reminder message style set
 
 public:
 	// Constructor
@@ -729,9 +725,9 @@ public:
 	BOOL Compare(const PwrReminderItem&) const;						// Compare items
 
 	// Access data
-	PWRREPEATSET& GetRepeatSetData(void);							// Get access to item RepeatSet info data
+	PwrRepeatSet& GetRepeatSetData(void);							// Get access to item RepeatSet info data
 	void ResetRepeatInfo(void);										// Reset RepeatSet info data
-	RMDMSGSTYLESET& GetMessageStyleData(void);						// Get access to item Message Style info data
+	RmdMsgStyleSet& GetMessageStyleData(void);						// Get access to item Message Style info data
 	void ResetMessageStyleInfo(void);								// Reset Message Style info data
 
 public:
@@ -769,9 +765,8 @@ public:
 };
 
 // Define new typenames for Power Reminder Item data
-using PWRREMINDERITEM = PwrReminderItem;
-using PPWRREMINDERITEM = PwrReminderItem*;
-using PWRREMINDERITEMLIST = typename std::vector<PWRREMINDERITEM>;
+using PPwrReminderItem = PwrReminderItem*;
+using PwrReminderItemList = typename std::vector<PwrReminderItem>;
 
 // Define new global typenames for the enum attributes of Power Reminder items
 using PwrReminderEvent = PwrReminderItem::Event;
@@ -795,8 +790,8 @@ public:
 
 private:
 	// Attributes
-	PWRREMINDERITEMLIST	m_arrRmdItemList;							// List of reminder items
-	RMDMSGSTYLESET		m_rmdCommonStyle;							// Common message style set
+	PwrReminderItemList	m_arrRmdItemList;							// List of reminder items
+	RmdMsgStyleSet		m_rmdCommonStyle;							// Common message style set
 
 public:
 	// Constructor
@@ -813,12 +808,12 @@ public:
 	void SetDefaultData(void);										// Set default data
 
 	// Update items
-	void Add(const PWRREMINDERITEM&);								// Add item
-	void Update(const PWRREMINDERITEM&);							// Update item
+	void Add(const PwrReminderItem&);								// Add item
+	void Update(const PwrReminderItem&);							// Update item
 
 	// Access items
-	const PWRREMINDERITEM& GetItemAt(int) const;					// Get item at index (constant)
-	PWRREMINDERITEM& GetItemAt(int);								// Get item at index
+	const PwrReminderItem& GetItemAt(int) const;					// Get item at index (constant)
+	PwrReminderItem& GetItemAt(int);								// Get item at index
 
 	// Item processing
 	void Remove(int);												// Remove item at index
@@ -891,9 +886,8 @@ public:
 };
 
 // Define new typenames for runtime info item data
-using PWRRUNTIMEITEM = PwrRuntimeItem;
-using PPWRRUNTIMEITEM = PwrRuntimeItem*;
-using PWRRUNTIMEQUEUE = typename std::vector<PWRRUNTIMEITEM>;
+using PPwrRuntimeItem = PwrRuntimeItem*;
+using PwrRuntimeQueue = typename std::vector<PwrRuntimeItem>;
 
 // Define new global typenames for the enum attributes of runtime info items
 using PwrFeatureID = PwrRuntimeItem::FeatureCategoryID;
@@ -952,8 +946,7 @@ public:
 };
 
 // Define new typenames for History info data
-using HISTORYINFODATA = HistoryInfoData;
-using PHISTORYINFODATA = HistoryInfoData*;
+using PHistoryInfoData = HistoryInfoData*;
 
 //////////////////////////////////////////////////////////////////////////
 //

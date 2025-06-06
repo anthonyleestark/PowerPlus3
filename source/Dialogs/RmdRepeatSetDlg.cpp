@@ -480,10 +480,10 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CRmdRepeatSetDlg::UpdateDialogData(PWRREMINDERITEM& pwrItemData, BOOL bUpdate)
+void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpdate)
 {
 	// Get repeat set data
-	PWRREPEATSET& rpsRepeatData = pwrItemData.GetRepeatSetData();
+	PwrRepeatSet& rpsRepeatData = pwrItemData.GetRepeatSetData();
 
 	if (bUpdate == TRUE) {
 

@@ -3655,7 +3655,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 	BOOL bTriggerReupdate = FALSE;
 
 	// Get default schedule item
-	SCHEDULEITEM& schDefaultItem = m_schScheduleData.GetDefaultItem();
+	ScheduleItem& schDefaultItem = m_schScheduleData.GetDefaultItem();
 	{
 		// Flag to skip processing schedule item
 		BOOL bSkipProcess = FALSE;
@@ -3729,7 +3729,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 	for (int nExtraIndex = 0; nExtraIndex < m_schScheduleData.GetExtraItemNum(); nExtraIndex++) {
 
 		// Get schedule item
-		SCHEDULEITEM& schExtraItem = m_schScheduleData.GetItemAt(nExtraIndex);
+		ScheduleItem& schExtraItem = m_schScheduleData.GetItemAt(nExtraIndex);
 
 		// Do not process if repeat option is ON but is not set as active in current day of week
 		if ((schExtraItem.IsRepeatEnabled() == TRUE) && (!schExtraItem.IsDayActive((DayOfWeek)stCurrentTime.wDayOfWeek)))
@@ -3824,7 +3824,7 @@ void CPowerPlusDlg::ReupdateActionScheduleData(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetActionScheduleSkip(const SCHEDULEITEM& schItem, int nSkipFlag)
+void CPowerPlusDlg::SetActionScheduleSkip(const ScheduleItem& schItem, int nSkipFlag)
 {
 	// If item is empty, do nothing
 	if (schItem.IsEmpty()) return;
@@ -3833,7 +3833,7 @@ void CPowerPlusDlg::SetActionScheduleSkip(const SCHEDULEITEM& schItem, int nSkip
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -3848,7 +3848,7 @@ void CPowerPlusDlg::SetActionScheduleSkip(const SCHEDULEITEM& schItem, int nSkip
 	}
 
 	// Prepare runtime item info to add
-	PWRRUNTIMEITEM pwrRuntimeItem;
+	PwrRuntimeItem pwrRuntimeItem;
 	pwrRuntimeItem.SetCategory(PwrFeatureID::schedule);
 	pwrRuntimeItem.SetItemID(schItem.GetItemID());
 	pwrRuntimeItem.SetSkipFlag(nSkipFlag);
@@ -3867,7 +3867,7 @@ void CPowerPlusDlg::SetActionScheduleSkip(const SCHEDULEITEM& schItem, int nSkip
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetActionScheduleSnooze(const SCHEDULEITEM& schItem, int nSnoozeFlag)
+void CPowerPlusDlg::SetActionScheduleSnooze(const ScheduleItem& schItem, int nSnoozeFlag)
 {
 	// If item is empty, do nothing
 	if (schItem.IsEmpty()) return;
@@ -3885,7 +3885,7 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const SCHEDULEITEM& schItem, int nSn
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -3906,7 +3906,7 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const SCHEDULEITEM& schItem, int nSn
 	}
 
 	// Prepare runtime item info to add
-	PWRRUNTIMEITEM pwrRuntimeItem;
+	PwrRuntimeItem pwrRuntimeItem;
 	pwrRuntimeItem.SetCategory(PwrFeatureID::schedule);
 	pwrRuntimeItem.SetItemID(schItem.GetItemID());
 	pwrRuntimeItem.SetSnoozeFlag(nSnoozeFlag);
@@ -3946,7 +3946,7 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 		for (int nQueueIdx = (m_arrRuntimeQueue.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
 
 			// Get runtime item from queue
-			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
+			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
 
 			// Skip if it's not an Action Schedule item
 			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -3955,7 +3955,7 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 			BOOL bItemFound = FALSE;
 
 			// Check if item ID is default schedule item
-			const SCHEDULEITEM& schDefaultItem = m_schScheduleData.GetDefaultItem();
+			const ScheduleItem& schDefaultItem = m_schScheduleData.GetDefaultItem();
 			if (schDefaultItem.GetItemID() == pwrRuntimeItem.GetItemID()) {
 
 				// If item's snoozing mode is no longer available
@@ -3971,7 +3971,7 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 
 			// Search for item ID in Action Schedule extra item data
 			for (int nItemIdx = 0; nItemIdx < m_schScheduleData.GetExtraItemNum(); nItemIdx++) {
-				const SCHEDULEITEM& schItem = m_schScheduleData.GetItemAt(nItemIdx);
+				const ScheduleItem& schItem = m_schScheduleData.GetItemAt(nItemIdx);
 				if (schItem.GetItemID() == pwrRuntimeItem.GetItemID()) {
 
 					// If item's snoozing mode is no longer available
@@ -4000,7 +4000,7 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 			// Get runtime item from queue
-			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 			// Skip if it's not an Action Schedule item
 			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -4033,7 +4033,7 @@ BOOL CPowerPlusDlg::GetActionScheduleSkipStatus(UINT nItemID)
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -4072,7 +4072,7 @@ BOOL CPowerPlusDlg::GetActionScheduleSnoozeStatus(UINT nItemID, SYSTEMTIME& curS
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
@@ -4204,8 +4204,9 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 		// Register each HotkeySet item
 		BOOL bRegistered = FALSE;
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+
 			// Get hotkey item
-			HOTKEYSETITEM hksItem = m_hksHotkeySetData.GetItemAt(nIndex);
+			HotkeySetItem hksItem = m_hksHotkeySetData.GetItemAt(nIndex);
 
 			// If item is empty, skip this item
 			if (hksItem.IsEmpty()) 
@@ -4287,9 +4288,9 @@ BOOL CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 	OutputDebugLogFormat(_T("Process Hotkey: HKeyID=%d"), nHotkeyID);
 
 	// Get HotkeySet item by ID
-	HOTKEYSETITEM hksItem;
+	HotkeySetItem hksItem;
 	for (int nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
-		HOTKEYSETITEM& hksTemp = m_hksHotkeySetData.GetItemAt(nIndex);
+		HotkeySetItem& hksTemp = m_hksHotkeySetData.GetItemAt(nIndex);
 		if (hksTemp.GetActionID() == static_cast<UINT>(nHotkeyID)) {
 			hksItem.Copy(hksTemp);
 			break;
@@ -4455,7 +4456,7 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 	// Look for corresponding HotkeyID in HotkeySet data
 	UINT nHKActionID = INT_NULL;
 	for (size_t nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
-		const HOTKEYSETITEM& hksItem = m_hksHotkeySetData.GetItemAt(nIndex);
+		const HotkeySetItem& hksItem = m_hksHotkeySetData.GetItemAt(nIndex);
 		if ((hksItem.IsEnabled() == TRUE) &&						// HotkeySet item is enabled
 			(hksItem.CompareKeycode(wModifiers, wVirtualKey))) {	// Keycode is matching
 			nHKActionID = hksItem.GetActionID();
@@ -4531,7 +4532,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 
 	// Search all items and process reminder
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		PWRREMINDERITEM& pwrCurItem = m_prdReminderData.GetItemAt(nIndex);
+		PwrReminderItem& pwrCurItem = m_prdReminderData.GetItemAt(nIndex);
 
 		// If item is empty, skip this item
 		if (pwrCurItem.IsEmpty())
@@ -4546,7 +4547,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 			continue;
 
 		// Process item
-		PWRREMINDERITEM pwrDispItem;
+		PwrReminderItem pwrDispItem;
 		switch (nExecEventID)
 		{
 		case PwrReminderEvent::atSetTime:
@@ -4622,7 +4623,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CPowerPlusDlg::DisplayPwrReminder(const PWRREMINDERITEM& pwrDispItem)
+int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 {
 	// Check message content validity
 	CString strMsgContent = pwrDispItem.GetMessage();
@@ -4746,7 +4747,7 @@ void CPowerPlusDlg::ReupdatePwrReminderData(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetPwrReminderSnooze(const PWRREMINDERITEM& pwrItem, int nSnoozeFlag)
+void CPowerPlusDlg::SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSnoozeFlag)
 {
 	// If item is empty, do nothing
 	if (pwrItem.IsEmpty()) return;
@@ -4768,7 +4769,7 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PWRREMINDERITEM& pwrItem, int nSn
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4789,7 +4790,7 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PWRREMINDERITEM& pwrItem, int nSn
 	}
 
 	// Prepare runtime item info to add
-	PWRRUNTIMEITEM pwrRuntimeItem;
+	PwrRuntimeItem pwrRuntimeItem;
 	pwrRuntimeItem.SetCategory(PwrFeatureID::pwrReminder);
 	pwrRuntimeItem.SetItemID(pwrItem.GetItemID());
 	pwrRuntimeItem.SetSnoozeFlag(nSnoozeFlag);
@@ -4828,7 +4829,7 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 		for (int nQueueIdx = (m_arrRuntimeQueue.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
 			
 			// Get runtime item from queue
-			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
+			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
 
 			// Skip if it's not Power Reminder item
 			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4836,7 +4837,7 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 			// Search for item ID in Power Reminder data
 			BOOL bItemFound = FALSE;
 			for (int nItemIdx = 0; nItemIdx < m_prdReminderData.GetItemNum(); nItemIdx++) {
-				const PWRREMINDERITEM& pwrItem = m_prdReminderData.GetItemAt(nItemIdx);
+				const PwrReminderItem& pwrItem = m_prdReminderData.GetItemAt(nItemIdx);
 				if (pwrItem.GetItemID() == pwrRuntimeItem.GetItemID()) {
 
 					// If item's snoozing mode is no longer available
@@ -4865,7 +4866,7 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 			// Get runtime item from queue
-			PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 			// Skip if it's not Power Reminder item
 			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4896,7 +4897,7 @@ BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysT
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4929,7 +4930,7 @@ BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysT
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int nDispFlag)
+void CPowerPlusDlg::SetPwrReminderDispFlag(const PwrReminderItem& pwrItem, int nDispFlag)
 {
 	// If item is empty, do nothing
 	if (pwrItem.IsEmpty()) return;
@@ -4938,7 +4939,7 @@ void CPowerPlusDlg::SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int n
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4952,7 +4953,7 @@ void CPowerPlusDlg::SetPwrReminderDispFlag(const PWRREMINDERITEM& pwrItem, int n
 	}
 
 	// Prepare item info to add
-	PWRRUNTIMEITEM pwrRuntimeItem;
+	PwrRuntimeItem pwrRuntimeItem;
 	pwrRuntimeItem.SetCategory(PwrFeatureID::pwrReminder);
 	pwrRuntimeItem.SetItemID(pwrItem.GetItemID());
 	pwrRuntimeItem.SetDisplayFlag(nDispFlag);
@@ -4984,7 +4985,7 @@ size_t CPowerPlusDlg::GetPwrReminderDispList(UIntArray& arrPwrDispList)
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PWRRUNTIMEITEM& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
@@ -5015,7 +5016,7 @@ size_t CPowerPlusDlg::GetPwrReminderDispList(UIntArray& arrPwrDispList)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const SCHEDULEITEM& schItem)
+void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& schItem)
 {
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
@@ -5041,7 +5042,7 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const SCHEDULEITEM& s
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PWRREMINDERITEM& pwrItem)
+void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PwrReminderItem& pwrItem)
 {
 	// Message content
 	CString strMsgContent = pwrItem.GetMessage();
@@ -5085,7 +5086,7 @@ void CPowerPlusDlg::InitPwrActionHistoryInfo(UINT nActionID, BOOL bResult, DWORD
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::InitScheduleHistoryInfo(const SCHEDULEITEM& schItem)
+void CPowerPlusDlg::InitScheduleHistoryInfo(const ScheduleItem& schItem)
 {
 	// Check item validity
 	if (schItem.IsEmpty())
@@ -5136,9 +5137,9 @@ void CPowerPlusDlg::InitScheduleHistoryInfo(const SCHEDULEITEM& schItem)
 void CPowerPlusDlg::InitHotkeyHistoryInfo(UINT nHKID)
 {
 	// Get HotkeySet item by ID
-	HOTKEYSETITEM hksItem;
+	HotkeySetItem hksItem;
 	for (int nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
-		HOTKEYSETITEM& hksTemp = m_hksHotkeySetData.GetItemAt(nIndex);
+		HotkeySetItem& hksTemp = m_hksHotkeySetData.GetItemAt(nIndex);
 		if (hksTemp.GetActionID() == nHKID) {
 			hksItem.Copy(hksTemp);
 			break;
@@ -5192,7 +5193,7 @@ void CPowerPlusDlg::InitHotkeyHistoryInfo(UINT nHKID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPowerPlusDlg::InitPwrReminderHistoryInfo(const PWRREMINDERITEM& pwrItem)
+void CPowerPlusDlg::InitPwrReminderHistoryInfo(const PwrReminderItem& pwrItem)
 {
 	// Check item validity
 	if (pwrItem.IsEmpty()) return;
@@ -5338,7 +5339,7 @@ int CPowerPlusDlg::ConfirmActionExec(UINT nActionType, UINT nActionID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CPowerPlusDlg::NotifySchedule(PSCHEDULEITEM pschItem, BOOL& bReupdate)
+int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, BOOL& bReupdate)
 {
 	// Do not notify if schedule action is "Do nothing"
 	if (pschItem->GetAction() == APP_ACTION_NOTHING) {

@@ -465,7 +465,7 @@ BOOL ScheduleItem::Compare(const ScheduleItem& pItem) const
 BOOL ScheduleItem::IsEmpty(void) const
 {
 	// Initialize an empty item
-	static const SCHEDULEITEM schDummyItem;
+	static const ScheduleItem schDummyItem;
 
 	// Compare with this item and return result
 	return this->Compare(schDummyItem);
@@ -512,7 +512,7 @@ void ScheduleItem::Print(CString& strOutput) const
 ScheduleData::ScheduleData()
 {
 	// Initialize
-	m_schDefaultItem = SCHEDULEITEM(ScheduleData::defaultItemID);
+	m_schDefaultItem = ScheduleItem(ScheduleData::defaultItemID);
 	m_arrSchedExtraItemList.clear();
 }
 
@@ -550,7 +550,7 @@ ScheduleData& ScheduleData::operator=(const ScheduleData& pData)
 void ScheduleData::Init()
 {
 	// Initialize
-	m_schDefaultItem = SCHEDULEITEM(ScheduleData::defaultItemID);
+	m_schDefaultItem = ScheduleItem(ScheduleData::defaultItemID);
 	m_arrSchedExtraItemList.clear();
 }
 
@@ -576,7 +576,7 @@ void ScheduleData::Copy(const ScheduleData& pData)
 
 	// Copy extra data
 	for (int nIndex = 0; nIndex < pData.GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = pData.m_arrSchedExtraItemList.at(nIndex);
+		ScheduleItem schItem = pData.m_arrSchedExtraItemList.at(nIndex);
 		this->m_arrSchedExtraItemList.push_back(schItem);
 	}
 }
@@ -605,7 +605,7 @@ void ScheduleData::SetDefaultData(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
+DWORD ScheduleData::Add(const ScheduleItem& pItem)
 {
 	// If item is empty, can not update
 	if (pItem.IsEmpty())
@@ -614,7 +614,7 @@ DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 	// If default item is currently empty
 	if (m_schDefaultItem.IsEmpty()) {
 		// Make item as default
-		SCHEDULEITEM schDefaultTemp(pItem);
+		ScheduleItem schDefaultTemp(pItem);
 		schDefaultTemp.SetItemID(ScheduleData::defaultItemID);
 		m_schDefaultItem.Copy(schDefaultTemp);
 		return Error::Success;
@@ -633,7 +633,7 @@ DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 
 	// Check if item is duplicated, if yes, do not add
 	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM pItemTemp = GetItemAt(nIndex);
+		ScheduleItem pItemTemp = GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE) {
 			// All data is duplicated
 			return Error::ItemDuplicated;
@@ -652,7 +652,7 @@ DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 	// Copy old data to new one
 	pNew->m_schDefaultItem.Copy(this->m_schDefaultItem);
 	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = this->GetItemAt(nIndex);
+		ScheduleItem schItem = this->GetItemAt(nIndex);
 		pNew->m_arrSchedExtraItemList.push_back(schItem);
 	}
 
@@ -679,7 +679,7 @@ DWORD ScheduleData::Add(const SCHEDULEITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-DWORD ScheduleData::Update(const SCHEDULEITEM& pItem)
+DWORD ScheduleData::Update(const ScheduleItem& pItem)
 {
 	// If default item or extra schedule data is currently empty
 	if (GetDefaultItem().IsEmpty() || IsAllEmpty()) {
@@ -709,7 +709,7 @@ DWORD ScheduleData::Update(const SCHEDULEITEM& pItem)
 
 	// Update item if found
 	if (nRetItemIndex != INT_INVALID) {
-		SCHEDULEITEM& schTemp = GetItemAt(nRetItemIndex);
+		ScheduleItem& schTemp = GetItemAt(nRetItemIndex);
 		schTemp.Copy(pItem);
 		return Error::Success;
 	}
@@ -736,10 +736,10 @@ void ScheduleData::Remove(int nAtIndex)
 		return;
 
 	// Get item data
-	SCHEDULEITEM& schItem = GetItemAt(nAtIndex);
+	ScheduleItem& schItem = GetItemAt(nAtIndex);
 
 	// Reset item value
-	schItem.Copy(SCHEDULEITEM());
+	schItem.Copy(ScheduleItem());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -782,7 +782,7 @@ void ScheduleData::Adjust(void)
 
 	// Check and remove empty extra items
 	for (int nIndex = (GetExtraItemNum() - 1); nIndex >= 0; nIndex--) {
-		SCHEDULEITEM schTemp = GetItemAt(nIndex);
+		ScheduleItem schTemp = GetItemAt(nIndex);
 		if (!schTemp.IsEmpty()) continue;
 
 		// Remove item
@@ -804,7 +804,7 @@ UINT ScheduleData::GetNextID(void)
 	// Get currently max ID
 	UINT nRetNextID = ScheduleData::minItemID;
 	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
-		SCHEDULEITEM schItem = GetItemAt(nIndex);
+		ScheduleItem schItem = GetItemAt(nIndex);
 		if (schItem.GetItemID() > nRetNextID) {
 			nRetNextID = schItem.GetItemID();
 		}
@@ -907,7 +907,7 @@ void ScheduleData::DeleteExtra(void)
 void ScheduleData::DeleteAll(void)
 {
 	// Reset data
-	m_schDefaultItem = SCHEDULEITEM(ScheduleData::defaultItemID);
+	m_schDefaultItem = ScheduleItem(ScheduleData::defaultItemID);
 	m_arrSchedExtraItemList.clear();
 }
 
@@ -1492,13 +1492,13 @@ PwrReminderItem::PwrReminderItem()
 	// Init data
 	m_bEnabled = FALSE;										// Enable state
 	m_nItemID = PwrReminderData::minItemID;					// Item ID
-	m_strMessage = Constant::String::Empty;							// Message content
+	m_strMessage = Constant::String::Empty;					// Message content
 	m_nEventID = Event::atSetTime;							// Event ID
 	m_stTime = SYSTEMTIME_ZERO;								// Event time
 	m_dwMsgStyle = Style::messageBox;						// Reminder style
-	m_rpsRepeatSet = PWRREPEATSET();						// Repeat set
+	m_rpsRepeatSet = PwrRepeatSet();						// Repeat set
 	m_bUseCustomStyle = FALSE;								// Use message custom style
-	m_rmsMsgStyleSet = RMDMSGSTYLESET();					// Reminder message style set
+	m_rmsMsgStyleSet = RmdMsgStyleSet();					// Reminder message style set
 }
 
 PwrReminderItem::PwrReminderItem(const PwrReminderItem& pItem)
@@ -1561,7 +1561,7 @@ void PwrReminderItem::Copy(const PwrReminderItem& pItem)
 BOOL PwrReminderItem::IsEmpty() const
 {
 	// Initialize an empty item
-	static const PWRREMINDERITEM pwrDummyItem;
+	static const PwrReminderItem pwrDummyItem;
 
 	// Compare with this item and return result
 	return this->Compare(pwrDummyItem);
@@ -1674,7 +1674,7 @@ PwrReminderData::PwrReminderData()
 {
 	// Initialize
 	m_arrRmdItemList.clear();
-	m_rmdCommonStyle = RMDMSGSTYLESET();
+	m_rmdCommonStyle = RmdMsgStyleSet();
 }
 
 PwrReminderData::PwrReminderData(const PwrReminderData& pData)
@@ -1712,7 +1712,7 @@ void PwrReminderData::Init()
 {
 	// Initialize
 	m_arrRmdItemList.clear();
-	m_rmdCommonStyle = RMDMSGSTYLESET();
+	m_rmdCommonStyle = RmdMsgStyleSet();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1734,7 +1734,7 @@ void PwrReminderData::Copy(const PwrReminderData& pData)
 
 	// Copy reminder data
 	for (int nIndex = 0; nIndex < pData.GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = pData.m_arrRmdItemList.at(nIndex);
+		PwrReminderItem pwrItem = pData.m_arrRmdItemList.at(nIndex);
 		this->m_arrRmdItemList.push_back(pwrItem);
 	}
 
@@ -1766,7 +1766,7 @@ void PwrReminderData::SetDefaultData(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
+void PwrReminderData::Add(const PwrReminderItem& pItem)
 {
 	// If data list is current empty
 	if (m_arrRmdItemList.empty()) {
@@ -1777,7 +1777,7 @@ void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
 
 	// Check if item exists, if yes, do not add
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pItemTemp = GetItemAt(nIndex);
+		PwrReminderItem pItemTemp = GetItemAt(nIndex);
 		if (pItemTemp.Compare(pItem) == TRUE)
 			return;
 	}
@@ -1791,7 +1791,7 @@ void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
 
 	// Copy old data to new one
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = this->GetItemAt(nIndex);
+		PwrReminderItem pwrItem = this->GetItemAt(nIndex);
 		pNew->m_arrRmdItemList.push_back(pwrItem);
 	}
 
@@ -1816,7 +1816,7 @@ void PwrReminderData::Add(const PWRREMINDERITEM& pItem)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::Update(const PWRREMINDERITEM& pItem)
+void PwrReminderData::Update(const PwrReminderItem& pItem)
 {
 	// If data list is current empty
 	if (m_arrRmdItemList.empty()) {
@@ -1836,7 +1836,7 @@ void PwrReminderData::Update(const PWRREMINDERITEM& pItem)
 
 	// Update item if found
 	if (nRetItemIndex != INT_INVALID) {
-		PWRREMINDERITEM& pwrTemp = GetItemAt(nRetItemIndex);
+		PwrReminderItem& pwrTemp = GetItemAt(nRetItemIndex);
 		pwrTemp.Copy(pItem);
 	}
 	// Otherwise, add new
@@ -1861,10 +1861,10 @@ void PwrReminderData::Remove(int nAtIndex)
 		return;
 
 	// Get item data
-	PWRREMINDERITEM& pwrItem = GetItemAt(nAtIndex);
+	PwrReminderItem& pwrItem = GetItemAt(nAtIndex);
 
 	// Reset item value
-	pwrItem.Copy(PWRREMINDERITEM());
+	pwrItem.Copy(PwrReminderItem());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1898,7 +1898,7 @@ void PwrReminderData::Adjust(void)
 	// Remove garbage items
 	for (int nIndex = (GetItemNum() - 1); nIndex >= 0; nIndex--) {
 		// Get item
-		PWRREMINDERITEM pwrTemp = GetItemAt(nIndex);
+		PwrReminderItem pwrTemp = GetItemAt(nIndex);
 		if (!pwrTemp.IsEmpty()) continue;
 
 		// Remove empty if item
@@ -1920,7 +1920,7 @@ UINT PwrReminderData::GetNextID(void)
 	// Get max ID
 	UINT nRetNextID = PwrReminderData::minItemID;
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		PWRREMINDERITEM pwrItem = GetItemAt(nIndex);
+		PwrReminderItem pwrItem = GetItemAt(nIndex);
 		if (pwrItem.GetItemID() > nRetNextID) {
 			nRetNextID = pwrItem.GetItemID();
 		}

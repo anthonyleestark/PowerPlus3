@@ -782,7 +782,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		pschTempData->Init();
 
 		// Initialize default item
-		SCHEDULEITEM schDefaultTemp(ScheduleData::defaultItemID);
+		ScheduleItem schDefaultTemp(ScheduleData::defaultItemID);
 		{
 			// Read default schedule item
 			int nDefSchedRet = INT_NULL;
@@ -830,7 +830,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			}
 			else {
 				// Update default item data
-				SCHEDULEITEM& schDefaultItem = pschTempData->GetDefaultItem();
+				ScheduleItem& schDefaultItem = pschTempData->GetDefaultItem();
 				schDefaultItem.Copy(schDefaultTemp);
 			}
 		}
@@ -844,7 +844,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
 
 				// Initialize temp item
-				SCHEDULEITEM schExtraTemp;
+				ScheduleItem schExtraTemp;
 
 				// Read extra item
 				int nSchedRet = INT_NULL;
@@ -945,8 +945,8 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Initialize temp item
-			HOTKEYSETITEM hksTemp;
-			ZeroMemory(&hksTemp, sizeof(HOTKEYSETITEM));
+			HotkeySetItem hksTemp;
+			ZeroMemory(&hksTemp, sizeof(HotkeySetItem));
 
 			// Read item data
 			int nItemRet = INT_NULL;
@@ -1024,7 +1024,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 				// Initialize temp item
-				PWRREMINDERITEM pwrTemp;
+				PwrReminderItem pwrTemp;
 
 				// Read item data
 				int nItemRet = INT_NULL;
@@ -1212,7 +1212,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeleteScheduleSection();
 
 		// Save default schedule item
-		SCHEDULEITEM schTempDefault = m_pschScheduleData->GetDefaultItem();
+		ScheduleItem schTempDefault = m_pschScheduleData->GetDefaultItem();
 		{
 			// Convert time data
 			nTimeTemp = FORMAT_REG_TIME(schTempDefault.GetTime());
@@ -1239,7 +1239,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
 
 			// Get schedule extra item
-			SCHEDULEITEM schTempExtra = m_pschScheduleData->GetItemAt(nExtraIndex);
+			ScheduleItem schTempExtra = m_pschScheduleData->GetItemAt(nExtraIndex);
 
 			// Convert time data
 			nTimeTemp = FORMAT_REG_TIME(schTempExtra.GetTime());
@@ -1303,7 +1303,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Get HotkeySet item
-			HOTKEYSETITEM hksTemp = m_phksHotkeySetData->GetItemAt(nIndex);
+			HotkeySetItem hksTemp = m_phksHotkeySetData->GetItemAt(nIndex);
 
 			// Get keycode
 			DWORD dwModifiersTemp, dwVirtKeyTemp;
@@ -1343,7 +1343,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Get Power Reminder item
-			PWRREMINDERITEM pwrTemp = m_ppwrReminderData->GetItemAt(nIndex);
+			PwrReminderItem pwrTemp = m_ppwrReminderData->GetItemAt(nIndex);
 
 			// Convert time data
 			nTimeTemp = FORMAT_REG_TIME(pwrTemp.GetTime());

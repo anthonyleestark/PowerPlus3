@@ -539,7 +539,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			int nItemID = _tstoi(retBuff[2].tcToken);
 			// Find and display reminder item by ID
 			BOOL bFindRet = FALSE;
-			PWRREMINDERITEM pwrTemp;
+			PwrReminderItem pwrTemp;
 			int nItemNum = m_prdReminderData.GetItemNum();
 			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 				pwrTemp = m_prdReminderData.GetItemAt(nIndex);
@@ -689,7 +689,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				OutputDebugLog(strOutputResult, DebugTestTool);
 				// Print each item data
 				for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
-					SCHEDULEITEM schExtraItem = pSchedDataTemp->GetItemAt(nExtraIndex);
+					ScheduleItem schExtraItem = pSchedDataTemp->GetItemAt(nExtraIndex);
 
 					// Print item
 					CString strItemPrint;
@@ -711,7 +711,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				OutputDebugLog(strOutputResult, DebugTestTool);
 				// Print each item data
 				for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-					HOTKEYSETITEM hksItem = pHksDataTemp->GetItemAt(nIndex);
+					HotkeySetItem hksItem = pHksDataTemp->GetItemAt(nIndex);
 
 					// Print item
 					CString strItemPrint;
@@ -733,7 +733,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 				OutputDebugLog(strOutputResult, DebugTestTool);
 				// Print each item data
 				for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-					PWRREMINDERITEM pwrItem = pRmdDataTemp->GetItemAt(nIndex);
+					PwrReminderItem pwrItem = pRmdDataTemp->GetItemAt(nIndex);
 
 					// Print item
 					CString strItemPrint;
@@ -1172,7 +1172,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			}
 			else {
 				// Print each item
-				PWRRUNTIMEITEM pwrRuntimeItem;
+				PwrRuntimeItem pwrRuntimeItem;
 				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 					// Get runtime item from queue
 					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
@@ -1198,7 +1198,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			}
 			else {
 				// Print each item
-				PWRRUNTIMEITEM pwrRuntimeItem;
+				PwrRuntimeItem pwrRuntimeItem;
 				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 					// Get runtime item from queue
 					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
@@ -1227,7 +1227,7 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode)
 			}
 			else {
 				// Print each item
-				PWRRUNTIMEITEM pwrRuntimeItem;
+				PwrRuntimeItem pwrRuntimeItem;
 				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
 					// Get runtime item from queue
 					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);

@@ -68,8 +68,8 @@ private:
 	UINT m_nAction;
 
 	// Data container variables
-	SCHEDULEITEM m_schScheduleItem;
-	SCHEDULEITEM m_schScheduleItemTemp;
+	ScheduleItem m_schScheduleItem;
+	ScheduleItem m_schScheduleItemTemp;
 
 	// Other variables
 	int		m_nDispMode;
@@ -95,8 +95,8 @@ public:
 	void RedrawActiveDayTable(BOOL bReadOnly = FALSE);
 
 	// Data processing functions
-	void GetScheduleItem(PSCHEDULEITEM pschItem);
-	void SetScheduleItem(const SCHEDULEITEM& pschItem);
+	void GetScheduleItem(PScheduleItem pschItem);
+	void SetScheduleItem(const ScheduleItem& pschItem);
 	void UpdateScheduleItem(void);
 	void SaveScheduleItem(void);
 

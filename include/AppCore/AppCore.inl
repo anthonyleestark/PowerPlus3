@@ -202,17 +202,17 @@ inline void ScheduleItem::SetDayActive(DayOfWeek dayOfWeek, BOOL bActive) {
 }
 
 // Get the default Action Schedule item
-inline const SCHEDULEITEM& ScheduleData::GetDefaultItem(void) const {
+inline const ScheduleItem& ScheduleData::GetDefaultItem(void) const {
 	return m_schDefaultItem;
 }
 
 // Get the default Action Schedule item
-inline SCHEDULEITEM& ScheduleData::GetDefaultItem(void) {
+inline ScheduleItem& ScheduleData::GetDefaultItem(void) {
 	return m_schDefaultItem;
 }
 
 // Get the Action Schedule item at index
-inline const SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex) const
+inline const ScheduleItem& ScheduleData::GetItemAt(int nIndex) const
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetExtraItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetExtraItemNum()))
@@ -223,7 +223,7 @@ inline const SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex) const
 }
 
 // Get the Action Schedule item at index
-inline SCHEDULEITEM& ScheduleData::GetItemAt(int nIndex)
+inline ScheduleItem& ScheduleData::GetItemAt(int nIndex)
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetExtraItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetExtraItemNum()))
@@ -251,7 +251,7 @@ inline BOOL ScheduleData::IsEmpty(int nIndex) const
 		return TRUE;
 
 	// Check if item is empty
-	const SCHEDULEITEM& schItem = GetItemAt(nIndex);
+	const ScheduleItem& schItem = GetItemAt(nIndex);
 	return schItem.IsEmpty();
 }
 
@@ -353,7 +353,7 @@ inline BOOL HotkeySetData::IsEmpty(int nIndex) const
 }
 
 // Get the hotkeyset item at index
-inline const HOTKEYSETITEM& HotkeySetData::GetItemAt(int nIndex) const
+inline const HotkeySetItem& HotkeySetData::GetItemAt(int nIndex) const
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetItemNum()))
@@ -364,7 +364,7 @@ inline const HOTKEYSETITEM& HotkeySetData::GetItemAt(int nIndex) const
 }
 
 // Get the hotkeyset item at index
-inline HOTKEYSETITEM& HotkeySetData::GetItemAt(int nIndex)
+inline HotkeySetItem& HotkeySetData::GetItemAt(int nIndex)
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetItemNum()))
@@ -492,7 +492,7 @@ inline void RmdMsgStyleSet::SetVerticalMargin(UINT uiVMargin) {
 }
 
 // Get access to item RepeatSet info data
-inline PWRREPEATSET& PwrReminderItem::GetRepeatSetData(void) {
+inline PwrRepeatSet& PwrReminderItem::GetRepeatSetData(void) {
 	return this->m_rpsRepeatSet;
 }
 
@@ -500,14 +500,14 @@ inline PWRREPEATSET& PwrReminderItem::GetRepeatSetData(void) {
 inline void PwrReminderItem::ResetRepeatInfo(void)
 {
 	// Create a new default RepeatSet info data
-	const PwrRepeatSet emptyData = PWRREPEATSET();
+	const PwrRepeatSet emptyData = PwrRepeatSet();
 
 	// Copy and overwrite current data
 	this->m_rpsRepeatSet.Copy(emptyData);
 }
 
 // Get access to item Message Style info data
-inline RMDMSGSTYLESET& PwrReminderItem::GetMessageStyleData(void) {
+inline RmdMsgStyleSet& PwrReminderItem::GetMessageStyleData(void) {
 	return this->m_rmsMsgStyleSet;
 }
 
@@ -515,7 +515,7 @@ inline RMDMSGSTYLESET& PwrReminderItem::GetMessageStyleData(void) {
 inline void PwrReminderItem::ResetMessageStyleInfo(void)
 {
 	// Create a new default Message Style info data
-	const RmdMsgStyleSet emptyData = RMDMSGSTYLESET();
+	const RmdMsgStyleSet emptyData = RmdMsgStyleSet();
 
 	// Copy and overwrite current data
 	this->m_rmsMsgStyleSet.Copy(emptyData);
@@ -642,7 +642,7 @@ inline size_t PwrReminderData::GetItemNum(void) const {
 }
 
 // Get the Power Reminder item at index
-inline PWRREMINDERITEM& PwrReminderData::GetItemAt(int nIndex)
+inline PwrReminderItem& PwrReminderData::GetItemAt(int nIndex)
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetItemNum()))
@@ -653,7 +653,7 @@ inline PWRREMINDERITEM& PwrReminderData::GetItemAt(int nIndex)
 }
 
 // Get the Power Reminder item at index
-inline const PWRREMINDERITEM& PwrReminderData::GetItemAt(int nIndex) const
+inline const PwrReminderItem& PwrReminderData::GetItemAt(int nIndex) const
 {
 	ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
 	if ((nIndex >= 0) && (nIndex < GetItemNum()))
@@ -671,7 +671,7 @@ inline BOOL PwrReminderData::IsEmpty(int nIndex) const
 		return TRUE;
 
 	// Check if item is empty
-	const PWRREMINDERITEM& pwrItem = GetItemAt(nIndex);
+	const PwrReminderItem& pwrItem = GetItemAt(nIndex);
 	return pwrItem.IsEmpty();
 }
 
@@ -680,7 +680,7 @@ inline void PwrReminderData::DeleteAll(void)
 {
 	// Reset data
 	m_arrRmdItemList.clear();
-	m_rmdCommonStyle = RMDMSGSTYLESET();
+	m_rmdCommonStyle = RmdMsgStyleSet();
 }
 
 // Calculate next snooze time
