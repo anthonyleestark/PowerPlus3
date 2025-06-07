@@ -59,9 +59,81 @@ __pragma(warning(disable:28159))
 #endif
 
 
+// Check for C++ version
+#ifdef __cplusplus
+	#if defined(_MSVC_LANG) && _MSVC_LANG > __cplusplus
+		#define _STL_LANG _MSVC_LANG
+	#else
+		#define _STL_LANG __cplusplus
+	#endif
+#else
+	#define _STL_LANG 0L
+#endif
+
+
+// Check if it is C++ 17
+#ifndef _HAS_CXX17
+	#if _STL_LANG > 201402L
+		#define _HAS_CXX17 1
+	#else
+		#define _HAS_CXX17 0
+	#endif
+#endif
+
+
+// Check if it is C++ 20
+#ifndef _HAS_CXX20
+	#if _HAS_CXX17 && _STL_LANG > 201703L
+		#define _HAS_CXX20 1
+	#else
+		#define _HAS_CXX20 0
+	#endif
+#endif
+
+
+// Check if it is C++ 23
+#ifndef _HAS_CXX23
+	#if _HAS_CXX20 && _STL_LANG > 202002L
+		#define _HAS_CXX23 1
+	#else
+		#define _HAS_CXX23 0
+	#endif
+#endif
+
+
+// Check if it is C++ 26
+#ifndef _HAS_CXX26
+	#if _HAS_CXX23 && _STL_LANG > 202302L
+		#define _HAS_CXX26 1
+	#else
+		#define _HAS_CXX26 0
+	#endif
+#endif
+
+#undef _STL_LANG
+
+
+// C++ 20 must imply C++ 17
+#if _HAS_CXX20 && !_HAS_CXX17
+	#error _HAS_CXX20 must imply _HAS_CXX17.
+#endif
+
+// C++ 23 must imply C++ 20
+#if _HAS_CXX23 && !_HAS_CXX20
+	#error _HAS_CXX23 must imply _HAS_CXX20.
+#endif
+
+
+// C++ 26 must imply C++ 23
+#if _HAS_CXX26 && !_HAS_CXX23
+	#error _HAS_CXX26 must imply _HAS_CXX23.
+#endif
+
+
 // Include application base definitions
 #include "AppMacros.h"
 #include "AppConstants.h"
+#include "BaseTypes.h"
 
 
 // Define global typenames for basic data types

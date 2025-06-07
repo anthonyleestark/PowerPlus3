@@ -116,6 +116,7 @@
     <ClInclude Include="../include/AppBase/AppCommon.h" />
     <ClInclude Include="../include/AppBase/AppConstants.h" />
     <ClInclude Include="../include/AppBase/AppMacros.h" />
+    <ClInclude Include="../include/AppBase/BaseTypes.h" />
     <ClInclude Include="../include/AppBase/Resource.h" />
     <ClInclude Include="../include/AppBase/Resource2.h" />
     <ClInclude Include="../include/AppBase/WinApp.h" />
@@ -174,6 +175,9 @@
   <ItemGroup>
     <ClInclude Include="../include/MainApp/PowerPlus.h" />
     <ClInclude Include="../include/MainApp/PowerPlusDlg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="../source/AppBase/BaseTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../source/AppCore/AppCore.cpp" />

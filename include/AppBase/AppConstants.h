@@ -50,6 +50,12 @@ enum Mode {
 };
 
 
+// Using RGB for color values
+#ifndef RGB
+	#define RGB(r,g,b) ((unsigned long)(((unsigned char)(r)|((unsigned short)((unsigned char)(g))<<8))|(((unsigned long)(unsigned char)(b))<<16)))
+#endif
+
+
 // Color values
 enum Color {
 	Red					= RGB(255,0,0),
@@ -116,7 +122,7 @@ struct Constant {
 		static constexpr int DaysOfWeek					= 7;								// 7 days
 
 		static constexpr int TokenNumber				= 50;								// 50 tokens
-		static constexpr int BufferLength				= 512;								// 512 characters
+		static constexpr int TokenLength				= 512;								// 512 characters
 		static constexpr int StringLength				= 1024;								// 2KB ~ 1024 characters
 		static constexpr int TextLength					= 2097152;							// 2MB ~ 2097152 characters
 		static constexpr int PasswordLength				= 30;								// 30 characters

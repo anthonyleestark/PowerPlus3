@@ -1016,7 +1016,7 @@ public:
 public:
 	// Validation
 	BOOL IsEmpty(void) const;										// Check if tracking data is empty
-	size_t GetTrackedCount(void) const;							// Get number of tracked events
+	size_t GetTrackedCount(void) const;								// Get number of tracked events
 
 	// Update data
 	void AddEvent(const SystemEvent&);								// Add system event info
@@ -1332,21 +1332,6 @@ typedef struct tagACTIONDEF
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	BUFFER
-//  Description:	Using for string buffer processing (debug command, etc)
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef struct tagBUFFER 
-{
-	// Member variables
-	INT		nLength;										// Buffer length
-	TCHAR	tcToken[Constant::Max::BufferLength];			// Buffer token
-} BUFFER, *PBUFFER;
-
-//////////////////////////////////////////////////////////////////////////
-//
 //	Data type name:	RESTARTREQ
 //  Description:	Using for request to restart app as admin
 //  Derivered from: C++ basic struct
@@ -1526,8 +1511,8 @@ namespace AppCore
 	BOOL	LoadResourceString(CString& strResult, UINT nResStringID);
 	BOOL	LoadResourceTextFile(CString& strTextData, UINT nResourceFileID);
 
-	int		GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars);
-	void	UpperEachWord(CString& strInput, BOOL bTrim);
+//	int		GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars);
+//	void	UpperEachWord(CString& strInput, BOOL bTrim);
 	LPCTSTR GetSubFolderPath(LPCTSTR lpszSubFolderName);
 	BOOL	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
 	int		PrintCharList(LPCTSTR lpszSrc, CString& strOutput);

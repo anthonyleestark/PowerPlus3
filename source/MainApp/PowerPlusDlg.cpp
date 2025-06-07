@@ -1473,7 +1473,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 
 	// Process debug command
 	DWORD dwErrorCode = APP_ERROR_DBG_SUCCESS;
-	if (!ProcessDebugCommand(strDebugCommand, dwErrorCode)) {
+	if (!ProcessDebugCommand(strDebugCommand.GetString(), dwErrorCode)) {
 
 		// Reply failed message
 		if (dwErrorCode == APP_ERROR_DBG_INVALID_COMMAND) {

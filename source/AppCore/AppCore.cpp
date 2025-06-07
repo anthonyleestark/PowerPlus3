@@ -3359,15 +3359,14 @@ static BOOL InitTraceErrorLogFile(void)
 	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
-	if (pTraceErrorLogFile->m_hFile == CFile::hFileNull) {
-		OPENFILE: {
-			// Open the log file
-			if (!pTraceErrorLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
-				// Show error message
-				DWORD dwErrorCode = GetLastError();
-				AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-				return FALSE;
-			}
+	while (pTraceErrorLogFile->m_hFile == CFile::hFileNull) {
+
+		// Open the log file
+		if (!pTraceErrorLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
+			// Show error message
+			DWORD dwErrorCode = GetLastError();
+			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			return FALSE;
 		}
 
 		// Go to end of file
@@ -3384,7 +3383,7 @@ static BOOL InitTraceErrorLogFile(void)
 				return FALSE;
 
 			// Step3: Create new file and reopen
-			goto OPENFILE;
+			continue;
 		}
 	}
 
@@ -3451,15 +3450,14 @@ static BOOL InitTraceDebugLogFile(void)
 	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
-	if (pTraceDebugLogFile->m_hFile == CFile::hFileNull) {
-		OPENFILE: {
-			// Open the log file
-			if (!pTraceDebugLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
-				// Show error message
-				DWORD dwErrorCode = GetLastError();
-				AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-				return FALSE;
-			}
+	while (pTraceDebugLogFile->m_hFile == CFile::hFileNull) {
+
+		// Open the log file
+		if (!pTraceDebugLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
+			// Show error message
+			DWORD dwErrorCode = GetLastError();
+			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			return FALSE;
 		}
 
 		// Go to end of file
@@ -3476,7 +3474,7 @@ static BOOL InitTraceDebugLogFile(void)
 				return FALSE;
 
 			// Step3: Create new file and reopen
-			goto OPENFILE;
+			continue;
 		}
 	}
 
@@ -3544,15 +3542,14 @@ static BOOL InitDebugInfoLogFile(void)
 	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
-	if (pDebugInfoLogFile->m_hFile == CFile::hFileNull) {
-		OPENFILE: {
-			// Open the log file
-			if (!pDebugInfoLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
-				// Show error message
-				DWORD dwErrorCode = GetLastError();
-				AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-				return FALSE;
-			}
+	while (pDebugInfoLogFile->m_hFile == CFile::hFileNull) {
+
+		// Open the log file
+		if (!pDebugInfoLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
+			// Show error message
+			DWORD dwErrorCode = GetLastError();
+			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			return FALSE;
 		}
 
 		// Go to end of file
@@ -3569,7 +3566,7 @@ static BOOL InitDebugInfoLogFile(void)
 				return FALSE;
 
 			// Step3: Create new file and reopen
-			goto OPENFILE;
+			continue;
 		}
 	}
 
@@ -4656,6 +4653,7 @@ BOOL AppCore::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
 	return FALSE;
 }
 
+#ifdef _GET_TOKEN_LIST
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	GetTokenList
@@ -4783,7 +4781,9 @@ int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars
 	// Return number of tokens
 	return (nTokenCount);
 }
+#endif
 
+#ifdef _UPPER_EACH_WORD
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	UpperEachWord
@@ -4844,6 +4844,7 @@ void AppCore::UpperEachWord(CString& strInput, BOOL bTrim)
 	strInput.SetString(lpszString);
 	strInput.ReleaseBuffer();
 }
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 // 

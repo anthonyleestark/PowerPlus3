@@ -243,7 +243,7 @@ private:
 	size_t GetPwrReminderDispList(UIntArray& arrPwrDispList);
 
 	// Debugging functions
-	BOOL ProcessDebugCommand(LPCTSTR lpszCommand, DWORD& dwErrorCode);
+	BOOL ProcessDebugCommand(const wchar_t* commandString, DWORD& dwErrorCode);
 
 	// History and logging functions
 	void OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& schItem);
