@@ -311,11 +311,11 @@ void CMultiScheduleDlg::OnClose()
 		if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			CString strMessage = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
-			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
+			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
-			int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
+			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Save data
 				SaveScheduleSettings();
@@ -372,10 +372,10 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 	if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		CString strMessage = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
-		CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
+		const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
+		const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 
-		int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
+		int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Save data
 			SaveScheduleSettings();
@@ -573,12 +573,12 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 		SetFixedCellStyle(m_pDataItemListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = Constant::String::Empty;
+		String headerTitle = Constant::String::Empty;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
-			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pDataItemListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, strHdrTitle);
+		m_pDataItemListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, headerTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -610,7 +610,7 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 			if ((nRow == ROW_INDEX_DEFAULT) && (nColStyle != COLSTYLE_FIXED) && (bReadOnly != TRUE)) {
 				CGridCellBase* pCellBase = m_pDataItemListTable->GetCell(nRow, nCol);
 				if (pCellBase != NULL) {
-					pCellBase->SetBackClr(Color::White);
+					pCellBase->SetBackClr(Color::Yellow);
 					pCellBase->SetTextClr(Color::Red);
 				}
 			}
@@ -724,10 +724,10 @@ void CMultiScheduleDlg::LoadLayoutInfo(void)
 
 	// Load layout info data from registry
 	int nRet = 0;
-	CString strKeyName;
+	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
-		if (GetLayoutInfo(Section::LayoutInfo::MultiScheduleTable, strKeyName, nRet)) {
+		keyName = Key::LayoutInfo::GridColSize(nIndex);
+		if (GetLayoutInfo(Section::LayoutInfo::MultiScheduleTable, keyName, nRet)) {
 			if (m_apGrdColFormat != NULL) {
 				m_apGrdColFormat[nIndex].nWidth = nRet;
 			}
@@ -751,11 +751,11 @@ void CMultiScheduleDlg::SaveLayoutInfo(void)
 
 	// Save layout info data to registry
 	int nRef = 0;
-	CString strKeyName;
+	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
 		nRef = m_apGrdColFormat[nIndex].nWidth;
-		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
-		WriteLayoutInfo(Section::LayoutInfo::MultiScheduleTable, strKeyName, nRef);
+		keyName = Key::LayoutInfo::GridColSize(nIndex);
+		WriteLayoutInfo(Section::LayoutInfo::MultiScheduleTable, keyName, nRef);
 	}
 }
 
@@ -806,7 +806,6 @@ void CMultiScheduleDlg::UpdateDataItemList()
 	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Print items
-	CString strTemp;
 	int nTemp = -1;
 	int nExtraItemIndex = 0;
 	CGridCellCheck* pCellCheck = NULL;
@@ -828,8 +827,8 @@ void CMultiScheduleDlg::UpdateDataItemList()
 		if (schItem.IsEmpty()) continue;
 
 		// Item index
-		strTemp.Format(_T("%d"), nRowIndex);
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::Index, strTemp);
+		String tempString = StringUtils::StringFormat(_T("%d"), nRowIndex);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::Index, tempString);
 
 		// Enable state
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
@@ -839,13 +838,13 @@ void CMultiScheduleDlg::UpdateDataItemList()
 
 		// Action name
 		nTemp = GetPairedID(IDTable::ActionName, schItem.GetAction());
-		strTemp = GetLanguageString(ptrLanguage, nTemp);
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ActionID, strTemp);
+		tempString = GetLanguageString(ptrLanguage, nTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ActionID, tempString);
 
 		// Time setting
-		CString strFormat = GetLanguageString(ptrLanguage, GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT);
-		strTemp = FormatDispTime(ptrLanguage, strFormat, schItem.GetTime());
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::TimeValue, strTemp);
+		const wchar_t* formatString = GetLanguageString(ptrLanguage, GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT);
+		tempString = FormatDispTime(ptrLanguage, formatString, schItem.GetTime());
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::TimeValue, tempString);
 
 		// Repeat
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
@@ -1420,9 +1419,9 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 			// If auto correction is ON
 			if (bAutoCorrect == TRUE) {
 				// Add "Data will be automatically reset to default"
-				CString strErrMessage = arrMsgString.at(nIndex);
-				strErrMessage += GetLanguageString(pLang, MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT);
-				DisplayMessageBox(strErrMessage, NULL, MB_OK | MB_ICONERROR);
+				String errorMessage = arrMsgString.at(nIndex);
+				errorMessage += GetLanguageString(pLang, MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT);
+				DisplayMessageBox(errorMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {
 				// Display error message
@@ -1485,11 +1484,11 @@ void CMultiScheduleDlg::OnExit()
 		if (bIsChanged == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			CString strMessage = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
-			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
+			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
-			int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
+			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Save data
 				SaveScheduleSettings();

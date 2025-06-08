@@ -309,10 +309,10 @@ LRESULT CDebugTestV2Dlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 		return LRESULT(Result::Failure);
 
 	// Format debug output log string
-	CString strDebugOutputLog = LPARAM_TO_STRING(lParam);
+	String debugOutputLogString = LPARAM_TO_STRING(lParam);
 
 	// Add debug output string
-	AddLine(strDebugOutputLog);
+	AddLine(debugOutputLogString);
 
 	// Display log and move cursor to end
 	UpdateDisplay(TRUE);
@@ -611,28 +611,30 @@ BOOL CDebugTestV2Dlg::SendDebugCommand(void)
 	BackupDebugViewBuffer();
 
 	// Get the debug command line
-	CString strDebugCommand;
-	GetDebugCommandInput()->GetWindowText(strDebugCommand);
+	const int buffLength = GetDebugCommandInput()->GetWindowTextLength();
+	std::vector<wchar_t> tempBuff(buffLength + 1);
+	GetDebugCommandInput()->GetWindowText(tempBuff.data(), buffLength + 1);
+	String debugCommand = tempBuff.data();
 
 	// Clear Debug command input
 	ClearDebugCommandInput();
 
 	// Re-format the debug command
-	int nCommandLength = FormatDebugCommand(strDebugCommand);
+	int nCommandLength = FormatDebugCommand(debugCommand);
 
 	// If debug command is empty, do not send
 	if (nCommandLength <= 0)
 		return FALSE;
 
 	// Prepare params
-	WPARAM wParam = MAKE_WPARAM_STRING(strDebugCommand);
-	LPARAM lParam = MAKE_LPARAM_STRING(strDebugCommand.GetString());
+	WPARAM wParam = MAKE_WPARAM_STRING(debugCommand);
+	LPARAM lParam = MAKE_LPARAM_STRING(debugCommand.GetString());
 
 	// Send debug command message to parent window
 	this->NotifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);
 
 	// Update debug command history
-	AddDebugCommandHistory(strDebugCommand);
+	AddDebugCommandHistory(debugCommand);
 
 	return TRUE;
 }
@@ -878,66 +880,61 @@ BOOL CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 // 
 //	Function name:	FormatDebugCommand
 //	Description:	Re-format debug command and return its length
-//  Arguments:		strDebugCommand - Debug command (IN & OUT)
+//  Arguments:		debugCommand - Debug command (IN & OUT)
 //  Return value:	int - Length of debug command
 //
 //////////////////////////////////////////////////////////////////////////
 
-int CDebugTestV2Dlg::FormatDebugCommand(CString& strDebugCommand)
+int CDebugTestV2Dlg::FormatDebugCommand(String& debugCommand)
 {
 	// If debug command is empty, do nothing
-	if (strDebugCommand.IsEmpty())
+	if (debugCommand.IsEmpty())
 		return 0;
 
 	// Remove prefix
-	int nSrcLength = strDebugCommand.GetLength();
+	int nSrcLength = debugCommand.GetLength();
 	if (m_bDispCommandPrefix == TRUE) {
-		nSrcLength -= _tcslen(debugCommandPrefix);
-		CString strTemp = strDebugCommand.Right(nSrcLength);
-		strDebugCommand = strTemp;
+		nSrcLength -= wcslen(debugCommandPrefix);
+		String tempString = debugCommand.Right(nSrcLength);
+		debugCommand = tempString;
 	}
 
 	// Remove leading/trailing spaces
-	strDebugCommand.Trim();
+	debugCommand.Trim();
 
 	// Initialize a temporary string buffer
-	nSrcLength = strDebugCommand.GetLength();
-	LPTSTR lpszBuffTemp = new TCHAR[nSrcLength + 1];
+	nSrcLength = debugCommand.GetLength();
+	std::vector<wchar_t> tempBuff(nSrcLength + 1);
 
 	// Remove invalid characters
-	int nBuffCount = 0;
 	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
 
-		TCHAR tch = strDebugCommand.GetAt(nIndex);
-		switch (tch)
+		wchar_t ch = debugCommand.GetAt(nIndex);
+		switch (ch)
 		{
 		case Constant::Char::Return:
 		case Constant::Char::EndLine:
 			break;
 		case Constant::Char::Tab:
 			// Replace with space
-			lpszBuffTemp[nBuffCount++] = Constant::Char::Space;
+			tempBuff.push_back(Constant::Char::Space);
 			break;
 		default:
 			// Add to buffer
-			lpszBuffTemp[nBuffCount++] = tch;
+			tempBuff.push_back(ch);
 			break;
 		}
 	}
 
 	// Copy back formatted string
-	strDebugCommand.Empty();
-	strDebugCommand.FreeExtra();
-	strDebugCommand.SetString(lpszBuffTemp, nBuffCount);
+	debugCommand.Empty();
+	debugCommand.SetString(tempBuff.data());
 
 	// Remove leading/trailing spaces again
-	strDebugCommand.Trim();
-
-	// Clean-up temporary string buffer
-	delete[] lpszBuffTemp;
+	debugCommand.Trim();
 
 	// Return the debug command's new length
-	return strDebugCommand.GetLength();
+	return debugCommand.GetLength();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -955,16 +952,16 @@ void CDebugTestV2Dlg::ClearDebugCommandInput(const wchar_t* commandBuff /* = Con
 		return;
 
 	// Re-initialize Debug command buffer
-	CString strCmdBuff = Constant::String::Empty;
+	String commandTempStr = Constant::String::Empty;
 	if (m_bDispCommandPrefix == TRUE) {
-		strCmdBuff = debugCommandPrefix;
+		commandTempStr = debugCommandPrefix;
 	}
 	if (IS_NOT_EMPTY_STRING(commandBuff)) {
-		strCmdBuff += commandBuff;
+		commandTempStr += commandBuff;
 	}
 
 	// Update display
-	GetDebugCommandInput()->SetWindowText(strCmdBuff);
+	GetDebugCommandInput()->SetWindowText(commandTempStr);
 
 	// Move to end
 	GetDebugCommandInput()->SetSel(static_cast<DWORD>(-1));
@@ -1113,15 +1110,15 @@ void CDebugTestV2Dlg::DispDebugCommandHistory(int nHistoryIndex)
 		return;
 
 	// Get command at index
-	CString strCommand = m_astrCommandHistory.at(nHistoryIndex);
-	if (strCommand.IsEmpty())
+	String commandString = m_astrCommandHistory.at(nHistoryIndex);
+	if (commandString.IsEmpty())
 		return;
 
 	// Check if DebugTest edit view is available and focused
 	if (IsDebugCommandInputFocused()) {
 
 		// Display command
-		ClearDebugCommandInput(strCommand);
+		ClearDebugCommandInput(commandString);
 
 		// Update current displaying history index
 		SetHistoryCurrentDispIndex(nHistoryIndex);

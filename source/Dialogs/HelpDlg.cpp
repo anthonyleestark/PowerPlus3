@@ -285,8 +285,8 @@ void CHelpDlg::SetupLanguage()
 	// Set [Close] button title
 	CWnd* pWnd = GetDlgItem(IDC_HELP_CLOSE_BTN);
 	if (pWnd != NULL) {
-		CString strWndText = GetLanguageString(pAppLang, IDC_HELP_CLOSE_BTN);
-		pWnd->SetWindowText(strWndText);
+		const wchar_t* wndText = GetLanguageString(pAppLang, IDC_HELP_CLOSE_BTN);
+		pWnd->SetWindowText(wndText);
 	}
 
 	// Set [Switch view mode] button title
@@ -423,11 +423,11 @@ void CHelpDlg::UpdateSwitchViewModeButton(void)
 
 	// Get app current language package
 	LANGTABLE_PTR ptrLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	CString strTitle = GetLanguageString(ptrLang, nStringID);
+	const wchar_t* titleString = GetLanguageString(ptrLang, nStringID);
 
 	// Reupdate button title
 	CButton* pBtn = (CButton*)GetDlgItem(IDC_HELP_SWITCHVIEWMODE_BTN);
 	if (pBtn != NULL)
-		pBtn->SetWindowText(strTitle);
+		pBtn->SetWindowText(titleString);
 }
 

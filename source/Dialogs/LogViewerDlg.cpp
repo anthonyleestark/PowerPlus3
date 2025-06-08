@@ -474,12 +474,12 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 		SetFixedCellStyle(m_pLogViewerList, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = Constant::String::Empty;
+		String headerTitle = Constant::String::Empty;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
-			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pLogViewerList->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, strHdrTitle);
+		m_pLogViewerList->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, headerTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -608,7 +608,6 @@ void CLogViewerDlg::UpdateLogViewer(void)
 	LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
 
 	// Print items
-	CString strTemp;
 	int nItemIndex = 0;
 	for (int nRowIndex = ROW_INDEX_START; nRowIndex <= m_nLogCount; nRowIndex++) {
 		
@@ -620,16 +619,16 @@ void CLogViewerDlg::UpdateLogViewer(void)
 		if (logItem.IsEmpty()) continue;
 
 		// Date/time
-		strTemp = logItem.FormatDateTime();
-		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::DateTime, strTemp);
+		String tempString = logItem.FormatDateTime();
+		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::DateTime, tempString);
 
 		// Category
-		strTemp = GetLanguageString(ptrLanguage, logItem.GetCategory());
-		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::CategoryID, strTemp);
+		tempString = GetLanguageString(ptrLanguage, logItem.GetCategory());
+		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::CategoryID, tempString);
 
 		// Additional description
-		strTemp = logItem.GetLogString();
-		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::Description, strTemp);
+		tempString = logItem.GetLogString();
+		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::Description, tempString);
 	}
 }
 
@@ -749,10 +748,10 @@ void CLogViewerDlg::LoadLayoutInfo(void)
 
 	// Load layout info data from registry
 	int nRet = 0;
-	CString strKeyName;
+	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
-		if (GetLayoutInfo(Section::LayoutInfo::LogViewerTable, strKeyName, nRet)) {
+		keyName = Key::LayoutInfo::GridColSize(nIndex);
+		if (GetLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, nRet)) {
 			if (m_apGrdColFormat != NULL) {
 				m_apGrdColFormat[nIndex].nWidth = nRet;
 			}
@@ -776,10 +775,10 @@ void CLogViewerDlg::SaveLayoutInfo(void)
 
 	// Save layout info data to registry
 	int nRef = 0;
-	CString strKeyName;
+	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
 		nRef = m_apGrdColFormat[nIndex].nWidth;
-		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
-		WriteLayoutInfo(Section::LayoutInfo::LogViewerTable, strKeyName, nRef);
+		keyName = Key::LayoutInfo::GridColSize(nIndex);
+		WriteLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, nRef);
 	}
 }

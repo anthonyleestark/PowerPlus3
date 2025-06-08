@@ -1426,15 +1426,15 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	/*-----------------------------<Application launch-time>-----------------------------*/
 
 	// Format launch-time
-	CString strDateTimeFormat;
 	SYSTEMTIME stLaunchTime = GetAppLaunchTime();
 	UINT nTimePeriod = (stLaunchTime.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = GetLanguageString(LoadLanguageTable(NULL), nTimePeriod);
-	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stLaunchTime.wYear, stLaunchTime.wMonth, stLaunchTime.wDay,
+	const wchar_t* timeFormatString = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	strValue = StringUtils::StringFormat(timeFormatString, stLaunchTime.wYear, stLaunchTime.wMonth, stLaunchTime.wDay,
 		stLaunchTime.wHour, stLaunchTime.wMinute, stLaunchTime.wSecond, stLaunchTime.wMilliseconds, timePeriodFormat);
 
 	// Store launch-time info data
-	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchTime, strDateTimeFormat)) {
+	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchTime, strValue)) {
 		bRet = FALSE;
 	}
 
@@ -1453,8 +1453,8 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	// Executable file name
 	strValue = StringUtils::GetApplicationPath(true);
 	if (!strValue.IsEmpty()) {
-		CString strFileName = PathFindFileName(strValue);
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::FileName, strFileName)) {
+		String execFileName = PathFindFileName(strValue);
+		if (!WriteProfileInfo(AppProfile::LaunchInfo::FileName, execFileName)) {
 			bRet = FALSE;
 		}
 	}
@@ -1528,30 +1528,30 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	String strGlbValue = Constant::String::Empty;			// String value
 
 	// Subsection name
-	CString strSubSection = Constant::String::Empty;
+	String subSectionName = Constant::String::Empty;
 
 	/*------------------------<Load debugging/testing variables>-------------------------*/
 
 	// Subsection: DebugTest
-	strSubSection = Section::GlobalData::DebugTest;
+	subSectionName = Section::GlobalData::DebugTest;
 
 	// DummyTest mode
-	if (GetGlobalData(strSubSection, Key::GlobalData::DebugTest::DummyTest, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, nGlbValue)) {
 		SetDummyTestMode(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Debug mode
-	if (GetGlobalData(strSubSection, Key::GlobalData::DebugTest::DebugMode, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, nGlbValue)) {
 		SetDebugMode(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Debug log output target
-	if (GetGlobalData(strSubSection, Key::GlobalData::DebugTest::DebugOutput, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, nGlbValue)) {
 		SetDebugOutputTarget(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Test feature enable
-	if (GetGlobalData(strSubSection, Key::GlobalData::DebugTest::TestFeature, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, nGlbValue)) {
 		SetTestFeatureEnable(nGlbValue);
 		bRet |= TRUE;
 	}
@@ -1561,28 +1561,28 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	/*-----------------------------<Load app special flags>------------------------------*/
 
 	// Subsection: AppFlags
-	strSubSection = Section::GlobalData::AppFlag;
+	subSectionName = Section::GlobalData::AppFlag;
 
 	// Power action trace flag
-	if (GetGlobalData(strSubSection, Key::GlobalData::AppFlag::PwrActionFlag, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, nGlbValue)) {
 		SetPwrActionFlag((BYTE)nGlbValue);
 		bRet |= TRUE;
 	}
 
 	// System suspended trace flag
-	if (GetGlobalData(strSubSection, Key::GlobalData::AppFlag::SystemSuspendFlag, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, nGlbValue)) {
 		SetSystemSuspendFlag((BYTE)nGlbValue);
 		bRet |= TRUE;
 	}
 
 	// Session ending trace flag
-	if (GetGlobalData(strSubSection, Key::GlobalData::AppFlag::SessionEndFlag, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, nGlbValue)) {
 		SetSessionEndFlag((BYTE)nGlbValue);
 		bRet |= TRUE;
 	}
 
 	// Previously safe termination trace flag
-	if (GetGlobalData(strSubSection, Key::GlobalData::AppFlag::SafeTermination, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, nGlbValue)) {
 		SetSafeTerminationFlag((BYTE)nGlbValue);
 		bRet |= TRUE;
 	}
@@ -1592,60 +1592,60 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	/*-------------------------<Load special feature variables>--------------------------*/
 
 	// Subsection: Features
-	strSubSection = Section::GlobalData::Feature;
+	subSectionName = Section::GlobalData::Feature;
 
 	// Reminder message background color
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgBkgrdColor, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgBkgrdColor, nGlbValue)) {
 		SetReminderMsgBkgrdColor((DWORD)nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message text color
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgTxtColor, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgTxtColor, nGlbValue)) {
 		SetReminderMsgTextColor((DWORD)nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message font name
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgFontName, strGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgFontName, strGlbValue)) {
 		SetReminderMsgFontName(strGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message font size
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgFontSize, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgFontSize, nGlbValue)) {
 		SetReminderMsgFontSize((UINT)nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message auto-close interval
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgTimeout, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgTimeout, nGlbValue)) {
 		SetReminderMsgTimeout((UINT)nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message icon ID
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgIconID, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconID, nGlbValue)) {
 		SetReminderMsgIconID(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message icon size
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgIconSize, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconSize, nGlbValue)) {
 		SetReminderMsgIconSize(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message icon position
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgIconPos, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconPos, nGlbValue)) {
 		SetReminderMsgIconPosition(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message display position
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgDispPos, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgDispPos, nGlbValue)) {
 		SetReminderMsgDispPosition(nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message display area horizontal margin
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgHMargin, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgHMargin, nGlbValue)) {
 		SetReminderMsgHMargin((UINT)nGlbValue);
 		bRet |= TRUE;
 	}
 	// Reminder message display area vertical margin
-	if (GetGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgVMargin, nGlbValue)) {
+	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgVMargin, nGlbValue)) {
 		SetReminderMsgVMargin((UINT)nGlbValue);
 		bRet |= TRUE;
 	}
@@ -1675,31 +1675,31 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	String strGlbValue = Constant::String::Empty;			// String value
 
 	// Subsection name
-	CString strSubSection = Constant::String::Empty;
+	String subSectionName = Constant::String::Empty;
 
 	/*------------------------<Save debugging/testing variables>-------------------------*/
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_DEBUGTEST)) {
 		// Subsection: DebugTest
-		strSubSection = Section::GlobalData::DebugTest;
+		subSectionName = Section::GlobalData::DebugTest;
 
 		// DummyTest mode
 		nGlbValue = GetDummyTestMode();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::DebugTest::DummyTest, nGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, nGlbValue)) {
 			bRet = FALSE;
 		}
 		// Debug mode
 		nGlbValue = GetDebugMode();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::DebugTest::DebugMode, nGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, nGlbValue)) {
 			bRet = FALSE;
 		}
 		// Debug log output target
 		nGlbValue = GetDebugOutputTarget();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::DebugTest::DebugOutput, nGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, nGlbValue)) {
 			bRet = FALSE;
 		}
 		// Test feature enable
 		nGlbValue = GetTestFeatureEnable();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::DebugTest::TestFeature, nGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, nGlbValue)) {
 			bRet = FALSE;
 		}
 	}
@@ -1708,29 +1708,29 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	/*---------------------------------<Save app flags>----------------------------------*/
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_APPFLAGS)) {
 		// Subsection: AppFlags
-		strSubSection = Section::GlobalData::AppFlag;
+		subSectionName = Section::GlobalData::AppFlag;
 
 		// Power action trace flag
 		byGlbValue = GetPwrActionFlag();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::AppFlag::PwrActionFlag, byGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, byGlbValue)) {
 			bRet = FALSE;
 		}
 
 		// System suspended trace flag
 		byGlbValue = GetSystemSuspendFlag();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::AppFlag::SystemSuspendFlag, byGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, byGlbValue)) {
 			bRet = FALSE;
 		}
 
 		// Session ending trace flag
 		byGlbValue = GetSessionEndFlag();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::AppFlag::SessionEndFlag, byGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, byGlbValue)) {
 			bRet = FALSE;
 		}
 
 		// Previously safe termination trace flag
 		byGlbValue = GetSafeTerminationFlag();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::AppFlag::SafeTermination, byGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, byGlbValue)) {
 			bRet = FALSE;
 		}
 	}
@@ -1739,61 +1739,61 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	/*-----------------------------<Save special variables>------------------------------*/
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_FEATURES)) {
 		// Subsection: Features
-		strSubSection = Section::GlobalData::Feature;
+		subSectionName = Section::GlobalData::Feature;
 
 		// Reminder message background color
 		dwGlbValue = GetReminderMsgBkgrdColor();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgBkgrdColor, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgBkgrdColor, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message text color
 		dwGlbValue = GetReminderMsgTextColor();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgTxtColor, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgTxtColor, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message font name
 		bGlbValue = GetReminderMsgFontName(strGlbValue);
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgFontName, strGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgFontName, strGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message font size
 		dwGlbValue = GetReminderMsgFontSize();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgFontSize, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgFontSize, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message auto-close interval
 		dwGlbValue = GetReminderMsgTimeout();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgTimeout, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgTimeout, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message icon ID
 		dwGlbValue = GetReminderMsgIconID();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgIconID, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconID, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message icon size
 		dwGlbValue = GetReminderMsgIconSize();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgIconSize, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconSize, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message icon position
 		dwGlbValue = GetReminderMsgIconPosition();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgIconPos, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconPos, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message display position
 		dwGlbValue = GetReminderMsgDispPosition();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgDispPos, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgDispPos, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message display area horizontal margin
 		dwGlbValue = GetReminderMsgHMargin();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgHMargin, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgHMargin, dwGlbValue)) {
 			bRet = FALSE;
 		}
 		// Reminder message display area vertical margin
 		dwGlbValue = GetReminderMsgVMargin();
-		if (!WriteGlobalData(strSubSection, Key::GlobalData::Feature::RmdMsgVMargin, dwGlbValue)) {
+		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgVMargin, dwGlbValue)) {
 			bRet = FALSE;
 		}
 	}
@@ -2075,8 +2075,8 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 
 void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 {
-	CString strTrcTitle = Constant::String::Empty;
-	CString strTrcLogFormat = Constant::String::Empty;
+	String traceMessageTitle = Constant::String::Empty;
+	String traceLogFormat = Constant::String::Empty;
 	const wchar_t* _dataNullString = _T("Data pointer is NULL");
 	const wchar_t* _readFailedString = _T("Registry data is unreadable or invalid");
 	const wchar_t* _writeFailedString = _T("Unable to write registry data");
@@ -2089,98 +2089,98 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 	{
 	case APP_ERROR_LOAD_CFG_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Load config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
+		traceMessageTitle = _T("Load config failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_CFG_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
-		strTrcTitle = _T("Load config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _readFailedString);
+		traceMessageTitle = _T("Load config failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_SCHED_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Load schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
+		traceMessageTitle = _T("Load schedule failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_SCHED_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
-		strTrcTitle = _T("Load schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _readFailedString);
+		traceMessageTitle = _T("Load schedule failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Load hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
+		traceMessageTitle = _T("Load hotkeyset failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
-		strTrcTitle = _T("Load hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _readFailedString);
+		traceMessageTitle = _T("Load hotkeyset failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Load reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
+		traceMessageTitle = _T("Load reminder failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
-		strTrcTitle = _T("Load reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _readFailedString);
+		traceMessageTitle = _T("Load reminder failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _readFailedString);
 		break;
 
 	case APP_ERROR_SAVE_CFG_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Save config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
+		traceMessageTitle = _T("Save config failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_CFG_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Save config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _writeFailedString);
+		traceMessageTitle = _T("Save config failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Save schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
+		traceMessageTitle = _T("Save schedule failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Save schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _writeFailedString);
+		traceMessageTitle = _T("Save schedule failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Save hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
+		traceMessageTitle = _T("Save hotkeyset failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Save hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _writeFailedString);
+		traceMessageTitle = _T("Save hotkeyset failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Save reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
+		traceMessageTitle = _T("Save reminder failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
-		strTrcTitle = _T("Save reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _writeFailedString);
+		traceMessageTitle = _T("Save reminder failed");
+		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
 		break;
 	}
 
@@ -2189,8 +2189,8 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 		return;
 
 	// Output trace error log
-	if (!strTrcLogFormat.IsEmpty()) {
-		TRACE_ERROR(strTrcLogFormat);
+	if (!traceLogFormat.IsEmpty()) {
+		TRACE_ERROR(traceLogFormat);
 	}
 
 	// Show error message
@@ -2505,10 +2505,10 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	regInfoLastSysEvt.SetSectionName(Section::GlobalData::Tracking);
 
 	// Get registry path
-	CString strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, RegistryPathType::includingSectionName, FALSE);
+	String lastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, RegistryPathType::includingSectionName, FALSE);
 
 	// Open registry key
-	lRes = RegOpenKeyEx(HKEY_CURRENT_USER, strLastSysEvtRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hRegOpenKey);
+	lRes = RegOpenKeyEx(HKEY_CURRENT_USER, lastSysEvtRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hRegOpenKey);
 
 	// Registry key open failed
 	if (lRes != ERROR_SUCCESS) {
@@ -2518,18 +2518,18 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	}
 
 	// Get key name
-	CString strKeyName;
+	String keyName;
 	if (byEventType == SystemEventID::SystemSuspend) {
 		// Last system suspend
-		strKeyName = Key::GlobalData::Tracking::LastSysSuspend;
+		keyName = Key::GlobalData::Tracking::LastSysSuspend;
 	}
 	else if (byEventType == SystemEventID::SystemWakeUp) {
 		// Last system wakeup
-		strKeyName = Key::GlobalData::Tracking::LastSysWakeup;
+		keyName = Key::GlobalData::Tracking::LastSysWakeup;
 	}
 	else if (byEventType == SystemEventID::SessionEnded) {
 		// Last app/system session ending
-		strKeyName = Key::GlobalData::Tracking::LastSessionEnd;
+		keyName = Key::GlobalData::Tracking::LastSessionEnd;
 	}
 	else {
 		// Close key and exit
@@ -2541,7 +2541,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	DWORD dwType = REG_SZ;
 	TCHAR tcBuffer[MAX_PATH];
 	DWORD dwBufferSize = sizeof(tcBuffer);
-	lRes = RegQueryValueEx(hRegOpenKey, strKeyName, 0, &dwType, (LPBYTE)tcBuffer, &dwBufferSize);
+	lRes = RegQueryValueEx(hRegOpenKey, keyName, 0, &dwType, (LPBYTE)tcBuffer, &dwBufferSize);
 	
 	// Get registry key value failed
 	if (lRes != ERROR_SUCCESS) {
@@ -2556,9 +2556,8 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 
 	// Extract time data from string
 	TCHAR tcTimePeriod[5];
-	CString strDateTimeFormat;
-	strDateTimeFormat.LoadString(IDS_FORMAT_FULLDATETIME);
-	_stscanf_s(tcBuffer, strDateTimeFormat, &timeSysEvent.wYear, &timeSysEvent.wMonth, &timeSysEvent.wDay,
+	String dateTimeFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	_stscanf_s(tcBuffer, dateTimeFormat, &timeSysEvent.wYear, &timeSysEvent.wMonth, &timeSysEvent.wDay,
 		&timeSysEvent.wHour, &timeSysEvent.wMinute, &timeSysEvent.wSecond, &timeSysEvent.wMilliseconds, tcTimePeriod, (unsigned)_countof(tcTimePeriod));
 
 	// Close key
@@ -2596,10 +2595,10 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 	regInfoLastSysEvt.SetSectionName(Section::GlobalData::Tracking);
 
 	// Get registry path
-	CString strLastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, RegistryPathType::includingSectionName, FALSE);
+	String lastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, RegistryPathType::includingSectionName, FALSE);
 
 	// Create registry key (open if key exists)
-	lRes = RegCreateKeyEx(HKEY_CURRENT_USER, strLastSysEvtRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hRegOpenKey, &dwState);
+	lRes = RegCreateKeyEx(HKEY_CURRENT_USER, lastSysEvtRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hRegOpenKey, &dwState);
 
 	// Registry key creation failed
 	if (lRes != ERROR_SUCCESS) {
@@ -2609,18 +2608,18 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 	}
 
 	// Get key name
-	CString strKeyName;
+	String keyName;
 	if (byEventType == SystemEventID::SystemSuspend) {
 		// Last system suspend
-		strKeyName = Key::GlobalData::Tracking::LastSysSuspend;
+		keyName = Key::GlobalData::Tracking::LastSysSuspend;
 	}
 	else if (byEventType == SystemEventID::SystemWakeUp) {
 		// Last system wakeup
-		strKeyName = Key::GlobalData::Tracking::LastSysWakeup;
+		keyName = Key::GlobalData::Tracking::LastSysWakeup;
 	}
 	else if (byEventType == SystemEventID::SessionEnded) {
 		// Last app/system session ending
-		strKeyName = Key::GlobalData::Tracking::LastSessionEnd;
+		keyName = Key::GlobalData::Tracking::LastSessionEnd;
 	}
 	else {
 		// Close key and exit
@@ -2629,17 +2628,17 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 	}
 
 	// Format date/time
-	CString strDateTimeFormat;
 	UINT nTimePeriod = (timeSysEvent.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = GetLanguageString(GetAppLanguage(), nTimePeriod);
-	strDateTimeFormat.Format(IDS_FORMAT_FULLDATETIME, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
+	const wchar_t* timeFormatString = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	String dateTimeFormat = StringUtils::StringFormat(timeFormatString, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
 		timeSysEvent.wHour, timeSysEvent.wMinute, timeSysEvent.wSecond, timeSysEvent.wMilliseconds, timePeriodFormat);
 
 	// Save registry value
-	DWORD dwDataSize = (strDateTimeFormat.GetLength() + 1) * sizeof(TCHAR);
+	DWORD dwDataSize = (dateTimeFormat.GetLength() + 1) * sizeof(TCHAR);
 	TCHAR* pszData = new TCHAR[dwDataSize];
-	_tcscpy_s(pszData, dwDataSize, strDateTimeFormat);
-	lRes = RegSetValueEx(hRegOpenKey, strKeyName, 0, REG_SZ, (LPBYTE)pszData, dwDataSize);
+	_tcscpy_s(pszData, dwDataSize, dateTimeFormat);
+	lRes = RegSetValueEx(hRegOpenKey, keyName, 0, REG_SZ, (LPBYTE)pszData, dwDataSize);
 	delete[] pszData;
 
 	// Close key
@@ -2662,12 +2661,12 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 void CPowerPlusApp::OnExecuteDebugCommand(WPARAM /*wParam*/, LPARAM lParam)
 {
 	// If debug command is empty, do nothing
-	CString strDebugCommand(LPARAM_TO_STRING(lParam));
+	String strDebugCommand(LPARAM_TO_STRING(lParam));
 	if (strDebugCommand.IsEmpty())
 		return;
 
 	// Format debug command
-	strDebugCommand.MakeLower();
+	strDebugCommand.ToLower();
 
 	// Output event log
 	OutputEventLog(LOG_EVENT_EXEC_DEBUGCMD, strDebugCommand);
@@ -2687,8 +2686,7 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 {
 	// Error code
 	DWORD dwErrCode = DWORD(wParam);
-	CString strDescription;
-	strDescription.Format(_T("Error code: 0x%04X"), dwErrCode);
+	String description = StringUtils::StringFormat(_T("Error code: 0x%04X"), dwErrCode);
 
 	// Event log detail info
 	LOGDETAILINFO logDetailInfo;
@@ -2701,6 +2699,6 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 	}
 
 	// Output event log
-	OutputEventLog(LOG_EVENT_ERROR_MESSAGE, strDescription, &logDetailInfo);
+	OutputEventLog(LOG_EVENT_ERROR_MESSAGE, description, &logDetailInfo);
 }
 

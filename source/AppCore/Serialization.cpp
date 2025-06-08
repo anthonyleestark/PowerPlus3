@@ -49,13 +49,13 @@ UINT AppRegistry::GetRegistryValueInt(const wchar_t* sectionName, const wchar_t*
 {
 	// Format section name
 	String sectionNameFormat;
-	if (sectionName != NULL) {
+	if (subSectionName != NULL) {
 		// Format section full name
 		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
-		sectionNameFormat.Format(sectionName);
+		sectionNameFormat = sectionName;
 	}
 
 	// Get registry value
@@ -72,7 +72,7 @@ BOOL AppRegistry::WriteRegistryValueInt(const wchar_t* sectionName, const wchar_
 	}
 	else {
 		// Format section name
-		sectionNameFormat.Format(sectionName);
+		sectionNameFormat = sectionName;
 	}
 
 	// Write registry value
@@ -103,7 +103,7 @@ String AppRegistry::GetRegistryValueString(const wchar_t* sectionName, const wch
 	}
 	else {
 		// Format section name
-		sectionNameFormat.Format(sectionName);
+		sectionNameFormat = sectionName;
 	}
 
 	// Get registry value
@@ -120,7 +120,7 @@ BOOL AppRegistry::WriteRegistryValueString(const wchar_t* sectionName, const wch
 	}
 	else {
 		// Format section name
-		sectionNameFormat.Format(sectionName);
+		sectionNameFormat = sectionName;
 	}
 
 	// Write registry value
@@ -147,7 +147,7 @@ BOOL AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_
 	}
 	else {
 		// Format section name
-		sectionNameFormat.Format(sectionName);
+		sectionNameFormat = sectionName;
 	}
 
 	// Write registry value

@@ -40,7 +40,7 @@ public:
 
 private:
 	// Message string buffer
-	CString m_strBuffer;
+	String m_strBuffer;
 
 	// Message font & icon
 	CFont*	m_pMsgFont;

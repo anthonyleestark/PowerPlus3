@@ -141,4 +141,4 @@ using IntArray = typename std::vector<int>;
 using UIntArray = typename std::vector<unsigned int>;
 using LongArray = typename std::vector<long long>;
 using ULongArray = typename std::vector<unsigned long long>;
-using StringArray = typename std::vector<CString>;
+using StringArray = typename std::vector<String>;

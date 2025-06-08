@@ -275,11 +275,11 @@ void CEditScheduleDlg::OnClose()
 		if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
-			int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
+			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 
 				// Update data
@@ -336,10 +336,10 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 	if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-		CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+		const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+		const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
-		int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
+		int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 
 			// Update data
@@ -692,7 +692,6 @@ void CEditScheduleDlg::UpdateActiveDayList()
 	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Print items
-	CString strTemp;
 	int nDayOfWeekID = INT_INVALID;
 	CGridCellCheck* pCellCheck = NULL;
 	for (int nRowIndex = 0; nRowIndex < Constant::Max::DaysOfWeek; nRowIndex++) {
@@ -708,8 +707,8 @@ void CEditScheduleDlg::UpdateActiveDayList()
 		}
 
 		// Day title
-		strTemp = GetLanguageString(ptrLanguage, GetPairedID(IDTable::DayOfWeek, nDayOfWeekID));
-		m_pActiveDayListTable->SetItemText(nRowIndex, COL_ID_DAYTITLE, strTemp);
+		const wchar_t* tempString = GetLanguageString(ptrLanguage, GetPairedID(IDTable::DayOfWeek, nDayOfWeekID));
+		m_pActiveDayListTable->SetItemText(nRowIndex, COL_ID_DAYTITLE, tempString);
 	}
 }
 
@@ -963,17 +962,19 @@ void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = T
 
 	if (bUpdate == TRUE) {
 		// Get value from time editbox
-		CString strTimeFormat;
-		m_pTimeEdit->GetWindowText(strTimeFormat);
+		const int buffLength = m_pTimeEdit->GetWindowTextLength();
+		std::vector<wchar_t> tempBuff(buffLength + 1);
+		m_pTimeEdit->GetWindowText(tempBuff.data(), buffLength + 1);
+		String timeFormatString = tempBuff.data();
 
 		// Get hour value
-		WORD wHour = (WORD)_tstoi(strTimeFormat.Left(2));
-		CString strTimePeriod = strTimeFormat.Right(2);
-		if (strTimePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
+		WORD wHour = (WORD)_tstoi(timeFormatString.Left(2));
+		String timePeriod = timeFormatString.Right(2);
+		if (timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
 			stTime.wHour = wHour;
 		}
-		else if ((strTimePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && wHour < 12) {
+		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && wHour < 12) {
 			// After midday
 			stTime.wHour = wHour + 12;
 		}
@@ -983,13 +984,13 @@ void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = T
 		}
 
 		// Get minute value
-		stTime.wMinute = (WORD)_tstoi(strTimeFormat.Mid(3, 2));
+		stTime.wMinute = (WORD)_tstoi(timeFormatString.Mid(3, 2));
 	}
 	else {
 		// Set value for time editbox
-		CString strTimeFormat;
-		strTimeFormat = FormatDispTime(pLang, IDS_FORMAT_SHORTTIME, stTime);
-		m_pTimeEdit->SetWindowText(strTimeFormat);
+		String timeFormatString;
+		timeFormatString = FormatDispTime(pLang, IDS_FORMAT_SHORTTIME, stTime);
+		m_pTimeEdit->SetWindowText(timeFormatString);
 	}
 }
 
@@ -1074,11 +1075,11 @@ void CEditScheduleDlg::OnExit()
 		if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			CString strMessage = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-			CString strMsgCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
-			int nConfirm = MessageBox(strMessage, strMsgCaption, MB_YESNO | MB_ICONQUESTION);
+			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 
 				// Update data
@@ -1227,11 +1228,13 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	}
 
 	// Update data
-	CString strText;
-	m_pTimeEdit->GetWindowText(strText);
+	const int buffLength = m_pTimeEdit->GetWindowTextLength();
+	std::vector<wchar_t> tempBuff(buffLength + 1);
+	m_pTimeEdit->GetWindowText(tempBuff.data(), buffLength + 1);
+	String timeTextValue = tempBuff.data();
 
 	SYSTEMTIME stTimeTemp;
-	BOOL bRet = Text2Time(stTimeTemp, strText);
+	BOOL bRet = Text2Time(stTimeTemp, timeTextValue);
 	if (bRet != FALSE) {
 		// Update new time value
 		UpdateTimeSetting(stTimeTemp, FALSE);

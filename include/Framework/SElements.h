@@ -99,10 +99,10 @@ protected:
 	// Control ID info
 	INT				m_nTypeID;
 	UINT			m_nTemplateID;
-	CString			m_strTemplateID;
+	String			m_strTemplateID;
 
 	// Control attributes
-	CString			m_strCaption;
+	String			m_strCaption;
 	BOOL			m_bVisible;
 	BOOL			m_bEnabled;
 	BOOL			m_bFocused;
@@ -126,8 +126,8 @@ protected:
 	DOUBLE*			m_pdbMaxValue;
 
 	// String data
-	CString*		m_pstrValue;
-	CString*		m_pstrReserveValue;
+	String*			m_pstrValue;
+	String*			m_pstrReserveValue;
 
 	// Integer array data
 	ULongArray*		m_paulValueList;
@@ -166,11 +166,11 @@ public:
 	virtual INT		GetType(void) const;
 	virtual UINT	GetTemplateID(void) const;
 	virtual const wchar_t* GetTemplateStringID(void) const;
-	virtual void	GetTemplateStringID(_Out_ CString& strTemplateID) const;
+	virtual void	GetTemplateStringID(_Out_ String& templateID) const;
 
 	// Get attributes
 	virtual const wchar_t* GetCaption(void) const;
-	virtual void	GetCaption(_Out_ CString& strCaption) const;
+	virtual void	GetCaption(_Out_ String& caption) const;
 	virtual BOOL	IsVisible(void) const;
 	virtual BOOL	IsEnabled(void) const;
 	virtual BOOL	IsFocused(void) const;
@@ -206,9 +206,9 @@ public:
 
 	// Get string data values
 	virtual const wchar_t* GetString(void) const;
-	virtual void	 GetString(_Out_ CString& strValue) const;
+	virtual void	 GetString(_Out_ String& value) const;
 	virtual const wchar_t* GetReserveString(void) const;
-	virtual void	 GetReserveString(_Out_ CString& strValue) const;
+	virtual void	 GetReserveString(_Out_ String& value) const;
 
 	// Get array data values
 	virtual void	 GetIntArray(_Out_ ULongArray& aulValue) const;

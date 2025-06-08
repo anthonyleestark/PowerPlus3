@@ -44,8 +44,8 @@ private:
 	CBrush* m_pDebugViewBrush;
 
 	// Buffer content
-	CString m_strBuffer;
-	CString m_strBufferBak;
+	String m_strBuffer;
+	String m_strBufferBak;
 
 	// Debug command history
 	BOOL		 m_bCurDispHistory;
@@ -90,7 +90,7 @@ private:
 	BOOL ShowDebugTestEditViewMenu(void);
 
 	inline void BackupDebugViewBuffer(void);
-	int  FormatDebugCommand(CString &strDebugCommand);
+	int  FormatDebugCommand(String &debugCommand);
 	void ClearViewBuffer(void);
 
 	void AddLine(const wchar_t* lineString, BOOL bNewLine = TRUE);

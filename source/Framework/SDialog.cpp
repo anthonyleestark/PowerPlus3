@@ -330,9 +330,11 @@ BOOL SDialog::OnInitDialog()
 	}
 	else {
 		// Use defined caption in resource
-		CString strResourceCaption;
-		this->GetWindowText(strResourceCaption);
-		this->SetCaption(strResourceCaption);
+		const int captionLength = this->GetWindowTextLength();
+		std::vector<wchar_t> tempBuff(captionLength + 1);
+		this->GetWindowText(tempBuff.data(), captionLength + 1);
+		String resourceCaption = tempBuff.data();
+		this->SetCaption(resourceCaption);
 	}
 
 	// Get dialog rectangle
@@ -1182,11 +1184,10 @@ void SDialog::SetDisplayArea(RECT rcNewDispArea, BOOL bResizeDialog, BOOL bCente
 
 void SDialog::SetCaptionFromResource(UINT nResourceStringID)
 {
-	CString strTemp;
-	BOOL bRet = strTemp.LoadString(nResourceStringID);
-	ASSERT(!strTemp.IsEmpty());
-	if ((bRet == TRUE) && (!strTemp.IsEmpty())) {
-		this->SetCaption(strTemp);
+	String captionString = StringUtils::LoadResourceString(nResourceStringID);
+	ASSERT(!captionString.IsEmpty());
+	if (!captionString.IsEmpty()) {
+		this->SetCaption(captionString);
 	}
 }
 
@@ -1204,8 +1205,8 @@ void SDialog::SetCaptionFromLanguage(UINT nLangStringID)
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
 
-	CString strTemp = GetLanguageString(pAppLang, nLangStringID);
-	this->SetCaption(strTemp);
+	String captionString = GetLanguageString(pAppLang, nLangStringID);
+	this->SetCaption(captionString);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1254,25 +1255,25 @@ void SDialog::RegisterMessageBoxCaption(UINT nCaptionID)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
-	CString strCaption = Constant::String::Empty;
+	String captionString = Constant::String::Empty;
 	if (nCaptionID != NULL) {
 
 		// Get language string caption
-		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (IS_NOT_NULL_STRING(strTemp)) {
+		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		if (IS_NOT_NULL_STRING(langCaption)) {
 			// Set caption string
-			strCaption = strTemp;
+			captionString = langCaption;
 		}
 	}
 
 	// If caption is empty
-	if (strCaption.IsEmpty()) {
+	if (captionString.IsEmpty()) {
 		// Use default app window caption
-		strCaption = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
+		captionString = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
 	}
 
 	// Register message box caption
-	RegisterMessageBoxCaption(strCaption);
+	RegisterMessageBoxCaption(captionString);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1291,24 +1292,24 @@ int SDialog::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
 
-	CString strMsg = GetLanguageString(pAppLang, nPromptID);
-	CString strCaption = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
+	String messagePrompt = GetLanguageString(pAppLang, nPromptID);
+	String messageCaption = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
 	if (nCaptionID != NULL) {
 
 		// Get language string caption
-		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (IS_NOT_NULL_STRING(strTemp))
-			strCaption = strTemp;
+		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		if (IS_NOT_NULL_STRING(langCaption))
+			messageCaption = langCaption;
 	}
 	else {
 		// Using registered message box caption
 		if (!m_strMsgCaption.IsEmpty()) {
-			strCaption = m_strMsgCaption;
+			messageCaption = m_strMsgCaption;
 		}
 	}
 
 	// Display message box
-	int nResult = DisplayMessageBox(strMsg, strCaption, nStyle);
+	int nResult = DisplayMessageBox(messagePrompt, messageCaption, nStyle);
 
 	return nResult;
 }
@@ -1333,25 +1334,25 @@ int SDialog::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
 	}
 
 	// If caption is not set
-	CString strCaption(caption);
-	if (strCaption.IsEmpty()) {
+	String messageCaption(caption);
+	if (messageCaption.IsEmpty()) {
 
 		// If message box caption is registered
 		if (!m_strMsgCaption.IsEmpty()) {
 			// Use registered caption
-			strCaption = m_strMsgCaption;
+			messageCaption = m_strMsgCaption;
 		}
 
 		// Otherwise,
 		else {
 			// Use app window caption
-			strCaption = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
+			messageCaption = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
 		}
 	}
 	
 	// Display message box
 	nStyle |= MB_SYSTEMMODAL;
-	return MessageBox(prompt, strCaption, nStyle);
+	return MessageBox(prompt, messageCaption, nStyle);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1407,8 +1408,12 @@ void SDialog::OutputButtonLog(USHORT usEvent, UINT nButtonID)
 	// Prepare button event log info
 	CButton* pButton = (CButton*)GetDlgItem(nButtonID);
 	if (pButton == NULL) return;
-	CString strButtonCaption;
-	pButton->GetWindowText(strButtonCaption);
+
+	// Get button caption
+	const int captionLength = pButton->GetWindowTextLength();
+	std::vector<wchar_t> tempBuff(captionLength + 1);
+	pButton->GetWindowText(tempBuff.data(), captionLength + 1);
+	String buttonCaption = tempBuff.data();
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
@@ -1421,7 +1426,7 @@ void SDialog::OutputButtonLog(USHORT usEvent, UINT nButtonID)
 	}
 
 	// Output button event log
-	OutputEventLog(usEvent, strButtonCaption, &logDetailInfo);
+	OutputEventLog(usEvent, buttonCaption, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1439,8 +1444,12 @@ void SDialog::OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID)
 	// Prepare checkbox event log info
 	CButton* pChkBtn = (CButton*)GetDlgItem(nCheckboxID);
 	if (pChkBtn == NULL) return;
-	CString strChkCaption;
-	pChkBtn->GetWindowText(strChkCaption);
+
+	// Get checkbox caption
+	const int captionLength = pChkBtn->GetWindowTextLength();
+	std::vector<wchar_t> tempBuff(captionLength + 1);
+	pChkBtn->GetWindowText(tempBuff.data(), captionLength + 1);
+	String checkBoxCaption = tempBuff.data();
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
@@ -1456,7 +1465,7 @@ void SDialog::OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID)
 	}
 
 	// Output checkbox event log
-	OutputEventLog(usEvent, strChkCaption, &logDetailInfo);
+	OutputEventLog(usEvent, checkBoxCaption, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1474,8 +1483,12 @@ void SDialog::OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID)
 	// Prepare radio button event log info
 	CButton* pRadBtn = (CButton*)GetDlgItem(nRadButtonID);
 	if (pRadBtn == NULL) return;
-	CString strRadCaption;
-	pRadBtn->GetWindowText(strRadCaption);
+
+	// Get radio button caption
+	const int captionLength = pRadBtn->GetWindowTextLength();
+	std::vector<wchar_t> tempBuff(captionLength + 1);
+	pRadBtn->GetWindowText(tempBuff.data(), captionLength + 1);
+	String radButtonCaption = tempBuff.data();
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
@@ -1491,7 +1504,7 @@ void SDialog::OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID)
 	}
 
 	// Output radio button event log
-	OutputEventLog(usEvent, strRadCaption, &logDetailInfo);
+	OutputEventLog(usEvent, radButtonCaption, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1511,7 +1524,7 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 	if (pCombo == NULL) return;
 
 	// Detail info
-	CString strComboCaption;
+	String comboBoxCaption;
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Combo-box ID
@@ -1526,7 +1539,7 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 			SCtrlInfoWrap* pComboWrap = pCtrlMan->GetControl(nComboID);
 			if (pComboWrap != NULL) {
 				// Combo-box caption
-				pComboWrap->GetCaption(strComboCaption);
+				pComboWrap->GetCaption(comboBoxCaption);
 
 				// Combo-box current selection string
 				size_t nCurSel = pComboWrap->GetInteger();
@@ -1540,7 +1553,7 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 	}
 
 	// Output combo-box event log
-	OutputEventLog(usEvent, strComboCaption, &logDetailInfo);
+	OutputEventLog(usEvent, comboBoxCaption, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1560,7 +1573,7 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 	if (pEdit == NULL) return;
 
 	// Detail info
-	CString strEditBoxCaption;
+	String editBoxCaption;
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Edit box ID
@@ -1575,18 +1588,18 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 			SCtrlInfoWrap* pEditBoxWrap = pCtrlMan->GetControl(nEditID);
 			if (pEditBoxWrap != NULL) {
 				// Edit box caption
-				pEditBoxWrap->GetCaption(strEditBoxCaption);
+				pEditBoxWrap->GetCaption(editBoxCaption);
 
 				// Edit box content
-				CString strContent;
-				pEditBoxWrap->GetString(strContent);
-				logDetailInfo.AddDetail(EventDetail::DataValue, strContent);
+				String editBoxContent;
+				pEditBoxWrap->GetString(editBoxContent);
+				logDetailInfo.AddDetail(EventDetail::DataValue, editBoxContent);
 			}
 		}
 	}
 
 	// Output edit box event log
-	OutputEventLog(usEvent, strEditBoxCaption, &logDetailInfo);
+	OutputEventLog(usEvent, editBoxCaption, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1606,7 +1619,7 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 	if (pListBox == NULL) return;
 
 	// Detail info
-	CString strListBoxCaption;
+	String listBoxCaption;
 	LOGDETAILINFO logDetailInfo;
 	{
 		// List box ID
@@ -1621,7 +1634,7 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 			SCtrlInfoWrap* pListBoxWrap = pCtrlMan->GetControl(nListBoxID);
 			if (pListBoxWrap != NULL) {
 				// List box caption
-				pListBoxWrap->GetCaption(strListBoxCaption);
+				pListBoxWrap->GetCaption(listBoxCaption);
 
 				// List box current selection string
 				size_t nCurSel = pListBoxWrap->GetInteger();
@@ -1635,7 +1648,7 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 	}
 
 	// Output list box event log
-	OutputEventLog(usEvent, strListBoxCaption, &logDetailInfo);
+	OutputEventLog(usEvent, listBoxCaption, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1682,10 +1695,10 @@ void SDialog::OutputMenuLog(USHORT usEvent, UINT nMenuItemID)
 {
 	// Prepare menu event log info
 	// Get menu item title from language table
-	CString strMenuItemCaption;
+	String menuItemCaption;
 	LANGTABLE_PTR pLanguage = ((SWinApp*)AfxGetApp())->GetAppLanguage();
 	if (pLanguage != NULL) {
-		strMenuItemCaption = GetLanguageString(pLanguage, nMenuItemID);
+		menuItemCaption = GetLanguageString(pLanguage, nMenuItemID);
 	}
 
 	// Detail info
@@ -1699,7 +1712,7 @@ void SDialog::OutputMenuLog(USHORT usEvent, UINT nMenuItemID)
 	}
 
 	// Output menu event log
-	OutputEventLog(usEvent, strMenuItemCaption, &logDetailInfo);
+	OutputEventLog(usEvent, menuItemCaption, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1763,10 +1776,17 @@ void SDialog::SetupComboBox(UINT /*nComboID*/, LANGTABLE_PTR /*ptrLanguage*/)
 
 void SDialog::SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle /* = FALSE */)
 {
+	// Get button
+	CWnd* pButton = GetDlgItem(nButtonID);
+	if (!pButton) return;
+
 	// Backup title
-	CString strButtonTitle;
+	String buttonTitle;
 	if (bReUpdateTitle == TRUE) {
-		GetDlgItemText(nButtonID, strButtonTitle);
+		const int captionLength = pButton->GetWindowTextLength();
+		std::vector<wchar_t> tempBuff(captionLength + 1);
+		pButton->GetWindowText(tempBuff.data(), captionLength + 1);
+		buttonTitle = tempBuff.data();
 	}
 
 	// Icon size
@@ -1784,7 +1804,7 @@ void SDialog::SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle /*
 
 	// Restore title
 	if (bReUpdateTitle == TRUE) {
-		SetDlgItemText(nButtonID, strButtonTitle);
+		SetDlgItemText(nButtonID, buttonTitle);
 	}
 }
 
@@ -1830,18 +1850,18 @@ void SDialog::UpdateItemText(UINT nCtrlID , UINT nNewCaptionID /* = NULL */, LAN
 	}
 
 	// Get caption language string
-	CString strWndText;
+	String wndItemText;
 	if (nNewCaptionID != NULL) {
 		// Get new caption
-		strWndText = GetLanguageString(ptrLanguage, nNewCaptionID);
+		wndItemText = GetLanguageString(ptrLanguage, nNewCaptionID);
 	}
 	else {
 		// Get its own caption string ID
-		strWndText = GetLanguageString(ptrLanguage, nCtrlID);
+		wndItemText = GetLanguageString(ptrLanguage, nCtrlID);
 	}
 
 	// Update item text
-	UpdateItemText(nCtrlID, strWndText);
+	UpdateItemText(nCtrlID, wndItemText);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1872,10 +1892,10 @@ void SDialog::SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLang
 	}
 
 	// Get language string
-	CString strWndText = GetLanguageString(ptrLanguage, nCtrlID);
+	String wndItemText = GetLanguageString(ptrLanguage, nCtrlID);
 	
 	// Set control text
-	pCtrlWnd->SetWindowText(strWndText);
+	pCtrlWnd->SetWindowText(wndItemText);
 }
 
 //////////////////////////////////////////////////////////////////////////

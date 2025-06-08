@@ -51,9 +51,9 @@ private:
 	CBrush* m_pDebugScreenBrush;
 
 	// Buffer content
-	CString m_strBuffer;
-	CString m_strBackupBuffer;
-	CString m_strCommandBuffer;
+	String m_strBuffer;
+	String m_strBackupBuffer;
+	String m_strCommandBuffer;
 
 	// Specific flags
 	BOOL m_bDispCommandPrefix;
@@ -103,7 +103,7 @@ private:
 	BOOL RefreshDebugScreen(int nFlag);
 	BOOL ShowDebugScreenContextMenu(void);
 
-	int  FormatDebugCommand(CString& strDebugCommand);
+	int  FormatDebugCommand(String& debugCommand);
 	void ClearDebugCommandInput(const wchar_t* commandBuff = Constant::String::Empty);
 	void BackupDebugViewBuffer(void);
 	void ClearDebugViewBuffer(void);

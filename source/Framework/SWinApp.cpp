@@ -216,11 +216,10 @@ BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 	// If language changed
 	if (m_nCurDispLang != nCurLanguage) {
 		// Output event log
-		CString strEventDescription;
-		const wchar_t* lpszOldLang = GetLanguageName(m_nCurDispLang);
-		const wchar_t* lpszNewLang = GetLanguageName(nCurLanguage);
-		strEventDescription.Format(L"%s -> %s", lpszOldLang, lpszNewLang);
-		OutputEventLog(LOG_EVENT_CHANGE_LANGUAGE, strEventDescription);
+		const wchar_t* oldLangName = GetLanguageName(m_nCurDispLang);
+		const wchar_t* newLangName = GetLanguageName(nCurLanguage);
+		String eventDescription = StringUtils::StringFormat(L"%s -> %s", oldLangName, newLangName);
+		OutputEventLog(LOG_EVENT_CHANGE_LANGUAGE, eventDescription);
 	}
 
 	// Update current displaying language
@@ -248,15 +247,14 @@ BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 BOOL SWinApp::SetAppName(UINT nResourceStringID)
 {
 	// Load resource string
-	CString strTemp;
-	BOOL bRet = strTemp.LoadString(nResourceStringID);
-	ASSERT(!strTemp.IsEmpty());
-	if ((bRet == TRUE) && (!strTemp.IsEmpty())) {
+	String tempString = StringUtils::LoadResourceString(nResourceStringID);
+	ASSERT(!tempString.IsEmpty());
+	if (!tempString.IsEmpty()) {
 		// Set app name
-		SetAppName(strTemp);
+		SetAppName(tempString);
 	}
 
-	return bRet;
+	return (!tempString.IsEmpty());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -291,15 +289,15 @@ void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVe
 
 BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
 {
-	CString strWindowCaption;
-	BOOL bRet = strWindowCaption.LoadString(nResourceStringID);
-	ASSERT(!strWindowCaption.IsEmpty());
-	if ((bRet == TRUE) && (!strWindowCaption.IsEmpty())) {
+	// Load resource string
+	String tempWindowCaption = StringUtils::LoadResourceString(nResourceStringID);
+	ASSERT(!tempWindowCaption.IsEmpty());
+	if (!tempWindowCaption.IsEmpty()) {
 		// Set app window caption 
-		SetAppWindowCaption(strWindowCaption, bShowProdVersion, bFullVersion);
+		SetAppWindowCaption(tempWindowCaption, bShowProdVersion, bFullVersion);
 	}
 
-	return bRet;
+	return (!tempWindowCaption.IsEmpty());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -316,25 +314,25 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
-	CString strCaption = Constant::String::Empty;
+	String messageCaption = Constant::String::Empty;
 	if (nCaptionID != NULL) {
 
 		// Get language string caption
-		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (IS_NOT_NULL_STRING(strTemp)) {
+		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		if (IS_NOT_NULL_STRING(langCaption)) {
 			// Set caption string
-			strCaption = strTemp;
+			messageCaption = langCaption;
 		}
 	}
 
 	// If caption is empty
-	if (strCaption.IsEmpty()) {
+	if (messageCaption.IsEmpty()) {
 		// Use default app window caption
-		strCaption = this->GetAppWindowCaption();
+		messageCaption = this->GetAppWindowCaption();
 	}
 
 	// Register message box caption
-	RegisterMessageBoxCaption(strCaption);
+	RegisterMessageBoxCaption(messageCaption);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -352,23 +350,22 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 int SWinApp::DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt)
 {
 	// Message caption
-	CString strMsgCaption;
-	strMsgCaption.Empty();
+	String messageCaption;
 
 	// If application message box caption is registered
 	if (!m_strMessageCaption.IsEmpty()) {
 		// Use registered message box caption
-		strMsgCaption = m_strMessageCaption;
+		messageCaption = m_strMessageCaption;
 	}
 	// Otherwise,
 	else {
 		// Use app window caption
-		strMsgCaption = this->GetAppWindowCaption();
+		messageCaption = this->GetAppWindowCaption();
 	}
 
 	// If message caption is empty (not registered)
 	// or the global application window title is not set
-	if (strMsgCaption.IsEmpty()) {
+	if (messageCaption.IsEmpty()) {
 		// Use the default AfxMessageBox
 		return CWinApp::DoMessageBox(prompt, nType, nIDPrompt);
 	}
@@ -376,7 +373,7 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt)
 		// Use the MessageBox function, which we can specify the caption with
 		nType |= MB_SYSTEMMODAL;							// Show message box as Top-most
 		HWND hMainWnd = GET_HANDLE_MAINWND();				// Get main window handle
-		return MessageBox(hMainWnd, prompt, strMsgCaption, nType);
+		return MessageBox(hMainWnd, prompt, messageCaption, nType);
 	}
 }
 
@@ -396,23 +393,23 @@ int SWinApp::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 	// Load app language package
 	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
 
-	CString strMsg = GetLanguageString(pAppLang, nPromptID);
-	CString strCaption = this->GetAppWindowCaption();
+	String messagePrompt = GetLanguageString(pAppLang, nPromptID);
+	String messageCaption = this->GetAppWindowCaption();
 	if (nCaptionID != NULL) {
 		// Get language string caption
-		CString strTemp = GetLanguageString(pAppLang, nCaptionID);
-		if (IS_NOT_NULL_STRING(strTemp))
-			strCaption = strTemp;
+		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		if (IS_NOT_NULL_STRING(langCaption))
+			messageCaption = langCaption;
 	}
 	else {
 		// Using registered message box caption
 		if (!m_strMessageCaption.IsEmpty()) {
-			strCaption = m_strMessageCaption;
+			messageCaption = m_strMessageCaption;
 		}
 	}
 
 	// Display message box
-	int nResult = DisplayMessageBox(strMsg, strCaption, nStyle);
+	int nResult = DisplayMessageBox(messagePrompt, messageCaption, nStyle);
 
 	return nResult;
 }
@@ -437,23 +434,23 @@ int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
 	}
 
 	// If caption is not set
-	CString strCaption(caption);
-	if (strCaption.IsEmpty()) {
+	String messageCaption(caption);
+	if (messageCaption.IsEmpty()) {
 		// If application message box caption is registered
 		if (!m_strMessageCaption.IsEmpty()) {
 			// Use registered message box caption
-			strCaption = m_strMessageCaption;
+			messageCaption = m_strMessageCaption;
 		}
 		// Otherwise,
 		else {
 			// Use application window caption
-			strCaption = this->GetAppWindowCaption();
+			messageCaption = this->GetAppWindowCaption();
 		}
 	}
 	
 	// Display message box
 	nStyle |= MB_SYSTEMMODAL;
-	return ::MessageBox(this->GetMainWnd()->GetSafeHwnd(), prompt, strCaption, nStyle);
+	return ::MessageBox(this->GetMainWnd()->GetSafeHwnd(), prompt, messageCaption, nStyle);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -862,11 +862,13 @@ void CPwrReminderDlg::OnMsgContentEditChange()
 	}
 
 	// Update data
-	CString strText;
-	m_pMsgStringEdit->GetWindowText(strText);
+	const int buffLength = m_pMsgStringEdit->GetWindowTextLength();
+	std::vector<wchar_t> tempBuff(buffLength + 1);
+	m_pMsgStringEdit->GetWindowText(tempBuff.data(), buffLength + 1);
+	String textValue = tempBuff.data();
 
 	// Update message counter
-	int nCount = strText.GetLength();
+	int nCount = textValue.GetLength();
 	UpdateMsgCounter(nCount);
 }
 
@@ -932,11 +934,13 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	}
 
 	// Update data
-	CString strText;
-	m_pEvtSetTimeEdit->GetWindowText(strText);
+	const int buffLength = m_pEvtSetTimeEdit->GetWindowTextLength();
+	std::vector<wchar_t> tempBuff(buffLength + 1);
+	m_pEvtSetTimeEdit->GetWindowText(tempBuff.data(), buffLength + 1);
+	String timeTextValue = tempBuff.data();
 
 	SYSTEMTIME stTimeTemp;
-	BOOL bRet = Text2Time(stTimeTemp, strText);
+	BOOL bRet = Text2Time(stTimeTemp, timeTextValue);
 	if (bRet != FALSE) {
 		// Update new time value
 		UpdateTimeSetting(stTimeTemp, FALSE);
@@ -1431,12 +1435,12 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 		SetFixedCellStyle(m_pDataItemListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = Constant::String::Empty;
+		String headerTitle = Constant::String::Empty;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
-			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pDataItemListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, strHdrTitle);
+		m_pDataItemListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, headerTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -1714,10 +1718,10 @@ void CPwrReminderDlg::LoadLayoutInfo(void)
 
 	// Load layout info data from registry
 	int nRet = 0;
-	CString strKeyName;
+	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
-		if (GetLayoutInfo(Section::LayoutInfo::PwrReminderTable, strKeyName, nRet)) {
+		keyName = Key::LayoutInfo::GridColSize(nIndex);
+		if (GetLayoutInfo(Section::LayoutInfo::PwrReminderTable, keyName, nRet)) {
 			if (m_apGrdColFormat != NULL) {
 				m_apGrdColFormat[nIndex].nWidth = nRet;
 			}
@@ -1741,11 +1745,11 @@ void CPwrReminderDlg::SaveLayoutInfo(void)
 
 	// Save layout info data to registry
 	int nRef = 0;
-	CString strKeyName;
+	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
 		nRef = m_apGrdColFormat[nIndex].nWidth;
-		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
-		WriteLayoutInfo(Section::LayoutInfo::PwrReminderTable, strKeyName, nRef);
+		keyName = Key::LayoutInfo::GridColSize(nIndex);
+		WriteLayoutInfo(Section::LayoutInfo::PwrReminderTable, keyName, nRef);
 	}
 }
 
@@ -1903,7 +1907,6 @@ void CPwrReminderDlg::UpdateDataItemList()
 	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 	
 	// Print items
-	CString strTemp;
 	int nTemp = -1;
 	int nRowIndex = 0;
 	CGridCellCheck* pCellCheck = NULL;
@@ -1916,8 +1919,8 @@ void CPwrReminderDlg::UpdateDataItemList()
 		const Item& pwrItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 
 		// Item index
-		strTemp.Format(_T("%d"), nRowIndex);
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::Index, strTemp);
+		String tempString = StringUtils::StringFormat(_T("%d"), nRowIndex);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::Index, tempString);
 
 		// Enable state
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
@@ -1926,27 +1929,27 @@ void CPwrReminderDlg::UpdateDataItemList()
 		}
 
 		// ItemID
-		strTemp.Format(_T("%d"), pwrItem.GetItemID());
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ItemID, strTemp);
+		tempString.Format(_T("%d"), pwrItem.GetItemID());
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ItemID, tempString);
 
 		// Message content
-		strTemp = pwrItem.GetMessage();
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MessageContent, strTemp);
+		tempString = pwrItem.GetMessage();
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MessageContent, tempString);
 
 		// EventID
 		nTemp = GetPairedID(IDTable::PwrReminderEvent, pwrItem.GetEventID());
-		strTemp = GetLanguageString(ptrLanguage, nTemp);
+		tempString = GetLanguageString(ptrLanguage, nTemp);
 		if (pwrItem.GetEventID() == Event::atSetTime) {
 			// Format time string
-			CString strFormat = strTemp;
-			strTemp = FormatDispTime(ptrLanguage, strFormat, pwrItem.GetTime());
+			String formatTime = tempString;
+			tempString = FormatDispTime(ptrLanguage, formatTime, pwrItem.GetTime());
 		}
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::EventID, strTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::EventID, tempString);
 
 		// Message style
 		nTemp = GetPairedID(IDTable::PwrReminderStyle, pwrItem.GetMessageStyle());
-		strTemp = GetLanguageString(ptrLanguage, nTemp);
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MsgStyle, strTemp);
+		tempString = GetLanguageString(ptrLanguage, nTemp);
+		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MsgStyle, tempString);
 
 		// Repeat
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
@@ -2308,9 +2311,9 @@ void CPwrReminderDlg::UpdateMsgCounter(int nCount)
 	if ((nCount < 0) || (nCount > Constant::Max::StringLength)) return;
 
 	// Display counter
-	CString strCountFormat;
-	strCountFormat.Format(_T("%d/%d"), nCount, Constant::Max::StringLength);
-	pCounter->SetWindowText(strCountFormat);
+	String countFormatString;
+	countFormatString.Format(_T("%d/%d"), nCount, Constant::Max::StringLength);
+	pCounter->SetWindowText(countFormatString);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2340,17 +2343,19 @@ void CPwrReminderDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TR
 
 	if (bUpdate == TRUE) {
 		// Get value from time editbox
-		CString strTimeFormat;
-		m_pEvtSetTimeEdit->GetWindowText(strTimeFormat);
+		const int buffLength = m_pEvtSetTimeEdit->GetWindowTextLength();
+		std::vector<wchar_t> tempBuff(buffLength + 1);
+		m_pEvtSetTimeEdit->GetWindowText(tempBuff.data(), buffLength + 1);
+		String timeTextValue = tempBuff.data();
 
 		// Get hour value
-		WORD wHour = (WORD)_tstoi(strTimeFormat.Left(2));
-		CString strTimePeriod = strTimeFormat.Right(2);
-		if (strTimePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
+		WORD wHour = (WORD)_tstoi(timeTextValue.Left(2));
+		const wchar_t* timePeriod = timeTextValue.Right(2);
+		if (timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
 			stTime.wHour = wHour;
 		}
-		else if ((strTimePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && wHour < 12) {
+		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && wHour < 12) {
 			// After midday
 			stTime.wHour = wHour + 12;
 		}
@@ -2360,13 +2365,13 @@ void CPwrReminderDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TR
 		}
 
 		// Get minute value
-		stTime.wMinute = (WORD)_tstoi(strTimeFormat.Mid(3, 2));
+		stTime.wMinute = (WORD)_tstoi(timeTextValue.Mid(3, 2));
 	}
 	else {
 		// Set value for time editbox
-		CString strTimeFormat;
-		strTimeFormat = FormatDispTime(pLang, IDS_FORMAT_SHORTTIME, stTime);
-		m_pEvtSetTimeEdit->SetWindowText(strTimeFormat);
+		String timeFormatString;
+		timeFormatString = FormatDispTime(pLang, IDS_FORMAT_SHORTTIME, stTime);
+		m_pEvtSetTimeEdit->SetWindowText(timeFormatString);
 
 		// Backup current displaying time value
 		m_stDispTimeBak = stTime;
@@ -2680,9 +2685,9 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	const Item& pwrDispItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
 
 	// Check message content validity
-	CString strMsgContent = pwrDispItem.GetMessage();
-	if ((strMsgContent.IsEmpty()) ||
-		(IS_NULL_STRING(strMsgContent))) {
+	String messageContent = pwrDispItem.GetMessage();
+	if ((messageContent.IsEmpty()) ||
+		(IS_NULL_STRING(messageContent))) {
 		// Invalid message content
 		return;
 	}
@@ -2693,9 +2698,9 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	// Style: MessageBox
 	if (pwrDispItem.GetMessageStyle() == Style::messageBox) {
 		// Display message box
-		CString strCaption = GetLanguageString(pAppLang, IDC_PWRREMINDER_PREVIEW_BTN);
+		const wchar_t* messageCaption = GetLanguageString(pAppLang, IDC_PWRREMINDER_PREVIEW_BTN);
 		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
-		DisplayMessageBox(strMsgContent, strCaption, dwMsgStyle);
+		DisplayMessageBox(messageContent, messageCaption, dwMsgStyle);
 	}
 	// Style: Dialog
 	else if (pwrDispItem.GetMessageStyle() == Style::dialogBox) {
@@ -2722,7 +2727,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 
 			// Set properties
 			m_pRmdPreviewMsgDlg->SetCaptionFromLanguage(IDC_PWRREMINDER_PREVIEW_BTN);
-			m_pRmdPreviewMsgDlg->SetDispMessage(strMsgContent);
+			m_pRmdPreviewMsgDlg->SetDispMessage(messageContent);
 			m_pRmdPreviewMsgDlg->SetMessageStyle(rmdMessageStyle);
 			m_pRmdPreviewMsgDlg->SetAutoCloseInterval(nDefTimeout);
 
@@ -2761,10 +2766,13 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 
 		/*-----------------------Message content-----------------------*/
 
-		CString strTemp = Constant::String::Empty;
+		String tempString = Constant::String::Empty;
 		if (m_pMsgStringEdit != NULL) {
-			m_pMsgStringEdit->GetWindowText(strTemp);
-			pwrItem.SetMessage(strTemp);
+			const int buffLength = m_pMsgStringEdit->GetWindowTextLength();
+			std::vector<wchar_t> tempBuff(buffLength + 1);
+			m_pMsgStringEdit->GetWindowText(tempBuff.data(), buffLength + 1);
+			tempString = tempBuff.data();
+			pwrItem.SetMessage(tempString);
 		}
 
 		/*----------------------------Event----------------------------*/
@@ -2869,7 +2877,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 
 		/*----------------------Get item details-----------------------*/
 
-		CString strMessage = pwrItem.GetMessage();
+		String messageContent = pwrItem.GetMessage();
 		SYSTEMTIME stTime = pwrItem.GetTime();
 		UINT nEventID = pwrItem.GetEventID();
 		DWORD dwMsgStyle = pwrItem.GetMessageStyle();
@@ -2883,12 +2891,12 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		}
 		if (m_pMsgStringEdit != NULL) {
 			m_pMsgStringEdit->EnableWindow(bEnable);
-			m_pMsgStringEdit->SetWindowText(strMessage);
+			m_pMsgStringEdit->SetWindowText(messageContent);
 		}
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_COUNTER);
 		if (pWnd != NULL) {
 			pWnd->EnableWindow(bEnable);
-			UpdateMsgCounter(strMessage.GetLength());
+			UpdateMsgCounter(messageContent.GetLength());
 		}
 
 		/*----------------------------Event----------------------------*/
@@ -3007,8 +3015,8 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	}
 
 	// Check message content
-	CString strMessage = pwrItem.GetMessage();
-	if (strMessage.IsEmpty()) {
+	String messageContent = pwrItem.GetMessage();
+	if (messageContent.IsEmpty()) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_EMPTY;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3018,13 +3026,13 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 			pwrItem.SetMessage(GetLanguageString(pLang, PWRRMD_MSGCONTENT_SAMPLE));
 			if (IS_NOT_NULL_STRING(pwrItem.GetMessage())) {
 				// Re-format sample message
-				CString strFormat = pwrItem.GetMessage();
-				strMessage.Format(strFormat, pwrItem.GetItemID());
-				pwrItem.SetMessage(strMessage);
+				String messageFormat = pwrItem.GetMessage();
+				messageContent.Format(messageFormat, pwrItem.GetItemID());
+				pwrItem.SetMessage(messageContent);
 			}
 		}
 	}
-	else if (strMessage.GetLength() > Constant::Max::StringLength) {
+	else if (messageContent.GetLength() > Constant::Max::StringLength) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = FALSE;
@@ -3032,8 +3040,8 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 		// Auto correction
 		if (bAutoCorrect == TRUE) {
 			// Only get character numbers in range
-			CString strTemp = strMessage.Left(Constant::Max::StringLength);
-			pwrItem.SetMessage(strTemp);
+			String tempString = messageContent.Left(Constant::Max::StringLength);
+			pwrItem.SetMessage(tempString);
 		}
 	}
 
@@ -3095,9 +3103,9 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 			// If auto correction is ON
 			if (bAutoCorrect == TRUE) {
 				// Add "Data will be automatically reset to default"
-				CString strErrMessage = arrMsgString.at(nIndex);
-				strErrMessage += GetLanguageString(pLang, MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT);
-				DisplayMessageBox(strErrMessage, NULL, MB_OK | MB_ICONERROR);
+				String errorMessage = arrMsgString.at(nIndex);
+				errorMessage += GetLanguageString(pLang, MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT);
+				DisplayMessageBox(errorMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {
 				// Display error message

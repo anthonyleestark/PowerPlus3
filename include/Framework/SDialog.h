@@ -157,9 +157,9 @@ protected:
 	CRect	 m_rcClientMargin;
 
 	// Other properties
-	CString  m_strCaption;
-	HICON	 m_hDefaultIcon;
-	CString	 m_strMsgCaption;
+	String  m_strCaption;
+	HICON	m_hDefaultIcon;
+	String	m_strMsgCaption;
 
 	// Color and graphic objects
 	CBrush*  m_pBkgrdBrush;
@@ -260,7 +260,7 @@ public:
 
 	// Dialog caption get/set functions
 	virtual const wchar_t* GetCaption(void) const;
-	virtual void GetCaption(CString& strCaption) const;
+	virtual void GetCaption(String& caption) const;
 	virtual void SetCaption(const wchar_t* caption);
 	virtual void SetCaptionFromResource(UINT nResourceStringID);
 	virtual void SetCaptionFromLanguage(UINT nLangStringID);
@@ -279,7 +279,7 @@ public:
 	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);
 	virtual void RegisterMessageBoxCaption(const wchar_t* caption);
-	virtual void GetMessageBoxCaption(CString& strRegMsgBoxCap) const;
+	virtual void GetMessageBoxCaption(String& regMsgBoxCaption) const;
 	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
 	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, UINT nStyle = NULL);
 

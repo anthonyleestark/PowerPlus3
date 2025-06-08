@@ -1468,11 +1468,11 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 	}
 
 	// Get debug command string
-	CString strDebugCommand(LPARAM_TO_STRING(lParam));
+	String debugCommand(LPARAM_TO_STRING(lParam));
 
 	// Process debug command
 	DWORD dwErrorCode = APP_ERROR_DBG_SUCCESS;
-	if (!ProcessDebugCommand(strDebugCommand.GetString(), dwErrorCode)) {
+	if (!ProcessDebugCommand(debugCommand, dwErrorCode)) {
 
 		// Reply failed message
 		if (dwErrorCode == APP_ERROR_DBG_INVALID_COMMAND) {
@@ -1487,12 +1487,11 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 
 			// Get command character list
 			String commandCharList;
-			StringUtils::PrintCharList(strDebugCommand.GetString(), commandCharList);
+			StringUtils::PrintCharList(debugCommand, commandCharList);
 
 			// Output debug info (to file)
-			CString strDebugLog;
-			strDebugLog.Format(_T("Failed debug command: %s"), commandCharList.GetString());
-			OutputDebugLog(strDebugLog, DebugInfoFile);
+			String debugLog = StringUtils::StringFormat(_T("Failed debug command: %s"), commandCharList.GetString());
+			OutputDebugLog(debugLog, DebugInfoFile);
 		}
 		else {
 			// Reply corresponding error code
@@ -1504,8 +1503,8 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 	}
 
 	// Notify app class about debug command execution
-	WPARAM wAppNotiParam = MAKE_WPARAM_STRING(strDebugCommand);
-	LPARAM lAppNotiParam = MAKE_LPARAM_STRING(strDebugCommand);
+	WPARAM wAppNotiParam = MAKE_WPARAM_STRING(debugCommand);
+	LPARAM lAppNotiParam = MAKE_LPARAM_STRING(debugCommand);
 	::PostMessage(NULL, SM_APP_DEBUGCMD_EXEC, wAppNotiParam, lAppNotiParam);
 
 	// Default: Success
@@ -2884,22 +2883,20 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
-	CString strTipText;
-	CString strFormat;
 	StringArray arrTipText;
 	arrTipText.reserve(3);
 
 	// Load language strings
-	strFormat = GetLanguageString(pAppLang, NOTIFY_TIP_TEMPLATE);
+	String formatString = GetLanguageString(pAppLang, NOTIFY_TIP_TEMPLATE);
 	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nLMBAction)));
 	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nMMBAction)));
 	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nRMBAction)));
 
 	// Format notify tip text
-	strTipText.Format(strFormat, arrTipText[0].GetString(), arrTipText[1].GetString(), arrTipText[2].GetString());
+	String notifyTipText = StringUtils::StringFormat(formatString, arrTipText.at(0).GetString(), arrTipText.at(1).GetString(), arrTipText.at(2).GetString());
 
 	// Set notify tip text
-	StrCpyW(pNotifyIconData->szTip, strTipText.GetString());
+	StrCpyW(pNotifyIconData->szTip, notifyTipText.GetString());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2931,17 +2928,15 @@ void CPowerPlusDlg::SetBalloonTipText(UINT /*nCurLanguage*/, UINT nScheduleActio
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
-	CString strBalloonTip;
-
 	// Load language strings
 	const wchar_t* formatString = GetLanguageString(pAppLang, BALLOON_TIP_TEMPLATE);
 	const wchar_t* balloonText = GetLanguageString(pAppLang, GetPairedID(IDTable::BalloonTip, nScheduleAction));
 
-	strBalloonTip.Format(formatString, balloonText, nSecondLeft);
+	String balloonTipText = StringUtils::StringFormat(formatString, balloonText, nSecondLeft);
 
 	// Set balloon tip text
 	StrCpy(m_pNotifyIconData->szInfoTitle, (wchar_t*)(const wchar_t*)GetLanguageString(pAppLang, IDC_APPNAME_LABEL));
-	StrCpy(m_pNotifyIconData->szInfo, (wchar_t*)strBalloonTip.GetString());
+	StrCpy(m_pNotifyIconData->szInfo, (wchar_t*)balloonTipText.GetString());
 	Shell_NotifyIcon(NIM_MODIFY, m_pNotifyIconData);
 }
 
@@ -3126,12 +3121,12 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 	}
 	else {
 		// Power action canceled --> Output event log
-		CString strPwrActionName;
+		String pwrActionNameString;
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		if (pAppLang != NULL) {
-			strPwrActionName = GetLanguageString(pAppLang, nActionNameLangID);
+			pwrActionNameString = GetLanguageString(pAppLang, nActionNameLangID);
 		}
-		OutputEventLog(LOG_EVENT_CANCEL_PWRACTION, strPwrActionName);
+		OutputEventLog(LOG_EVENT_CANCEL_PWRACTION, pwrActionNameString);
 	}
 
 	return bResult;
@@ -3493,8 +3488,8 @@ void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE
 	else {
 		// Find dialog by title
 		LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		CString strDialogTitle = GetLanguageString(pLang, nDialogID);
-		hDialogWnd = ::FindWindow(NULL, strDialogTitle);
+		String dialogTitle = GetLanguageString(pLang, nDialogID);
+		hDialogWnd = ::FindWindow(NULL, dialogTitle);
 	}
 
 	// If yes, only bring that instance up to top instead of starting a new one
@@ -4199,7 +4194,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 		m_arrCurRegHKeyList.reserve(nItemNum);
 
 		// Debug log
-		CString strLogTemp;
+		String logTempString;
 
 		// Register each HotkeySet item
 		BOOL bRegistered = FALSE;
@@ -4225,14 +4220,14 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 			dwModifiers |= MOD_NOREPEAT;
 
 			// Debug log format
-			strLogTemp.Format(_T("ActionID=%d, Modifiers=%d, VirtualKey=%d"), nHKActionID, dwModifiers, dwVirtualKey);
+			logTempString.Format(_T("ActionID=%d, Modifiers=%d, VirtualKey=%d"), nHKActionID, dwModifiers, dwVirtualKey);
 
 			// Get enable/disable status
 			BOOL bEnabled = hksItem.IsEnabled();
 
 			// Skip registering item if disabled
 			if (bEnabled == FALSE) {
-				OutputDebugLogFormat(_T("Skip registering hotkey (disabled): %s"), strLogTemp.GetString());
+				OutputDebugLogFormat(_T("Skip registering hotkey (disabled): %s"), logTempString.GetString());
 				continue;
 			}
 
@@ -4245,7 +4240,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 
 			if (bRet == TRUE) {
 				// Register successfully
-				OutputDebugLogFormat(_T("Registered hotkey: %s"), strLogTemp.GetString());
+				OutputDebugLogFormat(_T("Registered hotkey: %s"), logTempString.GetString());
 				m_arrCurRegHKeyList.push_back(nHKActionID);						// Update registered hotkey list
 			}
 			else {
@@ -4253,7 +4248,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 				dwErrorCode = GetLastError();
 
 				// Output debug log
-				OutputDebugLogFormat(_T("Register hotkey failed: %s"), strLogTemp.GetString());
+				OutputDebugLogFormat(_T("Register hotkey failed: %s"), logTempString.GetString());
 
 				// Trace error
 				TRACE_FORMAT("Error: Hotkey register failed!!! (Code=0x%X)", dwErrorCode);
@@ -4626,9 +4621,8 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 {
 	// Check message content validity
-	CString strMsgContent = pwrDispItem.GetMessage();
-	if ((strMsgContent.IsEmpty()) ||
-		(IS_NULL_STRING(strMsgContent))) {
+	String messageContent = pwrDispItem.GetMessage();
+	if ((messageContent.IsEmpty()) || (IS_NULL_STRING(messageContent))) {
 		// Invalid message content
 		TRACE("Invalid message content!!!");
 		return INT_INVALID;
@@ -4656,9 +4650,9 @@ int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 	// Style: MessageBox
 	if (pwrDispItem.GetMessageStyle() == PwrReminderStyle::messageBox) {
 
-		CString strCaption = GetLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
+		const wchar_t* messageCaption = GetLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
 		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
-		nRespond = DisplayMessageBox(strMsgContent, strCaption, dwMsgStyle);
+		nRespond = DisplayMessageBox(messageContent, messageCaption, dwMsgStyle);
 	}
 	// Style: Dialog
 	else if (pwrDispItem.GetMessageStyle() == PwrReminderStyle::dialogBox) {
@@ -4690,7 +4684,7 @@ int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 
 		// Set properties
 		pMsgDlg->SetCaptionFromLanguage(IDD_PWRREMINDER_DLG);
-		pMsgDlg->SetDispMessage(strMsgContent);
+		pMsgDlg->SetDispMessage(messageContent);
 		pMsgDlg->SetMessageStyle(rmdMessageStyle);
 		pMsgDlg->SetAutoCloseInterval(nTimeout);
 
@@ -5022,14 +5016,14 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& s
 
 	// Schedule action name
 	int nActionNameID = GetPairedID(IDTable::ActionName, schItem.GetAction());
-	CString strActionName = GetLanguageString(pAppLang, nActionNameID);
+	const wchar_t* actionNameString = GetLanguageString(pAppLang, nActionNameID);
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
 	logDetailInfo.AddDetail(EventDetail::ContentID, schItem.GetItemID());
 
 	// Output event log
-	OutputEventLog(usEvent, strActionName, &logDetailInfo);
+	OutputEventLog(usEvent, actionNameString, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5045,14 +5039,14 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& s
 void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PwrReminderItem& pwrItem)
 {
 	// Message content
-	CString strMsgContent = pwrItem.GetMessage();
+	const wchar_t* messageContent = pwrItem.GetMessage();
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
 	logDetailInfo.AddDetail(EventDetail::ContentID, pwrItem.GetItemID());
 
 	// Output event log
-	OutputEventLog(usEvent, strMsgContent, &logDetailInfo);
+	OutputEventLog(usEvent, messageContent, &logDetailInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5354,20 +5348,19 @@ int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, BOOL& bReupdate)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Format message
-	const wchar_t* msgCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CAPTION);
-	const wchar_t* msgScheduleAction = GetLanguageString(pAppLang, nActionStringID);
-	const wchar_t* msgTemplate = GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_NOTIFY);
+	const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CAPTION);
+	const wchar_t* messageScheduleAction = GetLanguageString(pAppLang, nActionStringID);
+	const wchar_t* messageTemplate = GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_NOTIFY);
 	
-	CString strMsgContent;
-	strMsgContent.Format(msgTemplate, msgScheduleAction);
+	String messageContent = StringUtils::StringFormat(messageTemplate, messageScheduleAction);
 
 	// Allow cancelling schedule when notify
 	BOOL bAllowCancel = GetAppOption(AppOptionID::allowCancelingSchedule);
 	if (bAllowCancel == TRUE)
 	{
 		// Update message content
-		strMsgContent += GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL);
-		int nRespond = DisplayMessageBox(strMsgContent.GetString(), msgCaption, MB_OKCANCEL | MB_ICONINFORMATION);
+		messageContent += GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL);
+		int nRespond = DisplayMessageBox(messageContent, messageCaption, MB_OKCANCEL | MB_ICONINFORMATION);
 		if (nRespond == IDCANCEL)
 		{
 			// Set item skip flag
@@ -5392,7 +5385,7 @@ int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, BOOL& bReupdate)
 	}
 
 	// Show message
-	return DisplayMessageBox(strMsgContent, msgCaption, MB_OK | MB_ICONINFORMATION);
+	return DisplayMessageBox(messageContent, messageCaption, MB_OK | MB_ICONINFORMATION);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5498,9 +5491,9 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
-	const wchar_t* requestMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_REQUEST_RESTARTASADMIN);
-	const wchar_t* msgCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowCaption();
-	CString strMsgFormat = requestMsg;
+	const wchar_t* requestMessage = GetLanguageString(pAppLang, MSGBOX_OTHER_REQUEST_RESTARTASADMIN);
+	const wchar_t* messageCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowCaption();
+	String messageFormatString = requestMessage;
 
 	// Check if the application is currently running as admin
 	BOOL bIsAdmin = FALSE;
@@ -5519,13 +5512,13 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 			// Show "not admin" message
 			if (reqRestart.bNotAdminShowMsg == TRUE) {
 				const wchar_t* notAdminMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_NOTRUNASADMIN);
-				strMsgFormat.Format(_T("%s\n%s"), notAdminMsg, requestMsg);
+				messageFormatString.Format(_T("%s\n%s"), notAdminMsg, requestMessage);
 			}
 		}
 	}
 	
 	// Display request message
-	int nRet = DisplayMessageBox(strMsgFormat, msgCaption, MB_YESNO | MB_ICONQUESTION);
+	int nRet = DisplayMessageBox(messageFormatString, messageCaption, MB_YESNO | MB_ICONQUESTION);
 	if (nRet == IDYES) {
 		// Restart as admin
 		RestartApp(TRUE);

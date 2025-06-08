@@ -487,14 +487,13 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			CFileFind Finder;
 			String fileName = StringUtils::MakeFilePath(StringUtils::GetSubFolderPath(SUBFOLDER_LOG), _T("*"), FILEEXT_LOGFILE);
-			CString strFileName = fileName.GetString();
-			BOOL bFindRet = Finder.FindFile(strFileName);
+			BOOL bFindRet = Finder.FindFile(fileName);
 			if (!strKeyName.IsEmpty()) {
 				int nDelFileCount = 0;
 				while (bFindRet == TRUE) {
 					bFindRet = Finder.FindNextFile();
-					strFileName = Finder.GetFileName();
-					if (strFileName.Find(strKeyName) != INT_INVALID) {
+					fileName = Finder.GetFileName().GetString();
+					if (fileName.Find(strKeyName) != INT_INVALID) {
 						// Delete file
 						CFile::Remove(Finder.GetFilePath());
 						nDelFileCount++;	// Increase counter
@@ -749,13 +748,13 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		if ((tokenCount >= 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("bkgclr")))) {
 			if (tokenCount == 3) {
 				// Set message background color by name
-				CString strColorName = tokenList.at(2).c_str();
-				DWORD dwRetColorID = GetStringID(StringTable::ColorName, strColorName);
+				String colorName = tokenList.at(2).c_str();
+				DWORD dwRetColorID = GetStringID(StringTable::ColorName, colorName);
 				if (dwRetColorID != INT_INVALID) {
 					// Set background color
 					SetReminderMsgBkgrdColor(dwRetColorID);
 					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message background color set: %s"), strColorName.MakeUpper().GetString());
+					OutputDebugLogFormat(_T("Message background color set: %s"), colorName.ToUpper().GetString());
 					bNoReply = FALSE;	// Reset flag
 				}
 				else {
@@ -790,13 +789,13 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount >= 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("txtclr")))) {
 			if (tokenCount == 3) {
 				// Set message text color by name
-				CString strColorName = tokenList.at(2).c_str();
-				DWORD dwRetColorID = GetStringID(StringTable::ColorName, strColorName);
+				String colorName = tokenList.at(2).c_str();
+				DWORD dwRetColorID = GetStringID(StringTable::ColorName, colorName);
 				if (dwRetColorID != INT_INVALID) {
 					// Set text color
 					SetReminderMsgTextColor(dwRetColorID);
 					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message text color set: %s"), strColorName.MakeUpper().GetString());
+					OutputDebugLogFormat(_T("Message text color set: %s"), colorName.ToUpper().GetString());
 					bNoReply = FALSE;	// Reset flag
 				}
 				else {
@@ -890,13 +889,13 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconid")))) {
 			// Set message icon ID by name
-			CString strIconName = tokenList.at(2).c_str();
-			DWORD dwRetIconID = GetStringID(StringTable::MsgIconName, strIconName);
+			String iconName = tokenList.at(2).c_str();
+			DWORD dwRetIconID = GetStringID(StringTable::MsgIconName, iconName);
 			if (dwRetIconID != INT_INVALID) {
 				// Set icon ID
 				SetReminderMsgIconID(dwRetIconID);
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message icon ID set: %s (%d)"), strIconName.MakeUpper().GetString(), dwRetIconID);
+				OutputDebugLogFormat(_T("Message icon ID set: %s (%d)"), iconName.ToUpper().GetString(), dwRetIconID);
 				bNoReply = FALSE;	// Reset flag
 			}
 			else {
@@ -929,15 +928,15 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconplacement")))) {
 			// Set reminder message icon position
-			CString strIconPos = tokenList.at(2).c_str();
-			if (!_tcscmp(strIconPos, _T("left"))) {
+			String iconPosition = tokenList.at(2).c_str();
+			if (!_tcscmp(iconPosition, _T("left"))) {
 				// Set icon position: Icon on the Left
 				SetReminderMsgIconPosition(RmdMsgStyleSet::IconOnTheLeft);
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				OutputDebugLog(_T("Message icon position set: Left"));
 				bNoReply = FALSE;	// Reset flag
 			}
-			else if (!_tcscmp(strIconPos, _T("top"))) {
+			else if (!_tcscmp(iconPosition, _T("top"))) {
 				// Set icon position: Icon on the Top
 				SetReminderMsgIconPosition(RmdMsgStyleSet::IconOnTheTop);
 				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
@@ -1266,16 +1265,14 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("getlastsysevttime"))) {
 		// Get last system event time
 		SYSTEMTIME stTimeTemp;
-		CString strDateTimeFormat;
-		strDateTimeFormat.LoadString(IDS_FORMAT_FULLDATETIME);
+		String dateTimeFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
 		// Get last system suspend time
 		if (pApp->GetLastSysEventTime(SystemEventID::SystemSuspend, stTimeTemp)) {
 			// Format date time
-			CString strLogTemp;
 			const wchar_t* middayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
-			strLogTemp.Format(strDateTimeFormat, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay,
+			String logTemp = StringUtils::StringFormat(dateTimeFormat, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay,
 				stTimeTemp.wHour, stTimeTemp.wMinute, stTimeTemp.wSecond, stTimeTemp.wMilliseconds, middayFlag);
-			logOutputResult.Format(_T("Last System Suspend: %s"), strLogTemp.GetString());
+			logOutputResult.Format(_T("Last System Suspend: %s"), logTemp.GetString());
 			OutputDebugLog(logOutputResult);
 			bNoReply = FALSE;	// Reset flag
 		}
@@ -1287,11 +1284,10 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		// Get last system wakeup time
 		if (pApp->GetLastSysEventTime(SystemEventID::SystemWakeUp, stTimeTemp)) {
 			// Format date time
-			CString strLogTemp;
 			const wchar_t* middayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
-			strLogTemp.Format(strDateTimeFormat, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay,
+			String logTemp = StringUtils::StringFormat(dateTimeFormat, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay,
 				stTimeTemp.wHour, stTimeTemp.wMinute, stTimeTemp.wSecond, stTimeTemp.wMilliseconds, middayFlag);
-			logOutputResult.Format(_T("Last System Wakeup: %s"), strLogTemp.GetString());
+			logOutputResult.Format(_T("Last System Wakeup: %s"), logTemp.GetString());
 			OutputDebugLog(logOutputResult);
 			bNoReply = FALSE;	// Reset flag
 		}

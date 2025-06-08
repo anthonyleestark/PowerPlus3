@@ -622,7 +622,7 @@ void CReminderMsgDlg::TextToClient(LPRECT lpRect) const
 
 	// Calculate rectangle
 	DWORD dwFormat = DT_CENTER | DT_WORDBREAK | DT_CALCRECT;
-	pDC->DrawText(m_strBuffer, lpRect, dwFormat);
+	pDC->DrawText(m_strBuffer, m_strBuffer.GetLength(), lpRect, dwFormat);
 
 	// Reset device context
 	pDC->SelectObject(pDefFont);

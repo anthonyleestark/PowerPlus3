@@ -447,8 +447,8 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Get format string
-	CString strFormat = GetLanguageString(pAppLang, PWRRMD_REPEATSET_SNOOZEINTERVAL);
-	if (IS_NULL_STRING(strFormat)) return;
+	const wchar_t* formatString = GetLanguageString(pAppLang, PWRRMD_REPEATSET_SNOOZEINTERVAL);
+	if (IS_NULL_STRING(formatString)) return;
 
 	// Check validity
 	if (((nValue * 60) < PwrRepeatSet::minSnoozeInterval) ||
@@ -456,11 +456,10 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 		return;
 
 	// Show snooze interval value
-	CString strSnoozeInterval;
-	strSnoozeInterval.Format(strFormat, nValue);
+	String snoozeIntervalString = StringUtils::StringFormat(formatString, nValue);
 	if (m_pSnoozeIntervalEdit != NULL) {
 		// Display
-		m_pSnoozeIntervalEdit->SetWindowText(strSnoozeInterval);
+		m_pSnoozeIntervalEdit->SetWindowText(snoozeIntervalString);
 		if (m_pSnoozeIntervalSpin != NULL) {
 			// Update spin position
 			if (m_pSnoozeIntervalSpin->GetPos() != nValue) {

@@ -39,7 +39,7 @@ public:
 
 private:
 	// Message string buffer
-	CString m_strBuffer;
+	String m_strBuffer;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

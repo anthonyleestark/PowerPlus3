@@ -859,12 +859,12 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 		SetFixedCellStyle(m_pHotkeySetListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
 
 		// Column header title
-		CString strHdrTitle = Constant::String::Empty;
+		String headerTitle = Constant::String::Empty;
 		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
-			strHdrTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pHotkeySetListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, strHdrTitle);
+		m_pHotkeySetListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, headerTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -1283,10 +1283,10 @@ void CHotkeySetDlg::LoadLayoutInfo(void)
 
 	// Load layout info data from registry
 	int nRet = 0;
-	CString strKeyName;
+	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
-		if (GetLayoutInfo(Section::LayoutInfo::HKeySetTable, strKeyName, nRet)) {
+		keyName = Key::LayoutInfo::GridColSize(nIndex);
+		if (GetLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, nRet)) {
 			if (m_apGrdColFormat != NULL) {
 				m_apGrdColFormat[nIndex].nWidth = nRet;
 			}
@@ -1310,11 +1310,11 @@ void CHotkeySetDlg::SaveLayoutInfo(void)
 
 	// Save layout info data to registry
 	int nRef = 0;
-	CString strKeyName;
+	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
 		nRef = m_apGrdColFormat[nIndex].nWidth;
-		strKeyName = Key::LayoutInfo::GridColSize(nIndex);
-		WriteLayoutInfo(Section::LayoutInfo::HKeySetTable, strKeyName, nRef);
+		keyName = Key::LayoutInfo::GridColSize(nIndex);
+		WriteLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, nRef);
 	}
 }
 
@@ -1596,19 +1596,19 @@ BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 		if ((dwModifiers == OtherTable::ExistedSysHotkeyList[nIndex].dwModifiers) &&
 			(dwVirtualKey == OtherTable::ExistedSysHotkeyList[nIndex].dwVirtualKey)) {
 			// Hotkey info format
-			CString strKeyStrokes = Constant::String::Empty;
-			if (dwModifiers & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
-			if (dwModifiers & MOD_ALT)		strKeyStrokes += _T("Alt + ");
-			if (dwModifiers & MOD_WIN)		strKeyStrokes += _T("Win + ");
-			strKeyStrokes += GetString(StringTable::FunctionKeys, dwVirtualKey);
-			CString strKeyInfo = Constant::String::Empty;
-			strKeyInfo.Format(_T("%s - %s"), strKeyStrokes.GetString(), GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].nHotkeyDescription));
+			String keyStrokesString = Constant::String::Empty;
+			if (dwModifiers & MOD_CONTROL)	keyStrokesString += _T("Ctrl + ");
+			if (dwModifiers & MOD_ALT)		keyStrokesString += _T("Alt + ");
+			if (dwModifiers & MOD_WIN)		keyStrokesString += _T("Win + ");
+			keyStrokesString += GetString(StringTable::FunctionKeys, dwVirtualKey);
+			String keyInfoString = Constant::String::Empty;
+			keyInfoString.Format(_T("%s - %s"), keyStrokesString.GetString(), GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].nHotkeyDescription));
 
 			// Message format
-			CString strMsgFormat;
-			strMsgFormat.Format(GetLanguageString(pLang, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), strKeyInfo.GetString());
+			String messageFormat;
+			messageFormat.Format(GetLanguageString(pLang, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), keyInfoString.GetString());
 
-			arrMsgString.push_back(strMsgFormat);
+			arrMsgString.push_back(messageFormat);
 			bResult = FALSE;
 		}
 	}

@@ -68,9 +68,9 @@ protected:
 	FlagManager m_flagManager;
 
 	// Title and caption
-	CString m_strTemplateName;
-	CString	m_strWindowCaption;
-	CString	m_strMessageCaption;
+	String  m_strTemplateName;
+	String	m_strWindowCaption;
+	String	m_strMessageCaption;
 
 	// App language function
 	LANGTABLE_PTR m_pAppLangPtr;
@@ -102,20 +102,20 @@ public:
 
 	// Application name get/set functions
 	virtual const wchar_t* GetAppName(void) const;
-	virtual void GetAppName(CString& strAppName) const;
+	virtual void GetAppName(String& appName) const;
 	virtual void SetAppName(const wchar_t* appName);
 	virtual BOOL SetAppName(UINT nResourceStringID);
 
 	// Application window caption get/set functions
 	virtual const wchar_t* GetAppWindowCaption(void) const;
-	virtual void GetAppWindowCaption(CString& strWindowCaption) const;
+	virtual void GetAppWindowCaption(String& windowCaption) const;
 	virtual void SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
 	virtual BOOL SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
 
 	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);
 	virtual void RegisterMessageBoxCaption(const wchar_t* caption);
-	virtual void GetRegisterdMsgBoxCaption(CString& strRegMsgBoxCap) const;
+	virtual void GetRegisterdMsgBoxCaption(String& regMsgBoxCaption) const;
 	virtual int DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt);
 	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
 	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, UINT nStyle = NULL);

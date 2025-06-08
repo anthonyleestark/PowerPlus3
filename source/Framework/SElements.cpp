@@ -276,9 +276,11 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 		{
 			// Get base control window text itself;
 			if (IsBaseControlAvailable()) {
-				CString strCaption;
-				this->GetBaseControl()->GetWindowText(strCaption);
-				this->SetCaption(strCaption);
+				const int captionLength = this->GetBaseControl()->GetWindowTextLength();
+				std::vector<wchar_t> tempBuff(captionLength + 1);
+				this->GetBaseControl()->GetWindowText(tempBuff.data(), captionLength + 1);
+				String captionString = tempBuff.data();
+				this->SetCaption(captionString);
 			}
 		} break;
 
@@ -301,9 +303,11 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 		{
 			// Get buddy control's caption
 			if (IsBuddyAvailable()) {
-				CString strCaption;
-				this->GetBuddy()->GetWindowText(strCaption);
-				this->SetCaption(strCaption);
+				const int captionLength = this->GetBuddy()->GetWindowTextLength();
+				std::vector<wchar_t> tempBuff(captionLength + 1);
+				this->GetBuddy()->GetWindowText(tempBuff.data(), captionLength + 1);
+				String captionString = tempBuff.data();
+				this->SetCaption(captionString);
 			}
 		} break;
 
@@ -507,7 +511,7 @@ void SCtrlInfoWrap::GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) con
 // 
 //	Function name:	GetString
 //	Description:	Get current control's string data value
-//  Arguments:		strValue - String value (out)
+//  Arguments:		value - String value (out)
 //  Return value:	const wchar_t*
 //
 //////////////////////////////////////////////////////////////////////////
@@ -520,19 +524,19 @@ const wchar_t* SCtrlInfoWrap::GetString(void) const
 		return *(this->m_pstrValue);
 }
 
-void SCtrlInfoWrap::GetString(_Out_ CString& strValue) const
+void SCtrlInfoWrap::GetString(_Out_ String& value) const
 {
 	if (this->m_pstrValue == NULL)
-		strValue = Constant::String::Empty;
+		value = Constant::String::Empty;
 	else
-		strValue = *(this->m_pstrValue);
+		value = *(this->m_pstrValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	GetReserveString
 //	Description:	Get current control's reserve string data value
-//  Arguments:		strValue - String reserve value (out)
+//  Arguments:		value - String reserve value (out)
 //  Return value:	const wchar_t*
 //
 //////////////////////////////////////////////////////////////////////////
@@ -545,12 +549,12 @@ const wchar_t* SCtrlInfoWrap::GetReserveString(void) const
 		return *(this->m_pstrReserveValue);
 }
 
-void SCtrlInfoWrap::GetReserveString(_Out_ CString& strValue) const
+void SCtrlInfoWrap::GetReserveString(_Out_ String& value) const
 {
 	if (this->m_pstrReserveValue == NULL)
-		strValue = Constant::String::Empty;
+		value = Constant::String::Empty;
 	else
-		strValue = *(this->m_pstrReserveValue);
+		value = *(this->m_pstrReserveValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -819,10 +823,10 @@ void SCtrlInfoWrap::SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& 
 void SCtrlInfoWrap::SetString(_In_ const wchar_t* value)
 {
 	if (this->m_pstrValue == NULL)
-		this->m_pstrValue = new CString(value);
+		this->m_pstrValue = new String(value);
 	else {
 		delete (this->m_pstrValue);
-		this->m_pstrValue = new CString(value);
+		this->m_pstrValue = new String(value);
 	}
 }
 
@@ -838,10 +842,10 @@ void SCtrlInfoWrap::SetString(_In_ const wchar_t* value)
 void SCtrlInfoWrap::SetReserveString(_In_ const wchar_t* value)
 {
 	if (this->m_pstrReserveValue == NULL)
-		this->m_pstrReserveValue = new CString(value);
+		this->m_pstrReserveValue = new String(value);
 	else {
 		delete (this->m_pstrReserveValue);
-		this->m_pstrReserveValue = new CString(value);
+		this->m_pstrReserveValue = new String(value);
 	}
 }
 
@@ -1458,9 +1462,11 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case Edit_Control:
 			{
 				// Update control's text value
-				CString strTemp;
-				((CEdit*)pBaseControl)->GetWindowText(strTemp);
-				pCurControl->SetString(strTemp);
+				const int textLength = ((CEdit*)pBaseControl)->GetWindowTextLength();
+				std::vector<wchar_t> tempBuff(textLength + 1);
+				((CEdit*)pBaseControl)->GetWindowText(tempBuff.data(), textLength + 1);
+				String tempText = tempBuff.data();
+				pCurControl->SetString(tempText);
 			} break;
 
 			// Combo-box
@@ -1474,9 +1480,9 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				size_t nCount = ((CComboBox*)pBaseControl)->GetCount();
 				arrStringData.reserve(nCount);
 				for (size_t nIndex = 0; nIndex < nCount; nIndex++) {
-					CString strTemp;
-					((CComboBox*)pBaseControl)->GetLBText(nIndex, strTemp);
-					arrStringData.push_back(strTemp);
+					wchar_t tempBuff[Constant::Max::StringLength] = {0};
+					((CComboBox*)pBaseControl)->GetLBText(nIndex, tempBuff);
+					arrStringData.push_back(tempBuff);
 				}
 				pCurControl->SetStringArray(arrStringData);
 			} break;
@@ -1492,9 +1498,9 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				size_t nCount = ((CListBox*)pBaseControl)->GetCount();
 				arrStringData.reserve(nCount);
 				for (size_t nIndex = 0; nIndex < nCount; nIndex++) {
-					CString strTemp;
-					((CListBox*)pBaseControl)->GetText(nIndex, strTemp);
-					arrStringData.push_back(strTemp);
+					wchar_t tempBuff[Constant::Max::StringLength] = {0};
+					((CListBox*)pBaseControl)->GetText(nIndex, tempBuff);
+					arrStringData.push_back(tempBuff);
 				}
 				pCurControl->SetStringArray(arrStringData);
 			} break;
@@ -1527,9 +1533,8 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				for (size_t nIndex = 0; nIndex < nItemCount; nIndex++) {
 					for (size_t nColIndex = 0; nColIndex < nColumnCount; nColIndex++) {
 						// Get item text
-						CString strTemp;
-						strTemp = ((CListCtrl*)pBaseControl)->GetItemText(nIndex, nColIndex);
-						arrStringData.push_back(strTemp);
+						const wchar_t* tempText = ((CListCtrl*)pBaseControl)->GetItemText(nIndex, nColIndex);
+						arrStringData.push_back(tempText);
 					}
 				}
 				pCurControl->SetStringArray(arrStringData);
@@ -1548,12 +1553,12 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				StringArray arrTabTitles;
 				arrTabTitles.reserve(nTabCount);
 				for (size_t nIndex = 0; nIndex < nTabCount; nIndex++) {
-					CString strTemp = Constant::String::Empty;
+					String tempText = Constant::String::Empty;
 					BOOL bRet = ((CTabCtrl*)pBaseControl)->GetItem(nIndex, &tabInfo);
 					if (bRet == TRUE && ((tabInfo.mask & TCIF_TEXT) != 0)) {
-						strTemp = tabInfo.pszText;
+						tempText = tabInfo.pszText;
 					}
-					arrTabTitles.push_back(strTemp);
+					arrTabTitles.push_back(tempText);
 				}
 				pCurControl->SetStringArray(arrTabTitles);
 			} break;
@@ -1564,9 +1569,11 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case SysLink_Control:
 			{
 				// Update control's text label
-				CString strTemp;
-				pBaseControl->GetWindowText(strTemp);
-				pCurControl->SetCaption(strTemp);
+				const int textLength = pBaseControl->GetWindowTextLength();
+				std::vector<wchar_t> tempBuff(textLength + 1);
+				pBaseControl->GetWindowText(tempBuff.data(), textLength + 1);
+				String captionString = tempBuff.data();
+				pCurControl->SetCaption(captionString);
 			} break;
 
 			// Scroll bars
@@ -1657,10 +1664,10 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				HRESULT hRes = ((CNetAddressCtrl*)pBaseControl)->GetAddress(&ncAddress);
 				if (hRes == S_OK) {
 					// Save address and port info
-					CString strAddress = ncAddress.pAddrInfo->NamedAddress.Address;
-					CString strPort = ncAddress.pAddrInfo->NamedAddress.Port;
-					pCurControl->SetString(strAddress);
-					pCurControl->SetReserveString(strPort);
+					String addressString = ncAddress.pAddrInfo->NamedAddress.Address;
+					String portString = ncAddress.pAddrInfo->NamedAddress.Port;
+					pCurControl->SetString(addressString);
+					pCurControl->SetReserveString(portString);
 					// Numeric data
 					pCurControl->SetInteger(ncAddress.PortNumber);
 					pCurControl->SetReserveInteger(ncAddress.PrefixLength);

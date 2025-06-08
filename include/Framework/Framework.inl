@@ -77,8 +77,8 @@ inline const wchar_t* SCtrlInfoWrap::GetTemplateStringID(void) const {
 }
 
 // Get current control's template string ID
-inline void SCtrlInfoWrap::GetTemplateStringID(_Out_ CString& strTemplateID) const {
-	strTemplateID = m_strTemplateID;
+inline void SCtrlInfoWrap::GetTemplateStringID(_Out_ String& templateID) const {
+	templateID = m_strTemplateID;
 }
 
 // Get current control's caption
@@ -87,8 +87,8 @@ inline const wchar_t* SCtrlInfoWrap::GetCaption(void) const {
 }
 
 // Get current control's caption
-inline void SCtrlInfoWrap::GetCaption(_Out_ CString& strCaption) const {
-	strCaption = m_strCaption;
+inline void SCtrlInfoWrap::GetCaption(_Out_ String& caption) const {
+	caption = m_strCaption;
 }
 
 // Get current control's visible state
@@ -219,8 +219,8 @@ inline const wchar_t* SWinApp::GetAppName(void) const {
 }
 
 // Get application name
-inline void SWinApp::GetAppName(CString& strAppName) const {
-	strAppName = m_pszAppName;
+inline void SWinApp::GetAppName(String& appName) const {
+	appName = m_pszAppName;
 }
 
 // Set application name
@@ -239,8 +239,8 @@ inline const wchar_t* SWinApp::GetAppWindowCaption(void) const {
 }
 
 // Get application window common caption
-inline void SWinApp::GetAppWindowCaption(CString& strWindowCaption) const {
-	strWindowCaption = m_strWindowCaption;
+inline void SWinApp::GetAppWindowCaption(String& windowCaption) const {
+	windowCaption = m_strWindowCaption;
 }
 
 // Register message box caption string
@@ -249,8 +249,8 @@ inline void SWinApp::RegisterMessageBoxCaption(const wchar_t* caption) {
 }
 
 // Get registered message box caption string
-inline void SWinApp::GetRegisterdMsgBoxCaption(CString& strRegMsgBoxCap) const {
-	strRegMsgBoxCap = m_strMessageCaption;
+inline void SWinApp::GetRegisterdMsgBoxCaption(String& regMsgBoxCaption) const {
+	regMsgBoxCaption = m_strMessageCaption;
 }
 
 // Get application event logging pointer
@@ -565,8 +565,8 @@ inline const wchar_t* SDialog::GetCaption(void) const {
 }
 
 // Get dialog caption
-inline void SDialog::GetCaption(CString& strCaption) const {
-	strCaption = m_strCaption;
+inline void SDialog::GetCaption(String& caption) const {
+	caption = m_strCaption;
 }
 
 // Set dialog caption
@@ -626,8 +626,8 @@ inline void SDialog::RegisterMessageBoxCaption(const wchar_t* caption) {
 }
 
 // Get registered message box caption string
-inline void SDialog::GetMessageBoxCaption(CString& strRegMsgBoxCap) const {
-	strRegMsgBoxCap = m_strMsgCaption;
+inline void SDialog::GetMessageBoxCaption(String& regMsgBoxCaption) const {
+	regMsgBoxCaption = m_strMsgCaption;
 }
 
 // Show/hide dialog item with corresponding ID

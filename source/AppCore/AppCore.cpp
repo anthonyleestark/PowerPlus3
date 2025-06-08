@@ -3451,10 +3451,10 @@ const wchar_t* Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID)
 
 	// Find and return corresponding language string paired with specified ID
 	for (int nIndex = 0; nIndex < ptLanguage->size(); nIndex++) {
-		LANGTEXT langString = ptLanguage->at(nIndex);
+		LANGTEXT langText = ptLanguage->at(nIndex);
 
-		if (langString.id == nID)
-			return langString.langString;
+		if (langText.id == nID)
+			return langText.langString;
 	}
 
 	return Constant::String::Null;
