@@ -275,9 +275,8 @@ void SWinApp::SetAppWindowCaption(LPCTSTR lpszWindowCaption, BOOL bShowProdVersi
 
 	// Show product version
 	if (bShowProdVersion == TRUE) {
-		CString strTemp;
-		strTemp.Format(_T(" %s"), GetProductVersion(bFullVersion).GetString());
-		m_strWindowCaption.Append(strTemp);
+		String tempString = StringUtils::StringFormat(_T(" %s"), StringUtils::GetProductVersion(bFullVersion).GetString());
+		m_strWindowCaption.Append(tempString);
 	}
 }
 

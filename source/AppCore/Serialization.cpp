@@ -207,10 +207,10 @@ BOOL AppRegistry::GetProfileInfo(LPCTSTR lpszKeyName, CString& strRef)
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteProfileInfo(LPCTSTR lpszKeyName, CString strValue)
+BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueString)
 {
 	// Write registry value
-	return AfxGetApp()->WriteProfileString(Constant::String::Empty, lpszKeyName, strValue);
+	return AfxGetApp()->WriteProfileString(Constant::String::Empty, keyName, valueString);
 }
 
 
@@ -670,15 +670,15 @@ BackupSystem::~BackupSystem()
 BOOL BackupSystem::RegistryExport()
 {
 	// Initialize registry info
-	REGISTRYINFO regInfo;
+	RegistryInfo regInfo;
 	regInfo.SetRootKeyName(AppProfile::Registry::RootKey);
 	regInfo.SetSubkeyPath(AppProfile::Registry::SubKeys);
 	regInfo.SetCompanyName(AppProfile::Registry::CompanyName);
 	regInfo.SetProductName(AppProfile::Registry::ProductID);
 
 	// Registry export destination file
-	CString strDestFilePath;
-	if (!MakeFilePath(strDestFilePath, NULL, FILENAME_BAKCONFIG, FILEEXT_REGFILE)) {
+	String destFilePath = StringUtils::MakeFilePath(NULL, FILENAME_BAKCONFIG, FILEEXT_REGFILE);
+	if (!destFilePath.IsEmpty()) {
 		// Make file path failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to make destination file path!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -686,9 +686,8 @@ BOOL BackupSystem::RegistryExport()
 	}
 
 	// Execute registry export command
-	CString strExecCommand;
-	strExecCommand.Format(Constant::Command::Registry::Export, MakeRegistryPath(regInfo, RegistryPathType::includingProductName), strDestFilePath.GetString());
-	if (!ExecuteCommand(strExecCommand, FALSE, FALSE)) {
+	String execCommand = StringUtils::StringFormat(Constant::Command::Registry::Export, MakeRegistryPath(regInfo, RegistryPathType::includingProductName), destFilePath.GetString());
+	if (!ExecuteCommand(execCommand, FALSE, FALSE)) {
 		// Execute command failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to execute export command!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);

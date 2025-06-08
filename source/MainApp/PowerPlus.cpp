@@ -211,7 +211,8 @@ BOOL CPowerPlusApp::InitInstance()
 	UpdateAppLaunchTimeProfileInfo();
 
 	// Create neccessary sub-folders
-	CreateDirectory(GetSubFolderPath(SUBFOLDER_LOG), NULL);
+	String subDirectory = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	CreateDirectory(subDirectory, NULL);
 
 	// Setup low-level keyboard hook
 	m_hAppKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
@@ -1403,7 +1404,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 
 	int nValue = (int)0;						// Integer type
 	UINT uiValue = (UINT)0;						// Unsigned integer value
-	CString strValue = Constant::String::Empty;			// String value
+	String strValue = Constant::String::Empty;	// String value
 
 	/*------------------------<Application launch-time counter>--------------------------*/
 
@@ -1442,7 +1443,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	/*------------------------<Application directory/file info>--------------------------*/
 
 	// Directory path (not including the executable file name)
-	strValue = GetApplicationPath(FALSE);
+	strValue = StringUtils::GetApplicationPath(false);
 	if (!strValue.IsEmpty()) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::Directory, strValue)) {
 			bRet = FALSE;
@@ -1450,7 +1451,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	// Executable file name
-	strValue = GetApplicationPath(TRUE);
+	strValue = StringUtils::GetApplicationPath(true);
 	if (!strValue.IsEmpty()) {
 		CString strFileName = PathFindFileName(strValue);
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::FileName, strFileName)) {
@@ -1459,7 +1460,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	// Product version (full version)
-	strValue = GetProductVersion(TRUE);
+	strValue = StringUtils::GetProductVersion(true);
 	if (!strValue.IsEmpty()) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::ProductVersion, strValue)) {
 			bRet = FALSE;
@@ -1471,7 +1472,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	/*--------------------------<Device, system and user info>---------------------------*/
 
 	// Device name
-	BOOL bRetGetInfo = GetDeviceName(strValue);
+	BOOL bRetGetInfo = StringUtils::GetDeviceName(strValue);
 	if ((bRetGetInfo != FALSE) && (!strValue.IsEmpty())) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::DeviceName, strValue)) {
 			bRet = FALSE;
@@ -1479,7 +1480,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	// User name
-	bRetGetInfo = GetCurrentUserName(strValue);
+	bRetGetInfo = StringUtils::GetCurrentUserName(strValue);
 	if ((bRetGetInfo != FALSE) && (!strValue.IsEmpty())) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::UserName, strValue)) {
 			bRet = FALSE;
@@ -2414,23 +2415,18 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 	// Enable auto-start
 	if (bEnable == TRUE) {
 
-		CString strExecCommand;
+		String execCommand;
 
 		if (bRunAsAdmin == TRUE) {
 			// Register to run as admin
-			strExecCommand.Format(Constant::Command::RunAsAdmin::Register, REG_AFX_PROJECTNAME, GetApplicationPath(TRUE));
-			WinExec(MAKEANSI(strExecCommand.GetString()), SW_HIDE);
+			execCommand.Format(Constant::Command::RunAsAdmin::Register, REG_AFX_PROJECTNAME, StringUtils::GetApplicationPath(true).GetString());
+			WinExec(MAKEANSI(execCommand), SW_HIDE);
 		}
 		else {
 			// Unregister to run as admin
-			strExecCommand.Format(Constant::Command::RunAsAdmin::Unregister, REG_AFX_PROJECTNAME);
-			WinExec(MAKEANSI(strExecCommand.GetString()), SW_HIDE);
+			execCommand.Format(Constant::Command::RunAsAdmin::Unregister, REG_AFX_PROJECTNAME);
+			WinExec(MAKEANSI(execCommand), SW_HIDE);
 		}
-
-		// Debug log
-		CString strALSLog;
-		strALSLog.Format(_T("[ALS] => EnableAutoStart: Cmd=(%s)"), strExecCommand.GetString());
-		OutputDebugString(strALSLog);
 
 		// Register to run at startup
 		GetModuleFileName(NULL, tcPath, sizeof(tcPath) / sizeof(TCHAR));
@@ -2498,7 +2494,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 	HKEY hRegOpenKey;
 
 	// Initialize registry info data
-	REGISTRYINFO regInfoLastSysEvt;
+	RegistryInfo regInfoLastSysEvt;
 	regInfoLastSysEvt.SetRootKeyName(AppProfile::Registry::RootKey);
 	regInfoLastSysEvt.SetSubkeyPath(AppProfile::Registry::SubKeys);
 	regInfoLastSysEvt.SetCompanyName(AppProfile::Registry::CompanyName);
@@ -2589,7 +2585,7 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 	BOOL bRet = TRUE;
 
 	// Initialize registry info data
-	REGISTRYINFO regInfoLastSysEvt;
+	RegistryInfo regInfoLastSysEvt;
 	regInfoLastSysEvt.SetRootKeyName(AppProfile::Registry::RootKey);
 	regInfoLastSysEvt.SetSubkeyPath(AppProfile::Registry::SubKeys);
 	regInfoLastSysEvt.SetCompanyName(AppProfile::Registry::CompanyName);

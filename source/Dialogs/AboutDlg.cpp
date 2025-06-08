@@ -283,9 +283,9 @@ void CAboutDlg::SetAppNameLabel(void)
 	if (pAppNameLabel == NULL) return;
 
 	// Get product version info
-	CString strFullProductVersion;
-	CString strShortProductVersion;
-	if (!GetProductVersion(strFullProductVersion, strShortProductVersion))
+	String fullProdVersion;
+	String shortProdVersion;
+	if (!StringUtils::GetProductVersion(fullProdVersion, shortProdVersion))
 		return;
 
 	// Get app name label format from app language package
@@ -294,9 +294,8 @@ void CAboutDlg::SetAppNameLabel(void)
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app name label
-	CString strAppNameLabel;
-	strAppNameLabel.Format(formatString, strShortProductVersion.GetString(), strFullProductVersion.GetString());
-	pAppNameLabel->SetWindowText(strAppNameLabel);
+	String appNameLabel = StringUtils::StringFormat(formatString, shortProdVersion.GetString(), fullProdVersion.GetString());
+	pAppNameLabel->SetWindowText(appNameLabel);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -315,18 +314,17 @@ void CAboutDlg::SetAppInfoLabel(void)
 	if (pAppInfoLabel == NULL) return;
 
 	// Get product version info (short number)
-	CString strProductVersion = GetProductVersion(FALSE);
-	if (strProductVersion.IsEmpty()) return;
+	String productVersion = StringUtils::GetProductVersion(false);
+	if (productVersion.IsEmpty()) return;
 
 	// Get app info label format from app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	CString strFormat = GetLanguageString(pAppLang, IDC_APPINFO_LABEL);
+	String strFormat = GetLanguageString(pAppLang, IDC_APPINFO_LABEL);
 	if (IS_NULL_STRING(strFormat)) return;
 
 	// Set app info label
-	CString strAppInfoLabel;
-	strAppInfoLabel.Format(strFormat, strProductVersion.GetString());
-	pAppInfoLabel->SetWindowText(strAppInfoLabel);
+	String appInfoLabel = StringUtils::StringFormat(strFormat, productVersion.GetString());
+	pAppInfoLabel->SetWindowText(appInfoLabel);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -328,13 +328,11 @@ void CHelpDlg::SetupEditbox(CEdit& pEdit)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
+BOOL CHelpDlg::LoadRCFileData(String& strRCFileData)
 {
 	// Get currently displaying language
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	UINT nCurLanguage = pApp->GetAppLanguageOption(TRUE);
-
-	BOOL bResLoadRCData = FALSE;
 
 	// Remove existing data
 	if (!strRCFileData.IsEmpty())
@@ -345,13 +343,13 @@ BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_HELP_ENG);
+			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_HELP_ENG);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_HELP_VIE);
+			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_HELP_VIE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_HELP_CHS);
+			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_HELP_CHS);
 			break;
 		}
 	}
@@ -360,19 +358,19 @@ BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
 		switch (nCurLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_CHANGELOG_ENG);
+			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_CHANGELOG_ENG);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_CHANGELOG_VIE);
+			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_CHANGELOG_VIE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			bResLoadRCData = LoadResourceTextFile(strRCFileData, IDR_FILE_CHANGELOG_CHS);
+			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_CHANGELOG_CHS);
 			break;
 		}
 	}
 
 	// Load RCData failed
-	if (bResLoadRCData != TRUE) {
+	if (strRCFileData.IsEmpty()) {
 
 		// Load app language package
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -394,7 +392,7 @@ BOOL CHelpDlg::LoadRCFileData(CString& strRCFileData)
 		}
 	}
 
-	return (bResLoadRCData && (!strRCFileData.IsEmpty()));
+	return (!strRCFileData.IsEmpty());
 }
 
 //////////////////////////////////////////////////////////////////////////

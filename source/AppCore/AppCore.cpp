@@ -2725,6 +2725,563 @@ void Substring::RemoveAll(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	StringFormat
+//	Description:	Format string (same as default MFC Format function)
+//  Arguments:		formatTemplateID  - ID of resource format template string
+//					...				  - Same as default MFC Format function
+//  Return value:	String - Returned formatted string
+//
+//////////////////////////////////////////////////////////////////////////
+
+String StringUtils::StringFormat(UINT formatTemplateID, ...)
+{
+	// Load resource format template string
+	CString strTemplate;
+	VERIFY(strTemplate.LoadString(formatTemplateID));
+	if (strTemplate.IsEmpty()) return Constant::String::Empty;
+
+	// Template string validation
+	ATLASSERT(AtlIsValidString(strTemplate));
+
+	// Result string
+	static CString strResult;
+	strResult.Empty();
+
+	// Format string
+	va_list argList;
+	va_start(argList, strTemplate.GetString());
+	strResult.FormatV(strTemplate, argList);
+	va_end(argList);
+
+	return strResult.GetString();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	StringFormat
+//	Description:	Format string (same as default MFC Format function)
+//  Arguments:		formatTemplate - Format template string
+//					...			   - Same as default MFC Format function
+//  Return value:	String	- Returned formatted string
+//
+//////////////////////////////////////////////////////////////////////////
+
+String StringUtils::StringFormat(const wchar_t* formatTemplate, ...)
+{
+	// Template string validation
+	ATLASSERT(AtlIsValidString(formatTemplate));
+
+	// Result string
+	static CString strResult;
+	strResult.Empty();
+
+	// Format string
+	va_list argList;
+	va_start(argList, formatTemplate);
+	strResult.FormatV(formatTemplate, argList);
+	va_end(argList);
+
+	return strResult.GetString();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	LoadResourceString
+//	Description:	Load resource ID and return the string
+//  Arguments:		nResStringID - ID of resource string
+//  Return value:	LPCTSTR	- Returned resource string
+//
+//////////////////////////////////////////////////////////////////////////
+
+String StringUtils::LoadResourceString(UINT resourceStringID)
+{
+	// Output result
+	String resultString;
+
+	// Get resource handle
+	HINSTANCE hResInstance = AfxGetResourceHandle();
+	if (hResInstance == NULL) {
+		// Trace error
+		TRACE_ERROR("Error: Get resource handle failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return resultString;
+	}
+
+	// Load resource string
+	wchar_t _tempBuffer[Constant::Max::StringLength] = {0};
+	int _length = ::LoadStringW(hResInstance, resourceStringID, _tempBuffer, static_cast<int>(std::size(_tempBuffer)));
+	if (_length <= 0)
+		resultString = Constant::String::Null;
+	else
+		resultString.SetString(_tempBuffer);
+
+	return resultString;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	LoadResourceString
+//	Description:	Load resource ID and return the string
+//  Arguments:		strResult	 - Returned resource string
+//					nResStringID - ID of resource string
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+bool StringUtils::LoadResourceString(String& resultStr, UINT resourceStringID)
+{
+	// Output result
+	resultStr.Empty();
+
+	// Get resource handle
+	HINSTANCE hResInstance = AfxGetResourceHandle();
+	if (hResInstance == NULL) {
+		// Trace error
+		TRACE_ERROR("Error: Get resource handle failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return false;
+	}
+
+	// Load resource string
+	wchar_t _tempBuffer[Constant::Max::StringLength] = {0};
+	int _length = ::LoadStringW(hResInstance, resourceStringID, _tempBuffer, static_cast<int>(std::size(_tempBuffer)));
+	if (_length <= 0) {
+		resultStr = Constant::String::Null;
+		return false;
+	}
+	else
+		resultStr.SetString(_tempBuffer);
+
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	LoadResourceTextFile
+//	Description:	Load resource text file by ID and return the text data
+//  Arguments:		resourceFileID - ID of the file in resource
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+String StringUtils::LoadResourceTextData(UINT resourceFileID)
+{
+	// Empty result text data
+	String resultTextData;
+
+	// Get resource handle
+	HINSTANCE hResInstance = AfxGetResourceHandle();
+	if (hResInstance == NULL) {
+		// Trace error
+		TRACE_ERROR("Error: Get resource handle failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return resultTextData;
+	}
+
+	// Find resource file by ID
+	HRSRC hRes = FindResource(hResInstance, MAKEINTRESOURCE(resourceFileID), RT_RCDATA);
+	if (hRes != NULL) {
+
+		// Load resource data
+		HGLOBAL hData = LoadResource(hResInstance, hRes);
+		if (hData != NULL) {
+
+			// Convert data to text data
+			const wchar_t* dataBuffer = static_cast<LPCTSTR>(LockResource(hData));
+			resultTextData = dataBuffer;
+		}
+	}
+
+	return resultTextData;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetApplicationPath
+//	Description:	Get application executable file path
+//  Arguments:		includeExeName - Including executable file name
+//  Return value:	String - Return application path
+//
+//////////////////////////////////////////////////////////////////////////
+
+String StringUtils::GetApplicationPath(bool includeExeName)
+{
+	// Get the application's module handle
+	HMODULE hModule = GetModuleHandle(NULL);
+
+	// Get the full path of the executable file of the module
+	wchar_t appPathBuffer[MAX_PATH];
+	if (!GetModuleFileName(hModule, appPathBuffer, MAX_PATH)) {
+		// Trace error
+		TRACE_FORMAT("Error: Get module file name failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return Constant::String::Empty;
+	}
+
+	// Full path result
+	String retAppPath(appPathBuffer);
+
+	// If not including the executable file name
+	if (!includeExeName) {
+		// Remove the executable file name (and the last '\' as well)
+		int nPos = retAppPath.ReverseFind(Constant::Char::Backslash);
+		if (nPos != INT_INVALID) {
+			String strTemp = retAppPath.Left(nPos);
+			retAppPath = strTemp;
+		}
+	}
+
+	return retAppPath;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetSubFolderPath
+//	Description:	Get full sub-folder path
+//  Arguments:		lpszSubFolderName - Subfolder name
+//  Return value:	LPCTSTR
+//
+//////////////////////////////////////////////////////////////////////////
+
+String StringUtils::GetSubFolderPath(const wchar_t* subFolderName)
+{
+	// Get application executable file path
+	String appPath = GetApplicationPath(FALSE);
+
+	// Initialize result string
+	String retSubFolderPath;
+
+	// Make sub-folder path
+	retSubFolderPath = appPath;
+	if (subFolderName) {
+		retSubFolderPath.Append(Constant::Symbol::Backslash);
+		retSubFolderPath.Append(subFolderName);
+	}
+
+	return retSubFolderPath;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	MakeFilePath
+//	Description:	Make file path by given part names
+//  Arguments:		directory - Directory path
+//					fileName  - File name
+//					extension - File extension
+//  Return value:	String
+//
+//////////////////////////////////////////////////////////////////////////
+
+String StringUtils::MakeFilePath(const wchar_t* directory, const wchar_t* fileName, const wchar_t* extension)
+{
+	// Format file path
+	String strFilePath;
+
+	// Directory path, it may or may not be specified
+	// If not specified, it means targeted file is in the same folder with executable file
+	if (directory) {
+		// Add directory path
+		strFilePath.Append(directory);
+		strFilePath.Append(Constant::Symbol::Backslash);
+	}
+
+	// File name must be specified
+	if (fileName) {
+		strFilePath.Append(fileName);
+	}
+	else {
+		strFilePath.Empty();
+		return strFilePath;
+	}
+
+	// File extension, it may or may not be specified
+	// If not specified, it means targeted file has no extension
+	if (extension) {
+		// Add file extension
+		strFilePath.Append(extension);
+	}
+
+	return strFilePath;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetProductVersion
+//	Description:	Get app executable file product version info
+//  Arguments:		isFullVersion - Full product version number (x.x.x.x) 
+//								    or short version number (x.x)
+//  Return value:	String - Product version string
+//
+//////////////////////////////////////////////////////////////////////////
+
+String StringUtils::GetProductVersion(bool isFullVersion)
+{
+	// Get product file name
+	String productFileName = StringUtils::MakeFilePath(NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE);
+	if (productFileName.IsEmpty()) {
+		// Trace error
+		TRACE_ERROR("Error: Make file path failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return Constant::String::Empty;
+	}
+
+	// Get file version info size
+	DWORD dwHandle;
+	DWORD dwSize = GetFileVersionInfoSize(productFileName, &dwHandle);
+	if (dwSize <= 0) {
+		// Trace error
+		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return Constant::String::Empty;
+	}
+
+	// Get file verision info structure
+	BYTE* pVersionInfo = new BYTE[dwSize];
+	if (!GetFileVersionInfo(productFileName, dwHandle, dwSize, pVersionInfo)) {
+		// Trace error
+		TRACE_FORMAT("Error: Get file version info failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+
+		delete[] pVersionInfo;
+		return Constant::String::Empty;
+	}
+
+	// Querry version value
+	UINT uLen;
+	VS_FIXEDFILEINFO* lpFfi;
+	if (!VerQueryValue(pVersionInfo, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &uLen)) {
+		// Trace error
+		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+
+		delete[] pVersionInfo;
+		return Constant::String::Empty;
+	}
+
+	// Result product version
+	String productVersion;
+
+	// Get product version successfully
+	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
+	DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
+	if (isFullVersion) {
+		// Get full product version number (x.x.x.x)
+		productVersion.Format(_T("%d.%d.%d.%d"),
+			HIWORD(dwProductVersionMS),
+			LOWORD(dwProductVersionMS),
+			HIWORD(dwProductVersionLS),
+			LOWORD(dwProductVersionLS));
+	}
+	else {
+		// Get short product version number (x.x)
+		productVersion.Format(_T("%d.%d"),
+			HIWORD(dwProductVersionMS),
+			LOWORD(dwProductVersionMS));
+	}
+
+	delete[] pVersionInfo;
+
+	return productVersion;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetProductVersion
+//	Description:	Get app executable file product version info
+//  Arguments:		fullVersion  - Full product version number (x.x.x.x) 
+//					shortVersion - Short product version number (x.x)
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+bool StringUtils::GetProductVersion(String& fullVersion, String& shortVersion)
+{
+	// Get product file name
+	String productFileName = StringUtils::MakeFilePath(NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE);
+	if (productFileName.IsEmpty()) {
+		// Trace error
+		TRACE_ERROR("Error: Make file path failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return false;
+	}
+
+	// Get product version info size
+	DWORD dwHandle;
+	DWORD dwSize = GetFileVersionInfoSize(productFileName, &dwHandle);
+	if (dwSize <= 0) {
+		// Trace error
+		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return false;
+	}
+
+	// Get product version info structure
+	BYTE* pVersionInfo = new BYTE[dwSize];
+	if (!GetFileVersionInfo(productFileName, dwHandle, dwSize, pVersionInfo)) {
+		// Trace error
+		TRACE_FORMAT("Error: Get file version info structure failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+
+		delete[] pVersionInfo;
+		return false;
+	}
+
+	// Querry version value
+	UINT uLen;
+	VS_FIXEDFILEINFO* lpFfi;
+	if (!VerQueryValue(pVersionInfo, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &uLen)) {
+		// Trace error
+		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+
+		delete[] pVersionInfo;
+		return false;
+	}
+
+	// Empty destination product version strings
+	fullVersion.Empty();
+	shortVersion.Empty();
+
+	// Get product version successfully
+	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
+	DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
+
+	// Get full product version number (x.x.x.x)
+	fullVersion.Format(_T("%d.%d.%d.%d"),
+		HIWORD(dwProductVersionMS),
+		LOWORD(dwProductVersionMS),
+		HIWORD(dwProductVersionLS),
+		LOWORD(dwProductVersionLS));
+
+	// Get short product version number (x.x)
+	shortVersion.Format(_T("%d.%d"),
+		HIWORD(dwProductVersionMS),
+		LOWORD(dwProductVersionMS));
+
+	delete[] pVersionInfo;
+
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetDeviceName
+//	Description:	Get the computer device name
+//  Arguments:		deviceName - Device name (out)
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+bool StringUtils::GetDeviceName(String& deviceName)
+{
+	// Empty the output string
+	deviceName.Empty();
+
+	// Get the computer device name
+	wchar_t deviceNameBuffer[MAX_COMPUTERNAME_LENGTH + 1];
+	DWORD dwNameLength = sizeof(deviceNameBuffer) / sizeof(wchar_t);
+	if (!GetComputerName(deviceNameBuffer, &dwNameLength)) {
+		// Trace error
+		TRACE_FORMAT("Error: Get computer name failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return false;
+	}
+
+	// Return the computer name
+	deviceName.SetString(deviceNameBuffer);
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetCurrentUserName
+//	Description:	Get the current Windows user name
+//  Arguments:		userName - User name (out)
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+bool StringUtils::GetCurrentUserName(String& userName)
+{
+	// Empty the output string
+	userName.Empty();
+
+	// Get the current user name
+	wchar_t userNameBuffer[UNLEN + 1];
+	DWORD dwNameLength = sizeof(userNameBuffer) / sizeof(wchar_t);
+	if (!GetUserName(userNameBuffer, &dwNameLength)) {
+		// Trace error
+		TRACE_FORMAT("Error: Get user name failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return false;
+	}
+
+	// Return the user name
+	userName.SetString(userNameBuffer);
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	PrintCharList
+//	Description:	Print list of characters of given string
+//  Arguments:		srcStr	  - Given string
+//					outputStr - Result string
+//  Return value:	int - Number of characters
+//
+//////////////////////////////////////////////////////////////////////////
+
+int StringUtils::PrintCharList(const wchar_t* srcStr, String& outputStr)
+{
+	// Invalid source string
+	if (!srcStr)
+		return INT_INVALID;
+
+	// Get source string
+	String _srcStr(srcStr);
+
+	// Prepare output string
+	outputStr.Empty();
+	outputStr.Append(_T("{ "));
+
+	// Print character list
+	String replaceStr = Constant::String::Empty;
+	int nSrcLength = wcslen(srcStr);
+	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
+		wchar_t ch = _srcStr.At(nIndex);
+		switch (ch)
+		{
+		case Constant::Char::Tab:
+			replaceStr = _T("#TAB");
+			outputStr.Append(replaceStr);
+			break;
+		case Constant::Char::Return:
+			replaceStr = _T("#RET");
+			outputStr.Append(replaceStr);
+			break;
+		case Constant::Char::EndLine:
+			replaceStr = _T("#ENDL");
+			outputStr.Append(replaceStr);
+			break;
+		default:
+			outputStr.AppendChar(ch);
+			break;
+		}
+
+		// Add separator
+		if (nIndex < nSrcLength - 1) {
+			outputStr.Append(_T(", "));
+		}
+	}
+
+	// End result
+	outputStr.Append(_T(" }"));
+
+	return nSrcLength;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	PerformanceCounter
 //	Description:	Constructor
 //
@@ -3114,31 +3671,31 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 // 
 //	Function name:	TraceError
 //	Description:	Output exception/error trace log string to log file
-//  Arguments:		lpszTraceLogA - Output trace log string (ANSI)
+//  Arguments:		traceLogA - Output trace log string (ANSI)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::TraceError(LPCSTR lpszTraceLogA)
+void AppCore::TraceError(const char* traceLogA)
 {
 	// Convert ANSI string to UNICODE
-	LPCTSTR lpszTraceLogW = MAKEUNICODE(lpszTraceLogA);
-	TraceError(lpszTraceLogW);
+	const wchar_t* traceLogW = MAKEUNICODE(traceLogA);
+	TraceError(traceLogW);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	TraceError
 //	Description:	Output exception/error trace log string to log file
-//  Arguments:		lpszTraceLogW - Output trace log string (Unicode)
+//  Arguments:		traceLogW - Output trace log string (Unicode)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::TraceError(LPCTSTR lpszTraceLogW)
+void AppCore::TraceError(const wchar_t* traceLogW)
 {
 	// Write trace log file: TraceError.log
-	WriteTraceErrorLogFile(lpszTraceLogW);
+	WriteTraceErrorLogFile(traceLogW);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3151,16 +3708,16 @@ void AppCore::TraceError(LPCTSTR lpszTraceLogW)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::TraceErrorFormat(LPCSTR lpszTraceLogFormatA, ...)
+void AppCore::TraceErrorFormat(const char* traceLogFormatA, ...)
 {
-	ATLASSERT(AtlIsValidString(lpszTraceLogFormatA));
+	ATLASSERT(AtlIsValidString(traceLogFormatA));
 
 	// Format source string (ANSI)
 	CStringA strLogFormatA;
 
 	va_list argList;
-	va_start(argList, lpszTraceLogFormatA);
-	strLogFormatA.FormatV(lpszTraceLogFormatA, argList);
+	va_start(argList, traceLogFormatA);
+	strLogFormatA.FormatV(traceLogFormatA, argList);
 	va_end(argList);
 
 	// Output trace log
@@ -3177,16 +3734,16 @@ void AppCore::TraceErrorFormat(LPCSTR lpszTraceLogFormatA, ...)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::TraceErrorFormat(LPCTSTR lpszTraceLogFormatW, ...)
+void AppCore::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
 {
-	ATLASSERT(AtlIsValidString(lpszTraceLogFormatW));
+	ATLASSERT(AtlIsValidString(traceLogFormatW));
 
 	// Format source string (Unicode)
 	CString strLogFormatW;
 
 	va_list argList;
-	va_start(argList, lpszTraceLogFormatW);
-	strLogFormatW.FormatV(lpszTraceLogFormatW, argList);
+	va_start(argList, traceLogFormatW);
+	strLogFormatW.FormatV(traceLogFormatW, argList);
 	va_end(argList);
 
 	// Output trace log
@@ -3204,43 +3761,42 @@ void AppCore::TraceErrorFormat(LPCTSTR lpszTraceLogFormatW, ...)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex)
+void AppCore::TraceDebugInfo(const char* funcName, const char* fileName, int lineIndex)
 {
 	// Debug trace info
-	const wchar_t* funcName = MAKEUNICODE(lpszFuncName);
-	const wchar_t* fileName = MAKEUNICODE(lpszFileName);
+	const wchar_t* _funcName = MAKEUNICODE(funcName);
+	const wchar_t* _fileName = MAKEUNICODE(fileName);
 
 	// Format debug trace log
-	CString strDebugTraceFormat;
-	strDebugTraceFormat.Format(_T("Function: %s, File: %s(%d)"), funcName, fileName, nLineIndex);
+	String debugTraceFormat = StringUtils::StringFormat(_T("Function: %s, File: %s(%d)"), _funcName, _fileName, lineIndex);
 
 	// Write debug trace log: TraceDebug.log
-	WriteTraceDebugLogFile(strDebugTraceFormat.GetString());
+	WriteTraceDebugLogFile(debugTraceFormat.GetString());
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	OutputDebugLog
 //	Description:	Output debug log string
-//  Arguments:		lpszDebugLog - Debug log string (Unicode)
-//					nForceOutput - Force output target
+//  Arguments:		debugLog	- Debug log string (Unicode)
+//					forceOutput - Force output target
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = INT_INVALID */)
+void AppCore::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_INVALID */)
 {
 	// Get debug mode enable state
 	BOOL bDebugModeEnable = GetDebugMode();
 
 	// Get debug log string
-	CString strDebugLog = lpszDebugLog;
+	CString strDebugLog = debugLog;
 
 	// Get DebugTest tool dialog handle
 	HWND hDebugTestWnd = FindDebugTestDlg();
 
 	// Debug log output target
-	int nDebugOutputTarget = nForceOutput;
+	int nDebugOutputTarget = forceOutput;
 	if (nDebugOutputTarget == INT_INVALID) {
 		nDebugOutputTarget = GetDebugOutputTarget();
 	}
@@ -3279,22 +3835,22 @@ void AppCore::OutputDebugLog(LPCTSTR lpszDebugLog, int nForceOutput /* = INT_INV
 // 
 //	Function name:	OutputDebugLogFormat
 //	Description:	Output debug log string format
-//  Arguments:		lpszDebugLogFormat - Debug log format string (Unicode)
-//					...				   - Same as default MFC Format function
+//  Arguments:		debugLogFormat - Debug log format string (Unicode)
+//					...			   - Same as default MFC Format function
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...)
+void AppCore::OutputDebugLogFormat(const wchar_t* debugLogFormat, ...)
 {
-	ATLASSERT(AtlIsValidString(lpszDebugLogFormat));
+	ATLASSERT(AtlIsValidString(debugLogFormat));
 
 	// Format source string
 	CString strLogFormat;
 
 	va_list argList;
-	va_start(argList, lpszDebugLogFormat);
-	strLogFormat.FormatV(lpszDebugLogFormat, argList);
+	va_start(argList, debugLogFormat);
+	strLogFormat.FormatV(debugLogFormat, argList);
 	va_end(argList);
 
 	// Output debug string
@@ -3312,16 +3868,16 @@ void AppCore::OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::OutputDebugStringFormat(LPCTSTR lpszDebugStringFormat, ...)
+void AppCore::OutputDebugStringFormat(const wchar_t* debugStringFormat, ...)
 {
-	ATLASSERT(AtlIsValidString(lpszDebugStringFormat));
+	ATLASSERT(AtlIsValidString(debugStringFormat));
 
 	// Format source string
 	CString strStringFormat;
 
 	va_list argList;
-	va_start(argList, lpszDebugStringFormat);
-	strStringFormat.FormatV(lpszDebugStringFormat, argList);
+	va_start(argList, debugStringFormat);
+	strStringFormat.FormatV(debugStringFormat, argList);
 	va_end(argList);
 
 	// Output debug string
@@ -3352,11 +3908,10 @@ static BOOL InitTraceErrorLogFile(void)
 	NULL_POINTER_BREAK(pTraceErrorLogFile, return FALSE);
 
 	// Log folder path
-	CString strFolderPath = AppCore::GetSubFolderPath(SUBFOLDER_LOG);
+	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Log file path
-	CString strFilePath;
-	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	while (pTraceErrorLogFile->m_hFile == CFile::hFileNull) {
@@ -3443,11 +3998,10 @@ static BOOL InitTraceDebugLogFile(void)
 	NULL_POINTER_BREAK(pTraceDebugLogFile, return FALSE);
 
 	// Log folder path
-	CString strFolderPath = AppCore::GetSubFolderPath(SUBFOLDER_LOG);
+	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Log file path
-	CString strFilePath;
-	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
+	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	while (pTraceDebugLogFile->m_hFile == CFile::hFileNull) {
@@ -3535,11 +4089,10 @@ static BOOL InitDebugInfoLogFile(void)
 	NULL_POINTER_BREAK(pDebugInfoLogFile, return FALSE);
 
 	// Log folder path
-	CString strFolderPath = AppCore::GetSubFolderPath(SUBFOLDER_LOG);
+	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Log file path
-	CString strFilePath;
-	AppCore::MakeFilePath(strFilePath, strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
+	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
 
 	// If the log file is not being opened
 	while (pDebugInfoLogFile->m_hFile == CFile::hFileNull) {
@@ -3606,39 +4159,36 @@ inline void ReleaseDebugInfoLogFile(void)
 // 
 //	Function name:	BackupOldLogFile
 //	Description:	Backup old log file
-//  Arguments:		strFilePath		- File path (in/out)
-//					lpszLogFileName	- Log file name
+//  Arguments:		filePath	- File path (in/out)
+//					logFileName	- Log file name
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
+BOOL AppCore::BackupOldLogFile(String& filePath, const wchar_t* logFileName)
 {
 	CFileFind Finder;
-	CString strBakFilePath;
-	CString strFilePathTemp;
 
 	// If file path is not specified, do nothing
-	if (strFilePath.IsEmpty()) return FALSE;
+	if (filePath.IsEmpty()) return FALSE;
 
 	// Log folder path
-	CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
+	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Search for backup file list
 	for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
 		
 		// Make backup file path template
-		if (!MakeFilePath(strFilePathTemp, strFolderPath, lpszLogFileName, FILEEXT_BAKLOGFILE))
+		String filePathTemp = StringUtils::MakeFilePath(folderPath, logFileName, FILEEXT_BAKLOGFILE);
+		if (filePathTemp.IsEmpty())
 			return FALSE;
 
-		// If backup file path template is empty, do nothing
-		if (strFilePathTemp.IsEmpty()) return FALSE;
-
 		// Format backup file path
-		strBakFilePath.Format(strFilePathTemp, nNum);
+		String bakFilePath;
+		bakFilePath.Format(filePathTemp, nNum);
 
 		// Check if file has already existed
-		if (Finder.FindFile(strBakFilePath) == TRUE) {
+		if (Finder.FindFile(bakFilePath) == TRUE) {
 
 			// If backup file number exceeded the limit, can not backup more
 			if (nNum == (Constant::Max::BackupFileNumber - 1)) return FALSE;
@@ -3646,7 +4196,7 @@ BOOL AppCore::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 		}
 
 		// Rename file
-		CFile::Rename(strFilePath, strBakFilePath);
+		CFile::Rename(filePath, bakFilePath);
 		break;
 	}
 
@@ -3657,14 +4207,14 @@ BOOL AppCore::BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName)
 // 
 //	Function name:	WriteTraceErrorLogFile
 //	Description:	Write trace error log string to file
-//  Arguments:		lpszLogStringW	- Log string
+//  Arguments:		logStringW	- Log string
 //  Return value:	None
 //	Notes:			TraceError.log
 //					File to output trace error detail log strings
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
+void AppCore::WriteTraceErrorLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
@@ -3678,7 +4228,7 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), lpszLogStringW, Constant::String::Empty);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
 	if (strLogFormat.IsEmpty())
@@ -3711,9 +4261,8 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 			pTraceErrorLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			CString strOrgFilePath;
-			CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
-			MakeFilePath(strOrgFilePath, strFolderPath.GetString(), FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath.GetString(), FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
 			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_ERROR_LOG))
 				return;
 
@@ -3729,7 +4278,7 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 // 
 //	Function name:	WriteTraceDebugLogFile
 //	Description:	Write trace debug log string to file
-//  Arguments:		lpszLogStringW	- Log string
+//  Arguments:		logStringW	- Log string
 //  Return value:	None
 //	Notes:			TraceDebug.log
 //					File to output trace debug log strings (including 
@@ -3737,7 +4286,7 @@ void AppCore::WriteTraceErrorLogFile(LPCTSTR lpszLogStringW)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
+void AppCore::WriteTraceDebugLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
@@ -3751,7 +4300,7 @@ void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), lpszLogStringW, Constant::String::Empty);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
 	if (strLogFormat.IsEmpty()) return;
@@ -3783,9 +4332,8 @@ void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 			pTraceDebugLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			CString strOrgFilePath;
-			CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
-			MakeFilePath(strOrgFilePath, strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
+			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
 			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_DEBUG_LOG))
 				return;
 
@@ -3809,7 +4357,7 @@ void AppCore::WriteTraceDebugLogFile(LPCTSTR lpszLogStringW)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
+void AppCore::WriteDebugInfoLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
 	SYSTEMTIME stTime;
@@ -3823,7 +4371,7 @@ void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), lpszLogStringW, Constant::String::Empty);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
 	if (strLogFormat.IsEmpty()) return;
@@ -3855,9 +4403,8 @@ void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 			pDebugInfoLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			CString strOrgFilePath;
-			CString strFolderPath = GetSubFolderPath(SUBFOLDER_LOG);
-			MakeFilePath(strOrgFilePath, strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
+			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
 			if (!BackupOldLogFile(strOrgFilePath, FILENAME_DEBUG_INFO_LOG))
 				return;
 
@@ -3880,26 +4427,23 @@ void AppCore::WriteDebugInfoLogFile(LPCTSTR lpszLogStringW)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW)
+void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
 {
 	// Log file path
-	CString strFilePath;
-	MakeFilePath(strFilePath, SUBFOLDER_LOG, lpszFileName, FILEEXT_LOGFILE);
+	String strFilePath = StringUtils::MakeFilePath(SUBFOLDER_LOG, fileName, FILEEXT_LOGFILE);
 
 	CFile fTrcDbgLogFile;
 
 	// Check if file is opening, if not, open it
-	if (fTrcDbgLogFile.m_hFile == CFile::hFileNull) {
-		BOOL bResult = TRUE;
-	OPENFILE: {
-			bResult = fTrcDbgLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
-			if (bResult == FALSE) {
-				// Show error message
-				DWORD dwErrorCode = GetLastError();
-				LPARAM lParam = (LPARAM)lpszFileName;
-				ShowErrorMessage(NULL, NULL, dwErrorCode, lParam);
-				return;
-			}
+	while (fTrcDbgLogFile.m_hFile == CFile::hFileNull) {
+
+		BOOL bResult = fTrcDbgLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
+		if (bResult == FALSE) {
+			// Show error message
+			DWORD dwErrorCode = GetLastError();
+			LPARAM lParam = (LPARAM)fileName;
+			ShowErrorMessage(NULL, NULL, dwErrorCode, lParam);
+			return;
 		}
 
 		// Go to end of file
@@ -3925,7 +4469,7 @@ void AppCore::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogS
 			}
 
 			// Step3: Create new file and reopen
-			goto OPENFILE;
+			continue;
 		}
 	}
 
@@ -3941,7 +4485,7 @@ void AppCore::WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogS
 
 	// Format output log string
 	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), lpszLogStringW, Constant::String::Empty);
+	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), logStringW, Constant::String::Empty);
 
 	if (!strLogFormat.IsEmpty()) {
 		// Write log string to file
@@ -4525,14 +5069,11 @@ BOOL AppCore::CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffse
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString	AppCore::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal)
+String	AppCore::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal)
 {
 	// Load format string
-	static CString strFormat;
-	strFormat.Empty();
-	LoadResourceString(strFormat, nFormatID);
-
-	return FormatDispTime(pLang, strFormat, timeVal);
+	String formatString = StringUtils::LoadResourceString(nFormatID);
+	return FormatDispTime(pLang, formatString, timeVal);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4542,11 +5083,11 @@ CString	AppCore::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME 
 //  Arguments:		pLang			 - Language table pointer
 //					lpszFormatString - Format string
 //					timeVal			 - Given time value
-//  Return value:	CString	- Format time string
+//  Return value:	String	- Format time string
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString	AppCore::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString, SYSTEMTIME timeVal)
+String	AppCore::FormatDispTime(LANGTABLE_PTR pLang, const wchar_t* formatString, SYSTEMTIME timeVal)
 {
 	// Format time string
 	UINT nTimePeriod = (timeVal.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
@@ -4554,790 +5095,12 @@ CString	AppCore::FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString, S
 	WORD wHour = (timeVal.wHour > 12) ? (timeVal.wHour - 12) : timeVal.wHour;
 	WORD wMinute = timeVal.wMinute;
 
-	static CString strResult;
-	strResult.Empty();
-	strResult.Format(lpszFormatString, wHour, wMinute, timePeriodFormat);
-
-	return strResult;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadResourceString
-//	Description:	Load resource ID and return the string
-//  Arguments:		nResStringID - ID of resource string
-//  Return value:	LPCTSTR	- Returned resource string
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR AppCore::LoadResourceString(UINT nResStringID)
-{
-	// Output result
-	static CString strResult;
-	strResult.Empty();
-
-	// Load resource string
-	BOOL bRet = strResult.LoadString(nResStringID);
-	if (bRet == FALSE) {
-		// Null string
-		strResult = Constant::String::Null;
-	}
-
-	return strResult.GetString();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadResourceString
-//	Description:	Load resource ID and return the string
-//  Arguments:		strResult	 - Returned resource string
-//					nResStringID - ID of resource string
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::LoadResourceString(CString& strResult, UINT nResStringID)
-{
-	BOOL bRet = strResult.LoadString(nResStringID);
-	if (bRet == FALSE) {
-		// Null string
-		strResult = Constant::String::Null;
-	}
-
-	return bRet;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadResourceTextFile
-//	Description:	Load resource text file by ID and return the text data
-//  Arguments:		strTextData		- Returned file's text data
-//					nResourceFileID - ID of the file in resource
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::LoadResourceTextFile(CString& strTextData, UINT nResourceFileID)
-{
-	// Empty result text data
-	strTextData.Empty();
-
-	// Get resource handle
-	HINSTANCE hResInstance = AfxGetResourceHandle();
-	if (hResInstance == NULL) {
-		// Trace error
-		TRACE_ERROR("Error: Get resource handle failed!!!");
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
-	}
-
-	// Find resource file by ID
-	HRSRC hRes = FindResource(hResInstance, MAKEINTRESOURCE(nResourceFileID), RT_RCDATA);
-	if (hRes != NULL) {
-
-		// Load resource data
-		HGLOBAL hData = LoadResource(hResInstance, hRes);
-		if (hData != NULL) {
-
-			// Get text data size
-			DWORD dwSize = SizeofResource(hResInstance, hRes);
-
-			// Convert data to text data
-			LPCTSTR lpData = static_cast<LPCTSTR>(LockResource(hData));
-			strTextData = CString(lpData, dwSize);
-
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-#ifdef _GET_TOKEN_LIST
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetTokenList
-//	Description:	Get token list from given string buffer
-//  Arguments:		lpszBuff	 - Given string
-//					retBuff		 - Returned token list
-//					lpszKeyChars - Key characters
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
-int	AppCore::GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars)
-{
-	// Get length
-	int nBuffLength = _tcslen(lpszBuff);
-	int nKeyLength = _tcslen(lpszKeyChars);
-
-	// Re-format given string buffer
-	int nBuffIndex = 0;
-	for (int nIndex = 0; nIndex < nBuffLength; nIndex++) {
-
-		// Invalid characters
-		if ((lpszBuff[nIndex] == Constant::Char::EndLine) ||
-			(lpszBuff[nIndex] == Constant::Char::Return))
-			continue;
-
-		// Keep valid characters only
-		lpszBuff[nBuffIndex] = lpszBuff[nIndex];
-		nBuffIndex++;
-
-		// End string
-		if (lpszBuff[nBuffIndex] == Constant::Char::EndString)
-			break;
-	}
-
-	// Index and flag
-	int nCurCharIndex = 0;
-	int nTokenCount = 0, nTokenCharIndex = 0;
-	int nQuoteFlag = 0;
-
-	// Loop through given string buffer and separate tokens
-	while ((nCurCharIndex <= nBuffLength) && (nCurCharIndex < Constant::Max::BufferLength)) {
-
-		// Init flag OFF
-		int nKeyFlag = FLAG_OFF;
-
-		// Get current character
-		TCHAR tcCurChar = lpszBuff[nCurCharIndex];
-
-		// In case of newline character
-		if ((tcCurChar == Constant::Char::EndLine) || (tcCurChar == Constant::Char::Return)) {
-
-			// Go to next character
-			nCurCharIndex++;
-			continue;
-		}
-
-		// In case of quotation mark
-		if (tcCurChar == Constant::Char::QuotaMark) {
-
-			// Change flag
-			nQuoteFlag = (nQuoteFlag == FLAG_OFF) ? FLAG_ON : FLAG_OFF;
-		}
-
-		// If not in a quotation
-		if (nQuoteFlag == FLAG_OFF) {
-
-			// Loop through key string and find keychar match
-			for (int nKeyIndex = 0; nKeyIndex < nKeyLength; nKeyIndex++) {
-
-				// If key letter is matched
-				if (tcCurChar == lpszKeyChars[nKeyIndex]) {
-
-					// Mark as ON
-					nKeyFlag = FLAG_ON;
-				}
-			}
-		}
-
-		// If current character is a key letter or end of string
-		if ((nKeyFlag == FLAG_ON) || (tcCurChar == Constant::Char::EndString)) {
-
-			// Empty token means continuous key letters
-			if (nTokenCharIndex > 0) {
-
-				// End current token
-				retBuff[nTokenCount].tcToken[nTokenCharIndex] = Constant::Char::EndString;
-				retBuff[nTokenCount].nLength = _tcsclen(retBuff[nTokenCount].tcToken);
-				nTokenCharIndex = 0;
-
-				// Increase token number counter
-				nTokenCount++;
-			}
-		}
-
-		// Current character is the quotation mark itself
-		else if (tcCurChar == Constant::Char::QuotaMark) {
-
-			// If token number exceeds max count, stop processing
-			if (nTokenCount > Constant::Max::TokenNumber)
-				break;
-
-			else {
-				// Go to next character
-				nCurCharIndex++;
-				continue;
-			}
-		}
-
-		// Current character is not a key letter or is in a quotation
-		else {
-			// Add character to current token
-			retBuff[nTokenCount].tcToken[nTokenCharIndex] = tcCurChar;
-			nTokenCharIndex++;
-		}
-
-		// Go to next character
-		nCurCharIndex++;
-
-		// If end of string or token number exceeds maximum limitation, stop processing
-		if ((tcCurChar == Constant::Char::EndString) || (nTokenCount > Constant::Max::TokenNumber))
-			break;
-	}
-
-	// Return number of tokens
-	return (nTokenCount);
-}
-#endif
-
-#ifdef _UPPER_EACH_WORD
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpperEachWord
-//	Description:	Capitalize first character of each word of given string
-//  Arguments:		strInput - Given string (also return as ref-value)
-//					bTrim	 - Trim string (left, right and mid)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void AppCore::UpperEachWord(CString& strInput, BOOL bTrim)
-{
-	// Get string
-	LPTSTR lpszString = strInput.GetBuffer();
-
-	// Get string length
-	int nLength = _tcslen(lpszString);
-	if (nLength <= 0)
-		return;
-
-	// Lambda functions
-	static auto IsNotSpace = [](TCHAR tcChar) { return (!std::isspace(tcChar)); };
-	static auto BothSpaces = [](TCHAR tcFirst, TCHAR tcSecond) {
-		return ((tcFirst == tcSecond) && (tcFirst == Constant::Char::Space));
-		};
-
-	// Trim string
-	if (bTrim == TRUE) {
-		// Use 'std::wstring' methods 
-		std::wstring wstrTemp = lpszString;
-		std::wstring::iterator newend = std::unique(wstrTemp.begin(), wstrTemp.end(), BothSpaces);
-		wstrTemp.erase(newend, wstrTemp.end());
-
-		// Trim left and right
-		wstrTemp.erase(wstrTemp.begin(), std::find_if(wstrTemp.begin(), wstrTemp.end(), IsNotSpace));
-		wstrTemp.erase(std::find_if(wstrTemp.rbegin(), wstrTemp.rend(), IsNotSpace).base(), wstrTemp.end());
-
-		// Copy returned string
-		_tcscpy(lpszString, wstrTemp.c_str());
-		
-		// Update length
-		nLength = _tcslen(lpszString);
-	}
-
-	// Capitalize first character of each word
-	for (int nIndex = 0; nIndex < nLength; nIndex++) {
-		if (lpszString[nIndex] != Constant::Char::Space) {
-			if ((nIndex == 0)	/* First character */ ||
-				/* Not the first character and standing right next to a space */
-				((nIndex > 0) && (lpszString[nIndex - 1] == Constant::Char::Space))) {
-				// Convert to uppercase
-				lpszString[nIndex] = std::toupper(lpszString[nIndex]);
-			}
-		}
-	}
-
-	// Return result
-	strInput.SetString(lpszString);
-	strInput.ReleaseBuffer();
-}
-#endif
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetSubFolderPath
-//	Description:	Get full sub-folder path
-//  Arguments:		lpszSubFolderName - Subfolder name
-//  Return value:	LPCTSTR
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR AppCore::GetSubFolderPath(LPCTSTR lpszSubFolderName)
-{
-	// Get application executable file path
-	static CString strAppPath;
-	if (strAppPath.IsEmpty()) {
-		strAppPath = GetApplicationPath(FALSE);
-	}
-
-	// Initialize result string
-	static CString strRetSubFolderPath;
-	strRetSubFolderPath.Empty();
-
-	// Make sub-folder path
-	strRetSubFolderPath.SetString(strAppPath);
-	if (lpszSubFolderName != NULL) {
-		strRetSubFolderPath.Append(Constant::Symbol::Backslash);
-		strRetSubFolderPath.Append(lpszSubFolderName);
-	}
-
-	return strRetSubFolderPath.GetString();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	MakeFilePath
-//	Description:	Make file path by given part names
-//  Arguments:		strOutput	  - Output file path
-//					lpszDirectory - Directory path
-//					lpszFileName  - File name
-//					lpszExtension - File extension
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension)
-{
-	// Format file path
-	CString strFilePath;
-
-	// Directory path, it may or may not be specified
-	// If not specified, it means targeted file is in the same folder with executable file
-	if (lpszDirectory != NULL) {
-		// Add directory path
-		strFilePath.Append(lpszDirectory);
-		strFilePath.Append(Constant::Symbol::Backslash);
-	}
-
-	// File name must be specified, if not, do nothing
-	if (lpszFileName == NULL) return FALSE;
-	else {
-		// Add file name
-		strFilePath.Append(lpszFileName);
-	}
-
-	// File extension, it may or may not be specified
-	// If not specified, it means targeted file has no extension
-	if (lpszExtension != NULL) {
-		// Add file extension
-		strFilePath.Append(lpszExtension);
-	}
-
-	// Return output path
-	strOutput = strFilePath;
-
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PrintCharList
-//	Description:	Print list of characters of given string
-//  Arguments:		lpszSrc	  - Given string
-//					strOutput - Result string
-//  Return value:	int - Number of characters
-//
-//////////////////////////////////////////////////////////////////////////
-
-int AppCore::PrintCharList(LPCTSTR lpszSrc, CString& strOutput)
-{
-	// Invalid source string
-	if (lpszSrc == NULL)
-		return INT_INVALID;
-
-	// Prepare output string
-	strOutput.Empty();
-	strOutput.Append(_T("{ "));
-
-	// Print character list
-	CString strReplace = Constant::String::Empty;
-	int nSrcLength = _tcslen(lpszSrc);
-	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
-		TCHAR tch = lpszSrc[nIndex];
-		switch (tch)
-		{
-		case Constant::Char::Tab:
-			strReplace = _T("#TAB");
-			strOutput.Append(strReplace);
-			break;
-		case Constant::Char::Return:
-			strReplace = _T("#RET");
-			strOutput.Append(strReplace);
-			break;
-		case Constant::Char::EndLine:
-			strReplace = _T("#ENDL");
-			strOutput.Append(strReplace);
-			break;
-		default:
-			strOutput.AppendChar(tch);
-			break;
-		}
-
-		// Add separator
-		if (nIndex < nSrcLength - 1) {
-			strOutput.Append(_T(", "));
-		}
-	}
-
-	// End result
-	strOutput.Append(_T(" }"));
-
-	return nSrcLength;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	StringFormat
-//	Description:	Format string (same as default MFC Format function)
-//  Arguments:		nFormatTemplateID  - ID of resource format template string
-//					...				   - Same as default MFC Format function
-//  Return value:	LPCTSTR	- Returned formatted string
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR AppCore::StringFormat(UINT nFormatTemplateID, ...)
-{
-	// Load resource format template string
-	CString strTemplate;
-	VERIFY(strTemplate.LoadString(nFormatTemplateID));
-	if (strTemplate.IsEmpty()) return Constant::String::Empty;
-
-	// Template string validation
-	ATLASSERT(AtlIsValidString(strTemplate));
-
-	// Result string
-	static CString strResult;
-	strResult.Empty();
-
-	// Format string
-	va_list argList;
-	va_start(argList, strTemplate.GetString());
-	strResult.FormatV(strTemplate, argList);
-	va_end(argList);
-
-	return strResult.GetString();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	StringFormat
-//	Description:	Format string (same as default MFC Format function)
-//  Arguments:		lpszFormatTemplate - Format template string
-//					...				   - Same as default MFC Format function
-//  Return value:	LPCTSTR	- Returned formatted string
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR AppCore::StringFormat(LPCTSTR lpszFormatTemplate, ...)
-{
-	// Template string validation
-	ATLASSERT(AtlIsValidString(lpszFormatTemplate));
-
-	// Result string
-	static CString strResult;
-	strResult.Empty();
-
-	// Format string
-	va_list argList;
-	va_start(argList, lpszFormatTemplate);
-	strResult.FormatV(lpszFormatTemplate, argList);
-	va_end(argList);
-
-	return strResult.GetString();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SubString
-//	Description:	Get a substring from a source string
-//  Arguments:		lpszSrc		 - Source string
-//					subDest		 - Destination substring data
-//					tcFirstChar	 - First separator character
-//					tcLastChar	 - Last separator character
-//					bIncSepChar	 - Include separator characters
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::SubString(LPCTSTR lpszSrc, Substring& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL /* bIncSepChar = FALSE */ )
-{
-	CString strSrc(lpszSrc);
-
-	// Empty destination data
-	subDest.RemoveAll();
-
-	// If source string is empty
-	if (strSrc.IsEmpty()) {
-		TRACE_ERROR("Error: Source string is empty!!!");
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
-	}
-
-	// Find starting and ending character index
-	size_t nFirstIndex = (tcFirstChar != NULL) ? (strSrc.Find(tcFirstChar)) : INT_INVALID;
-	size_t nLastIndex = (tcLastChar != NULL) ? (strSrc.ReverseFind(tcLastChar)) : INT_INVALID;
-
-	// Debug log
-	OutputDebugStringFormat(_T("[ALSTest] ==> GetSubString: nFirstIndex=%d, nLastIndex=%d"), nFirstIndex, nLastIndex);
-
-	// Temporary output data
-	Substring subResult;
-
-	/**********************************************************************************************************/
-	/*                                                                                                        */
-	/*	Visualize how to get substring parts                                                                  */
-	/*	Example:                                                                                              */
-	/*				Source string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  --> Length = 26                             */
-	/*				Case #1:                                                                                  */
-	/*						First character = 'E' --> Index = 4                                               */
-	/*						Last character = 'R'  --> Index = 17                                              */
-	/*					Output:                                                                               */
-	/*							Left	= "ABCD"			--> Range = [0 -> 3]	--> Count = 4             */
-	/*							Middle	= "FGHIJKLMNOPQ"	--> Range = [5 -> 16]	--> Count = 12            */
-	/*							Right	= "STUVWXYZ"		--> Range = [18 -> 25]	--> Count = 8             */
-	/*				Case #2:                                                                                  */
-	/*						First character = '?' --> Index = -1                                              */
-	/*						Last character = 'M'  --> Index = 12                                              */
-	/*					Output:                                                                               */
-	/*							Left	= "ABCDEFGHIJKL"	--> Range = [0 -> 11]	--> Count = 12            */
-	/*							Middle	= Empty                                                               */
-	/*							Right	= "NOPQRSTUVWXYZ"	--> Range = [13 -> 25]	--> Count = 13            */
-	/*				Case #3:                                                                                  */
-	/*						First character = 'K' --> Index = 10                                              */
-	/*						Last character = '?'  --> Index = -1                                              */
-	/*					Output:                                                                               */
-	/*							Left	= "ABCDEFGHIJ"		--> Range = [0 -> 9]	--> Count = 10            */
-	/*							Middle	= Empty                                                               */
-	/*							Right	= "LMNOPQRSTUVWXYZ"	--> Range = [11 -> 25]	--> Count = 15            */
-	/*                                                                                                        */
-	/**********************************************************************************************************/
-
-	// Get substring parts
-	if ((nFirstIndex != INT_INVALID) && (nLastIndex != INT_INVALID)) {
-
-		// Case #1:
-		subResult.SetLeft(strSrc.Left(nFirstIndex));
-		subResult.SetMid(strSrc.Mid((nFirstIndex + 1), (nLastIndex - nFirstIndex)));
-		subResult.SetRight(strSrc.Right(strSrc.GetLength() - (nLastIndex + 1)));
-	}
-	else if ((nFirstIndex == INT_INVALID) && (nLastIndex != INT_INVALID)) {
-
-		// Case #2:
-		subResult.SetLeft(strSrc.Left(nLastIndex));
-		subResult.SetMid(Constant::String::Empty);
-		subResult.SetRight(strSrc.Right(strSrc.GetLength() - (nLastIndex + 1)));
-	}
-	else if ((nFirstIndex != INT_INVALID) && (nLastIndex == INT_INVALID)) {
-
-		// Case #3:
-		subResult.SetLeft(strSrc.Left(nFirstIndex));
-		subResult.SetMid(Constant::String::Empty);
-		subResult.SetRight(strSrc.Right(strSrc.GetLength() - (nFirstIndex + 1)));
-	}
-
-	// Get result
-	BOOL bRet = (!subResult.IsEmpty());
-	if (bRet != FALSE) {
-
-		// Trim spaces
-		subResult.TrimAll();
-
-		// Copy output result
-		subDest.Copy(subResult);
-	}
-
-	return bRet;
+	String resultString = StringUtils::StringFormat(formatString, wHour, wMinute, timePeriodFormat);
+	return resultString;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // Additional functions
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetApplicationPath
-//	Description:	Get application executable file path
-//  Arguments:		bIncludeExeName - Including executable file name
-//  Return value:	LPCTSTR - Return application path
-//
-//////////////////////////////////////////////////////////////////////////
-
-LPCTSTR AppCore::GetApplicationPath(BOOL bIncludeExeName)
-{
-	// Get the application's module handle
-	HMODULE hModule = GetModuleHandle(NULL);
-
-	// Get the full path of the executable file of the module
-	TCHAR tcAppPath[MAX_PATH];
-	if (!GetModuleFileName(hModule, tcAppPath, MAX_PATH)) {
-		// Trace error
-		TRACE_FORMAT("Error: Get module file name failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return Constant::String::Empty;
-	}
-
-	// Full path result
-	static CString strRetAppPath;
-	strRetAppPath.Empty();
-	strRetAppPath = tcAppPath;
-
-	// If not including the executable file name
-	if (bIncludeExeName != TRUE) {
-		// Remove the executable file name (and the last '\' as well)
-		int nPos = strRetAppPath.ReverseFind(Constant::Char::Backslash);
-		if (nPos != INT_INVALID) {
-			CString strTemp = strRetAppPath.Left(nPos);
-			strRetAppPath = strTemp;
-		}
-	}
-
-	return strRetAppPath.GetString();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetProductVersion
-//	Description:	Get app executable file product version info
-//  Arguments:		bFullVersion - Full product version number (x.x.x.x) 
-//								   or short version number (x.x)
-//  Return value:	CString - Product version string
-//
-//////////////////////////////////////////////////////////////////////////
-
-CString AppCore::GetProductVersion(BOOL bFullVersion)
-{
-	// Get product file name
-	CString strProductFileName;
-	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE)) {
-		// Trace error
-		TRACE_ERROR("Error: Make file path failed!!!");
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return Constant::String::Empty;
-	}
-
-	// Get file version info size
-	CString strProductVersion;
-	DWORD dwHandle;
-	DWORD dwSize = GetFileVersionInfoSize(strProductFileName, &dwHandle);
-	if (dwSize <= 0) {
-		// Trace error
-		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return Constant::String::Empty;
-	}
-
-	// Get file verision info structure
-	BYTE* pVersionInfo = new BYTE[dwSize];
-	if (!GetFileVersionInfo(strProductFileName, dwHandle, dwSize, pVersionInfo)) {
-		// Trace error
-		TRACE_FORMAT("Error: Get file version info failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-
-		delete[] pVersionInfo;
-		return Constant::String::Empty;
-	}
-
-	// Querry version value
-	UINT uLen;
-	VS_FIXEDFILEINFO* lpFfi;
-	if (!VerQueryValue(pVersionInfo, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &uLen)) {
-		// Trace error
-		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-
-		delete[] pVersionInfo;
-		return FALSE;
-	}
-
-	// Get product version successfully
-	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
-	DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
-	if (bFullVersion == TRUE) {
-		// Get full product version number (x.x.x.x)
-		strProductVersion.Format(_T("%d.%d.%d.%d"),
-			HIWORD(dwProductVersionMS),
-			LOWORD(dwProductVersionMS),
-			HIWORD(dwProductVersionLS),
-			LOWORD(dwProductVersionLS));
-	}
-	else {
-		// Get short product version number (x.x)
-		strProductVersion.Format(_T("%d.%d"),
-			HIWORD(dwProductVersionMS),
-			LOWORD(dwProductVersionMS));
-	}
-
-	delete[] pVersionInfo;
-
-	return strProductVersion;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetProductVersion
-//	Description:	Get app executable file product version info
-//  Arguments:		strFullVersion  - Full product version number (x.x.x.x) 
-//					strShortVersion	- Short product version number (x.x)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::GetProductVersion(CString& strFullVersion, CString& strShortVersion)
-{
-	// Get product file name
-	CString strProductFileName;
-	if (!MakeFilePath(strProductFileName, NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE)) {
-		// Trace error
-		TRACE_ERROR("Error: Make file path failed!!!");
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
-	}
-
-	// Get product version info size
-	DWORD dwHandle;
-	DWORD dwSize = GetFileVersionInfoSize(strProductFileName, &dwHandle);
-	if (dwSize <= 0) {
-		// Trace error
-		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
-	}
-
-	// Get product version info structure
-	BYTE* pVersionInfo = new BYTE[dwSize];
-	if (!GetFileVersionInfo(strProductFileName, dwHandle, dwSize, pVersionInfo)) {
-		// Trace error
-		TRACE_FORMAT("Error: Get file version info structure failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-
-		delete[] pVersionInfo;
-		return FALSE;
-	}
-
-	// Querry version value
-	UINT uLen;
-	VS_FIXEDFILEINFO* lpFfi;
-	if (!VerQueryValue(pVersionInfo, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &uLen)) {
-		// Trace error
-		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-
-		delete[] pVersionInfo;
-		return FALSE;
-	}
-
-	// Get product version successfully
-	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
-	DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
-
-	// Get full product version number (x.x.x.x)
-	strFullVersion.Format(_T("%d.%d.%d.%d"),
-		HIWORD(dwProductVersionMS),
-		LOWORD(dwProductVersionMS),
-		HIWORD(dwProductVersionLS),
-		LOWORD(dwProductVersionLS));
-
-	// Get short product version number (x.x)
-	strShortVersion.Format(_T("%d.%d"),
-		HIWORD(dwProductVersionMS),
-		LOWORD(dwProductVersionMS));
-
-	delete[] pVersionInfo;
-
-	return TRUE;
-}
 
 //////////////////////////////////////////////////////////////////////////
 // 
@@ -5397,64 +5160,6 @@ UINT AppCore::GetWindowsOSVersion(void)
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	GetDeviceName
-//	Description:	Get the computer device name
-//  Arguments:		strDeviceName - Device name (out)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::GetDeviceName(CString& strDeviceName)
-{
-	// Empty the output string
-	strDeviceName.Empty();
-
-	// Get the computer device name
-	TCHAR tcDeviceName[MAX_COMPUTERNAME_LENGTH + 1];
-	DWORD dwNameLength = sizeof(tcDeviceName) / sizeof(TCHAR);
-	if (!GetComputerName(tcDeviceName, &dwNameLength)) {
-		// Trace error
-		TRACE_FORMAT("Error: Get computer name failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
-	}
-
-	// Return the computer name
-	strDeviceName = tcDeviceName;
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCurrentUserName
-//	Description:	Get the current Windows user name
-//  Arguments:		strUserName - User name (out)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::GetCurrentUserName(CString& strUserName)
-{
-	// Empty the output string
-	strUserName.Empty();
-
-	// Get the current user name
-	TCHAR tcUserName[UNLEN + 1];
-	DWORD dwNameLength = sizeof(tcUserName) / sizeof(TCHAR);
-	if (!GetUserName(tcUserName, &dwNameLength)) {
-		// Trace error
-		TRACE_FORMAT("Error: Get user name failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
-	}
-
-	// Return the user name
-	strUserName = tcUserName;
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	AddRegistryKey
 //	Description:	Add new key into registry
 //  Arguments:		regInfo - Registry key info data
@@ -5462,7 +5167,7 @@ BOOL AppCore::GetCurrentUserName(CString& strUserName)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::AddRegistryKey(const REGISTRYINFO& regInfo)
+BOOL AppCore::AddRegistryKey(const RegistryInfo& regInfo)
 {
 	CRegKey regKey;
 	REGISTRYKEY regKeyInfo = regInfo.GetRegistryKey();
@@ -5489,7 +5194,7 @@ BOOL AppCore::AddRegistryKey(const REGISTRYINFO& regInfo)
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR AppCore::MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType /* = RegistryPathType::fullPath */, BOOL bIncRootKey /* = TRUE */)
+LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType /* = RegistryPathType::fullPath */, BOOL bIncRootKey /* = TRUE */)
 {
 	// Check root key info validity
 	if (bIncRootKey != FALSE) {
@@ -5717,20 +5422,20 @@ void AppCore::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 // 
 //	Function name:	FileViewStd
 //	Description:	Open a file to view using external standard fileviewer
-//  Arguments:		eFileType	 - File type
-//					lpszFilePath - Path of file
+//  Arguments:		eFileType - File type
+//					filePath  - Path of file
 //  Return value:	BOOL - Result of file opening process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
+BOOL AppCore::FileViewStd(FILETYPE eFileType, const wchar_t* filePath)
 {
-	CString strAppPath = Constant::String::Empty;
+	String appPath = Constant::String::Empty;
 
 	switch (eFileType) 
 	{
 	case FILETYPE_TEXT:
-		strAppPath = PATH_APP_NOTEPAD;
+		appPath = PATH_APP_NOTEPAD;
 		break;
 	case FILETYPE_IMAGE:
 		break;
@@ -5740,7 +5445,7 @@ BOOL AppCore::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
 
 	// Run a file viewer instance
 	HWND hWnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
-	HINSTANCE hInstance = ShellExecute(hWnd, Constant::Command::Open, strAppPath, lpszFilePath, NULL, SW_SHOW);
+	HINSTANCE hInstance = ShellExecute(hWnd, Constant::Command::Open, appPath, filePath, NULL, SW_SHOW);
 	return (hInstance != NULL);
 }
 
@@ -5748,15 +5453,15 @@ BOOL AppCore::FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath)
 // 
 //	Function name:	OpenWebURL
 //	Description:	Open web URL using default web browser
-//  Arguments:		lpszWebUrl - String of web URL
+//  Arguments:		webUrl - String of web URL
 //  Return value:	BOOL - Result of web URL opening process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::OpenWebURL(LPCTSTR lpszWebUrl)
+BOOL AppCore::OpenWebURL(const wchar_t* webUrl)
 {
 	// Run a web browser instance
-	HINSTANCE hInstance = ShellExecute(0, 0, lpszWebUrl, NULL, NULL, SW_NORMAL);
+	HINSTANCE hInstance = ShellExecute(0, 0, webUrl, NULL, NULL, SW_NORMAL);
 	return (hInstance != NULL);
 }
 
@@ -5764,21 +5469,21 @@ BOOL AppCore::OpenWebURL(LPCTSTR lpszWebUrl)
 // 
 //	Function name:	RunApp
 //	Description:	Run an application by specified path
-//  Arguments:		lpszAppPath - Path of excutive file
+//  Arguments:		appPath		- Path of excutive file
 //					bRunAsAdmin	- Run as admin flag
 //					bShowFlag	- Show window flag
 //  Return value:	LRESULT - Result of app launching process
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT AppCore::RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin /* = FALSE */, BOOL bShowFlag /* = TRUE */)
+LRESULT AppCore::RunApp(const wchar_t* appPath, BOOL bRunAsAdmin /* = FALSE */, BOOL bShowFlag /* = TRUE */)
 {
 	// Param set
-	CString strRunAs = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
+	String runAsFlag = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
 	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
 
 	// Run an executable instance
-	HINSTANCE hInstance = ShellExecute(NULL, strRunAs, lpszAppPath, 0, 0, nShowFlag);
+	HINSTANCE hInstance = ShellExecute(NULL, runAsFlag, appPath, 0, 0, nShowFlag);
 	return (LRESULT)(hInstance != NULL);
 }
 
@@ -5786,25 +5491,24 @@ LRESULT AppCore::RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin /* = FALSE */, BOO
 // 
 //	Function name:	ExecuteCommand
 //	Description:	Execute CMD command
-//  Arguments:		lpszCmd		- Command string
-//					bRunAsAdmin	- Run as admin flag
-//					bShowFlag	- Show window flag
+//  Arguments:		commandString - Command string
+//					bRunAsAdmin	  - Run as admin flag
+//					bShowFlag	  - Show window flag
 //  Return value:	LRESULT - Result of command execution process
 //
 //////////////////////////////////////////////////////////////////////////
 
-LRESULT AppCore::ExecuteCommand(LPCTSTR lpszCommand, BOOL bRunAsAdmin /* = TRUE */, BOOL bShowFlag /* = TRUE */)
+LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, BOOL bRunAsAdmin /* = TRUE */, BOOL bShowFlag /* = TRUE */)
 {
 	// Format input command
-	CString strCommandFormat;
-	strCommandFormat.Format(_T("/C %s"), lpszCommand);
+	String commandFormat = StringUtils::StringFormat(_T("/C %s"), commandString);
 
 	// Flag param set
-	CString strRunAsFlag = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
+	String strRunAsFlag = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
 	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
 
 	// Excute command
-	HINSTANCE hInstance = ShellExecute(NULL, strRunAsFlag, PATH_APP_SYSTEMCMD, strCommandFormat, 0, nShowFlag);
+	HINSTANCE hInstance = ShellExecute(NULL, strRunAsFlag, PATH_APP_SYSTEMCMD, commandFormat, 0, nShowFlag);
 	return (LRESULT)(hInstance != NULL);
 }
 
@@ -5812,15 +5516,15 @@ LRESULT AppCore::ExecuteCommand(LPCTSTR lpszCommand, BOOL bRunAsAdmin /* = TRUE 
 // 
 //	Function name:	CreateAppProcess
 //	Description:	Create app process
-//  Arguments:		lpszAppPath	 - App executable file path
-//					lpszCmdLine	 - Command line
+//  Arguments:		appPath		 - App executable file path
+//					commandLine	 - Command line
 //					nStyle		 - App process style
 //					dwErrorCode	 - Returned error code
 //  Return value:	BOOL
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT nStyle, DWORD& dwErrorCode)
+BOOL AppCore::CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, UINT nStyle, DWORD& dwErrorCode)
 {
 	// Startup info
 	STARTUPINFO StartupInfo;
@@ -5832,7 +5536,7 @@ BOOL AppCore::CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT nSt
 	ZeroMemory(&ProcessInfo, sizeof(PROCESS_INFORMATION));
 
 	// Create process
-	BOOL bResult = CreateProcess(lpszAppPath, lpszCmdLine, (LPSECURITY_ATTRIBUTES)NULL,
+	BOOL bResult = CreateProcess(appPath, commandLine, (LPSECURITY_ATTRIBUTES)NULL,
 		(LPSECURITY_ATTRIBUTES)NULL, FALSE, (DWORD)nStyle, NULL, NULL, &StartupInfo, &ProcessInfo);
 
 	if (bResult == FALSE) {
@@ -5911,7 +5615,7 @@ BOOL AppCore::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* = Constant::String::Empty */)
+void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, const wchar_t* buttonTitle /* = Constant::String::Empty */)
 {
 	// Check validity
 	if (pBtn == NULL)
@@ -5927,10 +5631,12 @@ void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, LPCTSTR lpszBtnTitle /* =
 	pBtn->GetWindowRect(&rcBtnRect);
 
 	// Button title
-	CString strBtnTitle;
-	strBtnTitle.SetString(lpszBtnTitle);
-	if (!strBtnTitle.IsEmpty()) {
-		pBtn->GetWindowText(strBtnTitle);
+	String buttonTitleString;
+	buttonTitleString.SetString(buttonTitle);
+	if (!buttonTitleString.IsEmpty()) {
+		wchar_t _tempBuffer[Constant::Max::StringLength] = {0};
+		pBtn->GetWindowText(_tempBuffer, Constant::Max::StringLength);
+		buttonTitleString.SetString(_tempBuffer);
 	}
 
 	// Update button
@@ -5965,7 +5671,7 @@ BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* /*l
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
+bool AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 {
 	// Define temp font
 	LOGFONT logfont = STRUCT_ZERO;
@@ -5987,32 +5693,32 @@ BOOL AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 // 
 //	Function name:	ValidateFontName
 //	Description:	Check if an input string is a valid font name
-//  Arguments:		lpszFontName - Input font name
+//  Arguments:		fontName - Input font name
 //  Return value:	TRUE/FALSE
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::ValidateFontName(LPCTSTR lpszFontName)
+bool AppCore::ValidateFontName(const wchar_t* fontName)
 {
 	// Array to get returned font names
 	std::vector<std::wstring> fontNames;
 
 	// Enumerate all currently available fonts
-	BOOL bRet = EnumFontNames(fontNames);
-	if (bRet == FALSE) {
+	bool bRet = EnumFontNames(fontNames);
+	if (!bRet) {
 		// Trace error
 		TRACE_ERROR("Error: Enumerate fonts failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
 	// Find for input font name within the acquired font families
-	bRet = (std::find(fontNames.begin(), fontNames.end(), lpszFontName) != fontNames.end());
-	if (bRet == TRUE)
+	bRet = (std::find(fontNames.begin(), fontNames.end(), fontName) != fontNames.end());
+	if (bRet)
 		return bRet;
 
 	// For easier comparison, convert all to lowercase
-	std::wstring lowerInput = lpszFontName;
+	std::wstring lowerInput(fontName);
 	std::transform(lowerInput.begin(), lowerInput.end(), lowerInput.begin(), ::towlower);
 	std::vector<std::wstring> fontLowNames;
 	for (auto it = fontNames.begin(); it != fontNames.end(); it++) {

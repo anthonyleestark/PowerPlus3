@@ -60,7 +60,7 @@ namespace AppRegistry
 	BOOL GetProfileInfo(LPCTSTR lpszKeyName, int& nRef);
 	BOOL WriteProfileInfo(LPCTSTR lpszKeyName, int nValue);
 	BOOL GetProfileInfo(LPCTSTR lpszKeyName, CString& strRef);
-	BOOL WriteProfileInfo(LPCTSTR lpszKeyName, CString strValue);
+	BOOL WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueString);
 
 
 	//////////////////////////////////////////////////////////////////////////

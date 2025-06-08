@@ -215,7 +215,7 @@ private:
 	void ShowDialog(CWnd* pWnd, BOOL bShowFlag = TRUE);
 	void OpenChildDialogEx(UINT nDialogID);
 	void OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode = FALSE, int nOpenMode = MODE_OPENDLG_MODAL);
-	BOOL OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir = Constant::String::Empty);
+	BOOL OpenTextFileToView(const wchar_t* fileName, const wchar_t* extension, const wchar_t* subDir = Constant::String::Empty);
 
 	// Action Schedule feature functions
 	BOOL ProcessActionSchedule(void);

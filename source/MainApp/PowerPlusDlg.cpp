@@ -502,17 +502,16 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
 	if (pSysMenu != NULL)
 	{
-		CString strAboutMenuFormat;
-		strAboutMenuFormat.LoadString(IDS_APP_SYSMENU_ABOUT);
-		if (!strAboutMenuFormat.IsEmpty())
+		String aboutMenuFormat = StringUtils::LoadResourceString(IDS_APP_SYSMENU_ABOUT);
+		if (!aboutMenuFormat.IsEmpty())
 		{
 			// Add product version number
-			CString strAboutMenu;
-			strAboutMenu.Format(strAboutMenuFormat, GetProductVersion(FALSE).GetString());
+			String aboutMenuTitle;
+			aboutMenuTitle.Format(aboutMenuFormat, StringUtils::GetProductVersion(FALSE).GetString());
 
 			// Add menu item
 			pSysMenu->AppendMenu(MF_SEPARATOR);
-			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
+			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, aboutMenuTitle);
 		}
 	}
 
@@ -1487,12 +1486,12 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 			TRACE_ERROR(_T("Error: Debug command tokenization failed!!!"));
 
 			// Get command character list
-			CString strCommandCharList;
-			PrintCharList(strDebugCommand.GetString(), strCommandCharList);
+			String commandCharList;
+			StringUtils::PrintCharList(strDebugCommand.GetString(), commandCharList);
 
 			// Output debug info (to file)
 			CString strDebugLog;
-			strDebugLog.Format(_T("Failed debug command: %s"), strCommandCharList.GetString());
+			strDebugLog.Format(_T("Failed debug command: %s"), commandCharList.GetString());
 			OutputDebugLog(strDebugLog, DebugInfoFile);
 		}
 		else {
@@ -3254,7 +3253,7 @@ void CPowerPlusDlg::RestartApp(BOOL bRestartAsAdmin)
 	ExitApp(ExitCode::RestartApp);
 
 	// Restart immediately
-	RunApp(GetApplicationPath(TRUE), bRestartAsAdmin);
+	RunApp(StringUtils::GetApplicationPath(true), bRestartAsAdmin);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3606,28 +3605,29 @@ void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE
 // 
 //	Function name:	OpenTextFileToView
 //	Description:	Open text file to view using Notepad
-//  Arguments:		lpszFileName - File name/path
-//					lpszExtension - File extension
-//					lpszSubDir	- Sub-directory name
+//  Arguments:		fileName  - File name/path
+//					extension - File extension
+//					subDir	  - Sub-directory name
 //  Return value:	BOOL - Result of file opening
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusDlg::OpenTextFileToView(LPCTSTR lpszFileName, LPCTSTR lpszExtension, LPCTSTR lpszSubDir /* = Constant::String::Empty */)
+BOOL CPowerPlusDlg::OpenTextFileToView(const wchar_t* fileName, const wchar_t* extension, const wchar_t* subDir /* = Constant::String::Empty */)
 {
 	// Get file name
-	VERIFY(lpszFileName != NULL);
-	CString strFilePath = (CString)lpszFileName + lpszExtension;
+	VERIFY(fileName != NULL);
+	String filePath(fileName);
+	filePath.Append(extension);
 	
 	// If sub-directory name is not empty
-	if (IS_NOT_EMPTY_STRING(lpszSubDir)) {
+	if (IS_NOT_EMPTY_STRING(subDir)) {
 		// Format file path with sub-directory
-		CString strFolderPath = GetSubFolderPath(lpszSubDir);
-		MakeFilePath(strFilePath, strFolderPath, lpszFileName, lpszExtension);
+		String folderPath = StringUtils::GetSubFolderPath(subDir);
+		filePath = StringUtils::MakeFilePath(folderPath, fileName, extension);
 	}
 
 	// Standard file view
-	return FileViewStd(FILETYPE_TEXT, strFilePath);
+	return FileViewStd(FILETYPE_TEXT, filePath);
 }
 
 

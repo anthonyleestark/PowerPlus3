@@ -1240,8 +1240,7 @@ public:
 };
 
 // Define new typenames for Registry info class
-using REGISTRYINFO = RegistryInfo;
-using PREGISTRYINFO = RegistryInfo*;
+using PRegistryInfo = RegistryInfo*;
 
 // Define new global typenames for the enum attributes of RegistryValue
 using RegistryPathType = RegistryInfo::RegistryPathType;
@@ -1394,12 +1393,12 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Class name:		StringProcessor
+//	Class name:		StringUtils
 //  Description:	Using for string processing and validation
 //
 //////////////////////////////////////////////////////////////////////////
 
-class StringProcessor
+class StringUtils
 {
 public:
 	enum class ValidationError {
@@ -1416,6 +1415,32 @@ public:
 		InjectionDetected,
 		CustomRuleFailed
 	};
+
+public:
+	// Format string
+	static String StringFormat(UINT formatTemplateID, ...);
+	static String StringFormat(const wchar_t* formatTemplate, ...);
+
+	// Load resource string/text data
+	static String LoadResourceString(UINT resourceStringID);
+	static bool	LoadResourceString(String& resultStr, UINT resourceStringID);
+	static String LoadResourceTextData(UINT resourceFileID);
+
+	// Make/acquire paths
+	static String GetApplicationPath(bool includeExeName);
+	static String GetSubFolderPath(const wchar_t* subFolderName);
+	static String MakeFilePath(const wchar_t* directory, const wchar_t* fileName, const wchar_t* extension);
+
+	// Get product version
+	static String GetProductVersion(bool isFullVersion);
+	static bool GetProductVersion(String& fullVersion, String& shortVersion);
+
+	// Get system and user info
+	static bool GetDeviceName(String& deviceName);
+	static bool GetCurrentUserName(String& userName);
+
+	// Print character list
+	static int PrintCharList(const wchar_t* srcStr, String& outputStr);
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -1461,23 +1486,23 @@ namespace AppCore
 	BOOL ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode);
 
 	// Trace logging functions
-	void TraceError(LPCSTR lpszTraceLogA);
-	void TraceError(LPCTSTR lpszTraceLogW);
-	void TraceErrorFormat(LPCSTR lpszTraceLogFormatA, ...);
-	void TraceErrorFormat(LPCTSTR lpszTraceLogFormatW, ...);
-	void TraceDebugInfo(LPCSTR lpszFuncName, LPCSTR lpszFileName, int nLineIndex);
+	void TraceError(const char* traceLogA);
+	void TraceError(const wchar_t* traceLogW);
+	void TraceErrorFormat(const char* traceLogFormatA, ...);
+	void TraceErrorFormat(const wchar_t* traceLogFormatW, ...);
+	void TraceDebugInfo(const char* funcName, const char* fileName, int lineIndex);
 
 	// Debug logging functions
-	void OutputDebugLog(LPCTSTR lpszDebugLog, int nForceStyle = -1);
-	void OutputDebugLogFormat(LPCTSTR lpszDebugLogFormat, ...);
-	void OutputDebugStringFormat(LPCTSTR lpszDebugStringFormat, ...);
+	void OutputDebugLog(const wchar_t* debugLog, int forceStyle = -1);
+	void OutputDebugLogFormat(const wchar_t* debugLogFormat, ...);
+	void OutputDebugStringFormat(const wchar_t* debugStringFormat, ...);
 
 	// Trace/debug file logging functions
-	BOOL BackupOldLogFile(CString& strFilePath, LPCTSTR lpszLogFileName);
-	void WriteTraceErrorLogFile(LPCTSTR lpszLogStringW);
-	void WriteTraceDebugLogFile(LPCTSTR lpszLogStringW);
-	void WriteDebugInfoLogFile(LPCTSTR lpszLogStringW);
-	void WriteTraceNDebugLogFileBase(LPCTSTR lpszFileName, LPCTSTR lpszLogStringW);
+	BOOL BackupOldLogFile(String& filePath, const wchar_t* logFileName);
+	void WriteTraceErrorLogFile(const wchar_t* logStringW);
+	void WriteTraceDebugLogFile(const wchar_t* logStringW);
+	void WriteDebugInfoLogFile(const wchar_t* logStringW);
+	void WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW);
 
 	// Message and notification functions
 	LRESULT	WaitMessage(UINT nMsg, int nTimeout = Constant::Max::Timeout::WaitMessage);
@@ -1503,48 +1528,27 @@ namespace AppCore
 	void		GetCurSysTime(SYSTEMTIME& stTime);
 	void		CalcTimeOffset(SYSTEMTIME& stTime, int nOffset);
 	BOOL		CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffset = 0);
-	CString		FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal);
-	CString		FormatDispTime(LANGTABLE_PTR pLang, LPCTSTR lpszFormatString, SYSTEMTIME timeVal);
-
-	// String and text data processing functions
-	LPCTSTR LoadResourceString(UINT nResStringID);
-	BOOL	LoadResourceString(CString& strResult, UINT nResStringID);
-	BOOL	LoadResourceTextFile(CString& strTextData, UINT nResourceFileID);
-
-//	int		GetTokenList(LPTSTR lpszBuff, PBUFFER retBuff, LPCTSTR lpszKeyChars);
-//	void	UpperEachWord(CString& strInput, BOOL bTrim);
-	LPCTSTR GetSubFolderPath(LPCTSTR lpszSubFolderName);
-	BOOL	MakeFilePath(CString& strOutput, LPCTSTR lpszDirectory, LPCTSTR lpszFileName, LPCTSTR lpszExtension);
-	int		PrintCharList(LPCTSTR lpszSrc, CString& strOutput);
-
-	LPCTSTR StringFormat(UINT nFormatTemplateID, ...);
-	LPCTSTR StringFormat(LPCTSTR lpszFormatTemplate, ...);
-	BOOL	SubString(LPCTSTR lpszSrc, Substring& subDest, TCHAR tcFirstChar, TCHAR tcLastChar, BOOL bIncSepChar = FALSE);
+	String		FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal);
+	String		FormatDispTime(LANGTABLE_PTR pLang, const wchar_t* formatString, SYSTEMTIME timeVal);
 
 	// Additional functions
-	LPCTSTR GetApplicationPath(BOOL bIncludeExeName);
-	CString	GetProductVersion(BOOL bFullVersion);
-	BOOL	GetProductVersion(CString& strFullVersion, CString& strShortVersion);
-
 	UINT	GetWindowsOSVersion(void);
-	BOOL	GetDeviceName(CString& strDeviceName);
-	BOOL	GetCurrentUserName(CString& strUserName);
 
-	BOOL	AddRegistryKey(const REGISTRYINFO& regInfo);
-	LPCTSTR MakeRegistryPath(const REGISTRYINFO& regInfo, UINT nRegPathType = RegistryPathType::fullPath, BOOL bIncRootKey = TRUE);
+	BOOL	AddRegistryKey(const RegistryInfo& regInfo);
+	LPCTSTR MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType = RegistryPathType::fullPath, BOOL bIncRootKey = TRUE);
 
 	void	PlaySound(BOOL bSoundEnable, UINT nTypeOfSound);
-	BOOL	FileViewStd(FILETYPE eFileType, LPCTSTR lpszFilePath);
-	BOOL	OpenWebURL(LPCTSTR lpszWebUrl);
+	BOOL	FileViewStd(FILETYPE eFileType, const wchar_t* filePath);
+	BOOL	OpenWebURL(const wchar_t* webUrl);
 
-	LRESULT RunApp(LPCTSTR lpszAppPath, BOOL bRunAsAdmin = FALSE, BOOL bShowFlag = TRUE);
-	LRESULT ExecuteCommand(LPCTSTR lpszCmd, BOOL bRunAsAdmin = TRUE, BOOL bShowFlag = TRUE);
-	BOOL	CreateAppProcess(LPCWSTR lpszAppPath, LPWSTR lpszCmdLine, UINT nStyle, DWORD& dwErrorCode);
+	LRESULT RunApp(const wchar_t* appPath, BOOL bRunAsAdmin = FALSE, BOOL bShowFlag = TRUE);
+	LRESULT ExecuteCommand(const wchar_t* commandString, BOOL bRunAsAdmin = TRUE, BOOL bShowFlag = TRUE);
+	BOOL	CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, UINT nStyle, DWORD& dwErrorCode);
 
 	BOOL	SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode);
-	void	DrawButton(CButton*& pButton, UINT nIconID, LPCTSTR lpszButtonTitle = Constant::String::Empty);
-	BOOL	EnumFontNames(std::vector<std::wstring>& fontNames);
-	BOOL	ValidateFontName(LPCTSTR lpszFontName);
+	void	DrawButton(CButton*& pButton, UINT nIconID, const wchar_t* buttonTitle = Constant::String::Empty);
+	bool	EnumFontNames(std::vector<std::wstring>& fontNames);
+	bool	ValidateFontName(const wchar_t* fontName);
 };
 
 

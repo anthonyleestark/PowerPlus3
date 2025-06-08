@@ -39,7 +39,7 @@ private:
 	};
 
 private:
-	CString m_strFileData;
+	String  m_strFileData;
 	UINT	m_nViewMode;
 
 public:
@@ -75,7 +75,7 @@ protected:
 	// Member functions
 	void SetupLanguage(void);
 	void SetupEditbox(CEdit& pEdit);
-	BOOL LoadRCFileData(CString& strRCFileData);
+	BOOL LoadRCFileData(String& strRCFileData);
 	void UpdateSwitchViewModeButton(void);
 
 	// Get/set properties

@@ -447,8 +447,8 @@ public:
 
 	// Find the last match of a character
 	int ReverseFind(const wchar_t& ch) const {
-		String _temp = _buffer; _temp.Reverse();
-		return _temp.Find(ch, 0);
+		String _temp = _buffer; _temp.Reverse(); int _pos = _temp.Find(ch, 0);
+		return (_pos != -1) ? static_cast<int>(_buffer.length() - _pos) : -1;
 	};
 
 	// Format string

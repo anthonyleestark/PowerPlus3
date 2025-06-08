@@ -201,16 +201,6 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		return FALSE;
 	}
 
-	// Debug log
-	{
-		int nTokenCount = tokenCount;
-		OutputDebugStringFormat(_T("Token number: %d"), nTokenCount);
-		for (int nTokenIndex = 0; nTokenIndex < nTokenCount; nTokenIndex++) {
-			String strDebugLog = tokenList.at(nTokenIndex);
-			OutputDebugStringFormat(_T("Token[%d]: %s"), nTokenIndex, strDebugLog.GetString());
-		}
-	}
-
 	String strTemp = Constant::String::Empty;
 
 	// Process debug commands by tokens
@@ -496,8 +486,8 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				strKeyName = _T("AppEventLog");
 			}
 			CFileFind Finder;
-			CString strFileName;
-			MakeFilePath(strFileName, GetSubFolderPath(SUBFOLDER_LOG), _T("*"), FILEEXT_LOGFILE);
+			String fileName = StringUtils::MakeFilePath(StringUtils::GetSubFolderPath(SUBFOLDER_LOG), _T("*"), FILEEXT_LOGFILE);
+			CString strFileName = fileName.GetString();
 			BOOL bFindRet = Finder.FindFile(strFileName);
 			if (!strKeyName.IsEmpty()) {
 				int nDelFileCount = 0;
