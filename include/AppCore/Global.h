@@ -200,8 +200,8 @@ static inline const COLORREF GetReminderMsgTextColor(void);
 static inline void SetReminderMsgTextColor(COLORREF colorValue);
 
 // Font name
-static inline BOOL GetReminderMsgFontName(CString& strFontName);
-static inline void SetReminderMsgFontName(LPCTSTR lpszValue);
+static inline BOOL GetReminderMsgFontName(String& strFontName);
+static inline void SetReminderMsgFontName(const wchar_t* lpszValue);
 
 // Font size
 static inline const UINT GetReminderMsgFontSize(void);

@@ -42,7 +42,7 @@ private:
 
 	// Data
 	INT		m_nDetailValue;									// Detail value (integer)
-	CString	m_strDetailInfo;								// Detail info (string)
+	String	m_strDetailInfo;								// Detail info (string)
 	PVOID	m_ptrDetailData;								// Detail data (pointer)
 	BYTE	m_byPointerType;								// Detail info pointer data type
 	SIZE_T	m_szPointerSize;								// Detail info pointer data size
@@ -72,8 +72,8 @@ public:
 	void SetFlag(INT nFlag);								// Set detail flag
 	INT GetDetailValue(void) const;							// Get detail value (integer)
 	void SetDetailValue(INT);								// Set detail value (integer)
-	CString GetDetailString(void) const;					// Get detail info (string)
-	void SetDetailString(LPCTSTR);							// Set detail info (string)
+	String GetDetailString(void) const;						// Get detail info (string)
+	void SetDetailString(const wchar_t*);					// Set detail info (string)
 	PVOID GetPointerData(void) const;						// Get detail data pointer data
 	BOOL SetPointerData(PVOID, BYTE = -1, SIZE_T = 0);		// Set detail data pointer data
 	BYTE GetPointerType(void) const;						// Get detail data pointer type
@@ -114,8 +114,8 @@ public:
 	// Update data functions
 	void AddDetail(const LOGDETAIL&);						// Add detail item
 	void AddDetail(USHORT, INT, INT = 0);					// Add detail item (integer data only)
-	void AddDetail(USHORT, LPCTSTR, INT = 0);				// Add detail item (string data only)
-	void AddDetail(USHORT, INT, LPCTSTR, INT = 0);			// Add detail item (both integer and string data)
+	void AddDetail(USHORT, const wchar_t*, INT = 0);		// Add detail item (string data only)
+	void AddDetail(USHORT, INT, const wchar_t*, INT = 0);	// Add detail item (both integer and string data)
 };
 
 // Define new typenames for LogDetailInfo
@@ -137,7 +137,7 @@ private:
 	SYSTEMTIME		m_stTime;								// Log time
 	DWORD			m_dwProcessID;							// Process ID
 	USHORT			m_usCategory;							// Log category
-	CString			m_strLogString;							// Log description string
+	String			m_strLogString;							// Log description string
 	LOGDETAILINFO	m_arrDetailInfo;						// Log detail info
 
 public:
@@ -159,23 +159,23 @@ public:
 public:
 	// Get/set functions
 	SYSTEMTIME GetTime(void) const;							// Get log time
-	void SetTime(const SYSTEMTIME& stTime);					// Set log time
+	void SetTime(const SYSTEMTIME&);						// Set log time
 	DWORD GetProcessID(void) const;							// Get process ID
 	void SetProcessID(void);								// Set process ID
 	USHORT GetCategory(void) const;							// Get log category
-	void SetCategory(USHORT usCategory);					// Set log category
-	CString GetLogString(void) const;						// Get log description string
-	void SetLogString(LPCTSTR lpszLogString);				// Set log description string
+	void SetCategory(USHORT);								// Set log category
+	String GetLogString(void) const;						// Get log description string
+	void SetLogString(const wchar_t*);						// Set log description string
 
 	// Detail info functions
 	void AddDetail(const LOGDETAIL&);						// Add detail data
 	void AddDetail(USHORT, INT, INT = 0);					// Add detail (integer data only)
-	void AddDetail(USHORT, LPCTSTR, INT = 0);				// Add detail (string data only)
-	void AddDetail(USHORT, INT, LPCTSTR, INT = 0);			// Add detail (both integer and string data)
+	void AddDetail(USHORT, const wchar_t*, INT = 0);		// Add detail (string data only)
+	void AddDetail(USHORT, INT, const wchar_t*, INT = 0);	// Add detail (both integer and string data)
 
 	// Format data functions
-	CString	FormatDateTime(void) const;						// Format date/time value
-	CString FormatOutput(void) const;						// Format log item output
+	String FormatDateTime(void) const;						// Format date/time value
+	String FormatOutput(void) const;						// Format log item output
 };
 
 // Define new typenames for LogItem
@@ -213,12 +213,12 @@ static SIZE_T GetSizeByType(BYTE byDataType);
 struct JSON_ENTRY
 {
 	// Member variables
-	CString strKey;			// Key name
-	CString strValue;		// Value (string)
+	String strKey;			// Key name
+	String strValue;		// Value (string)
 
 	// Construction
 	JSON_ENTRY() : strKey(Constant::String::Empty), strValue(Constant::String::Empty) {};
-	JSON_ENTRY(const CString& key, const CString& value) : strKey(key), strValue(value) {};
+	JSON_ENTRY(const String& key, const String& value) : strKey(key), strValue(value) {};
 
 	// Operators
 	bool operator==(const JSON_ENTRY& other) const {
@@ -251,13 +251,13 @@ class JSON
 {
 private:
 	// Attributes
-	CString m_strObjectName;								// JSON object name
+	String m_strObjectName;									// JSON object name
 
 	// Properties
 	JSON_ENTRY_DATA m_arrKeyValuePairs;						// Key-value pairs (array)
 
 	// Children
-	size_t m_nChildObjectCount;							// Number of child objects
+	size_t m_nChildObjectCount;								// Number of child objects
 	JSON** m_apChildObjectList;								// List of child objects
 
 public:
@@ -277,20 +277,20 @@ protected:
 	BOOL Compare(const JSON&) const;						// Compare objects
 	BOOL IsEmpty(void) const;								// Check if object data is empty
 	void RemoveProperty(size_t);							// Remove property by index
-	void RemoveProperty(LPCTSTR);							// Remove property by key name
+	void RemoveProperty(const wchar_t*);					// Remove property by key name
 	void RemoveAll(void);									// Remove all object data
 
 public:
 	// Get/set functions
-	void SetObjectName(LPCTSTR);							// Set object name
-	void AddString(LPCTSTR, LPCTSTR);						// Add string value
-	void AddInteger(LPCTSTR, INT);							// Add integer value
-	void AddFloat(LPCTSTR, DOUBLE);							// Add float value
+	void SetObjectName(const wchar_t*);						// Set object name
+	void AddString(const wchar_t*, const wchar_t*);			// Add string value
+	void AddInteger(const wchar_t*, INT);					// Add integer value
+	void AddFloat(const wchar_t*, DOUBLE);					// Add float value
 	void AddChildObject(JSON*);								// Add child object
 
 	// Printing functions
-	void Print(CString&, int, BOOL, BOOL = TRUE);			// Print data in JSON format (with indentation)
-	void PrintYAML(CString&, int);							// Print data in YAML format
+	void Print(String&, int, BOOL, BOOL = TRUE);			// Print data in JSON format (with indentation)
+	void PrintYAML(String&, int);							// Print data in YAML format
 };
 
 // Define new typenames for JSON class object
@@ -315,7 +315,7 @@ private:
 	BYTE	 m_byLogType;					// Log type
 	BYTE	 m_byWriteMode;					// Log write mode
 	size_t	 m_nMaxSize;					// Log data max item count
-	CString  m_strFilePath;					// Log output file path
+	String   m_strFilePath;					// Log output file path
 	PLOGITEM m_pItemDefTemplate;			// Log default template
 
 public:
@@ -339,19 +339,19 @@ public:
 	virtual BOOL SetMaxSize(size_t nMaxSize);
 	virtual BYTE GetWriteMode(void) const;
 	virtual void SetWriteMode(BYTE byWriteMode);
-	virtual void GetFilePath(CString& strFilePath);
-	virtual void SetFilePath(LPCTSTR lpszFilePath);
+	virtual void GetFilePath(String& strFilePath);
+	virtual void SetFilePath(const wchar_t* filePath);
 	virtual PLOGITEM GetDefaultTemplate(void);
 	virtual void SetDefaultTemplate(const LOGITEM& logItemTemplate);
 
 	// Output log functions
 	void OutputItem(const LOGITEM& logItem);
-	void OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate = TRUE);
+	void OutputString(const wchar_t* logString, BOOL bUseLastTemplate = TRUE);
 
 	// Write log functions
 	BOOL Write(void);
-	BOOL Write(const LOGITEM& logItem, LPCTSTR lpszFilePath = NULL);
-	BOOL Write(LPCTSTR lpszLogString, LPCTSTR lpszFilePath = NULL);
+	BOOL Write(const LOGITEM& logItem, const wchar_t* filePath = NULL);
+	BOOL Write(const wchar_t* logString, const wchar_t* filePath = NULL);
 };
 
 

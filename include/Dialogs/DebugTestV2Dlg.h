@@ -95,32 +95,32 @@ private:
 	BOOL CreateDebugScreenFont(void);
 	BOOL CreateDebugScreenBrush(void);
 
-	inline BOOL IsDebugScreenValid(void);
-	inline BOOL IsDebugViewValid(void);
-	inline BOOL IsDebugCommandInputValid(void);
-	inline BOOL IsDebugCommandInputFocused(void);
+	BOOL IsDebugScreenValid(void);
+	BOOL IsDebugViewValid(void);
+	BOOL IsDebugCommandInputValid(void);
+	BOOL IsDebugCommandInputFocused(void);
 
 	BOOL RefreshDebugScreen(int nFlag);
 	BOOL ShowDebugScreenContextMenu(void);
 
 	int  FormatDebugCommand(CString& strDebugCommand);
-	void ClearDebugCommandInput(LPCTSTR lpszCmdBuff = Constant::String::Empty);
-	inline void BackupDebugViewBuffer(void);
+	void ClearDebugCommandInput(const wchar_t* commandBuff = Constant::String::Empty);
+	void BackupDebugViewBuffer(void);
 	void ClearDebugViewBuffer(void);
 
-	void AddLine(LPCTSTR lpszString, BOOL bNewLine = TRUE);
+	void AddLine(const wchar_t* lpszString, BOOL bNewLine = TRUE);
 	void UpdateDisplay(BOOL bSeekToEnd = FALSE, BOOL bNotifyParent = TRUE);
 
-	size_t AddDebugCommandHistory(LPCTSTR lpszCommand);
+	size_t AddDebugCommandHistory(const wchar_t* commandString);
 	void DispDebugCommandHistory(int nHistoryIndex);
 	void ClearDebugCommandHistory(void);
 	size_t GetDebugCommandHistoryCount(void) const;
 	BOOL IsDebugCommandHistoryEmpty(void) const;
 
-	inline BOOL IsCurrentlyDispHistory(void) const;
-	inline void SetCurrentlyDispHistoryState(BOOL bState);
-	inline size_t GetHistoryCurrentDispIndex(void) const;
-	inline void SetHistoryCurrentDispIndex(size_t nCurIndex);
+	BOOL IsCurrentlyDispHistory(void) const;
+	void SetCurrentlyDispHistoryState(BOOL bState);
+	size_t GetHistoryCurrentDispIndex(void) const;
+	void SetHistoryCurrentDispIndex(size_t nCurIndex);
 };
 
 

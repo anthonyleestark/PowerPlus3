@@ -82,8 +82,8 @@ public:
 
 public:
 	// Get/set display content
-	virtual LPCTSTR GetDispMessage(void) const;
-	virtual void SetDispMessage(LPCTSTR lpszDispMsg);
+	virtual const wchar_t* GetDispMessage(void) const;
+	virtual void SetDispMessage(const wchar_t* dispMsg);
 
 	// Get/set message style
 	virtual void GetMessageStyle(RmdMsgStyleSet& rmdMsgStyle) const;

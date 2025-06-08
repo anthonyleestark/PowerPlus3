@@ -69,13 +69,13 @@ UINT MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse /
 // 
 //	Function name:	GetStringID
 //	Description:	Find and return ID paired with given string
-//  Arguments:		pStringTableRef  - Reference string table
-//					lpszInput		 - Given string
+//  Arguments:		pStringTableRef - Reference string table
+//					input			- Given string
 //  Return value:	UINT - String ID
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput)
+UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input)
 {
 	// Return NULL string if language table is invalid
 	ASSERT(pStringTableRef != NULL);
@@ -84,12 +84,12 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput)
 	}
 
 	// Convert input string to lowercase
-	CString strInput = lpszInput;
-	strInput.MakeLower();
+	String inputString(input);
+	inputString.ToLower();
 
 	// Find and return corresponding ID paired with specified string
 	int nIndex = 0;
-	CString strPairedString;
+	String pairedString;
 	do {
 		// Get string pair entry
 		LANGTEXT stringPair = pStringTableRef[nIndex++];
@@ -99,11 +99,11 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput)
 			break;
 
 		// Also convert language string to lower for easier comparison
-		strPairedString = stringPair.langString;
-		strPairedString.MakeLower();
+		pairedString = stringPair.langString;
+		pairedString.ToLower();
 
 		// Compare string ID
-		if (!_tcscmp(strPairedString, strInput)) {
+		if (!_tcscmp(pairedString, inputString)) {
 			return stringPair.id;
 		}
 	} while (nIndex < MAX_TABLESIZE);
@@ -118,11 +118,11 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput)
 //	Description:	Find and return string paired with specified ID
 //  Arguments:		pStringTableRef  - Reference string table
 //					nID				 - String ID
-//  Return value:	LPCTSTR - Paired string
+//  Return value:	const wchar_t* - Paired string
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR	MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID)
+const wchar_t* MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID)
 {
 	// Return NULL string if language table is invalid
 	ASSERT(pStringTableRef != NULL);

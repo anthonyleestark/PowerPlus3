@@ -106,13 +106,13 @@ inline int CPwrReminderDlg::GetCurMode() const {
 #endif
 
 // Get display message
-inline LPCTSTR CReminderMsgDlg::GetDispMessage(void) const {
+inline const wchar_t* CReminderMsgDlg::GetDispMessage(void) const {
 	return m_strBuffer.GetString();
 }
 
 // Set display message
-inline void CReminderMsgDlg::SetDispMessage(LPCTSTR lpszDispMsg) {
-	m_strBuffer = lpszDispMsg;
+inline void CReminderMsgDlg::SetDispMessage(const wchar_t* dispMsg) {
+	m_strBuffer = dispMsg;
 }
 
 // Get message style

@@ -451,8 +451,8 @@ BOOL CReminderMsgDlg::InitMessageStyle(void)
 
 		// Create font
 		int nFontPointSize = int(m_rmdMsgStyleSet.GetFontSize() * 10);
-		CString strFontName = m_rmdMsgStyleSet.GetFontName();
-		if (!m_pMsgFont->CreatePointFont(nFontPointSize, strFontName, NULL)) {
+		String fontName = m_rmdMsgStyleSet.GetFontName();
+		if (!m_pMsgFont->CreatePointFont(nFontPointSize, fontName, NULL)) {
 
 			// Error: Create font failed
 			TRACE_ERROR("Error: Create font failed!!!");

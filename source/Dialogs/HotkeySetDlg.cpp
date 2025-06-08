@@ -1092,7 +1092,7 @@ void CHotkeySetDlg::UpdateHotkeySet()
 	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Print items
-	CString strTemp;
+	String tempString;
 	int nTemp = -1;
 	int nItemIndex = 0;
 	CGridCellCheck* pCellCheck = NULL;
@@ -1110,16 +1110,16 @@ void CHotkeySetDlg::UpdateHotkeySet()
 
 		// Hotkey action
 		nTemp = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hksItem.GetActionID()));
-		strTemp = GetLanguageString(ptrLanguage, nTemp);
-		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::HKActionID, strTemp);
+		tempString = GetLanguageString(ptrLanguage, nTemp);
+		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::HKActionID, tempString);
 
 		// Keystrokes
-		hksItem.PrintKeyStrokes(strTemp);
-		if (IS_NULL_STRING(strTemp)) {
+		hksItem.PrintKeyStrokes(tempString);
+		if (IS_NULL_STRING(tempString)) {
 			// Undefined keystrokes
-			strTemp = GetLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
+			tempString = GetLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
 		}
-		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::Keystrokes, strTemp);
+		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::Keystrokes, tempString);
 	}
 }
 

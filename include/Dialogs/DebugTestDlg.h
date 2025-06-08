@@ -93,10 +93,10 @@ private:
 	int  FormatDebugCommand(CString &strDebugCommand);
 	void ClearViewBuffer(void);
 
-	void AddLine(LPCTSTR lpszString, BOOL bNewLine = TRUE);
+	void AddLine(const wchar_t* lineString, BOOL bNewLine = TRUE);
 	void UpdateDisplay(BOOL bSeekToEnd = FALSE, BOOL bNotifyParent = TRUE);
 
-	size_t AddDebugCommandHistory(LPCTSTR lpszCommand);
+	size_t AddDebugCommandHistory(const wchar_t* commandString);
 	void DispDebugCommandHistory(int nHistoryIndex);
 	void ClearDebugCommandHistory(void);
 	size_t GetDebugCommandHistoryCount(void) const;

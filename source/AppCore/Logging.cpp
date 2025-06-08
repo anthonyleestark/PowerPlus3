@@ -369,7 +369,7 @@ void LogDetailInfo::CopyData(const LogDetailInfo& pData)
 //  Arguments:		logDetail	  - Log detail item
 //					usCategory	  - Detail category
 //					nDetailInfo	  - Detail info (integer)
-//					strDetailInfo - Detail info (string)
+//					detailInfo	  - Detail info (string)
 //					nFlag		  - Detail flag
 //  Return value:	None
 //
@@ -387,25 +387,25 @@ void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, INT nFlag /* =
 	this->AddDetail(logDetail);
 }
 
-void LogDetailInfo::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::AddDetail(USHORT usCategory, const wchar_t* detailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
 	logDetail.SetCategory(usCategory);
-	logDetail.SetDetailString(lpszDetailInfo);
+	logDetail.SetDetailString(detailInfo);
 	logDetail.SetFlag(nFlag);
 
 	// Add detail info item
 	this->AddDetail(logDetail);
 }
 
-void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, LPCTSTR lpszDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, const wchar_t* detailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
 	logDetail.SetCategory(usCategory);
 	logDetail.SetDetailValue(nDetailInfo);
-	logDetail.SetDetailString(lpszDetailInfo);
+	logDetail.SetDetailString(detailInfo);
 	logDetail.SetFlag(nFlag);
 
 	// Add detail info item
@@ -541,7 +541,7 @@ void LogItem::RemoveAll(void)
 	m_stTime = SYSTEMTIME_ZERO;									// Log time
 	m_dwProcessID = INT_NULL;									// Process ID
 	m_usCategory = LOG_MACRO_NONE;								// Log category
-	m_strLogString = Constant::String::Empty;								// Log string
+	m_strLogString = Constant::String::Empty;					// Log string
 
 	// Clean up log detail info data
 	this->RemoveDetailInfo();									// Log detail info
@@ -552,18 +552,18 @@ void LogItem::RemoveAll(void)
 //	Function name:	FormatDateTime
 //	Description:	Return a formatted logitem date/time string
 //  Arguments:		None
-//  Return value:	CString - Formatted result
+//  Return value:	String - Formatted result
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString LogItem::FormatDateTime(void) const
+String LogItem::FormatDateTime(void) const
 {
-	CString strTimeFormat;
 	const wchar_t* middayFlag = (m_stTime.wHour >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
-	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, m_stTime.wYear, m_stTime.wMonth, m_stTime.wDay,
+	String templateFormatStr = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::StringFormat(templateFormatStr, m_stTime.wYear, m_stTime.wMonth, m_stTime.wDay,
 		m_stTime.wHour, m_stTime.wMinute, m_stTime.wSecond, m_stTime.wMilliseconds, middayFlag);
 
-	return strTimeFormat;
+	return timeFormatString;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -571,17 +571,17 @@ CString LogItem::FormatDateTime(void) const
 //	Function name:	FormatOutput
 //	Description:	Return formatted output log string for file writing
 //  Arguments:		None
-//  Return value:	CString - Formatted result
+//  Return value:	String - Formatted result
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString LogItem::FormatOutput(void) const
+String LogItem::FormatOutput(void) const
 {
 	// Create JSON data object
 	JSONDATA jsonData;
 
-	CString strLogKey;
-	CString strLogValue;
+	String logKey;
+	String logValue;
 
 	// Load default language table package
 	LANGTABLE_PTR pDefLang = LoadLanguageTable(NULL);
@@ -593,21 +593,21 @@ CString LogItem::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log time
-	strLogKey = GetString(StringTable::LogKey, BaseLog::Time);
-	jsonData.AddString(strLogKey, FormatDateTime());
+	logKey = GetString(StringTable::LogKey, BaseLog::Time);
+	jsonData.AddString(logKey, FormatDateTime());
 
 	// Process ID
-	strLogKey = GetString(StringTable::LogKey, BaseLog::PID);
-	jsonData.AddInteger(strLogKey, m_dwProcessID);
+	logKey = GetString(StringTable::LogKey, BaseLog::PID);
+	jsonData.AddInteger(logKey, m_dwProcessID);
 
 	// Log category
-	strLogKey = GetString(StringTable::LogKey, BaseLog::LogCategory);
-	strLogValue = GetLanguageString(pDefLang, m_usCategory);
-	jsonData.AddString(strLogKey, strLogValue);
+	logKey = GetString(StringTable::LogKey, BaseLog::LogCategory);
+	logValue = GetLanguageString(pDefLang, m_usCategory);
+	jsonData.AddString(logKey, logValue);
 
 	// Log description string
-	strLogKey = GetString(StringTable::LogKey, BaseLog::Description);
-	jsonData.AddString(strLogKey, m_strLogString);
+	logKey = GetString(StringTable::LogKey, BaseLog::Description);
+	jsonData.AddString(logKey, m_strLogString);
 
 	/*********************************************************************/
 	/*																	 */
@@ -621,8 +621,8 @@ CString LogItem::FormatOutput(void) const
 		// Create JSON detail data object
 		JSONDATA jsonDetailData;
 
-		CString strDetailKey;
-		CString strDetailValue;
+		String detailKey;
+		String detailValue;
 
 		// Set object name: Details
 		jsonDetailData.SetObjectName(GetString(StringTable::LogKey, BaseLog::Details));
@@ -644,26 +644,26 @@ CString LogItem::FormatOutput(void) const
 			}
 
 			// Detail info category
-			strDetailKey = GetString(StringTable::LogKey, logDetail.GetCategory());
+			detailKey = GetString(StringTable::LogKey, logDetail.GetCategory());
 
 			// Detail info value
 			int nDetailValue = logDetail.GetDetailValue();
 			if (nDetailFlag & LogDetailFlag::Write_Int) {
-				jsonDetailData.AddInteger(strDetailKey, logDetail.GetDetailValue());
+				jsonDetailData.AddInteger(detailKey, logDetail.GetDetailValue());
 			}
 			else if (nDetailFlag & LogDetailFlag::LookUp_Dict) {
-				strDetailValue = GetString(StringTable::LogValue, nDetailValue);
-				jsonDetailData.AddString(strDetailKey, strDetailValue);
+				detailKey = GetString(StringTable::LogValue, nDetailValue);
+				jsonDetailData.AddString(detailKey, detailValue);
 			}
 			else if (nDetailFlag & LogDetailFlag::Write_String) {
-				jsonDetailData.AddString(strDetailKey, logDetail.GetDetailString());
+				jsonDetailData.AddString(detailKey, logDetail.GetDetailString());
 			}
 			else if (nDetailFlag & (LogDetailFlag::Write_Int & LogDetailFlag::Write_String)) {
 				JSONDATA jsonSubDetail;
-				strDetailKey = GetString(StringTable::LogKey, BaseLog::DetailNumeric);
-				jsonSubDetail.AddInteger(strDetailKey, logDetail.GetDetailValue());
-				strDetailKey = GetString(StringTable::LogKey, BaseLog::DetailString);
-				jsonSubDetail.AddString(strDetailKey, logDetail.GetDetailString());
+				detailKey = GetString(StringTable::LogKey, BaseLog::DetailNumeric);
+				jsonSubDetail.AddInteger(detailKey, logDetail.GetDetailValue());
+				detailKey = GetString(StringTable::LogKey, BaseLog::DetailString);
+				jsonSubDetail.AddString(detailKey, logDetail.GetDetailString());
 				jsonDetailData.AddChildObject(&jsonSubDetail);
 			}
 		}
@@ -678,11 +678,11 @@ CString LogItem::FormatOutput(void) const
 	/*																	 */
 	/*********************************************************************/
 
-	CString strLogFormat;
-	jsonData.PrintYAML(strLogFormat, 0);
-	strLogFormat.Append(Constant::String::NewLine);
+	String logYAMLFormat;
+	jsonData.PrintYAML(logYAMLFormat, 0);
+	logYAMLFormat.Append(Constant::String::NewLine);
 
-	return strLogFormat;
+	return logYAMLFormat;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -913,12 +913,12 @@ BOOL JSON::IsEmpty(void) const
 // 
 //	Function name:	RemoveProperty
 //	Description:	Remove property by its key name
-//  Arguments:		lpszKeyName - Key name
+//  Arguments:		keyName - Key name
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void JSON::RemoveProperty(LPCTSTR lpszKeyName)
+void JSON::RemoveProperty(const wchar_t* keyName)
 {
 	// If property data is empty, do nothing
 	if (this->m_arrKeyValuePairs.empty())
@@ -927,7 +927,7 @@ void JSON::RemoveProperty(LPCTSTR lpszKeyName)
 	// Search for key name
 	int nFoundIndex = INT_INVALID;
 	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
-		if (this->m_arrKeyValuePairs.at(nIndex).strKey == lpszKeyName) {
+		if (this->m_arrKeyValuePairs.at(nIndex).strKey == keyName) {
 			nFoundIndex = nIndex;
 			break;
 		}
@@ -974,26 +974,26 @@ void JSON::RemoveAll(void)
 //	Function name:	AddString
 //	Description:	Add a string-typed key-value pair, update value if
 //					the given key name already existed
-//  Arguments:		lpszKeyName - Key name
-//					lpszValue	- String value
+//  Arguments:		keyName - Key name
+//					value	- String value
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void JSON::AddString(LPCTSTR lpszKeyName, LPCTSTR lpszValue)
+void JSON::AddString(const wchar_t* keyName, const wchar_t* value)
 {
 	// Search if key name already existed
 	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
 		JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
-		if (jsonEntry.strKey == lpszKeyName) {
+		if (jsonEntry.strKey == keyName) {
 			// Replace existed value with new value
-			jsonEntry.strValue = lpszValue;
+			jsonEntry.strValue = value;
 			return;
 		}
 	}
 
 	// Add property
-	this->m_arrKeyValuePairs.push_back({ lpszKeyName, lpszValue });
+	this->m_arrKeyValuePairs.push_back({ keyName, value });
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1001,20 +1001,19 @@ void JSON::AddString(LPCTSTR lpszKeyName, LPCTSTR lpszValue)
 //	Function name:	AddInteger
 //	Description:	Add an integer-typed key-value pair, update value if
 //					the given key name already existed
-//  Arguments:		lpszKeyName - Item name
-//					nValue		- Signed integer value
+//  Arguments:		keyName - Item name
+//					nValue	- Signed integer value
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void JSON::AddInteger(LPCTSTR lpszKeyName, INT nValue)
+void JSON::AddInteger(const wchar_t* keyName, INT nValue)
 {
 	// Convert integer to string
-	CString strValue;
-	strValue.Format(_T("%d"), nValue);
+	String valueStr = StringUtils::StringFormat(_T("%d"), nValue);
 
 	// Add property
-	AddString(lpszKeyName, strValue);
+	AddString(keyName, valueStr);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1022,20 +1021,19 @@ void JSON::AddInteger(LPCTSTR lpszKeyName, INT nValue)
 //	Function name:	AddFloat
 //	Description:	Add a float-typed key-value pair, update value if
 //					the given key name already existed
-//  Arguments:		lpszKeyName - Key name
-//					dbValue		- Float value
+//  Arguments:		keyName - Key name
+//					dbValue	- Float value
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void JSON::AddFloat(LPCTSTR lpszKeyName, DOUBLE dbValue)
+void JSON::AddFloat(const wchar_t* keyName, DOUBLE dbValue)
 {
 	// Convert float number to string
-	CString strValue;
-	strValue.Format(_T("%f"), dbValue);
+	String valueStr = StringUtils::StringFormat(_T("%f"), dbValue);
 
 	// Add property
-	AddString(lpszKeyName, strValue);
+	AddString(keyName, valueStr);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1088,47 +1086,47 @@ void JSON::AddChildObject(JSON* pSrc)
 // 
 //	Function name:	Print
 //	Description:	Print JSON object data with indentation
-//  Arguments:		strOutput  - Output printed result string
-//					nIndent	   - Indentation
-//					bSeparator - Whether to add a blank line as separator
-//					bMultiline - Whether to print the data in multiple lines
+//  Arguments:		outputString  - Output printed result string
+//					nIndent		  - Indentation
+//					bSeparator    - Whether to add a blank line as separator
+//					bMultiline    - Whether to print the data in multiple lines
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultiline /* = TRUE */)
+void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMultiline /* = TRUE */)
 {
 	// Empty output result string
-	strOutput.Empty();
+	outputString.Empty();
 
 	// Make indentation
-	CString strIndent = Constant::String::Empty;
+	String indentationStr = Constant::String::Empty;
 	for (int nTabCount = 1; nTabCount <= nIndent; nTabCount++) {
 		// Add indent (tab character)
-		strIndent.Append(Constant::Symbol::JSON_Indent);
+		indentationStr.Append(Constant::Symbol::JSON_Indent);
 	}
 
 	// Do not use indentation if printing in single line
 	// This will make better visualization
 	if (bMultiline != TRUE) {
-		strIndent.Empty();
+		indentationStr.Empty();
 	}
 
 	// Add indentation
-	strOutput.Append(strIndent);
+	outputString.Append(indentationStr);
 
-	CString strFormat = Constant::String::Empty;
+	String formatStr = Constant::String::Empty;
 
 	// Print object name (if set)
 	if (!this->m_strObjectName.IsEmpty()) {
-		strFormat.Format(_T("\"%s\": "), this->m_strObjectName.GetString());
-		strOutput.Append(strFormat);
+		formatStr.Format(_T("\"%s\": "), this->m_strObjectName.GetString());
+		outputString.Append(formatStr);
 	}
 
 	// Opening bracket
-	strOutput.Append(_T("{ "));
+	outputString.Append(_T("{ "));
 	if (bMultiline == TRUE) {
-		strOutput.Append(Constant::String::EndLine);
+		outputString.Append(Constant::String::EndLine);
 	}
 
 	// Print list of properties
@@ -1136,7 +1134,7 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 		// Add indentation
-		strOutput.Append(strIndent);
+		outputString.Append(indentationStr);
 
 		// Get key and value
 		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
@@ -1146,44 +1144,44 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 			((this->m_nChildObjectCount <= 0) || (this->m_apChildObjectList == NULL))) {
 
 			// Last property (no other child object following) has no comma in the end
-			strFormat.Format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
-			strOutput.Append(strFormat);
+			formatStr.Format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
+			outputString.Append(formatStr);
 			if (bMultiline == TRUE) {
-				strOutput.Append(Constant::String::EndLine);
+				outputString.Append(Constant::String::EndLine);
 			}
 		}
 		else {
 			// Add comma character at the end of each property
-			strFormat.Format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
-			strOutput.Append(strFormat);
+			formatStr.Format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
+			outputString.Append(formatStr);
 			if (bMultiline == TRUE) {
-				strOutput.Append(Constant::String::EndLine);
+				outputString.Append(Constant::String::EndLine);
 			}
 		}
 	}
 
 	// Print child objects
-	CString strSubItemOutput = Constant::String::Empty;
+	String subItemOutput = Constant::String::Empty;
 	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
 		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
 			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
 			if (pSubItem != NULL) {
-				pSubItem->Print(strSubItemOutput, nIndent + 1, FALSE, bMultiline);
-				strOutput.Append(strSubItemOutput);
+				pSubItem->Print(subItemOutput, nIndent + 1, FALSE, bMultiline);
+				outputString.Append(subItemOutput);
 			}
 		}
 	}
 
 	// Add indentation and closing bracket
-	strOutput.Append(strIndent);
-	strOutput.Append(_T("} "));
+	outputString.Append(indentationStr);
+	outputString.Append(_T("} "));
 	if (bMultiline == TRUE) {
-		strOutput.Append(Constant::String::EndLine);
+		outputString.Append(Constant::String::EndLine);
 	}
 
 	// Add a blank line as separator
 	if (bSeparator == TRUE) {
-		strOutput.Append(Constant::String::EndLine);
+		outputString.Append(Constant::String::EndLine);
 	}
 }
 
@@ -1191,33 +1189,37 @@ void JSON::Print(CString& strOutput, int nIndent, BOOL bSeparator, BOOL bMultili
 // 
 //	Function name:	PrintYAML
 //	Description:	Print JSON object data in YAML format
-//  Arguments:		strOutput  - Output printed result string
-//					nIndent	   - Indentation
+//  Arguments:		outputString  - Output printed result string
+//					nIndent		  - Indentation
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void JSON::PrintYAML(CString& strOutput, int nIndent)
+void JSON::PrintYAML(String& outputString, int nIndent)
 {
 	// Empty output result string
-	strOutput.Empty();
+	outputString.Empty();
 
 	// Indentation
-	CString strIndent = Constant::String::Empty;
+	String indentationStr = Constant::String::Empty;
 	for (int nCount = 1; nCount < nIndent; nCount++) {
-		strIndent.Append(Constant::Symbol::YAML_Indent);
+		indentationStr.Append(Constant::Symbol::YAML_Indent);
 	}
+
+	String formatStr = Constant::String::Empty;
 
 	// Print object name (if set)
 	if (!this->m_strObjectName.IsEmpty()) {
-		strOutput.AppendFormat(_T("%s%s:\n"), strIndent.GetString(), this->m_strObjectName.GetString());
-		strIndent.Append(Constant::Symbol::YAML_Indent); // Add one more indent for properties
+		formatStr = StringUtils::StringFormat(_T("%s%s:\n"), indentationStr.GetString(), this->m_strObjectName.GetString());
+		outputString.Append(formatStr);
+		indentationStr.Append(Constant::Symbol::YAML_Indent); // Add one more indent for properties
 	}
 
 	// Print key-value pairs
 	for (int nIndex = 0; nIndex < this->m_arrKeyValuePairs.size(); nIndex++) {
 		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
-		strOutput.AppendFormat(_T("%s%s: \"%s\"\n"), strIndent.GetString(), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
+		formatStr = StringUtils::StringFormat(_T("%s%s: \"%s\"\n"), indentationStr.GetString(), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
+		outputString.Append(formatStr);
 	}
 
 	// Print child objects
@@ -1225,9 +1227,9 @@ void JSON::PrintYAML(CString& strOutput, int nIndent)
 		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
 			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
 			if (pSubItem != NULL) {
-				CString strSubItemOutput;
-				pSubItem->PrintYAML(strSubItemOutput, nIndent + 1);
-				strOutput.Append(strSubItemOutput);
+				String subItemOutput;
+				pSubItem->PrintYAML(subItemOutput, nIndent + 1);
+				outputString.Append(subItemOutput);
 			}
 		}
 	}
@@ -1386,18 +1388,17 @@ void SLogging::OutputItem(const LOGITEM& logItem)
 // 
 //	Function name:	OutputLogString
 //	Description:	Add a log string into log list data
-//  Arguments:		lpszLogString - Log string
-//					lpszLogDetail - Log detail string
-//					byType		  - Log type
+//  Arguments:		logString - Log string
+//					byType	  - Log type
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SLogging::OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate /* = TRUE */)
+void SLogging::OutputString(const wchar_t* logString, BOOL bUseLastTemplate /* = TRUE */)
 {
 	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
-		Write(lpszLogString);
+		Write(logString);
 	}
 	else {
 		// Get log time
@@ -1433,7 +1434,7 @@ void SLogging::OutputString(LPCTSTR lpszLogString, BOOL bUseLastTemplate /* = TR
 
 		// Update log item data
 		logItem.SetTime(stLogTime);
-		logItem.SetLogString(lpszLogString);
+		logItem.SetLogString(logString);
 		OutputItem(logItem);
 	}
 }
@@ -1459,16 +1460,16 @@ BOOL SLogging::Write(void)
 		(this->GetWriteMode() == LogWriteMode::WriteInstantly))
 		return FALSE;
 
-	CString strFileName;
-	CString strCurFileName;
 	CFile fLogFile;
+	String fileName;
+	String currentFileName;
 
 	// Log folder path
 	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
 
 	LOGITEM logItem;
 	SYSTEMTIME stTemp;
-	CString strLogFormat;
+	String logFormatString;
 	String filePath;
 
 	// Setup performance counter for tracking
@@ -1486,38 +1487,38 @@ BOOL SLogging::Write(void)
 		{
 		case LOGTYPE_APP_EVENT:
 			// Format app event log filename
-			strFileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth);
-			filePath = StringUtils::MakeFilePath(folderPath, strFileName, FILEEXT_LOGFILE);
-			if (strCurFileName.IsEmpty()) {
+			fileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth);
+			filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
+			if (currentFileName.IsEmpty()) {
 				// Set current file name
-				strCurFileName = strFileName;
+				currentFileName = fileName;
 			}
 
 			// If a file with another name (previous day's log file) is opening,
 			// write down all current log strings and close the file
-			if ((fLogFile.m_hFile != CFile::hFileNull) && (strFileName != strCurFileName))
+			if ((fLogFile.m_hFile != CFile::hFileNull) && (fileName != currentFileName))
 			{
-				if (!strLogFormat.IsEmpty()) {
+				if (!logFormatString.IsEmpty()) {
 
 					// Write log strings to file
-					fLogFile.Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+					fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
 					fLogFile.Flush();
 
-					strLogFormat.Empty();
+					logFormatString.Empty();
 				}
 
 				// Close current file
 				fLogFile.Close();
 
 				// Set new current file name
-				strCurFileName = strFileName;
+				currentFileName = fileName;
 			}
 			break;
 
 		case LOGTYPE_HISTORY_LOG:
 			// App history log
-			strFileName = FILENAME_HISTORY_LOG;
-			filePath = StringUtils::MakeFilePath(folderPath, strFileName, FILEEXT_LOGFILE);
+			fileName = FILENAME_HISTORY_LOG;
+			filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
 			break;
 
 		default:
@@ -1553,12 +1554,12 @@ BOOL SLogging::Write(void)
 		}
 
 		// Format output log strings
-		strLogFormat += logItem.FormatOutput();
+		logFormatString += logItem.FormatOutput();
 	}
 
-	if (!strLogFormat.IsEmpty()) {
+	if (!logFormatString.IsEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
 		fLogFile.Flush();
 	}
 
@@ -1578,13 +1579,13 @@ BOOL SLogging::Write(void)
 // 
 //	Function name:	Write
 //	Description:	Write log item instantly into logfile
-//  Arguments:		logItem		 - Log item to write
-//					lpszFilePath - Output log file path
+//  Arguments:		logItem	 - Log item to write
+//					filePath - Output log file path
 //  Return value:	BOOL - Result of log writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR /* lpszFilePath  = NULL */)
+BOOL SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
@@ -1594,10 +1595,10 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR /* lpszFilePath  = NULL */)
 	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
 		return FALSE;
 
-	CString strFileName;
+	String fileName;
 	CFile fLogFile;
 
-	CString strLogFormat;
+	String logFormatString;
 
 	// Get log time
 	SYSTEMTIME stTimeTemp;
@@ -1608,12 +1609,12 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR /* lpszFilePath  = NULL */)
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		strFileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth);
+		fileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth);
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
 		// App history log
-		strFileName = FILENAME_HISTORY_LOG;
+		fileName = FILENAME_HISTORY_LOG;
 		break;
 
 	default:
@@ -1629,7 +1630,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR /* lpszFilePath  = NULL */)
 	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Get file path
-	String filePath = StringUtils::MakeFilePath(folderPath, strFileName, FILEEXT_LOGFILE);
+	String filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -1655,11 +1656,11 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR /* lpszFilePath  = NULL */)
 	}
 
 	// Format output log strings
-	strLogFormat = logItem.FormatOutput();
+	logFormatString = logItem.FormatOutput();
 
-	if (!strLogFormat.IsEmpty()) {
+	if (!logFormatString.IsEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
 		fLogFile.Flush();
 	}
 
@@ -1675,12 +1676,12 @@ BOOL SLogging::Write(const LOGITEM& logItem, LPCTSTR /* lpszFilePath  = NULL */)
 // 
 //	Function name:	WriteInstantLog
 //	Description:	Write log string instantly into logfile
-//  Arguments:		lpszLogString - Log string
+//  Arguments:		logString - Log string
 //  Return value:	BOOL - Result of log writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR /* lpszFilePath  = NULL */)
+BOOL SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
 {
 	BOOL bResult = TRUE;
 	DWORD dwErrCode;
@@ -1690,10 +1691,10 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR /* lpszFilePath  = NULL */)
 	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
 		return FALSE;
 
-	CString strFileName;
+	String fileName;
 	CFile fLogFile;
 
-	CString strLogFormat;
+	String logFormatString;
 
 	// Get log time
 	SYSTEMTIME stCurTime;
@@ -1704,12 +1705,12 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR /* lpszFilePath  = NULL */)
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		strFileName.Format(FILENAME_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth);
+		fileName.Format(FILENAME_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth);
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
 		// App history log
-		strFileName = FILENAME_HISTORY_LOG;
+		fileName = FILENAME_HISTORY_LOG;
 		break;
 
 	default:
@@ -1726,7 +1727,7 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR /* lpszFilePath  = NULL */)
 	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
 
 	// Get file path
-	String filePath = StringUtils::MakeFilePath(folderPath, strFileName, FILEEXT_LOGFILE);
+	String filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -1754,12 +1755,12 @@ BOOL SLogging::Write(LPCTSTR lpszLogString, LPCTSTR /* lpszFilePath  = NULL */)
 	// Format output log strings
 	LOGITEM logItem;
 	logItem.SetTime(stCurTime);
-	logItem.SetLogString(lpszLogString);
-	strLogFormat = logItem.FormatOutput();
+	logItem.SetLogString(logString);
+	logFormatString = logItem.FormatOutput();
 
-	if (!strLogFormat.IsEmpty()) {
+	if (!logFormatString.IsEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
 		fLogFile.Flush();
 	}
 

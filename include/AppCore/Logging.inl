@@ -62,13 +62,13 @@ inline void LogDetail::SetDetailValue(INT nDetailValue) {
 };
 
 // Get detail info (string)
-inline CString LogDetail::GetDetailString(void) const {
+inline String LogDetail::GetDetailString(void) const {
 	return m_strDetailInfo;
 };
 
 // Set detail info (string)
-inline void LogDetail::SetDetailString(LPCTSTR lpszDetailInfo) {
-	m_strDetailInfo = lpszDetailInfo;
+inline void LogDetail::SetDetailString(const wchar_t* detailInfo) {
+	m_strDetailInfo = detailInfo;
 };
 
 // Get detail info (pointer)
@@ -132,13 +132,13 @@ inline void LogItem::SetCategory(USHORT usCategory) {
 };
 
 // Get log description string
-inline CString LogItem::GetLogString(void) const {
+inline String LogItem::GetLogString(void) const {
 	return m_strLogString;
 };
 
 // Set log description string
-inline void LogItem::SetLogString(LPCTSTR lpszLogString) {
-	m_strLogString = lpszLogString;
+inline void LogItem::SetLogString(const wchar_t* logString) {
+	m_strLogString = logString;
 };
 
 // Add log detail info item
@@ -152,13 +152,13 @@ inline void LogItem::AddDetail(USHORT usCategory, INT nDetailInfo, INT nFlag /* 
 }
 
 // Add log detail info item
-inline void LogItem::AddDetail(USHORT usCategory, LPCTSTR lpszDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */) {
-	m_arrDetailInfo.AddDetail(usCategory, lpszDetailInfo, nFlag);
+inline void LogItem::AddDetail(USHORT usCategory, const wchar_t* detailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */) {
+	m_arrDetailInfo.AddDetail(usCategory, detailInfo, nFlag);
 }
 
 // Add log detail info item
-inline void LogItem::AddDetail(USHORT usCategory, INT nDetailInfo, LPCTSTR lpszDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */) {
-	m_arrDetailInfo.AddDetail(usCategory, nDetailInfo, lpszDetailInfo, nFlag);
+inline void LogItem::AddDetail(USHORT usCategory, INT nDetailInfo, const wchar_t* detailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */) {
+	m_arrDetailInfo.AddDetail(usCategory, nDetailInfo, detailInfo, nFlag);
 }
 
 // Remove all log detail info data
@@ -178,8 +178,8 @@ inline void JSON::RemoveProperty(size_t nIndex)
 }
 
 // Set JSON object name
-inline void JSON::SetObjectName(LPCTSTR lpszObjectName) {
-	this->m_strObjectName = lpszObjectName;
+inline void JSON::SetObjectName(const wchar_t* objectName) {
+	this->m_strObjectName = objectName;
 }
 
 // Initialize log data
@@ -232,13 +232,13 @@ inline void SLogging::SetWriteMode(BYTE byWriteMode) {
 }
 
 // Get log output file path
-inline void SLogging::GetFilePath(CString& strFilePath) {
+inline void SLogging::GetFilePath(String& strFilePath) {
 	strFilePath = m_strFilePath;
 }
 
 // Set log output file path
-inline void SLogging::SetFilePath(LPCTSTR lpszFilePath) {
-	m_strFilePath = lpszFilePath;
+inline void SLogging::SetFilePath(const wchar_t* filePath) {
+	m_strFilePath = filePath;
 }
 
 // Get log default template

@@ -2845,11 +2845,11 @@ void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 //	Function name:	GetNotifyTipText
 //	Description:	Get notify tip text
 //  Arguments:		pNotifyIconData - Notify icon data pointer
-//  Return value:	None
+//  Return value:	const wchar_t*
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR CPowerPlusDlg::GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
+const wchar_t* CPowerPlusDlg::GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 {
 	// Check validity
 	if (pNotifyIconData == NULL) {
@@ -2940,8 +2940,8 @@ void CPowerPlusDlg::SetBalloonTipText(UINT /*nCurLanguage*/, UINT nScheduleActio
 	strBalloonTip.Format(formatString, balloonText, nSecondLeft);
 
 	// Set balloon tip text
-	StrCpy(m_pNotifyIconData->szInfoTitle, (PWSTR)(LPCTSTR)GetLanguageString(pAppLang, IDC_APPNAME_LABEL));
-	StrCpy(m_pNotifyIconData->szInfo, (PWSTR)strBalloonTip.GetString());
+	StrCpy(m_pNotifyIconData->szInfoTitle, (wchar_t*)(const wchar_t*)GetLanguageString(pAppLang, IDC_APPNAME_LABEL));
+	StrCpy(m_pNotifyIconData->szInfo, (wchar_t*)strBalloonTip.GetString());
 	Shell_NotifyIcon(NIM_MODIFY, m_pNotifyIconData);
 }
 
@@ -4302,9 +4302,9 @@ BOOL CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 		return FALSE;
 
 	// Output hotkey event log
-	CString strHotkeyDescription;
-	hksItem.PrintKeyStrokes(strHotkeyDescription);
-	OutputEventLog(LOG_EVENT_EXEC_HOTKEY, strHotkeyDescription.GetString());
+	String hotkeyDescription;
+	hksItem.PrintKeyStrokes(hotkeyDescription);
+	OutputEventLog(LOG_EVENT_EXEC_HOTKEY, hotkeyDescription);
 
 	// Get Power action ID by HotkeyID
 	UINT nActionID = NULL;
@@ -4522,7 +4522,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 	}
 
 	// Get current time
-	SYSTEMTIME curSysTime;
+	SYSTEMTIME curSysTime{};
 	if (nExecEventID == PwrReminderEvent::atSetTime) {
 		curSysTime = GetCurSysTime();
 	}
@@ -5179,9 +5179,9 @@ void CPowerPlusDlg::InitHotkeyHistoryInfo(UINT nHKID)
 	// Initialize hotkey action history info
 	m_hidHistoryInfoData.Init(HotkeySet);
 	m_hidHistoryInfoData.SetActionID(nActionID);
-	CString strKeyStrokes;
-	hksItem.PrintKeyStrokes(strKeyStrokes);
-	m_hidHistoryInfoData.SetDescription(strKeyStrokes);
+	String keyStrokesString;
+	hksItem.PrintKeyStrokes(keyStrokesString);
+	m_hidHistoryInfoData.SetDescription(keyStrokesString);
 }
 
 //////////////////////////////////////////////////////////////////////////

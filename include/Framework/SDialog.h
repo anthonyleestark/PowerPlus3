@@ -111,7 +111,7 @@ public:
 	// Construction
 	SDialog();																// default constructor
 	explicit SDialog(UINT nIDTemplate, CWnd* pParentWnd = NULL);			// custom constructor
-	explicit SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);	// custom constructor
+	explicit SDialog(const wchar_t* templateName, CWnd* pParentWnd = NULL);	// custom constructor
 	virtual ~SDialog();														// destructor
 
 protected:
@@ -259,9 +259,9 @@ public:
 	virtual void GetMargin(LPRECT lpDialogMargin) const;
 
 	// Dialog caption get/set functions
-	virtual LPCTSTR GetCaption(void) const;
+	virtual const wchar_t* GetCaption(void) const;
 	virtual void GetCaption(CString& strCaption) const;
-	virtual void SetCaption(LPCTSTR lpszCaption);
+	virtual void SetCaption(const wchar_t* caption);
 	virtual void SetCaptionFromResource(UINT nResourceStringID);
 	virtual void SetCaptionFromLanguage(UINT nLangStringID);
 
@@ -278,13 +278,13 @@ public:
 
 	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);
-	virtual void RegisterMessageBoxCaption(LPCTSTR lpszCaption);
+	virtual void RegisterMessageBoxCaption(const wchar_t* caption);
 	virtual void GetMessageBoxCaption(CString& strRegMsgBoxCap) const;
 	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
-	virtual int DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption = NULL, UINT nStyle = NULL);
+	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, UINT nStyle = NULL);
 
 	// Dialog event logging function
-	virtual void OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription = NULL, LOGDETAILINFO* pDetailInfo = NULL);
+	virtual void OutputEventLog(USHORT usEvent, const wchar_t* description = NULL, LOGDETAILINFO* pDetailInfo = NULL);
 
 	// Dialog control event logging functions
 	virtual void OutputButtonLog(USHORT usEvent, UINT nButtonID);
@@ -300,7 +300,7 @@ public:
 	virtual void SetupLanguage(void);
 	virtual void SetupComboBox(UINT nComboID, LANGTABLE_PTR pLanguage);
 	virtual void SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle = FALSE);
-	virtual void UpdateItemText(UINT nCtrlID, LPCTSTR lpszNewCaption);
+	virtual void UpdateItemText(UINT nCtrlID, const wchar_t* newCaption);
 	virtual void UpdateItemText(UINT nCtrlID, UINT nNewCaptionID = NULL, LANGTABLE_PTR ptrLanguage = NULL);
 	virtual void SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLanguage = NULL);
 	virtual void MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition);

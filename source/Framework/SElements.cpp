@@ -508,11 +508,11 @@ void SCtrlInfoWrap::GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) con
 //	Function name:	GetString
 //	Description:	Get current control's string data value
 //  Arguments:		strValue - String value (out)
-//  Return value:	LPCTSTR
+//  Return value:	const wchar_t*
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR SCtrlInfoWrap::GetString(void) const
+const wchar_t* SCtrlInfoWrap::GetString(void) const
 {
 	if (this->m_pstrValue == NULL)
 		return Constant::String::Empty;
@@ -533,11 +533,11 @@ void SCtrlInfoWrap::GetString(_Out_ CString& strValue) const
 //	Function name:	GetReserveString
 //	Description:	Get current control's reserve string data value
 //  Arguments:		strValue - String reserve value (out)
-//  Return value:	LPCTSTR
+//  Return value:	const wchar_t*
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR SCtrlInfoWrap::GetReserveString(void) const
+const wchar_t* SCtrlInfoWrap::GetReserveString(void) const
 {
 	if (this->m_pstrReserveValue == NULL)
 		return Constant::String::Empty;
@@ -811,18 +811,18 @@ void SCtrlInfoWrap::SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& 
 // 
 //	Function name:	SetString
 //	Description:	Set current control's string data value
-//  Arguments:		lpszValue - String value (in)
+//  Arguments:		value - String value (in)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::SetString(_In_ LPCTSTR lpszValue)
+void SCtrlInfoWrap::SetString(_In_ const wchar_t* value)
 {
 	if (this->m_pstrValue == NULL)
-		this->m_pstrValue = new CString(lpszValue);
+		this->m_pstrValue = new CString(value);
 	else {
 		delete (this->m_pstrValue);
-		this->m_pstrValue = new CString(lpszValue);
+		this->m_pstrValue = new CString(value);
 	}
 }
 
@@ -830,18 +830,18 @@ void SCtrlInfoWrap::SetString(_In_ LPCTSTR lpszValue)
 // 
 //	Function name:	SetReserveValueString
 //	Description:	Set current control's reserve string data value
-//  Arguments:		lpszValue - String reserve value (in)
+//  Arguments:		value - String reserve value (in)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SCtrlInfoWrap::SetReserveString(_In_ LPCTSTR lpszValue)
+void SCtrlInfoWrap::SetReserveString(_In_ const wchar_t* value)
 {
 	if (this->m_pstrReserveValue == NULL)
-		this->m_pstrReserveValue = new CString(lpszValue);
+		this->m_pstrReserveValue = new CString(value);
 	else {
 		delete (this->m_pstrReserveValue);
-		this->m_pstrReserveValue = new CString(lpszValue);
+		this->m_pstrReserveValue = new CString(value);
 	}
 }
 

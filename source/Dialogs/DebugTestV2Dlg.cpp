@@ -949,7 +949,7 @@ int CDebugTestV2Dlg::FormatDebugCommand(CString& strDebugCommand)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestV2Dlg::ClearDebugCommandInput(LPCTSTR lpszCmdBuff /* = Constant::String::Empty */)
+void CDebugTestV2Dlg::ClearDebugCommandInput(const wchar_t* commandBuff /* = Constant::String::Empty */)
 {
 	if (!IsDebugCommandInputValid())
 		return;
@@ -959,8 +959,8 @@ void CDebugTestV2Dlg::ClearDebugCommandInput(LPCTSTR lpszCmdBuff /* = Constant::
 	if (m_bDispCommandPrefix == TRUE) {
 		strCmdBuff = debugCommandPrefix;
 	}
-	if (IS_NOT_EMPTY_STRING(lpszCmdBuff)) {
-		strCmdBuff += lpszCmdBuff;
+	if (IS_NOT_EMPTY_STRING(commandBuff)) {
+		strCmdBuff += commandBuff;
 	}
 
 	// Update display
@@ -996,13 +996,13 @@ void CDebugTestV2Dlg::ClearDebugViewBuffer(void)
 // 
 //	Function name:	AddLine
 //	Description:	Add a string line to debug screen
-//  Arguments:		lpszString - String line
+//  Arguments:		lineString - String line
 //					bNewLine   - Whether to add a new empty line
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CDebugTestV2Dlg::AddLine(LPCTSTR lpszString, BOOL bNewLine /* = TRUE */)
+void CDebugTestV2Dlg::AddLine(const wchar_t* lineString, BOOL bNewLine /* = TRUE */)
 {
 	// If buffer not empty
 	if (!m_strBuffer.IsEmpty()) {
@@ -1018,8 +1018,8 @@ void CDebugTestV2Dlg::AddLine(LPCTSTR lpszString, BOOL bNewLine /* = TRUE */)
 	}
 
 	// Add string line
-	if (IS_NOT_EMPTY_STRING(lpszString)) {
-		m_strBuffer.Append(lpszString);
+	if (IS_NOT_EMPTY_STRING(lineString)) {
+		m_strBuffer.Append(lineString);
 	}
 
 	// Re-check the end of buffer character
@@ -1071,16 +1071,16 @@ void CDebugTestV2Dlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */, BOOL bNotifyP
 // 
 //	Function name:	AddDebugCommandHistory
 //	Description:	Add debug command to history
-//  Arguments:		lpszCommand - Input command
+//  Arguments:		commandString - Input command
 //  Return value:	size_t - New item count
 //
 //////////////////////////////////////////////////////////////////////////
 
-size_t CDebugTestV2Dlg::AddDebugCommandHistory(LPCTSTR lpszCommand)
+size_t CDebugTestV2Dlg::AddDebugCommandHistory(const wchar_t* commandString)
 {
 	// Only add if input command is not empty
-	if (IS_NOT_EMPTY_STRING(lpszCommand)) {
-		m_astrCommandHistory.push_back(lpszCommand);
+	if (IS_NOT_EMPTY_STRING(commandString)) {
+		m_astrCommandHistory.push_back(commandString);
 
 		// Not currently displaying history
 		if (!IsCurrentlyDispHistory()) {

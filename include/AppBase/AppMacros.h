@@ -421,10 +421,10 @@
 
 #define MAKE_WPARAM_STRING(string)						DEFAULT_CAST(WPARAM, _tcslen(string))
 #define MAKE_LPARAM(type, data)							REINTERPRET_CAST(LPARAM, ((type)data))
-#define MAKE_LPARAM_STRING(string)						MAKE_LPARAM(LPCTSTR, string)
+#define MAKE_LPARAM_STRING(string)						MAKE_LPARAM(const wchar_t*, string)
 #define LPARAM_STATIC_CAST(type, lParam)				STATIC_CAST(type, lParam)
 #define LPARAM_REINTERPRET_CAST(type, lParam)			REINTERPRET_CAST(type, lParam)
-#define LPARAM_TO_STRING(lParam)						LPARAM_REINTERPRET_CAST(LPCTSTR, lParam)
+#define LPARAM_TO_STRING(lParam)						LPARAM_REINTERPRET_CAST(const wchar_t*, lParam)
 
 
 // Special expressions

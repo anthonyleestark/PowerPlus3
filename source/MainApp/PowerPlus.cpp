@@ -703,7 +703,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 	int nDataTemp = INT_INVALID;
 	int nTimeTemp = INT_INVALID;
-	CString strTemp = Constant::String::Empty;
+	String tempString = Constant::String::Empty;
 	SYSTEMTIME stTimeTemp = SYSTEMTIME_ZERO;
 
 	// Check data validity first
@@ -1039,8 +1039,8 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				pwrTemp.EnableItem(nDataTemp);
 
 				// Message content
-				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::Message, strTemp);
-				pwrTemp.SetMessage(strTemp);
+				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::Message, tempString);
+				pwrTemp.SetMessage(tempString);
 
 				// Event ID
 				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::EventID, nDataTemp);
@@ -1167,7 +1167,7 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeleteConfigSection();
 
 		// Get a copy of config data
-		CONFIGDATA cfgConfigTemp;
+		CONFIGDATA cfgConfigTemp{};
 		if (m_pcfgAppConfig != NULL) {
 			m_pcfgAppConfig->GetData(cfgConfigTemp);
 		}
@@ -1525,7 +1525,7 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	BOOL bRet = FALSE;
 
 	int nGlbValue = (int)0;									// Integer type
-	CString strGlbValue = Constant::String::Empty;			// String value
+	String strGlbValue = Constant::String::Empty;			// String value
 
 	// Subsection name
 	CString strSubSection = Constant::String::Empty;
@@ -1672,7 +1672,7 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	BOOL bGlbValue = (BOOL)0;								// Boolean type
 	BYTE byGlbValue = (BYTE)0;								// Byte value
 	DWORD dwGlbValue = (DWORD)0;							// D-WORD value
-	CString strGlbValue = Constant::String::Empty;			// String value
+	String strGlbValue = Constant::String::Empty;			// String value
 
 	// Subsection name
 	CString strSubSection = Constant::String::Empty;
@@ -2077,9 +2077,9 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 {
 	CString strTrcTitle = Constant::String::Empty;
 	CString strTrcLogFormat = Constant::String::Empty;
-	LPCTSTR lpszDataNull = _T("Data pointer is NULL");
-	LPCTSTR lpszReadFailed = _T("Registry data is unreadable or invalid");
-	LPCTSTR lpszWriteFailed = _T("Unable to write registry data");
+	const wchar_t* _dataNullString = _T("Data pointer is NULL");
+	const wchar_t* _readFailedString = _T("Registry data is unreadable or invalid");
+	const wchar_t* _writeFailedString = _T("Unable to write registry data");
 
 	// Serialization trace skip flag
 	// Note: If the application is launching for the 1st time, do not trace data loading error
@@ -2090,97 +2090,97 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 	case APP_ERROR_LOAD_CFG_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_CFG_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_SCHED_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_SCHED_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Load reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_FAILED:
 		bSkipFlag = IsAppFirstLaunch();
 		strTrcTitle = _T("Load reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszReadFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _readFailedString);
 		break;
 
 	case APP_ERROR_SAVE_CFG_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_CFG_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save config failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save schedule failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save hotkeyset failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_INVALID:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszDataNull);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_FAILED:
 		bSkipFlag = FALSE;							// Do not skip
 		strTrcTitle = _T("Save reminder failed");
-		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), lpszWriteFailed);
+		strTrcLogFormat.Format(_T("%s: %s"), strTrcTitle.GetString(), _writeFailedString);
 		break;
 	}
 

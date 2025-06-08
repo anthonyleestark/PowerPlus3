@@ -198,7 +198,7 @@ protected:
 	// Component update functions
 	void SetMenuItemText(CMenu* pMenu);
 	void UpdateMenuItemState(CMenu* pMenu);
-	LPCTSTR GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
+	const wchar_t* GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
 	void SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
 	void SetBalloonTipText(UINT nCurLanguage, UINT nScheduleAction, UINT nSecondLeft);
 

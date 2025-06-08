@@ -165,11 +165,11 @@ public:
 	// Get control ID info
 	virtual INT		GetType(void) const;
 	virtual UINT	GetTemplateID(void) const;
-	virtual LPCTSTR GetTemplateStringID(void) const;
+	virtual const wchar_t* GetTemplateStringID(void) const;
 	virtual void	GetTemplateStringID(_Out_ CString& strTemplateID) const;
 
 	// Get attributes
-	virtual LPCTSTR GetCaption(void) const;
+	virtual const wchar_t* GetCaption(void) const;
 	virtual void	GetCaption(_Out_ CString& strCaption) const;
 	virtual BOOL	IsVisible(void) const;
 	virtual BOOL	IsEnabled(void) const;
@@ -178,10 +178,10 @@ public:
 	// Set control ID info
 	virtual void	SetType(_In_ INT nTypeID);
 	virtual void	SetTemplateID(_In_ UINT nTemplateID);
-	virtual void	SetTemplateStringID(_In_z_ LPCTSTR lpszTemplateID);
+	virtual void	SetTemplateStringID(_In_z_ const wchar_t* templateID);
 
 	// Set attributes
-	virtual void	SetCaption(_In_z_ LPCTSTR lpszCaption);
+	virtual void	SetCaption(_In_z_ const wchar_t* caption);
 	virtual void	SetVisibleState(_In_ BOOL bVisible);
 	virtual void	SetEnableState(_In_ BOOL bEnabled);
 	virtual void	SetFocusedState(_In_ BOOL bFocused);
@@ -205,9 +205,9 @@ public:
 	virtual void	 GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) const;
 
 	// Get string data values
-	virtual LPCTSTR	 GetString(void) const;
+	virtual const wchar_t* GetString(void) const;
 	virtual void	 GetString(_Out_ CString& strValue) const;
-	virtual LPCTSTR	 GetReserveString(void) const;
+	virtual const wchar_t* GetReserveString(void) const;
 	virtual void	 GetReserveString(_Out_ CString& strValue) const;
 
 	// Get array data values
@@ -234,8 +234,8 @@ public:
 	virtual void	SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& dbMax);
 
 	// Set string data values
-	virtual void	SetString(_In_ LPCTSTR lpszValue);
-	virtual void	SetReserveString(_In_ LPCTSTR lpszValue);
+	virtual void	SetString(_In_ const wchar_t* value);
+	virtual void	SetReserveString(_In_ const wchar_t* value);
 
 	// Set array data values
 	virtual void	SetIntArray(_In_ const ULongArray& auiValue);

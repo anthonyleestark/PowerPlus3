@@ -402,13 +402,13 @@ inline void RmdMsgStyleSet::SetTextColor(COLORREF color) {
 }
 
 // Get font name
-inline CString RmdMsgStyleSet::GetFontName(void) const {
+inline String RmdMsgStyleSet::GetFontName(void) const {
 	return m_strFontName;
 }
 
 // Set font name
-inline void RmdMsgStyleSet::SetFontName(LPCTSTR lpszFontName) {
-	m_strFontName = lpszFontName;
+inline void RmdMsgStyleSet::SetFontName(const wchar_t* fontName) {
+	m_strFontName = fontName;
 }
 
 // Get font size
@@ -542,13 +542,13 @@ inline void PwrReminderItem::SetItemID(UINT nItemID) {
 }
 
 // Get Power Reminder item message content
-inline LPCTSTR PwrReminderItem::GetMessage(void) const {
+inline const wchar_t* PwrReminderItem::GetMessage(void) const {
 	return m_strMessage.GetString();
 }
 
 // Set Power Reminder item message content
-inline void PwrReminderItem::SetMessage(LPCTSTR lpszMessage) {
-	m_strMessage = lpszMessage;
+inline void PwrReminderItem::SetMessage(const wchar_t* message) {
+	m_strMessage = message;
 }
 
 // Get Power Reminder item event ID
@@ -826,18 +826,18 @@ inline void HistoryInfoData::SetErrorCode(DWORD dwErrorCode) {
 }
 
 // Get history description (attached info)
-inline LPCTSTR HistoryInfoData::GetDescription(void) const {
+inline const wchar_t* HistoryInfoData::GetDescription(void) const {
 	return m_strDescription.GetString();
 }
 
 // Get history description (attached info)
-inline void HistoryInfoData::GetDescription(CString& strDescription) const {
+inline void HistoryInfoData::GetDescription(String& strDescription) const {
 	strDescription = m_strDescription;
 }
 
 // Set history description (attached info)
-inline void HistoryInfoData::SetDescription(LPCTSTR lpszDescription) {
-	m_strDescription = lpszDescription;
+inline void HistoryInfoData::SetDescription(const wchar_t* description) {
+	m_strDescription = description;
 }
 
 // Get system event ID
@@ -888,7 +888,7 @@ inline const SystemEvent& SystemEventTracker::GetAt(int nIndex) const {
 
 // Check if data is empty
 inline BOOL RegistryValue::IsEmpty(void) const {
-	return (IsType(Type::None));
+	return (IsType(Type::NONE));
 }
 
 // Check if current type is matching
@@ -897,20 +897,20 @@ inline BOOL RegistryValue::IsType(UINT nType) const {
 }
 
 // Get String value
-inline void RegistryValue::GetString(CString& strValue) const {
-	if (!IsType(Type::String)) { strValue.Empty(); }
+inline void RegistryValue::GetString(String& strValue) const {
+	if (!IsType(Type::STRING)) { strValue.Empty(); }
 	else { strValue = *m_pstrValue; }
 }
 
 // Get String value
-inline LPCTSTR RegistryValue::GetString(void) const {
-	if (!IsType(Type::String)) { return Constant::String::Empty; }
+inline const wchar_t* RegistryValue::GetString(void) const {
+	if (!IsType(Type::STRING)) { return Constant::String::Empty; }
 	else return m_pstrValue->GetString();
 }
 
 // Set String value
-inline void RegistryValue::SetString(LPCTSTR lpszValue) {
-	if (Init(Type::String)) { *m_pstrValue = lpszValue; }
+inline void RegistryValue::SetString(const wchar_t* value) {
+	if (Init(Type::STRING)) { *m_pstrValue = value; }
 }
 
 // Get DWORD (32-bit) value
@@ -943,15 +943,15 @@ inline void RegistryValue::GetMultiString(StringArray& astrValue) const {
 
 // Set multi-string value
 inline void RegistryValue::SetMultiString(StringArray& astrValue) {
-	if (Init(Type::Multi_String)) { m_pastrValue->assign(astrValue.begin(), astrValue.end()); }
+	if (Init(Type::MULTI_STRING)) { m_pastrValue->assign(astrValue.begin(), astrValue.end()); }
 }
 
 // Add string value to Multi-string data
-inline BOOL RegistryValue::AddString(LPCTSTR lpszValue)
+inline BOOL RegistryValue::AddString(const wchar_t* value)
 {
-	if (!IsEmpty() && !IsType(Type::Multi_String)) return FALSE;
-	if (IsEmpty() && !Init(Type::Multi_String)) return FALSE;
-	m_pastrValue->push_back(lpszValue);
+	if (!IsEmpty() && !IsType(Type::MULTI_STRING)) return FALSE;
+	if (IsEmpty() && !Init(Type::MULTI_STRING)) return FALSE;
+	m_pastrValue->push_back(value);
 	return TRUE;
 }
 
@@ -961,18 +961,18 @@ inline BOOL RegistryKey::IsEmpty(void) const {
 }
 
 // Get registry key name
-inline void RegistryKey::GetName(CString& strKeyName) const {
+inline void RegistryKey::GetName(String& strKeyName) const {
 	strKeyName = m_strKeyName;
 }
 
 // Get registry key name
-inline LPCTSTR RegistryKey::GetName(void) const {
+inline const wchar_t* RegistryKey::GetName(void) const {
 	return m_strKeyName.GetString();
 }
 
 // Set registry key name
-inline void RegistryKey::SetName(LPCTSTR lpszKeyName) {
-	m_strKeyName = lpszKeyName;
+inline void RegistryKey::SetName(const wchar_t* keyName) {
+	m_strKeyName = keyName;
 }
 
 // Get registry key value type
@@ -986,18 +986,18 @@ inline void RegistryKey::SetType(UINT nValueType) {
 }
 
 // Get String value
-inline void RegistryKey::GetString(CString& strValue) const {
+inline void RegistryKey::GetString(String& strValue) const {
 	m_regValue.GetString(strValue);
 }
 
 // Get String value
-inline LPCTSTR RegistryKey::GetString(void) const {
+inline const wchar_t* RegistryKey::GetString(void) const {
 	return m_regValue.GetString();
 }
 
 // Set String value
-inline void RegistryKey::SetString(LPCTSTR lpszValue) {
-	m_regValue.SetString(lpszValue);
+inline void RegistryKey::SetString(const wchar_t* value) {
+	m_regValue.SetString(value);
 }
 
 // Get DWORD (32-bit) value
@@ -1031,8 +1031,8 @@ inline void RegistryKey::SetMultiString(StringArray& astrValue) {
 }
 
 // Add string value to Multi-string data
-inline BOOL RegistryKey::AddString(LPCTSTR lpszValue) {
-	return m_regValue.AddString(lpszValue);
+inline BOOL RegistryKey::AddString(const wchar_t* value) {
+	return m_regValue.AddString(value);
 }
 
 // Get root key
@@ -1041,22 +1041,22 @@ inline HKEY RegistryInfo::GetRootKey(void) const {
 }
 
 // Get registry key info data
-inline const REGISTRYKEY& RegistryInfo::GetRegistryKey(void) const {
+inline const RegistryKey& RegistryInfo::GetRegistryKey(void) const {
 	return m_regKeyInfo;
 }
 
 // Get root key name
-inline LPCTSTR RegistryInfo::GetRootKeyName(void) const {
+inline const wchar_t* RegistryInfo::GetRootKeyName(void) const {
 	return m_strRootKey.GetString();
 }
 
 // Get company name part
-inline LPCTSTR RegistryInfo::GetCompanyName(void) const {
+inline const wchar_t* RegistryInfo::GetCompanyName(void) const {
 	return m_strCompanyName.GetString();
 }
 
 // Get product name part
-inline LPCTSTR RegistryInfo::GetProductName(void) const {
+inline const wchar_t* RegistryInfo::GetProductName(void) const {
 	return m_strProductName.GetString();
 }
 
@@ -1066,13 +1066,13 @@ inline void RegistryInfo::SetRootKey(HKEY hRootKey) {
 }
 
 // Set registry info root key name
-inline void RegistryInfo::SetRootKeyName(LPCTSTR lpszRootkeyName) {
-	m_strRootKey = lpszRootkeyName;
+inline void RegistryInfo::SetRootKeyName(const wchar_t* rootkeyName) {
+	m_strRootKey = rootkeyName;
 }
 
 // Set registry info sub-key path
-inline void RegistryInfo::SetSubkeyPath(LPCTSTR lpszSubKeyName) {
-	m_astrSubkeyPath.push_back(lpszSubKeyName);
+inline void RegistryInfo::SetSubkeyPath(const wchar_t* subKeyName) {
+	m_astrSubkeyPath.push_back(subKeyName);
 }
 
 // Set registry info sub-key path
@@ -1081,18 +1081,18 @@ inline void RegistryInfo::SetSubkeyPath(StringArray& astrSubkeyPath) {
 }
 
 // Set registry info company name
-inline void RegistryInfo::SetCompanyName(LPCTSTR lpszCompanyName) {
-	m_strCompanyName = lpszCompanyName;
+inline void RegistryInfo::SetCompanyName(const wchar_t* companyName) {
+	m_strCompanyName = companyName;
 }
 
 // Set registry info product name
-inline void RegistryInfo::SetProductName(LPCTSTR lpszProductName) {
-	m_strProductName = lpszProductName;
+inline void RegistryInfo::SetProductName(const wchar_t* productName) {
+	m_strProductName = productName;
 }
 
 // Add section name
-inline void RegistryInfo::SetSectionName(LPCTSTR lpszSectionName) {
-	m_astrSectionArray.push_back(lpszSectionName);
+inline void RegistryInfo::SetSectionName(const wchar_t* sectionName) {
+	m_astrSectionArray.push_back(sectionName);
 }
 
 // Set section name array
@@ -1129,33 +1129,33 @@ inline void Substring::TrimRight(void) {
 }
 
 // Get left part
-inline LPCTSTR Substring::Left(void) const {
+inline const wchar_t* Substring::Left(void) const {
 	return (m_strLeft.GetString());
 }
 
 // Get middle part
-inline LPCTSTR Substring::Mid(void) const {
+inline const wchar_t* Substring::Mid(void) const {
 	return (m_strMid.GetString());
 }
 
 // Get right part
-inline LPCTSTR Substring::Right(void) const {
+inline const wchar_t* Substring::Right(void) const {
 	return (m_strRight.GetString());
 }
 
 // Set left part
-inline void Substring::SetLeft(LPCTSTR lpszSrc) {
-	m_strLeft = lpszSrc;
+inline void Substring::SetLeft(const wchar_t* srcStr) {
+	m_strLeft = srcStr;
 }
 
 // Set middle part
-inline void Substring::SetMid(LPCTSTR lpszSrc) {
-	m_strMid = lpszSrc;
+inline void Substring::SetMid(const wchar_t* srcStr) {
+	m_strMid = srcStr;
 }
 
 // Set right part
-inline void Substring::SetRight(LPCTSTR lpszSrc) {
-	m_strRight = lpszSrc;
+inline void Substring::SetRight(const wchar_t* srcStr) {
+	m_strRight = srcStr;
 }
 
 // Convert combo-box selection into option ID

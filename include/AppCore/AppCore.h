@@ -383,7 +383,7 @@ public:
 	void SetActiveDays(BYTE);										// Set repeat days data
 	void SetDayActive(DayOfWeek, BOOL);								// Set active state for specific day of week
 
-	void Print(CString& strOutput) const;							// Print item data
+	void Print(String&) const;										// Print item data
 };
 
 // Define new typenames for Schedule item data
@@ -506,8 +506,8 @@ public:
 	BOOL IsEmpty(void) const;										// Check if item is empty
 	BOOL Compare(const HotkeySetItem&) const;						// Compare items
 	BOOL CompareKeycode(const HotkeySetItem&) const;				// Compare item keycodes
-	void Print(CString& strOutput) const;							// Print item data
-	void PrintKeyStrokes(CString& strOutput) const;					// Print item keystrokes
+	void Print(String&) const;										// Print item data
+	void PrintKeyStrokes(String&) const;							// Print item keystrokes
 
 public:
 	// Get/set attributes
@@ -580,7 +580,7 @@ public:
 	// Clean-up
 	void Delete(int);												// Delete item at index
 	void DeleteAll(void);											// Delete all data
-	void PrintKeyStrokes(UINT nHKID, CString& strOutput) const;		// Print item keystrokes by ID
+	void PrintKeyStrokes(UINT, String&) const;						// Print item keystrokes by ID
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -623,7 +623,7 @@ private:
 	// Attributes
 	COLORREF	m_colorBkgrd;										// Background color
 	COLORREF	m_colorText;										// Text color
-	CString		m_strFontName;										// Font name
+	String		m_strFontName;										// Font name
 	UINT		m_uiFontSize;										// Font size
 	UINT		m_uiTimeout;										// Timeout (auto-close) interval
 	UINT		m_uiIconID;											// Message icon ID
@@ -652,8 +652,8 @@ public:
 	void SetBkgrdColor(COLORREF);									// Set background color
 	COLORREF GetTextColor(void) const;								// Get text color
 	void SetTextColor(COLORREF);									// Set text color
-	CString GetFontName(void) const;								// Get font name
-	void SetFontName(LPCTSTR);										// Set font name
+	String GetFontName(void) const;									// Get font name
+	void SetFontName(const wchar_t*);								// Set font name
 	UINT GetFontSize(void) const;									// Get font size
 	void SetFontSize(UINT);											// Set font size
 	UINT GetTimeout(void) const;									// Get timeout interval
@@ -702,7 +702,7 @@ private:
 	// Attributes
 	BOOL			m_bEnabled;										// Enable state
 	UINT			m_nItemID;										// Item ID
-	CString			m_strMessage;									// Message content
+	String			m_strMessage;									// Message content
 	UINT			m_nEventID;										// Event ID
 	SYSTEMTIME		m_stTime;										// Event time
 	DWORD			m_dwMsgStyle;									// Reminder style
@@ -736,8 +736,8 @@ public:
 	void EnableItem(BOOL);											// Set item enable state
 	UINT GetItemID(void) const;										// Get Power Reminder item ID
 	void SetItemID(UINT);											// Set Power Reminder item ID
-	LPCTSTR GetMessage(void) const;									// Get item message content
-	void SetMessage(LPCTSTR);										// Set item message content
+	const wchar_t* GetMessage(void) const;							// Get item message content
+	void SetMessage(const wchar_t*);								// Set item message content
 	UINT GetEventID(void) const;									// Get Power Reminder item event ID
 	void SetEventID(UINT);											// Set Power Reminder item event ID
 	SYSTEMTIME GetTime(void) const;									// Get Power Reminder item time data
@@ -761,7 +761,7 @@ public:
 	void SetActiveDays(BYTE);										// Set repeat days data
 	void SetDayActive(DayOfWeek, BOOL);								// Set active state for specific day of week
 
-	void Print(CString& strOutput) const;							// Print item data
+	void Print(String&) const;										// Print item data
 };
 
 // Define new typenames for Power Reminder Item data
@@ -910,7 +910,7 @@ private:
 	UINT		m_nActionID;										// Action ID
 	BOOL		m_bActionResult;									// Action result
 	DWORD		m_dwErrorCode;										// Returned error code
-	CString		m_strDescription;									// History description (attached info)
+	String		m_strDescription;									// History description (attached info)
 
 public:
 	// Constructor
@@ -940,9 +940,9 @@ public:
 	void SetResult(BOOL);											// Set action result
 	DWORD GetErrorCode(void) const;									// Get error code
 	void SetErrorCode(DWORD);										// Set error code
-	void GetDescription(CString&) const;							// Get description
-	LPCTSTR GetDescription(void) const;								// Get description
-	void SetDescription(LPCTSTR);									// Set description
+	void GetDescription(String&) const;							// Get description
+	const wchar_t* GetDescription(void) const;						// Get description
+	void SetDescription(const wchar_t*);							// Set description
 };
 
 // Define new typenames for History info data
@@ -1069,16 +1069,16 @@ class RegistryValue
 {
 public:
 	enum Type {
-		None = 0,											// Undefined/invalid type/no data
-		String,												// String value
+		NONE = 0,											// Undefined/invalid type/no data
+		STRING,												// String value
 		DWORD_32,											// DWORD (32-bit) value
 		QWORD_64,											// QWORD (64-bit) value
-		Multi_String,										// Multi-string value
+		MULTI_STRING,										// Multi-string value
 	};
 
 private:
 	// Data values
-	CString*		m_pstrValue;							// String value
+	String*			m_pstrValue;							// String value
 	DWORD*			m_pdwValue;								// DWORD (32-bit) value
 	QWORD*			m_pqwValue;								// QWORD (64-bit) value
 	StringArray*	m_pastrValue;							// Multi-string value
@@ -1103,16 +1103,16 @@ public:
 public:
 	// Get/set values
 	UINT GetType(void) const;								// Get value type
-	void GetString(CString&) const;							// Get String value
-	LPCTSTR GetString(void) const;							// Get String value
-	void SetString(LPCTSTR);								// Set String value
+	void GetString(String&) const;							// Get String value
+	const wchar_t* GetString(void) const;					// Get String value
+	void SetString(const wchar_t*);							// Set String value
 	DWORD GetDWord(void) const;								// Get DWORD (32-bit) value
 	void SetDWord(DWORD);									// Set DWORD (32-bit) value
 	QWORD GetQWord(void) const;								// Get QWORD (64-bit) value
 	void SetQWord(QWORD);									// Set QWORD (64-bit) value
 	void GetMultiString(StringArray&) const;				// Get Multi-string value
 	void SetMultiString(StringArray&);						// Set Multi-string value
-	BOOL AddString(LPCTSTR);								// Add string value to Multi-string data
+	BOOL AddString(const wchar_t*);							// Add string value to Multi-string data
 };
 
 // Define new typenames for Registry value data
@@ -1133,7 +1133,7 @@ class RegistryKey
 {
 private:
 	// Member variables
-	CString			m_strKeyName;							// Key name (string)
+	String			m_strKeyName;							// Key name (string)
 	REGISTRYVALUE	m_regValue;								// Registry value data
 
 public:
@@ -1151,28 +1151,27 @@ public:
 
 public:
 	// Get/set properties
-	void GetName(CString&) const;							// Get key name
-	LPCTSTR GetName(void) const;							// Get key name
-	void SetName(LPCTSTR);									// Set key name
+	void GetName(String&) const;							// Get key name
+	const wchar_t* GetName(void) const;						// Get key name
+	void SetName(const wchar_t*);							// Set key name
 	UINT GetType(void) const;								// Get value type
 	void SetType(UINT);										// Set value type
 
 	// Get/set value
-	void GetString(CString&) const;							// Get String value
-	LPCTSTR GetString(void) const;							// Get String value
-	void SetString(LPCTSTR);								// Set String value
+	void GetString(String&) const;							// Get String value
+	const wchar_t* GetString(void) const;					// Get String value
+	void SetString(const wchar_t*);							// Set String value
 	DWORD GetDWord(void) const;								// Get DWORD (32-bit) value
 	void SetDWord(DWORD);									// Set DWORD (32-bit) value
 	QWORD GetQWord(void) const;								// Get QWORD (64-bit) value
 	void SetQWord(QWORD);									// Set QWORD (64-bit) value
 	void GetMultiString(StringArray&) const;				// Get Multi-string value
 	void SetMultiString(StringArray&);						// Set Multi-string value
-	BOOL AddString(LPCTSTR);								// Add string value to Multi-string data
+	BOOL AddString(const wchar_t*);							// Add string value to Multi-string data
 };
 
 // Define new typenames for Registry key info data
-using REGISTRYKEY = RegistryKey;
-using PREGISTRYKEY = RegistryKey*;
+using PRegistryKey = RegistryKey*;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1197,12 +1196,12 @@ public:
 private:
 	// Attributes
 	HKEY			m_hRootKey;								// Root key (HKEY)
-	CString			m_strRootKey;							// Root key (string)
+	String			m_strRootKey;							// Root key (string)
 	StringArray		m_astrSubkeyPath;						// Subkey path (string array)
-	CString			m_strCompanyName;						// Company name (string)
-	CString			m_strProductName;						// Product name (string)
+	String			m_strCompanyName;						// Company name (string)
+	String			m_strProductName;						// Product name (string)
 	StringArray		m_astrSectionArray;						// Section array (string)
-	REGISTRYKEY		m_regKeyInfo;							// Registry key info
+	RegistryKey		m_regKeyInfo;							// Registry key info
 
 public:
 	// Constructor
@@ -1219,23 +1218,23 @@ public:
 public:
 	// Get data
 	HKEY GetRootKey(void) const;							// Get root key
-	const REGISTRYKEY& GetRegistryKey(void) const;			// Get registry key info data
+	const RegistryKey& GetRegistryKey(void) const;			// Get registry key info data
 
 	// Get attributes
-	LPCTSTR GetRootKeyName(void) const;						// Get root key name
+	const wchar_t* GetRootKeyName(void) const;				// Get root key name
 	void GetSubkeyPath(StringArray&) const;					// Get subkey path array
-	LPCTSTR GetCompanyName(void) const;						// Get company name
-	LPCTSTR GetProductName(void) const;						// Get product name
+	const wchar_t* GetCompanyName(void) const;				// Get company name
+	const wchar_t* GetProductName(void) const;				// Get product name
 	void GetSectionName(StringArray&) const;				// Get section name array
 
 	// Set attributes
 	void SetRootKey(HKEY);									// Set root key
-	void SetRootKeyName(LPCTSTR);							// Set root key name
-	void SetSubkeyPath(LPCTSTR);							// Set subkey path
+	void SetRootKeyName(const wchar_t*);					// Set root key name
+	void SetSubkeyPath(const wchar_t*);						// Set subkey path
 	void SetSubkeyPath(StringArray&);						// Set subkey path (string array)
-	void SetCompanyName(LPCTSTR);							// Set company name
-	void SetProductName(LPCTSTR);							// Set product name
-	void SetSectionName(LPCTSTR);							// Set section name
+	void SetCompanyName(const wchar_t*);					// Set company name
+	void SetProductName(const wchar_t*);					// Set product name
+	void SetSectionName(const wchar_t*);					// Set section name
 	void SetSectionName(StringArray&);						// Set section array (string array)
 };
 
@@ -1359,9 +1358,9 @@ class Substring
 {
 private:
 	// Member variables
-	CString m_strLeft;										// Left part
-	CString m_strMid;										// Middle part
-	CString m_strRight;										// Right part
+	String m_strLeft;										// Left part
+	String m_strMid;										// Middle part
+	String m_strRight;										// Right part
 
 public:
 	// Constructor
@@ -1381,14 +1380,14 @@ public:
 	void TrimAll(void);										// Trim spaces for all parts
 
 	// Get substrings
-	LPCTSTR	Left(void) const;								// Get left part
-	LPCTSTR	Mid(void) const;								// Get middle part
-	LPCTSTR	Right(void) const;								// Get right part
+	const wchar_t* Left(void) const;						// Get left part
+	const wchar_t* Mid(void) const;							// Get middle part
+	const wchar_t* Right(void) const;						// Get right part
 
 	// Set substrings
-	void SetLeft(LPCTSTR);									// Set left part
-	void SetMid(LPCTSTR);									// Set middle part
-	void SetRight(LPCTSTR);									// Set right part
+	void SetLeft(const wchar_t*);							// Set left part
+	void SetMid(const wchar_t*);							// Set middle part
+	void SetRight(const wchar_t*);							// Set right part
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -1512,8 +1511,8 @@ namespace AppCore
 	UINT Sel2Opt(UINT nOptionMacro, UINT nSelection);
 	UINT Opt2Sel(UINT nOptionMacro, UINT nCurOption);
 
-	BOOL Text2Time(SYSTEMTIME& stTime, CString strText);
-	BOOL Text2TimeBase(SYSTEMTIME& stTime, CString strText);
+	BOOL Text2Time(SYSTEMTIME& stTime, const wchar_t* text);
+	BOOL Text2TimeBase(SYSTEMTIME& stTime, const wchar_t* text);
 	void SpinPos2Time(SYSTEMTIME& stTime, int nPos);
 	void Time2SpinPos(SYSTEMTIME stTime, int& nPos);
 
@@ -1535,7 +1534,7 @@ namespace AppCore
 	UINT	GetWindowsOSVersion(void);
 
 	BOOL	AddRegistryKey(const RegistryInfo& regInfo);
-	LPCTSTR MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType = RegistryPathType::fullPath, BOOL bIncRootKey = TRUE);
+	const wchar_t* MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType = RegistryPathType::fullPath, BOOL bIncRootKey = TRUE);
 
 	void	PlaySound(BOOL bSoundEnable, UINT nTypeOfSound);
 	BOOL	FileViewStd(FILETYPE eFileType, const wchar_t* filePath);

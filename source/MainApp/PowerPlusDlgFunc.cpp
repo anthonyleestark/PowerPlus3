@@ -658,9 +658,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				// Prepare for replying
 				bNoReply = FALSE;	// Reset flag
 				// Print default schedule
-				CString strDefItemPrint;
-				pSchedDataTemp->GetDefaultItem().Print(strDefItemPrint);
-				logOutputResult.Format(_T("DefaultSchedule: %s"), strDefItemPrint.GetString());
+				String defaultItemPrint;
+				pSchedDataTemp->GetDefaultItem().Print(defaultItemPrint);
+				logOutputResult.Format(_T("DefaultSchedule: %s"), defaultItemPrint.GetString());
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print extra item number
 				int nExtraItemNum = pSchedDataTemp->GetExtraItemNum();
@@ -671,9 +671,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 					ScheduleItem schExtraItem = pSchedDataTemp->GetItemAt(nExtraIndex);
 
 					// Print item
-					CString strItemPrint;
-					schExtraItem.Print(strItemPrint);
-					logOutputResult.Format(_T("Index=%d, %s"), nExtraIndex, strItemPrint.GetString());
+					String extraItemPrint;
+					schExtraItem.Print(extraItemPrint);
+					logOutputResult.Format(_T("Index=%d, %s"), nExtraIndex, extraItemPrint.GetString());
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}
 			}
@@ -693,9 +693,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 					HotkeySetItem hksItem = pHksDataTemp->GetItemAt(nIndex);
 
 					// Print item
-					CString strItemPrint;
-					hksItem.Print(strItemPrint);
-					logOutputResult.Format(_T("Index=%d, %s"), nIndex, strItemPrint.GetString());
+					String hotKeyItemPrint;
+					hksItem.Print(hotKeyItemPrint);
+					logOutputResult.Format(_T("Index=%d, %s"), nIndex, hotKeyItemPrint.GetString());
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}
 			}
@@ -715,9 +715,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 					PwrReminderItem pwrItem = pRmdDataTemp->GetItemAt(nIndex);
 
 					// Print item
-					CString strItemPrint;
-					pwrItem.Print(strItemPrint);
-					logOutputResult.Format(_T("Index=%d, %s"), nIndex, strItemPrint.GetString());
+					String reminderItemPrint;
+					pwrItem.Print(reminderItemPrint);
+					logOutputResult.Format(_T("Index=%d, %s"), nIndex, reminderItemPrint.GetString());
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}
 			}
@@ -1083,9 +1083,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontname")))) {
 			// Get reminder message font name
-			CString strFontName;
-			GetReminderMsgFontName(strFontName);
-			OutputDebugLogFormat(_T("Message font name: %s"), strFontName.GetString());
+			String fontName;
+			GetReminderMsgFontName(fontName);
+			OutputDebugLogFormat(_T("Message font name: %s"), fontName.GetString());
 			bNoReply = FALSE;	// Reset flag
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {

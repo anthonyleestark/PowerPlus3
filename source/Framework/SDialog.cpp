@@ -134,7 +134,7 @@ SDialog::SDialog(UINT nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogEx(nI
 	m_clTextColor = Color::Black;
 }
 
-SDialog::SDialog(LPCTSTR lpszTemplateName, CWnd* pParentWnd /* = NULL */) : CDialogEx(lpszTemplateName, pParentWnd)
+SDialog::SDialog(const wchar_t* templateName, CWnd* pParentWnd /* = NULL */) : CDialogEx(templateName, pParentWnd)
 {
 	// Parent window
 	m_pParentWnd = pParentWnd;
@@ -1317,14 +1317,14 @@ int SDialog::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 // 
 //	Function name:	DisplayMessageBox
 //	Description:	Display message box using language string
-//  Arguments:		lpszPromptID  - Message string
-//					lpszCaptionID - Message caption string
-//					nStyle		  - Message box style
+//  Arguments:		prompt  - Message string
+//					caption - Message caption string
+//					nStyle	- Message box style
 //  Return value:	int	- Result of message box
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL */, UINT nStyle /* = NULL */)
+int SDialog::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* = NULL */, UINT nStyle /* = NULL */)
 {
 	// Set default style
 	if (nStyle == NULL) {
@@ -1333,7 +1333,7 @@ int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL
 	}
 
 	// If caption is not set
-	CString strCaption(lpszCaption);
+	CString strCaption(caption);
 	if (strCaption.IsEmpty()) {
 
 		// If message box caption is registered
@@ -1351,30 +1351,30 @@ int SDialog::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL
 	
 	// Display message box
 	nStyle |= MB_SYSTEMMODAL;
-	return MessageBox(lpszPrompt, strCaption, nStyle);
+	return MessageBox(prompt, strCaption, nStyle);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 
 //	Function name:	OutputEventLog
 //	Description:	Output application event log
-//  Arguments:		usEvent			- Event ID
-//					lpszDescription - Additional description
-//					pDetailInfo		- Log detail info (array pointer)
+//  Arguments:		usEvent		- Event ID
+//					description - Additional description
+//					pDetailInfo	- Log detail info (array pointer)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
+void SDialog::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
 {
 	// Prepare event log info
 	LOGITEM logItemDialogEvent;
 	logItemDialogEvent.SetCategory(usEvent);
 	logItemDialogEvent.SetTime(GetCurSysTime());
 	logItemDialogEvent.SetProcessID();
-	if (lpszDescription != NULL) {
+	if (description) {
 		// Include event description
-		logItemDialogEvent.SetLogString(lpszDescription);
+		logItemDialogEvent.SetLogString(description);
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data
@@ -1792,13 +1792,13 @@ void SDialog::SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle /*
 // 
 //	Function name:	UpdateItemText
 //	Description:	Update control text label
-//  Arguments:		nCtrlID		   - ID of control item
-//					lpszNewCaption - New caption string
+//  Arguments:		nCtrlID	   - ID of control item
+//					newCaption - New caption string
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SDialog::UpdateItemText(UINT nCtrlID, LPCTSTR lpszNewCaption)
+void SDialog::UpdateItemText(UINT nCtrlID, const wchar_t* newCaption)
 {
 	// Get item by ID
 	CWnd* pCtrlWnd = this->GetDlgItem(nCtrlID);
@@ -1806,7 +1806,7 @@ void SDialog::UpdateItemText(UINT nCtrlID, LPCTSTR lpszNewCaption)
 		return;
 
 	// Update item text
-	pCtrlWnd->SetWindowText(lpszNewCaption);
+	pCtrlWnd->SetWindowText(newCaption);
 }
 
 //////////////////////////////////////////////////////////////////////////

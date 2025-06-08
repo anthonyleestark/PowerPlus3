@@ -475,12 +475,12 @@ BOOL ScheduleItem::IsEmpty(void) const
 // 
 //	Function name:	Print
 //	Description:	Print schedule item
-//  Arguments:		strOutput - Output printed string
+//  Arguments:		outputString - Output printed string
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void ScheduleItem::Print(CString& strOutput) const
+void ScheduleItem::Print(String& outputString) const
 {
 	// Use table, language and core functions
 	using namespace MapTable;
@@ -498,7 +498,7 @@ void ScheduleItem::Print(CString& strOutput) const
 	const wchar_t* repeatState = (m_rpsRepeatSet.IsRepeatEnabled() == TRUE) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
 
 	// Print item
-	strOutput.Format(_T("Active=(%s), ItemID=%d, Action=(%s), Time=(%s), Repeat=(%s)"),
+	outputString.Format(_T("Active=(%s), ItemID=%d, Action=(%s), Time=(%s), Repeat=(%s)"),
 					enableState, m_nItemID, actionName, timeFormat, repeatState);
 }
 
@@ -983,12 +983,12 @@ void HotkeySetItem::Copy(const HotkeySetItem& pItem)
 // 
 //	Function name:	Print
 //	Description:	Print HotkeySet item
-//  Arguments:		strOutput - Output printed string
+//  Arguments:		outputString - Output printed string
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void HotkeySetItem::Print(CString& strOutput) const
+void HotkeySetItem::Print(String& outputString) const
 {
 	// Use table and language functions
 	using namespace MapTable;
@@ -1001,11 +1001,11 @@ void HotkeySetItem::Print(CString& strOutput) const
 	const wchar_t* lpszEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
 	UINT nActionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, m_nHKActionID));
 	const wchar_t* lpszAction = GetLanguageString(ptrLanguage, nActionNameID);
-	CString strKeyStrokes = Constant::String::Empty;
-	PrintKeyStrokes(strKeyStrokes);
+	String keyStrokesStr = Constant::String::Empty;
+	PrintKeyStrokes(keyStrokesStr);
 
 	// Print item
-	strOutput.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  lpszEnable, lpszAction, strKeyStrokes.GetString());
+	outputString.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  lpszEnable, lpszAction, keyStrokesStr.GetString());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1017,14 +1017,14 @@ void HotkeySetItem::Print(CString& strOutput) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-void HotkeySetItem::PrintKeyStrokes(CString& strOutput) const
+void HotkeySetItem::PrintKeyStrokes(String& strOutput) const
 {
 	// Use table and language functions
 	using namespace MapTable;
 	using namespace Language;
 
 	// Format keystrokes
-	CString strKeyStrokes = Constant::String::Empty;
+	String strKeyStrokes = Constant::String::Empty;
 	if (m_dwModifiers & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
 	if (m_dwModifiers & MOD_ALT)		strKeyStrokes += _T("Alt + ");
 	if (m_dwModifiers & MOD_WIN)		strKeyStrokes += _T("Win + ");
@@ -1355,27 +1355,27 @@ void HotkeySetData::Delete(int nAtIndex)
 // 
 //	Function name:	PrintKeyStrokes
 //	Description:	Print HotkeySet item keystrokes data by ID
-//  Arguments:		nHKID	  - Item hotkey ID
-//					strOutput - Output printed keystrokes string
+//  Arguments:		nHKID		 - Item hotkey ID
+//					outputString - Output printed keystrokes string
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void HotkeySetData::PrintKeyStrokes(UINT nHKID, CString& strOutput) const
+void HotkeySetData::PrintKeyStrokes(UINT nHKID, String& outputString) const
 {
 	// Search for hotkey ID and get keystrokes string
-	CString strKeyStrokes = Constant::String::Empty;
+	String keyStrokesStr = Constant::String::Empty;
 	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
 		Item hksItem = this->GetItemAt(nIndex);
 		if (hksItem.GetActionID() == nHKID) {
-			hksItem.PrintKeyStrokes(strKeyStrokes);
+			hksItem.PrintKeyStrokes(keyStrokesStr);
 			break;
 		}
 	}
 
 	// Output string
-	strOutput.Empty();
-	strOutput = strKeyStrokes;
+	outputString.Empty();
+	outputString = keyStrokesStr;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1627,12 +1627,12 @@ BOOL PwrReminderItem::IsAllowSnoozing(void) const
 // 
 //	Function name:	Print
 //	Description:	Print reminder item
-//  Arguments:		strOutput - Output printed string
+//  Arguments:		outputString - Output printed string
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void PwrReminderItem::Print(CString& strOutput) const
+void PwrReminderItem::Print(String& outputString) const
 {
 	// Use table, language and core functions
 	using namespace MapTable;
@@ -1643,24 +1643,24 @@ void PwrReminderItem::Print(CString& strOutput) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	const wchar_t* lpszEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
-	CString strMsg = m_strMessage;
-	if (strMsg.GetLength() > (Constant::Max::DisplayLogStringLength + 3)) {
-		strMsg = m_strMessage.Left(Constant::Max::DisplayLogStringLength) + _T("...");
+	const wchar_t* enableStr = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
+	String messageStr = m_strMessage;
+	if (messageStr.GetLength() > (Constant::Max::DisplayLogStringLength + 3)) {
+		messageStr = m_strMessage.Left(Constant::Max::DisplayLogStringLength) + _T("...");
 	}
 	int nTemp = GetPairedID(IDTable::PwrReminderEvent, m_nEventID);
-	CString strEvent = GetLanguageString(ptrLanguage, nTemp);
+	String eventStr = GetLanguageString(ptrLanguage, nTemp);
 	if (m_nEventID == Event::atSetTime) {
 		// Format time string
-		CString strFormat = strEvent;
-		strEvent = FormatDispTime(ptrLanguage, strFormat, m_stTime);
+		String formatString = eventStr;
+		eventStr = FormatDispTime(ptrLanguage, formatString, m_stTime);
 	}
 	nTemp = GetPairedID(IDTable::PwrReminderStyle, m_dwMsgStyle);
-	const wchar_t* lpszStyle = GetLanguageString(ptrLanguage, nTemp);
+	const wchar_t* styleStr = GetLanguageString(ptrLanguage, nTemp);
 
 	// Print item
-	strOutput.Format(_T("State=(%s), ItemID=%d, Msg=(%s), Event=(%s), Style=(%s), Repeat=%d"),
-				lpszEnable, m_nItemID, strMsg.GetString(), strEvent.GetString(), lpszStyle, m_rpsRepeatSet.IsRepeatEnabled());
+	outputString.Format(_T("State=(%s), ItemID=%d, Msg=(%s), Event=(%s), Style=(%s), Repeat=%d"),
+		enableStr, m_nItemID, messageStr.GetString(), eventStr.GetString(), styleStr, m_rpsRepeatSet.IsRepeatEnabled());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2078,7 +2078,7 @@ HistoryInfoData::HistoryInfoData()
 	m_nActionID = INT_NULL;									// History action ID
 	m_bActionResult = FALSE;								// Action result
 	m_dwErrorCode = INT_NULL;								// Returned error code
-	m_strDescription = Constant::String::Empty;						// History description (attached info)
+	m_strDescription = Constant::String::Empty;				// History description (attached info)
 }
 
 HistoryInfoData::HistoryInfoData(const HistoryInfoData& pData)
@@ -2145,7 +2145,7 @@ void HistoryInfoData::Init(UINT nCategoryID)
 	m_nCategoryID = nCategoryID;							// Category ID
 	m_stTimestamp = AppCore::GetCurSysTime();				// Timestamp of history
 	m_dwErrorCode = INT_NULL;								// Returned error code
-	m_strDescription = Constant::String::Empty;						// History description (attached info)
+	m_strDescription = Constant::String::Empty;				// History description (attached info)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2287,8 +2287,8 @@ BOOL RegistryValue::Init(UINT nRegValueType)
 	// Initialize with specific data type
 	switch (nRegValueType)
 	{
-	case Type::String:
-		m_pstrValue = new CString(Constant::String::Empty);
+	case Type::STRING:
+		m_pstrValue = new String(Constant::String::Empty);
 		return (m_pstrValue != NULL);
 
 	case Type::DWORD_32:
@@ -2299,7 +2299,7 @@ BOOL RegistryValue::Init(UINT nRegValueType)
 		m_pqwValue = new QWORD(INT_NULL);
 		return (m_pqwValue != NULL);
 
-	case Type::Multi_String:
+	case Type::MULTI_STRING:
 		m_pastrValue = new StringArray();
 		return (m_pastrValue != NULL);
 
@@ -2330,7 +2330,7 @@ void RegistryValue::Copy(const RegistryValue& pItem)
 			delete m_pstrValue;
 		}
 		// Copy string value
-		m_pstrValue = new CString(*pItem.m_pstrValue);
+		m_pstrValue = new String(*pItem.m_pstrValue);
 	}
 	else if (pItem.m_pdwValue != NULL) {
 		if (m_pdwValue != NULL) {
@@ -2405,10 +2405,10 @@ void RegistryValue::Reset(void)
 void RegistryValue::Refactor(void)
 {
 	UINT nType = GetType();
-	if (nType == Type::String) {
-		CString strTemp = *m_pstrValue;
-		if (Init(Type::String)) {
-			*m_pstrValue = strTemp;
+	if (nType == Type::STRING) {
+		String tempStr = *m_pstrValue;
+		if (Init(Type::STRING)) {
+			*m_pstrValue = tempStr;
 		}
 	}
 	else if (nType == Type::DWORD_32) {
@@ -2423,10 +2423,10 @@ void RegistryValue::Refactor(void)
 			*m_pqwValue = qwTemp;
 		}
 	}
-	else if (nType == Type::Multi_String) {
+	else if (nType == Type::MULTI_STRING) {
 		StringArray astrTemp;
 		astrTemp.assign(m_pastrValue->begin(), m_pastrValue->end());
-		if (Init(Type::Multi_String)) {
+		if (Init(Type::MULTI_STRING)) {
 			m_pastrValue->assign(astrTemp.begin(), astrTemp.end());
 		}
 	}
@@ -2448,15 +2448,15 @@ void RegistryValue::Refactor(void)
 UINT RegistryValue::GetType(void) const
 {
 	if (m_pstrValue != NULL)
-		return Type::String;
+		return Type::STRING;
 	else if (m_pdwValue != NULL)
 		return Type::DWORD_32;
 	else if (m_pqwValue != NULL)
 		return Type::QWORD_64;
 	else if (m_pastrValue)
-		return Type::Multi_String;
+		return Type::MULTI_STRING;
 	else
-		return Type::None;
+		return Type::NONE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2469,7 +2469,7 @@ UINT RegistryValue::GetType(void) const
 RegistryKey::RegistryKey()
 {
 	// Initialize
-	m_strKeyName = Constant::String::Empty;							// Key name (string)
+	m_strKeyName = Constant::String::Empty;					// Key name (string)
 	m_regValue = REGISTRYVALUE();							// Register value data
 }
 
@@ -2523,7 +2523,7 @@ void RegistryKey::Copy(const RegistryKey& pItem)
 void RegistryKey::Clear(void)
 {
 	// Reset data
-	m_strKeyName = Constant::String::Empty;							// Key name (string)
+	m_strKeyName = Constant::String::Empty;					// Key name (string)
 	m_regValue.Reset();										// Data values
 }
 
@@ -2538,12 +2538,12 @@ RegistryInfo::RegistryInfo()
 {
 	// Initialize
 	m_hRootKey = NULL;										// Root key (HKEY)
-	m_strRootKey = Constant::String::Empty;							// Root key (string)
+	m_strRootKey = Constant::String::Empty;					// Root key (string)
 	m_astrSubkeyPath.clear();								// Subkey path (string array)
-	m_strCompanyName = Constant::String::Empty;						// Company name (string)
-	m_strProductName = Constant::String::Empty;						// Product name (string)
+	m_strCompanyName = Constant::String::Empty;				// Company name (string)
+	m_strProductName = Constant::String::Empty;				// Product name (string)
 	m_astrSectionArray.clear();								// Section array (string)
-	m_regKeyInfo = REGISTRYKEY();							// Registry key info
+	m_regKeyInfo = RegistryKey();							// Registry key info
 }
 
 RegistryInfo::RegistryInfo(const RegistryInfo& pItem)
@@ -2605,10 +2605,10 @@ void RegistryInfo::RemoveAll(void)
 {
 	// Reset data
 	m_hRootKey = NULL;										// Root key (HKEY)
-	m_strRootKey = Constant::String::Empty;							// Root key (string)
+	m_strRootKey = Constant::String::Empty;					// Root key (string)
 	m_astrSubkeyPath.clear();								// Subkey path (string array)
-	m_strCompanyName = Constant::String::Empty;						// Company name (string)
-	m_strProductName = Constant::String::Empty;						// Product name (string)
+	m_strCompanyName = Constant::String::Empty;				// Company name (string)
+	m_strProductName = Constant::String::Empty;				// Product name (string)
 	m_astrSectionArray.clear();								// Section array (string)
 	m_regKeyInfo.Clear();									// Registry key info
 }
@@ -2659,9 +2659,9 @@ void RegistryInfo::GetSectionName(StringArray& arrOutput) const
 Substring::Substring()
 {
 	// Initialization
-	m_strLeft = Constant::String::Empty;				// Left part
+	m_strLeft = Constant::String::Empty;			// Left part
 	m_strMid = Constant::String::Empty;				// Middle part
-	m_strRight = Constant::String::Empty;				// Right part
+	m_strRight = Constant::String::Empty;			// Right part
 }
 
 Substring::Substring(const Substring& pData)
@@ -2736,24 +2736,23 @@ void Substring::RemoveAll(void)
 String StringUtils::StringFormat(UINT formatTemplateID, ...)
 {
 	// Load resource format template string
-	CString strTemplate;
-	VERIFY(strTemplate.LoadString(formatTemplateID));
-	if (strTemplate.IsEmpty()) return Constant::String::Empty;
+	String templateString = StringUtils::LoadResourceString(formatTemplateID);
+	if (templateString.IsEmpty())
+		return Constant::String::Empty;
 
 	// Template string validation
-	ATLASSERT(AtlIsValidString(strTemplate));
+	ATLASSERT(AtlIsValidString(templateString));
 
 	// Result string
-	static CString strResult;
-	strResult.Empty();
+	String resultString;
 
 	// Format string
 	va_list argList;
-	va_start(argList, strTemplate.GetString());
-	strResult.FormatV(strTemplate, argList);
+	va_start(argList, templateString.GetString());
+	resultString.FormatV(templateString, argList);
 	va_end(argList);
 
-	return strResult.GetString();
+	return resultString;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2772,16 +2771,15 @@ String StringUtils::StringFormat(const wchar_t* formatTemplate, ...)
 	ATLASSERT(AtlIsValidString(formatTemplate));
 
 	// Result string
-	static CString strResult;
-	strResult.Empty();
+	String resultString;
 
 	// Format string
 	va_list argList;
 	va_start(argList, formatTemplate);
-	strResult.FormatV(formatTemplate, argList);
+	resultString.FormatV(formatTemplate, argList);
 	va_end(argList);
 
-	return strResult.GetString();
+	return resultString;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -2789,7 +2787,7 @@ String StringUtils::StringFormat(const wchar_t* formatTemplate, ...)
 //	Function name:	LoadResourceString
 //	Description:	Load resource ID and return the string
 //  Arguments:		nResStringID - ID of resource string
-//  Return value:	LPCTSTR	- Returned resource string
+//  Return value:	String	- Returned resource string
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -2887,7 +2885,7 @@ String StringUtils::LoadResourceTextData(UINT resourceFileID)
 		if (hData != NULL) {
 
 			// Convert data to text data
-			const wchar_t* dataBuffer = static_cast<LPCTSTR>(LockResource(hData));
+			const wchar_t* dataBuffer = static_cast<const wchar_t*>(LockResource(hData));
 			resultTextData = dataBuffer;
 		}
 	}
@@ -2939,7 +2937,7 @@ String StringUtils::GetApplicationPath(bool includeExeName)
 //	Function name:	GetSubFolderPath
 //	Description:	Get full sub-folder path
 //  Arguments:		lpszSubFolderName - Subfolder name
-//  Return value:	LPCTSTR
+//  Return value:	String
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -3375,11 +3373,11 @@ double PerformanceCounter::GetElapsedTime(BOOL bToMillisecs) const
 //	Description:	Get the title name of current language
 //  Arguments:		nCurLanguage	- Current language ID
 //					bGetDescription - Get language package description
-//  Return value:	LPCTSTR - Language name
+//  Return value:	const wchar_t* - Language name
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = FALSE */)
+const wchar_t* Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = FALSE */)
 {
 	// Load language table package
 	LANGTABLE_PTR ptrLangTable = LoadLanguageTable(nCurLanguage);
@@ -3388,11 +3386,11 @@ LPCTSTR Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = F
 
 	// Get language package info
 	UINT nInfoTargetID = (bGetDescription) ? LANGPACKINFO_DESCRIPTIONFULL : LANGPACKINFO_LANGNAMEID;
-	LPCTSTR lpszRetInfoString = GetLanguageString(ptrLangTable, nInfoTargetID);
-	if (IS_NULL_STRING(lpszRetInfoString)) 
-		lpszRetInfoString = Constant::Value::Unknown;
+	const wchar_t* retInfoString = GetLanguageString(ptrLangTable, nInfoTargetID);
+	if (IS_NULL_STRING(retInfoString))
+		retInfoString = Constant::Value::Unknown;
 
-	return lpszRetInfoString;
+	return retInfoString;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3441,11 +3439,11 @@ LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage)
 //  Arguments:		ptLanguage - Language package pointer
 //					nID		   - Language string ID
 //					pszResult  - Result string (reference-type)
-//  Return value:	LPCTSTR	- Language string
+//  Return value:	const wchar_t*	- Language string
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID)
+const wchar_t* Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID)
 {
 	// Return NULL string if language table is empty
 	if ((ptLanguage == NULL) || (ptLanguage->empty()))
@@ -3594,9 +3592,9 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 	SYSTEMTIME sysExecTime = GetCurSysTime();
 
 	// Get action name
-	CString strAction;
+	String actionInfoString;
 	if (nActionType == APP_ACTIONTYPE_MONITOR) {
-		strAction.SetString(_T("Turn off display"));
+		actionInfoString.SetString(_T("Turn off display"));
 		dwErrCode = ERROR_SUCCESS;
 	}
 	else if (nActionType == APP_ACTIONTYPE_POWER && 
@@ -3605,19 +3603,19 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 		{
 		case APP_MESSAGE_SHUTDOWN:
 			// Shutdown
-			strAction.SetString(_T("Shutdown"));
+			actionInfoString.SetString(_T("Shutdown"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 
 		case APP_MESSAGE_REBOOT:
 			// Restart
-			strAction.SetString(_T("Restart"));
+			actionInfoString.SetString(_T("Restart"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 
 		case APP_MESSAGE_SIGNOUT:
 			// Sign out
-			strAction.SetString(_T("Sign out"));
+			actionInfoString.SetString(_T("Sign out"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 		}
@@ -3628,42 +3626,43 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 		{
 		case APP_MESSAGE_SLEEP:
 			// Sleep
-			strAction.SetString(_T("Sleep"));
+			actionInfoString.SetString(_T("Sleep"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 
 		case APP_MESSAGE_HIBERNATE:
 			// Hibernate
-			strAction.SetString(_T("Hibernate"));
+			actionInfoString.SetString(_T("Hibernate"));
 			dwErrCode = ERROR_SUCCESS;
 			break;
 		}
 	}
 	else {
 		// Wrong argument
-		strAction.SetString(_T("Invalid"));
+		actionInfoString.SetString(_T("Invalid"));
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 	}
 
 	// Time format
-	CString strTimeFormat;
-	const wchar_t* lpszTimePeriod = (sysExecTime.wHour < 12) ? Constant::Symbol::AnteMeridiem : Constant::Symbol::PostMeridiem;
-	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, sysExecTime.wYear,
-												  sysExecTime.wMonth,
-												  sysExecTime.wDay,
-												  sysExecTime.wHour,
-												  sysExecTime.wMinute,
-												  sysExecTime.wSecond,
-												  sysExecTime.wMilliseconds,
-												  lpszTimePeriod);
+	String timeFormatStr;
+	const wchar_t* timePeriod = (sysExecTime.wHour < 12) ? Constant::Symbol::AnteMeridiem : Constant::Symbol::PostMeridiem;
+	String templateFormatStr = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	timeFormatStr.Format(templateFormatStr, sysExecTime.wYear,
+											sysExecTime.wMonth,
+											sysExecTime.wDay,
+											sysExecTime.wHour,
+											sysExecTime.wMinute,
+											sysExecTime.wSecond,
+											sysExecTime.wMilliseconds,
+											timePeriod);
 
 	// Message format
-	CString strMsgFormat;
-	strMsgFormat.Format(_T("[ExecutePowerAction]\nAction: %s\nTime: %s"), strAction.GetString(), strTimeFormat.GetString());
+	String messageFormatStr;
+	messageFormatStr.Format(_T("[ExecutePowerAction]\nAction: %s\nTime: %s"), actionInfoString.GetString(), timeFormatStr.GetString());
 
 	// Show dummy test message
 	HWND hWnd = GET_HANDLE_MAINWND();
-	MessageBox(hWnd, strMsgFormat, _T("DummyTest"), MB_OK | MB_ICONINFORMATION);
+	MessageBox(hWnd, messageFormatStr, _T("DummyTest"), MB_OK | MB_ICONINFORMATION);
 	return TRUE;
 }
 
@@ -3739,15 +3738,15 @@ void AppCore::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
 	ATLASSERT(AtlIsValidString(traceLogFormatW));
 
 	// Format source string (Unicode)
-	CString strLogFormatW;
+	String logFormatStringW;
 
 	va_list argList;
 	va_start(argList, traceLogFormatW);
-	strLogFormatW.FormatV(traceLogFormatW, argList);
+	logFormatStringW.FormatV(traceLogFormatW, argList);
 	va_end(argList);
 
 	// Output trace log
-	TraceError(strLogFormatW);
+	TraceError(logFormatStringW);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3790,7 +3789,7 @@ void AppCore::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_I
 	BOOL bDebugModeEnable = GetDebugMode();
 
 	// Get debug log string
-	CString strDebugLog = debugLog;
+	String debugLogStr = debugLog;
 
 	// Get DebugTest tool dialog handle
 	HWND hDebugTestWnd = FindDebugTestDlg();
@@ -3816,17 +3815,17 @@ void AppCore::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_I
 	if (nDebugOutputTarget == DefaultOutput) {
 		// Default output target: OutputDebugString
 		// Debug strings can be watched by using VS Output screen or DebugView tool
-		OutputDebugString(strDebugLog);
+		OutputDebugString(debugLogStr);
 	}
 	else if (nDebugOutputTarget == DebugInfoFile) {
 		// Ouput debug log to file: DebugInfo.log
-		WriteDebugInfoLogFile(strDebugLog);
+		WriteDebugInfoLogFile(debugLogStr);
 	}
 	else if (nDebugOutputTarget == DebugTestTool) {
 		// Output debug log to DebugTest tool
 		if (hDebugTestWnd == NULL) return;
-		WPARAM wParam = MAKE_WPARAM_STRING(strDebugLog);
-		LPARAM lParam = MAKE_LPARAM_STRING(strDebugLog);
+		WPARAM wParam = MAKE_WPARAM_STRING(debugLogStr);
+		LPARAM lParam = MAKE_LPARAM_STRING(debugLogStr);
 		SendMessage(hDebugTestWnd, SM_APP_DEBUG_OUTPUT, wParam, lParam);
 	}
 }
@@ -3846,15 +3845,15 @@ void AppCore::OutputDebugLogFormat(const wchar_t* debugLogFormat, ...)
 	ATLASSERT(AtlIsValidString(debugLogFormat));
 
 	// Format source string
-	CString strLogFormat;
+	String logFormatString;
 
 	va_list argList;
 	va_start(argList, debugLogFormat);
-	strLogFormat.FormatV(debugLogFormat, argList);
+	logFormatString.FormatV(debugLogFormat, argList);
 	va_end(argList);
 
 	// Output debug string
-	OutputDebugLog(strLogFormat);
+	OutputDebugLog(logFormatString);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3873,15 +3872,15 @@ void AppCore::OutputDebugStringFormat(const wchar_t* debugStringFormat, ...)
 	ATLASSERT(AtlIsValidString(debugStringFormat));
 
 	// Format source string
-	CString strStringFormat;
+	String logDebugStringFormat;
 
 	va_list argList;
 	va_start(argList, debugStringFormat);
-	strStringFormat.FormatV(debugStringFormat, argList);
+	logDebugStringFormat.FormatV(debugStringFormat, argList);
 	va_end(argList);
 
 	// Output debug string
-	OutputDebugString(strStringFormat);
+	OutputDebugString(logDebugStringFormat);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -4221,17 +4220,17 @@ void AppCore::WriteTraceErrorLogFile(const wchar_t* logStringW)
 	GetLocalTime(&stTime);
 
 	// Format log date/time
-	CString strTimeFormat;
 	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
-	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::StringFormat(templateFormat, stTime.wYear, stTime.wMonth, stTime.wDay,
 		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
 
 	// Format output log string
-	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (strLogFormat.IsEmpty())
+	if (logOutputFormatString.IsEmpty())
 		return;
 
 	// If the file is not initialized or had been released
@@ -4245,7 +4244,7 @@ void AppCore::WriteTraceErrorLogFile(const wchar_t* logStringW)
 	NULL_POINTER_BREAK(pTraceErrorLogFile, return NOTHING);
 	{
 		// Write log string to file
-		pTraceErrorLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		pTraceErrorLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
 		pTraceErrorLogFile->Flush();
 	}
 
@@ -4293,17 +4292,17 @@ void AppCore::WriteTraceDebugLogFile(const wchar_t* logStringW)
 	GetLocalTime(&stTime);
 
 	// Format log date/time
-	CString strTimeFormat;
 	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
-	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::StringFormat(templateFormat, stTime.wYear, stTime.wMonth, stTime.wDay,
 		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
 
 	// Format output log string
-	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (strLogFormat.IsEmpty()) return;
+	if (logOutputFormatString.IsEmpty()) return;
 
 	// If the file is not initialized or had been released
 	if (GetTraceDebugLogFile() == NULL) {
@@ -4316,7 +4315,7 @@ void AppCore::WriteTraceDebugLogFile(const wchar_t* logStringW)
 	NULL_POINTER_BREAK(pTraceDebugLogFile, return NOTHING);
 	{
 		// Write log string to file
-		pTraceDebugLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		pTraceDebugLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
 		pTraceDebugLogFile->Flush();
 	}
 
@@ -4364,17 +4363,17 @@ void AppCore::WriteDebugInfoLogFile(const wchar_t* logStringW)
 	GetLocalTime(&stTime);
 
 	// Format log date/time
-	CString strTimeFormat;
 	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
-	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::StringFormat(templateFormat, stTime.wYear, stTime.wMonth, stTime.wDay,
 		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
 
 	// Format output log string
-	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (strLogFormat.IsEmpty()) return;
+	if (logOutputFormatString.IsEmpty()) return;
 
 	// If the file is not initialized or had been released
 	if (GetDebugInfoLogFile() == NULL) {
@@ -4387,7 +4386,7 @@ void AppCore::WriteDebugInfoLogFile(const wchar_t* logStringW)
 	NULL_POINTER_BREAK(pDebugInfoLogFile, return NOTHING);
 	{
 		// Write log string to file
-		pDebugInfoLogFile->Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		pDebugInfoLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
 		pDebugInfoLogFile->Flush();
 	}
 
@@ -4430,14 +4429,14 @@ void AppCore::WriteDebugInfoLogFile(const wchar_t* logStringW)
 void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
 {
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(SUBFOLDER_LOG, fileName, FILEEXT_LOGFILE);
+	String filePath = StringUtils::MakeFilePath(SUBFOLDER_LOG, fileName, FILEEXT_LOGFILE);
 
 	CFile fTrcDbgLogFile;
 
 	// Check if file is opening, if not, open it
 	while (fTrcDbgLogFile.m_hFile == CFile::hFileNull) {
 
-		BOOL bResult = fTrcDbgLogFile.Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
+		BOOL bResult = fTrcDbgLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
 		if (bResult == FALSE) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
@@ -4457,14 +4456,14 @@ void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t
 			
 			// Step2: Rename file extension to BAK
 			CFileFind Finder;
-			CString strBakFilePath;
+			String backupFilePath;
 			for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
-				strBakFilePath.Format((strFilePath + FILEEXT_BAKLOGFILE), nNum);
-				if (Finder.FindFile(strBakFilePath) == TRUE) {
+				backupFilePath.Format((filePath + FILEEXT_BAKLOGFILE), nNum);
+				if (Finder.FindFile(backupFilePath) == TRUE) {
 					if (nNum == (Constant::Max::BackupFileNumber - 1)) return;
 					else continue;
 				}
-				CFile::Rename(strFilePath, strBakFilePath);
+				CFile::Rename(filePath, backupFilePath);
 				break;
 			}
 
@@ -4478,18 +4477,18 @@ void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t
 	GetLocalTime(&stTime);
 
 	// Format log date/time
-	CString strTimeFormat;
 	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
-	strTimeFormat.Format(IDS_FORMAT_FULLDATETIME, stTime.wYear, stTime.wMonth, stTime.wDay,
+	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::StringFormat(templateFormat, stTime.wYear, stTime.wMonth, stTime.wDay,
 		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
 
 	// Format output log string
-	CString strLogFormat;
-	strLogFormat.Format(IDS_FORMAT_LOGSTRING, strTimeFormat.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
 
-	if (!strLogFormat.IsEmpty()) {
+	if (!logOutputFormatString.IsEmpty()) {
 		// Write log string to file
-		fTrcDbgLogFile.Write(strLogFormat, strLogFormat.GetLength() * sizeof(TCHAR));
+		fTrcDbgLogFile.Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
 		fTrcDbgLogFile.Flush();
 	}
 
@@ -4587,35 +4586,35 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErro
 		return;
 
 	// Get language strings
-	CString strErrMessage = GetLanguageString(pAppLang, nErrMsgID);
-	CString strErrCaption = GetLanguageString(pAppLang, MSGBOX_ERROR_CAPTION);
+	String errorMessage = GetLanguageString(pAppLang, nErrMsgID);
+	const wchar_t* errorCaption = GetLanguageString(pAppLang, MSGBOX_ERROR_CAPTION);
 
 	// In case of unknown error, attach the error code
 	if (nErrMsgID == MSGBOX_ERROR_UNKNOWN) {
-		CString strTemp;
-		strTemp.Format(strErrMessage, dwErrorCode);
-		strErrMessage = strTemp;
+		String tempStr;
+		tempStr.Format(errorMessage, dwErrorCode);
+		errorMessage = tempStr;
 	}
 
 	// Get attached param
-	CString strDescription = Constant::String::Null;
+	String descriptionStr = Constant::String::Null;
 	if (lParam != NULL) {
 		// Convert to description string
-		strDescription = LPARAM_TO_STRING(lParam);
+		descriptionStr = LPARAM_TO_STRING(lParam);
 	}
 
 	// Attach additional description if available
-	if (IS_NOT_NULL_STRING(strDescription)) {
-		strErrMessage.Append(Constant::String::NewLine);
-		strErrMessage.Append(strDescription);
+	if (IS_NOT_NULL_STRING(descriptionStr)) {
+		errorMessage.Append(Constant::String::NewLine);
+		errorMessage.Append(descriptionStr);
 	}
 
 	// Show error message
-	MessageBox(hMsgOwnerWnd, strErrMessage, strErrCaption, MB_OK | MB_ICONERROR | MB_TOPMOST | MB_SETFOREGROUND);
+	MessageBox(hMsgOwnerWnd, errorMessage, errorCaption, MB_OK | MB_ICONERROR | MB_TOPMOST | MB_SETFOREGROUND);
 
 	// Notify application class about error message showing
 	WPARAM wAppMsgParam = (WPARAM)dwErrorCode;
-	LPARAM lAppMsgParam = MAKE_LPARAM_STRING(strErrMessage);
+	LPARAM lAppMsgParam = MAKE_LPARAM_STRING(errorMessage);
 	PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, wAppMsgParam, lAppMsgParam);
 }
 
@@ -4624,35 +4623,35 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErro
 //	Function name:	Text2Time
 //	Description:	Convert editbox input text into valid time value
 //  Arguments:		stTime  - Return time data (ref-value)
-//					strText - Input text
+//					text	- Input text
 //  Return value:	BOOL - Result of converting process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::Text2Time(SYSTEMTIME& stTime, CString strText)
+BOOL AppCore::Text2Time(SYSTEMTIME& stTime, const wchar_t* text)
 {
 	// Check input text validity
-	int nLength = strText.GetLength();
+	int nLength = wcslen(text);
 	if ((nLength == 0) || (nLength > 4))
 		return FALSE;
 
-	CString strTime = strText;
+	String timeString(text);
 
 	int nHour = INT_INVALID;
 	int nMinute = INT_INVALID;
 
 	// Break the time value into combinations of digits
-	int nLeft1Digit = _tstoi(strTime.Left(1));
-	int nLeft2Digits = _tstoi(strTime.Left(2));
-	int	nRight1Digit = _tstoi(strTime.Right(1));
-	int nRight2Digits = _tstoi(strTime.Right(2));
+	int nLeft1Digit = _tstoi(timeString.Left(1));
+	int nLeft2Digits = _tstoi(timeString.Left(2));
+	int	nRight1Digit = _tstoi(timeString.Right(1));
+	int nRight2Digits = _tstoi(timeString.Right(2));
 
 	// Convert
 	switch (nLength)
 	{
 	case 1:
 		// Ex: 3 -> 03:00, 9 -> 09:00, ...
-		nHour = _tstoi(strTime);			// The given time value will be the hour value
+		nHour = _tstoi(timeString);			// The given time value will be the hour value
 		nMinute = 0;						// The minute value will be zero (0)
 		break;
 
@@ -4664,7 +4663,7 @@ BOOL AppCore::Text2Time(SYSTEMTIME& stTime, CString strText)
 		}
 		else {
 			// Ex: 13 -> 13:00, 18 -> 18:00, ...
-			nHour = _tstoi(strTime);				// All digits will be the hour value
+			nHour = _tstoi(timeString);				// All digits will be the hour value
 			nMinute = 0;							// The minute value will be zero (0)
 		} break;
 
@@ -4712,21 +4711,21 @@ BOOL AppCore::Text2Time(SYSTEMTIME& stTime, CString strText)
 //	Function name:	Text2TimeBase
 //	Description:	Convert editbox input text into valid time value 
 //  Arguments:		stTime  - Return time data (ref-value)
-//					strText - Input text
+//					text	- Input text
 //  Return value:	BOOL - Result of converting process
 //	Note:			Old/base function (no longer used)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, CString strText)
+BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, const wchar_t* text)
 {
 	// Check input text validity
-	int nLength = strText.GetLength();
+	int nLength = wcslen(text);
 	if ((nLength == 0) || (nLength > 4))
 		return FALSE;
 
 	// Get input text length
-	UINT nTime = _tstoi(strText);
+	UINT nTime = _tstoi(text);
 	UINT nTimeTemp = nTime;
 	nLength = 0;
 	do {
@@ -4869,9 +4868,9 @@ int AppCore::GetListCurSel(CListCtrl& pListCtrl)
 
 HWND AppCore::FindDebugTestDlg()
 {
-	CString strDebugDlgTitle;
-	strDebugDlgTitle.LoadString(IDS_APP_DEBUGTESTDLG_TITLE);
-	return ::FindWindow(NULL, strDebugDlgTitle);
+	String debugDlgTitle = StringUtils::LoadResourceString(IDS_APP_DEBUGTESTDLG_TITLE);
+	if (debugDlgTitle.IsEmpty()) return NULL;
+	return ::FindWindow(NULL, debugDlgTitle);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -5065,7 +5064,7 @@ BOOL AppCore::CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffse
 //  Arguments:		pLang	  - Language table pointer
 //					nFormatID - Format string
 //					timeVal	  - Given time value
-//  Return value:	CString	- Format time string
+//  Return value:	String	- Format time string
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -5170,7 +5169,7 @@ UINT AppCore::GetWindowsOSVersion(void)
 BOOL AppCore::AddRegistryKey(const RegistryInfo& regInfo)
 {
 	CRegKey regKey;
-	REGISTRYKEY regKeyInfo = regInfo.GetRegistryKey();
+	RegistryKey regKeyInfo = regInfo.GetRegistryKey();
 	LONG lResult = regKey.Open(regInfo.GetRootKey(), regKeyInfo.GetName(), KEY_ALL_ACCESS);
 	if (lResult != ERROR_SUCCESS) {
 		// Create register key if not found
@@ -5190,16 +5189,16 @@ BOOL AppCore::AddRegistryKey(const RegistryInfo& regInfo)
 //  Arguments:		regInfo		 - Registry key info data
 //					nRegPathTYpe - Registry path type
 //					bIncRootKey  - Include root key name or not
-//  Return value:	LPCTSTR - Registry path
+//  Return value:	const wchar_t* - Registry path
 //
 //////////////////////////////////////////////////////////////////////////
 
-LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType /* = RegistryPathType::fullPath */, BOOL bIncRootKey /* = TRUE */)
+const wchar_t* AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType /* = RegistryPathType::fullPath */, BOOL bIncRootKey /* = TRUE */)
 {
 	// Check root key info validity
 	if (bIncRootKey != FALSE) {
-		CString strRootKey = regInfo.GetRootKeyName();
-		if ((regInfo.GetRootKey() == NULL) && (strRootKey.IsEmpty())) {
+		String rootKeyName = regInfo.GetRootKeyName();
+		if ((regInfo.GetRootKey() == NULL) && (rootKeyName.IsEmpty())) {
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, rootkey name is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -5221,8 +5220,8 @@ LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType
 
 	// Check profile key validity
 	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingCompanyName)) {
-		CString strProfileName = regInfo.GetCompanyName();
-		if (strProfileName.IsEmpty()) {
+		String companyNameStr = regInfo.GetCompanyName();
+		if (companyNameStr.IsEmpty()) {
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, profile key name is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -5232,8 +5231,8 @@ LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType
 
 	// Check app name validity
 	if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProductName)) {
-		CString strAppName = regInfo.GetProductName();
-		if (strAppName.IsEmpty()) {
+		String productNameStr = regInfo.GetProductName();
+		if (productNameStr.IsEmpty()) {
 			// Trace error
 			TRACE_ERROR("Error: Make registry path failed, application name is invalid!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -5254,78 +5253,77 @@ LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType
 	}
 
 	// Root key (string)
-	CString strRootKeyNameTemp;
-	CString strRootKeyName = regInfo.GetRootKeyName();
-	if (!strRootKeyName.IsEmpty()) {
-		strRootKeyNameTemp.Format(strRootKeyName);
+	String rootKeyName;
+	String rootKeyNameTemp = regInfo.GetRootKeyName();
+	if (!rootKeyNameTemp.IsEmpty()) {
+		rootKeyName = rootKeyNameTemp;
 	}
 
 	// Sub-key path
-	CString strSubKeyPathTemp;
+	String subKeyPath;
 	StringArray astrSubkeyPath;
 	regInfo.GetSubkeyPath(astrSubkeyPath);
 	for (int nIndex = 0; nIndex < astrSubkeyPath.size(); nIndex++) {
 		if (nIndex > 0) {
-			strSubKeyPathTemp.Append(Constant::Symbol::Backslash);
+			subKeyPath.Append(Constant::Symbol::Backslash);
 		}
-		strSubKeyPathTemp.Append(astrSubkeyPath.at(nIndex));
+		subKeyPath.Append(astrSubkeyPath.at(nIndex));
 	}
 
-	// Profile key name
-	CString strProfileKeyNameTemp;
-	CString strProfileKeyName = regInfo.GetCompanyName();
-	if (!strProfileKeyName.IsEmpty()) {
-		strProfileKeyNameTemp.Format(strProfileKeyName);
+	// Company name
+	String companyName;
+	String companyNameTemp = regInfo.GetCompanyName();
+	if (!companyNameTemp.IsEmpty()) {
+		companyName = companyNameTemp;
 	}
 
-	// App name
-	CString strAppNameTemp;
-	CString strAppName = regInfo.GetProductName();
-	if (!strAppName.IsEmpty()) {
-		strAppNameTemp.Format(strAppName);
+	// Product name
+	String productName;
+	String productNameTemp = regInfo.GetProductName();
+	if (!productNameTemp.IsEmpty()) {
+		productName = productNameTemp;
 	}
 
 	// Section name
-	CString strSectionNameTemp;
+	String sectionName;
 	StringArray astrSectionArray;
 	regInfo.GetSectionName(astrSectionArray);
 	for (int nIndex = 0; nIndex < astrSectionArray.size(); nIndex++) {
 		if (nIndex > 0) {
-			strSectionNameTemp.Append(Constant::Symbol::Backslash);
+			sectionName.Append(Constant::Symbol::Backslash);
 		}
-		strSectionNameTemp.Append(astrSectionArray.at(nIndex));
+		sectionName.Append(astrSectionArray.at(nIndex));
 	}
 
 	// Key name
-	CString strKeyNameTemp;
-	REGISTRYKEY regKeyInfo = regInfo.GetRegistryKey();
-	CString strKeyName = regKeyInfo.GetName();
-	if (!strKeyName.IsEmpty()) {
-		strKeyNameTemp.Format(strKeyName);
+	String keyName;
+	RegistryKey regKeyInfo = regInfo.GetRegistryKey();
+	String keyNameTemp = regKeyInfo.GetName();
+	if (!keyNameTemp.IsEmpty()) {
+		keyName = keyNameTemp;
 	}
 
 	// Result string
-	static CString strRegFullPath;
-	strRegFullPath.Empty();
+	String resultRegistryPath;
 
 	// Make registry path by type
 	int nRetFailedFlag = FLAG_OFF;
-	if (!strRootKeyNameTemp.IsEmpty()) {
+	if (!rootKeyName.IsEmpty()) {
 
 		// Initialize and include root key name
-		strRegFullPath.Empty();
+		resultRegistryPath.Empty();
 		if (bIncRootKey != FALSE) {
-			strRegFullPath.Append(strRootKeyNameTemp);
+			resultRegistryPath.Append(rootKeyName);
 		}
 
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSubKeyPath)) {
-			if ((nRetFailedFlag != FLAG_ON) && (!strSubKeyPathTemp.IsEmpty())) {
+			if ((nRetFailedFlag != FLAG_ON) && (!subKeyPath.IsEmpty())) {
 				// Include separator character if rootkey is included
 				if (bIncRootKey != FALSE) {
-					strRegFullPath.Append(Constant::Symbol::Backslash);
+					resultRegistryPath.Append(Constant::Symbol::Backslash);
 				}
 				// Include sub-key path
-				strRegFullPath.Append(strSubKeyPathTemp);
+				resultRegistryPath.Append(subKeyPath);
 			}
 			else {
 				// Turn failed flag ON
@@ -5334,10 +5332,10 @@ LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType
 		}
 
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingCompanyName)) {
-			if ((nRetFailedFlag != FLAG_ON) && (!strProfileKeyName.IsEmpty())) {
+			if ((nRetFailedFlag != FLAG_ON) && (!companyName.IsEmpty())) {
 				// Include profile key name
-				strRegFullPath.Append(Constant::Symbol::Backslash);
-				strRegFullPath.Append(strProfileKeyName);
+				resultRegistryPath.Append(Constant::Symbol::Backslash);
+				resultRegistryPath.Append(companyName);
 			}
 			else {
 				// Turn failed flag ON
@@ -5346,10 +5344,10 @@ LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType
 		}
 
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingProductName)) {
-			if ((nRetFailedFlag != FLAG_ON) && (!strAppName.IsEmpty())) {
+			if ((nRetFailedFlag != FLAG_ON) && (!productName.IsEmpty())) {
 				// Include application name
-				strRegFullPath.Append(Constant::Symbol::Backslash);
-				strRegFullPath.Append(strAppName);
+				resultRegistryPath.Append(Constant::Symbol::Backslash);
+				resultRegistryPath.Append(productName);
 			}
 			else {
 				// Turn failed flag ON
@@ -5358,10 +5356,10 @@ LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType
 		}
 
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingSectionName)) {
-			if ((nRetFailedFlag != FLAG_ON) && (!strSectionNameTemp.IsEmpty())) {
+			if ((nRetFailedFlag != FLAG_ON) && (!sectionName.IsEmpty())) {
 				// Include section name
-				strRegFullPath.Append(Constant::Symbol::Backslash);
-				strRegFullPath.Append(strSectionNameTemp);
+				resultRegistryPath.Append(Constant::Symbol::Backslash);
+				resultRegistryPath.Append(sectionName);
 			}
 			else {
 				// Turn failed flag ON
@@ -5370,10 +5368,10 @@ LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType
 		}
 
 		if ((nRegPathType == RegistryPathType::fullPath) || (nRegPathType >= RegistryPathType::includingKeyName)) {
-			if ((nRetFailedFlag != FLAG_ON) && (!strKeyNameTemp.IsEmpty())) {
+			if ((nRetFailedFlag != FLAG_ON) && (!keyName.IsEmpty())) {
 				// Include key name
-				strRegFullPath.Append(Constant::Symbol::Backslash);
-				strRegFullPath.Append(strKeyNameTemp);
+				resultRegistryPath.Append(Constant::Symbol::Backslash);
+				resultRegistryPath.Append(keyName);
 			}
 			else {
 				// Turn failed flag ON
@@ -5384,10 +5382,10 @@ LPCTSTR AppCore::MakeRegistryPath(const RegistryInfo& regInfo, UINT nRegPathType
 	else {
 		// Turn flag ON and return empty result
 		nRetFailedFlag = FLAG_ON;
-		strRegFullPath.Empty();
+		resultRegistryPath.Empty();
 	}
 
-	return strRegFullPath.GetString();
+	return resultRegistryPath;
 }
 
 //////////////////////////////////////////////////////////////////////////

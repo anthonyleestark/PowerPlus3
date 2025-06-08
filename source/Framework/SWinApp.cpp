@@ -59,10 +59,10 @@ SWinApp::SWinApp() : CWinAppEx()
 	m_bForceClose = FALSE;
 }
 
-SWinApp::SWinApp(LPCTSTR lpszTemplateName) : CWinAppEx()
+SWinApp::SWinApp(const wchar_t* templateName) : CWinAppEx()
 {
 	// Title and caption
-	m_strTemplateName = lpszTemplateName;
+	m_strTemplateName = templateName;
 	m_strWindowCaption = Constant::String::Empty;
 	m_strMessageCaption = Constant::String::Empty;
 
@@ -263,15 +263,15 @@ BOOL SWinApp::SetAppName(UINT nResourceStringID)
 // 
 //	Function name:	SetAppWindowCaption
 //	Description:	Set application window common caption
-//  Arguments:		lpszWindowCaption - Application window caption
+//  Arguments:		windowCaption - Application window caption
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SWinApp::SetAppWindowCaption(LPCTSTR lpszWindowCaption, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
+void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
 {
 	// Set caption
-	m_strWindowCaption = lpszWindowCaption;
+	m_strWindowCaption = windowCaption;
 
 	// Show product version
 	if (bShowProdVersion == TRUE) {
@@ -342,14 +342,14 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 //	Function name:	DoMessageBox
 //	Description:	Override this function to customize application-wide 
 //					processing of AfxMessageBox calls
-//  Arguments:		lpszPrompt  - Message box text
+//  Arguments:		prompt		- Message box text
 //					nType		- Message box style
 //					nIDPrompt	- An index to a Help context string.
 //  Return value:	int	- Result of message box
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SWinApp::DoMessageBox(LPCTSTR lpszPrompt, UINT nType, UINT nIDPrompt)
+int SWinApp::DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt)
 {
 	// Message caption
 	CString strMsgCaption;
@@ -370,13 +370,13 @@ int SWinApp::DoMessageBox(LPCTSTR lpszPrompt, UINT nType, UINT nIDPrompt)
 	// or the global application window title is not set
 	if (strMsgCaption.IsEmpty()) {
 		// Use the default AfxMessageBox
-		return CWinApp::DoMessageBox(lpszPrompt, nType, nIDPrompt);
+		return CWinApp::DoMessageBox(prompt, nType, nIDPrompt);
 	}
 	else {
 		// Use the MessageBox function, which we can specify the caption with
 		nType |= MB_SYSTEMMODAL;							// Show message box as Top-most
 		HWND hMainWnd = GET_HANDLE_MAINWND();				// Get main window handle
-		return MessageBox(hMainWnd, lpszPrompt, strMsgCaption, nType);
+		return MessageBox(hMainWnd, prompt, strMsgCaption, nType);
 	}
 }
 
@@ -421,14 +421,14 @@ int SWinApp::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 // 
 //	Function name:	DisplayMessageBox
 //	Description:	Display message box using language string
-//  Arguments:		lpszPromptID  - Message string
-//					lpszCaptionID - Message caption string
-//					nStyle		  - Message box style
+//  Arguments:		prompt  - Message string
+//					caption - Message caption string
+//					nStyle	- Message box style
 //  Return value:	int	- Result of message box
 //
 //////////////////////////////////////////////////////////////////////////
 
-int SWinApp::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL */, UINT nStyle /* = NULL */)
+int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* = NULL */, UINT nStyle /* = NULL */)
 {
 	// Set default style
 	if (nStyle == NULL) {
@@ -437,7 +437,7 @@ int SWinApp::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL
 	}
 
 	// If caption is not set
-	CString strCaption(lpszCaption);
+	CString strCaption(caption);
 	if (strCaption.IsEmpty()) {
 		// If application message box caption is registered
 		if (!m_strMessageCaption.IsEmpty()) {
@@ -453,7 +453,7 @@ int SWinApp::DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption /* = NULL
 	
 	// Display message box
 	nStyle |= MB_SYSTEMMODAL;
-	return ::MessageBox(this->GetMainWnd()->GetSafeHwnd(), lpszPrompt, strCaption, nStyle);
+	return ::MessageBox(this->GetMainWnd()->GetSafeHwnd(), prompt, strCaption, nStyle);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -488,23 +488,23 @@ void SWinApp::InitAppEventLog(void)
 // 
 //	Function name:	OutputEventLog
 //	Description:	Output application event log
-//  Arguments:		usEvent			- Event ID
-//					lpszDescription - Additional description
-//					pDetailInfo		- Log detail info (array pointer)
+//  Arguments:		usEvent		- Event ID
+//					description - Additional description
+//					pDetailInfo	- Log detail info (array pointer)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void SWinApp::OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
+void SWinApp::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
 {
 	// Prepare event log info
 	LOGITEM logItemAppEvent;
 	logItemAppEvent.SetCategory(usEvent);
 	logItemAppEvent.SetTime(GetCurSysTime());
 	logItemAppEvent.SetProcessID();
-	if (lpszDescription != NULL) {
+	if (description) {
 		// Include event description
-		logItemAppEvent.SetLogString(lpszDescription);
+		logItemAppEvent.SetLogString(description);
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data

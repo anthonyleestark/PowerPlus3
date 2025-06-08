@@ -537,6 +537,6 @@ namespace MapTable
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	UINT	GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse = FALSE);
-	UINT	GetStringID(STRINGTABLE_REF pStringTableRef, LPCTSTR lpszInput);
-	LPCTSTR	GetString(STRINGTABLE_REF pStringTableRef, UINT nID);
+	UINT	GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input);
+	const wchar_t* GetString(STRINGTABLE_REF pStringTableRef, UINT nID);
 };

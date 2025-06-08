@@ -72,7 +72,7 @@ inline UINT SCtrlInfoWrap::GetTemplateID(void) const {
 }
 
 // Get current control's template string ID
-inline LPCTSTR SCtrlInfoWrap::GetTemplateStringID(void) const {
+inline const wchar_t* SCtrlInfoWrap::GetTemplateStringID(void) const {
 	return m_strTemplateID;
 }
 
@@ -82,7 +82,7 @@ inline void SCtrlInfoWrap::GetTemplateStringID(_Out_ CString& strTemplateID) con
 }
 
 // Get current control's caption
-inline LPCTSTR SCtrlInfoWrap::GetCaption(void) const {
+inline const wchar_t* SCtrlInfoWrap::GetCaption(void) const {
 	return m_strTemplateID;
 }
 
@@ -117,13 +117,13 @@ inline void SCtrlInfoWrap::SetTemplateID(_In_ UINT nTemplateID) {
 }
 
 // Set current control's template ID
-inline void SCtrlInfoWrap::SetTemplateStringID(_In_z_ LPCTSTR lpszTemplateID) {
-	m_strTemplateID = lpszTemplateID;
+inline void SCtrlInfoWrap::SetTemplateStringID(_In_z_ const wchar_t* templateID) {
+	m_strTemplateID = templateID;
 }
 
 // Set current control's caption
-inline void SCtrlInfoWrap::SetCaption(_In_z_ LPCTSTR lpszCaption) {
-	m_strCaption = lpszCaption;
+inline void SCtrlInfoWrap::SetCaption(_In_z_ const wchar_t* caption) {
+	m_strCaption = caption;
 }
 
 // Set current control's visible state
@@ -214,7 +214,7 @@ inline void SWinApp::SetAppLanguageOption(UINT nSetLanguage) {
 }
 
 // Get application name
-inline LPCTSTR SWinApp::GetAppName(void) const {
+inline const wchar_t* SWinApp::GetAppName(void) const {
 	return m_pszAppName;
 }
 
@@ -224,17 +224,17 @@ inline void SWinApp::GetAppName(CString& strAppName) const {
 }
 
 // Set application name
-inline void SWinApp::SetAppName(LPCTSTR lpszAppName)
+inline void SWinApp::SetAppName(const wchar_t* appName)
 {
 	// First, free default allocated string
 	free((void*)m_pszAppName);
 
 	// Assign new application name string
-	m_pszAppName = _tcsdup(lpszAppName);
+	m_pszAppName = _tcsdup(appName);
 }
 
 // Get application window common caption
-inline LPCTSTR SWinApp::GetAppWindowCaption(void) const {
+inline const wchar_t* SWinApp::GetAppWindowCaption(void) const {
 	return m_strWindowCaption.GetString();
 }
 
@@ -244,8 +244,8 @@ inline void SWinApp::GetAppWindowCaption(CString& strWindowCaption) const {
 }
 
 // Register message box caption string
-inline void SWinApp::RegisterMessageBoxCaption(LPCTSTR lpszCaption) {
-	m_strMessageCaption = lpszCaption;
+inline void SWinApp::RegisterMessageBoxCaption(const wchar_t* caption) {
+	m_strMessageCaption = caption;
 }
 
 // Get registered message box caption string
@@ -560,7 +560,7 @@ inline void SDialog::GetMargin(LPRECT lpDialogMargin) const
 }
 
 // Get dialog caption
-inline LPCTSTR SDialog::GetCaption(void) const {
+inline const wchar_t* SDialog::GetCaption(void) const {
 	return m_strCaption;
 }
 
@@ -570,10 +570,10 @@ inline void SDialog::GetCaption(CString& strCaption) const {
 }
 
 // Set dialog caption
-inline void SDialog::SetCaption(LPCTSTR lpszCaption)
+inline void SDialog::SetCaption(const wchar_t* caption)
 {
 	// Set caption
-	m_strCaption = lpszCaption;
+	m_strCaption = caption;
 
 	// If dialog is already initialized, trigger updating title
 	if (IsWindow(this->m_hWnd)) {
@@ -621,8 +621,8 @@ inline void SDialog::SetTextColor(COLORREF clTextColor)
 }
 
 // Register message box caption
-inline void SDialog::RegisterMessageBoxCaption(LPCTSTR lpszCaption) {
-	m_strMsgCaption = lpszCaption;
+inline void SDialog::RegisterMessageBoxCaption(const wchar_t* caption) {
+	m_strMsgCaption = caption;
 }
 
 // Get registered message box caption string

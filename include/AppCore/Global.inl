@@ -191,13 +191,13 @@ inline void SetReminderMsgTextColor(COLORREF colorValue) {
 }
 
 // Font name
-inline BOOL GetReminderMsgFontName(CString& strFontName) {
+inline BOOL GetReminderMsgFontName(String& strFontName) {
 	strFontName = g_rmdMsgStyleSet.GetFontName();
 	return (!strFontName.IsEmpty());
 }
-inline void SetReminderMsgFontName(LPCTSTR lpszValue) {
-	if (_tcscmp(lpszValue, _T("")))
-		g_rmdMsgStyleSet.SetFontName(lpszValue);
+inline void SetReminderMsgFontName(const wchar_t* value) {
+	if (_tcscmp(value, _T("")))
+		g_rmdMsgStyleSet.SetFontName(value);
 }
 
 // Font size

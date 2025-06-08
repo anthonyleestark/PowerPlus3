@@ -1461,7 +1461,7 @@ namespace Language
 	//
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	LPCTSTR		  GetLanguageName(UINT nCurLanguage, BOOL bGetDescription = FALSE);
+	const wchar_t* GetLanguageName(UINT nCurLanguage, BOOL bGetDescription = FALSE);
 	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage);
-	LPCTSTR		  GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID);
+	const wchar_t* GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID);
 };

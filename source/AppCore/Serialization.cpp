@@ -36,47 +36,47 @@ using namespace AppCore;
 //	Function name:	GetRegistryValueInt/WriteRegistryValueInt
 //  Description:	Using for reading/writing registry 
 //					values with nested subsection
-//  Arguments:		lpszSectionName	   - Section name (string)
-//					lpszSubSectionName - Sub section name (string)
-//					lpszKeyName		   - Key name (string)
-//					nValue			   - Value (int)
+//  Arguments:		sectionName	   - Section name (string)
+//					subSectionName - Sub section name (string)
+//					keyName		   - Key name (string)
+//					nValue		   - Value (int)
 //  Return value:	UINT - Read value
 //					BOOL - Result of writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-UINT AppRegistry::GetRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName)
+UINT AppRegistry::GetRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName)
 {
 	// Format section name
-	CString strSectionFormat;
-	if (lpszSubSectionName != NULL) {
+	String sectionNameFormat;
+	if (sectionName != NULL) {
 		// Format section full name
-		strSectionFormat.Format(_T("%s\\%s"), lpszSectionName, lpszSubSectionName);
+		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
-		strSectionFormat.Format(lpszSectionName);
+		sectionNameFormat.Format(sectionName);
 	}
 
 	// Get registry value
-	return AfxGetApp()->GetProfileInt(strSectionFormat, lpszKeyName, UINT_MAX);
+	return AfxGetApp()->GetProfileInt(sectionNameFormat, keyName, UINT_MAX);
 }
 
-BOOL AppRegistry::WriteRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
 {
 	// Format section name
-	CString strSectionFormat;
-	if (lpszSubSectionName != NULL) {
+	String sectionNameFormat;
+	if (subSectionName != NULL) {
 		// Format section full name
-		strSectionFormat.Format(_T("%s\\%s"), lpszSectionName, lpszSubSectionName);
+		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
-		strSectionFormat.Format(lpszSectionName);
+		sectionNameFormat.Format(sectionName);
 	}
 
 	// Write registry value
-	return AfxGetApp()->WriteProfileInt(strSectionFormat, lpszKeyName, nValue);
+	return AfxGetApp()->WriteProfileInt(sectionNameFormat, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,74 +84,74 @@ BOOL AppRegistry::WriteRegistryValueInt(LPCTSTR lpszSectionName, LPCTSTR lpszSub
 //	Function name:	GetRegistryValueString/WriteRegistryValueString
 //  Description:	Using for reading/writing registry 
 //					values with nested subsection
-//  Arguments:		lpszSectionName	   - Section name (string)
-//					lpszSubSectionName - Sub section name (string)
-//					lpszKeyName		   - Key name (string)
-//					lpszValue		   - Value (string)
-//  Return value:	CString - Read value
-//					BOOL	- Result of writing process
+//  Arguments:		sectionName	   - Section name (string)
+//					subSectionName - Sub section name (string)
+//					keyName		   - Key name (string)
+//					value		   - Value (string)
+//  Return value:	String - Read value
+//					BOOL   - Result of writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-CString AppRegistry::GetRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName)
+String AppRegistry::GetRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName)
 {
 	// Format section name
-	CString strSectionFormat;
-	if (lpszSubSectionName != NULL) {
+	String sectionNameFormat;
+	if (subSectionName != NULL) {
 		// Format section full name
-		strSectionFormat.Format(_T("%s\\%s"), lpszSectionName, lpszSubSectionName);
+		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
-		strSectionFormat.Format(lpszSectionName);
+		sectionNameFormat.Format(sectionName);
 	}
 
 	// Get registry value
-	return AfxGetApp()->GetProfileString(strSectionFormat, lpszKeyName, Constant::String::Null);
+	return AfxGetApp()->GetProfileString(sectionNameFormat, keyName, Constant::String::Null).GetString();
 }
 
-BOOL AppRegistry::WriteRegistryValueString(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, LPCTSTR lpszValue)
+BOOL AppRegistry::WriteRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value)
 {
 	// Format section name
-	CString strSectionFormat;
-	if (lpszSubSectionName != NULL) {
+	String sectionNameFormat;
+	if (subSectionName != NULL) {
 		// Format section full name
-		strSectionFormat.Format(_T("%s\\%s"), lpszSectionName, lpszSubSectionName);
+		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
-		strSectionFormat.Format(lpszSectionName);
+		sectionNameFormat.Format(sectionName);
 	}
 
 	// Write registry value
-	return AfxGetApp()->WriteProfileString(strSectionFormat, lpszKeyName, lpszValue);
+	return AfxGetApp()->WriteProfileString(sectionNameFormat, keyName, value);
 }
 
 //////////////////////////////////////////////////////////////////////////
 //
 //	Function name:	DeleteRegistrySection
 //  Description:	Using for delete registry section or subsection by name
-//  Arguments:		lpszSectionName	   - Section name (string)
-//					lpszSubSectionName - Sub section name (string)
+//  Arguments:		sectionName	   - Section name (string)
+//					subSectionName - Sub section name (string)
 //  Return value:	TRUE/FALSE - Return of deletion
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::DeleteRegistrySection(LPCTSTR lpszSectionName, LPCTSTR lpszSubSectionName /* = NULL */)
+BOOL AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_t* subSectionName /* = NULL */)
 {
 	// Get name string
-	CString strSectionFormat;
-	if (lpszSubSectionName != NULL) {
+	String sectionNameFormat;
+	if (subSectionName != NULL) {
 		// Format section full name
-		strSectionFormat.Format(_T("%s\\%s"), lpszSectionName, lpszSubSectionName);
+		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
-		strSectionFormat.Format(lpszSectionName);
+		sectionNameFormat.Format(sectionName);
 	}
 
 	// Write registry value
-	return AfxGetApp()->WriteProfileString(strSectionFormat, NULL, NULL);
+	return AfxGetApp()->WriteProfileString(sectionNameFormat, NULL, NULL);
 }
 
 
@@ -165,45 +165,45 @@ BOOL AppRegistry::DeleteRegistrySection(LPCTSTR lpszSectionName, LPCTSTR lpszSub
 //
 //	Function name:	GetProfileInfo/WriteProfileInfo
 //  Description:	Using for reading/writing registry profile info values
-//  Arguments:		lpszKeyName - Key name
-//					nRef		- Result integer value (ref-value)
-//					nValue		- Value to write (integer)
+//  Arguments:		keyName	- Key name
+//					nRef	- Result integer value (ref-value)
+//					nValue	- Value to write (integer)
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetProfileInfo(LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetProfileInfo(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = AfxGetApp()->GetProfileInt(Constant::String::Empty, lpszKeyName, UINT_MAX);
+	int nRet = AfxGetApp()->GetProfileInt(Constant::String::Empty, keyName, UINT_MAX);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteProfileInfo(LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, int nValue)
 {
 	// Write registry value
-	return AfxGetApp()->WriteProfileInt(Constant::String::Empty, lpszKeyName, nValue);
+	return AfxGetApp()->WriteProfileInt(Constant::String::Empty, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
 //
 //	Function name:	GetProfileInfo/WriteProfileInfo
 //  Description:	Using for reading/writing registry profile info values
-//  Arguments:		lpszKeyName - Key name
+//  Arguments:		keyName		- Key name
 //					strRef		- Result string value (ref-value)
-//					strValue	- Value to write (string)
+//					valueString - Value to write (string)
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetProfileInfo(LPCTSTR lpszKeyName, CString& strRef)
+BOOL AppRegistry::GetProfileInfo(const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
-	CString strRet = AfxGetApp()->GetProfileString(Constant::String::Empty, lpszKeyName, Constant::String::Null);
-	if (IS_NULL_STRING(strRet)) return FALSE;
-	strRef = strRet; // Copy returned value
+	String resultString = AfxGetApp()->GetProfileString(Constant::String::Empty, keyName, Constant::String::Null).GetString();
+	if (IS_NULL_STRING(resultString)) return FALSE;
+	strRef = resultString; // Copy returned value
 	return TRUE;
 }
 
@@ -224,25 +224,25 @@ BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueS
 //
 //	Function name:	GetConfig/WriteConfig
 //  Description:	Using for reading/writing registry config values
-//  Arguments:		lpszKeyName - Key name
-//					nRef		- Result value (ref-value)
-//					nValue		- Value to write
+//  Arguments:		keyName - Key name
+//					nRef	- Result value (ref-value)
+//					nValue	- Value to write
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetConfig(LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetConfig(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::ConfigData, NULL, lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::ConfigData, NULL, keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteConfig(LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteConfig(const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::ConfigData, NULL, lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::ConfigData, NULL, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -263,25 +263,25 @@ BOOL AppRegistry::DeleteConfigSection(void)
 //
 //	Function name:	GetDefaultSchedule/GetDefaultSchedule
 //  Description:	Using for reading/writing registry default schedule values
-//  Arguments:		lpszKeyName - Key name
-//					nRef		- Result value (ref-value)
-//					nValue		- Value to write
+//  Arguments:		keyName - Key name
+//					nRef	- Result value (ref-value)
+//					nValue	- Value to write
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetDefaultSchedule(LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetDefaultSchedule(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::ScheduleData, NULL, lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::ScheduleData, NULL, keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteDefaultSchedule(LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteDefaultSchedule(const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::ScheduleData, NULL, lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::ScheduleData, NULL, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -289,25 +289,25 @@ BOOL AppRegistry::WriteDefaultSchedule(LPCTSTR lpszKeyName, int nValue)
 //	Function name:	GetScheduleExtraItemNum/WriteScheduleExtraItemNum
 //  Description:	Using for reading/writing registry schedule extra
 //					item number values
-//  Arguments:		lpszKeyName - Key name
-//					nRef		- Result value (ref-value)
-//					nValue		- Value to write
+//  Arguments:		keyName - Key name
+//					nRef	- Result value (ref-value)
+//					nValue	- Value to write
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetScheduleExtraItemNum(LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetScheduleExtraItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::ScheduleData, NULL, lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::ScheduleData, NULL, keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteScheduleExtraItemNum(LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteScheduleExtraItemNum(const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::ScheduleData, NULL, lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::ScheduleData, NULL, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -315,25 +315,25 @@ BOOL AppRegistry::WriteScheduleExtraItemNum(LPCTSTR lpszKeyName, int nValue)
 //	Function name:	GetScheduleExtra/WriteScheduleExtra
 //  Description:	Using for reading/writing registry schedule extra item values
 //  Arguments:		nItemIndex  - Schedule extra item index
-//					lpszKeyName - Key name
+//					keyName		- Key name
 //					nRef	    - Result value (ref-value)
 //					nValue	    - Value to write
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetScheduleExtra(int nItemIndex, LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetScheduleExtra(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::ScheduleData, Section::Schedule::Item(nItemIndex), lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::ScheduleData, Section::Schedule::Item(nItemIndex), keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteScheduleExtra(int nItemIndex, LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteScheduleExtra(int nItemIndex, const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::ScheduleData, Section::Schedule::Item(nItemIndex), lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::ScheduleData, Section::Schedule::Item(nItemIndex), keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -370,25 +370,25 @@ BOOL AppRegistry::DeleteScheduleSection(void)
 //	Function name:	GetHotkeyItemNum/WriteHotkeyItemNum
 //  Description:	Using for reading/writing registry hotkeyset
 //					item number values
-//  Arguments:		lpszKeyName - Key name
-//					nRef		- Result value (ref-value)
-//					nValue		- Value to write
+//  Arguments:		keyName - Key name
+//					nRef	- Result value (ref-value)
+//					nValue	- Value to write
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetHotkeyItemNum(LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetHotkeyItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::HotkeySetData, NULL, lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::HotkeySetData, NULL, keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteHotkeyItemNum(LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteHotkeyItemNum(const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::HotkeySetData, NULL, lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::HotkeySetData, NULL, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -396,25 +396,25 @@ BOOL AppRegistry::WriteHotkeyItemNum(LPCTSTR lpszKeyName, int nValue)
 //	Function name:	GetHotkeySet/WriteHotkeySet
 //  Description:	Using for reading/writing registry hotkeyset item values
 //  Arguments:		nItemIndex  - Hotkey item index
-//					lpszKeyName - Key name
+//					keyName		- Key name
 //					nRef	    - Result value (ref-value)
 //					nValue	    - Value to write
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetHotkeySet(int nItemIndex, LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetHotkeySet(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::HotkeySetData, Section::HotkeySet::Item(nItemIndex), lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::HotkeySetData, Section::HotkeySet::Item(nItemIndex), keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteHotkeySet(int nItemIndex, LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteHotkeySet(int nItemIndex, const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::HotkeySetData, Section::HotkeySet::Item(nItemIndex), lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::HotkeySetData, Section::HotkeySet::Item(nItemIndex), keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -451,25 +451,25 @@ BOOL AppRegistry::DeleteHotkeySetSection(void)
 //	Function name:	GetPwrReminderItemNum/WritePwrReminderItemNum
 //  Description:	Using for reading/writing registry Power Reminder
 //					item number values
-//  Arguments:		lpszKeyName - Key name
-//					nRef		- Result value (ref-value)
-//					nValue		- Value to write
+//  Arguments:		keyName - Key name
+//					nRef	- Result value (ref-value)
+//					nValue	- Value to write
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetPwrReminderItemNum(LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetPwrReminderItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::PwrReminderData, NULL, lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::PwrReminderData, NULL, keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WritePwrReminderItemNum(LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WritePwrReminderItemNum(const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::PwrReminderData, NULL, lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::PwrReminderData, NULL, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -477,25 +477,25 @@ BOOL AppRegistry::WritePwrReminderItemNum(LPCTSTR lpszKeyName, int nValue)
 //	Function name:	GetPwrReminder/WritePwrReminder
 //  Description:	Using for reading/writing registry Power Reminder item values
 //  Arguments:		nItemIndex  - Hotkey item index
-//					lpszKeyName - Key name
-//					nRef	    - Result value (integer) (ref-value)
-//					nValue	    - Value to write (integer)
+//					keyName - Key name
+//					nRef	- Result value (integer) (ref-value)
+//					nValue	- Value to write (integer)
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetPwrReminder(int nItemIndex, LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetPwrReminder(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WritePwrReminder(int nItemIndex, LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -503,25 +503,25 @@ BOOL AppRegistry::WritePwrReminder(int nItemIndex, LPCTSTR lpszKeyName, int nVal
 //	Function name:	GetPwrReminder/WritePwrReminder
 //  Description:	Using for reading/writing registry Power Reminder item values
 //  Arguments:		nItemIndex	- Hotkey item index
-//					lpszKeyName - Key name
+//					keyName		- Key name
 //					strRef	    - Result value (string) (ref-value)
 //					strValue    - Value to write (string)
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetPwrReminder(int nItemIndex, LPCTSTR lpszKeyName, CString& strRef)
+BOOL AppRegistry::GetPwrReminder(int nItemIndex, const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
-	CString strRet = GetRegistryValueString(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), lpszKeyName);
-	if (IS_NULL_STRING(strRet)) return FALSE;
-	strRef = strRet; // Copy returned value
+	String resultString = GetRegistryValueString(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName);
+	if (IS_NULL_STRING(resultString)) return FALSE;
+	strRef = resultString; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WritePwrReminder(int nItemIndex, LPCTSTR lpszKeyName, CString strValue)
+BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, const wchar_t* value)
 {
-	return WriteRegistryValueString(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), lpszKeyName, strValue);
+	return WriteRegistryValueString(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName, value);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -557,26 +557,26 @@ BOOL AppRegistry::DeletePwrReminderSection(void)
 //
 //	Function name:	GetLayoutInfo/WriteLayoutInfo
 //  Description:	Using for reading/writing registry layout info values
-//  Arguments:		lpszSubSectionName  - Subsection name
-//					lpszKeyName			- Key name
-//					nRef				- Result value (ref-value)
-//					nValue				- Value to write
+//  Arguments:		subSectionName  - Subsection name
+//					keyName			- Key name
+//					nRef			- Result value (ref-value)
+//					nValue			- Value to write
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetLayoutInfo(LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::LayoutInfo, lpszSubSectionName, lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::LayoutInfo, subSectionName, keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteLayoutInfo(LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::LayoutInfo, lpszSubSectionName, lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::LayoutInfo, subSectionName, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -597,42 +597,42 @@ BOOL AppRegistry::DeleteLayoutInfoSection(void)
 //
 //	Function name:	GetGlobalData/WriteGlobalData
 //  Description:	Using for reading/writing registry global data values
-//  Arguments:		lpszSubSectionName  - Subsection name
-//					lpszKeyName			- Key name
-//					nRef				- Result value (integer/ref-value)
-//					nValue				- Value to write (integer)
-//					strRef				- Result value (integer/ref-value)
-//					strValue			- Value to write (string)
+//  Arguments:		subSectionName  - Subsection name
+//					keyName			- Key name
+//					nRef			- Result value (integer/ref-value)
+//					nValue			- Value to write (integer)
+//					strRef			- Result value (integer/ref-value)
+//					strValue		- Value to write (string)
 //  Return value:	BOOL - Result of reading/writing process
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppRegistry::GetGlobalData(LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, int& nRef)
+BOOL AppRegistry::GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::GlobalData, lpszSubSectionName, lpszKeyName);
+	int nRet = GetRegistryValueInt(Section::GlobalData, subSectionName, keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteGlobalData(LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, int nValue)
+BOOL AppRegistry::WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::GlobalData, lpszSubSectionName, lpszKeyName, nValue);
+	return WriteRegistryValueInt(Section::GlobalData, subSectionName, keyName, nValue);
 }
 
-BOOL AppRegistry::GetGlobalData(LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, CString& strRef)
+BOOL AppRegistry::GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
-	CString strRet = GetRegistryValueString(Section::GlobalData, lpszSubSectionName, lpszKeyName);
-	if (IS_NULL_STRING(strRet)) return FALSE;
-	strRef = strRet; // Copy returned value
+	String resultString = GetRegistryValueString(Section::GlobalData, subSectionName, keyName);
+	if (IS_NULL_STRING(resultString)) return FALSE;
+	strRef = resultString; // Copy returned value
 	return TRUE;
 }
 
-BOOL AppRegistry::WriteGlobalData(LPCTSTR lpszSubSectionName, LPCTSTR lpszKeyName, CString strValue)
+BOOL AppRegistry::WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value)
 {
-	return WriteRegistryValueString(Section::GlobalData, lpszSubSectionName, lpszKeyName, strValue);
+	return WriteRegistryValueString(Section::GlobalData, subSectionName, keyName, value);
 }
 
 

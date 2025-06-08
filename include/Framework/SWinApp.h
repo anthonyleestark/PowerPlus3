@@ -57,7 +57,7 @@ public:
 public:
 	// Construction
 	SWinApp();								// constructor
-	SWinApp(LPCTSTR lpszTemplateName);		// custom constructor
+	SWinApp(const wchar_t* templateName);	// custom constructor
 	virtual ~SWinApp();						// destructor
 
 protected:
@@ -101,29 +101,29 @@ public:
 	virtual void SetAppLanguageOption(UINT nSetLanguage);
 
 	// Application name get/set functions
-	virtual LPCTSTR GetAppName(void) const;
+	virtual const wchar_t* GetAppName(void) const;
 	virtual void GetAppName(CString& strAppName) const;
-	virtual void SetAppName(LPCTSTR lpszAppName);
+	virtual void SetAppName(const wchar_t* appName);
 	virtual BOOL SetAppName(UINT nResourceStringID);
 
 	// Application window caption get/set functions
-	virtual LPCTSTR GetAppWindowCaption(void) const;
+	virtual const wchar_t* GetAppWindowCaption(void) const;
 	virtual void GetAppWindowCaption(CString& strWindowCaption) const;
-	virtual void SetAppWindowCaption(LPCTSTR lpszWindowCaption, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
+	virtual void SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
 	virtual BOOL SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
 
 	// MessageBox functions
 	virtual void RegisterMessageBoxCaption(UINT nCaptionID);
-	virtual void RegisterMessageBoxCaption(LPCTSTR lpszCaption);
+	virtual void RegisterMessageBoxCaption(const wchar_t* caption);
 	virtual void GetRegisterdMsgBoxCaption(CString& strRegMsgBoxCap) const;
-	virtual int DoMessageBox(LPCTSTR lpszPrompt, UINT nType, UINT nIDPrompt);
+	virtual int DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt);
 	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
-	virtual int DisplayMessageBox(LPCTSTR lpszPrompt, LPCTSTR lpszCaption = NULL, UINT nStyle = NULL);
+	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, UINT nStyle = NULL);
 
 	// Logging functions
 	virtual void InitAppEventLog(void);
 	virtual SLogging* GetAppEventLog(void);
-	virtual void OutputEventLog(USHORT usEvent, LPCTSTR lpszDescription = NULL, LOGDETAILINFO* pDetailInfo = NULL);
+	virtual void OutputEventLog(USHORT usEvent, const wchar_t* description = NULL, LOGDETAILINFO* pDetailInfo = NULL);
 
 	// Flag management functions
 	virtual int  GetFlagValue(AppFlagID eFlagID) const;
