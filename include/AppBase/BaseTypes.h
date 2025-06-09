@@ -30,6 +30,14 @@
 #endif
 
 
+// For compatibility with Win-base types
+#ifdef _WINBASE_COMPATIBILITIES
+	#if !defined _WINDOWS_ || !defined _WINDOWSAPI_INCLUDED || !defined _WINAPP_INCLUDED
+		#include <windows.h>
+	#endif
+#endif
+
+
 // Using Unicode for strings
 #ifndef _UNICODE
 	#define	_UNICODE
@@ -218,7 +226,7 @@ public:
 		return _temp;
 	};
 
-	// Prefix decrement operator
+	// Postfix decrement operator
 	// Remove the last character but return the original string
 	String& operator--(int) noexcept {
 		String _temp = *this;
@@ -465,3 +473,532 @@ public:
 	// Tokenization
 	TokenList Tokenize(const wchar_t* delimiters) const;
 };
+
+
+// Use STL chrono for time
+#ifndef _CHRONO_
+	#include <chrono>
+#endif
+
+
+// Base class for other time classes
+// Only intended to be inherited without creating instances
+class __TimeBase
+{
+protected:
+	// Using aliases for std::chrono classes
+	using __TimePoint = std::chrono::system_clock::time_point;
+	using __Date = std::chrono::year_month_day;
+	using __Year = std::chrono::year;
+	using __Years = std::chrono::years;
+	using __Month = std::chrono::month;
+	using __Months = std::chrono::months;
+	using __Day = std::chrono::day;
+	using __Days = std::chrono::days;
+	using __Weekday = std::chrono::weekday;
+	using __Hours = std::chrono::hours;
+	using __Minutes = std::chrono::minutes;
+	using __Seconds = std::chrono::seconds;
+	using __Milliseconds = std::chrono::milliseconds;
+
+protected:
+	// Using Chrono time_point as base value
+	__TimePoint _timePoint;
+
+protected:
+	// Constructor
+	__TimeBase() : _timePoint(__TimePoint{}) {};
+	explicit __TimeBase(__TimePoint src) : _timePoint(src) {};
+
+public:
+	virtual ~__TimeBase() = default;
+	virtual __TimePoint GetTimePoint(void) const noexcept = 0;
+};
+
+
+// For time span calculation
+class TimeSpan : public __TimeBase
+{
+public:
+	// Construction
+	explicit TimeSpan() = default;
+
+	// Copy constructor
+	TimeSpan(const TimeSpan& other) : __TimeBase(other._timePoint) {};
+
+	// Copy assignment operator
+	TimeSpan& operator=(const TimeSpan& other) {
+		if (this != &other) {
+			_timePoint = other._timePoint;
+		}
+		return *this;
+	};
+
+	// Move constructor
+	TimeSpan(TimeSpan&& other) noexcept : __TimeBase(std::move(other._timePoint)) {};
+
+	// Move assignment operator
+	TimeSpan& operator=(TimeSpan&& other) noexcept {
+		if (this != &other) {
+			_timePoint = std::move(other._timePoint);
+		}
+		return *this;
+	};
+
+public:
+	// Conversion constructor
+	TimeSpan(__TimePoint timepoint) : __TimeBase(timepoint) {};
+	TimeSpan(int days, int hours = 0, int mins = 0, int secs = 0, int millisecs = 0) noexcept {
+		_timePoint = __TimePoint{ duration_cast<__TimePoint::duration>(__Days{ days } +
+				__Hours{ hours } + __Minutes { mins } + __Seconds { secs } + __Milliseconds{ millisecs }) };
+	};
+
+#ifdef _WINBASE_COMPATIBILITIES
+	TimeSpan(SYSTEMTIME src) noexcept /* ignore the wYear and wMonth values */ {
+		_timePoint = __TimePoint{ duration_cast<__TimePoint::duration>(__Days{ static_cast<int>(src.wDay) } +
+				__Hours{ src.wHour } + __Minutes { src.wMinute } + __Seconds { src.wSecond } + __Milliseconds{ src.wMilliseconds }) };
+	};
+#endif
+
+public:
+	// Get time point (conversion to std::chrono::system_clock::time_point)
+	__TimePoint GetTimePoint(void) const noexcept override {
+		return _timePoint;
+	};
+
+public:
+	// Addition operator
+	TimeSpan operator+(const TimeSpan& other) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + other._timePoint.time_since_epoch()));
+	};
+	TimeSpan& operator+=(const TimeSpan& other) {
+		if (this != &other) _timePoint += other._timePoint.time_since_epoch();
+		return *this;
+	};
+	TimeSpan operator+(int seconds) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + __Seconds{ seconds }));
+	};
+	TimeSpan& operator+=(int seconds) {
+		_timePoint += __Seconds{ seconds };
+		return *this;
+	};
+
+	// Subtraction operator
+	TimeSpan operator-(const TimeSpan& other) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - other._timePoint.time_since_epoch()));
+	};
+	TimeSpan& operator-=(const TimeSpan& other) {
+		if (this != &other) _timePoint -= other._timePoint.time_since_epoch();
+		return *this;
+	};
+	TimeSpan operator-(int seconds) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - __Seconds{ seconds }));
+	};
+	TimeSpan& operator-=(int seconds) {
+		_timePoint -= __Seconds{ seconds };
+		return *this;
+	};
+
+	// Equality operator
+	constexpr bool operator==(const TimeSpan& other) const noexcept {
+		return _timePoint == other._timePoint;
+	};
+	constexpr bool operator==(int64_t seconds) const noexcept {
+		return TotalSeconds() == seconds;
+	};
+
+	// Inequality operator
+	constexpr bool operator!=(const TimeSpan& other) const noexcept {
+		return _timePoint != other._timePoint;
+	};
+	constexpr bool operator!=(int64_t seconds) const noexcept {
+		return TotalSeconds() != seconds;
+	};
+
+	// Comparison operator
+	constexpr bool operator<(const TimeSpan& other) const noexcept {
+		return _timePoint < other._timePoint;
+	};
+	constexpr bool operator<(int64_t seconds) const noexcept {
+		return TotalSeconds() < seconds;
+	};
+	constexpr bool operator>(const TimeSpan& other) const noexcept {
+		return _timePoint > other._timePoint;
+	};
+	constexpr bool operator>(int64_t seconds) const noexcept {
+		return TotalSeconds() > seconds;
+	};
+	constexpr bool operator<=(const TimeSpan& other) const noexcept {
+		return _timePoint <= other._timePoint;
+	};
+	constexpr bool operator<=(int64_t seconds) const noexcept {
+		return TotalSeconds() <= seconds;
+	};
+	constexpr bool operator>=(const TimeSpan& other) const noexcept {
+		return _timePoint >= other._timePoint;
+	};
+	constexpr bool operator>=(int64_t seconds) const noexcept {
+		return TotalSeconds() >= seconds;
+	};
+
+	// Prefix increment operator (increase by 1 second)
+	TimeSpan& operator++() noexcept {
+		_timePoint += __Seconds{1};
+		return *this;
+	};
+
+	// Prefix decrement operator (decrease by 1 second)
+	TimeSpan& operator--() noexcept {
+		_timePoint -= __Seconds{1};
+		return *this;
+	};
+
+	// Postfix increment operator (increase by 1 second)
+	TimeSpan& operator++(int) noexcept {
+		TimeSpan _temp = *this;
+		_timePoint += __Seconds{1};
+		return _temp;
+	};
+
+	// Postfix decrement operator (decrease by 1 second)
+	TimeSpan& operator--(int) noexcept {
+		TimeSpan _temp = *this;
+		_timePoint -= __Seconds{1};
+		return _temp;
+	};
+
+public:
+	// Total durations
+	constexpr int64_t TotalHours() const noexcept {
+		return std::chrono::duration_cast<__Hours>(_timePoint.time_since_epoch()).count();
+	};
+	constexpr int64_t TotalMinutes() const noexcept {
+		return std::chrono::duration_cast<__Minutes>(_timePoint.time_since_epoch()).count();
+	};
+	constexpr int64_t TotalSeconds() const noexcept {
+		return std::chrono::duration_cast<__Seconds>(_timePoint.time_since_epoch()).count();
+	};
+	constexpr int64_t TotalMilliseconds() const noexcept {
+		return std::chrono::duration_cast<__Milliseconds>(_timePoint.time_since_epoch()).count();
+	};
+
+public:
+	// Access data
+	constexpr int Days() const noexcept {
+		return std::chrono::duration_cast<__Days>(_timePoint.time_since_epoch()).count();
+	};
+	constexpr int Hours() const noexcept {
+		return static_cast<int>(TotalHours() % 24);
+	};
+	constexpr int Minutes() const noexcept {
+		return static_cast<int>(TotalMinutes() % 60);
+	};
+	constexpr int Seconds() const noexcept {
+		return static_cast<int>(TotalSeconds() % 60);
+	};
+	constexpr int Milliseconds() const noexcept {
+		return static_cast<int>(TotalMilliseconds() % 1000);
+	};
+
+public:
+	// Arithmetic
+	TimeSpan& IncreaseDays(int days) noexcept {
+		_timePoint += __Days{ days };
+		return *this;
+	};
+	TimeSpan& DecreaseDays(int days) noexcept {
+		_timePoint -= __Days{ days };
+		return *this;
+	};
+	TimeSpan& IncreaseHours(int hours) noexcept {
+		_timePoint += __Hours{ hours };
+		return *this;
+	};
+	TimeSpan& DecreaseHours(int hours) noexcept {
+		_timePoint -= __Hours{ hours };
+		return *this;
+	};
+	TimeSpan& IncreaseMinutes(int mins) noexcept {
+		_timePoint += __Minutes{ mins };
+		return *this;
+	};
+	TimeSpan& DecreaseMinutes(int mins) noexcept {
+		_timePoint -= __Minutes{ mins };
+		return *this;
+	};
+	TimeSpan& IncreaseSeconds(int secs) noexcept {
+		_timePoint += __Seconds{ secs };
+		return *this;
+	};
+	TimeSpan& DecreaseSeconds(int secs) noexcept {
+		_timePoint -= __Seconds{ secs };
+		return *this;
+	};
+	TimeSpan& IncreaseMillisecs(int millisecs) noexcept {
+		_timePoint += __Milliseconds{ millisecs };
+		return *this;
+	};
+	TimeSpan& DecreaseMillisecs(int millisecs) noexcept {
+		_timePoint -= __Milliseconds{ millisecs };
+		return *this;
+	};
+};
+
+
+// Manage Date/Time data
+class DateTime : public __TimeBase
+{
+public:
+	enum __DayOfWeek { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday };
+
+public:
+	// Construction
+	explicit DateTime() = default;
+
+	// Copy constructor
+	DateTime(const DateTime& other) : __TimeBase(other._timePoint) {};
+
+	// Copy assignment operator
+	DateTime& operator=(const DateTime& other) {
+		if (this != &other) {
+			_timePoint = other._timePoint;
+		}
+		return *this;
+	};
+
+	// Move constructor
+	DateTime(DateTime&& other) noexcept : __TimeBase(std::move(other._timePoint)) {};
+
+	// Move assignment operator
+	DateTime& operator=(DateTime&& other) noexcept {
+		if (this != &other) {
+			_timePoint = std::move(other._timePoint);
+		}
+		return *this;
+	};
+
+public:
+	// Conversion constructor
+	DateTime(__TimePoint timepoint) : __TimeBase(timepoint) {};
+	DateTime(int year, unsigned int month, unsigned int day, int hour, int min, int sec, int millisec = 0) noexcept {
+		auto _dateVal = __Date{ __Year{ year }, __Month{ month }, __Day{ day } };
+		auto _timeVal = __Hours(hour) + __Minutes(min) + __Seconds(sec) + __Milliseconds(millisec);
+		_timePoint = std::chrono::sys_days{ _dateVal } + _timeVal;
+	};
+
+#ifdef _WINBASE_COMPATIBILITIES
+	DateTime(SYSTEMTIME src) noexcept {
+		auto _dateVal = __Date{ __Year{ src.wYear }, __Month{ src.wMonth }, __Day{ src.wDay } };
+		auto _timeVal = __Hours(src.wHour) + __Minutes(src.wMinute) + __Seconds(src.wSecond) + __Milliseconds(src.wMilliseconds);
+		_timePoint = std::chrono::sys_days{ _dateVal } + _timeVal;
+	};
+#endif
+
+public:
+	// Get time point (conversion to std::chrono::system_clock::time_point)
+	__TimePoint GetTimePoint(void) const noexcept override {
+		return _timePoint;
+	};
+
+public:
+	// Addition operator
+	DateTime operator+(const DateTime& other) const noexcept {
+		return DateTime(__TimePoint(_timePoint.time_since_epoch() + other._timePoint.time_since_epoch()));
+	};
+	DateTime& operator+=(const DateTime& other) {
+		if (this != &other) _timePoint += other._timePoint.time_since_epoch();
+		return *this;
+	};
+	DateTime operator+(int seconds) const noexcept {
+		return DateTime(__TimePoint(_timePoint.time_since_epoch() + __Seconds{ seconds }));
+	};
+	DateTime& operator+=(int seconds) {
+		_timePoint += __Seconds{ seconds };
+		return *this;
+	};
+
+	// Subtraction operator
+	DateTime operator-(const DateTime& other) const noexcept {
+		return DateTime(__TimePoint(_timePoint.time_since_epoch() - other._timePoint.time_since_epoch()));
+	};
+	DateTime& operator-=(const DateTime& other) {
+		if (this != &other) _timePoint -= other._timePoint.time_since_epoch();
+		return *this;
+	};
+	DateTime operator-(int seconds) const noexcept {
+		return DateTime(__TimePoint(_timePoint.time_since_epoch() - __Seconds{ seconds }));
+	};
+	DateTime& operator-=(int seconds) {
+		_timePoint -= __Seconds{ seconds };
+		return *this;
+	};
+
+	// Equality operator
+	constexpr bool operator==(const DateTime& other) const noexcept {
+		return _timePoint == other._timePoint;
+	};
+
+	// Inequality operator
+	constexpr bool operator!=(const DateTime& other) const noexcept {
+		return _timePoint != other._timePoint;
+	};
+
+	// Comparison operator
+	constexpr bool operator<(const DateTime& other) const noexcept {
+		return _timePoint < other._timePoint;
+	};
+	constexpr bool operator>(const DateTime& other) const noexcept {
+		return _timePoint > other._timePoint;
+	};
+	constexpr bool operator<=(const DateTime& other) const noexcept {
+		return _timePoint <= other._timePoint;
+	};
+	constexpr bool operator>=(const DateTime& other) const noexcept {
+		return _timePoint >= other._timePoint;
+	};
+
+	// Prefix increment operator (increase by 1 second)
+	DateTime& operator++() noexcept {
+		_timePoint += __Seconds{ 1 };
+		return *this;
+	};
+
+	// Prefix decrement operator (decrease by 1 second)
+	DateTime& operator--() noexcept {
+		_timePoint -= __Seconds{ 1 };
+		return *this;
+	};
+
+	// Postfix increment operator (increase by 1 second)
+	DateTime& operator++(int) noexcept {
+		DateTime _temp = *this;
+		_timePoint += __Seconds{ 1 };
+		return _temp;
+	};
+
+	// Postfix decrement operator (decrease by 1 second)
+	DateTime& operator--(int) noexcept {
+		DateTime _temp = *this;
+		_timePoint -= __Seconds{ 1 };
+		return _temp;
+	};
+
+private:
+	// Internal getters
+	constexpr __Year _yearVal() const noexcept {
+		return __Date{ std::chrono::floor<__Days>(_timePoint) }.year();
+	};
+	constexpr __Month _monthVal() const noexcept {
+		return __Date{ std::chrono::floor<__Days>(_timePoint) }.month();
+	};
+	constexpr __Day _dayVal() const noexcept {
+		return __Date{ std::chrono::floor<__Days>(_timePoint) }.day();
+	};
+	constexpr __Weekday _weekdayVal() const noexcept {
+		return __Weekday{ std::chrono::floor<__Days>(_timePoint) };
+	};
+	constexpr __Hours _getHours() const noexcept {
+		return std::chrono::duration_cast<__Hours>(_timePoint.time_since_epoch() % __Days(1));
+	};
+	constexpr __Minutes _getMinutes() const noexcept {
+		return std::chrono::duration_cast<__Minutes>(_timePoint.time_since_epoch() % __Hours(1));
+	};
+	constexpr __Seconds _getSeconds() const noexcept {
+		return std::chrono::duration_cast<__Seconds>(_timePoint.time_since_epoch() % __Minutes(1));
+	};
+	constexpr __Milliseconds _getMillisecs() const noexcept {
+		return std::chrono::duration_cast<__Milliseconds>(_timePoint.time_since_epoch() % __Seconds(1));
+	};
+
+public:
+	// Access data
+	constexpr int Year(void) const noexcept {
+		return static_cast<int>(_yearVal());
+	};
+	constexpr unsigned Month(void) const noexcept {
+		return static_cast<unsigned>(_monthVal());
+	};
+	constexpr unsigned Day(void) const noexcept {
+		return static_cast<unsigned>(_dayVal());
+	};
+	constexpr int Hour(void) const noexcept {
+		return _getHours().count();
+	};
+	constexpr int Minute(void) const noexcept {
+		return _getMinutes().count();
+	};
+	constexpr int Second(void) const noexcept {
+		return static_cast<int>(_getSeconds().count());
+	};
+	constexpr int Millisecond(void) const noexcept {
+		return static_cast<int>(_getMillisecs().count());
+	};
+	constexpr int DayOfWeek(void) const noexcept {
+		return static_cast<unsigned>(_weekdayVal().c_encoding());
+	};
+
+public:
+	// Special validation
+	constexpr bool IsLeapYear(void) const noexcept {
+		return _yearVal().is_leap();
+	};
+
+public:
+	// Arithmetic
+	DateTime& IncreaseDays(int days) noexcept {
+		_timePoint += __Days{ days };
+		return *this;
+	};
+	DateTime& DecreaseDays(int days) noexcept {
+		_timePoint -= __Days{ days };
+		return *this;
+	};
+	DateTime& IncreaseHours(int hours) noexcept {
+		_timePoint += __Hours{ hours };
+		return *this;
+	};
+	DateTime& DecreaseHours(int hours) noexcept {
+		_timePoint -= __Hours{ hours };
+		return *this;
+	};
+	DateTime& IncreaseMinutes(int mins) noexcept {
+		_timePoint += __Minutes{ mins };
+		return *this;
+	};
+	DateTime& DecreaseMinutes(int mins) noexcept {
+		_timePoint -= __Minutes{ mins };
+		return *this;
+	};
+	DateTime& IncreaseSeconds(int secs) noexcept {
+		_timePoint += __Seconds{ secs };
+		return *this;
+	};
+	DateTime& DecreaseSeconds(int secs) noexcept {
+		_timePoint -= __Seconds{ secs };
+		return *this;
+	};
+	DateTime& IncreaseMillisecs(int millisecs) noexcept {
+		_timePoint += __Milliseconds{ millisecs };
+		return *this;
+	};
+	DateTime& DecreaseMillisecs(int millisecs) noexcept {
+		_timePoint -= __Milliseconds{ millisecs };
+		return *this;
+	};
+
+#ifdef _WINBASE_COMPATIBILITIES
+public:
+	// Conversion
+	SYSTEMTIME ToSystemTime(void) const noexcept {
+		SYSTEMTIME _result; _result.wYear = Year(); _result.wMonth = Month();
+		_result.wDay = Day(); _result.wDayOfWeek = DayOfWeek(); _result.wHour = Hour();
+		_result.wMinute = Minute(); _result.wSecond = Second(); _result.wMilliseconds = Millisecond();
+		return _result;
+	};
+	FILETIME ToFileTime(void) const noexcept {
+	};
+#endif
+};
+
+// For global usage
+using DayOfWeek = DateTime::__DayOfWeek;

@@ -68,7 +68,7 @@ inline BYTE PwrRepeatSet::GetActiveDays(void) const {
 inline BOOL PwrRepeatSet::IsDayActive(DayOfWeek dayOfWeek) const
 {
 	// Invalid day of week
-	if ((dayOfWeek < Sunday) || (dayOfWeek > Saturday))
+	if ((dayOfWeek < DayOfWeek::Sunday) || (dayOfWeek > DayOfWeek::Saturday))
 		return FALSE;
 
 	return ((m_byRepeatDays & (1 << dayOfWeek)) >> dayOfWeek);
@@ -98,7 +98,7 @@ inline void PwrRepeatSet::SetActiveDays(BYTE byActiveDays) {
 inline void PwrRepeatSet::SetDayActive(DayOfWeek dayOfWeek, BOOL bActive)
 {
 	// Invalid day of week
-	if ((dayOfWeek < Sunday) || (dayOfWeek > Saturday))
+	if ((dayOfWeek < DayOfWeek::Sunday) || (dayOfWeek > DayOfWeek::Saturday))
 		return;
 
 	m_byRepeatDays |= bActive << dayOfWeek;

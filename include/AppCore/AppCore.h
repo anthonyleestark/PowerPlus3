@@ -276,9 +276,6 @@ using FlagManagementMethod = FlagManager::ManagementMethod;
 class PwrRepeatSet
 {
 public:
-	enum DayOfWeek { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday	};
-
-public:
 	// Define constant values
 	static constexpr int minSnoozeInterval = 60;					// Min snooze interval: 1 minutes
 	static constexpr int defaultSnoozeInterval = 600;				// Default snooze interval: 10 minutes
@@ -323,9 +320,6 @@ public:
 
 // Define new typenames for RepeatSet data
 using PPwrRepeatSet = PwrRepeatSet*;
-
-// Define new global typenames for the enum attributes of RepeatSet data
-using DayOfWeek = PwrRepeatSet::DayOfWeek;
 
 //////////////////////////////////////////////////////////////////////////
 //
