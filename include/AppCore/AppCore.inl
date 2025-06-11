@@ -135,12 +135,12 @@ inline void ScheduleItem::SetAction(UINT nActionID) {
 }
 
 // Get schedule item time data
-inline SYSTEMTIME ScheduleItem::GetTime(void) const {
+inline ClockTime ScheduleItem::GetTime(void) const {
 	return m_stTime;
 }
 
 // Set schedule item time data
-inline void ScheduleItem::SetTime(const SYSTEMTIME& stTime) {
+inline void ScheduleItem::SetTime(const ClockTime& stTime) {
 	m_stTime = stTime;
 }
 
@@ -562,12 +562,12 @@ inline void PwrReminderItem::SetEventID(UINT nEventID) {
 }
 
 // Get Power Reminder item time data
-inline SYSTEMTIME PwrReminderItem::GetTime(void) const {
+inline ClockTime PwrReminderItem::GetTime(void) const {
 	return m_stTime;
 }
 
 // Set Power Reminder item time data
-inline void PwrReminderItem::SetTime(const SYSTEMTIME& stTime) {
+inline void PwrReminderItem::SetTime(const ClockTime& stTime) {
 	m_stTime = stTime;
 }
 
@@ -687,7 +687,7 @@ inline void PwrReminderData::DeleteAll(void)
 inline void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval)
 {
 	// Calculate time with offset
-	AppCore::CalcTimeOffset(m_stNextSnoozeTime, nInterval);
+	ClockTimeUtils::CalculateOffset(m_stNextSnoozeTime, nInterval);
 }
 
 // Get item category
@@ -741,12 +741,12 @@ inline void PwrRuntimeItem::SetSnoozeFlag(INT nValue) {
 }
 
 // Get next snooze trigger time
-inline SYSTEMTIME PwrRuntimeItem::GetTime(void) const {
+inline ClockTime PwrRuntimeItem::GetTime(void) const {
 	return m_stNextSnoozeTime;
 }
 
 // Set next snooze trigger time
-inline void PwrRuntimeItem::SetTime(const SYSTEMTIME& stTime) {
+inline void PwrRuntimeItem::SetTime(const ClockTime& stTime) {
 	m_stNextSnoozeTime = stTime;
 }
 
@@ -776,12 +776,12 @@ inline void HistoryInfoData::SetCategoryID(UINT nCategoryID) {
 }
 
 // Get timestamp of history
-inline SYSTEMTIME HistoryInfoData::GetTime(void) const {
+inline DateTime HistoryInfoData::GetTime(void) const {
 	return m_stTimestamp;
 }
 
 // Set timestamp of history
-inline void HistoryInfoData::SetTime(const SYSTEMTIME& stTime) {
+inline void HistoryInfoData::SetTime(const DateTime& stTime) {
 	m_stTimestamp = stTime;
 }
 
@@ -846,12 +846,12 @@ inline SystemEventID SystemEvent::GetEventID(void) const {
 }
 
 // Get system event timestamp
-inline SYSTEMTIME SystemEvent::GetTimestamp(void) const {
+inline DateTime SystemEvent::GetTimestamp(void) const {
 	return m_timeStamp;
 }
 
 // Set system event timestamp
-inline void SystemEvent::SetTimestamp(SYSTEMTIME eventTimestamp) {
+inline void SystemEvent::SetTimestamp(DateTime eventTimestamp) {
 	m_timeStamp = eventTimestamp;
 }
 
@@ -1172,11 +1172,6 @@ inline UINT AppCore::Opt2Sel(UINT nOptionMacro, UINT nCurOption)
 	VERIFY(nOptionMacro > 0x00 && nOptionMacro < UINT_MAX);
 	VERIFY(nCurOption >= 0 && nCurOption < UINT_MAX);
 	return (nCurOption - (nOptionMacro << 8) - 1);
-}
-
-// Get current time with milliseconds and return SYSTEMTIME
-inline void AppCore::GetCurSysTime(SYSTEMTIME& stTime) {
-	stTime = GetCurSysTime();
 }
 
 #endif		// ifdef _APPCORE_ENABLE_INLINES

@@ -111,8 +111,8 @@ public:
 	int EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin);
 	int GetAutoStartRegisterStatus(void);
 
-	BOOL GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEvent);
-	BOOL SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& timeSysEvent);
+	BOOL GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent);
+	BOOL SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent);
 
 protected:
 	// Application message handlers

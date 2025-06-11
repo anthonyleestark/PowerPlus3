@@ -843,7 +843,7 @@ void CMultiScheduleDlg::UpdateDataItemList()
 
 		// Time setting
 		const wchar_t* formatString = GetLanguageString(ptrLanguage, GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT);
-		tempString = FormatDispTime(ptrLanguage, formatString, schItem.GetTime());
+		tempString = ClockTimeUtils::Format(ptrLanguage, formatString, schItem.GetTime());
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::TimeValue, tempString);
 
 		// Repeat

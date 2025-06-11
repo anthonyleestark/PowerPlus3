@@ -103,7 +103,7 @@ public:
 	BOOL CheckDataChangeState(void);
 	void EnableSaveButton(BOOL bEnable);
 	void EnableSubItems(BOOL bEnable);
-	void UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate = TRUE);
+	void UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate = TRUE);
 
 public:
 	// Get/set functions

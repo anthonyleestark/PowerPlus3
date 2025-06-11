@@ -135,7 +135,8 @@ enum LogDataType {
 	Boolean,							// Boolean number (TRUE/FALSE)
 	Text_ANSI,							// Text value (ANSI)
 	Text_Unicode,						// Text value (Unicode)
-	SystemTime,							// SYSTEMTIME struct
+	ClockTimeData,						// Clock-time data
+	DateTimeData,						// Date/time data
 };
 
 

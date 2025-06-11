@@ -121,7 +121,7 @@ private:
 	int m_nCheckCount;
 	int m_nCurSelIndex;
 	int m_nCurDispIndex;
-	SYSTEMTIME m_stDispTimeBak;
+	ClockTime m_stDispTimeBak;
 
 public:
 	// Generated message map functions
@@ -172,7 +172,7 @@ protected:
 	void UpdateCheckAllBtnState(BOOL bRecheck = FALSE);
 	void RefreshDetailView(int nMode);
 	void UpdateMsgCounter(int nCount);
-	void UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate = TRUE);
+	void UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate = TRUE);
 
 private:
 	// Data processing functions

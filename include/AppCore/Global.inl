@@ -26,10 +26,10 @@
 ///////////////////////////////////////////////////////
 
 // Access application launch-time data
-inline const SYSTEMTIME GetAppLaunchTime(void) {
+inline const DateTime& GetAppLaunchTime(void) {
 	return Global::g_stAppLaunchTime;
 }
-inline void SetAppLaunchTime(SYSTEMTIME stTime) {
+inline void SetAppLaunchTime(const DateTime& stTime) {
 	Global::g_stAppLaunchTime = stTime;
 }
 

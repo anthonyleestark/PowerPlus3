@@ -224,7 +224,7 @@ private:
 	void SetActionScheduleSnooze(const ScheduleItem& schItem, int nSnoozeFlag);
 	void UpdateActionScheduleQueue(int nMode);
 	BOOL GetActionScheduleSkipStatus(UINT nItemID);
-	BOOL GetActionScheduleSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
+	BOOL GetActionScheduleSnoozeStatus(UINT nItemID, const ClockTime& currentTime);
 
 	// HotkeySet feature functions
 	void SetupBackgroundHotkey(int nMode);
@@ -238,7 +238,8 @@ private:
 	void ReupdatePwrReminderData(void);
 	void SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSnoozeFlag);
 	void UpdatePwrReminderSnooze(int nMode);
-	BOOL GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime);
+	BOOL GetPwrReminderSnoozeStatus(UINT nItemID, const ClockTime& currentTime);
+	BOOL GetPwrReminderDispFlag(const PwrReminderItem& pwrItem);
 	void SetPwrReminderDispFlag(const PwrReminderItem& pwrItem, int nDispFlag);
 	size_t GetPwrReminderDispList(UIntArray& arrPwrDispList);
 

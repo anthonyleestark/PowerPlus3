@@ -134,7 +134,7 @@ class LogItem
 {
 private:
 	// Member variables
-	SYSTEMTIME		m_stTime;								// Log time
+	DateTime		m_stTime;								// Log time
 	DWORD			m_dwProcessID;							// Process ID
 	USHORT			m_usCategory;							// Log category
 	String			m_strLogString;							// Log description string
@@ -158,8 +158,8 @@ public:
 
 public:
 	// Get/set functions
-	SYSTEMTIME GetTime(void) const;							// Get log time
-	void SetTime(const SYSTEMTIME&);						// Set log time
+	DateTime GetTime(void) const;							// Get log time
+	void SetTime(const DateTime&);							// Set log time
 	DWORD GetProcessID(void) const;							// Get process ID
 	void SetProcessID(void);								// Set process ID
 	USHORT GetCategory(void) const;							// Get log category

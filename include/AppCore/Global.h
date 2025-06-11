@@ -42,13 +42,13 @@
 /*---------------------------------------------Launch-info data----------------------------------------------*/
 
 namespace Global {
-	extern SYSTEMTIME g_stAppLaunchTime;
+	extern DateTime g_stAppLaunchTime;
 	extern UINT	g_uiAppLaunchTimeCounter;
 };
 
 // Access application launch-time data
-static inline const SYSTEMTIME GetAppLaunchTime(void);
-static inline void SetAppLaunchTime(SYSTEMTIME stTime);
+static inline const DateTime& GetAppLaunchTime(void);
+static inline void SetAppLaunchTime(const DateTime& stTime);
 
 // Access application launch-time counter data
 static inline const UINT GetAppLaunchTimeCounter(void);

@@ -335,7 +335,7 @@ private:
 	UINT		 m_nItemID;											// Item ID
 	BOOL		 m_bEnabled;										// Enable/disable state
 	UINT		 m_nActionID;										// Schedule action ID
-	SYSTEMTIME	 m_stTime;											// Schedule time
+	ClockTime	 m_stTime;											// Schedule time
 	PwrRepeatSet m_rpsRepeatSet;									// Repeat set data
 
 public:
@@ -361,8 +361,8 @@ public:
 	void EnableItem(BOOL);											// Set item active state
 	UINT GetAction(void) const;										// Get item action ID
 	void SetAction(UINT);											// Set item action ID
-	SYSTEMTIME GetTime(void) const;									// Get schedule item time data
-	void SetTime(const SYSTEMTIME&);								// Set schedule item time data
+	ClockTime GetTime(void) const;									// Get schedule item time data
+	void SetTime(const ClockTime&);									// Set schedule item time data
 
 	// Get RepeatSet data
 	BOOL IsRepeatEnabled(void) const;								// Check if repeat is enabled
@@ -698,7 +698,7 @@ private:
 	UINT			m_nItemID;										// Item ID
 	String			m_strMessage;									// Message content
 	UINT			m_nEventID;										// Event ID
-	SYSTEMTIME		m_stTime;										// Event time
+	ClockTime		m_stTime;										// Event time
 	DWORD			m_dwMsgStyle;									// Reminder style
 	PwrRepeatSet	m_rpsRepeatSet;									// Repeat set data
 	BOOL			m_bUseCustomStyle;								// Use message custom style
@@ -734,8 +734,8 @@ public:
 	void SetMessage(const wchar_t*);								// Set item message content
 	UINT GetEventID(void) const;									// Get Power Reminder item event ID
 	void SetEventID(UINT);											// Set Power Reminder item event ID
-	SYSTEMTIME GetTime(void) const;									// Get Power Reminder item time data
-	void SetTime(const SYSTEMTIME&);								// Set Power Reminder item time data
+	ClockTime GetTime(void) const;									// Get Power Reminder item time data
+	void SetTime(const ClockTime&);									// Set Power Reminder item time data
 	DWORD GetMessageStyle(void) const;								// Get item message style ID
 	void SetMessageStyle(DWORD);									// Set item message style ID
 	BOOL IsCustomStyleEnabled(void) const;							// Check if item message custom style is enabled
@@ -849,7 +849,7 @@ private:
 	INT			m_nDisplayFlag;										// Item displaying flag
 	INT			m_nSkipFlag;										// Item skip flag
 	INT			m_nSnoozeFlag;										// Item snooze trigger flag
-	SYSTEMTIME	m_stNextSnoozeTime;									// Next snooze trigger time
+	ClockTime	m_stNextSnoozeTime;									// Next snooze trigger time
 
 public:
 	// Constructor
@@ -875,8 +875,8 @@ public:
 	void		SetSkipFlag(INT);									// Set item skip flag
 	INT			GetSnoozeFlag(void) const;							// Get item snooze trigger flag
 	void		SetSnoozeFlag(INT);									// Set item snooze trigger flag
-	SYSTEMTIME  GetTime(void) const;								// Get next snooze trigger time
-	void		SetTime(const SYSTEMTIME&);							// Set next snooze trigger time
+	ClockTime	GetTime(void) const;								// Get next snooze trigger time
+	void		SetTime(const ClockTime&);							// Set next snooze trigger time
 };
 
 // Define new typenames for runtime info item data
@@ -899,7 +899,7 @@ private:
 	// Attributes
 	BOOL		m_bInitState;										// Init state flag
 	UINT		m_nCategoryID;										// Category ID
-	SYSTEMTIME	m_stTimestamp;										// Timestamp of history
+	DateTime	m_stTimestamp;										// Timestamp of history
 	UINT		m_nItemID;											// Item ID
 	UINT		m_nActionID;										// Action ID
 	BOOL		m_bActionResult;									// Action result
@@ -924,8 +924,8 @@ public:
 	BOOL IsInit(void) const;										// Check if data is initialized
 	UINT GetCategoryID(void) const;									// Get category ID
 	void SetCategoryID(UINT);										// Set category ID
-	SYSTEMTIME GetTime(void) const;									// Get timestamp
-	void SetTime(const SYSTEMTIME&);								// Set timestamp
+	DateTime GetTime(void) const;									// Get timestamp
+	void SetTime(const DateTime&);									// Set timestamp
 	UINT GetItemID(void) const;										// Get item ID
 	void SetItemID(UINT);											// Set item ID
 	UINT GetActionID(void) const;									// Get action ID
@@ -962,8 +962,8 @@ public:
 
 private:
 	// Attributes
-	EventID		m_sysEventID;										// System event ID
-	SYSTEMTIME  m_timeStamp;										// Event timestamp
+	EventID	 m_sysEventID;											// System event ID
+	DateTime m_timeStamp;											// Event timestamp
 
 public:
 	// Construction
@@ -976,8 +976,8 @@ public:
 public:
 	// Get/set functions
 	EventID GetEventID(void) const;									// Get system event ID
-	SYSTEMTIME GetTimestamp(void) const;							// Get system event timestamp
-	void SetTimestamp(SYSTEMTIME);									// Set system event timestamp
+	DateTime GetTimestamp(void) const;								// Get system event timestamp
+	void SetTimestamp(DateTime);									// Set system event timestamp
 };
 
 // Define new typenames for Power System Event info data
@@ -1438,6 +1438,56 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 //
+//	Class name:		ClockTimeUtils
+//  Description:	Using for clock-time processing and validation
+//
+//////////////////////////////////////////////////////////////////////////
+
+class ClockTimeUtils
+{
+public:
+	// Get current clock-time from system
+	static ClockTime GetCurrentClockTime(void);
+
+	// Conversion
+	static ClockTime FromSystemTime(SYSTEMTIME sysTime);
+	static SYSTEMTIME ToSystemTime(const ClockTime& clockTime);
+
+	// Calculate time offset (increasing/descreasing) in seconds
+	static void CalculateOffset(ClockTime& clockTime, int offInSecs);
+
+	// Check time matching (in seconds)
+	static bool IsMatching(ClockTime thisTime, ClockTime otherTime, int offInSecs = 0);
+
+	// Format for displaying/printing
+	static String Format(LANGTABLE_PTR pLang, UINT nFormatID, const ClockTime& clockTime);
+	static String Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const ClockTime& clockTime);
+};
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Class name:		DateTimeUtils
+//  Description:	Using for date/time processing and validation
+//
+//////////////////////////////////////////////////////////////////////////
+
+class DateTimeUtils
+{
+public:
+	// Get current date/time from system
+	static DateTime GetCurrentDateTime(void);
+
+	// Conversion
+	static DateTime FromSystemTime(SYSTEMTIME sysTime);
+	static SYSTEMTIME ToSystemTime(const DateTime& dateTime);
+
+	// Format for displaying/printing
+	static String Format(LANGTABLE_PTR pLang, UINT nFormatID, const DateTime& dateTime);
+	static String Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const DateTime& dateTime);
+};
+
+//////////////////////////////////////////////////////////////////////////
+//
 //	Class name:		PerformanceCounter
 //  Description:	Using for querrying performance counter of functions
 //
@@ -1505,24 +1555,16 @@ namespace AppCore
 	UINT Sel2Opt(UINT nOptionMacro, UINT nSelection);
 	UINT Opt2Sel(UINT nOptionMacro, UINT nCurOption);
 
-	BOOL Text2Time(SYSTEMTIME& stTime, const wchar_t* text);
-	BOOL Text2TimeBase(SYSTEMTIME& stTime, const wchar_t* text);
-	void SpinPos2Time(SYSTEMTIME& stTime, int nPos);
-	void Time2SpinPos(SYSTEMTIME stTime, int& nPos);
+	BOOL Text2Time(ClockTime& clockTime, const wchar_t* text);
+	BOOL Text2TimeBase(ClockTime& clockTime, const wchar_t* text);
+	void SpinPos2Time(ClockTime& clockTime, int spinPos);
+	void Time2SpinPos(const ClockTime& clockTime, int& spinPos);
 
 	// Data/control/window processing functions
 	int	 GetListCurSel(CListCtrl& pListCtrl);
 	HWND FindDebugTestDlg(void);
 	void SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol);
 	void DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int nRowNum, int nColNum, GRIDCTRLCOLFORMAT* apGrdColFormat);
-
-	// Time data processing functions
-	SYSTEMTIME	GetCurSysTime(void);
-	void		GetCurSysTime(SYSTEMTIME& stTime);
-	void		CalcTimeOffset(SYSTEMTIME& stTime, int nOffset);
-	BOOL		CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffset = 0);
-	String		FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal);
-	String		FormatDispTime(LANGTABLE_PTR pLang, const wchar_t* formatString, SYSTEMTIME timeVal);
 
 	// Additional functions
 	UINT	GetWindowsOSVersion(void);

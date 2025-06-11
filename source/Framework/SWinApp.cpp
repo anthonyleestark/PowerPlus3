@@ -497,7 +497,7 @@ void SWinApp::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NUL
 	// Prepare event log info
 	LOGITEM logItemAppEvent;
 	logItemAppEvent.SetCategory(usEvent);
-	logItemAppEvent.SetTime(GetCurSysTime());
+	logItemAppEvent.SetTime(DateTimeUtils::GetCurrentDateTime());
 	logItemAppEvent.SetProcessID();
 	if (description) {
 		// Include event description

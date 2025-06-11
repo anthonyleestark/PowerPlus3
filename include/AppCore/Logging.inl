@@ -102,12 +102,12 @@ inline void LogDetailInfo::AddDetail(const LOGDETAIL& logDetail) {
 }
 
 // Get log time
-inline SYSTEMTIME LogItem::GetTime(void) const {
+inline DateTime LogItem::GetTime(void) const {
 	return m_stTime;
 };
 
 // Set log time
-inline void LogItem::SetTime(const SYSTEMTIME& stTime) {
+inline void LogItem::SetTime(const DateTime& stTime) {
 	m_stTime = stTime;
 };
 

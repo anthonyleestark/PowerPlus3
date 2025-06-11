@@ -1669,8 +1669,8 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 
 	// Save last session ending time
-	SYSTEMTIME stCurSysTime = GetCurSysTime();
-	pApp->SaveLastSysEventTime(SystemEventID::SessionEnded, stCurSysTime);
+	DateTime curSysDateTime = DateTimeUtils::GetCurrentDateTime();
+	pApp->SaveLastSysEventTime(SystemEventID::SessionEnded, curSysDateTime);
 
 	// Save action history if remaining unsaved
 	SaveHistoryInfoData();
@@ -3643,8 +3643,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 	BOOL bResult = FALSE;
 
 	// Get current time
-	SYSTEMTIME stCurrentTime;
-	GetLocalTime(&stCurrentTime);
+	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Flag that trigger to reupdate schedule data
 	BOOL bTriggerReupdate = FALSE;
@@ -3662,7 +3661,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 		}
 
 		// If repeat option is ON and is set as active in current day of week
-		if ((schDefaultItem.IsRepeatEnabled() == TRUE) && (!schDefaultItem.IsDayActive((DayOfWeek)stCurrentTime.wDayOfWeek))) {
+		if ((schDefaultItem.IsRepeatEnabled() == TRUE) && (!schDefaultItem.IsDayActive((DayOfWeek)currentDateTime.DayOfWeek()))) {
 			// Do not process
 			bSkipProcess = TRUE;
 		}
@@ -3672,7 +3671,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 
 			// Check for time matching and trigger schedule notifying if enabled
 			if (GetAppOption(AppOptionID::notifySchedule) == TRUE) {
-				BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, schDefaultItem.GetTime(), -30);
+				BOOL bTriggerNotify = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schDefaultItem.GetTime(), -30);
 				if (bTriggerNotify == TRUE) {
 					// Do notify schedule (and check for trigger reupdate)
 					NotifySchedule(&schDefaultItem, bTriggerReupdate);
@@ -3681,7 +3680,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 			}
 
 			// Check for time matching and trigger the scheduled action
-			BOOL bTriggerAction = CheckTimeMatch(stCurrentTime, schDefaultItem.GetTime());
+			BOOL bTriggerAction = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schDefaultItem.GetTime());
 			if (bTriggerAction == TRUE) {
 				
 				// Check if item is marked as skipped
@@ -3727,12 +3726,12 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 		ScheduleItem& schExtraItem = m_schScheduleData.GetItemAt(nExtraIndex);
 
 		// Do not process if repeat option is ON but is not set as active in current day of week
-		if ((schExtraItem.IsRepeatEnabled() == TRUE) && (!schExtraItem.IsDayActive((DayOfWeek)stCurrentTime.wDayOfWeek)))
+		if ((schExtraItem.IsRepeatEnabled() == TRUE) && (!schExtraItem.IsDayActive((DayOfWeek)currentDateTime.DayOfWeek())))
 			continue;
 
 		// Check for time matching and trigger schedule notifying if enabled
 		if (GetAppOption(AppOptionID::notifySchedule) == TRUE) {
-			BOOL bTriggerNotify = CheckTimeMatch(stCurrentTime, schExtraItem.GetTime(), -30);
+			BOOL bTriggerNotify = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schExtraItem.GetTime(), -30);
 			if (bTriggerNotify == TRUE) {
 				// Do notify schedule (and check for trigger reupdate)
 				NotifySchedule(&schExtraItem, bTriggerReupdate);
@@ -3742,7 +3741,7 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 		}
 
 		// Check for time matching and trigger the scheduled action
-		BOOL bTriggerAction = CheckTimeMatch(stCurrentTime, schExtraItem.GetTime());
+		BOOL bTriggerAction = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schExtraItem.GetTime());
 		if (bTriggerAction == TRUE) {
 
 			// Check if item is marked as skipped
@@ -3893,7 +3892,7 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const ScheduleItem& schItem, int nSn
 
 			if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_ON) {
 				// Calculate next snooze trigger time
-				pwrRuntimeItem.SetTime(GetCurSysTime());
+				pwrRuntimeItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
 				pwrRuntimeItem.CalcNextSnoozeTime(nInterval);
 			}
 			return;
@@ -3907,7 +3906,7 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const ScheduleItem& schItem, int nSn
 	pwrRuntimeItem.SetSnoozeFlag(nSnoozeFlag);
 	if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_ON) {
 		// Calculate next snooze trigger time
-		pwrRuntimeItem.SetTime(GetCurSysTime());
+		pwrRuntimeItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
 		pwrRuntimeItem.CalcNextSnoozeTime(nInterval);
 	}
 
@@ -4057,7 +4056,7 @@ BOOL CPowerPlusDlg::GetActionScheduleSkipStatus(UINT nItemID)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusDlg::GetActionScheduleSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime)
+BOOL CPowerPlusDlg::GetActionScheduleSnoozeStatus(UINT nItemID, const ClockTime& currentTime)
 {
 	// If runtime queue data is empty, do not trigger
 	if (m_arrRuntimeQueue.empty())
@@ -4080,7 +4079,7 @@ BOOL CPowerPlusDlg::GetActionScheduleSnoozeStatus(UINT nItemID, SYSTEMTIME& curS
 				return FALSE;
 
 			// Check for next snooze time matching
-			if (CheckTimeMatch(curSysTime, pwrRuntimeItem.GetTime()))
+			if (ClockTimeUtils::IsMatching(currentTime, pwrRuntimeItem.GetTime()))
 				return TRUE;
 
 			return FALSE;
@@ -4517,9 +4516,11 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 	}
 
 	// Get current time
-	SYSTEMTIME curSysTime{};
+	DateTime currentDateTime;
+	ClockTime currentClockTime;
 	if (nExecEventID == PwrReminderEvent::atSetTime) {
-		curSysTime = GetCurSysTime();
+		currentDateTime = DateTimeUtils::GetCurrentDateTime();
+		currentClockTime = currentDateTime.GetClockTime();
 	}
 
 	// Flag that trigger to reupdate Power Reminder data
@@ -4547,12 +4548,12 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 		{
 		case PwrReminderEvent::atSetTime:
 			// If item is set to repeat but not set active in current day of week
-			if ((pwrCurItem.IsRepeatEnabled() == TRUE) && (!pwrCurItem.IsDayActive((DayOfWeek)curSysTime.wDayOfWeek)))
+			if ((pwrCurItem.IsRepeatEnabled() == TRUE) && (!pwrCurItem.IsDayActive((DayOfWeek)currentDateTime.DayOfWeek())))
 				continue;
 
 			// If set time matching or snooze time is triggered
-			if ((CheckTimeMatch(curSysTime, pwrCurItem.GetTime())) ||
-				(GetPwrReminderSnoozeStatus(pwrCurItem.GetItemID(), curSysTime))) {
+			if ((ClockTimeUtils::IsMatching(currentClockTime, pwrCurItem.GetTime())) ||
+				(GetPwrReminderSnoozeStatus(pwrCurItem.GetItemID(), currentClockTime))) {
 				// Prepare to display
 				pwrDispItem.Copy(pwrCurItem);
 				SetPwrReminderSnooze(pwrCurItem, FLAG_OFF);
@@ -4586,7 +4587,7 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 		}
 
 		// Display reminder
-		if (!pwrDispItem.IsEmpty()) {
+		if (!pwrDispItem.IsEmpty() && !GetPwrReminderDispFlag(pwrDispItem)) {
 
 			// Display reminder item
 			DisplayPwrReminder(pwrDispItem);
@@ -4776,7 +4777,7 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSn
 
 			if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_ON) {
 				// Calculate next snooze trigger time
-				pwrRuntimeItem.SetTime(GetCurSysTime());
+				pwrRuntimeItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
 				pwrRuntimeItem.CalcNextSnoozeTime(nInterval);
 			}
 			return;
@@ -4790,7 +4791,7 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSn
 	pwrRuntimeItem.SetSnoozeFlag(nSnoozeFlag);
 	if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_ON) {
 		// Calculate next snooze trigger time
-		pwrRuntimeItem.SetTime(GetCurSysTime());
+		pwrRuntimeItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
 		pwrRuntimeItem.CalcNextSnoozeTime(nInterval);
 	}
 
@@ -4881,7 +4882,7 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysTime)
+BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, const ClockTime& currentTime)
 {
 	// If runtime queue data is empty, do not trigger
 	if (m_arrRuntimeQueue.empty())
@@ -4904,7 +4905,44 @@ BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, SYSTEMTIME& curSysT
 				return FALSE;
 			
 			// Check for next snooze time matching
-			if (CheckTimeMatch(curSysTime, pwrRuntimeItem.GetTime()))
+			if (ClockTimeUtils::IsMatching(currentTime, pwrRuntimeItem.GetTime()))
+				return TRUE;
+
+			return FALSE;
+		}
+	}
+
+	return FALSE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetPwrReminderDispFlag
+//	Description:	Get Power Reminder item runtime displaying flag
+//  Arguments:		pwrItem	- Power Reminder item
+//  Return value:	TRUE/FALSE
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL CPowerPlusDlg::GetPwrReminderDispFlag(const PwrReminderItem& pwrItem)
+{
+	// If item is empty, it can not be displayed
+	if (pwrItem.IsEmpty()) return FALSE;
+
+	// Find if item runtime data is already setup
+	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+
+		// Get runtime item from queue
+		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+
+		// Skip if it's not Power Reminder item
+		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
+
+		// If item ID is found
+		if (pwrRuntimeItem.GetItemID() == pwrItem.GetItemID()) {
+
+			// Get snooze enable flag
+			if (pwrRuntimeItem.GetDisplayFlag() == FLAG_ON)
 				return TRUE;
 
 			return FALSE;

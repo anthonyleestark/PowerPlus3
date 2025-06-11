@@ -372,7 +372,7 @@ ScheduleItem::ScheduleItem()
 	m_nItemID = ScheduleData::minItemID;				// Item ID
 	m_bEnabled = FALSE;									// Enable/disable status
 	m_nActionID = APP_ACTION_NOTHING;					// Schedule action ID
-	m_stTime = SYSTEMTIME_ZERO;							// Schedule time
+	m_stTime = ClockTime();								// Schedule time
 	m_rpsRepeatSet = PwrRepeatSet();					// Repeat set data
 }
 
@@ -382,7 +382,7 @@ ScheduleItem::ScheduleItem(UINT nItemID)
 	m_nItemID = nItemID;								// Item ID
 	m_bEnabled = FALSE;									// Enable/disable status
 	m_nActionID = APP_ACTION_NOTHING;					// Schedule action
-	m_stTime = SYSTEMTIME_ZERO;							// Schedule time
+	m_stTime = ClockTime();								// Schedule time
 	m_rpsRepeatSet = PwrRepeatSet();					// Repeat set data
 }
 
@@ -446,8 +446,8 @@ BOOL ScheduleItem::Compare(const ScheduleItem& pItem) const
 	// Compare item (do not compare item ID)
 	bRet &= (this->m_bEnabled == pItem.m_bEnabled);
 	bRet &= (this->m_nActionID == pItem.m_nActionID);
-	bRet &= (this->m_stTime.wHour == pItem.m_stTime.wHour);
-	bRet &= (this->m_stTime.wMinute == pItem.m_stTime.wMinute);
+	bRet &= (this->m_stTime.Hour() == pItem.m_stTime.Hour());
+	bRet &= (this->m_stTime.Minute() == pItem.m_stTime.Minute());
 	bRet &= (this->m_rpsRepeatSet.Compare(pItem.m_rpsRepeatSet));
 
 	return bRet;
@@ -494,7 +494,7 @@ void ScheduleItem::Print(String& outputString) const
 	const wchar_t* enableState = (m_bEnabled == TRUE) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
 	UINT nActionStringID = GetPairedID(IDTable::ActionName, m_nActionID);
 	const wchar_t* actionName = GetLanguageString(ptrLanguage, nActionStringID);												// Schedule action
-	const wchar_t* timeFormat = FormatDispTime(ptrLanguage, IDS_FORMAT_SHORTTIME, m_stTime).GetString();						// Schedule time
+	const wchar_t* timeFormat = ClockTimeUtils::Format(ptrLanguage, IDS_FORMAT_SHORTTIME, m_stTime).GetString();				// Schedule time
 	const wchar_t* repeatState = (m_rpsRepeatSet.IsRepeatEnabled() == TRUE) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
 
 	// Print item
@@ -638,7 +638,7 @@ DWORD ScheduleData::Add(const ScheduleItem& pItem)
 			// All data is duplicated
 			return Error::ItemDuplicated;
 		}
-		else if (AppCore::CheckTimeMatch(pItemTemp.GetTime(), pItem.GetTime())) {
+		else if (ClockTimeUtils::IsMatching(pItemTemp.GetTime(), pItem.GetTime())) {
 			// Time value is duplicated
 			// Can not execute multiple action at the same time
 			return Error::TimeDuplicated;
@@ -1494,7 +1494,7 @@ PwrReminderItem::PwrReminderItem()
 	m_nItemID = PwrReminderData::minItemID;					// Item ID
 	m_strMessage = Constant::String::Empty;					// Message content
 	m_nEventID = Event::atSetTime;							// Event ID
-	m_stTime = SYSTEMTIME_ZERO;								// Event time
+	m_stTime = ClockTime();									// Event time
 	m_dwMsgStyle = Style::messageBox;						// Reminder style
 	m_rpsRepeatSet = PwrRepeatSet();						// Repeat set
 	m_bUseCustomStyle = FALSE;								// Use message custom style
@@ -1583,8 +1583,8 @@ BOOL PwrReminderItem::Compare(const PwrReminderItem& pItem) const
 	// Compare item (do not compare item ID)
 	bRet &= (this->m_strMessage == pItem.m_strMessage);
 	bRet &= (this->m_nEventID == pItem.m_nEventID);
-	bRet &= (this->m_stTime.wHour == pItem.m_stTime.wHour);
-	bRet &= (this->m_stTime.wMinute == pItem.m_stTime.wMinute);
+	bRet &= (this->m_stTime.Hour() == pItem.m_stTime.Hour());
+	bRet &= (this->m_stTime.Minute() == pItem.m_stTime.Minute());
 	bRet &= (this->m_dwMsgStyle == pItem.m_dwMsgStyle);
 	bRet &= (this->m_rpsRepeatSet.Compare(pItem.m_rpsRepeatSet));
 	bRet &= (this->m_bUseCustomStyle == pItem.m_bUseCustomStyle);
@@ -1653,7 +1653,7 @@ void PwrReminderItem::Print(String& outputString) const
 	if (m_nEventID == Event::atSetTime) {
 		// Format time string
 		String formatString = eventStr;
-		eventStr = FormatDispTime(ptrLanguage, formatString, m_stTime);
+		eventStr = ClockTimeUtils::Format(ptrLanguage, formatString, m_stTime);
 	}
 	nTemp = GetPairedID(IDTable::PwrReminderStyle, m_dwMsgStyle);
 	const wchar_t* styleStr = GetLanguageString(ptrLanguage, nTemp);
@@ -2013,7 +2013,7 @@ PwrRuntimeItem::PwrRuntimeItem()
 	m_nDisplayFlag = FLAG_OFF;								// Item displaying flag
 	m_nSkipFlag = FLAG_OFF;									// Item skip flag
 	m_nSnoozeFlag = FLAG_OFF;								// Item snooze trigger flag
-	m_stNextSnoozeTime = SYSTEMTIME_ZERO;					// Next snooze trigger time
+	m_stNextSnoozeTime = ClockTime();						// Next snooze trigger time
 }
 
 PwrRuntimeItem::PwrRuntimeItem(const PwrRuntimeItem& pItem)
@@ -2073,7 +2073,7 @@ HistoryInfoData::HistoryInfoData()
 	// Init data
 	m_bInitState = FALSE;									// Init state
 	m_nCategoryID = INT_NULL;								// Category ID
-	m_stTimestamp = SYSTEMTIME_ZERO;						// Timestamp of history
+	m_stTimestamp = DateTime();								// Timestamp of history
 	m_nItemID = INT_NULL;									// Item ID
 	m_nActionID = INT_NULL;									// History action ID
 	m_bActionResult = FALSE;								// Action result
@@ -2143,7 +2143,7 @@ void HistoryInfoData::Init(UINT nCategoryID)
 	RemoveAll();
 	m_bInitState = TRUE;									// Init state
 	m_nCategoryID = nCategoryID;							// Category ID
-	m_stTimestamp = AppCore::GetCurSysTime();				// Timestamp of history
+	m_stTimestamp = DateTimeUtils::GetCurrentDateTime();	// Timestamp of history
 	m_dwErrorCode = INT_NULL;								// Returned error code
 	m_strDescription = Constant::String::Empty;				// History description (attached info)
 }
@@ -2159,7 +2159,7 @@ SystemEvent::SystemEvent(EventID eventID)
 {
 	// Initialize
 	m_sysEventID = eventID;									// System event ID
-	m_timeStamp = SYSTEMTIME_ZERO;							// Event timestamp
+	m_timeStamp = DateTime();								// Event timestamp
 }
 
 SystemEvent::SystemEvent(const SystemEvent& pItem)
@@ -3280,6 +3280,249 @@ int StringUtils::PrintCharList(const wchar_t* srcStr, String& outputStr)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	GetCurrentClockTime
+//	Description:	Get current local clock-time (including milliseconds)
+//  Arguments:		None
+//  Return value:	ClockTime - Return clock-time data
+//
+//////////////////////////////////////////////////////////////////////////
+
+ClockTime ClockTimeUtils::GetCurrentClockTime(void)
+{
+	SYSTEMTIME _tempSysTime{};
+	::GetLocalTime(&_tempSysTime);
+
+	return FromSystemTime(_tempSysTime);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	FromSystemTime
+//	Description:	Convert Windows-based SYSTEMTIME to ClockTime data
+//  Arguments:		sysTime - Windows-based SYSTEMTIME data
+//  Return value:	ClockTime - Return clock-time data
+//
+//////////////////////////////////////////////////////////////////////////
+
+ClockTime ClockTimeUtils::FromSystemTime(SYSTEMTIME sysTime)
+{
+	int hour = static_cast<int>(sysTime.wHour);
+	int minute = static_cast<int>(sysTime.wMinute);
+	int second = static_cast<int>(sysTime.wSecond);
+	int millisecs = static_cast<int>(sysTime.wMilliseconds);
+
+	return ClockTime(hour, minute, second, millisecs);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	ToSystemTime
+//	Description:	Convert ClockTime data to Windows-based SYSTEMTIME data
+//  Arguments:		clockTime - Clock-time data
+//  Return value:	SYSTEMTIME - Return Windows-based SYSTEMTIME data
+//
+//////////////////////////////////////////////////////////////////////////
+
+SYSTEMTIME ClockTimeUtils::ToSystemTime(const ClockTime& clockTime)
+{
+	SYSTEMTIME _sysTime{};
+	_sysTime.wHour = static_cast<unsigned short>(clockTime.Hour());
+	_sysTime.wMinute = static_cast<unsigned short>(clockTime.Minute());
+	_sysTime.wSecond = static_cast<unsigned short>(clockTime.Second());
+	_sysTime.wMilliseconds = static_cast<unsigned short>(clockTime.Millisecond());
+
+	return _sysTime;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	CalculateOffset
+//	Description:	Calculate time with given offset in seconds
+//  Arguments:		clockTime - Clock-time data (in/out)
+//					offInSecs - Offset value (in seconds)
+//  Return value:	None
+//  Notes:			Positive 'offInSecs' value means increasing
+//					Negative 'offInSecs' value means decreasing
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ClockTimeUtils::CalculateOffset(ClockTime& clockTime, int offInSecs)
+{
+	if (offInSecs < 0)
+		clockTime.DecreaseSeconds(abs(offInSecs));
+	else
+		clockTime.IncreaseSeconds(offInSecs);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	IsMatching
+//	Description:	Clock-time comparison with allowable offset in seconds
+//  Arguments:		thisTime  - This clock-time data
+//					otherTime - The other clock-time data to compare
+//					offInSecs - Offset value (in seconds, 0 by default)
+//  Return value:	TRUE/FALSE - Clock-time values are matching or
+//								 different within the allowable offset
+//
+//////////////////////////////////////////////////////////////////////////
+
+bool ClockTimeUtils::IsMatching(ClockTime thisTime, ClockTime otherTime, int offInSecs /* = 0 */)
+{
+	TimeSpan _diff = thisTime - otherTime;
+	int _diffInSecs = static_cast<int>(_diff.TotalSeconds());
+	if (offInSecs == 0)
+		return (_diffInSecs == 0);
+	else if (offInSecs > 0)
+		return (_diffInSecs >= 0 && _diffInSecs <= offInSecs);
+	else /* if (offInSecs < 0) */
+		return (_diffInSecs >= offInSecs && _diffInSecs <= 0);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Format
+//	Description:	Format clock-time value for displaying or printing
+//  Arguments:		pLang	  - Language table pointer
+//					nFormatID - Format string ID
+//					clockTime - Given clock-time data
+//  Return value:	String - Format clock-time string
+//
+//////////////////////////////////////////////////////////////////////////
+
+String ClockTimeUtils::Format(LANGTABLE_PTR pLang, UINT nFormatID, const ClockTime& clockTime)
+{
+	// Load format string
+	String formatString = StringUtils::LoadResourceString(nFormatID);
+	return Format(pLang, formatString, clockTime);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Format
+//	Description:	Format clock-time value for displaying or printing
+//  Arguments:		pLang		 - Language table pointer
+//					formatString - Format string
+//					clockTime	 - Given clock-time data
+//  Return value:	String - Format clock-time string
+//
+//////////////////////////////////////////////////////////////////////////
+
+String ClockTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const ClockTime& clockTime)
+{
+	// Format time string
+	UINT nTimePeriod = (clockTime.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	const wchar_t* timePeriodFormat = Language::GetLanguageString(pLang, nTimePeriod);
+	int hourVal = (clockTime.Hour() > 12) ? (clockTime.Hour() - 12) : clockTime.Hour();
+	int minuteVal = clockTime.Minute();
+
+	return StringUtils::StringFormat(formatString, hourVal, minuteVal, timePeriodFormat);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	GetCurrentDateTime
+//	Description:	Get current local date/time (including milliseconds)
+//  Arguments:		None
+//  Return value:	DateTime - Return date/time data
+//
+//////////////////////////////////////////////////////////////////////////
+
+DateTime DateTimeUtils::GetCurrentDateTime(void)
+{
+	SYSTEMTIME _tempSysTime{};
+	::GetLocalTime(&_tempSysTime);
+
+	return FromSystemTime(_tempSysTime);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	FromSystemTime
+//	Description:	Convert Windows-based SYSTEMTIME to DateTime data
+//  Arguments:		sysTime - Windows-based SYSTEMTIME data
+//  Return value:	DateTime - Return date/time data
+//
+//////////////////////////////////////////////////////////////////////////
+
+DateTime DateTimeUtils::FromSystemTime(SYSTEMTIME sysTime)
+{
+	int year = static_cast<int>(sysTime.wYear);
+	unsigned int month = static_cast<unsigned int>(sysTime.wMonth);
+	unsigned int day = static_cast<unsigned int>(sysTime.wDay);
+	int hour = static_cast<int>(sysTime.wHour);
+	int minute = static_cast<int>(sysTime.wMinute);
+	int second = static_cast<int>(sysTime.wSecond);
+	int millisecs = static_cast<int>(sysTime.wMilliseconds);
+
+	return DateTime(year, month, day, hour, minute, second, millisecs);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	ToSystemTime
+//	Description:	Convert DateTime data to Windows-based SYSTEMTIME data
+//  Arguments:		dateTime - Date/time data
+//  Return value:	SYSTEMTIME - Return Windows-based SYSTEMTIME data
+//
+//////////////////////////////////////////////////////////////////////////
+
+SYSTEMTIME DateTimeUtils::ToSystemTime(const DateTime& dateTime)
+{
+	SYSTEMTIME _sysTime;
+	_sysTime.wYear = static_cast<unsigned short>(dateTime.Year());
+	_sysTime.wMonth = static_cast<unsigned short>(dateTime.Month());
+	_sysTime.wDay = static_cast<unsigned short>(dateTime.Day());
+	_sysTime.wDayOfWeek = static_cast<unsigned short>(dateTime.DayOfWeek());
+	_sysTime.wHour = static_cast<unsigned short>(dateTime.Hour());
+	_sysTime.wMinute = static_cast<unsigned short>(dateTime.Minute());
+	_sysTime.wSecond = static_cast<unsigned short>(dateTime.Second());
+	_sysTime.wMilliseconds = static_cast<unsigned short>(dateTime.Millisecond());
+
+	return _sysTime;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Format
+//	Description:	Format date/time value for displaying or printing
+//  Arguments:		pLang	  - Language table pointer
+//					nFormatID - Format string ID
+//					dateTime  - Given date/time data
+//  Return value:	String - Format date/time string
+//
+//////////////////////////////////////////////////////////////////////////
+
+String DateTimeUtils::Format(LANGTABLE_PTR pLang, UINT nFormatID, const DateTime& dateTime)
+{
+	// Load format string
+	String formatString = StringUtils::LoadResourceString(nFormatID);
+	return Format(pLang, formatString, dateTime);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Format
+//	Description:	Format date/time value for displaying or printing
+//  Arguments:		pLang		 - Language table pointer
+//					formatString - Format string
+//					dateTime	 - Given date/time data
+//  Return value:	String - Format time string
+//
+//////////////////////////////////////////////////////////////////////////
+
+String DateTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const DateTime& dateTime)
+{
+	// Format time string
+	UINT nTimePeriod = (dateTime.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	const wchar_t* timePeriodFormat = Language::GetLanguageString(pLang, nTimePeriod);
+	int hourVal = (dateTime.Hour() > 12) ? (dateTime.Hour() - 12) : dateTime.Hour();
+	int minuteVal = dateTime.Minute();
+
+	return StringUtils::StringFormat(formatString, hourVal, minuteVal, timePeriodFormat);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	PerformanceCounter
 //	Description:	Constructor
 //
@@ -3589,7 +3832,7 @@ BOOL AppCore::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCo
 BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
 	// Get action execution time
-	SYSTEMTIME sysExecTime = GetCurSysTime();
+	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Get action name
 	String actionInfoString;
@@ -3645,16 +3888,10 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 
 	// Time format
 	String timeFormatStr;
-	const wchar_t* timePeriod = (sysExecTime.wHour < 12) ? Constant::Symbol::AnteMeridiem : Constant::Symbol::PostMeridiem;
+	const wchar_t* timePeriod = (currentDateTime.Hour() < 12) ? Constant::Symbol::AnteMeridiem : Constant::Symbol::PostMeridiem;
 	String templateFormatStr = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	timeFormatStr.Format(templateFormatStr, sysExecTime.wYear,
-											sysExecTime.wMonth,
-											sysExecTime.wDay,
-											sysExecTime.wHour,
-											sysExecTime.wMinute,
-											sysExecTime.wSecond,
-											sysExecTime.wMilliseconds,
-											timePeriod);
+	timeFormatStr.Format(templateFormatStr, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
+						currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), timePeriod);
 
 	// Message format
 	String messageFormatStr;
@@ -4216,14 +4453,13 @@ BOOL AppCore::BackupOldLogFile(String& filePath, const wchar_t* logFileName)
 void AppCore::WriteTraceErrorLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	SYSTEMTIME stTime;
-	GetLocalTime(&stTime);
+	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
 	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, stTime.wYear, stTime.wMonth, stTime.wDay,
-		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
+	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
+		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
 
 	// Format output log string
 	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
@@ -4288,14 +4524,13 @@ void AppCore::WriteTraceErrorLogFile(const wchar_t* logStringW)
 void AppCore::WriteTraceDebugLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	SYSTEMTIME stTime;
-	GetLocalTime(&stTime);
+	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
 	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, stTime.wYear, stTime.wMonth, stTime.wDay,
-		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
+	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
+		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
 
 	// Format output log string
 	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
@@ -4359,14 +4594,13 @@ void AppCore::WriteTraceDebugLogFile(const wchar_t* logStringW)
 void AppCore::WriteDebugInfoLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	SYSTEMTIME stTime;
-	GetLocalTime(&stTime);
+	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
 	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, stTime.wYear, stTime.wMonth, stTime.wDay,
-		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
+	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
+		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
 
 	// Format output log string
 	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
@@ -4473,14 +4707,13 @@ void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t
 	}
 
 	// Get current time up to milisecs
-	SYSTEMTIME stTime;
-	GetLocalTime(&stTime);
+	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (stTime.wHour >= 12) ? _T("PM") : _T("AM");
+	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
 	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, stTime.wYear, stTime.wMonth, stTime.wDay,
-		stTime.wHour, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, middayFlag);
+	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
+		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
 
 	// Format output log string
 	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
@@ -4628,7 +4861,7 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErro
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::Text2Time(SYSTEMTIME& stTime, const wchar_t* text)
+BOOL AppCore::Text2Time(ClockTime& clockTime, const wchar_t* text)
 {
 	// Check input text validity
 	int nLength = wcslen(text);
@@ -4699,8 +4932,8 @@ BOOL AppCore::Text2Time(SYSTEMTIME& stTime, const wchar_t* text)
 
 	// Only return if both the hour and minute values are valid
 	if ((nHour > INT_INVALID) && (nMinute > INT_INVALID)) {
-		stTime.wHour = nHour;
-		stTime.wMinute = nMinute;
+		clockTime.SetHour(nHour);
+		clockTime.SetMinute(nMinute);
 	}
 
 	return TRUE;
@@ -4717,7 +4950,7 @@ BOOL AppCore::Text2Time(SYSTEMTIME& stTime, const wchar_t* text)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, const wchar_t* text)
+BOOL AppCore::Text2TimeBase(ClockTime& clockTime, const wchar_t* text)
 {
 	// Check input text validity
 	int nLength = wcslen(text);
@@ -4774,8 +5007,8 @@ BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, const wchar_t* text)
 		return FALSE;
 
 	if ((nHour > -1) && (nMinute > -1)) {
-		stTime.wHour = nHour;
-		stTime.wMinute = nMinute;
+		clockTime.SetHour(nHour);
+		clockTime.SetMinute(nMinute);
 	}
 
 	return TRUE;
@@ -4791,7 +5024,7 @@ BOOL AppCore::Text2TimeBase(SYSTEMTIME& stTime, const wchar_t* text)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::SpinPos2Time(SYSTEMTIME& stTime, int nPos)
+void AppCore::SpinPos2Time(ClockTime& clockTime, int nPos)
 {
 	// Invalid input position
 	if (nPos < Constant::Min::TimeSpin)
@@ -4805,8 +5038,8 @@ void AppCore::SpinPos2Time(SYSTEMTIME& stTime, int nPos)
 
 	// Validate
 	if ((nHour != INT_INVALID) && (nMinute != INT_INVALID)) {
-		stTime.wHour = (WORD)nHour;
-		stTime.wMinute = (WORD)nMinute;
+		clockTime.SetHour(nHour);
+		clockTime.SetMinute(nMinute);
 	}
 }
 
@@ -4820,10 +5053,10 @@ void AppCore::SpinPos2Time(SYSTEMTIME& stTime, int nPos)
 //
 //////////////////////////////////////////////////////////////////////////
 
-void AppCore::Time2SpinPos(SYSTEMTIME stTime, int& nPos)
+void AppCore::Time2SpinPos(const ClockTime& clockTime, int& nPos)
 {
 	// Convert
-	nPos = (stTime.wHour * 60) + stTime.wMinute;
+	nPos = (clockTime.Hour() * 60) + clockTime.Minute();
 
 	// Invalid result
 	if (nPos < Constant::Min::TimeSpin)
@@ -4965,137 +5198,6 @@ void AppCore::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int /*nRowNum*/, 
 			}
 		}
 	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCurSysTime
-//	Description:	Get current time with milliseconds and return SYSTEMTIME
-//  Arguments:		stTime - Current system time (out)
-//  Return value:	SYSTEMTIME - Return time data
-//
-//////////////////////////////////////////////////////////////////////////
-
-SYSTEMTIME AppCore::GetCurSysTime(void)
-{
-	// Get system time
-	SYSTEMTIME tsSysTimeTemp;
-	GetSystemTime(&tsSysTimeTemp);
-	
-	// Backup the millisecond value
-	WORD wMillisecs = tsSysTimeTemp.wMilliseconds;
-	
-	// Get current time
-	CTime timeTemp = CTime::GetCurrentTime();
-	timeTemp.GetAsSystemTime(tsSysTimeTemp);
-
-	// Restore the millisecond value
-	tsSysTimeTemp.wMilliseconds = wMillisecs;
-
-	return tsSysTimeTemp;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CalcTimeOffset
-//	Description:	Calculate time with specific offset by second
-//  Arguments:		stTime  - Return time data (ref-value)
-//					nOffset - Offset second number
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void AppCore::CalcTimeOffset(SYSTEMTIME& stTime, int nOffset)
-{
-	// Convert to seconds and calculate offset
-	UINT nTotalSecs = TIME_TO_SECONDS(stTime);
-	nTotalSecs += nOffset;
-
-	// Revert back to time data
-	stTime.wHour = GET_HOUR(nTotalSecs);
-	stTime.wMinute = GET_MINUTE(nTotalSecs);
-	stTime.wSecond = GET_SECOND(nTotalSecs);
-
-	// Re-correct time data
-	if (stTime.wHour >= 24) {
-		// Decrease by 24-hour (next day)
-		stTime.wHour -= 24;
-	}
-	else if (stTime.wHour < 0) {
-		// Increase by 24-hour (previous day)
-		stTime.wHour += 24;
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckTimeMatch
-//	Description:	Compare two time-structs and check if matching
-//  Arguments:		timeDest - Destination time data
-//					timePar	 - Comparison time data
-//					nOffset	 - Offset second number (0 by default)
-//  Return value:	BOOL - Result of comparison process (match or not)
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::CheckTimeMatch(SYSTEMTIME timeDest, SYSTEMTIME timePar, int nOffset /* = 0 */)
-{
-	// Second is 0
-	timePar.wSecond = 0;
-
-	// Time offset is not 0
-	if (nOffset != 0) {
-		// Calculate time offset
-		CalcTimeOffset(timePar, nOffset);
-	}
-
-	// Compare each part value
-	BOOL bRet = (timeDest.wHour == timePar.wHour);
-	bRet &= (timeDest.wMinute == timePar.wMinute);
-	bRet &= (timeDest.wSecond == timePar.wSecond);
-
-	return bRet;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FormatDispTime
-//	Description:	Format time value for displaying
-//  Arguments:		pLang	  - Language table pointer
-//					nFormatID - Format string
-//					timeVal	  - Given time value
-//  Return value:	String	- Format time string
-//
-//////////////////////////////////////////////////////////////////////////
-
-String	AppCore::FormatDispTime(LANGTABLE_PTR pLang, UINT nFormatID, SYSTEMTIME timeVal)
-{
-	// Load format string
-	String formatString = StringUtils::LoadResourceString(nFormatID);
-	return FormatDispTime(pLang, formatString, timeVal);
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FormatDispTime
-//	Description:	Format time value for displaying
-//  Arguments:		pLang			 - Language table pointer
-//					lpszFormatString - Format string
-//					timeVal			 - Given time value
-//  Return value:	String	- Format time string
-//
-//////////////////////////////////////////////////////////////////////////
-
-String	AppCore::FormatDispTime(LANGTABLE_PTR pLang, const wchar_t* formatString, SYSTEMTIME timeVal)
-{
-	// Format time string
-	UINT nTimePeriod = (timeVal.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	const wchar_t* timePeriodFormat = Language::GetLanguageString(pLang, nTimePeriod);
-	WORD wHour = (timeVal.wHour > 12) ? (timeVal.wHour - 12) : timeVal.wHour;
-	WORD wMinute = timeVal.wMinute;
-
-	String resultString = StringUtils::StringFormat(formatString, wHour, wMinute, timePeriodFormat);
-	return resultString;
 }
 
 /////////////////////////////////////////////////////////////////////////////

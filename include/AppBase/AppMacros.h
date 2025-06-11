@@ -439,10 +439,10 @@
 // Time value processing expressions
 //
 
-#define FORMAT_REG_TIME(systime)						(INT((systime.wHour * 100) + systime.wMinute))
+#define FORMAT_REG_TIME(clocktime)						(INT((clocktime.Hour() * 100) + clocktime.Minute()))
 #define GET_REGTIME_HOUR(reg_time)						(WORD(reg_time / 100))
 #define GET_REGTIME_MINUTE(reg_time)					(WORD(reg_time % 100))
-#define TIME_TO_SECONDS(time)							(INT((time.wHour * 3600) + (time.wMinute * 60) + time.wSecond))
+#define TIME_TO_SECONDS(clocktime)						(INT((clocktime.Hour() * 3600) + (clocktime.Minute() * 60) + clocktime.Second()))
 #define GET_HOUR(totalSecs)								(WORD(totalSecs / 3600))
 #define GET_MINUTE(totalSecs)							(WORD((totalSecs % 3600) / 60))
 #define GET_SECOND(totalSecs)							(WORD((totalSecs % 3600) % 60))

@@ -1371,7 +1371,7 @@ void SDialog::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NUL
 	// Prepare event log info
 	LOGITEM logItemDialogEvent;
 	logItemDialogEvent.SetCategory(usEvent);
-	logItemDialogEvent.SetTime(GetCurSysTime());
+	logItemDialogEvent.SetTime(DateTimeUtils::GetCurrentDateTime());
 	logItemDialogEvent.SetProcessID();
 	if (description) {
 		// Include event description

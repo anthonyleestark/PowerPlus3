@@ -75,8 +75,12 @@ SIZE_T GetSizeByType(BYTE byDataType)
 		retSize = sizeof(BOOL);
 		break;
 
-	case LogDataType::SystemTime:		// SYSTEMTIME struct
-		retSize = sizeof(SYSTEMTIME);
+	case LogDataType::ClockTimeData:	// Clock-time data
+		retSize = sizeof(ClockTime);
+		break;
+
+	case LogDataType::DateTimeData:		// Date/time data
+		retSize = sizeof(DateTime);
 		break;
 
 	default:
@@ -422,7 +426,7 @@ void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, const wchar_t*
 LogItem::LogItem()
 {
 	// Initialization
-	m_stTime = SYSTEMTIME_ZERO;								// Log time
+	m_stTime = DateTime();									// Log time
 	m_dwProcessID = INT_NULL;								// Process ID
 	m_usCategory = LOG_MACRO_NONE;							// Log category
 	m_strLogString = Constant::String::Empty;							// Log string
@@ -484,8 +488,7 @@ BOOL LogItem::Compare(const LogItem& pItem) const
 	BOOL bRet = FALSE;
 
 	// Compare item
-	bRet &= (m_stTime.wHour == pItem.m_stTime.wHour);
-	bRet &= (m_stTime.wMinute == pItem.m_stTime.wMinute);
+	bRet &= (m_stTime == pItem.m_stTime);
 	bRet &= (m_dwProcessID == pItem.m_dwProcessID);
 	bRet &= (m_usCategory == pItem.m_usCategory);
 	bRet &= (m_strLogString == pItem.m_strLogString);
@@ -538,7 +541,7 @@ BOOL LogItem::IsEmpty(void) const
 void LogItem::RemoveAll(void)
 {
 	// Reset data
-	m_stTime = SYSTEMTIME_ZERO;									// Log time
+	m_stTime = DateTime();										// Log time
 	m_dwProcessID = INT_NULL;									// Process ID
 	m_usCategory = LOG_MACRO_NONE;								// Log category
 	m_strLogString = Constant::String::Empty;					// Log string
@@ -558,10 +561,10 @@ void LogItem::RemoveAll(void)
 
 String LogItem::FormatDateTime(void) const
 {
-	const wchar_t* middayFlag = (m_stTime.wHour >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
+	const wchar_t* middayFlag = (m_stTime.Hour() >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
 	String templateFormatStr = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormatStr, m_stTime.wYear, m_stTime.wMonth, m_stTime.wDay,
-		m_stTime.wHour, m_stTime.wMinute, m_stTime.wSecond, m_stTime.wMilliseconds, middayFlag);
+	String timeFormatString = StringUtils::StringFormat(templateFormatStr, m_stTime.Year(), m_stTime.Month(), m_stTime.Day(),
+		m_stTime.Hour(), m_stTime.Minute(), m_stTime.Second(), m_stTime.Millisecond(), middayFlag);
 
 	return timeFormatString;
 }
@@ -1402,8 +1405,7 @@ void SLogging::OutputString(const wchar_t* logString, BOOL bUseLastTemplate /* =
 	}
 	else {
 		// Get log time
-		SYSTEMTIME stLogTime;
-		stLogTime = GetCurSysTime();
+		DateTime stLogTime = DateTimeUtils::GetCurrentDateTime();
 
 		// Prepare log item
 		LOGITEM logItem;
@@ -1468,7 +1470,7 @@ BOOL SLogging::Write(void)
 	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
 
 	LOGITEM logItem;
-	SYSTEMTIME stTemp;
+	DateTime stTemp;
 	String logFormatString;
 	String filePath;
 
@@ -1487,7 +1489,7 @@ BOOL SLogging::Write(void)
 		{
 		case LOGTYPE_APP_EVENT:
 			// Format app event log filename
-			fileName.Format(FILENAME_APPEVENT_LOG, stTemp.wYear, stTemp.wMonth);
+			fileName.Format(FILENAME_APPEVENT_LOG, stTemp.Year(), stTemp.Month());
 			filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
 			if (currentFileName.IsEmpty()) {
 				// Set current file name
@@ -1601,15 +1603,14 @@ BOOL SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	String logFormatString;
 
 	// Get log time
-	SYSTEMTIME stTimeTemp;
-	stTimeTemp = logItem.GetTime();
+	DateTime stTimeTemp = logItem.GetTime();
 
 	// Get filename according to type of logs
 	switch (m_byLogType)
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		fileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.wYear, stTimeTemp.wMonth);
+		fileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.Year(), stTimeTemp.Month());
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
@@ -1697,15 +1698,14 @@ BOOL SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	String logFormatString;
 
 	// Get log time
-	SYSTEMTIME stCurTime;
-	GetLocalTime(&stCurTime);
+	DateTime stCurTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Get filename according to type of logs
 	switch (m_byLogType)
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		fileName.Format(FILENAME_APPEVENT_LOG, stCurTime.wYear, stCurTime.wMonth);
+		fileName.Format(FILENAME_APPEVENT_LOG, stCurTime.Year(), stCurTime.Month());
 		break;
 
 	case LOGTYPE_HISTORY_LOG:

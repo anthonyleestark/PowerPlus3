@@ -96,7 +96,7 @@ CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
 	m_nCheckCount = 0;
 	m_nCurSelIndex = -1;
 	m_nCurDispIndex = -2;
-	m_stDispTimeBak = SYSTEMTIME_ZERO;
+	m_stDispTimeBak = ClockTime();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -939,15 +939,15 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	m_pEvtSetTimeEdit->GetWindowText(tempBuff.data(), buffLength + 1);
 	String timeTextValue = tempBuff.data();
 
-	SYSTEMTIME stTimeTemp;
-	BOOL bRet = Text2Time(stTimeTemp, timeTextValue);
-	if (bRet != FALSE) {
+	ClockTime clockTime;
+	if (Text2Time(clockTime, timeTextValue)) {
+
 		// Update new time value
-		UpdateTimeSetting(stTimeTemp, FALSE);
+		UpdateTimeSetting(clockTime, FALSE);
 
 		// Update timespin new position
 		int nSpinPos;
-		Time2SpinPos(stTimeTemp, nSpinPos);
+		Time2SpinPos(clockTime, nSpinPos);
 		if (m_pEvtSetTimeSpin != NULL) {
 			m_pEvtSetTimeSpin->SetPos(nSpinPos);
 		}
@@ -980,11 +980,11 @@ void CPwrReminderDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	int nPos = pNMUpDown->iPos;
 
 	// Convert to time value
-	SYSTEMTIME stTimeTemp;
-	SpinPos2Time(stTimeTemp, nPos);
+	ClockTime clockTime;
+	SpinPos2Time(clockTime, nPos);
 
 	// Update time edit value
-	UpdateTimeSetting(stTimeTemp, FALSE);
+	UpdateTimeSetting(clockTime, FALSE);
 
 	*pResult = NULL;
 
@@ -1873,9 +1873,9 @@ void CPwrReminderDlg::SetupDialogItemState()
 	}
 
 	// Setup time editbox
-	SYSTEMTIME stTimeTemp;
-	SpinPos2Time(stTimeTemp, 0);
-	UpdateTimeSetting(stTimeTemp, FALSE);
+	ClockTime clockTime;
+	SpinPos2Time(clockTime, 0);
+	UpdateTimeSetting(clockTime, FALSE);
 
 	// Initialize counter display
 	UpdateMsgCounter(0);
@@ -1942,7 +1942,7 @@ void CPwrReminderDlg::UpdateDataItemList()
 		if (pwrItem.GetEventID() == Event::atSetTime) {
 			// Format time string
 			String formatTime = tempString;
-			tempString = FormatDispTime(ptrLanguage, formatTime, pwrItem.GetTime());
+			tempString = ClockTimeUtils::Format(ptrLanguage, formatTime, pwrItem.GetTime());
 		}
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::EventID, tempString);
 
@@ -2034,7 +2034,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	if (GetCurMode() == Mode::Add) {
 		pwrItem.SetMessage(Constant::String::Empty);
 		pwrItem.SetEventID(Event::atSetTime);
-		pwrItem.SetTime(GetCurSysTime());
+		pwrItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
 		pwrItem.SetMessageStyle(Style::messageBox);
 		pwrItem.EnableCustomStyle(FALSE);
 		pwrItem.ResetRepeatInfo();
@@ -2320,13 +2320,13 @@ void CPwrReminderDlg::UpdateMsgCounter(int nCount)
 // 
 //	Function name:	UpdateTimeSetting
 //	Description:	Update time value from/to time edit control
-//  Arguments:		stTime  - Time data
-//					bUpdate - Update or not (YES/TRUE by default)
+//  Arguments:		clockTime  - Clock-time data
+//					bUpdate	   - Update or not (YES/TRUE by default)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CPwrReminderDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TRUE */)
+void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* = TRUE */)
 {
 	// Get app language package
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -2342,6 +2342,7 @@ void CPwrReminderDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TR
 	}
 
 	if (bUpdate == TRUE) {
+
 		// Get value from time editbox
 		const int buffLength = m_pEvtSetTimeEdit->GetWindowTextLength();
 		std::vector<wchar_t> tempBuff(buffLength + 1);
@@ -2349,37 +2350,37 @@ void CPwrReminderDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TR
 		String timeTextValue = tempBuff.data();
 
 		// Get hour value
-		WORD wHour = (WORD)_tstoi(timeTextValue.Left(2));
-		const wchar_t* timePeriod = timeTextValue.Right(2);
+		int hour = _wtoi(timeTextValue.Left(2));
+		const String timePeriod = timeTextValue.Right(2);
 		if (timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
-			stTime.wHour = wHour;
+			clockTime.SetHour(hour);
 		}
-		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && wHour < 12) {
+		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
 			// After midday
-			stTime.wHour = wHour + 12;
+			clockTime.SetHour(hour + 12);
 		}
 		else {
-			// Keep the value
-			stTime.wHour = wHour;
+			// Keep value
+			clockTime.SetHour(hour);
 		}
 
 		// Get minute value
-		stTime.wMinute = (WORD)_tstoi(timeTextValue.Mid(3, 2));
+		clockTime.SetMinute(_wtoi(timeTextValue.Mid(3, 2)));
 	}
 	else {
 		// Set value for time editbox
 		String timeFormatString;
-		timeFormatString = FormatDispTime(pLang, IDS_FORMAT_SHORTTIME, stTime);
+		timeFormatString = ClockTimeUtils::Format(pLang, IDS_FORMAT_SHORTTIME, clockTime);
 		m_pEvtSetTimeEdit->SetWindowText(timeFormatString);
 
 		// Backup current displaying time value
-		m_stDispTimeBak = stTime;
+		m_stDispTimeBak = clockTime;
 
 		// Update time spin position
 		if (m_pEvtSetTimeSpin != NULL) {
 			int nSpinPos = 0;
-			Time2SpinPos(stTime, nSpinPos);
+			Time2SpinPos(clockTime, nSpinPos);
 			m_pEvtSetTimeSpin->SetPos(nSpinPos);
 		}
 	}
@@ -2785,9 +2786,9 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 			if (bTemp == TRUE) {
 				pwrItem.SetEventID(Event::atSetTime);
 				if (m_pEvtSetTimeEdit != NULL) {
-					SYSTEMTIME stTimeTemp = SYSTEMTIME_ZERO;
-					UpdateTimeSetting(stTimeTemp, TRUE);
-					pwrItem.SetTime(stTimeTemp);
+					ClockTime clockTimeTemp;
+					UpdateTimeSetting(clockTimeTemp, TRUE);
+					pwrItem.SetTime(clockTimeTemp);
 				}
 			}
 		}
@@ -2878,7 +2879,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		/*----------------------Get item details-----------------------*/
 
 		String messageContent = pwrItem.GetMessage();
-		SYSTEMTIME stTime = pwrItem.GetTime();
+		ClockTime itemTime = pwrItem.GetTime();
 		UINT nEventID = pwrItem.GetEventID();
 		DWORD dwMsgStyle = pwrItem.GetMessageStyle();
 
@@ -2917,7 +2918,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 			bTemp &= bEnable;
 			if (m_pEvtSetTimeEdit != NULL) {
 				m_pEvtSetTimeEdit->EnableWindow(bTemp);
-				UpdateTimeSetting(stTime, FALSE);
+				UpdateTimeSetting(itemTime, FALSE);
 			}
 			if (m_pEvtSetTimeSpin != NULL) {
 				m_pEvtSetTimeSpin->EnableWindow(bTemp);

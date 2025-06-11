@@ -30,14 +30,6 @@
 #endif
 
 
-// For compatibility with Win-base types
-#ifdef _WINBASE_COMPATIBILITIES
-	#if !defined _WINDOWS_ || !defined _WINDOWSAPI_INCLUDED || !defined _WINAPP_INCLUDED
-		#include <windows.h>
-	#endif
-#endif
-
-
 // Using Unicode for strings
 #ifndef _UNICODE
 	#define	_UNICODE
@@ -553,13 +545,6 @@ public:
 				__Hours{ hours } + __Minutes { mins } + __Seconds { secs } + __Milliseconds{ millisecs }) };
 	};
 
-#ifdef _WINBASE_COMPATIBILITIES
-	TimeSpan(SYSTEMTIME src) noexcept /* ignore the wYear and wMonth values */ {
-		_timePoint = __TimePoint{ duration_cast<__TimePoint::duration>(__Days{ static_cast<int>(src.wDay) } +
-				__Hours{ src.wHour } + __Minutes { src.wMinute } + __Seconds { src.wSecond } + __Milliseconds{ src.wMilliseconds }) };
-	};
-#endif
-
 public:
 	// Get time point (conversion to std::chrono::system_clock::time_point)
 	__TimePoint GetTimePoint(void) const noexcept override {
@@ -745,6 +730,231 @@ public:
 };
 
 
+// Manage Clock-time-only data
+class ClockTime : public __TimeBase
+{
+public:
+	// Construction
+	explicit ClockTime() = default;
+
+	// Copy constructor
+	ClockTime(const ClockTime& other) : __TimeBase(other._timePoint) {};
+
+	// Copy assignment operator
+	ClockTime& operator=(const ClockTime& other) {
+		if (this != &other) {
+			_timePoint = other._timePoint;
+		}
+		return *this;
+	};
+
+	// Move constructor
+	ClockTime(ClockTime&& other) noexcept : __TimeBase(std::move(other._timePoint)) {};
+
+	// Move assignment operator
+	ClockTime& operator=(ClockTime&& other) noexcept {
+		if (this != &other) {
+			_timePoint = std::move(other._timePoint);
+		}
+		return *this;
+	};
+
+public:
+	// Conversion constructor
+	ClockTime(__TimePoint timepoint) : __TimeBase(timepoint) {};
+	ClockTime(int hour, int min, int sec, int millisec = 0) noexcept {
+		auto _timeVal = __Hours(hour) + __Minutes(min) + __Seconds(sec) + __Milliseconds(millisec);
+		_timePoint = std::chrono::sys_time{ _timeVal };
+	};
+
+public:
+	// Get time point (conversion to std::chrono::system_clock::time_point)
+	__TimePoint GetTimePoint(void) const noexcept override {
+		return _timePoint;
+	};
+
+public:
+	// Addition operator
+	TimeSpan operator+(const ClockTime& other) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + other._timePoint.time_since_epoch()));
+	};
+	ClockTime& operator+=(const ClockTime& other) {
+		if (this != &other) _timePoint += other._timePoint.time_since_epoch();
+		return *this;
+	};
+	TimeSpan operator+(const TimeSpan& timeSpan) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + timeSpan.GetTimePoint().time_since_epoch()));
+	};
+	ClockTime& operator+=(const TimeSpan& timeSpan) {
+		_timePoint += timeSpan.GetTimePoint().time_since_epoch();
+		return *this;
+	};
+	TimeSpan operator+(int seconds) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + __Seconds{ seconds }));
+	};
+	ClockTime& operator+=(int seconds) {
+		_timePoint += __Seconds{ seconds };
+		return *this;
+	};
+
+	// Subtraction operator
+	TimeSpan operator-(const ClockTime& other) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - other._timePoint.time_since_epoch()));
+	};
+	ClockTime& operator-=(const ClockTime& other) {
+		if (this != &other) _timePoint -= other._timePoint.time_since_epoch();
+		return *this;
+	};
+	TimeSpan operator-(const TimeSpan& timeSpan) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - timeSpan.GetTimePoint().time_since_epoch()));
+	};
+	ClockTime& operator-=(const TimeSpan& timeSpan) {
+		_timePoint -= timeSpan.GetTimePoint().time_since_epoch();
+		return *this;
+	};
+	TimeSpan operator-(int seconds) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - __Seconds{ seconds }));
+	};
+	ClockTime& operator-=(int seconds) {
+		_timePoint -= __Seconds{ seconds };
+		return *this;
+	};
+
+	// Equality operator
+	constexpr bool operator==(const ClockTime& other) const noexcept {
+		return _timePoint == other._timePoint;
+	};
+
+	// Inequality operator
+	constexpr bool operator!=(const ClockTime& other) const noexcept {
+		return _timePoint != other._timePoint;
+	};
+
+	// Comparison operator
+	constexpr bool operator<(const ClockTime& other) const noexcept {
+		return _timePoint < other._timePoint;
+	};
+	constexpr bool operator>(const ClockTime& other) const noexcept {
+		return _timePoint > other._timePoint;
+	};
+	constexpr bool operator<=(const ClockTime& other) const noexcept {
+		return _timePoint <= other._timePoint;
+	};
+	constexpr bool operator>=(const ClockTime& other) const noexcept {
+		return _timePoint >= other._timePoint;
+	};
+
+	// Prefix increment operator (increase by 1 second)
+	ClockTime& operator++() noexcept {
+		_timePoint += __Seconds{ 1 };
+		return *this;
+	};
+
+	// Prefix decrement operator (decrease by 1 second)
+	ClockTime& operator--() noexcept {
+		_timePoint -= __Seconds{ 1 };
+		return *this;
+	};
+
+	// Postfix increment operator (increase by 1 second)
+	ClockTime& operator++(int) noexcept {
+		ClockTime _temp = *this;
+		_timePoint += __Seconds{ 1 };
+		return _temp;
+	};
+
+	// Postfix decrement operator (decrease by 1 second)
+	ClockTime& operator--(int) noexcept {
+		ClockTime _temp = *this;
+		_timePoint -= __Seconds{ 1 };
+		return _temp;
+	};
+
+private:
+	// Internal getters
+	constexpr __Hours _getHours() const noexcept {
+		return std::chrono::duration_cast<__Hours>(_timePoint.time_since_epoch() % __Days(1));
+	};
+	constexpr __Minutes _getMinutes() const noexcept {
+		return std::chrono::duration_cast<__Minutes>(_timePoint.time_since_epoch() % __Hours(1));
+	};
+	constexpr __Seconds _getSeconds() const noexcept {
+		return std::chrono::duration_cast<__Seconds>(_timePoint.time_since_epoch() % __Minutes(1));
+	};
+	constexpr __Milliseconds _getMillisecs() const noexcept {
+		return std::chrono::duration_cast<__Milliseconds>(_timePoint.time_since_epoch() % __Seconds(1));
+	};
+
+public:
+	// Access data
+	constexpr int Hour(void) const noexcept {
+		return _getHours().count();
+	};
+	constexpr int Minute(void) const noexcept {
+		return _getMinutes().count();
+	};
+	constexpr int Second(void) const noexcept {
+		return static_cast<int>(_getSeconds().count());
+	};
+	constexpr int Millisecond(void) const noexcept {
+		return static_cast<int>(_getMillisecs().count());
+	};
+
+	// Modify data
+	void SetHour(int hour) noexcept {
+		ClockTime _temp = *this;
+		_timePoint = std::chrono::sys_time{ __Hours(hour) + _temp._getMinutes() + _temp._getSeconds() + _temp._getMillisecs() };
+	};
+	void SetMinute(int minute) noexcept {
+		ClockTime _temp = *this;
+		_timePoint = std::chrono::sys_time{ _temp._getHours() + __Minutes(minute) + _temp._getSeconds() + _temp._getMillisecs() };
+	};
+	void SetSecond(int second) noexcept {
+		ClockTime _temp = *this;
+		_timePoint = std::chrono::sys_time{ _temp._getHours() + _temp._getMinutes() + __Seconds(second) + _temp._getMillisecs() };
+	};
+	void SetMillisecs(int millisecs) noexcept {
+		ClockTime _temp = *this;
+		_timePoint = std::chrono::sys_time{ _temp._getHours() + _temp._getMinutes() + _temp._getSeconds() + __Milliseconds(millisecs) };
+	};
+
+public:
+	// Arithmetic
+	ClockTime& IncreaseHours(int hours) noexcept {
+		_timePoint += __Hours{ hours };
+		return *this;
+	};
+	ClockTime& DecreaseHours(int hours) noexcept {
+		_timePoint -= __Hours{ hours };
+		return *this;
+	};
+	ClockTime& IncreaseMinutes(int mins) noexcept {
+		_timePoint += __Minutes{ mins };
+		return *this;
+	};
+	ClockTime& DecreaseMinutes(int mins) noexcept {
+		_timePoint -= __Minutes{ mins };
+		return *this;
+	};
+	ClockTime& IncreaseSeconds(int secs) noexcept {
+		_timePoint += __Seconds{ secs };
+		return *this;
+	};
+	ClockTime& DecreaseSeconds(int secs) noexcept {
+		_timePoint -= __Seconds{ secs };
+		return *this;
+	};
+	ClockTime& IncreaseMillisecs(int millisecs) noexcept {
+		_timePoint += __Milliseconds{ millisecs };
+		return *this;
+	};
+	ClockTime& DecreaseMillisecs(int millisecs) noexcept {
+		_timePoint -= __Milliseconds{ millisecs };
+		return *this;
+	};
+};
+
+
 // Manage Date/Time data
 class DateTime : public __TimeBase
 {
@@ -786,31 +996,35 @@ public:
 		_timePoint = std::chrono::sys_days{ _dateVal } + _timeVal;
 	};
 
-#ifdef _WINBASE_COMPATIBILITIES
-	DateTime(SYSTEMTIME src) noexcept {
-		auto _dateVal = __Date{ __Year{ src.wYear }, __Month{ src.wMonth }, __Day{ src.wDay } };
-		auto _timeVal = __Hours(src.wHour) + __Minutes(src.wMinute) + __Seconds(src.wSecond) + __Milliseconds(src.wMilliseconds);
-		_timePoint = std::chrono::sys_days{ _dateVal } + _timeVal;
-	};
-#endif
-
 public:
 	// Get time point (conversion to std::chrono::system_clock::time_point)
 	__TimePoint GetTimePoint(void) const noexcept override {
 		return _timePoint;
 	};
 
+	// Get clock-time data
+	ClockTime GetClockTime(void) const noexcept {
+		return ClockTime(Hour(), Minute(), Second(), Millisecond());
+	};
+
 public:
 	// Addition operator
-	DateTime operator+(const DateTime& other) const noexcept {
-		return DateTime(__TimePoint(_timePoint.time_since_epoch() + other._timePoint.time_since_epoch()));
+	TimeSpan operator+(const DateTime& other) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + other._timePoint.time_since_epoch()));
 	};
 	DateTime& operator+=(const DateTime& other) {
 		if (this != &other) _timePoint += other._timePoint.time_since_epoch();
 		return *this;
 	};
-	DateTime operator+(int seconds) const noexcept {
-		return DateTime(__TimePoint(_timePoint.time_since_epoch() + __Seconds{ seconds }));
+	TimeSpan operator+(const TimeSpan& timeSpan) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + timeSpan.GetTimePoint().time_since_epoch()));
+	};
+	DateTime& operator+=(const TimeSpan& timeSpan) {
+		_timePoint += timeSpan.GetTimePoint().time_since_epoch();
+		return *this;
+	};
+	TimeSpan operator+(int seconds) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + __Seconds{ seconds }));
 	};
 	DateTime& operator+=(int seconds) {
 		_timePoint += __Seconds{ seconds };
@@ -818,15 +1032,22 @@ public:
 	};
 
 	// Subtraction operator
-	DateTime operator-(const DateTime& other) const noexcept {
-		return DateTime(__TimePoint(_timePoint.time_since_epoch() - other._timePoint.time_since_epoch()));
+	TimeSpan operator-(const DateTime& other) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - other._timePoint.time_since_epoch()));
 	};
 	DateTime& operator-=(const DateTime& other) {
 		if (this != &other) _timePoint -= other._timePoint.time_since_epoch();
 		return *this;
 	};
-	DateTime operator-(int seconds) const noexcept {
-		return DateTime(__TimePoint(_timePoint.time_since_epoch() - __Seconds{ seconds }));
+	TimeSpan operator-(const TimeSpan& timeSpan) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - timeSpan.GetTimePoint().time_since_epoch()));
+	};
+	DateTime& operator-=(const TimeSpan& timeSpan) {
+		_timePoint -= timeSpan.GetTimePoint().time_since_epoch();
+		return *this;
+	};
+	TimeSpan operator-(int seconds) const noexcept {
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - __Seconds{ seconds }));
 	};
 	DateTime& operator-=(int seconds) {
 		_timePoint -= __Seconds{ seconds };
@@ -985,19 +1206,6 @@ public:
 		_timePoint -= __Milliseconds{ millisecs };
 		return *this;
 	};
-
-#ifdef _WINBASE_COMPATIBILITIES
-public:
-	// Conversion
-	SYSTEMTIME ToSystemTime(void) const noexcept {
-		SYSTEMTIME _result; _result.wYear = Year(); _result.wMonth = Month();
-		_result.wDay = Day(); _result.wDayOfWeek = DayOfWeek(); _result.wHour = Hour();
-		_result.wMinute = Minute(); _result.wSecond = Second(); _result.wMilliseconds = Millisecond();
-		return _result;
-	};
-	FILETIME ToFileTime(void) const noexcept {
-	};
-#endif
 };
 
 // For global usage

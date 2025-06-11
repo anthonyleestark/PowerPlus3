@@ -29,7 +29,7 @@
 /*---------------------------------------------Launch-info data----------------------------------------------*/
 
 // Application launch-time
-SYSTEMTIME Global::g_stAppLaunchTime = {0};
+DateTime Global::g_stAppLaunchTime;
 
 // Application launch-time counter
 UINT Global::g_uiAppLaunchTimeCounter = 0;

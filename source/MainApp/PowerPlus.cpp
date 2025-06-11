@@ -143,7 +143,7 @@ BOOL CPowerPlusApp::InitInstance()
 	DWORD dwErrorCode;
 
 	// Set application launch time
-	SetAppLaunchTime(GetCurSysTime());
+	SetAppLaunchTime(DateTimeUtils::GetCurrentDateTime());
 
 	// Set application window caption (with product version number)
 	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, TRUE)) {
@@ -517,21 +517,21 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID /*pContext*/, ULONG ulTyp
 	if (pApp == NULL) 
 		return ULONG(Result::Failure);
 
-	// Get current system time
-	SYSTEMTIME stCurSysTime = GetCurSysTime();
+	// Get current date/time
+	DateTime curDateTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Processing
 	switch (ulType)
 	{
 	case PBT_APMSUSPEND:					// System suspend event
 		// Save last system suspend time
-		pApp->SaveLastSysEventTime(SystemEventID::SystemSuspend, stCurSysTime);
+		pApp->SaveLastSysEventTime(SystemEventID::SystemSuspend, curDateTime);
 		break;
 
 	case PBT_APMRESUMESUSPEND:				// System resume from suspend event
 	case PBT_APMRESUMEAUTOMATIC:			// System automatic resume event
 		// Save last system wakeup time
-		pApp->SaveLastSysEventTime(SystemEventID::SystemWakeUp, stCurSysTime);
+		pApp->SaveLastSysEventTime(SystemEventID::SystemWakeUp, curDateTime);
 		break;
 
 	default:
@@ -704,7 +704,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	int nDataTemp = INT_INVALID;
 	int nTimeTemp = INT_INVALID;
 	String tempString = Constant::String::Empty;
-	SYSTEMTIME stTimeTemp = SYSTEMTIME_ZERO;
+	ClockTime clockTimeTemp;
 
 	// Check data validity first
 	if (!DataSerializeCheck(Mode::Load))
@@ -809,12 +809,12 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			if (nTimeTemp != INT_INVALID) {
 
 				// Convert time value and set time
-				stTimeTemp.wHour = GET_REGTIME_HOUR(nTimeTemp);
-				stTimeTemp.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
-				schDefaultTemp.SetTime(stTimeTemp);
+				clockTimeTemp.SetHour(GET_REGTIME_HOUR(nTimeTemp));
+				clockTimeTemp.SetMinute(GET_REGTIME_MINUTE(nTimeTemp));
+				schDefaultTemp.SetTime(clockTimeTemp);
 
 				// Reset temp data
-				stTimeTemp = SYSTEMTIME_ZERO;
+				clockTimeTemp = ClockTime();
 				nTimeTemp = INT_INVALID;
 			}
 
@@ -875,12 +875,12 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				if (nTimeTemp != INT_INVALID) {
 
 					// Convert time value and set time
-					stTimeTemp.wHour = GET_REGTIME_HOUR(nTimeTemp);
-					stTimeTemp.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
-					schExtraTemp.SetTime(stTimeTemp);
+					clockTimeTemp.SetHour(GET_REGTIME_HOUR(nTimeTemp));
+					clockTimeTemp.SetMinute(GET_REGTIME_MINUTE(nTimeTemp));
+					schExtraTemp.SetTime(clockTimeTemp);
 
 					// Reset temp data
-					stTimeTemp = SYSTEMTIME_ZERO;
+					clockTimeTemp = ClockTime();
 					nTimeTemp = INT_INVALID;
 				}
 
@@ -1071,12 +1071,12 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				if (nTimeTemp != INT_INVALID) {
 
 					// Convert time value and set time
-					stTimeTemp.wHour = GET_REGTIME_HOUR(nTimeTemp);
-					stTimeTemp.wMinute = GET_REGTIME_MINUTE(nTimeTemp);
-					pwrTemp.SetTime(stTimeTemp);
+					clockTimeTemp.SetHour(GET_REGTIME_HOUR(nTimeTemp));
+					clockTimeTemp.SetMinute(GET_REGTIME_MINUTE(nTimeTemp));
+					pwrTemp.SetTime(clockTimeTemp);
 
 					// Reset temp data
-					stTimeTemp = SYSTEMTIME_ZERO;
+					clockTimeTemp = ClockTime();
 					nTimeTemp = INT_INVALID;
 				}
 
@@ -1426,12 +1426,12 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	/*-----------------------------<Application launch-time>-----------------------------*/
 
 	// Format launch-time
-	SYSTEMTIME stLaunchTime = GetAppLaunchTime();
-	UINT nTimePeriod = (stLaunchTime.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	DateTime dateTimeAppLaunch = GetAppLaunchTime();
+	UINT nTimePeriod = (dateTimeAppLaunch.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = GetLanguageString(LoadLanguageTable(NULL), nTimePeriod);
 	const wchar_t* timeFormatString = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	strValue = StringUtils::StringFormat(timeFormatString, stLaunchTime.wYear, stLaunchTime.wMonth, stLaunchTime.wDay,
-		stLaunchTime.wHour, stLaunchTime.wMinute, stLaunchTime.wSecond, stLaunchTime.wMilliseconds, timePeriodFormat);
+	strValue = StringUtils::StringFormat(timeFormatString, dateTimeAppLaunch.Year(), dateTimeAppLaunch.Month(), dateTimeAppLaunch.Day(),
+		dateTimeAppLaunch.Hour(), dateTimeAppLaunch.Minute(), dateTimeAppLaunch.Second(), dateTimeAppLaunch.Millisecond(), timePeriodFormat);
 
 	// Store launch-time info data
 	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchTime, strValue)) {
@@ -2488,7 +2488,7 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEvent)
+BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent)
 {
 	long lRes;
 	HKEY hRegOpenKey;
@@ -2554,11 +2554,15 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 		return FALSE;
 	}
 
+	SYSTEMTIME sysTimeTemp = DateTimeUtils::ToSystemTime(timeSysEvent);
+
 	// Extract time data from string
 	TCHAR tcTimePeriod[5];
 	String dateTimeFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	_stscanf_s(tcBuffer, dateTimeFormat, &timeSysEvent.wYear, &timeSysEvent.wMonth, &timeSysEvent.wDay,
-		&timeSysEvent.wHour, &timeSysEvent.wMinute, &timeSysEvent.wSecond, &timeSysEvent.wMilliseconds, tcTimePeriod, (unsigned)_countof(tcTimePeriod));
+	_stscanf_s(tcBuffer, dateTimeFormat, &sysTimeTemp.wYear, &sysTimeTemp.wMonth, &sysTimeTemp.wDay,
+		&sysTimeTemp.wHour, &sysTimeTemp.wMinute, &sysTimeTemp.wSecond, &sysTimeTemp.wMilliseconds, tcTimePeriod, (unsigned)_countof(tcTimePeriod));
+
+	timeSysEvent = DateTimeUtils::FromSystemTime(sysTimeTemp);
 
 	// Close key
 	RegCloseKey(hRegOpenKey);
@@ -2576,7 +2580,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, SYSTEMTIME& timeSysEve
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& timeSysEvent)
+BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent)
 {
 	long lRes;
 	HKEY hRegOpenKey;
@@ -2628,11 +2632,11 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const SYSTEMTIME& tim
 	}
 
 	// Format date/time
-	UINT nTimePeriod = (timeSysEvent.wHour < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	UINT nTimePeriod = (timeSysEvent.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = GetLanguageString(GetAppLanguage(), nTimePeriod);
 	const wchar_t* timeFormatString = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String dateTimeFormat = StringUtils::StringFormat(timeFormatString, timeSysEvent.wYear, timeSysEvent.wMonth, timeSysEvent.wDay,
-		timeSysEvent.wHour, timeSysEvent.wMinute, timeSysEvent.wSecond, timeSysEvent.wMilliseconds, timePeriodFormat);
+	String dateTimeFormat = StringUtils::StringFormat(timeFormatString, timeSysEvent.Year(), timeSysEvent.Month(), timeSysEvent.Day(),
+		timeSysEvent.Hour(), timeSysEvent.Minute(), timeSysEvent.Second(), timeSysEvent.Millisecond(), timePeriodFormat);
 
 	// Save registry value
 	DWORD dwDataSize = (dateTimeFormat.GetLength() + 1) * sizeof(TCHAR);

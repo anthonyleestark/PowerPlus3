@@ -1183,9 +1183,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 					// Skip if it's not Power Reminder item
 					if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info
-					SYSTEMTIME stNextSnoozeTime = pwrRuntimeItem.GetTime();
+					ClockTime timeNextSnooze = pwrRuntimeItem.GetTime();
 					OutputDebugLogFormat(_T("Item%03d: ID=%d, Snooze=%d, NextTrigger=%02d:%02d"), nIndex, pwrRuntimeItem.GetItemID(),
-						pwrRuntimeItem.GetSnoozeFlag(), stNextSnoozeTime.wHour, stNextSnoozeTime.wMinute);
+						pwrRuntimeItem.GetSnoozeFlag(), timeNextSnooze.Hour(), timeNextSnooze.Minute());
 					bNoReply = FALSE;	// Reset flag
 				}
 			}
@@ -1212,9 +1212,9 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 					// Skip if it's not Power Reminder item
 					if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info
-					SYSTEMTIME stNextSnoozeTime = pwrRuntimeItem.GetTime();
+					ClockTime timeNextSnooze = pwrRuntimeItem.GetTime();
 					OutputDebugLogFormat(_T("Item%03d: ID=%d, Display=%d, Snooze=%d, NextTrigger=%02d:%02d"), nIndex, pwrRuntimeItem.GetItemID(),
-						pwrRuntimeItem.GetDisplayFlag(), pwrRuntimeItem.GetSnoozeFlag(), stNextSnoozeTime.wHour, stNextSnoozeTime.wMinute);
+						pwrRuntimeItem.GetDisplayFlag(), pwrRuntimeItem.GetSnoozeFlag(), timeNextSnooze.Hour(), timeNextSnooze.Minute());
 					bNoReply = FALSE;	// Reset flag
 				}
 			}
@@ -1264,14 +1264,14 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("getlastsysevttime"))) {
 		// Get last system event time
-		SYSTEMTIME stTimeTemp;
+		DateTime dateTimeTemp;
 		String dateTimeFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
 		// Get last system suspend time
-		if (pApp->GetLastSysEventTime(SystemEventID::SystemSuspend, stTimeTemp)) {
+		if (pApp->GetLastSysEventTime(SystemEventID::SystemSuspend, dateTimeTemp)) {
 			// Format date time
-			const wchar_t* middayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
-			String logTemp = StringUtils::StringFormat(dateTimeFormat, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay,
-				stTimeTemp.wHour, stTimeTemp.wMinute, stTimeTemp.wSecond, stTimeTemp.wMilliseconds, middayFlag);
+			const wchar_t* middayFlag = (dateTimeTemp.Hour() >= 12) ? _T("PM") : _T("AM");
+			String logTemp = StringUtils::StringFormat(dateTimeFormat, dateTimeTemp.Year(), dateTimeTemp.Month(), dateTimeTemp.Day(),
+				dateTimeTemp.Hour(), dateTimeTemp.Minute(), dateTimeTemp.Second(), dateTimeTemp.Millisecond(), middayFlag);
 			logOutputResult.Format(_T("Last System Suspend: %s"), logTemp.GetString());
 			OutputDebugLog(logOutputResult);
 			bNoReply = FALSE;	// Reset flag
@@ -1282,11 +1282,11 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			bNoReply = FALSE;	// Reset flag
 		}
 		// Get last system wakeup time
-		if (pApp->GetLastSysEventTime(SystemEventID::SystemWakeUp, stTimeTemp)) {
+		if (pApp->GetLastSysEventTime(SystemEventID::SystemWakeUp, dateTimeTemp)) {
 			// Format date time
-			const wchar_t* middayFlag = (stTimeTemp.wHour >= 12) ? _T("PM") : _T("AM");
-			String logTemp = StringUtils::StringFormat(dateTimeFormat, stTimeTemp.wYear, stTimeTemp.wMonth, stTimeTemp.wDay,
-				stTimeTemp.wHour, stTimeTemp.wMinute, stTimeTemp.wSecond, stTimeTemp.wMilliseconds, middayFlag);
+			const wchar_t* middayFlag = (dateTimeTemp.Hour() >= 12) ? _T("PM") : _T("AM");
+			String logTemp = StringUtils::StringFormat(dateTimeFormat, dateTimeTemp.Year(), dateTimeTemp.Month(), dateTimeTemp.Day(),
+				dateTimeTemp.Hour(), dateTimeTemp.Minute(), dateTimeTemp.Second(), dateTimeTemp.Millisecond(), middayFlag);
 			logOutputResult.Format(_T("Last System Wakeup: %s"), logTemp.GetString());
 			OutputDebugLog(logOutputResult);
 			bNoReply = FALSE;	// Reset flag

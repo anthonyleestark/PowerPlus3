@@ -652,8 +652,8 @@ void CEditScheduleDlg::SetupDialogItemState()
 	}
 
 	// Setup time editbox
-	SYSTEMTIME sysTimeTemp = m_schScheduleItemTemp.GetTime();
-	UpdateTimeSetting(sysTimeTemp, FALSE);
+	ClockTime clockTimeTemp = m_schScheduleItemTemp.GetTime();
+	UpdateTimeSetting(clockTimeTemp, FALSE);
 
 	// Enable/disable active day table (also update its display)
 	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() & m_schScheduleItemTemp.IsRepeatEnabled()));
@@ -820,7 +820,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	m_schScheduleItemTemp.SetAction(m_nAction);
 
 	// Update time value
-	SYSTEMTIME stTimeTemp;
+	ClockTime stTimeTemp;
 	UpdateTimeSetting(stTimeTemp, TRUE);
 
 	m_schScheduleItemTemp.SetTime(stTimeTemp);
@@ -939,13 +939,13 @@ void CEditScheduleDlg::EnableSubItems(BOOL bEnable)
 // 
 //	Function name:	UpdateTimeSetting
 //	Description:	Update time value from/to time edit control
-//  Arguments:		stTime  - Time data
-//					bUpdate - Update or not (YES/TRUE by default)
+//  Arguments:		clockTime  - Clock-time data
+//					bUpdate	   - Update or not (YES/TRUE by default)
 //  Return value:	None
 //
 //////////////////////////////////////////////////////////////////////////
 
-void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = TRUE */)
+void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* = TRUE */)
 {
 	// Get app language package
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -968,28 +968,28 @@ void CEditScheduleDlg::UpdateTimeSetting(SYSTEMTIME& stTime, BOOL bUpdate /* = T
 		String timeFormatString = tempBuff.data();
 
 		// Get hour value
-		WORD wHour = (WORD)_tstoi(timeFormatString.Left(2));
-		String timePeriod = timeFormatString.Right(2);
+		int hour = _wtoi(timeFormatString.Left(2));
+		const String timePeriod = timeFormatString.Right(2);
 		if (timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
-			stTime.wHour = wHour;
+			clockTime.SetHour(hour);
 		}
-		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && wHour < 12) {
+		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
 			// After midday
-			stTime.wHour = wHour + 12;
+			clockTime.SetHour(hour + 12);
 		}
 		else {
 			// Keep value
-			stTime.wHour = wHour;
+			clockTime.SetHour(hour);
 		}
 
 		// Get minute value
-		stTime.wMinute = (WORD)_tstoi(timeFormatString.Mid(3, 2));
+		clockTime.SetMinute(_wtoi(timeFormatString.Mid(3, 2)));
 	}
 	else {
 		// Set value for time editbox
 		String timeFormatString;
-		timeFormatString = FormatDispTime(pLang, IDS_FORMAT_SHORTTIME, stTime);
+		timeFormatString = ClockTimeUtils::Format(pLang, IDS_FORMAT_SHORTTIME, clockTime);
 		m_pTimeEdit->SetWindowText(timeFormatString);
 	}
 }
@@ -1233,23 +1233,23 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	m_pTimeEdit->GetWindowText(tempBuff.data(), buffLength + 1);
 	String timeTextValue = tempBuff.data();
 
-	SYSTEMTIME stTimeTemp;
-	BOOL bRet = Text2Time(stTimeTemp, timeTextValue);
-	if (bRet != FALSE) {
+	ClockTime clockTime;
+	if (Text2Time(clockTime, timeTextValue)) {
+
 		// Update new time value
-		UpdateTimeSetting(stTimeTemp, FALSE);
+		UpdateTimeSetting(clockTime, FALSE);
 		
 		// Update timespin new position
 		int nSpinPos;
-		Time2SpinPos(stTimeTemp, nSpinPos);
+		Time2SpinPos(clockTime, nSpinPos);
 		if (m_pTimeSpin != NULL) {
 			m_pTimeSpin->SetPos(nSpinPos);
 		}
 	}
 	else {
 		// Restore old time value
-		stTimeTemp = m_schScheduleItemTemp.GetTime();
-		UpdateTimeSetting(stTimeTemp, FALSE);
+		clockTime = m_schScheduleItemTemp.GetTime();
+		UpdateTimeSetting(clockTime, FALSE);
 		return;
 	}
 
@@ -1274,9 +1274,9 @@ void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Get timespin position and convert to time value
 	int nPos = pNMUpDown->iPos;
-	SYSTEMTIME stTimeTemp;
-	SpinPos2Time(stTimeTemp, nPos);
-	UpdateTimeSetting(stTimeTemp, FALSE);
+	ClockTime clockTime;
+	SpinPos2Time(clockTime, nPos);
+	UpdateTimeSetting(clockTime, FALSE);
 
 	*pResult = NULL;
 
