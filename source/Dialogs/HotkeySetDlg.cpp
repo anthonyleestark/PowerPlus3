@@ -27,15 +27,10 @@ using namespace AppCore;
 using namespace AppRegistry;
 
 
-////////////////////////////////////////////////////////
-//
-//	Define macros for HotkeySet data list table
-//
-////////////////////////////////////////////////////////
-
-#define COL_FIXED_NUM			0
-#define ROW_FIXED_NUM			1
-#define ROW_INDEX_START			1
+// Data list table constants
+constexpr const int fixedColumnNum = 0;
+constexpr const int fixedRowNum = 1;
+constexpr const int startRowIndex = 1;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -589,7 +584,7 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 	int nCurSelRow = pItem->iRow;
 
 	// Update current selection index
-	SetListCurSel(nCurSelRow - ROW_INDEX_START);
+	SetListCurSel(nCurSelRow - startRowIndex);
 	int nItemCount = GetItemNum();
 
 	*pResult = NULL;
@@ -765,14 +760,14 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW);
 
 	// Table format and properties
-	int nRowNum = (GetItemNum() + ROW_FIXED_NUM);
+	int nRowNum = (GetItemNum() + fixedRowNum);
 	int nColNum = m_nColNum;
 
 	// Setup table
 	m_pHotkeySetListTable->SetColumnCount(nColNum);
-	m_pHotkeySetListTable->SetFixedColumnCount(COL_FIXED_NUM);
+	m_pHotkeySetListTable->SetFixedColumnCount(fixedColumnNum);
 	m_pHotkeySetListTable->SetRowCount(nRowNum);
-	m_pHotkeySetListTable->SetFixedRowCount(ROW_FIXED_NUM);
+	m_pHotkeySetListTable->SetFixedRowCount(fixedRowNum);
 	m_pHotkeySetListTable->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
 
 	// Draw table
@@ -834,7 +829,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 
 	// Table properties
 	int nColNum = m_nColNum;
-	int nRowNum = (GetItemNum() + ROW_FIXED_NUM);
+	int nRowNum = (GetItemNum() + fixedRowNum);
 
 	// Setup display size
 	int nFrameHeight = m_pszDataTableFrameSize->cy;
@@ -1096,10 +1091,10 @@ void CHotkeySetDlg::UpdateHotkeySet()
 	int nTemp = -1;
 	int nItemIndex = 0;
 	CGridCellCheck* pCellCheck = NULL;
-	for (int nRowIndex = ROW_INDEX_START; nRowIndex <= nItemNum; nRowIndex++) {
+	for (int nRowIndex = startRowIndex; nRowIndex <= nItemNum; nRowIndex++) {
 
 		// Get item
-		nItemIndex = nRowIndex - ROW_INDEX_START;
+		nItemIndex = nRowIndex - startRowIndex;
 		const Item& hksItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
 
 		// Enable state
@@ -1160,7 +1155,7 @@ void CHotkeySetDlg::RedrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 	if (m_pHotkeySetListTable == NULL) return;
 
 	// Update new row number
-	int nCurRowNum = (GetItemNum() + ROW_FIXED_NUM);
+	int nCurRowNum = (GetItemNum() + fixedRowNum);
 	m_pHotkeySetListTable->SetRowCount(nCurRowNum);
 
 	// Draw table
@@ -1396,7 +1391,7 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 	// Update enable state of all item before checking
 	int nItemIndex = 0;
 	CGridCellCheck* pCellCheckEnable = NULL;
-	for (int nRowIndex = ROW_INDEX_START; nRowIndex <= GetItemNum(); nRowIndex++) {
+	for (int nRowIndex = startRowIndex; nRowIndex <= GetItemNum(); nRowIndex++) {
 		// Get checkbox cell
 		pCellCheckEnable = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, ColumnID::EnableState);
 		if (pCellCheckEnable == NULL) continue;
@@ -1405,7 +1400,7 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 		BOOL bEnabled = pCellCheckEnable->GetCheck();
 
 		// Update item checked state
-		nItemIndex = nRowIndex - ROW_INDEX_START;
+		nItemIndex = nRowIndex - startRowIndex;
 		Item& hksTempItem = m_hksHotkeySetTemp.GetItemAt(nItemIndex);
 		hksTempItem.EnableItem(bEnabled);
 	}
@@ -1459,7 +1454,7 @@ void CHotkeySetDlg::Add(void)
 
 	// Update action ID
 	int nCurSel = m_cmbActionList.GetCurSel();
-	int nHKActionID = IDTable::HKActionID[nCurSel].nFirstID;
+	int nHKActionID = IDTable::HKActionID[nCurSel].first;
 	hksTemp.SetActionID(nHKActionID);
 
 	// Update virtual key code

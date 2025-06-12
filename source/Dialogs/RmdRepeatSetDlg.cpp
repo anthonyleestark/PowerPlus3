@@ -19,11 +19,13 @@
 #define new DEBUG_NEW
 #endif
 
-#define DEFAULT_WIDTH	320
-#define DEFAULT_HEIGHT	240
-
 using namespace Language;
 using namespace AppCore;
+
+
+// Dialog default size
+constexpr const int defaultWidth = 320;
+constexpr const int defaultHeight = 240;
 
 
 //////////////////////////////////////////////////////////////////////////

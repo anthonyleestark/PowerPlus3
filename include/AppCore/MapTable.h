@@ -24,6 +24,13 @@ namespace MapTable
 	//
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// ID pair entry
+	struct IDPAIR
+	{
+		unsigned first;											// First pair ID
+		unsigned second;										// Second pair ID
+	};
+
 	// ID map table
 	using IDMAPTABLE = const IDPAIR[];
 	using IDMAPTABLE_REF = const IDPAIR*;
@@ -56,6 +63,25 @@ namespace MapTable
 		static const elementType tableName[] = {
 	#define END_TABLE() \
 		};
+
+	// Hotkey info description
+	struct HOTKEYINFO
+	{
+		DWORD	dwModifiers;								// Modifier keys
+		DWORD	dwVirtualKey;								// Virtual key code
+		UINT	nHotkeyDescription;							// Hotkey description (string ID)
+	};
+
+	// Action definition/combination table
+	struct ACTIONDEF
+	{
+		UINT nActionDefID;									// Action ID
+		UINT nActionNameID;									// Action Name ID
+		UINT nActionMsgID;									// Action message ID
+		UINT nSchedNotifyID;								// Schedule notify message ID
+		UINT nNotifyTipID;									// Notify file tip ID
+		UINT nBalloonTipID;									// Balloon tip ID
+	};
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////

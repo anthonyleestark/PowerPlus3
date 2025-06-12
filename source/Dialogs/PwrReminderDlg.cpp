@@ -28,14 +28,9 @@ using namespace AppCore;
 using namespace AppRegistry;
 
 
-////////////////////////////////////////////////////////
-//
-//	Define macros for Power Reminder data list table
-//
-////////////////////////////////////////////////////////
-
-#define COL_FIXED_NUM			1
-#define ROW_FIXED_NUM			1
+// Data list table constants
+constexpr const int fixedColumnNum = 1;
+constexpr const int fixedRowNum = 1;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -752,7 +747,7 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 	int nRow = pItem->iRow;
 
 	//Get current selection index
-	m_nCurSelIndex = nRow - ROW_FIXED_NUM;
+	m_nCurSelIndex = nRow - fixedRowNum;
 	int nItemCount = GetItemNum();
 
 	*pResult = NULL;
@@ -940,14 +935,14 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	String timeTextValue = tempBuff.data();
 
 	ClockTime clockTime;
-	if (Text2Time(clockTime, timeTextValue)) {
+	if (ClockTimeUtils::InputText2Time(clockTime, timeTextValue)) {
 
 		// Update new time value
 		UpdateTimeSetting(clockTime, FALSE);
 
 		// Update timespin new position
-		int nSpinPos;
-		Time2SpinPos(clockTime, nSpinPos);
+		int nSpinPos = 0;
+		ClockTimeUtils::Time2SpinPos(clockTime, nSpinPos);
 		if (m_pEvtSetTimeSpin != NULL) {
 			m_pEvtSetTimeSpin->SetPos(nSpinPos);
 		}
@@ -981,7 +976,7 @@ void CPwrReminderDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Convert to time value
 	ClockTime clockTime;
-	SpinPos2Time(clockTime, nPos);
+	ClockTimeUtils::SpinPos2Time(clockTime, nPos);
 
 	// Update time edit value
 	UpdateTimeSetting(clockTime, FALSE);
@@ -1331,14 +1326,14 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW);
 
 	// Table format and properties
-	int nRowNum = (GetItemNum() + ROW_FIXED_NUM);
+	int nRowNum = (GetItemNum() + fixedRowNum);
 	int nColNum = m_nColNum;
 
 	// Setup table
 	m_pDataItemListTable->SetColumnCount(nColNum);
-	m_pDataItemListTable->SetFixedColumnCount(COL_FIXED_NUM);
+	m_pDataItemListTable->SetFixedColumnCount(fixedColumnNum);
 	m_pDataItemListTable->SetRowCount(nRowNum);
-	m_pDataItemListTable->SetFixedRowCount(COL_FIXED_NUM);
+	m_pDataItemListTable->SetFixedRowCount(fixedColumnNum);
 	m_pDataItemListTable->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
 
 	// Draw table
@@ -1384,7 +1379,7 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 	if (m_apGrdColFormat == NULL) return;
 
 	// Check row and column number validity
-	if ((nColNum <= 0) || (nRowNum < ROW_FIXED_NUM))
+	if ((nColNum <= 0) || (nRowNum < fixedRowNum))
 		return;
 
 	// Get app pointer
@@ -1874,7 +1869,7 @@ void CPwrReminderDlg::SetupDialogItemState()
 
 	// Setup time editbox
 	ClockTime clockTime;
-	SpinPos2Time(clockTime, 0);
+	ClockTimeUtils::SpinPos2Time(clockTime, 0);
 	UpdateTimeSetting(clockTime, FALSE);
 
 	// Initialize counter display
@@ -1913,7 +1908,7 @@ void CPwrReminderDlg::UpdateDataItemList()
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 		// Get row index
-		nRowIndex = nIndex + ROW_FIXED_NUM;
+		nRowIndex = nIndex + fixedRowNum;
 
 		// Get item
 		const Item& pwrItem = m_pwrReminderDataTemp.GetItemAt(nIndex);
@@ -1996,7 +1991,7 @@ void CPwrReminderDlg::RedrawDataTable(BOOL bReadOnly /* = FALSE */)
 	if (m_pDataItemListTable == NULL) return;
 
 	// Update new row number
-	int nCurRowNum = (GetItemNum() + ROW_FIXED_NUM);
+	int nCurRowNum = (GetItemNum() + fixedRowNum);
 	m_pDataItemListTable->SetRowCount(nCurRowNum);
 
 	// Draw table
@@ -2380,7 +2375,7 @@ void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* = 
 		// Update time spin position
 		if (m_pEvtSetTimeSpin != NULL) {
 			int nSpinPos = 0;
-			Time2SpinPos(clockTime, nSpinPos);
+			ClockTimeUtils::Time2SpinPos(clockTime, nSpinPos);
 			m_pEvtSetTimeSpin->SetPos(nSpinPos);
 		}
 	}
@@ -2476,10 +2471,10 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 	int nRowIndex = 0;
 	CGridCellCheck* pCellCheckEnable = NULL;
 	CGridCellCheck* pCellCheckRepeat = NULL;
-	int nItemRowNum = (m_pDataItemListTable->GetRowCount() - ROW_FIXED_NUM);
+	int nItemRowNum = (m_pDataItemListTable->GetRowCount() - fixedRowNum);
 	for (int nIndex = 0; nIndex < nItemRowNum; nIndex++) {
 		// Get row index
-		nRowIndex = (nIndex + ROW_FIXED_NUM);
+		nRowIndex = (nIndex + fixedRowNum);
 
 		// Get checkbox cells
 		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);

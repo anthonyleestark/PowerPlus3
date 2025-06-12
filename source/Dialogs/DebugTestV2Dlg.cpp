@@ -19,20 +19,14 @@
 using namespace AppCore;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-// Define macros and constants for DebugTest functions
-//
-//////////////////////////////////////////////////////////////////////////
-
 // Default min/max size
-#define DEFAULT_MIN_WIDTH				840
-#define DEFAULT_MIN_HEIGHT				500
-#define DEFAULT_MAX_WIDTH				1600
-#define DEFAULT_MAX_HEIGHT				900
+constexpr const int defaultMinWidth = 840;
+constexpr const int defaultMinHeight = 500;
+constexpr const int defaultMaxWidth = 1600;
+constexpr const int defaultMaxHeight = 900;
 
 // Default Debug command input height
-#define DEBUG_COMMAND_INPUT_HEIGHT		50
+constexpr const int debugCmdInputHeight = 50;
 
 // Define constants
 const wchar_t* debugCommandPrefix = _T(">>> ");
@@ -231,8 +225,8 @@ void CDebugTestV2Dlg::OnDestroy()
 void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
-	pMinMaxInfo->ptMinTrackSize = CPoint(DEFAULT_MIN_WIDTH, DEFAULT_MIN_HEIGHT);
-	pMinMaxInfo->ptMaxTrackSize = CPoint(DEFAULT_MAX_WIDTH, DEFAULT_MAX_HEIGHT);
+	pMinMaxInfo->ptMinTrackSize = CPoint(defaultMinWidth, defaultMinHeight);
+	pMinMaxInfo->ptMaxTrackSize = CPoint(defaultMaxWidth, defaultMaxHeight);
 
 	// Default
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
@@ -775,12 +769,12 @@ BOOL CDebugTestV2Dlg::RefreshDebugScreen(int nFlag)
 		// DebugScreen position
 		int nXPos = rcClient.left;
 		int nDBViewYPos = rcClient.top;
-		int nDBCmdInputYPos = rcClient.bottom - DEBUG_COMMAND_INPUT_HEIGHT;
+		int nDBCmdInputYPos = rcClient.bottom - debugCmdInputHeight;
 
 		// DebugScreen size
 		int nWidth = rcClient.right - rcClient.left;
 		int nDBViewHeight = nDBCmdInputYPos - nDBViewYPos;
-		int nDBCmdInputHeight = DEBUG_COMMAND_INPUT_HEIGHT;
+		int nDBCmdInputHeight = debugCmdInputHeight;
 
 		// Set DebugScreen position
 		GetDebugView()->SetWindowPos(NULL, nXPos, nDBViewYPos, nWidth, nDBViewHeight, SWP_SHOWWINDOW | SWP_NOZORDER);

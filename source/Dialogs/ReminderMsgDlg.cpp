@@ -21,13 +21,8 @@
 using namespace AppCore;
 
 
-////////////////////////////////////////////////////////
-//
-//	Define macros for Reminder Message dialog
-//
-////////////////////////////////////////////////////////
-
-#define DEFAULT_TEXT2ICON_DISTANCE	10
+// Dialog constant
+constexpr const int defaultTextIconSpacing = 10;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -161,14 +156,14 @@ BOOL CReminderMsgDlg::OnInitDialog()
 
 			// Shift top margin
 			rcDialogMargin.top += m_szIconSize.cy;
-			rcDialogMargin.top -= DEFAULT_TEXT2ICON_DISTANCE;
+			rcDialogMargin.top -= defaultTextIconSpacing;
 			this->SetTopMargin(rcDialogMargin.top);
 		}
 		else if (byIconPosition == RmdMsgStyleSet::IconPosition::IconOnTheLeft) {
 
 			// Shift left margin
 			rcDialogMargin.left += m_szIconSize.cx;
-			rcDialogMargin.left -= DEFAULT_TEXT2ICON_DISTANCE;
+			rcDialogMargin.left -= defaultTextIconSpacing;
 			this->SetLeftMargin(rcDialogMargin.left);
 		}
 	}
@@ -552,7 +547,7 @@ BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon) const
 	this->GetClientRect(&rcClient);
 
 	// Calculate icon top-left point
-	int nText2IconDist = DEFAULT_TEXT2ICON_DISTANCE;
+	int nText2IconDist = defaultTextIconSpacing;
 	BYTE byIconPosition = m_rmdMsgStyleSet.GetIconPosition();
 	if (byIconPosition == RmdMsgStyleSet::IconPosition::IconOnTheTop) {
 		lpptIcon->y = rcCurMargin.top - (m_szIconSize.cy + nText2IconDist);

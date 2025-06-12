@@ -36,12 +36,7 @@ using namespace Language;
 using namespace AppCore;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Define local macros and constants
-//
-//////////////////////////////////////////////////////////////////////////
-
+// TaskbarCreated message constant
 const UINT WM_TASKBARCREATED = ::RegisterWindowMessage(_T("TaskbarCreated"));
 
 

@@ -26,15 +26,10 @@ using namespace Language;
 using namespace AppCore;
 
 
-////////////////////////////////////////////////////////
-//
-//	Define macros for active day list table
-//
-////////////////////////////////////////////////////////
-
-#define COL_ID_CHECKBOX		0
-#define COL_ID_DAYTITLE		1
-#define COL_SIZE_CHECKBOX	30
+// Active days list table constants
+constexpr const int checkboxColID = 0;
+constexpr const int daytitleColID = 1;
+constexpr const int checkboxColSize = 30;
 
 
 ////////////////////////////////////////////////////////
@@ -564,8 +559,8 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	}
 
 	// Setup columns
-	m_pActiveDayListTable->SetColumnWidth(COL_ID_CHECKBOX, COL_SIZE_CHECKBOX);
-	m_pActiveDayListTable->SetColumnWidth(COL_ID_DAYTITLE, nFrameWidth - COL_SIZE_CHECKBOX);
+	m_pActiveDayListTable->SetColumnWidth(checkboxColID, checkboxColSize);
+	m_pActiveDayListTable->SetColumnWidth(daytitleColID, nFrameWidth - checkboxColSize);
 
 	// Setup rows
 	UINT nItemState = INT_NULL;
@@ -574,23 +569,23 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 		/*------------------------------------- Checkbox column -------------------------------------*/
 
 		// Set cell type: Checkbox
-		if (!m_pActiveDayListTable->SetCellType(nRow, COL_ID_CHECKBOX, RUNTIME_CLASS(CGridCellCheck)))
+		if (!m_pActiveDayListTable->SetCellType(nRow, checkboxColID, RUNTIME_CLASS(CGridCellCheck)))
 			continue;
 
 		// Set cell checkbox placement: Centering
-		CGridCellCheck* pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRow, COL_ID_CHECKBOX);
+		CGridCellCheck* pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRow, checkboxColID);
 		if (pCellCheck == NULL) continue;
 		pCellCheck->SetCheckPlacement(SCP_CENTERING);
 
 		/*------------------------------------ Day title column -------------------------------------*/
 
 		// Update cell state
-		nItemState = m_pActiveDayListTable->GetItemState(nRow, COL_ID_DAYTITLE);
-		if (!m_pActiveDayListTable->SetItemState(nRow, COL_ID_DAYTITLE, nItemState | GVIS_READONLY))
+		nItemState = m_pActiveDayListTable->GetItemState(nRow, daytitleColID);
+		if (!m_pActiveDayListTable->SetItemState(nRow, daytitleColID, nItemState | GVIS_READONLY))
 			continue;
 
 		// Set cell alignment: Center
-		CGridCellBase* pCell = (CGridCellBase*)m_pActiveDayListTable->GetCell(nRow, COL_ID_DAYTITLE);
+		CGridCellBase* pCell = (CGridCellBase*)m_pActiveDayListTable->GetCell(nRow, daytitleColID);
 		if (pCell == NULL) continue;
 		pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
 
@@ -631,8 +626,8 @@ void CEditScheduleDlg::SetupDialogItemState()
 	UpdateData(FALSE);
 
 	// Setup time spin button properties
-	int nTimeSpinPos;
-	Time2SpinPos(m_schScheduleItemTemp.GetTime(), nTimeSpinPos);
+	int nTimeSpinPos = 0;
+	ClockTimeUtils::Time2SpinPos(m_schScheduleItemTemp.GetTime(), nTimeSpinPos);
 
 	// Time spin initialization
 	if (m_pTimeSpin == NULL) {
@@ -701,14 +696,14 @@ void CEditScheduleDlg::UpdateActiveDayList()
 
 		// Active state
 		BOOL bActive = (m_schScheduleItemTemp.IsDayActive((DayOfWeek)nDayOfWeekID)) ? TRUE : FALSE;
-		pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, COL_ID_CHECKBOX);
+		pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, checkboxColID);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(bActive);
 		}
 
 		// Day title
 		const wchar_t* tempString = GetLanguageString(ptrLanguage, GetPairedID(IDTable::DayOfWeek, nDayOfWeekID));
-		m_pActiveDayListTable->SetItemText(nRowIndex, COL_ID_DAYTITLE, tempString);
+		m_pActiveDayListTable->SetItemText(nRowIndex, daytitleColID, tempString);
 	}
 }
 
@@ -831,7 +826,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	if (m_pActiveDayListTable == NULL) return;
 	for (int nRowIndex = 0; nRowIndex < Constant::Max::DaysOfWeek; nRowIndex++) {
 		// Get checkbox cell
-		pCellCheckActive = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, COL_ID_CHECKBOX);
+		pCellCheckActive = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, checkboxColID);
 		if (pCellCheckActive == NULL) continue;
 
 		// Get checked states
@@ -1234,14 +1229,14 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	String timeTextValue = tempBuff.data();
 
 	ClockTime clockTime;
-	if (Text2Time(clockTime, timeTextValue)) {
+	if (ClockTimeUtils::InputText2Time(clockTime, timeTextValue)) {
 
 		// Update new time value
 		UpdateTimeSetting(clockTime, FALSE);
 		
 		// Update timespin new position
-		int nSpinPos;
-		Time2SpinPos(clockTime, nSpinPos);
+		int nSpinPos = 0;
+		ClockTimeUtils::Time2SpinPos(clockTime, nSpinPos);
 		if (m_pTimeSpin != NULL) {
 			m_pTimeSpin->SetPos(nSpinPos);
 		}
@@ -1275,7 +1270,7 @@ void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get timespin position and convert to time value
 	int nPos = pNMUpDown->iPos;
 	ClockTime clockTime;
-	SpinPos2Time(clockTime, nPos);
+	ClockTimeUtils::SpinPos2Time(clockTime, nPos);
 	UpdateTimeSetting(clockTime, FALSE);
 
 	*pResult = NULL;

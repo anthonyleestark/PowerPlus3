@@ -3336,6 +3336,220 @@ SYSTEMTIME ClockTimeUtils::ToSystemTime(const ClockTime& clockTime)
 
 //////////////////////////////////////////////////////////////////////////
 // 
+//	Function name:	InputText2Time
+//	Description:	Convert editbox input text into valid time value
+//  Arguments:		stTime		- Return time data (ref-value)
+//					inputText	- Input text
+//  Return value:	bool - Result of converting process
+//
+//////////////////////////////////////////////////////////////////////////
+
+bool ClockTimeUtils::InputText2Time(ClockTime& clockTime, const wchar_t* inputText)
+{
+	// Check input text validity
+	int nLength = wcslen(inputText);
+	if ((nLength == 0) || (nLength > 4))
+		return FALSE;
+
+	String timeString(inputText);
+
+	int nHour = INT_INVALID;
+	int nMinute = INT_INVALID;
+
+	// Break the time value into combinations of digits
+	int nLeft1Digit = _tstoi(timeString.Left(1));
+	int nLeft2Digits = _tstoi(timeString.Left(2));
+	int	nRight1Digit = _tstoi(timeString.Right(1));
+	int nRight2Digits = _tstoi(timeString.Right(2));
+
+	// Convert
+	switch (nLength)
+	{
+	case 1:
+		// Ex: 3 -> 03:00, 9 -> 09:00, ...
+		nHour = _tstoi(timeString);			// The given time value will be the hour value
+		nMinute = 0;						// The minute value will be zero (0)
+		break;
+
+	case 2:
+		if ((nLeft1Digit == 0) ||													// Ex: 08 -> 00:08
+			((nLeft1Digit > 2) || ((nLeft1Digit == 2) && (nRight1Digit > 3)))) {	// Ex: 35 -> 03:05, 24 -> 02:04, ...
+			nHour = nLeft1Digit;													// The first half will be the hour value
+			nMinute = nRight1Digit;													// The remaining will be the minute value
+		}
+		else {
+			// Ex: 13 -> 13:00, 18 -> 18:00, ...
+			nHour = _tstoi(timeString);				// All digits will be the hour value
+			nMinute = 0;							// The minute value will be zero (0)
+		} break;
+
+	case 3:
+		if ((nLeft1Digit == 0) ||								// Ex: 034 -> 00:34, ...
+			((nLeft1Digit > 2) || (nLeft2Digits >= 24)) ||		// Ex: 320 -> 03:20, 250 -> 02:50, ...
+			((nRight2Digits > 0) && (nRight2Digits < 60))) {	// Ex: 225 -> 02:25, 132 -> 01:32, ...
+			nHour = nLeft1Digit;								// The first digit will be the hour value
+			nMinute = nRight2Digits;							// The remaining will be the minute value
+		}
+		else {
+			// Ex: 180 -> 18:00, 1530 -> 15:30, ...
+			nHour = nLeft2Digits;					// The first 2 digits will be the hour value
+			nMinute = nRight1Digit;					// The remaining will be the minute value
+		} break;
+
+	case 4:
+		// Ex: 1235 -> 12:35, 1840 -> 18:40, ...
+		nHour = nLeft2Digits;						// The first half will be the hour value
+		nMinute = nRight2Digits;					// The remaining will be the minute value
+		break;
+	}
+
+	// If the minute value is larger than 60
+	if (nMinute >= 60) {
+		nHour++;			// The hour value increases by 1
+		nMinute -= 60;		// The minute value decreases by 60
+	}
+
+	// If the hour value exceeds 24, return invalid
+	if (nHour >= 24)
+		return FALSE;
+
+	// Only return if both the hour and minute values are valid
+	if ((nHour > INT_INVALID) && (nMinute > INT_INVALID)) {
+		clockTime.SetHour(nHour);
+		clockTime.SetMinute(nMinute);
+	}
+
+	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	InputText2TimeBase
+//	Description:	Convert editbox input text into valid time value 
+//  Arguments:		stTime		- Return time data (ref-value)
+//					inputText	- Input text
+//  Return value:	bool - Result of converting process
+//	Note:			Old/base function (no longer used)
+//
+//////////////////////////////////////////////////////////////////////////
+
+bool ClockTimeUtils::InputText2TimeBase(ClockTime& clockTime, const wchar_t* inputText)
+{
+	// Check input text validity
+	int nLength = wcslen(inputText);
+	if ((nLength == 0) || (nLength > 4))
+		return FALSE;
+
+	// Get input text length
+	UINT nTime = _tstoi(inputText);
+	UINT nTimeTemp = nTime;
+	nLength = 0;
+	do {
+		nLength++;
+		nTimeTemp /= 10;
+	} while (nTimeTemp != 0);
+
+	// Convert
+	int nHour = -1, nMinute = -1;
+	switch (nLength)
+	{
+	case 1: 	// Ex: 3, 9, ...
+		nHour = nTime;
+		nMinute = 0;
+		break;
+
+	case 2:
+		if ((nTime / 10 > 2) ||
+			((nTime / 10 == 2) && (nTime % 10 > 3))) {	// Ex: 35, 24, ...
+			nHour = nTime / 10;
+			nMinute = nTime % 10;
+		}
+		else {	// Ex: 13, 18, ...
+			nHour = nTime;
+			nMinute = 0;
+		} break;
+
+	case 3:
+		if ((nTime / 100 > 2) || (nTime / 10 >= 24)) {	// Ex: 320, 240
+			nHour = nTime / 100;
+			nMinute = nTime % 100;
+		}
+		else {	// Ex: 320, 245
+			nHour = nTime / 10;
+			nMinute = nTime % 10;
+		} break;
+
+	case 4:
+		nHour = nTime / 100;
+		nMinute = nTime % 100;
+		break;
+	}
+
+	// Validate
+	if ((nHour >= 24) || (nMinute >= 60))
+		return FALSE;
+
+	if ((nHour > -1) && (nMinute > -1)) {
+		clockTime.SetHour(nHour);
+		clockTime.SetMinute(nMinute);
+	}
+
+	return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	SpinPos2Time
+//	Description:	Convert timespin position to time value
+//  Arguments:		stTime  - Return time data (ref-value)
+//					nPos	- Input spin position
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ClockTimeUtils::SpinPos2Time(ClockTime& clockTime, int nPos)
+{
+	// Invalid input position
+	if (nPos < Constant::Min::TimeSpin)
+		nPos = Constant::Min::TimeSpin;
+	else if (nPos > Constant::Max::TimeSpin)
+		nPos = Constant::Max::TimeSpin;
+
+	// Convert
+	int nHour = nPos / 60;
+	int nMinute = nPos - (nHour * 60);
+
+	// Validate
+	if ((nHour != INT_INVALID) && (nMinute != INT_INVALID)) {
+		clockTime.SetHour(nHour);
+		clockTime.SetMinute(nMinute);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
+//	Function name:	Time2SpinPos
+//	Description:	Convert time value to timespin position
+//  Arguments:		stTime  - Return time data
+//					nPos	- Input spin position (ref-value)
+//  Return value:	None
+//
+//////////////////////////////////////////////////////////////////////////
+
+void ClockTimeUtils::Time2SpinPos(const ClockTime& clockTime, int& nPos)
+{
+	// Convert
+	nPos = (clockTime.Hour() * 60) + clockTime.Minute();
+
+	// Invalid result
+	if (nPos < Constant::Min::TimeSpin)
+		nPos = Constant::Min::TimeSpin;
+	else if (nPos > Constant::Max::TimeSpin)
+		nPos = Constant::Max::TimeSpin;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 
 //	Function name:	CalculateOffset
 //	Description:	Calculate time with given offset in seconds
 //  Arguments:		clockTime - Clock-time data (in/out)
@@ -3468,7 +3682,7 @@ DateTime DateTimeUtils::FromSystemTime(SYSTEMTIME sysTime)
 
 SYSTEMTIME DateTimeUtils::ToSystemTime(const DateTime& dateTime)
 {
-	SYSTEMTIME _sysTime;
+	SYSTEMTIME _sysTime{};
 	_sysTime.wYear = static_cast<unsigned short>(dateTime.Year());
 	_sysTime.wMonth = static_cast<unsigned short>(dateTime.Month());
 	_sysTime.wDay = static_cast<unsigned short>(dateTime.Day());
@@ -4853,220 +5067,6 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErro
 
 //////////////////////////////////////////////////////////////////////////
 // 
-//	Function name:	Text2Time
-//	Description:	Convert editbox input text into valid time value
-//  Arguments:		stTime  - Return time data (ref-value)
-//					text	- Input text
-//  Return value:	BOOL - Result of converting process
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::Text2Time(ClockTime& clockTime, const wchar_t* text)
-{
-	// Check input text validity
-	int nLength = wcslen(text);
-	if ((nLength == 0) || (nLength > 4))
-		return FALSE;
-
-	String timeString(text);
-
-	int nHour = INT_INVALID;
-	int nMinute = INT_INVALID;
-
-	// Break the time value into combinations of digits
-	int nLeft1Digit = _tstoi(timeString.Left(1));
-	int nLeft2Digits = _tstoi(timeString.Left(2));
-	int	nRight1Digit = _tstoi(timeString.Right(1));
-	int nRight2Digits = _tstoi(timeString.Right(2));
-
-	// Convert
-	switch (nLength)
-	{
-	case 1:
-		// Ex: 3 -> 03:00, 9 -> 09:00, ...
-		nHour = _tstoi(timeString);			// The given time value will be the hour value
-		nMinute = 0;						// The minute value will be zero (0)
-		break;
-
-	case 2:
-		if ((nLeft1Digit == 0) ||													// Ex: 08 -> 00:08
-			((nLeft1Digit > 2) || ((nLeft1Digit == 2) && (nRight1Digit > 3)))) {	// Ex: 35 -> 03:05, 24 -> 02:04, ...
-			nHour = nLeft1Digit;													// The first half will be the hour value
-			nMinute = nRight1Digit;													// The remaining will be the minute value
-		}
-		else {
-			// Ex: 13 -> 13:00, 18 -> 18:00, ...
-			nHour = _tstoi(timeString);				// All digits will be the hour value
-			nMinute = 0;							// The minute value will be zero (0)
-		} break;
-
-	case 3:
-		if ((nLeft1Digit == 0) ||								// Ex: 034 -> 00:34, ...
-			((nLeft1Digit > 2) || (nLeft2Digits >= 24)) ||		// Ex: 320 -> 03:20, 250 -> 02:50, ...
-			((nRight2Digits > 0) && (nRight2Digits < 60))) {	// Ex: 225 -> 02:25, 132 -> 01:32, ...
-			nHour = nLeft1Digit;								// The first digit will be the hour value
-			nMinute = nRight2Digits;							// The remaining will be the minute value
-		}
-		else {
-			// Ex: 180 -> 18:00, 1530 -> 15:30, ...
-			nHour = nLeft2Digits;					// The first 2 digits will be the hour value
-			nMinute = nRight1Digit;					// The remaining will be the minute value
-		} break;
-
-	case 4:
-		// Ex: 1235 -> 12:35, 1840 -> 18:40, ...
-		nHour = nLeft2Digits;						// The first half will be the hour value
-		nMinute = nRight2Digits;					// The remaining will be the minute value
-		break;
-	}
-
-	// If the minute value is larger than 60
-	if (nMinute >= 60) {
-		nHour++;			// The hour value increases by 1
-		nMinute -= 60;		// The minute value decreases by 60
-	}
-
-	// If the hour value exceeds 24, return invalid
-	if (nHour >= 24)
-		return FALSE;
-
-	// Only return if both the hour and minute values are valid
-	if ((nHour > INT_INVALID) && (nMinute > INT_INVALID)) {
-		clockTime.SetHour(nHour);
-		clockTime.SetMinute(nMinute);
-	}
-
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Text2TimeBase
-//	Description:	Convert editbox input text into valid time value 
-//  Arguments:		stTime  - Return time data (ref-value)
-//					text	- Input text
-//  Return value:	BOOL - Result of converting process
-//	Note:			Old/base function (no longer used)
-//
-//////////////////////////////////////////////////////////////////////////
-
-BOOL AppCore::Text2TimeBase(ClockTime& clockTime, const wchar_t* text)
-{
-	// Check input text validity
-	int nLength = wcslen(text);
-	if ((nLength == 0) || (nLength > 4))
-		return FALSE;
-
-	// Get input text length
-	UINT nTime = _tstoi(text);
-	UINT nTimeTemp = nTime;
-	nLength = 0;
-	do {
-		nLength++;
-		nTimeTemp /= 10;
-	} while (nTimeTemp != 0);
-
-	// Convert
-	int nHour = -1, nMinute = -1;
-	switch (nLength)
-	{
-	case 1: 	// Ex: 3, 9, ...
-		nHour = nTime;
-		nMinute = 0;
-		break;
-
-	case 2:
-		if ((nTime / 10 > 2) || 
-			((nTime / 10 == 2) && (nTime % 10 > 3))) {	// Ex: 35, 24, ...
-			nHour = nTime / 10;
-			nMinute = nTime % 10;
-		}
-		else {	// Ex: 13, 18, ...
-			nHour = nTime;
-			nMinute = 0;
-		} break;
-
-	case 3:
-		if ((nTime / 100 > 2) || (nTime / 10 >= 24)) {	// Ex: 320, 240
-			nHour = nTime / 100;
-			nMinute = nTime % 100;
-		}
-		else {	// Ex: 320, 245
-			nHour = nTime / 10;
-			nMinute = nTime % 10;
-		} break;
-
-	case 4:
-		nHour = nTime / 100;
-		nMinute = nTime % 100;
-		break;
-	}
-
-	// Validate
-	if ((nHour >= 24) || (nMinute >= 60))
-		return FALSE;
-
-	if ((nHour > -1) && (nMinute > -1)) {
-		clockTime.SetHour(nHour);
-		clockTime.SetMinute(nMinute);
-	}
-
-	return TRUE;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SpinPos2Time
-//	Description:	Convert timespin position to time value
-//  Arguments:		stTime  - Return time data (ref-value)
-//					nPos	- Input spin position
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void AppCore::SpinPos2Time(ClockTime& clockTime, int nPos)
-{
-	// Invalid input position
-	if (nPos < Constant::Min::TimeSpin)
-		nPos = Constant::Min::TimeSpin;
-	else if (nPos > Constant::Max::TimeSpin)
-		nPos = Constant::Max::TimeSpin;
-
-	// Convert
-	int nHour = nPos / 60;
-	int nMinute = nPos - (nHour * 60);
-
-	// Validate
-	if ((nHour != INT_INVALID) && (nMinute != INT_INVALID)) {
-		clockTime.SetHour(nHour);
-		clockTime.SetMinute(nMinute);
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Time2SpinPos
-//	Description:	Convert time value to timespin position
-//  Arguments:		stTime  - Return time data
-//					nPos	- Input spin position (ref-value)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
-void AppCore::Time2SpinPos(const ClockTime& clockTime, int& nPos)
-{
-	// Convert
-	nPos = (clockTime.Hour() * 60) + clockTime.Minute();
-
-	// Invalid result
-	if (nPos < Constant::Min::TimeSpin)
-		nPos = Constant::Min::TimeSpin;
-	else if (nPos > Constant::Max::TimeSpin)
-		nPos = Constant::Max::TimeSpin;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 
 //	Function name:	GetListCurSel
 //	Description:	Return list control current selected item index
 //  Arguments:		pListCtrl - Pointer of list control
@@ -5215,7 +5215,7 @@ void AppCore::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int /*nRowNum*/, 
 UINT AppCore::GetWindowsOSVersion(void)
 {
 	// Init info data
-	OSVERSIONINFOEX oviOSVersion;
+	OSVERSIONINFOEX oviOSVersion{};
 	oviOSVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
 	// Get function address
@@ -5754,7 +5754,7 @@ void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, const wchar_t* buttonTitl
 //
 //////////////////////////////////////////////////////////////////////////
 
-BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* /*lpntme*/, DWORD /*FontType*/, LPARAM lParam) 
+static BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* /*lpntme*/, DWORD /*FontType*/, LPARAM lParam) 
 {
 	using wstring_vector = typename std::vector<std::wstring>;
 	wstring_vector* fontNames = reinterpret_cast<wstring_vector*>(lParam);

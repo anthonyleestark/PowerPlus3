@@ -27,15 +27,10 @@ using namespace AppCore;
 using namespace AppRegistry;
 
 
-////////////////////////////////////////////////////////
-//
-//	Define macros for data list table
-//
-////////////////////////////////////////////////////////
-
-#define COL_FIXED_NUM			0
-#define ROW_FIXED_NUM			1
-#define ROW_INDEX_START			1
+// Data list table constants
+constexpr const int fixedColumnNum = 0;
+constexpr const int fixedRowNum = 1;
+constexpr const int startRowIndex = 1;
 
 ////////////////////////////////////////////////////////
 //
@@ -386,13 +381,13 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
 
 	// Table format and properties
-	int nRowNum = (m_nLogCount + ROW_FIXED_NUM);
+	int nRowNum = (m_nLogCount + fixedRowNum);
 	int nColNum = m_nColNum;
 
 	// Setup table
 	m_pLogViewerList->SetColumnCount(nColNum);
 	m_pLogViewerList->SetRowCount(nRowNum);
-	m_pLogViewerList->SetFixedRowCount(ROW_FIXED_NUM);
+	m_pLogViewerList->SetFixedRowCount(fixedRowNum);
 	m_pLogViewerList->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
 
 	// Draw table
@@ -445,7 +440,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 
 	// Table properties
 	int nColNum = m_nColNum;
-	int nRowNum = (m_nLogCount + ROW_FIXED_NUM);
+	int nRowNum = (m_nLogCount + fixedRowNum);
 
 	// Setup display size
 	int nFrameHeight = m_pszTableFrameSize->cy;
@@ -609,10 +604,10 @@ void CLogViewerDlg::UpdateLogViewer(void)
 
 	// Print items
 	int nItemIndex = 0;
-	for (int nRowIndex = ROW_INDEX_START; nRowIndex <= m_nLogCount; nRowIndex++) {
+	for (int nRowIndex = startRowIndex; nRowIndex <= m_nLogCount; nRowIndex++) {
 		
 		// Get log item
-		nItemIndex = nRowIndex - ROW_INDEX_START;
+		nItemIndex = nRowIndex - startRowIndex;
 		Item logItem = m_ptrAppEventLog->GetLogItem(nItemIndex);
 
 		// If log item is empty
@@ -654,7 +649,7 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 	int nRow = pItem->iRow;
 
 	//Get current selection index
-	m_nCurSelIndex = nRow - ROW_FIXED_NUM;
+	m_nCurSelIndex = nRow - fixedRowNum;
 
 	// Get app event logging pointer
 	if (m_ptrAppEventLog == NULL) return;

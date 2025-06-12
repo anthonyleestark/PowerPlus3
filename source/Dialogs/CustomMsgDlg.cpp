@@ -17,10 +17,12 @@
 #define new DEBUG_NEW
 #endif
 
-#define DEFAULT_WIDTH	320
-#define DEFAULT_HEIGHT	240
-
 using namespace AppCore;
+
+
+// Dialog default size
+constexpr const int defaultWidth = 320;
+constexpr const int defaultHeight = 240;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -123,8 +125,8 @@ void CCustomMsgDlg::OnDestroy()
 void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
-	pMinMaxInfo->ptMinTrackSize = CPoint(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	pMinMaxInfo->ptMaxTrackSize = CPoint((DEFAULT_WIDTH * 3), (DEFAULT_HEIGHT * 3));
+	pMinMaxInfo->ptMinTrackSize = CPoint(defaultWidth, defaultHeight);
+	pMinMaxInfo->ptMaxTrackSize = CPoint((defaultWidth * 3), (defaultHeight * 3));
 
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
 }

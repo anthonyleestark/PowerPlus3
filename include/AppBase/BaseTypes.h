@@ -480,6 +480,7 @@ class __TimeBase
 protected:
 	// Using aliases for std::chrono classes
 	using __TimePoint = std::chrono::system_clock::time_point;
+	using __Duration = std::chrono::system_clock::duration;
 	using __Date = std::chrono::year_month_day;
 	using __Year = std::chrono::year;
 	using __Years = std::chrono::years;
@@ -494,7 +495,7 @@ protected:
 	using __Milliseconds = std::chrono::milliseconds;
 
 protected:
-	// Using Chrono time_point as base value
+	// Using STL Chrono time_point as base value
 	__TimePoint _timePoint;
 
 protected:
@@ -505,6 +506,27 @@ protected:
 public:
 	virtual ~__TimeBase() = default;
 	virtual __TimePoint GetTimePoint(void) const noexcept = 0;
+
+protected:
+	// Internal validations
+	static constexpr bool _isValidHour(int hour) noexcept {
+		return (hour >= 0 && hour <= 23);
+	};
+	static constexpr bool _isValidMinute(int minute) noexcept {
+		return (minute >= 0 && minute <= 59);
+	};
+	static constexpr bool _isValidSecond(int second) noexcept {
+		return (second >= 0 && second <= 59);
+	};
+	static constexpr bool _isValidMillisecs(int millisecs) noexcept {
+		return (millisecs >= 0 && millisecs <= 999);
+	};
+
+public:
+	// Special validation
+	constexpr bool IsEmpty() const noexcept {
+		return _timePoint == __TimePoint{};
+	};
 };
 
 
@@ -640,16 +662,16 @@ public:
 
 	// Postfix increment operator (increase by 1 second)
 	TimeSpan& operator++(int) noexcept {
-		TimeSpan _temp = *this;
+		TimeSpan _original = *this;
 		_timePoint += __Seconds{1};
-		return _temp;
+		return _original;
 	};
 
 	// Postfix decrement operator (decrease by 1 second)
 	TimeSpan& operator--(int) noexcept {
-		TimeSpan _temp = *this;
+		TimeSpan _original = *this;
 		_timePoint -= __Seconds{1};
-		return _temp;
+		return _original;
 	};
 
 public:
@@ -761,7 +783,9 @@ public:
 
 public:
 	// Conversion constructor
-	ClockTime(__TimePoint timepoint) : __TimeBase(timepoint) {};
+	ClockTime(__TimePoint timepoint) {
+		_timePoint = std::chrono::sys_time{ timepoint - std::chrono::floor<__Days>(timepoint) };
+	};
 	ClockTime(int hour, int min, int sec, int millisec = 0) noexcept {
 		auto _timeVal = __Hours(hour) + __Minutes(min) + __Seconds(sec) + __Milliseconds(millisec);
 		_timePoint = std::chrono::sys_time{ _timeVal };
@@ -771,6 +795,33 @@ public:
 	// Get time point (conversion to std::chrono::system_clock::time_point)
 	__TimePoint GetTimePoint(void) const noexcept override {
 		return _timePoint;
+	};
+
+private:
+	// Internal getters
+	constexpr __Hours _getHours() const noexcept {
+		return std::chrono::duration_cast<__Hours>(_timePoint.time_since_epoch() % __Days(1));
+	};
+	constexpr __Minutes _getMinutes() const noexcept {
+		return std::chrono::duration_cast<__Minutes>(_timePoint.time_since_epoch() % __Hours(1));
+	};
+	constexpr __Seconds _getSeconds() const noexcept {
+		return std::chrono::duration_cast<__Seconds>(_timePoint.time_since_epoch() % __Minutes(1));
+	};
+	constexpr __Milliseconds _getMillisecs() const noexcept {
+		return std::chrono::duration_cast<__Milliseconds>(_timePoint.time_since_epoch() % __Seconds(1));
+	};
+	constexpr __Hours _toHours() const noexcept {
+		return std::chrono::floor<__Hours>(_timePoint - std::chrono::floor<__Days>(_timePoint));
+	};
+	constexpr __Minutes _toMinutes() const noexcept {
+		return std::chrono::floor<__Minutes>(_timePoint - std::chrono::floor<__Days>(_timePoint));
+	};
+	constexpr __Seconds _toSeconds() const noexcept {
+		return std::chrono::floor<__Seconds>(_timePoint - std::chrono::floor<__Days>(_timePoint));
+	};
+	constexpr __Milliseconds _toMillisecs() const noexcept {
+		return std::chrono::floor<__Milliseconds>(_timePoint - std::chrono::floor<__Days>(_timePoint));
 	};
 
 public:
@@ -858,31 +909,16 @@ public:
 
 	// Postfix increment operator (increase by 1 second)
 	ClockTime& operator++(int) noexcept {
-		ClockTime _temp = *this;
+		ClockTime _original = *this;
 		_timePoint += __Seconds{ 1 };
-		return _temp;
+		return _original;
 	};
 
 	// Postfix decrement operator (decrease by 1 second)
 	ClockTime& operator--(int) noexcept {
-		ClockTime _temp = *this;
+		ClockTime _original = *this;
 		_timePoint -= __Seconds{ 1 };
-		return _temp;
-	};
-
-private:
-	// Internal getters
-	constexpr __Hours _getHours() const noexcept {
-		return std::chrono::duration_cast<__Hours>(_timePoint.time_since_epoch() % __Days(1));
-	};
-	constexpr __Minutes _getMinutes() const noexcept {
-		return std::chrono::duration_cast<__Minutes>(_timePoint.time_since_epoch() % __Hours(1));
-	};
-	constexpr __Seconds _getSeconds() const noexcept {
-		return std::chrono::duration_cast<__Seconds>(_timePoint.time_since_epoch() % __Minutes(1));
-	};
-	constexpr __Milliseconds _getMillisecs() const noexcept {
-		return std::chrono::duration_cast<__Milliseconds>(_timePoint.time_since_epoch() % __Seconds(1));
+		return _original;
 	};
 
 public:
@@ -902,20 +938,26 @@ public:
 
 	// Modify data
 	void SetHour(int hour) noexcept {
-		ClockTime _temp = *this;
-		_timePoint = std::chrono::sys_time{ __Hours(hour) + _temp._getMinutes() + _temp._getSeconds() + _temp._getMillisecs() };
+		ClockTime _original = *this;
+		_timePoint = std::chrono::sys_time{ __Hours(hour) + _original._getMinutes() + _original._getSeconds() + _original._getMillisecs() };
 	};
 	void SetMinute(int minute) noexcept {
-		ClockTime _temp = *this;
-		_timePoint = std::chrono::sys_time{ _temp._getHours() + __Minutes(minute) + _temp._getSeconds() + _temp._getMillisecs() };
+		ClockTime _original = *this;
+		_timePoint = std::chrono::sys_time{ _original._getHours() + __Minutes(minute) + _original._getSeconds() + _original._getMillisecs() };
 	};
 	void SetSecond(int second) noexcept {
-		ClockTime _temp = *this;
-		_timePoint = std::chrono::sys_time{ _temp._getHours() + _temp._getMinutes() + __Seconds(second) + _temp._getMillisecs() };
+		ClockTime _original = *this;
+		_timePoint = std::chrono::sys_time{ _original._getHours() + _original._getMinutes() + __Seconds(second) + _original._getMillisecs() };
 	};
 	void SetMillisecs(int millisecs) noexcept {
-		ClockTime _temp = *this;
-		_timePoint = std::chrono::sys_time{ _temp._getHours() + _temp._getMinutes() + _temp._getSeconds() + __Milliseconds(millisecs) };
+		ClockTime _original = *this;
+		_timePoint = std::chrono::sys_time{ _original._getHours() + _original._getMinutes() + _original._getSeconds() + __Milliseconds(millisecs) };
+	};
+
+public:
+	// Special validations
+	constexpr bool IsValidTime(int hour, int minute, int second, int millisecs = 0) const noexcept {
+		return (_isValidHour(hour) && _isValidMinute(minute) && _isValidSecond(second) && _isValidMillisecs(millisecs));
 	};
 
 public:
@@ -951,6 +993,20 @@ public:
 	ClockTime& DecreaseMillisecs(int millisecs) noexcept {
 		_timePoint -= __Milliseconds{ millisecs };
 		return *this;
+	};
+
+	// Comparison
+	int CompareToHours(const ClockTime& other) const noexcept {
+		return static_cast<int>((_toHours() - other._toHours()).count());
+	};
+	int CompareToMinutes(const ClockTime& other) const noexcept {
+		return static_cast<int>((_toMinutes() - other._toMinutes()).count());
+	};
+	int CompareToSeconds(const ClockTime& other) const noexcept {
+		return static_cast<int>((_toSeconds() - other._toSeconds()).count());
+	};
+	int CompareToMillisecs(const ClockTime& other) const noexcept {
+		return static_cast<int>((_toMillisecs() - other._toMillisecs()).count());
 	};
 };
 
@@ -1092,20 +1148,23 @@ public:
 
 	// Postfix increment operator (increase by 1 second)
 	DateTime& operator++(int) noexcept {
-		DateTime _temp = *this;
+		DateTime _original = *this;
 		_timePoint += __Seconds{ 1 };
-		return _temp;
+		return _original;
 	};
 
 	// Postfix decrement operator (decrease by 1 second)
 	DateTime& operator--(int) noexcept {
-		DateTime _temp = *this;
+		DateTime _original = *this;
 		_timePoint -= __Seconds{ 1 };
-		return _temp;
+		return _original;
 	};
 
 private:
 	// Internal getters
+	constexpr __Date _dateVal() const noexcept {
+		return __Date{ std::chrono::floor<__Days>(_timePoint) };
+	};
 	constexpr __Year _yearVal() const noexcept {
 		return __Date{ std::chrono::floor<__Days>(_timePoint) }.year();
 	};
@@ -1158,10 +1217,77 @@ public:
 		return static_cast<unsigned>(_weekdayVal().c_encoding());
 	};
 
+	// Modify data
+	void SetDate(int year, unsigned int month, unsigned int day) noexcept {
+		DateTime _original = *this;
+		auto _newDateVal = __Date{ __Year(year), __Month(month), __Day(day) };
+		_timePoint = std::chrono::sys_days{ _newDateVal } + (_original._timePoint - std::chrono::sys_days{ _original._dateVal() });
+	};
+	void SetClockTime(int hour, int minute, int second, int millisecs = 0) noexcept {
+		DateTime _original = *this;
+		auto _newTimeVal = __Hours(hour) + __Minutes(minute) + __Seconds(second) + __Milliseconds(millisecs);
+		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
+	};
+	void SetClockTime(const ClockTime& clockTime) noexcept {
+		DateTime _original = *this;
+		auto _newTimeVal = clockTime.GetTimePoint() - std::chrono::floor<__Days>(clockTime.GetTimePoint());
+		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
+	};
+	void SetYear(int year) noexcept {
+		DateTime _original = *this;
+		auto _newDateVal = __Date{ __Year(year), _original._monthVal(), _original._dayVal() };
+		_timePoint = std::chrono::sys_days{ _newDateVal } + (_original._timePoint - std::chrono::sys_days{ _original._dateVal() });
+	};
+	void SetMonth(int month) noexcept {
+		DateTime _original = *this;
+		auto _newDateVal = __Date{ _original._yearVal(), __Month(month), _original._dayVal() };
+		_timePoint = std::chrono::sys_days{ _newDateVal } + (_original._timePoint - std::chrono::sys_days{ _original._dateVal() });
+	};
+	void SetDay(int day) noexcept {
+		DateTime _original = *this;
+		auto _newDateVal = __Date{ _original._yearVal(), _original._monthVal(), __Day(day) };
+		_timePoint = std::chrono::sys_days{ _newDateVal } + (_original._timePoint - std::chrono::sys_days{ _original._dateVal() });
+	};
+	void SetHour(int hour) noexcept {
+		DateTime _original = *this;
+		auto _newTimeVal = __Hours(hour) + _original._getMinutes() + _original._getSeconds() + _original._getMillisecs();
+		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
+	};
+	void SetMinute(int minute) noexcept {
+		DateTime _original = *this;
+		auto _newTimeVal = _original._getHours() + __Minutes(minute) + _original._getSeconds() + _original._getMillisecs();
+		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
+	};
+	void SetSecond(int second) noexcept {
+		DateTime _original = *this;
+		auto _newTimeVal = _original._getHours() + _original._getMinutes() + __Seconds(second) + _original._getMillisecs();
+		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
+	};
+	void SetMillisecs(int millisecs) noexcept {
+		DateTime _original = *this;
+		auto _newTimeVal = _original._getHours() + _original._getMinutes() + _original._getSeconds() + __Milliseconds(millisecs);
+		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
+	};
+
 public:
-	// Special validation
+	// Special validations
 	constexpr bool IsLeapYear(void) const noexcept {
 		return _yearVal().is_leap();
+	};
+	constexpr bool IsValidDate(int year, unsigned int month, unsigned int day) const noexcept {
+		return __Date{ __Year(year), __Month(month), __Day(day) }.ok();
+	};
+	constexpr bool IsValidTime(int hour, int minute, int second, int millisecs = 0) const noexcept {
+		return (_isValidHour(hour) && _isValidMinute(minute) && _isValidSecond(second) && _isValidMillisecs(millisecs));
+	};
+	constexpr bool IsToday(void) const noexcept {
+		return _dateVal() == DateTime(std::chrono::system_clock::now())._dateVal();
+	};
+	constexpr bool IsInTheFuture(void) const noexcept {
+		return _timePoint > std::chrono::system_clock::now();
+	};
+	constexpr bool IsInThePast(void) const noexcept {
+		return _timePoint < std::chrono::system_clock::now();
 	};
 
 public:

@@ -47,17 +47,17 @@ UINT MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse /
 		IDPAIR idPair = pIDTableRef[nIndex++];
 
 		// End of table
-		if (idPair.nFirstID == INT_NULL)
+		if (idPair.first == INT_NULL)
 			break;
 
 		// Reverse search
 		if (bReverse == TRUE) {
-			if (idPair.nSecondID == nID)
-				return idPair.nFirstID;
+			if (idPair.second == nID)
+				return idPair.first;
 		}
 		else {
-			if (idPair.nFirstID == nID)
-				return idPair.nSecondID;
+			if (idPair.first == nID)
+				return idPair.second;
 		}
 	} while (nIndex < MAX_TABLESIZE);
 

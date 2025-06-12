@@ -1274,56 +1274,6 @@ typedef struct tagGRIDCTRLCOLFMT
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	HOTKEYINFO
-//  Description:	Store hotkey info
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef struct tagHOTKEYINFO
-{
-	// Member variables
-	DWORD	dwModifiers;									// Modifier keys
-	DWORD	dwVirtualKey;									// Virtual key code
-	UINT	nHotkeyDescription;								// Hotkey description (string ID)
-} HOTKEYINFO, *PHOTKEYINFO;
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	IDPAIR
-//  Description:	Using for ID pair list
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef struct tagIDPAIR
-{
-	// Member variables
-	UINT nFirstID;											// First pair ID
-	UINT nSecondID;											// Second pair ID
-} IDPAIR, *PIDPAIR;
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	ACTIONDEF
-//  Description:	Using for action definition/combination table
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef struct tagACTIONDEF
-{
-	// Member variables
-	UINT nActionDefID;										// Action ID
-	UINT nActionNameID;										// Action Name ID
-	UINT nActionMsgID;										// Action message ID
-	UINT nSchedNotifyID;									// Schedule notify message ID
-	UINT nNotifyTipID;										// Notify file tip ID
-	UINT nBalloonTipID;										// Balloon tip ID
-} ACTIONDEF, *PACTIONDEF;
-
-//////////////////////////////////////////////////////////////////////////
-//
 //	Data type name:	RESTARTREQ
 //  Description:	Using for request to restart app as admin
 //  Derivered from: C++ basic struct
@@ -1453,6 +1403,11 @@ public:
 	static ClockTime FromSystemTime(SYSTEMTIME sysTime);
 	static SYSTEMTIME ToSystemTime(const ClockTime& clockTime);
 
+	static bool InputText2Time(ClockTime& clockTime, const wchar_t* inputText);
+	static bool InputText2TimeBase(ClockTime& clockTime, const wchar_t* inputText);
+	static void SpinPos2Time(ClockTime& clockTime, int spinPos);
+	static void Time2SpinPos(const ClockTime& clockTime, int& spinPos);
+
 	// Calculate time offset (increasing/descreasing) in seconds
 	static void CalculateOffset(ClockTime& clockTime, int offInSecs);
 
@@ -1554,11 +1509,6 @@ namespace AppCore
 	// Data converting functions
 	UINT Sel2Opt(UINT nOptionMacro, UINT nSelection);
 	UINT Opt2Sel(UINT nOptionMacro, UINT nCurOption);
-
-	BOOL Text2Time(ClockTime& clockTime, const wchar_t* text);
-	BOOL Text2TimeBase(ClockTime& clockTime, const wchar_t* text);
-	void SpinPos2Time(ClockTime& clockTime, int spinPos);
-	void Time2SpinPos(const ClockTime& clockTime, int& spinPos);
 
 	// Data/control/window processing functions
 	int	 GetListCurSel(CListCtrl& pListCtrl);

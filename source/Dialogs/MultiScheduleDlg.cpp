@@ -29,16 +29,11 @@ using namespace AppCore;
 using namespace AppRegistry;
 
 
-////////////////////////////////////////////////////////
-//
-//	Define macros for data list table
-//
-////////////////////////////////////////////////////////
-
-#define COL_FIXED_NUM			1
-#define ROW_FIXED_NUM			1
-#define ROW_INDEX_DEFAULT		1
-#define ROW_INDEX_EXTRASTART	2
+// Data list table constants
+constexpr const int fixedColumnNum = 1;
+constexpr const int fixedRowNum = 1;
+constexpr const int defaultRowIndex = 1;
+constexpr const int extraStartRowIndex = 2;
 
 
 ////////////////////////////////////////////////////////
@@ -477,14 +472,14 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR /*ptrLanguage*/)
 	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
 
 	// Table format and properties
-	int nRowNum = (GetTotalItemNum() + ROW_FIXED_NUM);
+	int nRowNum = (GetTotalItemNum() + fixedRowNum);
 	int nColNum = m_nColNum;
 
 	// Setup table
 	m_pDataItemListTable->SetColumnCount(nColNum);
-	m_pDataItemListTable->SetFixedColumnCount(COL_FIXED_NUM);
+	m_pDataItemListTable->SetFixedColumnCount(fixedColumnNum);
 	m_pDataItemListTable->SetRowCount(nRowNum);
-	m_pDataItemListTable->SetFixedRowCount(ROW_FIXED_NUM);
+	m_pDataItemListTable->SetFixedRowCount(fixedRowNum);
 	m_pDataItemListTable->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
 
 	// Draw table
@@ -546,7 +541,7 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 	
 	// Table properties
 	int nColNum = m_nColNum;
-	int nRowNum = (GetTotalItemNum() + ROW_FIXED_NUM);
+	int nRowNum = (GetTotalItemNum() + fixedRowNum);
 
 	// Setup display size
 	int nFrameHeight = m_pszDataTableFrameSize->cy;
@@ -607,7 +602,7 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 			nItemState |= GVIS_READONLY;
 
 			// Highlight default schedule item
-			if ((nRow == ROW_INDEX_DEFAULT) && (nColStyle != COLSTYLE_FIXED) && (bReadOnly != TRUE)) {
+			if ((nRow == defaultRowIndex) && (nColStyle != COLSTYLE_FIXED) && (bReadOnly != TRUE)) {
 				CGridCellBase* pCellBase = m_pDataItemListTable->GetCell(nRow, nCol);
 				if (pCellBase != NULL) {
 					pCellBase->SetBackClr(Color::Yellow);
@@ -809,17 +804,17 @@ void CMultiScheduleDlg::UpdateDataItemList()
 	int nTemp = -1;
 	int nExtraItemIndex = 0;
 	CGridCellCheck* pCellCheck = NULL;
-	for (int nRowIndex = ROW_INDEX_DEFAULT; nRowIndex <= nItemNum; nRowIndex++) {
+	for (int nRowIndex = defaultRowIndex; nRowIndex <= nItemNum; nRowIndex++) {
 		
 		// Get schedule item
 		Item schItem;
-		if (nRowIndex == ROW_INDEX_DEFAULT) {
+		if (nRowIndex == defaultRowIndex) {
 			// Get schedule default item
 			schItem = m_schScheduleTemp.GetDefaultItem();
 		}
 		else {
 			// Get schedule extra item
-			nExtraItemIndex = nRowIndex - ROW_INDEX_EXTRASTART;
+			nExtraItemIndex = nRowIndex - extraStartRowIndex;
 			schItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
 		}
 
@@ -891,7 +886,7 @@ void CMultiScheduleDlg::RedrawDataTable(BOOL bReadOnly /* = FALSE */)
 	if (m_pDataItemListTable == NULL) return;
 
 	// Update new row number
-	int nCurRowNum = (GetTotalItemNum() + ROW_FIXED_NUM);
+	int nCurRowNum = (GetTotalItemNum() + fixedRowNum);
 	m_pDataItemListTable->SetRowCount(nCurRowNum);
 
 	// Draw table
@@ -925,7 +920,7 @@ void CMultiScheduleDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	BOOL bIsSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetTotalItemNum()));
 
 	// Check if selected item is an extra item or not
-	BOOL bIsExtraSelected = ((bIsSelected == TRUE) && ((m_nCurSelIndex + ROW_FIXED_NUM) >= ROW_INDEX_EXTRASTART));
+	BOOL bIsExtraSelected = ((bIsSelected == TRUE) && ((m_nCurSelIndex + fixedRowNum) >= extraStartRowIndex));
 
 	// Check if number of extra item has reached the limit
 	BOOL bIsMaxNum = (GetExtraItemNum() >= ScheduleData::maxItemNum);
@@ -1137,13 +1132,13 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 	int nExtraItemIndex = 0;
 	CGridCellCheck* pCellCheckEnable = NULL;
 	CGridCellCheck* pCellCheckRepeat = NULL;
-	int nItemRowNum = (m_pDataItemListTable->GetRowCount() - ROW_FIXED_NUM);
-	for (int nRowIndex = ROW_INDEX_DEFAULT; nRowIndex <= nItemRowNum; nRowIndex++) {
+	int nItemRowNum = (m_pDataItemListTable->GetRowCount() - fixedRowNum);
+	for (int nRowIndex = defaultRowIndex; nRowIndex <= nItemRowNum; nRowIndex++) {
 		
 		// In case of extra item rows
-		if (nRowIndex > ROW_INDEX_DEFAULT) {
+		if (nRowIndex > defaultRowIndex) {
 			// Get extra item index
-			nExtraItemIndex = nRowIndex - ROW_INDEX_EXTRASTART;
+			nExtraItemIndex = nRowIndex - extraStartRowIndex;
 		}
 
 		// Get checkbox cells
@@ -1156,7 +1151,7 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 		BOOL bRepeat = pCellCheckRepeat->GetCheck();
 
 		// Update item enable and repeat states
-		if (nRowIndex == ROW_INDEX_DEFAULT) {
+		if (nRowIndex == defaultRowIndex) {
 			// Update default item data
 			Item& schTempDefault = m_schScheduleTemp.GetDefaultItem();
 			schTempDefault.EnableItem(bEnabled);
@@ -1557,17 +1552,17 @@ void CMultiScheduleDlg::OnEdit()
 	if (bIsSelected == TRUE) {
 
 		// Get selected row index
-		int nSelRowIndex = m_nCurSelIndex + ROW_FIXED_NUM;
+		int nSelRowIndex = m_nCurSelIndex + fixedRowNum;
 
 		// Get selected item
 		Item schItem;
-		if (nSelRowIndex == ROW_INDEX_DEFAULT) {
+		if (nSelRowIndex == defaultRowIndex) {
 			// Get default item
 			schItem = m_schScheduleTemp.GetDefaultItem();
 		}
 		else {
 			// Get extra item
-			int nExtraItemIndex = nSelRowIndex - ROW_INDEX_EXTRASTART;
+			int nExtraItemIndex = nSelRowIndex - extraStartRowIndex;
 			schItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
 		}
 
@@ -1615,18 +1610,18 @@ void CMultiScheduleDlg::OnRemove()
 
 	// Get current select item index
 	int nSelItemIndex = m_nCurSelIndex;
-	int nSelRowIndex = nSelItemIndex + ROW_FIXED_NUM;
+	int nSelRowIndex = nSelItemIndex + fixedRowNum;
 
 	// If item at selected index is default item, can not remove
-	if (nSelRowIndex == ROW_INDEX_DEFAULT) {
+	if (nSelRowIndex == defaultRowIndex) {
 		DisplayMessageBox(MSGBOX_MULTISCHEDULE_NOTREMOVE_DEFAULT, NULL, MB_OK | MB_ICONINFORMATION);
 		return;
 	}
 
 	// In case of extra item rows
-	else if (nSelRowIndex > ROW_INDEX_DEFAULT) {
+	else if (nSelRowIndex > defaultRowIndex) {
 		// Get extra item index
-		nSelItemIndex = nSelRowIndex - ROW_INDEX_EXTRASTART;
+		nSelItemIndex = nSelRowIndex - extraStartRowIndex;
 	}
 
 	// If item at selected index is empy, do nothing
@@ -1731,17 +1726,17 @@ void CMultiScheduleDlg::OnViewDetails()
 	if (bIsSelected == TRUE) {
 
 		// Get selected row index
-		int nSelRowIndex = m_nCurSelIndex + ROW_FIXED_NUM;
+		int nSelRowIndex = m_nCurSelIndex + fixedRowNum;
 
 		// Get selected item
 		Item schItem;
-		if (nSelRowIndex == ROW_INDEX_DEFAULT) {
+		if (nSelRowIndex == defaultRowIndex) {
 			// Get default item
 			schItem = m_schScheduleTemp.GetDefaultItem();
 		}
 		else {
 			// Get extra item
-			int nExtraItemIndex = nSelRowIndex - ROW_INDEX_EXTRASTART;
+			int nExtraItemIndex = nSelRowIndex - extraStartRowIndex;
 			schItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
 		}
 
@@ -1788,8 +1783,8 @@ void CMultiScheduleDlg::OnSetDefault()
 		return;
 
 	// Check if selected item is an extra item or not
-	int nSelRowIndex = m_nCurSelIndex + ROW_FIXED_NUM;
-	BOOL bIsExtraSelected = ((bIsSelected == TRUE) && (nSelRowIndex >= ROW_INDEX_EXTRASTART));
+	int nSelRowIndex = m_nCurSelIndex + fixedRowNum;
+	BOOL bIsExtraSelected = ((bIsSelected == TRUE) && (nSelRowIndex >= extraStartRowIndex));
 
 	if (bIsExtraSelected == TRUE) {
 
@@ -1797,7 +1792,7 @@ void CMultiScheduleDlg::OnSetDefault()
 		int nConfirm = DisplayMessageBox(MSGBOX_MULTISCHEDULE_CONFIRM_SETDEFAULT, NULL, MB_YESNO | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Check if currently selected item is empty
-			int nExtraItemIndex = nSelRowIndex - ROW_INDEX_EXTRASTART;
+			int nExtraItemIndex = nSelRowIndex - extraStartRowIndex;
 			const Item& schCurSelItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
 			if (schCurSelItem.IsEmpty())
 				return;
@@ -1837,7 +1832,7 @@ void CMultiScheduleDlg::OnSelectScheduleItem(NMHDR* pNMHDR, LRESULT* pResult)
 	int nRow = pItem->iRow;
 
 	//Get current selection index
-	m_nCurSelIndex = nRow - ROW_FIXED_NUM;
+	m_nCurSelIndex = nRow - fixedRowNum;
 	int nItemCount = GetTotalItemNum();
 
 	// Success (return 0)
