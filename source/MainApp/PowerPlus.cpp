@@ -2458,82 +2458,54 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 
 BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent)
 {
-	long lRes;
-	HKEY hRegOpenKey;
-
-	// Initialize registry info data
-	RegistryInfo regInfoLastSysEvt;
-	regInfoLastSysEvt.SetRootKeyName(AppProfile::Registry::RootKey);
-	regInfoLastSysEvt.SetSubkeyPath(AppProfile::Registry::SubKeys);
-	regInfoLastSysEvt.SetCompanyName(AppProfile::Registry::CompanyName);
-	regInfoLastSysEvt.SetProductName(AppProfile::Registry::ProductID);
-	regInfoLastSysEvt.SetSectionName(Section::GlobalData);
-
-	// Set subsection
-	regInfoLastSysEvt.SetSectionName(Section::GlobalData::Tracking);
-
-	// Get registry path
-	String lastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, RegistryPathType::includingSectionName, FALSE);
-
-	// Open registry key
-	lRes = RegOpenKeyEx(HKEY_CURRENT_USER, lastSysEvtRegPath, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hRegOpenKey);
-
-	// Registry key open failed
-	if (lRes != ERROR_SUCCESS) {
-		TRACE_ERROR("Error: Registry key open failed!!!");
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
-	}
-
 	// Get key name
 	String keyName;
-	if (byEventType == SystemEventID::SystemSuspend) {
-		// Last system suspend
-		keyName = Key::GlobalData::Tracking::LastSysSuspend;
-	}
-	else if (byEventType == SystemEventID::SystemWakeUp) {
-		// Last system wakeup
-		keyName = Key::GlobalData::Tracking::LastSysWakeup;
-	}
-	else if (byEventType == SystemEventID::SessionEnded) {
-		// Last app/system session ending
-		keyName = Key::GlobalData::Tracking::LastSessionEnd;
-	}
-	else {
-		// Close key and exit
-		RegCloseKey(hRegOpenKey);
-		return FALSE;
-	}
+	switch (byEventType)
+	{
+	case SystemEventID::SystemSuspend:
+		keyName = Key::SystemEventTracking::LastSysSuspend;
+		break;
 
-	// Get registry key value
-	DWORD dwType = REG_SZ;
-	TCHAR tcBuffer[MAX_PATH];
-	DWORD dwBufferSize = sizeof(tcBuffer);
-	lRes = RegQueryValueEx(hRegOpenKey, keyName, 0, &dwType, (LPBYTE)tcBuffer, &dwBufferSize);
-	
-	// Get registry key value failed
-	if (lRes != ERROR_SUCCESS) {
-		// Trace error
-		TRACE_ERROR("Error: Registry key query value failed!!!");
+	case SystemEventID::SystemWakeUp:
+		keyName = Key::SystemEventTracking::LastSysWakeup;
+		break;
+
+	case SystemEventID::SessionEnded:
+		keyName = Key::SystemEventTracking::LastSessionEnd;
+		break;
+
+	default:
+		// Invalid argument
+		TRACE_ERROR("Error: Invalid argument!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-
-		// Close key and exit
-		RegCloseKey(hRegOpenKey);
 		return FALSE;
 	}
 
-	SYSTEMTIME sysTimeTemp = DateTimeUtils::ToSystemTime(timeSysEvent);
+	// Get registry data
+	String sysEventTrackingInfo;
+	if (!GetSysEventTracking(keyName, sysEventTrackingInfo)) {
 
-	// Extract time data from string
-	TCHAR tcTimePeriod[5];
-	String dateTimeFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	_stscanf_s(tcBuffer, dateTimeFormat, &sysTimeTemp.wYear, &sysTimeTemp.wMonth, &sysTimeTemp.wDay,
-		&sysTimeTemp.wHour, &sysTimeTemp.wMinute, &sysTimeTemp.wSecond, &sysTimeTemp.wMilliseconds, tcTimePeriod, (unsigned)_countof(tcTimePeriod));
+		// Get system event tracking data failed
+		TRACE_ERROR("Error: Get system event tracking data failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return FALSE;
+	}
 
-	timeSysEvent = DateTimeUtils::FromSystemTime(sysTimeTemp);
+	// Extract time data from result string
+	wchar_t tcTimePeriod[5] = {0};
+	int year, month, day, hour, minute, second, millisecs;
+	int nRet = swscanf_s(sysEventTrackingInfo.GetString(), L"%d/%d/%d %d:%d:%d.%d %ls", &year, &month, &day,
+		&hour, &minute, &second, &millisecs, tcTimePeriod, static_cast<unsigned int>(_countof(tcTimePeriod)));
 
-	// Close key
-	RegCloseKey(hRegOpenKey);
+	if (nRet != 8) {
+		// Extract system event tracking time failed
+		TRACE_ERROR("Error: Get system event tracking time failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return FALSE;
+	}
+
+	// Return time data
+	timeSysEvent = DateTime(year, static_cast<unsigned int>(month), static_cast<unsigned int>(day), hour, minute, second, millisecs);
 
 	return TRUE;
 }
@@ -2550,52 +2522,26 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent
 
 BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent)
 {
-	long lRes;
-	HKEY hRegOpenKey;
-	DWORD dwState;
-	BOOL bRet = TRUE;
-
-	// Initialize registry info data
-	RegistryInfo regInfoLastSysEvt;
-	regInfoLastSysEvt.SetRootKeyName(AppProfile::Registry::RootKey);
-	regInfoLastSysEvt.SetSubkeyPath(AppProfile::Registry::SubKeys);
-	regInfoLastSysEvt.SetCompanyName(AppProfile::Registry::CompanyName);
-	regInfoLastSysEvt.SetProductName(AppProfile::Registry::ProductID);
-	regInfoLastSysEvt.SetSectionName(Section::GlobalData);
-
-	// Set subsection
-	regInfoLastSysEvt.SetSectionName(Section::GlobalData::Tracking);
-
-	// Get registry path
-	String lastSysEvtRegPath = MakeRegistryPath(regInfoLastSysEvt, RegistryPathType::includingSectionName, FALSE);
-
-	// Create registry key (open if key exists)
-	lRes = RegCreateKeyEx(HKEY_CURRENT_USER, lastSysEvtRegPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hRegOpenKey, &dwState);
-
-	// Registry key creation failed
-	if (lRes != ERROR_SUCCESS) {
-		TRACE_ERROR("Error: Registry key creation failed!!!");
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
-	}
-
 	// Get key name
 	String keyName;
-	if (byEventType == SystemEventID::SystemSuspend) {
-		// Last system suspend
-		keyName = Key::GlobalData::Tracking::LastSysSuspend;
-	}
-	else if (byEventType == SystemEventID::SystemWakeUp) {
-		// Last system wakeup
-		keyName = Key::GlobalData::Tracking::LastSysWakeup;
-	}
-	else if (byEventType == SystemEventID::SessionEnded) {
-		// Last app/system session ending
-		keyName = Key::GlobalData::Tracking::LastSessionEnd;
-	}
-	else {
-		// Close key and exit
-		RegCloseKey(hRegOpenKey);
+	switch (byEventType)
+	{
+	case SystemEventID::SystemSuspend:
+		keyName = Key::SystemEventTracking::LastSysSuspend;
+		break;
+
+	case SystemEventID::SystemWakeUp:
+		keyName = Key::SystemEventTracking::LastSysWakeup;
+		break;
+
+	case SystemEventID::SessionEnded:
+		keyName = Key::SystemEventTracking::LastSessionEnd;
+		break;
+
+	default:
+		// Invalid argument
+		TRACE_ERROR("Error: Invalid argument!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
@@ -2606,18 +2552,16 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeS
 	String dateTimeFormat = StringUtils::StringFormat(timeFormatString, timeSysEvent.Year(), timeSysEvent.Month(), timeSysEvent.Day(),
 		timeSysEvent.Hour(), timeSysEvent.Minute(), timeSysEvent.Second(), timeSysEvent.Millisecond(), timePeriodFormat);
 
-	// Save registry value
-	DWORD dwDataSize = (dateTimeFormat.GetLength() + 1) * sizeof(TCHAR);
-	TCHAR* pszData = new TCHAR[dwDataSize];
-	_tcscpy_s(pszData, dwDataSize, dateTimeFormat);
-	lRes = RegSetValueEx(hRegOpenKey, keyName, 0, REG_SZ, (LPBYTE)pszData, dwDataSize);
-	delete[] pszData;
+	// Save registry data
+	if (!WriteSysEventTracking(keyName, dateTimeFormat)) {
 
-	// Close key
-	RegCloseKey(hRegOpenKey);
+		// Save system event tracking data failed
+		TRACE_ERROR("Error: Save system event tracking data failed!!!");
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return FALSE;
+	}
 
-	bRet = (lRes == ERROR_SUCCESS);
-	return bRet;
+	return TRUE;
 }
 
 //////////////////////////////////////////////////////////////////////////

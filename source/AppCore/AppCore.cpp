@@ -3956,7 +3956,7 @@ BOOL AppCore::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCo
 					uExitWinExFlags |= EWX_FORCE;
 
 					HANDLE hToken;
-					TOKEN_PRIVILEGES tkPrivileges;
+					TOKEN_PRIVILEGES tkPrivileges{};
 
 					// Get process token
 					if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {

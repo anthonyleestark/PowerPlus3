@@ -84,7 +84,6 @@ struct Section {
 		static constexpr const wchar_t* DebugTest								= _T("DebugTest");
 		static constexpr const wchar_t* AppFlag									= _T("AppFlag");
 		static constexpr const wchar_t* Feature									= _T("Feature");
-		static constexpr const wchar_t* Tracking								= _T("Tracking");
 		static constexpr const wchar_t* Other									= _T("Other");
 	};
 
@@ -99,6 +98,7 @@ struct Section {
 		static constexpr const wchar_t* PwrReminderTable						= _T("PwrReminderTable");
 	};
 
+	static constexpr const wchar_t* SystemEventTracking							= _T("SystemEventTracking");
 	static constexpr const wchar_t* AutoStart									= _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
 };
 
@@ -199,12 +199,6 @@ struct Key
 			static constexpr const wchar_t* SessionEndFlag						= _T("SessionEndFlag");
 			static constexpr const wchar_t* SafeTermination						= _T("SafeTermination");
 		};
-
-		struct Tracking {
-			static constexpr const wchar_t* LastSysSuspend						= _T("LastSysSuspend");
-			static constexpr const wchar_t* LastSysWakeup						= _T("LastSysWakeup");
-			static constexpr const wchar_t* LastSessionEnd						= _T("LastSessionEnd");
-		};
 	};
 
 	struct LayoutInfo
@@ -215,5 +209,11 @@ struct Key
 			swprintf(buffer, 32, GridColSizeFormat, id);
 			return buffer;
 		};
+	};
+
+	struct SystemEventTracking {
+		static constexpr const wchar_t* LastSysSuspend							= _T("LastSysSuspend");
+		static constexpr const wchar_t* LastSysWakeup							= _T("LastSysWakeup");
+		static constexpr const wchar_t* LastSessionEnd							= _T("LastSessionEnd");
 	};
 };

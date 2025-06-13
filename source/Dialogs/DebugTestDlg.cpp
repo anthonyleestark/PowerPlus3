@@ -697,9 +697,11 @@ BOOL CDebugTestDlg::SendDebugCommand(void)
 	int nLineLength = GetDebugEditView()->LineLength(nLineIndex);
 
 	// Get the debug command line
-	std::vector<wchar_t> tempBuff(nLineLength + 1);
-	GetDebugEditView()->GetLine(nCurLine, tempBuff.data(), nLineLength + 1);
-	String debugCommand = tempBuff.data();
+	std::wstring tempBuff{};
+	tempBuff.resize(nLineLength + 1);
+	int nBuffLength = GetDebugEditView()->GetLine(nCurLine, &tempBuff[0], nLineLength + 1);
+	tempBuff.resize(nBuffLength);
+	String debugCommand = tempBuff;
 
 	// Re-format the debug command
 	int nCommandLength = FormatDebugCommand(debugCommand);
@@ -953,13 +955,12 @@ int CDebugTestDlg::FormatDebugCommand(String& debugCommand)
 	debugCommand.Trim();
 
 	// Initialize a temporary string buffer
-	int nSrcLength = debugCommand.GetLength();
-	std::vector<wchar_t> tempBuff(nSrcLength + 1);
+	std::wstring copyBuffer = debugCommand;
+	std::wstring tempNewBuffer = Constant::String::Empty;
 
 	// Remove invalid characters
-	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
-
-		wchar_t ch = debugCommand.GetAt(nIndex);
+	for (wchar_t ch : copyBuffer)
+	{
 		switch (ch)
 		{
 		case Constant::Char::Return:
@@ -967,18 +968,18 @@ int CDebugTestDlg::FormatDebugCommand(String& debugCommand)
 			break;
 		case Constant::Char::Tab:
 			// Replace with space
-			tempBuff.push_back(Constant::Char::Space);
+			tempNewBuffer.push_back(Constant::Char::Space);
 			break;
 		default:
 			// Add to buffer
-			tempBuff.push_back(ch);
+			tempNewBuffer.push_back(ch);
 			break;
 		}
 	}
 
 	// Copy back formatted string
 	debugCommand.Empty();
-	debugCommand.SetString(tempBuff.data());
+	debugCommand.SetString(tempNewBuffer);
 
 	// Return the debug command's new length
 	return debugCommand.GetLength();

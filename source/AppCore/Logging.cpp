@@ -655,7 +655,7 @@ String LogItem::FormatOutput(void) const
 				jsonDetailData.AddInteger(detailKey, logDetail.GetDetailValue());
 			}
 			else if (nDetailFlag & LogDetailFlag::LookUp_Dict) {
-				detailKey = GetString(StringTable::LogValue, nDetailValue);
+				detailValue = GetString(StringTable::LogValue, nDetailValue);
 				jsonDetailData.AddString(detailKey, detailValue);
 			}
 			else if (nDetailFlag & LogDetailFlag::Write_String) {

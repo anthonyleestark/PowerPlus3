@@ -651,6 +651,31 @@ BOOL AppRegistry::DeleteLayoutInfoSection(void)
 
 //////////////////////////////////////////////////////////////////////////
 //
+//	Function name:	GetSysEventTracking/WriteSysEventTracking
+//  Description:	Using for reading/writing registry system event tracking data
+//  Arguments:		keyName - Key name
+//					strRef	- Result value (ref-value)
+//					value	- Value to write
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL AppRegistry::GetSysEventTracking(const wchar_t* keyName, String& strRef)
+{
+	// Get registry value
+	String resultString = GetRegistryValueString(Section::SystemEventTracking, NULL, keyName);
+	if (IS_NULL_STRING(resultString)) return FALSE;
+	strRef = resultString; // Copy returned value
+	return TRUE;
+}
+
+BOOL AppRegistry::WriteSysEventTracking(const wchar_t* keyName, const wchar_t* value)
+{
+	return WriteRegistryValueString(Section::SystemEventTracking, NULL, keyName, value);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
 //	Function name:	GetGlobalData/WriteGlobalData
 //  Description:	Using for reading/writing registry global data values
 //  Arguments:		subSectionName  - Subsection name

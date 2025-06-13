@@ -128,6 +128,10 @@ namespace AppRegistry
 	// Delete section
 	BOOL DeleteLayoutInfoSection(void);
 
+	// Read/write system event tracking data
+	BOOL GetSysEventTracking(const wchar_t* keyName, String& strRef);
+	BOOL WriteSysEventTracking(const wchar_t* keyName, const wchar_t* value);
+
 	// Read/write other global data variables
 	BOOL GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef);
 	BOOL WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int nValue);
