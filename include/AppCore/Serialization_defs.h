@@ -142,8 +142,6 @@ struct Key
 		static constexpr const wchar_t* IsEnabled								= _T("IsEnabled");
 		static constexpr const wchar_t* ActionID								= _T("ActionID");
 		static constexpr const wchar_t* Time									= _T("Time");
-		static constexpr const wchar_t* IsRepeated								= _T("IsRepeated");
-		static constexpr const wchar_t* RepeatDays								= _T("RepeatDays");
 	};
 
 	struct HotkeySetData
@@ -163,16 +161,7 @@ struct Key
 		static constexpr const wchar_t* ItemNum									= _T("ItemNum");
 	};
 
-	struct PwrReminderItem {
-		static constexpr const wchar_t* IsEnabled								= _T("IsEnabled");
-		static constexpr const wchar_t* ItemID									= _T("ItemID");
-		static constexpr const wchar_t* Message									= _T("Message");
-		static constexpr const wchar_t* EventID									= _T("EventID");
-		static constexpr const wchar_t* Time									= _T("Time");
-		static constexpr const wchar_t* MsgStyle								= _T("MsgStyle");
-	};
-
-	struct Feature {
+	struct PwrReminderMsgStyle {
 		static constexpr const wchar_t* BkgrdColor								= _T("BkgrdColor");
 		static constexpr const wchar_t* TextColor								= _T("TextColor");
 		static constexpr const wchar_t* FontName								= _T("FontName");
@@ -184,6 +173,15 @@ struct Key
 		static constexpr const wchar_t* DisplayPosition							= _T("DisplayPosition");
 		static constexpr const wchar_t* HorizontalMargin						= _T("HorizontalMargin");
 		static constexpr const wchar_t* VerticalMargin							= _T("VerticalMargin");
+	};
+
+	struct PwrReminderItem {
+		static constexpr const wchar_t* IsEnabled								= _T("IsEnabled");
+		static constexpr const wchar_t* ItemID									= _T("ItemID");
+		static constexpr const wchar_t* Message									= _T("Message");
+		static constexpr const wchar_t* EventID									= _T("EventID");
+		static constexpr const wchar_t* Time									= _T("Time");
+		static constexpr const wchar_t* MsgStyle								= _T("MsgStyle");
 	};
 
 	struct GlobalData
@@ -206,20 +204,6 @@ struct Key
 			static constexpr const wchar_t* LastSysSuspend						= _T("LastSysSuspend");
 			static constexpr const wchar_t* LastSysWakeup						= _T("LastSysWakeup");
 			static constexpr const wchar_t* LastSessionEnd						= _T("LastSessionEnd");
-		};
-
-		struct Feature {
-			static constexpr const wchar_t* RmdMsgBkgrdColor					= _T("RmdMsgBkgrdColor");
-			static constexpr const wchar_t* RmdMsgTxtColor						= _T("RmdMsgTxtColor");
-			static constexpr const wchar_t* RmdMsgFontName						= _T("RmdMsgFontName");
-			static constexpr const wchar_t* RmdMsgFontSize						= _T("RmdMsgFontSize");
-			static constexpr const wchar_t* RmdMsgTimeout						= _T("RmdMsgTimeout");
-			static constexpr const wchar_t* RmdMsgIconID						= _T("RmdMsgIconID");
-			static constexpr const wchar_t* RmdMsgIconSize						= _T("RmdMsgIconSize");
-			static constexpr const wchar_t* RmdMsgIconPos						= _T("RmdMsgIconPos");
-			static constexpr const wchar_t* RmdMsgDispPos						= _T("RmdMsgDispPos");
-			static constexpr const wchar_t* RmdMsgHMargin						= _T("RmdMsgHMargin");
-			static constexpr const wchar_t* RmdMsgVMargin						= _T("RmdMsgVMargin");
 		};
 	};
 

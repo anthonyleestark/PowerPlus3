@@ -102,6 +102,12 @@ namespace AppRegistry
 	// Delete section
 	BOOL DeleteHotkeySetSection(void);
 
+	// Read/write registry Power Reminder common style data
+	BOOL GetPwrReminderCommonStyle(const wchar_t* keyName, int& nRef);
+	BOOL WritePwrReminderCommonStyle(const wchar_t* kyName, int nValue);
+	BOOL GetPwrReminderCommonStyle(const wchar_t* keyName, String& strRef);
+	BOOL WritePwrReminderCommonStyle(const wchar_t* keyName, const wchar_t* value);
+
 	// Read/write registry Power Reminder item number value
 	BOOL GetPwrReminderItemNum(const wchar_t* keyName, int& nRef);
 	BOOL WritePwrReminderItemNum(const wchar_t* keyName, int nValue);

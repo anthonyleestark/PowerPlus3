@@ -2716,7 +2716,9 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			if (m_pRmdPreviewMsgDlg == NULL) return;
 
 			// Message style
-			RmdMsgStyleSet rmdMessageStyle = GetReminderMessageStyle();
+			RmdMsgStyleSet rmdMessageStyle = m_pwrReminderDataTemp.GetCommonStyle();
+			if (pwrDispItem.IsCustomStyleEnabled())
+				rmdMessageStyle = pwrDispItem.GetMessageStyleData();
 
 			// Default timeout for previewing
 			int nDefTimeout = PwrReminderData::previewTimeout;

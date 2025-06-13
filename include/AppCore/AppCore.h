@@ -707,8 +707,10 @@ public:
 	BOOL Compare(const PwrReminderItem&) const;						// Compare items
 
 	// Access data
+	const PwrRepeatSet& GetRepeatSetData(void) const;				// Get access to item RepeatSet info data (constant)
 	PwrRepeatSet& GetRepeatSetData(void);							// Get access to item RepeatSet info data
 	void ResetRepeatInfo(void);										// Reset RepeatSet info data
+	const RmdMsgStyleSet& GetMessageStyleData(void) const;			// Get access to item Message Style info data (constant)
 	RmdMsgStyleSet& GetMessageStyleData(void);						// Get access to item Message Style info data
 	void ResetMessageStyleInfo(void);								// Reset Message Style info data
 
@@ -792,6 +794,10 @@ public:
 	// Update items
 	void Add(const PwrReminderItem&);								// Add item
 	void Update(const PwrReminderItem&);							// Update item
+
+	// Access data
+	const RmdMsgStyleSet& GetCommonStyle(void) const;				// Get common style data (constant)
+	RmdMsgStyleSet& GetCommonStyle(void);							// Get common style data
 
 	// Access items
 	const PwrReminderItem& GetItemAt(int) const;					// Get item at index (constant)

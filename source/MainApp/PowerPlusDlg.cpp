@@ -4667,10 +4667,12 @@ int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 		}
 
 		// Message style
-		RmdMsgStyleSet rmdMessageStyle = GetReminderMessageStyle();
+		RmdMsgStyleSet rmdMessageStyle = m_prdReminderData.GetCommonStyle();
+		if (pwrDispItem.IsCustomStyleEnabled())
+			rmdMessageStyle = pwrDispItem.GetMessageStyleData();
 
 		// Message auto-close interval
-		int nTimeout = GetReminderMsgTimeout();
+		int nTimeout = rmdMessageStyle.GetTimeout();
 
 		// Allow snooze mode
 		BOOL bAllowSnooze = pwrDispItem.IsAllowSnoozing();

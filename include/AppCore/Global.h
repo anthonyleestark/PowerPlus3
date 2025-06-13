@@ -182,61 +182,6 @@ static inline void SetSessionLockFlag(BYTE byValue);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
-/*---------------------------------------Power reminder message styles---------------------------------------*/
-
-// Global Power Reminder message style
-extern RmdMsgStyleSet g_rmdMsgStyleSet;
-
-// Message style
-static inline const RmdMsgStyleSet& GetReminderMessageStyle(void);
-static inline void SetReminderMessageStyle(const RmdMsgStyleSet& rmdMsgStyle);
-
-// Background color
-static inline const COLORREF GetReminderMsgBkgrdColor(void);
-static inline void SetReminderMsgBkgrdColor(COLORREF colorValue);
-
-// Text color
-static inline const COLORREF GetReminderMsgTextColor(void);
-static inline void SetReminderMsgTextColor(COLORREF colorValue);
-
-// Font name
-static inline BOOL GetReminderMsgFontName(String& strFontName);
-static inline void SetReminderMsgFontName(const wchar_t* lpszValue);
-
-// Font size
-static inline const UINT GetReminderMsgFontSize(void);
-static inline void SetReminderMsgFontSize(UINT uiValue);
-
-// Timeout (auto-close) interval
-static inline const UINT GetReminderMsgTimeout(void);
-static inline void SetReminderMsgTimeout(UINT uiValue);
-
-// Message icon ID
-static inline const UINT GetReminderMsgIconID(void);
-static inline void SetReminderMsgIconID(UINT uiValue);
-
-// Message icon size
-static inline const INT GetReminderMsgIconSize(void);
-static inline void SetReminderMsgIconSize(int nValue);
-
-// Message icon position
-static inline const BYTE GetReminderMsgIconPosition(void);
-static inline void SetReminderMsgIconPosition(BYTE byValue);
-
-// Message display position
-static inline const BYTE GetReminderMsgDispPosition(void);
-static inline void SetReminderMsgDispPosition(BYTE byValue);
-
-// Display area horizontal margin
-static inline const UINT GetReminderMsgHMargin(void);
-static inline void SetReminderMsgHMargin(UINT uiValue);
-
-// Display area vertical margin
-static inline const UINT GetReminderMsgVMargin(void);
-static inline void SetReminderMsgVMargin(UINT uiValue);
-
-/*-----------------------------------------------------------------------------------------------------------*/
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //

@@ -261,7 +261,7 @@ BOOL AppRegistry::DeleteConfigSection(void)
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Function name:	GetDefaultSchedule/GetDefaultSchedule
+//	Function name:	GetDefaultSchedule/WriteDefaultSchedule
 //  Description:	Using for reading/writing registry default schedule values
 //  Arguments:		keyName - Key name
 //					nRef	- Result value (ref-value)
@@ -348,6 +348,9 @@ BOOL AppRegistry::WriteScheduleExtra(int nItemIndex, const wchar_t* keyName, int
 BOOL AppRegistry::DeleteScheduleSection(void)
 {
 	BOOL bRet = TRUE;
+
+	// Delete default schedule subsection
+	bRet &= DeleteRegistrySection(Section::ScheduleData, Section::Schedule::DefautItem);
 
 	// Get subsection number
 	int nSubItemNum = 0;
@@ -448,6 +451,56 @@ BOOL AppRegistry::DeleteHotkeySetSection(void)
 
 //////////////////////////////////////////////////////////////////////////
 //
+//	Function name:	GetPwrReminderCommonStyle/WritePwrReminderCommonStyle
+//  Description:	Using for reading/writing registry Power Reminder common style data
+//  Arguments:		keyName - Key name
+//					nRef	- Result value (ref-value)
+//					nValue	- Value to write
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL AppRegistry::GetPwrReminderCommonStyle(const wchar_t* keyName, int& nRef)
+{
+	// Get registry value
+	int nRet = GetRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName);
+	if (nRet == UINT_MAX) return FALSE;
+	nRef = nRet; // Copy returned value
+	return TRUE;
+}
+
+BOOL AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, int nValue)
+{
+	return WriteRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName, nValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//	Function name:	GetPwrReminderCommonStyle/WritePwrReminderCommonStyle
+//  Description:	Using for reading/writing registry Power Reminder common style data
+//  Arguments:		keyName - Key name
+//					strRef	- Result value (ref-value)
+//					value	- Value to write
+//  Return value:	BOOL - Result of reading/writing process
+//
+//////////////////////////////////////////////////////////////////////////
+
+BOOL AppRegistry::GetPwrReminderCommonStyle(const wchar_t* keyName, String& strRef)
+{
+	// Get registry value
+	String resultString = GetRegistryValueString(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName);
+	if (IS_NULL_STRING(resultString)) return FALSE;
+	strRef = resultString; // Copy returned value
+	return TRUE;
+}
+
+BOOL AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, const wchar_t* value)
+{
+	return WriteRegistryValueString(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName, value);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
 //	Function name:	GetPwrReminderItemNum/WritePwrReminderItemNum
 //  Description:	Using for reading/writing registry Power Reminder
 //					item number values
@@ -536,6 +589,9 @@ BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, const
 BOOL AppRegistry::DeletePwrReminderSection(void)
 {
 	BOOL bRet = TRUE;
+
+	// Delete common style section
+	bRet &= DeleteRegistrySection(Section::PwrReminderData, Section::PwrReminder::CommonStyle);
 
 	// Get subsection number
 	int nSubItemNum = 0;

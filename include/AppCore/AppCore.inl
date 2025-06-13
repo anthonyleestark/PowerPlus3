@@ -496,6 +496,11 @@ inline PwrRepeatSet& PwrReminderItem::GetRepeatSetData(void) {
 	return this->m_rpsRepeatSet;
 }
 
+// Get access to item RepeatSet info data
+inline const PwrRepeatSet& PwrReminderItem::GetRepeatSetData(void) const {
+	return this->m_rpsRepeatSet;
+}
+
 // Reset RepeatSet info data
 inline void PwrReminderItem::ResetRepeatInfo(void)
 {
@@ -508,6 +513,11 @@ inline void PwrReminderItem::ResetRepeatInfo(void)
 
 // Get access to item Message Style info data
 inline RmdMsgStyleSet& PwrReminderItem::GetMessageStyleData(void) {
+	return this->m_rmsMsgStyleSet;
+}
+
+// Get access to item Message Style info data
+inline const RmdMsgStyleSet& PwrReminderItem::GetMessageStyleData(void) const {
 	return this->m_rmsMsgStyleSet;
 }
 
@@ -639,6 +649,16 @@ inline void PwrReminderItem::SetDayActive(DayOfWeek dayOfWeek, BOOL bActive) {
 // Get number of items
 inline size_t PwrReminderData::GetItemNum(void) const {
 	return m_arrRmdItemList.size();
+}
+
+// Get Power Reminder common style data
+inline RmdMsgStyleSet& PwrReminderData::GetCommonStyle(void) {
+	return m_rmdCommonStyle;
+}
+
+// Get Power Reminder common style data
+inline const RmdMsgStyleSet& PwrReminderData::GetCommonStyle(void) const {
+	return m_rmdCommonStyle;
 }
 
 // Get the Power Reminder item at index

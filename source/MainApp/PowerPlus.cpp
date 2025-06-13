@@ -797,11 +797,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			schDefaultTemp.SetAction(nDataTemp);
 
 			// Repeat enable state
-			nDefSchedRet += GetDefaultSchedule(Key::ScheduleItem::IsRepeated, nDataTemp);
+			nDefSchedRet += GetDefaultSchedule(Key::PwrRepeatSet::IsRepeated, nDataTemp);
 			schDefaultTemp.EnableRepeat(nDataTemp);
 
 			// Repeat days
-			nDefSchedRet += GetDefaultSchedule(Key::ScheduleItem::RepeatDays, nDataTemp);
+			nDefSchedRet += GetDefaultSchedule(Key::PwrRepeatSet::RepeatDays, nDataTemp);
 			schDefaultTemp.SetActiveDays(BYTE(nDataTemp));
 
 			// Time value
@@ -863,11 +863,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				schExtraTemp.SetAction(nDataTemp);
 
 				// Repeat enable state
-				nSchedRet += GetScheduleExtra(nExtraIndex, Key::ScheduleItem::IsRepeated, nDataTemp);
+				nSchedRet += GetScheduleExtra(nExtraIndex, Key::PwrRepeatSet::IsRepeated, nDataTemp);
 				schExtraTemp.EnableRepeat(nDataTemp);
 
 				// Repeat days
-				nSchedRet += GetScheduleExtra(nExtraIndex, Key::ScheduleItem::RepeatDays, nDataTemp);
+				nSchedRet += GetScheduleExtra(nExtraIndex, Key::PwrRepeatSet::RepeatDays, nDataTemp);
 				schExtraTemp.SetActiveDays(BYTE(nDataTemp));
 
 				// Time value
@@ -1020,6 +1020,74 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 			// Initialize temp data
 			ppwrTempData->Init();
+
+			// Initialize Power Reminder common style data
+			RmdMsgStyleSet rmdCommonStyleTemp;
+			{
+				// Read Power Reminder common style data
+				int nPwrRmdCommonStyleRet = INT_NULL;
+
+				// Background color
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor, nDataTemp);
+				rmdCommonStyleTemp.SetBkgrdColor((COLORREF)nDataTemp);
+
+				// Text color
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor, nDataTemp);
+				rmdCommonStyleTemp.SetTextColor((COLORREF)nDataTemp);
+
+				// Font name
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName, tempString);
+				rmdCommonStyleTemp.SetFontName(tempString);
+
+				// Font size
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize, nDataTemp);
+				rmdCommonStyleTemp.SetFontSize(nDataTemp);
+
+				// Timeout (auto-close) interval
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout, nDataTemp);
+				rmdCommonStyleTemp.SetTimeout(nDataTemp);
+
+				// Message icon ID
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID, nDataTemp);
+				rmdCommonStyleTemp.SetIconID(nDataTemp);
+
+				// Message icon size
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize, nDataTemp);
+				rmdCommonStyleTemp.SetIconSize(nDataTemp);
+
+				// Message icon position
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition, nDataTemp);
+				rmdCommonStyleTemp.SetIconPosition(nDataTemp);
+
+				// Message display position
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition, nDataTemp);
+				rmdCommonStyleTemp.SetDisplayPosition(nDataTemp);
+
+				// Display area horizontal margin
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin, nDataTemp);
+				rmdCommonStyleTemp.SetHorizontalMargin(nDataTemp);
+
+				// Display area vertical margin
+				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin, nDataTemp);
+				rmdCommonStyleTemp.SetVerticalMargin(nDataTemp);
+
+				// Mark data as reading failed
+				// only if all values were read unsuccessfully
+				bResult = (nPwrRmdCommonStyleRet != INT_NULL);
+
+				// Trace error
+				if (bResult == FALSE) {
+					wLoadRet = APP_ERROR_LOAD_PWRRMD_FAILED;
+					TraceSerializeData(wLoadRet);
+					bFinalResult = FALSE;	// Set final result
+					bResult = TRUE;			// Reset flag
+				}
+				else {
+					// Update Power Reminder common style data
+					RmdMsgStyleSet& rmdCommonStyle = ppwrTempData->GetCommonStyle();
+					rmdCommonStyle.Copy(rmdCommonStyleTemp);
+				}
+			}
 
 			// Read each item data
 			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
@@ -1221,8 +1289,8 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 			// Save registry data
 			bResult &= WriteDefaultSchedule(Key::ScheduleItem::IsEnabled,		schTempDefault.IsEnabled());
 			bResult &= WriteDefaultSchedule(Key::ScheduleItem::ActionID,		schTempDefault.GetAction());
-			bResult &= WriteDefaultSchedule(Key::ScheduleItem::IsRepeated,		schTempDefault.IsRepeatEnabled());
-			bResult &= WriteDefaultSchedule(Key::ScheduleItem::RepeatDays,		schTempDefault.GetActiveDays());
+			bResult &= WriteDefaultSchedule(Key::PwrRepeatSet::IsRepeated,		schTempDefault.IsRepeatEnabled());
+			bResult &= WriteDefaultSchedule(Key::PwrRepeatSet::RepeatDays,		schTempDefault.GetActiveDays());
 			bResult &= WriteDefaultSchedule(Key::ScheduleItem::Time,			nTimeTemp);
 
 			// Trace error
@@ -1249,8 +1317,8 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::IsEnabled,	schTempExtra.IsEnabled());
 			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::ItemID,		schTempExtra.GetItemID());
 			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::ActionID,		schTempExtra.GetAction());
-			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::IsRepeated,	schTempExtra.IsRepeatEnabled());
-			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::RepeatDays,	schTempExtra.GetActiveDays());
+			bResult &= WriteScheduleExtra(nExtraIndex, Key::PwrRepeatSet::IsRepeated,	schTempExtra.IsRepeatEnabled());
+			bResult &= WriteScheduleExtra(nExtraIndex, Key::PwrRepeatSet::RepeatDays,	schTempExtra.GetActiveDays());
 			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::Time,			nTimeTemp);
 
 			// Trace error
@@ -1337,6 +1405,31 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 		// Delete old data before writing
 		DeletePwrReminderSection();
+
+		// Save Power Reminder common style data
+		RmdMsgStyleSet& rmdTempCommonStyle = m_ppwrReminderData->GetCommonStyle();
+		{
+			// Save registry data
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor,		rmdTempCommonStyle.GetBkgrdColor());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor,			rmdTempCommonStyle.GetTextColor());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName,			rmdTempCommonStyle.GetFontName());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize,			rmdTempCommonStyle.GetFontSize());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout,			rmdTempCommonStyle.GetTimeout());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID,			rmdTempCommonStyle.GetIconID());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize,	 		rmdTempCommonStyle.GetIconSize());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition,		rmdTempCommonStyle.GetIconPosition());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition,	rmdTempCommonStyle.GetDisplayPosition());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin,	rmdTempCommonStyle.GetHorizontalMargin());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin,	rmdTempCommonStyle.GetVerticalMargin());
+
+			// Trace error
+			if (bResult == FALSE) {
+				wSaveRet = APP_ERROR_SAVE_PWRRMD_FAILED;
+				TraceSerializeData(wSaveRet);
+				bFinalResult = FALSE; // Set final result
+				bResult = TRUE; // Reset flag
+			}
+		}
 
 		// Save registry data
 		int nItemNum = m_ppwrReminderData->GetItemNum();
@@ -1525,7 +1618,6 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	BOOL bRet = FALSE;
 
 	int nGlbValue = (int)0;									// Integer type
-	String strGlbValue = Constant::String::Empty;			// String value
 
 	// Subsection name
 	String subSectionName = Constant::String::Empty;
@@ -1589,69 +1681,6 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 
 	/*-----------------------------------------------------------------------------------*/
 
-	/*-------------------------<Load special feature variables>--------------------------*/
-
-	// Subsection: Features
-	subSectionName = Section::GlobalData::Feature;
-
-	// Reminder message background color
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgBkgrdColor, nGlbValue)) {
-		SetReminderMsgBkgrdColor((DWORD)nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message text color
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgTxtColor, nGlbValue)) {
-		SetReminderMsgTextColor((DWORD)nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message font name
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgFontName, strGlbValue)) {
-		SetReminderMsgFontName(strGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message font size
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgFontSize, nGlbValue)) {
-		SetReminderMsgFontSize((UINT)nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message auto-close interval
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgTimeout, nGlbValue)) {
-		SetReminderMsgTimeout((UINT)nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message icon ID
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconID, nGlbValue)) {
-		SetReminderMsgIconID(nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message icon size
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconSize, nGlbValue)) {
-		SetReminderMsgIconSize(nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message icon position
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconPos, nGlbValue)) {
-		SetReminderMsgIconPosition(nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message display position
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgDispPos, nGlbValue)) {
-		SetReminderMsgDispPosition(nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message display area horizontal margin
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgHMargin, nGlbValue)) {
-		SetReminderMsgHMargin((UINT)nGlbValue);
-		bRet |= TRUE;
-	}
-	// Reminder message display area vertical margin
-	if (GetGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgVMargin, nGlbValue)) {
-		SetReminderMsgVMargin((UINT)nGlbValue);
-		bRet |= TRUE;
-	}
-
-	/*-----------------------------------------------------------------------------------*/
-
 	return bRet;
 }
 
@@ -1669,15 +1698,14 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	BOOL bRet = TRUE;
 
 	int nGlbValue = (int)0;									// Integer type
-	BOOL bGlbValue = (BOOL)0;								// Boolean type
 	BYTE byGlbValue = (BYTE)0;								// Byte value
-	DWORD dwGlbValue = (DWORD)0;							// D-WORD value
 	String strGlbValue = Constant::String::Empty;			// String value
 
 	// Subsection name
 	String subSectionName = Constant::String::Empty;
 
 	/*------------------------<Save debugging/testing variables>-------------------------*/
+
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_DEBUGTEST)) {
 		// Subsection: DebugTest
 		subSectionName = Section::GlobalData::DebugTest;
@@ -1703,9 +1731,11 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 			bRet = FALSE;
 		}
 	}
+
 	/*-----------------------------------------------------------------------------------*/
 
 	/*---------------------------------<Save app flags>----------------------------------*/
+
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_APPFLAGS)) {
 		// Subsection: AppFlags
 		subSectionName = Section::GlobalData::AppFlag;
@@ -1734,69 +1764,7 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 			bRet = FALSE;
 		}
 	}
-	/*-----------------------------------------------------------------------------------*/
 
-	/*-----------------------------<Save special variables>------------------------------*/
-	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_FEATURES)) {
-		// Subsection: Features
-		subSectionName = Section::GlobalData::Feature;
-
-		// Reminder message background color
-		dwGlbValue = GetReminderMsgBkgrdColor();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgBkgrdColor, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message text color
-		dwGlbValue = GetReminderMsgTextColor();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgTxtColor, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message font name
-		bGlbValue = GetReminderMsgFontName(strGlbValue);
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgFontName, strGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message font size
-		dwGlbValue = GetReminderMsgFontSize();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgFontSize, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message auto-close interval
-		dwGlbValue = GetReminderMsgTimeout();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgTimeout, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message icon ID
-		dwGlbValue = GetReminderMsgIconID();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconID, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message icon size
-		dwGlbValue = GetReminderMsgIconSize();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconSize, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message icon position
-		dwGlbValue = GetReminderMsgIconPosition();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgIconPos, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message display position
-		dwGlbValue = GetReminderMsgDispPosition();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgDispPos, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message display area horizontal margin
-		dwGlbValue = GetReminderMsgHMargin();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgHMargin, dwGlbValue)) {
-			bRet = FALSE;
-		}
-		// Reminder message display area vertical margin
-		dwGlbValue = GetReminderMsgVMargin();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::Feature::RmdMsgVMargin, dwGlbValue)) {
-			bRet = FALSE;
-		}
-	}
 	/*-----------------------------------------------------------------------------------*/
 
 	return bRet;

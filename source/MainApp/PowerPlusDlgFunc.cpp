@@ -745,6 +745,8 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("rmdmsgset"))) {
+		// Get Power Reminder data
+		PwrReminderData* pRmdData = pApp->GetAppPwrReminderData();
 		if ((tokenCount >= 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("bkgclr")))) {
 			if (tokenCount == 3) {
 				// Set message background color by name
@@ -752,10 +754,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				DWORD dwRetColorID = GetStringID(StringTable::ColorName, colorName);
 				if (dwRetColorID != INT_INVALID) {
 					// Set background color
-					SetReminderMsgBkgrdColor(dwRetColorID);
-					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message background color set: %s"), colorName.ToUpper().GetString());
-					bNoReply = FALSE;	// Reset flag
+					if (pRmdData != NULL) {
+						pRmdData->GetCommonStyle().SetBkgrdColor(dwRetColorID);
+						pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+						OutputDebugLogFormat(_T("Message background color set: %s"), colorName.ToUpper().GetString());
+						bNoReply = FALSE;	// Reset flag
+					}
+					else {
+						OutputDebugLogFormat(_T("Failed to set message background color!!!"));
+						bNoReply = FALSE;	// Reset flag
+					}
 				}
 				else {
 					// Invalid command
@@ -775,10 +783,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				else {
 					// Set background color
 					COLORREF clrRGB = RGB(nRValue, nGValue, nBValue);
-					SetReminderMsgBkgrdColor(clrRGB);
-					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message background color set: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
-					bNoReply = FALSE;	// Reset flag
+					if (pRmdData != NULL) {
+						pRmdData->GetCommonStyle().SetBkgrdColor(clrRGB);
+						pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+						OutputDebugLogFormat(_T("Message background color set: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
+						bNoReply = FALSE;	// Reset flag
+					}
+					else {
+						OutputDebugLogFormat(_T("Failed to set message background color!!!"));
+						bNoReply = FALSE;	// Reset flag
+					}
 				}
 			}
 			else {
@@ -793,10 +807,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				DWORD dwRetColorID = GetStringID(StringTable::ColorName, colorName);
 				if (dwRetColorID != INT_INVALID) {
 					// Set text color
-					SetReminderMsgTextColor(dwRetColorID);
-					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message text color set: %s"), colorName.ToUpper().GetString());
-					bNoReply = FALSE;	// Reset flag
+					if (pRmdData != NULL) {
+						pRmdData->GetCommonStyle().SetTextColor(dwRetColorID);
+						pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+						OutputDebugLogFormat(_T("Message text color set: %s"), colorName.ToUpper().GetString());
+						bNoReply = FALSE;	// Reset flag
+					}
+					else {
+						OutputDebugLogFormat(_T("Failed to set message text color!!!"));
+						bNoReply = FALSE;	// Reset flag
+					}
 				}
 				else {
 					// Invalid command
@@ -816,10 +836,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				else {
 					// Set text color
 					COLORREF clrRGB = RGB(nRValue, nGValue, nBValue);
-					SetReminderMsgTextColor(clrRGB);
-					pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-					OutputDebugLogFormat(_T("Message text color set: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
-					bNoReply = FALSE;	// Reset flag
+					if (pRmdData != NULL) {
+						pRmdData->GetCommonStyle().SetTextColor(clrRGB);
+						pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+						OutputDebugLogFormat(_T("Message text color set: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
+						bNoReply = FALSE;	// Reset flag
+					}
+					else {
+						OutputDebugLogFormat(_T("Failed to set message text color!!!"));
+						bNoReply = FALSE;	// Reset flag
+					}
 				}
 			}
 			else {
@@ -842,10 +868,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			else {
 				// Set message font
-				SetReminderMsgFontName(strFontName);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message font name set: %s"), strFontName.GetString());
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetFontName(strFontName);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLogFormat(_T("Message font name set: %s"), strFontName.GetString());
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message font name!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {
@@ -858,10 +890,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			else {
 				// Set font size
-				SetReminderMsgFontSize(nFontSize);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message font size set: %dpt"), nFontSize);
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetFontSize(nFontSize);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLogFormat(_T("Message font size set: %dpt"), nFontSize);
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message font size!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("timeout")))) {
@@ -874,18 +912,30 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			else {
 				// Set timeout
-				SetReminderMsgTimeout(nTimeout);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message time-out set: %ds"), nTimeout);
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetTimeout(nTimeout);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLogFormat(_T("Message time-out set: %ds"), nTimeout);
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message time-out!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("notimeout")))) {
 			// No reminder message timeout (default 0)
-			SetReminderMsgTimeout(INT_NULL);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLog(_T("Message time-out disabled"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetTimeout(INT_NULL);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLog(_T("Message time-out disabled"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to set message time-out!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconid")))) {
 			// Set message icon ID by name
@@ -893,10 +943,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			DWORD dwRetIconID = GetStringID(StringTable::MsgIconName, iconName);
 			if (dwRetIconID != INT_INVALID) {
 				// Set icon ID
-				SetReminderMsgIconID(dwRetIconID);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message icon ID set: %s (%d)"), iconName.ToUpper().GetString(), dwRetIconID);
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetIconID(dwRetIconID);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLogFormat(_T("Message icon ID set: %s (%d)"), iconName.ToUpper().GetString(), dwRetIconID);
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message icon ID!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 			else {
 				// Invalid command
@@ -905,10 +961,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("noicon")))) {
 			// No reminder message icon (default 0)
-			SetReminderMsgIconID(0);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLog(_T("Message icon disabled"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetIconID(0);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLog(_T("Message icon disabled"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to set message icon ID!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconsize")))) {
 			// Set reminder message icon size
@@ -920,10 +982,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			else {
 				// Set icon size
-				SetReminderMsgIconSize(nIconSize);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message icon size set: %dx%dpx"), nIconSize, nIconSize);
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetIconSize(nIconSize);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLogFormat(_T("Message icon size set: %dx%dpx"), nIconSize, nIconSize);
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message icon size!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconplacement")))) {
@@ -931,17 +999,29 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			String iconPosition = tokenList.at(2).c_str();
 			if (!_tcscmp(iconPosition, _T("left"))) {
 				// Set icon position: Icon on the Left
-				SetReminderMsgIconPosition(RmdMsgStyleSet::IconOnTheLeft);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLog(_T("Message icon position set: Left"));
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetIconPosition(RmdMsgStyleSet::IconOnTheLeft);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLog(_T("Message icon position set: Left"));
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message icon position!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 			else if (!_tcscmp(iconPosition, _T("top"))) {
 				// Set icon position: Icon on the Top
-				SetReminderMsgIconPosition(RmdMsgStyleSet::IconOnTheTop);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLog(_T("Message icon position set: Top"));
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetIconPosition(RmdMsgStyleSet::IconOnTheTop);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLog(_T("Message icon position set: Top"));
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message icon position!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 			else {
 				// Invalid command
@@ -958,10 +1038,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			else {
 				// Set margin
-				SetReminderMsgHMargin(nHMargin);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message horizontal margin set: %dpx"), nHMargin);
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetHorizontalMargin(nHMargin);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLogFormat(_T("Message horizontal margin set: %dpx"), nHMargin);
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message horizontal margin!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("vmargin")))) {
@@ -974,10 +1060,16 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			else {
 				// Set margin
-				SetReminderMsgVMargin(nVMargin);
-				pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-				OutputDebugLogFormat(_T("Message vertical margin set: %dpx"), nVMargin);
-				bNoReply = FALSE;	// Reset flag
+				if (pRmdData != NULL) {
+					pRmdData->GetCommonStyle().SetVerticalMargin(nVMargin);
+					pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLogFormat(_T("Message vertical margin set: %dpx"), nVMargin);
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLogFormat(_T("Failed to set message vertical margin!!!"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
 		}
 		else {
@@ -986,75 +1078,137 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("rmdmsgreset"))) {
+		// Get Power Reminder data
+		PwrReminderData* pRmdData = pApp->GetAppPwrReminderData();
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("bkgclr")))) {
 			// Reset message background color
-			SetReminderMsgBkgrdColor(RmdMsgStyleSet::defaultBkgrdColor);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLogFormat(_T("Message background color reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetBkgrdColor(RmdMsgStyleSet::defaultBkgrdColor);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLogFormat(_T("Message background color reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message background color!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("txtclr")))) {
 			// Set message text color by name
-			SetReminderMsgTextColor(RmdMsgStyleSet::defaultTextColor);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLogFormat(_T("Message text color reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetTextColor(RmdMsgStyleSet::defaultTextColor);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLogFormat(_T("Message text color reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message text color!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontname")))) {
 			// Set reminder message font name
-			SetReminderMsgFontName(RmdMsgStyleSet::defaultFontName);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLogFormat(_T("Message font name reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetFontName(RmdMsgStyleSet::defaultFontName);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLogFormat(_T("Message font name reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message font name!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {
 			// Set reminder message font size
-			SetReminderMsgFontSize(RmdMsgStyleSet::defaultFontSize);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLogFormat(_T("Message font size reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetFontSize(RmdMsgStyleSet::defaultFontSize);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLogFormat(_T("Message font size reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message font size!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("timeout")))) {
 			// Reset reminder message auto-close interval (time-out)
-			SetReminderMsgTimeout(RmdMsgStyleSet::defaultTimeout);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLog(_T("Message time-out reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetTimeout(RmdMsgStyleSet::defaultTimeout);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLog(_T("Message time-out reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message time-out!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconid")))) {
 			// Reset reminder message icon ID
-			SetReminderMsgIconID(RmdMsgStyleSet::defaultIconID);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLog(_T("Message icon ID reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetIconID(RmdMsgStyleSet::defaultIconID);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLog(_T("Message icon ID reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message icon ID!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconsize")))) {
 			// Reset reminder message icon size
-			SetReminderMsgIconSize(RmdMsgStyleSet::defaultIconSize);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLog(_T("Message icon size reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetIconSize(RmdMsgStyleSet::defaultIconSize);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLog(_T("Message icon size reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message icon size!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconpos")))) {
 			// Reset reminder message icon position
-			SetReminderMsgIconPosition(RmdMsgStyleSet::defaultIconPosition);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLog(_T("Message icon position reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetIconPosition(RmdMsgStyleSet::defaultIconPosition);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLog(_T("Message icon position reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message icon position!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("hmargin")))) {
 			// Reset reminder message horizontal margin
-			SetReminderMsgHMargin(RmdMsgStyleSet::defaultHorizontalMargin);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLogFormat(_T("Message horizontal margin reset)"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetHorizontalMargin(RmdMsgStyleSet::defaultHorizontalMargin);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLogFormat(_T("Message horizontal margin reset)"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message horizontal margin!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("vmargin")))) {
 			// Reset reminder message vertical margin
-			SetReminderMsgVMargin(RmdMsgStyleSet::defaultVerticalMargin);
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_FEATURES);
-			OutputDebugLogFormat(_T("Message vertical margin reset"));
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				pRmdData->GetCommonStyle().SetVerticalMargin(RmdMsgStyleSet::defaultVerticalMargin);
+				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+				OutputDebugLogFormat(_T("Message vertical margin reset"));
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to reset message vertical margin!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else {
 			// Invalid command
@@ -1062,78 +1216,143 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("rmdmsgget"))) {
+		// Get Power Reminder data
+		PwrReminderData* pRmdData = pApp->GetAppPwrReminderData();
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("bkgclr")))) {
 			// Get reminder message background color
-			DWORD dwBkgrdColor = GetReminderMsgBkgrdColor();
-			int nBValue = (dwBkgrdColor & 0x00FF0000) >> 16;	// Blue
-			int nGValue = (dwBkgrdColor & 0x0000FF00) >> 8;		// Green
-			int nRValue = (dwBkgrdColor & 0x000000FF);			// Red
-			OutputDebugLogFormat(_T("Message background color: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				DWORD dwBkgrdColor = pRmdData->GetCommonStyle().GetBkgrdColor();
+				int nBValue = (dwBkgrdColor & 0x00FF0000) >> 16;	// Blue
+				int nGValue = (dwBkgrdColor & 0x0000FF00) >> 8;		// Green
+				int nRValue = (dwBkgrdColor & 0x000000FF);			// Red
+				OutputDebugLogFormat(_T("Message background color: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message background color!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("txtclr")))) {
 			// Get reminder message text color
-			DWORD dwTextColor = GetReminderMsgTextColor();
-			int nBValue = (dwTextColor & 0x00FF0000) >> 16;		// Blue
-			int nGValue = (dwTextColor & 0x0000FF00) >> 8;		// Green
-			int nRValue = (dwTextColor & 0x000000FF);			// Red
-			OutputDebugLogFormat(_T("Message text color: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				DWORD dwTextColor = pRmdData->GetCommonStyle().GetTextColor();
+				int nBValue = (dwTextColor & 0x00FF0000) >> 16;		// Blue
+				int nGValue = (dwTextColor & 0x0000FF00) >> 8;		// Green
+				int nRValue = (dwTextColor & 0x000000FF);			// Red
+				OutputDebugLogFormat(_T("Message text color: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message text color!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontname")))) {
 			// Get reminder message font name
-			String fontName;
-			GetReminderMsgFontName(fontName);
-			OutputDebugLogFormat(_T("Message font name: %s"), fontName.GetString());
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				String fontName = pRmdData->GetCommonStyle().GetFontName();
+				OutputDebugLogFormat(_T("Message font name: %s"), fontName.GetString());
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message font name!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {
 			// Get reminder message font size
-			int nFontSize = GetReminderMsgFontSize();
-			OutputDebugLogFormat(_T("Message font size: %dpt"), nFontSize);
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				int nFontSize = pRmdData->GetCommonStyle().GetFontSize();
+				OutputDebugLogFormat(_T("Message font size: %dpt"), nFontSize);
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message font size!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("timeout")))) {
 			// Get reminder message auto-close interval (time-out)
-			int nTimeout = GetReminderMsgTimeout();
-			OutputDebugLogFormat(_T("Message time-out: %ds"), nTimeout);
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				int nTimeout = pRmdData->GetCommonStyle().GetTimeout();
+				OutputDebugLogFormat(_T("Message time-out: %ds"), nTimeout);
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message time-out!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconid")))) {
 			// Get reminder message icon ID
-			UINT nIconID = GetReminderMsgIconID();
-			OutputDebugLogFormat(_T("Message icon ID: %d"), nIconID);
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				UINT nIconID = pRmdData->GetCommonStyle().GetIconID();
+				OutputDebugLogFormat(_T("Message icon ID: %d"), nIconID);
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message icon ID!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconsize")))) {
 			// Get reminder message icon size
-			int nIconSize = GetReminderMsgIconSize();
-			OutputDebugLogFormat(_T("Message icon size: %dx%dpx"), nIconSize, nIconSize);
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				int nIconSize = pRmdData->GetCommonStyle().GetIconSize();
+				OutputDebugLogFormat(_T("Message icon size: %dx%dpx"), nIconSize, nIconSize);
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message icon size!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconpos")))) {
 			// Get reminder message icon position
-			BYTE byIconPlacement = GetReminderMsgIconPosition();
-			if (byIconPlacement == RmdMsgStyleSet::IconOnTheLeft) {
-				OutputDebugLog(_T("Message icon position: Left"));
-				bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				BYTE byIconPosition = pRmdData->GetCommonStyle().GetIconPosition();
+				if (byIconPosition == RmdMsgStyleSet::IconOnTheLeft) {
+					OutputDebugLog(_T("Message icon position: Left"));
+					bNoReply = FALSE;	// Reset flag
+				}
+				else if (byIconPosition == RmdMsgStyleSet::IconOnTheTop) {
+					OutputDebugLog(_T("Message icon position: Top"));
+					bNoReply = FALSE;	// Reset flag
+				}
+				else {
+					OutputDebugLog(_T("Message icon position: Unknown"));
+					bNoReply = FALSE;	// Reset flag
+				}
 			}
-			else if (byIconPlacement == RmdMsgStyleSet::IconOnTheTop) {
-				OutputDebugLog(_T("Message icon position: Top"));
+			else {
+				OutputDebugLogFormat(_T("Failed to get message icon position!!!"));
 				bNoReply = FALSE;	// Reset flag
 			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("hmargin")))) {
 			// Get reminder message horizontal margin
-			int nHMargin = GetReminderMsgHMargin();
-			OutputDebugLogFormat(_T("Message horizontal margin: %dpx"), nHMargin);
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				int nHMargin = pRmdData->GetCommonStyle().GetHorizontalMargin();
+				OutputDebugLogFormat(_T("Message horizontal margin: %dpx"), nHMargin);
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message horizontal margin!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("vmargin")))) {
 			// Get reminder message vertical margin
-			int nVMargin = GetReminderMsgVMargin();
-			OutputDebugLogFormat(_T("Message vertical margin: %dpx"), nVMargin);
-			bNoReply = FALSE;	// Reset flag
+			if (pRmdData != NULL) {
+				int nVMargin = pRmdData->GetCommonStyle().GetVerticalMargin();
+				OutputDebugLogFormat(_T("Message vertical margin: %dpx"), nVMargin);
+				bNoReply = FALSE;	// Reset flag
+			}
+			else {
+				OutputDebugLogFormat(_T("Failed to get message vertical margin!!!"));
+				bNoReply = FALSE;	// Reset flag
+			}
 		}
 		else {
 			// Invalid command
