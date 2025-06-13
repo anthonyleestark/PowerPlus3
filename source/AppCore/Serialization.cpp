@@ -750,24 +750,22 @@ BackupSystem::~BackupSystem()
 
 BOOL BackupSystem::RegistryExport()
 {
-	// Initialize registry info
-	RegistryInfo regInfo;
-	regInfo.SetRootKeyName(AppProfile::Registry::RootKey);
-	regInfo.SetSubkeyPath(AppProfile::Registry::SubKeys);
-	regInfo.SetCompanyName(AppProfile::Registry::CompanyName);
-	regInfo.SetProductName(AppProfile::Registry::ProductID);
-
 	// Registry export destination file
 	String destFilePath = StringUtils::MakeFilePath(NULL, FILENAME_BAKCONFIG, FILEEXT_REGFILE);
-	if (!destFilePath.IsEmpty()) {
+	if (destFilePath.IsEmpty()) {
 		// Make file path failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to make destination file path!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return FALSE;
 	}
 
+	// Registry path
+	String registryPath = Registry::RootKey::CurrentUser;
+	registryPath += Constant::Symbol::Backslash;
+	registryPath += Registry::Path::Application;
+
 	// Execute registry export command
-	String execCommand = StringUtils::StringFormat(Constant::Command::Registry::Export, MakeRegistryPath(regInfo, RegistryPathType::includingProductName), destFilePath.GetString());
+	String execCommand = StringUtils::StringFormat(Constant::Command::Registry::Export, registryPath.GetString(), destFilePath.GetString());
 	if (!ExecuteCommand(execCommand, FALSE, FALSE)) {
 		// Execute command failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to execute export command!!!");

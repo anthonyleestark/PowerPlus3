@@ -16,18 +16,13 @@
 //////////////////////////////////////////////////////////////////
 // Define constant values
 
+
 // Application profile info
 struct AppProfile {
 
 	static constexpr const wchar_t* CompanyName									= _T("Stark Personal");
-	static constexpr const wchar_t* ProductName									= _T("Power++ 3.2");
-
-	struct Registry {
-		static constexpr const wchar_t* RootKey									= _T("HKEY_CURRENT_USER");
-		static constexpr const wchar_t* SubKeys									= _T("SOFTWARE");
-		static constexpr const wchar_t* CompanyName								= _T("Stark Personal");
-		static constexpr const wchar_t* ProductID								= _T("powerplusapp");
-	};
+	static constexpr const wchar_t* ProductName									= _T("Power++ v3.2");
+	static constexpr const wchar_t* ProductID									= _T("powerplusapp");
 
 	struct LaunchInfo {
 		static constexpr const wchar_t* LaunchTime								= _T("LaunchTime");
@@ -42,6 +37,21 @@ struct AppProfile {
 		static constexpr const wchar_t* OSPlatformID							= _T("OSPlatformID");
 	};
 };
+
+
+// Registry info
+struct Registry {
+	struct RootKey {
+		static constexpr const wchar_t* CurrentUser								= _T("HKEY_CURRENT_USER");
+		static constexpr const wchar_t* LocalMachine							= _T("HKEY_LOCAL_MACHINE");
+	};
+
+	struct Path {
+		static constexpr const wchar_t* Application								= _T("Software\\Stark Personal\\powerplusapp");
+		static constexpr const wchar_t* AutoStart								= _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
+	};
+};
+
 
 // Data sections
 struct Section {
@@ -99,7 +109,6 @@ struct Section {
 	};
 
 	static constexpr const wchar_t* SystemEventTracking							= _T("SystemEventTracking");
-	static constexpr const wchar_t* AutoStart									= _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
 };
 
 // Data keys

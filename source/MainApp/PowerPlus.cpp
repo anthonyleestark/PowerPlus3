@@ -2371,7 +2371,7 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 	GetAutoStartRegistryRootKey(hRootKey);
 
 	// Create registry key
-	lRes = RegCreateKeyEx(hRootKey, Section::AutoStart, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hKey, &dwState);
+	lRes = RegCreateKeyEx(hRootKey, Registry::Path::AutoStart, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hKey, &dwState);
 
 	// Registry key creation failed
 	if (lRes != ERROR_SUCCESS) {
@@ -2431,7 +2431,7 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 	GetAutoStartRegistryRootKey(hRootKey);
 
 	// Open registry key
-	lRes = RegOpenKeyEx(hRootKey, Section::AutoStart, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hKey);
+	lRes = RegOpenKeyEx(hRootKey, Registry::Path::AutoStart, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hKey);
 	if (lRes != ERROR_SUCCESS) {
 		TRACE_ERROR("Error: Registry key open failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
