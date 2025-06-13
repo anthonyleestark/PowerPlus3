@@ -36,18 +36,6 @@
 
 //////////////////// ********************
 // 
-// List view column size units
-//
-//////////////////// ********************
-
-typedef enum eLVCOLSIZEUNIT {
-	COLSIZE_PIXEL = 0,					// Pixel
-	COLSIZE_PERCENT,					// Percent (of frame width)
-} LVCOLSIZEUNIT;
-
-
-//////////////////// ********************
-// 
 // Grid table column style
 //
 //////////////////// ********************
@@ -1023,37 +1011,6 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Data type name:	USERMENUITEM
-//  Description:	Store data of a user custom menu item
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef struct tagUSERMENUITEM
-{
-	UINT	nItemID;										// Menu item ID
-	UINT	nItemType;										// Menu item type
-	LPTSTR	lpszItemCaption;								// Menu item text
-	UINT	nParentID;										// Item parent ID
-	LPTSTR	lpszParentCaption;								// Item parent caption
-} USERMENUITEM, *PUSERMENUITEM;
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	USERMENU
-//  Description:	Store data of a user custom menu
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef struct tagUSERMENU
-{
-	UINT nItemCount;										// Number of menu items
-	PUSERMENUITEM pMenuItemList;							// User menu pointer
-} USERMENU, *PUSERMENU;
-
-//////////////////////////////////////////////////////////////////////////
-//
 //	Class name:		RegistryValue
 //  Description:	Store data values of a registry key 
 //
@@ -1237,22 +1194,6 @@ using PRegistryInfo = RegistryInfo*;
 
 // Define new global typenames for the enum attributes of RegistryValue
 using RegistryPathType = RegistryInfo::RegistryPathType;
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	LVCOLUMNFORMAT
-//  Description:	Store list control/view column format info
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
-typedef struct tagLVCOLUMNFORMAT
-{
-	// Member variables
-	INT		nColumnTitleID;									// Column title ID
-	INT		nColumnSize;									// Column size
-	INT		nColumnSizeUnit;								// Column size unit
-} LVCOLUMNFORMAT, *PLVCOLUMNFORMAT;
 
 //////////////////////////////////////////////////////////////////////////
 //

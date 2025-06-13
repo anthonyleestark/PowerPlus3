@@ -273,7 +273,7 @@ BOOL AppRegistry::DeleteConfigSection(void)
 BOOL AppRegistry::GetDefaultSchedule(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
-	int nRet = GetRegistryValueInt(Section::ScheduleData, NULL, keyName);
+	int nRet = GetRegistryValueInt(Section::ScheduleData, Section::Schedule::DefautItem, keyName);
 	if (nRet == UINT_MAX) return FALSE;
 	nRef = nRet; // Copy returned value
 	return TRUE;
@@ -281,7 +281,7 @@ BOOL AppRegistry::GetDefaultSchedule(const wchar_t* keyName, int& nRef)
 
 BOOL AppRegistry::WriteDefaultSchedule(const wchar_t* keyName, int nValue)
 {
-	return WriteRegistryValueInt(Section::ScheduleData, NULL, keyName, nValue);
+	return WriteRegistryValueInt(Section::ScheduleData, Section::Schedule::DefautItem, keyName, nValue);
 }
 
 //////////////////////////////////////////////////////////////////////////

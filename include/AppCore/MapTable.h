@@ -39,7 +39,7 @@ namespace MapTable
 	#define INITIALIZE_IDMAPTABLE(tableName) \
 		static IDMAPTABLE tableName = {
 	#define END_IDMAPTABLE() \
-		,INT_NULL,INT_NULL};
+		,INFINITE,INFINITE};
 
 	// String map table
 	using STRINGTABLE = const LANGTEXT[];
@@ -49,7 +49,7 @@ namespace MapTable
 	#define INITIALIZE_STRINGMAPTABLE(tableName) \
 		static STRINGTABLE tableName = {
 	#define END_STRINGMAPTABLE() \
-		, INT_NULL, _T("") };
+		,INFINITE, _T("")};
 
 	// Maximum table size
 	#define MAX_TABLESIZE	1000

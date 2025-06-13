@@ -48,6 +48,7 @@ struct Section {
 	static constexpr const wchar_t* ConfigData									= _T("ConfigData");
 	static constexpr const wchar_t* ScheduleData								= _T("ScheduleData");
 	struct Schedule {
+		static constexpr const wchar_t* DefautItem								= _T("DefaultSchedule");
 		static constexpr const wchar_t* ItemFormat								= _T("ScheduleItem_%02d");
 		static const wchar_t* Item(int id) {
 			static wchar_t buffer[32] = L"\0";
@@ -68,6 +69,7 @@ struct Section {
 
 	static constexpr const wchar_t* PwrReminderData								= _T("PwrReminderData");
 	struct PwrReminder {
+		static constexpr const wchar_t* CommonStyle								= _T("CommonStyle");
 		static constexpr const wchar_t* ItemFormat								= _T("PwrReminderItem_%02d");
 		static const wchar_t* Item(int id) {
 			static wchar_t buffer[32] = L"\0";

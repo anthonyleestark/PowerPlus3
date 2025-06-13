@@ -20,10 +20,11 @@
 
 //////////////////////////////////////////////////////////////////////////
 //
-//	Define dialog/window control types
+//	Define enum types or structs
 //
 //////////////////////////////////////////////////////////////////////////
 
+// Define dialog/window control types
 enum ControlType {
 	Control_Base = 0x00,			// Base control type (NULL)
 
@@ -68,6 +69,25 @@ enum ControlType {
 	MFC_ShellList_Control,			// MFC ShellList Control
 	MFC_ShellTree_Control,			// MFC ShellTree Control
 	MFC_Link_Control,				// MFC Link Control
+};
+
+
+// Menu item info
+struct USERMENUITEM
+{
+	UINT	nItemID;				// Menu item ID
+	UINT	nItemType;				// Menu item type
+	LPTSTR	lpszItemCaption;		// Menu item text
+	UINT	nParentID;				// Item parent ID
+	LPTSTR	lpszParentCaption;		// Item parent caption
+};
+
+
+// User menu
+struct USERMENU
+{
+	UINT nItemCount;				// Number of menu items
+	USERMENUITEM* pMenuItemList;	// User menu pointer
 };
 
 
@@ -280,7 +300,7 @@ public:
 
 protected:
 	// User menu layout
-	PUSERMENU	m_pMenuLayout;
+	USERMENU* m_pMenuLayout;
 };
 
 //////////////////////////////////////////////////////////////////////////

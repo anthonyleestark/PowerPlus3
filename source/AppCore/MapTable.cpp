@@ -47,7 +47,7 @@ UINT MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse /
 		IDPAIR idPair = pIDTableRef[nIndex++];
 
 		// End of table
-		if (idPair.first == INT_NULL)
+		if (idPair.first == INFINITE)
 			break;
 
 		// Reverse search
@@ -95,7 +95,7 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input
 		LANGTEXT stringPair = pStringTableRef[nIndex++];
 
 		// End of table
-		if (stringPair.id == INT_NULL)
+		if (stringPair.id == INFINITE)
 			break;
 
 		// Also convert language string to lower for easier comparison
@@ -136,7 +136,7 @@ const wchar_t* MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID)
 		LANGTEXT stringPair = pStringTableRef[nIndex++];
 
 		// End of table
-		if (stringPair.id == INT_NULL)
+		if (stringPair.id == INFINITE)
 			break;
 
 		// Compare string
