@@ -1,20 +1,13 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Serialization_defs.h
-//		Description:	Define necessary macros, enums and constants for serialization and backup system
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.06.03:		Create new
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Serialization_defs.h
+ * @brief		Define necessary macros, enums and constants for serialization and backup system
+ * @author		AnthonyLeeStark
+ * @date		2024.06.03
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
-
-//////////////////////////////////////////////////////////////////
-// Define constant values
 
 
 // Application profile info

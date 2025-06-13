@@ -1,19 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Core.h
-//		Description:	Define and implement core data types, macros and methods which will be used elsewhere in program
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.03.12:		Create new
-//						<1> 2017.03.08:		Update to version 2.0
-//						<2> 2024.01.27:		Update to version 3.0
-//						<3> 2024.07.06:		Update to version 3.1
-//						<4> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		AppCore.h
+ * @brief		Define and implement core data types, macros and methods which will be used elsewhere in program
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -22,24 +14,8 @@
 #include "Components/GridCtrl/GridCellCheck.h"
 #include "Language.h"
 
-/////////////////////////////////////
 
-//// Declarations
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define enum datas for program, these datas will be used elsewhere in the programs
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////// ********************
-// 
 // Grid table column style
-//
-//////////////////// ********************
-
 typedef enum eGRIDCOLSTYLE {
 	COLSTYLE_FIXED = 0,					// Fixed cell
 	COLSTYLE_CHECKBOX,					// Checkbox cell
@@ -47,32 +23,17 @@ typedef enum eGRIDCOLSTYLE {
 } GRIDCOLSTYLE;
 
 
-//////////////////// ********************
-// 
 // File types (view file mode)
-//
-//////////////////// ********************
-
 typedef enum eFILETYPE {
 	FILETYPE_TEXT = 0,					// Text files
 	FILETYPE_IMAGE,						// Image files
 } FILETYPE;
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 //	Define data types for program, these data types will be used elsewhere in the program
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	CONFIGDATA
-//  Description:	Store application settings and configurations
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store application settings and configurations
 struct CONFIGDATA
 {
 	// Main settings
@@ -102,14 +63,8 @@ struct CONFIGDATA
 // Define typename
 using PCONFIGDATA = CONFIGDATA*;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		ConfigData
-//  Description:	Class for application config data management
-//  Derivered from:	CONFIGDATA
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For application config data management
 class ConfigData : public CONFIGDATA
 {
 public:
@@ -157,13 +112,8 @@ public:
 // Define new global typenames for the enum attributes of Application config data
 using AppOptionID = ConfigData::AppOptionID;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		FlagManager
-//  Description:	Class for application flag data management
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For application flag data management
 class FlagManager final
 {
 public:
@@ -254,13 +204,8 @@ using AppFlagID = FlagManager::AppFlagID;
 using FlagManagerID = FlagManager::ManagerID;
 using FlagManagementMethod = FlagManager::ManagementMethod;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		PwrRepeatSet
-//  Description:	Store and manage data of a Power++ item repeat set
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage data of a Power++ item repeat set
 class PwrRepeatSet
 {
 public:
@@ -309,13 +254,8 @@ public:
 // Define new typenames for RepeatSet data
 using PPwrRepeatSet = PwrRepeatSet*;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		ScheduleItem
-//  Description:	Store schedule item settings
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage schedule item data
 class ScheduleItem
 {
 private:
@@ -372,13 +312,8 @@ public:
 using PScheduleItem = ScheduleItem*;
 using ScheduleItemList = typename std::vector<ScheduleItem>;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		ScheduleData
-//  Description:	Store app Action Schedule data settings
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage application's Action Schedule data settings
 class ScheduleData
 {
 public:
@@ -447,13 +382,8 @@ public:
 	void DeleteAll(void);											// Delete all data
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		HotkeySetItem
-//  Description:	Store data of a HotkeySet item
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage data of a HotkeySet item
 class HotkeySetItem
 {
 public:
@@ -509,13 +439,8 @@ using HotkeySetItemList = typename std::vector<HotkeySetItem>;
 // Define new global typenames for the enum attributes of HotkeySet items
 using HotkeyID = HotkeySetItem::HKID;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		HotkeySetData
-//  Description:	Store app Hotkeyset data settings
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage application's HotkeySet data settings
 class HotkeySetData
 {
 public:
@@ -565,13 +490,8 @@ public:
 	void PrintKeyStrokes(UINT, String&) const;						// Print item keystrokes by ID
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		RmdMsgStyleSet
-//  Description:	Store data of a Reminder message style set
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store data of Reminder message style
 class RmdMsgStyleSet
 {
 public:
@@ -657,13 +577,8 @@ public:
 // Define new typenames for Reminder message style data
 using PRmdMsgStyleSet = RmdMsgStyleSet*;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		PwrReminderItem
-//  Description:	Store data of a Power Reminder item
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage data of a Power Reminder item
 class PwrReminderItem
 {
 public:
@@ -756,13 +671,8 @@ using PwrReminderItemList = typename std::vector<PwrReminderItem>;
 using PwrReminderEvent = PwrReminderItem::Event;
 using PwrReminderStyle = PwrReminderItem::Style;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		PwrReminderData
-//  Description:	Store app Power Reminder data settings
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage application's Power Reminder settings
 class PwrReminderData
 {
 public:
@@ -819,13 +729,8 @@ public:
 	void DeleteAll(void);											// Delete all data
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//  Class name:		PwrRuntimeItem
-//  Description:	Store data of a runtime info item
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage information of application feature runtime item
 class PwrRuntimeItem
 {
 public:
@@ -880,13 +785,8 @@ using PwrRuntimeQueue = typename std::vector<PwrRuntimeItem>;
 // Define new global typenames for the enum attributes of runtime info items
 using PwrFeatureID = PwrRuntimeItem::FeatureCategoryID;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		HistoryInfoData
-//  Description:	Manage app action history info data
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store application action history info data
 class HistoryInfoData
 {
 private:
@@ -936,13 +836,8 @@ public:
 // Define new typenames for History info data
 using PHistoryInfoData = HistoryInfoData*;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		SystemEvent
-//  Description:	Store data of System Event info
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store data of System Event tracking info
 class SystemEvent
 {
 public:
@@ -980,13 +875,8 @@ using SystemEventData = typename std::vector<SystemEvent>;
 // Define new global typenames for the enum attributes of System Event info
 using SystemEventID = SystemEvent::EventID;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		SystemEventTracker
-//  Description:	Store and manage System Event tracking data
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store and manage System Event tracking data
 class SystemEventTracker
 {
 private:
@@ -1015,14 +905,8 @@ public:
 	const SystemEvent& GetAt(int) const;							// Get system event info data by index
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	GRIDCTRLCOLFORMAT
-//  Description:	Store grid control/view column format info
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Store grid control/view column format info
 typedef struct tagGRIDCTRLCOLFMT 
 {
 	// Member variables
@@ -1033,14 +917,8 @@ typedef struct tagGRIDCTRLCOLFMT
 	BOOL	bCenter;										// Align center
 } GRIDCTRLCOLFORMAT, *PGRIDCTRLCOLFORMAT;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	RESTARTREQ
-//  Description:	Using for request to restart app as admin
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For request to restart app as admin
 typedef struct tagRESTARTREQ 
 {
 	// Member variables
@@ -1052,13 +930,8 @@ typedef struct tagRESTARTREQ
 	BOOL bResetFlag;										// Reset flag when denied
 } RESTARTREQ, *PRESTARTREQ;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		Substring
-//  Description:	Using for getting substrings
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For getting substrings
 class Substring
 {
 private:
@@ -1095,13 +968,8 @@ public:
 	void SetRight(const wchar_t*);							// Set right part
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		StringUtils
-//  Description:	Using for string processing and validation
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For string processing and validation
 class StringUtils
 {
 public:
@@ -1147,13 +1015,8 @@ public:
 	static int PrintCharList(const wchar_t* srcStr, String& outputStr);
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		ClockTimeUtils
-//  Description:	Using for clock-time processing and validation
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For clock-time processing and validation
 class ClockTimeUtils
 {
 public:
@@ -1180,13 +1043,8 @@ public:
 	static String Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const ClockTime& clockTime);
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		DateTimeUtils
-//  Description:	Using for date/time processing and validation
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For date/time processing and validation
 class DateTimeUtils
 {
 public:
@@ -1202,13 +1060,8 @@ public:
 	static String Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const DateTime& dateTime);
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:		PerformanceCounter
-//  Description:	Using for querrying performance counter of functions
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For querrying performance counter of functions
 class PerformanceCounter
 {
 private:
@@ -1232,12 +1085,8 @@ public:
 };
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define core methods for program, these functions will be used elsewhere in the program
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// Core methods for application
+// These functions will be used elsewhere in the program
 namespace AppCore
 {
 	// Power action execution functions (main core)

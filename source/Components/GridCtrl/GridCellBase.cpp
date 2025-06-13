@@ -1,15 +1,8 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		GridCellBase.cpp
-//		Description:	Grid cell base class implementation file
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.20:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		GridCellBase.cpp
+ * @brief		Grid cell base class implementation file
+ * @date		2024.07.20
+ */
 
 #include "Components/GridCtrl/GridCtrl.h"
 #include "Components/GridCtrl/GridCellBase.h"
@@ -680,7 +673,6 @@ BOOL CGridCellBase::PrintCell(CDC* /*pDC*/, int /*nRow*/, int /*nCol*/, CRect /*
     pDC->SelectObject(&Font);
     // ***************************************************
     */
-
     // Draw lines only when wanted on fixed cells.  Normal cell grid lines
     // are handled in OnPrint.
     if(pGrid->GetGridLines() != GVL_NONE && IsFixed())

@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		SDialog.h
-//		Project name:	Stupid Framework
-//		Description:	Custom base class for dialogs (header file)
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.06:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		SDialog.h
+ * @brief		Custom base class for dialogs (header file)
+ * @author		AnthonyLeeStark
+ * @date		2024.07.06
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -24,15 +18,7 @@
 #include "SWinApp.h"
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Define flags for dialog properties
-//
-//////////////////////////////////////////////////////////////////////////
-
-
 // Flags for SetDialogAlign
-//
 
 #define SDA_LEFTALIGN						0x0001L
 #define SDA_RIGHTALIGN						0x0002L
@@ -47,14 +33,12 @@
 
 
 // Flags for moving functions
-//
 
 #define MOVDIR_HORIZONTAL					0x0001L
 #define MOVDIR_VERTICAL						0x0002L
 
 
 // Flags and default values for dialog properties
-//
 
 #define POINT_NULL							CPoint(0,0)
 #define SIZE_NULL							CSize(0,0)
@@ -63,12 +47,7 @@
 #define MARGIN_DEFAULT						CRect(10,10,10,10)
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Define custom message for dialogs
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Define custom message for dialogs
 
 #define SCM_NOTIFY_DIALOG_EVENT				(WM_USER+2000)
 
@@ -85,14 +64,7 @@
 #define SCM_NOTIFY_DIALOG_DESTROY			(SCM_NOTIFY_DIALOG_EVENT+11)
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:	 SDialog
-//  Description: Custom base class for dialogs
-//  Base class:	 CDialogEx
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Custom base class for dialogs
 class SDialog : public CDialogEx
 {
 	DECLARE_DYNAMIC(SDialog)

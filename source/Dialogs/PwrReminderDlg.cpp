@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		PwrReminderDlg.cpp
-//		Description:	Source file for Power Reminder dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.20:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		PwrReminderDlg.cpp
+ * @brief		Source file for Power Reminder dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.07.20
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "MainApp/PowerPlus.h"
 #include "MainApp/PowerPlusDlg.h"
@@ -33,21 +28,13 @@ constexpr const int fixedColumnNum = 1;
 constexpr const int fixedRowNum = 1;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CPwrReminderDlg
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for CPwrReminderDlg
 IMPLEMENT_DYNAMIC(CPwrReminderDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CPwrReminderDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
 	: SDialog(IDD_PWRREMINDER_DLG, pParent)
 {
@@ -94,13 +81,9 @@ CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
 	m_stDispTimeBak = ClockTime();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CPwrReminderDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CPwrReminderDlg::~CPwrReminderDlg()
 {
 	// Delete child dialogs
@@ -139,13 +122,9 @@ CPwrReminderDlg::~CPwrReminderDlg()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CPwrReminderDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -159,15 +138,11 @@ void CPwrReminderDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,		m_bStyleDialogRad);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterDialogManagement
-//	Description:	Register dialog control management
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register dialog control management
+ * @param	None
+ * @return	int
+ */
 int CPwrReminderDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
@@ -214,15 +189,11 @@ int CPwrReminderDlg::RegisterDialogManagement(void)
 	return nRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UnregisterDialogManagement
-//	Description:	Unregister dialog control management
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Unregister dialog control management
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CPwrReminderDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
@@ -335,15 +306,11 @@ END_MESSAGE_MAP()
 
 // PwrReminderDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize Power Reminder dialog and setup dialog content
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize Power Reminder dialog and setup dialog content
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CPwrReminderDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -383,15 +350,11 @@ BOOL CPwrReminderDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Default method for dialog closing
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog closing
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnClose()
 {
 	// If not forced closing by request
@@ -427,15 +390,11 @@ void CPwrReminderDlg::OnClose()
 	SDialog::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Default method for dialog destroying
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog destroying
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnDestroy()
 {
 	// Save app event log if enabled
@@ -449,15 +408,11 @@ void CPwrReminderDlg::OnDestroy()
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnApply
-//	Description:	Handle click event for [Apply] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Apply] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnApply()
 {
 	// Save app event log if enabled
@@ -475,15 +430,11 @@ void CPwrReminderDlg::OnApply()
 	SDialog::OnOK();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCancel
-//	Description:	Handle click event for [Cancel] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Cancel] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnCancel()
 {
 	// If not forced closing by request
@@ -522,15 +473,11 @@ void CPwrReminderDlg::OnCancel()
 	SDialog::OnCancel();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnAdd
-//	Description:	Handle click event for [Add] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Add] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnAdd()
 {
 	// Save app event log if enabled
@@ -557,15 +504,11 @@ void CPwrReminderDlg::OnAdd()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnEdit
-//	Description:	Handle click event for [Edit] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Edit] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnEdit()
 {
 	// Save app event log if enabled
@@ -597,15 +540,11 @@ void CPwrReminderDlg::OnEdit()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRemove
-//	Description:	Handle click event for [Remove] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Remove] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnRemove()
 {
 	// Save app event log if enabled
@@ -631,15 +570,11 @@ void CPwrReminderDlg::OnRemove()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRemoveAll
-//	Description:	Handle click event for [Remove All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Remove All] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnRemoveAll()
 {
 	// Save app event log if enabled
@@ -657,15 +592,11 @@ void CPwrReminderDlg::OnRemoveAll()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCheckAll
-//	Description:	Handle click event for [Check All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Check All] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnCheckAll()
 {
 	// Save app event log if enabled
@@ -679,15 +610,11 @@ void CPwrReminderDlg::OnCheckAll()
 	SetAllItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnUncheckAll
-//	Description:	Handle click event for [Uncheck All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Uncheck All] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnUncheckAll()
 {
 	// Save app event log if enabled
@@ -701,15 +628,11 @@ void CPwrReminderDlg::OnUncheckAll()
 	SetAllItemState(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnPreviewItem
-//	Description:	Handle click event for [Preview] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Preview] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnPreviewItem()
 {
 	// Save app event log if enabled
@@ -729,16 +652,12 @@ void CPwrReminderDlg::OnPreviewItem()
 	PreviewItem(nIndex);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSelectReminderItem
-//	Description:	Show details when selecting a reminder item
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Show details when selecting a reminder item
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
@@ -766,17 +685,13 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClickDataItemList
-//	Description:	Handle click event on Power Reminder data 
-//					item list control
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event on Power Reminder data
+					item list control
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
@@ -802,17 +717,13 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRightClickDataItemList
-//	Description:	Handle right click event on Power Reminder data 
-//					item list control
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle right click event on Power Reminder data
+					item list control
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
@@ -838,15 +749,11 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnMsgContentEditChange
-//	Description:	Update when message content editbox value changes
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update when message content editbox value changes
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnMsgContentEditChange()
 {
 	// Check control validity
@@ -867,15 +774,11 @@ void CPwrReminderDlg::OnMsgContentEditChange()
 	UpdateMsgCounter(nCount);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnTimeEditSetFocus
-//	Description:	Select all text when editbox is set focus
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Select all text when editbox is set focus
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnTimeEditSetFocus()
 {
 	/*********************************************************************/
@@ -883,7 +786,6 @@ void CPwrReminderDlg::OnTimeEditSetFocus()
 	/*			TODO: Time edit set focus --> Select all text			 */
 	/*																	 */
 	/*********************************************************************/
-
 	// Check control validity
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
@@ -901,15 +803,11 @@ void CPwrReminderDlg::OnTimeEditSetFocus()
 	m_pEvtSetTimeEdit->PostMessage(EM_SETSEL, 0, -1);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnTimeEditKillFocus
-//	Description:	Update when time editbox is killed focus
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update when time editbox is killed focus
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnTimeEditKillFocus()
 {
 	/*********************************************************************/
@@ -917,7 +815,6 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	/*			TODO: Time edit kill forcus --> Update data			     */
 	/*																	 */
 	/*********************************************************************/
-
 	// Check control validity
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
@@ -957,16 +854,12 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnTimeSpinChange
-//	Description:	Update when time spin value changes
-//  Arguments:		pNMDHR  - Default of spin event handler
-//					pResult - Default of spin event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update when time spin value changes
+ * @param	pNMDHR  - Default of spin event handler
+ * @param	pResult - Default of spin event handler
+ * @return	None
+ */
 void CPwrReminderDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
@@ -987,15 +880,11 @@ void CPwrReminderDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnPwrEventRadBtnClicked
-//	Description:	Handle clicked for event radio buttons
-//  Arguments:		nID - ID of button
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicked for event radio buttons
+ * @param	nID - ID of button
+ * @return	None
+ */
 void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
 {
 	// Ignore if clicked on items with in-range IDs but not radio buttons
@@ -1051,15 +940,11 @@ void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRepeatSet
-//	Description:	Handle click event for [RepeatSet] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [RepeatSet] button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::OnRepeatSet()
 {
 	// Save app event log if enabled
@@ -1106,15 +991,11 @@ void CPwrReminderDlg::OnRepeatSet()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestCloseDialog
-//	Description:	Request current dialog to close
-//  Arguments:		None
-//  Return value:	LRESULT (0:Success, else:Failed)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Request current dialog to close
+ * @param	None
+ * @return	LRESULT (0:Success, else:Failed)
+ */
 LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 {
 	// Close preview message dialog if opening
@@ -1169,17 +1050,13 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	return SDialog::RequestCloseDialog();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WindowProc
-//	Description:	Pre-handle dialog messages
-//  Arguments:		message - Message ID
-//					wParam	- First param (HIWORD)
-//					lParam	- Second param (LOWORD)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Pre-handle dialog messages
+ * @param	message - Message ID
+ * @param	wParam	- First param (HIWORD)
+ * @param	lParam	- Second param (LOWORD)
+ * @return	None
+ */
 LRESULT CPwrReminderDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -1229,15 +1106,11 @@ LRESULT CPwrReminderDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	return SDialog::WindowProc(message, wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog items
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::SetupLanguage()
 {
 	// Load app language package
@@ -1280,15 +1153,11 @@ void CPwrReminderDlg::SetupLanguage()
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupDataItemList
-//	Description:	Initialize and setup language for Power Reminder data item list
-//  Arguments:		ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize and setup language for Power Reminder data item list
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 {
 	// Get parent list frame rect
@@ -1355,19 +1224,15 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	m_pDataItemListTable->SetRedraw(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DrawDataTable
-//	Description:	Draw data list table
-//  Arguments:		szFrameWndSize	- Frame size
-//					nColNum			- Number of table columns
-//					nRowNum			- Number of table rows
-//					bReadOnly		- Read-only mode
-//					ptrLanguage		- Pointer to app language
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Draw data list table
+ * @param	szFrameWndSize	- Frame size
+ * @param	nColNum			- Number of table columns
+ * @param	nRowNum			- Number of table rows
+ * @param	bReadOnly		- Read-only mode
+ * @param	ptrLanguage		- Pointer to app language
+ * @return	None
+ */
 void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRowNum, BOOL bReadOnly /* = FALSE */, LANGTABLE_PTR ptrLanguage /* = NULL */)
 {
 	// Check table validity
@@ -1507,16 +1372,12 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupComboBox
-//	Description:	Setup data for combo-boxes
-//  Arguments:		nComboID	- ID of combo box
-//					ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup data for combo-boxes
+ * @param	nComboID	- ID of combo box
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CPwrReminderDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	// Check combo validity
@@ -1538,15 +1399,11 @@ void CPwrReminderDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 	SDialog::SetupComboBox(nComboID, ptrLanguage);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SwitchMode
-//	Description:	Switch between modes and re-update dialog item states
-//  Arguments:		bRedraw - Redraw dialog items or not
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Switch between modes and re-update dialog item states
+ * @param	bRedraw - Redraw dialog items or not
+ * @return	None
+ */
 void CPwrReminderDlg::SwitchMode(BOOL /* bRedraw = FALSE */)
 {
 	int nCurMode = GetCurMode();
@@ -1648,15 +1505,11 @@ void CPwrReminderDlg::SwitchMode(BOOL /* bRedraw = FALSE */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateLayoutInfo
-//	Description:	Update layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update layout info data
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::UpdateLayoutInfo(void)
 {
 	// Check table validity
@@ -1675,15 +1528,11 @@ void CPwrReminderDlg::UpdateLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadLayoutInfo
-//	Description:	Load layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load layout info data
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::LoadLayoutInfo(void)
 {
 	// Define default table columns format
@@ -1724,15 +1573,11 @@ void CPwrReminderDlg::LoadLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveLayoutInfo
-//	Description:	Save layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save layout info data
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::SaveLayoutInfo(void)
 {
 	// Check table column format data validity
@@ -1748,15 +1593,11 @@ void CPwrReminderDlg::SaveLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupDialogItemState
-//	Description:	Setup state and properties for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup state and properties for dialog items
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::SetupDialogItemState()
 {
 	// Initialize dialog items
@@ -1879,15 +1720,11 @@ void CPwrReminderDlg::SetupDialogItemState()
 	SDialog::SetupDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateDataItemList
-//	Description:	Update Power Reminder data item list
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update Power Reminder data item list
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::UpdateDataItemList()
 {
 	// Check table validity
@@ -1954,15 +1791,11 @@ void CPwrReminderDlg::UpdateDataItemList()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisableTable
-//	Description:	Disable mouse click events for table
-//  Arguments:		bDisable - Disable/enable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Disable mouse click events for table
+ * @param	bDisable - Disable/enable
+ * @return	None
+ */
 void CPwrReminderDlg::DisableTable(BOOL bDisable)
 {
 	// Redraw read-only style
@@ -1976,15 +1809,11 @@ void CPwrReminderDlg::DisableTable(BOOL bDisable)
 	m_pDataItemListTable->DisableMouseMove(bDisable);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RedrawDataTable
-//	Description:	Update and redraw data table
-//  Arguments:		BOOL bReadOnly - Read-only mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update and redraw data table
+ * @param	BOOL bReadOnly - Read-only mode
+ * @return	None
+ */
 void CPwrReminderDlg::RedrawDataTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
@@ -2004,15 +1833,11 @@ void CPwrReminderDlg::RedrawDataTable(BOOL bReadOnly /* = FALSE */)
 	m_pDataItemListTable->RedrawWindow();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayItemDetails
-//	Description:	Display details of an item at specified index
-//  Arguments:		nIndex - Index of item to display
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Display details of an item at specified index
+ * @param	nIndex - Index of item to display
+ * @return	None
+ */
 void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 {
 	// Check index validity
@@ -2059,15 +1884,11 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	UpdateItemData(pwrItem, FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RefreshDialogItemState
-//	Description:	Refresh and update state for dialog items
-//  Arguments:		bRecheckState - Recheck all item's state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for dialog items
+ * @param	bRecheckState - Recheck all item's state
+ * @return	None
+ */
 void CPwrReminderDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
 	CWnd* pBtn = NULL;
@@ -2136,15 +1957,11 @@ void CPwrReminderDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	SDialog::RefreshDialogItemState(bRecheckState);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateCheckAllBtnState
-//	Description:	Refresh and update state for [Check/Uncheck All] button
-//  Arguments:		bRecheck - Recheck all items enable state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for [Check/Uncheck All] button
+ * @param	bRecheck - Recheck all items enable state
+ * @return	None
+ */
 void CPwrReminderDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = FALSE */)
 {
 	// If dialog items are being locked, do nothing
@@ -2197,15 +2014,11 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = FALSE */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RefreshDetailView
-//	Description:	Refresh and update state for detail view
-//  Arguments:		nMode - Detail view mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for detail view
+ * @param	nMode - Detail view mode
+ * @return	None
+ */
 void CPwrReminderDlg::RefreshDetailView(int nMode)
 {
 	// Set state and init value by mode
@@ -2225,7 +2038,6 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 	/*				Update detail view item states				   */
 	/*															   */
 	/***************************************************************/
-
 	CWnd* pWnd = NULL;
 
 	// Message content
@@ -2287,15 +2099,11 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateMsgCounter
-//	Description:	Update message content length counter
-//  Arguments:		nCount - Character number counter
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update message content length counter
+ * @param	nCount - Character number counter
+ * @return	None
+ */
 void CPwrReminderDlg::UpdateMsgCounter(int nCount)
 {
 	// Get dialog item
@@ -2311,16 +2119,12 @@ void CPwrReminderDlg::UpdateMsgCounter(int nCount)
 	pCounter->SetWindowText(countFormatString);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateTimeSetting
-//	Description:	Update time value from/to time edit control
-//  Arguments:		clockTime  - Clock-time data
-//					bUpdate	   - Update or not (YES/TRUE by default)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update time value from/to time edit control
+ * @param	clockTime  - Clock-time data
+ * @param	bUpdate	   - Update or not (YES/TRUE by default)
+ * @return	None
+ */
 void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* = TRUE */)
 {
 	// Get app language package
@@ -2381,15 +2185,11 @@ void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* = 
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadPwrReminderData
-//	Description:	Load Power Reminder data
-//  Arguments:		None
-//  Return value:	BOOL - Result of loading process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load Power Reminder data
+ * @param	None
+ * @return	BOOL - Result of loading process
+ */
 BOOL CPwrReminderDlg::LoadPwrReminderData()
 {
 	// Get app Reminder data pointer
@@ -2420,15 +2220,11 @@ BOOL CPwrReminderDlg::LoadPwrReminderData()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SavePwrReminderData
-//	Description:	Save Power Reminder data
-//  Arguments:		None
-//  Return value:	BOOL - Result of saving process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save Power Reminder data
+ * @param	None
+ * @return	BOOL - Result of saving process
+ */
 BOOL CPwrReminderDlg::SavePwrReminderData()
 {
 	// Copy data and adjust validity
@@ -2454,15 +2250,11 @@ BOOL CPwrReminderDlg::SavePwrReminderData()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckDataChangeState
-//	Description:	Check if settings changed
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check if settings changed
+ * @param	None
+ * @return	None
+ */
 BOOL CPwrReminderDlg::CheckDataChangeState()
 {
 	BOOL bChangeFlag = FALSE;
@@ -2515,15 +2307,11 @@ BOOL CPwrReminderDlg::CheckDataChangeState()
 	return bChangeFlag;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Add
-//	Description:	Add current settings to reminder data list
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add current settings to reminder data list
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::Add()
 {
 	// Update data
@@ -2551,15 +2339,11 @@ void CPwrReminderDlg::Add()
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Edit
-//	Description:	Edit a reminder item by index
-//  Arguments:		nIndex - Index of item to edit
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Edit a reminder item by index
+ * @param	nIndex - Index of item to edit
+ * @return	None
+ */
 void CPwrReminderDlg::Edit(int nIndex)
 {
 	// Update data
@@ -2590,15 +2374,11 @@ void CPwrReminderDlg::Edit(int nIndex)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Remove
-//	Description:	Remove a reminder item by index
-//  Arguments:		nIndex - Index of item to remove
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove a reminder item by index
+ * @param	nIndex - Index of item to remove
+ * @return	None
+ */
 void CPwrReminderDlg::Remove(int nIndex)
 {
 	// Remove item at index
@@ -2611,15 +2391,11 @@ void CPwrReminderDlg::Remove(int nIndex)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all reminder items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove all reminder items
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::RemoveAll()
 {
 	// Remove all items
@@ -2632,15 +2408,11 @@ void CPwrReminderDlg::RemoveAll()
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAllItemState
-//	Description:	Check/uncheck all Power Reminder items
-//  Arguments:		bState - Item state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check/uncheck all Power Reminder items
+ * @param	bState - Item state
+ * @return	None
+ */
 void CPwrReminderDlg::SetAllItemState(BOOL bState)
 {
 	// Check/uncheck all --> Update all items enable state
@@ -2662,15 +2434,11 @@ void CPwrReminderDlg::SetAllItemState(BOOL bState)
 	RefreshDialogItemState(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PreviewItem
-//	Description:	Preview Power Reminder item
-//  Arguments:		nIndex - Item index
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Preview Power Reminder item
+ * @param	nIndex - Item index
+ * @return	None
+ */
 void CPwrReminderDlg::PreviewItem(int nIndex)
 {
 	// Check index validity
@@ -2742,16 +2510,12 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateItemData
-//	Description:	Update reminder data from/to dialog controls
-//  Arguments:		pwrItem - Power Reminder item
-//					bUpdate - Update data flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update reminder data from/to dialog controls
+ * @param	pwrItem - Power Reminder item
+ * @param	bUpdate - Update data flag
+ * @return	None
+ */
 void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 {
 	if (bUpdate == TRUE) {
@@ -2761,9 +2525,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		/*				Update data from dialog controls			   */
 		/*															   */
 		/***************************************************************/
-
 		/*-----------------------Message content-----------------------*/
-
 		String tempString = Constant::String::Empty;
 		if (m_pMsgStringEdit != NULL) {
 			const int buffLength = m_pMsgStringEdit->GetWindowTextLength();
@@ -2774,7 +2536,6 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		}
 
 		/*----------------------------Event----------------------------*/
-
 		BOOL bTemp = FALSE;
 
 		// Event: At set time
@@ -2830,7 +2591,6 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		}
 
 		/*------------------------Message style------------------------*/
-
 		// Style: MessageBox
 		if (m_pStyleMsgBoxRad != NULL) {
 			bTemp = m_pStyleMsgBoxRad->GetCheck();
@@ -2855,9 +2615,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		/*				  Bind data to dialog controls				   */
 		/*															   */
 		/***************************************************************/
-
 		/*-----------------Set state and init value by mode------------*/
-
 		BOOL bEnable = TRUE;
 		int nMode = GetCurMode();
 		if ((nMode == Mode::Init) || (nMode == Mode::View)) {
@@ -2874,14 +2632,12 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		}
 
 		/*----------------------Get item details-----------------------*/
-
 		String messageContent = pwrItem.GetMessage();
 		ClockTime itemTime = pwrItem.GetTime();
 		UINT nEventID = pwrItem.GetEventID();
 		DWORD dwMsgStyle = pwrItem.GetMessageStyle();
 
 		/*-----------------------Message content-----------------------*/
-
 		CWnd* pWnd = NULL;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_TITLE);
 		if (pWnd != NULL) {
@@ -2898,7 +2654,6 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		}
 
 		/*----------------------------Event----------------------------*/
-
 		BOOL bTemp = FALSE;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
 		if (pWnd != NULL) {
@@ -2957,7 +2712,6 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 		}
 
 		/*------------------------Message style------------------------*/
-
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_TITLE);
 		if (pWnd != NULL) {
 			pWnd->EnableWindow(bEnable);
@@ -2977,17 +2731,13 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, BOOL bUpdate)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Validate
-//	Description:	Check Power Reminder item validity
-//  Arguments:		pwrItem		 - Item to validate
-//					bShowMsg	 - Show validation message box or not
-//					bAutoCorrect - Invalid value auto correction (ON/OFF)
-//  Return value:	BOOL - Result of validation process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check Power Reminder item validity
+ * @param	pwrItem		 - Item to validate
+ * @param	bShowMsg	 - Show validation message box or not
+ * @param	bAutoCorrect - Invalid value auto correction (ON/OFF)
+ * @return	BOOL - Result of validation process
+ */
 BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL bAutoCorrect /* = FALSE */)
 {
 	BOOL bResult = TRUE;
@@ -3118,15 +2868,11 @@ BOOL CPwrReminderDlg::Validate(Item& pwrItem, BOOL bShowMsg /* = FALSE */, BOOL 
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetCurMode
-//	Description:	Set current mode
-//  Arguments:		nMode - Mode to set
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current mode
+ * @param	nMode - Mode to set
+ * @return	None
+ */
 void CPwrReminderDlg::SetCurMode(int nMode)
 {
 	// If new mode is the same, do nothing
@@ -3139,15 +2885,11 @@ void CPwrReminderDlg::SetCurMode(int nMode)
 	SwitchMode(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DrawRepeatSetButton
-//	Description:	Draw icon for repeat set button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Draw icon for repeat set button
+ * @param	None
+ * @return	None
+ */
 void CPwrReminderDlg::DrawRepeatSetButton(void)
 {
 	// Check button validity

@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Dialogs.inl
-//		Description:	Implement definition of inline functions for Dialog classes
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2025.05.26:		Create new for version 3.2
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+﻿/**
+ * @file		Dialogs.inl
+ * @brief		Implement definition of inline functions for Dialog classes
+ * @author		AnthonyLeeStark
+ * @date		2025.05.26
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 ///////////////////////////////////////////////////////
 //// Implementations

@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		MapTable.cpp
-//		Description:	Implement methods for map table processing
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2025.04.03:		Create new
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		MapTable.cpp
+ * @brief		Implement methods for map table processing
+ * @author		AnthonyLeeStark
+ * @date		2025.04.03
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "AppCore/MapTable.h"
 
@@ -18,20 +14,13 @@
 #endif
 
 
-///////////////////////////////////////////////////////
-//// Implementations
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetPairedID
-//	Description:	Find and return ID paired with specified macro ID
-//  Arguments:		pIDTableRef - Reference ID mapping table
-//					nID			- First ID
-//					bReverse	- Reverse search
-//  Return value:	UINT - Second paired ID
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Find and return ID paired with specified macro ID
+ * @param	pIDTableRef - Reference ID mapping table
+ * @param	nID			- First ID
+ * @param	bReverse	- Reverse search
+ * @return	UINT - Second paired ID
+ */
 UINT MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse /* = FALSE */)
 {
 	// Return INVALID if ID mapping table is invalid
@@ -65,16 +54,12 @@ UINT MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse /
 	return (UINT)INT_INVALID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetStringID
-//	Description:	Find and return ID paired with given string
-//  Arguments:		pStringTableRef - Reference string table
-//					input			- Given string
-//  Return value:	UINT - String ID
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Find and return ID paired with given string
+ * @param	pStringTableRef - Reference string table
+ * @param	input			- Given string
+ * @return	UINT - String ID
+ */
 UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input)
 {
 	// Return NULL string if language table is invalid
@@ -112,16 +97,12 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input
 	return (UINT)INT_INVALID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetString
-//	Description:	Find and return string paired with specified ID
-//  Arguments:		pStringTableRef  - Reference string table
-//					nID				 - String ID
-//  Return value:	const wchar_t* - Paired string
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Find and return string paired with specified ID
+ * @param	pStringTableRef  - Reference string table
+ * @param	nID				 - String ID
+ * @return	const wchar_t* - Paired string
+ */
 const wchar_t* MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID)
 {
 	// Return NULL string if language table is invalid

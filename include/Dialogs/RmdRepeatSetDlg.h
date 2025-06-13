@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		RmdRepeatSetDlg.h
-//		Description:	Header file for Reminder message repeat mode set dialog
-//		Owner:			AnthonyLeeStark
-// 
-//		History:		<0> 2024.10.02:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		RmdRepeatSetDlg.h
+ * @brief		Header file for Reminder message repeat mode set dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.10.02
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -19,12 +14,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
-//
-//	CRmdRepeatSetDlg dialog used for Reminder repeat set
-//
-////////////////////////////////////////////////////////
-
+// RepeatSet dialog class
 class CRmdRepeatSetDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CRmdRepeatSetDlg)

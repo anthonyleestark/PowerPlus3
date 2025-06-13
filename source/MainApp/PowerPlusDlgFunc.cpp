@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		PowerPlusDlg.cpp
-//		Description:	Define necessary functions using for main window
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.02.24:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		PowerPlusDlgFunc.cpp
+ * @brief		Define necessary functions using for main window
+ * @author		AnthonyLeeStark
+ * @date		2024.02.24
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "MainApp/PowerPlus.h"
 #include "MainApp/PowerPlusDlg.h"
@@ -31,16 +26,12 @@ using namespace Language;
 using namespace AppCore;
 
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ProcessDebugCommand
-//	Description:	Process app debug commands
-//  Arguments:		commandString - Debug command string
-//					errorCode	  - Returned error code
-//  Return value:	BOOL
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Process app debug commands
+ * @param	commandString - Debug command string
+ * @param	errorCode	  - Returned error code
+ * @return	BOOL
+ */
 BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& errorCode)
 {
 	String debugCommand(commandString);
@@ -85,7 +76,6 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	/*					Process basic debug commands				     */
 	/*																	 */
 	/*********************************************************************/
-
 	if (!_tcscmp(debugCommand, _T("exit"))) {
 		// Exit application
 		ExitApp(ExitCode::FromDebugCommand);
@@ -189,7 +179,6 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	/*			Process advanced/multi-token debug commands				 */
 	/*																	 */
 	/*********************************************************************/
-
 	// Make token list (break string buffer)
 	TokenList tokenList = debugCommand.Tokenize(_T("=,;:-_"));
 	size_t tokenCount = tokenList.size();
@@ -1653,7 +1642,6 @@ BOOL CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	/*					Post-processing and clean-up				     */
 	/*																	 */
 	/*********************************************************************/
-
 	// If command is invalid
 	if (bInvalidCmdFlag == TRUE) {
 		// Error: Invalid command

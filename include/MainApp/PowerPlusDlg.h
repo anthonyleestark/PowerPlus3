@@ -1,19 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		PowerPlusDlg.h
-//		Description:	Header file for main window
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.06.19:		Create new
-//						<1> 2017.03.08:		Update to version 2.0
-//						<2> 2024.01.27:		Update to version 3.0
-//						<3> 2024.07.06:		Update to version 3.1
-//						<4> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		PowerPlusDlg.h
+ * @brief		Header file for main window dialog class
+ * @author		AnthonyLeeStark
+ * @date		2015.06.19
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -27,9 +19,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
 // Declaration of child dialog classes
-
 class CAboutDlg;
 class CHelpDlg;
 class CMultiScheduleDlg;
@@ -37,12 +27,8 @@ class CLogViewerDlg;
 class CHotkeySetDlg;
 class CPwrReminderDlg;
 
-////////////////////////////////////////////////////////
-//
-//	CPowerPlusDlg used for main app window
-//
-////////////////////////////////////////////////////////
 
+// Main window dialog class
 class CPowerPlusDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CPowerPlusDlg)

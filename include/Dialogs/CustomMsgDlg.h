@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		CustomMsgDlg.h
-//		Description:	Header file for Custom Message dialog
-//		Owner:			AnthonyLeeStark
-// 
-//		History:		<0> 2024.08.12:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		CustomMsgDlg.h
+ * @brief		Header file for Custom Message dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.08.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -18,12 +14,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
-//
-//	CCustomMsgDlg dialog used for Custom Message
-//
-////////////////////////////////////////////////////////
-
+// Custom Message dialog class
 class CCustomMsgDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CCustomMsgDlg)

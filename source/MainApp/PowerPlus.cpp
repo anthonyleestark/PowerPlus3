@@ -1,20 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		PowerPlus.cpp
-//		Description:	Source file for app class
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.03.12:		Create new
-//						<1> 2017.03.08:		Update to version 2.0
-//						<2> 2024.01.27:		Update to version 3.0
-//						<1> 2024.07.06:		Update to version 3.1
-//						<4> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+﻿/**
+ * @file		PowerPlus.cpp
+ * @brief		Source file for app class
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "MainApp/PowerPlus.h"
 #include "MainApp/PowerPlusDlg.h"
@@ -30,23 +21,15 @@ using namespace AppCore;
 using namespace AppRegistry;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CPowerPlus
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Application message map
 BEGIN_MESSAGE_MAP(CPowerPlusApp, SWinApp)
 	ON_COMMAND(ID_HELP,	&SWinApp::OnHelp)
 END_MESSAGE_MAP()
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CPowerPlusApp
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CPowerPlusApp::CPowerPlusApp() : SWinApp()
 {
 	// RestartManagerSupport
@@ -68,13 +51,9 @@ CPowerPlusApp::CPowerPlusApp() : SWinApp()
 	m_pDebugTestDlg = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CPowerPlusApp
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CPowerPlusApp::~CPowerPlusApp()
 {
 	// Delete app data pointers
@@ -116,28 +95,19 @@ CPowerPlusApp::~CPowerPlusApp()
 	ReleaseDebugInfoLogFile();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Object name:	theApp
-//	Description:	Unique app object
-//
-//////////////////////////////////////////////////////////////////////////
 
+// The unique global application object
 CPowerPlusApp theApp;
 
 
 //////////////////////////////////////////////////////////////////////////
 // Instance functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitInstance
-//	Description:	Initialize app instance
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize app instance
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CPowerPlusApp::InitInstance()
 {
 	DWORD dwErrorCode;
@@ -282,7 +252,6 @@ BOOL CPowerPlusApp::InitInstance()
 	/*							BEGIN MAIN DIALOG MODAL LOOP							*/
 	/*																					*/
 	/************************************************************************************/
-	
 	// Initialize main dialog
 	CPowerPlusDlg* pMainDlg = new CPowerPlusDlg;
 	if (pMainDlg == NULL) {
@@ -337,7 +306,6 @@ BOOL CPowerPlusApp::InitInstance()
 	/*							 END MAIN DIALOG MODAL LOOP								*/
 	/*																					*/
 	/************************************************************************************/
-
 	// Unregister to system wakeup event notifications
 	if (hPowerNotify != NULL) {
 		dwErrorCode = PowerUnregisterSuspendResumeNotification(hPowerNotify);
@@ -365,15 +333,11 @@ BOOL CPowerPlusApp::InitInstance()
 	return FALSE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExitInstance
-//	Description:	Exit app instance
-//  Arguments:		None
-//  Return value:	int - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Exit app instance
+ * @param	None
+ * @return	int - Default
+ */
 int CPowerPlusApp::ExitInstance()
 {
 	// Output event log: ExitInstance
@@ -410,15 +374,11 @@ int CPowerPlusApp::ExitInstance()
 	return SWinApp::ExitInstance();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	KeyboardProc
-//	Description:	Low-level keyboard hook process
-//  Arguments:		Default
-//  Return value:	LRESULT - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Low-level keyboard hook process
+ * @param	Default
+ * @return	LRESULT - Default
+ */
 LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	// Get low-level keyboard hook info param
@@ -432,7 +392,6 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 		/*			  Keyboard process in screen unlock state			     */
 		/*																	 */
 		/*********************************************************************/
-
 		if (GetSessionLockFlag() == FLAG_OFF) {
 			// Process when Alt & Backspace keys are pressed
 			if ((dwKeyCode == VK_BACK) && (dwKeyFlags & LLKHF_ALTDOWN)) {
@@ -455,7 +414,6 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 		/*				Keyboard process in screen lock state			     */
 		/*																	 */
 		/*********************************************************************/
-
 		else if (GetSessionLockFlag() == FLAG_ON) {
 			// Process hotkey when the screen is locked
 			if (((dwKeyCode >= VK_F1) && (dwKeyCode <= VK_F12)) &&					// Only process if a function key (F1 -> F12) and
@@ -501,15 +459,11 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DeviceNotifyCallbackRoutine
-//	Description:	Device notify callback routine (callback function)
-//  Arguments:		Default (see MSDN "DEVICE_NOTIFY_CALLBACK_ROUTINE")
-//  Return value:	ULONG - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Device notify callback routine (callback function)
+ * @param	Default (see MSDN "DEVICE_NOTIFY_CALLBACK_ROUTINE")
+ * @return	ULONG - Default
+ */
 ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID /*pContext*/, ULONG ulType, PVOID /*pSetting*/)
 {
 	// Get app pointer
@@ -542,16 +496,12 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID /*pContext*/, ULONG ulTyp
 	return ULONG(Result::Success);		// ERROR_SUCCESS
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ProcessMessageFilter
-//	Description:	Process app message filter
-//  Arguments:		code - Default
-//					msg - Default
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Process app message filter
+ * @param	code - Default
+ * @param	msg - Default
+ * @return	BOOL - Default
+ */
 BOOL CPowerPlusApp::ProcessMessageFilter(int nCode, LPMSG lpMsg)
 {
 	// Default process
@@ -565,15 +515,11 @@ BOOL CPowerPlusApp::ProcessMessageFilter(int nCode, LPMSG lpMsg)
 	return FALSE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PreTranslateMessage
-//	Description:	Pre-translate app messages
-//  Arguments:		pMsg - Default
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Pre-translate app messages
+ * @param	pMsg - Default
+ * @return	BOOL - Default
+ */
 BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 {
 	// "Show error message" message
@@ -627,15 +573,11 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 //////////////////////////////////////////////////////////////////////////
 // App data serialization functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitAppData
-//	Description:	Initialize app data
-//  Arguments:		None
-//  Return value:	BOOL - Result of initialization
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize app data
+ * @param	None
+ * @return	BOOL - Result of initialization
+ */
 BOOL CPowerPlusApp::InitAppData()
 {
 	// Initialize app config data
@@ -686,15 +628,11 @@ BOOL CPowerPlusApp::InitAppData()
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadRegistryAppData
-//	Description:	Load app data from registry
-//  Arguments:		None
-//  Return value:	BOOL - Result of loading process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load app data from registry
+ * @param	None
+ * @return	BOOL - Result of loading process
+ */
 BOOL CPowerPlusApp::LoadRegistryAppData()
 {
 	BOOL bResult = TRUE;
@@ -722,7 +660,6 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	/*									 Load configuration info								   */
 	/*																							   */
 	/***********************************************************************************************/
-
 	if (pcfgTempData != NULL) {
 
 		// Read configuration data
@@ -776,7 +713,6 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	/*										Load schedule info									   */
 	/*																							   */
 	/***********************************************************************************************/
-
 	if (pschTempData != NULL) {
 
 		// Initialize temp data
@@ -928,7 +864,6 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	/*									  Load HotkeySet info								       */
 	/*																							   */
 	/***********************************************************************************************/
-
 	// Load HotkeySet data
 	int nItemNum = 0;
 	if (phksTempData != NULL) {
@@ -1011,7 +946,6 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	/*									 Load Power Reminder info								   */
 	/*																							   */
 	/***********************************************************************************************/
-
 	// Load Power Reminder data
 	nItemNum = 0;
 	if (ppwrTempData != NULL) {
@@ -1195,22 +1129,17 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	/*										Load other data										   */
 	/*																							   */
 	/***********************************************************************************************/
-	
 	// Load global data values
 	LoadGlobalData();
 	
 	return bFinalResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveRegistryAppData
-//	Description:	Save app data to registry
-//  Arguments:		dwDataType - App data type to save
-//  Return value:	BOOL - Result of saving process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save app data to registry
+ * @param	dwDataType - App data type to save
+ * @return	BOOL - Result of saving process
+ */
 BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 {
 	BOOL bResult = TRUE;
@@ -1227,7 +1156,6 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*									Save configuration info									   */
 	/*																							   */
 	/***********************************************************************************************/
-
 	// Save configuration data
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
 
@@ -1273,7 +1201,6 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*									 Save schedule info										   */
 	/*																							   */
 	/***********************************************************************************************/
-
 	// Save schedule data
 	if ((dwDataType & APPDATA_SCHEDULE) != 0) {
 
@@ -1336,7 +1263,6 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*								 Save auto-start status info								   */
 	/*																							   */
 	/***********************************************************************************************/
-
 	// Save auto-start status info
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
 
@@ -1359,7 +1285,6 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*									 Save HotkeySet info									   */
 	/*																							   */
 	/***********************************************************************************************/
-
 	// Save HotkeySet data
 	if ((dwDataType & APPDATA_HOTKEYSET) != 0) {
 
@@ -1399,7 +1324,6 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*									Save Power Reminder info								   */
 	/*																							   */
 	/***********************************************************************************************/
-
 	// Save Power Reminder data
 	if ((dwDataType & APPDATA_PWRREMINDER) != 0) {
 
@@ -1467,30 +1391,22 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	return bFinalResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	BackupRegistryAppData
-//	Description:	Backup app data to file
-//  Arguments:		None
-//  Return value:	BOOL - Result of backing up process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Backup app data to file
+ * @param	None
+ * @return	BOOL - Result of backing up process
+ */
 BOOL CPowerPlusApp::BackupRegistryAppData()
 {
 	// Auto backup using Registry Export
 	return BackupSystem::RegistryExport();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateAppLaunchTimeProfileInfo
-//	Description:	Load and update application launch-time profile info data
-//  Arguments:		None
-//  Return value:	BOOL - Result of loading process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load and update application launch-time profile info data
+ * @param	None
+ * @return	BOOL - Result of loading process
+ */
 BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 {
 	BOOL bRet = FALSE;
@@ -1500,7 +1416,6 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	String strValue = Constant::String::Empty;	// String value
 
 	/*------------------------<Application launch-time counter>--------------------------*/
-
 	// Load info from registry
 	if (GetProfileInfo(AppProfile::LaunchInfo::LaunchCounter, nValue)) {
 		SetAppLaunchTimeCounter(nValue);
@@ -1515,9 +1430,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
-
 	/*-----------------------------<Application launch-time>-----------------------------*/
-
 	// Format launch-time
 	DateTime dateTimeAppLaunch = GetAppLaunchTime();
 	UINT nTimePeriod = (dateTimeAppLaunch.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
@@ -1532,9 +1445,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
-
 	/*------------------------<Application directory/file info>--------------------------*/
-
 	// Directory path (not including the executable file name)
 	strValue = StringUtils::GetApplicationPath(false);
 	if (!strValue.IsEmpty()) {
@@ -1561,9 +1472,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
-
 	/*--------------------------<Device, system and user info>---------------------------*/
-
 	// Device name
 	BOOL bRetGetInfo = StringUtils::GetDeviceName(strValue);
 	if ((bRetGetInfo != FALSE) && (!strValue.IsEmpty())) {
@@ -1600,19 +1509,14 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
-
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadGlobalData
-//	Description:	Load global data values from registry
-//  Arguments:		None
-//  Return value:	BOOL - Result of loading process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load global data values from registry
+ * @param	None
+ * @return	BOOL - Result of loading process
+ */
 BOOL CPowerPlusApp::LoadGlobalData(void)
 {
 	BOOL bRet = FALSE;
@@ -1623,7 +1527,6 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	String subSectionName = Constant::String::Empty;
 
 	/*------------------------<Load debugging/testing variables>-------------------------*/
-
 	// Subsection: DebugTest
 	subSectionName = Section::GlobalData::DebugTest;
 
@@ -1649,9 +1552,7 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
-
 	/*-----------------------------<Load app special flags>------------------------------*/
-
 	// Subsection: AppFlags
 	subSectionName = Section::GlobalData::AppFlag;
 
@@ -1680,19 +1581,14 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
-
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveGlobalData
-//	Description:	Save global data values to registry
-//  Arguments:		byCateID - Category ID
-//  Return value:	BOOL - Result of loading process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save global data values to registry
+ * @param	byCateID - Category ID
+ * @return	BOOL - Result of loading process
+ */
 BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 {
 	BOOL bRet = TRUE;
@@ -1705,7 +1601,6 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	String subSectionName = Constant::String::Empty;
 
 	/*------------------------<Save debugging/testing variables>-------------------------*/
-
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_DEBUGTEST)) {
 		// Subsection: DebugTest
 		subSectionName = Section::GlobalData::DebugTest;
@@ -1733,9 +1628,7 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
-
 	/*---------------------------------<Save app flags>----------------------------------*/
-
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_APPFLAGS)) {
 		// Subsection: AppFlags
 		subSectionName = Section::GlobalData::AppFlag;
@@ -1766,22 +1659,17 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
-
 	return bRet;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // App data processing functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppConfigData
-//	Description:	Get app configuration data
-//  Arguments:		None
-//  Return value:	ConfigData* - Config data pointer
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get app configuration data
+ * @param	None
+ * @return	ConfigData* - Config data pointer
+ */
 ConfigData* CPowerPlusApp::GetAppConfigData()
 {
 	// Check validity
@@ -1789,15 +1677,11 @@ ConfigData* CPowerPlusApp::GetAppConfigData()
 	return m_pcfgAppConfig;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppConfigData
-//	Description:	Set app configuration data
-//  Arguments:		pcfgData - Config data pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set app configuration data
+ * @param	pcfgData - Config data pointer
+ * @return	None
+ */
 void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
 {
 	// Check data validity
@@ -1812,15 +1696,11 @@ void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
 	GetAppConfigData()->Copy(*pcfgData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppScheduleData
-//	Description:	Get app schedule data
-//  Arguments:		None
-//  Return value:	ScheduleData* - Schedule data pointer
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get app schedule data
+ * @param	None
+ * @return	ScheduleData* - Schedule data pointer
+ */
 ScheduleData* CPowerPlusApp::GetAppScheduleData()
 {
 	// Check validity
@@ -1828,15 +1708,11 @@ ScheduleData* CPowerPlusApp::GetAppScheduleData()
 	return m_pschScheduleData;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppScheduleData
-//	Description:	Set app schedule data
-//  Arguments:		pschData - Schedule data pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set app schedule data
+ * @param	pschData - Schedule data pointer
+ * @return	None
+ */
 void CPowerPlusApp::SetAppScheduleData(ScheduleData* pschData)
 {
 	// Check data validity
@@ -1851,15 +1727,11 @@ void CPowerPlusApp::SetAppScheduleData(ScheduleData* pschData)
 	GetAppScheduleData()->Copy(*pschData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppHotkeySetData
-//	Description:	Get app hotkeyset data
-//  Arguments:		None
-//  Return value:	HotkeySetData* - HotkeySet data pointer
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get app hotkeyset data
+ * @param	None
+ * @return	HotkeySetData* - HotkeySet data pointer
+ */
 HotkeySetData* CPowerPlusApp::GetAppHotkeySetData()
 {
 	// Check validity
@@ -1867,15 +1739,11 @@ HotkeySetData* CPowerPlusApp::GetAppHotkeySetData()
 	return m_phksHotkeySetData;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppHotkeySetData
-//	Description:	Set app hotkeyset data
-//  Arguments:		phksData - HotkeySet data pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set app hotkeyset data
+ * @param	phksData - HotkeySet data pointer
+ * @return	None
+ */
 void CPowerPlusApp::SetAppHotkeySetData(HotkeySetData* phksData)
 {
 	// Check data validity
@@ -1890,15 +1758,11 @@ void CPowerPlusApp::SetAppHotkeySetData(HotkeySetData* phksData)
 	GetAppHotkeySetData()->Copy(*phksData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppPwrReminderData
-//	Description:	Get app Power Reminder data
-//  Arguments:		None
-//  Return value:	PwrReminderData* - Power Reminder data pointer
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get app Power Reminder data
+ * @param	None
+ * @return	PwrReminderData* - Power Reminder data pointer
+ */
 PwrReminderData* CPowerPlusApp::GetAppPwrReminderData()
 {
 	// Check validity
@@ -1906,15 +1770,11 @@ PwrReminderData* CPowerPlusApp::GetAppPwrReminderData()
 	return m_ppwrReminderData;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppPwrReminderData
-//	Description:	Set app Power Reminder data
-//  Arguments:		ppwrData - Power Reminder data pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set app Power Reminder data
+ * @param	ppwrData - Power Reminder data pointer
+ * @return	None
+ */
 void CPowerPlusApp::SetAppPwrReminderData(PwrReminderData* ppwrData)
 {
 	// Check data validity
@@ -1933,15 +1793,11 @@ void CPowerPlusApp::SetAppPwrReminderData(PwrReminderData* ppwrData)
 //////////////////////////////////////////////////////////////////////////
 // Data options and flags get/set functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppOption
-//	Description:	Return option value by ID
-//  Arguments:		eAppOptionID - ID of specific option
-//  Return value:	int - Option value
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return option value by ID
+ * @param	eAppOptionID - ID of specific option
+ * @return	int - Option value
+ */
 int CPowerPlusApp::GetAppOption(AppOptionID eAppOptionID) const
 {
 	int nResult = INT_INVALID;
@@ -1968,15 +1824,11 @@ int CPowerPlusApp::GetAppOption(AppOptionID eAppOptionID) const
 	return nResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitAppHistoryLog
-//	Description:	Initialize action history log data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize action history log data
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusApp::InitAppHistoryLog()
 {
 	// Initialization
@@ -1996,15 +1848,11 @@ void CPowerPlusApp::InitAppHistoryLog()
 	m_pAppHistoryLog->SetWriteMode(WriteInstantly);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppHistoryLog
-//	Description:	Get app action history log pointer
-//  Arguments:		None
-//  Return value:	SLogging - Action history log pointer
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get app action history log pointer
+ * @param	None
+ * @return	SLogging - Action history log pointer
+ */
 SLogging* CPowerPlusApp::GetAppHistoryLog()
 {
 	// Check validity
@@ -2012,15 +1860,11 @@ SLogging* CPowerPlusApp::GetAppHistoryLog()
 	return m_pAppHistoryLog;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputAppHistoryLog
-//	Description:	Output a log item to action history log
-//  Arguments:		logItem - Log item data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output a log item to action history log
+ * @param	logItem - Log item data
+ * @return	None
+ */
 void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 {
 	// Get app history logging pointer
@@ -2032,15 +1876,11 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	TraceSerializeData
-//	Description:	Output trace log of data serialization
-//  Arguments:		wErrCode - Error code
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output trace log of data serialization
+ * @param	wErrCode - Error code
+ * @return	None
+ */
 void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 {
 	String traceMessageTitle = Constant::String::Empty;
@@ -2178,16 +2018,12 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DataSerializeCheck
-//	Description:	Check validity of data for serialization
-//  Arguments:		bySerializeMode - Data serializing mode (load/save)
-//					nSaveFlag		- Data saving type flag
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check validity of data for serialization
+ * @param	bySerializeMode - Data serializing mode (load/save)
+ * @param	nSaveFlag		- Data saving type flag
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = APPDATA_ALL */)
 {
 	BOOL bResult = TRUE;
@@ -2250,15 +2086,11 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 //////////////////////////////////////////////////////////////////////////
 // DebugTest dialog function
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitDebugTestDlg
-//	Description:	Initialize app DebugTest dialog pointer
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize app DebugTest dialog pointer
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusApp::InitDebugTestDlg(void)
 {
 	// Initialize dialog
@@ -2277,29 +2109,21 @@ BOOL CPowerPlusApp::InitDebugTestDlg(void)
 	return (m_pDebugTestDlg != NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetDebugTestDlg
-//	Description:	Get app DebugTest dialog pointer
-//  Arguments:		None
-//  Return value:	SDialog*
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get app DebugTest dialog pointer
+ * @param	None
+ * @return	SDialog*
+ */
 SDialog* CPowerPlusApp::GetDebugTestDlg(void)
 {
 	return m_pDebugTestDlg;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DestroyDebugTestDlg
-//	Description:	Destroy app DebugTest dialog pointer
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destroy app DebugTest dialog pointer
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusApp::DestroyDebugTestDlg(void)
 {
 	// Destroy DebugTest dialog
@@ -2316,15 +2140,11 @@ void CPowerPlusApp::DestroyDebugTestDlg(void)
 //////////////////////////////////////////////////////////////////////////
 // Registry functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAutoStartRegistryRootKey
-//	Description:	Get registry root key for auto-start function
-//  Arguments:		hAutoStartRootKey - Returned root key handle (ref-value)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get registry root key for auto-start function
+ * @param	hAutoStartRootKey - Returned root key handle (ref-value)
+ * @return	None
+ */
 void CPowerPlusApp::GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
 {
 	// Init info data
@@ -2349,16 +2169,12 @@ void CPowerPlusApp::GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnableAutoStart
-//	Description:	Enable/disable start-up with Windows function
-//  Arguments:		bEnable		- Auto startup option
-//					bRunAsAdmin - Run as admin option
-//  Return value:	int - Result of registry writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Enable/disable start-up with Windows function
+ * @param	bEnable		- Auto startup option
+ * @param	bRunAsAdmin - Run as admin option
+ * @return	int - Result of registry writing process
+ */
 int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 {
 	long lRes;
@@ -2413,15 +2229,11 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 	return nRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAutoStartRegisterStatus
-//	Description:	Check if startup with Windows is enabled or not
-//  Arguments:		None
-//  Return value:	int - Result of querrying process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check if startup with Windows is enabled or not
+ * @param	None
+ * @return	int - Result of querrying process
+ */
 int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 {
 	long lRes;
@@ -2446,16 +2258,12 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 	return (lRes == ERROR_SUCCESS);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetLastSysEventTime
-//	Description:	Get last system event time
-//  Arguments:		byEventType  - Event type (suspend/wakeup)
-//					timeSysEvent - Event time value
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get last system event time
+ * @param	byEventType  - Event type (suspend/wakeup)
+ * @param	timeSysEvent - Event time value
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent)
 {
 	// Get key name
@@ -2510,16 +2318,12 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveLastSysEventTime
-//	Description:	Save last system event time
-//  Arguments:		byEventType  - Event type (suspend/wakeup)
-//					timeSysEvent - Event time value
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save last system event time
+ * @param	byEventType  - Event type (suspend/wakeup)
+ * @param	timeSysEvent - Event time value
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent)
 {
 	// Get key name
@@ -2564,16 +2368,12 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeS
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnExecuteDebugCommand
-//	Description:	Handle event when a debug command is executed
-//  Arguments:		wParam - First param
-//					lParam - Second param
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when a debug command is executed
+ * @param	wParam - First param
+ * @param	lParam - Second param
+ * @return	None
+ */
 void CPowerPlusApp::OnExecuteDebugCommand(WPARAM /*wParam*/, LPARAM lParam)
 {
 	// If debug command is empty, do nothing
@@ -2588,16 +2388,12 @@ void CPowerPlusApp::OnExecuteDebugCommand(WPARAM /*wParam*/, LPARAM lParam)
 	OutputEventLog(LOG_EVENT_EXEC_DEBUGCMD, strDebugCommand);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnShowErrorMessage
-//	Description:	Handle event when an error message is displayed
-//  Arguments:		wParam - First param
-//					lParam - Second param
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when an error message is displayed
+ * @param	wParam - First param
+ * @param	lParam - Second param
+ * @return	None
+ */
 void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 {
 	// Error code

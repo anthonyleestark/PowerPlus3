@@ -1,11 +1,11 @@
-﻿//////////////////////////////////////////////////////////
-//
-// 	{{NO_DEPENDENCIES}}
-// 	Microsoft Visual C++ generated include file.
-// 	Used by PowerPlus.rc
-// 	Modified by Anthony Lee Stark
-//
-//////////////////////////////////////////////////////////
+﻿/**
+ * @file		Resource.h
+ * @brief		Microsoft Visual C++ generated include file
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 
 //************************************* VersionInfo **************************************

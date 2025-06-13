@@ -1,52 +1,37 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		EditScheduleDlg.cpp
-//		Description:	Source file for Edit Schedule details dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2017.03.08:		Create new
-//						<1> 2024.01.27:		Update to version 3.0
-//						<2> 2024.10.27:		Implement Multi schedule function
-//						<3> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		EditScheduleDlg.cpp
+ * @brief		Source file for Edit Schedule details dialog
+ * @author		AnthonyLeeStark
+ * @date		2017.03.08
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
-#include "MainApp/PowerPlus.h"
-#include "Dialogs/EditScheduleDlg.h"
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
-using namespace MapTable;
-using namespace Language;
-using namespace AppCore;
-
-
-// Active days list table constants
-constexpr const int checkboxColID = 0;
-constexpr const int daytitleColID = 1;
-constexpr const int checkboxColSize = 30;
+ #include "MainApp/PowerPlus.h"
+ #include "Dialogs/EditScheduleDlg.h"
+ 
+ #ifdef _DEBUG
+ #define new DEBUG_NEW
+ #endif
+ 
+ using namespace MapTable;
+ using namespace Language;
+ using namespace AppCore;
+ 
+ 
+ // Active days list table constants
+ constexpr const int checkboxColID = 0;
+ constexpr const int daytitleColID = 1;
+ constexpr const int checkboxColSize = 30;
 
 
-////////////////////////////////////////////////////////
-//
-//	Implement methods for CEditScheduleDlg
-//
-////////////////////////////////////////////////////////
-
+ //	Implement methods for CEditScheduleDlg
 IMPLEMENT_DYNAMIC(CEditScheduleDlg, SDialog)
 
-////////////////////////////////////////////////////////
-// 
-//	Function name:	CEditScheduleDlg
-//	Description:	Constructor
-//
-////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 {
 	// Initialize member variables
@@ -71,13 +56,9 @@ CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 	m_pszActiveTableFrameSize = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CEditScheduleDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CEditScheduleDlg::~CEditScheduleDlg()
 {
 	// Grid table list controls
@@ -93,13 +74,9 @@ CEditScheduleDlg::~CEditScheduleDlg()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CEditScheduleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -107,15 +84,11 @@ void CEditScheduleDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_EDITSCHEDULE_REPEATDAILY_CHK, m_bRepeat);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterDialogManagement
-//	Description:	Register dialog control management
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register dialog control management
+ * @param	None
+ * @return	int
+ */
 int CEditScheduleDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
@@ -145,15 +118,11 @@ int CEditScheduleDlg::RegisterDialogManagement(void)
 	return nRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UnregisterDialogManagement
-//	Description:	Unregister dialog control management
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Unregister dialog control management
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CEditScheduleDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
@@ -176,12 +145,8 @@ BOOL CEditScheduleDlg::UnregisterDialogManagement(void)
 	return SDialog::UnregisterDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CEditScheduleDlg dialog items ID map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CEditScheduleDlg dialog items ID map
 BEGIN_RESOURCEID_MAP(CEditScheduleDlg)
 	ON_ID_DIALOG(IDD_EDITSCHEDULE_DLG,					"EditScheduleDlg")
 	ON_ID_CONTROL(IDC_EDITSCHEDULE_ENABLE_CHK,			"EnableScheduleCheck")
@@ -196,12 +161,8 @@ BEGIN_RESOURCEID_MAP(CEditScheduleDlg)
 	ON_ID_CONTROL(IDC_EDITSCHEDULE_CANCEL_BTN,			"CancelButton")
 END_RESOURCEID_MAP()
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CEditScheduleDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CEditScheduleDlg dialog message map
 BEGIN_MESSAGE_MAP(CEditScheduleDlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
@@ -219,19 +180,14 @@ END_MESSAGE_MAP()
 
 
 //////////////////////////////////////////////////////////////////////////
-//// Implementation
-
 // CEditScheduleDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize Edit Schedule dialog and setup dialog content
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize Edit Schedule dialog and setup dialog content
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CEditScheduleDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -252,15 +208,11 @@ BOOL CEditScheduleDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Default method for dialog closing
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog closing
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnClose()
 {
 	// If not forced closing by request
@@ -298,15 +250,11 @@ void CEditScheduleDlg::OnClose()
 	SDialog::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Default method for dialog destroying
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog destroying
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnDestroy()
 {
 	// Save app event log if enabled
@@ -316,15 +264,11 @@ void CEditScheduleDlg::OnDestroy()
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestCloseDialog
-//	Description:	Request current dialog to close
-//  Arguments:		None
-//  Return value:	LRESULT (0:Success, else:Failed)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Request current dialog to close
+ * @param	None
+ * @return	LRESULT (0:Success, else:Failed)
+ */
 LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 {
 	// If data changed, ask for saving before closing dialog
@@ -357,15 +301,11 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 	return SDialog::RequestCloseDialog();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog items
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::SetupLanguage()
 {
 	// Load app language package
@@ -406,16 +346,12 @@ void CEditScheduleDlg::SetupLanguage()
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupComboBox
-//	Description:	Setup data for combo-boxes
-//  Arguments:		nComboID	- ID of combo box
-//					ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup data for combo-boxes
+ * @param	nComboID	- ID of combo box
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CEditScheduleDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	// Action list
@@ -442,15 +378,11 @@ void CEditScheduleDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 	SDialog::SetupComboBox(nComboID, ptrLanguage);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupActiveDayList
-//	Description:	Initialize and setup language for Active Day list
-//  Arguments:		ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize and setup language for Active Day list
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Get parent list frame rect
@@ -506,15 +438,11 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pActiveDayListTable->SetRedraw(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DrawActiveDayTable
-//	Description:	Draw active day list table
-//  Arguments:		bReadOnly - Read-only mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Draw active day list table
+ * @param	bReadOnly - Read-only mode
+ * @return	None
+ */
 void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
@@ -567,7 +495,6 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	for (int nRow = 0; nRow < Constant::Max::DaysOfWeek; nRow++) {
 
 		/*------------------------------------- Checkbox column -------------------------------------*/
-
 		// Set cell type: Checkbox
 		if (!m_pActiveDayListTable->SetCellType(nRow, checkboxColID, RUNTIME_CLASS(CGridCellCheck)))
 			continue;
@@ -578,7 +505,6 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 		pCellCheck->SetCheckPlacement(SCP_CENTERING);
 
 		/*------------------------------------ Day title column -------------------------------------*/
-
 		// Update cell state
 		nItemState = m_pActiveDayListTable->GetItemState(nRow, daytitleColID);
 		if (!m_pActiveDayListTable->SetItemState(nRow, daytitleColID, nItemState | GVIS_READONLY))
@@ -593,15 +519,11 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupDialogItemState
-//	Description:	Setup properties and values for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup properties and values for dialog items
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::SetupDialogItemState()
 {
 	// Setup checkboxes
@@ -669,15 +591,11 @@ void CEditScheduleDlg::SetupDialogItemState()
 	SDialog::SetupDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateActiveDayList
-//	Description:	Update Active days list table
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update Active days list table
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::UpdateActiveDayList()
 {
 	// Check table validity
@@ -707,15 +625,11 @@ void CEditScheduleDlg::UpdateActiveDayList()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisableActiveDayTable
-//	Description:	Disable mouse click events for Active Days table
-//  Arguments:		bDisable - Disable/enable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Disable mouse click events for Active Days table
+ * @param	bDisable - Disable/enable
+ * @return	None
+ */
 void CEditScheduleDlg::DisableActiveDayTable(BOOL bDisable)
 {
 	// If is currently in read-only or view mode
@@ -735,15 +649,11 @@ void CEditScheduleDlg::DisableActiveDayTable(BOOL bDisable)
 	m_pActiveDayListTable->DisableMouseMove(bDisable);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RedrawActiveDayTable
-//	Description:	Update and redraw Active day table
-//  Arguments:		BOOL bReadOnly - Read-only mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update and redraw Active day table
+ * @param	BOOL bReadOnly - Read-only mode
+ * @return	None
+ */
 void CEditScheduleDlg::RedrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
@@ -759,15 +669,11 @@ void CEditScheduleDlg::RedrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	m_pActiveDayListTable->RedrawWindow();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetScheduleItem
-//	Description:	Get schedule item data
-//  Arguments:		pschItem - Return item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get schedule item data
+ * @param	pschItem - Return item
+ * @return	None
+ */
 void CEditScheduleDlg::GetScheduleItem(PScheduleItem pschItem)
 {
 	// Copy data
@@ -775,15 +681,11 @@ void CEditScheduleDlg::GetScheduleItem(PScheduleItem pschItem)
 	pschItem->Copy(m_schScheduleItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetScheduleItem
-//	Description:	Set schedule item data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set schedule item data
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::SetScheduleItem(const ScheduleItem& pschItem)
 {
 	// Copy data
@@ -791,15 +693,11 @@ void CEditScheduleDlg::SetScheduleItem(const ScheduleItem& pschItem)
 	m_schScheduleItemTemp.Copy(m_schScheduleItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateScheduleItem
-//	Description:	Update and refresh schedule settings
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update and refresh schedule settings
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::UpdateScheduleItem()
 {
 	// Update data
@@ -840,15 +738,11 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	m_schScheduleItemTemp.SetActiveDays(byRepeatDays);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveScheduleItem
-//	Description:	Update and save schedule settings
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update and save schedule settings
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::SaveScheduleItem()
 {
 	// Update settings
@@ -856,15 +750,11 @@ void CEditScheduleDlg::SaveScheduleItem()
 	m_schScheduleItem.Copy(m_schScheduleItemTemp);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckDataChangeState
-//	Description:	Compare control values with current config to check for changes
-//  Arguments:		None
-//  Return value:	BOOL - Flag to mark data changed or not
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Compare control values with current config to check for changes
+ * @param	None
+ * @return	BOOL - Flag to mark data changed or not
+ */
 BOOL CEditScheduleDlg::CheckDataChangeState()
 {
 	// Update item
@@ -876,15 +766,11 @@ BOOL CEditScheduleDlg::CheckDataChangeState()
 	return bChangeFlag;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnableSaveButton
-//	Description:	Enable/disable save button
-//  Arguments:		bEnable - Enable or disable button
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Enable/disable save button
+ * @param	bEnable - Enable or disable button
+ * @return	None
+ */
 void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
@@ -904,15 +790,11 @@ void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
 	pSaveBtn->EnableWindow(bEnable);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnableSubItems
-//	Description:	Enable/disable sub items of function
-//  Arguments:		bEnable - Enable or disable sub items
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Enable/disable sub items of function
+ * @param	bEnable - Enable or disable sub items
+ * @return	None
+ */
 void CEditScheduleDlg::EnableSubItems(BOOL bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
@@ -930,16 +812,12 @@ void CEditScheduleDlg::EnableSubItems(BOOL bEnable)
 	GetDlgItem(IDC_EDITSCHEDULE_REPEATDAILY_CHK)->EnableWindow(bEnable);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateTimeSetting
-//	Description:	Update time value from/to time edit control
-//  Arguments:		clockTime  - Clock-time data
-//					bUpdate	   - Update or not (YES/TRUE by default)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update time value from/to time edit control
+ * @param	clockTime  - Clock-time data
+ * @param	bUpdate	   - Update or not (YES/TRUE by default)
+ * @return	None
+ */
 void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* = TRUE */)
 {
 	// Get app language package
@@ -989,43 +867,31 @@ void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* =
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetDispMode
-//	Description:	Get dialog display mode
-//  Arguments:		None
-//  Return value:	int - Display mode
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get dialog display mode
+ * @param	None
+ * @return	int - Display mode
+ */
 int CEditScheduleDlg::GetDispMode(void) const
 {
 	return m_nDispMode;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetDispMode
-//	Description:	Set dialog display mode
-//  Arguments:		nMode - Display mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set dialog display mode
+ * @param	nMode - Display mode
+ * @return	None
+ */
 void CEditScheduleDlg::SetDispMode(int nMode)
 {
 	m_nDispMode = nMode;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnApply
-//	Description:	Handle clicking event for [Save] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicking event for [Save] button
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnApply()
 {
 	// Save app event log if enabled
@@ -1049,15 +915,11 @@ void CEditScheduleDlg::OnApply()
 	SDialog::OnOK();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnExit
-//	Description:	Handle clicking event for [Exit] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicking event for [Exit] button
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnExit()
 {
 	// If not forced closing by request
@@ -1098,15 +960,11 @@ void CEditScheduleDlg::OnExit()
 	SDialog::OnCancel();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnEnableSchedule
-//	Description:	Handle clicking event for [EnableSchedule] checkbox
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicking event for [EnableSchedule] checkbox
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnEnableSchedule()
 {
 	// Update dialog item state
@@ -1123,15 +981,11 @@ void CEditScheduleDlg::OnEnableSchedule()
 	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChangeAction
-//	Description:	Update when action list selection changes
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update when action list selection changes
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnChangeAction()
 {
 	// Save app event log if enabled
@@ -1143,15 +997,11 @@ void CEditScheduleDlg::OnChangeAction()
 	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChangeRepeatDaily
-//	Description:	Update when repeat checkbox changes
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update when repeat checkbox changes
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnChangeRepeatDaily()
 {
 	// Check for data change
@@ -1164,15 +1014,11 @@ void CEditScheduleDlg::OnChangeRepeatDaily()
 	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnTimeEditSetFocus
-//	Description:	Select all text when editbox is set focus
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Select all text when editbox is set focus
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnTimeEditSetFocus()
 {
 	/*********************************************************************/
@@ -1180,7 +1026,6 @@ void CEditScheduleDlg::OnTimeEditSetFocus()
 	/*			TODO: Time edit set focus --> Select all text			 */
 	/*																	 */
 	/*********************************************************************/
-
 	// Check control validity
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
@@ -1195,15 +1040,11 @@ void CEditScheduleDlg::OnTimeEditSetFocus()
 	m_pTimeEdit->PostMessage(EM_SETSEL, 0, -1);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnTimeEditKillFocus
-//	Description:	Update when time editbox is killed focus
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update when time editbox is killed focus
+ * @param	None
+ * @return	None
+ */
 void CEditScheduleDlg::OnTimeEditKillFocus()
 {
 	/*********************************************************************/
@@ -1211,7 +1052,6 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	/*			TODO: Time edit kill forcus --> Update data				 */
 	/*																	 */
 	/*********************************************************************/
-
 	// Check control validity
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
@@ -1253,16 +1093,12 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnTimeSpinChange
-//	Description:	Update when time spin value changes
-//  Arguments:		pNMDHR  - Default of spin event handler
-//					pResult - Default of spin event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update when time spin value changes
+ * @param	pNMDHR  - Default of spin event handler
+ * @param	pResult - Default of spin event handler
+ * @return	None
+ */
 void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
@@ -1280,16 +1116,12 @@ void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClickActiveDayList
-//	Description:	Handle click event on Active days of week table
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event on Active days of week table
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CEditScheduleDlg::OnClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Success (return 0)
@@ -1302,16 +1134,12 @@ void CEditScheduleDlg::OnClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRightClickActiveDayList
-//	Description:	Handle right click event on Active days of week table
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle right click event on Active days of week table
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Success (return 0)
@@ -1324,17 +1152,13 @@ void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pRe
 	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WindowProc
-//	Description:	Pre-handle dialog messages
-//  Arguments:		message - Message ID
-//					wParam	- First param (HIWORD)
-//					lParam	- Second param (LOWORD)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Pre-handle dialog messages
+ * @param	message - Message ID
+ * @param	wParam	- First param (HIWORD)
+ * @param	lParam	- Second param (LOWORD)
+ * @return	None
+ */
 LRESULT CEditScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)

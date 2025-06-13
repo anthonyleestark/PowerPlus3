@@ -1,15 +1,8 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		GridCellBase.h
-//		Description:	Grid cell base class header file
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.20:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		GridCellBase.h
+ * @brief		Grid cell base class header file
+ * @date		2024.07.20
+ */
 
 #if !defined(AFX_GRIDCELLBASE_H__519FA702_722C_11D1_ABBA_00A0243D1382__INCLUDED_)
 #define AFX_GRIDCELLBASE_H__519FA702_722C_11D1_ABBA_00A0243D1382__INCLUDED_

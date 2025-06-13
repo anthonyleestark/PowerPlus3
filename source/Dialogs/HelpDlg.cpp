@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		HelpDlg.cpp
-//		Description:	Source file for Help dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.03.12:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//						<2> 2025.03.06:		Split from AboutDlg.cpp
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		HelpDlg.cpp
+ * @brief		Source file for Help dialog
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "Dialogs/HelpDlg.h"
 #include "MainApp/PowerPlus.h"
@@ -25,21 +19,13 @@ using namespace Language;
 using namespace AppCore;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CHelpDlg
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for CHelpDlg
 IMPLEMENT_DYNAMIC(CHelpDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CHelpDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CHelpDlg::CHelpDlg(CWnd* pParent /*=NULL*/)
 	: SDialog(IDD_HELP_DLG, pParent)
 {
@@ -48,38 +34,26 @@ CHelpDlg::CHelpDlg(CWnd* pParent /*=NULL*/)
 	m_nViewMode = ViewMode::HelpFile;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CHelpDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CHelpDlg::~CHelpDlg()
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CHelpDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterDialogManagement
-//	Description:	Register dialog control management
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register dialog control management
+ * @param	None
+ * @return	int
+ */
 int CHelpDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
@@ -102,15 +76,11 @@ int CHelpDlg::RegisterDialogManagement(void)
 	return nRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UnregisterDialogManagement
-//	Description:	Unregister dialog control management
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Unregister dialog control management
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CHelpDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
@@ -159,15 +129,11 @@ END_MESSAGE_MAP()
 
 // CHelpDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize Help dialog and setup dialog content
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize Help dialog and setup dialog content
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CHelpDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -182,30 +148,22 @@ BOOL CHelpDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Default method for dialog closing
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog closing
+ * @param	None
+ * @return	None
+ */
 void CHelpDlg::OnClose()
 {
 	// Close dialog
 	SDialog::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Default method for dialog destroying
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog destroying
+ * @param	None
+ * @return	None
+ */
 void CHelpDlg::OnDestroy()
 {
 	// Save app event log if enabled
@@ -215,15 +173,11 @@ void CHelpDlg::OnDestroy()
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCloseButton
-//	Description:	Handle clicking event for [Close] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicking event for [Close] button
+ * @param	None
+ * @return	None
+ */
 void CHelpDlg::OnCloseButton()
 {
 	// Save app event log if enabled
@@ -233,15 +187,11 @@ void CHelpDlg::OnCloseButton()
 	EndDialog(IDOK);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSwitchViewMode
-//	Description:	Handle clicking event for [Switch View Mode] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicking event for [Switch View Mode] button
+ * @param	None
+ * @return	None
+ */
 void CHelpDlg::OnSwitchViewMode()
 {
 	// Save app event log if enabled
@@ -265,15 +215,11 @@ void CHelpDlg::OnSwitchViewMode()
 	UpdateSwitchViewModeButton();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog
+ * @param	None
+ * @return	None
+ */
 void CHelpDlg::SetupLanguage()
 {
 	// Load app language package
@@ -303,15 +249,11 @@ void CHelpDlg::SetupLanguage()
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupEditbox
-//	Description:	Setup help info box
-//  Arguments:		pEdit - Pointer of edit control
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup help info box
+ * @param	pEdit - Pointer of edit control
+ * @return	None
+ */
 void CHelpDlg::SetupEditbox(CEdit& pEdit)
 {
 	// Setup editbox property: UPPERCASE
@@ -319,15 +261,11 @@ void CHelpDlg::SetupEditbox(CEdit& pEdit)
 	pEdit.UpdateWindow();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadRCFileData
-//	Description:	Load help content from Resource-embeded text data
-//  Arguments:		strRCFileData - File data result (ref-value)
-//  Return value:	BOOL - Result of file loading process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load help content from Resource-embeded text data
+ * @param	strRCFileData - File data result (ref-value)
+ * @return	BOOL - Result of file loading process
+ */
 BOOL CHelpDlg::LoadRCFileData(String& strRCFileData)
 {
 	// Get currently displaying language
@@ -395,15 +333,11 @@ BOOL CHelpDlg::LoadRCFileData(String& strRCFileData)
 	return (!strRCFileData.IsEmpty());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateSwitchViewModeButton
-//	Description:	Update title for [Switch View Mode] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update title for [Switch View Mode] button
+ * @param	None
+ * @return	None
+ */
 void CHelpDlg::UpdateSwitchViewModeButton(void)
 {
 	// Language string ID

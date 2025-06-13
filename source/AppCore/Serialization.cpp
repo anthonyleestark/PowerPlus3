@@ -1,18 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Serialization.cpp
-//		Description:	Implement necessary methods to read/write, load/save configurations
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.02.03:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//						<3> 2025.06.03:		Rename from Config to Serialization
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Serialization.cpp
+ * @brief		Implement necessary methods to read/write, load/save configurations
+ * @author		AnthonyLeeStark
+ * @date		2024.02.03
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "AppCore/Serialization.h"
 
@@ -22,29 +15,19 @@
 
 using namespace AppCore;
 
-/////////////////////////////////////////////////////////////////////////
-//// Implementations
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Base functions for reading/writing registry values
-//
-//////////////////////////////////////////////////////////////////////////
+/*----------------- Base functions for reading/writing registry values ----------------*/
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetRegistryValueInt/WriteRegistryValueInt
-//  Description:	Using for reading/writing registry 
-//					values with nested subsection
-//  Arguments:		sectionName	   - Section name (string)
-//					subSectionName - Sub section name (string)
-//					keyName		   - Key name (string)
-//					nValue		   - Value (int)
-//  Return value:	UINT - Read value
-//					BOOL - Result of writing process
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Using for reading/writing registry values with nested subsection
+ * @param	sectionName	   - Section name (string)
+ * @param	subSectionName - Sub section name (string)
+ * @param	keyName		   - Key name (string)
+ * @param	nValue		   - Value (int)
+ * @return	UINT - Read value
+ * @return	BOOL - Result of writing process
+ */
 UINT AppRegistry::GetRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName)
 {
 	// Format section name
@@ -79,20 +62,15 @@ BOOL AppRegistry::WriteRegistryValueInt(const wchar_t* sectionName, const wchar_
 	return AfxGetApp()->WriteProfileInt(sectionNameFormat, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetRegistryValueString/WriteRegistryValueString
-//  Description:	Using for reading/writing registry 
-//					values with nested subsection
-//  Arguments:		sectionName	   - Section name (string)
-//					subSectionName - Sub section name (string)
-//					keyName		   - Key name (string)
-//					value		   - Value (string)
-//  Return value:	String - Read value
-//					BOOL   - Result of writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry values with nested subsection
+ * @param	sectionName	   - Section name (string)
+ * @param	subSectionName - Sub section name (string)
+ * @param	keyName		   - Key name (string)
+ * @param	value		   - Value (string)
+ * @return	String - Read value
+ * @return	BOOL   - Result of writing process
+ */
 String AppRegistry::GetRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName)
 {
 	// Format section name
@@ -127,16 +105,12 @@ BOOL AppRegistry::WriteRegistryValueString(const wchar_t* sectionName, const wch
 	return AfxGetApp()->WriteProfileString(sectionNameFormat, keyName, value);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	DeleteRegistrySection
-//  Description:	Using for delete registry section or subsection by name
-//  Arguments:		sectionName	   - Section name (string)
-//					subSectionName - Sub section name (string)
-//  Return value:	TRUE/FALSE - Return of deletion
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for delete registry section or subsection by name
+ * @param	sectionName	   - Section name (string)
+ * @param	subSectionName - Sub section name (string)
+ * @return	TRUE/FALSE - Return of deletion
+ */
 BOOL AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_t* subSectionName /* = NULL */)
 {
 	// Get name string
@@ -155,23 +129,16 @@ BOOL AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Functions for reading/writing application profile info
-//
-//////////////////////////////////////////////////////////////////////////
+/*--------------- Functions for reading/writing application profile info ---------------*/
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetProfileInfo/WriteProfileInfo
-//  Description:	Using for reading/writing registry profile info values
-//  Arguments:		keyName	- Key name
-//					nRef	- Result integer value (ref-value)
-//					nValue	- Value to write (integer)
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Using for reading/writing registry profile info values
+ * @param	keyName	- Key name
+ * @param	nRef	- Result integer value (ref-value)
+ * @param	nValue	- Value to write (integer)
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetProfileInfo(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -187,17 +154,13 @@ BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, int nValue)
 	return AfxGetApp()->WriteProfileInt(Constant::String::Empty, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetProfileInfo/WriteProfileInfo
-//  Description:	Using for reading/writing registry profile info values
-//  Arguments:		keyName		- Key name
-//					strRef		- Result string value (ref-value)
-//					valueString - Value to write (string)
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry profile info values
+ * @param	keyName		- Key name
+ * @param	strRef		- Result string value (ref-value)
+ * @param	valueString - Value to write (string)
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetProfileInfo(const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
@@ -214,23 +177,16 @@ BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueS
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Derivered functions for reading/writing each data type
-//
-//////////////////////////////////////////////////////////////////////////
+/*--------------- Derivered functions for reading/writing each data type ---------------*/
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetConfig/WriteConfig
-//  Description:	Using for reading/writing registry config values
-//  Arguments:		keyName - Key name
-//					nRef	- Result value (ref-value)
-//					nValue	- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Using for reading/writing registry config values
+ * @param	keyName - Key name
+ * @param	nRef	- Result value (ref-value)
+ * @param	nValue	- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetConfig(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -245,31 +201,23 @@ BOOL AppRegistry::WriteConfig(const wchar_t* keyName, int nValue)
 	return WriteRegistryValueInt(Section::ConfigData, NULL, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	DeleteConfigSection
-//  Description:	Using for delete config section
-//  Arguments:		None
-//  Return value:	TRUE/FALSE - Return of deletion
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for delete config section
+ * @param	None
+ * @return	TRUE/FALSE - Return of deletion
+ */
 BOOL AppRegistry::DeleteConfigSection(void)
 {
 	return DeleteRegistrySection(Section::ConfigData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetDefaultSchedule/WriteDefaultSchedule
-//  Description:	Using for reading/writing registry default schedule values
-//  Arguments:		keyName - Key name
-//					nRef	- Result value (ref-value)
-//					nValue	- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry default schedule values
+ * @param	keyName - Key name
+ * @param	nRef	- Result value (ref-value)
+ * @param	nValue	- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetDefaultSchedule(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -284,18 +232,13 @@ BOOL AppRegistry::WriteDefaultSchedule(const wchar_t* keyName, int nValue)
 	return WriteRegistryValueInt(Section::ScheduleData, Section::Schedule::DefautItem, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetScheduleExtraItemNum/WriteScheduleExtraItemNum
-//  Description:	Using for reading/writing registry schedule extra
-//					item number values
-//  Arguments:		keyName - Key name
-//					nRef	- Result value (ref-value)
-//					nValue	- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry schedule extra item number values
+ * @param	keyName - Key name
+ * @param	nRef	- Result value (ref-value)
+ * @param	nValue	- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetScheduleExtraItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -310,18 +253,14 @@ BOOL AppRegistry::WriteScheduleExtraItemNum(const wchar_t* keyName, int nValue)
 	return WriteRegistryValueInt(Section::ScheduleData, NULL, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetScheduleExtra/WriteScheduleExtra
-//  Description:	Using for reading/writing registry schedule extra item values
-//  Arguments:		nItemIndex  - Schedule extra item index
-//					keyName		- Key name
-//					nRef	    - Result value (ref-value)
-//					nValue	    - Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry schedule extra item values
+ * @param	nItemIndex  - Schedule extra item index
+ * @param	keyName		- Key name
+ * @param	nRef	    - Result value (ref-value)
+ * @param	nValue	    - Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetScheduleExtra(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -336,15 +275,11 @@ BOOL AppRegistry::WriteScheduleExtra(int nItemIndex, const wchar_t* keyName, int
 	return WriteRegistryValueInt(Section::ScheduleData, Section::Schedule::Item(nItemIndex), keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	DeleteScheduleSection
-//  Description:	Using for delete schedule section
-//  Arguments:		None
-//  Return value:	TRUE/FALSE - Return of deletion
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for delete schedule section
+ * @param	None
+ * @return	TRUE/FALSE - Return of deletion
+ */
 BOOL AppRegistry::DeleteScheduleSection(void)
 {
 	BOOL bRet = TRUE;
@@ -368,18 +303,13 @@ BOOL AppRegistry::DeleteScheduleSection(void)
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetHotkeyItemNum/WriteHotkeyItemNum
-//  Description:	Using for reading/writing registry hotkeyset
-//					item number values
-//  Arguments:		keyName - Key name
-//					nRef	- Result value (ref-value)
-//					nValue	- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry hotkeyset item number values
+ * @param	keyName - Key name
+ * @param	nRef	- Result value (ref-value)
+ * @param	nValue	- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetHotkeyItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -394,18 +324,14 @@ BOOL AppRegistry::WriteHotkeyItemNum(const wchar_t* keyName, int nValue)
 	return WriteRegistryValueInt(Section::HotkeySetData, NULL, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetHotkeySet/WriteHotkeySet
-//  Description:	Using for reading/writing registry hotkeyset item values
-//  Arguments:		nItemIndex  - Hotkey item index
-//					keyName		- Key name
-//					nRef	    - Result value (ref-value)
-//					nValue	    - Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry hotkeyset item values
+ * @param	nItemIndex  - Hotkey item index
+ * @param	keyName		- Key name
+ * @param	nRef	    - Result value (ref-value)
+ * @param	nValue	    - Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetHotkeySet(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -420,15 +346,11 @@ BOOL AppRegistry::WriteHotkeySet(int nItemIndex, const wchar_t* keyName, int nVa
 	return WriteRegistryValueInt(Section::HotkeySetData, Section::HotkeySet::Item(nItemIndex), keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	DeleteHotkeySetSection
-//  Description:	Using for delete HotkeySet section
-//  Arguments:		None
-//  Return value:	TRUE/FALSE - Return of deletion
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for delete HotkeySet section
+ * @param	None
+ * @return	TRUE/FALSE - Return of deletion
+ */
 BOOL AppRegistry::DeleteHotkeySetSection(void)
 {
 	BOOL bRet = TRUE;
@@ -449,17 +371,13 @@ BOOL AppRegistry::DeleteHotkeySetSection(void)
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetPwrReminderCommonStyle/WritePwrReminderCommonStyle
-//  Description:	Using for reading/writing registry Power Reminder common style data
-//  Arguments:		keyName - Key name
-//					nRef	- Result value (ref-value)
-//					nValue	- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry Power Reminder common style data
+ * @param	keyName - Key name
+ * @param	nRef	- Result value (ref-value)
+ * @param	nValue	- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetPwrReminderCommonStyle(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -474,17 +392,13 @@ BOOL AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, int nValue
 	return WriteRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetPwrReminderCommonStyle/WritePwrReminderCommonStyle
-//  Description:	Using for reading/writing registry Power Reminder common style data
-//  Arguments:		keyName - Key name
-//					strRef	- Result value (ref-value)
-//					value	- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry Power Reminder common style data
+ * @param	keyName - Key name
+ * @param	strRef	- Result value (ref-value)
+ * @param	value	- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetPwrReminderCommonStyle(const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
@@ -499,18 +413,13 @@ BOOL AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, const wcha
 	return WriteRegistryValueString(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName, value);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetPwrReminderItemNum/WritePwrReminderItemNum
-//  Description:	Using for reading/writing registry Power Reminder
-//					item number values
-//  Arguments:		keyName - Key name
-//					nRef	- Result value (ref-value)
-//					nValue	- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry Power Reminder item number values
+ * @param	keyName - Key name
+ * @param	nRef	- Result value (ref-value)
+ * @param	nValue	- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetPwrReminderItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -525,18 +434,14 @@ BOOL AppRegistry::WritePwrReminderItemNum(const wchar_t* keyName, int nValue)
 	return WriteRegistryValueInt(Section::PwrReminderData, NULL, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetPwrReminder/WritePwrReminder
-//  Description:	Using for reading/writing registry Power Reminder item values
-//  Arguments:		nItemIndex  - Hotkey item index
-//					keyName - Key name
-//					nRef	- Result value (integer) (ref-value)
-//					nValue	- Value to write (integer)
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry Power Reminder item values
+ * @param	nItemIndex  - Hotkey item index
+ * @param	keyName - Key name
+ * @param	nRef	- Result value (integer) (ref-value)
+ * @param	nValue	- Value to write (integer)
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetPwrReminder(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -551,18 +456,14 @@ BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, int n
 	return WriteRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetPwrReminder/WritePwrReminder
-//  Description:	Using for reading/writing registry Power Reminder item values
-//  Arguments:		nItemIndex	- Hotkey item index
-//					keyName		- Key name
-//					strRef	    - Result value (string) (ref-value)
-//					strValue    - Value to write (string)
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry Power Reminder item values
+ * @param	nItemIndex	- Hotkey item index
+ * @param	keyName		- Key name
+ * @param	strRef	    - Result value (string) (ref-value)
+ * @param	strValue    - Value to write (string)
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetPwrReminder(int nItemIndex, const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
@@ -577,15 +478,11 @@ BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, const
 	return WriteRegistryValueString(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName, value);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	DeletePwrReminderSection
-//  Description:	Using for delete Power Reminder section
-//  Arguments:		None
-//  Return value:	TRUE/FALSE - Return of deletion
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for delete Power Reminder section
+ * @param	None
+ * @return	TRUE/FALSE - Return of deletion
+ */
 BOOL AppRegistry::DeletePwrReminderSection(void)
 {
 	BOOL bRet = TRUE;
@@ -609,18 +506,14 @@ BOOL AppRegistry::DeletePwrReminderSection(void)
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetLayoutInfo/WriteLayoutInfo
-//  Description:	Using for reading/writing registry layout info values
-//  Arguments:		subSectionName  - Subsection name
-//					keyName			- Key name
-//					nRef			- Result value (ref-value)
-//					nValue			- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry layout info values
+ * @param	subSectionName  - Subsection name
+ * @param	keyName			- Key name
+ * @param	nRef			- Result value (ref-value)
+ * @param	nValue			- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -635,31 +528,23 @@ BOOL AppRegistry::WriteLayoutInfo(const wchar_t* subSectionName, const wchar_t* 
 	return WriteRegistryValueInt(Section::LayoutInfo, subSectionName, keyName, nValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	DeleteLayoutInfoSection
-//  Description:	Using for delete config section
-//  Arguments:		None
-//  Return value:	TRUE/FALSE - Return of deletion
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for delete config section
+ * @param	None
+ * @return	TRUE/FALSE - Return of deletion
+ */
 BOOL AppRegistry::DeleteLayoutInfoSection(void)
 {
 	return DeleteRegistrySection(Section::LayoutInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetSysEventTracking/WriteSysEventTracking
-//  Description:	Using for reading/writing registry system event tracking data
-//  Arguments:		keyName - Key name
-//					strRef	- Result value (ref-value)
-//					value	- Value to write
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry system event tracking data
+ * @param	keyName - Key name
+ * @param	strRef	- Result value (ref-value)
+ * @param	value	- Value to write
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetSysEventTracking(const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
@@ -674,20 +559,16 @@ BOOL AppRegistry::WriteSysEventTracking(const wchar_t* keyName, const wchar_t* v
 	return WriteRegistryValueString(Section::SystemEventTracking, NULL, keyName, value);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Function name:	GetGlobalData/WriteGlobalData
-//  Description:	Using for reading/writing registry global data values
-//  Arguments:		subSectionName  - Subsection name
-//					keyName			- Key name
-//					nRef			- Result value (integer/ref-value)
-//					nValue			- Value to write (integer)
-//					strRef			- Result value (integer/ref-value)
-//					strValue		- Value to write (string)
-//  Return value:	BOOL - Result of reading/writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Using for reading/writing registry global data values
+ * @param	subSectionName  - Subsection name
+ * @param	keyName			- Key name
+ * @param	nRef			- Result value (integer/ref-value)
+ * @param	nValue			- Value to write (integer)
+ * @param	strRef			- Result value (integer/ref-value)
+ * @param	strValue		- Value to write (string)
+ * @return	BOOL - Result of reading/writing process
+ */
 BOOL AppRegistry::GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
@@ -717,37 +598,27 @@ BOOL AppRegistry::WriteGlobalData(const wchar_t* subSectionName, const wchar_t* 
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	BackupSystem
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
+/*----------------------- Implementation of BackupSystem class -------------------------*/
 
+
+/**
+ * @brief	Constructor
+ */
 BackupSystem::BackupSystem()
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~BackupSystem
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 BackupSystem::~BackupSystem()
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegistryExport
-//	Description:	Backup registry automatically by using system command
-//  Arguments:		None
-//  Return value:	BOOL - Result of process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Backup registry automatically by using system command
+ * @return	BOOL - Result of process
+ */
 BOOL BackupSystem::RegistryExport()
 {
 	// Registry export destination file

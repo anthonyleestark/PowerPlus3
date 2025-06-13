@@ -1,19 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		PowerPlusDlg.cpp
-//		Description:	Source file for main window
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.03.12:		Create new
-//						<1> 2017.03.08:		Update to version 2.0
-//						<2> 2024.01.27:		Update to version 3.0
-//						<3> 2024.07.06:		Update to version 3.1
-//						<4> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		PowerPlusDlg.cpp
+ * @brief		Source file for main window
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "MainApp/PowerPlus.h"
 #include "MainApp/PowerPlusDlg.h"
@@ -40,21 +32,13 @@ using namespace AppCore;
 const UINT WM_TASKBARCREATED = ::RegisterWindowMessage(_T("TaskbarCreated"));
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CPowerPlusDlg
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for CPowerPlusDlg
 IMPLEMENT_DYNAMIC(CPowerPlusDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CPowerPlusDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	: SDialog(IDD_POWERPLUS_DIALOG, pParent)
 {
@@ -98,13 +82,10 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	m_pPwrReminderDlg = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CPowerPlusDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Destructor
+ */
 CPowerPlusDlg::~CPowerPlusDlg()
 {
 	// Delete member pointers
@@ -179,13 +160,10 @@ CPowerPlusDlg::~CPowerPlusDlg()
 	RegisterSessionNotification(Mode::Disable);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CPowerPlusDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -207,15 +185,12 @@ void CPowerPlusDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX,	IDC_ENBPWRREMINDER_CHK,		m_bEnablePowerReminder);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterDialogManagement
-//	Description:	Register dialog control management
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Register dialog control management
+ * @param	None
+ * @return	int
+ */
 int CPowerPlusDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
@@ -271,15 +246,12 @@ int CPowerPlusDlg::RegisterDialogManagement(void)
 	return nRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateDialogManagement
-//	Description:	Update dialog control management
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update dialog control management
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::UpdateDialogManagement(void)
 {
 	// Get control manager
@@ -299,15 +271,12 @@ void CPowerPlusDlg::UpdateDialogManagement(void)
 	SDialog::UpdateDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UnregisterDialogManagement
-//	Description:	Unregister dialog control management
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Unregister dialog control management
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
@@ -356,12 +325,8 @@ BOOL CPowerPlusDlg::UnregisterDialogManagement(void)
 	return SDialog::UnregisterDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CPowerPlusDlg dialog items ID map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CPowerPlusDlg dialog items ID map
 BEGIN_RESOURCEID_MAP(CPowerPlusDlg)
 	// Dialog controls
 	ON_ID_DIALOG(IDD_POWERPLUS_DIALOG,			"AppMainDlg")
@@ -425,12 +390,8 @@ BEGIN_RESOURCEID_MAP(CPowerPlusDlg)
 	ON_ID_MENU(IDM_NOTIFY_EXIT_APP,				"Menu.ExitApp")
 END_RESOURCEID_MAP()
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CPowerPlusDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CPowerPlusDlg dialog message map
 BEGIN_MESSAGE_MAP(CPowerPlusDlg, SDialog)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
@@ -469,19 +430,14 @@ END_MESSAGE_MAP()
 
 
 //////////////////////////////////////////////////////////////////////////
-//// Implementation
-
 // CPowerPlusDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize main dialog and setup dialog content
-//  Arguments:		None
-//  Return value:	BOOL - Default result
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize main dialog and setup dialog content
+ * @param	None
+ * @return	BOOL - Default result
+ */
 BOOL CPowerPlusDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -606,15 +562,12 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PreDestroyDialog
-//	Description:	Pre-destroy dialog and exit application
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Pre-destroy dialog and exit application
+ * @param	None
+ * @return	int
+ */
 int CPowerPlusDlg::PreDestroyDialog()
 {
 	// Request closing all child dialog if opening
@@ -689,15 +642,12 @@ int CPowerPlusDlg::PreDestroyDialog()
 	return SDialog::PreDestroyDialog();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Destroy dialog and quit
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Destroy dialog and quit
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnDestroy()
 {
 	// Destroy background hotkeys if enabled
@@ -713,15 +663,12 @@ void CPowerPlusDlg::OnDestroy()
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSysCommand
-//	Description:	OnSysCommand function
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	OnSysCommand function
+ * @param	Default
+ * @return	None
+ */
 void CPowerPlusDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX) {
@@ -734,15 +681,12 @@ void CPowerPlusDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnPaint
-//	Description:	OnPaint function
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	OnPaint function
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnPaint()
 {
 	if (IsIconic()) {
@@ -769,15 +713,12 @@ void CPowerPlusDlg::OnPaint()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnQueryDragIcon
-//	Description:	OnQueryDragIcon function
-//  Arguments:		None
-//  Return value:	HCURSOR - Default
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	OnQueryDragIcon function
+ * @param	None
+ * @return	HCURSOR - Default
+ */
 HCURSOR CPowerPlusDlg::OnQueryDragIcon()
 {
 	return STATIC_CAST(HCURSOR, m_hDefaultIcon);
@@ -786,15 +727,12 @@ HCURSOR CPowerPlusDlg::OnQueryDragIcon()
 //////////////////////////////////////////////////////////////////////////
 // Message processing functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnApply
-//	Description:	Handle click event for [Apply] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Apply] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnApply()
 {
 	// Save app event logs if enabled
@@ -804,15 +742,12 @@ void CPowerPlusDlg::OnApply()
 	ApplySettings(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnReload
-//	Description:	Handle click event for [Reload] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Reload] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnReload()
 {
 	// Save app event logs if enabled
@@ -837,15 +772,12 @@ void CPowerPlusDlg::OnReload()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnExit
-//	Description:	Handle click event for [Exit] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Exit] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnExit()
 {
 	// Save app event logs if enabled
@@ -855,15 +787,12 @@ void CPowerPlusDlg::OnExit()
 	ExitApp(ExitCode::PressExitButton);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Handle click event for [X] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [X] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnClose()
 {
 	// Check for setting changed
@@ -879,15 +808,12 @@ void CPowerPlusDlg::OnClose()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnExpand
-//	Description:	Handle click event for [Expand/Collapse] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Expand/Collapse] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnExpand()
 {
 	// Save app event log if enabled
@@ -899,15 +825,12 @@ void CPowerPlusDlg::OnExpand()
 	UpdateDialogData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnAbout
-//	Description:	Show about dialog when pressing [About] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show about dialog when pressing [About] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnAbout()
 {
 	// Save app event log if enabled
@@ -917,15 +840,12 @@ void CPowerPlusDlg::OnAbout()
 	OpenChildDialogEx(IDD_ABOUT_DLG);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnHelp
-//	Description:	Show help dialog when pressing [Help] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show help dialog when pressing [Help] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnHelp()
 {
 	// Save app event log if enabled
@@ -935,15 +855,12 @@ void CPowerPlusDlg::OnHelp()
 	OpenChildDialogEx(IDD_HELP_DLG);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDefault
-//	Description:	Handle click event for [Default] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Default] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnDefault()
 {
 	// Save app event log if enabled
@@ -953,15 +870,12 @@ void CPowerPlusDlg::OnDefault()
 	SetDefaultConfig();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChangeLMBAction
-//	Description:	Change action for left mouse button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Change action for left mouse button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnChangeLMBAction()
 {
 	// Update data
@@ -975,15 +889,12 @@ void CPowerPlusDlg::OnChangeLMBAction()
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_LMBACTION_LIST);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChangeMMBAction
-//	Description:	Change action for middle mouse button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Change action for middle mouse button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnChangeMMBAction()
 {
 	// Update data
@@ -997,15 +908,12 @@ void CPowerPlusDlg::OnChangeMMBAction()
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_MMBACTION_LIST);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChangeRMBAction
-//	Description:	Change action for right mouse button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Change action for right mouse button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnChangeRMBAction()
 {
 	// Update data
@@ -1023,15 +931,12 @@ void CPowerPlusDlg::OnChangeRMBAction()
 	UpdateDialogData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChangeLanguage
-//	Description:	Update dialog items when changing language
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update dialog items when changing language
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnChangeLanguage()
 {
 	// Update data
@@ -1053,30 +958,24 @@ void CPowerPlusDlg::OnChangeLanguage()
 	UpdateDialogData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnEnableRightMouseMenu
-//	Description:	Handle click event for "Right mouse action" checkbox
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for "Right mouse action" checkbox
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnEnableRightMouseMenu()
 {
 	// Using custom checkbox clicked event handler
 	OnCheckboxClicked(IDC_ENABLERMBMENU_CHK);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCheckboxClicked
-//	Description:	Handle click event on checkbox-es
-//  Arguments:		nChkBoxID - ID of clicked checkbox
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event on checkbox-es
+ * @param	nChkBoxID - ID of clicked checkbox
+ * @return	None
+ */
 void CPowerPlusDlg::OnCheckboxClicked(UINT nChkBoxID)
 {
 	// Get clicked checkbox control
@@ -1116,15 +1015,12 @@ void CPowerPlusDlg::OnCheckboxClicked(UINT nChkBoxID)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnBackupConfig
-//	Description:	Handle click event for [Backup Configuration] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Backup Configuration] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnBackupConfig()
 {
 	// Save app event log if enabled
@@ -1144,15 +1040,12 @@ void CPowerPlusDlg::OnBackupConfig()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnLogViewer
-//	Description:	Handle click event for [Logviewer] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Logviewer] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnLogViewer()
 {
 	// Save app event log if enabled
@@ -1162,15 +1055,12 @@ void CPowerPlusDlg::OnLogViewer()
 	OpenChildDialogEx(IDD_LOGVIEWER_DLG);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSchedule
-//	Description:	Handle click event for [Schedule] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Schedule] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnSchedule()
 {
 	// Save app event log if enabled
@@ -1180,15 +1070,12 @@ void CPowerPlusDlg::OnSchedule()
 	OpenChildDialogEx(IDD_MULTISCHEDULE_DLG);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnHotkeySet
-//	Description:	Handle click event for [HotkeySet] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [HotkeySet] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnHotkeySet()
 {
 	// Save app event log if enabled
@@ -1198,15 +1085,12 @@ void CPowerPlusDlg::OnHotkeySet()
 	OpenChildDialogEx(IDD_HOTKEYSET_DLG);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnPowerReminder
-//	Description:	Handle click event for [Power Reminder] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle click event for [Power Reminder] button
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnPowerReminder()
 {
 	// Save app event log if enabled
@@ -1216,15 +1100,12 @@ void CPowerPlusDlg::OnPowerReminder()
 	OpenChildDialogEx(IDD_PWRREMINDER_DLG);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnViewActionLog
-//	Description:	Open action log file with Notepad
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Open action log file with Notepad
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnViewActionLog()
 {
 	// Save app event log if enabled
@@ -1234,15 +1115,12 @@ void CPowerPlusDlg::OnViewActionLog()
 	OpenTextFileToView(FILENAME_HISTORY_LOG, FILEEXT_LOGFILE, SUBFOLDER_LOG);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnViewBackupConfig
-//	Description:	Open backed-up configuration file with Notepad
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Open backed-up configuration file with Notepad
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::OnViewBackupConfig()
 {
 	// Save app event log if enabled
@@ -1252,15 +1130,12 @@ void CPowerPlusDlg::OnViewBackupConfig()
 	OpenTextFileToView(FILENAME_BAKCONFIG, FILEEXT_REGFILE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnTimer
-//	Description:	OnTimer function
-//  Arguments:		nIDEvent - Time event ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	OnTimer function
+ * @param	nIDEvent - Time event ID
+ * @return	None
+ */
 void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// Timer ID: Action Schedule
@@ -1293,16 +1168,13 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 	SDialog::OnTimer(nIDEvent);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChildDialogDestroy
-//	Description:	Handle event when a child dialog is closed/destroyed
-//  Arguments:		wParam - Child dialog ID
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle event when a child dialog is closed/destroyed
+ * @param	wParam - Child dialog ID
+ * @param	lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 {
 	// Get dialog ID
@@ -1366,16 +1238,13 @@ LRESULT CPowerPlusDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 	return SDialog::OnChildDialogDestroy(wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnUpdateScheduleData
-//	Description:	Update schedule data if changed
-//  Arguments:		wParam - Not used
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update schedule data if changed
+ * @param	wParam - Not used
+ * @param	lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update data
@@ -1392,16 +1261,13 @@ LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM /*wParam*/, LPARAM /*lParam*/
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnUpdateHotkeySetData
-//	Description:	Update HotkeySet data if changed
-//  Arguments:		wParam - Not used
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update HotkeySet data if changed
+ * @param	wParam - Not used
+ * @param	lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update data
@@ -1418,16 +1284,13 @@ LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM /*wParam*/, LPARAM /*lParam*
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnUpdatePwrReminderData
-//	Description:	Update Power Reminder data if changed
-//  Arguments:		wParam - Not used
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update Power Reminder data if changed
+ * @param	wParam - Not used
+ * @param	lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update data
@@ -1444,16 +1307,13 @@ LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM /*wParam*/, LPARAM /*lPara
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnProcessDebugCommand
-//	Description:	Handle debug command message
-//  Arguments:		wParam - First param
-//					lParam - Second param
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle debug command message
+ * @param	wParam - First param
+ * @param	lParam - Second param
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 {
 	// Check argument validity
@@ -1506,16 +1366,13 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnShowDialog
-//	Description:	Show/hide dialog when receiving message
-//  Arguments:		wParam - Show/hide flag
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show/hide dialog when receiving message
+ * @param	wParam - Show/hide flag
+ * @param	lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get flag value
@@ -1531,16 +1388,13 @@ LRESULT CPowerPlusDlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnShowErrorMessage
-//	Description:	Show error when receiving message
-//  Arguments:		wParam - Error code
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show error when receiving message
+ * @param	wParam - Error code
+ * @param	lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get error code value
@@ -1556,16 +1410,13 @@ LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM /*lParam*/)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnPowerBroadcastEvent
-//	Description:	Handle power broadcast event
-//	Arguments:		wParam - Event ID
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle power broadcast event
+	Arguments:		wParam - Event ID
+					lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Check if event skip counter is triggered
@@ -1637,16 +1488,13 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnQuerryEndSession
-//	Description:	Handle querry ending session event
-//	Arguments:		wParam - Not used
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle querry ending session event
+	Arguments:		wParam - Not used
+					lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Get app pointer
@@ -1658,7 +1506,6 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	}
 
 	/*---------- Process querry ending session event ----------*/
-
 	// Turn on session ending flag
 	SetSessionEndFlag(FLAG_ON);
 	pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
@@ -1671,21 +1518,17 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	SaveHistoryInfoData();
 
 	/*---------------------------------------------------------*/
-
 	// Default: Success
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnWTSSessionChange
-//	Description:	Handle session state change notifications
-//	Arguments:		wParam - First param
-//					lParam - Second param
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle session state change notifications
+	Arguments:		wParam - First param
+					lParam - Second param
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Process status code
@@ -1713,28 +1556,27 @@ LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM /*lParam*/)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCommand
-//	Description:	Handle app command messages (WM_COMMAND)
-//	Arguments:		wParam - First param (HIWORD)
-//					lParam - Second param (LOWORD)
-//  Return value:	BOOL
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle app command messages (WM_COMMAND)
+	Arguments:		wParam - First param (HIWORD)
+					lParam - Second param (LOWORD)
+ * @return	BOOL
+ */
 BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	// Process commands
 	switch (LOWORD(wParam))
 	{
 
-	/*********************************************************************/
+
+/*********************************************************************/
 	/*																	 */
 	/*				Handle commands for Action menu items				 */
 	/*																	 */
-	/*********************************************************************/
 
+
+/*********************************************************************/
 	case IDM_NOTIFY_ACTION_DISPLAYOFF:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_ACTION_DISPLAYOFF);
 		ExecuteAction(APP_MACRO_ACTION_MENU, APP_ACTION_DISPLAYOFF);
@@ -1764,12 +1606,14 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		ExecuteAction(APP_MACRO_ACTION_SCHEDULE, GetAppOption(AppOptionID::defaultScheduleActionID));
 		break;
 
-	/*********************************************************************/
+
+/*********************************************************************/
 	/*																	 */
 	/*				Handle commands for other menu items				 */
 	/*																	 */
-	/*********************************************************************/
 
+
+/*********************************************************************/
 	case IDM_NOTIFY_OPENDLG_ABOUT:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_OPENDLG_ABOUT);
 		OpenChildDialogEx(IDD_ABOUT_DLG);
@@ -1831,17 +1675,14 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	return CWnd::OnCommand(wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WindowProc
-//	Description:	Handle app window messages
-//  Arguments:		message - Message ID
-//					wParam - First param (HIWORD)
-//					lParam - Second param (LOWORD)
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Handle app window messages
+ * @param	message - Message ID
+ * @param	wParam - First param (HIWORD)
+ * @param	lParam - Second param (LOWORD)
+ * @return	LRESULT
+ */
 LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -1899,15 +1740,12 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 //////////////////////////////////////////////////////////////////////////
 // Member functions using for resizing dialog
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExpandDialog
-//	Description:	Expand/collapse dialog
-//  Arguments:		bExpand - Flag to expand or collapse
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Expand/collapse dialog
+ * @param	bExpand - Flag to expand or collapse
+ * @return	None
+ */
 void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 {
 	// If new state is the same as current state, do nothing
@@ -2035,15 +1873,12 @@ void CPowerPlusDlg::ExpandDialog(BOOL bExpand)
 //////////////////////////////////////////////////////////////////////////
 // Notify icon functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CreateNotifyIcon
-//	Description:	Setup and create notify icon
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup and create notify icon
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusDlg::CreateNotifyIcon(void)
 {
 	// If notify icon is showed, re-create it
@@ -2093,15 +1928,12 @@ BOOL CPowerPlusDlg::CreateNotifyIcon(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ShowNotifyMenu
-//	Description:	Show notify menu
-//  Arguments:		None
-//	Return value:	BOOL - Show menu successfully or failed
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show notify menu
+ * @param	None
+ * @param	Return value:	BOOL - Show menu successfully or failed
+ */
 BOOL CPowerPlusDlg::ShowNotifyMenu(void)
 {
 	// Reset notify menu
@@ -2135,15 +1967,12 @@ BOOL CPowerPlusDlg::ShowNotifyMenu(void)
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateNotifyIcon
-//	Description:	Update notify icon changes
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update notify icon changes
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::UpdateNotifyIcon(void)
 {
 	// If notify icon doesn't exist, do nothing
@@ -2159,15 +1988,12 @@ void CPowerPlusDlg::UpdateNotifyIcon(void)
 	Shell_NotifyIcon(NIM_MODIFY, m_pNotifyIconData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveNotifyIcon
-//	Description:	Remove notify icon when exiting
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Remove notify icon when exiting
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::RemoveNotifyIcon(void)
 {
 	// If notify icon is not showed, do nothing
@@ -2195,16 +2021,13 @@ void CPowerPlusDlg::RemoveNotifyIcon(void)
 
 //////////////////////////////////////////////////////////////////////////
 // Data processing functions
-	
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppData
-//	Description:	Get app data
-//  Arguments:		dwDataType - App data type to get
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+
+/**
+ * @brief	Get app data
+ * @param	dwDataType - App data type to get
+ * @return	None
+ */
 void CPowerPlusDlg::GetAppData(UINT dwDataType /* = APPDATA_ALL */)
 {
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
@@ -2249,16 +2072,13 @@ void CPowerPlusDlg::GetAppData(UINT dwDataType /* = APPDATA_ALL */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppOption
-//	Description:	Return app option by ID
-//  Arguments:		eAppOptionID - ID of specific app option
-//					bTemp		 - Temp value or saved value (saved value by default)
-//  Return value:	int - App option value
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Return app option by ID
+ * @param	eAppOptionID - ID of specific app option
+ * @param	bTemp		 - Temp value or saved value (saved value by default)
+ * @return	int - App option value
+ */
 int CPowerPlusDlg::GetAppOption(AppOptionID eAppOptionID, BOOL bTemp /* = FALSE */) const
 {
 	int nResult = INT_INVALID;
@@ -2295,15 +2115,12 @@ int CPowerPlusDlg::GetAppOption(AppOptionID eAppOptionID, BOOL bTemp /* = FALSE 
 	return nResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateDialogData
-//	Description:	Update data values for dialog items
-//  Arguments:		bSaveAndValidate - Same as default MFC UpdateData function
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update data values for dialog items
+ * @param	bSaveAndValidate - Same as default MFC UpdateData function
+ * @return	None
+ */
 void CPowerPlusDlg::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 {
 	UINT nCmbSel = 0;
@@ -2311,7 +2128,6 @@ void CPowerPlusDlg::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 	if (bSaveAndValidate == FALSE) {
 
 	/*----------------------------<Bind config data to dialog items>----------------------------*/
-
 		// Left mouse button action combo-box
 		nCmbSel = m_cfgTempConfig.nLMBAction;
 		m_cmbLMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
@@ -2354,12 +2170,10 @@ void CPowerPlusDlg::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 		UpdateData(FALSE);
 
 	/*------------------------------------------------------------------------------------------*/
-
 	}
 	else {
 
 	/*----------------------------<Bind dialog items data to config>----------------------------*/
-
 		// Update dialog items
 		UpdateData(TRUE);
 
@@ -2397,22 +2211,18 @@ void CPowerPlusDlg::UpdateDialogData(BOOL bSaveAndValidate /* = TRUE */)
 		m_cfgTempConfig.nLanguageID = Sel2Opt(APP_LANGUAGE, nCmbSel);
 
 	/*------------------------------------------------------------------------------------------*/
-
 	}
 
 	// Update base dialog data
 	SDialog::UpdateDialogData(bSaveAndValidate);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckSettingChangeState
-//	Description:	Check setting variables changing state
-//  Arguments:		None
-//  Return value:	BOOL - Change flag
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Check setting variables changing state
+ * @param	None
+ * @return	BOOL - Change flag
+ */
 BOOL CPowerPlusDlg::CheckSettingChangeState(void)
 {
 	BOOL bChangeFlag = FALSE;
@@ -2438,15 +2248,12 @@ BOOL CPowerPlusDlg::CheckSettingChangeState(void)
 	return bChangeFlag;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetFlagValue
-//	Description:	Return flag value by ID
-//  Arguments:		eFlagID - ID of specific flag
-//  Return value:	int - Flag value
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Return flag value by ID
+ * @param	eFlagID - ID of specific flag
+ * @return	int - Flag value
+ */
 int CPowerPlusDlg::GetFlagValue(AppFlagID eFlagID) const
 {
 	int nValue = FLAG_OFF;
@@ -2471,16 +2278,13 @@ int CPowerPlusDlg::GetFlagValue(AppFlagID eFlagID) const
 	return nValue;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetFlagValue
-//	Description:	Update flag value by ID
-//  Arguments:		eFlagID - ID of specific flag
-//					nValue  - Value to set
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update flag value by ID
+ * @param	eFlagID - ID of specific flag
+ * @param	nValue  - Value to set
+ * @return	None
+ */
 void CPowerPlusDlg::SetFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
@@ -2509,15 +2313,12 @@ void CPowerPlusDlg::SetFlagValue(AppFlagID eFlagID, int nValue)
 //////////////////////////////////////////////////////////////////////////
 // Dialog setup functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup language for dialog items
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::SetupLanguage(void)
 {
 	// Load app language package
@@ -2563,16 +2364,13 @@ void CPowerPlusDlg::SetupLanguage(void)
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupComboBox
-//	Description:	Setup data for combo-boxes
-//  Arguments:		nComboID	- ID of combo box
-//					ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup data for combo-boxes
+ * @param	nComboID	- ID of combo box
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CPowerPlusDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	switch (nComboID)
@@ -2628,29 +2426,23 @@ void CPowerPlusDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 //////////////////////////////////////////////////////////////////////////
 // Item state/checkbox update functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnableRightMouseMenu
-//	Description:	Enable/disable right mouse action combo-box
-//  Arguments:		bEnable - Enable or disable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Enable/disable right mouse action combo-box
+ * @param	bEnable - Enable or disable
+ * @return	None
+ */
 void CPowerPlusDlg::EnableRightMouseMenu(BOOL /*bEnable*/)
 {
 	UpdateDialogData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnableLogViewer
-//	Description:	Enable/disable LogViewer function
-//  Arguments:		bEnable - Enable or disable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Enable/disable LogViewer function
+ * @param	bEnable - Enable or disable
+ * @return	None
+ */
 void CPowerPlusDlg::EnableLogViewer(BOOL bEnable)
 {
 	// Prefer using app data option than temp config option
@@ -2668,43 +2460,34 @@ void CPowerPlusDlg::EnableLogViewer(BOOL bEnable)
 	UpdateDialogData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnableBackgroundHotkey
-//	Description:	Enable/disable HotKeySet button
-//  Arguments:		bEnable - Enable or disable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Enable/disable HotKeySet button
+ * @param	bEnable - Enable or disable
+ * @return	None
+ */
 void CPowerPlusDlg::EnableBackgroundHotkey(BOOL /*bEnable*/)
 {
 	UpdateDialogData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnablePowerReminder
-//	Description:	Enable/disable Power Reminder button
-//  Arguments:		bEnable - Enable or disable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Enable/disable Power Reminder button
+ * @param	bEnable - Enable or disable
+ * @return	None
+ */
 void CPowerPlusDlg::EnablePowerReminder(BOOL /*bEnable*/)
 {
 	UpdateDialogData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateRestartAsAdminFlag
-//	Description:	Update restart as admin flag
-//  Arguments:		bFlag - Update flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update restart as admin flag
+ * @param	bFlag - Update flag
+ * @return	None
+ */
 void CPowerPlusDlg::UpdateRestartAsAdminFlag(BOOL bFlag)
 {
 	// Check current set app data option
@@ -2721,15 +2504,12 @@ void CPowerPlusDlg::UpdateRestartAsAdminFlag(BOOL bFlag)
 //////////////////////////////////////////////////////////////////////////
 // Component update functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetMenuItemText
-//	Description:	Setup language for menu items
-//  Arguments:		pMenu - Menu pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup language for menu items
+ * @param	pMenu - Menu pointer
+ * @return	None
+ */
 void CPowerPlusDlg::SetMenuItemText(CMenu* pMenu)
 {
 	// Load app language package
@@ -2761,15 +2541,12 @@ void CPowerPlusDlg::SetMenuItemText(CMenu* pMenu)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateMenuItemState
-//	Description:	Update state for menu items
-//  Arguments:		pMenu - Menu pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update state for menu items
+ * @param	pMenu - Menu pointer
+ * @return	None
+ */
 void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 {
 	// Check validity
@@ -2834,15 +2611,12 @@ void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetNotifyTipText
-//	Description:	Get notify tip text
-//  Arguments:		pNotifyIconData - Notify icon data pointer
-//  Return value:	const wchar_t*
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get notify tip text
+ * @param	pNotifyIconData - Notify icon data pointer
+ * @return	const wchar_t*
+ */
 const wchar_t* CPowerPlusDlg::GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 {
 	// Check validity
@@ -2856,15 +2630,12 @@ const wchar_t* CPowerPlusDlg::GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 	return pNotifyIconData->szTip;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetNotifyTipText
-//	Description:	Set notify tip text
-//  Arguments:		pNotifyIconData - Notify icon data pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Set notify tip text
+ * @param	pNotifyIconData - Notify icon data pointer
+ * @return	None
+ */
 void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 {
 	// Check validity
@@ -2894,17 +2665,14 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 	StrCpyW(pNotifyIconData->szTip, notifyTipText.GetString());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetBallonTipText
-//	Description:	Show balloon tip to notify schedule
-//  Arguments:		nCurLanguage - Current language ID
-//					nScheduleAction - Upcoming schedule action
-//					nSecondLeft  - Number of second left
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show balloon tip to notify schedule
+ * @param	nCurLanguage - Current language ID
+ * @param	nScheduleAction - Upcoming schedule action
+ * @param	nSecondLeft  - Number of second left
+ * @return	None
+ */
 void CPowerPlusDlg::SetBalloonTipText(UINT /*nCurLanguage*/, UINT nScheduleAction, UINT nSecondLeft)
 {
 	// If notify icon doesn't exist, do nothing
@@ -2939,17 +2707,14 @@ void CPowerPlusDlg::SetBalloonTipText(UINT /*nCurLanguage*/, UINT nScheduleActio
 //////////////////////////////////////////////////////////////////////////
 // Core functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExecuteAction
-//	Description:	Execute action as config/schedule/menu selection
-//  Arguments:		nActionMacro - Action macro
-//					wParam		 - First param (HIWORD)
-//					lParam		 - Second param (LOWORD)
-//  Return value:	BOOL - Result of action execution
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Execute action as config/schedule/menu selection
+ * @param	nActionMacro - Action macro
+ * @param	wParam		 - First param (HIWORD)
+ * @param	lParam		 - Second param (LOWORD)
+ * @return	BOOL - Result of action execution
+ */
 BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */, LPARAM /* lParam = NULL */)
 {
 	UINT nActionType = 0;
@@ -3127,15 +2892,12 @@ BOOL CPowerPlusDlg::ExecuteAction(UINT nActionMacro, WPARAM wParam /* = NULL */,
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ApplySettings
-//	Description:	Apply changes and minimize window to tray
-//  Arguments:		bMinimize - Minimize to tray after applying changes
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Apply changes and minimize window to tray
+ * @param	bMinimize - Minimize to tray after applying changes
+ * @return	None
+ */
 void CPowerPlusDlg::ApplySettings(BOOL bMinimize)
 {
 	// Update data
@@ -3178,15 +2940,12 @@ void CPowerPlusDlg::ApplySettings(BOOL bMinimize)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ReloadSettings
-//	Description:	Abort all changes and reload settings
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Abort all changes and reload settings
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::ReloadSettings(void)
 {
 	// Reload app data
@@ -3203,15 +2962,12 @@ void CPowerPlusDlg::ReloadSettings(void)
 	SetFlagValue(AppFlagID::dialogDataChanged, FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetDefaultConfig
-//	Description:	Set default config data and re-update display
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Set default config data and re-update display
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::SetDefaultConfig(void)
 {
 	// Set default options
@@ -3225,15 +2981,12 @@ void CPowerPlusDlg::SetDefaultConfig(void)
 	UpdateDialogData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RestartApp
-//	Description:	Restart application with/without admin privileges
-//  Arguments:		bRestartAsAdmin - Restart with/without admin privileges
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Restart application with/without admin privileges
+ * @param	bRestartAsAdmin - Restart with/without admin privileges
+ * @return	None
+ */
 void CPowerPlusDlg::RestartApp(BOOL bRestartAsAdmin)
 {
 	// Remove window title to prevent from startup checking
@@ -3246,15 +2999,12 @@ void CPowerPlusDlg::RestartApp(BOOL bRestartAsAdmin)
 	RunApp(StringUtils::GetApplicationPath(true), bRestartAsAdmin);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExitApp
-//	Description:	Safely trigger exitting the application
-//  Arguments:		nExitCode - Application exit code (use for PostQuitMessage)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Safely trigger exitting the application
+ * @param	nExitCode - Application exit code (use for PostQuitMessage)
+ * @return	None
+ */
 void CPowerPlusDlg::ExitApp(int nExitCode)
 {
 	// Request closing opening dialogs and do clean-up
@@ -3275,16 +3025,13 @@ void CPowerPlusDlg::ExitApp(int nExitCode)
 //////////////////////////////////////////////////////////////////////////
 // Dialog and window functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ShowDialog
-//	Description:	Show/hide dialog out of/into system tray
-//  Arguments:		pWnd	  - Pointer of the dialog to show/hide
-//					bShowFlag - Flag to show/hide dialog
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show/hide dialog out of/into system tray
+ * @param	pWnd	  - Pointer of the dialog to show/hide
+ * @param	bShowFlag - Flag to show/hide dialog
+ * @return	None
+ */
 void CPowerPlusDlg::ShowDialog(CWnd* pWnd, BOOL bShowFlag /* = TRUE */)
 {
 	// Get show/hide flag
@@ -3309,15 +3056,12 @@ void CPowerPlusDlg::ShowDialog(CWnd* pWnd, BOOL bShowFlag /* = TRUE */)
 	OutputEventLog(nEventID, ((SDialog*)pWnd)->GetCaption());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OpenChildDialogEx
-//	Description:	Open child dialog with corresponding ID
-//  Arguments:		nDialogID - Child dialog ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Open child dialog with corresponding ID
+ * @param	nDialogID - Child dialog ID
+ * @return	None
+ */
 void CPowerPlusDlg::OpenChildDialogEx(UINT nDialogID)
 {
 	// Get app pointer
@@ -3460,18 +3204,15 @@ void CPowerPlusDlg::OpenChildDialogEx(UINT nDialogID)
 	SDialog::OpenChildDialogEx(nDialogID);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OpenDialogBase
-//	Description:	Open dialog with corresponding ID
-//  Arguments:		nDialogID	  - Dialog ID
-//					bReadOnlyMode - Read-only mode flag
-//					nOpenMode	  - Open mode: Modal or modeless
-//  Return value:	None
-//	Note:			Base function (no longer used)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Open dialog with corresponding ID
+ * @param	nDialogID	  - Dialog ID
+ * @param	bReadOnlyMode - Read-only mode flag
+ * @param	nOpenMode	  - Open mode: Modal or modeless
+ * @return	None
+ * @note:	Base function (no longer used)
+ */
 void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE */, int nOpenMode /* = DEF_MODE_OPENDLG_MODAL */)
 {
 	// Check if there is any other instance of dialog currently running,
@@ -3591,17 +3332,14 @@ void CPowerPlusDlg::OpenDialogBase(UINT nDialogID, BOOL bReadOnlyMode /* = FALSE
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OpenTextFileToView
-//	Description:	Open text file to view using Notepad
-//  Arguments:		fileName  - File name/path
-//					extension - File extension
-//					subDir	  - Sub-directory name
-//  Return value:	BOOL - Result of file opening
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Open text file to view using Notepad
+ * @param	fileName  - File name/path
+ * @param	extension - File extension
+ * @param	subDir	  - Sub-directory name
+ * @return	BOOL - Result of file opening
+ */
 BOOL CPowerPlusDlg::OpenTextFileToView(const wchar_t* fileName, const wchar_t* extension, const wchar_t* subDir /* = Constant::String::Empty */)
 {
 	// Get file name
@@ -3624,15 +3362,12 @@ BOOL CPowerPlusDlg::OpenTextFileToView(const wchar_t* fileName, const wchar_t* e
 //////////////////////////////////////////////////////////////////////////
 // Action Schedule feature functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ProcessActionSchedule
-//	Description:	Process Action schedule function
-//  Arguments:		None
-//  Return value:	BOOL - Schedule processing result
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Process Action schedule function
+ * @param	None
+ * @return	BOOL - Schedule processing result
+ */
 BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 {
 	BOOL bResult = FALSE;
@@ -3780,15 +3515,12 @@ BOOL CPowerPlusDlg::ProcessActionSchedule(void)
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ReupdateActionScheduleData
-//	Description:	Reupdate Action Schedule data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Reupdate Action Schedule data
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::ReupdateActionScheduleData(void)
 {
 	// Disable Action schedule items
@@ -3803,16 +3535,13 @@ void CPowerPlusDlg::ReupdateActionScheduleData(void)
 	PostMessage(SM_APP_UPDATE_SCHEDULEDATA, NULL, NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetActionScheduleSkip
-//	Description:	Setup Action Schedule item skip mode
-//  Arguments:		schItem	  - Action schedule item
-//					nSkipFlag - Skip flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup Action Schedule item skip mode
+ * @param	schItem	  - Action schedule item
+ * @param	nSkipFlag - Skip flag
+ * @return	None
+ */
 void CPowerPlusDlg::SetActionScheduleSkip(const ScheduleItem& schItem, int nSkipFlag)
 {
 	// If item is empty, do nothing
@@ -3846,16 +3575,13 @@ void CPowerPlusDlg::SetActionScheduleSkip(const ScheduleItem& schItem, int nSkip
 	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetActionScheduleSnooze
-//	Description:	Setup Action Schedule item snooze mode
-//  Arguments:		schItem		- Action schedule item
-//					nSnoozeFlag - Snooze flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup Action Schedule item snooze mode
+ * @param	schItem		- Action schedule item
+ * @param	nSnoozeFlag - Snooze flag
+ * @return	None
+ */
 void CPowerPlusDlg::SetActionScheduleSnooze(const ScheduleItem& schItem, int nSnoozeFlag)
 {
 	// If item is empty, do nothing
@@ -3909,15 +3635,12 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const ScheduleItem& schItem, int nSn
 	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateActionScheduleQueue
-//	Description:	Update Action Schedule runtime queue data
-//  Arguments:		nMode - Update mode flag (INIT, UPDATE or DISABLE)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update Action Schedule runtime queue data
+ * @param	nMode - Update mode flag (INIT, UPDATE or DISABLE)
+ * @return	None
+ */
 void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 {
 	if (nMode == Mode::Init) {
@@ -4003,15 +3726,12 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetActionScheduleSkipStatus
-//	Description:	Get Action Schedule item skip flag status
-//  Arguments:		nItemID	- Action Schedule item ID
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get Action Schedule item skip flag status
+ * @param	nItemID	- Action Schedule item ID
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusDlg::GetActionScheduleSkipStatus(UINT nItemID)
 {
 	// If runtime queue data is empty, do not trigger
@@ -4041,16 +3761,13 @@ BOOL CPowerPlusDlg::GetActionScheduleSkipStatus(UINT nItemID)
 	return FALSE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetActionScheduleSnoozeStatus
-//	Description:	Get Action Schedule item snooze trigger status
-//  Arguments:		nItemID	   - Action Schedule item ID
-//					curSysTime - Current system time
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get Action Schedule item snooze trigger status
+ * @param	nItemID	   - Action Schedule item ID
+ * @param	curSysTime - Current system time
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusDlg::GetActionScheduleSnoozeStatus(UINT nItemID, const ClockTime& currentTime)
 {
 	// If runtime queue data is empty, do not trigger
@@ -4088,15 +3805,12 @@ BOOL CPowerPlusDlg::GetActionScheduleSnoozeStatus(UINT nItemID, const ClockTime&
 //////////////////////////////////////////////////////////////////////////
 // HotkeySet feature functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupBackgroundHotkey
-//	Description:	Setup background hotkey if enabled
-//  Arguments:		nMode - Mode of setup (INIT, UPDATE or DISABLE)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup background hotkey if enabled
+ * @param	nMode - Mode of setup (INIT, UPDATE or DISABLE)
+ * @return	None
+ */
 void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 {
 	// Get option and flag values
@@ -4115,13 +3829,15 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 	HWND hWnd = this->GetSafeHwnd();
 	DWORD dwErrorCode;
 
-	/*********************************************************************/
+
+/*********************************************************************/
 	/*																	 */
 	/*	         Unregister already registered HotkeySet items			 */
 	/*	             Applied for modes: DISABLE or UPDATE                */
 	/*																	 */
-	/*********************************************************************/
 
+
+/*********************************************************************/
 	if ((nMode == Mode::Disable) || (nMode == Mode::Update)) {
 
 		if ((bHKRegisterFlag == TRUE) &&									// Hotkey registered flag ON
@@ -4160,13 +3876,15 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 		}
 	}
 
-	/*********************************************************************/
+
+/*********************************************************************/
 	/*																	 */
 	/*				      Register HotkeySet items					     */
 	/*				   Applied for modes: INIT or UPDATE		         */
 	/*																	 */
-	/*********************************************************************/
 
+
+/*********************************************************************/
 	if ((nMode == Mode::Init) || (nMode == Mode::Update)) {
 
 		// If feature not enabled, do nothing
@@ -4256,15 +3974,12 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ProcessHotkey
-//	Description:	Process when registered hotkey is pressed
-//  Arguments:		nHotkeyID - ID of pressed hotkey
-//  Return value:	BOOL - Hotkey processing result
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Process when registered hotkey is pressed
+ * @param	nHotkeyID - ID of pressed hotkey
+ * @return	BOOL - Hotkey processing result
+ */
 BOOL CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 {
 	// If "Background hotkey" option is not enabled, do nothing
@@ -4341,27 +4056,26 @@ BOOL CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterSessionNotification
-//	Description:	Register/unregister to receive session state change notification
-//  Arguments:		nMode - Mode of setup (INIT, UPDATE or DISABLE)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Register/unregister to receive session state change notification
+ * @param	nMode - Mode of setup (INIT, UPDATE or DISABLE)
+ * @return	None
+ */
 void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 {
 	DWORD dwError;
 	HWND hCurWnd = this->GetSafeHwnd();
-	
-	/*********************************************************************/
+
+
+/*********************************************************************/
 	/*																	 */
 	/*		  Unregister for session state change notifications			 */
 	/*	            Applied for modes: DISABLE or UPDATE		         */
 	/*																	 */
-	/*********************************************************************/
 
+
+/*********************************************************************/
 	if ((nMode == Mode::Disable) || (nMode == Mode::Update)) {
 
 		// Only unregister if the flag is not OFF
@@ -4385,13 +4099,15 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 		}
 	}
 
-	/*********************************************************************/
+
+/*********************************************************************/
 	/*																	 */
 	/*			Register for session state change notifications			 */
 	/*				   Applied for modes: INIT or UPDATE		         */
 	/*																	 */
-	/*********************************************************************/
 
+
+/*********************************************************************/
 	if ((nMode == Mode::Init) || (nMode == Mode::Update)) {
 
 		// Only register if the flag is not ON
@@ -4416,19 +4132,15 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ProcessLockStateHotkey
-//	Description:	Process when registered hotkey is pressed in lock state
-//					(this function will convert key-hooked param sent from the
-//					application class into corresponding registered hotkey ID)
-//  Arguments:		dwHKeyParam - Hotkey parameters (sent from app class)
-//  Return value:	BOOL - Hotkey processing result
-//	Notes:			If the hotkey ID is found and is registered, the hotkey will
-//					be processed and executed using the base ProcessHotkey function
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Process when registered hotkey is pressed in lock state
+					(this function will convert key-hooked param sent from the
+					application class into corresponding registered hotkey ID)
+ * @param	dwHKeyParam - Hotkey parameters (sent from app class)
+ * @return	BOOL - Hotkey processing result
+ * @note	If the hotkey ID is found and is registered, the hotkey will be processed and executed using the base ProcessHotkey function
+ */
 BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 {
 	// Only process if both options are enabled
@@ -4486,15 +4198,12 @@ BOOL CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 //////////////////////////////////////////////////////////////////////////
 // Power Reminder feature functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExecutePowerReminder
-//	Description:	Excute Power Reminder action
-//  Arguments:		nExecEventID - Execute event ID
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Excute Power Reminder action
+ * @param	nExecEventID - Execute event ID
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 {
 	// If "Power Reminder" option is not enabled, do nothing
@@ -4605,15 +4314,12 @@ BOOL CPowerPlusDlg::ExecutePowerReminder(UINT nExecEventID)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayPwrReminder
-//	Description:	Display Power Reminder item
-//  Arguments:		pwrDispItem - Item to display
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Display Power Reminder item
+ * @param	pwrDispItem - Item to display
+ * @return	int
+ */
 int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 {
 	// Check message content validity
@@ -4706,15 +4412,12 @@ int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 	return nRespond;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ReupdatePwrReminderData
-//	Description:	Reupdate Power Reminder data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Reupdate Power Reminder data
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::ReupdatePwrReminderData(void)
 {
 	// Disable Power Reminder items
@@ -4729,16 +4432,13 @@ void CPowerPlusDlg::ReupdatePwrReminderData(void)
 	PostMessage(SM_APP_UPDATE_PWRREMINDERDATA, NULL, NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetPwrReminderSnooze
-//	Description:	Setup Power Reminder item snooze mode
-//  Arguments:		pwrItem		- Power Reminder item
-//					nSnoozeFlag - Snooze flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup Power Reminder item snooze mode
+ * @param	pwrItem		- Power Reminder item
+ * @param	nSnoozeFlag - Snooze flag
+ * @return	None
+ */
 void CPowerPlusDlg::SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSnoozeFlag)
 {
 	// If item is empty, do nothing
@@ -4796,15 +4496,12 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSn
 	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdatePwrReminderSnooze
-//	Description:	Update Power Reminder snooze queue data
-//  Arguments:		nMode - Update mode flag (UPDATE or DISABLE)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update Power Reminder snooze queue data
+ * @param	nMode - Update mode flag (UPDATE or DISABLE)
+ * @return	None
+ */
 void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 {
 	if (nMode == Mode::Init) {
@@ -4869,16 +4566,13 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetPwrReminderSnoozeStatus
-//	Description:	Get Power Reminder item snooze trigger status
-//  Arguments:		nItemID	   - Power Reminder item ID
-//					curSysTime - Current system time
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get Power Reminder item snooze trigger status
+ * @param	nItemID	   - Power Reminder item ID
+ * @param	curSysTime - Current system time
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, const ClockTime& currentTime)
 {
 	// If runtime queue data is empty, do not trigger
@@ -4912,15 +4606,12 @@ BOOL CPowerPlusDlg::GetPwrReminderSnoozeStatus(UINT nItemID, const ClockTime& cu
 	return FALSE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetPwrReminderDispFlag
-//	Description:	Get Power Reminder item runtime displaying flag
-//  Arguments:		pwrItem	- Power Reminder item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get Power Reminder item runtime displaying flag
+ * @param	pwrItem	- Power Reminder item
+ * @return	TRUE/FALSE
+ */
 BOOL CPowerPlusDlg::GetPwrReminderDispFlag(const PwrReminderItem& pwrItem)
 {
 	// If item is empty, it can not be displayed
@@ -4949,16 +4640,13 @@ BOOL CPowerPlusDlg::GetPwrReminderDispFlag(const PwrReminderItem& pwrItem)
 	return FALSE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetPwrReminderDispFlag
-//	Description:	Set Power Reminder item runtime displaying flag
-//  Arguments:		pwrItem	  - Power Reminder item
-//					nDispFlag - Display flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Set Power Reminder item runtime displaying flag
+ * @param	pwrItem	  - Power Reminder item
+ * @param	nDispFlag - Display flag
+ * @return	None
+ */
 void CPowerPlusDlg::SetPwrReminderDispFlag(const PwrReminderItem& pwrItem, int nDispFlag)
 {
 	// If item is empty, do nothing
@@ -4991,15 +4679,12 @@ void CPowerPlusDlg::SetPwrReminderDispFlag(const PwrReminderItem& pwrItem, int n
 	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetPwrReminderDispList
-//	Description:	Get Power Reminder runtime displaying item list
-//  Arguments:		arrPwrDispList - Power Reminder displaying item list
-//  Return value:	size_t - Number of displaying items
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get Power Reminder runtime displaying item list
+ * @param	arrPwrDispList - Power Reminder displaying item list
+ * @return	size_t - Number of displaying items
+ */
 size_t CPowerPlusDlg::GetPwrReminderDispList(UIntArray& arrPwrDispList)
 {
 	// Reset output data list
@@ -5035,16 +4720,13 @@ size_t CPowerPlusDlg::GetPwrReminderDispList(UIntArray& arrPwrDispList)
 //////////////////////////////////////////////////////////////////////////
 // History and logging functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputScheduleEventLog
-//	Description:	Output action schedule event log
-//  Arguments:		usEvent	- Event ID
-//					schItem - Schedule item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Output action schedule event log
+ * @param	usEvent	- Event ID
+ * @param	schItem - Schedule item
+ * @return	None
+ */
 void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& schItem)
 {
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -5061,16 +4743,13 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& s
 	OutputEventLog(usEvent, actionNameString, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputPwrReminderEventLog
-//	Description:	Output Power Reminder event log
-//  Arguments:		usEvent	- Event ID
-//					pwrItem - Power Reminder item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Output Power Reminder event log
+ * @param	usEvent	- Event ID
+ * @param	pwrItem - Power Reminder item
+ * @return	None
+ */
 void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PwrReminderItem& pwrItem)
 {
 	// Message content
@@ -5084,17 +4763,14 @@ void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PwrReminderI
 	OutputEventLog(usEvent, messageContent, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitPwrActionHistoryInfo
-//	Description:	Initialize Power Action history info data
-//  Arguments:		nActionID	- History action ID
-//					bResult		- Result of execution
-//					dwErrorCode	- Error code
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize Power Action history info data
+ * @param	nActionID	- History action ID
+ * @param	bResult		- Result of execution
+ * @param	dwErrorCode	- Error code
+ * @return	None
+ */
 void CPowerPlusDlg::InitPwrActionHistoryInfo(UINT nActionID, BOOL bResult, DWORD dwErrorCode)
 {
 	// Initialize action history info data to save logs
@@ -5106,15 +4782,12 @@ void CPowerPlusDlg::InitPwrActionHistoryInfo(UINT nActionID, BOOL bResult, DWORD
 	m_hidHistoryInfoData.SetErrorCode(dwErrorCode);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitScheduleHistoryInfo
-//	Description:	Initialize schedule history info data
-//  Arguments:		schItem - Schedule item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize schedule history info data
+ * @param	schItem - Schedule item
+ * @return	None
+ */
 void CPowerPlusDlg::InitScheduleHistoryInfo(const ScheduleItem& schItem)
 {
 	// Check item validity
@@ -5154,15 +4827,12 @@ void CPowerPlusDlg::InitScheduleHistoryInfo(const ScheduleItem& schItem)
 	m_hidHistoryInfoData.SetActionID(nActionID);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitHotkeyHistoryInfo
-//	Description:	Initialize hotkeyset history info data
-//  Arguments:		nHKID - Hotkey action ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize hotkeyset history info data
+ * @param	nHKID - Hotkey action ID
+ * @return	None
+ */
 void CPowerPlusDlg::InitHotkeyHistoryInfo(UINT nHKID)
 {
 	// Get HotkeySet item by ID
@@ -5213,15 +4883,12 @@ void CPowerPlusDlg::InitHotkeyHistoryInfo(UINT nHKID)
 	m_hidHistoryInfoData.SetDescription(keyStrokesString);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitPwrReminderHistoryInfo
-//	Description:	Initialize reminder displaying history info data
-//  Arguments:		pwrItem - Power Reminder item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize reminder displaying history info data
+ * @param	pwrItem - Power Reminder item
+ * @return	None
+ */
 void CPowerPlusDlg::InitPwrReminderHistoryInfo(const PwrReminderItem& pwrItem)
 {
 	// Check item validity
@@ -5233,15 +4900,12 @@ void CPowerPlusDlg::InitPwrReminderHistoryInfo(const PwrReminderItem& pwrItem)
 	m_hidHistoryInfoData.SetDescription(pwrItem.GetMessage());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveHistoryInfoData
-//	Description:	Save history info data log file
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Save history info data log file
+ * @param	None
+ * @return	None
+ */
 void CPowerPlusDlg::SaveHistoryInfoData(void)
 {
 	// If history info data is empty (not yet initialized), do nothing
@@ -5319,16 +4983,13 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 //////////////////////////////////////////////////////////////////////////
 // Notification and error message functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ConfirmActionExec
-//	Description:	Show confirmation message before executing action
-//  Arguments:		nActionType - Type of action
-//					nActionID	- ID of action
-//  Return value:	int	- Result of confirmation message
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show confirmation message before executing action
+ * @param	nActionType - Type of action
+ * @param	nActionID	- ID of action
+ * @return	int	- Result of confirmation message
+ */
 int CPowerPlusDlg::ConfirmActionExec(UINT nActionType, UINT nActionID)
 {
 	// If "Confirm action" option is not enabled, return YES
@@ -5358,16 +5019,13 @@ int CPowerPlusDlg::ConfirmActionExec(UINT nActionType, UINT nActionID)
 	return nResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	NotifySchedule
-//	Description:	Notify schedule if enabled
-//  Arguments:		pschItem  - Schedule item to notify (pointer)
-//					bReupdate - Trigger reupdate flag (out)
-//  Return value:	int - Result of notify message
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Notify schedule if enabled
+ * @param	pschItem  - Schedule item to notify (pointer)
+ * @param	bReupdate - Trigger reupdate flag (out)
+ * @return	int - Result of notify message
+ */
 int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, BOOL& bReupdate)
 {
 	// Do not notify if schedule action is "Do nothing"
@@ -5423,15 +5081,12 @@ int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, BOOL& bReupdate)
 	return DisplayMessageBox(messageContent, messageCaption, MB_OK | MB_ICONINFORMATION);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ShowErrorMessage
-//	Description:	Show error message if enabled
-//  Arguments:		dwError - Error code
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show error message if enabled
+ * @param	dwError - Error code
+ * @return	None
+ */
 void CPowerPlusDlg::ShowErrorMessage(DWORD dwError)
 {
 	// If option is not enabled, do nothing
@@ -5448,16 +5103,13 @@ void CPowerPlusDlg::ShowErrorMessage(DWORD dwError)
 	AppCore::ShowErrorMessage(hWnd, nCurLang, dwError);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestRestartApp
-//	Description:	Request to restart the application
-//	Arguments:		uiCmdSenderID	- ID of command which sends request
-//					bRestartAsAdmin - Restart as admin???
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Request to restart the application
+	Arguments:		uiCmdSenderID	- ID of command which sends request
+					bRestartAsAdmin - Restart as admin???
+ * @return	None
+ */
 void CPowerPlusDlg::RequestRestartApp(UINT uiCmdSenderID, BOOL bRestartAsAdmin)
 {
 	// Init request data
@@ -5506,15 +5158,12 @@ void CPowerPlusDlg::RequestRestartApp(UINT uiCmdSenderID, BOOL bRestartAsAdmin)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestRestartAsAdmin
-//	Description:	Request to restart the application as admin
-//	Arguments:		reqRestart - Request to restart
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Request to restart the application as admin
+	Arguments:		reqRestart - Request to restart
+ * @return	None
+ */
 void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 {
 	// If there's no request, do nothing

@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		DebugTestDlg.h
-//		Description:	Header file for DebugTest dialog
-//		Owner:			AnthonyLeeStark
-// 
-//		History:		<0> 2024.07.13:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		DebugTestDlg.h
+ * @brief		Header file for DebugTest dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.07.13
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -18,12 +14,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
-//
-//	CDebugTestDlg dialog used for DebugTest dialog
-//
-////////////////////////////////////////////////////////
-
+// DebugTest dialog class
 class CDebugTestDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CDebugTestDlg)

@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Global.inl
-//		Description:	Implement definition of global inline functions which will be used everywhere in program
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.05.29:		Create new for version 3.2
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Global.inl
+ * @brief		Implement definition of global inline functions which will be used everywhere in program
+ * @author		AnthonyLeeStark
+ * @date		2024.05.29
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 

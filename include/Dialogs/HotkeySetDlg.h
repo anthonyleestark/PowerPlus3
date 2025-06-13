@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		HotkeySetDlg.h
-//		Description:	Header file for HotkeySet dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.05.01:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		HotkeySetDlg.h
+ * @brief		Header file for HotkeySet dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.05.01
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -23,12 +17,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
-//
-//	CHotkeySetDlg dialog used for HotkeySet function
-//
-////////////////////////////////////////////////////////
-
+// HotkeySet dialog class
 class CHotkeySetDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CHotkeySetDlg)

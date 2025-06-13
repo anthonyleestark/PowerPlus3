@@ -1,18 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Serialization.h
-//		Description:	Define necessary methods to read/write, load/save configurations
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.02.03:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//						<3> 2025.06.03:		Rename from Config to Serialization
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Serialization.h
+ * @brief		Define necessary methods to read/write, load/save configurations
+ * @author		AnthonyLeeStark
+ * @date		2024.02.03
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -20,23 +13,10 @@
 #include "AppCore/Serialization_defs.h"
 
 
-/////////////////////////////////////
-
-//// Declarations
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Functions using for reading/writing registry values
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// Functions using for reading/writing registry values
 namespace AppRegistry
 {
-	//////////////////////////////////////////////////////////////////////////
-	//
-	//	Base functions for reading/writing registry values
-	//
-	//////////////////////////////////////////////////////////////////////////
+	/*----------------- Base functions for reading/writing registry values ----------------*/
 	
 	// Read/write registry values (integer) with nested subsection
 	UINT GetRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName);
@@ -50,11 +30,8 @@ namespace AppRegistry
 	BOOL DeleteRegistrySection(const wchar_t* sectionName, const wchar_t* subSectionName = NULL);
 
 
-	//////////////////////////////////////////////////////////////////////////
-	//
-	//	Functions for reading/writing application profile info
-	//
-	//////////////////////////////////////////////////////////////////////////
+	/*--------------- Functions for reading/writing application profile info ---------------*/
+
 
 	// Read/write registry profile info values
 	BOOL GetProfileInfo(const wchar_t* keyName, int& nRef);
@@ -63,11 +40,8 @@ namespace AppRegistry
 	BOOL WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueString);
 
 
-	//////////////////////////////////////////////////////////////////////////
-	//
-	//	Derivered functions for reading/writing each data type
-	//
-	//////////////////////////////////////////////////////////////////////////
+	/*--------------- Derivered functions for reading/writing each data type ---------------*/
+
 
 	// Read/write registry config values
 	BOOL GetConfig(const wchar_t* keyName, int& nRef);
@@ -140,13 +114,7 @@ namespace AppRegistry
 };
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:	 BackupSystem
-//  Description: Using for configuration and data backup system
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Using for configuration and data backup system
 class BackupSystem
 {
 public:

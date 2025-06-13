@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		HotkeySetDlg.cpp
-//		Description:	Source file for HotkeySet dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.05.01:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		HotkeySetDlg.cpp
+ * @brief		Source file for HotkeySet dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.05.01
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "MainApp/PowerPlus.h"
 #include "MainApp/PowerPlusDlg.h"
@@ -32,21 +26,14 @@ constexpr const int fixedColumnNum = 0;
 constexpr const int fixedRowNum = 1;
 constexpr const int startRowIndex = 1;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CHotkeySetDlg
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Implement methods for CHotkeySetDlg
 IMPLEMENT_DYNAMIC(CHotkeySetDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CHotkeySetDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CHotkeySetDlg::CHotkeySetDlg(CWnd* pParent /*=nullptr*/)
 	: SDialog(IDD_HOTKEYSET_DLG, pParent)
 {
@@ -74,13 +61,9 @@ CHotkeySetDlg::CHotkeySetDlg(CWnd* pParent /*=nullptr*/)
 	m_nCurSelIndex = -1;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CHotkeySetDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CHotkeySetDlg::~CHotkeySetDlg()
 {
 	// Data item list control
@@ -104,13 +87,9 @@ CHotkeySetDlg::~CHotkeySetDlg()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CHotkeySetDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -121,15 +100,11 @@ void CHotkeySetDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_HOTKEYSET_WINKEY_CHK, m_bWinKeyBtn);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterDialogManagement
-//	Description:	Register dialog control management
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register dialog control management
+ * @param	None
+ * @return	int
+ */
 int CHotkeySetDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
@@ -166,15 +141,11 @@ int CHotkeySetDlg::RegisterDialogManagement(void)
 	return nRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UnregisterDialogManagement
-//	Description:	Unregister dialog control management
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Unregister dialog control management
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CHotkeySetDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
@@ -260,15 +231,11 @@ END_MESSAGE_MAP()
 
 // HotkeySetDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize HotkeySet dialog and setup dialog content
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize HotkeySet dialog and setup dialog content
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CHotkeySetDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -307,15 +274,11 @@ BOOL CHotkeySetDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Default method for dialog closing
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog closing
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnClose()
 {
 	// If not forced closing by request
@@ -338,15 +301,11 @@ void CHotkeySetDlg::OnClose()
 	SDialog::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Default method for dialog destroying
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog destroying
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnDestroy()
 {
 	// Save app event log if enabled
@@ -360,15 +319,11 @@ void CHotkeySetDlg::OnDestroy()
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnApply
-//	Description:	Handle click event for [Apply] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Apply] button
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnApply()
 {
 	// Save app event log if enabled
@@ -386,15 +341,11 @@ void CHotkeySetDlg::OnApply()
 	SDialog::OnOK();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCancel
-//	Description:	Handle click event for [Cancel] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Cancel] button
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnCancel()
 {
 	// If not forced closing by request
@@ -420,15 +371,11 @@ void CHotkeySetDlg::OnCancel()
 	SDialog::OnCancel();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnAdd
-//	Description:	Handle click event for [Add] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Add] button
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnAdd()
 {
 	// Save app event log if enabled
@@ -441,15 +388,11 @@ void CHotkeySetDlg::OnAdd()
 	RedrawHotkeySetTable();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRemove
-//	Description:	Handle click event for [Remove] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Remove] button
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnRemove()
 {
 	// Save app event log if enabled
@@ -477,15 +420,11 @@ void CHotkeySetDlg::OnRemove()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRemoveAll
-//	Description:	Handle click event for [Remove All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Remove All] button
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnRemoveAll()
 {
 	// Save app event log if enabled
@@ -507,15 +446,11 @@ void CHotkeySetDlg::OnRemoveAll()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCheckAll
-//	Description:	Handle click event for [Check All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Check All] button
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnCheckAll()
 {
 	// Save app event log if enabled
@@ -529,15 +464,11 @@ void CHotkeySetDlg::OnCheckAll()
 	SwitchAllItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnUncheckAll
-//	Description:	Handle click event for [Uncheck All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Uncheck All] button
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnUncheckAll()
 {
 	// Save app event log if enabled
@@ -551,31 +482,23 @@ void CHotkeySetDlg::OnUncheckAll()
 	SwitchAllItemState(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnExport
-//	Description:	Handle click event for [Export] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Export] button
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::OnExport()
 {
 	// Save app event log if enabled
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_EXPORT_BTN);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSelectHotkeyItem
-//	Description:	Show hotkey details when selecting an item
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Show hotkey details when selecting an item
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
@@ -598,16 +521,12 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 	RefreshDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClickHotkeyList
-//	Description:	Handle click event on HotkeyList control
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event on HotkeyList control
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CHotkeySetDlg::OnClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Success (return 0)
@@ -617,16 +536,12 @@ void CHotkeySetDlg::OnClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	RefreshDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRightClickHotkeyList
-//	Description:	Handle right click event on HotkeyList control
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle right click event on HotkeyList control
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Success (return 0)
@@ -636,15 +551,11 @@ void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	RefreshDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestCloseDialog
-//	Description:	Request current dialog to close
-//  Arguments:		None
-//  Return value:	LRESULT (0:Success, else:Failed)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Request current dialog to close
+ * @param	None
+ * @return	LRESULT (0:Success, else:Failed)
+ */
 LRESULT CHotkeySetDlg::RequestCloseDialog(void)
 {
 	// Ask for saving before exiting if data changed
@@ -666,15 +577,11 @@ LRESULT CHotkeySetDlg::RequestCloseDialog(void)
 	return SDialog::RequestCloseDialog();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog items
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::SetupLanguage()
 {
 	// Load app language package
@@ -714,15 +621,11 @@ void CHotkeySetDlg::SetupLanguage()
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupHotkeySetList
-//	Description:	Initialize and setup language for HotkeySet list
-//  Arguments:		ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize and setup language for HotkeySet list
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Get parent list frame rect
@@ -789,15 +692,11 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pHotkeySetListTable->SetRedraw(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DrawHotkeySetTable
-//	Description:	Draw HotkeySet data list table
-//  Arguments:		bReadOnly - Read-only mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Draw HotkeySet data list table
+ * @param	bReadOnly - Read-only mode
+ * @return	None
+ */
 void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
@@ -933,16 +832,12 @@ void CHotkeySetDlg::DrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupComboBox
-//	Description:	Setup data for combo-boxes
-//  Arguments:		nComboID	- ID of combo box
-//					ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup data for combo-boxes
+ * @param	nComboID	- ID of combo box
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	switch (nComboID)
@@ -971,15 +866,11 @@ void CHotkeySetDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
 	SDialog::SetupComboBox(nComboID, ptrLanguage);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RefreshDialogItemState
-//	Description:	Refresh and update state for dialog items
-//  Arguments:		bRecheckState - Recheck all item's state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for dialog items
+ * @param	bRecheckState - Recheck all item's state
+ * @return	None
+ */
 void CHotkeySetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
 	// Enable/disable buttons if data is all empty or not
@@ -999,15 +890,11 @@ void CHotkeySetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	SDialog::RefreshDialogItemState(bRecheckState);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateCheckAllBtnState
-//	Description:	Refresh and update state for [Check/Uncheck All] button
-//  Arguments:		bRecheck - Flag to recheck data item list
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for [Check/Uncheck All] button
+ * @param	bRecheck - Flag to recheck data item list
+ * @return	None
+ */
 void CHotkeySetDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = TRUE */)
 {
 	// If dialog items are being locked, do nothing
@@ -1064,15 +951,11 @@ void CHotkeySetDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = TRUE */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateHotkeySet
-//	Description:	Update HotkeySet list
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update HotkeySet list
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::UpdateHotkeySet()
 {
 	// Check table validity
@@ -1118,15 +1001,11 @@ void CHotkeySetDlg::UpdateHotkeySet()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisableHotkeySetTable
-//	Description:	Disable mouse click events for HotkeySet data table
-//  Arguments:		bDisable - Disable/enable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Disable mouse click events for HotkeySet data table
+ * @param	bDisable - Disable/enable
+ * @return	None
+ */
 void CHotkeySetDlg::DisableHotkeySetTable(BOOL bDisable)
 {
 	// Redraw read-only style
@@ -1140,15 +1019,11 @@ void CHotkeySetDlg::DisableHotkeySetTable(BOOL bDisable)
 	m_pHotkeySetListTable->DisableMouseMove(bDisable);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RedrawHotkeySetTable
-//	Description:	Update and redraw HotkeySet data table
-//  Arguments:		BOOL bReadOnly - Read-only mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update and redraw HotkeySet data table
+ * @param	BOOL bReadOnly - Read-only mode
+ * @return	None
+ */
 void CHotkeySetDlg::RedrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
@@ -1168,15 +1043,11 @@ void CHotkeySetDlg::RedrawHotkeySetTable(BOOL bReadOnly /* = FALSE */)
 	m_pHotkeySetListTable->RedrawWindow();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayHotkeyDetails
-//	Description:	Display details of an item at specified index
-//  Arguments:		nIndex - Index of item to display
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Display details of an item at specified index
+ * @param	nIndex - Index of item to display
+ * @return	None
+ */
 void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 {
 	// Reset default control states
@@ -1217,15 +1088,11 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 	UpdateData(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateLayoutInfo
-//	Description:	Update layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update layout info data
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::UpdateLayoutInfo(void)
 {
 	// Check table validity
@@ -1244,15 +1111,11 @@ void CHotkeySetDlg::UpdateLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadLayoutInfo
-//	Description:	Load layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load layout info data
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::LoadLayoutInfo(void)
 {
 	// Define default table columns format
@@ -1289,15 +1152,11 @@ void CHotkeySetDlg::LoadLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveLayoutInfo
-//	Description:	Save layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save layout info data
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::SaveLayoutInfo(void)
 {
 	// Check table column format data validity
@@ -1313,15 +1172,11 @@ void CHotkeySetDlg::SaveLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadHotkeySetData
-//	Description:	Load hotkeyset data
-//  Arguments:		None
-//  Return value:	BOOL - Result of loading process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load hotkeyset data
+ * @param	None
+ * @return	BOOL - Result of loading process
+ */
 BOOL CHotkeySetDlg::LoadHotkeySetData()
 {
 	// Get app hotkeyset data pointer
@@ -1341,15 +1196,11 @@ BOOL CHotkeySetDlg::LoadHotkeySetData()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveHotkeySetData
-//	Description:	Save hotkeyset data
-//  Arguments:		None
-//  Return value:	BOOL - Result of saving process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save hotkeyset data
+ * @param	None
+ * @return	BOOL - Result of saving process
+ */
 BOOL CHotkeySetDlg::SaveHotkeySetData()
 {
 	// Copy data and adjust validity
@@ -1375,15 +1226,11 @@ BOOL CHotkeySetDlg::SaveHotkeySetData()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckDataChangeState
-//	Description:	Check if settings changed
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check if settings changed
+ * @param	None
+ * @return	None
+ */
 BOOL CHotkeySetDlg::CheckDataChangeState()
 {
 	BOOL bChangeFlag = FALSE;
@@ -1427,15 +1274,11 @@ BOOL CHotkeySetDlg::CheckDataChangeState()
 	return bChangeFlag;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Add
-//	Description:	Add current settings to HotkeySet data list
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add current settings to HotkeySet data list
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::Add(void)
 {
 	// Update data
@@ -1476,15 +1319,11 @@ void CHotkeySetDlg::Add(void)
 	RefreshDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Remove
-//	Description:	Remove a HotkeySet item by index
-//  Arguments:		nIndex - Index of item to remove
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove a HotkeySet item by index
+ * @param	nIndex - Index of item to remove
+ * @return	None
+ */
 void CHotkeySetDlg::Remove(int nIndex)
 {
 	// Remove item at index
@@ -1494,15 +1333,11 @@ void CHotkeySetDlg::Remove(int nIndex)
 	RefreshDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all HotkeySet items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove all HotkeySet items
+ * @param	None
+ * @return	None
+ */
 void CHotkeySetDlg::RemoveAll(void)
 {
 	// Remove all items
@@ -1512,15 +1347,11 @@ void CHotkeySetDlg::RemoveAll(void)
 	RefreshDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SwitchAllItemState
-//	Description:	Check/uncheck all HotkeySet items
-//  Arguments:		bState - New state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check/uncheck all HotkeySet items
+ * @param	bState - New state
+ * @return	None
+ */
 void CHotkeySetDlg::SwitchAllItemState(BOOL bState)
 {
 	// Check/uncheck all --> Update all item enable state
@@ -1539,16 +1370,12 @@ void CHotkeySetDlg::SwitchAllItemState(BOOL bState)
 	RefreshDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Validate
-//	Description:	Check hotkeyset item validity
-//  Arguments:		hksItem  - Item to validate
-//					bShowMsg - Show validation message box or not
-//  Return value:	BOOL - Result of validation process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check hotkeyset item validity
+ * @param	hksItem  - Item to validate
+ * @param	bShowMsg - Show validation message box or not
+ * @return	BOOL - Result of validation process
+ */
 BOOL CHotkeySetDlg::Validate(const Item& hksItem, BOOL bShowMsg /* = FALSE */)
 {
 	BOOL bResult = TRUE;

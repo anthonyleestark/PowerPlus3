@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		RmdRepeatSetDlg.cpp
-//		Description:	Source file for Reminder message repeat mode set dialog
-//		Owner:			AnthonyLeeStark
-// 
-//		History:		<0> 2024.10.02:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		RmdRepeatSetDlg.cpp
+ * @brief		Source file for Reminder message repeat mode set dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.10.02
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "MainApp/PowerPlus.h"
 #include "Dialogs/RmdRepeatSetDlg.h"
@@ -28,21 +23,13 @@ constexpr const int defaultWidth = 320;
 constexpr const int defaultHeight = 240;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CRmdRepeatSetDlg
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for CRmdRepeatSetDlg
 IMPLEMENT_DYNAMIC(CRmdRepeatSetDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CRmdRepeatSetDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CRmdRepeatSetDlg::CRmdRepeatSetDlg() : SDialog(IDD_RMDREPEATSET_DLG)
 {
 	// Dialog control
@@ -63,24 +50,16 @@ CRmdRepeatSetDlg::CRmdRepeatSetDlg() : SDialog(IDD_RMDREPEATSET_DLG)
 	m_nSnoozeInterval = 0;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CRmdRepeatSetDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CRmdRepeatSetDlg::~CRmdRepeatSetDlg()
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CRmdRepeatSetDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -106,15 +85,11 @@ END_MESSAGE_MAP()
 
 // CRmdRepeatSetDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize Reminder repeat set dialog
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize Reminder repeat set dialog
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CRmdRepeatSetDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -128,30 +103,22 @@ BOOL CRmdRepeatSetDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Destroy dialog
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destroy dialog
+ * @param	None
+ * @return	None
+ */
 void CRmdRepeatSetDlg::OnDestroy()
 {
 	// Destroy dialog
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnActivate
-//	Description:	Default method for dialog activate message handling
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog activate message handling
+ * @param	Default
+ * @return	None
+ */
 void CRmdRepeatSetDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {
 	// Default
@@ -164,16 +131,12 @@ void CRmdRepeatSetDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSnoozeSpinChange
-//	Description:	Update when snooze spin value changes
-//  Arguments:		pNMDHR  - Default of spin event handler
-//					pResult - Default of spin event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update when snooze spin value changes
+ * @param	pNMDHR  - Default of spin event handler
+ * @param	pResult - Default of spin event handler
+ * @return	None
+ */
 void CRmdRepeatSetDlg::OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
@@ -190,29 +153,21 @@ void CRmdRepeatSetDlg::OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCheckboxClicked
-//	Description:	Handle clicked event for checkbox-es
-//  Arguments:		nID - ID of checkbox
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicked event for checkbox-es
+ * @param	nID - ID of checkbox
+ * @return	None
+ */
 void CRmdRepeatSetDlg::OnCheckboxClicked(UINT /*nID*/)
 {
 	RefreshDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog controls
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog controls
+ * @param	None
+ * @return	None
+ */
 void CRmdRepeatSetDlg::SetupLanguage()
 {
 	// Load app language package
@@ -243,15 +198,11 @@ void CRmdRepeatSetDlg::SetupLanguage()
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupDialogItemState
-//	Description:	Setup properties and values for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup properties and values for dialog items
+ * @param	None
+ * @return	None
+ */
 void CRmdRepeatSetDlg::SetupDialogItemState()
 {
 	// Initialize dialog items
@@ -368,15 +319,11 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
 	SDialog::SetupDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RefreshDialogItemState
-//	Description:	Refresh and update state for dialog items
-//  Arguments:		bRecheckState - Recheck all item's state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for dialog items
+ * @param	bRecheckState - Recheck all item's state
+ * @return	None
+ */
 void CRmdRepeatSetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
 	int nRepeatState = INT_NULL;
@@ -434,15 +381,11 @@ void CRmdRepeatSetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	SDialog::RefreshDialogItemState(bRecheckState);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetSnoozeIntervalEdit
-//	Description:	Set value to snooze interval edit control
-//  Arguments:		nValue - Value to set (in minutes)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set value to snooze interval edit control
+ * @param	nValue - Value to set (in minutes)
+ * @return	None
+ */
 void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 {
 	// Load app language package
@@ -471,16 +414,12 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateDialogData
-//	Description:	Update repeat set data from/to dialog controls
-//  Arguments:		pwrItemData - Power Reminder item
-//					bUpdate		- Update data flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update repeat set data from/to dialog controls
+ * @param	pwrItemData - Power Reminder item
+ * @param	bUpdate		- Update data flag
+ * @return	None
+ */
 void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpdate)
 {
 	// Get repeat set data
@@ -493,7 +432,6 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpda
 		/*				Update data from dialog controls			   */
 		/*															   */
 		/***************************************************************/
-
 		// Repeat enable
 		int nState = 0;
 		if (m_pRepeatEnableChk != NULL) {
@@ -575,7 +513,6 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpda
 		/*				  Bind data to dialog controls				   */
 		/*															   */
 		/***************************************************************/
-
 		int nState = 0;
 
 		// Repeat enable

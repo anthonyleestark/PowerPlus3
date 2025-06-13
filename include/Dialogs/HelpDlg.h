@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		HelpDlg.h
-//		Description:	Header file for Help dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.03.12:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//						<2> 2025.03.06:		Split from AboutDlg.h
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		HelpDlg.h
+ * @brief		Header file for Help dialog
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -22,12 +16,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
-//
-//	CHelpDlg dialog used for App Help
-//
-////////////////////////////////////////////////////////
-
+// Help dialog class
 class CHelpDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CHelpDlg)

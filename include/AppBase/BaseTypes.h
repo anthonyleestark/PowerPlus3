@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		BaseTypes.h
-//		Description:	Declare very basic and utility data types for application
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2025.06.04:		Create new
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		BaseTypes.h
+ * @brief		Declare very basic and utility data types for application
+ * @author		AnthonyLeeStark
+ * @date		2025.06.04
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 

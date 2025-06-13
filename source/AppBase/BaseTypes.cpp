@@ -1,22 +1,14 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		BaseTypes.cpp
-//		Description:	Implementations of very basic and utility data types for application
-//		Owner:			AnthonyLeeStark
-//		Notes:			Do not add function descriptions in this file
-//		
-//		History:		<0> 2025.06.04:		Create new
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		BaseTypes.cpp
+ * @brief		Implementations of very basic and utility data types for application
+ * @author		AnthonyLeeStark
+ * @date		2025.06.04
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "AppBase/BaseTypes.h"
 
-
-/////////////////////////////////////////
-// Implementation
 
 // Format string
 String& String::FormatV(const wchar_t* formatStr, va_list vargs)

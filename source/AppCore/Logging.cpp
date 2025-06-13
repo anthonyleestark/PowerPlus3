@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Logging.cpp
-//		Description:	Implement necessary methods to read/write app logs
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.02.22:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Logging.cpp
+ * @brief		Implement necessary methods to read/write app logs
+ * @author		AnthonyLeeStark
+ * @date		2024.02.22
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "AppCore/Logging.h"
 
@@ -24,20 +18,11 @@ using namespace Language;
 using namespace AppCore;
 
 
-///////////////////////////////////////////////////////
-
-//// Implementations
-
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetSizeByType
-//	Description:	Get size of data by data type
-//  Arguments:		byDataType - Data type
-//  Return value:	SIZE_T
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get size of data by data type
+ * @param	byDataType - Data type
+ * @return	SIZE_T
+ */
 SIZE_T GetSizeByType(BYTE byDataType)
 {
 	SIZE_T retSize = 0;
@@ -91,13 +76,9 @@ SIZE_T GetSizeByType(BYTE byDataType)
 	return retSize;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LogDetail
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 LogDetail::LogDetail()
 {
 	// Initialization
@@ -116,15 +97,11 @@ LogDetail::LogDetail(const LogDetail& pItem)
 	this->Copy(pItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		Default
-//  Return value:	LogDetail&
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy assignment operator
+ * @param	Default
+ * @return	LogDetail&
+ */
 LogDetail& LogDetail::operator=(const LogDetail& pItem)
 {
 	// Copy data
@@ -132,15 +109,11 @@ LogDetail& LogDetail::operator=(const LogDetail& pItem)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Init
-//	Description:	Initialize/reset item data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize/reset item data
+ * @param	None
+ * @return	None
+ */
 void LogDetail::Init()
 {
 	// Initialization
@@ -153,15 +126,11 @@ void LogDetail::Init()
 	m_szPointerSize = INT_NULL;								// Detail info pointer data sizesize
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy data from another item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void LogDetail::Copy(const LogDetail& pItem)
 {
 	// Do not copy itself
@@ -175,15 +144,11 @@ void LogDetail::Copy(const LogDetail& pItem)
 	PointerCopy(pItem);										// Detail data (pointer)
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PointerCopy
-//	Description:	Copy detail info pointer
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy detail info pointer
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void LogDetail::PointerCopy(const LogDetail& pItem)
 {
 	// Copy pointer properties
@@ -194,15 +159,11 @@ void LogDetail::PointerCopy(const LogDetail& pItem)
 	memcpy(m_ptrDetailData, pItem.m_ptrDetailData, pItem.m_szPointerSize);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare with another given item
-//  Arguments:		pItem - Pointer of given item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Compare with another given item
+ * @param	pItem - Pointer of given item
+ * @return	TRUE/FALSE
+ */
 BOOL LogDetail::Compare(const LogDetail& pItem) const
 {
 	BOOL bRet = FALSE;
@@ -217,15 +178,11 @@ BOOL LogDetail::Compare(const LogDetail& pItem) const
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PointerCompare
-//	Description:	Compare detail info pointers
-//  Arguments:		pItem - Pointer of given item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Compare detail info pointers
+ * @param	pItem - Pointer of given item
+ * @return	TRUE/FALSE
+ */
 BOOL LogDetail::PointerCompare(const LogDetail& pItem) const
 {
 	BOOL bRet = FALSE;
@@ -242,15 +199,11 @@ BOOL LogDetail::PointerCompare(const LogDetail& pItem) const
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsEmpty
-//	Description:	Check if current detail info data is empty
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check if current detail info data is empty
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL LogDetail::IsEmpty(void) const
 {
 	// Initialize empty detail info
@@ -260,17 +213,13 @@ BOOL LogDetail::IsEmpty(void) const
 	return this->Compare(logDummyDetail);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetPointerData
-//	Description:	Set detail info pointer data
-//  Arguments:		pDataBuff	- Data buffer (pointer)
-//					byDataType	- Data type
-//					szDataSize	- Data size
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set detail info pointer data
+ * @param	pDataBuff	- Data buffer (pointer)
+ * @param	byDataType	- Data type
+ * @param	szDataSize	- Data size
+ * @return	TRUE/FALSE
+ */
 BOOL LogDetail::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_UNSPECIFIED */, SIZE_T szDataSize /* = 0 */)
 {
 	// If data type is void (unusable), do nothing
@@ -298,13 +247,9 @@ BOOL LogDetail::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_U
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LogDetailInfo
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 LogDetailInfo::LogDetailInfo() : LOGDETAILARRAY()
 {
 	// Initialization
@@ -317,15 +262,11 @@ LogDetailInfo::LogDetailInfo(const LogDetailInfo& pData)
 	this->CopyData(pData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		Default
-//  Return value:	LogDetailInfo&
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy assignment operator
+ * @param	Default
+ * @return	LogDetailInfo&
+ */
 LogDetailInfo& LogDetailInfo::operator=(const LogDetailInfo& pData)
 {
 	// Copy data
@@ -333,30 +274,22 @@ LogDetailInfo& LogDetailInfo::operator=(const LogDetailInfo& pData)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Init
-//	Description:	Initialize/reset data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize/reset data
+ * @param	None
+ * @return	None
+ */
 void LogDetailInfo::Init(void)
 {
 	// Reset data
 	this->clear();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CopyData
-//	Description:	Copy data from another log detail info data
-//  Arguments:		pData - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy data from another log detail info data
+ * @param	pData - Pointer of input item
+ * @return	None
+ */
 void LogDetailInfo::CopyData(const LogDetailInfo& pData)
 {
 	// Remove all data first
@@ -366,19 +299,15 @@ void LogDetailInfo::CopyData(const LogDetailInfo& pData)
 	this->assign(pData.begin(), pData.end());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddDetail
-//	Description:	Add log detail info item
-//  Arguments:		logDetail	  - Log detail item
-//					usCategory	  - Detail category
-//					nDetailInfo	  - Detail info (integer)
-//					detailInfo	  - Detail info (string)
-//					nFlag		  - Detail flag
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add log detail info item
+ * @param	logDetail	  - Log detail item
+ * @param	usCategory	  - Detail category
+ * @param	nDetailInfo	  - Detail info (integer)
+ * @param	detailInfo	  - Detail info (string)
+ * @param	nFlag		  - Detail flag
+ * @return	None
+ */
 void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
@@ -416,13 +345,9 @@ void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, const wchar_t*
 	this->AddDetail(logDetail);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LogItem
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 LogItem::LogItem()
 {
 	// Initialization
@@ -439,15 +364,11 @@ LogItem::LogItem(const LogItem& pItem)
 	this->Copy(pItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		Default
-//  Return value:	LogItem&
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy assignment operator
+ * @param	Default
+ * @return	LogItem&
+ */
 LogItem& LogItem::operator=(const LogItem& pItem)
 {
 	// Copy data
@@ -455,15 +376,11 @@ LogItem& LogItem::operator=(const LogItem& pItem)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another log item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy data from another log item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void LogItem::Copy(const LogItem& pItem)
 {
 	// Copy data
@@ -474,15 +391,11 @@ void LogItem::Copy(const LogItem& pItem)
 	m_arrDetailInfo = pItem.m_arrDetailInfo;				// Log detail info
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare with another given item
-//  Arguments:		pItem - Pointer of given item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Compare with another given item
+ * @param	pItem - Pointer of given item
+ * @return	TRUE/FALSE
+ */
 BOOL LogItem::Compare(const LogItem& pItem) const
 {
 	BOOL bRet = FALSE;
@@ -511,15 +424,11 @@ BOOL LogItem::Compare(const LogItem& pItem) const
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsEmpty
-//	Description:	Check if current log item is empty
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check if current log item is empty
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL LogItem::IsEmpty(void) const
 {
 	// Initialize an empty item
@@ -529,15 +438,11 @@ BOOL LogItem::IsEmpty(void) const
 	return this->Compare(logDummyItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all log item data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove all log item data
+ * @param	None
+ * @return	None
+ */
 void LogItem::RemoveAll(void)
 {
 	// Reset data
@@ -550,15 +455,11 @@ void LogItem::RemoveAll(void)
 	this->RemoveDetailInfo();									// Log detail info
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FormatDateTime
-//	Description:	Return a formatted logitem date/time string
-//  Arguments:		None
-//  Return value:	String - Formatted result
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return a formatted logitem date/time string
+ * @param	None
+ * @return	String - Formatted result
+ */
 String LogItem::FormatDateTime(void) const
 {
 	const wchar_t* middayFlag = (m_stTime.Hour() >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
@@ -569,15 +470,11 @@ String LogItem::FormatDateTime(void) const
 	return timeFormatString;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FormatOutput
-//	Description:	Return formatted output log string for file writing
-//  Arguments:		None
-//  Return value:	String - Formatted result
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return formatted output log string for file writing
+ * @param	None
+ * @return	String - Formatted result
+ */
 String LogItem::FormatOutput(void) const
 {
 	// Create JSON data object
@@ -594,7 +491,6 @@ String LogItem::FormatOutput(void) const
 	/*			  Convert log item base info into JSON data				 */
 	/*																	 */
 	/*********************************************************************/
-
 	// Log time
 	logKey = GetString(StringTable::LogKey, BaseLog::Time);
 	jsonData.AddString(logKey, FormatDateTime());
@@ -617,7 +513,6 @@ String LogItem::FormatOutput(void) const
 	/*		  Convert log item detail info data into JSON data			 */
 	/*																	 */
 	/*********************************************************************/
-
 	// Log detail info
 	if (!m_arrDetailInfo.empty()) {
 
@@ -680,7 +575,6 @@ String LogItem::FormatOutput(void) const
 	/*				  Output JSON data under YAML format				 */
 	/*																	 */
 	/*********************************************************************/
-
 	String logYAMLFormat;
 	jsonData.PrintYAML(logYAMLFormat, 0);
 	logYAMLFormat.Append(Constant::String::NewLine);
@@ -688,13 +582,9 @@ String LogItem::FormatOutput(void) const
 	return logYAMLFormat;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	JSON
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 JSON::JSON()
 {
 	// Initialization
@@ -710,28 +600,20 @@ JSON::JSON(const JSON& pObj)
 	this->Copy(pObj);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~JSON
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 JSON::~JSON()
 {
 	// Remove all data and clean-up
 	this->RemoveAll();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		Default
-//  Return value:	JSON&
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy assignment operator
+ * @param	Default
+ * @return	JSON&
+ */
 JSON& JSON::operator=(const JSON& pObj)
 {
 	// Copy data
@@ -739,15 +621,11 @@ JSON& JSON::operator=(const JSON& pObj)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another JSON object
-//  Arguments:		pObj - Pointer of input object
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy data from another JSON object
+ * @param	pObj - Pointer of input object
+ * @return	None
+ */
 void JSON::Copy(const JSON& pObj)
 {
 	// Do not copy itself
@@ -759,15 +637,11 @@ void JSON::Copy(const JSON& pObj)
 	this->CopyPtrData(pObj);						// Child object (pointer) data
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CopyArrayData
-//	Description:	Copy object array data from another JSON object
-//  Arguments:		pObj - Pointer of input object
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy object array data from another JSON object
+ * @param	pObj - Pointer of input object
+ * @return	None
+ */
 void JSON::CopyArrayData(const JSON& pObj)
 {
 	// Remove all existing array data
@@ -782,15 +656,11 @@ void JSON::CopyArrayData(const JSON& pObj)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CopyPtrData
-//	Description:	Copy object pointer data from another JSON object
-//  Arguments:		pObj - Pointer of input object
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy object pointer data from another JSON object
+ * @param	pObj - Pointer of input object
+ * @return	None
+ */
 void JSON::CopyPtrData(const JSON& pObj)
 {
 	// Number of child objects
@@ -832,15 +702,11 @@ void JSON::CopyPtrData(const JSON& pObj)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare with another given object
-//  Arguments:		pObj - Pointer of given object
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Compare with another given object
+ * @param	pObj - Pointer of given object
+ * @return	TRUE/FALSE
+ */
 BOOL JSON::Compare(const JSON& pObj) const
 {
 	BOOL bRet = FALSE;
@@ -894,15 +760,11 @@ BOOL JSON::Compare(const JSON& pObj) const
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsEmpty
-//	Description:	Check if current JSON object is empty
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check if current JSON object is empty
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL JSON::IsEmpty(void) const
 {
 	// Initialize an empty item
@@ -912,15 +774,11 @@ BOOL JSON::IsEmpty(void) const
 	return this->Compare(jsonDummyItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveProperty
-//	Description:	Remove property by its key name
-//  Arguments:		keyName - Key name
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove property by its key name
+ * @param	keyName - Key name
+ * @return	None
+ */
 void JSON::RemoveProperty(const wchar_t* keyName)
 {
 	// If property data is empty, do nothing
@@ -940,15 +798,11 @@ void JSON::RemoveProperty(const wchar_t* keyName)
 	this->RemoveProperty(nFoundIndex);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all JSON object data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove all JSON object data
+ * @param	None
+ * @return	None
+ */
 void JSON::RemoveAll(void)
 {
 	// Reset data
@@ -972,17 +826,13 @@ void JSON::RemoveAll(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddString
-//	Description:	Add a string-typed key-value pair, update value if
-//					the given key name already existed
-//  Arguments:		keyName - Key name
-//					value	- String value
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add a string-typed key-value pair, update value if
+					the given key name already existed
+ * @param	keyName - Key name
+ * @param	value	- String value
+ * @return	None
+ */
 void JSON::AddString(const wchar_t* keyName, const wchar_t* value)
 {
 	// Search if key name already existed
@@ -999,17 +849,13 @@ void JSON::AddString(const wchar_t* keyName, const wchar_t* value)
 	this->m_arrKeyValuePairs.push_back({ keyName, value });
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddInteger
-//	Description:	Add an integer-typed key-value pair, update value if
-//					the given key name already existed
-//  Arguments:		keyName - Item name
-//					nValue	- Signed integer value
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add an integer-typed key-value pair, update value if
+					the given key name already existed
+ * @param	keyName - Item name
+ * @param	nValue	- Signed integer value
+ * @return	None
+ */
 void JSON::AddInteger(const wchar_t* keyName, INT nValue)
 {
 	// Convert integer to string
@@ -1019,17 +865,13 @@ void JSON::AddInteger(const wchar_t* keyName, INT nValue)
 	AddString(keyName, valueStr);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddFloat
-//	Description:	Add a float-typed key-value pair, update value if
-//					the given key name already existed
-//  Arguments:		keyName - Key name
-//					dbValue	- Float value
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add a float-typed key-value pair, update value if
+					the given key name already existed
+ * @param	keyName - Key name
+ * @param	dbValue	- Float value
+ * @return	None
+ */
 void JSON::AddFloat(const wchar_t* keyName, DOUBLE dbValue)
 {
 	// Convert float number to string
@@ -1039,15 +881,11 @@ void JSON::AddFloat(const wchar_t* keyName, DOUBLE dbValue)
 	AddString(keyName, valueStr);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddChildOject
-//	Description:	Add a child object
-//  Arguments:		pSrc - Source item data (pointer)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add a child object
+ * @param	pSrc - Source item data (pointer)
+ * @return	None
+ */
 void JSON::AddChildObject(JSON* pSrc)
 {
 	// Check for data validity
@@ -1085,18 +923,14 @@ void JSON::AddChildObject(JSON* pSrc)
 	this->m_nChildObjectCount++;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Print
-//	Description:	Print JSON object data with indentation
-//  Arguments:		outputString  - Output printed result string
-//					nIndent		  - Indentation
-//					bSeparator    - Whether to add a blank line as separator
-//					bMultiline    - Whether to print the data in multiple lines
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Print JSON object data with indentation
+ * @param	outputString  - Output printed result string
+ * @param	nIndent		  - Indentation
+ * @param	bSeparator    - Whether to add a blank line as separator
+ * @param	bMultiline    - Whether to print the data in multiple lines
+ * @return	None
+ */
 void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMultiline /* = TRUE */)
 {
 	// Empty output result string
@@ -1188,16 +1022,12 @@ void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMulti
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PrintYAML
-//	Description:	Print JSON object data in YAML format
-//  Arguments:		outputString  - Output printed result string
-//					nIndent		  - Indentation
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Print JSON object data in YAML format
+ * @param	outputString  - Output printed result string
+ * @param	nIndent		  - Indentation
+ * @return	None
+ */
 void JSON::PrintYAML(String& outputString, int nIndent)
 {
 	// Empty output result string
@@ -1238,13 +1068,9 @@ void JSON::PrintYAML(String& outputString, int nIndent)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SLogging
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 SLogging::SLogging(BYTE byLogType)
 {
 	// Log data array
@@ -1258,13 +1084,9 @@ SLogging::SLogging(BYTE byLogType)
 	m_pItemDefTemplate = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~SLogging
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 SLogging::~SLogging()
 {
 	// Clean up log data
@@ -1277,15 +1099,11 @@ SLogging::~SLogging()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetLogItem
-//	Description:	Return a specific log item of log list
-//  Arguments:		nIndex - Item index
-//  Return value:	LOGITEM - Return log item
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return a specific log item of log list
+ * @param	nIndex - Item index
+ * @return	LOGITEM - Return log item
+ */
 LOGITEM& SLogging::GetLogItem(int nIndex)
 {
 	// If current log data is empty
@@ -1330,15 +1148,11 @@ const LOGITEM& SLogging::GetLogItem(int nIndex) const
 	return m_arrLogData.at(nIndex);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Get/SetDefaultTemplate
-//	Description:	Get/set log default template
-//  Arguments:		logItemTemplate - Log item template
-//  Return value:	BYTE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get/set log default template
+ * @param	logItemTemplate - Log item template
+ * @return	BYTE
+ */
 void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
 {
 	// Initialize default template
@@ -1358,15 +1172,11 @@ void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputItem
-//	Description:	Add a log item into log data
-//  Arguments:		logItem	- Log item to write
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add a log item into log data
+ * @param	logItem	- Log item to write
+ * @return	None
+ */
 void SLogging::OutputItem(const LOGITEM& logItem)
 {
 	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
@@ -1387,16 +1197,12 @@ void SLogging::OutputItem(const LOGITEM& logItem)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputLogString
-//	Description:	Add a log string into log list data
-//  Arguments:		logString - Log string
-//					byType	  - Log type
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add a log string into log list data
+ * @param	logString - Log string
+ * @param	byType	  - Log type
+ * @return	None
+ */
 void SLogging::OutputString(const wchar_t* logString, BOOL bUseLastTemplate /* = TRUE */)
 {
 	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
@@ -1441,15 +1247,11 @@ void SLogging::OutputString(const wchar_t* logString, BOOL bUseLastTemplate /* =
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Write
-//	Description:	Write log data into the corresponding logfile
-//  Arguments:		None
-//  Return value:	BOOL - Result of log writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Write log data into the corresponding logfile
+ * @param	None
+ * @return	BOOL - Result of log writing process
+ */
 BOOL SLogging::Write(void)
 {
 	BOOL bResult = TRUE;
@@ -1577,16 +1379,12 @@ BOOL SLogging::Write(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Write
-//	Description:	Write log item instantly into logfile
-//  Arguments:		logItem	 - Log item to write
-//					filePath - Output log file path
-//  Return value:	BOOL - Result of log writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Write log item instantly into logfile
+ * @param	logItem	 - Log item to write
+ * @param	filePath - Output log file path
+ * @return	BOOL - Result of log writing process
+ */
 BOOL SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
 {
 	BOOL bResult = TRUE;
@@ -1673,15 +1471,11 @@ BOOL SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WriteInstantLog
-//	Description:	Write log string instantly into logfile
-//  Arguments:		logString - Log string
-//  Return value:	BOOL - Result of log writing process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Write log string instantly into logfile
+ * @param	logString - Log string
+ * @return	BOOL - Result of log writing process
+ */
 BOOL SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
 {
 	BOOL bResult = TRUE;

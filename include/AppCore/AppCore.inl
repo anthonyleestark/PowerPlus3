@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		AppCore.inl
-//		Description:	Implement definition of inline functions for the application core
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.26:		Create new for version 3.1
-//						<1> 2025.25.26:		Rename from PowerPlus.inl to AppCore.inl
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		AppCore.inl
+ * @brief		Implement definition of inline functions for the application core
+ * @author		AnthonyLeeStark
+ * @date		2024.07.26
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 

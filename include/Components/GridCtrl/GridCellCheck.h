@@ -1,15 +1,8 @@
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		GridCellCheck.h
-//		Description:	CGridCellCheck class header file
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.20:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file		GridCellCheck.h
+ * @brief		CGridCellCheck class header file
+ * @date		2024.07.20
+ */
 
 #if !defined(AFX_GRIDCELLCHECK_H__ECD42822_16DF_11D1_992F_895E185F9C72__INCLUDED_)
 #define AFX_GRIDCELLCHECK_H__ECD42822_16DF_11D1_992F_895E185F9C72__INCLUDED_

@@ -1,19 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		PowerPlus.h
-//		Description:	Header file for app class
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.03.12:		Create new
-//						<1> 2017.03.08:		Update to version 2.0
-//						<2> 2024.01.27:		Update to version 3.0
-//						<1> 2024.07.06:		Update to version 3.1
-//						<4> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		PowerPlus.h
+ * @brief		Header file for main application class
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -28,12 +20,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
-//
-//	CPowerPlusApp used for app
-//
-////////////////////////////////////////////////////////
-
+// Main application class
 class CPowerPlusApp : public SWinApp
 {
 public:
@@ -122,4 +109,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
+
+// The unique global application object
 extern CPowerPlusApp theApp;

@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		ReminderMsgDlg.h
-//		Description:	Header file for Reminder Message dialog
-//		Owner:			AnthonyLeeStark
-// 
-//		History:		<0> 2024.08.12:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		ReminderMsgDlg.h
+ * @brief		Header file for Reminder Message dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.08.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -19,12 +14,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
-//
-//	CReminderMsgDlg dialog used for Reminder Message
-//
-////////////////////////////////////////////////////////
-
+// Reminder message dialog class
 class CReminderMsgDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CReminderMsgDlg)

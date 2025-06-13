@@ -1,56 +1,40 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		MultiScheduleDlg.cpp
-//		Description:	Source file for Schedule dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2017.03.08:		Create new
-//						<1> 2024.01.27:		Update to version 3.0
-//						<2> 2024.07.06:		Update to version 3.1
-//						<3> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		MultiScheduleDlg.cpp
+ * @brief		Source file for Schedule dialog
+ * @author		AnthonyLeeStark
+ * @date		2017.03.08
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "MainApp/PowerPlus.h"
 #include "MainApp/PowerPlusDlg.h"
 #include "Dialogs/MultiScheduleDlg.h"
 #include "Dialogs/EditScheduleDlg.h"
-
+ 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
+ 
 using namespace MapTable;
 using namespace Language;
 using namespace AppCore;
 using namespace AppRegistry;
-
-
+ 
+ 
 // Data list table constants
 constexpr const int fixedColumnNum = 1;
 constexpr const int fixedRowNum = 1;
 constexpr const int defaultRowIndex = 1;
 constexpr const int extraStartRowIndex = 2;
 
-
-////////////////////////////////////////////////////////
-//
-//	Implement methods for CMultiScheduleDlg
-//
-////////////////////////////////////////////////////////
-
+// Implement methods for CMultiScheduleDlg
 IMPLEMENT_DYNAMIC(CMultiScheduleDlg, SDialog)
 
-////////////////////////////////////////////////////////
-// 
-//	Function name:	CMultiScheduleDlg
-//	Description:	Constructor
-//
-////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CMultiScheduleDlg::CMultiScheduleDlg() : SDialog(IDD_MULTISCHEDULE_DLG)
 {
 	// Initialize member variables
@@ -77,13 +61,9 @@ CMultiScheduleDlg::CMultiScheduleDlg() : SDialog(IDD_MULTISCHEDULE_DLG)
 	m_nCurDispIndex = -2;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CMultiScheduleDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CMultiScheduleDlg::~CMultiScheduleDlg()
 {
 	// Delete child dialog
@@ -115,27 +95,19 @@ CMultiScheduleDlg::~CMultiScheduleDlg()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CMultiScheduleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterDialogManagement
-//	Description:	Register dialog control management
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register dialog control management
+ * @param	None
+ * @return	int
+ */
 int CMultiScheduleDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
@@ -166,15 +138,11 @@ int CMultiScheduleDlg::RegisterDialogManagement(void)
 	return nRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UnregisterDialogManagement
-//	Description:	Unregister dialog control management
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Unregister dialog control management
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CMultiScheduleDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
@@ -250,15 +218,11 @@ END_MESSAGE_MAP()
 
 // CMultiScheduleDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize Schedule dialog and setup dialog content
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize Schedule dialog and setup dialog content
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CMultiScheduleDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -288,15 +252,11 @@ BOOL CMultiScheduleDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Default method for dialog closing
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog closing
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnClose()
 {
 	// If not forced closing by request
@@ -322,15 +282,11 @@ void CMultiScheduleDlg::OnClose()
 	SDialog::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Default method for dialog destroying
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog destroying
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnDestroy()
 {
 	// Save app event log if enabled
@@ -344,15 +300,11 @@ void CMultiScheduleDlg::OnDestroy()
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestCloseDialog
-//	Description:	Request current dialog to close
-//  Arguments:		None
-//  Return value:	LRESULT (0:Success, else:Failed)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Request current dialog to close
+ * @param	None
+ * @return	LRESULT (0:Success, else:Failed)
+ */
 LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 {
 	// If detail edit dialog is opening
@@ -385,15 +337,11 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 	return SDialog::RequestCloseDialog();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog items
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::SetupLanguage()
 {
 	// Load app language package
@@ -426,15 +374,11 @@ void CMultiScheduleDlg::SetupLanguage()
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupDataItemList
-//	Description:	Initialize and setup language for Schedule item list
-//  Arguments:		ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize and setup language for Schedule item list
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Get parent list frame rect
@@ -501,15 +445,11 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pDataItemListTable->SetRedraw(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DrawDataTable
-//	Description:	Draw Schedule data list table
-//  Arguments:		bReadOnly - Read-only mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Draw Schedule data list table
+ * @param	bReadOnly - Read-only mode
+ * @return	None
+ */
 void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
@@ -656,15 +596,11 @@ void CMultiScheduleDlg::DrawDataTable(BOOL bReadOnly /* = FALSE */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateLayoutInfo
-//	Description:	Update layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update layout info data
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::UpdateLayoutInfo(void)
 {
 	// Check table validity
@@ -683,15 +619,11 @@ void CMultiScheduleDlg::UpdateLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadLayoutInfo
-//	Description:	Load layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load layout info data
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::LoadLayoutInfo(void)
 {
 	// Define default table columns format
@@ -730,15 +662,11 @@ void CMultiScheduleDlg::LoadLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveLayoutInfo
-//	Description:	Save layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save layout info data
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::SaveLayoutInfo(void)
 {
 	// Check table column format data validity
@@ -754,15 +682,11 @@ void CMultiScheduleDlg::SaveLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupDialogItemState
-//	Description:	Setup properties and values for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup properties and values for dialog items
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::SetupDialogItemState()
 {
 	// Read-only mode (if enabled)
@@ -778,15 +702,11 @@ void CMultiScheduleDlg::SetupDialogItemState()
 	SDialog::SetupDialogItemState();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateDataItemList
-//	Description:	Update Schedule data item list table
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update Schedule data item list table
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::UpdateDataItemList()
 {
 	// Check table validity
@@ -849,15 +769,11 @@ void CMultiScheduleDlg::UpdateDataItemList()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisableDataTable
-//	Description:	Disable mouse click events for Schedule data table
-//  Arguments:		bDisable - Disable/enable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Disable mouse click events for Schedule data table
+ * @param	bDisable - Disable/enable
+ * @return	None
+ */
 void CMultiScheduleDlg::DisableDataTable(BOOL bDisable)
 {
 	// Redraw read-only style
@@ -871,15 +787,11 @@ void CMultiScheduleDlg::DisableDataTable(BOOL bDisable)
 	m_pDataItemListTable->DisableMouseMove(bDisable);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RedrawDataTable
-//	Description:	Update and redraw Schedule data table
-//  Arguments:		BOOL bReadOnly - Read-only mode
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update and redraw Schedule data table
+ * @param	BOOL bReadOnly - Read-only mode
+ * @return	None
+ */
 void CMultiScheduleDlg::RedrawDataTable(BOOL bReadOnly /* = FALSE */)
 {
 	// Check table validity
@@ -899,15 +811,11 @@ void CMultiScheduleDlg::RedrawDataTable(BOOL bReadOnly /* = FALSE */)
 	m_pDataItemListTable->RedrawWindow();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RefreshDialogItemState
-//	Description:	Refresh and update state for dialog items
-//  Arguments:		bRecheckState - Recheck all item's state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for dialog items
+ * @param	bRecheckState - Recheck all item's state
+ * @return	None
+ */
 void CMultiScheduleDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 {
 	CWnd* pBtn = NULL;
@@ -985,15 +893,11 @@ void CMultiScheduleDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 	SDialog::RefreshDialogItemState(bRecheckState);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateCheckAllBtnState
-//	Description:	Refresh and update state for [Check/Uncheck All] button
-//  Arguments:		bRecheck - Recheck all items enable state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for [Check/Uncheck All] button
+ * @param	bRecheck - Recheck all items enable state
+ * @return	None
+ */
 void CMultiScheduleDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = FALSE */)
 {
 	// If dialog items are being locked, do nothing
@@ -1055,15 +959,11 @@ void CMultiScheduleDlg::UpdateCheckAllBtnState(BOOL bRecheck /* = FALSE */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadScheduleSettings
-//	Description:	Load schedule settings from configurations
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load schedule settings from configurations
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CMultiScheduleDlg::LoadScheduleSettings()
 {
 	// Get app Schedule data pointer
@@ -1084,15 +984,11 @@ BOOL CMultiScheduleDlg::LoadScheduleSettings()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveScheduleSettings
-//	Description:	Save schedule settings to configurations
-//  Arguments:		None
-//  Return value:	BOOL - Result of saving process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save schedule settings to configurations
+ * @param	None
+ * @return	BOOL - Result of saving process
+ */
 BOOL CMultiScheduleDlg::SaveScheduleSettings()
 {
 	// Update settings
@@ -1117,15 +1013,11 @@ BOOL CMultiScheduleDlg::SaveScheduleSettings()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateScheduleSettings
-//	Description:	Update and refresh schedule settings
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update and refresh schedule settings
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::UpdateScheduleSettings()
 {
 	// Update enable and repeat states of each item
@@ -1166,15 +1058,11 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CheckDataChangeState
-//	Description:	Compare control values with current config to check for changes
-//  Arguments:		None
-//  Return value:	BOOL - Flag to mark data changed or not
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Compare control values with current config to check for changes
+ * @param	None
+ * @return	BOOL - Flag to mark data changed or not
+ */
 BOOL CMultiScheduleDlg::CheckDataChangeState()
 {
 	BOOL bChangeFlag = FALSE;
@@ -1209,15 +1097,11 @@ BOOL CMultiScheduleDlg::CheckDataChangeState()
 	return bChangeFlag;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Add
-//	Description:	Add item into schedule data
-//  Arguments:		schItem - Schedule item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add item into schedule data
+ * @param	schItem - Schedule item
+ * @return	None
+ */
 void CMultiScheduleDlg::Add(Item& schItem)
 {
 	// If item is empty, do nothing
@@ -1239,15 +1123,11 @@ void CMultiScheduleDlg::Add(Item& schItem)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Update
-//	Description:	Update schedule item
-//  Arguments:		schItem - Schedule item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update schedule item
+ * @param	schItem - Schedule item
+ * @return	None
+ */
 void CMultiScheduleDlg::Update(Item& schItem)
 {
 	// If item is empty, do nothing
@@ -1269,15 +1149,11 @@ void CMultiScheduleDlg::Update(Item& schItem)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Remove
-//	Description:	Remove a schedule item by index
-//  Arguments:		nIndex - Index of item to remove
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove a schedule item by index
+ * @param	nIndex - Index of item to remove
+ * @return	None
+ */
 void CMultiScheduleDlg::Remove(int nIndex)
 {
 	// Remove item at index
@@ -1290,15 +1166,11 @@ void CMultiScheduleDlg::Remove(int nIndex)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all schedule items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove all schedule items
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::RemoveAll()
 {
 	// Remove all items
@@ -1311,15 +1183,11 @@ void CMultiScheduleDlg::RemoveAll()
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAllItemState
-//	Description:	Check/uncheck all Schedule data items
-//  Arguments:		bState - Item state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check/uncheck all Schedule data items
+ * @param	bState - Item state
+ * @return	None
+ */
 void CMultiScheduleDlg::SetAllItemState(BOOL bState)
 {
 	// Check/uncheck all --> Update all items enable state
@@ -1346,17 +1214,13 @@ void CMultiScheduleDlg::SetAllItemState(BOOL bState)
 	RefreshDialogItemState(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Validate
-//	Description:	Check Schedule item validity
-//  Arguments:		schItem		 - Item to validate
-//					bShowMsg	 - Show validation message box or not
-//					bAutoCorrect - Invalid value auto correction (ON/OFF)
-//  Return value:	BOOL - Result of validation process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check Schedule item validity
+ * @param	schItem		 - Item to validate
+ * @param	bShowMsg	 - Show validation message box or not
+ * @param	bAutoCorrect - Invalid value auto correction (ON/OFF)
+ * @return	BOOL - Result of validation process
+ */
 BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOOL bAutoCorrect /* = FALSE */)
 {
 	BOOL bResult = TRUE;
@@ -1431,15 +1295,11 @@ BOOL CMultiScheduleDlg::Validate(Item& schItem, BOOL bShowMsg /* = FALSE */, BOO
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnApply
-//	Description:	Handle clicking event for [Save] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicking event for [Save] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnApply()
 {
 	// Save app event log if enabled
@@ -1456,15 +1316,11 @@ void CMultiScheduleDlg::OnApply()
 	SDialog::OnOK();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnExit
-//	Description:	Handle clicking event for [Exit] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicking event for [Exit] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnExit()
 {
 	// If not forced closing by request
@@ -1495,15 +1351,11 @@ void CMultiScheduleDlg::OnExit()
 	SDialog::OnCancel();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnAdd
-//	Description:	Handle click event for [Add] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Add] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnAdd()
 {
 	// Save app event log if enabled
@@ -1532,15 +1384,11 @@ void CMultiScheduleDlg::OnAdd()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnEdit
-//	Description:	Handle click event for [Edit] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Edit] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnEdit()
 {
 	// Save app event log if enabled
@@ -1589,15 +1437,11 @@ void CMultiScheduleDlg::OnEdit()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRemove
-//	Description:	Handle click event for [Remove] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Remove] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnRemove()
 {
 	// Save app event log if enabled
@@ -1636,15 +1480,11 @@ void CMultiScheduleDlg::OnRemove()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRemoveAll
-//	Description:	Handle click event for [Remove All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Remove All] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnRemoveAll()
 {
 	// Save app event log if enabled
@@ -1662,15 +1502,11 @@ void CMultiScheduleDlg::OnRemoveAll()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCheckAll
-//	Description:	Handle click event for [Check All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Check All] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnCheckAll()
 {
 	// Save app event log if enabled
@@ -1684,15 +1520,11 @@ void CMultiScheduleDlg::OnCheckAll()
 	SetAllItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnUncheckAll
-//	Description:	Handle click event for [Uncheck All] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Uncheck All] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnUncheckAll()
 {
 	// Save app event log if enabled
@@ -1706,15 +1538,11 @@ void CMultiScheduleDlg::OnUncheckAll()
 	SetAllItemState(FALSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnViewDetails
-//	Description:	Handle click event for [View Details] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [View Details] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnViewDetails()
 {
 	// Save app event log if enabled
@@ -1763,15 +1591,11 @@ void CMultiScheduleDlg::OnViewDetails()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSetDefault
-//	Description:	Handle click event for [Set Default] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Set Default] button
+ * @param	None
+ * @return	None
+ */
 void CMultiScheduleDlg::OnSetDefault()
 {
 	// Save app event log if enabled
@@ -1814,16 +1638,12 @@ void CMultiScheduleDlg::OnSetDefault()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSelectScheduleItem
-//	Description:	Show details when selecting a schedule item
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Show details when selecting a schedule item
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CMultiScheduleDlg::OnSelectScheduleItem(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
@@ -1846,17 +1666,13 @@ void CMultiScheduleDlg::OnSelectScheduleItem(NMHDR* pNMHDR, LRESULT* pResult)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClickDataItemList
-//	Description:	Handle click event on Power Reminder data 
-//					item list control
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event on Power Reminder data
+					item list control
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CMultiScheduleDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
@@ -1877,17 +1693,13 @@ void CMultiScheduleDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRightClickDataItemList
-//	Description:	Handle right click event on Power Reminder data 
-//					item list control
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle right click event on Power Reminder data
+					item list control
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CMultiScheduleDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
@@ -1908,16 +1720,12 @@ void CMultiScheduleDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult
 	RefreshDialogItemState(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChildDialogDestroy
-//	Description:	Handle event when a child dialog is destroyed
-//  Arguments:		wParam - Child dialog ID
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when a child dialog is destroyed
+ * @param	wParam - Child dialog ID
+ * @param	lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get dialog ID
@@ -1962,17 +1770,13 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM /*lParam*/
 	return LRESULT(Result::Success);	// ERROR_SUCCESS
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WindowProc
-//	Description:	Pre-handle dialog messages
-//  Arguments:		message - Message ID
-//					wParam	- First param (HIWORD)
-//					lParam	- Second param (LOWORD)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Pre-handle dialog messages
+ * @param	message - Message ID
+ * @param	wParam	- First param (HIWORD)
+ * @param	lParam	- Second param (LOWORD)
+ * @return	None
+ */
 LRESULT CMultiScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	// Default

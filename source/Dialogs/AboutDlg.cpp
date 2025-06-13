@@ -1,19 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		AboutDlg.cpp
-//		Description:	Source file for About and Help dialogs
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.03.12:		Create new
-//						<1> 2017.03.08:		Update to version 2.0
-//						<2> 2024.01.27:		Update to version 3.0
-//						<3> 2024.07.06:		Update to version 3.1
-//						<4> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		AboutDlg.cpp
+ * @brief		Source file for About dialog
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "Dialogs/AboutDlg.h"
 #include "MainApp/PowerPlus.h"
@@ -27,57 +19,37 @@ using namespace Language;
 using namespace AppCore;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CAboutDlg
-//
-//////////////////////////////////////////////////////////////////////////
-
+//	Implementations for CAboutDlg
 IMPLEMENT_DYNAMIC(CAboutDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CAboutDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CAboutDlg::CAboutDlg() : SDialog(IDD_ABOUT_DLG)
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CAboutDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CAboutDlg::~CAboutDlg()
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterDialogManagement
-//	Description:	Register dialog control management
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register dialog control management
+ * @param	None
+ * @return	int
+ */
 int CAboutDlg::RegisterDialogManagement(void)
 {
 	size_t nRet = SDialog::RegisterDialogManagement();
@@ -103,15 +75,11 @@ int CAboutDlg::RegisterDialogManagement(void)
 	return nRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UnregisterDialogManagement
-//	Description:	Unregister dialog control management
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Unregister dialog control management
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CAboutDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
@@ -130,12 +98,8 @@ BOOL CAboutDlg::UnregisterDialogManagement(void)
 	return SDialog::UnregisterDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CAboutDlg dialog items ID map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CAboutDlg dialog items ID map
 BEGIN_RESOURCEID_MAP(CAboutDlg)
 	ON_ID_DIALOG(IDD_ABOUT_DLG,						"AboutDlg")
 	ON_ID_CONTROL(IDC_ABOUT_CLOSE_BTN,				"CloseButton")
@@ -146,12 +110,8 @@ BEGIN_RESOURCEID_MAP(CAboutDlg)
 	ON_ID_CONTROL(IDC_APPINFO_LABEL,				"AuthorInfoLabel")
 END_RESOURCEID_MAP()
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CAboutDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CAboutDlg dialog message map
 BEGIN_MESSAGE_MAP(CAboutDlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
@@ -163,17 +123,11 @@ END_MESSAGE_MAP()
 //////////////////////////////////////////////////////////////////////////
 //// Implementations
 
-// CAboutDlg message handlers
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize About dialog and setup dialog content
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize About dialog and setup dialog content
+ * @param	None
+ * @return	TRUE/FALSE - Default
+ */
 BOOL CAboutDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -188,30 +142,22 @@ BOOL CAboutDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Default method for dialog closing
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog closing
+ * @param	None
+ * @return	None
+ */
 void CAboutDlg::OnClose()
 {
 	// Close dialog
 	SDialog::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Default method for dialog destroying
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog destroying
+ * @param	None
+ * @return	None
+ */
 void CAboutDlg::OnDestroy()
 {
 	// Save app event log if enabled
@@ -221,15 +167,11 @@ void CAboutDlg::OnDestroy()
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog controls
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog controls
+ * @param	None
+ * @return	None
+ */
 void CAboutDlg::SetupLanguage(void)
 {
 	// Load app language packages
@@ -267,15 +209,11 @@ void CAboutDlg::SetupLanguage(void)
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppNameLabel
-//	Description:	Set application name label info
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set application name label info
+ * @param	None
+ * @return	None
+ */
 void CAboutDlg::SetAppNameLabel(void)
 {
 	// Get app name label static
@@ -298,15 +236,11 @@ void CAboutDlg::SetAppNameLabel(void)
 	pAppNameLabel->SetWindowText(appNameLabel);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppInfoLabel
-//	Description:	Set application info label
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set application info label
+ * @param	None
+ * @return	None
+ */
 void CAboutDlg::SetAppInfoLabel(void)
 {
 	// Get app info label static
@@ -327,15 +261,11 @@ void CAboutDlg::SetAppInfoLabel(void)
 	pAppInfoLabel->SetWindowText(appInfoLabel);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCloseButton
-//	Description:	Handle clicking event for [OK/Close] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle clicking event for [OK/Close] button
+ * @param	None
+ * @return	None
+ */
 void CAboutDlg::OnCloseButton()
 {
 	// Save app event log if enabled
@@ -345,16 +275,12 @@ void CAboutDlg::OnCloseButton()
 	EndDialog(IDOK);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnViewFacebookProfileLink
-//	Description:	Handle click event for [View Facebook Profile] link
-//  Arguments:		pNMHDR  - Default of link clicked event handler
-//					pResult - Default of link clicked event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [View Facebook Profile] link
+ * @param	pNMHDR  - Default of link clicked event handler
+ * @param	pResult - Default of link clicked event handler
+ * @return	None
+ */
 void CAboutDlg::OnViewFacebookProfileLink(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Save app event log if enabled

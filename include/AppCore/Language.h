@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Language.h
-//		Description:	Define all language strings to be used in program
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.01.27:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Language.h
+ * @brief		Define all language strings to be used in program
+ * @author		AnthonyLeeStark
+ * @date		2024.01.27
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -22,48 +16,23 @@
 #endif
 
 
-//////////////////////////////////////////////////
-// Implementation
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	LANGTEXT
-//  Description:	Store language text item
-//  Derivered from: C++ basic struct
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Store language text item
 typedef struct tagLANGTEXT
 {
 	unsigned int	id;
 	const wchar_t*	langString;
 } LANGTEXT, *PLANGTEXT;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Data type name:	LANGTABLE/LANGTABLE_PTR
-//  Description:	Language package data
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Language package data
 using LANGTABLE = const std::vector<LANGTEXT>;
 using LANGTABLE_PTR = LANGTABLE*;
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define global language packages for program, these packages will be used elsewhere in the program
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// Define static language packages for application
 namespace Language
 {
-	//////////////////////////////////////////////////////////////////////////
-	// 
-	//	Language: English (United States)
-	//
-	//////////////////////////////////////////////////////////////////////////
-
+	// Language: English (United States)
 	static LANGTABLE langtable_en_US
 	{
 	/*-------Language Info ID-------------------------------------------------------------Language Info Details-----------------------------------------------------------*/
@@ -522,13 +491,9 @@ namespace Language
 		{ LOG_HISTORY_DISP_PWRREMINDER,							_T("Reminder message displayed") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 	};
+	
 
-	//////////////////////////////////////////////////////////////////////////
-	// 
-	//	Language: Vietnamese (Vietnam)
-	//
-	//////////////////////////////////////////////////////////////////////////
-
+	// Language: Vietnamese (Vietnam)
 	static LANGTABLE langtable_vi_VN
 	{
 	/*-------Language Info ID-------------------------------------------------------------Language Info Details-----------------------------------------------------------*/
@@ -988,12 +953,8 @@ namespace Language
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 	};
 
-	////////////////////////////////////////////////////////
-	// 
-	//	Language: Simplified Chinese (China mainland)
-	//
-	////////////////////////////////////////////////////////
-
+	
+	// Language: Simplified Chinese (China mainland)
 	static LANGTABLE langtable_zh_CH
 	{
 	/*-------Language Info ID-------------------------------------------------------------Language Info Details-----------------------------------------------------------*/
@@ -1455,12 +1416,7 @@ namespace Language
 	};
 
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	//	Define global language table package processing functions
-	//
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	// Language table package processing functions
 	const wchar_t* GetLanguageName(UINT nCurLanguage, BOOL bGetDescription = FALSE);
 	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage);
 	const wchar_t* GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID);

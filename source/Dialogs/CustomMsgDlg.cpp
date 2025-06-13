@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		CustomMsgDlg.cpp
-//		Description:	Source file for Custom Message dialog
-//		Owner:			AnthonyLeeStark
-// 
-//		History:		<0> 2024.08.12:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		CustomMsgDlg.cpp
+ * @brief		Source file for Custom Message dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.08.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "Dialogs/CustomMsgDlg.h"
 
@@ -25,45 +21,29 @@ constexpr const int defaultWidth = 320;
 constexpr const int defaultHeight = 240;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CCustomMsgDlg
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for CCustomMsgDlg
 IMPLEMENT_DYNAMIC(CCustomMsgDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CCustomMsgDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CCustomMsgDlg::CCustomMsgDlg() : SDialog(IDD_CUSTOM_MESSAGE_DLG)
 {
 	// Message string buffer
 	m_strBuffer = Constant::String::Empty;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CCustomMsgDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CCustomMsgDlg::~CCustomMsgDlg()
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CCustomMsgDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -82,15 +62,11 @@ END_MESSAGE_MAP()
 
 // CCustomMsgDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize DebugTest dialog
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize DebugTest dialog
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CCustomMsgDlg::OnInitDialog()
 {
 	RECT rcClient;
@@ -99,29 +75,21 @@ BOOL CCustomMsgDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Destroy dialog
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destroy dialog
+ * @param	None
+ * @return	None
+ */
 void CCustomMsgDlg::OnDestroy()
 {
 	EndDialog(IDCANCEL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnGetMinMaxInfo
-//	Description:	Dialog get min/max info handler
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Dialog get min/max info handler
+ * @param	Default
+ * @return	None
+ */
 void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
@@ -131,15 +99,11 @@ void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSize
-//	Description:	Resizelog
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Resizelog
+ * @param	Default
+ * @return	None
+ */
 void CCustomMsgDlg::OnSize(UINT nType, int nWidth, int nHeight)
 {
 	SDialog::OnSize(nType, nWidth, nHeight);

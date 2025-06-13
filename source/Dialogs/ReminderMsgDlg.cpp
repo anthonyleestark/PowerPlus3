@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		ReminderMsgDlg.cpp
-//		Description:	Source file for Reminder Message dialog
-//		Owner:			AnthonyLeeStark
-// 
-//		History:		<0> 2024.08.12:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		ReminderMsgDlg.cpp
+ * @brief		Source file for Reminder Message dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.08.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "Dialogs/ReminderMsgDlg.h"
 
@@ -25,21 +20,13 @@ using namespace AppCore;
 constexpr const int defaultTextIconSpacing = 10;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CReminderMsgDlg
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for CReminderMsgDlg
 IMPLEMENT_DYNAMIC(CReminderMsgDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CReminderMsgDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	: SDialog(IDD_REMINDERMSG_DLG, pParentWnd)
 {
@@ -65,13 +52,9 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	m_nAutoCloseInterval = 0;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CReminderMsgDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CReminderMsgDlg::~CReminderMsgDlg()
 {
 	// Delete font info
@@ -84,13 +67,9 @@ CReminderMsgDlg::~CReminderMsgDlg()
 	::DestroyIcon(m_hMsgIcon);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CReminderMsgDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -121,15 +100,11 @@ END_MESSAGE_MAP()
 
 // CReminderMsgDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize DebugTest dialog
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize DebugTest dialog
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CReminderMsgDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -207,45 +182,33 @@ BOOL CReminderMsgDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Default method for dialog closing
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog closing
+ * @param	None
+ * @return	None
+ */
 void CReminderMsgDlg::OnClose()
 {
 	// Close dialog
 	SDialog::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Destroy dialog
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destroy dialog
+ * @param	None
+ * @return	None
+ */
 void CReminderMsgDlg::OnDestroy()
 {
 	// Destroy dialog
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PostNcDestroy
-//	Description:	PostNcDestroy function
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	PostNcDestroy function
+ * @param	None
+ * @return	None
+ */
 void CReminderMsgDlg::PostNcDestroy()
 {
 	// Kill timer if set
@@ -261,15 +224,11 @@ void CReminderMsgDlg::PostNcDestroy()
 	SDialog::PostNcDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnPaint
-//	Description:	OnPaint function
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	OnPaint function
+ * @param	None
+ * @return	None
+ */
 void CReminderMsgDlg::OnPaint()
 {
 	CPaintDC dc(this);
@@ -291,15 +250,11 @@ void CReminderMsgDlg::OnPaint()
 	SDialog::OnPaint();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnTimer
-//	Description:	OnTimer function
-//  Arguments:		nIDEvent - Time event ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	OnTimer function
+ * @param	nIDEvent - Time event ID
+ * @return	None
+ */
 void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// Handle auto-close timer if set
@@ -321,15 +276,11 @@ void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
 	SDialog::OnTimer(nIDEvent);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCreate
-//	Description:	OnCreate function
-//  Arguments:		Default
-//  Return value:	int - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	OnCreate function
+ * @param	Default
+ * @return	int - Default
+ */
 int CReminderMsgDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	// Default creation
@@ -346,15 +297,11 @@ int CReminderMsgDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSysCommand
-//	Description:	OnSysCommand function
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	OnSysCommand function
+ * @param	Default
+ * @return	None
+ */
 void CReminderMsgDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == SC_MINIMIZE) {
@@ -371,15 +318,11 @@ void CReminderMsgDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCtlColor
-//	Description:	WM_CTLCOLOR handling function
-//  Arguments:		Default
-//  Return value:	HBRUSH
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	WM_CTLCOLOR handling function
+ * @param	Default
+ * @return	HBRUSH
+ */
 HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	// Default initialization
@@ -407,15 +350,11 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return hBrush;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitMessageStyle
-//	Description:	Initialize message style info data
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize message style info data
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CReminderMsgDlg::InitMessageStyle(void)
 {
 	// Background & text color
@@ -524,15 +463,11 @@ BOOL CReminderMsgDlg::InitMessageStyle(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CalcMsgIconPosition
-//	Description:	Calculate message icon position (top-left point)
-//  Arguments:		lpptIcon - Icon position (point)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Calculate message icon position (top-left point)
+ * @param	lpptIcon - Icon position (point)
+ * @return	TRUE/FALSE
+ */
 BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon) const
 {
 	// Check pointer validity
@@ -561,28 +496,20 @@ BOOL CReminderMsgDlg::CalcMsgIconPosition(LPPOINT lpptIcon) const
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ClientToText
-//	Description:	Calculate text rect from dialog client size
-//  Arguments:		lpRect - Returned rect
-//  Return value:	void
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Calculate text rect from dialog client size
+ * @param	lpRect - Returned rect
+ * @return	void
+ */
 void CReminderMsgDlg::ClientToText(LPRECT /*lpRect*/) const
 {
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	TextToClient
-//	Description:	Calculate dialog client rect from text size
-//  Arguments:		lpRect - Returned rect
-//  Return value:	void
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Calculate dialog client rect from text size
+ * @param	lpRect - Returned rect
+ * @return	void
+ */
 void CReminderMsgDlg::TextToClient(LPRECT lpRect) const
 {
 	// If message text is not set, do nothing

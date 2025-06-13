@@ -1,15 +1,8 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		GridCell.h
-//		Description:	Grid cell class header file
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.07.20:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		GridCell.h
+ * @brief		Grid cell class header file
+ * @date		2015.07.20
+ */
 
 #if !defined(AFX_GRIDCELL_H__519FA702_722C_11D1_ABBA_00A0243D1382__INCLUDED_)
 #define AFX_GRIDCELL_H__519FA702_722C_11D1_ABBA_00A0243D1382__INCLUDED_

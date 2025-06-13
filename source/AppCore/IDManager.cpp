@@ -1,18 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		IDManager.cpp
-//		Description:	Implement methods for components and items ID management
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.02.25:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//						<3> 2025.06.03:		Rename from IDMapping to IDManager
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		IDManager.cpp
+ * @brief		Implement methods for components and items ID management
+ * @author		AnthonyLeeStark
+ * @date		2024.02.25
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "AppCore/IDManager.h"
 
@@ -21,36 +14,18 @@
 #endif
 
 
-///////////////////////////
-/// Implementations
-
-
-//////////////////////////////////////////////////////////////////////////
-//
 //	Implement methods for SResourceIDMap
-//
-//////////////////////////////////////////////////////////////////////////
-
 IMPLEMENT_DYNAMIC(SResourceIDMap, CObject)
 
 
-//////////////////////////////////////////////////////////////////////////
-//
 //	Initialize static members for SResourceIDMap
-//
-//////////////////////////////////////////////////////////////////////////
-
 SResourceIDMap* SResourceIDMap::m_thisInstance = NULL;
 std::mutex		SResourceIDMap::m_mutexLockGuard;
 
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SResourceIDMap
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 SResourceIDMap::SResourceIDMap() : CObject()
 {
 	// Initialization
@@ -58,42 +33,30 @@ SResourceIDMap::SResourceIDMap() : CObject()
 	m_nSize = 0;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~SResourceIDMap
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 SResourceIDMap::~SResourceIDMap()
 {
 	// Clean-up data
 	RemoveAll();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator[]
-//	Description:	Return the resource ID map entry at specific given index
-//  Arguments:		nIndex - Index of resource ID map entry to get
-//  Return value:	const RESOURCE_ID_MAP_ENTRY&
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return the resource ID map entry at specific given index
+ * @param	nIndex - Index of resource ID map entry to get
+ * @return	const RESOURCE_ID_MAP_ENTRY&
+ */
 const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::operator[](size_t nIndex)
 {
 	return this->GetAt(nIndex);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetResourceIDMap
-//	Description:	Get the single instance of resource ID map
-//  Arguments:		None
-//  Return value:	SResourceIDMap*
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get the single instance of resource ID map
+ * @param	None
+ * @return	SResourceIDMap*
+ */
 SResourceIDMap* SResourceIDMap::GetResourceIDMap(void)
 {
 	// Ensure thread safety
@@ -107,16 +70,12 @@ SResourceIDMap* SResourceIDMap::GetResourceIDMap(void)
 	return m_thisInstance;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DestroyResourceIDMap
-//	Description:	Clean-up resource ID map data
-//					and destroy the single instance of it
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Clean-up resource ID map data
+					and destroy the single instance of it
+ * @param	None
+ * @return	None
+ */
 void SResourceIDMap::DestroyResourceIDMap(void)
 {
 	// Ensure instance validity
@@ -132,16 +91,12 @@ void SResourceIDMap::DestroyResourceIDMap(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy another resource ID map data to current map data
-//  Arguments:		pSrc  - Source data pointer
-//					nSize - Source data size
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Copy another resource ID map data to current map data
+ * @param	pSrc  - Source data pointer
+ * @param	nSize - Source data size
+ * @return	None
+ */
 void SResourceIDMap::Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
 {
 	// Check source data validity
@@ -170,16 +125,12 @@ void SResourceIDMap::Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
 	m_nSize = nSize;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Append
-//	Description:	Append another resource ID map data into current map data
-//  Arguments:		pSrc - Source data pointer
-//					nSize - Source data size
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Append another resource ID map data into current map data
+ * @param	pSrc - Source data pointer
+ * @param	nSize - Source data size
+ * @return	None
+ */
 void SResourceIDMap::Append(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
 {
 	// Check source data validity
@@ -228,17 +179,13 @@ void SResourceIDMap::Append(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
 	m_nSize = nNewSize;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Add
-//	Description:	Add a resource ID map entry to resource ID map data
-//  Arguments:		byTypeID   - Resource type ID
-//					dwResID	   - Resource ID
-//					lpszNameID - Resource name string ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add a resource ID map entry to resource ID map data
+ * @param	byTypeID   - Resource type ID
+ * @param	dwResID	   - Resource ID
+ * @param	lpszNameID - Resource name string ID
+ * @return	None
+ */
 void SResourceIDMap::Add(BYTE byTypeID, DWORD dwResID, LPCSTR lpszNameID)
 {
 	// Check data validity
@@ -263,16 +210,12 @@ void SResourceIDMap::Add(BYTE byTypeID, DWORD dwResID, LPCSTR lpszNameID)
 	m_nSize = nNewSize;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Modify
-//	Description:	Modify name ID of specific resource ID item in resource ID map
-//  Arguments:		dwResID		  - Resource ID
-//					lpszNewNameID - New resource name string ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Modify name ID of specific resource ID item in resource ID map
+ * @param	dwResID		  - Resource ID
+ * @param	lpszNewNameID - New resource name string ID
+ * @return	None
+ */
 void SResourceIDMap::Modify(DWORD dwResID, LPCSTR lpszNewNameID)
 {
 	// Check data validity
@@ -289,16 +232,12 @@ void SResourceIDMap::Modify(DWORD dwResID, LPCSTR lpszNewNameID)
 	m_pIDMapData[nIndex].strNameID = lpszNewNameID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Remove
-//	Description:	Remove a resource ID map entry with specified ID out of
-//					the current resource ID map
-//  Arguments:		dwResID	- Resource ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove a resource ID map entry with specified ID out of
+					the current resource ID map
+ * @param	dwResID	- Resource ID
+ * @return	None
+ */
 void SResourceIDMap::Remove(DWORD dwResID)
 {
 	// Check data validity
@@ -331,15 +270,11 @@ void SResourceIDMap::Remove(DWORD dwResID)
 	m_nSize = nNewSize;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all resource ID map data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove all resource ID map data
+ * @param	None
+ * @return	None
+ */
 void SResourceIDMap::RemoveAll(void)
 {
 	// Check data validity
@@ -352,15 +287,11 @@ void SResourceIDMap::RemoveAll(void)
 	m_pIDMapData = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetResourceID
-//	Description:	Get resource ID from given name string ID
-//  Arguments:		lpszNameID - Resource name string ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get resource ID from given name string ID
+ * @param	lpszNameID - Resource name string ID
+ * @return	None
+ */
 UINT SResourceIDMap::GetResourceID(LPCSTR lpszNameID) const
 {
 	// Check data validity
@@ -377,15 +308,11 @@ UINT SResourceIDMap::GetResourceID(LPCSTR lpszNameID) const
 	return m_pIDMapData[nIndex].dwResourceID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetNameID
-//	Description:	Get name string ID from given resource ID
-//  Arguments:		dwResID	- Resource ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get name string ID from given resource ID
+ * @param	dwResID	- Resource ID
+ * @return	None
+ */
 LPCSTR SResourceIDMap::GetNameID(DWORD dwResID) const
 {
 	// Check data validity
@@ -402,16 +329,12 @@ LPCSTR SResourceIDMap::GetNameID(DWORD dwResID) const
 	return m_pIDMapData[nIndex].strNameID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FindResourceID
-//	Description:	Return index of the first item with specific resource ID
-//					and return -1 if resource ID is not found
-//  Arguments:		dwResID - Resource ID
-//  Return value:	long long
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return index of the first item with specific resource ID
+					and return -1 if resource ID is not found
+ * @param	dwResID - Resource ID
+ * @return	long long
+ */
 long long SResourceIDMap::FindResourceID(DWORD dwResID) const
 {
 	// Check data validity
@@ -430,16 +353,12 @@ long long SResourceIDMap::FindResourceID(DWORD dwResID) const
 	return resIndex;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FindNameID
-//	Description:	Return index of the first item with specific name ID
-//					and return -1 if name ID is not found
-//					lpszNameID - Name string ID
-//  Return value:	long long
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return index of the first item with specific name ID
+					and return -1 if name ID is not found
+					lpszNameID - Name string ID
+ * @return	long long
+ */
 long long SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
 {
 	// Check data validity
@@ -458,15 +377,11 @@ long long SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
 	return resIndex;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAt
-//	Description:	Return the resource ID map entry at specific given index
-//  Arguments:		nIndex - Index of resource ID map entry to get
-//  Return value:	const RESOURCE_ID_MAP_ENTRY&
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return the resource ID map entry at specific given index
+ * @param	nIndex - Index of resource ID map entry to get
+ * @return	const RESOURCE_ID_MAP_ENTRY&
+ */
 const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::GetAt(size_t nIndex) const
 {
 	ASSERT((nIndex >= 0) && (nIndex < m_nSize));
@@ -478,15 +393,11 @@ const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::GetAt(size_t nIndex) const
 	AfxThrowInvalidArgException();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetMapCount
-//	Description:	Return the number of elements of resource ID map
-//  Arguments:		None
-//  Return value:	size_t - Number of resource ID map entries
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return the number of elements of resource ID map
+ * @param	None
+ * @return	size_t - Number of resource ID map entries
+ */
 size_t SResourceIDMap::GetMapCount(void) const
 {
 	return m_nSize;

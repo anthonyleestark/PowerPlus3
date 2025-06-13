@@ -1,15 +1,8 @@
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		MemDC.h
-//		Description:	CMemDC class header file
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.20:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @file		MemDC.h
+ * @brief		CMemDC class header file
+ * @date		2024.07.20
+ */
 
 #if !defined(AFX_MEMDC_H__CA1D3541_7235_11D1_ABBA_00A0243D1382__INCLUDED_)
 #define AFX_MEMDC_H__CA1D3541_7235_11D1_ABBA_00A0243D1382__INCLUDED_

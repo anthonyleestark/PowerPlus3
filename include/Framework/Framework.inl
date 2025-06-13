@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Framework.inl
-//		Description:	Implement definition of inline functions for Stupid Framework classes
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2025.05.26:		Create new for version 3.2
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Framework.inl
+ * @brief		Implement definition of inline functions for Stupid Framework classes
+ * @author		AnthonyLeeStark
+ * @date		2025.05.26
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 
 ///////////////////////////////////////////////////////

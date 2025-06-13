@@ -1,25 +1,13 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Logging_defs.h
-//		Description:	Define public resources and info using for logging function
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.12.08:		Create new
-//						<1> 2025.06.03:		Rename from Logging_pub to Logging_defs
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Logging_defs.h
+ * @brief		Define public resources and info using for logging function
+ * @author		AnthonyLeeStark
+ * @date		2024.12.08
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define macros for logging features
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // Log category macros
@@ -91,19 +79,7 @@
 #define LOG_HISTORY_DISP_PWRREMINDER		(LOG_MACRO_HISTORY<<8) + 0x004
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define enum data types for base logging feature
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////// ********************
-// 
 // Log write modes
-//
-//////////////////// ********************
-
 enum LogWriteMode {
 	ReadOnly = 0,						// Read-only log data (do not write)
 	WriteOnCall,						// Write log on-call mode
@@ -111,12 +87,7 @@ enum LogWriteMode {
 };
 
 
-//////////////////// ********************
-// 
 // Log detail data types
-//
-//////////////////// ********************
-
 enum LogDataType {
 	Unspecified = -1,					// Unspecified type
 	Void = 0,							// No type (unusable)
@@ -140,12 +111,7 @@ enum LogDataType {
 };
 
 
-//////////////////// ********************
-// 
 // Log detail flags
-//
-//////////////////// ********************
-
 enum LogDetailFlag
 {
 	Flag_Null			= (int)0x000,	// NULL flag (apply default behavior)
@@ -157,19 +123,7 @@ enum LogDetailFlag
 };
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define enum data types for specific logging types
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////// ********************
-// 
 // Base log key IDs
-//
-//////////////////// ********************
-
 enum BaseLog {
 	Time = 0x0100,				// Log time
 	PID,						// Process ID
@@ -181,12 +135,7 @@ enum BaseLog {
 };
 
 
-//////////////////// ********************
-// 
 // Event log detail category IDs
-//
-//////////////////// ********************
-
 enum EventDetail {
 	ResourceID = 0x0200,		// UI component resource ID
 	NameID,						// Name ID
@@ -202,12 +151,7 @@ enum EventDetail {
 };
 
 
-//////////////////// ********************
-// 
 // Action history log detail IDs
-//
-//////////////////// ********************
-
 enum HistoryDetail {
 	Category = 0x0300,			// Category
 	Action,						// Action
@@ -219,12 +163,7 @@ enum HistoryDetail {
 };
 
 
-//////////////////// ********************
-// 
 // Action history category IDs
-//
-//////////////////// ********************
-
 enum HistoryCategory {
 	PowerAction = 0x0400,		// Power action
 	ScheduleAction ,			// Schedule
@@ -233,12 +172,7 @@ enum HistoryCategory {
 };
 
 
-//////////////////// ********************
-// 
 // Action history action IDs
-//
-//////////////////// ********************
-
 enum HistoryAction {
 	DoNothing = 0x0500,			// Do nothing
 	DisplayOff,					// Turn off display
@@ -250,19 +184,9 @@ enum HistoryAction {
 };
 
 
-//////////////////// ********************
-// 
 // Action history result IDs
-//
-//////////////////// ********************
-
 enum HistoryResult {
 	SuccessNoError = 0x0600,	// Success
 	FailedUnknown,				// Failed (Unknown error)
 	FailedWithErrorCode,		// Failed (Error code: 0x%08X)
 };
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*                                                                                                             */
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////

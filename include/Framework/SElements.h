@@ -1,28 +1,17 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		SElements.h
-//		Project name:	Stupid Framework
-//		Description:	Custom base class for dialog elements (header file)
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.12.24:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		SElements.h
+ * @brief		Custom base class for dialog elements (header file)
+ * @author		AnthonyLeeStark
+ * @date		2024.12.24
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
 #include "AppCore/AppCore.h"
 #include "AppCore/IDManager.h"
 
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Define enum types or structs
-//
-//////////////////////////////////////////////////////////////////////////
 
 // Define dialog/window control types
 enum ControlType {
@@ -91,14 +80,7 @@ struct USERMENU
 };
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:	 SCtrlInfoWrap
-//  Description: Custom class for dialog/window control info wrapper
-//  Base class:	 CObject
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Custom class for dialog/window control info wrapper
 class SCtrlInfoWrap : public CObject
 {
 	DECLARE_DYNAMIC(SCtrlInfoWrap)
@@ -281,14 +263,8 @@ public:
 // Define new typename
 using SCtrlInfoList = typename std::vector<SCtrlInfoWrap*>;
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:	 SMenu
-//  Description: Custom base class for user menu
-//  Base class:	 CMenu
-//
-//////////////////////////////////////////////////////////////////////////
 
+// Custom base class for user menu
 class SMenu : public CMenu
 {
 	DECLARE_DYNAMIC(SMenu)
@@ -303,14 +279,8 @@ protected:
 	USERMENU* m_pMenuLayout;
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:	 SControlManager
-//  Description: Class for dialog/window control management
-//  Base class:	 CObject
-//
-//////////////////////////////////////////////////////////////////////////
 
+// For dialog/window control management
 class SControlManager : public CObject
 {
 	DECLARE_DYNAMIC(SControlManager)

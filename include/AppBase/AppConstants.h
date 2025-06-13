@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		AppConstants.h
-//		Description:	Define application base enums and constants
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2025.06.04:		Create new
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		AppConstants.h
+ * @brief		Define application base enums and constants
+ * @author		AnthonyLeeStark
+ * @date		2025.06.04
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 

@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		LogViewerDlg.h
-//		Description:	Header file for LogViewer dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.02.24:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		LogViewerDlg.h
+ * @brief		Header file for LogViewer dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.02.24
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -22,12 +16,8 @@
 #include "AppCore/Serialization.h"
 #include "Framework/SDialog.h"
 
-////////////////////////////////////////////////////////
-//
-//	CLogViewrDlg dialog used for LogViewer function
-//
-////////////////////////////////////////////////////////
 
+// LogViewer dialog class
 class CLogViewerDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CLogViewerDlg)

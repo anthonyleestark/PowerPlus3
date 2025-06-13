@@ -1,15 +1,8 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		GridCellCheck.cpp
-//		Description:	CGridCellCheck class implementation file
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.20:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		GridCellCheck.cpp
+ * @brief		CGridCellCheck class implementation file
+ * @date		2024.07.20
+ */
 
 #include "Components/GridCtrl/GridCell.h"
 #include "Components/GridCtrl/GridCtrl.h"

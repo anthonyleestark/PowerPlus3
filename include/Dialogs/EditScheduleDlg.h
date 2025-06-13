@@ -1,18 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		EditScheduleDlg.h
-//		Description:	Header file for Edit Schedule details dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2017.03.08:		Create new
-//						<1> 2024.01.27:		Update to version 3.0
-//						<2> 2024.10.27:		Implement Multi schedule function
-//						<3> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		EditScheduleDlg.h
+ * @brief		Header file for Edit Schedule details dialog
+ * @author		AnthonyLeeStark
+ * @date		2017.03.08
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -24,12 +17,7 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
-//
-//	CEditScheduleDlg dialog used for Edit Schedule function
-//
-////////////////////////////////////////////////////////
-
+// Edit Schedule dialog class
 class CEditScheduleDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CEditScheduleDlg)

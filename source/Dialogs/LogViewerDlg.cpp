@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		LogViewerDlg.cpp
-//		Description:	Source file for LogViewer dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.02.24:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		LogViewerDlg.cpp
+ * @brief		Source file for LogViewer dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.02.24
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "AppCore/Logging.h"
 #include "MainApp/PowerPlus.h"
@@ -32,21 +26,14 @@ constexpr const int fixedColumnNum = 0;
 constexpr const int fixedRowNum = 1;
 constexpr const int startRowIndex = 1;
 
-////////////////////////////////////////////////////////
-//
-//	Implement methods for CLogViewerDlg
-//
-////////////////////////////////////////////////////////
 
+// Implement methods for CLogViewerDlg
 IMPLEMENT_DYNAMIC(CLogViewerDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CLogViewerDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CLogViewerDlg::CLogViewerDlg(CWnd* pParent /*=nullptr*/)
 	: SDialog(IDD_LOGVIEWER_DLG, pParent)
 {
@@ -66,13 +53,9 @@ CLogViewerDlg::CLogViewerDlg(CWnd* pParent /*=nullptr*/)
 	m_nCurSelIndex = -1;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CLogViewerDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CLogViewerDlg::~CLogViewerDlg()
 {
 	// Grid table list control
@@ -92,13 +75,9 @@ CLogViewerDlg::~CLogViewerDlg()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CLogViewerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -141,15 +120,11 @@ END_MESSAGE_MAP()
 
 // LogViewerDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize Logviewer dialog and setup dialog content
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize Logviewer dialog and setup dialog content
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CLogViewerDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -181,30 +156,22 @@ BOOL CLogViewerDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Handle event when closing the dialog
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when closing the dialog
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::OnClose()
 {
 	// Close dialog
 	SDialog::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Default method for dialog destroying
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog destroying
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::OnDestroy()
 {
 	// Save app event log if enabled
@@ -218,30 +185,22 @@ void CLogViewerDlg::OnDestroy()
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestCloseDialog
-//	Description:	Request current dialog to close
-//  Arguments:		None
-//  Return value:	LRESULT (0:Success, else:Failed)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Request current dialog to close
+ * @param	None
+ * @return	LRESULT (0:Success, else:Failed)
+ */
 LRESULT CLogViewerDlg::RequestCloseDialog(void)
 {
 	// Request accepted
 	return SDialog::RequestCloseDialog();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnRemoveAllBtn
-//	Description:	Handle click event for [Remove All Records] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Remove All Records] button
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::OnRemoveAllBtn()
 {
 	// Get app event logging pointer
@@ -258,15 +217,11 @@ void CLogViewerDlg::OnRemoveAllBtn()
 	PostMessage(WM_CLOSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDetailBtn
-//	Description:	Handle click event for [Details] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Details] button
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::OnDetailBtn()
 {
 	// Get app event logging pointer
@@ -280,30 +235,22 @@ void CLogViewerDlg::OnDetailBtn()
 	DisplayLogDetails(m_nCurSelIndex);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCloseBtn
-//	Description:	Handle click event for [Close] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle click event for [Close] button
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::OnCloseBtn()
 {
 	// Close dialog
 	PostMessage(WM_CLOSE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog items
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::SetupLanguage(void)
 {
 	// Load app language package
@@ -335,15 +282,11 @@ void CLogViewerDlg::SetupLanguage(void)
 	SDialog::SetupLanguage();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLogViewerList
-//	Description:	Initialize and setup language for LogViewer list
-//  Arguments:		ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize and setup language for LogViewer list
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Get parent list frame rect
@@ -410,15 +353,11 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pLogViewerList->SetRedraw(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DrawLogViewerTable
-//	Description:	Draw LogViewer list table
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Draw LogViewer list table
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::DrawLogViewerTable(void)
 {
 	// Check table validity
@@ -549,15 +488,11 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadAppEventLogData
-//	Description:	Load app event log data
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load app event log data
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CLogViewerDlg::LoadAppEventLogData(void)
 {
 	// Get app event logging pointer
@@ -572,15 +507,11 @@ BOOL CLogViewerDlg::LoadAppEventLogData(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateLogViewer
-//	Description:	Update logviewer list
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update logviewer list
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::UpdateLogViewer(void)
 {
 	// Check list table validity
@@ -627,16 +558,12 @@ void CLogViewerDlg::UpdateLogViewer(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSelectLogItem
-//	Description:	Show log details when selecting a log item
-//  Arguments:		pNMHDR  - Default of notify/event handler
-//					pResult - Default of notify/event handler
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Show log details when selecting a log item
+ * @param	pNMHDR  - Default of notify/event handler
+ * @param	pResult - Default of notify/event handler
+ * @return	None
+ */
 void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 {
 	// Check table validity
@@ -667,30 +594,22 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayLogDetails
-//	Description:	Display details of log item at specified index
-//  Arguments:		nIndex - Index of item to display
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Display details of log item at specified index
+ * @param	nIndex - Index of item to display
+ * @return	None
+ */
 void CLogViewerDlg::DisplayLogDetails(int /*nIndex*/)
 {
 	// Get app event logging pointer
 	if (m_ptrAppEventLog == NULL) return;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateLayoutInfo
-//	Description:	Update layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update layout info data
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::UpdateLayoutInfo(void)
 {
 	// Check table validity
@@ -709,15 +628,11 @@ void CLogViewerDlg::UpdateLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadLayoutInfo
-//	Description:	Load layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Load layout info data
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::LoadLayoutInfo(void)
 {
 	// Define default table columns format
@@ -754,15 +669,11 @@ void CLogViewerDlg::LoadLayoutInfo(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SaveLayoutInfo
-//	Description:	Save layout info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Save layout info data
+ * @param	None
+ * @return	None
+ */
 void CLogViewerDlg::SaveLayoutInfo(void)
 {
 	// Check table column format data validity

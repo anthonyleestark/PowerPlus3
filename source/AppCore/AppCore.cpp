@@ -1,19 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Core.cpp
-//		Description:	Implement core methods which will be used elsewhere in program
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2015.03.12:		Create new
-//						<1> 2017.03.08:		Update to version 2.0
-//						<2> 2024.01.27:		Update to version 3.0
-//						<3> 2024.07.06:		Update to version 3.1
-//						<4> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		AppCore.cpp
+ * @brief		Implement core methods which will be used elsewhere in program
+ * @author		AnthonyLeeStark
+ * @date		2015.03.12
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "AppCore/AppCore.h"
 #include "AppCore/Global.h"
@@ -24,24 +16,9 @@
 #endif
 
 
-///////////////////////////////////////////////////////
-//// Implementations
-
-
-//////////////////////////////////////////////////////////////////////////
-//
-//	Define member functions of data structures/classes
-//
-//////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ConfigData
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 ConfigData::ConfigData()
 {
 	// Main settings
@@ -74,15 +51,12 @@ ConfigData::ConfigData(const CONFIGDATA& pData)
 	this->Copy(pData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another config data
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another config data
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 void ConfigData::Copy(const CONFIGDATA& pData)
 {
 	// Do not copy itself
@@ -112,16 +86,13 @@ void ConfigData::Copy(const CONFIGDATA& pData)
 	this->bEnablePowerReminder = pData.bEnablePowerReminder;			// Enable Power Peminder feature
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare with another given data
-//  Arguments:		pData - Pointer of given data
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
-BOOL ConfigData::Compare(const CONFIGDATA& pData) const
+/**
+ * @brief	Compare with another given data
+ * @param	pData - Pointer of given data
+ * @return	TRUE/FALSE
+ */
+ BOOL ConfigData::Compare(const CONFIGDATA& pData) const
 {
 	BOOL bRet = TRUE;
 
@@ -151,16 +122,13 @@ BOOL ConfigData::Compare(const CONFIGDATA& pData) const
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetData
-//	Description:	Get a clone copy of config data
-//  Arguments:		pData - Output config data (out)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void ConfigData::GetData(CONFIGDATA& pData) const
+/**
+ * @brief	Get a clone copy of config data
+ * @param	pData - Output config data (out)
+ * @return	None
+ */
+ void ConfigData::GetData(CONFIGDATA& pData) const
 {
 	// Main settings
 	pData.nLMBAction = this->nLMBAction;								// Left mouse button action
@@ -186,16 +154,13 @@ void ConfigData::GetData(CONFIGDATA& pData) const
 	pData.bEnablePowerReminder = this->bEnablePowerReminder;			// Enable Power Peminder feature
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppOption
-//	Description:	Get application option data by ID
-//  Arguments:		eAppOptionID - Option ID
-//  Return value:	int - Option value
-//
-//////////////////////////////////////////////////////////////////////////
 
-int ConfigData::GetAppOption(AppOptionID eAppOptionID) const
+/**
+ * @brief	Get application option data by ID
+ * @param	eAppOptionID - Option ID
+ * @return	int - Option value
+ */
+ int ConfigData::GetAppOption(AppOptionID eAppOptionID) const
 {
 	int nResult = INT_INVALID;
 
@@ -260,16 +225,13 @@ int ConfigData::GetAppOption(AppOptionID eAppOptionID) const
 	return nResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetDefaultData
-//	Description:	Set default for config data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void ConfigData::SetDefaultData(void)
+/**
+ * @brief	Set default for config data
+ * @param	None
+ * @return	None
+ */
+ void ConfigData::SetDefaultData(void)
 {
 	// Create a new default data
 	static const CONFIGDATA defaultConfig;
@@ -278,14 +240,11 @@ void ConfigData::SetDefaultData(void)
 	this->Copy(defaultConfig);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PwrRepeatSet
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
-PwrRepeatSet::PwrRepeatSet()
+/**
+ * @brief	Constructor
+ */
+ PwrRepeatSet::PwrRepeatSet()
 {
 	// Init data
 	m_bRepeat = FALSE;										// Repeat daily
@@ -300,15 +259,12 @@ PwrRepeatSet::PwrRepeatSet(const PwrRepeatSet& pItem)
 	this->Copy(pItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pItem - Pointer of input item
+ * @return	Nones
+ */
 PwrRepeatSet& PwrRepeatSet::operator=(const PwrRepeatSet& pItem)
 {
 	// Copy data
@@ -316,15 +272,12 @@ PwrRepeatSet& PwrRepeatSet::operator=(const PwrRepeatSet& pItem)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another Repeat set data
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another Repeat set data
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void PwrRepeatSet::Copy(const PwrRepeatSet& pItem)
 {
 	// Do not copy itself
@@ -337,15 +290,12 @@ void PwrRepeatSet::Copy(const PwrRepeatSet& pItem)
 	m_byRepeatDays = pItem.m_byRepeatDays;					// Days of week (for repeating)
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare data with another Repeat set data
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Compare data with another Repeat set data
+ * @param	pItem - Pointer of input item
+ * @return	TRUE/FALSE
+ */
 BOOL PwrRepeatSet::Compare(const PwrRepeatSet& pItem) const
 {
 	BOOL bRetCompare = TRUE;
@@ -359,13 +309,10 @@ BOOL PwrRepeatSet::Compare(const PwrRepeatSet& pItem) const
 	return bRetCompare;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ScheduleItem
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 ScheduleItem::ScheduleItem()
 {
 	// Initialize
@@ -392,15 +339,12 @@ ScheduleItem::ScheduleItem(const ScheduleItem& pItem)
 	this->Copy(pItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 ScheduleItem& ScheduleItem::operator=(const ScheduleItem& pItem)
 {
 	// Copy data
@@ -408,15 +352,12 @@ ScheduleItem& ScheduleItem::operator=(const ScheduleItem& pItem)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another schedule item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another schedule item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void ScheduleItem::Copy(const ScheduleItem& pItem)
 {
 	// Do not copy itself
@@ -430,15 +371,12 @@ void ScheduleItem::Copy(const ScheduleItem& pItem)
 	m_rpsRepeatSet.Copy(pItem.m_rpsRepeatSet);			// Repeat set data
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare with another given item
-//  Arguments:		pItem - Pointer of given item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Compare with another given item
+ * @param	pItem - Pointer of given item
+ * @return	TRUE/FALSE
+ */
 BOOL ScheduleItem::Compare(const ScheduleItem& pItem) const
 {
 	BOOL bRet = TRUE;
@@ -453,15 +391,12 @@ BOOL ScheduleItem::Compare(const ScheduleItem& pItem) const
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsEmpty
-//	Description:	Check if schedule item is empty
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Check if schedule item is empty
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL ScheduleItem::IsEmpty(void) const
 {
 	// Initialize an empty item
@@ -471,15 +406,12 @@ BOOL ScheduleItem::IsEmpty(void) const
 	return this->Compare(schDummyItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Print
-//	Description:	Print schedule item
-//  Arguments:		outputString - Output printed string
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Print schedule item
+ * @param	outputString - Output printed string
+ * @return	None
+ */
 void ScheduleItem::Print(String& outputString) const
 {
 	// Use table, language and core functions
@@ -502,13 +434,10 @@ void ScheduleItem::Print(String& outputString) const
 					enableState, m_nItemID, actionName, timeFormat, repeatState);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ScheduleData
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 ScheduleData::ScheduleData()
 {
 	// Initialize
@@ -522,15 +451,12 @@ ScheduleData::ScheduleData(const ScheduleData& pData)
 	this->Copy(pData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 ScheduleData& ScheduleData::operator=(const ScheduleData& pData)
 {
 	// Copy data
@@ -538,15 +464,12 @@ ScheduleData& ScheduleData::operator=(const ScheduleData& pData)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Init
-//	Description:	Init Action Schedule data (NULL)
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Init Action Schedule data (NULL)
+ * @param	None
+ * @return	None
+ */
 void ScheduleData::Init()
 {
 	// Initialize
@@ -554,15 +477,12 @@ void ScheduleData::Init()
 	m_arrSchedExtraItemList.clear();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another Action Schedule data
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another Action Schedule data
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 void ScheduleData::Copy(const ScheduleData& pData)
 {
 	// Do not copy itself
@@ -581,30 +501,24 @@ void ScheduleData::Copy(const ScheduleData& pData)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetDefaultData
-//	Description:	Set default for schedule data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Set default for schedule data
+ * @param	None
+ * @return	None
+ */
 void ScheduleData::SetDefaultData(void)
 {
 	// Reset data
 	this->Init();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Add
-//	Description:	Add an Action Schedule item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	DWORD - Error code
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Add an Action Schedule item
+ * @param	pItem - Pointer of input item
+ * @return	DWORD - Error code
+ */
 DWORD ScheduleData::Add(const ScheduleItem& pItem)
 {
 	// If item is empty, can not update
@@ -670,15 +584,12 @@ DWORD ScheduleData::Add(const ScheduleItem& pItem)
 	return Error::Success;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Update
-//	Description:	Update a Action Schedule item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	DWORD - Error code
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update a Action Schedule item
+ * @param	pItem - Pointer of input item
+ * @return	DWORD - Error code
+ */
 DWORD ScheduleData::Update(const ScheduleItem& pItem)
 {
 	// If default item or extra schedule data is currently empty
@@ -720,15 +631,12 @@ DWORD ScheduleData::Update(const ScheduleItem& pItem)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Remove
-//	Description:	Remove a schedule item by index
-//  Arguments:		nAtIndex - Index of item to remove
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Remove a schedule item by index
+ * @param	nAtIndex - Index of item to remove
+ * @return	None
+ */
 void ScheduleData::Remove(int nAtIndex)
 {
 	// Check index validity
@@ -742,15 +650,12 @@ void ScheduleData::Remove(int nAtIndex)
 	schItem.Copy(ScheduleItem());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all Action Schedule data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Remove all Action Schedule data
+ * @param	None
+ * @return	None
+ */
 void ScheduleData::RemoveAll(void)
 {
 	// Remove each item
@@ -759,15 +664,12 @@ void ScheduleData::RemoveAll(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Adjust
-//	Description:	Adjust Action Schedule data validity
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Adjust Action Schedule data validity
+ * @param	None
+ * @return	None
+ */
 void ScheduleData::Adjust(void)
 {
 	// If default item is empty but extra data is not
@@ -790,15 +692,12 @@ void ScheduleData::Adjust(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetNextID
-//	Description:	Get next item ID (to add new item)
-//  Arguments:		None
-//  Return value:	UINT
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get next item ID (to add new item)
+ * @param	None
+ * @return	UINT
+ */
 UINT ScheduleData::GetNextID(void)
 {
 	// Get currently max ID
@@ -816,15 +715,12 @@ UINT ScheduleData::GetNextID(void)
 	return nRetNextID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsExtraEmpty
-//	Description:	Check if extra data is empty
-//  Arguments:		None
-//  Return value:	BOOL - Result of all item empty
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Check if extra data is empty
+ * @param	None
+ * @return	BOOL - Result of all item empty
+ */
 BOOL ScheduleData::IsExtraEmpty(void) const
 {
 	// If there's no item, return TRUE
@@ -843,15 +739,12 @@ BOOL ScheduleData::IsExtraEmpty(void) const
 	return bExtraEmpty;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Delete
-//	Description:	Delete a reminder item by index
-//  Arguments:		nAtIndex - Index of item to delete
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Delete a reminder item by index
+ * @param	nAtIndex - Index of item to delete
+ * @return	None
+ */
 void ScheduleData::Delete(int nAtIndex)
 {
 	// Check index validity
@@ -880,30 +773,24 @@ void ScheduleData::Delete(int nAtIndex)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DeleteExtra
-//	Description:	Delete all Schedule extra items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Delete all Schedule extra items
+ * @param	None
+ * @return	None
+ */
 void ScheduleData::DeleteExtra(void)
 {
 	// Reset data
 	m_arrSchedExtraItemList.clear();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DeleteAll
-//	Description:	Delete all Action Schedule data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Delete all Action Schedule data
+ * @param	None
+ * @return	None
+ */
 void ScheduleData::DeleteAll(void)
 {
 	// Reset data
@@ -911,13 +798,10 @@ void ScheduleData::DeleteAll(void)
 	m_arrSchedExtraItemList.clear();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	HotkeySetItem
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 HotkeySetItem::HotkeySetItem()
 {
 	// Initialize
@@ -942,15 +826,12 @@ HotkeySetItem::HotkeySetItem(const HotkeySetItem& pItem)
 	this->Copy(pItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 HotkeySetItem& HotkeySetItem::operator=(const HotkeySetItem& pItem)
 {
 	// Copy data
@@ -958,15 +839,12 @@ HotkeySetItem& HotkeySetItem::operator=(const HotkeySetItem& pItem)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another Hotkeyset item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another Hotkeyset item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void HotkeySetItem::Copy(const HotkeySetItem& pItem)
 {
 	// Do not copy itself
@@ -979,15 +857,12 @@ void HotkeySetItem::Copy(const HotkeySetItem& pItem)
 	m_dwVirtualKey = pItem.m_dwVirtualKey;			// Virtual key code
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Print
-//	Description:	Print HotkeySet item
-//  Arguments:		outputString - Output printed string
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Print HotkeySet item
+ * @param	outputString - Output printed string
+ * @return	None
+ */
 void HotkeySetItem::Print(String& outputString) const
 {
 	// Use table and language functions
@@ -1008,15 +883,12 @@ void HotkeySetItem::Print(String& outputString) const
 	outputString.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  lpszEnable, lpszAction, keyStrokesStr.GetString());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PrintKeyStrokes
-//	Description:	Print HotkeySet item keystrokes data
-//  Arguments:		strOutput - Output printed keystrokes string
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Print HotkeySet item keystrokes data
+ * @param	strOutput - Output printed keystrokes string
+ * @return	None
+ */
 void HotkeySetItem::PrintKeyStrokes(String& strOutput) const
 {
 	// Use table and language functions
@@ -1035,13 +907,10 @@ void HotkeySetItem::PrintKeyStrokes(String& strOutput) const
 	strOutput = strKeyStrokes;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	HotkeySetData
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 HotkeySetData::HotkeySetData()
 {
 	// Initialize
@@ -1054,15 +923,12 @@ HotkeySetData::HotkeySetData(const HotkeySetData& pData)
 	this->Copy(pData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 HotkeySetData& HotkeySetData::operator=(const HotkeySetData& pData)
 {
 	// Copy data
@@ -1070,15 +936,12 @@ HotkeySetData& HotkeySetData::operator=(const HotkeySetData& pData)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another HotkeySet data
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another HotkeySet data
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 void HotkeySetData::Copy(const HotkeySetData& pData)
 {
 	// Do not copy itself
@@ -1094,15 +957,12 @@ void HotkeySetData::Copy(const HotkeySetData& pData)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetDefaultData
-//	Description:	Set default for HotkeySet data
-//  Arguments:		pcfgData - Pointer of HotkeySet data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Set default for HotkeySet data
+ * @param	pcfgData - Pointer of HotkeySet data
+ * @return	None
+ */
 void HotkeySetData::SetDefaultData(void)
 {
 	// Re-initialize data
@@ -1118,15 +978,12 @@ void HotkeySetData::SetDefaultData(void)
 	m_arrHotkeySetList.push_back(Item(HKID::hibernate));
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Add
-//	Description:	Add a hotkeyset item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Add a hotkeyset item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void HotkeySetData::Add(const Item& pItem)
 {
 	// If data list is current empty
@@ -1165,15 +1022,12 @@ void HotkeySetData::Add(const Item& pItem)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Update
-//	Description:	Update a hotkeyset item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Update a hotkeyset item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void HotkeySetData::Update(const Item& pItem)
 {
 	// If data list is current empty
@@ -1222,15 +1076,12 @@ void HotkeySetData::Update(const Item& pItem)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Remove
-//	Description:	Remove a hotkeyset item by index
-//  Arguments:		nAtIndex - Index of item to remove
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Remove a hotkeyset item by index
+ * @param	nAtIndex - Index of item to remove
+ * @return	None
+ */
 void HotkeySetData::Remove(int nAtIndex)
 {
 	// Check index validity
@@ -1245,15 +1096,12 @@ void HotkeySetData::Remove(int nAtIndex)
 	hksItem.SetKeyCode(NULL, NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all HotkeySet data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Remove all HotkeySet data
+ * @param	None
+ * @return	None
+ */
 void HotkeySetData::RemoveAll(void)
 {
 	// Remove each item
@@ -1262,15 +1110,12 @@ void HotkeySetData::RemoveAll(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Adjust
-//	Description:	Adjust HotkeySet data validity
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Adjust HotkeySet data validity
+ * @param	None
+ * @return	None
+ */
 void HotkeySetData::Adjust(void)
 {
 	DWORD dwCtrlKey, dwFuncKey;
@@ -1288,15 +1133,12 @@ void HotkeySetData::Adjust(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsAllEmpty
-//	Description:	Check if all item are empty
-//  Arguments:		None
-//  Return value:	BOOL - Result of all item empty
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Check if all item are empty
+ * @param	None
+ * @return	BOOL - Result of all item empty
+ */
 BOOL HotkeySetData::IsAllEmpty() const
 {
 	// If there's no item, return TRUE
@@ -1315,15 +1157,12 @@ BOOL HotkeySetData::IsAllEmpty() const
 	return bAllEmpty;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Delete
-//	Description:	Delete a hotkeyset item by index
-//  Arguments:		nAtIndex - Index of item to delete
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Delete a hotkeyset item by index
+ * @param	nAtIndex - Index of item to delete
+ * @return	None
+ */
 void HotkeySetData::Delete(int nAtIndex)
 {
 	// Check index validity
@@ -1351,16 +1190,13 @@ void HotkeySetData::Delete(int nAtIndex)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PrintKeyStrokes
-//	Description:	Print HotkeySet item keystrokes data by ID
-//  Arguments:		nHKID		 - Item hotkey ID
-//					outputString - Output printed keystrokes string
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Print HotkeySet item keystrokes data by ID
+ * @param	nHKID		 - Item hotkey ID
+ * @param	outputString - Output printed keystrokes string
+ * @return	None
+ */
 void HotkeySetData::PrintKeyStrokes(UINT nHKID, String& outputString) const
 {
 	// Search for hotkey ID and get keystrokes string
@@ -1378,13 +1214,10 @@ void HotkeySetData::PrintKeyStrokes(UINT nHKID, String& outputString) const
 	outputString = keyStrokesStr;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RmdMsgStyleSet
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 RmdMsgStyleSet::RmdMsgStyleSet()
 {
 	// Init data
@@ -1407,15 +1240,12 @@ RmdMsgStyleSet::RmdMsgStyleSet(const RmdMsgStyleSet& pItem)
 	this->Copy(pItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 RmdMsgStyleSet& RmdMsgStyleSet::operator=(const RmdMsgStyleSet& pItem)
 {
 	// Copy data
@@ -1423,15 +1253,12 @@ RmdMsgStyleSet& RmdMsgStyleSet::operator=(const RmdMsgStyleSet& pItem)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another Reminder message style set data
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another Reminder message style set data
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& pItem)
 {
 	// Do not copy itself
@@ -1451,15 +1278,12 @@ void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& pItem)
 	m_uiVMargin = pItem.m_uiVMargin;							// Display area vertical margin
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare data with another Repeat set data
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Compare data with another Repeat set data
+ * @param	pItem - Pointer of input item
+ * @return	TRUE/FALSE
+ */
 BOOL RmdMsgStyleSet::Compare(const RmdMsgStyleSet& pItem) const
 {
 	BOOL bRetCompare = TRUE;
@@ -1480,13 +1304,10 @@ BOOL RmdMsgStyleSet::Compare(const RmdMsgStyleSet& pItem) const
 	return bRetCompare;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PwrReminderItem
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 PwrReminderItem::PwrReminderItem()
 {
 	// Init data
@@ -1507,15 +1328,12 @@ PwrReminderItem::PwrReminderItem(const PwrReminderItem& pItem)
 	this->Copy(pItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 PwrReminderItem& PwrReminderItem::operator=(const PwrReminderItem& pItem)
 {
 	// Copy data
@@ -1523,15 +1341,12 @@ PwrReminderItem& PwrReminderItem::operator=(const PwrReminderItem& pItem)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another Power Reminder item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another Power Reminder item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 void PwrReminderItem::Copy(const PwrReminderItem& pItem)
 {
 	// Do not copy itself
@@ -1549,15 +1364,12 @@ void PwrReminderItem::Copy(const PwrReminderItem& pItem)
 	m_rmsMsgStyleSet.Copy(pItem.m_rmsMsgStyleSet);			// Reminder message style set
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsEmpty
-//	Description:	Check if Power Reminder item is empty
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Check if Power Reminder item is empty
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL PwrReminderItem::IsEmpty() const
 {
 	// Initialize an empty item
@@ -1567,15 +1379,12 @@ BOOL PwrReminderItem::IsEmpty() const
 	return this->Compare(pwrDummyItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Compare
-//	Description:	Compare with another given item
-//  Arguments:		pItem - Pointer of given item
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Compare with another given item
+ * @param	pItem - Pointer of given item
+ * @return	TRUE/FALSE
+ */
 BOOL PwrReminderItem::Compare(const PwrReminderItem& pItem) const
 {
 	BOOL bRet = TRUE;
@@ -1593,15 +1402,12 @@ BOOL PwrReminderItem::Compare(const PwrReminderItem& pItem) const
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsAllowSnoozing
-//	Description:	Check if item snooze mode is available
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Check if item snooze mode is available
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL PwrReminderItem::IsAllowSnoozing(void) const
 {
 	// If current eventID is not at settime
@@ -1623,15 +1429,12 @@ BOOL PwrReminderItem::IsAllowSnoozing(void) const
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Print
-//	Description:	Print reminder item
-//  Arguments:		outputString - Output printed string
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Print reminder item
+ * @param	outputString - Output printed string
+ * @return	None
+ */
 void PwrReminderItem::Print(String& outputString) const
 {
 	// Use table, language and core functions
@@ -1663,13 +1466,10 @@ void PwrReminderItem::Print(String& outputString) const
 		enableStr, m_nItemID, messageStr.GetString(), eventStr.GetString(), styleStr, m_rpsRepeatSet.IsRepeatEnabled());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PwrReminderData
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 PwrReminderData::PwrReminderData()
 {
 	// Initialize
@@ -1683,15 +1483,12 @@ PwrReminderData::PwrReminderData(const PwrReminderData& pData)
 	this->Copy(pData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 PwrReminderData& PwrReminderData::operator=(const PwrReminderData& pData)
 {
 	// Copy data
@@ -1699,15 +1496,12 @@ PwrReminderData& PwrReminderData::operator=(const PwrReminderData& pData)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Init
-//	Description:	Init Power Reminder data (NULL)
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Init Power Reminder data (NULL)
+ * @param	None
+ * @return	None
+ */
 void PwrReminderData::Init()
 {
 	// Initialize
@@ -1715,16 +1509,13 @@ void PwrReminderData::Init()
 	m_rmdCommonStyle = RmdMsgStyleSet();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another Power Reminder data
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::Copy(const PwrReminderData& pData)
+/**
+ * @brief	Copy data from another Power Reminder data
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
+ void PwrReminderData::Copy(const PwrReminderData& pData)
 {
 	// Do not copy itself
 	if (this == &pData) return;
@@ -1742,31 +1533,25 @@ void PwrReminderData::Copy(const PwrReminderData& pData)
 	this->m_rmdCommonStyle.Copy(pData.m_rmdCommonStyle);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetDefaultData
-//	Description:	Set default for Power Reminder data
-//  Arguments:		ppwrData - Pointer of Power Reminder data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::SetDefaultData(void)
+/**
+ * @brief	Set default for Power Reminder data
+ * @param	ppwrData - Pointer of Power Reminder data
+ * @return	None
+ */
+ void PwrReminderData::SetDefaultData(void)
 {
 	// Re-initialize data
 	this->Init();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Add
-//	Description:	Add a Power Reminder item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::Add(const PwrReminderItem& pItem)
+/**
+ * @brief	Add a Power Reminder item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
+ void PwrReminderData::Add(const PwrReminderItem& pItem)
 {
 	// If data list is current empty
 	if (m_arrRmdItemList.empty()) {
@@ -1807,16 +1592,13 @@ void PwrReminderData::Add(const PwrReminderItem& pItem)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Update
-//	Description:	Update a Power Reminder item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::Update(const PwrReminderItem& pItem)
+/**
+ * @brief	Update a Power Reminder item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
+ void PwrReminderData::Update(const PwrReminderItem& pItem)
 {
 	// If data list is current empty
 	if (m_arrRmdItemList.empty()) {
@@ -1845,16 +1627,13 @@ void PwrReminderData::Update(const PwrReminderItem& pItem)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Remove
-//	Description:	Remove a reminder item by index
-//  Arguments:		nAtIndex - Index of item to remove
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::Remove(int nAtIndex)
+/**
+ * @brief	Remove a reminder item by index
+ * @param	nAtIndex - Index of item to remove
+ * @return	None
+ */
+ void PwrReminderData::Remove(int nAtIndex)
 {
 	// Check index validity
 	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
@@ -1867,16 +1646,13 @@ void PwrReminderData::Remove(int nAtIndex)
 	pwrItem.Copy(PwrReminderItem());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all Power Reminder data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::RemoveAll(void)
+/**
+ * @brief	Remove all Power Reminder data
+ * @param	None
+ * @return	None
+ */
+ void PwrReminderData::RemoveAll(void)
 {
 	// Remove each item
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
@@ -1884,16 +1660,13 @@ void PwrReminderData::RemoveAll(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Adjust
-//	Description:	Adjust Power Reminder data validity
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::Adjust(void)
+/**
+ * @brief	Adjust Power Reminder data validity
+ * @param	None
+ * @return	None
+ */
+ void PwrReminderData::Adjust(void)
 {
 	// Remove garbage items
 	for (int nIndex = (GetItemNum() - 1); nIndex >= 0; nIndex--) {
@@ -1906,16 +1679,13 @@ void PwrReminderData::Adjust(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetNextID
-//	Description:	Get next item ID (to add new item)
-//  Arguments:		None
-//  Return value:	UINT
-//
-//////////////////////////////////////////////////////////////////////////
 
-UINT PwrReminderData::GetNextID(void)
+/**
+ * @brief	Get next item ID (to add new item)
+ * @param	None
+ * @return	UINT
+ */
+ UINT PwrReminderData::GetNextID(void)
 {
 	// Get max ID
 	UINT nRetNextID = PwrReminderData::minItemID;
@@ -1932,16 +1702,13 @@ UINT PwrReminderData::GetNextID(void)
 	return nRetNextID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsAllEmpty
-//	Description:	Check if all item are empty
-//  Arguments:		None
-//  Return value:	BOOL - Result of all item empty
-//
-//////////////////////////////////////////////////////////////////////////
 
-BOOL PwrReminderData::IsAllEmpty() const
+/**
+ * @brief	Check if all item are empty
+ * @param	None
+ * @return	BOOL - Result of all item empty
+ */
+ BOOL PwrReminderData::IsAllEmpty() const
 {
 	// If there's no item, return TRUE
 	if (m_arrRmdItemList.empty())
@@ -1959,16 +1726,13 @@ BOOL PwrReminderData::IsAllEmpty() const
 	return bAllEmpty;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Delete
-//	Description:	Delete a reminder item by index
-//  Arguments:		nAtIndex - Index of item to delete
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrReminderData::Delete(int nAtIndex)
+/**
+ * @brief	Delete a reminder item by index
+ * @param	nAtIndex - Index of item to delete
+ * @return	None
+ */
+ void PwrReminderData::Delete(int nAtIndex)
 {
 	// Check index validity
 	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
@@ -1998,14 +1762,11 @@ void PwrReminderData::Delete(int nAtIndex)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PwrRuntimeItem
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
-PwrRuntimeItem::PwrRuntimeItem()
+/**
+ * @brief	Constructor
+ */
+ PwrRuntimeItem::PwrRuntimeItem()
 {
 	// Init data
 	m_nCategory = INT_INVALID;								// Item category
@@ -2022,15 +1783,12 @@ PwrRuntimeItem::PwrRuntimeItem(const PwrRuntimeItem& pItem)
 	this->Copy(pItem);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 PwrRuntimeItem& PwrRuntimeItem::operator=(const PwrRuntimeItem& pItem)
 {
 	// Copy data
@@ -2038,16 +1796,13 @@ PwrRuntimeItem& PwrRuntimeItem::operator=(const PwrRuntimeItem& pItem)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another Power++ runtime info item
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
-void PwrRuntimeItem::Copy(const PwrRuntimeItem& pItem)
+/**
+ * @brief	Copy data from another Power++ runtime info item
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
+ void PwrRuntimeItem::Copy(const PwrRuntimeItem& pItem)
 {
 	// Do not copy itself
 	if (this == &pItem) return;
@@ -2061,14 +1816,11 @@ void PwrRuntimeItem::Copy(const PwrRuntimeItem& pItem)
 	m_stNextSnoozeTime = pItem.m_stNextSnoozeTime;			// Next snooze trigger time
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	HistoryInfoData
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
-HistoryInfoData::HistoryInfoData()
+/**
+ * @brief	Constructor
+ */
+ HistoryInfoData::HistoryInfoData()
 {
 	// Init data
 	m_bInitState = FALSE;									// Init state
@@ -2087,15 +1839,12 @@ HistoryInfoData::HistoryInfoData(const HistoryInfoData& pData)
 	this->Copy(pData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 HistoryInfoData& HistoryInfoData::operator=(const HistoryInfoData& pData)
 {
 	// Copy data
@@ -2103,15 +1852,12 @@ HistoryInfoData& HistoryInfoData::operator=(const HistoryInfoData& pData)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another action history data
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another action history data
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 void HistoryInfoData::Copy(const HistoryInfoData& pData)
 {
 	// Do not copy itself
@@ -2128,15 +1874,12 @@ void HistoryInfoData::Copy(const HistoryInfoData& pData)
 	m_strDescription = pData.m_strDescription;				// History description (attached info)
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Init
-//	Description:	Initialization
-//  Arguments:		nCategoryID - Category ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialization
+ * @param	nCategoryID - Category ID
+ * @return	None
+ */
 void HistoryInfoData::Init(UINT nCategoryID)
 {
 	// Reset data
@@ -2148,13 +1891,10 @@ void HistoryInfoData::Init(UINT nCategoryID)
 	m_strDescription = Constant::String::Empty;				// History description (attached info)
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SystemEvent
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 SystemEvent::SystemEvent(EventID eventID)
 {
 	// Initialize
@@ -2169,15 +1909,12 @@ SystemEvent::SystemEvent(const SystemEvent& pItem)
 	m_timeStamp = pItem.m_timeStamp;						// Event timestamp
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pItem - Pointer of input item
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pItem - Pointer of input item
+ * @return	None
+ */
 SystemEvent& SystemEvent::operator=(const SystemEvent& pItem)
 {
 	// Copy data
@@ -2185,13 +1922,10 @@ SystemEvent& SystemEvent::operator=(const SystemEvent& pItem)
 	m_timeStamp = pItem.m_timeStamp;						// Event timestamp
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SystemEventTracker
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 SystemEventTracker::SystemEventTracker()
 {
 	// Initialize
@@ -2204,28 +1938,22 @@ SystemEventTracker::SystemEventTracker(const SystemEventTracker& pData)
 	m_arrTrackingData = pData.m_arrTrackingData;			// System event tracking data
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 SystemEventTracker& SystemEventTracker::operator=(const SystemEventTracker& pData)
 {
 	// Copy data
 	m_arrTrackingData = pData.m_arrTrackingData;			// System event tracking data
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Substring
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 Substring::Substring()
 {
 	// Initialization
@@ -2240,15 +1968,12 @@ Substring::Substring(const Substring& pData)
 	this->Copy(pData);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	operator=
-//	Description:	Copy assignment operator
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy assignment operator
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 Substring& Substring::operator=(const Substring& pData)
 {
 	// Copy data
@@ -2256,15 +1981,12 @@ Substring& Substring::operator=(const Substring& pData)
 	return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Copy
-//	Description:	Copy data from another substring data
-//  Arguments:		pData - Pointer of input data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Copy data from another substring data
+ * @param	pData - Pointer of input data
+ * @return	None
+ */
 void Substring::Copy(const Substring& pData)
 {
 	// Do not copy itself
@@ -2276,15 +1998,12 @@ void Substring::Copy(const Substring& pData)
 	m_strRight = pData.m_strRight;			// Right part
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveAll
-//	Description:	Remove all registry key info data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Remove all registry key info data
+ * @param	None
+ * @return	None
+ */
 void Substring::RemoveAll(void)
 {
 	// Reset data
@@ -2293,16 +2012,13 @@ void Substring::RemoveAll(void)
 	m_strRight.Empty();						// Right part
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	StringFormat
-//	Description:	Format string (same as default MFC Format function)
-//  Arguments:		formatTemplateID  - ID of resource format template string
-//					...				  - Same as default MFC Format function
-//  Return value:	String - Returned formatted string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Format string (same as default MFC Format function)
+ * @param	formatTemplateID  - ID of resource format template string
+ * @param	...				  - Same as default MFC Format function
+ * @return	String - Returned formatted string
+ */
 String StringUtils::StringFormat(UINT formatTemplateID, ...)
 {
 	// Load resource format template string
@@ -2325,16 +2041,13 @@ String StringUtils::StringFormat(UINT formatTemplateID, ...)
 	return resultString;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	StringFormat
-//	Description:	Format string (same as default MFC Format function)
-//  Arguments:		formatTemplate - Format template string
-//					...			   - Same as default MFC Format function
-//  Return value:	String	- Returned formatted string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Format string (same as default MFC Format function)
+ * @param	formatTemplate - Format template string
+ * @param	...			   - Same as default MFC Format function
+ * @return	String	- Returned formatted string
+ */
 String StringUtils::StringFormat(const wchar_t* formatTemplate, ...)
 {
 	// Template string validation
@@ -2352,15 +2065,12 @@ String StringUtils::StringFormat(const wchar_t* formatTemplate, ...)
 	return resultString;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadResourceString
-//	Description:	Load resource ID and return the string
-//  Arguments:		nResStringID - ID of resource string
-//  Return value:	String	- Returned resource string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Load resource ID and return the string
+ * @param	nResStringID - ID of resource string
+ * @return	String	- Returned resource string
+ */
 String StringUtils::LoadResourceString(UINT resourceStringID)
 {
 	// Output result
@@ -2386,16 +2096,13 @@ String StringUtils::LoadResourceString(UINT resourceStringID)
 	return resultString;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadResourceString
-//	Description:	Load resource ID and return the string
-//  Arguments:		strResult	 - Returned resource string
-//					nResStringID - ID of resource string
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Load resource ID and return the string
+ * @param	strResult	 - Returned resource string
+ * @param	nResStringID - ID of resource string
+ * @return	TRUE/FALSE
+ */
 bool StringUtils::LoadResourceString(String& resultStr, UINT resourceStringID)
 {
 	// Output result
@@ -2423,15 +2130,12 @@ bool StringUtils::LoadResourceString(String& resultStr, UINT resourceStringID)
 	return true;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadResourceTextFile
-//	Description:	Load resource text file by ID and return the text data
-//  Arguments:		resourceFileID - ID of the file in resource
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Load resource text file by ID and return the text data
+ * @param	resourceFileID - ID of the file in resource
+ * @return	TRUE/FALSE
+ */
 String StringUtils::LoadResourceTextData(UINT resourceFileID)
 {
 	// Empty result text data
@@ -2463,15 +2167,12 @@ String StringUtils::LoadResourceTextData(UINT resourceFileID)
 	return resultTextData;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetApplicationPath
-//	Description:	Get application executable file path
-//  Arguments:		includeExeName - Including executable file name
-//  Return value:	String - Return application path
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get application executable file path
+ * @param	includeExeName - Including executable file name
+ * @return	String - Return application path
+ */
 String StringUtils::GetApplicationPath(bool includeExeName)
 {
 	// Get the application's module handle
@@ -2502,15 +2203,12 @@ String StringUtils::GetApplicationPath(bool includeExeName)
 	return retAppPath;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetSubFolderPath
-//	Description:	Get full sub-folder path
-//  Arguments:		lpszSubFolderName - Subfolder name
-//  Return value:	String
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get full sub-folder path
+ * @param	lpszSubFolderName - Subfolder name
+ * @return	String
+ */
 String StringUtils::GetSubFolderPath(const wchar_t* subFolderName)
 {
 	// Get application executable file path
@@ -2529,17 +2227,14 @@ String StringUtils::GetSubFolderPath(const wchar_t* subFolderName)
 	return retSubFolderPath;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	MakeFilePath
-//	Description:	Make file path by given part names
-//  Arguments:		directory - Directory path
-//					fileName  - File name
-//					extension - File extension
-//  Return value:	String
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Make file path by given part names
+ * @param	directory - Directory path
+ * @param	fileName  - File name
+ * @param	extension - File extension
+ * @return	String
+ */
 String StringUtils::MakeFilePath(const wchar_t* directory, const wchar_t* fileName, const wchar_t* extension)
 {
 	// Format file path
@@ -2572,16 +2267,13 @@ String StringUtils::MakeFilePath(const wchar_t* directory, const wchar_t* fileNa
 	return strFilePath;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetProductVersion
-//	Description:	Get app executable file product version info
-//  Arguments:		isFullVersion - Full product version number (x.x.x.x) 
-//								    or short version number (x.x)
-//  Return value:	String - Product version string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get app executable file product version info
+ * @param	isFullVersion - Full product version number (x.x.x.x)
+ * @param	or short version number (x.x)
+ * @return	String - Product version string
+ */
 String StringUtils::GetProductVersion(bool isFullVersion)
 {
 	// Get product file name
@@ -2652,16 +2344,13 @@ String StringUtils::GetProductVersion(bool isFullVersion)
 	return productVersion;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetProductVersion
-//	Description:	Get app executable file product version info
-//  Arguments:		fullVersion  - Full product version number (x.x.x.x) 
-//					shortVersion - Short product version number (x.x)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get app executable file product version info
+ * @param	fullVersion  - Full product version number (x.x.x.x)
+ * @param	shortVersion - Short product version number (x.x)
+ * @return	TRUE/FALSE
+ */
 bool StringUtils::GetProductVersion(String& fullVersion, String& shortVersion)
 {
 	// Get product file name
@@ -2731,15 +2420,12 @@ bool StringUtils::GetProductVersion(String& fullVersion, String& shortVersion)
 	return true;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetDeviceName
-//	Description:	Get the computer device name
-//  Arguments:		deviceName - Device name (out)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get the computer device name
+ * @param	deviceName - Device name (out)
+ * @return	TRUE/FALSE
+ */
 bool StringUtils::GetDeviceName(String& deviceName)
 {
 	// Empty the output string
@@ -2760,15 +2446,12 @@ bool StringUtils::GetDeviceName(String& deviceName)
 	return true;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCurrentUserName
-//	Description:	Get the current Windows user name
-//  Arguments:		userName - User name (out)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get the current Windows user name
+ * @param	userName - User name (out)
+ * @return	TRUE/FALSE
+ */
 bool StringUtils::GetCurrentUserName(String& userName)
 {
 	// Empty the output string
@@ -2789,16 +2472,13 @@ bool StringUtils::GetCurrentUserName(String& userName)
 	return true;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PrintCharList
-//	Description:	Print list of characters of given string
-//  Arguments:		srcStr	  - Given string
-//					outputStr - Result string
-//  Return value:	int - Number of characters
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Print list of characters of given string
+ * @param	srcStr	  - Given string
+ * @param	outputStr - Result string
+ * @return	int - Number of characters
+ */
 int StringUtils::PrintCharList(const wchar_t* srcStr, String& outputStr)
 {
 	// Invalid source string
@@ -2848,15 +2528,12 @@ int StringUtils::PrintCharList(const wchar_t* srcStr, String& outputStr)
 	return nSrcLength;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCurrentClockTime
-//	Description:	Get current local clock-time (including milliseconds)
-//  Arguments:		None
-//  Return value:	ClockTime - Return clock-time data
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get current local clock-time (including milliseconds)
+ * @param	None
+ * @return	ClockTime - Return clock-time data
+ */
 ClockTime ClockTimeUtils::GetCurrentClockTime(void)
 {
 	SYSTEMTIME _tempSysTime{};
@@ -2865,15 +2542,12 @@ ClockTime ClockTimeUtils::GetCurrentClockTime(void)
 	return FromSystemTime(_tempSysTime);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FromSystemTime
-//	Description:	Convert Windows-based SYSTEMTIME to ClockTime data
-//  Arguments:		sysTime - Windows-based SYSTEMTIME data
-//  Return value:	ClockTime - Return clock-time data
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Convert Windows-based SYSTEMTIME to ClockTime data
+ * @param	sysTime - Windows-based SYSTEMTIME data
+ * @return	ClockTime - Return clock-time data
+ */
 ClockTime ClockTimeUtils::FromSystemTime(SYSTEMTIME sysTime)
 {
 	int hour = static_cast<int>(sysTime.wHour);
@@ -2884,15 +2558,12 @@ ClockTime ClockTimeUtils::FromSystemTime(SYSTEMTIME sysTime)
 	return ClockTime(hour, minute, second, millisecs);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ToSystemTime
-//	Description:	Convert ClockTime data to Windows-based SYSTEMTIME data
-//  Arguments:		clockTime - Clock-time data
-//  Return value:	SYSTEMTIME - Return Windows-based SYSTEMTIME data
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Convert ClockTime data to Windows-based SYSTEMTIME data
+ * @param	clockTime - Clock-time data
+ * @return	SYSTEMTIME - Return Windows-based SYSTEMTIME data
+ */
 SYSTEMTIME ClockTimeUtils::ToSystemTime(const ClockTime& clockTime)
 {
 	SYSTEMTIME _sysTime{};
@@ -2904,16 +2575,13 @@ SYSTEMTIME ClockTimeUtils::ToSystemTime(const ClockTime& clockTime)
 	return _sysTime;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InputText2Time
-//	Description:	Convert editbox input text into valid time value
-//  Arguments:		stTime		- Return time data (ref-value)
-//					inputText	- Input text
-//  Return value:	bool - Result of converting process
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Convert editbox input text into valid time value
+ * @param	stTime		- Return time data (ref-value)
+ * @param	inputText	- Input text
+ * @return	bool - Result of converting process
+ */
 bool ClockTimeUtils::InputText2Time(ClockTime& clockTime, const wchar_t* inputText)
 {
 	// Check input text validity
@@ -2992,17 +2660,14 @@ bool ClockTimeUtils::InputText2Time(ClockTime& clockTime, const wchar_t* inputTe
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InputText2TimeBase
-//	Description:	Convert editbox input text into valid time value 
-//  Arguments:		stTime		- Return time data (ref-value)
-//					inputText	- Input text
-//  Return value:	bool - Result of converting process
-//	Note:			Old/base function (no longer used)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Convert editbox input text into valid time value
+ * @param	stTime		- Return time data (ref-value)
+ * @param	inputText	- Input text
+ * @return	bool - Result of converting process
+ * @note	Old/base function (no longer used)
+ */
 bool ClockTimeUtils::InputText2TimeBase(ClockTime& clockTime, const wchar_t* inputText)
 {
 	// Check input text validity
@@ -3067,16 +2732,13 @@ bool ClockTimeUtils::InputText2TimeBase(ClockTime& clockTime, const wchar_t* inp
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SpinPos2Time
-//	Description:	Convert timespin position to time value
-//  Arguments:		stTime  - Return time data (ref-value)
-//					nPos	- Input spin position
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Convert timespin position to time value
+ * @param	stTime  - Return time data (ref-value)
+ * @param	nPos	- Input spin position
+ * @return	None
+ */
 void ClockTimeUtils::SpinPos2Time(ClockTime& clockTime, int nPos)
 {
 	// Invalid input position
@@ -3096,16 +2758,13 @@ void ClockTimeUtils::SpinPos2Time(ClockTime& clockTime, int nPos)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Time2SpinPos
-//	Description:	Convert time value to timespin position
-//  Arguments:		stTime  - Return time data
-//					nPos	- Input spin position (ref-value)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Convert time value to timespin position
+ * @param	stTime  - Return time data
+ * @param	nPos	- Input spin position (ref-value)
+ * @return	None
+ */
 void ClockTimeUtils::Time2SpinPos(const ClockTime& clockTime, int& nPos)
 {
 	// Convert
@@ -3118,18 +2777,13 @@ void ClockTimeUtils::Time2SpinPos(const ClockTime& clockTime, int& nPos)
 		nPos = Constant::Max::TimeSpin;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CalculateOffset
-//	Description:	Calculate time with given offset in seconds
-//  Arguments:		clockTime - Clock-time data (in/out)
-//					offInSecs - Offset value (in seconds)
-//  Return value:	None
-//  Notes:			Positive 'offInSecs' value means increasing
-//					Negative 'offInSecs' value means decreasing
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Calculate time with given offset in seconds
+ * @param	clockTime - Clock-time data (in/out)
+ * @param	offInSecs - Offset value (in seconds)
+ * @return	None
+ */
 void ClockTimeUtils::CalculateOffset(ClockTime& clockTime, int offInSecs)
 {
 	if (offInSecs < 0)
@@ -3138,18 +2792,15 @@ void ClockTimeUtils::CalculateOffset(ClockTime& clockTime, int offInSecs)
 		clockTime.IncreaseSeconds(offInSecs);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsMatching
-//	Description:	Clock-time comparison with allowable offset in seconds
-//  Arguments:		thisTime  - This clock-time data
-//					otherTime - The other clock-time data to compare
-//					offInSecs - Offset value (in seconds, 0 by default)
-//  Return value:	TRUE/FALSE - Clock-time values are matching or
-//								 different within the allowable offset
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Clock-time comparison with allowable offset in seconds
+ * @param	thisTime  - This clock-time data
+ * @param	otherTime - The other clock-time data to compare
+ * @param	offInSecs - Offset value (in seconds, 0 by default)
+ * @return	TRUE/FALSE - Clock-time values are matching or
+ * @return	different within the allowable offset
+ */
 bool ClockTimeUtils::IsMatching(ClockTime thisTime, ClockTime otherTime, int offInSecs /* = 0 */)
 {
 	TimeSpan _diff = thisTime - otherTime;
@@ -3158,21 +2809,17 @@ bool ClockTimeUtils::IsMatching(ClockTime thisTime, ClockTime otherTime, int off
 		return (_diffInSecs == 0);
 	else if (offInSecs > 0)
 		return (_diffInSecs >= 0 && _diffInSecs <= offInSecs);
-	else /* if (offInSecs < 0) */
-		return (_diffInSecs >= offInSecs && _diffInSecs <= 0);
+	else /* if (offInSecs < 0) */		return (_diffInSecs >= offInSecs && _diffInSecs <= 0);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Format
-//	Description:	Format clock-time value for displaying or printing
-//  Arguments:		pLang	  - Language table pointer
-//					nFormatID - Format string ID
-//					clockTime - Given clock-time data
-//  Return value:	String - Format clock-time string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Format clock-time value for displaying or printing
+ * @param	pLang	  - Language table pointer
+ * @param	nFormatID - Format string ID
+ * @param	clockTime - Given clock-time data
+ * @return	String - Format clock-time string
+ */
 String ClockTimeUtils::Format(LANGTABLE_PTR pLang, UINT nFormatID, const ClockTime& clockTime)
 {
 	// Load format string
@@ -3180,17 +2827,14 @@ String ClockTimeUtils::Format(LANGTABLE_PTR pLang, UINT nFormatID, const ClockTi
 	return Format(pLang, formatString, clockTime);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Format
-//	Description:	Format clock-time value for displaying or printing
-//  Arguments:		pLang		 - Language table pointer
-//					formatString - Format string
-//					clockTime	 - Given clock-time data
-//  Return value:	String - Format clock-time string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Format clock-time value for displaying or printing
+ * @param	pLang		 - Language table pointer
+ * @param	formatString - Format string
+ * @param	clockTime	 - Given clock-time data
+ * @return	String - Format clock-time string
+ */
 String ClockTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const ClockTime& clockTime)
 {
 	// Format time string
@@ -3202,15 +2846,12 @@ String ClockTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, 
 	return StringUtils::StringFormat(formatString, hourVal, minuteVal, timePeriodFormat);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCurrentDateTime
-//	Description:	Get current local date/time (including milliseconds)
-//  Arguments:		None
-//  Return value:	DateTime - Return date/time data
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get current local date/time (including milliseconds)
+ * @param	None
+ * @return	DateTime - Return date/time data
+ */
 DateTime DateTimeUtils::GetCurrentDateTime(void)
 {
 	SYSTEMTIME _tempSysTime{};
@@ -3219,15 +2860,12 @@ DateTime DateTimeUtils::GetCurrentDateTime(void)
 	return FromSystemTime(_tempSysTime);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FromSystemTime
-//	Description:	Convert Windows-based SYSTEMTIME to DateTime data
-//  Arguments:		sysTime - Windows-based SYSTEMTIME data
-//  Return value:	DateTime - Return date/time data
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Convert Windows-based SYSTEMTIME to DateTime data
+ * @param	sysTime - Windows-based SYSTEMTIME data
+ * @return	DateTime - Return date/time data
+ */
 DateTime DateTimeUtils::FromSystemTime(SYSTEMTIME sysTime)
 {
 	int year = static_cast<int>(sysTime.wYear);
@@ -3241,15 +2879,12 @@ DateTime DateTimeUtils::FromSystemTime(SYSTEMTIME sysTime)
 	return DateTime(year, month, day, hour, minute, second, millisecs);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ToSystemTime
-//	Description:	Convert DateTime data to Windows-based SYSTEMTIME data
-//  Arguments:		dateTime - Date/time data
-//  Return value:	SYSTEMTIME - Return Windows-based SYSTEMTIME data
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Convert DateTime data to Windows-based SYSTEMTIME data
+ * @param	dateTime - Date/time data
+ * @return	SYSTEMTIME - Return Windows-based SYSTEMTIME data
+ */
 SYSTEMTIME DateTimeUtils::ToSystemTime(const DateTime& dateTime)
 {
 	SYSTEMTIME _sysTime{};
@@ -3265,17 +2900,14 @@ SYSTEMTIME DateTimeUtils::ToSystemTime(const DateTime& dateTime)
 	return _sysTime;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Format
-//	Description:	Format date/time value for displaying or printing
-//  Arguments:		pLang	  - Language table pointer
-//					nFormatID - Format string ID
-//					dateTime  - Given date/time data
-//  Return value:	String - Format date/time string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Format date/time value for displaying or printing
+ * @param	pLang	  - Language table pointer
+ * @param	nFormatID - Format string ID
+ * @param	dateTime  - Given date/time data
+ * @return	String - Format date/time string
+ */
 String DateTimeUtils::Format(LANGTABLE_PTR pLang, UINT nFormatID, const DateTime& dateTime)
 {
 	// Load format string
@@ -3283,17 +2915,14 @@ String DateTimeUtils::Format(LANGTABLE_PTR pLang, UINT nFormatID, const DateTime
 	return Format(pLang, formatString, dateTime);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Format
-//	Description:	Format date/time value for displaying or printing
-//  Arguments:		pLang		 - Language table pointer
-//					formatString - Format string
-//					dateTime	 - Given date/time data
-//  Return value:	String - Format time string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Format date/time value for displaying or printing
+ * @param	pLang		 - Language table pointer
+ * @param	formatString - Format string
+ * @param	dateTime	 - Given date/time data
+ * @return	String - Format time string
+ */
 String DateTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const DateTime& dateTime)
 {
 	// Format time string
@@ -3305,13 +2934,10 @@ String DateTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, c
 	return StringUtils::StringFormat(formatString, hourVal, minuteVal, timePeriodFormat);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PerformanceCounter
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 PerformanceCounter::PerformanceCounter()
 {
 	// Initialization
@@ -3319,28 +2945,22 @@ PerformanceCounter::PerformanceCounter()
 	QueryPerformanceFrequency(&m_liFrequency);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~PerformanceCounter
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Destructor
+ */
 PerformanceCounter::~PerformanceCounter()
 {
 	// Stop counting
 	this->Stop();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Start
-//	Description:	Start performance counter
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Start performance counter
+ * @param	None
+ * @return	None
+ */
 void PerformanceCounter::Start(void)
 {
 	// Start performance counter
@@ -3350,15 +2970,12 @@ void PerformanceCounter::Start(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Stop
-//	Description:	Stop performance counter
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Stop performance counter
+ * @param	None
+ * @return	None
+ */
 void PerformanceCounter::Stop(void)
 {
 	// Stop performance counter
@@ -3368,15 +2985,12 @@ void PerformanceCounter::Stop(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetElapsedTime
-//	Description:	Get function execution elapsed time
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get function execution elapsed time
+ * @param	None
+ * @return	None
+ */
 double PerformanceCounter::GetElapsedTime(BOOL bToMillisecs) const
 {
 	// Get elapsed time
@@ -3394,16 +3008,13 @@ double PerformanceCounter::GetElapsedTime(BOOL bToMillisecs) const
 //
 //////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetLanguageName
-//	Description:	Get the title name of current language
-//  Arguments:		nCurLanguage	- Current language ID
-//					bGetDescription - Get language package description
-//  Return value:	const wchar_t* - Language name
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get the title name of current language
+ * @param	nCurLanguage	- Current language ID
+ * @param	bGetDescription - Get language package description
+ * @return	const wchar_t* - Language name
+ */
 const wchar_t* Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription /* = FALSE */)
 {
 	// Load language table package
@@ -3420,15 +3031,12 @@ const wchar_t* Language::GetLanguageName(UINT nCurLanguage, BOOL bGetDescription
 	return retInfoString;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	LoadLanguageTable
-//	Description:	Load language table by specified language option
-//  Arguments:		nCurLanguage   - Current language ID
-//  Return value:	LANGTABLE_PTR - Language package pointer
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Load language table by specified language option
+ * @param	nCurLanguage   - Current language ID
+ * @return	LANGTABLE_PTR - Language package pointer
+ */
 LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage)
 {
 	LANGTABLE_PTR ptrLangTable = NULL;
@@ -3459,17 +3067,14 @@ LANGTABLE_PTR Language::LoadLanguageTable(UINT nCurLanguage)
 	return ptrLangTable;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetLanguageString
-//	Description:	Find and return language string by ID
-//  Arguments:		ptLanguage - Language package pointer
-//					nID		   - Language string ID
-//					pszResult  - Result string (reference-type)
-//  Return value:	const wchar_t*	- Language string
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Find and return language string by ID
+ * @param	ptLanguage - Language package pointer
+ * @param	nID		   - Language string ID
+ * @param	pszResult  - Result string (reference-type)
+ * @return	const wchar_t*	- Language string
+ */
 const wchar_t* Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID)
 {
 	// Return NULL string if language table is empty
@@ -3487,17 +3092,14 @@ const wchar_t* Language::GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID)
 	return Constant::String::Null;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExecutePowerAction
-//	Description:	Main power action function
-//  Arguments:		nActionType - Type of action
-//					nMessage	- Action message
-//					dwErrorCode - Return error code (ref-value)
-//  Return value:	BOOL - Result of action execution
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Main power action function
+ * @param	nActionType - Type of action
+ * @param	nMessage	- Action message
+ * @param	dwErrorCode - Return error code (ref-value)
+ * @return	BOOL - Result of action execution
+ */
 BOOL AppCore::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
 	BOOL bRet = TRUE;
@@ -3602,17 +3204,14 @@ BOOL AppCore::ExecutePowerAction(UINT nActionType, UINT nMessage, DWORD& dwErrCo
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExecutePowerActionDummy
-//	Description:	Dummy power action function (use for testing)
-//  Arguments:		nActionType - Type of action
-//					nMessage	- Action message
-//					dwErrorCode - Return error code (ref-value)
-//  Return value:	BOOL - Result of action execution
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Dummy power action function (use for testing)
+ * @param	nActionType - Type of action
+ * @param	nMessage	- Action message
+ * @param	dwErrorCode - Return error code (ref-value)
+ * @return	BOOL - Result of action execution
+ */
 BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dwErrCode)
 {
 	// Get action execution time
@@ -3687,15 +3286,12 @@ BOOL AppCore::ExecutePowerActionDummy(UINT nActionType, UINT nMessage, DWORD& dw
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	TraceError
-//	Description:	Output exception/error trace log string to log file
-//  Arguments:		traceLogA - Output trace log string (ANSI)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Output exception/error trace log string to log file
+ * @param	traceLogA - Output trace log string (ANSI)
+ * @return	None
+ */
 void AppCore::TraceError(const char* traceLogA)
 {
 	// Convert ANSI string to UNICODE
@@ -3703,31 +3299,25 @@ void AppCore::TraceError(const char* traceLogA)
 	TraceError(traceLogW);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	TraceError
-//	Description:	Output exception/error trace log string to log file
-//  Arguments:		traceLogW - Output trace log string (Unicode)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Output exception/error trace log string to log file
+ * @param	traceLogW - Output trace log string (Unicode)
+ * @return	None
+ */
 void AppCore::TraceError(const wchar_t* traceLogW)
 {
 	// Write trace log file: TraceError.log
 	WriteTraceErrorLogFile(traceLogW);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	TraceErrorFormat
-//	Description:	Format and output exception/error trace log string to log file
-//  Arguments:		lpszTraceLogFormatA - Trace log format string (ANSI)
-//					...				    - Same as default MFC Format function
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Format and output exception/error trace log string to log file
+ * @param	lpszTraceLogFormatA - Trace log format string (ANSI)
+ * @param	...				    - Same as default MFC Format function
+ * @return	None
+ */
 void AppCore::TraceErrorFormat(const char* traceLogFormatA, ...)
 {
 	ATLASSERT(AtlIsValidString(traceLogFormatA));
@@ -3744,16 +3334,13 @@ void AppCore::TraceErrorFormat(const char* traceLogFormatA, ...)
 	TraceError(strLogFormatA);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	TraceErrorFormat
-//	Description:	Format and output exception/error trace log string to log file
-//  Arguments:		lpszTraceLogFormatW - Trace log format string (Unicode)
-//					...				    - Same as default MFC Format function
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Format and output exception/error trace log string to log file
+ * @param	lpszTraceLogFormatW - Trace log format string (Unicode)
+ * @param	...				    - Same as default MFC Format function
+ * @return	None
+ */
 void AppCore::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
 {
 	ATLASSERT(AtlIsValidString(traceLogFormatW));
@@ -3770,17 +3357,14 @@ void AppCore::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
 	TraceError(logFormatStringW);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	TraceDebugInfo
-//	Description:	Output debug trace information log
-//  Arguments:		lpszFuncName - Code function name
-//					lpszFileName - Code file name
-//					nLineIndex	 - Code line number
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Output debug trace information log
+ * @param	lpszFuncName - Code function name
+ * @param	lpszFileName - Code file name
+ * @param	nLineIndex	 - Code line number
+ * @return	None
+ */
 void AppCore::TraceDebugInfo(const char* funcName, const char* fileName, int lineIndex)
 {
 	// Debug trace info
@@ -3794,16 +3378,13 @@ void AppCore::TraceDebugInfo(const char* funcName, const char* fileName, int lin
 	WriteTraceDebugLogFile(debugTraceFormat.GetString());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputDebugLog
-//	Description:	Output debug log string
-//  Arguments:		debugLog	- Debug log string (Unicode)
-//					forceOutput - Force output target
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Output debug log string
+ * @param	debugLog	- Debug log string (Unicode)
+ * @param	forceOutput - Force output target
+ * @return	None
+ */
 void AppCore::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_INVALID */)
 {
 	// Get debug mode enable state
@@ -3851,16 +3432,13 @@ void AppCore::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_I
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputDebugLogFormat
-//	Description:	Output debug log string format
-//  Arguments:		debugLogFormat - Debug log format string (Unicode)
-//					...			   - Same as default MFC Format function
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Output debug log string format
+ * @param	debugLogFormat - Debug log format string (Unicode)
+ * @param	...			   - Same as default MFC Format function
+ * @return	None
+ */
 void AppCore::OutputDebugLogFormat(const wchar_t* debugLogFormat, ...)
 {
 	ATLASSERT(AtlIsValidString(debugLogFormat));
@@ -3877,17 +3455,14 @@ void AppCore::OutputDebugLogFormat(const wchar_t* debugLogFormat, ...)
 	OutputDebugLog(logFormatString);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputDebugStringFormat
-//	Description:	Output debug string format (combined version of String.Format
-//					and the default OutputDebugString function)
-//  Arguments:		lpszDebugStringFormat - Debug log format string (Unicode)
-//					...					  - Same as default MFC Format function
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Output debug string format (combined version of String.Format
+					and the default OutputDebugString function)
+ * @param	lpszDebugStringFormat - Debug log format string (Unicode)
+ * @param	...					  - Same as default MFC Format function
+ * @return	None
+ */
 void AppCore::OutputDebugStringFormat(const wchar_t* debugStringFormat, ...)
 {
 	ATLASSERT(AtlIsValidString(debugStringFormat));
@@ -3904,17 +3479,14 @@ void AppCore::OutputDebugStringFormat(const wchar_t* debugStringFormat, ...)
 	OutputDebugString(logDebugStringFormat);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitTraceErrorLogFile
-//	Description:	Initialize trace error log file
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//	Notes:			TraceError.log
-//					File to output trace error detail log strings
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize trace error log file
+ * @param	None
+ * @return	TRUE/FALSE
+ * @note	Destination file: TraceError.log
+ * @note	To output trace error detail log strings
+ */
 static BOOL InitTraceErrorLogFile(void)
 {
 	// Get access to Global data
@@ -3965,17 +3537,14 @@ static BOOL InitTraceErrorLogFile(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ReleaseTraceErrorLogFile
-//	Description:	Release trace error log file
-//  Arguments:		None
-//  Return value:	None
-//	Notes:			TraceError.log
-//					File to output trace error detail log strings
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Release trace error log file
+ * @param	None
+ * @return	None
+ * @note	Destination file: TraceError.log
+ * @note	To output trace error detail log strings
+ */
 inline void ReleaseTraceErrorLogFile(void)
 {
 	// Get access to Global data
@@ -3993,18 +3562,14 @@ inline void ReleaseTraceErrorLogFile(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitTraceDebugLogFile
-//	Description:	Initialize trace debug log file
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//	Notes:			TraceDebug.log
-//					File to output trace debug log strings (including 
-//					the function name, code file and line where it failed)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize trace debug log file
+ * @param	None
+ * @return	TRUE/FALSE
+ * @note	Destination file: TraceDebug.log
+ * @note	To output trace debug log strings (including the function name, code file and line where it failed)
+ */
 static BOOL InitTraceDebugLogFile(void)
 {
 	// Get access to Global data
@@ -4055,18 +3620,14 @@ static BOOL InitTraceDebugLogFile(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ReleaseTraceDebugLogFile
-//	Description:	Release trace debug log file
-//  Arguments:		None
-//  Return value:	None
-//	Notes:			TraceDebug.log
-//					File to output trace debug log strings (including 
-//					the function name, code file and line where it failed)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Release trace debug log file
+ * @param	None
+ * @return	None
+ * @note	Destination file: TraceDebug.log
+ * @note	To output trace debug log strings (including the function name, code file and line where it failed)
+ */
 inline void ReleaseTraceDebugLogFile(void)
 {
 	// Get access to Global data
@@ -4084,18 +3645,14 @@ inline void ReleaseTraceDebugLogFile(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitDebugInfoLogFile
-//	Description:	Initialize debug info log file
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//	Notes:			DebugInfo.log
-//					File to output debug info log strings (similar to
-//					OutputDebugString, but output to file instead)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Initialize debug info log file
+ * @param	None
+ * @return	TRUE/FALSE
+ * @note	Destination file: DebugInfo.log
+ * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
+ */
 static BOOL InitDebugInfoLogFile(void)
 {
 	// Get access to Global data
@@ -4146,18 +3703,14 @@ static BOOL InitDebugInfoLogFile(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ReleaseDebugInfoLogFile
-//	Description:	Release debug info log file
-//  Arguments:		None
-//  Return value:	None
-//	Notes:			DebugInfo.log
-//					File to output debug info log strings (similar to
-//					OutputDebugString, but output to file instead)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Release debug info log file
+ * @param	None
+ * @return	None
+ * @note	Destination file: DebugInfo.log
+ * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
+ */
 inline void ReleaseDebugInfoLogFile(void)
 {
 	// Get access to Global data
@@ -4175,16 +3728,13 @@ inline void ReleaseDebugInfoLogFile(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	BackupOldLogFile
-//	Description:	Backup old log file
-//  Arguments:		filePath	- File path (in/out)
-//					logFileName	- Log file name
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Backup old log file
+ * @param	filePath	- File path (in/out)
+ * @param	logFileName	- Log file name
+ * @return	TRUE/FALSE
+ */
 BOOL AppCore::BackupOldLogFile(String& filePath, const wchar_t* logFileName)
 {
 	CFileFind Finder;
@@ -4223,17 +3773,14 @@ BOOL AppCore::BackupOldLogFile(String& filePath, const wchar_t* logFileName)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WriteTraceErrorLogFile
-//	Description:	Write trace error log string to file
-//  Arguments:		logStringW	- Log string
-//  Return value:	None
-//	Notes:			TraceError.log
-//					File to output trace error detail log strings
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Write trace error log string to file
+ * @param	logStringW	- Log string
+ * @return	None
+ * @note	Destination file: TraceError.log
+ * @note	To output trace error detail log strings
+ */
 void AppCore::WriteTraceErrorLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
@@ -4293,18 +3840,14 @@ void AppCore::WriteTraceErrorLogFile(const wchar_t* logStringW)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WriteTraceDebugLogFile
-//	Description:	Write trace debug log string to file
-//  Arguments:		logStringW	- Log string
-//  Return value:	None
-//	Notes:			TraceDebug.log
-//					File to output trace debug log strings (including 
-//					the function name, code file and line where it failed)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Write trace debug log string to file
+ * @param	logStringW	- Log string
+ * @return	None
+ * @note	Destination file: TraceDebug.log
+ * @note	To output trace debug log strings (including the function name, code file and line where it failed)
+ */
 void AppCore::WriteTraceDebugLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
@@ -4363,18 +3906,14 @@ void AppCore::WriteTraceDebugLogFile(const wchar_t* logStringW)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WriteDebugInfoLogFile
-//	Description:	Write debug info output log string to file
-//  Arguments:		lpszLogStringW	- Log string
-//  Return value:	None
-//	Notes:			DebugInfo.log
-//					File to output debug info log strings (similar to
-//					OutputDebugString, but output to file instead)
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Write debug info output log string to file
+ * @param	lpszLogStringW	- Log string
+ * @return	None
+ * @note	Destination file: DebugInfo.log
+ * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
+ */
 void AppCore::WriteDebugInfoLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
@@ -4433,17 +3972,14 @@ void AppCore::WriteDebugInfoLogFile(const wchar_t* logStringW)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WriteTraceNDebugLogFileBase
-//	Description:	Write trace and debug log string to file
-//  Arguments:		lpszFileName	- Log file name
-//					lpszLogStringW	- Log string
-//  Return value:	None
-//	Notes:			Base function - No longer used
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Write trace and debug log string to file
+ * @param	lpszFileName	- Log file name
+ * @param	lpszLogStringW	- Log string
+ * @return	None
+ * @note	Base function - No longer used
+ */
 void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
 {
 	// Log file path
@@ -4515,18 +4051,14 @@ void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WaitMessage
-//	Description:	Create a loop and wait for specified message
-//  Arguments:		nMsg	 - Message to wait for
-//					nTimeout - Timeout (tick-count)
-//  Return value:	LRESULT
-//	Notes:			Be careful when using this function, it may cause the
-//					program to be not responding
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Create a loop and wait for specified message
+ * @param	nMsg	 - Message to wait for
+ * @param	nTimeout - Timeout (tick-count)
+ * @return	LRESULT
+ * @note	Be careful when using this function, it may cause the program to be not responding
+ */
 LRESULT	AppCore::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOUT */)
 {
 	LRESULT lResult = Result::Success;
@@ -4559,18 +4091,15 @@ LRESULT	AppCore::WaitMessage(UINT nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOU
 	return lResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ShowErrorMessage
-//	Description:	Show error message by error code
-//  Arguments:		hMsgOwnerWnd - Handle of Message Box's owner window
-//					nLanguageID	 - Language option ID
-//					dwErrorCode	 - Error code
-//					lParam		 - Additional attached param (description string)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Show error message by error code
+ * @param	hMsgOwnerWnd - Handle of Message Box's owner window
+ * @param	nLanguageID	 - Language option ID
+ * @param	dwErrorCode	 - Error code
+ * @param	lParam		 - Additional attached param (description string)
+ * @return	None
+ */
 void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
 {
 	// Use table and language functions
@@ -4635,15 +4164,12 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, UINT nLanguageID, DWORD dwErro
 	PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, wAppMsgParam, lAppMsgParam);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetListCurSel
-//	Description:	Return list control current selected item index
-//  Arguments:		pListCtrl - Pointer of list control
-//  Return value:	int - Selection
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Return list control current selected item index
+ * @param	pListCtrl - Pointer of list control
+ * @return	int - Selection
+ */
 int AppCore::GetListCurSel(CListCtrl& pListCtrl)
 {
 	int nResult = INT_INVALID;
@@ -4660,15 +4186,12 @@ int AppCore::GetListCurSel(CListCtrl& pListCtrl)
 	return nResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FindDebugTestDlg
-//	Description:	Find and return DebugTest dialog handle
-//  Arguments:		None
-//  Return value:	HWND
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Find and return DebugTest dialog handle
+ * @param	None
+ * @return	HWND
+ */
 HWND AppCore::FindDebugTestDlg()
 {
 	String debugDlgTitle = StringUtils::LoadResourceString(IDS_APP_DEBUGTESTDLG_TITLE);
@@ -4676,16 +4199,13 @@ HWND AppCore::FindDebugTestDlg()
 	return ::FindWindow(NULL, debugDlgTitle);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetFixedCellStyle
-//	Description:	Set fixed cell style (header row, base column)
-//  Arguments:		pGridCtrl	- Grid control table pointer
-//					nRow & nCol - Cell position (row & column)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Set fixed cell style (header row, base column)
+ * @param	pGridCtrl	- Grid control table pointer
+ * @param	nRow & nCol - Cell position (row & column)
+ * @return	None
+ */
 void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 {
 	// Check control validity
@@ -4700,19 +4220,16 @@ void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 	pHeaderCell->SetTextClr(Color::Black);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DrawGridTableRow
-//	Description:	Setup style and draw grid control table row by row index
-//  Arguments:		pGridCtrl		- Grid control table pointer
-//					nRow			- Row position/index
-//					nRowNum			- Number of table rows
-//					nColNum			- Number of table columns
-//					arrGrdColFormat - Grid control column format data
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Setup style and draw grid control table row by row index
+ * @param	pGridCtrl		- Grid control table pointer
+ * @param	nRow			- Row position/index
+ * @param	nRowNum			- Number of table rows
+ * @param	nColNum			- Number of table columns
+ * @param	arrGrdColFormat - Grid control column format data
+ * @return	None
+ */
 void AppCore::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int /*nRowNum*/, int nColNum, GRIDCTRLCOLFORMAT* apGrdColFormat)
 {
 	// Check control validity
@@ -4773,15 +4290,12 @@ void AppCore::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int /*nRowNum*/, 
 /////////////////////////////////////////////////////////////////////////////
 // Additional functions
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetWindowsVersion
-//	Description:	Get Windows OS build version
-//  Arguments:		None
-//  Return value:	UINT - Windows version macro
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Get Windows OS build version
+ * @param	None
+ * @return	UINT - Windows version macro
+ */
 UINT AppCore::GetWindowsOSVersion(void)
 {
 	// Init info data
@@ -4829,16 +4343,13 @@ UINT AppCore::GetWindowsOSVersion(void)
 	return nRetWinVer;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PlaySound
-//	Description:	Play "BEEP" sound when sound is enabled
-//  Arguments:		bSoundEnable - Enable sound
-//					nTypeOfSound - Type of sound
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Play "BEEP" sound when sound is enabled
+ * @param	bSoundEnable - Enable sound
+ * @param	nTypeOfSound - Type of sound
+ * @return	None
+ */
 void AppCore::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 {
 	// If sound is not enabled, do nothing
@@ -4857,16 +4368,13 @@ void AppCore::PlaySound(BOOL bSoundEnable, UINT nTypeOfSound)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FileViewStd
-//	Description:	Open a file to view using external standard fileviewer
-//  Arguments:		eFileType - File type
-//					filePath  - Path of file
-//  Return value:	BOOL - Result of file opening process
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Open a file to view using external standard fileviewer
+ * @param	eFileType - File type
+ * @param	filePath  - Path of file
+ * @return	BOOL - Result of file opening process
+ */
 BOOL AppCore::FileViewStd(FILETYPE eFileType, const wchar_t* filePath)
 {
 	String appPath = Constant::String::Empty;
@@ -4888,15 +4396,12 @@ BOOL AppCore::FileViewStd(FILETYPE eFileType, const wchar_t* filePath)
 	return (hInstance != NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OpenWebURL
-//	Description:	Open web URL using default web browser
-//  Arguments:		webUrl - String of web URL
-//  Return value:	BOOL - Result of web URL opening process
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Open web URL using default web browser
+ * @param	webUrl - String of web URL
+ * @return	BOOL - Result of web URL opening process
+ */
 BOOL AppCore::OpenWebURL(const wchar_t* webUrl)
 {
 	// Run a web browser instance
@@ -4904,17 +4409,14 @@ BOOL AppCore::OpenWebURL(const wchar_t* webUrl)
 	return (hInstance != NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RunApp
-//	Description:	Run an application by specified path
-//  Arguments:		appPath		- Path of excutive file
-//					bRunAsAdmin	- Run as admin flag
-//					bShowFlag	- Show window flag
-//  Return value:	LRESULT - Result of app launching process
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Run an application by specified path
+ * @param	appPath		- Path of excutive file
+ * @param	bRunAsAdmin	- Run as admin flag
+ * @param	bShowFlag	- Show window flag
+ * @return	LRESULT - Result of app launching process
+ */
 LRESULT AppCore::RunApp(const wchar_t* appPath, BOOL bRunAsAdmin /* = FALSE */, BOOL bShowFlag /* = TRUE */)
 {
 	// Param set
@@ -4926,17 +4428,14 @@ LRESULT AppCore::RunApp(const wchar_t* appPath, BOOL bRunAsAdmin /* = FALSE */, 
 	return (LRESULT)(hInstance != NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExecuteCommand
-//	Description:	Execute CMD command
-//  Arguments:		commandString - Command string
-//					bRunAsAdmin	  - Run as admin flag
-//					bShowFlag	  - Show window flag
-//  Return value:	LRESULT - Result of command execution process
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Execute CMD command
+ * @param	commandString - Command string
+ * @param	bRunAsAdmin	  - Run as admin flag
+ * @param	bShowFlag	  - Show window flag
+ * @return	LRESULT - Result of command execution process
+ */
 LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, BOOL bRunAsAdmin /* = TRUE */, BOOL bShowFlag /* = TRUE */)
 {
 	// Format input command
@@ -4951,18 +4450,15 @@ LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, BOOL bRunAsAdmin /
 	return (LRESULT)(hInstance != NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CreateAppProcess
-//	Description:	Create app process
-//  Arguments:		appPath		 - App executable file path
-//					commandLine	 - Command line
-//					nStyle		 - App process style
-//					dwErrorCode	 - Returned error code
-//  Return value:	BOOL
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Create app process
+ * @param	appPath		 - App executable file path
+ * @param	commandLine	 - Command line
+ * @param	nStyle		 - App process style
+ * @param	dwErrorCode	 - Returned error code
+ * @return	BOOL
+ */
 BOOL AppCore::CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, UINT nStyle, DWORD& dwErrorCode)
 {
 	// Startup info
@@ -4999,16 +4495,13 @@ BOOL AppCore::CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, UIN
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetDarkMode
-//	Description:	Set dark mode for dialog with specified handle
-//  Arguments:		pWnd			- Pointer of window
-//					bEnableDarkMode - Enable/disable dark mode
-//  Return value:	BOOL - Result of dark mode setting process	
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Set dark mode for dialog with specified handle
+ * @param	pWnd			- Pointer of window
+ * @param	bEnableDarkMode - Enable/disable dark mode
+ * @return	BOOL - Result of dark mode setting process
+ */
 BOOL AppCore::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 {
 	// Load theme library
@@ -5043,17 +4536,14 @@ BOOL AppCore::SetDarkMode(CWnd* pWnd, BOOL bEnableDarkMode)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DrawButton
-//	Description:	Create button with icon
-//  Arguments:		pBtn		 - Pointer of button item
-//					nIconID		 - ID of button icon
-//					lpszBtnTitle - Title of button
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Create button with icon
+ * @param	pBtn		 - Pointer of button item
+ * @param	nIconID		 - ID of button icon
+ * @param	lpszBtnTitle - Title of button
+ * @return	None
+ */
 void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, const wchar_t* buttonTitle /* = Constant::String::Empty */)
 {
 	// Check validity
@@ -5084,15 +4574,12 @@ void AppCore::DrawButton(CButton*& pBtn, UINT nIconID, const wchar_t* buttonTitl
 	pBtn->UpdateWindow();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnumFontFamiliesExProc
-//	Description:	Callback function used with the EnumFontFamiliesEx
-//  Arguments:		Default (see MSDN "EnumFontFamProc callback function")
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Callback function used with the EnumFontFamiliesEx
+ * @param	Default (see MSDN "EnumFontFamProc callback function")
+ * @return	TRUE/FALSE
+ */
 static BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* /*lpntme*/, DWORD /*FontType*/, LPARAM lParam) 
 {
 	using wstring_vector = typename std::vector<std::wstring>;
@@ -5101,15 +4588,12 @@ static BOOL CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRIC
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnumFontNames
-//	Description:	Enumerate all currently available fonts
-//  Arguments:		fontNames - Array to contain enumerated fonts
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Enumerate all currently available fonts
+ * @param	fontNames - Array to contain enumerated fonts
+ * @return	TRUE/FALSE
+ */
 bool AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 {
 	// Define temp font
@@ -5128,15 +4612,12 @@ bool AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 	return (!fontNames.empty());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ValidateFontName
-//	Description:	Check if an input string is a valid font name
-//  Arguments:		fontName - Input font name
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Check if an input string is a valid font name
+ * @param	fontName - Input font name
+ * @return	TRUE/FALSE
+ */
 bool AppCore::ValidateFontName(const wchar_t* fontName)
 {
 	// Array to get returned font names

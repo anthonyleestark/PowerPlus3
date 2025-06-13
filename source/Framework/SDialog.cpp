@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		SDialog.h
-//		Project name:	Stupid Framework
-//		Description:	Custom base class for dialogs (source file)
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.06:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		SDialog.h
+ * @brief		Custom base class for dialogs (source file)
+ * @author		AnthonyLeeStark
+ * @date		2024.07.06
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "Framework/SElements.h"
 #include "Framework/SWinApp.h"
@@ -25,21 +19,13 @@ using namespace Language;
 using namespace AppCore;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for SDialog
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for SDialog
 IMPLEMENT_DYNAMIC(SDialog, CDialogEx)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SDialog
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 SDialog::SDialog() : CDialogEx()
 {
 	// Parent window
@@ -181,13 +167,9 @@ SDialog::SDialog(const wchar_t* templateName, CWnd* pParentWnd /* = NULL */) : C
 	m_clTextColor = Color::Black;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~SDialog
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 SDialog::~SDialog()
 {
 	// Destroy tooltip control window
@@ -218,13 +200,9 @@ SDialog::~SDialog()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void SDialog::DoDataExchange(CDataExchange* pDX)
 {
 	// Default
@@ -250,45 +228,33 @@ BEGIN_MESSAGE_MAP(SDialog, CDialogEx)
 END_MESSAGE_MAP()
 
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnOK
-//	Description:	Default method for [OK] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for [OK] button
+ * @param	None
+ * @return	None
+ */
 void SDialog::OnOK()
 {
 	// Default
 	CDialogEx::OnOK();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCancel
-//	Description:	Default method for [Cancel] button
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for [Cancel] button
+ * @param	None
+ * @return	None
+ */
 void SDialog::OnCancel()
 {
 	// Default
 	CDialogEx::OnCancel();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Default method for dialog initialization
-//  Arguments:		None
-//  Return value:	Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog initialization
+ * @param	None
+ * @return	Default
+ */
 BOOL SDialog::OnInitDialog()
 {
 	// Base class initialization
@@ -393,15 +359,11 @@ BOOL SDialog::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Default method for dialog closing
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog closing
+ * @param	None
+ * @return	None
+ */
 void SDialog::OnClose()
 {
 	// Get dialog ID
@@ -414,15 +376,11 @@ void SDialog::OnClose()
 	CDialogEx::OnClose();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Default method for dialog destroying
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog destroying
+ * @param	None
+ * @return	None
+ */
 void SDialog::OnDestroy()
 {
 	// Pre-destroy dialog
@@ -438,15 +396,11 @@ void SDialog::OnDestroy()
 	CDialogEx::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnActivate
-//	Description:	Default method for dialog activate message handling
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for dialog activate message handling
+ * @param	Default
+ * @return	None
+ */
 void SDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {
 	// Default
@@ -464,31 +418,23 @@ void SDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnMouseMove
-//	Description:	Default method for handling mouse moving event within dialog
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for handling mouse moving event within dialog
+ * @param	Default
+ * @return	None
+ */
 void SDialog::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// Default
 	CDialogEx::OnMouseMove(nFlags, point);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChildDialogInit
-//	Description:	Handle event when a child dialog is initialized
-//  Arguments:		wParam - Child dialog ID
-//					lParam - Modal or modeless state
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when a child dialog is initialized
+ * @param	wParam - Child dialog ID
+ * @param	lParam - Modal or modeless state
+ * @return	LRESULT
+ */
 LRESULT SDialog::OnChildDialogInit(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update descendant dialog counter
@@ -498,16 +444,12 @@ LRESULT SDialog::OnChildDialogInit(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnChildDialogDestroy
-//	Description:	Handle event when a child dialog is closed/destroyed
-//  Arguments:		wParam - Child dialog ID
-//					lParam - Modal or modeless state
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when a child dialog is closed/destroyed
+ * @param	wParam - Child dialog ID
+ * @param	lParam - Modal or modeless state
+ * @return	LRESULT
+ */
 LRESULT SDialog::OnChildDialogDestroy(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Update descendant dialog counter
@@ -517,15 +459,11 @@ LRESULT SDialog::OnChildDialogDestroy(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnGetMinMaxInfo
-//	Description:	Dialog get min/max info handler
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Dialog get min/max info handler
+ * @param	Default
+ * @return	None
+ */
 void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
@@ -542,15 +480,11 @@ void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 	CDialogEx::OnGetMinMaxInfo(pMinMaxInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PreTranslateMessage
-//	Description:	Default method for pre-translate message
-//  Arguments:		pMsg - Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for pre-translate message
+ * @param	pMsg - Default
+ * @return	None
+ */
 BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 {
 	// Handle system key pressed message
@@ -585,15 +519,11 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PreDestroyDialog
-//	Description:	Execute some actions before destroying dialog
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Execute some actions before destroying dialog
+ * @param	None
+ * @return	int
+ */
 int SDialog::PreDestroyDialog()
 {
 	// Unregister dialog control management
@@ -602,49 +532,37 @@ int SDialog::PreDestroyDialog()
 	return Result::Success;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	WindowProc
-//	Description:	Handle app window messages
-//  Arguments:		message - Message ID
-//					wParam - First param (HIWORD)
-//					lParam - Second param (LOWORD)
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle app window messages
+ * @param	message - Message ID
+ * @param	wParam - First param (HIWORD)
+ * @param	lParam - Second param (LOWORD)
+ * @return	LRESULT
+ */
 LRESULT SDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	// Default
 	return CDialogEx::WindowProc(message, wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoModal
-//	Description:	Run a modal dialog and return the result
-//  Arguments:		None
-//  Return value:	INT_PTR
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Run a modal dialog and return the result
+ * @param	None
+ * @return	INT_PTR
+ */
 INT_PTR SDialog::DoModal()
 {
 	return CDialogEx::DoModal();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	NotifyParent
-//	Description:	Post a message to parent window for notifying some
-//					special events
-//  Arguments:		nMsg   - Message
-//					wParam - First param
-//					lParam - Second param
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Post a message to parent window for notifying some
+					special events
+ * @param	nMsg   - Message
+ * @param	wParam - First param
+ * @param	lParam - Second param
+ * @return	TRUE/FALSE
+ */
 BOOL SDialog::NotifyParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	BOOL bRetNotify = FALSE;
@@ -668,18 +586,14 @@ BOOL SDialog::NotifyParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 	return bRetNotify;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SendMessageToParent
-//	Description:	Similar to NotifyParent but this will send the message
-//					and get the result immediately instead of posting it
-//  Arguments:		nMsg   - Message
-//					wParam - First param
-//					lParam - Second param
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Similar to NotifyParent but this will send the message
+					and get the result immediately instead of posting it
+ * @param	nMsg   - Message
+ * @param	wParam - First param
+ * @param	lParam - Second param
+ * @return	LRESULT
+ */
 LRESULT SDialog::SendMessageToParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRetNotify = Result::Failure;
@@ -703,15 +617,11 @@ LRESULT SDialog::SendMessageToParent(UINT nMsg, WPARAM wParam, LPARAM lParam)
 	return lRetNotify;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterDialogManagement
-//	Description:	Register dialog control management
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register dialog control management
+ * @param	None
+ * @return	int
+ */
 int SDialog::RegisterDialogManagement(void)
 {
 	// Initialize dialog control management
@@ -728,15 +638,11 @@ int SDialog::RegisterDialogManagement(void)
 	return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateDialogManagement
-//	Description:	Update dialog control management
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update dialog control management
+ * @param	None
+ * @return	None
+ */
 void SDialog::UpdateDialogManagement(void)
 {
 	// Get control manager
@@ -746,15 +652,11 @@ void SDialog::UpdateDialogManagement(void)
 	m_pCtrlManager->UpdateData(NULL);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UnregisterDialogManagement
-//	Description:	Unregister dialog control management
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Unregister dialog control management
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL SDialog::UnregisterDialogManagement(void)
 {
 	// Clean-up dialog control management
@@ -772,15 +674,11 @@ BOOL SDialog::UnregisterDialogManagement(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddStyle
-//	Description:	Add dialog extended styles
-//  Arguments:		dwAddStyle - Styles to add
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add dialog extended styles
+ * @param	dwAddStyle - Styles to add
+ * @return	TRUE/FALSE
+ */
 BOOL SDialog::AddStyle(DWORD dwAddStyle)
 {
 	DWORD dwStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
@@ -789,15 +687,11 @@ BOOL SDialog::AddStyle(DWORD dwAddStyle)
 	return (lRet != 0);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveStyle
-//	Description:	Remove dialog extended styles
-//  Arguments:		dwRemoveStyle - Styles to remove
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove dialog extended styles
+ * @param	dwRemoveStyle - Styles to remove
+ * @return	TRUE/FALSE
+ */
 BOOL SDialog::RemoveStyle(DWORD dwRemoveStyle)
 {
 	DWORD dwStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
@@ -806,15 +700,11 @@ BOOL SDialog::RemoveStyle(DWORD dwRemoveStyle)
 	return (lRet != 0);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddLockStateException
-//	Description:	Add a control ID to lock state exception list
-//  Arguments:		nID - Control ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add a control ID to lock state exception list
+ * @param	nID - Control ID
+ * @return	None
+ */
 void SDialog::AddLockStateException(UINT nID)
 {
 	// Initialize the list if not yet allocated
@@ -836,15 +726,11 @@ void SDialog::AddLockStateException(UINT nID)
 	m_paLockExceptionIDList->push_back(nID);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveLockStateException
-//	Description:	Remove a control ID out of lock state exception list
-//  Arguments:		nID - Control ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove a control ID out of lock state exception list
+ * @param	nID - Control ID
+ * @return	None
+ */
 void SDialog::RemoveLockStateException(UINT nID)
 {
 	// If the list is not yet allocated, no need to remove
@@ -860,15 +746,11 @@ void SDialog::RemoveLockStateException(UINT nID)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ResetLockStateExceptionList
-//	Description:	Remove all lock state exception list
-//  Arguments:		nID - Control ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove all lock state exception list
+ * @param	nID - Control ID
+ * @return	None
+ */
 void SDialog::ResetLockStateExceptionList(void)
 {
 	if (m_paLockExceptionIDList != NULL) {
@@ -876,16 +758,12 @@ void SDialog::ResetLockStateExceptionList(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	MoveDialog
-//	Description:	Move dialog position and return new rectangle
-//  Arguments:		ptPosition - Dialog position (anchor point)
-//					lpNewRect  - New dialog rectangle (OUT)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Move dialog position and return new rectangle
+ * @param	ptPosition - Dialog position (anchor point)
+ * @param	lpNewRect  - New dialog rectangle (OUT)
+ * @return	None
+ */
 void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
 {
 	// Get current dialog rectangle
@@ -932,17 +810,13 @@ void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
 	MoveDialog(dx, dy, lpNewRect);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	MoveDialog
-//	Description:	Move dialog position as given delta and return new rect
-//  Arguments:		dx		  - Horizontal delta
-//					dy		  - Vertical delta
-//					lpNewRect - New dialog rectangle (OUT)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Move dialog position as given delta and return new rect
+ * @param	dx		  - Horizontal delta
+ * @param	dy		  - Vertical delta
+ * @param	lpNewRect - New dialog rectangle (OUT)
+ * @return	None
+ */
 void SDialog::MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect /* = NULL */)
 {
 	// Get current dialog rectangle
@@ -978,15 +852,11 @@ void SDialog::MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect /* = NULL */)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ResizeDialog
-//	Description:	Resize dialog (after change size)
-//  Arguments:		bCenterDialog - Replace dialog to center
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Resize dialog (after change size)
+ * @param	bCenterDialog - Replace dialog to center
+ * @return	None
+ */
 void SDialog::ResizeDialog(BOOL bCenterDialog)
 {
 	// Get current dialog rectangle
@@ -1011,15 +881,11 @@ void SDialog::ResizeDialog(BOOL bCenterDialog)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ResetDialogSize
-//	Description:	Reset dialog size to default
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Reset dialog size to default
+ * @param	None
+ * @return	None
+ */
 void SDialog::ResetDialogSize(void)
 {
 	// No default size
@@ -1044,17 +910,13 @@ void SDialog::ResetDialogSize(void)
 	ResizeDialog(TRUE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetDisplayArea
-//	Description:	Set new display area, update margin and resize dialog
-//  Arguments:		rcNewDispArea - New display area rectangle
-//					bResizeDialog - Resize dialog
-//					bCenter		  - Center rectangle area
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set new display area, update margin and resize dialog
+ * @param	rcNewDispArea - New display area rectangle
+ * @param	bResizeDialog - Resize dialog
+ * @param	bCenter		  - Center rectangle area
+ * @return	None
+ */
 void SDialog::SetDisplayArea(RECT rcNewDispArea, BOOL bResizeDialog, BOOL bCenter)
 {
 	// Get current margin
@@ -1173,15 +1035,11 @@ void SDialog::SetDisplayArea(RECT rcNewDispArea, BOOL bResizeDialog, BOOL bCente
 	this->SetBottomMargin(rcNewMargin.bottom);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetCaptionFromResource
-//	Description:	Set dialog caption by resource string ID
-//  Arguments:		nResourceStringID - Resource string ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set dialog caption by resource string ID
+ * @param	nResourceStringID - Resource string ID
+ * @return	None
+ */
 void SDialog::SetCaptionFromResource(UINT nResourceStringID)
 {
 	String captionString = StringUtils::LoadResourceString(nResourceStringID);
@@ -1191,15 +1049,11 @@ void SDialog::SetCaptionFromResource(UINT nResourceStringID)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetCaptionFromLanguage
-//	Description:	Set dialog caption by language string ID
-//  Arguments:		nLangStringID - Language string ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set dialog caption by language string ID
+ * @param	nLangStringID - Language string ID
+ * @return	None
+ */
 void SDialog::SetCaptionFromLanguage(UINT nLangStringID)
 {
 	// Load app language package
@@ -1209,15 +1063,11 @@ void SDialog::SetCaptionFromLanguage(UINT nLangStringID)
 	this->SetCaption(captionString);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CreateBrush
-//	Description:	Create (or re-create) dialog owned brush
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Create (or re-create) dialog owned brush
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL SDialog::CreateBrush(void)
 {
 	if (GetFlagValue(AppFlagID::dialogSetBackgroundColor)) {
@@ -1241,16 +1091,12 @@ BOOL SDialog::CreateBrush(void)
 	return FALSE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterMessageBoxCaption
-//	Description:	Register default caption for message box-es
-//  Arguments:		nCaptionID  - ID of message caption string
-//					lpszCaption	- Message caption string
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register default caption for message box-es
+ * @param	nCaptionID  - ID of message caption string
+ * @param	lpszCaption	- Message caption string
+ * @return	None
+ */
 void SDialog::RegisterMessageBoxCaption(UINT nCaptionID)
 {
 	// Load app language package
@@ -1276,17 +1122,13 @@ void SDialog::RegisterMessageBoxCaption(UINT nCaptionID)
 	RegisterMessageBoxCaption(captionString);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayMessageBox
-//	Description:	Display message box using language string ID
-//  Arguments:		nPromptID  - ID of prompt message string
-//					nCaptionID - ID of message caption string
-//					nStyle	   - Message box style
-//  Return value:	int	- Result of message box
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Display message box using language string ID
+ * @param	nPromptID  - ID of prompt message string
+ * @param	nCaptionID - ID of message caption string
+ * @param	nStyle	   - Message box style
+ * @return	int	- Result of message box
+ */
 int SDialog::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UINT nStyle /* = NULL */)
 {
 	// Load app language package
@@ -1314,17 +1156,13 @@ int SDialog::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 	return nResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayMessageBox
-//	Description:	Display message box using language string
-//  Arguments:		prompt  - Message string
-//					caption - Message caption string
-//					nStyle	- Message box style
-//  Return value:	int	- Result of message box
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Display message box using language string
+ * @param	prompt  - Message string
+ * @param	caption - Message caption string
+ * @param	nStyle	- Message box style
+ * @return	int	- Result of message box
+ */
 int SDialog::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* = NULL */, UINT nStyle /* = NULL */)
 {
 	// Set default style
@@ -1355,17 +1193,13 @@ int SDialog::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
 	return MessageBox(prompt, messageCaption, nStyle);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputEventLog
-//	Description:	Output application event log
-//  Arguments:		usEvent		- Event ID
-//					description - Additional description
-//					pDetailInfo	- Log detail info (array pointer)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output application event log
+ * @param	usEvent		- Event ID
+ * @param	description - Additional description
+ * @param	pDetailInfo	- Log detail info (array pointer)
+ * @return	None
+ */
 void SDialog::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
 {
 	// Prepare event log info
@@ -1393,16 +1227,12 @@ void SDialog::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NUL
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputButtonLog
-//	Description:	Output button event log
-//  Arguments:		usEvent	  - Event ID
-//					nButtonID - Button ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output button event log
+ * @param	usEvent	  - Event ID
+ * @param	nButtonID - Button ID
+ * @return	None
+ */
 void SDialog::OutputButtonLog(USHORT usEvent, UINT nButtonID)
 {
 	// Prepare button event log info
@@ -1429,16 +1259,12 @@ void SDialog::OutputButtonLog(USHORT usEvent, UINT nButtonID)
 	OutputEventLog(usEvent, buttonCaption, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputCheckBoxLog
-//	Description:	Output checkbox event log
-//  Arguments:		usEvent		- Event ID
-//					nCheckboxID - Checkbox ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output checkbox event log
+ * @param	usEvent		- Event ID
+ * @param	nCheckboxID - Checkbox ID
+ * @return	None
+ */
 void SDialog::OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID)
 {
 	// Prepare checkbox event log info
@@ -1468,16 +1294,12 @@ void SDialog::OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID)
 	OutputEventLog(usEvent, checkBoxCaption, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputRadButtonLog
-//	Description:	Output radio button event log
-//  Arguments:		usEvent		- Event ID
-//					nCheckboxID - Checkbox ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output radio button event log
+ * @param	usEvent		- Event ID
+ * @param	nCheckboxID - Checkbox ID
+ * @return	None
+ */
 void SDialog::OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID)
 {
 	// Prepare radio button event log info
@@ -1507,16 +1329,12 @@ void SDialog::OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID)
 	OutputEventLog(usEvent, radButtonCaption, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputComboBoxLog
-//	Description:	Output combo-box event log
-//  Arguments:		usEvent	 - Event ID
-//					nComboID - Combo-box ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output combo-box event log
+ * @param	usEvent	 - Event ID
+ * @param	nComboID - Combo-box ID
+ * @return	None
+ */
 void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 {
 	// Prepare combo-box event log info
@@ -1556,16 +1374,12 @@ void SDialog::OutputComboBoxLog(USHORT usEvent, UINT nComboID)
 	OutputEventLog(usEvent, comboBoxCaption, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputEditBoxLog
-//	Description:	Output edit box event log
-//  Arguments:		usEvent	- Event ID
-//					nEditID - Edit box ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output edit box event log
+ * @param	usEvent	- Event ID
+ * @param	nEditID - Edit box ID
+ * @return	None
+ */
 void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 {
 	// Prepare edit box event log info
@@ -1602,16 +1416,12 @@ void SDialog::OutputEditBoxLog(USHORT usEvent, UINT nEditID)
 	OutputEventLog(usEvent, editBoxCaption, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputListBoxLog
-//	Description:	Output list box event log
-//  Arguments:		usEvent	   - Event ID
-//					nListBoxID - List box ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output list box event log
+ * @param	usEvent	   - Event ID
+ * @param	nListBoxID - List box ID
+ * @return	None
+ */
 void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 {
 	// Prepare list box event log info
@@ -1651,16 +1461,12 @@ void SDialog::OutputListBoxLog(USHORT usEvent, UINT nListBoxID)
 	OutputEventLog(usEvent, listBoxCaption, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputSpinCtrlLog
-//	Description:	Output spin control event log
-//  Arguments:		usEvent		- Event ID
-//					nSpinCtrlID - Spin control ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output spin control event log
+ * @param	usEvent		- Event ID
+ * @param	nSpinCtrlID - Spin control ID
+ * @return	None
+ */
 void SDialog::OutputSpinCtrlLog(USHORT usEvent, UINT nSpinCtrlID)
 {
 	// Prepare spin control event log info
@@ -1681,16 +1487,12 @@ void SDialog::OutputSpinCtrlLog(USHORT usEvent, UINT nSpinCtrlID)
 	OutputEventLog(usEvent, NULL, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputMenuLog
-//	Description:	Output menu event log
-//  Arguments:		usEvent		- Event ID
-//					nMenuItemID - Menu item ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output menu event log
+ * @param	usEvent		- Event ID
+ * @param	nMenuItemID - Menu item ID
+ * @return	None
+ */
 void SDialog::OutputMenuLog(USHORT usEvent, UINT nMenuItemID)
 {
 	// Prepare menu event log info
@@ -1715,15 +1517,11 @@ void SDialog::OutputMenuLog(USHORT usEvent, UINT nMenuItemID)
 	OutputEventLog(usEvent, menuItemCaption, &logDetailInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupLanguage
-//	Description:	Setup language for dialog controls
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup language for dialog controls
+ * @param	None
+ * @return	None
+ */
 void SDialog::SetupLanguage(void)
 {
 	// Load app language package
@@ -1747,33 +1545,25 @@ void SDialog::SetupLanguage(void)
 	UpdateDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupComboBox
-//	Description:	Setup data for combo-boxes
-//  Arguments:		nComboID	- ID of combo box
-//					ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup data for combo-boxes
+ * @param	nComboID	- ID of combo box
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void SDialog::SetupComboBox(UINT /*nComboID*/, LANGTABLE_PTR /*ptrLanguage*/)
 {
 	// Update dialog control attributes
 	UpdateDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetButtonIcon
-//	Description:	Set icon for dialog button
-//  Arguments:		nButtonID	   - ID of button
-//					nIconID		   - ID of icon resource
-//					bReUpdateTitle - Whether to reupdate button title
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set icon for dialog button
+ * @param	nButtonID	   - ID of button
+ * @param	nIconID		   - ID of icon resource
+ * @param	bReUpdateTitle - Whether to reupdate button title
+ * @return	None
+ */
 void SDialog::SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle /* = FALSE */)
 {
 	// Get button
@@ -1808,16 +1598,12 @@ void SDialog::SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle /*
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateItemText
-//	Description:	Update control text label
-//  Arguments:		nCtrlID	   - ID of control item
-//					newCaption - New caption string
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update control text label
+ * @param	nCtrlID	   - ID of control item
+ * @param	newCaption - New caption string
+ * @return	None
+ */
 void SDialog::UpdateItemText(UINT nCtrlID, const wchar_t* newCaption)
 {
 	// Get item by ID
@@ -1829,17 +1615,13 @@ void SDialog::UpdateItemText(UINT nCtrlID, const wchar_t* newCaption)
 	pCtrlWnd->SetWindowText(newCaption);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateItemText
-//	Description:	Update control text label
-//  Arguments:		nCtrlID		  - ID of control item
-//					nNewCaptionID - New caption language string ID
-//					ptrLanguage   - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update control text label
+ * @param	nCtrlID		  - ID of control item
+ * @param	nNewCaptionID - New caption language string ID
+ * @param	ptrLanguage   - Language package pointer
+ * @return	None
+ */
 void SDialog::UpdateItemText(UINT nCtrlID , UINT nNewCaptionID /* = NULL */, LANGTABLE_PTR ptrLanguage /* = NULL */)
 {
 	// Check language package validity
@@ -1864,17 +1646,13 @@ void SDialog::UpdateItemText(UINT nCtrlID , UINT nNewCaptionID /* = NULL */, LAN
 	UpdateItemText(nCtrlID, wndItemText);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetControlText
-//	Description:	Set control text label
-//  Arguments:		pCtrlWnd	- Pointer of control window
-//					nCtrlID		- ID of control item
-//					ptrLanguage - Language package pointer
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set control text label
+ * @param	pCtrlWnd	- Pointer of control window
+ * @param	nCtrlID		- ID of control item
+ * @param	ptrLanguage - Language package pointer
+ * @return	None
+ */
 void SDialog::SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLanguage /* = NULL */)
 {
 	// Check control pointer validity
@@ -1898,21 +1676,12 @@ void SDialog::SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLang
 	pCtrlWnd->SetWindowText(wndItemText);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	MoveItemGroup
-//	Description:	Move a group of dialog items to specific position
-//  Arguments:		arrCtrlIDGroup  - Array of control IDs
-//					ptNewPosition	- New position
-//  Return value:	None
-//  Notes:			This function will take the top-left point (smallest X&Y)
-//					of the smallest rectangle which borders all the controls
-//					as the original point. Then it will recalculate new positions
-//					of all the controls and move them so that the original point
-//					will be placed at the new position
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Move a group of dialog items to specific position
+ * @param	arrCtrlIDGroup  - Array of control IDs
+ * @param	ptNewPosition	- New position
+ * @return	None
+ */
 void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition)
 {
 	// Check data validity
@@ -1968,17 +1737,13 @@ void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	MoveItemGroup
-//	Description:	Move a group of dialog items to specific position
-//  Arguments:		arrCtrlIDGroup  - Array of control IDs
-//					nDirection		- Moving direction
-//					nDistance		- Moving distance
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Move a group of dialog items to specific position
+ * @param	arrCtrlIDGroup  - Array of control IDs
+ * @param	nDirection		- Moving direction
+ * @param	nDistance		- Moving distance
+ * @return	None
+ */
 void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, int nDirection, int nDistance)
 {
 	// Check data validity
@@ -2016,16 +1781,12 @@ void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, int nDirection, int
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ShowItem
-//	Description:	Show/hide dialog item with corresponding ID
-//  Arguments:		pDlgItemWnd - Dialog item window pointer
-//					bVisible	- Visible state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Show/hide dialog item with corresponding ID
+ * @param	pDlgItemWnd - Dialog item window pointer
+ * @param	bVisible	- Visible state
+ * @return	None
+ */
 void SDialog::ShowItem(CWnd* pDlgItemWnd, BOOL bVisible)
 {
 	// Check dialog item validity
@@ -2040,16 +1801,12 @@ void SDialog::ShowItem(CWnd* pDlgItemWnd, BOOL bVisible)
 	pDlgItemWnd->ShowWindow(bVisible);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	EnableItem
-//	Description:	Enable/disable dialog item with corresponding ID
-//  Arguments:		nDlgItemID - Dialog item ID
-//					bEnabled   - Enable or disable
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Enable/disable dialog item with corresponding ID
+ * @param	nDlgItemID - Dialog item ID
+ * @param	bEnabled   - Enable or disable
+ * @return	None
+ */
 void SDialog::EnableItem(CWnd* pDlgItemWnd, BOOL bEnabled)
 {
 	// Check dialog item validity
@@ -2064,61 +1821,45 @@ void SDialog::EnableItem(CWnd* pDlgItemWnd, BOOL bEnabled)
 	pDlgItemWnd->EnableWindow(bEnabled);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetupDialogItemState
-//	Description:	Setup properties and values for dialog items
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Setup properties and values for dialog items
+ * @param	None
+ * @return	None
+ */
 void SDialog::SetupDialogItemState(void)
 {
 	// Update dialog control attributes
 	UpdateDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RefreshDialogItemState
-//	Description:	Refresh and update state for dialog items
-//  Arguments:		bRecheckState - Recheck all item's state
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Refresh and update state for dialog items
+ * @param	bRecheckState - Recheck all item's state
+ * @return	None
+ */
 void SDialog::RefreshDialogItemState(BOOL /* bRecheckState = FALSE */)
 {
 	// Update dialog control attributes
 	UpdateDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateDialogData
-//	Description:	Update data values for dialog items
-//  Arguments:		bSaveAndValidate - Same as default MFC UpdateData function
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update data values for dialog items
+ * @param	bSaveAndValidate - Same as default MFC UpdateData function
+ * @return	None
+ */
 void SDialog::UpdateDialogData(BOOL /* bSaveAndValidate = TRUE */)
 {
 	// Update data for dialog control management
 	UpdateDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetAppOption
-//	Description:	Return option value by ID
-//  Arguments:		eAppOptionID - ID of specific option
-//					bTemp		 - Temp value or saved value (saved value by default)
-//  Return value:	int - Option value
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return option value by ID
+ * @param	eAppOptionID - ID of specific option
+ * @param	bTemp		 - Temp value or saved value (saved value by default)
+ * @return	int - Option value
+ */
 int SDialog::GetAppOption(AppOptionID eAppOptionID, BOOL bTemp /* = FALSE */) const
 {
 	int nResult = INT_INVALID;
@@ -2138,15 +1879,11 @@ int SDialog::GetAppOption(AppOptionID eAppOptionID, BOOL bTemp /* = FALSE */) co
 	return nResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetFlagValue
-//	Description:	Return flag value by ID
-//  Arguments:		eFlagID - ID of specific flag
-//  Return value:	int - Flag value
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return flag value by ID
+ * @param	eFlagID - ID of specific flag
+ * @return	int - Flag value
+ */
 int SDialog::GetFlagValue(AppFlagID eFlagID) const
 {
 	int nValue = FLAG_OFF;
@@ -2188,16 +1925,12 @@ int SDialog::GetFlagValue(AppFlagID eFlagID) const
 	return nValue;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetFlagValue
-//	Description:	Update flag value by ID
-//  Arguments:		eFlagID - ID of specific flag
-//					nValue  - Value to set
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update flag value by ID
+ * @param	eFlagID - ID of specific flag
+ * @param	nValue  - Value to set
+ * @return	None
+ */
 void SDialog::SetFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
@@ -2234,15 +1967,11 @@ void SDialog::SetFlagValue(AppFlagID eFlagID, int nValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestCloseDialog
-//	Description:	Request current dialog to close
-//  Arguments:		None
-//  Return value:	LRESULT (0:Success, else:Failed)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Request current dialog to close
+ * @param	None
+ * @return	LRESULT (0:Success, else:Failed)
+ */
 LRESULT SDialog::RequestCloseDialog(void)
 {
 	// Set force closing flag

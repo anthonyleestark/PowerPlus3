@@ -1,15 +1,8 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		GridCtrl.h
-//		Description:	MFC Grid Control implementation file
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.20:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		GridCtrl.cpp
+ * @brief		MFC Grid Control implementation file
+ * @date		2024.07.20
+ */
 
 //#include "MemDC.h"
 #include "Components/GridCtrl/GridCtrl.h"
@@ -3583,7 +3576,6 @@ void CGridCtrl::ResetScrollBars()
     SetScrollRange(SB_VERT, 0, m_nVScrollMax, TRUE);
     SetScrollRange(SB_HORZ, 0, m_nHScrollMax, TRUE);
     */
-
     // New code - Paul Runstedler 
     SCROLLINFO si;
     si.cbSize = sizeof(SCROLLINFO);
@@ -5734,7 +5726,6 @@ void CGridCtrl::EnsureVisible(int nRow, int nCol)
         InvalidateRect(rectWindow);
     }
     */
-
 	int nVertScroll = 0;
 	int nHorzScroll = 0;
 	int nFixedRows = m_nFixedRows + m_nFreezedRows;

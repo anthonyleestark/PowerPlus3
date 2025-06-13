@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		MultiScheduleDlg.h
-//		Description:	Header file for Multi Schedule setting dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.10.27:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		MultiScheduleDlg.h
+ * @brief		Header file for Multi Schedule setting dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.10.27
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -22,17 +17,11 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
 // Declaration of child dialog classes
-
 class CEditScheduleDlg;
 
-////////////////////////////////////////////////////////
-//
-//	CMultiScheduleDlg dialog used for Multi Schedule function
-//
-////////////////////////////////////////////////////////
 
+// Multi-schedule dialog class
 class CMultiScheduleDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CMultiScheduleDlg)

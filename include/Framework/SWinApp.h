@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		SWinApp.h
-//		Project name:	Stupid Framework
-//		Description:	Custom base class for application (header file)
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.11.19:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		SWinApp.h
+ * @brief		Custom base class for application (header file)
+ * @author		AnthonyLeeStark
+ * @date		2024.11.19
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -20,11 +14,7 @@
 #include "AppCore/Logging.h"
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Define custom message for dialogs
-//
-//////////////////////////////////////////////////////////////////////////
+// Define custom message for dialogs
 
 #define SCM_APPLICATION			(WM_USER+1000)
 
@@ -32,14 +22,7 @@
 #define SCM_FORCE_EXITAPP		(SCM_APPLICATION+2)
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Class name:	 SWinApp
-//  Description: Custom base class for application
-//  Base class:	 CWinAppEx
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Custom base class for application
 class SWinApp : public CWinAppEx
 {
 	DECLARE_DYNAMIC(SWinApp)

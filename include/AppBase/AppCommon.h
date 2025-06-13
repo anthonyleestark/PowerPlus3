@@ -1,15 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		AppCommon.h
-//		Description:	Base header file which includes C++ standard headers
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2025.06.04:		Create new
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		AppCommon.h
+ * @brief		Base header file which includes C++ standard headers
+ * @author		AnthonyLeeStark
+ * @date		2025.06.04
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 

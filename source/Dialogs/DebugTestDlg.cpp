@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		DebugTestDlg.cpp
-//		Description:	Source file for DebugTest dialog
-//		Owner:			AnthonyLeeStark
-// 
-//		History:		<0> 2024.07.13:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		DebugTestDlg.cpp
+ * @brief		Source file for DebugTest dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.07.13
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "Dialogs/DebugTestDlg.h"
 
@@ -31,21 +26,13 @@ constexpr const int defaultMaxHeight = 900;
 constexpr const wchar_t* debugOutputFormat = L">> %s";
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for CDebugTestDlg
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for CDebugTestDlg
 IMPLEMENT_DYNAMIC(CDebugTestDlg, SDialog)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CDebugTestDlg
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 CDebugTestDlg::CDebugTestDlg() : SDialog(IDD_DEBUGTEST_DLG)
 {
 	// Edit view
@@ -63,13 +50,9 @@ CDebugTestDlg::CDebugTestDlg() : SDialog(IDD_DEBUGTEST_DLG)
 	m_astrCommandHistory.clear();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~CDebugTestDlg
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 CDebugTestDlg::~CDebugTestDlg()
 {
 	// Clean-up debug command history
@@ -90,13 +73,9 @@ CDebugTestDlg::~CDebugTestDlg()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoDataExchange
-//	Description:	DoDataExchange function (DDX/DDV support)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	DoDataExchange function (DDX/DDV support)
+ */
 void CDebugTestDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
@@ -128,15 +107,11 @@ END_MESSAGE_MAP()
 
 // CDebugTestDlg message handlers
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnInitDialog
-//	Description:	Initialize DebugTest dialog
-//  Arguments:		None
-//  Return value:	BOOL - Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize DebugTest dialog
+ * @param	None
+ * @return	BOOL - Default
+ */
 BOOL CDebugTestDlg::OnInitDialog()
 {
 	// First, initialize base dialog class
@@ -178,45 +153,33 @@ BOOL CDebugTestDlg::OnInitDialog()
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnClose
-//	Description:	Close dialog
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Close dialog
+ * @param	None
+ * @return	None
+ */
 void CDebugTestDlg::OnClose()
 {
 	// Only hide the dialog
 	ShowWindow(SW_HIDE);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDestroy
-//	Description:	Destroy dialog
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destroy dialog
+ * @param	None
+ * @return	None
+ */
 void CDebugTestDlg::OnDestroy()
 {
 	// Destroy dialog
 	SDialog::OnDestroy();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnGetMinMaxInfo
-//	Description:	Dialog get min/max info handler
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Dialog get min/max info handler
+ * @param	Default
+ * @return	None
+ */
 void CDebugTestDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
@@ -227,15 +190,11 @@ void CDebugTestDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCtlColor
-//	Description:	Set background and text color
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set background and text color
+ * @param	Default
+ * @return	None
+ */
 HBRUSH CDebugTestDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -256,15 +215,11 @@ HBRUSH CDebugTestDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return hBrush;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnSize
-//	Description:	Resize dialog
-//  Arguments:		Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Resize dialog
+ * @param	Default
+ * @return	None
+ */
 void CDebugTestDlg::OnSize(UINT nType, int nWidth, int nHeight)
 {
 	// Implement base class method
@@ -287,15 +242,11 @@ void CDebugTestDlg::OnSize(UINT nType, int nWidth, int nHeight)
 	GetDebugEditView()->SetWindowPos(NULL, nXPos, nYPos, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDebugViewEditChange
-//	Description:	Handle event when debug view edit contents changed
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when debug view edit contents changed
+ * @param	None
+ * @return	None
+ */
 void CDebugTestDlg::OnDebugViewEditChange(void)
 {
 	// Check debug view pointer validity
@@ -317,16 +268,12 @@ void CDebugTestDlg::OnDebugViewEditChange(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDebugOutput
-//	Description:	Handle event when output debug contents
-//  Arguments:		wParam - First param
-//					lParam - Second param
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when output debug contents
+ * @param	wParam - First param
+ * @param	lParam - Second param
+ * @return	LRESULT
+ */
 LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 {
 	// Check argument validity
@@ -352,17 +299,13 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDebugCmdNoReply
-//	Description:	Handle event when a debug command has been processed 
-//					but there's no reply
-//  Arguments:		wParam - First param
-//					lParam - Second param
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle event when a debug command has been processed
+					but there's no reply
+ * @param	wParam - First param
+ * @param	lParam - Second param
+ * @return	LRESULT
+ */
 LRESULT CDebugTestDlg::OnDebugCmdNoReply(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Add an empty new line
@@ -380,16 +323,12 @@ LRESULT CDebugTestDlg::OnDebugCmdNoReply(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnDebugViewClear
-//	Description:	Handle debug view clear screen event
-//  Arguments:		wParam - First param
-//					lParam - Second param
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle debug view clear screen event
+ * @param	wParam - First param
+ * @param	lParam - Second param
+ * @return	LRESULT
+ */
 LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Clear buffer
@@ -399,16 +338,12 @@ LRESULT CDebugTestDlg::OnDebugViewClear(WPARAM /*wParam*/, LPARAM /*lParam*/)
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnShowDialog
-//	Description:	Show/hide dialog when receiving message
-//  Arguments:		wParam - Show/hide flag
-//					lParam - Not used
-//  Return value:	LRESULT
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Show/hide dialog when receiving message
+ * @param	wParam - Show/hide flag
+ * @param	lParam - Not used
+ * @return	LRESULT
+ */
 LRESULT CDebugTestDlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get flag value
@@ -437,16 +372,12 @@ LRESULT CDebugTestDlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 	return LRESULT(Result::Success);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OnCommand
-//	Description:	Handle app command messages (WM_COMMAND)
-//	Arguments:		wParam - First param (HIWORD)
-//					lParam - Second param (LOWORD)
-//  Return value:	BOOL
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Handle app command messages (WM_COMMAND)
+	Arguments:		wParam - First param (HIWORD)
+					lParam - Second param (LOWORD)
+ * @return	BOOL
+ */
 BOOL CDebugTestDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	// Process commands
@@ -501,15 +432,11 @@ BOOL CDebugTestDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	return SDialog::OnCommand(wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PreTranslateMessage
-//	Description:	Pre-translate message
-//  Arguments:		pMsg - Default
-//  Return value:	BOOL
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Pre-translate message
+ * @param	pMsg - Default
+ * @return	BOOL
+ */
 BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// Handle key pressed event for DebugTest edit view
@@ -673,15 +600,11 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 	return SDialog::PreTranslateMessage(pMsg);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SendDebugCommand
-//	Description:	Send debug command to main parts of program
-//  Arguments:		hRcvWnd - Receive window handle
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Send debug command to main parts of program
+ * @param	hRcvWnd - Receive window handle
+ * @return	None
+ */
 BOOL CDebugTestDlg::SendDebugCommand(void)
 {
 	// Check DebugTest edit view validity
@@ -727,15 +650,11 @@ BOOL CDebugTestDlg::SendDebugCommand(void)
 //////////////////////////////////////////////////////////////////////////
 // Protected methods
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitDebugEditView
-//	Description:	Initialize the DebugTest edit view pointer
-//  Arguments:		nCtrlID - Dialog control ID
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize the DebugTest edit view pointer
+ * @param	nCtrlID - Dialog control ID
+ * @return	TRUE/FALSE
+ */
 BOOL CDebugTestDlg::InitDebugEditView(UINT nCtrlID)
 {
 	// If it has already been initialized, do nothing
@@ -757,15 +676,11 @@ BOOL CDebugTestDlg::InitDebugEditView(UINT nCtrlID)
 	return IsDebugEditViewValid();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CreateDebugViewFont
-//	Description:	Initialize font for DebugTest edit view
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize font for DebugTest edit view
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CDebugTestDlg::CreateDebugViewFont(void)
 {
 	// Initialization
@@ -798,15 +713,11 @@ BOOL CDebugTestDlg::CreateDebugViewFont(void)
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	CreateDebugViewBrush
-//	Description:	Initialize brush for adjust DebugTest edit view color
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize brush for adjust DebugTest edit view color
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL CDebugTestDlg::CreateDebugViewBrush(void)
 {
 	// Initialization
@@ -829,15 +740,11 @@ BOOL CDebugTestDlg::CreateDebugViewBrush(void)
 	return bRet;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCaretPosition
-//	Description:	Get the caret's current position
-//  Arguments:		None
-//  Return value:	int - Caret position
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get the caret's current position
+ * @param	None
+ * @return	int - Caret position
+ */
 int CDebugTestDlg::GetCaretPosition(void)
 {
 	// Check DebugTest edit view validity
@@ -850,15 +757,11 @@ int CDebugTestDlg::GetCaretPosition(void)
 	return nStartSel;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ShowDebugTestEditViewMenu
-//	Description:	Show DebugTest edit view context menu
-//  Arguments:		None
-//	Return value:	BOOL - Show menu successfully or failed
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Show DebugTest edit view context menu
+ * @param	None
+ * @param	Return value:	BOOL - Show menu successfully or failed
+ */
 BOOL CDebugTestDlg::ShowDebugTestEditViewMenu(void)
 {
 	// Prepare menu
@@ -936,15 +839,11 @@ BOOL CDebugTestDlg::ShowDebugTestEditViewMenu(void)
 	return bResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	FormatDebugCommand
-//	Description:	Re-format debug command and return its length
-//  Arguments:		debugCommand - Debug command (IN & OUT)
-//  Return value:	int - Length of debug command
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Re-format debug command and return its length
+ * @param	debugCommand - Debug command (IN & OUT)
+ * @return	int - Length of debug command
+ */
 int CDebugTestDlg::FormatDebugCommand(String& debugCommand)
 {
 	// If debug command is empty, do nothing
@@ -985,15 +884,11 @@ int CDebugTestDlg::FormatDebugCommand(String& debugCommand)
 	return debugCommand.GetLength();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ClearViewBuffer
-//	Description:	Clear debug view screen buffer content
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Clear debug view screen buffer content
+ * @param	None
+ * @return	None
+ */
 void CDebugTestDlg::ClearViewBuffer(void)
 {
 	if (!IsDebugEditViewValid())
@@ -1007,16 +902,12 @@ void CDebugTestDlg::ClearViewBuffer(void)
 	BackupDebugViewBuffer();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddLine
-//	Description:	Add a string line to debug screen
-//  Arguments:		lineString - String line
-//					bNewLine   - Whether to add a new empty line
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add a string line to debug screen
+ * @param	lineString - String line
+ * @param	bNewLine   - Whether to add a new empty line
+ * @return	None
+ */
 void CDebugTestDlg::AddLine(const wchar_t* lineString, BOOL bNewLine /* = TRUE */)
 {
 	// If buffer not empty
@@ -1050,16 +941,12 @@ void CDebugTestDlg::AddLine(const wchar_t* lineString, BOOL bNewLine /* = TRUE *
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateDisplay
-//	Description:	Update debug screen display
-//  Arguments:		bSeekToEnd	  - Move cursor to end of view
-//					bNotifyParent - Notify to parent window about display update
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update debug screen display
+ * @param	bSeekToEnd	  - Move cursor to end of view
+ * @param	bNotifyParent - Notify to parent window about display update
+ * @return	None
+ */
 void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */, BOOL bNotifyParent /* = TRUE */)
 {
 	// Get debug edit view
@@ -1082,15 +969,11 @@ void CDebugTestDlg::UpdateDisplay(BOOL bSeekToEnd /* = FALSE */, BOOL bNotifyPar
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddDebugCommandHistory
-//	Description:	Add debug command to history
-//  Arguments:		commandString - Input command
-//  Return value:	size_t - New item count
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add debug command to history
+ * @param	commandString - Input command
+ * @return	size_t - New item count
+ */
 size_t CDebugTestDlg::AddDebugCommandHistory(const wchar_t* commandString)
 {
 	// Only add if input command is not empty
@@ -1108,15 +991,11 @@ size_t CDebugTestDlg::AddDebugCommandHistory(const wchar_t* commandString)
 	return GetDebugCommandHistoryCount();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DispDebugCommandHistory
-//	Description:	Display history command by index
-//  Arguments:		nHistoryIndex - History index
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Display history command by index
+ * @param	nHistoryIndex - History index
+ * @return	None
+ */
 void CDebugTestDlg::DispDebugCommandHistory(int nHistoryIndex)
 {
 	// If debug command history is empty, do nothing

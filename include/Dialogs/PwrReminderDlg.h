@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		PwrReminderDlg.h
-//		Description:	Header file for Power Reminder dialog
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.07.20:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		PwrReminderDlg.h
+ * @brief		Header file for Power Reminder dialog
+ * @author		AnthonyLeeStark
+ * @date		2024.07.20
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
@@ -24,18 +19,12 @@
 #include "Framework/SDialog.h"
 
 
-////////////////////////////////////////////////////////
 // Declaration of child dialog classes
-
 class CReminderMsgDlg;
 class CRmdRepeatSetDlg;
 
-////////////////////////////////////////////////////////
-//
-//	CPwrReminderDlg dialog used for Power Reminder function
-//
-////////////////////////////////////////////////////////
 
+// Power Reminder dialog class
 class CPwrReminderDlg : public SDialog
 {
 	DECLARE_DYNAMIC(CPwrReminderDlg)

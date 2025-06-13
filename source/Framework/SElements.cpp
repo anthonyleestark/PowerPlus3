@@ -1,16 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		SElements.h
-//		Project name:	Stupid Framework
-//		Description:	Custom base class for dialog elements (source file)
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.12.24:		Create new
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		SElements.h
+ * @brief		Custom base class for dialog elements (source file)
+ * @author		AnthonyLeeStark
+ * @date		2024.12.24
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "Framework/SElements.h"
 #include "Framework/SWinApp.h"
@@ -23,21 +18,13 @@ using namespace MapTable;
 using namespace AppCore;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for SCtrlInfoWrap
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for SCtrlInfoWrap
 IMPLEMENT_DYNAMIC(SCtrlInfoWrap, CObject)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SCtrlInfoWrap
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 SCtrlInfoWrap::SCtrlInfoWrap() : CObject()
 {
 	// Base control window pointer
@@ -95,13 +82,9 @@ SCtrlInfoWrap::SCtrlInfoWrap() : CObject()
 	m_pszDataSize = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~SCtrlInfoWrap
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 SCtrlInfoWrap::~SCtrlInfoWrap()
 {
 	// Clean-up and destroy control data pointers
@@ -215,18 +198,14 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Initialize
-//	Description:	Initialize control info wrap object
-//  Arguments:		pParentWnd - Parent window
-//					pBuddyWnd  - Buddy window
-//					nCtrlID	   - Control ID
-//					nTypeID	   - Control type ID
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize control info wrap object
+ * @param	pParentWnd - Parent window
+ * @param	pBuddyWnd  - Buddy window
+ * @param	nCtrlID	   - Control ID
+ * @param	nTypeID	   - Control type ID
+ * @return	TRUE/FALSE
+ */
 BOOL SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, INT nTypeID)
 {
 	ASSERT(pParentWnd->GetSafeHwnd());
@@ -251,15 +230,11 @@ BOOL SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, 
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateAttributes
-//	Description:	Update current control's attributes
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update current control's attributes
+ * @param	None
+ * @return	None
+ */
 void SCtrlInfoWrap::UpdateAttributes(void)
 {
 	// Update control caption by type
@@ -340,15 +315,11 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetCheck
-//	Description:	Get current control's checked state
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's checked state
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL SCtrlInfoWrap::GetCheck(void) const
 {
 	if (this->m_pbCheck == NULL)
@@ -357,15 +328,11 @@ BOOL SCtrlInfoWrap::GetCheck(void) const
 		return *(this->m_pbCheck);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetInteger
-//	Description:	Get current control's integer data value
-//  Arguments:		lValue - Integer value (out)
-//  Return value:	LONG_PTR
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's integer data value
+ * @param	lValue - Integer value (out)
+ * @return	LONG_PTR
+ */
 LONG_PTR SCtrlInfoWrap::GetInteger(void) const
 {
 	if (this->m_plValue == NULL)
@@ -382,15 +349,11 @@ void SCtrlInfoWrap::GetInteger(_Out_ LONG_PTR& lValue) const
 		lValue = *(this->m_plValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetReserveInteger
-//	Description:	Get current control's reserve integer data value
-//  Arguments:		lValue - Integer reserve value (out)
-//  Return value:	LONG_PTR
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's reserve integer data value
+ * @param	lValue - Integer reserve value (out)
+ * @return	LONG_PTR
+ */
 LONG_PTR SCtrlInfoWrap::GetReserveInteger(void) const
 {
 	if (this->m_plReserveValue == NULL)
@@ -407,16 +370,12 @@ void SCtrlInfoWrap::GetReserveInteger(_Out_ LONG_PTR& lValue) const
 		lValue = *(this->m_plReserveValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetMinMaxInt
-//	Description:	Get current control's min/max range integer data value
-//  Arguments:		lMin - Min range integer value (out)
-//					lMax - Max range integer value (out)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's min/max range integer data value
+ * @param	lMin - Min range integer value (out)
+ * @param	lMax - Max range integer value (out)
+ * @return	None
+ */
 void SCtrlInfoWrap::GetMinMaxInt(_Out_ LONG_PTR& lMin, _Out_ LONG_PTR& lMax) const
 {
 	// Min value
@@ -432,15 +391,11 @@ void SCtrlInfoWrap::GetMinMaxInt(_Out_ LONG_PTR& lMin, _Out_ LONG_PTR& lMax) con
 		lMax = *(this->m_plMaxValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetFloat
-//	Description:	Get current control's float data value
-//  Arguments:		dbValue - Float value (out)
-//  Return value:	DOUBLE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's float data value
+ * @param	dbValue - Float value (out)
+ * @return	DOUBLE
+ */
 DOUBLE SCtrlInfoWrap::GetFloat(void) const
 {
 	if (this->m_pdbValue == NULL)
@@ -457,15 +412,11 @@ void SCtrlInfoWrap::GetFloat(_Out_ DOUBLE& dbValue) const
 		dbValue = *(this->m_pdbValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetReserveFloat
-//	Description:	Get current control's reserve float data value
-//  Arguments:		dbValue - Float reserve value (out)
-//  Return value:	DOUBLE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's reserve float data value
+ * @param	dbValue - Float reserve value (out)
+ * @return	DOUBLE
+ */
 DOUBLE SCtrlInfoWrap::GetReserveFloat(void) const
 {
 	if (this->m_pdbReserveValue == NULL)
@@ -482,16 +433,12 @@ void SCtrlInfoWrap::GetReserveFloat(_Out_ DOUBLE& dbValue) const
 		dbValue = *(this->m_pdbReserveValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetMinMaxInt
-//	Description:	Get current control's min/max range integer data value
-//  Arguments:		lMin - Min range integer value (out)
-//					lMax - Max range integer value (out)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's min/max range integer data value
+ * @param	lMin - Min range integer value (out)
+ * @param	lMax - Max range integer value (out)
+ * @return	None
+ */
 void SCtrlInfoWrap::GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) const
 {
 	// Min value
@@ -507,15 +454,11 @@ void SCtrlInfoWrap::GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) con
 		dbMax = *(this->m_pdbMaxValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetString
-//	Description:	Get current control's string data value
-//  Arguments:		value - String value (out)
-//  Return value:	const wchar_t*
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's string data value
+ * @param	value - String value (out)
+ * @return	const wchar_t*
+ */
 const wchar_t* SCtrlInfoWrap::GetString(void) const
 {
 	if (this->m_pstrValue == NULL)
@@ -532,15 +475,11 @@ void SCtrlInfoWrap::GetString(_Out_ String& value) const
 		value = *(this->m_pstrValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetReserveString
-//	Description:	Get current control's reserve string data value
-//  Arguments:		value - String reserve value (out)
-//  Return value:	const wchar_t*
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's reserve string data value
+ * @param	value - String reserve value (out)
+ * @return	const wchar_t*
+ */
 const wchar_t* SCtrlInfoWrap::GetReserveString(void) const
 {
 	if (this->m_pstrReserveValue == NULL)
@@ -557,15 +496,11 @@ void SCtrlInfoWrap::GetReserveString(_Out_ String& value) const
 		value = *(this->m_pstrReserveValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetIntArray
-//	Description:	Get current control's integer array data value
-//  Arguments:		aulValue - Integer array value (out)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's integer array data value
+ * @param	aulValue - Integer array value (out)
+ * @return	None
+ */
 void SCtrlInfoWrap::GetIntArray(_Out_ ULongArray& aulValue) const
 {
 	if (this->m_paulValueList == NULL) {
@@ -576,15 +511,11 @@ void SCtrlInfoWrap::GetIntArray(_Out_ ULongArray& aulValue) const
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetReserveIntArray
-//	Description:	Get current control's reserve integer array data value
-//  Arguments:		aulValue - Integer array value (out)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's reserve integer array data value
+ * @param	aulValue - Integer array value (out)
+ * @return	None
+ */
 void SCtrlInfoWrap::GetReserveIntArray(_Out_ ULongArray& aulValue) const
 {
 	if (this->m_paulReserveValueList == NULL) {
@@ -595,15 +526,11 @@ void SCtrlInfoWrap::GetReserveIntArray(_Out_ ULongArray& aulValue) const
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetStringArray
-//	Description:	Get current control's string array data value
-//  Arguments:		astrValue - String array value (out)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's string array data value
+ * @param	astrValue - String array value (out)
+ * @return	None
+ */
 void SCtrlInfoWrap::GetStringArray(_Out_ StringArray& astrValue) const
 {
 	if (this->m_pastrValueList == NULL) {
@@ -614,15 +541,11 @@ void SCtrlInfoWrap::GetStringArray(_Out_ StringArray& astrValue) const
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetReserveStringArray
-//	Description:	Get current control's reserve string array data value
-//  Arguments:		astrValue - String array value (out)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's reserve string array data value
+ * @param	astrValue - String array value (out)
+ * @return	None
+ */
 void SCtrlInfoWrap::GetReserveStringArray(_Out_ StringArray& astrValue) const
 {
 	if (this->m_pastrReserveValueList == NULL) {
@@ -633,15 +556,11 @@ void SCtrlInfoWrap::GetReserveStringArray(_Out_ StringArray& astrValue) const
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetTime
-//	Description:	Get current control's time data value
-//  Arguments:		timeValue - Time value (out)
-//  Return value:	SYSTEMTIME
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's time data value
+ * @param	timeValue - Time value (out)
+ * @return	SYSTEMTIME
+ */
 SYSTEMTIME SCtrlInfoWrap::GetTime(void) const
 {
 	if (this->m_pstTimeValue == NULL)
@@ -658,15 +577,11 @@ void SCtrlInfoWrap::GetTime(_Out_ SYSTEMTIME& timeValue) const
 		timeValue = *(this->m_pstTimeValue);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetCheck
-//	Description:	Set current control's check state
-//  Arguments:		bCheck - Checked state (BOOLEAN)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's check state
+ * @param	bCheck - Checked state (BOOLEAN)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetCheck(_In_ const BOOL& bCheck)
 {
 	if (this->m_pbCheck == NULL)
@@ -677,15 +592,11 @@ void SCtrlInfoWrap::SetCheck(_In_ const BOOL& bCheck)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetInteger
-//	Description:	Set current control's integer data value
-//  Arguments:		lValue - Integer value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's integer data value
+ * @param	lValue - Integer value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetInteger(_In_ const LONG_PTR& lValue)
 {
 	if (this->m_plValue == NULL)
@@ -696,15 +607,11 @@ void SCtrlInfoWrap::SetInteger(_In_ const LONG_PTR& lValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetReserveInteger
-//	Description:	Set current control's reserve integer data value
-//  Arguments:		lValue - Integer reserve value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's reserve integer data value
+ * @param	lValue - Integer reserve value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetReserveInteger(_In_ const LONG_PTR& lValue)
 {
 	if (this->m_plReserveValue == NULL)
@@ -715,16 +622,12 @@ void SCtrlInfoWrap::SetReserveInteger(_In_ const LONG_PTR& lValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetMinMaxInt
-//	Description:	Set current control's min/max range integer data value
-//  Arguments:		lMin - Min range integer value (in)
-//					lMax - Max range integer value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's min/max range integer data value
+ * @param	lMin - Min range integer value (in)
+ * @param	lMax - Max range integer value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetMinMaxInt(_In_ const LONG_PTR& lMin, _In_ const LONG_PTR& lMax)
 {
 	// Min value
@@ -744,15 +647,11 @@ void SCtrlInfoWrap::SetMinMaxInt(_In_ const LONG_PTR& lMin, _In_ const LONG_PTR&
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetFloat
-//	Description:	Set current control's float data value
-//  Arguments:		dbValue - Float value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's float data value
+ * @param	dbValue - Float value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetFloat(_In_ const DOUBLE& dbValue)
 {
 	if (this->m_pdbValue == NULL)
@@ -763,15 +662,11 @@ void SCtrlInfoWrap::SetFloat(_In_ const DOUBLE& dbValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetReserveFloat
-//	Description:	Set current control's reserve float data value
-//  Arguments:		dbValue - Float reserve value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's reserve float data value
+ * @param	dbValue - Float reserve value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetReserveFloat(_In_ const DOUBLE& dbValue)
 {
 	if (this->m_pdbReserveValue == NULL)
@@ -782,16 +677,12 @@ void SCtrlInfoWrap::SetReserveFloat(_In_ const DOUBLE& dbValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetMinMaxFloat
-//	Description:	Set current control's min/max range float data value
-//  Arguments:		lMin - Min range integer value (in)
-//					lMax - Max range integer value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's min/max range float data value
+ * @param	lMin - Min range integer value (in)
+ * @param	lMax - Max range integer value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& dbMax)
 {
 	// Min value
@@ -811,15 +702,11 @@ void SCtrlInfoWrap::SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& 
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetString
-//	Description:	Set current control's string data value
-//  Arguments:		value - String value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's string data value
+ * @param	value - String value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetString(_In_ const wchar_t* value)
 {
 	if (this->m_pstrValue == NULL)
@@ -830,15 +717,11 @@ void SCtrlInfoWrap::SetString(_In_ const wchar_t* value)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetReserveValueString
-//	Description:	Set current control's reserve string data value
-//  Arguments:		value - String reserve value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's reserve string data value
+ * @param	value - String reserve value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetReserveString(_In_ const wchar_t* value)
 {
 	if (this->m_pstrReserveValue == NULL)
@@ -849,15 +732,11 @@ void SCtrlInfoWrap::SetReserveString(_In_ const wchar_t* value)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetIntArray
-//	Description:	Set current control's integer array data value
-//  Arguments:		aulValue - Integer array value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's integer array data value
+ * @param	aulValue - Integer array value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetIntArray(_In_ const ULongArray& aulValue)
 {
 	if (this->m_paulValueList == NULL)
@@ -869,15 +748,11 @@ void SCtrlInfoWrap::SetIntArray(_In_ const ULongArray& aulValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetReserveIntArray
-//	Description:	Set current control's reserve integer array data value
-//  Arguments:		aulValue - Integer array value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's reserve integer array data value
+ * @param	aulValue - Integer array value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetReserveIntArray(_In_ const ULongArray& aulValue)
 {
 	if (this->m_paulReserveValueList == NULL)
@@ -889,15 +764,11 @@ void SCtrlInfoWrap::SetReserveIntArray(_In_ const ULongArray& aulValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetStringArray
-//	Description:	Set current control's string array data value
-//  Arguments:		astrValue - String array value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's string array data value
+ * @param	astrValue - String array value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetStringArray(_In_ const StringArray& astrValue)
 {
 	if (this->m_pastrValueList == NULL)
@@ -909,15 +780,11 @@ void SCtrlInfoWrap::SetStringArray(_In_ const StringArray& astrValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetReserveStringArray
-//	Description:	Set current control's reserve string array data value
-//  Arguments:		astrValue - String array value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's reserve string array data value
+ * @param	astrValue - String array value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetReserveStringArray(_In_ const StringArray& astrValue)
 {
 	if (this->m_pastrReserveValueList == NULL)
@@ -929,15 +796,11 @@ void SCtrlInfoWrap::SetReserveStringArray(_In_ const StringArray& astrValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetTime
-//	Description:	Set current control's time data value
-//  Arguments:		timeValue - Time value (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's time data value
+ * @param	timeValue - Time value (in)
+ * @return	None
+ */
 void SCtrlInfoWrap::SetTime(_In_ const SYSTEMTIME& timeValue)
 {
 	if (this->m_pstTimeValue == NULL)
@@ -948,16 +811,12 @@ void SCtrlInfoWrap::SetTime(_In_ const SYSTEMTIME& timeValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetData
-//	Description:	Get current control's custom data pointer
-//  Arguments:		lpOutput   - Output data pointer
-//					szDataSize - Data's total size in bytes (in/out)
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get current control's custom data pointer
+ * @param	lpOutput   - Output data pointer
+ * @param	szDataSize - Data's total size in bytes (in/out)
+ * @return	TRUE/FALSE
+ */
 template<typename DATA_TYPE>
 BOOL SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const
 {
@@ -992,16 +851,12 @@ BOOL SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& 
 	return TRUE;	// Get data successfully
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetData
-//	Description:	Set current control's custom data pointer
-//  Arguments:		lpInput	   - Input data pointer
-//					szDataSize - Data's total size in bytes (in)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set current control's custom data pointer
+ * @param	lpInput	   - Input data pointer
+ * @param	szDataSize - Data's total size in bytes (in)
+ * @return	None
+ */
 template<typename DATA_TYPE>
 BOOL SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize)
 {
@@ -1048,15 +903,11 @@ BOOL SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& sz
 	return TRUE;	// Set data successfully
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	IsDataEmpty
-//	Description:	Check if the current control's custom data pointer is empty
-//  Arguments:		None
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Check if the current control's custom data pointer is empty
+ * @param	None
+ * @return	TRUE/FALSE
+ */
 BOOL SCtrlInfoWrap::IsDataEmpty(void) const
 {
 	// If the data pointer is not available, then it's indeed empty
@@ -1072,15 +923,11 @@ BOOL SCtrlInfoWrap::IsDataEmpty(void) const
 	return FALSE;	// Not empty
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetDataSize
-//	Description:	Get total size in bytes of the current control's custom data
-//  Arguments:		None
-//  Return value:	SIZE_T
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Get total size in bytes of the current control's custom data
+ * @param	None
+ * @return	SIZE_T
+ */
 SIZE_T SCtrlInfoWrap::GetDataSize(void) const
 {
 	// If the data is empty, return 0
@@ -1103,26 +950,18 @@ SIZE_T SCtrlInfoWrap::GetDataSize(void) const
 
 IMPLEMENT_DYNAMIC(SMenu, CMenu)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SMenu
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 SMenu::SMenu(CWnd* /* pParentWnd = NULL */) : CMenu()
 {
 	// User menu layout
 	m_pMenuLayout = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~SMenu
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 SMenu::~SMenu()
 {
 	// List of controls
@@ -1141,13 +980,9 @@ SMenu::~SMenu()
 
 IMPLEMENT_DYNAMIC(SControlManager, CObject)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SControlManager
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Constructor
+ */
 SControlManager::SControlManager(CWnd* pParentWnd /* = NULL */) : CObject()
 {
 	// List of control info wrappers
@@ -1157,13 +992,9 @@ SControlManager::SControlManager(CWnd* pParentWnd /* = NULL */) : CObject()
 	m_pParentWnd = pParentWnd;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~SControlManager
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 SControlManager::~SControlManager()
 {
 	// List of control info wrappers
@@ -1174,15 +1005,11 @@ SControlManager::~SControlManager()
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	Initialize
-//	Description:	Initialize control management
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize control management
+ * @param	None
+ * @return	None
+ */
 BOOL SControlManager::Initialize(void)
 {
 	// Initialize control info list pointer
@@ -1200,15 +1027,11 @@ BOOL SControlManager::Initialize(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DeleteAll
-//	Description:	Delete all and clean-up control management
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Delete all and clean-up control management
+ * @param	None
+ * @return	None
+ */
 BOOL SControlManager::DeleteAll(void)
 {
 	// If data is not initialized
@@ -1230,15 +1053,11 @@ BOOL SControlManager::DeleteAll(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddControl
-//	Description:	Add dialog/window control to management
-//  Arguments:		pControl - Dialog control item
-//  Return value:	long long
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add dialog/window control to management
+ * @param	pControl - Dialog control item
+ * @return	long long
+ */
 long long SControlManager::AddControl(SCtrlInfoWrap* pControl)
 {
 	// Check for control pointer validity
@@ -1264,16 +1083,12 @@ long long SControlManager::AddControl(SCtrlInfoWrap* pControl)
 	return (this->m_pCtrlInfoArray->size());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	AddControl
-//	Description:	Add dialog/window control to management
-//  Arguments:		nCtrlID - Dialog control ID
-//					nTypeID - Control type ID
-//  Return value:	long long
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Add dialog/window control to management
+ * @param	nCtrlID - Dialog control ID
+ * @param	nTypeID - Control type ID
+ * @return	long long
+ */
 long long SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 {
 	// If parent window is not set, do nothing
@@ -1299,15 +1114,11 @@ long long SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
 	return INT_INVALID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveControl
-//	Description:	Remove dialog/window control from management
-//  Arguments:		nCtrlID - Dialog control ID
-//  Return value:	size_t
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove dialog/window control from management
+ * @param	nCtrlID - Dialog control ID
+ * @return	size_t
+ */
 long long SControlManager::RemoveControl(UINT nCtrlID)
 {
 	// If data is not initialized or is empty
@@ -1331,15 +1142,11 @@ long long SControlManager::RemoveControl(UINT nCtrlID)
 	return INT_INVALID;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RemoveControl
-//	Description:	Remove dialog/window control from management
-//  Arguments:		nCtrlID - Dialog control ID
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Remove dialog/window control from management
+ * @param	nCtrlID - Dialog control ID
+ * @return	None
+ */
 SCtrlInfoWrap* SControlManager::GetControl(UINT nCtrlID)
 {
 	// If data is not initialized or is empty
@@ -1357,16 +1164,12 @@ SCtrlInfoWrap* SControlManager::GetControl(UINT nCtrlID)
 	return NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetBuddy
-//	Description:	Set buddy relationship between 2 controls
-//  Arguments:		nBaseCtrlID  - Base control ID
-//					nBuddyCtrlID - Buddy control ID
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set buddy relationship between 2 controls
+ * @param	nBaseCtrlID  - Base control ID
+ * @param	nBuddyCtrlID - Buddy control ID
+ * @return	TRUE/FALSE
+ */
 BOOL SControlManager::SetBuddy(UINT nBaseCtrlID, UINT nBuddyCtrlID)
 {
 	// Get base control from management list
@@ -1391,15 +1194,11 @@ BOOL SControlManager::SetBuddy(UINT nBaseCtrlID, UINT nBuddyCtrlID)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	UpdateData
-//	Description:	Update data for specified control or all controls
-//  Arguments:		nCtrlID - Control ID (NULL means all controls)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update data for specified control or all controls
+ * @param	nCtrlID - Control ID (NULL means all controls)
+ * @return	None
+ */
 void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 {
 	// If data is not initialized or is empty

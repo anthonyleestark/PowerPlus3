@@ -1,29 +1,18 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		Global.h
-//		Description:	Define global data and objects which will be used everywhere in program
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.01.27:		Create new
-//						<1> 2024.07.06:		Update to version 3.1
-//						<2> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		Global.h
+ * @brief		Define global data and objects which will be used everywhere in program
+ * @author		AnthonyLeeStark
+ * @date		2024.01.27
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
 #include "AppCore.h"
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Define categories of global data variables
-//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// Define categories of global data variables
 #define DEF_GLBDATA_CATE_NONE			0x00			// No category (main profile section)
 #define DEF_GLBDATA_CATE_DEBUGTEST		0x01			// Debugging/Testing variables
 #define DEF_GLBDATA_CATE_APPFLAGS		0x02			// App special flags
@@ -31,13 +20,6 @@
 #define DEF_GLBDATA_CATE_TRACKING		0x04			// Tracking data variables
 #define DEF_GLBDATA_CATE_OTHERS			0x05			// Other special variables
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Define global variables and methods which are used for application profile management
-// These variables are not being grouped in any category and are stored in the main profile section
-//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*---------------------------------------------Launch-info data----------------------------------------------*/
 
@@ -59,24 +41,10 @@ static inline void UpdateAppLaunchTimeCounter(void);
 /*-----------------------------------------------------------------------------------------------------------*/
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Define global data, objects, variables and methods which are used during the application's runtime.
-// These variables are not grouped into any specific category and are serialized independently.
-//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 // Application global/shared flag manager
 extern FlagManager g_sharedFlagManager;
 extern inline FlagManager& GetGlobalFlagManager(void);
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Define global variables and methods which are used for debugging/testing
-// These special variables can only be changed by using debug commands
-//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*----------------------------------------------Debug/Test flags---------------------------------------------*/
 
@@ -146,13 +114,6 @@ static inline CFileException* GetDebugInfoException(void);
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Define global variables and methods which are used for other special purposes,
-// These special variables can only be changed by using debug commands
-//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*---------------------------------------------App tracing flags---------------------------------------------*/
 

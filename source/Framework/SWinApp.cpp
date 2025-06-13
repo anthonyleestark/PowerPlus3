@@ -1,17 +1,11 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		SWinApp.h
-//		Project name:	Stupid Framework
-//		Description:	Custom base class for application (source file)
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2024.11.19:		Create new
-//						<1> 2024.12.18:		Update to version 3.2
-//
-//		Copyright (c) 2015-2024 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		SWinApp.h
+ * @brief		Custom base class for application (source file)
+ * @author		AnthonyLeeStark
+ * @date		2024.11.19
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #include "Framework/SWinApp.h"
 
@@ -23,21 +17,13 @@ using namespace Language;
 using namespace AppCore;
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	Implement methods for SWinApp
-//
-//////////////////////////////////////////////////////////////////////////
-
+// Implement methods for SWinApp
 IMPLEMENT_DYNAMIC(SWinApp, CWinAppEx)
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SWinApp
-//	Description:	Constructor
-//
-//////////////////////////////////////////////////////////////////////////
 
+/**
+ * @brief	Constructor
+ */
 SWinApp::SWinApp() : CWinAppEx()
 {
 	// Title and caption
@@ -80,13 +66,9 @@ SWinApp::SWinApp(const wchar_t* templateName) : CWinAppEx()
 	m_bForceClose = FALSE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	~SWinApp
-//	Description:	Destructor
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Destructor
+ */
 SWinApp::~SWinApp()
 {
 	// Delete logging pointer
@@ -109,43 +91,31 @@ BEGIN_MESSAGE_MAP(SWinApp, CWinAppEx)
 END_MESSAGE_MAP()
 
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitInstance
-//	Description:	Default method for application instance initialization
-//  Arguments:		None
-//  Return value:	Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for application instance initialization
+ * @param	None
+ * @return	Default
+ */
 BOOL SWinApp::InitInstance()
 {
 	return CWinAppEx::InitInstance();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ExitInstance
-//	Description:	Default method for application instance exiting
-//  Arguments:		None
-//  Return value:	Default
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for application instance exiting
+ * @param	None
+ * @return	Default
+ */
 int SWinApp::ExitInstance()
 {
 	return CWinAppEx::ExitInstance();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PreExitInstance
-//	Description:	Execute some actions before exiting app instance
-//  Arguments:		None
-//  Return value:	int
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Execute some actions before exiting app instance
+ * @param	None
+ * @return	int
+ */
 int SWinApp::PreExitInstance()
 {
 	// TODO: Override this function for custom actions
@@ -153,30 +123,22 @@ int SWinApp::PreExitInstance()
 	return Result::Success;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	PreTranslateMessage
-//	Description:	Default method for pre-translate message
-//  Arguments:		pMsg - Default
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Default method for pre-translate message
+ * @param	pMsg - Default
+ * @return	None
+ */
 BOOL SWinApp::PreTranslateMessage(MSG* pMsg)
 {
 	// Default
 	return CWinAppEx::PreTranslateMessage(pMsg);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitAppLanguage
-//	Description:	Initialize application language package pointer
-//  Arguments:		None
-//  Return value:	BOOL - Result of initialization
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize application language package pointer
+ * @param	None
+ * @return	BOOL - Result of initialization
+ */
 BOOL SWinApp::InitAppLanguage(void)
 {
 	// Update current language setting
@@ -196,15 +158,11 @@ BOOL SWinApp::InitAppLanguage(void)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	ReloadAppLanguage
-//	Description:	Reload application language package pointer
-//  Arguments:		nCurLanguage - Current language ID
-//  Return value:	BOOL - Result of reloading process
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Reload application language package pointer
+ * @param	nCurLanguage - Current language ID
+ * @return	BOOL - Result of reloading process
+ */
 BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 {
 	// If language is not specified
@@ -235,15 +193,11 @@ BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 	return TRUE;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppName
-//	Description:	Set application name by resource string ID
-//  Arguments:		nResourceStringID - Resource string ID
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set application name by resource string ID
+ * @param	nResourceStringID - Resource string ID
+ * @return	TRUE/FALSE
+ */
 BOOL SWinApp::SetAppName(UINT nResourceStringID)
 {
 	// Load resource string
@@ -257,15 +211,11 @@ BOOL SWinApp::SetAppName(UINT nResourceStringID)
 	return (!tempString.IsEmpty());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppWindowCaption
-//	Description:	Set application window common caption
-//  Arguments:		windowCaption - Application window caption
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set application window common caption
+ * @param	windowCaption - Application window caption
+ * @return	None
+ */
 void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
 {
 	// Set caption
@@ -278,15 +228,11 @@ void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVe
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetAppWindowCaption
-//	Description:	Set application window common caption by resource string ID
-//  Arguments:		nResourceStringID - Resource string ID
-//  Return value:	TRUE/FALSE
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Set application window common caption by resource string ID
+ * @param	nResourceStringID - Resource string ID
+ * @return	TRUE/FALSE
+ */
 BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
 {
 	// Load resource string
@@ -300,16 +246,12 @@ BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion 
 	return (!tempWindowCaption.IsEmpty());
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RegisterMessageBoxCaption
-//	Description:	Register default caption for message box-es
-//  Arguments:		nCaptionID  - ID of message caption string
-//					lpszCaption	- Message caption string
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Register default caption for message box-es
+ * @param	nCaptionID  - ID of message caption string
+ * @param	lpszCaption	- Message caption string
+ * @return	None
+ */
 void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 {
 	// Load app language package
@@ -335,18 +277,14 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
 	RegisterMessageBoxCaption(messageCaption);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DoMessageBox
-//	Description:	Override this function to customize application-wide 
-//					processing of AfxMessageBox calls
-//  Arguments:		prompt		- Message box text
-//					nType		- Message box style
-//					nIDPrompt	- An index to a Help context string.
-//  Return value:	int	- Result of message box
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Override this function to customize application-wide
+					processing of AfxMessageBox calls
+ * @param	prompt		- Message box text
+ * @param	nType		- Message box style
+ * @param	nIDPrompt	- An index to a Help context string.
+ * @return	int	- Result of message box
+ */
 int SWinApp::DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt)
 {
 	// Message caption
@@ -377,17 +315,13 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayMessageBox
-//	Description:	Display message box using language string ID
-//  Arguments:		nPromptID  - ID of prompt message string
-//					nCaptionID - ID of message caption string
-//					nStyle	   - Message box style
-//  Return value:	int	- Result of message box
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Display message box using language string ID
+ * @param	nPromptID  - ID of prompt message string
+ * @param	nCaptionID - ID of message caption string
+ * @param	nStyle	   - Message box style
+ * @return	int	- Result of message box
+ */
 int SWinApp::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UINT nStyle /* = NULL */)
 {
 	// Load app language package
@@ -414,17 +348,13 @@ int SWinApp::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
 	return nResult;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	DisplayMessageBox
-//	Description:	Display message box using language string
-//  Arguments:		prompt  - Message string
-//					caption - Message caption string
-//					nStyle	- Message box style
-//  Return value:	int	- Result of message box
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Display message box using language string
+ * @param	prompt  - Message string
+ * @param	caption - Message caption string
+ * @param	nStyle	- Message box style
+ * @return	int	- Result of message box
+ */
 int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* = NULL */, UINT nStyle /* = NULL */)
 {
 	// Set default style
@@ -453,15 +383,11 @@ int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
 	return ::MessageBox(this->GetMainWnd()->GetSafeHwnd(), prompt, messageCaption, nStyle);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	InitAppEventLog
-//	Description:	Initialize application event logging data
-//  Arguments:		None
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Initialize application event logging data
+ * @param	None
+ * @return	None
+ */
 void SWinApp::InitAppEventLog(void)
 {
 	// Initialization
@@ -481,17 +407,13 @@ void SWinApp::InitAppEventLog(void)
 	m_pAppEventLog->SetWriteMode(WriteOnCall);
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	OutputEventLog
-//	Description:	Output application event log
-//  Arguments:		usEvent		- Event ID
-//					description - Additional description
-//					pDetailInfo	- Log detail info (array pointer)
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Output application event log
+ * @param	usEvent		- Event ID
+ * @param	description - Additional description
+ * @param	pDetailInfo	- Log detail info (array pointer)
+ * @return	None
+ */
 void SWinApp::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
 {
 	// Prepare event log info
@@ -516,15 +438,11 @@ void SWinApp::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NUL
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	GetFlagValue
-//	Description:	Return flag value by ID
-//  Arguments:		eFlagID - ID of specific flag
-//  Return value:	int - Flag value
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Return flag value by ID
+ * @param	eFlagID - ID of specific flag
+ * @return	int - Flag value
+ */
 int SWinApp::GetFlagValue(AppFlagID eFlagID) const
 {
 	int nValue = FLAG_OFF;
@@ -548,16 +466,12 @@ int SWinApp::GetFlagValue(AppFlagID eFlagID) const
 	return nValue;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	SetFlagValue
-//	Description:	Update flag value by ID
-//  Arguments:		eFlagID - ID of specific flag
-//					nValue  - Value to set
-//  Return value:	None
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Update flag value by ID
+ * @param	eFlagID - ID of specific flag
+ * @param	nValue  - Value to set
+ * @return	None
+ */
 void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
@@ -581,16 +495,12 @@ void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 
-//	Function name:	RequestCloseDialog
-//	Description:	Request current dialog to close
-//  Arguments:		nDialogID  - Dialog ID
-//					hDialogWnd - Dialog window handle
-//  Return value:	LRESULT (0:Success, else:Failed)
-//
-//////////////////////////////////////////////////////////////////////////
-
+/**
+ * @brief	Request current dialog to close
+ * @param	nDialogID  - Dialog ID
+ * @param	hDialogWnd - Dialog window handle
+ * @return	LRESULT (0:Success, else:Failed)
+ */
 LRESULT SWinApp::RequestCloseDialog(UINT /*nDialogID*/)
 {
 	// Request denied

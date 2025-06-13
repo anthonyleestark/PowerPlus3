@@ -1,29 +1,20 @@
-﻿
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//		File name:		MapTable.h
-//		Description:	Define and implement data map table, macros and methods for map table processing
-//		Owner:			AnthonyLeeStark
-//		
-//		History:		<0> 2025.04.03:		Create new
-//
-//		Copyright (c) 2015-2025 AnthonyLeeStark
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * @file		MapTable.h
+ * @brief		Define and implement data map table, macros and methods for map table processing
+ * @author		AnthonyLeeStark
+ * @date		2025.04.03
+ * 
+ * @copyright 	Copyright (c) 2015-2025 AnthonyLeeStark
+ */
 
 #pragma once
 
 #include "AppCore.h"
 #include "Global.h"
 
+
 namespace MapTable
 {
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	//	Define data types and macros for data map table initialization and process
-	//
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	// ID pair entry
 	struct IDPAIR
 	{
@@ -83,23 +74,11 @@ namespace MapTable
 		UINT nBalloonTipID;									// Balloon tip ID
 	};
 
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	//	Define global static data tables for program, these data will be used elsewhere in the program
-	//
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	
+	// Static data tables for application
 	namespace IDTable
 	{
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		ActionName
-		//  Description:	Using for pairing action macro IDs and action name IDs
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		// Using for pairing action macro IDs and action name IDs
 		INITIALIZE_IDMAPTABLE(ActionName)
 		/*------Action ID------------------------------Action Name ID------------------*/
 			APP_ACTION_NOTHING,					ACTION_NAME_NOTHING,
@@ -113,14 +92,8 @@ namespace MapTable
 		/*-----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		ActionMessage
-		//  Description:	Using for pairing action macro IDs and action message IDs
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
 
+		// Using for pairing action macro IDs and action message IDs
 		INITIALIZE_IDMAPTABLE(ActionMessage)
 		/*------Action ID-------------------------------Message String ID-------------*/
 			APP_ACTION_DISPLAYOFF,				MESSAGE_ACTION_DISPLAYOFF,
@@ -132,15 +105,8 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		NotifyTip
-		//  Description:	Using for pairing action macro IDs and string IDs for
-		//					notify icon tip text
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
 
+		// Using for pairing action macro IDs and string IDs for notify icon tip text
 		INITIALIZE_IDMAPTABLE(NotifyTip)
 		/*------Action ID------------------------------Notify String ID---------------*/
 			APP_ACTION_DISPLAYOFF,				NOTIFY_TIP_DISPLAYOFF,
@@ -153,15 +119,8 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		BalloonTip
-		//  Description:	Using for pairing action macro IDs and string IDs for
-		//					notify icon balloon tip text
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		
+		// Using for pairing action macro IDs and string IDs for notify icon balloon tip text
 		INITIALIZE_IDMAPTABLE(BalloonTip)
 		/*------Action ID------------------------------Balloon String ID--------------*/
 			APP_ACTION_DISPLAYOFF,				BALLOON_TIP_DISPLAYOFF,
@@ -173,15 +132,8 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		ErrorCode
-		//  Description:	Using for pairing application-defined error codes and
-		//					system-defined error codes
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		
+		// Using for pairing application-defined error codes and system-defined error codes
 		INITIALIZE_IDMAPTABLE(ErrorCode)
 		/*------Action ID--------------------------------Action Name ID---------------*/
 			APP_ERROR_SUCCESS,					ERROR_SUCCESS,
@@ -212,15 +164,8 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		ErrorMessage
-		//  Description:	Using for pairing application-defined error codes and
-		//					error message string IDs
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		
+		// Using for pairing application-defined error codes and error message string IDs
 		INITIALIZE_IDMAPTABLE(ErrorMessage)
 		/*------Action ID-----------------------------Error message string ID---------*/
 			APP_ERROR_SUCCESS,					INT_NULL,
@@ -272,15 +217,8 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		ScheduleNotifyMessage
-		//  Description:	Using for pairing action macro IDs and message box
-		//					string IDs for Notify Schedule function
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
 
+		// Using for pairing action macro IDs and message box string IDs for Notify Schedule function
 		INITIALIZE_IDMAPTABLE(ScheduleNotifyMessage)
 		/*------Action ID---------------------------------Message String ID-----------*/
 			APP_ACTION_DISPLAYOFF,				MESSAGE_SCHEDNOTIFY_DISPLAYOFF,
@@ -292,14 +230,8 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		HKActionID
-		//  Description:	Using for pairing Hotkey ID and action macro IDs
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
 
+		// Using for pairing Hotkey ID and action macro IDs
 		INITIALIZE_IDMAPTABLE(HKActionID)
 		/*--HotKey Action ID-----------------------------Action ID--------------------*/
 			HotkeyID::displayOff,				APP_ACTION_DISPLAYOFF,
@@ -311,15 +243,9 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		PwrReminderEvent
-		//  Description:	Using for pairing Power Reminder event IDs and string IDs 
-		//					which will display in Power Reminder data table
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
 
+		// Using for pairing Power Reminder event IDs and string IDs 
+		// which will display in Power Reminder data table
 		INITIALIZE_IDMAPTABLE(PwrReminderEvent)
 		/*-----Event ID--------------------------------Event String ID----------------*/
 			PwrReminderEvent::atSetTime,		PWRRMD_EVENT_AT_SETTIME,
@@ -331,15 +257,9 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		PwrReminderStyle
-		//  Description:	Using for pairing Power Reminder style IDs and string IDs 
-		//					which will display in Power Reminder data table
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
 
+		// Using for pairing Power Reminder style IDs and string IDs 
+		// which will display in Power Reminder data table
 		INITIALIZE_IDMAPTABLE(PwrReminderStyle)
 		/*----Style ID---------------------------------Style String ID----------------*/
 			PwrReminderStyle::messageBox,		PWRRMD_STYLE_MESSAGEBOX,
@@ -347,14 +267,8 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		DayOfWeek
-		//  Description:	Using for pairing day-of-week macro IDs and title IDs
-		//  Table type:		IDMAPTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
 
+		// Using for pairing day-of-week macro IDs and title IDs
 		INITIALIZE_IDMAPTABLE(DayOfWeek)
 		/*--Day ID-----------------------------------Day title string ID--------------*/
 			DayOfWeek::Monday,					DAYOFWEEK_TITLE_MONDAY,
@@ -370,14 +284,7 @@ namespace MapTable
 
 	namespace StringTable
 	{
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		FunctionKeys
-		//  Description:	Using for pairing function key macros and key names
-		//  Table type:		STRINGTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		// Using for pairing function key macros and key names
 		INITIALIZE_STRINGMAPTABLE(FunctionKeys)
 		/*----------------------------------------------------------------------------*/
 			{ VK_F1,  _T("F1") },	{ VK_F2,  _T("F2") },	{ VK_F3,  _T("F3") },
@@ -387,14 +294,8 @@ namespace MapTable
 		/*----------------------------------------------------------------------------*/
 		END_STRINGMAPTABLE()
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		ColorName
-		//  Description:	Using for pairing color macro IDs and color names
-		//  Table type:		STRINGTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
 
+		// Using for pairing color macro IDs and color names
 		INITIALIZE_STRINGMAPTABLE(ColorName)
 		/*-------Color ID----------------------------Color name-----------------------*/
 			Color::Red,							_T("Red"),
@@ -420,14 +321,7 @@ namespace MapTable
 		END_STRINGMAPTABLE()
 
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		MsgIconName
-		//  Description:	Using for pairing message icon IDs and icon names
-		//  Table type:		STRINGTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		// Using for pairing message icon IDs and icon names
 		INITIALIZE_STRINGMAPTABLE(MsgIconName)
 		/*--------Icon ID---------------------------Icon name-------------------------*/
 			SystemIcon::Application,			_T("App"),
@@ -444,14 +338,7 @@ namespace MapTable
 
 	namespace OtherTable
 	{
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		ExistedSysHotkeyList
-		//  Description:	Using to define list of existed system-defined keystrokes 
-		//  Table type:		HOTKEYINFO Table
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		// Using to define list of existed system-defined keystrokes 
 		INITIALIZE_TABLE(HOTKEYINFO, ExistedSysHotkeyList)
 		/*----Control Key----------------Function Key-----Hotkey description----------*/
 			MOD_ALT,						VK_F4,		HKEYSET_EXISTED_ALT_F4,
@@ -465,24 +352,9 @@ namespace MapTable
 		END_TABLE()
 	};
 
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//
-	//	Define static data tables for logging, these data will be used for logging feature only
-	//
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	namespace StringTable
 	{
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		LogKey
-		//  Description:	Using for pairing log key IDs and output texts
-		//					when writing log files
-		//  Table type:		STRINGTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		// Using for pairing log key IDs and output texts when writing log files
 		INITIALIZE_STRINGMAPTABLE(LogKey)
 		/*----Base log key ID--------------------Output Text-------------------------*/
 			BaseLog::Time,						_T("time"),
@@ -520,15 +392,7 @@ namespace MapTable
 		END_STRINGMAPTABLE()
 
 
-		//////////////////////////////////////////////////////////////////////////
-		//
-		//	Table name:		LogValue
-		//  Description:	Using for pairing log value IDs and output texts
-		//					when writing log files
-		//  Table type:		STRINGTABLE
-		//
-		//////////////////////////////////////////////////////////////////////////
-
+		// Using for pairing log value IDs and output texts when writing log files
 		INITIALIZE_STRINGMAPTABLE(LogValue)
 		/*--Action history category ID-----------Output Text-------------------------*/
 			HistoryCategory::PowerAction,		_T("Power Action"),
@@ -556,13 +420,8 @@ namespace MapTable
 	};
 
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//
 	//	Define methods for processing data map tables
-	//
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	UINT	GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse = FALSE);
-	UINT	GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input);
+	UINT GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse = FALSE);
+	UINT GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input);
 	const wchar_t* GetString(STRINGTABLE_REF pStringTableRef, UINT nID);
 };
