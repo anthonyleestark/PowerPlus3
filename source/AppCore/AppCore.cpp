@@ -25,24 +25,24 @@ ConfigData::ConfigData()
 	this->nLMBAction = APP_ACTION_DISPLAYOFF;							// Left mouse button action
 	this->nMMBAction = APP_ACTION_SLEEP;								// Middle mouse button action
 	this->nRMBAction = APP_ACTION_SHOWMENU;								// Right mouse button action
-	this->bRMBShowMenu = TRUE;											// Right mouse button: Only show menu
+	this->bRMBShowMenu = true;											// Right mouse button: Only show menu
 
 	// Display setting
 	this->nLanguageID = APP_LANGUAGE_ENGLISH;							// Language setting
 
 	// System settings
-	this->bShowDlgAtStartup = TRUE;										// Show dialog at startup
-	this->bStartupEnabled = TRUE;										// Startup with Windows
-	this->bConfirmAction = TRUE;										// Show confirm message before doing action
-	this->bSaveHistoryLog = FALSE;										// Save app history log
-	this->bSaveAppEventLog = TRUE;										// Save app event log
-	this->bRunAsAdmin = FALSE;											// Run with admin privileges
-	this->bShowErrorMsg = TRUE;											// Show action error message
-	this->bNotifySchedule = TRUE;										// Show notify tip for schedule action
-	this->bAllowCancelSchedule = FALSE;									// Allow canceling schedule when notify
-	this->bEnableBackgroundHotkey = FALSE;								// Enable background action hotkeys
-	this->bLockStateHotkey = TRUE;										// Allow background hotkeys on lockscreen
-	this->bEnablePowerReminder = TRUE;									// Enable Power Peminder feature
+	this->bShowDlgAtStartup = true;										// Show dialog at startup
+	this->bStartupEnabled = true;										// Startup with Windows
+	this->bConfirmAction = true;										// Show confirm message before doing action
+	this->bSaveHistoryLog = false;										// Save app history log
+	this->bSaveAppEventLog = true;										// Save app event log
+	this->bRunAsAdmin = false;											// Run with admin privileges
+	this->bShowErrorMsg = true;											// Show action error message
+	this->bNotifySchedule = true;										// Show notify tip for schedule action
+	this->bAllowCancelSchedule = false;									// Allow canceling schedule when notify
+	this->bEnableBackgroundHotkey = false;								// Enable background action hotkeys
+	this->bLockStateHotkey = true;										// Allow background hotkeys on lockscreen
+	this->bEnablePowerReminder = true;									// Enable Power Peminder feature
 }
 
 
@@ -84,7 +84,7 @@ void ConfigData::Copy(const CONFIGDATA& other) noexcept
 /**
  * @brief	Compare with another given data
  * @param	other - Pointer of given data
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 constexpr bool ConfigData::Compare(const CONFIGDATA& other) const noexcept
 {
@@ -226,8 +226,8 @@ constexpr bool ConfigData::Compare(const CONFIGDATA& other) const noexcept
  PwrRepeatSet::PwrRepeatSet()
 {
 	// Init data
-	m_bRepeat = FALSE;										// Repeat daily
-	m_bAllowSnooze = TRUE;									// Allow snoozing mode
+	m_bRepeat = false;										// Repeat daily
+	m_bAllowSnooze = true;									// Allow snoozing mode
 	m_nSnoozeInterval = defaultSnoozeInterval;				// Snooze interval
 	m_byRepeatDays = defaultActiveDays;						// Default repeat: All days of week
 }
@@ -254,7 +254,7 @@ void PwrRepeatSet::Copy(const PwrRepeatSet& other) noexcept
 /**
  * @brief	Compare data with another Repeat set data
  * @param	other - Pointer of input item
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 constexpr bool PwrRepeatSet::Compare(const PwrRepeatSet& other) const noexcept
 {
@@ -277,7 +277,7 @@ ScheduleItem::ScheduleItem()
 {
 	// Initialize
 	m_nItemID = ScheduleData::minItemID;				// Item ID
-	m_bEnabled = FALSE;									// Enable/disable status
+	m_bEnabled = false;									// Enable/disable status
 	m_nActionID = APP_ACTION_NOTHING;					// Schedule action ID
 	m_stTime = ClockTime();								// Schedule time
 	m_rpsRepeatSet = PwrRepeatSet();					// Repeat set data
@@ -287,7 +287,7 @@ ScheduleItem::ScheduleItem(unsigned nItemID)
 {
 	// Initialize
 	m_nItemID = nItemID;								// Item ID
-	m_bEnabled = FALSE;									// Enable/disable status
+	m_bEnabled = false;									// Enable/disable status
 	m_nActionID = APP_ACTION_NOTHING;					// Schedule action
 	m_stTime = ClockTime();								// Schedule time
 	m_rpsRepeatSet = PwrRepeatSet();					// Repeat set data
@@ -299,7 +299,7 @@ ScheduleItem::ScheduleItem(unsigned nItemID)
  * @param	other - Pointer of input item
  * @return	None
  */
-void ScheduleItem::Copy(const ScheduleItem& other)
+void ScheduleItem::Copy(const ScheduleItem& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -316,7 +316,7 @@ void ScheduleItem::Copy(const ScheduleItem& other)
 /**
  * @brief	Compare with another given item
  * @param	other - Pointer of given item
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 constexpr bool ScheduleItem::Compare(const ScheduleItem& other) const noexcept
 {
@@ -349,11 +349,11 @@ void ScheduleItem::Print(String& outputString) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format schedule data
-	const wchar_t* enableState = (m_bEnabled == TRUE) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
+	const wchar_t* enableState = (m_bEnabled == true) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
 	unsigned nActionStringID = GetPairedID(IDTable::ActionName, m_nActionID);
 	const wchar_t* actionName = GetLanguageString(ptrLanguage, nActionStringID);												// Schedule action
 	const wchar_t* timeFormat = ClockTimeUtils::Format(ptrLanguage, IDS_FORMAT_SHORTTIME, m_stTime).GetString();				// Schedule time
-	const wchar_t* repeatState = (m_rpsRepeatSet.IsRepeatEnabled() == TRUE) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
+	const wchar_t* repeatState = (m_rpsRepeatSet.IsRepeatEnabled() == true) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
 
 	// Print item
 	outputString.Format(_T("Active=(%s), ItemID=%d, Action=(%s), Time=(%s), Repeat=(%s)"),
@@ -430,7 +430,7 @@ DWORD ScheduleData::Add(const ScheduleItem& pItem)
 	// Check if item is duplicated, if yes, do not add
 	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
 		ScheduleItem pItemTemp = GetItemAt(nIndex);
-		if (pItemTemp.Compare(pItem) == TRUE) {
+		if (pItemTemp.Compare(pItem) == true) {
 			// All data is duplicated
 			return Error::ItemDuplicated;
 		}
@@ -541,7 +541,7 @@ void ScheduleData::Remove(int nAtIndex)
 void ScheduleData::Adjust(void)
 {
 	// If default item is empty but extra data is not
-	if (IsDefaultEmpty() && IsExtraEmpty() == FALSE) {
+	if (IsDefaultEmpty() && IsExtraEmpty() == false) {
 		// Make first extra item default
 		m_schDefaultItem.Copy(GetItemAt(0));
 		m_schDefaultItem.SetItemID(ScheduleData::defaultItemID);
@@ -566,7 +566,7 @@ void ScheduleData::Adjust(void)
  * @param	None
  * @return	unsigned
  */
-unsigned ScheduleData::GetNextID(void)
+unsigned ScheduleData::GetNextID(void) const
 {
 	// Get currently max ID
 	unsigned nRetNextID = ScheduleData::minItemID;
@@ -589,17 +589,17 @@ unsigned ScheduleData::GetNextID(void)
  * @param	None
  * @return	bool - Result of all item empty
  */
-bool ScheduleData::IsExtraEmpty(void) const
+constexpr bool ScheduleData::IsExtraEmpty(void) const noexcept
 {
-	// If there's no item, return TRUE
+	// If there's no item, return true
 	if (m_arrSchedExtraItemList.empty())
-		return TRUE;
+		return true;
 
 	// Check each item
-	bool bExtraEmpty = TRUE;
+	bool bExtraEmpty = true;
 	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
-		if (IsEmpty(nIndex) == FALSE) {
-			bExtraEmpty = FALSE;
+		if (IsEmpty(nIndex) == false) {
+			bExtraEmpty = false;
 			break;
 		}
 	}
@@ -648,7 +648,7 @@ void ScheduleData::Delete(int nAtIndex)
 HotkeySetItem::HotkeySetItem()
 {
 	// Initialize
-	m_bEnabled = FALSE;								// Hotkey enabled/disabled
+	m_bEnabled = false;								// Hotkey enabled/disabled
 	m_nHKActionID = 0;								// Hotkey action ID
 	m_dwModifiers = 0;								// Modifier keys
 	m_dwVirtualKey = 0;								// Virtual key code
@@ -657,7 +657,7 @@ HotkeySetItem::HotkeySetItem()
 HotkeySetItem::HotkeySetItem(unsigned nHKActionID)
 {
 	// Initialize
-	m_bEnabled = FALSE;								// Hotkey enabled/disabled
+	m_bEnabled = false;								// Hotkey enabled/disabled
 	m_nHKActionID = nHKActionID;					// Hotkey action ID
 	m_dwModifiers = 0;								// Modifier keys
 	m_dwVirtualKey = 0;								// Virtual key code
@@ -669,7 +669,7 @@ HotkeySetItem::HotkeySetItem(unsigned nHKActionID)
  * @param	other - Pointer of input item
  * @return	None
  */
-void HotkeySetItem::Copy(const HotkeySetItem& other)
+void HotkeySetItem::Copy(const HotkeySetItem& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -697,7 +697,7 @@ void HotkeySetItem::Print(String& outputString) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	const wchar_t* lpszEnable = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
+	const wchar_t* lpszEnable = (m_bEnabled == true) ? _T("Enabled") : _T("Disabled");
 	unsigned nActionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, m_nHKActionID));
 	const wchar_t* lpszAction = GetLanguageString(ptrLanguage, nActionNameID);
 	String keyStrokesStr = Constant::String::Empty;
@@ -737,7 +737,7 @@ void HotkeySetItem::PrintKeyStrokes(String& outputString) const
  * @param	other - Pointer of input data
  * @return	None
  */
-void HotkeySetData::Copy(const HotkeySetData& other)
+void HotkeySetData::Copy(const HotkeySetData& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -791,7 +791,7 @@ void HotkeySetData::Add(const Item& pItem)
 	// Check if item exists, if yes, do not add
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
 		const Item& pItemTemp = GetItemAt(nIndex);
-		if (pItemTemp.Compare(pItem) == TRUE)
+		if (pItemTemp.Compare(pItem) == true)
 			return;
 	}
 
@@ -842,7 +842,7 @@ void HotkeySetData::Update(const Item& pItem)
 			// Duplicate action ID found
 			nDupActionIndex = nIndex;
 		}
-		if (hksTemp.CompareKeycode(pItem) == TRUE) {
+		if (hksTemp.CompareKeycode(pItem) == true) {
 			// Duplicate keystrokes found
 			nDupKeyIndex = nIndex;
 		}
@@ -887,7 +887,7 @@ void HotkeySetData::Remove(int nAtIndex)
 	Item& hksItem = GetItemAt(nAtIndex);
 
 	// Reset item value
-	hksItem.EnableItem(FALSE);
+	hksItem.EnableItem(false);
 	hksItem.SetKeyCode(NULL, NULL);
 }
 
@@ -908,7 +908,7 @@ void HotkeySetData::Adjust(void)
 
 		// Not enable hotkeyset item if no keystroke data
 		if ((dwCtrlKey == 0) || (dwFuncKey == 0)) {
-			hksItem.EnableItem(FALSE);
+			hksItem.EnableItem(false);
 			hksItem.SetKeyCode(NULL, NULL);
 		}
 	}
@@ -920,17 +920,17 @@ void HotkeySetData::Adjust(void)
  * @param	None
  * @return	bool - Result of all item empty
  */
-bool HotkeySetData::IsAllEmpty() const
+bool HotkeySetData::IsAllEmpty(void) const noexcept
 {
-	// If there's no item, return TRUE
+	// If there's no item, return true
 	if (m_arrHotkeySetList.empty())
-		return TRUE;
+		return true;
 
 	// Check each item
-	bool bAllEmpty = TRUE;
+	bool bAllEmpty = true;
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		if (IsEmpty(nIndex) == FALSE) {
-			bAllEmpty = FALSE;
+		if (IsEmpty(nIndex) == false) {
+			bAllEmpty = false;
 			break;
 		}
 	}
@@ -1021,7 +1021,7 @@ RmdMsgStyleSet::RmdMsgStyleSet()
  * @param	other - Pointer of input item
  * @return	None
  */
-void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& other)
+void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -1044,11 +1044,11 @@ void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& other)
 /**
  * @brief	Compare data with another Repeat set data
  * @param	other - Pointer of input item
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-bool RmdMsgStyleSet::Compare(const RmdMsgStyleSet& other) const
+bool RmdMsgStyleSet::Compare(const RmdMsgStyleSet& other) const noexcept
 {
-	bool bRetCompare = TRUE;
+	bool bRetCompare = true;
 
 	// Compare data
 	bRetCompare &= (this->m_colorBkgrd == other.m_colorBkgrd);		// Background color
@@ -1073,14 +1073,14 @@ bool RmdMsgStyleSet::Compare(const RmdMsgStyleSet& other) const
 PwrReminderItem::PwrReminderItem()
 {
 	// Init data
-	m_bEnabled = FALSE;										// Enable state
+	m_bEnabled = false;										// Enable state
 	m_nItemID = PwrReminderData::minItemID;					// Item ID
 	m_strMessage = Constant::String::Empty;					// Message content
 	m_nEventID = Event::atSetTime;							// Event ID
 	m_stTime = ClockTime();									// Event time
 	m_dwMsgStyle = Style::messageBox;						// Reminder style
 	m_rpsRepeatSet = PwrRepeatSet();						// Repeat set
-	m_bUseCustomStyle = FALSE;								// Use message custom style
+	m_bUseCustomStyle = false;								// Use message custom style
 	m_rmsMsgStyleSet = RmdMsgStyleSet();					// Reminder message style set
 }
 
@@ -1090,7 +1090,7 @@ PwrReminderItem::PwrReminderItem()
  * @param	other - Pointer of input item
  * @return	None
  */
-void PwrReminderItem::Copy(const PwrReminderItem& other)
+void PwrReminderItem::Copy(const PwrReminderItem& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -1111,11 +1111,11 @@ void PwrReminderItem::Copy(const PwrReminderItem& other)
 /**
  * @brief	Compare with another given item
  * @param	other - Pointer of given item
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-bool PwrReminderItem::Compare(const PwrReminderItem& other) const
+bool PwrReminderItem::Compare(const PwrReminderItem& other) const noexcept
 {
-	bool bRet = TRUE;
+	bool bRet = true;
 
 	// Compare item (do not compare item ID)
 	bRet &= (this->m_strMessage == other.m_strMessage);
@@ -1134,27 +1134,27 @@ bool PwrReminderItem::Compare(const PwrReminderItem& other) const
 /**
  * @brief	Check if item snooze mode is available
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-bool PwrReminderItem::IsAllowSnoozing(void) const
+bool PwrReminderItem::IsAllowSnoozing(void) const noexcept
 {
 	// If current eventID is not at settime
 	if (m_nEventID != Event::atSetTime) {
 		// Not allow snooze mode
-		return FALSE;
+		return false;
 	}
 	// If repeat option is currently OFF
-	if (IsRepeatEnabled() != TRUE) {
+	if (IsRepeatEnabled() != true) {
 		// Not allow snooze mode
-		return FALSE;
+		return false;
 	}
 	// If allow snooze option is OFF
-	if (m_rpsRepeatSet.IsAllowSnoozing() != TRUE) {
+	if (m_rpsRepeatSet.IsAllowSnoozing() != true) {
 		// Not allow snooze mode
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1174,7 +1174,7 @@ void PwrReminderItem::Print(String& outputString) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	const wchar_t* enableStr = (m_bEnabled == TRUE) ? _T("Enabled") : _T("Disabled");
+	const wchar_t* enableStr = (m_bEnabled == true) ? _T("Enabled") : _T("Disabled");
 	String messageStr = m_strMessage;
 	if (messageStr.GetLength() > (Constant::Max::DisplayLogStringLength + 3)) {
 		messageStr = m_strMessage.Left(Constant::Max::DisplayLogStringLength) + _T("...");
@@ -1211,7 +1211,7 @@ PwrReminderData::PwrReminderData()
  * @param	None
  * @return	None
  */
-void PwrReminderData::Init()
+void PwrReminderData::Init() noexcept
 {
 	// Initialize
 	m_arrRmdItemList.clear();
@@ -1224,7 +1224,7 @@ void PwrReminderData::Init()
  * @param	other - Pointer of input data
  * @return	None
  */
- void PwrReminderData::Copy(const PwrReminderData& other)
+ void PwrReminderData::Copy(const PwrReminderData& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -1260,7 +1260,7 @@ void PwrReminderData::Init()
 	// Check if item exists, if yes, do not add
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
 		PwrReminderItem pItemTemp = GetItemAt(nIndex);
-		if (pItemTemp.Compare(pItem) == TRUE)
+		if (pItemTemp.Compare(pItem) == true)
 			return;
 	}
 
@@ -1368,7 +1368,7 @@ void PwrReminderData::Init()
  * @param	None
  * @return	unsigned
  */
- unsigned PwrReminderData::GetNextID(void)
+ unsigned PwrReminderData::GetNextID(void) const noexcept
 {
 	// Get max ID
 	unsigned nRetNextID = PwrReminderData::minItemID;
@@ -1391,17 +1391,17 @@ void PwrReminderData::Init()
  * @param	None
  * @return	bool - Result of all item empty
  */
- bool PwrReminderData::IsAllEmpty() const
+ bool PwrReminderData::IsAllEmpty() const noexcept
 {
-	// If there's no item, return TRUE
+	// If there's no item, return true
 	if (m_arrRmdItemList.empty())
-		return TRUE;
+		return true;
 
 	// Check each item
-	bool bAllEmpty = TRUE;
+	bool bAllEmpty = true;
 	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		if (IsEmpty(nIndex) == FALSE) {
-			bAllEmpty = FALSE;
+		if (IsEmpty(nIndex) == false) {
+			bAllEmpty = false;
 			break;
 		}
 	}
@@ -1466,7 +1466,7 @@ void PwrReminderData::Init()
  * @param	other - Pointer of input item
  * @return	None
  */
- void PwrRuntimeItem::Copy(const PwrRuntimeItem& other)
+ void PwrRuntimeItem::Copy(const PwrRuntimeItem& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -1486,7 +1486,7 @@ void PwrReminderData::Init()
  * @param	nInterval - Snooze interval
  * @return	None
  */
-void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval)
+void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval) noexcept
 {
 	ClockTimeUtils::CalculateOffset(m_stNextSnoozeTime, nInterval);
 }
@@ -1498,12 +1498,12 @@ void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval)
  HistoryInfoData::HistoryInfoData()
 {
 	// Init data
-	m_bInitState = FALSE;									// Init state
+	m_bInitState = false;									// Init state
 	m_nCategoryID = INT_NULL;								// Category ID
 	m_stTimestamp = DateTime();								// Timestamp of history
 	m_nItemID = INT_NULL;									// Item ID
 	m_nActionID = INT_NULL;									// History action ID
-	m_bActionResult = FALSE;								// Action result
+	m_bActionResult = false;								// Action result
 	m_dwErrorCode = INT_NULL;								// Returned error code
 	m_strDescription = Constant::String::Empty;				// History description (attached info)
 }
@@ -1514,7 +1514,7 @@ void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval)
  * @param	other - Pointer of input data
  * @return	None
  */
-void HistoryInfoData::Copy(const HistoryInfoData& other)
+void HistoryInfoData::Copy(const HistoryInfoData& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -1536,11 +1536,11 @@ void HistoryInfoData::Copy(const HistoryInfoData& other)
  * @param	nCategoryID - Category ID
  * @return	None
  */
-void HistoryInfoData::Init(unsigned nCategoryID)
+void HistoryInfoData::Init(unsigned nCategoryID) noexcept
 {
 	// Reset data
 	RemoveAll();
-	m_bInitState = TRUE;									// Init state
+	m_bInitState = true;									// Init state
 	m_nCategoryID = nCategoryID;							// Category ID
 	m_stTimestamp = DateTimeUtils::GetCurrentDateTime();	// Timestamp of history
 	m_dwErrorCode = INT_NULL;								// Returned error code
@@ -1695,7 +1695,7 @@ String StringUtils::LoadResourceString(unsigned resourceStringID)
  * @brief	Load resource ID and return the string
  * @param	strResult	 - Returned resource string
  * @param	nResStringID - ID of resource string
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 bool StringUtils::LoadResourceString(String& resultStr, unsigned resourceStringID)
 {
@@ -1728,7 +1728,7 @@ bool StringUtils::LoadResourceString(String& resultStr, unsigned resourceStringI
 /**
  * @brief	Load resource text file by ID and return the text data
  * @param	resourceFileID - ID of the file in resource
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 String StringUtils::LoadResourceTextData(unsigned resourceFileID)
 {
@@ -1806,7 +1806,7 @@ String StringUtils::GetApplicationPath(bool includeExeName)
 String StringUtils::GetSubFolderPath(const wchar_t* subFolderName)
 {
 	// Get application executable file path
-	String appPath = GetApplicationPath(FALSE);
+	String appPath = GetApplicationPath(false);
 
 	// Initialize result string
 	String retSubFolderPath;
@@ -1943,7 +1943,7 @@ String StringUtils::GetProductVersion(bool isFullVersion)
  * @brief	Get app executable file product version info
  * @param	fullVersion  - Full product version number (x.x.x.x)
  * @param	shortVersion - Short product version number (x.x)
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 bool StringUtils::GetProductVersion(String& fullVersion, String& shortVersion)
 {
@@ -2018,7 +2018,7 @@ bool StringUtils::GetProductVersion(String& fullVersion, String& shortVersion)
 /**
  * @brief	Get the computer device name
  * @param	deviceName - Device name (out)
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 bool StringUtils::GetDeviceName(String& deviceName)
 {
@@ -2044,7 +2044,7 @@ bool StringUtils::GetDeviceName(String& deviceName)
 /**
  * @brief	Get the current Windows user name
  * @param	userName - User name (out)
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 bool StringUtils::GetCurrentUserName(String& userName)
 {
@@ -2181,7 +2181,7 @@ bool ClockTimeUtils::InputText2Time(ClockTime& clockTime, const wchar_t* inputTe
 	// Check input text validity
 	int nLength = wcslen(inputText);
 	if ((nLength == 0) || (nLength > 4))
-		return FALSE;
+		return false;
 
 	String timeString(inputText);
 
@@ -2243,7 +2243,7 @@ bool ClockTimeUtils::InputText2Time(ClockTime& clockTime, const wchar_t* inputTe
 
 	// If the hour value exceeds 24, return invalid
 	if (nHour >= 24)
-		return FALSE;
+		return false;
 
 	// Only return if both the hour and minute values are valid
 	if ((nHour > INT_INVALID) && (nMinute > INT_INVALID)) {
@@ -2251,7 +2251,7 @@ bool ClockTimeUtils::InputText2Time(ClockTime& clockTime, const wchar_t* inputTe
 		clockTime.SetMinute(nMinute);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -2267,7 +2267,7 @@ bool ClockTimeUtils::InputText2TimeBase(ClockTime& clockTime, const wchar_t* inp
 	// Check input text validity
 	int nLength = wcslen(inputText);
 	if ((nLength == 0) || (nLength > 4))
-		return FALSE;
+		return false;
 
 	// Get input text length
 	unsigned nTime = _tstoi(inputText);
@@ -2316,14 +2316,14 @@ bool ClockTimeUtils::InputText2TimeBase(ClockTime& clockTime, const wchar_t* inp
 
 	// Validate
 	if ((nHour >= 24) || (nMinute >= 60))
-		return FALSE;
+		return false;
 
 	if ((nHour > -1) && (nMinute > -1)) {
 		clockTime.SetHour(nHour);
 		clockTime.SetMinute(nMinute);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -2392,7 +2392,7 @@ void ClockTimeUtils::CalculateOffset(ClockTime& clockTime, int offInSecs)
  * @param	thisTime  - This clock-time data
  * @param	otherTime - The other clock-time data to compare
  * @param	offInSecs - Offset value (in seconds, 0 by default)
- * @return	TRUE/FALSE - Clock-time values are matching or
+ * @return	true/false - Clock-time values are matching or
  * @return	different within the allowable offset
  */
 bool ClockTimeUtils::IsMatching(ClockTime thisTime, ClockTime otherTime, int offInSecs /* = 0 */)
@@ -2535,7 +2535,7 @@ String DateTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, c
 PerformanceCounter::PerformanceCounter()
 {
 	// Initialization
-	this->m_bIsRunning = FALSE;
+	this->m_bIsRunning = false;
 	QueryPerformanceFrequency(&m_liFrequency);
 }
 
@@ -2560,7 +2560,7 @@ void PerformanceCounter::Start(void)
 	// Start performance counter
 	if (!m_bIsRunning) {
 		QueryPerformanceCounter(&m_liStartTime);
-		this->m_bIsRunning = TRUE;
+		this->m_bIsRunning = true;
 	}
 }
 
@@ -2575,7 +2575,7 @@ void PerformanceCounter::Stop(void)
 	// Stop performance counter
 	if (m_bIsRunning) {
 		QueryPerformanceCounter(&m_liEndTime);
-		this->m_bIsRunning = FALSE;
+		this->m_bIsRunning = false;
 	}
 }
 
@@ -2585,11 +2585,11 @@ void PerformanceCounter::Stop(void)
  * @param	None
  * @return	None
  */
-double PerformanceCounter::GetElapsedTime(bool bToMillisecs) const
+double PerformanceCounter::GetElapsedTime(bool bToMillisecs) const noexcept
 {
 	// Get elapsed time
 	double dRetCounter = static_cast<double>(m_liEndTime.QuadPart - m_liStartTime.QuadPart) / m_liFrequency.QuadPart;
-	if (bToMillisecs == TRUE) {
+	if (bToMillisecs == true) {
 		dRetCounter *= 1000;
 	}
 	return dRetCounter;
@@ -2609,7 +2609,7 @@ double PerformanceCounter::GetElapsedTime(bool bToMillisecs) const
  * @param	bGetDescription - Get language package description
  * @return	const wchar_t* - Language name
  */
-const wchar_t* Language::GetLanguageName(unsigned nCurLanguage, bool bGetDescription /* = FALSE */)
+const wchar_t* Language::GetLanguageName(unsigned nCurLanguage, bool bGetDescription /* = false */)
 {
 	// Load language table package
 	LANGTABLE_PTR ptrLangTable = LoadLanguageTable(nCurLanguage);
@@ -2696,7 +2696,7 @@ const wchar_t* Language::GetLanguageString(LANGTABLE_PTR ptLanguage, unsigned nI
  */
 bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD& dwErrCode)
 {
-	bool bRet = TRUE;
+	bool bRet = true;
 
 	// Execute Power Actions in here
 	switch (nActionType)
@@ -2730,7 +2730,7 @@ bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD&
 						dwErrCode = GetLastError();
 						TRACE_FORMAT("Error: Cannot execute action, OpenProcessToken failed!!! (Code: 0x%08X)", dwErrCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-						return FALSE;
+						return false;
 					}
 
 					// Lookup privilege value
@@ -2739,18 +2739,18 @@ bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD&
 						dwErrCode = GetLastError();
 						TRACE_FORMAT("Error: Cannot execute action, LookupPrivilegeValue failed!!! (Code: 0x%08X)", dwErrCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-						return FALSE;
+						return false;
 					}
 
 					// Adjust token privileges
 					tkPrivileges.PrivilegeCount = 1;
 					tkPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-					if (!AdjustTokenPrivileges(hToken, FALSE, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
+					if (!AdjustTokenPrivileges(hToken, false, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
 						// Adjust token privileges failed
 						dwErrCode = GetLastError();
 						TRACE_FORMAT("Error: Cannot execute action, AdjustTokenPrivileges failed!!! (Code: 0x%08X)", dwErrCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-						return FALSE;
+						return false;
 					}
 
 					// Exit Windows
@@ -2759,28 +2759,28 @@ bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD&
 						dwErrCode = GetLastError();
 						TRACE_FORMAT("Error: Cannot execute action, ExitWindowsEx failed!!! (Code: 0x%08X)", dwErrCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-						return FALSE;
+						return false;
 					}
 
 				} break;
 
 				case APP_MESSAGE_SLEEP:
 					// Sleep mode
-					if (!SetSuspendState(FALSE, FALSE, FALSE)) {		// Stand by (sleep)
+					if (!SetSuspendState(false, false, false)) {		// Stand by (sleep)
 						dwErrCode = GetLastError();
 						TRACE_FORMAT("Error: Cannot execute action, SetSuspendState failed!!! (Code: 0x%08X)", dwErrCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-						return FALSE;
+						return false;
 					}
 					break;
 
 				case APP_MESSAGE_HIBERNATE:
 					// Hibernate mode
-					if (!SetSuspendState(TRUE, FALSE, FALSE)) {			// Hibernate
+					if (!SetSuspendState(true, false, false)) {			// Hibernate
 						dwErrCode = GetLastError();
 						TRACE_FORMAT("Error: Cannot execute action, SetSuspendState failed!!! (Code: 0x%08X)", dwErrCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-						return FALSE;
+						return false;
 					}
 					break;
 			}
@@ -2791,7 +2791,7 @@ bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD&
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 		TRACE_FORMAT("Error: Cannot execute action, wrong argument!!! (Code: 0x%08X)", dwErrCode);
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		bRet = FALSE;
+		bRet = false;
 		break;
 	}
 
@@ -2877,7 +2877,7 @@ bool AppCore::ExecutePowerActionDummy(unsigned nActionType, unsigned nMessage, D
 	// Show dummy test message
 	HWND hWnd = GET_HANDLE_MAINWND();
 	MessageBox(hWnd, messageFormatStr, _T("DummyTest"), MB_OK | MB_ICONINFORMATION);
-	return TRUE;
+	return true;
 }
 
 
@@ -2999,12 +2999,12 @@ void AppCore::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_I
 		(IsWindowVisible(hDebugTestWnd))) {
 		// Force enable debug mode and
 		// prefer output target to DebugTest tool if it's displaying
-		bDebugModeEnable = TRUE;
+		bDebugModeEnable = true;
 		nDebugOutputTarget = DebugTestTool;
 	}
 
 	// If debug mode not enabled, do nothing
-	if (bDebugModeEnable == FALSE)
+	if (bDebugModeEnable == false)
 		return;
 
 	// Output debug string
@@ -3077,7 +3077,7 @@ void AppCore::OutputDebugStringFormat(const wchar_t* debugStringFormat, ...)
 /**
  * @brief	Initialize trace error log file
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  * @note	Destination file: TraceError.log
  * @note	To output trace error detail log strings
  */
@@ -3091,7 +3091,7 @@ static bool InitTraceErrorLogFile(void)
 
 	// Get trace error log file pointer
 	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
-	NULL_POINTER_BREAK(pTraceErrorLogFile, return FALSE);
+	NULL_POINTER_BREAK(pTraceErrorLogFile, return false);
 
 	// Log folder path
 	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
@@ -3107,7 +3107,7 @@ static bool InitTraceErrorLogFile(void)
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
 			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-			return FALSE;
+			return false;
 		}
 
 		// Go to end of file
@@ -3121,14 +3121,14 @@ static bool InitTraceErrorLogFile(void)
 
 			// Step2: Rename file extension to BAK
 			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_TRACE_ERROR_LOG))
-				return FALSE;
+				return false;
 
 			// Step3: Create new file and reopen
 			continue;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -3160,7 +3160,7 @@ inline void ReleaseTraceErrorLogFile(void)
 /**
  * @brief	Initialize trace debug log file
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  * @note	Destination file: TraceDebug.log
  * @note	To output trace debug log strings (including the function name, code file and line where it failed)
  */
@@ -3174,7 +3174,7 @@ static bool InitTraceDebugLogFile(void)
 
 	// Get trace debug log file pointer
 	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
-	NULL_POINTER_BREAK(pTraceDebugLogFile, return FALSE);
+	NULL_POINTER_BREAK(pTraceDebugLogFile, return false);
 
 	// Log folder path
 	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
@@ -3190,7 +3190,7 @@ static bool InitTraceDebugLogFile(void)
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
 			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-			return FALSE;
+			return false;
 		}
 
 		// Go to end of file
@@ -3204,14 +3204,14 @@ static bool InitTraceDebugLogFile(void)
 
 			// Step2: Rename file extension to BAK
 			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_TRACE_DEBUG_LOG))
-				return FALSE;
+				return false;
 
 			// Step3: Create new file and reopen
 			continue;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -3243,7 +3243,7 @@ inline void ReleaseTraceDebugLogFile(void)
 /**
  * @brief	Initialize debug info log file
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  * @note	Destination file: DebugInfo.log
  * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
  */
@@ -3257,7 +3257,7 @@ static bool InitDebugInfoLogFile(void)
 
 	// Get debug info log file pointer
 	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
-	NULL_POINTER_BREAK(pDebugInfoLogFile, return FALSE);
+	NULL_POINTER_BREAK(pDebugInfoLogFile, return false);
 
 	// Log folder path
 	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
@@ -3273,7 +3273,7 @@ static bool InitDebugInfoLogFile(void)
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
 			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-			return FALSE;
+			return false;
 		}
 
 		// Go to end of file
@@ -3287,14 +3287,14 @@ static bool InitDebugInfoLogFile(void)
 
 			// Step2: Rename file extension to BAK
 			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_DEBUG_INFO_LOG))
-				return FALSE;
+				return false;
 
 			// Step3: Create new file and reopen
 			continue;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -3327,14 +3327,14 @@ inline void ReleaseDebugInfoLogFile(void)
  * @brief	Backup old log file
  * @param	filePath	- File path (in/out)
  * @param	logFileName	- Log file name
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 bool AppCore::BackupOldLogFile(const String& filePath, const wchar_t* logFileName)
 {
 	CFileFind Finder;
 
 	// If file path is not specified, do nothing
-	if (filePath.IsEmpty()) return FALSE;
+	if (filePath.IsEmpty()) return false;
 
 	// Log folder path
 	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
@@ -3345,17 +3345,17 @@ bool AppCore::BackupOldLogFile(const String& filePath, const wchar_t* logFileNam
 		// Make backup file path template
 		String filePathTemp = StringUtils::MakeFilePath(folderPath, logFileName, FILEEXT_BAKLOGFILE);
 		if (filePathTemp.IsEmpty())
-			return FALSE;
+			return false;
 
 		// Format backup file path
 		String bakFilePath;
 		bakFilePath.Format(filePathTemp, nNum);
 
 		// Check if file has already existed
-		if (Finder.FindFile(bakFilePath) == TRUE) {
+		if (Finder.FindFile(bakFilePath) == true) {
 
 			// If backup file number exceeded the limit, can not backup more
-			if (nNum == (Constant::Max::BackupFileNumber - 1)) return FALSE;
+			if (nNum == (Constant::Max::BackupFileNumber - 1)) return false;
 			else continue;
 		}
 
@@ -3364,7 +3364,7 @@ bool AppCore::BackupOldLogFile(const String& filePath, const wchar_t* logFileNam
 		break;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -3585,7 +3585,7 @@ void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t
 	while (fTrcDbgLogFile.m_hFile == CFile::hFileNull) {
 
 		bool bResult = fTrcDbgLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
-		if (bResult == FALSE) {
+		if (bResult == false) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
 			LPARAM lParam = reinterpret_cast<LPARAM>(fileName);
@@ -3607,7 +3607,7 @@ void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t
 			String backupFilePath;
 			for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
 				backupFilePath.Format((filePath + FILEEXT_BAKLOGFILE), nNum);
-				if (Finder.FindFile(backupFilePath) == TRUE) {
+				if (Finder.FindFile(backupFilePath) == true) {
 					if (nNum == (Constant::Max::BackupFileNumber - 1)) return;
 					else continue;
 				}
@@ -3701,7 +3701,7 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, unsigned nLanguageID, DWORD dw
 	using namespace Language;
 
 	// Get application-defined error code from system-defined error code
-	DWORD dwAppErrCode = GetPairedID(IDTable::ErrorCode, dwErrorCode, TRUE);
+	DWORD dwAppErrCode = GetPairedID(IDTable::ErrorCode, dwErrorCode, true);
 	if (dwAppErrCode != INT_INVALID) {
 		// Replace with application-defined error code
 		dwErrorCode = dwAppErrCode;
@@ -3790,73 +3790,6 @@ void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 	pHeaderCell->SetMargin(0);
 	pHeaderCell->SetBackClr(Color::Gray);
 	pHeaderCell->SetTextClr(Color::Black);
-}
-
-
-/**
- * @brief	Setup style and draw grid control table row by row index
- * @param	pGridCtrl		- Grid control table pointer
- * @param	nRow			- Row position/index
- * @param	nRowNum			- Number of table rows
- * @param	nColNum			- Number of table columns
- * @param	arrGrdColFormat - Grid control column format data
- * @return	None
- */
-void AppCore::DrawGridTableRow(CGridCtrl* pGridCtrl, int nRow, int /*nRowNum*/, int nColNum, GRIDCTRLCOLFORMAT* apGrdColFormat)
-{
-	// Check control validity
-	if (pGridCtrl == NULL) return;
-
-	// Check format data validity
-	if (apGrdColFormat == NULL) return;
-
-	// Check row index validity
-	if ((nRow < 0) || (nRow > pGridCtrl->GetRowCount()))
-		return;
-
-	// Setup row
-	int nColStyle = -1;
-	unsigned nItemState = INT_NULL;
-	for (int nCol = 0; nCol < nColNum; nCol++) {
-		// Get column style & item state
-		nColStyle = apGrdColFormat[nCol].nColStyle;
-		nItemState = pGridCtrl->GetItemState(nRow, nCol);
-		nItemState |= GVIS_READONLY;
-
-		// Base column - header-like style
-		if (nColStyle == COLSTYLE_FIXED) {
-			// Set fixed cell style
-			SetFixedCellStyle(pGridCtrl, nRow, nCol);
-		}
-
-		// Checkbox column
-		else if (nColStyle == COLSTYLE_CHECKBOX) {
-			// Set cell type: Checkbox
-			if (!pGridCtrl->SetCellType(nRow, nCol, RUNTIME_CLASS(CGridCellCheck)))
-				continue;
-
-			// Set center alignment if defined
-			if (apGrdColFormat[nCol].bCenter == TRUE) {
-				CGridCellCheck* pCell = (CGridCellCheck*)pGridCtrl->GetCell(nRow, nCol);
-				if (pCell == NULL) continue;
-				pCell->SetCheckPlacement(SCP_CENTERING);
-			}
-		}
-
-		// Normal column
-		else if (nColStyle == COLSTYLE_NORMAL) {
-			// Set item state
-			if (!pGridCtrl->SetItemState(nRow, nCol, nItemState))
-				continue;
-
-			// Set center alignment if defined
-			if (apGrdColFormat[nCol].bCenter == TRUE) {
-				CGridCellBase* pCell = (CGridCellBase*)pGridCtrl->GetCell(nRow, nCol);
-				if (pCell == NULL) continue;
-				pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
-			}
-		}
-	}
 }
 
 
@@ -3960,7 +3893,7 @@ bool AppCore::FileViewStd(FILETYPE eFileType, const wchar_t* filePath)
 	case FILETYPE_IMAGE:
 		break;
 	default:
-		return FALSE;
+		return false;
 	}
 
 	// Run a file viewer instance
@@ -3990,7 +3923,7 @@ bool AppCore::OpenWebURL(const wchar_t* webUrl)
  * @param	bShowFlag	- Show window flag
  * @return	LRESULT - Result of app launching process
  */
-LRESULT AppCore::RunApp(const wchar_t* appPath, bool bRunAsAdmin /* = FALSE */, bool bShowFlag /* = TRUE */)
+LRESULT AppCore::RunApp(const wchar_t* appPath, bool bRunAsAdmin /* = false */, bool bShowFlag /* = true */)
 {
 	// Param set
 	String runAsFlag = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
@@ -4009,7 +3942,7 @@ LRESULT AppCore::RunApp(const wchar_t* appPath, bool bRunAsAdmin /* = FALSE */, 
  * @param	bShowFlag	  - Show window flag
  * @return	LRESULT - Result of command execution process
  */
-LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, bool bRunAsAdmin /* = TRUE */, bool bShowFlag /* = TRUE */)
+LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, bool bRunAsAdmin /* = true */, bool bShowFlag /* = true */)
 {
 	// Format input command
 	String commandFormat = StringUtils::StringFormat(_T("/C %s"), commandString);
@@ -4045,9 +3978,9 @@ bool AppCore::CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, uns
 
 	// Create process
 	bool bResult = CreateProcess(appPath, commandLine, (LPSECURITY_ATTRIBUTES)NULL,
-		(LPSECURITY_ATTRIBUTES)NULL, FALSE, (DWORD)nStyle, NULL, NULL, &StartupInfo, &ProcessInfo);
+		(LPSECURITY_ATTRIBUTES)NULL, false, (DWORD)nStyle, NULL, NULL, &StartupInfo, &ProcessInfo);
 
-	if (bResult == FALSE) {
+	if (bResult == false) {
 		// Get error code
 		dwErrorCode = GetLastError();
 		TRACE_FORMAT("Error: Create app process failed!!! (Code: 0x%08X)", dwErrorCode);
@@ -4083,7 +4016,7 @@ bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
 		// Trace error
 		TRACE_FORMAT("Error: Load UXTheme library failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
 	// Get function pointer
@@ -4093,7 +4026,7 @@ bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
 		// Trace error
 		TRACE_FORMAT("Error: Get AllowDarkModeForWindow function address failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
 	// Set dark mode for each dialog item
@@ -4106,7 +4039,7 @@ bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
 		SendMessage(hWndChild, WM_THEMECHANGED, 0, 0);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -4151,21 +4084,21 @@ void AppCore::DrawButton(CButton*& pBtn, unsigned nIconID, const wchar_t* button
 /**
  * @brief	Callback function used with the EnumFontFamiliesEx
  * @param	Default (see MSDN "EnumFontFamProc callback function")
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 static bool CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRICEX* /*lpntme*/, DWORD /*FontType*/, LPARAM lParam) 
 {
 	using wstring_vector = typename std::vector<std::wstring>;
 	wstring_vector* fontNames = reinterpret_cast<wstring_vector*>(lParam);
 	fontNames->push_back(lpelfe->elfLogFont.lfFaceName);
-	return TRUE;
+	return true;
 }
 
 
 /**
  * @brief	Enumerate all currently available fonts
  * @param	fontNames - Array to contain enumerated fonts
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 bool AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 {
@@ -4189,7 +4122,7 @@ bool AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 /**
  * @brief	Check if an input string is a valid font name
  * @param	fontName - Input font name
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 bool AppCore::ValidateFontName(const wchar_t* fontName)
 {

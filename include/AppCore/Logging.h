@@ -44,53 +44,53 @@ public:
 
 public:
 	// Member functions
-	void Init(void);
-	void Copy(const LogDetail& other);
+	void Init(void) noexcept;
+	void Copy(const LogDetail& other) noexcept;
 	void PointerCopy(const LogDetail& other);
 	bool Compare(const LogDetail& other) const;
 	bool PointerCompare(const LogDetail& other) const;
-	bool IsEmpty(void) const;
+	bool IsEmpty(void) const noexcept;
 
 public:
 	// Get/set functions
-	USHORT GetCategory(void) const {
+	constexpr USHORT GetCategory(void) const noexcept {
 		return m_usCategory;
 	};
-	void SetCategory(USHORT usCategory) {
+	void SetCategory(USHORT usCategory) noexcept {
 		m_usCategory = usCategory;
 	};
-	int GetFlag(void) const {
+	constexpr int GetFlag(void) const noexcept {
 		return m_nFlag;
 	};
-	void SetFlag(int nFlag) {
+	void SetFlag(int nFlag) noexcept {
 		m_nFlag = nFlag;
 	};
-	int GetDetailValue(void) const {
+	constexpr int GetDetailValue(void) const noexcept {
 		return m_nDetailValue;
 	};
-	void SetDetailValue(int nDetailValue) {
+	void SetDetailValue(int nDetailValue) noexcept {
 		m_nDetailValue = nDetailValue;
 	};
-	String GetDetailString(void) const {
+	String GetDetailString(void) const noexcept {
 		return m_strDetailInfo;
 	};
-	void SetDetailString(const wchar_t* detailInfo) {
+	void SetDetailString(const wchar_t* detailInfo) noexcept {
 		m_strDetailInfo = detailInfo;
 	};
-	PVOID GetPointerData(void) const {
+	PVOID GetPointerData(void) const noexcept {
 		return m_ptrDetailData;
 	};
 	bool SetPointerData(PVOID pDataBuff, byte byDataType = -1, size_t szDataSize = 0);
-	byte GetPointerType(void) const {
+	constexpr byte GetPointerType(void) const noexcept {
 		return m_byPointerType;
 	};
-	void SetPointerType(byte byPointerType) {
+	void SetPointerType(byte byPointerType) noexcept {
 		m_byPointerType = byPointerType;
 	};
-	size_t GetPointerSize(void) const {
+	constexpr size_t GetPointerSize(void) const noexcept {
 		return m_szPointerSize;
 	};
-	void SetPointerSize(size_t szPointerSize) {
+	void SetPointerSize(size_t szPointerSize) noexcept {
 		m_szPointerSize = szPointerSize;
 	};
 };
@@ -121,7 +121,7 @@ public:
 
 public:
 	// Member functions
-	void Init(void) {
+	void Init(void) noexcept {
 		this->clear();
 	};
 	void CopyData(const LogDetailInfo& other) {
@@ -172,42 +172,42 @@ public:
 
 public:
 	// Member functions
-	void Copy(const LogItem& other);
-	bool Compare(const LogItem& other) const;
-	bool IsEmpty(void) const;
+	void Copy(const LogItem& other) noexcept;
+	bool Compare(const LogItem& other) const noexcept;
+	bool IsEmpty(void) const noexcept;
 
 	// Remove all log detail info data
-	void RemoveDetailInfo(void) {
+	void RemoveDetailInfo(void) noexcept {
 		m_arrDetailInfo.clear();
 	};
 
 	// Remove all log item data
-	void RemoveAll(void);									
+	void RemoveAll(void) noexcept;
 
 public:
 	// Get/set functions
-	DateTime GetTime(void) const {
+	DateTime GetTime(void) const noexcept {
 		return m_stTime;
 	};
-	void SetTime(const DateTime& stTime) {
+	void SetTime(const DateTime& stTime) noexcept {
 		m_stTime = stTime;
 	};
-	DWORD GetProcessID(void) const {
+	constexpr DWORD GetProcessID(void) const noexcept {
 		return m_dwProcessID;
 	};
-	void SetProcessID(void) {
+	void SetProcessID(void) noexcept {
 		m_dwProcessID = GetCurrentProcessId();
 	};
-	USHORT GetCategory(void) const {
+	constexpr USHORT GetCategory(void) const noexcept {
 		return m_usCategory;
 	};
-	void SetCategory(USHORT usCategory) {
+	void SetCategory(USHORT usCategory) noexcept {
 		m_usCategory = usCategory;
 	};
-	String GetLogString(void) const {
+	String GetLogString(void) const noexcept {
 		return m_strLogString;
 	};
-	void SetLogString(const wchar_t* logString) {
+	void SetLogString(const wchar_t* logString) noexcept {
 		m_strLogString = logString;
 	};
 
@@ -308,11 +308,11 @@ public:
 
 protected:
 	// Member functions
-	void Copy(const JSON& other);
+	void Copy(const JSON& other) noexcept;
 	void CopyArrayData(const JSON& other);
 	void CopyPtrData(const JSON& other);
 	bool Compare(const JSON& other) const;
-	bool IsEmpty(void) const;
+	bool IsEmpty(void) const noexcept;
 
 	// Remove property by index
 	void RemoveProperty(size_t nIndex) {
@@ -328,7 +328,7 @@ protected:
 
 public:
 	// Get/set functions
-	void SetObjectName(const wchar_t* objectName) {
+	void SetObjectName(const wchar_t* objectName) noexcept {
 		this->m_strObjectName = objectName;
 	};
 	void AddString(const wchar_t* keyName, const wchar_t* value);
@@ -337,8 +337,8 @@ public:
 	void AddChildObject(JSON* pSrc);
 
 	// Printing functions
-	void Print(String& outputString, int nIndent, bool bSeparator, bool bMultiline = true);
-	void PrintYAML(String& outputString, int nIndent);
+	void Print(String& outputString, int nIndent, bool bSeparator, bool bMultiline = true) const;
+	void PrintYAML(String& outputString, int nIndent) const;
 };
 
 // Define new typenames for JSON class object
@@ -367,28 +367,28 @@ public:
 
 public:
 	// Initialization
-	virtual void Init(void) {
+	virtual void Init(void) noexcept {
 		m_arrLogData.clear();
 	};
-	virtual void DeleteAll(void) {
+	virtual void DeleteAll(void) noexcept {
 		m_arrLogData.clear();
 	};
 
 	// Get/set data
-	virtual bool IsEmpty(void) const {
+	virtual constexpr bool IsEmpty(void) const noexcept {
 		return m_arrLogData.empty();
 	};
-	virtual size_t GetLogCount(void) const {
+	virtual constexpr size_t GetLogCount(void) const noexcept {
 		return m_arrLogData.size();
 	};
 	virtual LOGITEM& GetLogItem(int nIndex);
 	virtual const LOGITEM& GetLogItem(int nIndex) const;
 
 	// Get/set properties function
-	virtual size_t GetMaxSize(void) const {
+	virtual constexpr size_t GetMaxSize(void) const noexcept {
 		return m_nMaxSize;
 	};
-	virtual bool SetMaxSize(size_t nMaxSize) {
+	virtual bool SetMaxSize(size_t nMaxSize) noexcept {
 		// Max size can only be larger than current log data size
 		if (nMaxSize > (this->m_arrLogData.size())) {
 			m_nMaxSize = nMaxSize;
@@ -396,22 +396,22 @@ public:
 		}
 		return false;
 	};
-	virtual byte GetWriteMode(void) const {
+	virtual constexpr byte GetWriteMode(void) const noexcept {
 		return m_byWriteMode;
 	};
-	virtual void SetWriteMode(byte byWriteMode) {
+	virtual void SetWriteMode(byte byWriteMode) noexcept {
 		m_byWriteMode = byWriteMode;
 	};
-	virtual void GetFilePath(String& strFilePath) {
+	virtual void GetFilePath(String& strFilePath) noexcept {
 		strFilePath = m_strFilePath;
 	};
-	virtual void SetFilePath(const wchar_t* filePath) {
+	virtual void SetFilePath(const wchar_t* filePath) noexcept {
 		m_strFilePath = filePath;
 	};
-	virtual PLOGITEM GetDefaultTemplate(void) {
+	virtual PLOGITEM GetDefaultTemplate(void) noexcept {
 		return m_pItemDefTemplate;
 	};
-	virtual void SetDefaultTemplate(const LOGITEM& logItemTemplate);
+	virtual void SetDefaultTemplate(const LOGITEM& logItemTemplate) noexcept;
 
 	// Output log functions
 	void OutputItem(const LOGITEM& logItem);

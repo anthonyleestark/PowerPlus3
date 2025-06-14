@@ -96,7 +96,7 @@ LogDetail::LogDetail()
  * @param	None
  * @return	Nones
  */
-void LogDetail::Init(void)
+void LogDetail::Init(void) noexcept
 {
 	// Initialization
 	m_usCategory = INT_NULL;								// Detail category
@@ -113,7 +113,7 @@ void LogDetail::Init(void)
  * @param	other - Pointer of input item
  * @return	None
  */
-void LogDetail::Copy(const LogDetail& other)
+void LogDetail::Copy(const LogDetail& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -186,7 +186,7 @@ bool LogDetail::PointerCompare(const LogDetail& other) const
  * @param	None
  * @return	true/false
  */
-bool LogDetail::IsEmpty(void) const
+bool LogDetail::IsEmpty(void) const noexcept
 {
 	// Initialize empty detail info
 	static const LOGDETAIL logDummyDetail;
@@ -293,7 +293,7 @@ LogItem::LogItem()
  * @param	other - Pointer of input item
  * @return	None
  */
-void LogItem::Copy(const LogItem& other)
+void LogItem::Copy(const LogItem& other) noexcept
 {
 	// Copy data
 	m_stTime = other.m_stTime;								// Log time
@@ -308,7 +308,7 @@ void LogItem::Copy(const LogItem& other)
  * @param	other - Pointer of given item
  * @return	true/false
  */
-bool LogItem::Compare(const LogItem& other) const
+bool LogItem::Compare(const LogItem& other) const noexcept
 {
 	bool bRet = false;
 
@@ -341,7 +341,7 @@ bool LogItem::Compare(const LogItem& other) const
  * @param	None
  * @return	true/false
  */
-bool LogItem::IsEmpty(void) const
+bool LogItem::IsEmpty(void) const noexcept
 {
 	// Initialize an empty item
 	static const LOGITEM logDummyItem;
@@ -355,7 +355,7 @@ bool LogItem::IsEmpty(void) const
  * @param	None
  * @return	None
  */
-void LogItem::RemoveAll(void)
+void LogItem::RemoveAll(void) noexcept
 {
 	// Reset data
 	m_stTime = DateTime();										// Log time
@@ -511,7 +511,7 @@ JSON::JSON()
  * @param	other - Pointer of input object
  * @return	None
  */
-void JSON::Copy(const JSON& other)
+void JSON::Copy(const JSON& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -650,7 +650,7 @@ bool JSON::Compare(const JSON& other) const
  * @param	None
  * @return	true/false
  */
-bool JSON::IsEmpty(void) const
+bool JSON::IsEmpty(void) const noexcept
 {
 	// Initialize an empty item
 	static const JSONDATA jsonDummyItem;
@@ -816,7 +816,7 @@ void JSON::AddChildObject(JSON* pSrc)
  * @param	bMultiline    - Whether to print the data in multiple lines
  * @return	None
  */
-void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMultiline /* = true */)
+void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMultiline /* = true */) const
 {
 	// Empty output result string
 	outputString.Empty();
@@ -913,7 +913,7 @@ void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMulti
  * @param	nIndent		  - Indentation
  * @return	None
  */
-void JSON::PrintYAML(String& outputString, int nIndent)
+void JSON::PrintYAML(String& outputString, int nIndent) const
 {
 	// Empty output result string
 	outputString.Empty();
@@ -1038,7 +1038,7 @@ const LOGITEM& SLogging::GetLogItem(int nIndex) const
  * @param	logItemTemplate - Log item template
  * @return	byte
  */
-void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
+void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate) noexcept
 {
 	// Initialize default template
 	if (m_pItemDefTemplate == NULL) {
