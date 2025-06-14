@@ -114,7 +114,7 @@ enum ResourceType {
 // For resource ID mapping function
 struct RESOURCE_ID_MAP_ENTRY
 {
-	BYTE	 byTypeID;					// Resource type ID
+	byte	 byTypeID;					// Resource type ID
 	DWORD	 dwResourceID;				// Resource ID (integer type)
 	CStringA strNameID;					// Resource mapped name string ID
 };
@@ -160,16 +160,16 @@ public:
 	void Append(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize);
 
 	// Data processing functions
-	void Add(BYTE byTypeID, DWORD dwResID, LPCSTR lpszNameID);
-	void Modify(DWORD dwResID, LPCSTR lpszNewNameID);
+	void Add(byte byTypeID, DWORD dwResID, const char* lpszNameID);
+	void Modify(DWORD dwResID, const char* lpszNewNameID);
 	void Remove(DWORD dwResID);
 	void RemoveAll(void);
 	
 	// Data acquirement functions
-	UINT		GetResourceID(LPCSTR lpszNameID) const;
-	LPCSTR		GetNameID(DWORD dwResID) const;
+	unsigned	GetResourceID(const char* lpszNameID) const;
+	const char*	GetNameID(DWORD dwResID) const;
 	long long	FindResourceID(DWORD dwResID) const;
-	long long	FindNameID(LPCSTR lpszNameID) const;
+	long long	FindNameID(const char* lpszNameID) const;
 
 	// Attributes get/set functions
 	const RESOURCE_ID_MAP_ENTRY& GetAt(size_t nIndex) const;

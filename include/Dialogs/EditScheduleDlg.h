@@ -36,7 +36,7 @@ protected:
 
 	// Dialog control management
 	virtual int RegisterDialogManagement(void);
-	virtual BOOL UnregisterDialogManagement(void);
+	virtual bool UnregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -51,9 +51,9 @@ private:
 	CGridCtrl*		 m_pActiveDayListTable;
 
 	// Data variables
-	BOOL m_bEnabled;
-	BOOL m_bRepeat;
-	UINT m_nAction;
+	BOOL	 m_bEnabled;
+	BOOL	 m_bRepeat;
+	unsigned m_nAction;
 
 	// Data container variables
 	ScheduleItem m_schScheduleItem;
@@ -72,15 +72,15 @@ public:
 
 	// Member functions
 	void SetupLanguage();
-	void SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage);
+	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
 	void SetupActiveDayList(LANGTABLE_PTR ptrLanguage);
-	void DrawActiveDayTable(BOOL bReadOnly = FALSE);
+	void DrawActiveDayTable(bool bReadOnly = false);
 
 	// Dialog item properties functions
 	void SetupDialogItemState();
 	void UpdateActiveDayList();
-	void DisableActiveDayTable(BOOL bDisable);
-	void RedrawActiveDayTable(BOOL bReadOnly = FALSE);
+	void DisableActiveDayTable(bool bDisable);
+	void RedrawActiveDayTable(bool bReadOnly = false);
 
 	// Data processing functions
 	void GetScheduleItem(PScheduleItem pschItem);
@@ -88,10 +88,10 @@ public:
 	void UpdateScheduleItem(void);
 	void SaveScheduleItem(void);
 
-	BOOL CheckDataChangeState(void);
-	void EnableSaveButton(BOOL bEnable);
-	void EnableSubItems(BOOL bEnable);
-	void UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate = TRUE);
+	bool CheckDataChangeState(void);
+	void EnableSaveButton(bool bEnable);
+	void EnableSubItems(bool bEnable);
+	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);
 
 public:
 	// Get/set functions

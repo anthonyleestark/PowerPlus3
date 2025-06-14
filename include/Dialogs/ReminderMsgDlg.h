@@ -41,15 +41,15 @@ private:
 	RmdMsgStyleSet m_rmdMsgStyleSet;
 
 	// Flags
-	BOOL m_bTimerSet;
-	BOOL m_bDispIcon;
-	BOOL m_bLockDlgSize;
-	BOOL m_bLockFontSize;
-	BOOL m_bAllowSnooze;
+	bool m_bTimerSet;
+	bool m_bDispIcon;
+	bool m_bLockDlgSize;
+	bool m_bLockFontSize;
+	bool m_bAllowSnooze;
 	int	 m_nSnoozeFlag;
 
 	// Properties
-	UINT m_nAutoCloseInterval;
+	unsigned m_nAutoCloseInterval;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -72,57 +72,64 @@ public:
 
 public:
 	// Get/set display content
-	virtual const wchar_t* GetDispMessage(void) const;
-	virtual void SetDispMessage(const wchar_t* dispMsg);
+	virtual const wchar_t* GetDispMessage(void) const {
+		return m_strBuffer.GetString();
+	};
+	virtual void SetDispMessage(const wchar_t* dispMsg) {
+		m_strBuffer = dispMsg;
+	};
 
 	// Get/set message style
-	virtual void GetMessageStyle(RmdMsgStyleSet& rmdMsgStyle) const;
-	virtual void SetMessageStyle(const RmdMsgStyleSet& rmdMsgStyle);
+	virtual void GetMessageStyle(RmdMsgStyleSet& rmdMsgStyle) const {
+		rmdMsgStyle.Copy(m_rmdMsgStyleSet);
+	};
+	virtual void SetMessageStyle(const RmdMsgStyleSet& rmdMsgStyle) {
+		m_rmdMsgStyleSet.Copy(rmdMsgStyle);
+	};
 	
 	// Auto-close message
-	virtual UINT GetAutoCloseInterval(void) const;
-	virtual void SetAutoCloseInterval(UINT nSeconds);
+	virtual unsigned GetAutoCloseInterval(void) const {
+		return m_nAutoCloseInterval;
+	};
+	virtual void SetAutoCloseInterval(unsigned nSeconds) {
+		m_nAutoCloseInterval = nSeconds;
+	};
 
 	// Dialog size
-	virtual void SetSize(CSize szRegSize);
-	virtual void SetSize(LONG lWidth, LONG lHeight);
+	virtual void SetSize(CSize szRegSize) {
+		SDialog::SetSize(szRegSize);
+		m_bLockDlgSize = true;
+	};
+	virtual void SetSize(long lWidth, long lHeight) {
+		SDialog::SetSize(lWidth, lHeight);
+		m_bLockDlgSize = true;
+	};
 
 	// Other properties
-	virtual BOOL GetAllowSnoozeMode(void) const;
-	virtual void SetAllowSnoozeMode(BOOL bValue);
+	virtual bool GetAllowSnoozeMode(void) const {
+		return m_bAllowSnooze;
+	};
+	virtual void SetAllowSnoozeMode(bool bValue) {
+		m_bAllowSnooze = bValue;
+	};
 
 	// Flags
-	virtual void GetSnoozeTriggerFlag(int& nValue) const;
-	virtual void SetSnoozeTriggerFLag(int nValue);
+	virtual void GetSnoozeTriggerFlag(int& nValue) const {
+		nValue = m_nSnoozeFlag;
+	};
+	virtual void SetSnoozeTriggerFLag(int nValue) {
+		m_nSnoozeFlag = nValue;
+	};
 
 protected:
 	// Initialize message style
-	BOOL InitMessageStyle(void);
+	bool InitMessageStyle(void);
 
 	// Calculate icon position
-	BOOL CalcMsgIconPosition(LPPOINT lpptIcon) const;
+	bool CalcMsgIconPosition(LPPOINT lpptIcon) const;
 
 	// Convert text and client rectangle
 	void ClientToText(LPRECT lpRect) const;
 	void TextToClient(LPRECT lpRect) const;
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _REMINDERMSGDLG_ENABLE_INLINES
-	#include "Dialogs.inl"
-	#ifdef _REMINDERMSGDLG_INLINE_INCLUDED
-		#pragma message("-- Dialogs inline library included (ReminderMsgDlg.h)")
-	#else
-		#pragma error("-- Linking error in ReminderMsgDlg.h: Unable to link to inline header!")
-	#endif
-	#undef _REMINDERMSGDLG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in ReminderMsgDlg.h: Inline is not enabled!")
-#endif

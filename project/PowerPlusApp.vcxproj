@@ -133,11 +133,6 @@
     <ClInclude Include="../include/AppCore/Serialization_defs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="../include/AppCore/AppCore.inl" />
-    <ClInclude Include="../include/AppCore/Global.inl" />
-    <ClInclude Include="../include/AppCore/Logging.inl" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="../include/Components/GridCtrl/CellRange.h" />
     <ClInclude Include="../include/Components/GridCtrl/GridCell.h" />
     <ClInclude Include="../include/Components/GridCtrl/GridCellBase.h" />
@@ -162,15 +157,9 @@
     <ClInclude Include="../include/Dialogs/RmdRepeatSetDlg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="../include/Dialogs/Dialogs.inl" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="../include/Framework/SDialog.h" />
     <ClInclude Include="../include/Framework/SElements.h" />
     <ClInclude Include="../include/Framework/SWinApp.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="../include/Framework/Framework.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="../include/MainApp/PowerPlus.h" />

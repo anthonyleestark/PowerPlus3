@@ -51,7 +51,7 @@ protected:
 
 	// Dialog control management
 	virtual int RegisterDialogManagement(void);
-	virtual BOOL UnregisterDialogManagement(void);
+	virtual bool UnregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -90,7 +90,7 @@ public:
 	// Member functions
 	void SetupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
-	void DrawDataTable(BOOL bReadOnly = FALSE);
+	void DrawDataTable(bool bReadOnly = false);
 
 	// Layout functions
 	void UpdateLayoutInfo(void);
@@ -100,24 +100,24 @@ public:
 	// Dialog item properties functions
 	void SetupDialogItemState();
 	void UpdateDataItemList();
-	void DisableDataTable(BOOL bDisable);
-	void RedrawDataTable(BOOL bReadOnly = FALSE);
-	void RefreshDialogItemState(BOOL bRecheckState = FALSE);
-	void UpdateCheckAllBtnState(BOOL bRecheck = FALSE);
+	void DisableDataTable(bool bDisable);
+	void RedrawDataTable(bool bReadOnly = false);
+	void RefreshDialogItemState(bool bRecheckState = false);
+	void UpdateCheckAllBtnState(bool bRecheck = false);
 
 	// Data processing functions
-	BOOL LoadScheduleSettings();
-	BOOL SaveScheduleSettings();
+	bool LoadScheduleSettings();
+	bool SaveScheduleSettings();
 	void UpdateScheduleSettings();
-	BOOL CheckDataChangeState();
+	bool CheckDataChangeState();
 
 	// Data processing handlers
 	void Add(Item& schItem);
 	void Update(Item& schItem);
 	void Remove(int nIndex);
 	void RemoveAll();
-	void SetAllItemState(BOOL bState);
-	BOOL Validate(Item& schItem, BOOL bShowMsg = FALSE, BOOL bAutoCorrect = FALSE);
+	void SetAllItemState(bool bState);
+	bool Validate(Item& schItem, bool bShowMsg = false, bool bAutoCorrect = false);
 
 	// Message handlers
 	afx_msg void OnApply();
@@ -138,26 +138,11 @@ public:
 
 protected:
 	// Get/set functions
-	int GetTotalItemNum(void) const;
-	int GetExtraItemNum(void) const;
+	int GetTotalItemNum() const {
+		return GetExtraItemNum() + ScheduleData::defaultItemNum;
+	};
+	int GetExtraItemNum() const {
+		return m_schScheduleTemp.GetExtraItemNum();
+	};
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _MULTISCHEDULEDLG_ENABLE_INLINES
-	#include "Dialogs.inl"
-	#ifdef _MULTISCHEDULEDLG_INLINE_INCLUDED
-		#pragma message("-- Dialogs inline library included (MultiScheduleDlg.h)")
-	#else
-		#pragma error("-- Linking error in MultiScheduleDlg.h: Unable to link to inline header!")
-	#endif
-	#undef _MULTISCHEDULEDLG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in MultiScheduleDlg.h: Inline is not enabled!")
-#endif

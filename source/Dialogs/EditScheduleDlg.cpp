@@ -43,8 +43,8 @@ CEditScheduleDlg::CEditScheduleDlg() : SDialog(IDD_EDITSCHEDULE_DLG)
 	m_pActiveDayListTable = NULL;
 
 	// Data variables
-	m_bEnabled = FALSE;
-	m_bRepeat = FALSE;
+	m_bEnabled = false;
+	m_bRepeat = false;
 	m_nAction = APP_ACTION_NOTHING;
 
 	// Data container variables
@@ -121,9 +121,9 @@ int CEditScheduleDlg::RegisterDialogManagement(void)
 /**
  * @brief	Unregister dialog control management
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL CEditScheduleDlg::UnregisterDialogManagement(void)
+bool CEditScheduleDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
 	SControlManager* pCtrlMan = this->GetControlManager();
@@ -194,7 +194,7 @@ BOOL CEditScheduleDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
-	SetUseEnter(FALSE);
+	SetUseEnter(false);
 
 	// Init dialog items
 	SetupLanguage();
@@ -205,7 +205,7 @@ BOOL CEditScheduleDlg::OnInitDialog()
 	// Save dialog event log if enabled
 	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -219,7 +219,7 @@ void CEditScheduleDlg::OnClose()
 	if (!IsForceClosingByRequest()) {
 
 		// If data changed, ask for saving before closing dialog
-		if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
+		if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -272,7 +272,7 @@ void CEditScheduleDlg::OnDestroy()
 LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 {
 	// If data changed, ask for saving before closing dialog
-	if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -318,7 +318,7 @@ void CEditScheduleDlg::SetupLanguage()
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
 	{
 		// Get item ID
-		UINT nID = pWndChild->GetDlgCtrlID();
+		unsigned nID = pWndChild->GetDlgCtrlID();
 
 		switch (nID)
 		{
@@ -352,7 +352,7 @@ void CEditScheduleDlg::SetupLanguage()
  * @param	ptrLanguage - Language package pointer
  * @return	None
  */
-void CEditScheduleDlg::SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage)
+void CEditScheduleDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	// Action list
 	if (nComboID == IDC_EDITSCHEDULE_ACTION_LIST) {
@@ -411,7 +411,7 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 	pListFrameWnd->DestroyWindow();
 
 	// Cell format
-	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pActiveDayListTable->GetDefaultCell(FALSE, FALSE);
+	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pActiveDayListTable->GetDefaultCell(false, false);
 	if (pCell == NULL) return;
 	pCell->SetFormat(pCell->GetFormat());
 	pCell->SetMargin(0);
@@ -427,15 +427,15 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 	DrawActiveDayTable(GetReadOnlyMode());
 
 	// Display table
-	m_pActiveDayListTable->SetListMode(TRUE);
-	m_pActiveDayListTable->SetEditable(FALSE);
-	m_pActiveDayListTable->SetColumnResize(FALSE);
-	m_pActiveDayListTable->SetRowResize(FALSE);
-	m_pActiveDayListTable->EnableSelection(TRUE);
-	m_pActiveDayListTable->SetSingleRowSelection(TRUE);
-	m_pActiveDayListTable->SetSingleColSelection(FALSE);
+	m_pActiveDayListTable->SetListMode(true);
+	m_pActiveDayListTable->SetEditable(false);
+	m_pActiveDayListTable->SetColumnResize(false);
+	m_pActiveDayListTable->SetRowResize(false);
+	m_pActiveDayListTable->EnableSelection(true);
+	m_pActiveDayListTable->SetSingleRowSelection(true);
+	m_pActiveDayListTable->SetSingleColSelection(false);
 	m_pActiveDayListTable->ShowWindow(SW_SHOW);
-	m_pActiveDayListTable->SetRedraw(TRUE);
+	m_pActiveDayListTable->SetRedraw(true);
 }
 
 /**
@@ -443,7 +443,7 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
  * @param	bReadOnly - Read-only mode
  * @return	None
  */
-void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
+void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
 {
 	// Check table validity
 	if (m_pActiveDayListTable == NULL) return;
@@ -456,11 +456,11 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	if (pApp == NULL) return;
 
 	// Re-update default cell properties
-	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pActiveDayListTable->GetDefaultCell(FALSE, FALSE);
+	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pActiveDayListTable->GetDefaultCell(false, false);
 	if (pCell == NULL) return;
 
 	// Read-only mode --> Change cell color
-	if (bReadOnly == TRUE) {
+	if (bReadOnly == true) {
 		pCell->SetBackClr(Color::Bright_Gray);
 		pCell->SetTextClr(Color::Dark_Gray);
 	}
@@ -491,7 +491,7 @@ void CEditScheduleDlg::DrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
 	m_pActiveDayListTable->SetColumnWidth(daytitleColID, nFrameWidth - checkboxColSize);
 
 	// Setup rows
-	UINT nItemState = INT_NULL;
+	unsigned nItemState = INT_NULL;
 	for (int nRow = 0; nRow < Constant::Max::DaysOfWeek; nRow++) {
 
 		/*------------------------------------- Checkbox column -------------------------------------*/
@@ -531,9 +531,9 @@ void CEditScheduleDlg::SetupDialogItemState()
 	m_bRepeat = m_schScheduleItemTemp.IsRepeatEnabled();
 
 	// If is currently in read-only or view mode
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == Mode::View)) {
+	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Disable top checkbox
-		EnableItem(IDC_EDITSCHEDULE_ENABLE_CHK, FALSE);
+		EnableItem(IDC_EDITSCHEDULE_ENABLE_CHK, false);
 	}
 
 	// Enable/disable sub-items
@@ -545,7 +545,7 @@ void CEditScheduleDlg::SetupDialogItemState()
 		m_pActionList->SetCurSel(Opt2Sel(APP_ACTION, m_nAction));
 	}
 
-	UpdateData(FALSE);
+	UpdateData(false);
 
 	// Setup time spin button properties
 	int nTimeSpinPos = 0;
@@ -570,19 +570,19 @@ void CEditScheduleDlg::SetupDialogItemState()
 
 	// Setup time editbox
 	ClockTime clockTimeTemp = m_schScheduleItemTemp.GetTime();
-	UpdateTimeSetting(clockTimeTemp, FALSE);
+	UpdateTimeSetting(clockTimeTemp, false);
 
 	// Enable/disable active day table (also update its display)
-	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() & m_schScheduleItemTemp.IsRepeatEnabled()));
+	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() && m_schScheduleItemTemp.IsRepeatEnabled()));
 
 	// Disable save button at first
-	EnableSaveButton(FALSE);
+	EnableSaveButton(false);
 
 	// Read-only mode (if enabled)
-	if (GetReadOnlyMode() == TRUE) {
+	if (GetReadOnlyMode() == true) {
 		CWnd* pWndChild = GetTopWindow();
 		while (pWndChild != NULL) {
-			pWndChild->EnableWindow(FALSE);
+			pWndChild->EnableWindow(false);
 			pWndChild = pWndChild->GetWindow(GW_HWNDNEXT);
 		}
 	}
@@ -613,7 +613,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 		nDayOfWeekID = nRowIndex;
 
 		// Active state
-		BOOL bActive = (m_schScheduleItemTemp.IsDayActive((DayOfWeek)nDayOfWeekID)) ? TRUE : FALSE;
+		bool bActive = (m_schScheduleItemTemp.IsDayActive((DayOfWeek)nDayOfWeekID)) ? true : false;
 		pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, checkboxColID);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(bActive);
@@ -630,12 +630,12 @@ void CEditScheduleDlg::UpdateActiveDayList()
  * @param	bDisable - Disable/enable
  * @return	None
  */
-void CEditScheduleDlg::DisableActiveDayTable(BOOL bDisable)
+void CEditScheduleDlg::DisableActiveDayTable(bool bDisable)
 {
 	// If is currently in read-only or view mode
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == Mode::View)) {
+	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Force disable
-		bDisable = TRUE;
+		bDisable = true;
 	}
 
 	// Redraw read-only style
@@ -651,10 +651,10 @@ void CEditScheduleDlg::DisableActiveDayTable(BOOL bDisable)
 
 /**
  * @brief	Update and redraw Active day table
- * @param	BOOL bReadOnly - Read-only mode
+ * @param	bool bReadOnly - Read-only mode
  * @return	None
  */
-void CEditScheduleDlg::RedrawActiveDayTable(BOOL bReadOnly /* = FALSE */)
+void CEditScheduleDlg::RedrawActiveDayTable(bool bReadOnly /* = false */)
 {
 	// Check table validity
 	if (m_pActiveDayListTable == NULL) return;
@@ -701,7 +701,7 @@ void CEditScheduleDlg::SetScheduleItem(const ScheduleItem& pschItem)
 void CEditScheduleDlg::UpdateScheduleItem()
 {
 	// Update data
-	UpdateData(TRUE);
+	UpdateData(true);
 
 	// Update checkbox values
 	m_schScheduleItemTemp.EnableItem(m_bEnabled);
@@ -714,7 +714,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 
 	// Update time value
 	ClockTime stTimeTemp;
-	UpdateTimeSetting(stTimeTemp, TRUE);
+	UpdateTimeSetting(stTimeTemp, true);
 
 	m_schScheduleItemTemp.SetTime(stTimeTemp);
 
@@ -728,7 +728,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 		if (pCellCheckActive == NULL) continue;
 
 		// Get checked states
-		BOOL bActive = pCellCheckActive->GetCheck();
+		bool bActive = pCellCheckActive->GetCheck();
 
 		// Update active days of week data
 		byRepeatDays |= bActive << nRowIndex;
@@ -753,15 +753,15 @@ void CEditScheduleDlg::SaveScheduleItem()
 /**
  * @brief	Compare control values with current config to check for changes
  * @param	None
- * @return	BOOL - Flag to mark data changed or not
+ * @return	bool - Flag to mark data changed or not
  */
-BOOL CEditScheduleDlg::CheckDataChangeState()
+bool CEditScheduleDlg::CheckDataChangeState()
 {
 	// Update item
 	UpdateScheduleItem();
 
 	// Data comparison
-	BOOL bChangeFlag = (m_schScheduleItemTemp.Compare(m_schScheduleItem) != TRUE);
+	bool bChangeFlag = (m_schScheduleItemTemp.Compare(m_schScheduleItem) != true);
 
 	return bChangeFlag;
 }
@@ -771,12 +771,12 @@ BOOL CEditScheduleDlg::CheckDataChangeState()
  * @param	bEnable - Enable or disable button
  * @return	None
  */
-void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
+void CEditScheduleDlg::EnableSaveButton(bool bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == Mode::View)) {
+	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Force disable
-		bEnable = FALSE;
+		bEnable = false;
 	}
 
 	// If new state is the same as current state, do nothing
@@ -795,12 +795,12 @@ void CEditScheduleDlg::EnableSaveButton(BOOL bEnable)
  * @param	bEnable - Enable or disable sub items
  * @return	None
  */
-void CEditScheduleDlg::EnableSubItems(BOOL bEnable)
+void CEditScheduleDlg::EnableSubItems(bool bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
-	if ((GetReadOnlyMode() == TRUE) || (GetDispMode() == Mode::View)) {
+	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Force disable
-		bEnable = FALSE;
+		bEnable = false;
 	}
 
 	// Enable/disable items
@@ -815,10 +815,10 @@ void CEditScheduleDlg::EnableSubItems(BOOL bEnable)
 /**
  * @brief	Update time value from/to time edit control
  * @param	clockTime  - Clock-time data
- * @param	bUpdate	   - Update or not (YES/TRUE by default)
+ * @param	bUpdate	   - Update or not (YES/true by default)
  * @return	None
  */
-void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* = TRUE */)
+void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = true */)
 {
 	// Get app language package
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -833,7 +833,7 @@ void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate /* =
 		}
 	}
 
-	if (bUpdate == TRUE) {
+	if (bUpdate == true) {
 		// Get value from time editbox
 		const int buffLength = m_pTimeEdit->GetWindowTextLength();
 		std::vector<wchar_t> tempBuff(buffLength + 1);
@@ -898,7 +898,7 @@ void CEditScheduleDlg::OnApply()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_APPLY_BTN);
 
 	// Save data if changed
-	if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
+	if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
 
 		// Update data
 		SaveScheduleItem();
@@ -929,7 +929,7 @@ void CEditScheduleDlg::OnExit()
 		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_CANCEL_BTN);
 
 		// If data changed, ask for saving before closing dialog
-		if (GetFlagValue(AppFlagID::dialogDataChanged) == TRUE) {
+		if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -968,14 +968,14 @@ void CEditScheduleDlg::OnExit()
 void CEditScheduleDlg::OnEnableSchedule()
 {
 	// Update dialog item state
-	UpdateData(TRUE);
+	UpdateData(true);
 	EnableSubItems(m_bEnabled);
 
 	// Check for data change
 	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable active day table
-	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() & m_schScheduleItemTemp.IsRepeatEnabled()));
+	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() && m_schScheduleItemTemp.IsRepeatEnabled()));
 
 	// Enable/disable save button
 	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
@@ -1072,7 +1072,7 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	if (ClockTimeUtils::InputText2Time(clockTime, timeTextValue)) {
 
 		// Update new time value
-		UpdateTimeSetting(clockTime, FALSE);
+		UpdateTimeSetting(clockTime, false);
 		
 		// Update timespin new position
 		int nSpinPos = 0;
@@ -1084,7 +1084,7 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	else {
 		// Restore old time value
 		clockTime = m_schScheduleItemTemp.GetTime();
-		UpdateTimeSetting(clockTime, FALSE);
+		UpdateTimeSetting(clockTime, false);
 		return;
 	}
 
@@ -1107,7 +1107,7 @@ void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	int nPos = pNMUpDown->iPos;
 	ClockTime clockTime;
 	ClockTimeUtils::SpinPos2Time(clockTime, nPos);
-	UpdateTimeSetting(clockTime, FALSE);
+	UpdateTimeSetting(clockTime, false);
 
 	*pResult = NULL;
 
@@ -1185,7 +1185,7 @@ LRESULT CEditScheduleDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			((pt.y > rcEditBox.top) && (pt.y < rcEditBox.bottom))) {
 			if (m_pTimeEdit->IsWindowEnabled()) {
 				// Select all text
-				m_pTimeEdit->SetSel(0, -1, TRUE);
+				m_pTimeEdit->SetSel(0, -1, true);
 			}
 			return 0;
 		}

@@ -100,7 +100,7 @@ BOOL CRmdRepeatSetDlg::OnInitDialog()
 	SetupDialogItemState();
 	RefreshDialogItemState();
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -176,7 +176,7 @@ void CRmdRepeatSetDlg::SetupLanguage()
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
 	{
-		UINT nID = pWndChild->GetDlgCtrlID();
+		unsigned nID = pWndChild->GetDlgCtrlID();
 
 		switch (nID)
 		{
@@ -298,7 +298,7 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
 	// Setup properties
 	int nDefaultSnoozeMin = PwrRepeatSet::defaultSnoozeInterval / 60;
 	if (m_pSnoozeIntervalEdit != NULL) {
-		m_pSnoozeIntervalEdit->SetReadOnly(TRUE);
+		m_pSnoozeIntervalEdit->SetReadOnly(true);
 	}
 	if (m_pSnoozeIntervalSpin != NULL) {
 		if (m_pSnoozeIntervalEdit == NULL) return;
@@ -324,7 +324,7 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
  * @param	bRecheckState - Recheck all item's state
  * @return	None
  */
-void CRmdRepeatSetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
+void CRmdRepeatSetDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 {
 	int nRepeatState = INT_NULL;
 	int nSnoozeState = INT_NULL;
@@ -334,7 +334,7 @@ void CRmdRepeatSetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 		nRepeatState = m_pRepeatEnableChk->GetCheck();
 
 		// Enable/disable all other sub-controls
-		BOOL bEnable = (nRepeatState == 1) ? TRUE : FALSE;
+		bool bEnable = (nRepeatState == 1) ? true : false;
 		if (m_pSnoozeEnableChk != NULL) {
 			m_pSnoozeEnableChk->EnableWindow(bEnable);
 		}
@@ -367,12 +367,12 @@ void CRmdRepeatSetDlg::RefreshDialogItemState(BOOL bRecheckState /* = FALSE */)
 		// Enable/disable snooze controls
 		if ((m_pSnoozeIntervalEdit != NULL) && (m_pSnoozeIntervalSpin != NULL)) {
 			if ((nRepeatState == 1) && (nSnoozeState == 1)) {
-				m_pSnoozeIntervalEdit->EnableWindow(TRUE);
-				m_pSnoozeIntervalSpin->EnableWindow(TRUE);
+				m_pSnoozeIntervalEdit->EnableWindow(true);
+				m_pSnoozeIntervalSpin->EnableWindow(true);
 			}
 			else {
-				m_pSnoozeIntervalEdit->EnableWindow(FALSE);
-				m_pSnoozeIntervalSpin->EnableWindow(FALSE);
+				m_pSnoozeIntervalEdit->EnableWindow(false);
+				m_pSnoozeIntervalSpin->EnableWindow(false);
 			}
 		}
 	}
@@ -420,12 +420,12 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
  * @param	bUpdate		- Update data flag
  * @return	None
  */
-void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpdate)
+void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpdate)
 {
 	// Get repeat set data
 	PwrRepeatSet& rpsRepeatData = pwrItemData.GetRepeatSetData();
 
-	if (bUpdate == TRUE) {
+	if (bUpdate == true) {
 
 		/***************************************************************/
 		/*															   */
@@ -436,13 +436,13 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpda
 		int nState = 0;
 		if (m_pRepeatEnableChk != NULL) {
 			nState = m_pRepeatEnableChk->GetCheck();
-			rpsRepeatData.EnableRepeat((nState == 1) ? TRUE : FALSE);
+			rpsRepeatData.EnableRepeat((nState == 1) ? true : false);
 		}
 
 		// Snooze enable
 		if (m_pSnoozeEnableChk != NULL) {
 			nState = m_pSnoozeEnableChk->GetCheck();
-			rpsRepeatData.EnableSnoozing((nState == 1) ? TRUE : FALSE);
+			rpsRepeatData.EnableSnoozing((nState == 1) ? true : false);
 
 			if (m_pSnoozeIntervalSpin != NULL) {
 				// Get snooze interval value (in seconds)
@@ -455,52 +455,52 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpda
 
 		BYTE byRepeatDays = 0;
 		{
-			BOOL bSundayEnable = FALSE;
+			bool bSundayEnable = false;
 			if (m_pActiveSundayChk != NULL) {
 				nState = m_pActiveSundayChk->GetCheck();
-				bSundayEnable = (nState == 1) ? TRUE : FALSE;
+				bSundayEnable = (nState == 1) ? true : false;
 			}
 			byRepeatDays |= bSundayEnable << DayOfWeek::Sunday;
 
-			BOOL bMondayEnable = FALSE;
+			bool bMondayEnable = false;
 			if (m_pActiveMondayChk != NULL) {
 				nState = m_pActiveMondayChk->GetCheck();
-				bMondayEnable = (nState == 1) ? TRUE : FALSE;
+				bMondayEnable = (nState == 1) ? true : false;
 			}
 			byRepeatDays |= bMondayEnable << DayOfWeek::Monday;
 
-			BOOL bTuesdayEnable = FALSE;
+			bool bTuesdayEnable = false;
 			if (m_pActiveTuesdayChk != NULL) {
 				nState = m_pActiveTuesdayChk->GetCheck();
-				bTuesdayEnable = (nState == 1) ? TRUE : FALSE;
+				bTuesdayEnable = (nState == 1) ? true : false;
 			}
 			byRepeatDays |= bTuesdayEnable << DayOfWeek::Tuesday;
 
-			BOOL bWednesdayEnable = FALSE;
+			bool bWednesdayEnable = false;
 			if (m_pActiveWednesdayChk != NULL) {
 				nState = m_pActiveWednesdayChk->GetCheck();
-				bWednesdayEnable = (nState == 1) ? TRUE : FALSE;
+				bWednesdayEnable = (nState == 1) ? true : false;
 			}
 			byRepeatDays |= bWednesdayEnable << DayOfWeek::Wednesday;
 
-			BOOL bThursdayEnable = FALSE;
+			bool bThursdayEnable = false;
 			if (m_pActiveThursdayChk != NULL) {
 				nState = m_pActiveThursdayChk->GetCheck();
-				bThursdayEnable = (nState == 1) ? TRUE : FALSE;
+				bThursdayEnable = (nState == 1) ? true : false;
 			}
 			byRepeatDays |= bThursdayEnable << DayOfWeek::Thursday;
 
-			BOOL bFridayEnable = FALSE;
+			bool bFridayEnable = false;
 			if (m_pActiveFridayChk != NULL) {
 				nState = m_pActiveFridayChk->GetCheck();
-				bFridayEnable = (nState == 1) ? TRUE : FALSE;
+				bFridayEnable = (nState == 1) ? true : false;
 			}
 			byRepeatDays |= bFridayEnable << DayOfWeek::Friday;
 
-			BOOL bSaturdayEnable = FALSE;
+			bool bSaturdayEnable = false;
 			if (m_pActiveSaturdayChk != NULL) {
 				nState = m_pActiveSaturdayChk->GetCheck();
-				bSaturdayEnable = (nState == 1) ? TRUE : FALSE;
+				bSaturdayEnable = (nState == 1) ? true : false;
 			}
 			byRepeatDays |= bSaturdayEnable << DayOfWeek::Saturday;
 		}
@@ -569,7 +569,7 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpda
 		}
 
 		// Update data
-		UpdateData(FALSE);
+		UpdateData(false);
 		RefreshDialogItemState();
 	}
 }

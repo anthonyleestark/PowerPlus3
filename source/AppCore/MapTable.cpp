@@ -19,14 +19,14 @@
  * @param	pIDTableRef - Reference ID mapping table
  * @param	nID			- First ID
  * @param	bReverse	- Reverse search
- * @return	UINT - Second paired ID
+ * @return	unsigned - Second paired ID
  */
-UINT MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse /* = FALSE */)
+unsigned MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, unsigned nID, bool bReverse /* = false */)
 {
 	// Return INVALID if ID mapping table is invalid
 	ASSERT(pIDTableRef != NULL);
 	if (pIDTableRef == NULL) {
-		return (UINT)INT_INVALID;
+		return (unsigned)INT_INVALID;
 	}
 
 	// Find and return corresponding ID paired with specified macro ID
@@ -40,7 +40,7 @@ UINT MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse /
 			break;
 
 		// Reverse search
-		if (bReverse == TRUE) {
+		if (bReverse == true) {
 			if (idPair.second == nID)
 				return idPair.first;
 		}
@@ -51,21 +51,21 @@ UINT MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse /
 	} while (nIndex < MAX_TABLESIZE);
 
 	// Return INVALID if not found
-	return (UINT)INT_INVALID;
+	return (unsigned)INT_INVALID;
 }
 
 /**
  * @brief	Find and return ID paired with given string
  * @param	pStringTableRef - Reference string table
  * @param	input			- Given string
- * @return	UINT - String ID
+ * @return	unsigned - String ID
  */
-UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input)
+unsigned MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input)
 {
 	// Return NULL string if language table is invalid
 	ASSERT(pStringTableRef != NULL);
 	if (pStringTableRef == NULL) {
-		return (UINT)INT_INVALID;
+		return (unsigned)INT_INVALID;
 	}
 
 	// Convert input string to lowercase
@@ -94,7 +94,7 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input
 	} while (nIndex < MAX_TABLESIZE);
 
 	// Return INVALID if not found
-	return (UINT)INT_INVALID;
+	return (unsigned)INT_INVALID;
 }
 
 /**
@@ -103,7 +103,7 @@ UINT MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input
  * @param	nID				 - String ID
  * @return	const wchar_t* - Paired string
  */
-const wchar_t* MapTable::GetString(STRINGTABLE_REF pStringTableRef, UINT nID)
+const wchar_t* MapTable::GetString(STRINGTABLE_REF pStringTableRef, unsigned nID)
 {
 	// Return NULL string if language table is invalid
 	ASSERT(pStringTableRef != NULL);

@@ -79,9 +79,9 @@ int CHelpDlg::RegisterDialogManagement(void)
 /**
  * @brief	Unregister dialog control management
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL CHelpDlg::UnregisterDialogManagement(void)
+bool CHelpDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
 	SControlManager* pCtrlMan = this->GetControlManager();
@@ -145,7 +145,7 @@ BOOL CHelpDlg::OnInitDialog()
 	// Save dialog event log if enabled
 	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -264,13 +264,13 @@ void CHelpDlg::SetupEditbox(CEdit& pEdit)
 /**
  * @brief	Load help content from Resource-embeded text data
  * @param	strRCFileData - File data result (ref-value)
- * @return	BOOL - Result of file loading process
+ * @return	bool - Result of file loading process
  */
-BOOL CHelpDlg::LoadRCFileData(String& strRCFileData)
+bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 {
 	// Get currently displaying language
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	UINT nCurLanguage = pApp->GetAppLanguageOption(TRUE);
+	unsigned nCurLanguage = pApp->GetAppLanguageOption(true);
 
 	// Remove existing data
 	if (!strRCFileData.IsEmpty())
@@ -341,7 +341,7 @@ BOOL CHelpDlg::LoadRCFileData(String& strRCFileData)
 void CHelpDlg::UpdateSwitchViewModeButton(void)
 {
 	// Language string ID
-	UINT nStringID = INT_NULL;
+	unsigned nStringID = INT_NULL;
 	switch (m_nViewMode)
 	{
 	case ViewMode::HelpFile:

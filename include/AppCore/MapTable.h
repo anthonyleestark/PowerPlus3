@@ -47,7 +47,7 @@ namespace MapTable
 
 	// Get map table size
 	#define TABLE_SIZE(tableName) \
-		(INT(sizeof(tableName) / sizeof(tableName[0]) - 1))
+		(static_cast<int>(sizeof(tableName) / sizeof(tableName[0]) - 1))
 
 	// Initialize template table
 	#define INITIALIZE_TABLE(elementType, tableName) \
@@ -58,20 +58,20 @@ namespace MapTable
 	// Hotkey info description
 	struct HOTKEYINFO
 	{
-		DWORD	dwModifiers;								// Modifier keys
-		DWORD	dwVirtualKey;								// Virtual key code
-		UINT	nHotkeyDescription;							// Hotkey description (string ID)
+		DWORD		dwModifiers;							// Modifier keys
+		DWORD		dwVirtualKey;							// Virtual key code
+		unsigned	nHotkeyDescription;						// Hotkey description (string ID)
 	};
 
 	// Action definition/combination table
 	struct ACTIONDEF
 	{
-		UINT nActionDefID;									// Action ID
-		UINT nActionNameID;									// Action Name ID
-		UINT nActionMsgID;									// Action message ID
-		UINT nSchedNotifyID;								// Schedule notify message ID
-		UINT nNotifyTipID;									// Notify file tip ID
-		UINT nBalloonTipID;									// Balloon tip ID
+		unsigned nActionDefID;								// Action ID
+		unsigned nActionNameID;								// Action Name ID
+		unsigned nActionMsgID;								// Action message ID
+		unsigned nSchedNotifyID;							// Schedule notify message ID
+		unsigned nNotifyTipID;								// Notify file tip ID
+		unsigned nBalloonTipID;								// Balloon tip ID
 	};
 
 	
@@ -421,7 +421,7 @@ namespace MapTable
 
 
 	//	Define methods for processing data map tables
-	UINT GetPairedID(IDMAPTABLE_REF pIDTableRef, UINT nID, BOOL bReverse = FALSE);
-	UINT GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input);
-	const wchar_t* GetString(STRINGTABLE_REF pStringTableRef, UINT nID);
+	unsigned GetPairedID(IDMAPTABLE_REF pIDTableRef, unsigned nID, bool bReverse = false);
+	unsigned GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input);
+	const wchar_t* GetString(STRINGTABLE_REF pStringTableRef, unsigned nID);
 };

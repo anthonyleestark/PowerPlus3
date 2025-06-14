@@ -39,7 +39,7 @@ private:
 	String m_strBufferBak;
 
 	// Debug command history
-	BOOL		 m_bCurDispHistory;
+	bool		 m_bCurDispHistory;
 	size_t		 m_nHistoryCurIndex;
 	StringArray  m_astrCommandHistory;
 
@@ -65,56 +65,64 @@ public:
 	afx_msg LRESULT OnShowDialog(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL PreTranslateMessage(MSG *pMsg);
-	virtual BOOL SendDebugCommand(void);
+	virtual bool SendDebugCommand(void);
 
 private:
 	// Member functions
-	CEdit* GetDebugEditView(void) const;
-	BOOL InitDebugEditView(UINT nCtrlID);
-	BOOL CreateDebugViewFont(void);
-	BOOL CreateDebugViewBrush(void);
+	CEdit* GetDebugEditView(void) const {
+		return m_pDebugEditView;
+	};
+	bool InitDebugEditView(unsigned nCtrlID);
+	bool CreateDebugViewFont(void);
+	bool CreateDebugViewBrush(void);
 
-	inline BOOL IsDebugEditViewValid(void);
-	inline BOOL IsDebugEditViewFocus(void);
+	inline bool IsDebugEditViewValid(void) {
+		return (GetDebugEditView() != NULL);
+	};
+	inline bool IsDebugEditViewFocus(void) {
+		// Check DebugTest edit view validity
+		if (!IsDebugEditViewValid()) return FALSE;
+
+		// Check if it is focused
+		HWND hCurFocusWnd = GetFocus()->GetSafeHwnd();
+		return (hCurFocusWnd == GetDebugEditView()->GetSafeHwnd());
+	};
 
 	int GetCaretPosition(void);
-	BOOL ShowDebugTestEditViewMenu(void);
+	bool ShowDebugTestEditViewMenu(void);
 
-	inline void BackupDebugViewBuffer(void);
+	inline void BackupDebugViewBuffer(void) {
+		m_strBufferBak = m_strBuffer;
+	};
 	int  FormatDebugCommand(String &debugCommand);
 	void ClearViewBuffer(void);
 
-	void AddLine(const wchar_t* lineString, BOOL bNewLine = TRUE);
-	void UpdateDisplay(BOOL bSeekToEnd = FALSE, BOOL bNotifyParent = TRUE);
+	void AddLine(const wchar_t* lineString, bool bNewLine = TRUE);
+	void UpdateDisplay(bool bSeekToEnd = FALSE, bool bNotifyParent = TRUE);
 
 	size_t AddDebugCommandHistory(const wchar_t* commandString);
 	void DispDebugCommandHistory(int nHistoryIndex);
-	void ClearDebugCommandHistory(void);
-	size_t GetDebugCommandHistoryCount(void) const;
-	BOOL IsDebugCommandHistoryEmpty(void) const;
+	void ClearDebugCommandHistory(void) {
+		m_astrCommandHistory.clear();
+	};
+	size_t GetDebugCommandHistoryCount(void) const {
+		return m_astrCommandHistory.size();
+	};
+	bool IsDebugCommandHistoryEmpty(void) const {
+		return m_astrCommandHistory.empty();
+	};
 
-	inline BOOL IsCurrentlyDispHistory(void) const;
-	inline void SetCurrentlyDispHistoryState(BOOL bState);
-	inline size_t GetHistoryCurrentDispIndex(void) const;
-	inline void SetHistoryCurrentDispIndex(size_t nCurIndex);
+	inline bool IsCurrentlyDispHistory(void) const {
+		return m_bCurDispHistory;
+	};
+	inline void SetCurrentlyDispHistoryState(bool bState) {
+		m_bCurDispHistory = bState;
+	};
+	inline size_t GetHistoryCurrentDispIndex(void) const {
+		return m_nHistoryCurIndex;
+	};
+	inline void SetHistoryCurrentDispIndex(size_t nCurIndex) {
+		m_nHistoryCurIndex = nCurIndex;
+	};
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _DEBUGTESTDLG_ENABLE_INLINES
-	#include "Dialogs.inl"
-	#ifdef _DEBUGTESTDLG_INLINE_INCLUDED
-		#pragma message("-- Dialogs inline library included (DebugTestDlg.h)")
-	#else
-		#pragma error("-- Linking error in DebugTestDlg.h: Unable to link to inline header!")
-	#endif
-	#undef _DEBUGTESTDLG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in DebugTestDlg.h: Inline is not enabled!")
-#endif

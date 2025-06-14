@@ -35,7 +35,7 @@ protected:
 
 	// Dialog control management
 	virtual int RegisterDialogManagement(void);
-	virtual BOOL UnregisterDialogManagement(void);
+	virtual bool UnregisterDialogManagement(void);
 
 	// Implementation
 protected:

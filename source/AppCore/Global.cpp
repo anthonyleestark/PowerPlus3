@@ -19,7 +19,7 @@
 DateTime Global::g_stAppLaunchTime;
 
 // Application launch-time counter
-UINT Global::g_uiAppLaunchTimeCounter = 0;
+unsigned Global::g_uiAppLaunchTimeCounter = 0;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

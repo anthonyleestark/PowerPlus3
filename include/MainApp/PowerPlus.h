@@ -58,13 +58,13 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	// App data serialization functions
-	BOOL InitAppData();
-	BOOL LoadRegistryAppData();
-	BOOL SaveRegistryAppData(DWORD dwDataType = APPDATA_ALL);
-	BOOL BackupRegistryAppData();
-	BOOL UpdateAppLaunchTimeProfileInfo(void);
-	BOOL LoadGlobalData(void);
-	BOOL SaveGlobalData(BYTE byCateID = 0xFF);
+	bool InitAppData();
+	bool LoadRegistryAppData();
+	bool SaveRegistryAppData(DWORD dwDataType = APPDATA_ALL);
+	bool BackupRegistryAppData();
+	bool UpdateAppLaunchTimeProfileInfo(void);
+	bool LoadGlobalData(void);
+	bool SaveGlobalData(BYTE byCateID = 0xFF);
 
 	// App data processing functions
 	ConfigData* GetAppConfigData();
@@ -86,20 +86,20 @@ public:
 
 	// Data validity checking functions
 	void TraceSerializeData(WORD wErrCode);
-	BOOL DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag = APPDATA_ALL);
+	bool DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag = APPDATA_ALL);
 
 	// DebugTest dialog function
-	BOOL InitDebugTestDlg(void);
+	bool InitDebugTestDlg(void);
 	SDialog* GetDebugTestDlg(void);
 	void DestroyDebugTestDlg(void);
 
 	// Registry functions
 	void GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey);
-	int EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin);
+	int EnableAutoStart(bool bEnable, bool bRunAsAdmin);
 	int GetAutoStartRegisterStatus(void);
 
-	BOOL GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent);
-	BOOL SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent);
+	bool GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent);
+	bool SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent);
 
 protected:
 	// Application message handlers

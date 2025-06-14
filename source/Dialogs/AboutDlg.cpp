@@ -78,9 +78,9 @@ int CAboutDlg::RegisterDialogManagement(void)
 /**
  * @brief	Unregister dialog control management
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL CAboutDlg::UnregisterDialogManagement(void)
+bool CAboutDlg::UnregisterDialogManagement(void)
 {
 	// Get control manager
 	SControlManager* pCtrlMan = this->GetControlManager();
@@ -126,7 +126,7 @@ END_MESSAGE_MAP()
 /**
  * @brief	Initialize About dialog and setup dialog content
  * @param	None
- * @return	TRUE/FALSE - Default
+ * @return	true/false - Default
  */
 BOOL CAboutDlg::OnInitDialog()
 {
@@ -139,7 +139,7 @@ BOOL CAboutDlg::OnInitDialog()
 	// Save dialog event log if enabled
 	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -183,7 +183,7 @@ void CAboutDlg::SetupLanguage(void)
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
 	{
-		UINT nID = pWndChild->GetDlgCtrlID();
+		unsigned nID = pWndChild->GetDlgCtrlID();
 		switch (nID)
 		{
 		case IDI_ICON_APP:

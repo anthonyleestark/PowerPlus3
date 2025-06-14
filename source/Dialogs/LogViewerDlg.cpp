@@ -262,7 +262,7 @@ void CLogViewerDlg::SetupLanguage(void)
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
 	{
-		UINT nID = pWndChild->GetDlgCtrlID();
+		unsigned nID = pWndChild->GetDlgCtrlID();
 
 		switch (nID)
 		{
@@ -409,7 +409,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
-		UINT nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
+		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
 		if (nHeaderTitleID != INT_NULL) {
 			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
@@ -433,7 +433,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 
 	// Setup rows
 	int nColStyle = -1;
-	UINT nItemState = INT_NULL;
+	unsigned nItemState = INT_NULL;
 	for (int nRow = 1; nRow < nRowNum; nRow++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 

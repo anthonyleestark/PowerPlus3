@@ -116,7 +116,7 @@ BOOL CPowerPlusApp::InitInstance()
 	SetAppLaunchTime(DateTimeUtils::GetCurrentDateTime());
 
 	// Set application window caption (with product version number)
-	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, TRUE)) {
+	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, true)) {
 
 		// Set title string failed
 		TRACE_ERROR("Error: Set app window caption failed!!!");
@@ -124,16 +124,16 @@ BOOL CPowerPlusApp::InitInstance()
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
-		return FALSE;
+		return false;
 	}
 
 	// Check if there is any other instance currently running
 	// If yes, bring that instance to top and exit current instance
 	if (HWND hPrevWnd = FindWindow(NULL, GetAppWindowCaption())) {
-		PostMessage(hPrevWnd, SM_WND_SHOWDIALOG, TRUE, (LPARAM)0);
+		PostMessage(hPrevWnd, SM_WND_SHOWDIALOG, true, (LPARAM)0);
 		BringWindowToTop(hPrevWnd);
 		SetForegroundWindow(hPrevWnd);
-		return FALSE;
+		return false;
 	}
 
 	// Enable support Visual Styles
@@ -162,7 +162,7 @@ BOOL CPowerPlusApp::InitInstance()
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
-		return FALSE;
+		return false;
 	}
 
 	// Initialize DebugTest dialog
@@ -171,7 +171,7 @@ BOOL CPowerPlusApp::InitInstance()
 	// Check CTRL key press state and open DebugTest dialog
 	if (IS_PRESSED(VK_CONTROL)) {
 		HWND hDebugTestDlg = m_pDebugTestDlg->GetSafeHwnd();
-		PostMessage(hDebugTestDlg, SM_WND_SHOWDIALOG, TRUE, NULL);
+		PostMessage(hDebugTestDlg, SM_WND_SHOWDIALOG, true, NULL);
 	}
 
 	// Setup registry key info
@@ -196,7 +196,7 @@ BOOL CPowerPlusApp::InitInstance()
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
-		return FALSE;
+		return false;
 	}
 	
 	// Initialize default data
@@ -222,7 +222,7 @@ BOOL CPowerPlusApp::InitInstance()
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
-		return FALSE;
+		return false;
 	}
 	
 	// Initialize log objects
@@ -261,14 +261,14 @@ BOOL CPowerPlusApp::InitInstance()
 
 		// Show error message
 		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
-		return FALSE;
+		return false;
 	}
 
 	// Set application main window pointer
 	m_pMainWnd = pMainDlg;
 
 	// Show/hide main dialog at startup
-	if (GetAppOption(AppOptionID::showDlgAtStartup) == FALSE) {
+	if (GetAppOption(AppOptionID::showDlgAtStartup) == false) {
 
 		// Hide dialog
 		pMainDlg->Create(IDD_POWERPLUS_DIALOG, NULL);
@@ -296,7 +296,7 @@ BOOL CPowerPlusApp::InitInstance()
 		pMainDlg->DoModal();
 
 		// Bring dialog window to top
-		pMainDlg->SendMessage(SM_WND_SHOWDIALOG, TRUE, NULL);
+		pMainDlg->SendMessage(SM_WND_SHOWDIALOG, true, NULL);
 		pMainDlg->BringWindowToTop();
 		pMainDlg->SetForegroundWindow();
 	}
@@ -330,7 +330,7 @@ BOOL CPowerPlusApp::InitInstance()
 	ControlBarCleanUp();
 #endif
 
-	return FALSE;
+	return false;
 }
 
 /**
@@ -344,12 +344,12 @@ int CPowerPlusApp::ExitInstance()
 	OutputEventLog(LOG_EVENT_EXIT_INSTANCE);
 
 	// Write application event logging data to file if enabled
-	if (GetAppOption(AppOptionID::saveAppEventLog) == TRUE) {
+	if (GetAppOption(AppOptionID::saveAppEventLog) == true) {
 		GetAppEventLog()->Write();
 	}
 
 	// Write action history logging data to file if enabled
-	if (GetAppOption(AppOptionID::saveAppHistoryLog) == TRUE) {
+	if (GetAppOption(AppOptionID::saveAppHistoryLog) == true) {
 		GetAppHistoryLog()->Write();
 	}
 
@@ -404,7 +404,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 				// Keystroke pressed: "Alt + Shift + Backspace"
 				else if (IS_PRESSED(VK_LSHIFT) || IS_PRESSED(VK_RSHIFT)) {
 					// Show main dialog window
-					PostMessage(GET_HANDLE_MAINWND(), SM_WND_SHOWDIALOG, TRUE, NULL);
+					PostMessage(GET_HANDLE_MAINWND(), SM_WND_SHOWDIALOG, true, NULL);
 				}
 			}
 		}
@@ -426,8 +426,8 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 
 				// Only process if both options are enabled
 				if ((pApp != NULL) &&
-					(pApp->GetAppOption(AppOptionID::backgroundHotkeyEnabled) == TRUE) &&		// Enable background action hotkeys
-					(pApp->GetAppOption(AppOptionID::lockStateHotkeyEnabled) == TRUE)) {		// Allow background hotkeys on lockscreen
+					(pApp->GetAppOption(AppOptionID::backgroundHotkeyEnabled) == true) &&		// Enable background action hotkeys
+					(pApp->GetAppOption(AppOptionID::lockStateHotkeyEnabled) == true)) {		// Allow background hotkeys on lockscreen
 
 					// Keycode param
 					DWORD dwHKeyParam = NULL;
@@ -506,13 +506,13 @@ BOOL CPowerPlusApp::ProcessMessageFilter(int nCode, LPMSG lpMsg)
 {
 	// Default process
 	if (SWinApp::ProcessMessageFilter(nCode, lpMsg))
-		return TRUE;
+		return true;
 
 	// Pre-translate message if there's no window handler
 	if (lpMsg->hwnd == NULL)
 		return PreTranslateMessage(lpMsg);
 
-	return FALSE;
+	return false;
 }
 
 /**
@@ -533,7 +533,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 		// handle message and show error messagebox here
 		if (((hRcvWnd == NULL) && (this->GetMainWnd() == NULL)) || (this->GetAppLanguage() == NULL)) {
 			ShowErrorMessage(NULL, NULL, dwErrCode);
-			return TRUE;
+			return true;
 		}
 
 		// If the main window is available, 
@@ -541,7 +541,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 		else if (this->GetMainWnd() != NULL) {
 			HWND hMainWnd = GET_HANDLE_MAINWND();
 			SendMessage(hMainWnd, pMsg->message, pMsg->wParam, pMsg->lParam);
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -551,7 +551,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 		HWND hRcvWnd = pMsg->hwnd;
 		if (hRcvWnd == NULL) {
 			OnShowErrorMessage(pMsg->wParam, pMsg->lParam);
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -561,7 +561,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 		HWND hRcvWnd = pMsg->hwnd;
 		if (hRcvWnd == NULL) {
 			OnExecuteDebugCommand(pMsg->wParam, pMsg->lParam);
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -576,9 +576,9 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 /**
  * @brief	Initialize app data
  * @param	None
- * @return	BOOL - Result of initialization
+ * @return	bool - Result of initialization
  */
-BOOL CPowerPlusApp::InitAppData()
+bool CPowerPlusApp::InitAppData()
 {
 	// Initialize app config data
 	if (m_pcfgAppConfig == NULL) {
@@ -598,29 +598,29 @@ BOOL CPowerPlusApp::InitAppData()
 	}
 
 	// Check data validity
-	BOOL bResult = TRUE;
+	bool bResult = true;
 
 	// Check app config data
 	if (m_pcfgAppConfig == NULL) {
-		bResult = FALSE;
+		bResult = false;
 		TRACE_ERROR("Error: App config data init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check schedule data
 	if (m_pschScheduleData == NULL) {
-		bResult = FALSE;
+		bResult = false;
 		TRACE_ERROR("Error: Schedule data init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check HotkeySet data
 	if (m_phksHotkeySetData == NULL) {
-		bResult = FALSE;
+		bResult = false;
 		TRACE_ERROR("Error: HotkeySet data init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check Power Reminder data
 	if (m_ppwrReminderData == NULL) {
-		bResult = FALSE;
+		bResult = false;
 		TRACE_ERROR("Error: Power Reminder data init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
@@ -631,12 +631,12 @@ BOOL CPowerPlusApp::InitAppData()
 /**
  * @brief	Load app data from registry
  * @param	None
- * @return	BOOL - Result of loading process
+ * @return	bool - Result of loading process
  */
-BOOL CPowerPlusApp::LoadRegistryAppData()
+bool CPowerPlusApp::LoadRegistryAppData()
 {
-	BOOL bResult = TRUE;
-	BOOL bFinalResult = TRUE;
+	bool bResult = true;
+	bool bFinalResult = true;
 	WORD wLoadRet = APP_ERROR_SUCCESS;
 
 	int nDataTemp = INT_INVALID;
@@ -646,7 +646,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 
 	// Check data validity first
 	if (!DataSerializeCheck(Mode::Load))
-		return FALSE;
+		return false;
 
 	// Create temporary data
 	PCONFIGDATA pcfgTempData = new CONFIGDATA;
@@ -688,17 +688,17 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	}
 
 	// Trace error
-	if (bResult == FALSE) {
+	if (bResult == false) {
 		wLoadRet = APP_ERROR_LOAD_CFG_FAILED;
 		TraceSerializeData(wLoadRet);
-		bFinalResult = FALSE;	// Set final result
-		bResult = TRUE;			// Reset flag
+		bFinalResult = false;	// Set final result
+		bResult = true;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (pcfgTempData != NULL) {
 			m_pcfgAppConfig->Copy(*pcfgTempData);
-			bResult = TRUE;		// Reset flag
+			bResult = true;		// Reset flag
 		}
 	}
 
@@ -759,11 +759,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			bResult = (nDefSchedRet != INT_NULL);
 
 			// Trace error
-			if (bResult == FALSE) {
+			if (bResult == false) {
 				wLoadRet = APP_ERROR_LOAD_SCHED_FAILED;
 				TraceSerializeData(wLoadRet);
-				bFinalResult = FALSE;	// Set final result
-				bResult = TRUE;			// Reset flag
+				bFinalResult = false;	// Set final result
+				bResult = true;			// Reset flag
 			}
 			else {
 				// Update default item data
@@ -775,7 +775,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 		// Load number of extra items
 		int nExtraItemNum = 0;
 		bResult &= GetScheduleExtraItemNum(Key::ScheduleData::ExtraItemNum, nExtraItemNum);
-		if (bResult != FALSE) {
+		if (bResult != false) {
 
 			// Read each extra item data
 			for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
@@ -825,11 +825,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				bResult = (nSchedRet != INT_NULL);
 
 				// Trace error
-				if (bResult == FALSE) {
+				if (bResult == false) {
 					wLoadRet = APP_ERROR_LOAD_SCHED_FAILED;
 					TraceSerializeData(wLoadRet);
-					bFinalResult = FALSE;	// Set final result
-					bResult = TRUE;			// Reset flag
+					bFinalResult = false;	// Set final result
+					bResult = true;			// Reset flag
 				}
 
 				// Update item data
@@ -839,17 +839,17 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	}
 
 	// Trace error
-	if (bResult == FALSE) {
+	if (bResult == false) {
 		wLoadRet = APP_ERROR_LOAD_SCHED_FAILED;
 		TraceSerializeData(wLoadRet);
-		bFinalResult = FALSE;	// Set final result
-		bResult = TRUE;			// Reset flag
+		bFinalResult = false;	// Set final result
+		bResult = true;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (pschTempData != NULL) {
 			m_pschScheduleData->Copy(*pschTempData);
-			bResult = TRUE;		// Reset flag
+			bResult = true;		// Reset flag
 		}
 	}
 
@@ -906,11 +906,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 			bResult = (nItemRet != INT_NULL);
 
 			// Trace error
-			if (bResult == FALSE) {
+			if (bResult == false) {
 				wLoadRet = APP_ERROR_LOAD_HKEYSET_FAILED;
 				TraceSerializeData(wLoadRet);
-				bFinalResult = FALSE;	// Set final result
-				bResult = TRUE;			// Reset flag
+				bFinalResult = false;	// Set final result
+				bResult = true;			// Reset flag
 				continue;
 			}
 
@@ -920,17 +920,17 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	}
 
 	// Trace error
-	if (bResult == FALSE) {
+	if (bResult == false) {
 		wLoadRet = APP_ERROR_LOAD_HKEYSET_FAILED;
 		TraceSerializeData(wLoadRet);
-		bFinalResult = FALSE;	// Set final result
-		bResult = TRUE;			// Reset flag
+		bFinalResult = false;	// Set final result
+		bResult = true;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (phksTempData != NULL) {
 			m_phksHotkeySetData->Copy(*phksTempData);
-			bResult = TRUE;		// Reset flag
+			bResult = true;		// Reset flag
 		}
 	}
 
@@ -950,7 +950,7 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	nItemNum = 0;
 	if (ppwrTempData != NULL) {
 		bResult &= GetPwrReminderItemNum(Key::PwrReminderData::ItemNum, nItemNum);
-		if (bResult != FALSE) {
+		if (bResult != false) {
 
 			// Initialize temp data
 			ppwrTempData->Init();
@@ -1010,11 +1010,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				bResult = (nPwrRmdCommonStyleRet != INT_NULL);
 
 				// Trace error
-				if (bResult == FALSE) {
+				if (bResult == false) {
 					wLoadRet = APP_ERROR_LOAD_PWRRMD_FAILED;
 					TraceSerializeData(wLoadRet);
-					bFinalResult = FALSE;	// Set final result
-					bResult = TRUE;			// Reset flag
+					bFinalResult = false;	// Set final result
+					bResult = true;			// Reset flag
 				}
 				else {
 					// Update Power Reminder common style data
@@ -1087,11 +1087,11 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 				bResult = (nItemRet != INT_NULL);
 
 				// Trace error
-				if (bResult == FALSE) {
+				if (bResult == false) {
 					wLoadRet = APP_ERROR_LOAD_PWRRMD_FAILED;
 					TraceSerializeData(wLoadRet);
-					bFinalResult = FALSE;	// Set final result
-					bResult = TRUE;			// Reset flag
+					bFinalResult = false;	// Set final result
+					bResult = true;			// Reset flag
 					continue;
 				}
 
@@ -1102,18 +1102,18 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 	}
 
 	// Trace error
-	if (bResult == FALSE) {
+	if (bResult == false) {
 		wLoadRet = APP_ERROR_LOAD_PWRRMD_FAILED;
 		TraceSerializeData(wLoadRet);
-		bFinalResult = FALSE;	// Set final result
-		bResult = TRUE;			// Reset flag
+		bFinalResult = false;	// Set final result
+		bResult = true;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (ppwrTempData != NULL) {
 			m_ppwrReminderData->Copy(*ppwrTempData);
 			m_ppwrReminderData->Adjust();
-			bResult = TRUE;		// Reset flag
+			bResult = true;		// Reset flag
 		}
 	}
 
@@ -1138,18 +1138,18 @@ BOOL CPowerPlusApp::LoadRegistryAppData()
 /**
  * @brief	Save app data to registry
  * @param	dwDataType - App data type to save
- * @return	BOOL - Result of saving process
+ * @return	bool - Result of saving process
  */
-BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
+bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 {
-	BOOL bResult = TRUE;
-	BOOL bFinalResult = TRUE;
+	bool bResult = true;
+	bool bFinalResult = true;
 	WORD wSaveRet = APP_ERROR_SUCCESS;
 	int nTimeTemp = INT_INVALID;
 
 	// Check data validity first
 	if (!DataSerializeCheck(Mode::Save, dwDataType))
-		return FALSE;
+		return false;
 
 	/***********************************************************************************************/
 	/*																							   */
@@ -1188,11 +1188,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		bResult &= WriteConfig(Key::ConfigData::EnablePowerReminder,	cfgConfigTemp.bEnablePowerReminder);
 
 		// Trace error
-		if (bResult == FALSE) {
+		if (bResult == false) {
 			wSaveRet = APP_ERROR_SAVE_CFG_FAILED;
 			TraceSerializeData(wSaveRet);
-			bFinalResult = FALSE; // Set final result
-			bResult = TRUE; // Reset flag
+			bFinalResult = false; // Set final result
+			bResult = true; // Reset flag
 		}
 	}
 
@@ -1221,11 +1221,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 			bResult &= WriteDefaultSchedule(Key::ScheduleItem::Time,			nTimeTemp);
 
 			// Trace error
-			if (bResult == FALSE) {
+			if (bResult == false) {
 				wSaveRet = APP_ERROR_SAVE_SCHED_FAILED;
 				TraceSerializeData(wSaveRet);
-				bFinalResult = FALSE; // Set final result
-				bResult = TRUE; // Reset flag
+				bFinalResult = false; // Set final result
+				bResult = true; // Reset flag
 			}
 		}
 
@@ -1249,11 +1249,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::Time,			nTimeTemp);
 
 			// Trace error
-			if (bResult == FALSE) {
+			if (bResult == false) {
 				wSaveRet = APP_ERROR_SAVE_SCHED_FAILED;
 				TraceSerializeData(wSaveRet);
-				bFinalResult = FALSE; // Set final result
-				bResult = TRUE; // Reset flag
+				bFinalResult = false; // Set final result
+				bResult = true; // Reset flag
 			}
 		}
 	}
@@ -1266,17 +1266,17 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	// Save auto-start status info
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
 
-		BOOL bStartupEnabled = m_pcfgAppConfig->bStartupEnabled;
-		BOOL bRunAsAdmin = m_pcfgAppConfig->bRunAsAdmin;
+		bool bStartupEnabled = m_pcfgAppConfig->bStartupEnabled;
+		bool bRunAsAdmin = m_pcfgAppConfig->bRunAsAdmin;
 		int nRetAutoStartEnabled = EnableAutoStart(bStartupEnabled, bRunAsAdmin);
-		bResult &= nRetAutoStartEnabled ? TRUE : FALSE;
+		bResult &= nRetAutoStartEnabled ? true : false;
 
 		// Trace error
-		if (bResult == FALSE) {
+		if (bResult == false) {
 			wSaveRet = APP_ERROR_SAVE_CFG_FAILED;
 			TraceSerializeData(wSaveRet);
-			bFinalResult = FALSE; // Set final result
-			bResult = TRUE; // Reset flag
+			bFinalResult = false; // Set final result
+			bResult = true; // Reset flag
 		}
 	}
 
@@ -1311,11 +1311,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		}
 
 		// Trace error
-		if (bResult == FALSE) {
+		if (bResult == false) {
 			wSaveRet = APP_ERROR_SAVE_HKEYSET_FAILED;
 			TraceSerializeData(wSaveRet);
-			bFinalResult = FALSE; // Set final result
-			bResult = TRUE; // Reset flag
+			bFinalResult = false; // Set final result
+			bResult = true; // Reset flag
 		}
 	}
 
@@ -1347,11 +1347,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin,	rmdTempCommonStyle.GetVerticalMargin());
 
 			// Trace error
-			if (bResult == FALSE) {
+			if (bResult == false) {
 				wSaveRet = APP_ERROR_SAVE_PWRRMD_FAILED;
 				TraceSerializeData(wSaveRet);
-				bFinalResult = FALSE; // Set final result
-				bResult = TRUE; // Reset flag
+				bFinalResult = false; // Set final result
+				bResult = true; // Reset flag
 			}
 		}
 
@@ -1380,11 +1380,11 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		}
 
 		// Trace error
-		if (bResult == FALSE) {
+		if (bResult == false) {
 			wSaveRet = APP_ERROR_SAVE_PWRRMD_FAILED;
 			TraceSerializeData(wSaveRet);
-			bFinalResult = FALSE; // Set final result
-			bResult = TRUE; // Reset flag
+			bFinalResult = false; // Set final result
+			bResult = true; // Reset flag
 		}
 	}
 
@@ -1394,9 +1394,9 @@ BOOL CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 /**
  * @brief	Backup app data to file
  * @param	None
- * @return	BOOL - Result of backing up process
+ * @return	bool - Result of backing up process
  */
-BOOL CPowerPlusApp::BackupRegistryAppData()
+bool CPowerPlusApp::BackupRegistryAppData()
 {
 	// Auto backup using Registry Export
 	return BackupSystem::RegistryExport();
@@ -1405,35 +1405,35 @@ BOOL CPowerPlusApp::BackupRegistryAppData()
 /**
  * @brief	Load and update application launch-time profile info data
  * @param	None
- * @return	BOOL - Result of loading process
+ * @return	bool - Result of loading process
  */
-BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
+bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 {
-	BOOL bRet = FALSE;
+	bool bRet = false;
 
 	int nValue = (int)0;						// Integer type
-	UINT uiValue = (UINT)0;						// Unsigned integer value
+	unsigned uiValue = (unsigned)0;				// Unsigned integer value
 	String strValue = Constant::String::Empty;	// String value
 
 	/*------------------------<Application launch-time counter>--------------------------*/
 	// Load info from registry
 	if (GetProfileInfo(AppProfile::LaunchInfo::LaunchCounter, nValue)) {
 		SetAppLaunchTimeCounter(nValue);
-		bRet = TRUE;
+		bRet = true;
 	}
 
 	// Update and overwrite data
 	UpdateAppLaunchTimeCounter();
 	uiValue = GetAppLaunchTimeCounter();
 	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchCounter, uiValue)) {
-		bRet = FALSE;
+		bRet = false;
 	}
 
 	/*-----------------------------------------------------------------------------------*/
 	/*-----------------------------<Application launch-time>-----------------------------*/
 	// Format launch-time
 	DateTime dateTimeAppLaunch = GetAppLaunchTime();
-	UINT nTimePeriod = (dateTimeAppLaunch.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	unsigned nTimePeriod = (dateTimeAppLaunch.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = GetLanguageString(LoadLanguageTable(NULL), nTimePeriod);
 	const wchar_t* timeFormatString = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
 	strValue = StringUtils::StringFormat(timeFormatString, dateTimeAppLaunch.Year(), dateTimeAppLaunch.Month(), dateTimeAppLaunch.Day(),
@@ -1441,7 +1441,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 
 	// Store launch-time info data
 	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchTime, strValue)) {
-		bRet = FALSE;
+		bRet = false;
 	}
 
 	/*-----------------------------------------------------------------------------------*/
@@ -1450,7 +1450,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	strValue = StringUtils::GetApplicationPath(false);
 	if (!strValue.IsEmpty()) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::Directory, strValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 	}
 
@@ -1459,7 +1459,7 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	if (!strValue.IsEmpty()) {
 		String execFileName = PathFindFileName(strValue);
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::FileName, execFileName)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 	}
 
@@ -1467,25 +1467,25 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	strValue = StringUtils::GetProductVersion(true);
 	if (!strValue.IsEmpty()) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::ProductVersion, strValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 	}
 
 	/*-----------------------------------------------------------------------------------*/
 	/*--------------------------<Device, system and user info>---------------------------*/
 	// Device name
-	BOOL bRetGetInfo = StringUtils::GetDeviceName(strValue);
-	if ((bRetGetInfo != FALSE) && (!strValue.IsEmpty())) {
+	bool bRetGetInfo = StringUtils::GetDeviceName(strValue);
+	if ((bRetGetInfo != false) && (!strValue.IsEmpty())) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::DeviceName, strValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 	}
 
 	// User name
 	bRetGetInfo = StringUtils::GetCurrentUserName(strValue);
-	if ((bRetGetInfo != FALSE) && (!strValue.IsEmpty())) {
+	if ((bRetGetInfo != false) && (!strValue.IsEmpty())) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::UserName, strValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 	}
 
@@ -1496,15 +1496,15 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	if (GetVersionEx((OSVERSIONINFO*)&osvi)) {
 		// Operating system version
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::OSVersion, osvi.dwMajorVersion)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 		// Build number
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::OSBuildNumber, osvi.dwBuildNumber)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 		// Platform ID
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::OSPlatformID, osvi.dwPlatformId)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 	}
 
@@ -1515,11 +1515,11 @@ BOOL CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 /**
  * @brief	Load global data values from registry
  * @param	None
- * @return	BOOL - Result of loading process
+ * @return	bool - Result of loading process
  */
-BOOL CPowerPlusApp::LoadGlobalData(void)
+bool CPowerPlusApp::LoadGlobalData(void)
 {
-	BOOL bRet = FALSE;
+	bool bRet = false;
 
 	int nGlbValue = (int)0;									// Integer type
 
@@ -1533,22 +1533,22 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	// DummyTest mode
 	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, nGlbValue)) {
 		SetDummyTestMode(nGlbValue);
-		bRet |= TRUE;
+		bRet |= true;
 	}
 	// Debug mode
 	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, nGlbValue)) {
 		SetDebugMode(nGlbValue);
-		bRet |= TRUE;
+		bRet |= true;
 	}
 	// Debug log output target
 	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, nGlbValue)) {
 		SetDebugOutputTarget(nGlbValue);
-		bRet |= TRUE;
+		bRet |= true;
 	}
 	// Test feature enable
 	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, nGlbValue)) {
 		SetTestFeatureEnable(nGlbValue);
-		bRet |= TRUE;
+		bRet |= true;
 	}
 
 	/*-----------------------------------------------------------------------------------*/
@@ -1559,25 +1559,25 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 	// Power action trace flag
 	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, nGlbValue)) {
 		SetPwrActionFlag((BYTE)nGlbValue);
-		bRet |= TRUE;
+		bRet |= true;
 	}
 
 	// System suspended trace flag
 	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, nGlbValue)) {
 		SetSystemSuspendFlag((BYTE)nGlbValue);
-		bRet |= TRUE;
+		bRet |= true;
 	}
 
 	// Session ending trace flag
 	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, nGlbValue)) {
 		SetSessionEndFlag((BYTE)nGlbValue);
-		bRet |= TRUE;
+		bRet |= true;
 	}
 
 	// Previously safe termination trace flag
 	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, nGlbValue)) {
 		SetSafeTerminationFlag((BYTE)nGlbValue);
-		bRet |= TRUE;
+		bRet |= true;
 	}
 
 	/*-----------------------------------------------------------------------------------*/
@@ -1587,11 +1587,11 @@ BOOL CPowerPlusApp::LoadGlobalData(void)
 /**
  * @brief	Save global data values to registry
  * @param	byCateID - Category ID
- * @return	BOOL - Result of loading process
+ * @return	bool - Result of loading process
  */
-BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
+bool CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 {
-	BOOL bRet = TRUE;
+	bool bRet = true;
 
 	int nGlbValue = (int)0;									// Integer type
 	BYTE byGlbValue = (BYTE)0;								// Byte value
@@ -1608,22 +1608,22 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 		// DummyTest mode
 		nGlbValue = GetDummyTestMode();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, nGlbValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 		// Debug mode
 		nGlbValue = GetDebugMode();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, nGlbValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 		// Debug log output target
 		nGlbValue = GetDebugOutputTarget();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, nGlbValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 		// Test feature enable
 		nGlbValue = GetTestFeatureEnable();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, nGlbValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 	}
 
@@ -1636,25 +1636,25 @@ BOOL CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 		// Power action trace flag
 		byGlbValue = GetPwrActionFlag();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, byGlbValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 
 		// System suspended trace flag
 		byGlbValue = GetSystemSuspendFlag();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, byGlbValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 
 		// Session ending trace flag
 		byGlbValue = GetSessionEndFlag();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, byGlbValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 
 		// Previously safe termination trace flag
 		byGlbValue = GetSafeTerminationFlag();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, byGlbValue)) {
-			bRet = FALSE;
+			bRet = false;
 		}
 	}
 
@@ -1805,7 +1805,7 @@ int CPowerPlusApp::GetAppOption(AppOptionID eAppOptionID) const
 	switch (eAppOptionID)
 	{
 	case AppOptionID::curDispLanguage:
-		nResult = SWinApp::GetAppLanguageOption(TRUE);
+		nResult = SWinApp::GetAppLanguageOption(true);
 		break;
 	case AppOptionID::defaultScheduleActiveState:
 		nResult = m_pschScheduleData->GetDefaultItem().IsEnabled();
@@ -1871,7 +1871,7 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 	SLogging* ptrAppHistoryLog = GetAppHistoryLog();
 	
 	// Only output log if option is ON
-	if ((ptrAppHistoryLog != NULL) && (GetAppOption(AppOptionID::saveAppHistoryLog) != FALSE)) {
+	if ((ptrAppHistoryLog != NULL) && (GetAppOption(AppOptionID::saveAppHistoryLog) != false)) {
 		ptrAppHistoryLog->OutputItem(logItem);
 	}
 }
@@ -1891,12 +1891,12 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 
 	// Serialization trace skip flag
 	// Note: If the application is launching for the 1st time, do not trace data loading error
-	BOOL bSkipFlag = FALSE;
+	bool bSkipFlag = false;
 	
 	switch (wErrCode)
 	{
 	case APP_ERROR_LOAD_CFG_INVALID:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Load config failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
@@ -1908,7 +1908,7 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 		break;
 
 	case APP_ERROR_LOAD_SCHED_INVALID:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Load schedule failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
@@ -1920,7 +1920,7 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_INVALID:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Load hotkeyset failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
@@ -1932,7 +1932,7 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_INVALID:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Load reminder failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
@@ -1944,56 +1944,56 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 		break;
 
 	case APP_ERROR_SAVE_CFG_INVALID:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save config failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_CFG_FAILED:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save config failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_INVALID:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save schedule failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_FAILED:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save schedule failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_INVALID:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save hotkeyset failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_FAILED:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save hotkeyset failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_INVALID:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save reminder failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_FAILED:
-		bSkipFlag = FALSE;							// Do not skip
+		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save reminder failed");
 		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
 		break;
 	}
 
 	// If skip flag is triggered
-	if (bSkipFlag != FALSE)
+	if (bSkipFlag != false)
 		return;
 
 	// Output trace error log
@@ -2002,7 +2002,7 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 	}
 
 	// Show error message
-	UINT nMsg = SM_APP_ERROR_MESSAGE;
+	unsigned nMsg = SM_APP_ERROR_MESSAGE;
 	WPARAM wParam = (WPARAM)wErrCode;
 	CWnd* pMainWnd = this->GetMainWnd();
 	if (pMainWnd != NULL) {
@@ -2022,11 +2022,11 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
  * @brief	Check validity of data for serialization
  * @param	bySerializeMode - Data serializing mode (load/save)
  * @param	nSaveFlag		- Data saving type flag
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = APPDATA_ALL */)
+bool CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = APPDATA_ALL */)
 {
-	BOOL bResult = TRUE;
+	bool bResult = true;
 	WORD wLoadRet = APP_ERROR_SUCCESS;
 	WORD wSaveRet = APP_ERROR_SUCCESS;
 
@@ -2040,7 +2040,7 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 			wSaveRet = APP_ERROR_SAVE_CFG_INVALID;
 			TraceSerializeData(wSaveRet);
 		}
-		bResult = FALSE;
+		bResult = false;
 	}
 	// Validate schedule data
 	if (GetAppScheduleData() == NULL) {
@@ -2052,7 +2052,7 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 			wSaveRet = APP_ERROR_SAVE_SCHED_INVALID;
 			TraceSerializeData(wSaveRet);
 		}
-		bResult = FALSE;
+		bResult = false;
 	}
 	// Validate HotkeySet data
 	if (GetAppHotkeySetData() == NULL) {
@@ -2064,7 +2064,7 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 			wSaveRet = APP_ERROR_SAVE_HKEYSET_INVALID;
 			TraceSerializeData(wSaveRet);
 		}
-		bResult = FALSE;
+		bResult = false;
 	}
 	// Validate Power Reminder data
 	if (GetAppPwrReminderData() == NULL) {
@@ -2076,7 +2076,7 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 			wSaveRet = APP_ERROR_SAVE_PWRRMD_INVALID;
 			TraceSerializeData(wSaveRet);
 		}
-		bResult = FALSE;
+		bResult = false;
 	}
 
 	return bResult;
@@ -2089,9 +2089,9 @@ BOOL CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 /**
  * @brief	Initialize app DebugTest dialog pointer
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL CPowerPlusApp::InitDebugTestDlg(void)
+bool CPowerPlusApp::InitDebugTestDlg(void)
 {
 	// Initialize dialog
 	m_pDebugTestDlg = new CDebugTestDlg();
@@ -2175,7 +2175,7 @@ void CPowerPlusApp::GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
  * @param	bRunAsAdmin - Run as admin option
  * @return	int - Result of registry writing process
  */
-int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
+int CPowerPlusApp::EnableAutoStart(bool bEnable, bool bRunAsAdmin)
 {
 	long lRes;
 	HKEY hRootKey, hKey;
@@ -2197,11 +2197,11 @@ int CPowerPlusApp::EnableAutoStart(BOOL bEnable, BOOL bRunAsAdmin)
 	}
 
 	// Enable auto-start
-	if (bEnable == TRUE) {
+	if (bEnable == true) {
 
 		String execCommand;
 
-		if (bRunAsAdmin == TRUE) {
+		if (bRunAsAdmin == true) {
 			// Register to run as admin
 			execCommand.Format(Constant::Command::RunAsAdmin::Register, REG_AFX_PROJECTNAME, StringUtils::GetApplicationPath(true).GetString());
 			WinExec(MAKEANSI(execCommand), SW_HIDE);
@@ -2262,9 +2262,9 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
  * @brief	Get last system event time
  * @param	byEventType  - Event type (suspend/wakeup)
  * @param	timeSysEvent - Event time value
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent)
+bool CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent)
 {
 	// Get key name
 	String keyName;
@@ -2286,7 +2286,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent
 		// Invalid argument
 		TRACE_ERROR("Error: Invalid argument!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
 	// Get registry data
@@ -2296,7 +2296,7 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent
 		// Get system event tracking data failed
 		TRACE_ERROR("Error: Get system event tracking data failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
 	// Extract time data from result string
@@ -2309,22 +2309,22 @@ BOOL CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent
 		// Extract system event tracking time failed
 		TRACE_ERROR("Error: Get system event tracking time failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
 	// Return time data
 	timeSysEvent = DateTime(year, static_cast<unsigned int>(month), static_cast<unsigned int>(day), hour, minute, second, millisecs);
 
-	return TRUE;
+	return true;
 }
 
 /**
  * @brief	Save last system event time
  * @param	byEventType  - Event type (suspend/wakeup)
  * @param	timeSysEvent - Event time value
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent)
+bool CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent)
 {
 	// Get key name
 	String keyName;
@@ -2346,11 +2346,11 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeS
 		// Invalid argument
 		TRACE_ERROR("Error: Invalid argument!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
 	// Format date/time
-	UINT nTimePeriod = (timeSysEvent.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	unsigned nTimePeriod = (timeSysEvent.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = GetLanguageString(GetAppLanguage(), nTimePeriod);
 	const wchar_t* timeFormatString = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
 	String dateTimeFormat = StringUtils::StringFormat(timeFormatString, timeSysEvent.Year(), timeSysEvent.Month(), timeSysEvent.Day(),
@@ -2362,10 +2362,10 @@ BOOL CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeS
 		// Save system event tracking data failed
 		TRACE_ERROR("Error: Save system event tracking data failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /**

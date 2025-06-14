@@ -28,8 +28,8 @@ private:
 	};
 
 private:
-	String  m_strFileData;
-	UINT	m_nViewMode;
+	String   m_strFileData;
+	unsigned m_nViewMode;
 
 public:
 	CHelpDlg(CWnd* pParent = NULL);   // standard constructor
@@ -45,7 +45,7 @@ protected:
 
 	// Dialog control management
 	virtual int RegisterDialogManagement(void);
-	virtual BOOL UnregisterDialogManagement(void);
+	virtual bool UnregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -64,30 +64,15 @@ protected:
 	// Member functions
 	void SetupLanguage(void);
 	void SetupEditbox(CEdit& pEdit);
-	BOOL LoadRCFileData(String& strRCFileData);
+	bool LoadRCFileData(String& strRCFileData);
 	void UpdateSwitchViewModeButton(void);
 
 	// Get/set properties
-	UINT GetViewMode(void) const;
-	void SetViewMode(UINT nViewMode);
+	unsigned GetViewMode() const {
+		return m_nViewMode;
+	};
+	void SetViewMode(unsigned nViewMode) {
+		m_nViewMode = nViewMode;
+	};
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _HELPDLG_ENABLE_INLINES
-	#include "Dialogs.inl"
-	#ifdef _HELPDLG_INLINE_INCLUDED
-		#pragma message("-- Dialogs inline library included (HelpDlg.h)")
-	#else
-		#pragma error("-- Linking error in HelpDlg.h: Unable to link to inline header!")
-	#endif
-	#undef _HELPDLG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in HelpDlg.h: Inline is not enabled!")
-#endif

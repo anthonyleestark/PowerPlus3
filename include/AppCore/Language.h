@@ -1417,7 +1417,7 @@ namespace Language
 
 
 	// Language table package processing functions
-	const wchar_t* GetLanguageName(UINT nCurLanguage, BOOL bGetDescription = FALSE);
-	LANGTABLE_PTR LoadLanguageTable(UINT nCurLanguage);
-	const wchar_t* GetLanguageString(LANGTABLE_PTR ptLanguage, UINT nID);
+	const wchar_t* GetLanguageName(unsigned nCurLanguage, bool bGetDescription = false);
+	LANGTABLE_PTR LoadLanguageTable(unsigned nCurLanguage);
+	const wchar_t* GetLanguageString(LANGTABLE_PTR ptLanguage, unsigned nID);
 };

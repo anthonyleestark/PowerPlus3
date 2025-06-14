@@ -25,25 +25,39 @@
 
 namespace Global {
 	extern DateTime g_stAppLaunchTime;
-	extern UINT	g_uiAppLaunchTimeCounter;
+	extern unsigned	g_uiAppLaunchTimeCounter;
 };
 
 // Access application launch-time data
-static inline const DateTime& GetAppLaunchTime(void);
-static inline void SetAppLaunchTime(const DateTime& stTime);
+static inline const DateTime& GetAppLaunchTime(void) {
+	return Global::g_stAppLaunchTime;
+};
+static inline void SetAppLaunchTime(const DateTime& stTime) {
+	Global::g_stAppLaunchTime = stTime;
+};
 
 // Access application launch-time counter data
-static inline const UINT GetAppLaunchTimeCounter(void);
-static inline const BOOL IsAppFirstLaunch(void);
-static inline void SetAppLaunchTimeCounter(UINT uiValue);
-static inline void UpdateAppLaunchTimeCounter(void);
+static inline const unsigned GetAppLaunchTimeCounter(void) {
+	return Global::g_uiAppLaunchTimeCounter;
+};
+static inline const bool IsAppFirstLaunch(void) {
+	return (Global::g_uiAppLaunchTimeCounter <= 1);
+};
+static inline void SetAppLaunchTimeCounter(unsigned uiValue) {
+	Global::g_uiAppLaunchTimeCounter = uiValue;
+};
+static inline void UpdateAppLaunchTimeCounter(void) {
+	++Global::g_uiAppLaunchTimeCounter;
+};
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
 
 // Application global/shared flag manager
 extern FlagManager g_sharedFlagManager;
-extern inline FlagManager& GetGlobalFlagManager(void);
+extern inline FlagManager& GetGlobalFlagManager(void) {
+	return g_sharedFlagManager;
+};
 
 
 /*----------------------------------------------Debug/Test flags---------------------------------------------*/
@@ -55,12 +69,20 @@ extern inline FlagManager& GetGlobalFlagManager(void);
 #define DEFAULT_TESTFEATURE			FALSE
 
 // Dummy test mode flag
-static inline const BOOL GetDummyTestMode(void);
-static inline void SetDummyTestMode(BOOL bValue);
+static inline const bool GetDummyTestMode(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::dummyTestMode);
+};
+static inline void SetDummyTestMode(bool bValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::dummyTestMode, bValue);
+};
 
 // Debug mode flag
-static inline const BOOL GetDebugMode(void);
-static inline void SetDebugMode(BOOL bValue);
+static inline const bool GetDebugMode(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::debugMode);
+};
+static inline void SetDebugMode(bool bValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::debugMode, bValue);
+};
 
 // Debug log output target flag
 enum DebugOutput {
@@ -68,12 +90,20 @@ enum DebugOutput {
 	DebugInfoFile,
 	DebugTestTool,
 };
-static inline const INT GetDebugOutputTarget(void);
-static inline void SetDebugOutputTarget(int nValue);
+static inline const int GetDebugOutputTarget(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::debugOutputTarget);
+};
+static inline void SetDebugOutputTarget(int nValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::debugOutputTarget, nValue);
+};
 
 // Test feature enable flag
-static inline const BOOL GetTestFeatureEnable(void);
-static inline void SetTestFeatureEnable(BOOL bValue);
+static inline const bool GetTestFeatureEnable(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::testFeatureEnabled);
+};
+static inline void SetTestFeatureEnable(bool bValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::testFeatureEnabled, bValue);
+};
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -89,28 +119,40 @@ namespace Global {
 };
 
 // Trace error log file pointer
-static inline CFile* GetTraceErrorLogFile(void);
-static BOOL InitTraceErrorLogFile(void);
+static inline CFile* GetTraceErrorLogFile(void) {
+	return Global::g_pFileLogTraceError;
+};
+static bool InitTraceErrorLogFile(void);
 inline void ReleaseTraceErrorLogFile(void);
 
 //Trace debug info log file pointer
-static inline CFile* GetTraceDebugLogFile(void);
-static BOOL InitTraceDebugLogFile(void);
+static inline CFile* GetTraceDebugLogFile(void) {
+	return Global::g_pFileLogTraceDebug;
+};
+static bool InitTraceDebugLogFile(void);
 inline void ReleaseTraceDebugLogFile(void);
 
 // Debug info output log file pointer
-static inline CFile* GetDebugInfoLogFile(void);
-static BOOL InitDebugInfoLogFile(void);
+static inline CFile* GetDebugInfoLogFile(void) {
+	return Global::g_pFileLogDebugInfo;
+};
+static bool InitDebugInfoLogFile(void);
 inline void ReleaseDebugInfoLogFile(void);
 
 // Trace error log file exception pointer
-static inline CFileException* GetTraceErrorException(void);
+static inline CFileException* GetTraceErrorException(void) {
+	return Global::g_pExcLogTraceError;
+};
 
 // Trace debug info log file exception pointer
-static inline CFileException* GetTraceDebugException(void);
+static inline CFileException* GetTraceDebugException(void) {
+	return Global::g_pExcLogTraceDebug;
+};
 
 // Debug info output log file exception pointer
-static inline CFileException* GetDebugInfoException(void);
+static inline CFileException* GetDebugInfoException(void) {
+	return Global::g_pExcLogDebugInfo;
+};
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -118,47 +160,48 @@ static inline CFileException* GetDebugInfoException(void);
 /*---------------------------------------------App tracing flags---------------------------------------------*/
 
 // Power action trace flag
-static inline const BYTE GetPwrActionFlag(void);
-static inline void SetPwrActionFlag(BYTE byValue);
+static inline const byte GetPwrActionFlag(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::pwrActionFlag);
+};
+static inline void SetPwrActionFlag(byte byValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::pwrActionFlag, byValue);
+};
 
 // System suspended trace flag
-static inline const BYTE GetSystemSuspendFlag(void);
-static inline void SetSystemSuspendFlag(BYTE byValue);
+static inline const byte GetSystemSuspendFlag(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::systemSuspendFlag);
+};
+static inline void SetSystemSuspendFlag(byte byValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::systemSuspendFlag, byValue);
+};
 
 // Session ended trace flag
-static inline const BYTE GetSessionEndFlag(void);
-static inline void SetSessionEndFlag(BYTE byValue);
+static inline const byte GetSessionEndFlag(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::sessionEndFlag);
+};
+static inline void SetSessionEndFlag(byte byValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::sessionEndFlag, byValue);
+};
 
 // Previously safe termination trace flag
-static inline const BYTE GetSafeTerminationFlag(void);
-static inline void SetSafeTerminationFlag(BYTE byValue);
+static inline const byte GetSafeTerminationFlag(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::safeTerminationFlag);
+};
+static inline void SetSafeTerminationFlag(byte byValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::safeTerminationFlag, byValue);
+};
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
 /*---------------------------------------------Memory-only flags---------------------------------------------*/
 
 // Session lock trace flag
-static inline const BYTE GetSessionLockFlag(void);
-static inline void SetSessionLockFlag(BYTE byValue);
+static inline const byte GetSessionLockFlag(void) {
+	return GetGlobalFlagManager().GetFlagValue(AppFlagID::sessionLockFlag);
+};
+static inline void SetSessionLockFlag(byte byValue) {
+	GetGlobalFlagManager().SetFlagValue(AppFlagID::sessionLockFlag, byValue);
+};
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Include inline file for global inline functions
-//
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _GLOBAL_ENABLE_INLINES
-	#include "Global.inl"
-	#ifdef _GLOBAL_INLINE_INCLUDED
-		#pragma message("-- Global inline library included")
-	#else
-		#pragma error("-- Linking error in Global.h: Unable to link to inline header!")
-	#endif
-	#undef _GLOBAL_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in Global.h: Inline is not enabled!")
-#endif

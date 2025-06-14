@@ -141,23 +141,6 @@
     <ClInclude Include="../include/MainApp/PowerPlusDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="../include/AppCore/AppCore.inl">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="../include/AppCore/Global.inl">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="../include/AppCore/Logging.inl">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="../include/Dialogs/Dialogs.inl">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="../include/Framework/Framework.inl">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../source/AppBase/BaseTypes.cpp">

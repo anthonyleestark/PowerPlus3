@@ -25,10 +25,10 @@ using namespace AppCore;
  * @param	subSectionName - Sub section name (string)
  * @param	keyName		   - Key name (string)
  * @param	nValue		   - Value (int)
- * @return	UINT - Read value
- * @return	BOOL - Result of writing process
+ * @return	unsigned - Read value
+ * @return	bool	 - Result of writing process
  */
-UINT AppRegistry::GetRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName)
+unsigned AppRegistry::GetRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName)
 {
 	// Format section name
 	String sectionNameFormat;
@@ -45,7 +45,7 @@ UINT AppRegistry::GetRegistryValueInt(const wchar_t* sectionName, const wchar_t*
 	return AfxGetApp()->GetProfileInt(sectionNameFormat, keyName, UINT_MAX);
 }
 
-BOOL AppRegistry::WriteRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
 {
 	// Format section name
 	String sectionNameFormat;
@@ -69,7 +69,7 @@ BOOL AppRegistry::WriteRegistryValueInt(const wchar_t* sectionName, const wchar_
  * @param	keyName		   - Key name (string)
  * @param	value		   - Value (string)
  * @return	String - Read value
- * @return	BOOL   - Result of writing process
+ * @return	bool   - Result of writing process
  */
 String AppRegistry::GetRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName)
 {
@@ -88,7 +88,7 @@ String AppRegistry::GetRegistryValueString(const wchar_t* sectionName, const wch
 	return AfxGetApp()->GetProfileString(sectionNameFormat, keyName, Constant::String::Null).GetString();
 }
 
-BOOL AppRegistry::WriteRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value)
+bool AppRegistry::WriteRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value)
 {
 	// Format section name
 	String sectionNameFormat;
@@ -109,9 +109,9 @@ BOOL AppRegistry::WriteRegistryValueString(const wchar_t* sectionName, const wch
  * @brief	Using for delete registry section or subsection by name
  * @param	sectionName	   - Section name (string)
  * @param	subSectionName - Sub section name (string)
- * @return	TRUE/FALSE - Return of deletion
+ * @return	true/false - Return of deletion
  */
-BOOL AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_t* subSectionName /* = NULL */)
+bool AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_t* subSectionName /* = NULL */)
 {
 	// Get name string
 	String sectionNameFormat;
@@ -137,18 +137,18 @@ BOOL AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_
  * @param	keyName	- Key name
  * @param	nRef	- Result integer value (ref-value)
  * @param	nValue	- Value to write (integer)
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetProfileInfo(const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetProfileInfo(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = AfxGetApp()->GetProfileInt(Constant::String::Empty, keyName, UINT_MAX);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteProfileInfo(const wchar_t* keyName, int nValue)
 {
 	// Write registry value
 	return AfxGetApp()->WriteProfileInt(Constant::String::Empty, keyName, nValue);
@@ -159,18 +159,18 @@ BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, int nValue)
  * @param	keyName		- Key name
  * @param	strRef		- Result string value (ref-value)
  * @param	valueString - Value to write (string)
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetProfileInfo(const wchar_t* keyName, String& strRef)
+bool AppRegistry::GetProfileInfo(const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
 	String resultString = AfxGetApp()->GetProfileString(Constant::String::Empty, keyName, Constant::String::Null).GetString();
-	if (IS_NULL_STRING(resultString)) return FALSE;
+	if (IS_NULL_STRING(resultString)) return false;
 	strRef = resultString; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueString)
+bool AppRegistry::WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueString)
 {
 	// Write registry value
 	return AfxGetApp()->WriteProfileString(Constant::String::Empty, keyName, valueString);
@@ -185,18 +185,18 @@ BOOL AppRegistry::WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueS
  * @param	keyName - Key name
  * @param	nRef	- Result value (ref-value)
  * @param	nValue	- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetConfig(const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetConfig(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::ConfigData, NULL, keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteConfig(const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteConfig(const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::ConfigData, NULL, keyName, nValue);
 }
@@ -204,9 +204,9 @@ BOOL AppRegistry::WriteConfig(const wchar_t* keyName, int nValue)
 /**
  * @brief	Using for delete config section
  * @param	None
- * @return	TRUE/FALSE - Return of deletion
+ * @return	true/false - Return of deletion
  */
-BOOL AppRegistry::DeleteConfigSection(void)
+bool AppRegistry::DeleteConfigSection(void)
 {
 	return DeleteRegistrySection(Section::ConfigData);
 }
@@ -216,18 +216,18 @@ BOOL AppRegistry::DeleteConfigSection(void)
  * @param	keyName - Key name
  * @param	nRef	- Result value (ref-value)
  * @param	nValue	- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetDefaultSchedule(const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetDefaultSchedule(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::ScheduleData, Section::Schedule::DefautItem, keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteDefaultSchedule(const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteDefaultSchedule(const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::ScheduleData, Section::Schedule::DefautItem, keyName, nValue);
 }
@@ -237,18 +237,18 @@ BOOL AppRegistry::WriteDefaultSchedule(const wchar_t* keyName, int nValue)
  * @param	keyName - Key name
  * @param	nRef	- Result value (ref-value)
  * @param	nValue	- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetScheduleExtraItemNum(const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetScheduleExtraItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::ScheduleData, NULL, keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteScheduleExtraItemNum(const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteScheduleExtraItemNum(const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::ScheduleData, NULL, keyName, nValue);
 }
@@ -259,18 +259,18 @@ BOOL AppRegistry::WriteScheduleExtraItemNum(const wchar_t* keyName, int nValue)
  * @param	keyName		- Key name
  * @param	nRef	    - Result value (ref-value)
  * @param	nValue	    - Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetScheduleExtra(int nItemIndex, const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetScheduleExtra(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::ScheduleData, Section::Schedule::Item(nItemIndex), keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteScheduleExtra(int nItemIndex, const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteScheduleExtra(int nItemIndex, const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::ScheduleData, Section::Schedule::Item(nItemIndex), keyName, nValue);
 }
@@ -278,11 +278,11 @@ BOOL AppRegistry::WriteScheduleExtra(int nItemIndex, const wchar_t* keyName, int
 /**
  * @brief	Using for delete schedule section
  * @param	None
- * @return	TRUE/FALSE - Return of deletion
+ * @return	true/false - Return of deletion
  */
-BOOL AppRegistry::DeleteScheduleSection(void)
+bool AppRegistry::DeleteScheduleSection(void)
 {
-	BOOL bRet = TRUE;
+	bool bRet = true;
 
 	// Delete default schedule subsection
 	bRet &= DeleteRegistrySection(Section::ScheduleData, Section::Schedule::DefautItem);
@@ -290,7 +290,7 @@ BOOL AppRegistry::DeleteScheduleSection(void)
 	// Get subsection number
 	int nSubItemNum = 0;
 	bRet &= GetScheduleExtraItemNum(Key::ScheduleData::ExtraItemNum, nSubItemNum);
-	if (bRet == FALSE) return FALSE;
+	if (bRet == false) return false;
 
 	// Delete subsection of items
 	for (int nIndex = 0; nIndex < nSubItemNum; nIndex++) {
@@ -308,18 +308,18 @@ BOOL AppRegistry::DeleteScheduleSection(void)
  * @param	keyName - Key name
  * @param	nRef	- Result value (ref-value)
  * @param	nValue	- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetHotkeyItemNum(const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetHotkeyItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::HotkeySetData, NULL, keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteHotkeyItemNum(const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteHotkeyItemNum(const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::HotkeySetData, NULL, keyName, nValue);
 }
@@ -330,18 +330,18 @@ BOOL AppRegistry::WriteHotkeyItemNum(const wchar_t* keyName, int nValue)
  * @param	keyName		- Key name
  * @param	nRef	    - Result value (ref-value)
  * @param	nValue	    - Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetHotkeySet(int nItemIndex, const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetHotkeySet(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::HotkeySetData, Section::HotkeySet::Item(nItemIndex), keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteHotkeySet(int nItemIndex, const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteHotkeySet(int nItemIndex, const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::HotkeySetData, Section::HotkeySet::Item(nItemIndex), keyName, nValue);
 }
@@ -349,16 +349,16 @@ BOOL AppRegistry::WriteHotkeySet(int nItemIndex, const wchar_t* keyName, int nVa
 /**
  * @brief	Using for delete HotkeySet section
  * @param	None
- * @return	TRUE/FALSE - Return of deletion
+ * @return	true/false - Return of deletion
  */
-BOOL AppRegistry::DeleteHotkeySetSection(void)
+bool AppRegistry::DeleteHotkeySetSection(void)
 {
-	BOOL bRet = TRUE;
+	bool bRet = true;
 
 	// Get subsection number
 	int nSubItemNum = 0;
 	bRet &= GetHotkeyItemNum(Key::HotkeySetData::ItemNum, nSubItemNum);
-	if (bRet == FALSE) return FALSE;
+	if (bRet == false) return false;
 
 	// Delete subsection of items
 	for (int nIndex = 0; nIndex < nSubItemNum; nIndex++) {
@@ -376,18 +376,18 @@ BOOL AppRegistry::DeleteHotkeySetSection(void)
  * @param	keyName - Key name
  * @param	nRef	- Result value (ref-value)
  * @param	nValue	- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetPwrReminderCommonStyle(const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetPwrReminderCommonStyle(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, int nValue)
+bool AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName, nValue);
 }
@@ -397,18 +397,18 @@ BOOL AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, int nValue
  * @param	keyName - Key name
  * @param	strRef	- Result value (ref-value)
  * @param	value	- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetPwrReminderCommonStyle(const wchar_t* keyName, String& strRef)
+bool AppRegistry::GetPwrReminderCommonStyle(const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
 	String resultString = GetRegistryValueString(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName);
-	if (IS_NULL_STRING(resultString)) return FALSE;
+	if (IS_NULL_STRING(resultString)) return false;
 	strRef = resultString; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, const wchar_t* value)
+bool AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, const wchar_t* value)
 {
 	return WriteRegistryValueString(Section::PwrReminderData, Section::PwrReminder::CommonStyle, keyName, value);
 }
@@ -418,18 +418,18 @@ BOOL AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, const wcha
  * @param	keyName - Key name
  * @param	nRef	- Result value (ref-value)
  * @param	nValue	- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetPwrReminderItemNum(const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetPwrReminderItemNum(const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::PwrReminderData, NULL, keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WritePwrReminderItemNum(const wchar_t* keyName, int nValue)
+bool AppRegistry::WritePwrReminderItemNum(const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::PwrReminderData, NULL, keyName, nValue);
 }
@@ -440,18 +440,18 @@ BOOL AppRegistry::WritePwrReminderItemNum(const wchar_t* keyName, int nValue)
  * @param	keyName - Key name
  * @param	nRef	- Result value (integer) (ref-value)
  * @param	nValue	- Value to write (integer)
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetPwrReminder(int nItemIndex, const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetPwrReminder(int nItemIndex, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, int nValue)
+bool AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName, nValue);
 }
@@ -462,18 +462,18 @@ BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, int n
  * @param	keyName		- Key name
  * @param	strRef	    - Result value (string) (ref-value)
  * @param	strValue    - Value to write (string)
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetPwrReminder(int nItemIndex, const wchar_t* keyName, String& strRef)
+bool AppRegistry::GetPwrReminder(int nItemIndex, const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
 	String resultString = GetRegistryValueString(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName);
-	if (IS_NULL_STRING(resultString)) return FALSE;
+	if (IS_NULL_STRING(resultString)) return false;
 	strRef = resultString; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, const wchar_t* value)
+bool AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, const wchar_t* value)
 {
 	return WriteRegistryValueString(Section::PwrReminderData, Section::PwrReminder::Item(nItemIndex), keyName, value);
 }
@@ -481,11 +481,11 @@ BOOL AppRegistry::WritePwrReminder(int nItemIndex, const wchar_t* keyName, const
 /**
  * @brief	Using for delete Power Reminder section
  * @param	None
- * @return	TRUE/FALSE - Return of deletion
+ * @return	true/false - Return of deletion
  */
-BOOL AppRegistry::DeletePwrReminderSection(void)
+bool AppRegistry::DeletePwrReminderSection(void)
 {
-	BOOL bRet = TRUE;
+	bool bRet = true;
 
 	// Delete common style section
 	bRet &= DeleteRegistrySection(Section::PwrReminderData, Section::PwrReminder::CommonStyle);
@@ -493,7 +493,7 @@ BOOL AppRegistry::DeletePwrReminderSection(void)
 	// Get subsection number
 	int nSubItemNum = 0;
 	bRet &= GetPwrReminderItemNum(Key::PwrReminderData::ItemNum, nSubItemNum);
-	if (bRet == FALSE) return FALSE;
+	if (bRet == false) return false;
 
 	// Delete subsection of items
 	for (int nIndex = 0; nIndex < nSubItemNum; nIndex++) {
@@ -512,18 +512,18 @@ BOOL AppRegistry::DeletePwrReminderSection(void)
  * @param	keyName			- Key name
  * @param	nRef			- Result value (ref-value)
  * @param	nValue			- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::LayoutInfo, subSectionName, keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::LayoutInfo, subSectionName, keyName, nValue);
 }
@@ -531,9 +531,9 @@ BOOL AppRegistry::WriteLayoutInfo(const wchar_t* subSectionName, const wchar_t* 
 /**
  * @brief	Using for delete config section
  * @param	None
- * @return	TRUE/FALSE - Return of deletion
+ * @return	true/false - Return of deletion
  */
-BOOL AppRegistry::DeleteLayoutInfoSection(void)
+bool AppRegistry::DeleteLayoutInfoSection(void)
 {
 	return DeleteRegistrySection(Section::LayoutInfo);
 }
@@ -543,18 +543,18 @@ BOOL AppRegistry::DeleteLayoutInfoSection(void)
  * @param	keyName - Key name
  * @param	strRef	- Result value (ref-value)
  * @param	value	- Value to write
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetSysEventTracking(const wchar_t* keyName, String& strRef)
+bool AppRegistry::GetSysEventTracking(const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
 	String resultString = GetRegistryValueString(Section::SystemEventTracking, NULL, keyName);
-	if (IS_NULL_STRING(resultString)) return FALSE;
+	if (IS_NULL_STRING(resultString)) return false;
 	strRef = resultString; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteSysEventTracking(const wchar_t* keyName, const wchar_t* value)
+bool AppRegistry::WriteSysEventTracking(const wchar_t* keyName, const wchar_t* value)
 {
 	return WriteRegistryValueString(Section::SystemEventTracking, NULL, keyName, value);
 }
@@ -567,32 +567,32 @@ BOOL AppRegistry::WriteSysEventTracking(const wchar_t* keyName, const wchar_t* v
  * @param	nValue			- Value to write (integer)
  * @param	strRef			- Result value (integer/ref-value)
  * @param	strValue		- Value to write (string)
- * @return	BOOL - Result of reading/writing process
+ * @return	bool - Result of reading/writing process
  */
-BOOL AppRegistry::GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef)
+bool AppRegistry::GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef)
 {
 	// Get registry value
 	int nRet = GetRegistryValueInt(Section::GlobalData, subSectionName, keyName);
-	if (nRet == UINT_MAX) return FALSE;
+	if (nRet == UINT_MAX) return false;
 	nRef = nRet; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
+bool AppRegistry::WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int nValue)
 {
 	return WriteRegistryValueInt(Section::GlobalData, subSectionName, keyName, nValue);
 }
 
-BOOL AppRegistry::GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, String& strRef)
+bool AppRegistry::GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, String& strRef)
 {
 	// Get registry value
 	String resultString = GetRegistryValueString(Section::GlobalData, subSectionName, keyName);
-	if (IS_NULL_STRING(resultString)) return FALSE;
+	if (IS_NULL_STRING(resultString)) return false;
 	strRef = resultString; // Copy returned value
-	return TRUE;
+	return true;
 }
 
-BOOL AppRegistry::WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value)
+bool AppRegistry::WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value)
 {
 	return WriteRegistryValueString(Section::GlobalData, subSectionName, keyName, value);
 }
@@ -617,9 +617,9 @@ BackupSystem::~BackupSystem()
 
 /**
  * @brief	Backup registry automatically by using system command
- * @return	BOOL - Result of process
+ * @return	bool - Result of process
  */
-BOOL BackupSystem::RegistryExport()
+bool BackupSystem::RegistryExport()
 {
 	// Registry export destination file
 	String destFilePath = StringUtils::MakeFilePath(NULL, FILENAME_BAKCONFIG, FILEEXT_REGFILE);
@@ -627,7 +627,7 @@ BOOL BackupSystem::RegistryExport()
 		// Make file path failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to make destination file path!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
 	// Registry path
@@ -637,13 +637,13 @@ BOOL BackupSystem::RegistryExport()
 
 	// Execute registry export command
 	String execCommand = StringUtils::StringFormat(Constant::Command::Registry::Export, registryPath.GetString(), destFilePath.GetString());
-	if (!ExecuteCommand(execCommand, FALSE, FALSE)) {
+	if (!ExecuteCommand(execCommand, false, false)) {
 		// Execute command failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to execute export command!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 

@@ -21,11 +21,11 @@ using namespace AppCore;
 /**
  * @brief	Get size of data by data type
  * @param	byDataType - Data type
- * @return	SIZE_T
+ * @return	size_t
  */
-SIZE_T GetSizeByType(BYTE byDataType)
+size_t GetSizeByType(byte byDataType)
 {
-	SIZE_T retSize = 0;
+	size_t retSize = 0;
 	switch (byDataType)
 	{
 	case LogDataType::Void:				// No type (unusable)
@@ -56,8 +56,8 @@ SIZE_T GetSizeByType(BYTE byDataType)
 		retSize = sizeof(ULONGLONG);
 		break;
 
-	case LogDataType::Boolean:			// Boolean number (TRUE/FALSE)
-		retSize = sizeof(BOOL);
+	case LogDataType::Boolean:			// Boolean number (true/false)
+		retSize = sizeof(bool);
 		break;
 
 	case LogDataType::ClockTimeData:	// Clock-time data
@@ -91,30 +91,12 @@ LogDetail::LogDetail()
 	m_szPointerSize = INT_NULL;								// Detail info pointer data size
 }
 
-LogDetail::LogDetail(const LogDetail& pItem)
-{
-	// Copy data
-	this->Copy(pItem);
-}
-
-/**
- * @brief	Copy assignment operator
- * @param	Default
- * @return	LogDetail&
- */
-LogDetail& LogDetail::operator=(const LogDetail& pItem)
-{
-	// Copy data
-	this->Copy(pItem);
-	return *this;
-}
-
 /**
  * @brief	Initialize/reset item data
  * @param	None
- * @return	None
+ * @return	Nones
  */
-void LogDetail::Init()
+void LogDetail::Init(void)
 {
 	// Initialization
 	m_usCategory = INT_NULL;								// Detail category
@@ -128,72 +110,72 @@ void LogDetail::Init()
 
 /**
  * @brief	Copy data from another item
- * @param	pItem - Pointer of input item
+ * @param	other - Pointer of input item
  * @return	None
  */
-void LogDetail::Copy(const LogDetail& pItem)
+void LogDetail::Copy(const LogDetail& other)
 {
 	// Do not copy itself
-	if (this == &pItem) return;
+	if (this == &other) return;
 
 	// Copy data
-	m_usCategory = pItem.m_usCategory;						// Detail category
-	m_nFlag = pItem.m_nFlag;								// Detail flag
-	m_nDetailValue = pItem.m_nDetailValue;					// Detail value (integer)
-	m_strDetailInfo = pItem.m_strDetailInfo;				// Detail info (string)
-	PointerCopy(pItem);										// Detail data (pointer)
+	m_usCategory = other.m_usCategory;						// Detail category
+	m_nFlag = other.m_nFlag;								// Detail flag
+	m_nDetailValue = other.m_nDetailValue;					// Detail value (integer)
+	m_strDetailInfo = other.m_strDetailInfo;				// Detail info (string)
+	PointerCopy(other);										// Detail data (pointer)
 }
 
 /**
  * @brief	Copy detail info pointer
- * @param	pItem - Pointer of input item
+ * @param	other - Pointer of input item
  * @return	None
  */
-void LogDetail::PointerCopy(const LogDetail& pItem)
+void LogDetail::PointerCopy(const LogDetail& other)
 {
 	// Copy pointer properties
-	m_byPointerType = pItem.m_byPointerType;					// Detail info pointer data type
-	m_szPointerSize = pItem.m_szPointerSize;					// Detail info pointer data size
+	m_byPointerType = other.m_byPointerType;					// Detail info pointer data type
+	m_szPointerSize = other.m_szPointerSize;					// Detail info pointer data size
 
 	// Copy pointer data
-	memcpy(m_ptrDetailData, pItem.m_ptrDetailData, pItem.m_szPointerSize);
+	memcpy(m_ptrDetailData, other.m_ptrDetailData, other.m_szPointerSize);
 }
 
 /**
  * @brief	Compare with another given item
- * @param	pItem - Pointer of given item
- * @return	TRUE/FALSE
+ * @param	other - Pointer of given item
+ * @return	true/false
  */
-BOOL LogDetail::Compare(const LogDetail& pItem) const
+bool LogDetail::Compare(const LogDetail& other) const
 {
-	BOOL bRet = FALSE;
+	bool bRet = false;
 
 	// Compare items
-	bRet &= (m_usCategory == pItem.m_usCategory);				// Detail category
-	bRet &= (m_nFlag == pItem.m_nFlag);							// Detail flag
-	bRet &= (m_nDetailValue == pItem.m_nDetailValue);			// Detail value (integer)
-	bRet &= (m_strDetailInfo == pItem.m_strDetailInfo);			// Detail info (string)
-	bRet &= PointerCompare(pItem);								// Detail data (pointer)
+	bRet &= (m_usCategory == other.m_usCategory);				// Detail category
+	bRet &= (m_nFlag == other.m_nFlag);							// Detail flag
+	bRet &= (m_nDetailValue == other.m_nDetailValue);			// Detail value (integer)
+	bRet &= (m_strDetailInfo == other.m_strDetailInfo);			// Detail info (string)
+	bRet &= PointerCompare(other);								// Detail data (pointer)
 
 	return bRet;
 }
 
 /**
  * @brief	Compare detail info pointers
- * @param	pItem - Pointer of given item
- * @return	TRUE/FALSE
+ * @param	other - Pointer of given item
+ * @return	true/false
  */
-BOOL LogDetail::PointerCompare(const LogDetail& pItem) const
+bool LogDetail::PointerCompare(const LogDetail& other) const
 {
-	BOOL bRet = FALSE;
+	bool bRet = false;
 
 	// Compare properties
-	bRet &= (m_byPointerType == pItem.m_byPointerType);			// Detail info pointer data type
-	bRet &= (m_szPointerSize == pItem.m_szPointerSize);			// Detail info pointer data size
+	bRet &= (m_byPointerType == other.m_byPointerType);			// Detail info pointer data type
+	bRet &= (m_szPointerSize == other.m_szPointerSize);			// Detail info pointer data size
 
 	// Only compare pointer values if properties are matching
-	if (bRet != FALSE) {
-		bRet &= memcmp(m_ptrDetailData, pItem.m_ptrDetailData, m_szPointerSize);
+	if (bRet != false) {
+		bRet &= memcmp(m_ptrDetailData, other.m_ptrDetailData, m_szPointerSize);
 	}
 
 	return bRet;
@@ -202,9 +184,9 @@ BOOL LogDetail::PointerCompare(const LogDetail& pItem) const
 /**
  * @brief	Check if current detail info data is empty
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL LogDetail::IsEmpty(void) const
+bool LogDetail::IsEmpty(void) const
 {
 	// Initialize empty detail info
 	static const LOGDETAIL logDummyDetail;
@@ -218,17 +200,17 @@ BOOL LogDetail::IsEmpty(void) const
  * @param	pDataBuff	- Data buffer (pointer)
  * @param	byDataType	- Data type
  * @param	szDataSize	- Data size
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL LogDetail::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_UNSPECIFIED */, SIZE_T szDataSize /* = 0 */)
+bool LogDetail::SetPointerData(PVOID pDataBuff, byte byDataType /* = DATA_TYPE_UNSPECIFIED */, size_t szDataSize /* = 0 */)
 {
 	// If data type is void (unusable), do nothing
 	if (byDataType == LogDataType::Void)
-		return FALSE;
+		return false;
 
 	// If both data type and size are not specified, do nothing
 	if ((byDataType == LogDataType::Unspecified) && (szDataSize == 0))
-		return FALSE;
+		return false;
 
 	// If size is not specified,
 	if (szDataSize == 0) {
@@ -237,66 +219,14 @@ BOOL LogDetail::SetPointerData(PVOID pDataBuff, BYTE byDataType /* = DATA_TYPE_U
 
 		// Get size failed, do nothing
 		if (szDataSize == 0)
-			return FALSE;
+			return false;
 	}
 
 	// Otherwise, set normally
 	m_byPointerType = byDataType;
 	m_szPointerSize = szDataSize;
 	memcpy(m_ptrDetailData, pDataBuff, szDataSize);
-	return TRUE;
-}
-
-/**
- * @brief	Constructor
- */
-LogDetailInfo::LogDetailInfo() : LOGDETAILARRAY()
-{
-	// Initialization
-	this->clear();
-}
-
-LogDetailInfo::LogDetailInfo(const LogDetailInfo& pData)
-{
-	// Copy data
-	this->CopyData(pData);
-}
-
-/**
- * @brief	Copy assignment operator
- * @param	Default
- * @return	LogDetailInfo&
- */
-LogDetailInfo& LogDetailInfo::operator=(const LogDetailInfo& pData)
-{
-	// Copy data
-	this->CopyData(pData);
-	return *this;
-}
-
-/**
- * @brief	Initialize/reset data
- * @param	None
- * @return	None
- */
-void LogDetailInfo::Init(void)
-{
-	// Reset data
-	this->clear();
-}
-
-/**
- * @brief	Copy data from another log detail info data
- * @param	pData - Pointer of input item
- * @return	None
- */
-void LogDetailInfo::CopyData(const LogDetailInfo& pData)
-{
-	// Remove all data first
-	this->Init();
-
-	// Copy data
-	this->assign(pData.begin(), pData.end());
+	return true;
 }
 
 /**
@@ -308,7 +238,7 @@ void LogDetailInfo::CopyData(const LogDetailInfo& pData)
  * @param	nFlag		  - Detail flag
  * @return	None
  */
-void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::AddDetail(USHORT usCategory, int nDetailInfo, int nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
@@ -320,7 +250,7 @@ void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, INT nFlag /* =
 	this->AddDetail(logDetail);
 }
 
-void LogDetailInfo::AddDetail(USHORT usCategory, const wchar_t* detailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::AddDetail(USHORT usCategory, const wchar_t* detailInfo, int nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
@@ -332,7 +262,7 @@ void LogDetailInfo::AddDetail(USHORT usCategory, const wchar_t* detailInfo, INT 
 	this->AddDetail(logDetail);
 }
 
-void LogDetailInfo::AddDetail(USHORT usCategory, INT nDetailInfo, const wchar_t* detailInfo, INT nFlag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::AddDetail(USHORT usCategory, int nDetailInfo, const wchar_t* detailInfo, int nFlag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
@@ -358,63 +288,45 @@ LogItem::LogItem()
 	m_arrDetailInfo.clear();								// Log detail info
 }
 
-LogItem::LogItem(const LogItem& pItem)
-{
-	// Copy data
-	this->Copy(pItem);
-}
-
-/**
- * @brief	Copy assignment operator
- * @param	Default
- * @return	LogItem&
- */
-LogItem& LogItem::operator=(const LogItem& pItem)
-{
-	// Copy data
-	this->Copy(pItem);
-	return *this;
-}
-
 /**
  * @brief	Copy data from another log item
- * @param	pItem - Pointer of input item
+ * @param	other - Pointer of input item
  * @return	None
  */
-void LogItem::Copy(const LogItem& pItem)
+void LogItem::Copy(const LogItem& other)
 {
 	// Copy data
-	m_stTime = pItem.m_stTime;								// Log time
-	m_dwProcessID = pItem.m_dwProcessID;					// Process ID
-	m_usCategory = pItem.m_usCategory;						// Log category
-	m_strLogString = pItem.m_strLogString;					// Log string
-	m_arrDetailInfo = pItem.m_arrDetailInfo;				// Log detail info
+	m_stTime = other.m_stTime;								// Log time
+	m_dwProcessID = other.m_dwProcessID;					// Process ID
+	m_usCategory = other.m_usCategory;						// Log category
+	m_strLogString = other.m_strLogString;					// Log string
+	m_arrDetailInfo = other.m_arrDetailInfo;				// Log detail info
 }
 
 /**
  * @brief	Compare with another given item
- * @param	pItem - Pointer of given item
- * @return	TRUE/FALSE
+ * @param	other - Pointer of given item
+ * @return	true/false
  */
-BOOL LogItem::Compare(const LogItem& pItem) const
+bool LogItem::Compare(const LogItem& other) const
 {
-	BOOL bRet = FALSE;
+	bool bRet = false;
 
 	// Compare item
-	bRet &= (m_stTime == pItem.m_stTime);
-	bRet &= (m_dwProcessID == pItem.m_dwProcessID);
-	bRet &= (m_usCategory == pItem.m_usCategory);
-	bRet &= (m_strLogString == pItem.m_strLogString);
+	bRet &= (m_stTime == other.m_stTime);
+	bRet &= (m_dwProcessID == other.m_dwProcessID);
+	bRet &= (m_usCategory == other.m_usCategory);
+	bRet &= (m_strLogString == other.m_strLogString);
 
 	// Compare log detail info
-	BOOL bDetailInfoCompare = TRUE;
-	if (this->m_arrDetailInfo.size() != pItem.m_arrDetailInfo.size()) {
-		bDetailInfoCompare = FALSE;
+	bool bDetailInfoCompare = true;
+	if (this->m_arrDetailInfo.size() != other.m_arrDetailInfo.size()) {
+		bDetailInfoCompare = false;
 	}
 	else {
 		for (int nIndex = 0; nIndex < this->m_arrDetailInfo.size(); nIndex++) {
-			if (this->m_arrDetailInfo.at(nIndex).Compare(pItem.m_arrDetailInfo.at(nIndex)) != TRUE) {
-				bDetailInfoCompare = FALSE;
+			if (this->m_arrDetailInfo.at(nIndex).Compare(other.m_arrDetailInfo.at(nIndex)) != true) {
+				bDetailInfoCompare = false;
 				break;
 			}
 		}
@@ -427,9 +339,9 @@ BOOL LogItem::Compare(const LogItem& pItem) const
 /**
  * @brief	Check if current log item is empty
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL LogItem::IsEmpty(void) const
+bool LogItem::IsEmpty(void) const
 {
 	// Initialize an empty item
 	static const LOGITEM logDummyItem;
@@ -594,80 +506,53 @@ JSON::JSON()
 	this->m_apChildObjectList = NULL;				// List of child objects
 }
 
-JSON::JSON(const JSON& pObj)
-{
-	// Copy data
-	this->Copy(pObj);
-}
-
-/**
- * @brief	Destructor
- */
-JSON::~JSON()
-{
-	// Remove all data and clean-up
-	this->RemoveAll();
-}
-
-/**
- * @brief	Copy assignment operator
- * @param	Default
- * @return	JSON&
- */
-JSON& JSON::operator=(const JSON& pObj)
-{
-	// Copy data
-	this->Copy(pObj);
-	return *this;
-}
-
 /**
  * @brief	Copy data from another JSON object
- * @param	pObj - Pointer of input object
+ * @param	other - Pointer of input object
  * @return	None
  */
-void JSON::Copy(const JSON& pObj)
+void JSON::Copy(const JSON& other)
 {
 	// Do not copy itself
-	if (this == &pObj) return;
+	if (this == &other) return;
 
 	// Copy data
-	this->m_strObjectName = pObj.m_strObjectName;	// JSON object name
-	this->CopyArrayData(pObj);						// Property (array) data
-	this->CopyPtrData(pObj);						// Child object (pointer) data
+	this->m_strObjectName = other.m_strObjectName;	// JSON object name
+	this->CopyArrayData(other);						// Property (array) data
+	this->CopyPtrData(other);						// Child object (pointer) data
 }
 
 /**
  * @brief	Copy object array data from another JSON object
- * @param	pObj - Pointer of input object
+ * @param	other - Pointer of input object
  * @return	None
  */
-void JSON::CopyArrayData(const JSON& pObj)
+void JSON::CopyArrayData(const JSON& other)
 {
 	// Remove all existing array data
 	this->m_arrKeyValuePairs.clear();
 
 	// Set destination array data size
-	this->m_arrKeyValuePairs.reserve(pObj.m_arrKeyValuePairs.size());
+	this->m_arrKeyValuePairs.reserve(other.m_arrKeyValuePairs.size());
 
 	// Copy list of key-value pairs
-	for (int nIndex = 0; nIndex < pObj.m_arrKeyValuePairs.size(); nIndex++) {
-		this->m_arrKeyValuePairs.push_back(pObj.m_arrKeyValuePairs.at(nIndex));
+	for (int nIndex = 0; nIndex < other.m_arrKeyValuePairs.size(); nIndex++) {
+		this->m_arrKeyValuePairs.push_back(other.m_arrKeyValuePairs.at(nIndex));
 	}
 }
 
 /**
  * @brief	Copy object pointer data from another JSON object
- * @param	pObj - Pointer of input object
+ * @param	other - Pointer of input object
  * @return	None
  */
-void JSON::CopyPtrData(const JSON& pObj)
+void JSON::CopyPtrData(const JSON& other)
 {
 	// Number of child objects
-	this->m_nChildObjectCount = pObj.m_nChildObjectCount;
+	this->m_nChildObjectCount = other.m_nChildObjectCount;
 
 	// List of child objects (pointer copy)
-	if ((pObj.m_nChildObjectCount > 0) && (pObj.m_apChildObjectList != NULL)) {
+	if ((other.m_nChildObjectCount > 0) && (other.m_apChildObjectList != NULL)) {
 
 		// Allocation and initialization
 		this->m_apChildObjectList = new PJSONDATA[this->m_nChildObjectCount];
@@ -689,7 +574,7 @@ void JSON::CopyPtrData(const JSON& pObj)
 			}
 
 			// Get source data
-			PJSONDATA pSrcData = pObj.m_apChildObjectList[nCount];
+			PJSONDATA pSrcData = other.m_apChildObjectList[nCount];
 			if (pSrcData == NULL) {
 				TRACE_FORMAT("Error: Invalid JSON child object is skipped when copying!!! (Index=%d)", nCount);
 				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -704,25 +589,25 @@ void JSON::CopyPtrData(const JSON& pObj)
 
 /**
  * @brief	Compare with another given object
- * @param	pObj - Pointer of given object
- * @return	TRUE/FALSE
+ * @param	other - Pointer of given object
+ * @return	true/false
  */
-BOOL JSON::Compare(const JSON& pObj) const
+bool JSON::Compare(const JSON& other) const
 {
-	BOOL bRet = FALSE;
+	bool bRet = false;
 
 	// Compare object name
-	bRet &= (this->m_strObjectName == pObj.m_strObjectName);
+	bRet &= (this->m_strObjectName == other.m_strObjectName);
 
 	// Compare detail item info
-	BOOL bRetCompareDetail = TRUE;
-	if (this->m_arrKeyValuePairs.size() != pObj.m_arrKeyValuePairs.size()) {
-		bRetCompareDetail = FALSE;
+	bool bRetCompareDetail = true;
+	if (this->m_arrKeyValuePairs.size() != other.m_arrKeyValuePairs.size()) {
+		bRetCompareDetail = false;
 	}
-	if (bRetCompareDetail != FALSE) {
+	if (bRetCompareDetail != false) {
 		for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
-			if (this->m_arrKeyValuePairs.at(nIndex) != pObj.m_arrKeyValuePairs.at(nIndex)) {
-				bRetCompareDetail = FALSE;
+			if (this->m_arrKeyValuePairs.at(nIndex) != other.m_arrKeyValuePairs.at(nIndex)) {
+				bRetCompareDetail = false;
 				break;
 			}
 		}
@@ -730,26 +615,26 @@ BOOL JSON::Compare(const JSON& pObj) const
 	bRet &= bRetCompareDetail;
 
 	// Compare child objects
-	if (this->m_apChildObjectList != NULL && pObj.m_apChildObjectList != NULL) {
+	if (this->m_apChildObjectList != NULL && other.m_apChildObjectList != NULL) {
 
-		bRetCompareDetail = TRUE;
+		bRetCompareDetail = true;
 
 		// Compare child object numbers
 		int nThisChildObjectCount = this->m_nChildObjectCount;
-		int nOtherChildObjectCount = pObj.m_nChildObjectCount;
+		int nOtherChildObjectCount = other.m_nChildObjectCount;
 		if (nThisChildObjectCount != nOtherChildObjectCount) {
-			bRetCompareDetail = FALSE;
+			bRetCompareDetail = false;
 		}
 		else {
 			// Compare each child object data
 			for (int nCount = 0; nCount < nThisChildObjectCount; nCount++) {
 				PJSONDATA pThisChildObject = this->m_apChildObjectList[nCount];
-				PJSONDATA pOtherChildObject = pObj.m_apChildObjectList[nCount];
+				PJSONDATA pOtherChildObject = other.m_apChildObjectList[nCount];
 				if ((pThisChildObject != NULL) && (pOtherChildObject != NULL)) {
 					bRetCompareDetail &= pThisChildObject->Compare(*pOtherChildObject);
 				}
 				else {
-					bRetCompareDetail = FALSE;
+					bRetCompareDetail = false;
 					break;
 				}
 			}
@@ -763,9 +648,9 @@ BOOL JSON::Compare(const JSON& pObj) const
 /**
  * @brief	Check if current JSON object is empty
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL JSON::IsEmpty(void) const
+bool JSON::IsEmpty(void) const
 {
 	// Initialize an empty item
 	static const JSONDATA jsonDummyItem;
@@ -856,7 +741,7 @@ void JSON::AddString(const wchar_t* keyName, const wchar_t* value)
  * @param	nValue	- Signed integer value
  * @return	None
  */
-void JSON::AddInteger(const wchar_t* keyName, INT nValue)
+void JSON::AddInteger(const wchar_t* keyName, int nValue)
 {
 	// Convert integer to string
 	String valueStr = StringUtils::StringFormat(_T("%d"), nValue);
@@ -931,7 +816,7 @@ void JSON::AddChildObject(JSON* pSrc)
  * @param	bMultiline    - Whether to print the data in multiple lines
  * @return	None
  */
-void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMultiline /* = TRUE */)
+void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMultiline /* = true */)
 {
 	// Empty output result string
 	outputString.Empty();
@@ -945,7 +830,7 @@ void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMulti
 
 	// Do not use indentation if printing in single line
 	// This will make better visualization
-	if (bMultiline != TRUE) {
+	if (bMultiline != true) {
 		indentationStr.Empty();
 	}
 
@@ -962,7 +847,7 @@ void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMulti
 
 	// Opening bracket
 	outputString.Append(_T("{ "));
-	if (bMultiline == TRUE) {
+	if (bMultiline == true) {
 		outputString.Append(Constant::String::EndLine);
 	}
 
@@ -983,7 +868,7 @@ void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMulti
 			// Last property (no other child object following) has no comma in the end
 			formatStr.Format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
 			outputString.Append(formatStr);
-			if (bMultiline == TRUE) {
+			if (bMultiline == true) {
 				outputString.Append(Constant::String::EndLine);
 			}
 		}
@@ -991,7 +876,7 @@ void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMulti
 			// Add comma character at the end of each property
 			formatStr.Format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
 			outputString.Append(formatStr);
-			if (bMultiline == TRUE) {
+			if (bMultiline == true) {
 				outputString.Append(Constant::String::EndLine);
 			}
 		}
@@ -1003,7 +888,7 @@ void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMulti
 		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
 			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
 			if (pSubItem != NULL) {
-				pSubItem->Print(subItemOutput, nIndent + 1, FALSE, bMultiline);
+				pSubItem->Print(subItemOutput, nIndent + 1, false, bMultiline);
 				outputString.Append(subItemOutput);
 			}
 		}
@@ -1012,12 +897,12 @@ void JSON::Print(String& outputString, int nIndent, BOOL bSeparator, BOOL bMulti
 	// Add indentation and closing bracket
 	outputString.Append(indentationStr);
 	outputString.Append(_T("} "));
-	if (bMultiline == TRUE) {
+	if (bMultiline == true) {
 		outputString.Append(Constant::String::EndLine);
 	}
 
 	// Add a blank line as separator
-	if (bSeparator == TRUE) {
+	if (bSeparator == true) {
 		outputString.Append(Constant::String::EndLine);
 	}
 }
@@ -1071,7 +956,7 @@ void JSON::PrintYAML(String& outputString, int nIndent)
 /**
  * @brief	Constructor
  */
-SLogging::SLogging(BYTE byLogType)
+SLogging::SLogging(byte byLogType)
 {
 	// Log data array
 	m_arrLogData.clear();
@@ -1151,7 +1036,7 @@ const LOGITEM& SLogging::GetLogItem(int nIndex) const
 /**
  * @brief	Get/set log default template
  * @param	logItemTemplate - Log item template
- * @return	BYTE
+ * @return	byte
  */
 void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate)
 {
@@ -1203,7 +1088,7 @@ void SLogging::OutputItem(const LOGITEM& logItem)
  * @param	byType	  - Log type
  * @return	None
  */
-void SLogging::OutputString(const wchar_t* logString, BOOL bUseLastTemplate /* = TRUE */)
+void SLogging::OutputString(const wchar_t* logString, bool bUseLastTemplate /* = true */)
 {
 	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
@@ -1215,7 +1100,7 @@ void SLogging::OutputString(const wchar_t* logString, BOOL bUseLastTemplate /* =
 
 		// Prepare log item
 		LOGITEM logItem;
-		if (bUseLastTemplate == TRUE) {
+		if (bUseLastTemplate == true) {
 			// Use last log item as template
 			if (this->IsEmpty()) {
 				// Can not output log string --> Trace info
@@ -1250,11 +1135,11 @@ void SLogging::OutputString(const wchar_t* logString, BOOL bUseLastTemplate /* =
 /**
  * @brief	Write log data into the corresponding logfile
  * @param	None
- * @return	BOOL - Result of log writing process
+ * @return	bool - Result of log writing process
  */
-BOOL SLogging::Write(void)
+bool SLogging::Write(void)
 {
-	BOOL bResult = TRUE;
+	bool bResult = true;
 	DWORD dwErrCode;
 	HWND hMainWnd = GET_HANDLE_MAINWND();
 
@@ -1262,7 +1147,7 @@ BOOL SLogging::Write(void)
 	// or current log mode is write instantly mode
 	if ((this->GetWriteMode() == LogWriteMode::ReadOnly) ||
 		(this->GetWriteMode() == LogWriteMode::WriteInstantly))
-		return FALSE;
+		return false;
 
 	CFile fLogFile;
 	String fileName;
@@ -1339,7 +1224,7 @@ BOOL SLogging::Write(void)
 		if (fLogFile.m_hFile == CFile::hFileNull)
 		{
 			bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
-			if (bResult == FALSE) {
+			if (bResult == false) {
 
 				// Open file failed
 				dwErrCode = GetLastError();
@@ -1374,26 +1259,26 @@ BOOL SLogging::Write(void)
 
 	// Display performance counter
 	counter.Stop();
-	OutputDebugLogFormat(_T("Total write log time: %.4f (ms)"), counter.GetElapsedTime(TRUE));
+	OutputDebugLogFormat(_T("Total write log time: %.4f (ms)"), counter.GetElapsedTime(true));
 
-	return TRUE;
+	return true;
 }
 
 /**
  * @brief	Write log item instantly into logfile
  * @param	logItem	 - Log item to write
  * @param	filePath - Output log file path
- * @return	BOOL - Result of log writing process
+ * @return	bool - Result of log writing process
  */
-BOOL SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
+bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
 {
-	BOOL bResult = TRUE;
+	bool bResult = true;
 	DWORD dwErrCode;
 	HWND hMainWnd = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
 	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
-		return FALSE;
+		return false;
 
 	String fileName;
 	CFile fLogFile;
@@ -1422,7 +1307,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
-		return FALSE;
+		return false;
 	}
 
 	// Log folder path
@@ -1435,7 +1320,7 @@ BOOL SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	if (fLogFile.m_hFile == CFile::hFileNull)
 	{
 		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
-		if (bResult == FALSE) {
+		if (bResult == false) {
 
 			// Open file failed
 			dwErrCode = GetLastError();
@@ -1468,23 +1353,23 @@ BOOL SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 		fLogFile.Close();
 	}
 
-	return TRUE;
+	return true;
 }
 
 /**
  * @brief	Write log string instantly into logfile
  * @param	logString - Log string
- * @return	BOOL - Result of log writing process
+ * @return	bool - Result of log writing process
  */
-BOOL SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
+bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
 {
-	BOOL bResult = TRUE;
+	bool bResult = true;
 	DWORD dwErrCode;
 	HWND hMainWnd = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
 	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
-		return FALSE;
+		return false;
 
 	String fileName;
 	CFile fLogFile;
@@ -1514,7 +1399,7 @@ BOOL SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 		// Show error message
 		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
 		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
-		return FALSE;
+		return false;
 	}
 
 	// Log folder path
@@ -1527,7 +1412,7 @@ BOOL SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	if (fLogFile.m_hFile == CFile::hFileNull)
 	{
 		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
-		if (bResult == FALSE) {
+		if (bResult == false) {
 
 			// Open file failed
 			dwErrCode = GetLastError();
@@ -1563,6 +1448,6 @@ BOOL SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 		fLogFile.Close();
 	}
 
-	return TRUE;
+	return true;
 }
 

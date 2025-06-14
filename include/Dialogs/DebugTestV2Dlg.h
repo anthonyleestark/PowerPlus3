@@ -48,10 +48,10 @@ private:
 	String m_strCommandBuffer;
 
 	// Specific flags
-	BOOL m_bDispCommandPrefix;
+	bool m_bDispCommandPrefix;
 
 	// Debug command history
-	BOOL		 m_bCurDispHistory;
+	bool		 m_bCurDispHistory;
 	size_t		 m_nHistoryCurIndex;
 	StringArray  m_astrCommandHistory;
 
@@ -76,61 +76,79 @@ public:
 	afx_msg LRESULT OnShowDialog(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	virtual BOOL SendDebugCommand(void);
+	virtual bool SendDebugCommand(void);
 
 private:
-	// Member functions
-	CEdit* GetDebugView(void) const;
-	CEdit* GetDebugCommandInput(void) const;
+	// Get access to the DebugTest view pointer
+	CEdit* GetDebugView(void) const {
+		return m_pDebugView;
+	};
 
-	BOOL InitDebugScreen(void);
-	BOOL CreateDebugScreenFont(void);
-	BOOL CreateDebugScreenBrush(void);
+	// Get access to the Debug command input pointer
+	CEdit* GetDebugCommandInput(void) const {
+		return m_pDebugCommandInput;
+	};
 
-	BOOL IsDebugScreenValid(void);
-	BOOL IsDebugViewValid(void);
-	BOOL IsDebugCommandInputValid(void);
-	BOOL IsDebugCommandInputFocused(void);
+	// DebugView and command input initialization
+	bool InitDebugScreen(void);
+	bool CreateDebugScreenFont(void);
+	bool CreateDebugScreenBrush(void);
 
-	BOOL RefreshDebugScreen(int nFlag);
-	BOOL ShowDebugScreenContextMenu(void);
+	// Check if the DebugScreen (DebugView + Debug command input) is valid
+	bool IsDebugScreenValid(void) {
+		return (IsDebugViewValid() && IsDebugCommandInputValid());
+	};
+	bool IsDebugViewValid(void) {
+		return (GetDebugView() != NULL);
+	};
+	bool IsDebugCommandInputValid(void) {
+		return (GetDebugCommandInput() != NULL);
+	};
+	bool IsDebugCommandInputFocused(void) {
+		// Check DebugScreen validity
+		if (!IsDebugScreenValid() || !IsDebugCommandInputValid()) return false;
 
-	int  FormatDebugCommand(String& debugCommand);
+		// Get focused control
+		HWND hCurFocusWnd = GetFocus()->GetSafeHwnd();
+		return (hCurFocusWnd == GetDebugCommandInput()->GetSafeHwnd());
+	};
+
+	bool RefreshDebugScreen(int nFlag);
+	bool ShowDebugScreenContextMenu(void);
+
+	int  FormatDebugCommand(String& debugCommand) const;
 	void ClearDebugCommandInput(const wchar_t* commandBuff = Constant::String::Empty);
-	void BackupDebugViewBuffer(void);
+	void BackupDebugViewBuffer(void) {
+		m_strBackupBuffer = m_strBuffer;
+	};
 	void ClearDebugViewBuffer(void);
 
-	void AddLine(const wchar_t* lpszString, BOOL bNewLine = TRUE);
-	void UpdateDisplay(BOOL bSeekToEnd = FALSE, BOOL bNotifyParent = TRUE);
+	void AddLine(const wchar_t* lpszString, bool bNewLine = true);
+	void UpdateDisplay(bool bSeekToEnd = false, bool bNotifyParent = true);
 
 	size_t AddDebugCommandHistory(const wchar_t* commandString);
 	void DispDebugCommandHistory(int nHistoryIndex);
-	void ClearDebugCommandHistory(void);
-	size_t GetDebugCommandHistoryCount(void) const;
-	BOOL IsDebugCommandHistoryEmpty(void) const;
+	void ClearDebugCommandHistory(void) {
+		m_astrCommandHistory.clear();
+	};
+	size_t GetDebugCommandHistoryCount(void) const {
+		return m_astrCommandHistory.size();
+	};
+	bool IsDebugCommandHistoryEmpty(void) const {
+		return m_astrCommandHistory.empty();
+	};
 
-	BOOL IsCurrentlyDispHistory(void) const;
-	void SetCurrentlyDispHistoryState(BOOL bState);
-	size_t GetHistoryCurrentDispIndex(void) const;
-	void SetHistoryCurrentDispIndex(size_t nCurIndex);
+	bool IsCurrentlyDispHistory(void) const {
+		return m_bCurDispHistory;
+	};
+	void SetCurrentlyDispHistoryState(bool bState) {
+		m_bCurDispHistory = bState;
+	};
+	size_t GetHistoryCurrentDispIndex(void) const {
+		return m_nHistoryCurIndex;
+	};
+	void SetHistoryCurrentDispIndex(size_t nCurIndex) {
+		m_nHistoryCurIndex = nCurIndex;
+	};
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _DEBUGTESTV2DLG_ENABLE_INLINES
-	#include "Dialogs.inl"
-	#ifdef _DEBUGTESTV2DLG_INLINE_INCLUDED
-		#pragma message("-- Dialogs inline library included (DebugTestV2Dlg.h)")
-	#else
-		#pragma error("-- Linking error in DebugTestV2Dlg.h: Unable to link to inline header!")
-	#endif
-	#undef _DEBUGTESTV2DLG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in DebugTestV2Dlg.h: Inline is not enabled!")
-#endif

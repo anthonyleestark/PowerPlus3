@@ -58,7 +58,7 @@ protected:
 
 	// Dialog control management
 	virtual int RegisterDialogManagement(void);
-	virtual BOOL UnregisterDialogManagement(void);
+	virtual bool UnregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -142,9 +142,9 @@ protected:
 	// Dialog setup functions
 	void SetupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
-	void DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRowNum, BOOL bReadOnly = FALSE, LANGTABLE_PTR ptrLanguage = NULL);
-	void SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage);
-	void SwitchMode(BOOL bRedraw = FALSE);
+	void DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly = false, LANGTABLE_PTR ptrLanguage = NULL);
+	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
+	void SwitchMode(bool bRedraw = false);
 
 	// Layout functions
 	void UpdateLayoutInfo(void);
@@ -154,55 +154,40 @@ protected:
 	// Dialog item properties functions
 	void SetupDialogItemState();
 	void UpdateDataItemList();
-	void DisableTable(BOOL bDisable);
-	void RedrawDataTable(BOOL bReadOnly = FALSE);
+	void DisableTable(bool bDisable);
+	void RedrawDataTable(bool bReadOnly = false);
 	void DisplayItemDetails(int nIndex);
-	void RefreshDialogItemState(BOOL bRecheckState = FALSE);
-	void UpdateCheckAllBtnState(BOOL bRecheck = FALSE);
+	void RefreshDialogItemState(bool bRecheckState = false);
+	void UpdateCheckAllBtnState(bool bRecheck = false);
 	void RefreshDetailView(int nMode);
 	void UpdateMsgCounter(int nCount);
-	void UpdateTimeSetting(ClockTime& clockTime, BOOL bUpdate = TRUE);
+	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);
 
 private:
 	// Data processing functions
-	BOOL LoadPwrReminderData();
-	BOOL SavePwrReminderData();
-	BOOL CheckDataChangeState();
+	bool LoadPwrReminderData();
+	bool SavePwrReminderData();
+	bool CheckDataChangeState();
 
 	// Data processing handlers
 	void Add();
 	void Edit(int nIndex);
 	void Remove(int nIndex);
 	void RemoveAll();
-	void SetAllItemState(BOOL bState);
+	void SetAllItemState(bool bState);
 	void PreviewItem(int nIndex);
-	void UpdateItemData(Item& pwrItem, BOOL bUpdate);
-	BOOL Validate(Item& pwrItem, BOOL bShowMsg = FALSE, BOOL bAutoCorrect = FALSE);
+	void UpdateItemData(Item& pwrItem, bool bUpdate);
+	bool Validate(Item& pwrItem, bool bShowMsg = false, bool bAutoCorrect = false);
 
 protected:
 	// Get/set functions
-	int GetItemNum(void) const;
-	int GetCurMode(void) const;
+	int GetItemNum() const {
+		return m_pwrReminderDataTemp.GetItemNum();
+	};
+	int GetCurMode() const {
+		return m_nCurMode;
+	};
 	void SetCurMode(int nMode);
 	void DrawRepeatSetButton(void);
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _PWRREMINDERDLG_ENABLE_INLINES
-	#include "Dialogs.inl"
-	#ifdef _PWRREMINDERDLG_INLINE_INCLUDED
-		#pragma message("-- Dialogs inline library included (PwrReminderDlg.h)")
-	#else
-		#pragma error("-- Linking error in PwrReminderDlg.h: Unable to link to inline header!")
-	#endif
-	#undef _PWRREMINDERDLG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in PwrReminderDlg.h: Inline is not enabled!")
-#endif

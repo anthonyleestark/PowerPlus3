@@ -435,13 +435,13 @@
 // Time value processing expressions
 //
 
-#define FORMAT_REG_TIME(clocktime)						(INT((clocktime.Hour() * 100) + clocktime.Minute()))
-#define GET_REGTIME_HOUR(reg_time)						(WORD(reg_time / 100))
-#define GET_REGTIME_MINUTE(reg_time)					(WORD(reg_time % 100))
-#define TIME_TO_SECONDS(clocktime)						(INT((clocktime.Hour() * 3600) + (clocktime.Minute() * 60) + clocktime.Second()))
-#define GET_HOUR(totalSecs)								(WORD(totalSecs / 3600))
-#define GET_MINUTE(totalSecs)							(WORD((totalSecs % 3600) / 60))
-#define GET_SECOND(totalSecs)							(WORD((totalSecs % 3600) % 60))
+#define FORMAT_REG_TIME(clocktime)						(int((clocktime.Hour() * 100) + clocktime.Minute()))
+#define GET_REGTIME_HOUR(reg_time)						(unsigned short(reg_time / 100))
+#define GET_REGTIME_MINUTE(reg_time)					(unsigned short(reg_time % 100))
+#define TIME_TO_SECONDS(clocktime)						(int((clocktime.Hour() * 3600) + (clocktime.Minute() * 60) + clocktime.Second()))
+#define GET_HOUR(totalSecs)								(unsigned short(totalSecs / 3600))
+#define GET_MINUTE(totalSecs)							(unsigned short((totalSecs % 3600) / 60))
+#define GET_SECOND(totalSecs)							(unsigned short((totalSecs % 3600) % 60))
 
 
 // Complex macros

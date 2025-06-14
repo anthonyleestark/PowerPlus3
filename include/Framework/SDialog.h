@@ -82,16 +82,21 @@ public:
 public:
 	// Construction
 	SDialog();																// default constructor
-	explicit SDialog(UINT nIDTemplate, CWnd* pParentWnd = NULL);			// custom constructor
+	explicit SDialog(unsigned nIDTemplate, CWnd* pParentWnd = NULL);			// custom constructor
 	explicit SDialog(const wchar_t* templateName, CWnd* pParentWnd = NULL);	// custom constructor
 	virtual ~SDialog();														// destructor
 
 protected:
 	// Dialog resource ID mapping
-	static const size_t PASCAL UpdateThisResourceIDMap();
-	virtual const size_t UpdateResourceIDMap();
+	static const size_t PASCAL UpdateThisResourceIDMap() {
+		return GET_RESOURCEID_MAP()->GetMapCount();
+	};
+	virtual const size_t UpdateResourceIDMap() {
+		return UpdateThisResourceIDMap();
+	};
 
-	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
+	// DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX);
 
 	DECLARE_MESSAGE_MAP()
 
@@ -106,7 +111,7 @@ protected:
 	FlagManager m_flagManager;
 
 	// Dialog special flags
-	UINT m_nDescendantCount;
+	unsigned m_nDescendantCount;
 
 	// Lock state exception ID list
 	UIntArray* m_paLockExceptionIDList;
@@ -115,7 +120,7 @@ protected:
 	CPoint m_ptAnchorPoint;
 
 	// Dialog alignment
-	UINT m_nAlignment;
+	unsigned m_nAlignment;
 
 	// Dialog size
 	CSize m_szRegisterSize;
@@ -161,178 +166,323 @@ public:
 	virtual INT_PTR DoModal(void);
 
 	// Parent window functions
-	virtual CWnd* GetParentWnd(void);
-	virtual void SetParentWnd(CWnd* pParentWnd);
-	virtual BOOL IsParentWndAvailable(void) const;
-	virtual BOOL NotifyParent(UINT nMsg, WPARAM wParam, LPARAM lParam);
-	virtual LRESULT SendMessageToParent(UINT nMsg, WPARAM wParam, LPARAM lParam);
+	virtual CWnd* GetParentWnd(void) {
+		return m_pParentWnd;
+	};
+	virtual void SetParentWnd(CWnd* pParentWnd) {
+		m_pParentWnd = pParentWnd;
+	};
+	virtual bool IsParentWndAvailable(void) const {
+		return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
+	};
+	virtual bool NotifyParent(unsigned nMsg, WPARAM wParam, LPARAM lParam);
+	virtual LRESULT SendMessageToParent(unsigned nMsg, WPARAM wParam, LPARAM lParam);
 
 	// Tooltip control functions
-	virtual CToolTipCtrl* GetToolTipCtrl(void);
-	virtual BOOL IsToolTipCtrlAvailable(void) const;
+	virtual CToolTipCtrl* GetToolTipCtrl(void) {
+		return m_pToolTip;
+	};
+	virtual bool IsToolTipCtrlAvailable(void) const {
+		return ((m_pToolTip != NULL) && (m_pToolTip->GetSafeHwnd() != NULL));
+	};
 
 	// Dialog control management functions
-	virtual SControlManager* GetControlManager(void);
 	virtual int RegisterDialogManagement(void);
 	virtual void UpdateDialogManagement(void);
-	virtual BOOL UnregisterDialogManagement(void);
+	virtual bool UnregisterDialogManagement(void);
+	virtual SControlManager* GetControlManager(void) {
+		return m_pCtrlManager;
+	};
 
 	// Dialog style functions
-	virtual BOOL AddStyle(DWORD dwAddStyle);
-	virtual BOOL RemoveStyle(DWORD dwRemoveStyle);
+	virtual bool AddStyle(DWORD dwAddStyle);
+	virtual bool RemoveStyle(DWORD dwRemoveStyle);
 
 	// Dialog properties and information
-	virtual UINT GetDialogID(void) const;
-	virtual BOOL GetReadOnlyMode(void) const;
-	virtual void SetReadOnlyMode(BOOL bReadOnly);
-	virtual BOOL GetLockState(void) const;
-	virtual void SetLockState(BOOL bIsLocked);
-	virtual void SetUseEnter(BOOL bUseEnter);
-	virtual void SetUseEscape(BOOL bUseEscape);
+	virtual unsigned GetDialogID(void) const {
+		return m_nIDHelp;
+	};
+	virtual bool GetReadOnlyMode(void) const {
+		return m_flagManager.GetFlagValue(AppFlagID::dialogReadOnlyMode);
+	};
+	virtual void SetReadOnlyMode(bool bReadOnly) {
+		m_flagManager.SetFlagValue(AppFlagID::dialogReadOnlyMode, bReadOnly);
+	};
+	virtual bool GetLockState(void) const {
+		return m_flagManager.GetFlagValue(AppFlagID::dialogLockState);
+	};
+	virtual void SetLockState(bool bIsLocked) {
+		m_flagManager.SetFlagValue(AppFlagID::dialogLockState, bIsLocked);
+	};
+	virtual void SetUseEnter(bool bUseEnter) {
+		m_flagManager.SetFlagValue(AppFlagID::dialogUseEnterKey, bUseEnter);
+	};
+	virtual void SetUseEscape(bool bUseEscape) {
+		m_flagManager.SetFlagValue(AppFlagID::dialogUseEscapeKey, bUseEscape);
+	};
 
 	// Lock state exception ID list
-	virtual void AddLockStateException(UINT nID);
-	virtual void RemoveLockStateException(UINT nID);
+	virtual void AddLockStateException(unsigned nID);
+	virtual void RemoveLockStateException(unsigned nID);
 	virtual void ResetLockStateExceptionList(void);
 
 	// Dialog align and position
-	virtual UINT GetAlignment(void) const;
-	virtual void SetAlignment(UINT nAlignment);
-	virtual void GetAnchorPoint(LPPOINT lpAnchorPoint) const;
-	virtual void SetAnchorPoint(POINT ptAnchorPoint);
-	virtual void SetDialogPosition(POINT ptAnchorPoint, UINT nAlignment);
+	virtual unsigned GetAlignment(void) const {
+		return m_nAlignment;
+	};
+	virtual void SetAlignment(unsigned nAlignment) {
+		m_nAlignment = nAlignment;
+	};
+	virtual void GetAnchorPoint(LPPOINT lpAnchorPoint) const {
+		ASSERT(lpAnchorPoint != NULL);
+		if (lpAnchorPoint != NULL) {
+			lpAnchorPoint->x = m_ptAnchorPoint.x;
+			lpAnchorPoint->y = m_ptAnchorPoint.y;
+		}
+	};
+	virtual void SetAnchorPoint(POINT ptAnchorPoint) {
+		m_ptAnchorPoint.x = ptAnchorPoint.x;
+		m_ptAnchorPoint.y = ptAnchorPoint.y;
+
+		// Move dialog
+		MoveDialog(m_ptAnchorPoint);
+	};
+	virtual void SetDialogPosition(POINT ptAnchorPoint, unsigned nAlignment) {
+		SetAlignment(nAlignment);
+		SetAnchorPoint(ptAnchorPoint);
+	};
 
 	// Move and resize dialog
 	virtual void MoveDialog(POINT ptPosition, LPRECT lpNewRect = NULL);
 	virtual void MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect = NULL);
-	virtual void ResizeDialog(BOOL bCenterDialog);
+	virtual void ResizeDialog(bool bCenterDialog);
 	virtual void ResetDialogSize(void);
 
 	// Get/set dialog size functions
-	virtual void GetSize(LPSIZE lpRegSize) const;
-	virtual void SetSize(SIZE szRegSize);
-	virtual void SetSize(LONG lWidth, LONG lHeight);
-	virtual void SetMinSize(LONG lMinWidth, LONG lMinHeight);
-	virtual void SetMaxSize(LONG lMaxWidth, LONG lMaxHeight);
+	virtual void GetSize(LPSIZE lpRegSize) const {
+		// If size is not set, return default
+		if ((m_szRegisterSize.cx <= 0) && (m_szRegisterSize.cy <= 0)) {
+			lpRegSize->cx = m_szDefaultSize.cx;
+			lpRegSize->cy = m_szDefaultSize.cy;
+		}
+
+		// Return dialog size
+		lpRegSize->cx = m_szRegisterSize.cx;
+		lpRegSize->cy = m_szRegisterSize.cy;
+	};
+	virtual void SetSize(SIZE szRegSize) {
+		m_szRegisterSize.cx = szRegSize.cx;
+		m_szRegisterSize.cy = szRegSize.cy;
+	};
+	virtual void SetSize(LONG lWidth, LONG lHeight)	{
+		CSize szDialogSize(lWidth, lHeight);
+		this->SetSize(szDialogSize);
+	};
+	virtual void SetMinSize(LONG lMinWidth, LONG lMinHeight) {
+		m_szMinSize = CSize(lMinWidth, lMinHeight);
+	};
+	virtual void SetMaxSize(LONG lMaxWidth, LONG lMaxHeight) {
+		m_szMaxSize = CSize(lMaxWidth, lMaxHeight);
+	};
 
 	// Other properties
-	virtual void SetTopMost(BOOL bTopMost);
-	virtual void SetInitSound(BOOL bInitSound);
+	virtual void SetTopMost(bool bTopMost) {
+		SetFlagValue(AppFlagID::dialogSetTopMost, bTopMost);;
+	};
+	virtual void SetInitSound(bool bInitSound) {
+		SetFlagValue(AppFlagID::dialogSetInitSound, bInitSound);
+	};
 
 	// Dialog margins and display area
-	virtual void SetLeftMargin(LONG lMargin);
-	virtual void SetTopMargin(LONG lMargin);
-	virtual void SetRightMargin(LONG lMargin);
-	virtual void SetBottomMargin(LONG lMargin);
-	virtual void SetCenterMargin(POINT ptMargin);
-	virtual void SetCenterMargin(LONG lHMargin, LONG lVMargin);
-	virtual void GetDisplayArea(LPRECT lpDispAreaRect) const;
-	virtual void SetDisplayArea(RECT rcNewDispArea, BOOL bResizeDialog, BOOL bCenter);
-	virtual void GetMargin(LPRECT lpDialogMargin) const;
+	virtual void SetLeftMargin(LONG lMargin) {
+		m_rcClientMargin.left = lMargin;
+	};
+	virtual void SetTopMargin(LONG lMargin) {
+		m_rcClientMargin.top = lMargin;
+	};
+	virtual void SetRightMargin(LONG lMargin) {
+		m_rcClientMargin.right = lMargin;
+	};
+	virtual void SetBottomMargin(LONG lMargin) {
+		m_rcClientMargin.bottom = lMargin;
+	};
+	virtual void SetCenterMargin(POINT ptMargin) {
+		m_rcClientMargin.left = ptMargin.x;
+		m_rcClientMargin.top = ptMargin.y;
+		m_rcClientMargin.right = ptMargin.x;
+		m_rcClientMargin.bottom = ptMargin.y;
+	};
+	virtual void SetCenterMargin(LONG lHMargin, LONG lVMargin) {
+		m_rcClientMargin.left = lHMargin;
+		m_rcClientMargin.top = lVMargin;
+		m_rcClientMargin.right = lHMargin;
+		m_rcClientMargin.bottom = lVMargin;
+	};
+	virtual void GetDisplayArea(LPRECT lpDispAreaRect) const {
+		this->GetClientRect(lpDispAreaRect);
+
+		// Calculate display area with margin
+		lpDispAreaRect->left += m_rcClientMargin.left;
+		lpDispAreaRect->top += m_rcClientMargin.top;
+		lpDispAreaRect->right -= m_rcClientMargin.right;
+		lpDispAreaRect->bottom -= m_rcClientMargin.bottom;
+	};
+	virtual void SetDisplayArea(RECT rcNewDispArea, bool bResizeDialog, bool bCenter);
+	virtual void GetMargin(LPRECT lpDialogMargin) const {
+		lpDialogMargin->left = m_rcClientMargin.left;
+		lpDialogMargin->top = m_rcClientMargin.top;
+		lpDialogMargin->right = m_rcClientMargin.right;
+		lpDialogMargin->bottom = m_rcClientMargin.bottom;
+	};
 
 	// Dialog caption get/set functions
-	virtual const wchar_t* GetCaption(void) const;
-	virtual void GetCaption(String& caption) const;
-	virtual void SetCaption(const wchar_t* caption);
-	virtual void SetCaptionFromResource(UINT nResourceStringID);
-	virtual void SetCaptionFromLanguage(UINT nLangStringID);
+	virtual void SetCaptionFromResource(unsigned nResourceStringID);
+	virtual void SetCaptionFromLanguage(unsigned nLangStringID);
+	virtual const wchar_t* GetCaption(void) const {
+		return m_strCaption;
+	};
+	virtual void GetCaption(String& caption) const {
+		caption = m_strCaption;
+	};
+	virtual void SetCaption(const wchar_t* caption)	{
+		m_strCaption = caption;
+
+		// If dialog is already initialized, trigger updating title
+		if (IsWindow(this->m_hWnd)) {
+			this->SetWindowText(m_strCaption);
+		}
+	};
 
 	// Dialog icon functions
-	virtual void SetIcon(UINT nIconResourceID);
-	virtual void SetIcon(HICON hIcon, BOOL bBigIcon);
+	virtual void SetIcon(unsigned nIconResourceID) {
+		::DeleteObject(m_hDefaultIcon);
+		m_hDefaultIcon = AfxGetApp()->LoadIcon(nIconResourceID);
+	};
+	virtual void SetIcon(HICON hIcon, bool bBigIcon) {
+		CDialogEx::SetIcon(hIcon, bBigIcon);
+	};
 
 	// Dialog color functions
-	virtual void GetBkgrdColor(COLORREF& clBkgrdColor) const;
-	virtual void SetBkgrdColor(COLORREF clBkgrdColor);
-	virtual void GetTextColor(COLORREF& clTextColor) const;
-	virtual void SetTextColor(COLORREF clTextColor);
-	virtual BOOL CreateBrush(void);
+	virtual bool CreateBrush(void);
+	virtual void GetBkgrdColor(COLORREF& clBkgrdColor) const {
+		clBkgrdColor = m_clBkgrdColor;
+	};
+	virtual void SetBkgrdColor(COLORREF clBkgrdColor) {
+		m_clBkgrdColor = clBkgrdColor;
+		SetFlagValue(AppFlagID::dialogSetBackgroundColor, true);
+	};
+	virtual void GetTextColor(COLORREF& clTextColor) const {
+		clTextColor = m_clTextColor;
+	};
+	virtual void SetTextColor(COLORREF clTextColor) {
+		m_clTextColor = clTextColor;
+		SetFlagValue(AppFlagID::dialogSetTextColor, true);
+	};
 
 	// MessageBox functions
-	virtual void RegisterMessageBoxCaption(UINT nCaptionID);
-	virtual void RegisterMessageBoxCaption(const wchar_t* caption);
-	virtual void GetMessageBoxCaption(String& regMsgBoxCaption) const;
-	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
-	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, UINT nStyle = NULL);
+	virtual int DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID = NULL, unsigned nStyle = NULL);
+	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, unsigned nStyle = NULL);
+	virtual void RegisterMessageBoxCaption(unsigned nCaptionID);
+	virtual void RegisterMessageBoxCaption(const wchar_t* caption) {
+		m_strMsgCaption = caption;
+	};
+	virtual void GetMessageBoxCaption(String& regMsgBoxCaption) const {
+		regMsgBoxCaption = m_strMsgCaption;
+	};
 
 	// Dialog event logging function
 	virtual void OutputEventLog(USHORT usEvent, const wchar_t* description = NULL, LOGDETAILINFO* pDetailInfo = NULL);
 
 	// Dialog control event logging functions
-	virtual void OutputButtonLog(USHORT usEvent, UINT nButtonID);
-	virtual void OutputCheckBoxLog(USHORT usEvent, UINT nCheckboxID);
-	virtual void OutputRadButtonLog(USHORT usEvent, UINT nRadButtonID);
-	virtual void OutputComboBoxLog(USHORT usEvent, UINT nComboID);
-	virtual void OutputEditBoxLog(USHORT usEvent, UINT nEditID);
-	virtual void OutputListBoxLog(USHORT usEvent, UINT nListBoxID);
-	virtual void OutputSpinCtrlLog(USHORT usEvent, UINT nSpinCtrlID);
-	virtual void OutputMenuLog(USHORT usEvent, UINT nMenuItemID);
+	virtual void OutputButtonLog(USHORT usEvent, unsigned nButtonID);
+	virtual void OutputCheckBoxLog(USHORT usEvent, unsigned nCheckboxID);
+	virtual void OutputRadButtonLog(USHORT usEvent, unsigned nRadButtonID);
+	virtual void OutputComboBoxLog(USHORT usEvent, unsigned nComboID);
+	virtual void OutputEditBoxLog(USHORT usEvent, unsigned nEditID);
+	virtual void OutputListBoxLog(USHORT usEvent, unsigned nListBoxID);
+	virtual void OutputSpinCtrlLog(USHORT usEvent, unsigned nSpinCtrlID);
+	virtual void OutputMenuLog(USHORT usEvent, unsigned nMenuItemID);
 
 	// Dialog and items setup functions
 	virtual void SetupLanguage(void);
-	virtual void SetupComboBox(UINT nComboID, LANGTABLE_PTR pLanguage);
-	virtual void SetButtonIcon(UINT nButtonID, UINT nIconID, BOOL bReUpdateTitle = FALSE);
-	virtual void UpdateItemText(UINT nCtrlID, const wchar_t* newCaption);
-	virtual void UpdateItemText(UINT nCtrlID, UINT nNewCaptionID = NULL, LANGTABLE_PTR ptrLanguage = NULL);
-	virtual void SetControlText(CWnd* pCtrlWnd, UINT nCtrlID, LANGTABLE_PTR ptrLanguage = NULL);
+	virtual void SetupComboBox(unsigned nComboID, LANGTABLE_PTR pLanguage);
+	virtual void SetButtonIcon(unsigned nButtonID, unsigned nIconID, bool bReUpdateTitle = false);
+	virtual void UpdateItemText(unsigned nCtrlID, const wchar_t* newCaption);
+	virtual void UpdateItemText(unsigned nCtrlID, unsigned nNewCaptionID = NULL, LANGTABLE_PTR ptrLanguage = NULL);
+	virtual void SetControlText(CWnd* pCtrlWnd, unsigned nCtrlID, LANGTABLE_PTR ptrLanguage = NULL);
+
 	virtual void MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition);
 	virtual void MoveItemGroup(const UIntArray& arrCtrlIDGroup, int nDirection, int nDistance);
-	virtual void ShowItem(UINT nDlgItemID, BOOL bVisible);
-	virtual void ShowItem(CWnd* pDlgItemWnd, BOOL bVisible);
-	virtual void EnableItem(UINT nDlgItemID, BOOL bEnabled);
-	virtual void EnableItem(CWnd* pDlgItemWnd, BOOL bEnabled);
+
 	virtual void SetupDialogItemState(void);
-	virtual void RefreshDialogItemState(BOOL bRecheckState = FALSE);
+	virtual void RefreshDialogItemState(bool bRecheckState = false);
+
+	virtual void ShowItem(CWnd* pDlgItemWnd, bool bVisible);
+	virtual void EnableItem(CWnd* pDlgItemWnd, bool bEnabled);
+	virtual void ShowItem(unsigned nDlgItemID, bool bVisible) {
+		ShowItem(GetDlgItem(nDlgItemID), bVisible);
+	};
+	virtual void EnableItem(unsigned nDlgItemID, bool bEnabled) {
+		EnableItem(GetDlgItem(nDlgItemID), bEnabled);
+	};
 
 	// Layout functions
-	virtual void UpdateLayoutInfo(void);
-	virtual void LoadLayoutInfo(void);
-	virtual void SaveLayoutInfo(void);
+	// TODO: Override these functions for custom actions
+	virtual void UpdateLayoutInfo(void) {};
+	virtual void LoadLayoutInfo(void) {};
+	virtual void SaveLayoutInfo(void) {};
 
 	// Data processing functions
-	virtual void UpdateDialogData(BOOL bSaveAndValidate = TRUE);
-	virtual int  GetAppOption(AppOptionID eAppOptionID, BOOL bTemp = FALSE) const;
+	virtual void UpdateDialogData(bool bSaveAndValidate = true);
+	virtual int  GetAppOption(AppOptionID eAppOptionID, bool bTemp = false) const;
+
+	// Dialog flag management
 	virtual int  GetFlagValue(AppFlagID eFlagID) const;
 	virtual void SetFlagValue(AppFlagID eFlagID, int nValue);
-	virtual FlagManager& GetAppFlagManager(void);
-	virtual const FlagManager& GetAppFlagManager(void) const;
-	virtual FlagManager& GetDialogFlagManager(void);
-	virtual const FlagManager& GetDialogFlagManager(void) const;
+	virtual FlagManager& GetAppFlagManager(void) {
+		return ((SWinApp*)AfxGetApp())->GetAppFlagManager();
+	};
+	virtual const FlagManager& GetAppFlagManager(void) const {
+		return ((SWinApp*)AfxGetApp())->GetAppFlagManager();
+	};
+	virtual FlagManager& GetDialogFlagManager(void) {
+		return m_flagManager;
+	};
+	virtual const FlagManager& GetDialogFlagManager(void) const {
+		return m_flagManager;
+	};
 
 	// Directly access flag values
-	virtual BOOL GetChangeFlagValue(void) const;
-	virtual void SetChangeFlagValue(BOOL bValue);
-	virtual BOOL CheckDataChangeState(void);
-	virtual BOOL CheckSettingChangeState(void);
-	virtual BOOL IsForceClosingByRequest(void) const;
-	virtual int  GetReturnFlag(void) const;
-	virtual void SetReturnFlag(int nRetFlag);
+	virtual bool GetChangeFlagValue(void) const {
+		return m_flagManager.GetFlagValue(AppFlagID::dialogDataChanged);
+	};
+	virtual void SetChangeFlagValue(bool bValue) {
+		m_flagManager.SetFlagValue(AppFlagID::dialogDataChanged, bValue);
+	};
+	virtual bool CheckDataChangeState(void) {
+		return true;
+	};
+	virtual bool CheckSettingChangeState(void) {
+		return true;
+	};
+	virtual bool IsForceClosingByRequest(void) const {
+		return m_flagManager.GetFlagValue(AppFlagID::dialogForceClosing);
+	};
+	virtual int GetReturnFlag(void) const {
+		return m_flagManager.GetFlagValue(AppFlagID::dialogReturnFlag);
+	};
+	virtual void SetReturnFlag(int nValue) {
+		m_flagManager.SetFlagValue(AppFlagID::dialogReturnFlag, nValue);
+	};
 
 	// Request processing functions
 	virtual LRESULT RequestCloseDialog(void);
 
 	// Descendant dialog functions
-	virtual void OpenChildDialogEx(UINT nDialogID);
-	virtual void OpenChildDialogEx(SDialog* pChildDialog);
-	virtual UINT GetDescendantCount(void) const;
+	virtual void OpenChildDialogEx(unsigned nDialogID) { (nDialogID); };
+	virtual void OpenChildDialogEx(SDialog* pChildDialog) { (pChildDialog); };
+	virtual unsigned GetDescendantCount(void) const {
+		return m_nDescendantCount;
+	};
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _SDIALOG_ENABLE_INLINES
-	#include "Framework.inl"
-	#ifdef _SDIALOG_INLINE_INCLUDED
-		#pragma message("-- Framework inline library included (SDialog.h)")
-	#else
-		#pragma error("-- Linking error in SDialog.h: Unable to link to inline header!")
-	#endif
-	#undef _SDIALOG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in SDialog.h: Inline is not enabled!")
-#endif

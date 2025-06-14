@@ -64,9 +64,9 @@ protected:
 	SLogging* m_pAppEventLog;
 
 	// App special flags
-	BOOL m_bChangeFlag;
-	BOOL m_bReadOnlyMode;
-	BOOL m_bForceClose;
+	bool m_bChangeFlag;
+	bool m_bReadOnlyMode;
+	bool m_bForceClose;
 
 public:
 	// Instance functions
@@ -77,76 +77,109 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	// App language management
-	virtual BOOL InitAppLanguage(void);
-	virtual BOOL ReloadAppLanguage(UINT nCurLanguage = NULL);
-	virtual LANGTABLE_PTR GetAppLanguage(void);
-	virtual UINT_PTR GetAppLanguageOption(BOOL bCurDispLang = FALSE) const;
-	virtual void SetAppLanguageOption(UINT nSetLanguage);
+	virtual bool InitAppLanguage(void);
+	virtual bool ReloadAppLanguage(unsigned nCurLanguage = NULL);
+	virtual LANGTABLE_PTR GetAppLanguage(void) {
+		VERIFY(m_pAppLangPtr != NULL);
+		if (m_pAppLangPtr == NULL) return NULL;
+		return m_pAppLangPtr;
+	};
+	virtual UINT_PTR GetAppLanguageOption(bool bCurDispLang = false) const {
+		if (bCurDispLang == true) return m_nCurDispLang;
+		return m_nCurSetLang;
+	};
+	virtual void SetAppLanguageOption(unsigned nSetLanguage) {
+		m_nCurSetLang = nSetLanguage;
+	};
 
 	// Application name get/set functions
-	virtual const wchar_t* GetAppName(void) const;
-	virtual void GetAppName(String& appName) const;
-	virtual void SetAppName(const wchar_t* appName);
-	virtual BOOL SetAppName(UINT nResourceStringID);
+	virtual bool SetAppName(unsigned nResourceStringID);
+	virtual const wchar_t* GetAppName(void) const {
+		return m_pszAppName;
+	};
+	virtual void GetAppName(String& appName) const {
+		appName = m_pszAppName;
+	};
+	virtual void SetAppName(const wchar_t* appName)	{
+		free((void*)m_pszAppName);
+		m_pszAppName = _tcsdup(appName);
+	};
 
 	// Application window caption get/set functions
-	virtual const wchar_t* GetAppWindowCaption(void) const;
-	virtual void GetAppWindowCaption(String& windowCaption) const;
-	virtual void SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
-	virtual BOOL SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion = FALSE, BOOL bFullVersion = FALSE);
+	virtual void SetAppWindowCaption(const wchar_t* windowCaption, bool bShowProdVersion = false, bool bFullVersion = false);
+	virtual bool SetAppWindowCaption(unsigned nResourceStringID, bool bShowProdVersion = false, bool bFullVersion = false);
+
+	virtual const wchar_t* GetAppWindowCaption(void) const {
+		return m_strWindowCaption.GetString();
+	};
+	virtual void GetAppWindowCaption(String& windowCaption) const {
+		windowCaption = m_strWindowCaption;
+	};
+	virtual void RegisterMessageBoxCaption(const wchar_t* caption) {
+		m_strMessageCaption = caption;
+	};
 
 	// MessageBox functions
-	virtual void RegisterMessageBoxCaption(UINT nCaptionID);
-	virtual void RegisterMessageBoxCaption(const wchar_t* caption);
-	virtual void GetRegisterdMsgBoxCaption(String& regMsgBoxCaption) const;
-	virtual int DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt);
-	virtual int DisplayMessageBox(UINT nPromptID, UINT nCaptionID = NULL, UINT nStyle = NULL);
-	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, UINT nStyle = NULL);
+	virtual void RegisterMessageBoxCaption(unsigned nCaptionID);
+	virtual int DoMessageBox(const wchar_t* prompt, unsigned nType, unsigned nIDPrompt);
+	virtual int DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID = NULL, unsigned nStyle = NULL);
+	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, unsigned nStyle = NULL);
+	virtual void GetRegisterdMsgBoxCaption(String& regMsgBoxCaption) const {
+		regMsgBoxCaption = m_strMessageCaption;
+	};
 
 	// Logging functions
 	virtual void InitAppEventLog(void);
-	virtual SLogging* GetAppEventLog(void);
 	virtual void OutputEventLog(USHORT usEvent, const wchar_t* description = NULL, LOGDETAILINFO* pDetailInfo = NULL);
+	virtual SLogging* GetAppEventLog(void) {
+		VERIFY(m_pAppEventLog != NULL);
+		return m_pAppEventLog;
+	};
 
 	// Flag management functions
 	virtual int  GetFlagValue(AppFlagID eFlagID) const;
 	virtual void SetFlagValue(AppFlagID eFlagID, int nValue);
-	virtual FlagManager& GetAppFlagManager(void);
-	virtual const FlagManager& GetAppFlagManager(void) const;
+	virtual FlagManager& GetAppFlagManager(void) {
+		return m_flagManager;
+	};
+	virtual const FlagManager& GetAppFlagManager(void) const {
+		return m_flagManager;
+	};
 
 	// Directly access flag values
-	virtual BOOL GetChangeFlagValue(void) const;
-	virtual void SetChangeFlagValue(BOOL bChangeFlag);
-	virtual BOOL CheckDataChangeState(void);
-	virtual BOOL CheckSettingChangeState(void);
-	virtual BOOL GetReadOnlyMode(void) const;
-	virtual void SetReadOnlyMode(BOOL bReadOnly);
-	virtual BOOL IsForceClosingByRequest(void) const;
+	virtual bool GetChangeFlagValue(void) const {
+		return m_bChangeFlag;
+	};
+	virtual void SetChangeFlagValue(bool bChangeFlag) {
+		m_bChangeFlag = bChangeFlag;
+	};
+	virtual bool CheckDataChangeState(void) {
+		return true;
+	};
+	virtual bool CheckSettingChangeState(void) {
+		return true;
+	};
+	virtual bool GetReadOnlyMode(void) const {
+		return m_bReadOnlyMode;
+	};
+	virtual void SetReadOnlyMode(bool bReadOnly) {
+		m_bReadOnlyMode = bReadOnly;
+	};
+	virtual bool IsForceClosingByRequest(void) const {
+		return m_bForceClose;
+	};
 
 	// Request processing functions
-	virtual LRESULT RequestCloseDialog(UINT nDialogID);
+	virtual LRESULT RequestCloseDialog(unsigned nDialogID);
 	virtual LRESULT RequestCloseDialog(HWND hDialogWnd);
-	virtual void PostErrorMessage(DWORD dwErrorCode, LPARAM lParam = NULL);
-	virtual void PostErrorMessage(HWND hRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL);
-	virtual void PostErrorMessage(CWnd* pRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL);
+	virtual void PostErrorMessage(DWORD dwErrorCode, LPARAM lParam = NULL) {
+		PostMessage(NULL, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
+	};
+	virtual void PostErrorMessage(HWND hRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL) {
+		PostMessage(hRcvWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
+	};
+	virtual void PostErrorMessage(CWnd* pRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL) {
+		pRcvWnd->PostMessage(SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
+	};
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _SWINAPP_ENABLE_INLINES
-	#include "Framework.inl"
-	#ifdef _SWINAPP_INLINE_INCLUDED
-		#pragma message("-- Framework inline library included (SWinApp.h)")
-	#else
-		#pragma error("-- Linking error in SWinApp.h: Unable to link to inline header!")
-	#endif
-	#undef _SWINAPP_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in SWinApp.h: Inline is not enabled!")
-#endif

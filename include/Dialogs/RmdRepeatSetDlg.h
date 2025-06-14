@@ -65,35 +65,20 @@ protected:
 	// Dialog and items setup functions
 	virtual void SetupLanguage();
 	virtual void SetupDialogItemState();
-	virtual void RefreshDialogItemState(BOOL bRecheckState = FALSE);
+	virtual void RefreshDialogItemState(bool bRecheckState = false);
 
 	void SetSnoozeIntervalEdit(int nValue);
 	
 	// Get/set value functions
-	int  GetSnoozeInterval(void) const;
-	void SetSnoozeInterval(int nValue);
+	int GetSnoozeInterval() const {
+		return m_nSnoozeInterval;
+	};
+	void SetSnoozeInterval(int nValue) {
+		m_nSnoozeInterval = nValue;
+	};
 
 public:
 	// Data processing functions
-	void UpdateDialogData(PwrReminderItem& pwrItemData, BOOL bUpdate);
+	void UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpdate);
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _RMDREPEATSETDLG_ENABLE_INLINES
-	#include "Dialogs.inl"
-	#ifdef _RMDREPEATSETDLG_INLINE_INCLUDED
-		#pragma message("-- Dialogs inline library included (RmdRepeatSetDlg.h)")
-	#else
-		#pragma error("-- Linking error in RmdRepeatSetDlg.h: Unable to link to inline header!")
-	#endif
-	#undef _RMDREPEATSETDLG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in RmdRepeatSetDlg.h: Inline is not enabled!")
-#endif

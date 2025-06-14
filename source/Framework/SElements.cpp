@@ -41,9 +41,9 @@ SCtrlInfoWrap::SCtrlInfoWrap() : CObject()
 
 	// Control attributes
 	m_strCaption.Empty();
-	m_bVisible = FALSE;
-	m_bEnabled = FALSE;
-	m_bFocused = FALSE;
+	m_bVisible = false;
+	m_bEnabled = false;
+	m_bFocused = false;
 
 	// --- Control data values --- //
 
@@ -204,13 +204,13 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
  * @param	pBuddyWnd  - Buddy window
  * @param	nCtrlID	   - Control ID
  * @param	nTypeID	   - Control type ID
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, INT nTypeID)
+bool SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID)
 {
 	ASSERT(pParentWnd->GetSafeHwnd());
 	if (pParentWnd == NULL)
-		return FALSE;
+		return false;
 
 	// Set base control pointer (maybe NULL)
 	this->m_pBaseControl = pParentWnd->GetDlgItem(nCtrlID);
@@ -227,7 +227,7 @@ BOOL SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, 
 	// Set control attributes
 	this->UpdateAttributes();
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -293,9 +293,9 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 	}
 
 	// Update control displaying state
-	this->SetVisibleState(FALSE);		// Reset state
-	this->SetEnableState(FALSE);		// Reset state
-	this->SetFocusedState(FALSE);		// Reset state
+	this->SetVisibleState(false);		// Reset state
+	this->SetEnableState(false);		// Reset state
+	this->SetFocusedState(false);		// Reset state
 
 	if (IsBaseControlAvailable()) {
 
@@ -309,7 +309,7 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 		if (IsParentAvailable()) {
 			CWnd* pFocusCtrl = GetParent()->GetFocus();
 			if ((pFocusCtrl != NULL) && (pFocusCtrl == GetBaseControl())) {
-				this->SetFocusedState(TRUE);
+				this->SetFocusedState(true);
 			}
 		}
 	}
@@ -318,12 +318,12 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 /**
  * @brief	Get current control's checked state
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL SCtrlInfoWrap::GetCheck(void) const
+bool SCtrlInfoWrap::GetCheck(void) const
 {
 	if (this->m_pbCheck == NULL)
-		return FALSE;
+		return false;
 	else
 		return *(this->m_pbCheck);
 }
@@ -582,13 +582,13 @@ void SCtrlInfoWrap::GetTime(_Out_ SYSTEMTIME& timeValue) const
  * @param	bCheck - Checked state (BOOLEAN)
  * @return	None
  */
-void SCtrlInfoWrap::SetCheck(_In_ const BOOL& bCheck)
+void SCtrlInfoWrap::SetCheck(_In_ const bool& bCheck)
 {
 	if (this->m_pbCheck == NULL)
-		this->m_pbCheck = new BOOL(bCheck);
+		this->m_pbCheck = new bool(bCheck);
 	else {
 		delete (this->m_pbCheck);
-		this->m_pbCheck = new BOOL(bCheck);
+		this->m_pbCheck = new bool(bCheck);
 	}
 }
 
@@ -815,21 +815,21 @@ void SCtrlInfoWrap::SetTime(_In_ const SYSTEMTIME& timeValue)
  * @brief	Get current control's custom data pointer
  * @param	lpOutput   - Output data pointer
  * @param	szDataSize - Data's total size in bytes (in/out)
- * @return	TRUE/FALSE
+ * @return	true/false
  */
 template<typename DATA_TYPE>
-BOOL SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const
+bool SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const
 {
 	// If pointers are invalid
 	if ((lpOutput == NULL) ||
 		(this->m_ptrCustomData == NULL) ||
 		(this->m_pszDataSize == NULL))
-		return FALSE;	// Fail to retrieve data
+		return false;	// Fail to retrieve data
 
 	// If size value is invalid
 	SIZE_T szCurDataSize = *(this->m_pszDataSize);
 	if ((szDataSize <= 0) || (szCurDataSize <= 0))
-		return FALSE;	// Fail to retrieve data
+		return false;	// Fail to retrieve data
 
 	// If the output buffer size is insufficient
 	if (szDataSize < szCurDataSize) {
@@ -840,7 +840,7 @@ BOOL SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& 
 		ASSERT(lpOutput != NULL);
 		if (lpOutput == NULL) {
 			throw std::bad_alloc();
-			return FALSE;	// Allocation failed
+			return false;	// Allocation failed
 		}
 	}
 
@@ -848,7 +848,7 @@ BOOL SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& 
 	memcpy(lpOutput, this->m_ptrCustomData, szCurDataSize);
 	szDataSize = szCurDataSize;
 
-	return TRUE;	// Get data successfully
+	return true;	// Get data successfully
 }
 
 /**
@@ -858,11 +858,11 @@ BOOL SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& 
  * @return	None
  */
 template<typename DATA_TYPE>
-BOOL SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize)
+bool SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize)
 {
 	// If input data or size are invalid
 	if ((lpInput == NULL) || (szDataSize <= 0))
-		return FALSE;	// Fail to set data
+		return false;	// Fail to set data
 
 	// If the current data pointer is not empty
 	// or its current total size in bytes is not large enough
@@ -880,7 +880,7 @@ BOOL SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& sz
 		ASSERT(this->m_ptrCustomData != NULL);
 		if (this->m_ptrCustomData == NULL) {
 			throw std::bad_alloc();
-			return FALSE;	// Allocation failed
+			return false;	// Allocation failed
 		}
 	}
 
@@ -890,7 +890,7 @@ BOOL SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& sz
 		ASSERT(this->m_pszDataSize != NULL);
 		if (this->m_pszDataSize == NULL) {
 			throw std::bad_alloc();
-			return FALSE;	// Allocation failed
+			return false;	// Allocation failed
 		}
 	}
 
@@ -900,27 +900,27 @@ BOOL SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& sz
 	// Update the data's new total size in bytes
 	*(this->m_pszDataSize) = szDataSize;
 
-	return TRUE;	// Set data successfully
+	return true;	// Set data successfully
 }
 
 /**
  * @brief	Check if the current control's custom data pointer is empty
  * @param	None
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL SCtrlInfoWrap::IsDataEmpty(void) const
+bool SCtrlInfoWrap::IsDataEmpty(void) const
 {
 	// If the data pointer is not available, then it's indeed empty
 	if (this->m_ptrCustomData == NULL)
-		return TRUE;
+		return true;
 
 	// If the data size is not available or invalid,
 	// the data can be considered empty
 	if ((this->m_pszDataSize == NULL) ||
 		(this->m_pszDataSize != NULL) && *(this->m_pszDataSize) <= 0)
-		return TRUE;
+		return true;
 
-	return FALSE;	// Not empty
+	return false;	// Not empty
 }
 
 /**
@@ -1010,7 +1010,7 @@ SControlManager::~SControlManager()
  * @param	None
  * @return	None
  */
-BOOL SControlManager::Initialize(void)
+bool SControlManager::Initialize(void)
 {
 	// Initialize control info list pointer
 	if (this->m_pCtrlInfoArray == NULL) {
@@ -1018,13 +1018,13 @@ BOOL SControlManager::Initialize(void)
 
 		// Allocation failed
 		if (this->m_pCtrlInfoArray == NULL)
-			return FALSE;
+			return false;
 	}
 
 	// Empty array data
 	m_pCtrlInfoArray->clear();
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -1032,11 +1032,11 @@ BOOL SControlManager::Initialize(void)
  * @param	None
  * @return	None
  */
-BOOL SControlManager::DeleteAll(void)
+bool SControlManager::DeleteAll(void)
 {
 	// If data is not initialized
 	if (this->m_pCtrlInfoArray == NULL)
-		return FALSE;
+		return false;
 
 	// Delete all control info wrapper pointers
 	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
@@ -1050,7 +1050,7 @@ BOOL SControlManager::DeleteAll(void)
 	// Empty array data
 	m_pCtrlInfoArray->clear();
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -1089,7 +1089,7 @@ long long SControlManager::AddControl(SCtrlInfoWrap* pControl)
  * @param	nTypeID - Control type ID
  * @return	long long
  */
-long long SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
+long long SControlManager::AddControl(unsigned nCtrlID, unsigned nTypeID)
 {
 	// If parent window is not set, do nothing
 	if (this->m_pParentWnd == NULL)
@@ -1119,7 +1119,7 @@ long long SControlManager::AddControl(UINT nCtrlID, UINT nTypeID)
  * @param	nCtrlID - Dialog control ID
  * @return	size_t
  */
-long long SControlManager::RemoveControl(UINT nCtrlID)
+long long SControlManager::RemoveControl(unsigned nCtrlID)
 {
 	// If data is not initialized or is empty
 	if ((m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
@@ -1147,7 +1147,7 @@ long long SControlManager::RemoveControl(UINT nCtrlID)
  * @param	nCtrlID - Dialog control ID
  * @return	None
  */
-SCtrlInfoWrap* SControlManager::GetControl(UINT nCtrlID)
+SCtrlInfoWrap* SControlManager::GetControl(unsigned nCtrlID)
 {
 	// If data is not initialized or is empty
 	if ((this->m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
@@ -1168,21 +1168,21 @@ SCtrlInfoWrap* SControlManager::GetControl(UINT nCtrlID)
  * @brief	Set buddy relationship between 2 controls
  * @param	nBaseCtrlID  - Base control ID
  * @param	nBuddyCtrlID - Buddy control ID
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL SControlManager::SetBuddy(UINT nBaseCtrlID, UINT nBuddyCtrlID)
+bool SControlManager::SetBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID)
 {
 	// Get base control from management list
 	SCtrlInfoWrap* pBaseControl = GetControl(nBaseCtrlID);
 	if (pBaseControl == NULL)
-		return FALSE;
+		return false;
 
 	// Get buddy control (natively)
 	// No need to check NULL for parent window because if base control is found 
 	// in management list, it means parent window had already been set
 	CWnd* pBuddyWnd = m_pParentWnd->GetDlgItem(nBuddyCtrlID);
 	if (pBuddyWnd == NULL)
-		return FALSE;
+		return false;
 
 	// Set buddy relationship
 	pBaseControl->SetBuddy(pBuddyWnd);
@@ -1191,7 +1191,7 @@ BOOL SControlManager::SetBuddy(UINT nBaseCtrlID, UINT nBuddyCtrlID)
 	// This will set buddy control caption as base control caption if available
 	pBaseControl->UpdateAttributes();
 
-	return TRUE;
+	return true;
 }
 
 /**
@@ -1199,7 +1199,7 @@ BOOL SControlManager::SetBuddy(UINT nBaseCtrlID, UINT nBuddyCtrlID)
  * @param	nCtrlID - Control ID (NULL means all controls)
  * @return	None
  */
-void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
+void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 {
 	// If data is not initialized or is empty
 	if ((this->m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
@@ -1210,7 +1210,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 		return;
 
 	// Loop through control management list
-	INT nTriggerForceRetFlag = FLAG_OFF;
+	int nTriggerForceRetFlag = FLAG_OFF;
 	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
 
 		// If force return flag is ON, break the loop
@@ -1234,12 +1234,12 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			}
 		}
 
-		// Get base control pointer
-		CWnd* pBaseControl = pCurControl->GetBaseControl();
-
 		// If base control is not available, skip updating
 		if (!pCurControl->IsBaseControlAvailable())
 			continue;
+
+		// Get base control pointer
+		CWnd* pBaseControl = pCurControl->GetBaseControl();
 
 		// Update control attributes
 		pCurControl->UpdateAttributes();
@@ -1253,7 +1253,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			case Radio_Button:
 			{
 				// Update control's checked state
-				BOOL bCheck = ((CButton*)pBaseControl)->GetCheck();
+				bool bCheck = ((CButton*)pBaseControl)->GetCheck();
 				pCurControl->SetCheck(bCheck);
 			} break;
 
@@ -1332,7 +1332,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				for (size_t nIndex = 0; nIndex < nItemCount; nIndex++) {
 					for (size_t nColIndex = 0; nColIndex < nColumnCount; nColIndex++) {
 						// Get item text
-						const wchar_t* tempText = ((CListCtrl*)pBaseControl)->GetItemText(nIndex, nColIndex);
+						String tempText = ((CListCtrl*)pBaseControl)->GetItemText(nIndex, nColIndex).GetString();
 						arrStringData.push_back(tempText);
 					}
 				}
@@ -1353,8 +1353,8 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				arrTabTitles.reserve(nTabCount);
 				for (size_t nIndex = 0; nIndex < nTabCount; nIndex++) {
 					String tempText = Constant::String::Empty;
-					BOOL bRet = ((CTabCtrl*)pBaseControl)->GetItem(nIndex, &tabInfo);
-					if (bRet == TRUE && ((tabInfo.mask & TCIF_TEXT) != 0)) {
+					bool bRet = ((CTabCtrl*)pBaseControl)->GetItem(nIndex, &tabInfo);
+					if (bRet == true && ((tabInfo.mask & TCIF_TEXT) != 0)) {
 						tempText = tabInfo.pszText;
 					}
 					arrTabTitles.push_back(tempText);
@@ -1383,7 +1383,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				size_t nCurPos = ((CScrollBar*)pBaseControl)->GetScrollPos();
 				pCurControl->SetInteger(nCurPos);
 				// Update control's min/max range
-				INT nMin = NULL, nMax = NULL;
+				int nMin = NULL, nMax = NULL;
 				((CScrollBar*)pBaseControl)->GetScrollRange(&nMin, &nMax);
 				pCurControl->SetMinMaxInt(nMin, nMax);
 			} break;
@@ -1407,7 +1407,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				size_t nCurPos = ((CProgressCtrl*)pBaseControl)->GetPos();
 				pCurControl->SetInteger(nCurPos);
 				// Update control's min/max range
-				INT nMin = NULL, nMax = NULL;
+				int nMin = NULL, nMax = NULL;
 				((CProgressCtrl*)pBaseControl)->GetRange(nMin, nMax);
 				pCurControl->SetMinMaxInt(nMin, nMax);
 			} break;
@@ -1419,7 +1419,7 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 				size_t nCurPos = ((CSpinButtonCtrl*)pBaseControl)->GetPos();
 				pCurControl->SetInteger(nCurPos);
 				// Update control's min/max range
-				INT nMin = NULL, nMax = NULL;
+				int nMin = NULL, nMax = NULL;
 				((CSpinButtonCtrl*)pBaseControl)->GetRange(nMin, nMax);
 				pCurControl->SetMinMaxInt(nMin, nMax);
 			} break;
@@ -1438,8 +1438,8 @@ void SControlManager::UpdateData(UINT nCtrlID /* = NULL */)
 			{
 				// Update control's current IP address
 				DWORD dwAddress = 0;
-				BYTE byField0 = 0, byField1 = 0, byField2 = 0, byField3 = 0;
-				INT nNonBlankFieldNum = ((CIPAddressCtrl*)pBaseControl)->GetAddress(dwAddress);
+				byte byField0 = 0, byField1 = 0, byField2 = 0, byField3 = 0;
+				int nNonBlankFieldNum = ((CIPAddressCtrl*)pBaseControl)->GetAddress(dwAddress);
 				((CIPAddressCtrl*)pBaseControl)->GetAddress(byField0, byField1, byField2, byField3);
 				pCurControl->SetInteger(dwAddress);
 				pCurControl->SetReserveInteger(nNonBlankFieldNum);

@@ -40,9 +40,9 @@ SWinApp::SWinApp() : CWinAppEx()
 	m_pAppEventLog = NULL;
 
 	// App special flags
-	m_bReadOnlyMode = FALSE;
-	m_bChangeFlag = FALSE;
-	m_bForceClose = FALSE;
+	m_bReadOnlyMode = false;
+	m_bChangeFlag = false;
+	m_bForceClose = false;
 }
 
 SWinApp::SWinApp(const wchar_t* templateName) : CWinAppEx()
@@ -61,9 +61,9 @@ SWinApp::SWinApp(const wchar_t* templateName) : CWinAppEx()
 	m_pAppEventLog = NULL;
 
 	// App special flags
-	m_bReadOnlyMode = FALSE;
-	m_bChangeFlag = FALSE;
-	m_bForceClose = FALSE;
+	m_bReadOnlyMode = false;
+	m_bChangeFlag = false;
+	m_bForceClose = false;
 }
 
 /**
@@ -137,12 +137,12 @@ BOOL SWinApp::PreTranslateMessage(MSG* pMsg)
 /**
  * @brief	Initialize application language package pointer
  * @param	None
- * @return	BOOL - Result of initialization
+ * @return	bool - Result of initialization
  */
-BOOL SWinApp::InitAppLanguage(void)
+bool SWinApp::InitAppLanguage(void)
 {
 	// Update current language setting
-	UINT nCurLanguage = GetAppLanguageOption();
+	unsigned nCurLanguage = GetAppLanguageOption();
 	m_nCurDispLang = nCurLanguage;
 
 	// Load language package
@@ -152,18 +152,18 @@ BOOL SWinApp::InitAppLanguage(void)
 	if (m_pAppLangPtr == NULL) {
 		TRACE_ERROR("Error: Language pointer acquiring failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /**
  * @brief	Reload application language package pointer
  * @param	nCurLanguage - Current language ID
- * @return	BOOL - Result of reloading process
+ * @return	bool - Result of reloading process
  */
-BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
+bool SWinApp::ReloadAppLanguage(unsigned nCurLanguage /* = NULL */)
 {
 	// If language is not specified
 	if (nCurLanguage == NULL) {
@@ -188,17 +188,17 @@ BOOL SWinApp::ReloadAppLanguage(UINT nCurLanguage /* = NULL */)
 
 	// Check validity
 	if (m_pAppLangPtr == NULL)
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 /**
  * @brief	Set application name by resource string ID
  * @param	nResourceStringID - Resource string ID
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL SWinApp::SetAppName(UINT nResourceStringID)
+bool SWinApp::SetAppName(unsigned nResourceStringID)
 {
 	// Load resource string
 	String tempString = StringUtils::LoadResourceString(nResourceStringID);
@@ -216,13 +216,13 @@ BOOL SWinApp::SetAppName(UINT nResourceStringID)
  * @param	windowCaption - Application window caption
  * @return	None
  */
-void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
+void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, bool bShowProdVersion /* = false */, bool bFullVersion /* = false */)
 {
 	// Set caption
 	m_strWindowCaption = windowCaption;
 
 	// Show product version
-	if (bShowProdVersion == TRUE) {
+	if (bShowProdVersion == true) {
 		String tempString = StringUtils::StringFormat(_T(" %s"), StringUtils::GetProductVersion(bFullVersion).GetString());
 		m_strWindowCaption.Append(tempString);
 	}
@@ -231,9 +231,9 @@ void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, BOOL bShowProdVe
 /**
  * @brief	Set application window common caption by resource string ID
  * @param	nResourceStringID - Resource string ID
- * @return	TRUE/FALSE
+ * @return	true/false
  */
-BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion /* = FALSE */, BOOL bFullVersion /* = FALSE */)
+bool SWinApp::SetAppWindowCaption(unsigned nResourceStringID, bool bShowProdVersion /* = false */, bool bFullVersion /* = false */)
 {
 	// Load resource string
 	String tempWindowCaption = StringUtils::LoadResourceString(nResourceStringID);
@@ -252,7 +252,7 @@ BOOL SWinApp::SetAppWindowCaption(UINT nResourceStringID, BOOL bShowProdVersion 
  * @param	lpszCaption	- Message caption string
  * @return	None
  */
-void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
+void SWinApp::RegisterMessageBoxCaption(unsigned nCaptionID)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
@@ -285,7 +285,7 @@ void SWinApp::RegisterMessageBoxCaption(UINT nCaptionID)
  * @param	nIDPrompt	- An index to a Help context string.
  * @return	int	- Result of message box
  */
-int SWinApp::DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt)
+int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned nType, unsigned nIDPrompt)
 {
 	// Message caption
 	String messageCaption;
@@ -322,7 +322,7 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, UINT nType, UINT nIDPrompt)
  * @param	nStyle	   - Message box style
  * @return	int	- Result of message box
  */
-int SWinApp::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UINT nStyle /* = NULL */)
+int SWinApp::DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID /* = NULL */, unsigned nStyle /* = NULL */)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
@@ -355,7 +355,7 @@ int SWinApp::DisplayMessageBox(UINT nPromptID, UINT nCaptionID /* = NULL */, UIN
  * @param	nStyle	- Message box style
  * @return	int	- Result of message box
  */
-int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* = NULL */, UINT nStyle /* = NULL */)
+int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* = NULL */, unsigned nStyle /* = NULL */)
 {
 	// Set default style
 	if (nStyle == NULL) {
@@ -501,7 +501,7 @@ void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
  * @param	hDialogWnd - Dialog window handle
  * @return	LRESULT (0:Success, else:Failed)
  */
-LRESULT SWinApp::RequestCloseDialog(UINT /*nDialogID*/)
+LRESULT SWinApp::RequestCloseDialog(unsigned /*nDialogID*/)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED

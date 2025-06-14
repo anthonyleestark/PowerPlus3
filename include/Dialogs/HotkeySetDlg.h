@@ -46,7 +46,7 @@ protected:
 
 	// Dialog control management
 	virtual int RegisterDialogManagement(void);
-	virtual BOOL UnregisterDialogManagement(void);
+	virtual bool UnregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -99,15 +99,15 @@ protected:
 	// Dialog setup functions
 	void SetupLanguage();
 	void SetupHotkeySetList(LANGTABLE_PTR ptrLanguage);
-	void DrawHotkeySetTable(BOOL bReadOnly = FALSE);
-	void SetupComboBox(UINT nComboID, LANGTABLE_PTR ptrLanguage);
+	void DrawHotkeySetTable(bool bReadOnly = false);
+	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
 
 	// Dialog item properties functions
-	void RefreshDialogItemState(BOOL bRecheckState = FALSE);
-	void UpdateCheckAllBtnState(BOOL bRecheck = TRUE);
+	void RefreshDialogItemState(bool bRecheckState = false);
+	void UpdateCheckAllBtnState(bool bRecheck = true);
 	void UpdateHotkeySet();
-	void DisableHotkeySetTable(BOOL bDisable);
-	void RedrawHotkeySetTable(BOOL bReadOnly = FALSE);
+	void DisableHotkeySetTable(bool bDisable);
+	void RedrawHotkeySetTable(bool bReadOnly = false);
 	void DisplayHotkeyDetails(int nIndex);
 
 	// Layout functions
@@ -116,40 +116,27 @@ protected:
 	void SaveLayoutInfo(void);
 
 	// Data processing functions
-	BOOL LoadHotkeySetData();
-	BOOL SaveHotkeySetData();
-	BOOL CheckDataChangeState();
+	bool LoadHotkeySetData();
+	bool SaveHotkeySetData();
+	bool CheckDataChangeState();
 
 	// Data processing handlers
 	void Add(void);
 	void Remove(int nIndex);
 	void RemoveAll(void);
-	void SwitchAllItemState(BOOL bState);
-	BOOL Validate(const Item& hksItem, BOOL bShowMsg = FALSE);
+	void SwitchAllItemState(bool bState);
+	bool Validate(const Item& hksItem, bool bShowMsg = false);
 
 protected:
 	// Get/set functions
-	int GetItemNum(void) const;
-	int	GetListCurSel(void) const;
-	void SetListCurSel(int nSelIndex);
+	int GetItemNum() const {
+		return m_hksHotkeySetTemp.GetItemNum();
+	};
+	int	GetListCurSel(void) const {
+		return m_nCurSelIndex;
+	};
+	void SetListCurSel(int nSelIndex) {
+		m_nCurSelIndex = nSelIndex;
+	};
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _HOTKEYSETDLG_ENABLE_INLINES
-	#include "Dialogs.inl"
-	#ifdef _HOTKEYSETDLG_INLINE_INCLUDED
-		#pragma message("-- Dialogs inline library included (HotkeySetDlg.h)")
-	#else
-		#pragma error("-- Linking error in HotkeySetDlg.h: Unable to link to inline header!")
-	#endif
-	#undef _HOTKEYSETDLG_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in HotkeySetDlg.h: Inline is not enabled!")
-#endif

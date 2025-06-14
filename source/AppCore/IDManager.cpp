@@ -186,7 +186,7 @@ void SResourceIDMap::Append(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
  * @param	lpszNameID - Resource name string ID
  * @return	None
  */
-void SResourceIDMap::Add(BYTE byTypeID, DWORD dwResID, LPCSTR lpszNameID)
+void SResourceIDMap::Add(byte byTypeID, DWORD dwResID, const char* lpszNameID)
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);
@@ -216,7 +216,7 @@ void SResourceIDMap::Add(BYTE byTypeID, DWORD dwResID, LPCSTR lpszNameID)
  * @param	lpszNewNameID - New resource name string ID
  * @return	None
  */
-void SResourceIDMap::Modify(DWORD dwResID, LPCSTR lpszNewNameID)
+void SResourceIDMap::Modify(DWORD dwResID, const char* lpszNewNameID)
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);
@@ -292,7 +292,7 @@ void SResourceIDMap::RemoveAll(void)
  * @param	lpszNameID - Resource name string ID
  * @return	None
  */
-UINT SResourceIDMap::GetResourceID(LPCSTR lpszNameID) const
+unsigned SResourceIDMap::GetResourceID(const char* lpszNameID) const
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);
@@ -313,7 +313,7 @@ UINT SResourceIDMap::GetResourceID(LPCSTR lpszNameID) const
  * @param	dwResID	- Resource ID
  * @return	None
  */
-LPCSTR SResourceIDMap::GetNameID(DWORD dwResID) const
+const char* SResourceIDMap::GetNameID(DWORD dwResID) const
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);
@@ -359,7 +359,7 @@ long long SResourceIDMap::FindResourceID(DWORD dwResID) const
 					lpszNameID - Name string ID
  * @return	long long
  */
-long long SResourceIDMap::FindNameID(LPCSTR lpszNameID) const
+long long SResourceIDMap::FindNameID(const char* lpszNameID) const
 {
 	// Check data validity
 	ASSERT(m_pIDMapData != NULL);

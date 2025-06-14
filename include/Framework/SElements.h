@@ -64,10 +64,10 @@ enum ControlType {
 // Menu item info
 struct USERMENUITEM
 {
-	UINT	nItemID;				// Menu item ID
-	UINT	nItemType;				// Menu item type
+	unsigned	nItemID;				// Menu item ID
+	unsigned	nItemType;				// Menu item type
 	LPTSTR	lpszItemCaption;		// Menu item text
-	UINT	nParentID;				// Item parent ID
+	unsigned	nParentID;				// Item parent ID
 	LPTSTR	lpszParentCaption;		// Item parent caption
 };
 
@@ -75,7 +75,7 @@ struct USERMENUITEM
 // User menu
 struct USERMENU
 {
-	UINT nItemCount;				// Number of menu items
+	unsigned nItemCount;				// Number of menu items
 	USERMENUITEM* pMenuItemList;	// User menu pointer
 };
 
@@ -99,21 +99,21 @@ protected:
 	CWnd*			m_pBuddyWnd;
 
 	// Control ID info
-	INT				m_nTypeID;
-	UINT			m_nTemplateID;
+	int				m_nTypeID;
+	unsigned		m_nTemplateID;
 	String			m_strTemplateID;
 
 	// Control attributes
 	String			m_strCaption;
-	BOOL			m_bVisible;
-	BOOL			m_bEnabled;
-	BOOL			m_bFocused;
+	bool			m_bVisible;
+	bool			m_bEnabled;
+	bool			m_bFocused;
 
 protected:
 	// --- Control data values --- //
 
 	// Boolean data
-	PBOOL			m_pbCheck;
+	bool*			m_pbCheck;
 
 	// Integer data
 	PLONG_PTR		m_plValue;
@@ -122,10 +122,10 @@ protected:
 	PLONG_PTR		m_plMaxValue;
 
 	// Float data
-	DOUBLE*			m_pdbValue;
-	DOUBLE*			m_pdbReserveValue;
-	DOUBLE*			m_pdbMinValue;
-	DOUBLE*			m_pdbMaxValue;
+	double*			m_pdbValue;
+	double*			m_pdbReserveValue;
+	double*			m_pdbMinValue;
+	double*			m_pdbMaxValue;
 
 	// String data
 	String*			m_pstrValue;
@@ -148,49 +148,97 @@ protected:
 
 public:
 	// Initialization
-	virtual BOOL	Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, UINT nCtrlID, INT nTypeID);
+	virtual bool	Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID);
 
 	// Base control window pointer access
-	virtual CWnd*	GetBaseControl(void);
-	virtual BOOL	IsBaseControlAvailable(void) const;
+	virtual CWnd* GetBaseControl(void) {
+		return m_pBaseControl;
+	};
+	virtual bool IsBaseControlAvailable(void) const {
+		return ((m_pBaseControl != NULL) && (m_pBaseControl->GetSafeHwnd() != NULL));
+	};
 
 	// Parent window functions
-	virtual CWnd*	GetParent(void);
-	virtual void	SetParent(CWnd* pParentWnd);
-	virtual BOOL	IsParentAvailable(void) const;
+	virtual CWnd* GetParent(void) {
+		return m_pParentWnd;
+	};
+	virtual void SetParent(CWnd* pParentWnd) {
+		m_pParentWnd = pParentWnd;
+	};
+	virtual bool IsParentAvailable(void) const {
+		return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
+	};
 
 	// Buddy window functions
-	virtual CWnd*	GetBuddy(void);
-	virtual void	SetBuddy(CWnd* pBuddyWnd);
-	virtual BOOL	IsBuddyAvailable(void) const;
+	virtual CWnd* GetBuddy(void) {
+		return m_pBuddyWnd;
+	};
+	virtual void SetBuddy(CWnd* pBuddyWnd) {
+		m_pBuddyWnd = pBuddyWnd;
+	};
+	virtual bool IsBuddyAvailable(void) const {
+		return (m_pBuddyWnd != NULL);
+	};
 
 	// Get control ID info
-	virtual INT		GetType(void) const;
-	virtual UINT	GetTemplateID(void) const;
-	virtual const wchar_t* GetTemplateStringID(void) const;
-	virtual void	GetTemplateStringID(_Out_ String& templateID) const;
+	virtual int GetType(void) const {
+		return m_nTypeID;
+	};
+	virtual unsigned GetTemplateID(void) const {
+		return m_nTemplateID;
+	};
+	virtual const wchar_t* GetTemplateStringID(void) const {
+		return m_strTemplateID;
+	};
+	virtual void GetTemplateStringID(_Out_ String& templateID) const {
+		templateID = m_strTemplateID;
+	};
 
 	// Get attributes
-	virtual const wchar_t* GetCaption(void) const;
-	virtual void	GetCaption(_Out_ String& caption) const;
-	virtual BOOL	IsVisible(void) const;
-	virtual BOOL	IsEnabled(void) const;
-	virtual BOOL	IsFocused(void) const;
+	virtual const wchar_t* GetCaption(void) const {
+		return m_strTemplateID;
+	};
+	virtual void GetCaption(_Out_ String& caption) const {
+		caption = m_strCaption;
+	};
+	virtual bool IsVisible(void) const {
+		return m_bVisible;
+	};
+	virtual bool IsEnabled(void) const {
+		return m_bEnabled;
+	};
+	virtual bool IsFocused(void) const {
+		return m_bFocused;
+	};
 
 	// Set control ID info
-	virtual void	SetType(_In_ INT nTypeID);
-	virtual void	SetTemplateID(_In_ UINT nTemplateID);
-	virtual void	SetTemplateStringID(_In_z_ const wchar_t* templateID);
+	virtual void SetType(_In_ int nTypeID) {
+		m_nTypeID = nTypeID;
+	};
+	virtual void SetTemplateID(_In_ unsigned nTemplateID) {
+		m_nTemplateID = nTemplateID;
+	};
+	virtual void SetTemplateStringID(_In_z_ const wchar_t* templateID) {
+		m_strTemplateID = templateID;
+	};
 
 	// Set attributes
-	virtual void	SetCaption(_In_z_ const wchar_t* caption);
-	virtual void	SetVisibleState(_In_ BOOL bVisible);
-	virtual void	SetEnableState(_In_ BOOL bEnabled);
-	virtual void	SetFocusedState(_In_ BOOL bFocused);
-	virtual void	UpdateAttributes(void);
+	virtual void UpdateAttributes(void);
+	virtual void SetCaption(_In_z_ const wchar_t* caption) {
+		m_strCaption = caption;
+	};
+	virtual void SetVisibleState(_In_ bool bVisible) {
+		m_bVisible = bVisible;
+	};
+	virtual void SetEnableState(_In_ bool bEnabled) {
+		m_bEnabled = bEnabled;
+	};
+	virtual void SetFocusedState(_In_ bool bFocused) {
+		m_bFocused = bFocused;
+	};
 
 	// Get boolean data values
-	virtual BOOL	 GetCheck(void) const;
+	virtual bool	 GetCheck(void) const;
 
 	// Get integer data values
 	virtual LONG_PTR GetInteger(void) const;
@@ -223,7 +271,7 @@ public:
 	virtual void		GetTime(_Out_ SYSTEMTIME& timeValue) const;
 
 	// Set boolean data values
-	virtual void	SetCheck(_In_ const BOOL& bCheck);
+	virtual void	SetCheck(_In_ const bool& bCheck);
 
 	// Set integer data values
 	virtual void	SetInteger(_In_ const LONG_PTR& lValue);
@@ -251,12 +299,12 @@ public:
 public:
 	// Get/set custom data pointer
 	template<typename DATA_TYPE>
-	BOOL GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const;
+	bool GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const;
 	template<typename DATA_TYPE>
-	BOOL SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize);
+	bool SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize);
 
 	// Custom data size retrieving and validating
-	virtual BOOL	IsDataEmpty(void) const;
+	virtual bool	IsDataEmpty(void) const;
 	virtual SIZE_T	GetDataSize(void) const;
 };
 
@@ -299,45 +347,38 @@ private:
 
 public:
 	// Initialization and cleanup
-	BOOL Initialize(void);
-	BOOL DeleteAll(void);
+	bool Initialize(void);
+	bool DeleteAll(void);
 
 	// Attributes
-	size_t  GetCount(void) const;
-	BOOL	IsEmpty(void) const;
+	size_t GetCount(void) const {
+		if (m_pCtrlInfoArray == NULL) return 0;
+		return m_pCtrlInfoArray->size();
+	};
+	bool IsEmpty(void) const {
+		if (m_pCtrlInfoArray == NULL) return TRUE;
+		return m_pCtrlInfoArray->empty();
+	};
 
 	// Parent window functions
-	CWnd*	GetParent(void);
-	void	SetParent(CWnd* pParentWnd);
-	BOOL	IsParentAvailable(void) const;
+	CWnd* GetParent(void) {
+		return m_pParentWnd;
+	};
+	void SetParent(CWnd* pParentWnd) {
+		m_pParentWnd = pParentWnd;
+	};
+	bool IsParentAvailable(void) const {
+		return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
+	};
 
 	// Add/remove control
 	long long AddControl(SCtrlInfoWrap* pControl);
-	long long AddControl(UINT nCtrlID, UINT nTypeID);
-	long long RemoveControl(UINT nCtrlID);
+	long long AddControl(unsigned nCtrlID, unsigned nTypeID);
+	long long RemoveControl(unsigned nCtrlID);
 
 	// Accessing elements
-	SCtrlInfoWrap* GetControl(UINT nCtrlID);
-	BOOL SetBuddy(UINT nBaseCtrlID, UINT nBuddyCtrlID);
-	void UpdateData(UINT nCtrlID = NULL);
+	SCtrlInfoWrap* GetControl(unsigned nCtrlID);
+	bool SetBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID);
+	void UpdateData(unsigned nCtrlID = NULL);
 };
 
-
-////////////////////////////////////////////////////////
-//
-//	Include inline file for inline functions
-//
-////////////////////////////////////////////////////////
-
-#ifdef _AFX_ENABLE_INLINES
-	#define _SELEMENTS_ENABLE_INLINES
-	#include "Framework.inl"
-	#ifdef _SELEMENTS_INLINE_INCLUDED
-		#pragma message("-- Framework inline library included (SElements.h)")
-	#else
-		#pragma error("-- Linking error in SElements.h: Unable to link to inline header!")
-	#endif
-	#undef _SELEMENTS_ENABLE_INLINES
-#else
-	#pragma	error("-- Fatal error in SElements.h: Inline is not enabled!")
-#endif
