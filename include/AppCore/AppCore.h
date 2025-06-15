@@ -1503,25 +1503,6 @@ namespace AppCore
 	bool ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD& dwErrCode);
 	bool ExecutePowerActionDummy(unsigned nActionType, unsigned nMessage, DWORD& dwErrCode);
 
-	// Trace logging functions
-	void TraceError(const char* traceLogA);
-	void TraceError(const wchar_t* traceLogW);
-	void TraceErrorFormat(const char* traceLogFormatA, ...);
-	void TraceErrorFormat(const wchar_t* traceLogFormatW, ...);
-	void TraceDebugInfo(const char* funcName, const char* fileName, int lineIndex);
-
-	// Debug logging functions
-	void OutputDebugLog(const wchar_t* debugLog, int forceStyle = -1);
-	void OutputDebugLogFormat(const wchar_t* debugLogFormat, ...);
-	void OutputDebugStringFormat(const wchar_t* debugStringFormat, ...);
-
-	// Trace/debug file logging functions
-	bool BackupOldLogFile(const String& filePath, const wchar_t* logFileName);
-	void WriteTraceErrorLogFile(const wchar_t* logStringW);
-	void WriteTraceDebugLogFile(const wchar_t* logStringW);
-	void WriteDebugInfoLogFile(const wchar_t* logStringW);
-	void WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW);
-
 	// Message and notification functions
 	LRESULT	WaitMessage(unsigned nMsg, int nTimeout = Constant::Max::Timeout::WaitMessage);
 	void	ShowErrorMessage(HWND hMsgOwnerWnd, unsigned nLanguageID, DWORD dwErrorCode, LPARAM lParam = NULL);
@@ -1540,24 +1521,27 @@ namespace AppCore
 		return (nCurOption - (nOptionMacro << 8) - 1);
 	};
 
-	// Data/control/window processing functions
+	// Data/control/window functions
 	HWND FindDebugTestDlg(void);
 	void SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol);
+	bool SetDarkMode(CWnd* pWnd, bool bEnableDarkMode);
+	void DrawButton(CButton*& pButton, unsigned nIconID, const wchar_t* buttonTitle = Constant::String::Empty);
 
-	// Additional functions
+	// Get Windows OS version
 	unsigned GetWindowsOSVersion(void);
 
-	void	PlaySound(bool bSoundEnable, unsigned nTypeOfSound);
-	bool	FileViewStd(FILETYPE eFileType, const wchar_t* filePath);
-	bool	OpenWebURL(const wchar_t* webUrl);
+	// File and media
+	void PlaySound(bool bSoundEnable, unsigned nTypeOfSound);
+	bool FileViewStd(FILETYPE eFileType, const wchar_t* filePath);
+	bool OpenWebURL(const wchar_t* webUrl);
 
+	// Applications and instances
 	LRESULT RunApp(const wchar_t* appPath, bool bRunAsAdmin = false, bool bShowFlag = true);
 	LRESULT ExecuteCommand(const wchar_t* commandString, bool bRunAsAdmin = true, bool bShowFlag = true);
 	bool	CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, unsigned nStyle, DWORD& dwErrorCode);
 
-	bool	SetDarkMode(CWnd* pWnd, bool bEnableDarkMode);
-	void	DrawButton(CButton*& pButton, unsigned nIconID, const wchar_t* buttonTitle = Constant::String::Empty);
-	bool	EnumFontNames(std::vector<std::wstring>& fontNames);
-	bool	ValidateFontName(const wchar_t* fontName);
+	// Font name validation
+	bool EnumFontNames(std::vector<std::wstring>& fontNames);
+	bool ValidateFontName(const wchar_t* fontName);
 };
 

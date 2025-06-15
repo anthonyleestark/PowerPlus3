@@ -345,7 +345,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				}
 				for (int i = 0; i < nVal; i++) {
 					// Write test trace error log
-					TraceErrorFormat("[TraceError Test] Loop time: %d", i);
+					TRACE_FORMAT("[TraceError Test] Loop time: %d", i);
 					Sleep(50); // wait for a blink
 				}
 				// Output notification when done
@@ -372,7 +372,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				for (int i = 0; i < nVal; i++) {
 					// Write test trace debug log
 					strFormat.Format(_T("[TraceDebugLog Test] Loop time: %d"), i);
-					WriteTraceDebugLogFile(strFormat);
+					DebugLogging::GetDebugLogger().WriteTraceDebugLogFile(strFormat);
 					Sleep(50); // wait for a blink
 				}
 				// Output notification when done

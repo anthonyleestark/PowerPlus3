@@ -107,55 +107,6 @@ static inline void SetTestFeatureEnable(bool bValue) {
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
-/*----------------------------------------Debug/Test special variables---------------------------------------*/
-
-namespace Global {
-	extern CFile* g_pFileLogTraceError;
-	extern CFile* g_pFileLogTraceDebug;
-	extern CFile* g_pFileLogDebugInfo;
-	extern CFileException* g_pExcLogTraceError;
-	extern CFileException* g_pExcLogTraceDebug;
-	extern CFileException* g_pExcLogDebugInfo;
-};
-
-// Trace error log file pointer
-static inline CFile* GetTraceErrorLogFile(void) {
-	return Global::g_pFileLogTraceError;
-};
-static bool InitTraceErrorLogFile(void);
-inline void ReleaseTraceErrorLogFile(void);
-
-//Trace debug info log file pointer
-static inline CFile* GetTraceDebugLogFile(void) {
-	return Global::g_pFileLogTraceDebug;
-};
-static bool InitTraceDebugLogFile(void);
-inline void ReleaseTraceDebugLogFile(void);
-
-// Debug info output log file pointer
-static inline CFile* GetDebugInfoLogFile(void) {
-	return Global::g_pFileLogDebugInfo;
-};
-static bool InitDebugInfoLogFile(void);
-inline void ReleaseDebugInfoLogFile(void);
-
-// Trace error log file exception pointer
-static inline CFileException* GetTraceErrorException(void) {
-	return Global::g_pExcLogTraceError;
-};
-
-// Trace debug info log file exception pointer
-static inline CFileException* GetTraceDebugException(void) {
-	return Global::g_pExcLogTraceDebug;
-};
-
-// Debug info output log file exception pointer
-static inline CFileException* GetDebugInfoException(void) {
-	return Global::g_pExcLogDebugInfo;
-};
-
-/*-----------------------------------------------------------------------------------------------------------*/
-
 
 /*---------------------------------------------App tracing flags---------------------------------------------*/
 

@@ -1,6 +1,6 @@
 ﻿/**
  * @file		Logging.h
- * @brief		Define necessary variables and methods to read/write app log
+ * @brief		Define necessary variables and methods to read/write application log
  * @author		AnthonyLeeStark
  * @date		2024.02.22
  * 
@@ -422,3 +422,116 @@ public:
 	bool Write(const LOGITEM& logItem, const wchar_t* filePath = NULL);
 	bool Write(const wchar_t* logString, const wchar_t* filePath = NULL);
 };
+
+
+// Class for debugging/error trace logging
+class DebugLogging final
+{
+private:
+	// Log file pointers
+	CFile* m_pFileLogTraceError;
+	CFile* m_pFileLogTraceDebug;
+	CFile* m_pFileLogDebugInfo;
+
+	// File exception pointers
+	CFileException* m_pExcLogTraceError;
+	CFileException* m_pExcLogTraceDebug;
+	CFileException* m_pExcLogDebugInfo;
+
+private:
+	// Singleton
+	DebugLogging();
+
+	// No copyable
+	DebugLogging(const DebugLogging&) = delete;
+	DebugLogging& operator=(const DebugLogging&) = delete;
+
+	// No movable
+	DebugLogging(const DebugLogging&&) = delete;
+	DebugLogging& operator=(const DebugLogging&&) = delete;
+
+public:
+	// Get the single debug logging instance:
+	// Because the debug logging will be applied for the entire application,
+	// there must be one and only instance of it
+	static DebugLogging& GetDebugLogger(void) {
+		static std::unique_ptr<DebugLogging> loggerInstance(new DebugLogging());
+		return *loggerInstance;
+	};
+
+	// Make destructor public for self-destructing
+	~DebugLogging();
+
+public:
+	// Initialization
+	bool InitTraceErrorLogFile(void);
+	bool InitTraceDebugLogFile(void);
+	bool InitDebugInfoLogFile(void);
+
+	// Clean-up
+	void ReleaseTraceErrorLogFile(void);
+	void ReleaseTraceDebugLogFile(void);
+	void ReleaseDebugInfoLogFile(void);
+
+	// Access pointer
+	CFile* GetTraceErrorLogFile(void) {
+		return m_pFileLogTraceError;
+	};
+	CFile* GetTraceDebugLogFile(void) {
+		return m_pFileLogTraceDebug;
+	};
+	CFile* GetDebugInfoLogFile(void) {
+		return m_pFileLogDebugInfo;
+	};
+	CFileException* GetTraceErrorException(void) {
+		return m_pExcLogTraceError;
+	};
+	CFileException* GetTraceDebugException(void) {
+		return m_pExcLogTraceDebug;
+	};
+	CFileException* GetDebugInfoException(void) {
+		return m_pExcLogDebugInfo;
+	};
+
+public:
+	// Trace logging functions
+	void TraceError(const char* traceLogA);
+	void TraceError(const wchar_t* traceLogW);
+	void TraceErrorFormat(const char* traceLogFormatA, ...);
+	void TraceErrorFormat(const wchar_t* traceLogFormatW, ...);
+	void TraceDebugInfo(const char* funcName, const char* fileName, int lineIndex);
+
+	// Debug logging functions
+	static void OutputDebugLog(const wchar_t* debugLog, int forceStyle = -1);
+	static void OutputDebugLogFormat(const wchar_t* debugLogFormat, va_list args);
+	static void OutputDebugStringFormat(const wchar_t* debugStringFormat, va_list args);
+
+	// Trace/debug file logging functions
+	bool BackupOldLogFile(const String& filePath, const wchar_t* logFileName);
+	void WriteTraceErrorLogFile(const wchar_t* logStringW);
+	void WriteTraceDebugLogFile(const wchar_t* logStringW);
+	void WriteDebugInfoLogFile(const wchar_t* logStringW);
+	void WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW);
+};
+
+// Define wrapper for static debug logging functions for global usage
+inline void OutputDebugLog(const wchar_t* debugLog, int forceStyle = -1) {
+	DebugLogging::OutputDebugLog(debugLog, forceStyle);
+};
+inline void OutputDebugLogFormat(const wchar_t* debugLogFormat, ...) {
+	ATLASSERT(AtlIsValidString(debugStringFormat));
+
+	va_list argList;
+	va_start(argList, debugLogFormat);
+	DebugLogging::OutputDebugLogFormat(debugLogFormat, argList);
+	va_end(argList);
+};
+inline void OutputDebugStringFormat(const wchar_t* debugStringFormat, ...) {
+	ATLASSERT(AtlIsValidString(debugStringFormat));
+
+	va_list argList;
+	va_start(argList, debugStringFormat);
+	DebugLogging::OutputDebugStringFormat(debugStringFormat, argList);
+	va_end(argList);
+};
+

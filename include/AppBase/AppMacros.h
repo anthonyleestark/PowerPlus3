@@ -388,9 +388,9 @@
 // Trace log functions
 //
 
-#define TRACE_FORMAT									AppCore::TraceErrorFormat
-#define TRACE_ERROR(logString)							AppCore::TraceError(logString)
-#define TRACE_DEBUG(func, file, line)					AppCore::TraceDebugInfo(func, file, line)
+#define TRACE_FORMAT									DebugLogging::GetDebugLogger().TraceErrorFormat
+#define TRACE_ERROR(logString)							DebugLogging::GetDebugLogger().TraceError(logString)
+#define TRACE_DEBUG(func, file, line)					DebugLogging::GetDebugLogger().TraceDebugInfo(func, file, line)
 
 
 // Type-cast macros

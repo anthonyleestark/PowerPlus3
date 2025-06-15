@@ -8,6 +8,7 @@
  */
 
 #include "AppCore/Serialization.h"
+#include "AppCore/Logging.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

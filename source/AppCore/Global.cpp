@@ -23,29 +23,8 @@ unsigned Global::g_uiAppLaunchTimeCounter = 0;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
-
 // Application global/shared flag manager
 FlagManager g_sharedFlagManager;
-
-
-/*----------------------------------------Debug/Test special variables---------------------------------------*/
-// Trace error log file pointer
-CFile* Global::g_pFileLogTraceError = NULL;
-
-// Trace error log file pointer
-CFile* Global::g_pFileLogTraceDebug = NULL;
-
-// Debug info log file pointer
-CFile* Global::g_pFileLogDebugInfo = NULL;
-
-// Trace error log file exception pointer
-CFileException* Global::g_pExcLogTraceError = NULL;
-
-// Trace debug info log file exception pointer
-CFileException* Global::g_pExcLogTraceDebug = NULL;
-
-// Debug info output log file exception pointer
-CFileException* Global::g_pExcLogDebugInfo = NULL;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

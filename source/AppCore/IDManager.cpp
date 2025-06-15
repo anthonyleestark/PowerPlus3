@@ -71,8 +71,7 @@ SResourceIDMap* SResourceIDMap::GetResourceIDMap(void)
 }
 
 /**
- * @brief	Clean-up resource ID map data
-					and destroy the single instance of it
+ * @brief	Clean-up resource ID map data and destroy the single instance of it
  * @param	None
  * @return	None
  */

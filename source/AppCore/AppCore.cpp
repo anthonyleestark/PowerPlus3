@@ -10,6 +10,7 @@
 #include "AppCore/AppCore.h"
 #include "AppCore/Global.h"
 #include "AppCore/MapTable.h"
+#include "AppCore/Logging.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -2882,771 +2883,6 @@ bool AppCore::ExecutePowerActionDummy(unsigned nActionType, unsigned nMessage, D
 
 
 /**
- * @brief	Output exception/error trace log string to log file
- * @param	traceLogA - Output trace log string (ANSI)
- * @return	None
- */
-void AppCore::TraceError(const char* traceLogA)
-{
-	// Convert ANSI string to UNICODE
-	const wchar_t* traceLogW = MAKEUNICODE(traceLogA);
-	TraceError(traceLogW);
-}
-
-
-/**
- * @brief	Output exception/error trace log string to log file
- * @param	traceLogW - Output trace log string (Unicode)
- * @return	None
- */
-void AppCore::TraceError(const wchar_t* traceLogW)
-{
-	// Write trace log file: TraceError.log
-	WriteTraceErrorLogFile(traceLogW);
-}
-
-
-/**
- * @brief	Format and output exception/error trace log string to log file
- * @param	lpszTraceLogFormatA - Trace log format string (ANSI)
- * @param	...				    - Same as default MFC Format function
- * @return	None
- */
-void AppCore::TraceErrorFormat(const char* traceLogFormatA, ...)
-{
-	ATLASSERT(AtlIsValidString(traceLogFormatA));
-
-	// Format source string (ANSI)
-	CStringA strLogFormatA;
-
-	va_list argList;
-	va_start(argList, traceLogFormatA);
-	strLogFormatA.FormatV(traceLogFormatA, argList);
-	va_end(argList);
-
-	// Output trace log
-	TraceError(strLogFormatA);
-}
-
-
-/**
- * @brief	Format and output exception/error trace log string to log file
- * @param	lpszTraceLogFormatW - Trace log format string (Unicode)
- * @param	...				    - Same as default MFC Format function
- * @return	None
- */
-void AppCore::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
-{
-	ATLASSERT(AtlIsValidString(traceLogFormatW));
-
-	// Format source string (Unicode)
-	String logFormatStringW;
-
-	va_list argList;
-	va_start(argList, traceLogFormatW);
-	logFormatStringW.FormatV(traceLogFormatW, argList);
-	va_end(argList);
-
-	// Output trace log
-	TraceError(logFormatStringW);
-}
-
-
-/**
- * @brief	Output debug trace information log
- * @param	lpszFuncName - Code function name
- * @param	lpszFileName - Code file name
- * @param	nLineIndex	 - Code line number
- * @return	None
- */
-void AppCore::TraceDebugInfo(const char* funcName, const char* fileName, int lineIndex)
-{
-	// Debug trace info
-	const wchar_t* _funcName = MAKEUNICODE(funcName);
-	const wchar_t* _fileName = MAKEUNICODE(fileName);
-
-	// Format debug trace log
-	String debugTraceFormat = StringUtils::StringFormat(_T("Function: %s, File: %s(%d)"), _funcName, _fileName, lineIndex);
-
-	// Write debug trace log: TraceDebug.log
-	WriteTraceDebugLogFile(debugTraceFormat.GetString());
-}
-
-
-/**
- * @brief	Output debug log string
- * @param	debugLog	- Debug log string (Unicode)
- * @param	forceOutput - Force output target
- * @return	None
- */
-void AppCore::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_INVALID */)
-{
-	// Get debug mode enable state
-	bool bDebugModeEnable = GetDebugMode();
-
-	// Get debug log string
-	String debugLogStr = debugLog;
-
-	// Get DebugTest tool dialog handle
-	HWND hDebugTestWnd = FindDebugTestDlg();
-
-	// Debug log output target
-	int nDebugOutputTarget = forceOutput;
-	if (nDebugOutputTarget == INT_INVALID) {
-		nDebugOutputTarget = GetDebugOutputTarget();
-	}
-	if ((hDebugTestWnd != NULL) &&
-		(IsWindowVisible(hDebugTestWnd))) {
-		// Force enable debug mode and
-		// prefer output target to DebugTest tool if it's displaying
-		bDebugModeEnable = true;
-		nDebugOutputTarget = DebugTestTool;
-	}
-
-	// If debug mode not enabled, do nothing
-	if (bDebugModeEnable == false)
-		return;
-
-	// Output debug string
-	if (nDebugOutputTarget == DefaultOutput) {
-		// Default output target: OutputDebugString
-		// Debug strings can be watched by using VS Output screen or DebugView tool
-		OutputDebugString(debugLogStr);
-	}
-	else if (nDebugOutputTarget == DebugInfoFile) {
-		// Ouput debug log to file: DebugInfo.log
-		WriteDebugInfoLogFile(debugLogStr);
-	}
-	else if (nDebugOutputTarget == DebugTestTool) {
-		// Output debug log to DebugTest tool
-		if (hDebugTestWnd == NULL) return;
-		WPARAM wParam = MAKE_WPARAM_STRING(debugLogStr);
-		LPARAM lParam = MAKE_LPARAM_STRING(debugLogStr);
-		SendMessage(hDebugTestWnd, SM_APP_DEBUG_OUTPUT, wParam, lParam);
-	}
-}
-
-
-/**
- * @brief	Output debug log string format
- * @param	debugLogFormat - Debug log format string (Unicode)
- * @param	...			   - Same as default MFC Format function
- * @return	None
- */
-void AppCore::OutputDebugLogFormat(const wchar_t* debugLogFormat, ...)
-{
-	ATLASSERT(AtlIsValidString(debugLogFormat));
-
-	// Format source string
-	String logFormatString;
-
-	va_list argList;
-	va_start(argList, debugLogFormat);
-	logFormatString.FormatV(debugLogFormat, argList);
-	va_end(argList);
-
-	// Output debug string
-	OutputDebugLog(logFormatString);
-}
-
-
-/**
- * @brief	Output debug string format (combined version of String.Format
-					and the default OutputDebugString function)
- * @param	lpszDebugStringFormat - Debug log format string (Unicode)
- * @param	...					  - Same as default MFC Format function
- * @return	None
- */
-void AppCore::OutputDebugStringFormat(const wchar_t* debugStringFormat, ...)
-{
-	ATLASSERT(AtlIsValidString(debugStringFormat));
-
-	// Format source string
-	String logDebugStringFormat;
-
-	va_list argList;
-	va_start(argList, debugStringFormat);
-	logDebugStringFormat.FormatV(debugStringFormat, argList);
-	va_end(argList);
-
-	// Output debug string
-	OutputDebugString(logDebugStringFormat);
-}
-
-
-/**
- * @brief	Initialize trace error log file
- * @param	None
- * @return	true/false
- * @note	Destination file: TraceError.log
- * @note	To output trace error detail log strings
- */
-static bool InitTraceErrorLogFile(void)
-{
-	// Get access to Global data
-	using namespace Global;
-
-	// Verify global trace error log file pointer initialization
-	VERIFY_INITIALIZATION(g_pFileLogTraceError, CFile);
-
-	// Get trace error log file pointer
-	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
-	NULL_POINTER_BREAK(pTraceErrorLogFile, return false);
-
-	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-
-	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
-
-	// If the log file is not being opened
-	while (pTraceErrorLogFile->m_hFile == CFile::hFileNull) {
-
-		// Open the log file
-		if (!pTraceErrorLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
-			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-			return false;
-		}
-
-		// Go to end of file
-		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
-
-		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
-
-			// Step1: Close file
-			pTraceErrorLogFile->Close();
-
-			// Step2: Rename file extension to BAK
-			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_TRACE_ERROR_LOG))
-				return false;
-
-			// Step3: Create new file and reopen
-			continue;
-		}
-	}
-
-	return true;
-}
-
-
-/**
- * @brief	Release trace error log file
- * @param	None
- * @return	None
- * @note	Destination file: TraceError.log
- * @note	To output trace error detail log strings
- */
-inline void ReleaseTraceErrorLogFile(void)
-{
-	// Get access to Global data
-	using namespace Global;
-
-	// Clean up trace error log file pointer
-	if (g_pFileLogTraceError != NULL) {
-		// Close file if is opening
-		if (g_pFileLogTraceError->m_hFile != CFile::hFileNull) {
-			g_pFileLogTraceError->Flush();
-			g_pFileLogTraceError->Close();
-		}
-		delete g_pFileLogTraceError;
-		g_pFileLogTraceError = NULL;
-	}
-}
-
-
-/**
- * @brief	Initialize trace debug log file
- * @param	None
- * @return	true/false
- * @note	Destination file: TraceDebug.log
- * @note	To output trace debug log strings (including the function name, code file and line where it failed)
- */
-static bool InitTraceDebugLogFile(void)
-{
-	// Get access to Global data
-	using namespace Global;
-
-	// Verify global trace debug log file pointer initialization
-	VERIFY_INITIALIZATION(g_pFileLogTraceDebug, CFile);
-
-	// Get trace debug log file pointer
-	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
-	NULL_POINTER_BREAK(pTraceDebugLogFile, return false);
-
-	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-
-	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
-
-	// If the log file is not being opened
-	while (pTraceDebugLogFile->m_hFile == CFile::hFileNull) {
-
-		// Open the log file
-		if (!pTraceDebugLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
-			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-			return false;
-		}
-
-		// Go to end of file
-		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
-
-		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
-
-			// Step1: Close file
-			pTraceDebugLogFile->Close();
-
-			// Step2: Rename file extension to BAK
-			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_TRACE_DEBUG_LOG))
-				return false;
-
-			// Step3: Create new file and reopen
-			continue;
-		}
-	}
-
-	return true;
-}
-
-
-/**
- * @brief	Release trace debug log file
- * @param	None
- * @return	None
- * @note	Destination file: TraceDebug.log
- * @note	To output trace debug log strings (including the function name, code file and line where it failed)
- */
-inline void ReleaseTraceDebugLogFile(void)
-{
-	// Get access to Global data
-	using namespace Global;
-
-	// Clean up trace debug info log file pointer
-	if (g_pFileLogTraceDebug != NULL) {
-		// Close file if is opening
-		if (g_pFileLogTraceDebug->m_hFile != CFile::hFileNull) {
-			g_pFileLogTraceDebug->Flush();
-			g_pFileLogTraceDebug->Close();
-		}
-		delete g_pFileLogTraceDebug;
-		g_pFileLogTraceDebug = NULL;
-	}
-}
-
-
-/**
- * @brief	Initialize debug info log file
- * @param	None
- * @return	true/false
- * @note	Destination file: DebugInfo.log
- * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
- */
-static bool InitDebugInfoLogFile(void)
-{
-	// Get access to Global data
-	using namespace Global;
-
-	// Verify global debug info log file pointer initialization
-	VERIFY_INITIALIZATION(g_pFileLogDebugInfo, CFile);
-
-	// Get debug info log file pointer
-	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
-	NULL_POINTER_BREAK(pDebugInfoLogFile, return false);
-
-	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-
-	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
-
-	// If the log file is not being opened
-	while (pDebugInfoLogFile->m_hFile == CFile::hFileNull) {
-
-		// Open the log file
-		if (!pDebugInfoLogFile->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
-			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
-			return false;
-		}
-
-		// Go to end of file
-		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
-
-		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
-
-			// Step1: Close file
-			pDebugInfoLogFile->Close();
-
-			// Step2: Rename file extension to BAK
-			if (!AppCore::BackupOldLogFile(strFilePath, FILENAME_DEBUG_INFO_LOG))
-				return false;
-
-			// Step3: Create new file and reopen
-			continue;
-		}
-	}
-
-	return true;
-}
-
-
-/**
- * @brief	Release debug info log file
- * @param	None
- * @return	None
- * @note	Destination file: DebugInfo.log
- * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
- */
-inline void ReleaseDebugInfoLogFile(void)
-{
-	// Get access to Global data
-	using namespace Global;
-
-	// Clean up debug info log file pointer
-	if (g_pFileLogDebugInfo != NULL) {
-		// Close file if is opening
-		if (g_pFileLogDebugInfo->m_hFile != CFile::hFileNull) {
-			g_pFileLogDebugInfo->Flush();
-			g_pFileLogDebugInfo->Close();
-		}
-		delete g_pFileLogDebugInfo;
-		g_pFileLogDebugInfo = NULL;
-	}
-}
-
-
-/**
- * @brief	Backup old log file
- * @param	filePath	- File path (in/out)
- * @param	logFileName	- Log file name
- * @return	true/false
- */
-bool AppCore::BackupOldLogFile(const String& filePath, const wchar_t* logFileName)
-{
-	CFileFind Finder;
-
-	// If file path is not specified, do nothing
-	if (filePath.IsEmpty()) return false;
-
-	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-
-	// Search for backup file list
-	for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
-		
-		// Make backup file path template
-		String filePathTemp = StringUtils::MakeFilePath(folderPath, logFileName, FILEEXT_BAKLOGFILE);
-		if (filePathTemp.IsEmpty())
-			return false;
-
-		// Format backup file path
-		String bakFilePath;
-		bakFilePath.Format(filePathTemp, nNum);
-
-		// Check if file has already existed
-		if (Finder.FindFile(bakFilePath) == true) {
-
-			// If backup file number exceeded the limit, can not backup more
-			if (nNum == (Constant::Max::BackupFileNumber - 1)) return false;
-			else continue;
-		}
-
-		// Rename file
-		CFile::Rename(filePath, bakFilePath);
-		break;
-	}
-
-	return true;
-}
-
-
-/**
- * @brief	Write trace error log string to file
- * @param	logStringW	- Log string
- * @return	None
- * @note	Destination file: TraceError.log
- * @note	To output trace error detail log strings
- */
-void AppCore::WriteTraceErrorLogFile(const wchar_t* logStringW)
-{
-	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
-
-	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
-
-	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
-
-	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty())
-		return;
-
-	// If the file is not initialized or had been released
-	if (GetTraceErrorLogFile() == NULL) {
-		if (!InitTraceErrorLogFile())
-			return;
-	}
-
-	// Re-acquire trace log file pointer
-	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
-	NULL_POINTER_BREAK(pTraceErrorLogFile, return NOTHING);
-	{
-		// Write log string to file
-		pTraceErrorLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
-		pTraceErrorLogFile->Flush();
-	}
-
-	// Re-check file size after writing
-	{
-		// Go to end of file
-		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
-
-		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
-
-			// Step1: Close file
-			pTraceErrorLogFile->Close();
-
-			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath.GetString(), FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
-			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_ERROR_LOG))
-				return;
-
-			// Step3: Release log file pointer --> Quit
-			// New file will be re-initialized in the next function call
-			ReleaseTraceErrorLogFile();
-			return;
-		}
-	}
-}
-
-
-/**
- * @brief	Write trace debug log string to file
- * @param	logStringW	- Log string
- * @return	None
- * @note	Destination file: TraceDebug.log
- * @note	To output trace debug log strings (including the function name, code file and line where it failed)
- */
-void AppCore::WriteTraceDebugLogFile(const wchar_t* logStringW)
-{
-	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
-
-	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
-
-	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
-
-	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty()) return;
-
-	// If the file is not initialized or had been released
-	if (GetTraceDebugLogFile() == NULL) {
-		if (!InitTraceDebugLogFile())
-			return;
-	}
-
-	// Re-acquire trace debug log file pointer
-	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
-	NULL_POINTER_BREAK(pTraceDebugLogFile, return NOTHING);
-	{
-		// Write log string to file
-		pTraceDebugLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
-		pTraceDebugLogFile->Flush();
-	}
-
-	// Re-check file size after writing
-	{
-		// Go to end of file
-		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
-
-		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
-
-			// Step1: Close file
-			pTraceDebugLogFile->Close();
-
-			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
-			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_DEBUG_LOG))
-				return;
-
-			// Step3: Release log file pointer --> Quit
-			// New file will be re-initialized in the next function call
-			ReleaseTraceDebugLogFile();
-			return;
-		}
-	}
-}
-
-
-/**
- * @brief	Write debug info output log string to file
- * @param	lpszLogStringW	- Log string
- * @return	None
- * @note	Destination file: DebugInfo.log
- * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
- */
-void AppCore::WriteDebugInfoLogFile(const wchar_t* logStringW)
-{
-	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
-
-	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
-
-	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
-
-	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty()) return;
-
-	// If the file is not initialized or had been released
-	if (GetDebugInfoLogFile() == NULL) {
-		if (!InitDebugInfoLogFile())
-			return;
-	}
-
-	// Re-acquire debug info log file pointer
-	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
-	NULL_POINTER_BREAK(pDebugInfoLogFile, return NOTHING);
-	{
-		// Write log string to file
-		pDebugInfoLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
-		pDebugInfoLogFile->Flush();
-	}
-
-	// Recheck file size after writing
-	{
-		// Go to end of file
-		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
-
-		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
-
-			// Step1: Close file
-			pDebugInfoLogFile->Close();
-
-			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
-			if (!BackupOldLogFile(strOrgFilePath, FILENAME_DEBUG_INFO_LOG))
-				return;
-
-			// Step3: Release log file pointer --> Quit
-			// New file will be re-initialized in the next function call
-			ReleaseDebugInfoLogFile();
-			return;
-		}
-	}
-}
-
-
-/**
- * @brief	Write trace and debug log string to file
- * @param	lpszFileName	- Log file name
- * @param	lpszLogStringW	- Log string
- * @return	None
- * @note	Base function - No longer used
- */
-void AppCore::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
-{
-	// Log file path
-	String filePath = StringUtils::MakeFilePath(SUBFOLDER_LOG, fileName, FILEEXT_LOGFILE);
-
-	CFile fTrcDbgLogFile;
-
-	// Check if file is opening, if not, open it
-	while (fTrcDbgLogFile.m_hFile == CFile::hFileNull) {
-
-		bool bResult = fTrcDbgLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
-		if (bResult == false) {
-			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			LPARAM lParam = reinterpret_cast<LPARAM>(fileName);
-			ShowErrorMessage(NULL, NULL, dwErrorCode, lParam);
-			return;
-		}
-
-		// Go to end of file
-		ULONGLONG ullFileSize = fTrcDbgLogFile.SeekToEnd();
-
-		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
-
-			// Step1: Close file
-			fTrcDbgLogFile.Close();
-			
-			// Step2: Rename file extension to BAK
-			CFileFind Finder;
-			String backupFilePath;
-			for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
-				backupFilePath.Format((filePath + FILEEXT_BAKLOGFILE), nNum);
-				if (Finder.FindFile(backupFilePath) == true) {
-					if (nNum == (Constant::Max::BackupFileNumber - 1)) return;
-					else continue;
-				}
-				CFile::Rename(filePath, backupFilePath);
-				break;
-			}
-
-			// Step3: Create new file and reopen
-			continue;
-		}
-	}
-
-	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
-
-	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
-
-	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
-
-	if (!logOutputFormatString.IsEmpty()) {
-		// Write log string to file
-		fTrcDbgLogFile.Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
-		fTrcDbgLogFile.Flush();
-	}
-
-	// Close file after done writing
-	if (fTrcDbgLogFile.m_hFile != CFile::hFileNull) {
-		fTrcDbgLogFile.Close();
-	}
-}
-
-
-/**
  * @brief	Create a loop and wait for specified message
  * @param	nMsg	 - Message to wait for
  * @param	nTimeout - Timeout (tick-count)
@@ -3790,6 +3026,85 @@ void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
 	pHeaderCell->SetMargin(0);
 	pHeaderCell->SetBackClr(Color::Gray);
 	pHeaderCell->SetTextClr(Color::Black);
+}
+
+
+/**
+ * @brief	Set dark mode for dialog with specified handle
+ * @param	pWnd			- Pointer of window
+ * @param	bEnableDarkMode - Enable/disable dark mode
+ * @return	bool - Result of dark mode setting process
+ */
+bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
+{
+	// Load theme library
+	HMODULE hUxTheme = LoadLibraryEx(_T("uxtheme.dll"), nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+	if (hUxTheme == NULL) {
+		// Trace error
+		TRACE_FORMAT("Error: Load UXTheme library failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return false;
+	}
+
+	// Get function pointer
+	using fnAllowDarkMode = bool (WINAPI*)(HWND hWND, bool bAllow);
+	static const fnAllowDarkMode AllowDarkModeForWindow = (fnAllowDarkMode)GetProcAddress(hUxTheme, MAKEINTRESOURCEA(133));
+	if (AllowDarkModeForWindow == NULL) {
+		// Trace error
+		TRACE_FORMAT("Error: Get AllowDarkModeForWindow function address failed!!! (Code: 0x%08X)", GetLastError());
+		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+		return false;
+	}
+
+	// Set dark mode for each dialog item
+	CWnd* pWndChild = NULL;
+	for (pWndChild = pWnd->GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	{
+		HWND hWndChild = pWndChild->GetSafeHwnd();
+		AllowDarkModeForWindow(hWndChild, bEnableDarkMode);
+		SetWindowTheme(hWndChild, _T("DarkMode_Explorer"), NULL);
+		SendMessage(hWndChild, WM_THEMECHANGED, 0, 0);
+	}
+
+	return true;
+}
+
+
+/**
+ * @brief	Create button with icon
+ * @param	pBtn		 - Pointer of button item
+ * @param	nIconID		 - ID of button icon
+ * @param	lpszBtnTitle - Title of button
+ * @return	None
+ */
+void AppCore::DrawButton(CButton*& pBtn, unsigned nIconID, const wchar_t* buttonTitle /* = Constant::String::Empty */)
+{
+	// Check validity
+	if (pBtn == NULL)
+		return;
+
+	// Load icon
+	HICON hBtnIcon = AfxGetApp()->LoadIcon(nIconID);
+	if (hBtnIcon == NULL)
+		return;
+
+	// Button rect
+	CRect rcBtnRect;
+	pBtn->GetWindowRect(&rcBtnRect);
+
+	// Button title
+	String buttonTitleString;
+	buttonTitleString.SetString(buttonTitle);
+	if (!buttonTitleString.IsEmpty()) {
+		wchar_t _tempBuffer[Constant::Max::StringLength] = { 0 };
+		pBtn->GetWindowText(_tempBuffer, Constant::Max::StringLength);
+		buttonTitleString.SetString(_tempBuffer);
+	}
+
+	// Update button
+	pBtn->SetButtonStyle(BS_ICON);
+	pBtn->SetIcon(hBtnIcon);
+	pBtn->UpdateWindow();
 }
 
 
@@ -3999,85 +3314,6 @@ bool AppCore::CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, uns
 	CloseHandle(ProcessInfo.hThread);
 
 	return bResult;
-}
-
-
-/**
- * @brief	Set dark mode for dialog with specified handle
- * @param	pWnd			- Pointer of window
- * @param	bEnableDarkMode - Enable/disable dark mode
- * @return	bool - Result of dark mode setting process
- */
-bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
-{
-	// Load theme library
-	HMODULE hUxTheme = LoadLibraryEx(_T("uxtheme.dll"), nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-	if (hUxTheme == NULL) {
-		// Trace error
-		TRACE_FORMAT("Error: Load UXTheme library failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return false;
-	}
-
-	// Get function pointer
-	using fnAllowDarkMode = bool (WINAPI*)(HWND hWND, bool bAllow);
-	static const fnAllowDarkMode AllowDarkModeForWindow = (fnAllowDarkMode)GetProcAddress(hUxTheme, MAKEINTRESOURCEA(133));
-	if (AllowDarkModeForWindow == NULL) {
-		// Trace error
-		TRACE_FORMAT("Error: Get AllowDarkModeForWindow function address failed!!! (Code: 0x%08X)", GetLastError());
-		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return false;
-	}
-
-	// Set dark mode for each dialog item
-	CWnd* pWndChild = NULL;
-	for (pWndChild = pWnd->GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
-	{
-		HWND hWndChild = pWndChild->GetSafeHwnd();
-		AllowDarkModeForWindow(hWndChild, bEnableDarkMode);
-		SetWindowTheme(hWndChild, _T("DarkMode_Explorer"), NULL);
-		SendMessage(hWndChild, WM_THEMECHANGED, 0, 0);
-	}
-
-	return true;
-}
-
-
-/**
- * @brief	Create button with icon
- * @param	pBtn		 - Pointer of button item
- * @param	nIconID		 - ID of button icon
- * @param	lpszBtnTitle - Title of button
- * @return	None
- */
-void AppCore::DrawButton(CButton*& pBtn, unsigned nIconID, const wchar_t* buttonTitle /* = Constant::String::Empty */)
-{
-	// Check validity
-	if (pBtn == NULL)
-		return;
-
-	// Load icon
-	HICON hBtnIcon = AfxGetApp()->LoadIcon(nIconID);
-	if (hBtnIcon == NULL)
-		return;
-
-	// Button rect
-	CRect rcBtnRect;
-	pBtn->GetWindowRect(&rcBtnRect);
-
-	// Button title
-	String buttonTitleString;
-	buttonTitleString.SetString(buttonTitle);
-	if (!buttonTitleString.IsEmpty()) {
-		wchar_t _tempBuffer[Constant::Max::StringLength] = {0};
-		pBtn->GetWindowText(_tempBuffer, Constant::Max::StringLength);
-		buttonTitleString.SetString(_tempBuffer);
-	}
-
-	// Update button
-	pBtn->SetButtonStyle(BS_ICON);
-	pBtn->SetIcon(hBtnIcon);
-	pBtn->UpdateWindow();
 }
 
 

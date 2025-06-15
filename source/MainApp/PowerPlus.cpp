@@ -88,11 +88,6 @@ CPowerPlusApp::~CPowerPlusApp()
 
 	// Destroy DebugTest dialog
 	DestroyDebugTestDlg();
-
-	// Release trace/debug log files
-	ReleaseTraceErrorLogFile();
-	ReleaseTraceDebugLogFile();
-	ReleaseDebugInfoLogFile();
 }
 
 
