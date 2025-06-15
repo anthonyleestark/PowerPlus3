@@ -1579,8 +1579,8 @@ void SDialog::SetButtonIcon(unsigned nButtonID, unsigned nIconID, bool bReUpdate
 	}
 
 	// Icon size
-	int cx = BUTTON_ICON_WIDTH;
-	int cy = BUTTON_ICON_HEIGHT;
+	int cx = Constant::UI::Button::IconWidth;
+	int cy = Constant::UI::Button::IconHeight;
 
 	// Load icon from resource
 	HINSTANCE hInstance = AfxGetApp()->m_hInstance;

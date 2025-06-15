@@ -1154,7 +1154,7 @@ bool SLogging::Write(void)
 	String currentFileName;
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
 
 	LOGITEM logItem;
 	DateTime stTemp;
@@ -1176,8 +1176,8 @@ bool SLogging::Write(void)
 		{
 		case LOGTYPE_APP_EVENT:
 			// Format app event log filename
-			fileName.Format(FILENAME_APPEVENT_LOG, stTemp.Year(), stTemp.Month());
-			filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
+			fileName.Format(Constant::File::Name::AppEventLog, stTemp.Year(), stTemp.Month());
+			filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 			if (currentFileName.IsEmpty()) {
 				// Set current file name
 				currentFileName = fileName;
@@ -1206,8 +1206,8 @@ bool SLogging::Write(void)
 
 		case LOGTYPE_HISTORY_LOG:
 			// App history log
-			fileName = FILENAME_HISTORY_LOG;
-			filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
+			fileName = Constant::File::Name::AppHistory;
+			filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 			break;
 
 		default:
@@ -1293,12 +1293,12 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		fileName.Format(FILENAME_APPEVENT_LOG, stTimeTemp.Year(), stTimeTemp.Month());
+		fileName.Format(Constant::File::Name::AppEventLog, stTimeTemp.Year(), stTimeTemp.Month());
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
 		// App history log
-		fileName = FILENAME_HISTORY_LOG;
+		fileName = Constant::File::Name::AppHistory;
 		break;
 
 	default:
@@ -1311,10 +1311,10 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	}
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
 
 	// Get file path
-	String filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
+	String filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -1384,12 +1384,12 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		fileName.Format(FILENAME_APPEVENT_LOG, stCurTime.Year(), stCurTime.Month());
+		fileName.Format(Constant::File::Name::AppEventLog, stCurTime.Year(), stCurTime.Month());
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
 		// App history log
-		fileName = FILENAME_HISTORY_LOG;
+		fileName = Constant::File::Name::AppHistory;
 		break;
 
 	default:
@@ -1403,10 +1403,10 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	}
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
 
 	// Get file path
-	String filePath = StringUtils::MakeFilePath(folderPath, fileName, FILEEXT_LOGFILE);
+	String filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -1509,10 +1509,10 @@ bool DebugLogging::InitTraceErrorLogFile(void)
 	NULL_POINTER_BREAK(m_pFileLogTraceError, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
+	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceError, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogTraceError->m_hFile == CFile::hFileNull) {
@@ -1535,7 +1535,7 @@ bool DebugLogging::InitTraceErrorLogFile(void)
 			m_pFileLogTraceError->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, FILENAME_TRACE_ERROR_LOG))
+			if (!BackupOldLogFile(strFilePath, Constant::File::Name::TraceError))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1584,10 +1584,10 @@ bool DebugLogging::InitTraceDebugLogFile(void)
 	NULL_POINTER_BREAK(m_pFileLogTraceDebug, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
+	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogTraceDebug->m_hFile == CFile::hFileNull) {
@@ -1610,7 +1610,7 @@ bool DebugLogging::InitTraceDebugLogFile(void)
 			m_pFileLogTraceDebug->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, FILENAME_TRACE_DEBUG_LOG))
+			if (!BackupOldLogFile(strFilePath, Constant::File::Name::TraceDebug))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1659,10 +1659,10 @@ bool DebugLogging::InitDebugInfoLogFile(void)
 	NULL_POINTER_BREAK(m_pFileLogDebugInfo, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
+	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogDebugInfo->m_hFile == CFile::hFileNull) {
@@ -1685,7 +1685,7 @@ bool DebugLogging::InitDebugInfoLogFile(void)
 			m_pFileLogDebugInfo->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, FILENAME_DEBUG_INFO_LOG))
+			if (!BackupOldLogFile(strFilePath, Constant::File::Name::DebugInfo))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1732,13 +1732,13 @@ bool DebugLogging::BackupOldLogFile(const String& filePath, const wchar_t* logFi
 	if (filePath.IsEmpty()) return false;
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
 
 	// Search for backup file list
 	for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
 
 		// Make backup file path template
-		String filePathTemp = StringUtils::MakeFilePath(folderPath, logFileName, FILEEXT_BAKLOGFILE);
+		String filePathTemp = StringUtils::MakeFilePath(folderPath, logFileName, Constant::File::Extension::Backup_Log);
 		if (filePathTemp.IsEmpty())
 			return false;
 
@@ -1815,9 +1815,9 @@ void DebugLogging::WriteTraceErrorLogFile(const wchar_t* logStringW)
 			pTraceErrorLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath.GetString(), FILENAME_TRACE_ERROR_LOG, FILEEXT_LOGFILE);
-			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_ERROR_LOG))
+			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath.GetString(), Constant::File::Name::TraceError, Constant::File::Extension::Log);
+			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::TraceError))
 				return;
 
 			// Step3: Release log file pointer --> Quit
@@ -1880,9 +1880,9 @@ void DebugLogging::WriteTraceDebugLogFile(const wchar_t* logStringW)
 			pTraceDebugLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_TRACE_DEBUG_LOG, FILEEXT_LOGFILE);
-			if (!BackupOldLogFile(strOrgFilePath, FILENAME_TRACE_DEBUG_LOG))
+			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
+			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::TraceDebug))
 				return;
 
 			// Step3: Release log file pointer --> Quit
@@ -1945,9 +1945,9 @@ void DebugLogging::WriteDebugInfoLogFile(const wchar_t* logStringW)
 			pDebugInfoLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, FILENAME_DEBUG_INFO_LOG, FILEEXT_LOGFILE);
-			if (!BackupOldLogFile(strOrgFilePath, FILENAME_DEBUG_INFO_LOG))
+			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
+			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::DebugInfo))
 				return;
 
 			// Step3: Release log file pointer --> Quit
@@ -1968,7 +1968,7 @@ void DebugLogging::WriteDebugInfoLogFile(const wchar_t* logStringW)
 void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
 {
 	// Log file path
-	String filePath = StringUtils::MakeFilePath(SUBFOLDER_LOG, fileName, FILEEXT_LOGFILE);
+	String filePath = StringUtils::MakeFilePath(Constant::Folder::Log, fileName, Constant::File::Extension::Log);
 
 	CFile fTrcDbgLogFile;
 
@@ -1997,7 +1997,7 @@ void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wc
 			CFileFind Finder;
 			String backupFilePath;
 			for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
-				backupFilePath.Format((filePath + FILEEXT_BAKLOGFILE), nNum);
+				backupFilePath.Format((filePath + Constant::File::Extension::Backup_Log), nNum);
 				if (Finder.FindFile(backupFilePath) == true) {
 					if (nNum == (Constant::Max::BackupFileNumber - 1)) return;
 					else continue;

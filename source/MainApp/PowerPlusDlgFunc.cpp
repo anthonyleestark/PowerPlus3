@@ -141,7 +141,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(debugCommand, _T("viewbakconfig"))) {
 		// View backup configuration file
-		OpenTextFileToView(FILENAME_BAKCONFIG, FILEEXT_REGFILE);
+		OpenTextFileToView(Constant::File::Name::Backup_Config, Constant::File::Extension::Reg);
 		logOutputResult.Format(_T("Opening backup config file..."));
 		OutputDebugLog(logOutputResult, DebugTestTool);
 		bNoReply = false;	// Reset flag
@@ -149,7 +149,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(debugCommand, _T("viewhistory"))) {
 		// View action history log file
-		OpenTextFileToView(FILENAME_HISTORY_LOG, FILEEXT_LOGFILE, SUBFOLDER_LOG);
+		OpenTextFileToView(Constant::File::Name::AppHistory, Constant::File::Extension::Log, Constant::Folder::Log);
 		logOutputResult.Format(_T("Opening action history log file..."));
 		OutputDebugLog(logOutputResult, DebugTestTool);
 		bNoReply = false;	// Reset flag
@@ -475,7 +475,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				strKeyName = _T("AppEventLog");
 			}
 			CFileFind Finder;
-			String fileName = StringUtils::MakeFilePath(StringUtils::GetSubFolderPath(SUBFOLDER_LOG), _T("*"), FILEEXT_LOGFILE);
+			String fileName = StringUtils::MakeFilePath(StringUtils::GetSubFolderPath(Constant::Folder::Log), _T("*"), Constant::File::Extension::Log);
 			bool bFindRet = Finder.FindFile(fileName);
 			if (!strKeyName.IsEmpty()) {
 				int nDelFileCount = 0;

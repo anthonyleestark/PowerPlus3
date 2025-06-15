@@ -417,7 +417,7 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 	pCell->SetMargin(0);
 	pCell->SetBackClr(Color::White);
 	pCell->SetTextClr(Color::Black);
-	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
+	pCell->SetHeight(Constant::UI::GridCtrl::Height::Row_Ex);
 
 	// Setup table
 	m_pActiveDayListTable->SetColumnCount(2);
@@ -474,16 +474,16 @@ void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
 	int nFrameWidth = m_pszActiveTableFrameSize->cx;
 	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
+		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
+		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl;
 	}
-	if ((Constant::Max::DaysOfWeek * GRIDCTRL_HEIGHT_ROW_EX) >= nFrameHeight) {
+	if ((Constant::Max::DaysOfWeek * Constant::UI::GridCtrl::Height::Row_Ex) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
+		nFrameWidth -= (nScrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns

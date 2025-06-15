@@ -176,7 +176,7 @@ BOOL CPowerPlusApp::InitInstance()
 	UpdateAppLaunchTimeProfileInfo();
 
 	// Create neccessary sub-folders
-	String subDirectory = StringUtils::GetSubFolderPath(SUBFOLDER_LOG);
+	String subDirectory = StringUtils::GetSubFolderPath(Constant::Folder::Log);
 	CreateDirectory(subDirectory, NULL);
 
 	// Setup low-level keyboard hook
@@ -2198,24 +2198,24 @@ int CPowerPlusApp::EnableAutoStart(bool bEnable, bool bRunAsAdmin)
 
 		if (bRunAsAdmin == true) {
 			// Register to run as admin
-			execCommand.Format(Constant::Command::RunAsAdmin::Register, REG_AFX_PROJECTNAME, StringUtils::GetApplicationPath(true).GetString());
+			execCommand.Format(Constant::Command::RunAsAdmin::Register, AppProfile::ProjectName, StringUtils::GetApplicationPath(true).GetString());
 			WinExec(MAKEANSI(execCommand), SW_HIDE);
 		}
 		else {
 			// Unregister to run as admin
-			execCommand.Format(Constant::Command::RunAsAdmin::Unregister, REG_AFX_PROJECTNAME);
+			execCommand.Format(Constant::Command::RunAsAdmin::Unregister, AppProfile::ProjectName);
 			WinExec(MAKEANSI(execCommand), SW_HIDE);
 		}
 
 		// Register to run at startup
 		GetModuleFileName(NULL, tcPath, sizeof(tcPath) / sizeof(TCHAR));
-		lRes = RegSetValueEx(hKey, REG_STARTUP_VALUENAME, 0, REG_SZ, (LPBYTE)tcPath, (_tcsclen(tcPath) + 1) * sizeof(TCHAR));
+		lRes = RegSetValueEx(hKey, AppProfile::ProjectName, 0, REG_SZ, (LPBYTE)tcPath, (_tcsclen(tcPath) + 1) * sizeof(TCHAR));
 		nRet = (lRes == ERROR_SUCCESS);
 	}
 	else {
 		// Unregister to run at startup
-		RegDeleteValue(hKey, REG_STARTUP_VALUENAME);
-		lRes = RegQueryValueEx(hKey, REG_STARTUP_VALUENAME, 0, NULL, NULL, NULL);
+		RegDeleteValue(hKey, AppProfile::ProjectName);
+		lRes = RegQueryValueEx(hKey, AppProfile::ProjectName, 0, NULL, NULL, NULL);
 		nRet = (lRes != ERROR_SUCCESS);
 	}
 
@@ -2246,7 +2246,7 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
 	}
 
 	// Get registry key value
-	lRes = RegQueryValueEx(hKey, REG_STARTUP_VALUENAME, 0, NULL, NULL, NULL);
+	lRes = RegQueryValueEx(hKey, AppProfile::ProjectName, 0, NULL, NULL, NULL);
 
 	// Close key
 	RegCloseKey(hKey);

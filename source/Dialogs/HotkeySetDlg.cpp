@@ -660,7 +660,7 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 	pCell->SetMargin(0);
 	pCell->SetBackClr(Color::White);
 	pCell->SetTextClr(Color::Black);
-	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW);
+	pCell->SetHeight(Constant::UI::GridCtrl::Height::Row);
 
 	// Table format and properties
 	int nRowNum = (GetItemNum() + fixedRowNum);
@@ -671,7 +671,7 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pHotkeySetListTable->SetFixedColumnCount(fixedColumnNum);
 	m_pHotkeySetListTable->SetRowCount(nRowNum);
 	m_pHotkeySetListTable->SetFixedRowCount(fixedRowNum);
-	m_pHotkeySetListTable->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
+	m_pHotkeySetListTable->SetRowHeight(Constant::UI::GridCtrl::Height::Row, Constant::UI::GridCtrl::Height::Row);
 
 	// Draw table
 	DrawHotkeySetTable(GetReadOnlyMode());
@@ -735,22 +735,22 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 	int nFrameWidth = m_pszDataTableFrameSize->cx;
 	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
+		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
+		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl;
 	}
-	if ((GRIDCTRL_HEIGHT_HEADER + ((nRowNum - 1) * GRIDCTRL_HEIGHT_ROW)) >= nFrameHeight) {
+	if ((Constant::UI::Offset::Width::ListCtrl + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row)) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
+		nFrameWidth -= (nScrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pHotkeySetListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
+		SetFixedCellStyle(m_pHotkeySetListTable, Constant::UI::GridCtrl::Index::Header_Row, nCol);
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
@@ -758,7 +758,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 		if (nHeaderTitleID != INT_NULL) {
 			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pHotkeySetListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, headerTitle);
+		m_pHotkeySetListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -825,7 +825,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 				else {
 					// Set margin (left alignment)
 					if (pCell == NULL) continue;
-					pCell->SetMargin(GRIDCELL_MARGIN_LEFT);
+					pCell->SetMargin(Constant::UI::GridCtrl::Margin::Left);
 				}
 			}
 		}
@@ -1285,7 +1285,7 @@ void CHotkeySetDlg::Add(void)
 	UpdateData(true);
 
 	// Create temp hotkeyset item
-	Item hksTemp = STRUCT_ZERO;
+	Item hksTemp = {0};
 
 	// Keycode
 	DWORD dwModifiers = 0, dwVirtualKey = 0;

@@ -1112,7 +1112,7 @@ void CPowerPlusDlg::OnViewActionLog()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEWACTIONLOG_BTN);
 
 	// View action log file
-	OpenTextFileToView(FILENAME_HISTORY_LOG, FILEEXT_LOGFILE, SUBFOLDER_LOG);
+	OpenTextFileToView(Constant::File::Name::AppHistory, Constant::File::Extension::Log, Constant::Folder::Log);
 }
 
 
@@ -1127,7 +1127,7 @@ void CPowerPlusDlg::OnViewBackupConfig()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEWBAKCFG_BTN);
 
 	// View backup config file
-	OpenTextFileToView(FILENAME_BAKCONFIG, FILEEXT_REGFILE);
+	OpenTextFileToView(Constant::File::Name::Backup_Config, Constant::File::Extension::Reg);
 }
 
 
@@ -1624,7 +1624,7 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 	case IDM_NOTIFY_VIEW_ACTIONLOG:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_VIEW_ACTIONLOG);
-		OpenTextFileToView(FILENAME_HISTORY_LOG, FILEEXT_LOGFILE, SUBFOLDER_LOG);
+		OpenTextFileToView(Constant::File::Name::AppHistory, Constant::File::Extension::Log, Constant::Folder::Log);
 		break;
 	case IDM_NOTIFY_BACKUP_CONFIG:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_BACKUP_CONFIG);
@@ -1632,7 +1632,7 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 	case IDM_NOTIFY_VIEW_BAKCONFIG:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_VIEW_BAKCONFIG);
-		OpenTextFileToView(FILENAME_BAKCONFIG, FILEEXT_REGFILE);
+		OpenTextFileToView(Constant::File::Name::Backup_Config, Constant::File::Extension::Reg);
 		break;
 	case IDM_NOTIFY_OPENDLG_LOGVIEWER:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_OPENDLG_LOGVIEWER);

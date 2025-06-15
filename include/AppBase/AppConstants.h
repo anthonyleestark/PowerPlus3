@@ -216,4 +216,91 @@ struct Constant {
 			static constexpr const wchar_t* Unregister				= L"schtasks /delete /tn %s /f";
 		};
 	};
+
+	// Special UI constants
+	struct UI {
+
+		// Button
+		struct Button {
+			static constexpr const int IconWidth				= 20;
+			static constexpr const int IconHeight				= 20;
+			static constexpr const int IconSize					= 20;
+		};
+
+		// Offset values
+		struct Offset {
+			struct Width {
+				static constexpr const int VScrollBar			= 3;
+				static constexpr const int ListCtrl				= 5;
+				static constexpr const int ListCtrl_Win10		= 16;
+				static constexpr const int ListColumn			= 10;
+			};
+			struct Height {
+				static constexpr const int ListCtrl				= 5;
+				static constexpr const int ListCtrl_Win10		= 16;
+			};
+		};
+
+		// List control
+		struct ListCtrl {
+			struct Height {
+				static constexpr const int Header				= 27;
+				static constexpr const int Row					= 18;
+			};
+		};
+
+		// Grid control
+		struct GridCtrl {
+			struct Height {
+				static constexpr const int Header				= 25;
+				static constexpr const int Row					= 23;
+				static constexpr const int Header_Ex			= 28;
+				static constexpr const int Row_Ex				= 25;
+			};
+			struct Index {
+				static constexpr const int Header_Row			= 0;
+			};
+			struct Margin {
+				static constexpr const int Left					= 3;
+			};
+		};
+	};
+
+	// Folders
+	struct Folder {
+		static constexpr const wchar_t* Log						= L"Log";
+		static constexpr const wchar_t* Help					= L"Help";
+		static constexpr const wchar_t* Backup					= L"Backup";
+		static constexpr const wchar_t* Temp					= L"Temp";
+	};
+
+	// Files
+	struct File {
+		struct Name {
+			static constexpr const wchar_t* App_Executable		= L"power++";
+			static constexpr const wchar_t* Config				= L"Config";
+			static constexpr const wchar_t* Backup_Config		= L"BakConfig";
+			static constexpr const wchar_t* AppEventLog			= L"AppEventLog_%04d_%02d";
+			static constexpr const wchar_t* AppHistory			= L"AppHistory";
+			static constexpr const wchar_t* TraceError			= L"TraceError";
+			static constexpr const wchar_t* TraceDebug			= L"TraceDebug";
+			static constexpr const wchar_t* DebugInfo			= L"DebugInfo";
+		};
+		struct Extension {
+			static constexpr const wchar_t* Exe					= L".exe";						// EXE file
+			static constexpr const wchar_t* Ini					= L".ini";						// INI file
+			static constexpr const wchar_t* Reg					= L".reg";						// Registry file
+			static constexpr const wchar_t* Log					= L".log";						// Log file
+			static constexpr const wchar_t* Backup				= L".bak";						// Backup file extension
+			static constexpr const wchar_t* Backup_Log			= L"_%02d.log.bak";				// Backup log file extension
+			static constexpr const wchar_t* Help				= L".hlps";						// Help file
+		};
+	};
+
+	// Paths
+	struct Path {
+		static constexpr const wchar_t* Notepad					= L"C:\\Windows\\notepad.exe";
+		static constexpr const wchar_t* SystemCMD				= L"C:\\Windows\\System32\\cmd.exe";
+	};
 };
+

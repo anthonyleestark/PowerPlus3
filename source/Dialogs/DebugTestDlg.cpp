@@ -695,7 +695,7 @@ bool CDebugTestDlg::CreateDebugViewFont(void)
 	}
 
 	// Setup font properties
-	LOGFONT lf = STRUCT_ZERO;
+	LOGFONT lf = {0};
 	_tcscpy_s(lf.lfFaceName, _T("Cascadia Mono"));
 	lf.lfHeight = -16;
 	lf.lfWeight = FW_SEMIBOLD;

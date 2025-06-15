@@ -413,7 +413,7 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR /*ptrLanguage*/)
 	pCell->SetMargin(0);
 	pCell->SetBackClr(Color::White);
 	pCell->SetTextClr(Color::Black);
-	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
+	pCell->SetHeight(Constant::UI::GridCtrl::Height::Row_Ex);
 
 	// Table format and properties
 	int nRowNum = (GetTotalItemNum() + fixedRowNum);
@@ -424,7 +424,7 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pDataItemListTable->SetFixedColumnCount(fixedColumnNum);
 	m_pDataItemListTable->SetRowCount(nRowNum);
 	m_pDataItemListTable->SetFixedRowCount(fixedRowNum);
-	m_pDataItemListTable->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
+	m_pDataItemListTable->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Header);
 
 	// Draw table
 	DrawDataTable(GetReadOnlyMode());
@@ -488,24 +488,24 @@ void CMultiScheduleDlg::DrawDataTable(bool bReadOnly /* = false */)
 	int nFrameWidth = m_pszDataTableFrameSize->cx;
 	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
+		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
+		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl;
 		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL;
 	}
-	if ((GRIDCTRL_HEIGHT_HEADER + ((nRowNum - 1) * GRIDCTRL_HEIGHT_ROW_EX)) >= nFrameHeight) {
+	if ((Constant::UI::GridCtrl::Height::Header + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row_Ex)) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
+		nFrameWidth -= (nScrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pDataItemListTable, GRIDCTRL_INDEX_HEADER_ROW, nCol);
+		SetFixedCellStyle(m_pDataItemListTable, Constant::UI::GridCtrl::Index::Header_Row, nCol);
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
@@ -513,7 +513,7 @@ void CMultiScheduleDlg::DrawDataTable(bool bReadOnly /* = false */)
 		if (nHeaderTitleID != INT_NULL) {
 			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pDataItemListTable->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, headerTitle);
+		m_pDataItemListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -589,7 +589,7 @@ void CMultiScheduleDlg::DrawDataTable(bool bReadOnly /* = false */)
 				else {
 					// Set margin (left alignment)
 					if (pCell == NULL) continue;
-					pCell->SetMargin(GRIDCELL_MARGIN_LEFT);
+					pCell->SetMargin(Constant::UI::GridCtrl::Margin::Left);
 				}
 			}
 		}
@@ -1682,7 +1682,7 @@ void CMultiScheduleDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Check value validity
 	int nItemNum = GetTotalItemNum();
-	if ((nClickedRow <= GRIDCTRL_INDEX_HEADER_ROW) || (nClickedRow > nItemNum)) {
+	if ((nClickedRow <= Constant::UI::GridCtrl::Index::Header_Row) || (nClickedRow > nItemNum)) {
 		return;
 	}
 
@@ -1709,7 +1709,7 @@ void CMultiScheduleDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult
 
 	// Check value validity
 	int nItemNum = GetTotalItemNum();
-	if ((nClickedRow <= GRIDCTRL_INDEX_HEADER_ROW) || (nClickedRow > nItemNum)) {
+	if ((nClickedRow <= Constant::UI::GridCtrl::Index::Header_Row) || (nClickedRow > nItemNum)) {
 		return;
 	}
 

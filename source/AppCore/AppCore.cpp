@@ -1872,7 +1872,7 @@ String StringUtils::MakeFilePath(const wchar_t* directory, const wchar_t* fileNa
 String StringUtils::GetProductVersion(bool isFullVersion)
 {
 	// Get product file name
-	String productFileName = StringUtils::MakeFilePath(NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE);
+	String productFileName = StringUtils::MakeFilePath(NULL, Constant::File::Name::App_Executable, Constant::File::Extension::Exe);
 	if (productFileName.IsEmpty()) {
 		// Trace error
 		TRACE_ERROR("Error: Make file path failed!!!");
@@ -1949,7 +1949,7 @@ String StringUtils::GetProductVersion(bool isFullVersion)
 bool StringUtils::GetProductVersion(String& fullVersion, String& shortVersion)
 {
 	// Get product file name
-	String productFileName = StringUtils::MakeFilePath(NULL, FILENAME_APPEXEFILE, FILEEXT_EXEFILE);
+	String productFileName = StringUtils::MakeFilePath(NULL, Constant::File::Name::App_Executable, Constant::File::Extension::Exe);
 	if (productFileName.IsEmpty()) {
 		// Trace error
 		TRACE_ERROR("Error: Make file path failed!!!");
@@ -2898,7 +2898,7 @@ LRESULT	AppCore::WaitMessage(unsigned nMsg, int nTimeout /* = DEF_WAITMESSAGE_TI
 
 	// Wait for message
 	while (1) {
-		MSG msg = STRUCT_ZERO;
+		MSG msg = {0};
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
 
 			// If received specified message, break the loop
@@ -3203,7 +3203,7 @@ bool AppCore::FileViewStd(FILETYPE eFileType, const wchar_t* filePath)
 	switch (eFileType) 
 	{
 	case FILETYPE_TEXT:
-		appPath = PATH_APP_NOTEPAD;
+		appPath = Constant::Path::Notepad;
 		break;
 	case FILETYPE_IMAGE:
 		break;
@@ -3267,7 +3267,7 @@ LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, bool bRunAsAdmin /
 	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
 
 	// Excute command
-	HINSTANCE hInstance = ShellExecute(NULL, strRunAsFlag, PATH_APP_SYSTEMCMD, commandFormat, 0, nShowFlag);
+	HINSTANCE hInstance = ShellExecute(NULL, strRunAsFlag, Constant::Path::SystemCMD, commandFormat, 0, nShowFlag);
 	return (LRESULT)(hInstance != NULL);
 }
 
@@ -3339,7 +3339,7 @@ static bool CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRIC
 bool AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 {
 	// Define temp font
-	LOGFONT logfont = STRUCT_ZERO;
+	LOGFONT logfont = {0};
 	logfont.lfCharSet = DEFAULT_CHARSET;
 
 	// Get font families

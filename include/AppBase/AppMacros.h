@@ -272,40 +272,6 @@
 #define LOGTYPE_DEBUG_INFO							(LOGTYPE_NONE + 0x05)			// Debug info output log
 
 
-// Define subdirectory names
-//
-
-#define SUBFOLDER_LOG								_T("Log")
-#define SUBFOLDER_HELP								_T("Help")
-#define SUBFOLDER_BACKUP							_T("Backup")
-#define SUBFOLDER_TEMP								_T("Temp")
-
-
-// Define file names
-//
-
-#define FILENAME_APPEXEFILE							_T("power++")
-#define FILENAME_APPCONFIG							_T("Config")
-#define FILENAME_BAKCONFIG							_T("BakConfig")
-#define FILENAME_APPEVENT_LOG						_T("AppEventLog_%04d_%02d")
-#define FILENAME_HISTORY_LOG						_T("AppHistory")
-#define FILENAME_TRACE_ERROR_LOG					_T("TraceError")
-#define FILENAME_TRACE_DEBUG_LOG					_T("TraceDebug")
-#define FILENAME_DEBUG_INFO_LOG						_T("DebugInfo")
-
-
-// Define file extensions
-//
-
-#define FILEEXT_EXEFILE								_T(".exe")						// EXE file
-#define FILEEXT_INIFILE								_T(".ini")						// INI file
-#define FILEEXT_REGFILE								_T(".reg")						// Registry file
-#define FILEEXT_LOGFILE								_T(".log")						// Log file
-#define FILEEXT_BAKFILE								_T(".bak")						// Backup file extension
-#define FILEEXT_BAKLOGFILE							_T("_%02d.log.bak")				// Backup log file extension
-#define FILEEXT_HELPFILE							_T(".hlps")						// Help file
-
-
 // Define timer IDs
 //
 
@@ -316,15 +282,6 @@
 #define TIMERID_RMDMSG_AUTOCLOSE					(TIMERID_DEFAULT + 4)			// Timer ID for Reminder message auto close feature
 
 
-// Other special definitions
-//
-
-#define REG_AFX_PROJECTNAME							_T("Power++")
-#define REG_STARTUP_VALUENAME						REG_AFX_PROJECTNAME
-#define PATH_APP_NOTEPAD							_T("C:\\Windows\\notepad.exe")
-#define PATH_APP_SYSTEMCMD							_T("C:\\Windows\\System32\\cmd.exe")
-
-
 // Define special numbers and numeric values
 //
 
@@ -333,8 +290,6 @@
 #define INT_INFINITE								INFINITE						// Infinite (no limitation)
 #define FLOAT_INVALID								-1.0F							// Invalid float number (equals -1.0)
 #define FLOAT_NULL									0.0F							// Null float number (equals 0)
-#define STRUCT_ZERO									{0}								// Zero-initialized struct data
-#define SYSTEMTIME_ZERO								STRUCT_ZERO						// Zero-initialized systemtime data
 
 
 // Define windows system OS info macros
@@ -358,31 +313,6 @@
 #define OS_BUILDNUMBER_W8_LATEST					9600							// Windows 8/8.1 latest build number: 9600
 #define OS_BUILDNUMBER_W10_ORIGINAL					10240							// Windows 10 original release build number: 10240
 #define OS_BUILDNUMBER_W11_EARLIEST					21996							// Windows 11 earliest build number: 21996
-
-
-// Define specific/default values for controls or items
-//
-
-#define BUTTON_ICON_WIDTH							20								// Button icon width: 20px
-#define BUTTON_ICON_HEIGHT							20								// Button icon height: 20px
-#define BUTTON_ICON_SIZE							20								// Button icon size (square): 20x20 (px)
-
-#define OFFSET_WIDTH_VSCRLBR						3								// Vertical scrollbar width offset = 3px
-#define OFFSET_WIDTH_LISTCTRL						5								// List control width offset = 5px
-#define OFFSET_WIDTH_LISTCTRL_WIN10					16								// List control width offset (on Windows 10) = 16px
-#define OFFSET_HEIGHT_LISTCTRL						5								// List control height offset = 5px
-#define OFFSET_HEIGHT_LISTCTRL_WIN10				16								// List control height offset (on Windows 10) = 16px
-#define OFFSET_WIDTH_LISTCOL_WIN10					10								// List control column width offset (on Windows 10) = 10px
-
-#define LISTCTRL_HEIGHT_HEADER						27								// List control header height = 27px
-#define LISTCTRL_HEIGHT_ROW							18								// List control row height = 18px
-
-#define GRIDCTRL_HEIGHT_HEADER						25								// Grid control header height = 25px
-#define GRIDCTRL_HEIGHT_HEADER_EX					28								// Grid control header height (extra) = 28px
-#define GRIDCTRL_HEIGHT_ROW							23								// Grid control row height = 23px
-#define GRIDCTRL_HEIGHT_ROW_EX						25								// Grid control row height (extra) = 25px
-#define GRIDCTRL_INDEX_HEADER_ROW					0								// Grid control header row index
-#define GRIDCELL_MARGIN_LEFT						3								// Grid cell left margin = 3px
 
 
 // Trace log functions

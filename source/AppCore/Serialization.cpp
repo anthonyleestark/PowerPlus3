@@ -623,7 +623,7 @@ BackupSystem::~BackupSystem()
 bool BackupSystem::RegistryExport()
 {
 	// Registry export destination file
-	String destFilePath = StringUtils::MakeFilePath(NULL, FILENAME_BAKCONFIG, FILEEXT_REGFILE);
+	String destFilePath = StringUtils::MakeFilePath(NULL, Constant::File::Name::Backup_Config, Constant::File::Extension::Reg);
 	if (destFilePath.IsEmpty()) {
 		// Make file path failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to make destination file path!!!");

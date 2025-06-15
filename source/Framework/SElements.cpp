@@ -564,7 +564,7 @@ void SCtrlInfoWrap::GetReserveStringArray(_Out_ StringArray& astrValue) const
 SYSTEMTIME SCtrlInfoWrap::GetTime(void) const
 {
 	if (this->m_pstTimeValue == NULL)
-		return SYSTEMTIME_ZERO;
+		return {0};
 	else
 		return *(this->m_pstTimeValue);
 }
@@ -572,7 +572,7 @@ SYSTEMTIME SCtrlInfoWrap::GetTime(void) const
 void SCtrlInfoWrap::GetTime(_Out_ SYSTEMTIME& timeValue) const
 {
 	if (this->m_pstTimeValue == NULL)
-		timeValue = SYSTEMTIME_ZERO;
+		timeValue = {0};
 	else
 		timeValue = *(this->m_pstTimeValue);
 }
@@ -1477,7 +1477,7 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			case Date_Time_Picker:
 			{
 				// Update control's date/time value
-				SYSTEMTIME timeTemp = SYSTEMTIME_ZERO;
+				SYSTEMTIME timeTemp{};
 				((CDateTimeCtrl*)pBaseControl)->GetTime(&timeTemp);
 				pCurControl->SetTime(timeTemp);
 			} break;
@@ -1486,7 +1486,7 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			case Month_Calendar_Control:
 			{
 				// Update control's current selected date
-				SYSTEMTIME dateTemp = SYSTEMTIME_ZERO;
+				SYSTEMTIME dateTemp{};
 				((CMonthCalCtrl*)pBaseControl)->GetCurSel(&dateTemp);
 				pCurControl->SetTime(dateTemp);
 			} break;

@@ -321,7 +321,7 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 	pCell->SetMargin(0);
 	pCell->SetBackClr(Color::White);
 	pCell->SetTextClr(Color::Black);
-	pCell->SetHeight(GRIDCTRL_HEIGHT_ROW_EX);
+	pCell->SetHeight(Constant::UI::GridCtrl::Height::Row_Ex);
 
 	// Table format and properties
 	int nRowNum = (m_nLogCount + fixedRowNum);
@@ -331,7 +331,7 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pLogViewerList->SetColumnCount(nColNum);
 	m_pLogViewerList->SetRowCount(nRowNum);
 	m_pLogViewerList->SetFixedRowCount(fixedRowNum);
-	m_pLogViewerList->SetRowHeight(GRIDCTRL_INDEX_HEADER_ROW, GRIDCTRL_HEIGHT_HEADER);
+	m_pLogViewerList->SetRowHeight(Constant::UI::GridCtrl::Height::Row, Constant::UI::GridCtrl::Height::Row);
 
 	// Draw table
 	DrawLogViewerTable();
@@ -387,25 +387,25 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	int nColWidthOffset = 0;
 	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= OFFSET_WIDTH_LISTCTRL_WIN10;
-		nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
-		nColWidthOffset = OFFSET_WIDTH_LISTCOL_WIN10;
+		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
+		nFrameHeight -= Constant::UI::Offset::Height::ListCtrl_Win10;
+		nColWidthOffset = Constant::UI::Offset::Width::ListColumn;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= OFFSET_WIDTH_LISTCTRL;
-		nFrameHeight -= OFFSET_HEIGHT_LISTCTRL;
+		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl;
+		nFrameHeight -= Constant::UI::Offset::Height::ListCtrl;
 	}
-	if ((GRIDCTRL_HEIGHT_HEADER + ((nRowNum - 1) * GRIDCTRL_HEIGHT_ROW_EX)) >= nFrameHeight) {
+	if ((Constant::UI::Offset::Width::ListCtrl + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row_Ex)) >= nFrameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + OFFSET_WIDTH_VSCRLBR);
+		nFrameWidth -= (nScrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pLogViewerList, GRIDCTRL_INDEX_HEADER_ROW, nCol);
+		SetFixedCellStyle(m_pLogViewerList, Constant::UI::GridCtrl::Index::Header_Row, nCol);
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
@@ -413,7 +413,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 		if (nHeaderTitleID != INT_NULL) {
 			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
-		m_pLogViewerList->SetItemText(GRIDCTRL_INDEX_HEADER_ROW, nCol, headerTitle);
+		m_pLogViewerList->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
 		// Column width
 		int nColWidth = m_apGrdColFormat[nCol].nWidth;
@@ -481,7 +481,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 				else {
 					// Set margin (left alignment)
 					if (pCell == NULL) continue;
-					pCell->SetMargin(GRIDCELL_MARGIN_LEFT);
+					pCell->SetMargin(Constant::UI::GridCtrl::Margin::Left);
 				}
 			}
 		}

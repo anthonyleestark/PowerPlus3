@@ -14,6 +14,7 @@
 struct AppProfile {
 
 	static constexpr const wchar_t* CompanyName									= _T("Stark Personal");
+	static constexpr const wchar_t* ProjectName									= _T("Power++");
 	static constexpr const wchar_t* ProductName									= _T("Power++ v3.2");
 	static constexpr const wchar_t* ProductID									= _T("powerplusapp");
 
