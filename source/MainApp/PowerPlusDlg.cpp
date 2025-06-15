@@ -4950,12 +4950,11 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 	}
 
 	// Attach history action result detail info
-	if (m_hidHistoryInfoData.IsSuccess()) {
+	if (m_hidHistoryInfoData.IsSuccess() || m_hidHistoryInfoData.GetErrorCode() == APP_ERROR_SUCCESS) {
 		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::SuccessNoError, LogDetailFlag::LookUp_Dict);
 	}
 	else {
-		if ((m_hidHistoryInfoData.GetErrorCode() == INT_NULL) ||
-			(m_hidHistoryInfoData.GetErrorCode() == APP_ERROR_UNKNOWN)) {
+		if (m_hidHistoryInfoData.GetErrorCode() == APP_ERROR_UNKNOWN) {
 
 			// If error code is NULL or unknown, set as failed with unknown reason
 			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedUnknown, LogDetailFlag::LookUp_Dict);

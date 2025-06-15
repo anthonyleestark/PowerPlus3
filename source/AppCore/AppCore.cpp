@@ -1504,8 +1504,8 @@ void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval) noexcept
 	m_stTimestamp = DateTime();								// Timestamp of history
 	m_nItemID = INT_NULL;									// Item ID
 	m_nActionID = INT_NULL;									// History action ID
-	m_bActionResult = false;								// Action result
-	m_dwErrorCode = INT_NULL;								// Returned error code
+	m_bActionResult = true;									// Action result
+	m_dwErrorCode = APP_ERROR_SUCCESS;						// Returned error code
 	m_strDescription = Constant::String::Empty;				// History description (attached info)
 }
 
@@ -1544,7 +1544,8 @@ void HistoryInfoData::Init(unsigned nCategoryID) noexcept
 	m_bInitState = true;									// Init state
 	m_nCategoryID = nCategoryID;							// Category ID
 	m_stTimestamp = DateTimeUtils::GetCurrentDateTime();	// Timestamp of history
-	m_dwErrorCode = INT_NULL;								// Returned error code
+	m_bActionResult = true;									// Action result
+	m_dwErrorCode = APP_ERROR_SUCCESS;						// Returned error code
 	m_strDescription = Constant::String::Empty;				// History description (attached info)
 }
 
