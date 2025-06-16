@@ -92,9 +92,13 @@ void CCustomMsgDlg::OnDestroy()
  */
 void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
-	// Fix min/max size
-	pMinMaxInfo->ptMinTrackSize = CPoint(defaultWidth, defaultHeight);
-	pMinMaxInfo->ptMaxTrackSize = CPoint((defaultWidth * 3), (defaultHeight * 3));
+	// Fix min size
+	pMinMaxInfo->ptMinTrackSize.x = defaultWidth;
+	pMinMaxInfo->ptMinTrackSize.y = defaultHeight;
+
+	// Fix max size
+	pMinMaxInfo->ptMaxTrackSize.x = defaultWidth * 3;
+	pMinMaxInfo->ptMinTrackSize.y = defaultHeight * 3;
 
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
 }

@@ -35,7 +35,7 @@ private:
 	// Message font & icon
 	CFont*	m_pMsgFont;
 	HICON	m_hMsgIcon;
-	CSize	m_szIconSize;
+	Size	m_szIconSize;
 
 	// Message style set
 	RmdMsgStyleSet m_rmdMsgStyleSet;
@@ -96,8 +96,8 @@ public:
 	};
 
 	// Dialog size
-	virtual void SetSize(CSize szRegSize) {
-		SDialog::SetSize(szRegSize);
+	virtual void SetSize(Size regSize) {
+		SDialog::SetSize(regSize);
 		m_bLockDlgSize = true;
 	};
 	virtual void SetSize(long lWidth, long lHeight) {
@@ -126,10 +126,10 @@ protected:
 	bool InitMessageStyle(void);
 
 	// Calculate icon position
-	bool CalcMsgIconPosition(LPPOINT lpptIcon) const;
+	bool CalcMsgIconPosition(Point& iconPosition) const;
 
 	// Convert text and client rectangle
-	void ClientToText(LPRECT lpRect) const;
-	void TextToClient(LPRECT lpRect) const;
+	void ClientToText(Rect& rect) const;
+	void TextToClient(Rect& rect) const;
 };
 

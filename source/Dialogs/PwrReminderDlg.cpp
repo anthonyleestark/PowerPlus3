@@ -959,7 +959,7 @@ void CPwrReminderDlg::OnRepeatSet()
 	}
 
 	// Get button position
-	CRect rcButton;
+	RECT rcButton;
 	if (m_pEvtRepeatSetBtn != NULL) {
 		// Get button rectangle
 		m_pEvtRepeatSetBtn->GetWindowRect(&rcButton);
@@ -978,12 +978,10 @@ void CPwrReminderDlg::OnRepeatSet()
 			m_pRepeatSetDlg->SetAlignment(nAlign);
 
 			// Get button top-right point
-			POINT ptBtnTopRight;
-			ptBtnTopRight.x = rcButton.right;
-			ptBtnTopRight.y = rcButton.top;
+			Point btnTopRight(rcButton.right, rcButton.top);
 
 			// Set dialog anchor point
-			m_pRepeatSetDlg->SetAnchorPoint(ptBtnTopRight);
+			m_pRepeatSetDlg->SetAnchorPoint(btnTopRight);
 
 			// Show dialog
 			m_pRepeatSetDlg->ShowWindow(SW_SHOW);
@@ -1169,9 +1167,9 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 
 	// Get frame size
 	if (m_pszFrameWndSize == NULL) {
-		m_pszFrameWndSize = new CSize();
-		m_pszFrameWndSize->cx = rcListFrameWnd.right - rcListFrameWnd.left;
-		m_pszFrameWndSize->cy = rcListFrameWnd.bottom - rcListFrameWnd.top;
+		m_pszFrameWndSize = new Size();
+		m_pszFrameWndSize->_width = rcListFrameWnd.right - rcListFrameWnd.left;
+		m_pszFrameWndSize->_height = rcListFrameWnd.bottom - rcListFrameWnd.top;
 	}
 
 	// Initialization
@@ -1233,7 +1231,7 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
  * @param	ptrLanguage		- Pointer to app language
  * @return	None
  */
-void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly /* = false */, LANGTABLE_PTR ptrLanguage /* = NULL */)
+void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly /* = false */, LANGTABLE_PTR ptrLanguage /* = NULL */)
 {
 	// Check table validity
 	if (m_pDataItemListTable == NULL)
@@ -1271,8 +1269,8 @@ void CPwrReminderDlg::DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRo
 	}
 
 	// Setup display size
-	int nFrameHeight = pszFrameWndSize->cy;
-	int nFrameWidth = pszFrameWndSize->cx;
+	int nFrameHeight = pszFrameWndSize->Height();
+	int nFrameWidth = pszFrameWndSize->Width();
 	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;

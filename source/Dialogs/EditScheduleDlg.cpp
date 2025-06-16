@@ -394,9 +394,9 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 
 	// Get frame size
 	if (m_pszActiveTableFrameSize == NULL) {
-		m_pszActiveTableFrameSize = new CSize();
-		m_pszActiveTableFrameSize->cx = rcListFrameWnd.right - rcListFrameWnd.left;
-		m_pszActiveTableFrameSize->cy = rcListFrameWnd.bottom - rcListFrameWnd.top;
+		m_pszActiveTableFrameSize = new Size();
+		m_pszActiveTableFrameSize->_width = rcListFrameWnd.right - rcListFrameWnd.left;
+		m_pszActiveTableFrameSize->_height = rcListFrameWnd.bottom - rcListFrameWnd.top;
 	}
 
 	// Initialization
@@ -470,8 +470,8 @@ void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
 	}
 
 	// Setup display size
-	int nFrameHeight = m_pszActiveTableFrameSize->cy;
-	int nFrameWidth = m_pszActiveTableFrameSize->cx;
+	int nFrameHeight = m_pszActiveTableFrameSize->Height();
+	int nFrameWidth = m_pszActiveTableFrameSize->Width();
 	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;

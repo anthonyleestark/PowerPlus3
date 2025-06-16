@@ -49,7 +49,7 @@ private:
 	// Table format and properties
 	int	m_nColNum;
 	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
-	CSize* m_pszTableFrameSize;
+	Size* m_pszTableFrameSize;
 
 	// Other variables
 	int m_nCurMode;

@@ -304,33 +304,32 @@ BOOL SDialog::OnInitDialog()
 	}
 
 	// Get dialog rectangle
-	CRect rectDlg;
-	this->GetWindowRect(&rectDlg);
+	RECT dialogRect;
+	this->GetWindowRect(&dialogRect);
 
 	// Backup default size
-	m_szDefaultSize.cx = (rectDlg.right - rectDlg.left);
-	m_szDefaultSize.cy = (rectDlg.bottom - rectDlg.top);
+	m_szDefaultSize._width = (dialogRect.right - dialogRect.left);
+	m_szDefaultSize._height = (dialogRect.bottom - dialogRect.top);
 
 	// If dialog size is not registered, use default
-	if ((m_szRegisterSize.cx <= 0) && (m_szRegisterSize.cy <= 0)) {
-		m_szRegisterSize.cx = m_szDefaultSize.cx;
-		m_szRegisterSize.cy = m_szDefaultSize.cy;
+	if (m_szRegisterSize.IsEmpty()) {
+		m_szRegisterSize = m_szDefaultSize;
 	}
 
 	// Resize dialog
-	if ((m_szRegisterSize.cx != m_szDefaultSize.cx) || (m_szRegisterSize.cy != m_szDefaultSize.cy)) {
+	if (m_szRegisterSize != m_szDefaultSize) {
 		// Set width
-		if (m_szRegisterSize.cx > -1) {
-			rectDlg.right = (rectDlg.left + m_szRegisterSize.cx);
+		if (m_szRegisterSize.Width() > -1) {
+			dialogRect.right = (dialogRect.left + m_szRegisterSize.Width());
 		}
 		// Set height
-		if (m_szRegisterSize.cy > -1) {
-			rectDlg.bottom = (rectDlg.top + m_szRegisterSize.cy);
+		if (m_szRegisterSize.Height() > -1) {
+			dialogRect.bottom = (dialogRect.top + m_szRegisterSize.Height());
 		}
 	}
 	
 	// Center dialog
-	this->MoveWindow(&rectDlg);
+	this->MoveWindow(&dialogRect);
 	this->CenterWindow(GetParentWnd());
 
 	// Background color
@@ -468,12 +467,12 @@ void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
 	if (GetFlagValue(AppFlagID::dialogSetMinSize) == true) {
-		pMinMaxInfo->ptMinTrackSize.x = m_szMinSize.cx;
-		pMinMaxInfo->ptMinTrackSize.y = m_szMinSize.cy;
+		pMinMaxInfo->ptMinTrackSize.x = m_szMinSize.Width();
+		pMinMaxInfo->ptMinTrackSize.y = m_szMinSize.Height();
 	}
 	if (GetFlagValue(AppFlagID::dialogSetMaxSize) == true) {
-		pMinMaxInfo->ptMaxTrackSize.x = m_szMaxSize.cx;
-		pMinMaxInfo->ptMaxTrackSize.y = m_szMaxSize.cy;
+		pMinMaxInfo->ptMaxTrackSize.x = m_szMaxSize.Width();
+		pMinMaxInfo->ptMaxTrackSize.y = m_szMaxSize.Height();
 	}
 
 	// Default
@@ -759,14 +758,14 @@ void SDialog::ResetLockStateExceptionList(void)
 
 /**
  * @brief	Move dialog position and return new rectangle
- * @param	ptPosition - Dialog position (anchor point)
+ * @param	position - Dialog position (anchor point)
  * @param	lpNewRect  - New dialog rectangle (OUT)
  * @return	None
  */
-void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
+void SDialog::MoveDialog(const Point& position, Rect* newRect /* = nullptr */)
 {
 	// Get current dialog rectangle
-	CRect rcCurPos;
+	RECT rcCurPos;
 	this->GetWindowRect(&rcCurPos);
 
 	// Get dialog alignment
@@ -778,35 +777,35 @@ void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
 	// --> Calculate horizontal delta
 	if (nAlign & SDA_LEFTALIGN) {
 		// Move left rect
-		dx = ptPosition.x - rcCurPos.left;
+		dx = position._x - rcCurPos.left;
 	}
 	else if (nAlign & SDA_RIGHTALIGN) {
 		// Move right rect
-		dx = ptPosition.x - rcCurPos.right;
+		dx = position._x - rcCurPos.right;
 	}
 	else if (nAlign & SDA_HCENTERALIGN) {
 		// Move center rect
 		LONG nHCenter = rcCurPos.right - rcCurPos.left;
-		dx = ptPosition.x - nHCenter;
+		dx = position._x - nHCenter;
 	}
 
 	// --> Calculate vertical delta
 	if (nAlign & SDA_TOPALIGN) {
 		// Move top rect
-		dy = ptPosition.y - rcCurPos.top;
+		dy = position._y - rcCurPos.top;
 	}
 	else if (nAlign & SDA_BOTTOMALIGN) {
 		// Move bottom rect
-		dy = ptPosition.y - rcCurPos.bottom;
+		dy = position._y - rcCurPos.bottom;
 	}
 	else if (nAlign & SDA_VCENTERALIGN) {
 		// Move center rect
 		LONG nVCenter = rcCurPos.bottom - rcCurPos.top;
-		dy = ptPosition.y - nVCenter;
+		dy = position._y - nVCenter;
 	}
 
 	// Move dialog
-	MoveDialog(dx, dy, lpNewRect);
+	MoveDialog(dx, dy, newRect);
 }
 
 /**
@@ -816,10 +815,10 @@ void SDialog::MoveDialog(POINT ptPosition, LPRECT lpNewRect /* = NULL */)
  * @param	lpNewRect - New dialog rectangle (OUT)
  * @return	None
  */
-void SDialog::MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect /* = NULL */)
+void SDialog::MoveDialog(long dx, long dy, Rect* newRect /* = nullptr */)
 {
 	// Get current dialog rectangle
-	CRect rcCurPos;
+	RECT rcCurPos;
 	this->GetWindowRect(&rcCurPos);
 
 	// Shift rectangle
@@ -842,11 +841,11 @@ void SDialog::MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect /* = NULL */)
 		// Set dialog position
 		bool bRet = this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		// If moving successfully, update new rectangle 
-		if ((bRet == true) && (lpNewRect != NULL)) {
-			lpNewRect->left = rcCurPos.left;
-			lpNewRect->right = rcCurPos.right;
-			lpNewRect->top = rcCurPos.top;
-			lpNewRect->bottom = rcCurPos.bottom;
+		if ((bRet == true) && (newRect != nullptr)) {
+			newRect->_left = rcCurPos.left;
+			newRect->_right = rcCurPos.right;
+			newRect->_top = rcCurPos.top;
+			newRect->_bottom = rcCurPos.bottom;
 		}
 	}
 }
@@ -859,13 +858,13 @@ void SDialog::MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect /* = NULL */)
 void SDialog::ResizeDialog(bool bCenterDialog)
 {
 	// Get current dialog rectangle
-	CRect rectDlg;
+	RECT rectDlg;
 	this->GetWindowRect(&rectDlg);
 
 	// Set new rectangle
-	if ((m_szRegisterSize.cx > INT_INVALID) && (m_szRegisterSize.cy > INT_INVALID)) {
-		rectDlg.right = (rectDlg.left + m_szRegisterSize.cx);
-		rectDlg.bottom = (rectDlg.top + m_szRegisterSize.cy);
+	if (!m_szRegisterSize.IsEmpty()) {
+		rectDlg.right = (rectDlg.left + m_szRegisterSize.Width());
+		rectDlg.bottom = (rectDlg.top + m_szRegisterSize.Height());
 	}
 
 	// Resize
@@ -888,22 +887,21 @@ void SDialog::ResizeDialog(bool bCenterDialog)
 void SDialog::ResetDialogSize(void)
 {
 	// No default size
-	if ((m_szDefaultSize.cx == 0) || (m_szDefaultSize.cy == 0))
+	if (m_szDefaultSize.IsEmpty())
 		return;
 
 	// Get current size
-	CRect rcCurRect;
+	RECT rcCurRect;
 	this->GetWindowRect(&rcCurRect);
 
 	// If current size is default size, do nothing
 	LONG lCurWidth = (rcCurRect.right - rcCurRect.left);
 	LONG lCurHeight = (rcCurRect.bottom - rcCurRect.top);
-	if ((lCurWidth == m_szDefaultSize.cx) && (lCurHeight == m_szDefaultSize.cy))
+	if ((lCurWidth == m_szDefaultSize.Width()) && (lCurHeight == m_szDefaultSize.Height()))
 		return;
 
 	// Reset to default
-	m_szRegisterSize.cx = m_szDefaultSize.cx;
-	m_szRegisterSize.cy = m_szDefaultSize.cy;
+	m_szRegisterSize = m_szDefaultSize;
 
 	// Resize dialog
 	ResizeDialog(true);
@@ -911,112 +909,108 @@ void SDialog::ResetDialogSize(void)
 
 /**
  * @brief	Set new display area, update margin and resize dialog
- * @param	rcNewDispArea - New display area rectangle
+ * @param	newDispArea	  - New display area rectangle
  * @param	bResizeDialog - Resize dialog
  * @param	bCenter		  - Center rectangle area
  * @return	None
  */
-void SDialog::SetDisplayArea(RECT rcNewDispArea, bool bResizeDialog, bool bCenter)
+void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool bCenter)
 {
 	// Get current margin
-	CRect rcCurMargin;
-	this->GetMargin(&rcCurMargin);
+	Rect currentMargin;
+	this->GetMargin(currentMargin);
 
 	// Horizontal center margin
 	bool bHorzCenter = false;
-	if (rcCurMargin.left == rcCurMargin.right) {
+	if (currentMargin.Left() == currentMargin.Right()) {
 		bHorzCenter = true;
 	}
 
 	// Vertical center margin
 	bool bVertCenter = false;
-	if (rcCurMargin.top == rcCurMargin.bottom) {
+	if (currentMargin.Top() == currentMargin.Bottom()) {
 		bVertCenter = true;
 	}
 
 	// New dialog margin
-	CRect rcNewMargin = CRect(rcCurMargin);
+	Rect newMargin = currentMargin;
 
 	// Get current client size
-	CRect rcCurClient;
-	this->GetClientRect(&rcCurClient);
-	this->ClientToScreen(&rcCurClient);
+	RECT currentClientRect;
+	this->GetClientRect(&currentClientRect);
+	this->ClientToScreen(&currentClientRect);
 
 	// Get current display area
-	CRect rcCurDispArea;
-	this->GetDisplayArea(&rcCurDispArea);
+	Rect currentDispArea;
+	this->GetDisplayArea(currentDispArea);
 
 	// Calculate current display area size
-	CSize szCurDispAreaSize;
-	szCurDispAreaSize.cx = (rcCurDispArea.right - rcCurDispArea.left);
-	szCurDispAreaSize.cy = (rcCurDispArea.bottom - rcCurDispArea.top);
+	Size curDispAreaSize = currentDispArea.GetSize();
 
 	// Get current dialog rectangle
-	CRect rcCurDlgRect;
-	this->GetWindowRect(&rcCurDlgRect);
+	RECT currentDialogRect;
+	this->GetWindowRect(&currentDialogRect);
 
 	// Dialog and client rectangle offset
-	CRect rcDlgClientOffset;
-	rcDlgClientOffset.left = abs(rcCurDlgRect.left - rcCurClient.left);
-	rcDlgClientOffset.top = abs(rcCurDlgRect.top - rcCurClient.top);
-	rcDlgClientOffset.right = abs(rcCurDlgRect.right - rcCurClient.right);
-	rcDlgClientOffset.bottom = abs(rcCurDlgRect.bottom - rcCurClient.bottom);
+	Rect dialogClientOffset;
+	dialogClientOffset._left = abs(currentDialogRect.left - currentClientRect.left);
+	dialogClientOffset._top = abs(currentDialogRect.top - currentClientRect.top);
+	dialogClientOffset._right = abs(currentDialogRect.right - currentClientRect.right);
+	dialogClientOffset._bottom = abs(currentDialogRect.bottom - currentClientRect.bottom);
 
 	// Get dialog size
-	CSize szDialogSize;
-	this->GetSize(&szDialogSize);
+	Size dialogSize;
+	this->GetSize(dialogSize);
 
 	// New dialog rectangle
-	CRect rcNewDlgRect;
+	Rect newDialogRect;
 
 	// Calculate new display area size
-	CSize szNewDispAreaSize;
-	szNewDispAreaSize.cx = (rcNewDispArea.right - rcNewDispArea.left);
-	szNewDispAreaSize.cy = (rcNewDispArea.bottom - rcNewDispArea.top);
+	Size newDispAreaSize = newDispArea.GetSize();
 
 	// Update margin
 	if ((bResizeDialog != true) && (bCenter == true)) {
 		// Horizontal center margin
 		if (bHorzCenter == true) {
-			rcNewMargin.left = rcCurMargin.left + (szCurDispAreaSize.cx - szNewDispAreaSize.cx);
-			rcNewMargin.right = rcNewMargin.left;
+			newMargin._left = currentMargin.Left() + (curDispAreaSize.Width() - newDispAreaSize.Width());
+			newMargin._right = newMargin.Left();
 		}
 		// Vertical center margin
 		if (bVertCenter == true) {
-			rcNewMargin.top = rcCurMargin.top + (szCurDispAreaSize.cy - szNewDispAreaSize.cy);
-			rcNewMargin.bottom = rcNewMargin.top;
+			newMargin._top = currentMargin.Top() + (curDispAreaSize.Height() - newDispAreaSize.Height());
+			newMargin._bottom = newMargin.Top();
 		}
 	}
 
 	// Set new dialog rectangle top-left
-	rcNewDlgRect.left = (rcNewDispArea.left - rcNewMargin.left) - rcDlgClientOffset.left;
-	rcNewDlgRect.top = (rcNewDispArea.top - rcNewMargin.top) - rcDlgClientOffset.top;
+	newDialogRect._left = (newDispArea.Left() - newMargin.Left()) - dialogClientOffset.Left();
+	newDialogRect._top = (newDispArea.Top() - newMargin.Top()) - dialogClientOffset.Top();
 
 	// If resize is specified
 	if (bResizeDialog == true) {
 		// Set new dialog rectangle bottom-right
-		rcNewDlgRect.right = (rcNewDispArea.right + rcNewMargin.right) + rcDlgClientOffset.right;
-		rcNewDlgRect.bottom = (rcNewDispArea.bottom + rcNewMargin.bottom) + rcDlgClientOffset.bottom;
+		newDialogRect._right = (newDispArea.Right() + newMargin.Right()) + dialogClientOffset.Right();
+		newDialogRect._bottom = (newDispArea.Bottom() + newMargin.Bottom()) + dialogClientOffset.Bottom();
 
 		// Resize dialog
-		this->SetSize((rcNewDlgRect.right - rcNewDlgRect.left), (rcNewDlgRect.bottom - rcNewDlgRect.top));
+		this->SetSize(newDialogRect.Width(), newDialogRect.Height());
 		this->ResizeDialog(bCenter);
 	}
 	else {
 		// Reposition following new margin offset
-		rcNewDlgRect.left += (rcNewMargin.left - rcCurMargin.left);
-		rcNewDlgRect.top += (rcNewMargin.top - rcCurMargin.top);
+		newDialogRect._left += (newMargin.Left() - currentMargin.Left());
+		newDialogRect._top += (newMargin.Top() - currentMargin.Top());
 
 		// Set new dialog rectangle bottom-right
-		rcNewDlgRect.right = (rcNewDlgRect.left + szDialogSize.cx);
-		rcNewDlgRect.bottom = (rcNewDlgRect.top + szDialogSize.cy);
+		newDialogRect._right = (newDialogRect.Left() + dialogSize.Width());
+		newDialogRect._bottom = (newDialogRect.Top() + dialogSize.Height());
 
 		// Recalculate bottom-right margin
-		rcNewMargin.right = (rcNewDlgRect.right - rcDlgClientOffset.right) - rcNewDispArea.right;
-		rcNewMargin.bottom = (rcNewDlgRect.bottom - rcDlgClientOffset.bottom) - rcNewDispArea.bottom;
+		newMargin._right = (newDialogRect.Right() - dialogClientOffset.Right()) - newDispArea.Right();
+		newMargin._bottom = (newDialogRect.Bottom() - dialogClientOffset.Bottom()) - newDispArea.Bottom();
 
 		// Reposition dialog
-		SetWindowPos(NULL, rcNewDlgRect.left, rcNewDlgRect.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowPos(NULL, newDialogRect.Left(), newDialogRect.Top(), 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 		// Make sure that the entire dialog box is visible on the screen
 		SendMessage(DM_REPOSITION, 0, 0);
@@ -1028,10 +1022,10 @@ void SDialog::SetDisplayArea(RECT rcNewDispArea, bool bResizeDialog, bool bCente
 	}
 
 	// Save margin update
-	this->SetLeftMargin(rcNewMargin.left);
-	this->SetTopMargin(rcNewMargin.top);
-	this->SetRightMargin(rcNewMargin.right);
-	this->SetBottomMargin(rcNewMargin.bottom);
+	this->SetLeftMargin(newMargin.Left());
+	this->SetTopMargin(newMargin.Top());
+	this->SetRightMargin(newMargin.Right());
+	this->SetBottomMargin(newMargin.Bottom());
 }
 
 /**
@@ -1678,10 +1672,10 @@ void SDialog::SetControlText(CWnd* pCtrlWnd, unsigned nCtrlID, LANGTABLE_PTR ptr
 /**
  * @brief	Move a group of dialog items to specific position
  * @param	arrCtrlIDGroup  - Array of control IDs
- * @param	ptNewPosition	- New position
+ * @param	newPosition	- New position
  * @return	None
  */
-void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition)
+void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, const Point& newPosition)
 {
 	// Check data validity
 	if (arrCtrlIDGroup.empty())
@@ -1714,8 +1708,8 @@ void SDialog::MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition
 	}
 
 	// Calculate moving distance
-	int nDeltaX = ptNewPosition.x - lOrgX;
-	int nDeltaY = ptNewPosition.y - lOrgY;
+	int nDeltaX = newPosition._x - lOrgX;
+	int nDeltaY = newPosition._y - lOrgY;
 
 	// Move all items to new position
 	int nNewX = 0, nNewY = 0;
@@ -1891,12 +1885,10 @@ int SDialog::GetFlagValue(AppFlagID eFlagID) const
 	{
 	// Special dialog-base flags (not managed by FlagManager)
 	case AppFlagID::dialogSetMinSize:
-		nValue = ((m_szMinSize.cx >= 0) &&
-			(m_szMinSize.cy >= 0));
+		nValue = (!m_szMinSize.IsEmpty() &&	!m_szMinSize.IsZero());
 		break;
 	case AppFlagID::dialogSetMaxSize:
-		nValue = ((m_szMaxSize.cx > m_szMinSize.cx) &&
-			(m_szMaxSize.cy > m_szMinSize.cy));
+		nValue = (m_szMaxSize > m_szMinSize);
 		break;
 
 	// Dialog-base properties/flags

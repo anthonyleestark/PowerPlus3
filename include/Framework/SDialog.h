@@ -40,11 +40,11 @@
 
 // Flags and default values for dialog properties
 
-#define POINT_NULL							CPoint(0,0)
-#define SIZE_NULL							CSize(0,0)
-#define SIZE_UNDEFINED						CSize(-1,-1)
-#define MARGIN_NULL							CRect(0,0,0,0)
-#define MARGIN_DEFAULT						CRect(10,10,10,10)
+#define POINT_NULL							Point(0,0)
+#define SIZE_NULL							Size(0,0)
+#define SIZE_UNDEFINED						Size(-1,-1)
+#define MARGIN_NULL							Rect(0,0,0,0)
+#define MARGIN_DEFAULT						Rect(10,10,10,10)
 
 
 // Define custom message for dialogs
@@ -117,21 +117,21 @@ protected:
 	UIntArray* m_paLockExceptionIDList;
 
 	// Dialog anchor point
-	CPoint m_ptAnchorPoint;
+	Point m_ptAnchorPoint;
 
 	// Dialog alignment
 	unsigned m_nAlignment;
 
 	// Dialog size
-	CSize m_szRegisterSize;
-	CSize m_szDefaultSize;
+	Size m_szRegisterSize;
+	Size m_szDefaultSize;
 
 	// Dialog min/max info
-	CSize m_szMinSize;
-	CSize m_szMaxSize;
+	Size m_szMinSize;
+	Size m_szMaxSize;
 
 	// Dialog client display margin
-	CRect	 m_rcClientMargin;
+	Rect m_rcClientMargin;
 
 	// Other properties
 	String  m_strCaption;
@@ -233,56 +233,46 @@ public:
 	virtual void SetAlignment(unsigned nAlignment) {
 		m_nAlignment = nAlignment;
 	};
-	virtual void GetAnchorPoint(LPPOINT lpAnchorPoint) const {
-		ASSERT(lpAnchorPoint != NULL);
-		if (lpAnchorPoint != NULL) {
-			lpAnchorPoint->x = m_ptAnchorPoint.x;
-			lpAnchorPoint->y = m_ptAnchorPoint.y;
-		}
+	virtual void GetAnchorPoint(Point& anchorPoint) const {
+		anchorPoint = m_ptAnchorPoint;
 	};
-	virtual void SetAnchorPoint(POINT ptAnchorPoint) {
-		m_ptAnchorPoint.x = ptAnchorPoint.x;
-		m_ptAnchorPoint.y = ptAnchorPoint.y;
+	virtual void SetAnchorPoint(const Point& anchorPoint) {
+		m_ptAnchorPoint = anchorPoint;
 
 		// Move dialog
 		MoveDialog(m_ptAnchorPoint);
 	};
-	virtual void SetDialogPosition(POINT ptAnchorPoint, unsigned nAlignment) {
+	virtual void SetDialogPosition(const Point& anchorPoint, unsigned nAlignment) {
 		SetAlignment(nAlignment);
-		SetAnchorPoint(ptAnchorPoint);
+		SetAnchorPoint(anchorPoint);
 	};
 
 	// Move and resize dialog
-	virtual void MoveDialog(POINT ptPosition, LPRECT lpNewRect = NULL);
-	virtual void MoveDialog(LONG dx, LONG dy, LPRECT lpNewRect = NULL);
+	virtual void MoveDialog(const Point& position, Rect* newRect = nullptr);
+	virtual void MoveDialog(long dx, long dy, Rect* newRect = nullptr);
 	virtual void ResizeDialog(bool bCenterDialog);
 	virtual void ResetDialogSize(void);
 
 	// Get/set dialog size functions
-	virtual void GetSize(LPSIZE lpRegSize) const {
+	virtual void GetSize(Size& regSize) const {
 		// If size is not set, return default
-		if ((m_szRegisterSize.cx <= 0) && (m_szRegisterSize.cy <= 0)) {
-			lpRegSize->cx = m_szDefaultSize.cx;
-			lpRegSize->cy = m_szDefaultSize.cy;
-		}
+		if (m_szRegisterSize.IsEmpty()) regSize = m_szDefaultSize;
 
 		// Return dialog size
-		lpRegSize->cx = m_szRegisterSize.cx;
-		lpRegSize->cy = m_szRegisterSize.cy;
+		regSize = m_szRegisterSize;
 	};
-	virtual void SetSize(SIZE szRegSize) {
-		m_szRegisterSize.cx = szRegSize.cx;
-		m_szRegisterSize.cy = szRegSize.cy;
+	virtual void SetSize(const Size& regSize) {
+		m_szRegisterSize = regSize;
 	};
-	virtual void SetSize(LONG lWidth, LONG lHeight)	{
-		CSize szDialogSize(lWidth, lHeight);
-		this->SetSize(szDialogSize);
+	virtual void SetSize(long lWidth, long lHeight)	{
+		Size dialogSize(lWidth, lHeight);
+		this->SetSize(dialogSize);
 	};
-	virtual void SetMinSize(LONG lMinWidth, LONG lMinHeight) {
-		m_szMinSize = CSize(lMinWidth, lMinHeight);
+	virtual void SetMinSize(long lMinWidth, long lMinHeight) {
+		m_szMinSize = Size(lMinWidth, lMinHeight);
 	};
-	virtual void SetMaxSize(LONG lMaxWidth, LONG lMaxHeight) {
-		m_szMaxSize = CSize(lMaxWidth, lMaxHeight);
+	virtual void SetMaxSize(long lMaxWidth, long lMaxHeight) {
+		m_szMaxSize = Size(lMaxWidth, lMaxHeight);
 	};
 
 	// Other properties
@@ -294,45 +284,39 @@ public:
 	};
 
 	// Dialog margins and display area
-	virtual void SetLeftMargin(LONG lMargin) {
-		m_rcClientMargin.left = lMargin;
+	virtual void SetLeftMargin(long lMargin) {
+		m_rcClientMargin._left = lMargin;
 	};
-	virtual void SetTopMargin(LONG lMargin) {
-		m_rcClientMargin.top = lMargin;
+	virtual void SetTopMargin(long lMargin) {
+		m_rcClientMargin._top = lMargin;
 	};
-	virtual void SetRightMargin(LONG lMargin) {
-		m_rcClientMargin.right = lMargin;
+	virtual void SetRightMargin(long lMargin) {
+		m_rcClientMargin._right = lMargin;
 	};
-	virtual void SetBottomMargin(LONG lMargin) {
-		m_rcClientMargin.bottom = lMargin;
+	virtual void SetBottomMargin(long lMargin) {
+		m_rcClientMargin._bottom = lMargin;
 	};
-	virtual void SetCenterMargin(POINT ptMargin) {
-		m_rcClientMargin.left = ptMargin.x;
-		m_rcClientMargin.top = ptMargin.y;
-		m_rcClientMargin.right = ptMargin.x;
-		m_rcClientMargin.bottom = ptMargin.y;
+	virtual void SetCenterMargin(const Point& ptMargin) {
+		m_rcClientMargin.SetTopLeft(ptMargin);
+		m_rcClientMargin.SetBottomRight(ptMargin);
 	};
-	virtual void SetCenterMargin(LONG lHMargin, LONG lVMargin) {
-		m_rcClientMargin.left = lHMargin;
-		m_rcClientMargin.top = lVMargin;
-		m_rcClientMargin.right = lHMargin;
-		m_rcClientMargin.bottom = lVMargin;
+	virtual void SetCenterMargin(long lHMargin, long lVMargin) {
+		m_rcClientMargin.SetTopLeft(lHMargin, lVMargin);
+		m_rcClientMargin.SetBottomRight(lHMargin, lVMargin);
 	};
-	virtual void GetDisplayArea(LPRECT lpDispAreaRect) const {
-		this->GetClientRect(lpDispAreaRect);
+	virtual void GetDisplayArea(Rect& displayAreaRect) const {
+		RECT rcTemp; this->GetClientRect(&rcTemp);
+		displayAreaRect = Rect(rcTemp.left, rcTemp.top, rcTemp.right, rcTemp.bottom);
 
 		// Calculate display area with margin
-		lpDispAreaRect->left += m_rcClientMargin.left;
-		lpDispAreaRect->top += m_rcClientMargin.top;
-		lpDispAreaRect->right -= m_rcClientMargin.right;
-		lpDispAreaRect->bottom -= m_rcClientMargin.bottom;
+		displayAreaRect._left += m_rcClientMargin.Left();
+		displayAreaRect._top += m_rcClientMargin.Top();
+		displayAreaRect._right -= m_rcClientMargin.Right();
+		displayAreaRect._bottom -= m_rcClientMargin.Bottom();
 	};
-	virtual void SetDisplayArea(RECT rcNewDispArea, bool bResizeDialog, bool bCenter);
-	virtual void GetMargin(LPRECT lpDialogMargin) const {
-		lpDialogMargin->left = m_rcClientMargin.left;
-		lpDialogMargin->top = m_rcClientMargin.top;
-		lpDialogMargin->right = m_rcClientMargin.right;
-		lpDialogMargin->bottom = m_rcClientMargin.bottom;
+	virtual void SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool bCenter);
+	virtual void GetMargin(Rect& dialogMargin) const {
+		dialogMargin = m_rcClientMargin;
 	};
 
 	// Dialog caption get/set functions
@@ -411,7 +395,7 @@ public:
 	virtual void UpdateItemText(unsigned nCtrlID, unsigned nNewCaptionID = NULL, LANGTABLE_PTR ptrLanguage = NULL);
 	virtual void SetControlText(CWnd* pCtrlWnd, unsigned nCtrlID, LANGTABLE_PTR ptrLanguage = NULL);
 
-	virtual void MoveItemGroup(const UIntArray& arrCtrlIDGroup, POINT ptNewPosition);
+	virtual void MoveItemGroup(const UIntArray& arrCtrlIDGroup, const Point& newPosition);
 	virtual void MoveItemGroup(const UIntArray& arrCtrlIDGroup, int nDirection, int nDistance);
 
 	virtual void SetupDialogItemState(void);

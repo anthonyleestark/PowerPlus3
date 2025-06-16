@@ -298,9 +298,9 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 
 	// Get frame size
 	if (m_pszTableFrameSize == NULL) {
-		m_pszTableFrameSize = new CSize();
-		m_pszTableFrameSize->cx = rcListFrameWnd.right - rcListFrameWnd.left;
-		m_pszTableFrameSize->cy = rcListFrameWnd.bottom - rcListFrameWnd.top;
+		m_pszTableFrameSize = new Size();
+		m_pszTableFrameSize->_width = rcListFrameWnd.right - rcListFrameWnd.left;
+		m_pszTableFrameSize->_height = rcListFrameWnd.bottom - rcListFrameWnd.top;
 	}
 
 	// Initialization
@@ -382,8 +382,8 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	int nRowNum = (m_nLogCount + fixedRowNum);
 
 	// Setup display size
-	int nFrameHeight = m_pszTableFrameSize->cy;
-	int nFrameWidth = m_pszTableFrameSize->cx;
+	int nFrameHeight = m_pszTableFrameSize->Height();
+	int nFrameWidth = m_pszTableFrameSize->Width();
 	int nColWidthOffset = 0;
 	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset

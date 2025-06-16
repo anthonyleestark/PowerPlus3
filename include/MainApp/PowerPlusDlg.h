@@ -91,7 +91,7 @@ private:
 	CMenu*			m_pNotifyMenu;
 
 	// Member variables using for resizing dialog
-	CSize*	m_pDialogSize;
+	Size* m_pDialogSize;
 
 	// Hotkey register data
 	UIntArray m_arrCurRegHKeyList;

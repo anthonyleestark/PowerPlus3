@@ -1833,15 +1833,15 @@ void CPowerPlusDlg::ExpandDialog(bool bExpand)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Initialize dialog size pointer
-	VERIFY_INITIALIZATION(m_pDialogSize, CSize);
+	VERIFY_INITIALIZATION(m_pDialogSize, Size);
 
 	// Expand/collapse dialog
 	if (!bExpand) {
 
 		// Calculate dialog size
 		GetWindowRect(&rcWnd);
-		m_pDialogSize->cx = rcWnd.right - rcWnd.left;
-		m_pDialogSize->cy = rcWnd.bottom - rcWnd.top;
+		m_pDialogSize->_width = rcWnd.right - rcWnd.left;
+		m_pDialogSize->_height = rcWnd.bottom - rcWnd.top;
 
 		// Resize dialog
 		SetWindowPos(NULL, 0, 0, rcWnd.right - rcWnd.left, rcFrameWnd.bottom - rcWnd.top, SWP_NOMOVE | SWP_NOZORDER);
@@ -1851,7 +1851,7 @@ void CPowerPlusDlg::ExpandDialog(bool bExpand)
 	}
 	else {
 		// Resize dialog
-		SetWindowPos(NULL, 0, 0, m_pDialogSize->cx, m_pDialogSize->cy, SWP_NOMOVE | SWP_NOZORDER);
+		SetWindowPos(NULL, 0, 0, m_pDialogSize->Width(), m_pDialogSize->Height(), SWP_NOMOVE | SWP_NOZORDER);
 
 		// Make sure that the entire dialog box is visible on the screen
 		SendMessage(DM_REPOSITION, 0, 0);

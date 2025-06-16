@@ -60,8 +60,8 @@ private:
 	ScheduleItem m_schScheduleItemTemp;
 
 	// Other variables
-	int		m_nDispMode;
-	CSize*  m_pszActiveTableFrameSize;
+	int	  m_nDispMode;
+	Size* m_pszActiveTableFrameSize;
 
 public:
 	// Generated message map functions

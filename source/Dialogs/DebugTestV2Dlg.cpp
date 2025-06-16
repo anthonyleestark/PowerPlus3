@@ -189,9 +189,13 @@ void CDebugTestV2Dlg::OnDestroy()
  */
 void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
-	// Fix min/max size
-	pMinMaxInfo->ptMinTrackSize = CPoint(defaultMinWidth, defaultMinHeight);
-	pMinMaxInfo->ptMaxTrackSize = CPoint(defaultMaxWidth, defaultMaxHeight);
+	// Fix min size
+	pMinMaxInfo->ptMinTrackSize.x = defaultMinWidth;
+	pMinMaxInfo->ptMinTrackSize.y = defaultMinHeight;
+
+	// Fix max size
+	pMinMaxInfo->ptMaxTrackSize.x = defaultMaxWidth;
+	pMinMaxInfo->ptMinTrackSize.y = defaultMaxHeight;
 
 	// Default
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);

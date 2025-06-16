@@ -182,9 +182,13 @@ void CDebugTestDlg::OnDestroy()
  */
 void CDebugTestDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
-	// Fix min/max size
-	pMinMaxInfo->ptMinTrackSize = CPoint(defaultMinWidth, defaultMinHeight);
-	pMinMaxInfo->ptMaxTrackSize = CPoint(defaultMaxWidth, defaultMaxHeight);
+	// Fix min size
+	pMinMaxInfo->ptMinTrackSize.x = defaultMinWidth;
+	pMinMaxInfo->ptMinTrackSize.y = defaultMinHeight;
+
+	// Fix max size
+	pMinMaxInfo->ptMaxTrackSize.x = defaultMaxWidth;
+	pMinMaxInfo->ptMinTrackSize.y = defaultMaxHeight;
 
 	// Default
 	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
@@ -574,9 +578,7 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 			 pMsg->message == WM_RBUTTONDBLCLK) {
 
 		// Get clicked point
-		POINT pt;
-		pt.x = GET_X_LPARAM(pMsg->lParam);
-		pt.y = GET_Y_LPARAM(pMsg->lParam);
+		Point pt(GET_X_LPARAM(pMsg->lParam), GET_Y_LPARAM(pMsg->lParam));
 
 		// Get DebugTest edit view
 		if (!IsDebugEditViewValid())
@@ -588,8 +590,8 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 		ScreenToClient(&rcDebugEditView);
 
 		// If clicked point is inside the editbox area
-		if (((pt.x > rcDebugEditView.left) && (pt.x < rcDebugEditView.right)) &&
-			((pt.y > rcDebugEditView.top) && (pt.y < rcDebugEditView.bottom))) {
+		if (((pt._x > rcDebugEditView.left) && (pt._x < rcDebugEditView.right)) &&
+			((pt._y > rcDebugEditView.top) && (pt._y < rcDebugEditView.bottom))) {
 			// Show DebugTest edit view menu
 			ShowDebugTestEditViewMenu();
 			return true;

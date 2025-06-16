@@ -102,7 +102,7 @@ private:
 
 	// Table format and properties
 	int m_nColNum;
-	CSize* m_pszFrameWndSize;
+	Size* m_pszFrameWndSize;
 	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
 
 	// Other variables
@@ -142,7 +142,7 @@ protected:
 	// Dialog setup functions
 	void SetupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
-	void DrawDataTable(CSize* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly = false, LANGTABLE_PTR ptrLanguage = NULL);
+	void DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly = false, LANGTABLE_PTR ptrLanguage = NULL);
 	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
 	void SwitchMode(bool bRedraw = false);
 

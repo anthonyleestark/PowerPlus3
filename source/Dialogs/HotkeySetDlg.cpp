@@ -637,9 +637,9 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 
 	// Get frame size
 	if (m_pszDataTableFrameSize == NULL) {
-		m_pszDataTableFrameSize = new CSize();
-		m_pszDataTableFrameSize->cx = rcListFrameWnd.right - rcListFrameWnd.left;
-		m_pszDataTableFrameSize->cy = rcListFrameWnd.bottom - rcListFrameWnd.top;
+		m_pszDataTableFrameSize = new Size();
+		m_pszDataTableFrameSize->_width = rcListFrameWnd.right - rcListFrameWnd.left;
+		m_pszDataTableFrameSize->_height = rcListFrameWnd.bottom - rcListFrameWnd.top;
 	}
 
 	// Initialization
@@ -731,8 +731,8 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 	int nRowNum = (GetItemNum() + fixedRowNum);
 
 	// Setup display size
-	int nFrameHeight = m_pszDataTableFrameSize->cy;
-	int nFrameWidth = m_pszDataTableFrameSize->cx;
+	int nFrameHeight = m_pszDataTableFrameSize->Height();
+	int nFrameWidth = m_pszDataTableFrameSize->Width();
 	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
