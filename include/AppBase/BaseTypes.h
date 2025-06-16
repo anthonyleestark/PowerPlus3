@@ -32,6 +32,25 @@
 #endif
 
 
+// Using math for calculations
+#if !defined(_CMATH_)
+	#define _USE_MATH_DEFINES
+	#include <cmath>
+#endif
+
+
+// Using std::array
+#if !defined(_ARRAY_)
+	#include <array>
+#endif
+
+
+// For throwing exception
+#if !defined(_STDEXCEPT_) || !defined(_EXCEPTION_)
+	#include <stdexcept>
+#endif
+
+
 // For tokenization
 using TokenList = typename std::vector<std::wstring>;
 
@@ -1332,3 +1351,703 @@ public:
 
 // For global usage
 using DayOfWeek = DateTime::__DayOfWeek;
+
+
+// Manage point/coordinates
+class Point final
+{
+public:
+	double _x = 0;
+	double _y = 0;
+
+public:
+	// Construction
+	constexpr explicit Point() noexcept = default;
+	constexpr Point(double x, double y) noexcept : _x(x), _y(y) {};
+
+	// Copy constructor
+	constexpr Point(const Point& other) = default;
+
+	// Copy assignment operator
+	Point& operator=(const Point& other) = default;
+
+	// Move constructor
+	constexpr Point(Point&& other) noexcept = default;
+
+	// Move assignment operator
+	Point& operator=(Point&& other) noexcept = default;
+
+public:
+	// Access data
+	constexpr double GetX(void) const noexcept { return _x; };
+	void SetX(double x) noexcept { _x = x; };
+	constexpr double GetY(void) const noexcept { return _y; };
+	void SetY(double y) noexcept { _y = y; };
+
+public:
+	// For floating-point precision comparisons
+	static constexpr double EPSILON = 1e-9;
+	static bool NearlyEqual(double a, double b, double epsilon = EPSILON) {
+		return std::abs(a - b) < epsilon;
+	};
+
+	// Arithmetic Operators
+	constexpr Point operator+(const Point& other) const noexcept {
+		return Point(_x + other._x, _y + other._y);
+	};
+	constexpr Point operator-(const Point& other) const noexcept {
+		return Point(_x - other._x, _y - other._y);
+	};
+	constexpr Point operator*(double scalar) const noexcept {
+		return Point(_x * scalar, _y * scalar);
+	};
+	Point operator/(double scalar) const {
+		if (!NearlyEqual(scalar, 0)) return Point(_x / scalar, _y / scalar);
+		throw std::invalid_argument("Division by zero in Point::operator/");
+	};
+
+	// Compound Assignment Operators
+	Point& operator+=(const Point& other) noexcept {
+		if (this != &other) { _x += other._x; _y += other._y; }
+		return *this;
+	};
+	Point& operator-=(const Point& other) noexcept {
+		if (this != &other) { _x -= other._x; _y -= other._y; }
+		return *this;
+	};
+	Point& operator*=(double scalar) noexcept {
+		_x *= scalar; _y *= scalar;
+		return *this;
+	};
+	Point& operator/=(double scalar) {
+		if (!NearlyEqual(scalar, 0)) { _x /= scalar; _y /= scalar; return *this; }
+		throw std::invalid_argument("Division by zero in Point::operator/=");
+	};
+
+	// Comparison Operators
+	bool operator==(const Point& other) const noexcept {
+		return NearlyEqual(_x, other._x) && NearlyEqual(_y, other._y);
+	};
+	bool operator!=(const Point& other) const noexcept {
+		return !(*this == other);
+	};
+	bool operator<(const Point& other) const noexcept {
+		return (_x < other._x) || (NearlyEqual(_x, other._x) && _y < other._y);
+	};
+	bool operator<=(const Point& other) const noexcept {
+		return (*this < other) || (*this == other);
+	};
+	bool operator>(const Point& other) const noexcept {
+		return (_x > other._x) || (NearlyEqual(_x, other._x) && _y > other._y);
+	};
+	bool operator>=(const Point& other) const noexcept {
+		return !(*this < other);
+	};
+
+	// Stream Operators
+	friend std::ostream& operator<<(std::ostream& os, const Point& pt) {
+		return os << "(" << pt._x << ", " << pt._y << ")";
+	};
+	friend std::wostream& operator<<(std::wostream& wos, const Point& pt) {
+		return wos << L"(" << pt._x << L", " << pt._y << L")";
+	};
+
+// Geometric/Vector Math Operations
+public:
+	// Distance between points
+	double DistanceTo(const Point& other) const noexcept {
+		double dx = _x - other._x; double dy = _y - other._y;
+		return std::sqrt(dx * dx + dy * dy);
+	};
+
+	// Length / magnitude (treats the point as a vector from the origin (0, 0))
+	double Magnitude(void) const noexcept {
+		return std::sqrt(_x * _x + _y * _y);
+	};
+
+	// Dot products
+	constexpr double Dot(const Point& other) const noexcept {
+		return _x * other._x + _y * other._y;
+	};
+
+	// Cross product (2D)
+	// Used for determining orientation, area of parallelogram, etc.
+	constexpr double Cross(const Point& other) const noexcept {
+		return _x * other._y - _y * other._x;
+	};
+
+	// Angle between two vectors
+	double AngleWith(const Point& other) const noexcept {
+		double _dotProd = this->Dot(other);
+		double _magnitudes = this->Magnitude() * other.Magnitude();
+		return std::acos(_dotProd / _magnitudes); // in radians
+	}
+
+// Utility Operations
+public:
+	// Normalization (unit vector)
+	Point Normalized() const noexcept {
+		double _magitude = this->Magnitude();
+		return (_magitude == 0) ? Point(0, 0) : Point(_x / _magitude, _y / _magitude);
+	};
+
+	// Midpoint between two points
+	Point Midpoint(const Point& other) const noexcept {
+		return Point((_x + other._x) / 2, (_y + other._y) / 2);
+	};
+
+	// Manhattan distance
+	double ManhattanDistanceTo(const Point& other) const noexcept {
+		return std::abs(_x - other._x) + std::abs(_y - other._y);
+	};
+};
+
+
+// Manage Vector2D (line)
+class Vector2D
+{
+public:
+	double _x = 0;
+	double _y = 0;
+
+public:
+	// Construction
+	constexpr explicit Vector2D() noexcept = default;
+	constexpr Vector2D(double x, double y) noexcept : _x(x), _y(y) {};
+
+	// Copy constructor
+	constexpr Vector2D(const Vector2D& other) = default;
+
+	// Copy assignment operator
+	Vector2D& operator=(const Vector2D& other) = default;
+
+	// Move constructor
+	constexpr Vector2D(Vector2D&& other) noexcept = default;
+
+	// Move assignment operator
+	Vector2D& operator=(Vector2D&& other) noexcept = default;
+
+public:
+	// Access data
+	constexpr double GetX(void) const noexcept { return _x; };
+	void SetX(double x) noexcept { _x = x; };
+	constexpr double GetY(void) const noexcept { return _y; };
+	void SetY(double y) noexcept { _y = y; };
+	Point GetPoint(void) const noexcept {
+		return Point(_x, _y);
+	};
+	void SetPoint(const Point& point) noexcept {
+		_x = point._x; _y = point._y;
+	};
+
+public:
+	// For floating-point precision comparisons
+	static constexpr double EPSILON = 1e-9;
+	static bool NearlyEqual(double a, double b, double epsilon = EPSILON) {
+		return std::abs(a - b) < epsilon;
+	};
+
+	// Arithmetic Operators
+	constexpr Vector2D operator+(const Vector2D& other) const noexcept {
+		return Vector2D(_x + other._x, _y + other._y);
+	};
+	constexpr Vector2D operator-(const Vector2D& other) const noexcept {
+		return Vector2D(_x - other._x, _y - other._y);
+	};
+	constexpr Vector2D operator*(double scalar) const noexcept {
+		return Vector2D(_x * scalar, _y * scalar);
+	};
+	Vector2D operator/(double scalar) const {
+		if (!NearlyEqual(scalar, 0)) return Vector2D(_x / scalar, _y / scalar);
+		throw std::invalid_argument("Division by zero in Vector2D::operator/");
+	};
+
+	// Compound Assignment Operators
+	Vector2D& operator+=(const Vector2D& other) noexcept {
+		if (this != &other) { _x += other._x; _y += other._y; }
+		return *this;
+	};
+	Vector2D& operator-=(const Vector2D& other) noexcept {
+		if (this != &other) { _x -= other._x; _y -= other._y; }
+		return *this;
+	};
+	Vector2D& operator*=(double scalar) noexcept {
+		_x *= scalar; _y *= scalar;
+		return *this;
+	};
+	Vector2D& operator/=(double scalar) {
+		if (!NearlyEqual(scalar, 0)) { _x /= scalar; _y /= scalar; return *this; }
+		throw std::invalid_argument("Division by zero in Vector2D::operator/=");
+	};
+
+	// Comparison operators
+	bool operator==(const Vector2D& other) const noexcept {
+		return NearlyEqual(_x, other._x) && NearlyEqual(_y, other._y);
+	};
+	bool operator!=(const Vector2D& other) const noexcept {
+		return !(*this == other);
+	};
+	bool operator<(const Vector2D& other) const noexcept {
+		return (_x < other._x) || (NearlyEqual(_x, other._x) && _y < other._y);
+	};
+	bool operator<=(const Vector2D& other) const noexcept {
+		return (*this < other) || (*this == other);
+	};
+	bool operator>(const Vector2D& other) const noexcept {
+		return (_x > other._x) || (NearlyEqual(_x, other._x) && _y > other._y);
+	};
+	bool operator>=(const Vector2D& other) const noexcept {
+		return !(*this < other);
+	};
+
+	// Stream Operators
+	friend std::ostream& operator<<(std::ostream& os, const Vector2D& line) {
+		return os << "(" << line._x << ", " << line._y << ")";
+	};
+	friend std::wostream& operator<<(std::wostream& wos, const Vector2D& line) {
+		return wos << L"(" << line._x << L", " << line._y << L")";
+	};
+
+public:
+	// Magnitude (Length)
+	double Length() const noexcept {
+		return std::sqrt(_x * _x + _y * _y);
+	};
+
+	// Squared length (no sqrt)
+	constexpr double LengthSquared() const noexcept {
+		return _x * _x + _y * _y;
+	};
+
+	// Normalized vector (unit length)
+	Vector2D Normalized() const {
+		double _length = Length();
+		if (!NearlyEqual(_length, 0.0)) return Vector2D(_x / _length, _y / _length);
+		throw std::runtime_error("Cannot normalize a zero-length vector");
+	};
+
+	// Dot product
+	constexpr double Dot(const Vector2D& other) const noexcept {
+		return _x * other._x + _y * other._y;
+	};
+
+	// Cross product (2D scalar cross)
+	constexpr double Cross(const Vector2D& other) const noexcept {
+		return _x * other._y - _y * other._x;
+	};
+
+	// Angle between vectors (in radians)
+	double AngleTo(const Vector2D& other) const {
+		double _dot = Dot(other);
+		double _length1 = Length(); double _length2 = other.Length();
+		if (NearlyEqual(_length1, 0.0) || NearlyEqual(_length2, 0.0))
+			throw std::runtime_error("Cannot compute angle with zero-length vector");
+		double _cosTheta = _dot / (_length1 * _length2);
+		return std::acos(std::clamp(_cosTheta, -1.0, 1.0));
+	};
+
+	// Is zero
+	bool IsZero() const noexcept {
+		return NearlyEqual(_x, 0.0) && NearlyEqual(_y, 0.0);
+	};
+};
+
+
+// Manage size
+class Size
+{
+public:
+	double _width = 0;
+	double _height = 0;
+
+public:
+	// Construction
+	constexpr Size() noexcept = default;
+	constexpr Size(double width, double height) noexcept : _width(width), _height(height) {};
+
+	// Copy constructor
+	constexpr Size(const Size& other) = default;
+
+	// Copy assignment operator
+	Size& operator=(const Size& other) = default;
+
+	// Move constructor
+	constexpr Size(Size&& other) noexcept = default;
+
+	// Move assignment operator
+	Size& operator=(Size&& other) noexcept = default;
+
+public:
+	// Access data
+	constexpr double Width(void) const noexcept { return _width; };
+	void SetWidth(double width) noexcept { _width = width; };
+	constexpr double Height(void) const noexcept { return _height; };
+	void SetHeight(double height) noexcept { _height = height; };
+
+public:
+	// For floating-point precision comparisons
+	static constexpr double EPSILON = 1e-9;
+	static bool NearlyEqual(double a, double b, double epsilon = EPSILON) noexcept {
+		return std::abs(a - b) < epsilon;
+	};
+
+	// Arithmetic with Size
+	constexpr Size operator+(const Size& other) const noexcept {
+		return Size(_width + other._width, _height + other._height);
+	};
+	constexpr Size& operator+=(const Size& other) noexcept {
+		_width += other._width; _height += other._height;
+		return *this;
+	};
+	constexpr Size operator-(const Size& other) const noexcept {
+		return Size(_width - other._width, _height - other._height);
+	};
+	constexpr Size& operator-=(const Size& other) noexcept {
+		_width -= other._width; _height -= other._height;
+		return *this;
+	};
+
+	// Scaling with scalar
+	constexpr Size operator*(double scalar) const noexcept {
+		return Size(_width * scalar, _height * scalar);
+	};
+	constexpr Size& operator*=(double scalar) noexcept {
+		_width *= scalar; _height *= scalar;
+		return *this;
+	};
+	Size operator/(double scalar) const {
+		if (!NearlyEqual(scalar, 0.0)) return Size(_width / scalar, _height / scalar);
+		throw std::runtime_error("Division by zero in Size::operator/");
+	};
+	Size& operator/=(double scalar) {
+		if (NearlyEqual(scalar, 0.0)) {	_width /= scalar; _height /= scalar; return *this; }
+		throw std::runtime_error("Division by zero in Size::operator/=");
+	};
+
+	// Comparison operators
+	bool operator==(const Size& other) const noexcept {
+		return NearlyEqual(_width, other._width) && NearlyEqual(_height, other._height);
+	};
+	bool operator!=(const Size& other) const noexcept {
+		return !(*this == other);
+	};
+	bool operator<(const Size& other) const noexcept {
+		if (!NearlyEqual(_width, other._width)) return _width < other._width;
+		return _height < other._height;
+	};
+	bool operator<=(const Size& other) const noexcept {
+		return (*this < other) || (*this == other);
+	};
+	bool operator>(const Size& other) const noexcept {
+		return (_width > other._width) || (NearlyEqual(_width, other._width) && _height > other._height);
+	};
+	bool operator>=(const Size& other) const noexcept {
+		return !(*this < other);
+	};
+
+	// Stream Operators
+	friend std::ostream& operator<<(std::ostream& os, const Size& size) {
+		return os << "(" << size._width << ", " << size._height << ")";
+	};
+	friend std::wostream& operator<<(std::wostream& wos, const Size& size) {
+		return wos << L"(" << size._width << L", " << size._height << L")";
+	};
+
+public:
+	// Area
+	double Area(void) const noexcept {
+		return std::abs(_width * _height);
+	};
+
+	// Is zero/empty
+	bool IsZero(void) const noexcept {
+		return NearlyEqual(_width, 0.0) && NearlyEqual(_height, 0.0);
+	};
+	constexpr bool IsEmpty(void) const noexcept {
+		return _width <= 0.0 || _height <= 0.0;
+	};
+
+	// Normalized size (positive width and height)
+	Size Normalized(void) const noexcept {
+		return Size(std::abs(_width), std::abs(_height));
+	};
+
+	// Conversion to Vector2D
+	constexpr Vector2D ToVector() const noexcept {
+		return Vector2D(_width, _height);
+	};
+};
+
+
+// Manage rectangle
+// Allowing inverted rectangles
+class Rect
+{
+public:
+	enum class Rotation {
+		Clockwise_90, Clockwise_180, Clockwise_270,
+		CounterClockwise_90, CounterClockwise_180, CounterClockwise_270,
+	};
+
+public:
+	double _left = 0;
+	double _top = 0;
+	double _right = 0;
+	double _bottom = 0;
+
+public:
+	// Construction
+	constexpr explicit Rect() noexcept = default;
+	constexpr Rect(double left, double top, double right, double bottom) : _left(left), _top(top), _right(right), _bottom(bottom) {};
+	constexpr Rect(const Point& topLeft, const Point& bottomRight) : _left(topLeft._x), _top(topLeft._y), _right(bottomRight._x), _bottom(bottomRight._y) {};
+	constexpr Rect(const Vector2D& position, const Size& size)
+		: _left(position._x), _top(position._y), _right(position._x + size._width), _bottom(position._y + size._height) {};
+
+	// Copy constructor
+	constexpr Rect(const Rect& other) = default;
+
+	// Copy assignment operator
+	Rect& operator=(const Rect& other) = default;
+
+	// Move constructor
+	constexpr Rect(Rect&& other) noexcept = default;
+
+	// Move assignment operator
+	Rect& operator=(Rect&& other) noexcept = default;
+
+public:
+	// Create rectangle
+	static constexpr Rect FromPositionSize(const Vector2D& position, const Size& size) {
+		return Rect(position, size);
+	};
+	static constexpr Rect FromEdges(double left, double top, double right, double bottom) {
+		return Rect(left, top, right, bottom);
+	};
+	static constexpr Rect FromEdges(const Point& topLeft, const Point& bottomRight) {
+		return Rect(topLeft, bottomRight);
+	};
+
+public:
+	// Access data
+	constexpr double Left(void) const noexcept { return _left; };
+	constexpr double Top(void) const noexcept { return _top; };
+	constexpr double Right(void) const noexcept { return _right; };
+	constexpr double Bottom(void) const noexcept { return _bottom; };
+
+	Point TopLeft(void) const noexcept { return Point(_left, _top); };
+	Point TopRight(void) const noexcept { return Point(_right, _top); };
+	Point BottomLeft(void) const noexcept { return Point(_left, _bottom); };
+	Point BottomRight(void) const noexcept { return Point(_right, _bottom); };
+
+	// Modify data
+	void SetLeft(double left) noexcept { _left = left; };
+	void SetTop(double top) noexcept { _top = top; };
+	void SetRight(double right) noexcept { _right = right; };
+	void SetBottom(double bottom) noexcept { _bottom = bottom; };
+
+	void SetTopLeft(const Point& topLeft) noexcept { _left = topLeft._x; _top = topLeft._y; };
+	void SetTopLeft(double x, double y) noexcept { _left = x; _top = y; };
+	void SetBottomRight(const Point& bottomRight) noexcept { _right = bottomRight._x; _bottom = bottomRight._y; };
+	void SetBottomRight(double x, double y) noexcept { _right = x; _bottom = y; };
+
+private:
+	// Internal getters
+	constexpr double _leftVal(void) const noexcept {
+		return std::min(_left, _right);
+	};
+	constexpr double _rightVal(void) const noexcept {
+		return std::max(_left, _right);
+	};
+	constexpr double _topVal(void) const noexcept {
+		return std::min(_top, _bottom);
+	};
+	constexpr double _bottomVal(void) const noexcept {
+		return std::max(_top, _bottom);
+	};
+
+public:
+	// Comparison operators
+	static constexpr double EPSILON = 1e-9;
+	static bool NearlyEqual(double a, double b, double epsilon = EPSILON) {
+		return std::abs(a - b) < epsilon;
+	};
+	bool operator==(const Rect& other) const noexcept {
+		return NearlyEqual(_leftVal(), other._leftVal()) && NearlyEqual(_topVal(), other._topVal()) &&
+			NearlyEqual(_rightVal(), other._rightVal()) && NearlyEqual(_bottomVal(), other._bottomVal());
+	};
+	bool operator!=(const Rect& other) const noexcept {
+		return !(*this == other);
+	};
+	bool operator<(const Rect& other) const noexcept {
+		if (!NearlyEqual(_leftVal(), other._leftVal())) return _leftVal() < other._leftVal();
+		if (!NearlyEqual(_topVal(), other._topVal())) return _topVal() < other._topVal();
+		if (!NearlyEqual(_rightVal(), other._rightVal())) return _rightVal() < other._rightVal();
+		return _bottomVal() < other._bottomVal();
+	};
+	bool operator<=(const Rect& other) const noexcept {
+		return (*this < other || *this == other);
+	};
+	bool operator>(const Rect& other) const noexcept {
+		return !(*this <= other);
+	};
+	bool operator>=(const Rect& other) const noexcept {
+		return !(*this < other);
+	};
+
+	// Arithmetic Operators
+	Rect operator+(const Point& offset) const noexcept {
+		return Rect(_left + offset._x, _top + offset._y, _right + offset._x, _bottom + offset._y);
+	};
+	Rect& operator+=(const Point& offset) noexcept {
+		_left += offset._x; _top += offset._y; _right += offset._x; _bottom += offset._y;
+		return *this;
+	};
+	Rect operator-(const Point& offset) const noexcept {
+		return Rect(_left - offset._x, _top - offset._y, _right - offset._x, _bottom - offset._y);
+	};
+	Rect& operator-=(const Point& offset) noexcept {
+		_left -= offset._x; _top -= offset._y;
+		_right -= offset._x; _bottom -= offset._y;
+		return *this;
+	};
+	Rect operator+(const Vector2D& offset) const noexcept {
+		return Rect(_left + offset._x, _top + offset._y, _right + offset._x, _bottom + offset._y);
+	};
+	Rect& operator+=(const Vector2D& offset) noexcept {
+		_left += offset._x; _top += offset._y; _right += offset._x; _bottom += offset._y;
+		return *this;
+	};
+
+public:
+	// Width and Height of the rectangle
+	double Width(void) const noexcept {
+		return std::abs(_right - _left);
+	};
+	double Height(void) const noexcept {
+		return std::abs(_bottom - _top);
+	};
+
+	// Size of rectangle
+	Size GetSize(void) const noexcept {
+		return Size(Width(), Height());
+	};
+
+	// Position of rectangle
+	constexpr Vector2D GetPosition() const noexcept {
+		return Vector2D(_leftVal(), _topVal());
+	};
+
+	// Is a square
+	bool IsSquare(void) const noexcept {
+		return NearlyEqual(Width(), Height());
+	};
+
+	// Area of the rectangle
+	double Area(void) const noexcept {
+		return Width() * Height();
+	}
+
+	// Perimeter of the rectangle
+	double Perimeter(void) const noexcept {
+		return (Width() * 2.0 + Height() * 2.0);
+	};
+
+	// Center position of the rectangle
+	constexpr Vector2D Center(void) const noexcept {
+		return Vector2D((_leftVal() + _rightVal()) / 2.0, (_topVal() + _bottomVal()) / 2.0);
+	};
+
+	// Diagonal of the rectangle
+	double Diagonal(void) const noexcept {
+		return std::sqrt(Width() * Width() + Height() * Height());
+	};
+
+	// For inverted rectangles
+	constexpr bool IsInverted(void) const noexcept {
+		return (_right < _left || _bottom < _top);
+	};
+	Rect& Normalize(void) noexcept {
+		if (_right < _left) std::swap(_right, _left);
+		if (_bottom < _top) std::swap(_bottom, _top);
+		return *this;
+	};
+
+	// Contains a point
+	constexpr bool Contains(double x, double y) const noexcept {
+		return x >= _leftVal() && x <= _rightVal() && y >= _topVal() && y <= _bottomVal();
+	};
+	constexpr bool Contains(const Point& point) const noexcept {
+		return Contains(point._x, point._y);
+	};
+
+	// Intersects with another rectangle
+	constexpr bool Intersects(const Rect& other) const noexcept {
+		return !(_rightVal() < other._leftVal() || _leftVal() > other._rightVal() || _bottomVal() < other._topVal() || _topVal() > other._bottomVal());
+	};
+
+	// Intersection rectangle (returns empty Rect if no intersection)
+	Rect Intersection(const Rect& other) const noexcept {
+		if (!Intersects(other)) return Rect();
+		return Rect(std::max(_leftVal(), other._leftVal()), std::max(_topVal(), other._topVal()),
+			std::min(_rightVal(), other._rightVal()), std::min(_bottomVal(), other._bottomVal()));
+	};
+
+	// Union rectangle
+	Rect Unite(const Rect& other) const noexcept {
+		return Rect(std::min(_leftVal(), other._leftVal()), std::min(_topVal(), other._topVal()),
+			std::max(_rightVal(), other._rightVal()), std::max(_bottomVal(), other._bottomVal()));
+	};
+
+	// Move/Offset the rectangle
+	Rect& Offset(double deltaX, double deltaY = 0) noexcept {
+		_left += deltaX; _right += deltaX; _top += deltaY; _bottom += deltaY;
+		return *this;
+	};
+	Rect& Offset(const Point& point) noexcept {
+		return Offset(point._x, point._y);
+	};
+	Rect& Offset(const Vector2D& vector) noexcept {
+		return Offset(vector._x, vector._y);
+	};
+
+	// Empty the rectangle
+	void Empty(void) noexcept {
+		_left = _top = _right = _bottom = 0.0;
+	};
+
+	// Set new size (preserves whether it's inverted or not)
+	void SetSize(const Size& newSize) noexcept {
+		if (_right >= _left) { _right = _left + newSize._width; }
+		else { _right = _left - newSize._width; }
+		if (_bottom >= _top) { _bottom = _top + newSize._height; }
+		else { _bottom = _top - newSize._height; }
+	};
+
+	// Flip horizontally: mirror across vertical axis
+	Rect& FlipHorizontally() noexcept {
+		std::swap(_left, _right);
+		return *this;
+	};
+
+	// Flip vertically: mirror across horizontal axis
+	Rect& FlipVertically() noexcept {
+		std::swap(_top, _bottom);
+		return *this;
+	};
+
+	// Rotation around center
+	// This method only works like width/height swapping
+	Rect Rotate(Rotation rotation) const noexcept;
+
+	// Rotatition around center with an arbitary angle
+	// This returns a new axis-aligned bounding rectangle,
+	// which often has different width and height compared to the original rectangle
+	Rect Rotate(double angleRadians) const noexcept {
+		return RotateAround(Center(), angleRadians);
+	};
+
+	// Rotation around a pivot (any point)
+	// This returns a new axis-aligned bounding rectangle,
+	// which often has different width and height compared to the original rectangle
+	Rect RotateAround(const Vector2D& pivot, double angleRadians) const noexcept;
+};

@@ -15,7 +15,6 @@
 
 // Include C++ standard libraries
 #include <iostream>
-#include <cmath>
 #include <iomanip>
 #include <fstream>
 #include <string.h>

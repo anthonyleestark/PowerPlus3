@@ -133,3 +133,82 @@ TokenList String::Tokenize(const wchar_t* delimiters) const
 	return _tokens;
 }
 
+// Using PI constants
+#ifndef M_PI
+	#ifdef _HAS_CXX20
+		#if !defined(_NUMBERS_)
+			#include <numbers>
+		#endif
+		constexpr double M_PI = std::numbers::pi;
+		constexpr double M_PI_2 = std::numbers::pi / 2;
+		constexpr double M_PI_4 = std::numbers::pi / 4;
+	#else
+		#define M_PI       3.14159265358979323846   // pi
+		#define M_PI_2     1.57079632679489661923   // pi/2
+		#define M_PI_4     0.785398163397448309616  // pi/4
+	#endif
+#endif
+
+// Rectangle rotation around center
+Rect Rect::Rotate(Rotation rotation) const noexcept
+{
+	double _angleRadians = 0.0;
+
+	switch (rotation) {
+		case Rotation::Clockwise_90:         _angleRadians = -M_PI / 2.0;		break;
+		case Rotation::Clockwise_180:        _angleRadians = -M_PI;				break;
+		case Rotation::Clockwise_270:        _angleRadians = -3 * M_PI / 2.0;	break;
+		case Rotation::CounterClockwise_90:  _angleRadians = M_PI / 2.0;		break;
+		case Rotation::CounterClockwise_180: _angleRadians = M_PI;				break;
+		case Rotation::CounterClockwise_270: _angleRadians = 3 * M_PI / 2.0;	break;
+	}
+
+	// Rotate around center
+	return RotateAround(Center(), _angleRadians);
+}
+
+// Rotate point around a pivot
+// Helper for Rect::RotatedAround() function
+Vector2D RotatePointAround(const Vector2D& point, const Vector2D& pivot, double angle) noexcept
+{
+	double _sin = std::sin(angle);
+	double _cos = std::cos(angle);
+
+	// Translate to origin
+	Vector2D _translated = point - pivot;
+
+	// Rotate
+	double _xNew = _translated._x * _cos - _translated._y * _sin;
+	double _yNew = _translated._x * _sin + _translated._y * _cos;
+
+	// Translate back
+	return Vector2D(_xNew + pivot._x, _yNew + pivot._y);
+}
+
+// Rectangle rotation around a pivot (any point)
+Rect Rect::RotateAround(const Vector2D& pivot, double angleRadians) const noexcept
+{
+	// Get the 4 corners (respecting inversion)
+	std::array<Vector2D, 4> _corners = {
+		Vector2D(_leftVal(),  _topVal()),
+		Vector2D(_rightVal(), _topVal()),
+		Vector2D(_rightVal(), _bottomVal()),
+		Vector2D(_leftVal(),  _bottomVal())
+	};
+
+	// Rotate each corner around the pivot
+	for (auto& _point : _corners)
+		_point = RotatePointAround(_point, pivot, angleRadians);
+
+	// Compute the new bounding box
+	double _minX = _corners[0]._x, _maxX = _corners[0]._x;
+	double _minY = _corners[0]._y, _maxY = _corners[0]._y;
+	for (int i = 1; i < 4; ++i) {
+		_minX = std::min(_minX, _corners[i]._x);
+		_maxX = std::max(_maxX, _corners[i]._x);
+		_minY = std::min(_minY, _corners[i]._y);
+		_maxY = std::max(_maxY, _corners[i]._y);
+	}
+
+	return Rect(_minX, _minY, _maxX, _maxY);
+}
