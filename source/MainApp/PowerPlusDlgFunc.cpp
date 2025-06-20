@@ -76,6 +76,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	/*					Process basic debug commands				     */
 	/*																	 */
 	/*********************************************************************/
+
 	if (!_tcscmp(debugCommand, _T("exit"))) {
 		// Exit application
 		ExitApp(ExitCode::FromDebugCommand);
@@ -179,6 +180,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	/*			Process advanced/multi-token debug commands				 */
 	/*																	 */
 	/*********************************************************************/
+
 	// Make token list (break string buffer)
 	TokenList tokenList = debugCommand.Tokenize(_T("=,;:-_"));
 	size_t tokenCount = tokenList.size();
@@ -872,7 +874,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {
 			// Set reminder message font size
 			int nFontSize = _tstoi(tokenList.at(2).c_str());
-			if ((nFontSize < 10) || (nFontSize > 100)) {
+			if ((nFontSize < RmdMsgStyleSet::minFontSize) || (nFontSize > RmdMsgStyleSet::maxFontSize)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 10 -> 100)"));
 				bNoReply = false;	// Reset flag
@@ -894,7 +896,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("timeout")))) {
 			// Set reminder message auto-close interval (timeout)
 			int nTimeout = _tstoi(tokenList.at(2).c_str());
-			if ((nTimeout < 10) || (nTimeout > 1800)) {
+			if ((nTimeout < RmdMsgStyleSet::minTimeOut) || (nTimeout > RmdMsgStyleSet::maxTimeOut)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 10 -> 1800)"));
 				bNoReply = false;	// Reset flag
@@ -916,7 +918,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("notimeout")))) {
 			// No reminder message timeout (default 0)
 			if (pRmdData != NULL) {
-				pRmdData->GetCommonStyle().SetTimeout(INT_NULL);
+				pRmdData->GetCommonStyle().SetTimeout(RmdMsgStyleSet::defaultTimeout);
 				pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLog(_T("Message time-out disabled"));
 				bNoReply = false;	// Reset flag
@@ -964,7 +966,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconsize")))) {
 			// Set reminder message icon size
 			int nIconSize = _tstoi(tokenList.at(2).c_str());
-			if ((nIconSize < 30) || (nIconSize > 100)) {
+			if ((nIconSize < RmdMsgStyleSet::minIconSize) || (nIconSize > RmdMsgStyleSet::maxIconSize)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 30 -> 100)"));
 				bNoReply = false;	// Reset flag
@@ -1020,7 +1022,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("hmargin")))) {
 			// Set reminder message horizontal margin
 			int nHMargin = _tstoi(tokenList.at(2).c_str());
-			if ((nHMargin < 10) || (nHMargin > 120)) {
+			if ((nHMargin < RmdMsgStyleSet::minMarginVal) || (nHMargin > RmdMsgStyleSet::maxMarginVal)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 10 -> 120)"));
 				bNoReply = false;	// Reset flag
@@ -1042,7 +1044,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("vmargin")))) {
 			// Set reminder message vertical margin
 			int nVMargin = _tstoi(tokenList.at(2).c_str());
-			if ((nVMargin < 10) || (nVMargin > 120)) {
+			if ((nVMargin < RmdMsgStyleSet::minMarginVal) || (nVMargin > RmdMsgStyleSet::maxMarginVal)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 10 -> 120)"));
 				bNoReply = false;	// Reset flag
@@ -1642,6 +1644,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	/*					Post-processing and clean-up				     */
 	/*																	 */
 	/*********************************************************************/
+
 	// If command is invalid
 	if (bInvalidCmdFlag == true) {
 		// Error: Invalid command

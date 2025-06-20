@@ -247,6 +247,7 @@ BOOL CPowerPlusApp::InitInstance()
 	/*							BEGIN MAIN DIALOG MODAL LOOP							*/
 	/*																					*/
 	/************************************************************************************/
+
 	// Initialize main dialog
 	CPowerPlusDlg* pMainDlg = new CPowerPlusDlg;
 	if (pMainDlg == NULL) {
@@ -301,6 +302,7 @@ BOOL CPowerPlusApp::InitInstance()
 	/*							 END MAIN DIALOG MODAL LOOP								*/
 	/*																					*/
 	/************************************************************************************/
+
 	// Unregister to system wakeup event notifications
 	if (hPowerNotify != NULL) {
 		dwErrorCode = PowerUnregisterSuspendResumeNotification(hPowerNotify);
@@ -387,6 +389,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 		/*			  Keyboard process in screen unlock state			     */
 		/*																	 */
 		/*********************************************************************/
+
 		if (GetSessionLockFlag() == FLAG_OFF) {
 			// Process when Alt & Backspace keys are pressed
 			if ((dwKeyCode == VK_BACK) && (dwKeyFlags & LLKHF_ALTDOWN)) {
@@ -409,6 +412,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 		/*				Keyboard process in screen lock state			     */
 		/*																	 */
 		/*********************************************************************/
+
 		else if (GetSessionLockFlag() == FLAG_ON) {
 			// Process hotkey when the screen is locked
 			if (((dwKeyCode >= VK_F1) && (dwKeyCode <= VK_F12)) &&					// Only process if a function key (F1 -> F12) and
@@ -655,6 +659,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	/*									 Load configuration info								   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	if (pcfgTempData != NULL) {
 
 		// Read configuration data
@@ -708,6 +713,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	/*										Load schedule info									   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	if (pschTempData != NULL) {
 
 		// Initialize temp data
@@ -859,6 +865,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	/*									  Load HotkeySet info								       */
 	/*																							   */
 	/***********************************************************************************************/
+
 	// Load HotkeySet data
 	int nItemNum = 0;
 	if (phksTempData != NULL) {
@@ -941,6 +948,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	/*									 Load Power Reminder info								   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	// Load Power Reminder data
 	nItemNum = 0;
 	if (ppwrTempData != NULL) {
@@ -1124,6 +1132,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	/*										Load other data										   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	// Load global data values
 	LoadGlobalData();
 	
@@ -1151,6 +1160,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*									Save configuration info									   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	// Save configuration data
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
 
@@ -1196,6 +1206,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*									 Save schedule info										   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	// Save schedule data
 	if ((dwDataType & APPDATA_SCHEDULE) != 0) {
 
@@ -1258,6 +1269,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*								 Save auto-start status info								   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	// Save auto-start status info
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
 
@@ -1280,6 +1292,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*									 Save HotkeySet info									   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	// Save HotkeySet data
 	if ((dwDataType & APPDATA_HOTKEYSET) != 0) {
 
@@ -1319,6 +1332,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	/*									Save Power Reminder info								   */
 	/*																							   */
 	/***********************************************************************************************/
+
 	// Save Power Reminder data
 	if ((dwDataType & APPDATA_PWRREMINDER) != 0) {
 
@@ -1411,6 +1425,7 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	String strValue = Constant::String::Empty;	// String value
 
 	/*------------------------<Application launch-time counter>--------------------------*/
+
 	// Load info from registry
 	if (GetProfileInfo(AppProfile::LaunchInfo::LaunchCounter, nValue)) {
 		SetAppLaunchTimeCounter(nValue);
@@ -1425,7 +1440,9 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
+
 	/*-----------------------------<Application launch-time>-----------------------------*/
+
 	// Format launch-time
 	DateTime dateTimeAppLaunch = GetAppLaunchTime();
 	unsigned nTimePeriod = (dateTimeAppLaunch.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
@@ -1440,7 +1457,9 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
+
 	/*------------------------<Application directory/file info>--------------------------*/
+
 	// Directory path (not including the executable file name)
 	strValue = StringUtils::GetApplicationPath(false);
 	if (!strValue.IsEmpty()) {
@@ -1467,7 +1486,9 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
+
 	/*--------------------------<Device, system and user info>---------------------------*/
+
 	// Device name
 	bool bRetGetInfo = StringUtils::GetDeviceName(strValue);
 	if ((bRetGetInfo != false) && (!strValue.IsEmpty())) {
@@ -1504,6 +1525,7 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
+
 	return bRet;
 }
 
@@ -1522,6 +1544,7 @@ bool CPowerPlusApp::LoadGlobalData(void)
 	String subSectionName = Constant::String::Empty;
 
 	/*------------------------<Load debugging/testing variables>-------------------------*/
+
 	// Subsection: DebugTest
 	subSectionName = Section::GlobalData::DebugTest;
 
@@ -1547,7 +1570,9 @@ bool CPowerPlusApp::LoadGlobalData(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
+
 	/*-----------------------------<Load app special flags>------------------------------*/
+
 	// Subsection: AppFlags
 	subSectionName = Section::GlobalData::AppFlag;
 
@@ -1576,6 +1601,7 @@ bool CPowerPlusApp::LoadGlobalData(void)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
+
 	return bRet;
 }
 
@@ -1596,6 +1622,7 @@ bool CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	String subSectionName = Constant::String::Empty;
 
 	/*------------------------<Save debugging/testing variables>-------------------------*/
+
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_DEBUGTEST)) {
 		// Subsection: DebugTest
 		subSectionName = Section::GlobalData::DebugTest;
@@ -1623,7 +1650,9 @@ bool CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
+
 	/*---------------------------------<Save app flags>----------------------------------*/
+
 	if ((byCateID == 0xFF) || (byCateID == DEF_GLBDATA_CATE_APPFLAGS)) {
 		// Subsection: AppFlags
 		subSectionName = Section::GlobalData::AppFlag;
@@ -1654,6 +1683,7 @@ bool CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 	}
 
 	/*-----------------------------------------------------------------------------------*/
+
 	return bRet;
 }
 

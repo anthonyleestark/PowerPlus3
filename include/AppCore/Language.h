@@ -434,6 +434,22 @@ namespace Language
 		{ HKEYSET_EXISTED_CTRL_F4,								_T("Close the active document") },
 		{ HKEYSET_EXISTED_CTRL_F5,								_T("Refresh current window") },
 		{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("Close active virtual desktop") },
+		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("Default Application") },
+		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("Question Mark") },
+#if(WINVER >= 0x0400)
+		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Windows Logo") },
+#endif /* WINVER >= 0x0400 */
+#if(WINVER >= 0x0600)
+		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("Shield Icon") },
+#endif /* WINVER >= 0x0600 */
+		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("Warning Icon") },
+		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("Error Icon") },
+		{ MSGSTYLE_ICONID_INFORMATION_ICON,						_T("Information Icon") },
+		{ MSGSTYLE_DISPLAYPOS_AT_CENTER,						_T("At the center of the screen")},
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,						_T("On the top-left corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,						_T("On the top-right corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMLEFT,					_T("On the bottom-left corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMRIGHT,					_T("On the bottom-right corner of the screen") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*--------Logging macro ID--------------------------------------------------------------Language String---------------------------------------------------------------*/
@@ -895,6 +911,22 @@ namespace Language
 		{ HKEYSET_EXISTED_CTRL_F4,								_T("Đóng tài liệu hiện tại") },
 		{ HKEYSET_EXISTED_CTRL_F5,								_T("Làm mới cửa sổ hiện tại") },
 		{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("Đóng màn hình nền ảo hiện tại") },
+		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("Default Application") },
+		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("Question Mark") },
+#if(WINVER >= 0x0400)
+		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Windows Logo") },
+#endif /* WINVER >= 0x0400 */
+#if(WINVER >= 0x0600)
+		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("Shield Icon") },
+#endif /* WINVER >= 0x0600 */
+		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("Warning Icon") },
+		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("Error Icon") },
+		{ MSGSTYLE_ICONID_INFORMATION_ICON,						_T("Information Icon") },
+		{ MSGSTYLE_DISPLAYPOS_AT_CENTER,						_T("At the center of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,						_T("On the top-left corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,						_T("On the top-right corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMLEFT,					_T("On the bottom-left corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMRIGHT,					_T("On the bottom-right corner of the screen") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*--------Logging macro ID--------------------------------------------------------------Language String---------------------------------------------------------------*/
@@ -1357,6 +1389,22 @@ namespace Language
 		{ HKEYSET_EXISTED_CTRL_F4,								_T("关闭活动文档") },
 		{ HKEYSET_EXISTED_CTRL_F5,								_T("刷新当前窗口") },
 		{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("关闭活动虚拟桌面") },
+		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("Default Application") },
+		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("Question Mark") },
+#if(WINVER >= 0x0400)
+		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Windows Logo") },
+#endif /* WINVER >= 0x0400 */
+#if(WINVER >= 0x0600)
+		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("Shield Icon") },
+#endif /* WINVER >= 0x0600 */
+		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("Warning Icon") },
+		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("Error Icon") },
+		{ MSGSTYLE_ICONID_INFORMATION_ICON,						_T("Information Icon") },
+		{ MSGSTYLE_DISPLAYPOS_AT_CENTER,						_T("At the center of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,						_T("On the top-left corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,						_T("On the top-right corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMLEFT,					_T("On the bottom-left corner of the screen") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMRIGHT,					_T("On the bottom-right corner of the screen") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*--------Logging macro ID--------------------------------------------------------------Language String---------------------------------------------------------------*/

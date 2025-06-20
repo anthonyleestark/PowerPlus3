@@ -1413,8 +1413,8 @@ LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM /*lParam*/)
 
 /**
  * @brief	Handle power broadcast event
-	Arguments:		wParam - Event ID
-					lParam - Not used
+ * @param	wParam - Event ID
+ * @param	lParam - Not used
  * @return	LRESULT
  */
 LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
@@ -1491,8 +1491,8 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 
 /**
  * @brief	Handle querry ending session event
-	Arguments:		wParam - Not used
-					lParam - Not used
+ * @param	wParam - Not used
+ * @param	lParam - Not used
  * @return	LRESULT
  */
 LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
@@ -1506,6 +1506,7 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	}
 
 	/*---------- Process querry ending session event ----------*/
+
 	// Turn on session ending flag
 	SetSessionEndFlag(FLAG_ON);
 	pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
@@ -1518,6 +1519,7 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	SaveHistoryInfoData();
 
 	/*---------------------------------------------------------*/
+
 	// Default: Success
 	return LRESULT(Result::Success);
 }
@@ -1525,8 +1527,8 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
 /**
  * @brief	Handle session state change notifications
-	Arguments:		wParam - First param
-					lParam - Second param
+ * @param	wParam - First param
+ * @param	lParam - Second param
  * @return	LRESULT
  */
 LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM /*lParam*/)
@@ -1559,8 +1561,8 @@ LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM /*lParam*/)
 
 /**
  * @brief	Handle app command messages (WM_COMMAND)
-	Arguments:		wParam - First param (HIWORD)
-					lParam - Second param (LOWORD)
+ * @param	wParam - First param (HIWORD)
+ * @param	lParam - Second param (LOWORD)
  * @return	BOOL
  */
 BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -1568,15 +1570,12 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	// Process commands
 	switch (LOWORD(wParam))
 	{
-
-
-/*********************************************************************/
+	/*********************************************************************/
 	/*																	 */
 	/*				Handle commands for Action menu items				 */
 	/*																	 */
+	/*********************************************************************/
 
-
-/*********************************************************************/
 	case IDM_NOTIFY_ACTION_DISPLAYOFF:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_ACTION_DISPLAYOFF);
 		ExecuteAction(APP_MACRO_ACTION_MENU, APP_ACTION_DISPLAYOFF);
@@ -1606,14 +1605,12 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		ExecuteAction(APP_MACRO_ACTION_SCHEDULE, GetAppOption(AppOptionID::defaultScheduleActionID));
 		break;
 
-
-/*********************************************************************/
+	/*********************************************************************/
 	/*																	 */
 	/*				Handle commands for other menu items				 */
 	/*																	 */
+	/*********************************************************************/
 
-
-/*********************************************************************/
 	case IDM_NOTIFY_OPENDLG_ABOUT:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_OPENDLG_ABOUT);
 		OpenChildDialogEx(IDD_ABOUT_DLG);
@@ -1672,7 +1669,7 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	}
 
 	// Default
-	return CWnd::OnCommand(wParam, lParam);
+	return SDialog::OnCommand(wParam, lParam);
 }
 
 
@@ -2128,6 +2125,7 @@ void CPowerPlusDlg::UpdateDialogData(bool bSaveAndValidate /* = true */)
 	if (bSaveAndValidate == false) {
 
 	/*----------------------------<Bind config data to dialog items>----------------------------*/
+
 		// Left mouse button action combo-box
 		nCmbSel = m_cfgTempConfig.nLMBAction;
 		m_cmbLMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
@@ -2172,8 +2170,8 @@ void CPowerPlusDlg::UpdateDialogData(bool bSaveAndValidate /* = true */)
 	/*------------------------------------------------------------------------------------------*/
 	}
 	else {
-
 	/*----------------------------<Bind dialog items data to config>----------------------------*/
+
 		// Update dialog items
 		UpdateData(true);
 
@@ -3829,15 +3827,13 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 	HWND hWnd = this->GetSafeHwnd();
 	DWORD dwErrorCode;
 
-
-/*********************************************************************/
+	/*********************************************************************/
 	/*																	 */
 	/*	         Unregister already registered HotkeySet items			 */
 	/*	             Applied for modes: DISABLE or UPDATE                */
 	/*																	 */
+	/*********************************************************************/
 
-
-/*********************************************************************/
 	if ((nMode == Mode::Disable) || (nMode == Mode::Update)) {
 
 		if ((bHKRegisterFlag == true) &&									// Hotkey registered flag ON
@@ -3876,15 +3872,13 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 		}
 	}
 
-
-/*********************************************************************/
+	/*********************************************************************/
 	/*																	 */
 	/*				      Register HotkeySet items					     */
 	/*				   Applied for modes: INIT or UPDATE		         */
 	/*																	 */
+	/*********************************************************************/
 
-
-/*********************************************************************/
 	if ((nMode == Mode::Init) || (nMode == Mode::Update)) {
 
 		// If feature not enabled, do nothing
@@ -4067,15 +4061,13 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	DWORD dwError;
 	HWND hCurWnd = this->GetSafeHwnd();
 
-
-/*********************************************************************/
+	/*********************************************************************/
 	/*																	 */
 	/*		  Unregister for session state change notifications			 */
 	/*	            Applied for modes: DISABLE or UPDATE		         */
 	/*																	 */
+	/*********************************************************************/
 
-
-/*********************************************************************/
 	if ((nMode == Mode::Disable) || (nMode == Mode::Update)) {
 
 		// Only unregister if the flag is not OFF
@@ -4099,15 +4091,13 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 		}
 	}
 
-
-/*********************************************************************/
+	/*********************************************************************/
 	/*																	 */
 	/*			Register for session state change notifications			 */
 	/*				   Applied for modes: INIT or UPDATE		         */
 	/*																	 */
+	/*********************************************************************/
 
-
-/*********************************************************************/
 	if ((nMode == Mode::Init) || (nMode == Mode::Update)) {
 
 		// Only register if the flag is not ON
@@ -5105,8 +5095,8 @@ void CPowerPlusDlg::ShowErrorMessage(DWORD dwError)
 
 /**
  * @brief	Request to restart the application
-	Arguments:		uiCmdSenderID	- ID of command which sends request
-					bRestartAsAdmin - Restart as admin???
+ * @param	uiCmdSenderID	- ID of command which sends request
+ * @param	bRestartAsAdmin - Restart as admin???
  * @return	None
  */
 void CPowerPlusDlg::RequestRestartApp(unsigned uiCmdSenderID, bool bRestartAsAdmin)
@@ -5160,7 +5150,7 @@ void CPowerPlusDlg::RequestRestartApp(unsigned uiCmdSenderID, bool bRestartAsAdm
 
 /**
  * @brief	Request to restart the application as admin
-	Arguments:		reqRestart - Request to restart
+ * @param	reqRestart - Request to restart
  * @return	None
  */
 void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)

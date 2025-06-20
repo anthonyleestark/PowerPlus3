@@ -104,6 +104,20 @@ public:
 	};
 
 public:
+	// Create string
+	template <typename _Type>
+	static String FromNumber(_Type number) {
+		static_assert(std::is_arithmetic<_Type>::value, "FromNumber requires a numeric type.");
+		static thread_local wchar_t _tempBuff[100];
+		if constexpr (std::is_integral<_Type>::value)
+			swprintf(_tempBuff, 100, L"%lld", static_cast<long long>(number));
+		else if constexpr (std::is_floating_point<_Type>::value)
+			swprintf(_tempBuff, 100, L"%f", static_cast<double>(number));
+		else wprintf(_tempBuff, 100, L"(Unsupported)");
+		return String(_tempBuff);
+	};
+
+public:
 	// Subscript operator
 	constexpr wchar_t& operator[](const size_t index) {
 		return _buffer.at(index);

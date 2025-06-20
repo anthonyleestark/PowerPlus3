@@ -66,12 +66,7 @@ void CRmdRepeatSetDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CRmdRepeatSetDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
-
+// CRmdRepeatSetDlg dialog message map
 BEGIN_MESSAGE_MAP(CRmdRepeatSetDlg, SDialog)
 	ON_WM_DESTROY()
 	ON_WM_ACTIVATE()
@@ -432,6 +427,7 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 		/*				Update data from dialog controls			   */
 		/*															   */
 		/***************************************************************/
+
 		// Repeat enable
 		int nState = 0;
 		if (m_pRepeatEnableChk != NULL) {
@@ -513,6 +509,7 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 		/*				  Bind data to dialog controls				   */
 		/*															   */
 		/***************************************************************/
+
 		int nState = 0;
 
 		// Repeat enable

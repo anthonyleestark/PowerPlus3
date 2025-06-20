@@ -117,6 +117,9 @@
     <ClInclude Include="../include/Dialogs/MultiScheduleDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="../include/Dialogs/MsgStyleSetDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="../include/Dialogs/PwrReminderDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -209,6 +212,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/MultiScheduleDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="../source/Dialogs/MsgStyleSetDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/PwrReminderDlg.cpp">

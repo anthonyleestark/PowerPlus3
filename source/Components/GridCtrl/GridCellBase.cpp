@@ -728,6 +728,7 @@ BOOL CGridCellBase::PrintCell(CDC* /*pDC*/, int /*nRow*/, int /*nCol*/, CRect /*
 /*****************************************************************************
 Callable by derived classes, only
 *****************************************************************************/
+
 LRESULT CGridCellBase::SendMessageToParent(int nRow, int nCol, int nMessage)
 {
     CGridCtrl* pGrid = GetGrid();

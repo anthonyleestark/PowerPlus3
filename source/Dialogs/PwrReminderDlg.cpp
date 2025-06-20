@@ -12,6 +12,7 @@
 #include "Dialogs/PwrReminderDlg.h"
 #include "Dialogs/ReminderMsgDlg.h"
 #include "Dialogs/RmdRepeatSetDlg.h"
+#include "Dialogs/MsgStyleSetDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -57,6 +58,7 @@ CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
 	// Properties child dialogs
 	m_pRmdPreviewMsgDlg = NULL;
 	m_pRepeatSetDlg = NULL;
+	m_pMsgStyleSetDlg = NULL;
 
 	// Checkbox/radio button variables
 	m_bEvtSetTimeRad = false;
@@ -98,6 +100,12 @@ CPwrReminderDlg::~CPwrReminderDlg()
 		m_pRepeatSetDlg->DestroyWindow();
 		delete m_pRepeatSetDlg;
 		m_pRepeatSetDlg = NULL;
+	}
+	if (m_pMsgStyleSetDlg != NULL) {
+		// Destroy dialog
+		m_pMsgStyleSetDlg->DestroyWindow();
+		delete m_pMsgStyleSetDlg;
+		m_pMsgStyleSetDlg = NULL;
 	}
 
 	// Data item list control
@@ -297,6 +305,7 @@ BEGIN_MESSAGE_MAP(CPwrReminderDlg, SDialog)
 	ON_EN_KILLFOCUS(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX,		&CPwrReminderDlg::OnTimeEditKillFocus)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_PWRREMINDER_EVENT_SETTIME_SPIN,	&CPwrReminderDlg::OnTimeSpinChange)
 	ON_BN_CLICKED(IDC_PWRREMINDER_EVENT_REPEATSET_BTN,			&CPwrReminderDlg::OnRepeatSet)
+	ON_BN_CLICKED(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN,		&CPwrReminderDlg::OnCustomizeStyle)
 	ON_COMMAND_RANGE(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN, IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN, &CPwrReminderDlg::OnPwrEventRadBtnClicked)
 END_MESSAGE_MAP()
 
@@ -786,6 +795,7 @@ void CPwrReminderDlg::OnTimeEditSetFocus()
 	/*			TODO: Time edit set focus --> Select all text			 */
 	/*																	 */
 	/*********************************************************************/
+
 	// Check control validity
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
@@ -815,6 +825,7 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	/*			TODO: Time edit kill forcus --> Update data			     */
 	/*																	 */
 	/*********************************************************************/
+
 	// Check control validity
 	if (m_pEvtSetTimeEdit == NULL) {
 		m_pEvtSetTimeEdit = (CEdit*)GetDlgItem(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX);
@@ -985,6 +996,34 @@ void CPwrReminderDlg::OnRepeatSet()
 
 			// Show dialog
 			m_pRepeatSetDlg->ShowWindow(SW_SHOW);
+		}
+	}
+}
+
+/**
+ * @brief	Handle click event for [Customize] button
+ * @param	None
+ * @return	None
+ */
+void CPwrReminderDlg::OnCustomizeStyle()
+{
+	// Save app event log if enabled
+	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN);
+
+	// Initialize Customize dialog if not available
+	if (m_pMsgStyleSetDlg == NULL) {
+		m_pMsgStyleSetDlg = new CRmdMsgStyleSetDlg;
+		m_pMsgStyleSetDlg->Create(IDD_MSGSTYLESET_DLG);
+		m_pMsgStyleSetDlg->SetParentWnd(this);
+	}
+
+	// If the dialog has already been initialized
+	if (m_pMsgStyleSetDlg != NULL) {
+
+		// If the dialog is currently displaying
+		if (!m_pMsgStyleSetDlg->IsWindowVisible()) {
+			// Show the dialog
+			m_pMsgStyleSetDlg->ShowWindow(SW_SHOW);
 		}
 	}
 }
@@ -1878,6 +1917,13 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 		m_pRepeatSetDlg->SetParentWnd(this);
 	}
 
+	// Initialize Customize dialog if not available
+	if (m_pMsgStyleSetDlg == NULL) {
+		m_pMsgStyleSetDlg = new CRmdMsgStyleSetDlg;
+		m_pMsgStyleSetDlg->Create(IDD_MSGSTYLESET_DLG);
+		m_pMsgStyleSetDlg->SetParentWnd(this);
+	}
+
 	// Display item details
 	UpdateItemData(pwrItem, false);
 }
@@ -2036,6 +2082,7 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 	/*				Update detail view item states				   */
 	/*															   */
 	/***************************************************************/
+
 	CWnd* pWnd = NULL;
 
 	// Message content
@@ -2523,7 +2570,9 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		/*				Update data from dialog controls			   */
 		/*															   */
 		/***************************************************************/
+
 		/*-----------------------Message content-----------------------*/
+
 		String tempString = Constant::String::Empty;
 		if (m_pMsgStringEdit != NULL) {
 			const int buffLength = m_pMsgStringEdit->GetWindowTextLength();
@@ -2534,6 +2583,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 
 		/*----------------------------Event----------------------------*/
+
 		bool bTemp = false;
 
 		// Event: At set time
@@ -2589,6 +2639,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 
 		/*------------------------Message style------------------------*/
+
 		// Style: MessageBox
 		if (m_pStyleMsgBoxRad != NULL) {
 			bTemp = m_pStyleMsgBoxRad->GetCheck();
@@ -2603,6 +2654,11 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 				pwrItem.SetMessageStyle(Style::dialogBox);
 			}
 		}
+		// Update data for Customize dialog
+		if (m_pMsgStyleSetDlg != NULL) {
+			m_pMsgStyleSetDlg->SetData(pwrItem.GetMessageStyleData());
+			m_pMsgStyleSetDlg->UpdateDialogData(true);
+		}
 
 		/*-------------------------------------------------------------*/
 	}
@@ -2613,7 +2669,9 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		/*				  Bind data to dialog controls				   */
 		/*															   */
 		/***************************************************************/
+
 		/*-----------------Set state and init value by mode------------*/
+
 		bool bEnable = true;
 		int nMode = GetCurMode();
 		if ((nMode == Mode::Init) || (nMode == Mode::View)) {
@@ -2630,12 +2688,14 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 
 		/*----------------------Get item details-----------------------*/
+
 		String messageContent = pwrItem.GetMessage();
 		ClockTime itemTime = pwrItem.GetTime();
 		unsigned nEventID = pwrItem.GetEventID();
 		DWORD dwMsgStyle = pwrItem.GetMessageStyle();
 
 		/*-----------------------Message content-----------------------*/
+
 		CWnd* pWnd = NULL;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_TITLE);
 		if (pWnd != NULL) {
@@ -2652,6 +2712,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 
 		/*----------------------------Event----------------------------*/
+
 		bool bTemp = false;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
 		if (pWnd != NULL) {
@@ -2710,6 +2771,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 
 		/*------------------------Message style------------------------*/
+
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_TITLE);
 		if (pWnd != NULL) {
 			pWnd->EnableWindow(bEnable);

@@ -209,12 +209,8 @@ void SDialog::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	SDialog dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// SDialog dialog message map
 BEGIN_MESSAGE_MAP(SDialog, CDialogEx)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()

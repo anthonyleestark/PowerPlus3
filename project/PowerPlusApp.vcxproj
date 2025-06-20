@@ -152,6 +152,7 @@
     <ClInclude Include="../include/Dialogs/HotkeySetDlg.h" />
     <ClInclude Include="../include/Dialogs/LogViewerDlg.h" />
     <ClInclude Include="../include/Dialogs/MultiScheduleDlg.h" />
+    <ClInclude Include="../include/Dialogs/MsgStyleSetDlg.h" />
     <ClInclude Include="../include/Dialogs/PwrReminderDlg.h" />
     <ClInclude Include="../include/Dialogs/ReminderMsgDlg.h" />
     <ClInclude Include="../include/Dialogs/RmdRepeatSetDlg.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="../source/Dialogs/HotkeySetDlg.cpp" />
     <ClCompile Include="../source/Dialogs/LogViewerDlg.cpp" />
     <ClCompile Include="../source/Dialogs/MultiScheduleDlg.cpp" />
+    <ClCompile Include="../source/Dialogs/MsgStyleSetDlg.cpp" />
     <ClCompile Include="../source/Dialogs/PwrReminderDlg.cpp" />
     <ClCompile Include="../source/Dialogs/ReminderMsgDlg.cpp" />
     <ClCompile Include="../source/Dialogs/RmdRepeatSetDlg.cpp" />

@@ -351,8 +351,8 @@ LRESULT CDebugTestV2Dlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 
 /**
  * @brief	Handle app command messages (WM_COMMAND)
-	Arguments:		wParam - First param (HIWORD)
-					lParam - Second param (LOWORD)
+ * @param	wParam - First param (HIWORD)
+ * @param	lParam - Second param (LOWORD)
  * @return	BOOL
  */
 BOOL CDebugTestV2Dlg::OnCommand(WPARAM wParam, LPARAM lParam)

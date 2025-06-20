@@ -403,6 +403,7 @@ String LogItem::FormatOutput(void) const
 	/*			  Convert log item base info into JSON data				 */
 	/*																	 */
 	/*********************************************************************/
+
 	// Log time
 	logKey = GetString(StringTable::LogKey, BaseLog::Time);
 	jsonData.AddString(logKey, FormatDateTime());
@@ -425,6 +426,7 @@ String LogItem::FormatOutput(void) const
 	/*		  Convert log item detail info data into JSON data			 */
 	/*																	 */
 	/*********************************************************************/
+
 	// Log detail info
 	if (!m_arrDetailInfo.empty()) {
 
@@ -487,6 +489,7 @@ String LogItem::FormatOutput(void) const
 	/*				  Output JSON data under YAML format				 */
 	/*																	 */
 	/*********************************************************************/
+
 	String logYAMLFormat;
 	jsonData.PrintYAML(logYAMLFormat, 0);
 	logYAMLFormat.Append(Constant::String::NewLine);

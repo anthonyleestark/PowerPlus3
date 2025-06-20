@@ -495,6 +495,7 @@ void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
 	for (int nRow = 0; nRow < Constant::Max::DaysOfWeek; nRow++) {
 
 		/*------------------------------------- Checkbox column -------------------------------------*/
+
 		// Set cell type: Checkbox
 		if (!m_pActiveDayListTable->SetCellType(nRow, checkboxColID, RUNTIME_CLASS(CGridCellCheck)))
 			continue;
@@ -505,6 +506,7 @@ void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
 		pCellCheck->SetCheckPlacement(SCP_CENTERING);
 
 		/*------------------------------------ Day title column -------------------------------------*/
+
 		// Update cell state
 		nItemState = m_pActiveDayListTable->GetItemState(nRow, daytitleColID);
 		if (!m_pActiveDayListTable->SetItemState(nRow, daytitleColID, nItemState | GVIS_READONLY))
@@ -1026,6 +1028,7 @@ void CEditScheduleDlg::OnTimeEditSetFocus()
 	/*			TODO: Time edit set focus --> Select all text			 */
 	/*																	 */
 	/*********************************************************************/
+
 	// Check control validity
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);
@@ -1052,6 +1055,7 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	/*			TODO: Time edit kill forcus --> Update data				 */
 	/*																	 */
 	/*********************************************************************/
+
 	// Check control validity
 	if (m_pTimeEdit == NULL) {
 		m_pTimeEdit = (CEdit*)GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX);

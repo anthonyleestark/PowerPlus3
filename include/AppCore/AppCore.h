@@ -723,6 +723,17 @@ public:
 	static constexpr int defaultHorizontalMargin = 50;
 	static constexpr int defaultVerticalMargin = 50;
 
+public:
+	// Define constant values
+	static constexpr int minFontSize = 10;
+	static constexpr int maxFontSize = 100;
+	static constexpr int minTimeOut = 10;
+	static constexpr int maxTimeOut = 1800;
+	static constexpr int minIconSize = 30;
+	static constexpr int maxIconSize = 100;
+	static constexpr int minMarginVal = 10;
+	static constexpr int maxMarginVal = 120;
+
 private:
 	// Attributes
 	COLORREF	m_colorBkgrd;									// Background color
@@ -827,6 +838,10 @@ public:
 
 // Define new typenames for Reminder message style data
 using PRmdMsgStyleSet = RmdMsgStyleSet*;
+
+// Define new global typenames for the enum attributes of Reminder message style data
+using MsgIconPosition = RmdMsgStyleSet::IconPosition;
+using MsgDispPosition = RmdMsgStyleSet::DisplayPosition;
 
 
 // Store and manage data of a Power Reminder item

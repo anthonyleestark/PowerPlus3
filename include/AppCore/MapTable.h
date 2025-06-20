@@ -18,8 +18,8 @@ namespace MapTable
 	// ID pair entry
 	struct IDPAIR
 	{
-		unsigned first;											// First pair ID
-		unsigned second;										// Second pair ID
+		unsigned first;									// First pair ID
+		unsigned second;								// Second pair ID
 	};
 
 	// ID map table
@@ -220,7 +220,7 @@ namespace MapTable
 
 		// Using for pairing action macro IDs and message box string IDs for Notify Schedule function
 		INITIALIZE_IDMAPTABLE(ScheduleNotifyMessage)
-		/*------Action ID---------------------------------Message String ID-----------*/
+		/*------Action ID-----------------------------Message String ID---------------*/
 			APP_ACTION_DISPLAYOFF,				MESSAGE_SCHEDNOTIFY_DISPLAYOFF,
 			APP_ACTION_SLEEP,					MESSAGE_SCHEDNOTIFY_SLEEP,
 			APP_ACTION_SHUTDOWN,				MESSAGE_SCHEDNOTIFY_SHUTDOWN,
@@ -233,7 +233,7 @@ namespace MapTable
 
 		// Using for pairing Hotkey ID and action macro IDs
 		INITIALIZE_IDMAPTABLE(HKActionID)
-		/*--HotKey Action ID-----------------------------Action ID--------------------*/
+		/*----HotKey Action ID-----------------------Action ID------------------------*/
 			HotkeyID::displayOff,				APP_ACTION_DISPLAYOFF,
 			HotkeyID::sleep,					APP_ACTION_SLEEP,
 			HotkeyID::shutdown,					APP_ACTION_SHUTDOWN,
@@ -247,7 +247,7 @@ namespace MapTable
 		// Using for pairing Power Reminder event IDs and string IDs 
 		// which will display in Power Reminder data table
 		INITIALIZE_IDMAPTABLE(PwrReminderEvent)
-		/*-----Event ID--------------------------------Event String ID----------------*/
+		/*---------Event ID----------------------------Event String ID----------------*/
 			PwrReminderEvent::atSetTime,		PWRRMD_EVENT_AT_SETTIME,
 			PwrReminderEvent::atAppStartup,		PWRRMD_EVENT_AT_APPSTARTUP,
 			PwrReminderEvent::atSysWakeUp,		PWRRMD_EVENT_AT_SYSWAKEUP,
@@ -261,7 +261,7 @@ namespace MapTable
 		// Using for pairing Power Reminder style IDs and string IDs 
 		// which will display in Power Reminder data table
 		INITIALIZE_IDMAPTABLE(PwrReminderStyle)
-		/*----Style ID---------------------------------Style String ID----------------*/
+		/*-------Style ID------------------------------Style String ID----------------*/
 			PwrReminderStyle::messageBox,		PWRRMD_STYLE_MESSAGEBOX,
 			PwrReminderStyle::dialogBox,		PWRRMD_STYLE_DIALOG
 		/*----------------------------------------------------------------------------*/
@@ -270,7 +270,7 @@ namespace MapTable
 
 		// Using for pairing day-of-week macro IDs and title IDs
 		INITIALIZE_IDMAPTABLE(DayOfWeek)
-		/*--Day ID-----------------------------------Day title string ID--------------*/
+		/*------Day ID-------------------------------Day title string ID--------------*/
 			DayOfWeek::Monday,					DAYOFWEEK_TITLE_MONDAY,
 			DayOfWeek::Tuesday,					DAYOFWEEK_TITLE_TUESDAY,
 			DayOfWeek::Wednesday,				DAYOFWEEK_TITLE_WEDNESDAY,
@@ -278,6 +278,36 @@ namespace MapTable
 			DayOfWeek::Friday,					DAYOFWEEK_TITLE_FRIDAY,
 			DayOfWeek::Saturday,				DAYOFWEEK_TITLE_SATURDAY,
 			DayOfWeek::Sunday,					DAYOFWEEK_TITLE_SUNDAY
+		/*----------------------------------------------------------------------------*/
+		END_IDMAPTABLE()
+
+
+		// Using for pairing system-icon IDs and title IDs
+		INITIALIZE_IDMAPTABLE(SystemIcon)
+		/*------System Icon ID-----------------------Icon title ID--------------*/
+			SystemIcon::Application,			MSGSTYLE_ICONID_DEFAULT_APPLICATION,
+			SystemIcon::Question,				MSGSTYLE_ICONID_QUESTION_MARK,
+#if(WINVER >= 0x0400)
+			SystemIcon::WinLogo,				MSGSTYLE_ICONID_WIN_LOGO,
+#endif /* WINVER >= 0x0400 */
+#if(WINVER >= 0x0600)
+			SystemIcon::Shield,					MSGSTYLE_ICONID_SHIELD_ICON,
+#endif /* WINVER >= 0x0600 */
+			SystemIcon::Warning,				MSGSTYLE_ICONID_WARNING_MESSAGE,
+			SystemIcon::Error,					MSGSTYLE_ICONID_ERROR_MESSAGE,
+			SystemIcon::Information,			MSGSTYLE_ICONID_INFORMATION_ICON
+		/*----------------------------------------------------------------------------*/
+		END_IDMAPTABLE()
+
+
+		// Using for pairing message display position and title IDs
+		INITIALIZE_IDMAPTABLE(DisplayPosition)
+		/*------Message display position-----------------Title ID---------------------*/
+			MsgDispPosition::AtCenter,			MSGSTYLE_DISPLAYPOS_AT_CENTER,
+			MsgDispPosition::OnTopLeft,			MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,
+			MsgDispPosition::OnTopRight,		MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,
+			MsgDispPosition::OnBottomLeft,		MSGSTYLE_DISPLAYPOS_ON_BOTTOMLEFT,
+			MsgDispPosition::OnBottomRight,		MSGSTYLE_DISPLAYPOS_ON_BOTTOMRIGHT
 		/*----------------------------------------------------------------------------*/
 		END_IDMAPTABLE()
 	};
@@ -325,10 +355,13 @@ namespace MapTable
 		INITIALIZE_STRINGMAPTABLE(MsgIconName)
 		/*--------Icon ID---------------------------Icon name-------------------------*/
 			SystemIcon::Application,			_T("App"),
-			SystemIcon::Hand,					_T("Hand"),
 			SystemIcon::Question,				_T("Question"),
-			SystemIcon::Exclamation,			_T("Exclamation"),
-			SystemIcon::Asterisk,				_T("Asterisk"),
+#if(WINVER >= 0x0400)
+			SystemIcon::WinLogo,				_T("WinLogo"),
+#endif /* WINVER >= 0x0400 */
+#if(WINVER >= 0x0600)
+			SystemIcon::Shield,					_T("Shield"),
+#endif /* WINVER >= 0x0600 */
 			SystemIcon::Warning,				_T("Warning"),
 			SystemIcon::Error,					_T("Error"),
 			SystemIcon::Information,			_T("Information")

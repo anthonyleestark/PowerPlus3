@@ -22,6 +22,7 @@
 // Declaration of child dialog classes
 class CReminderMsgDlg;
 class CRmdRepeatSetDlg;
+class CRmdMsgStyleSetDlg;
 
 
 // Power Reminder dialog class
@@ -83,8 +84,9 @@ private:
 	CComboBox*		 m_pMsgStyleCombo;
 
 	// Properties child dialogs
-	CReminderMsgDlg* m_pRmdPreviewMsgDlg;
-	CRmdRepeatSetDlg* m_pRepeatSetDlg;
+	CReminderMsgDlg*	m_pRmdPreviewMsgDlg;
+	CRmdRepeatSetDlg*	m_pRepeatSetDlg;
+	CRmdMsgStyleSetDlg* m_pMsgStyleSetDlg;
 
 	// Checkbox/radio button variables
 	BOOL m_bEvtSetTimeRad;
@@ -135,6 +137,7 @@ public:
 	afx_msg void OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnPwrEventRadBtnClicked(UINT nID);
 	afx_msg void OnRepeatSet();
+	afx_msg void OnCustomizeStyle();
 	virtual LRESULT RequestCloseDialog(void);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 

@@ -7367,8 +7367,8 @@ void CGridCtrl::PrintColumnHeadings(CDC *pDC, CPrintInfo* /*pInfo*/)
 /*****************************************************************************
 Prints line of row buttons on each page of the printout.  Assumes that
 the window origin is setup before calling
-
 *****************************************************************************/
+
 void CGridCtrl::PrintRowButtons(CDC *pDC, CPrintInfo* /*pInfo*/)
 {
     CFont *pOldFont = pDC->SelectObject(&m_PrinterFont);
