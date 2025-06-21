@@ -86,6 +86,11 @@ protected:
 	virtual void SetupDialogItemState(void);
 	virtual void RefreshDialogItemState(bool bRecheckState = false);
 
+	// Displaying functions
+	void RedrawIconPreview(LPDRAWITEMSTRUCT lpDrawItemStruct);
+	int  GetEditValue(HWND hEditCtrl, unsigned maxDigits);
+	bool ValidateEditValue(HWND hEditCtrl, int& inputVal, int minVal, int maxVal, bool showWarning = true);
+
 public:
 	// Data processing functions
 	void UpdateDialogData(bool bUpdate);
@@ -95,5 +100,12 @@ public:
 	void SetData(const RmdMsgStyleSet& msgStyleData) {
 		m_rmsMsgStyleData.Copy(msgStyleData);
 		m_rmsMsgStyleTemp.Copy(m_rmsMsgStyleData);
+	};
+	bool ValidateAndCorrect(int& inputVal, int minVal, int maxVal) {
+		if (maxVal < minVal) std::swap(minVal, maxVal);
+		if (inputVal >= minVal && inputVal <= maxVal) return true;
+		if (inputVal < minVal) inputVal = minVal;
+		else if (inputVal > maxVal) inputVal = maxVal;
+		return false;
 	};
 };

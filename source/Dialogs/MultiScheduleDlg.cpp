@@ -166,12 +166,8 @@ bool CMultiScheduleDlg::UnregisterDialogManagement(void)
 	return SDialog::UnregisterDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CMultiScheduleDlg dialog items ID map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CMultiScheduleDlg dialog items ID map
 BEGIN_RESOURCEID_MAP(CMultiScheduleDlg)
 	ON_ID_DIALOG(IDD_MULTISCHEDULE_DLG,				 "ScheduleDlg")
 	ON_ID_CONTROL(IDC_MULTISCHEDULE_ITEM_LISTBOX,	 "ScheduleItemList")
@@ -187,12 +183,8 @@ BEGIN_RESOURCEID_MAP(CMultiScheduleDlg)
 	ON_ID_CONTROL(IDC_MULTISCHEDULE_CANCEL_BTN,		 "CancelButton")
 END_RESOURCEID_MAP()
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CMultiScheduleDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CMultiScheduleDlg dialog message map
 BEGIN_MESSAGE_MAP(CMultiScheduleDlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()

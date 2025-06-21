@@ -54,6 +54,9 @@ CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
 	m_pStyleMsgBoxRad = NULL;
 	m_pStyleDialogBoxRad = NULL;
 	m_pMsgStyleCombo = NULL;
+	m_pStyleUseCommonRad = NULL;
+	m_pStyleUseCustomRad = NULL;
+	m_pStyleCustomizeBtn = NULL;
 
 	// Properties child dialogs
 	m_pRmdPreviewMsgDlg = NULL;
@@ -69,6 +72,8 @@ CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
 	m_bEvtAppExitRad = false;
 	m_bStyleMsgBoxRad = false;
 	m_bStyleDialogRad = false;
+	m_bStyleUseCommonRad = false;
+	m_bStyleUseCustomRad = false;
 
 	// Table format and properties
 	m_nColNum = 0;
@@ -144,6 +149,8 @@ void CPwrReminderDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN,		m_bEvtAppExitRad);
 	DDX_Check(pDX, IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,		m_bStyleMsgBoxRad);
 	DDX_Check(pDX, IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,		m_bStyleDialogRad);
+	DDX_Check(pDX, IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN,	m_bStyleUseCommonRad);
+	DDX_Check(pDX, IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN,	m_bStyleUseCustomRad);
 }
 
 /**
@@ -192,6 +199,10 @@ int CPwrReminderDlg::RegisterDialogManagement(void)
 		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_TITLE, Static_Text);
 		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN, Radio_Button);
 		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE, Static_Text);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN, Radio_Button);
+		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN, Button);
 	}
 
 	return nRet;
@@ -236,17 +247,17 @@ bool CPwrReminderDlg::UnregisterDialogManagement(void)
 		pCtrlMan->RemoveControl(IDC_PWRREMINDER_MSGSTYLE_TITLE);
 		pCtrlMan->RemoveControl(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN);
 		pCtrlMan->RemoveControl(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN);
+		pCtrlMan->RemoveControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
+		pCtrlMan->RemoveControl(IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN);
+		pCtrlMan->RemoveControl(IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN);
+		pCtrlMan->RemoveControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN);
 	}
 
 	return SDialog::UnregisterDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CPwrReminderDlg dialog items ID map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CPwrReminderDlg dialog items ID map
 BEGIN_RESOURCEID_MAP(CPwrReminderDlg)
 	ON_ID_DIALOG(IDD_PWRREMINDER_DLG,							"PwrReminderDlg")
 	ON_ID_CONTROL(IDC_PWRREMINDER_ITEM_LISTBOX,					"PwrReminderItemList")
@@ -276,15 +287,14 @@ BEGIN_RESOURCEID_MAP(CPwrReminderDlg)
 	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_TITLE,				"MsgStyleGroup")
 	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,		"StyleMessageBoxRadio")
 	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,		"StyleDialogBoxRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE,	"StyleConfigurationGroup")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN,	"StyleUseCommonRadio")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN,	"StyleUseCustomRad")
+	ON_ID_CONTROL(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN,		"StyleCustomizeButton")
 END_RESOURCEID_MAP()
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CPwrReminderDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
-
+// CPwrReminderDlg dialog message map
 BEGIN_MESSAGE_MAP(CPwrReminderDlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
@@ -938,7 +948,7 @@ void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
 		}
 	}
 
-	// Enable/disable time spinedit and RepeatSet button
+	// Enable/disable time spinedit and [RepeatSet] button
 	if (nState == 1) {
 		m_pEvtSetTimeEdit->EnableWindow(true);
 		m_pEvtSetTimeSpin->EnableWindow(true);
@@ -1022,6 +1032,7 @@ void CPwrReminderDlg::OnCustomizeStyle()
 
 		// If the dialog is currently displaying
 		if (!m_pMsgStyleSetDlg->IsWindowVisible()) {
+
 			// Show the dialog
 			m_pMsgStyleSetDlg->ShowWindow(SW_SHOW);
 		}
@@ -1673,7 +1684,7 @@ void CPwrReminderDlg::SetupDialogItemState()
 	if (m_pEvtRepeatSetBtn == NULL) {
 		m_pEvtRepeatSetBtn = (CButton*)GetDlgItem(IDC_PWRREMINDER_EVENT_REPEATSET_BTN);
 		if (m_pEvtRepeatSetBtn == NULL) {
-			TRACE_ERROR("Error: RepeatSet button not found!!!");
+			TRACE_ERROR("Error: [RepeatSet] button not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
@@ -1730,6 +1741,30 @@ void CPwrReminderDlg::SetupDialogItemState()
 		m_pStyleDialogBoxRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN);
 		if (m_pStyleDialogBoxRad == NULL) {
 			TRACE_ERROR("Error: Radio button not found (StyleDlgBoxRad)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+			return;
+		}
+	}
+	if (m_pStyleUseCommonRad == NULL) {
+		m_pStyleUseCommonRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN);
+		if (m_pStyleUseCommonRad == NULL) {
+			TRACE_ERROR("Error: Radio button not found (StyleUseCommonRadio)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+			return;
+		}
+	}
+	if (m_pStyleUseCustomRad == NULL) {
+		m_pStyleUseCustomRad = (CButton*)GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN);
+		if (m_pStyleUseCustomRad == NULL) {
+			TRACE_ERROR("Error: Radio button not found (StyleUseCustomRadio)!!!");
+			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
+			return;
+		}
+	}
+	if (m_pStyleCustomizeBtn == NULL) {
+		m_pStyleCustomizeBtn = (CButton*)GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN);
+		if (m_pStyleCustomizeBtn == NULL) {
+			TRACE_ERROR("Error: [Customize] button not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
@@ -2656,7 +2691,6 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 		// Update data for Customize dialog
 		if (m_pMsgStyleSetDlg != NULL) {
-			m_pMsgStyleSetDlg->SetData(pwrItem.GetMessageStyleData());
 			m_pMsgStyleSetDlg->UpdateDialogData(true);
 		}
 
@@ -2693,6 +2727,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		ClockTime itemTime = pwrItem.GetTime();
 		unsigned nEventID = pwrItem.GetEventID();
 		DWORD dwMsgStyle = pwrItem.GetMessageStyle();
+		bool bUseCustomStyle = pwrItem.IsCustomStyleEnabled();
 
 		/*-----------------------Message content-----------------------*/
 
@@ -2776,15 +2811,45 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		if (pWnd != NULL) {
 			pWnd->EnableWindow(bEnable);
 		}
+		// Message Box style
 		if (m_pStyleMsgBoxRad != NULL) {
 			m_pStyleMsgBoxRad->EnableWindow(bEnable);
 			bTemp = (dwMsgStyle == Style::messageBox);
 			m_pStyleMsgBoxRad->SetCheck(bTemp);
 		}
+		// Dialog Box style
 		if (m_pStyleDialogBoxRad != NULL) {
 			m_pStyleDialogBoxRad->EnableWindow(bEnable);
 			bTemp = (dwMsgStyle == Style::dialogBox);
 			m_pStyleDialogBoxRad->SetCheck(bTemp);
+		}
+
+		// Style customization
+		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
+		if (pWnd != NULL) {
+			pWnd->EnableWindow(bEnable);
+		}
+		// Use common style configuration
+		if (m_pStyleUseCommonRad != NULL) {
+			m_pStyleUseCommonRad->EnableWindow(bEnable);
+			m_pStyleUseCommonRad->SetCheck(bUseCustomStyle);
+		}
+		// Use custom style configuration
+		if (m_pStyleUseCustomRad != NULL) {
+			m_pStyleUseCustomRad->EnableWindow(bEnable);
+			m_pStyleUseCustomRad->SetCheck(!bUseCustomStyle);
+		}
+		// [Customize] button
+		if (m_pStyleCustomizeBtn != NULL) {
+			m_pStyleCustomizeBtn->EnableWindow(bEnable);
+		}
+		// Update data for Customize dialog
+		if (m_pMsgStyleSetDlg != NULL) {
+			RmdMsgStyleSet rmdStyleData = m_pwrReminderDataTemp.GetCommonStyle();
+			if (bUseCustomStyle)
+				rmdStyleData = pwrItem.GetMessageStyleData();
+			m_pMsgStyleSetDlg->SetData(rmdStyleData);
+			m_pMsgStyleSetDlg->UpdateDialogData(false);
 		}
 
 		/*-------------------------------------------------------------*/

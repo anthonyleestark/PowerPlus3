@@ -96,12 +96,8 @@ bool CHelpDlg::UnregisterDialogManagement(void)
 	return SDialog::UnregisterDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CHelpDlg dialog items ID map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CHelpDlg dialog items ID map
 BEGIN_RESOURCEID_MAP(CHelpDlg)
 	ON_ID_DIALOG(IDD_HELP_DLG,					"HelpDlg")
 	ON_ID_CONTROL(IDC_HELPINFO_EDITBOX,			"HelpInfoEditView")
@@ -110,12 +106,7 @@ BEGIN_RESOURCEID_MAP(CHelpDlg)
 END_RESOURCEID_MAP()
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CHelpDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
-
+// CHelpDlg dialog message map
 BEGIN_MESSAGE_MAP(CHelpDlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()

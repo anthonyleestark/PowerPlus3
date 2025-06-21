@@ -92,12 +92,7 @@ void CDebugTestV2Dlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CDebugTestV2Dlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
-
+// CDebugTestV2Dlg dialog message map
 BEGIN_MESSAGE_MAP(CDebugTestV2Dlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()

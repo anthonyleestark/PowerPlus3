@@ -84,12 +84,7 @@ void CLogViewerDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CLogViewerDlg dialog items ID map
-//
-//////////////////////////////////////////////////////////////////////////
-
+// CLogViewerDlg dialog items ID map
 BEGIN_RESOURCEID_MAP(CLogViewerDlg)
 	ON_ID_DIALOG(IDD_LOGVIEWER_DLG,				 "LogViewerDlg")
 	ON_ID_CONTROL(IDC_LOGVIEWER_LOGDATA_LISTBOX, "LogViewerList")
@@ -99,12 +94,7 @@ BEGIN_RESOURCEID_MAP(CLogViewerDlg)
 END_RESOURCEID_MAP()
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CLogViewerDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
-
+// CLogViewerDlg dialog message map
 BEGIN_MESSAGE_MAP(CLogViewerDlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()

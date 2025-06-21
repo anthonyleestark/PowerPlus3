@@ -76,12 +76,7 @@ void CReminderMsgDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CReminderMsgDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
-
+// CReminderMsgDlg dialog message map
 BEGIN_MESSAGE_MAP(CReminderMsgDlg, SDialog)
 	ON_WM_CREATE()
 	ON_WM_CLOSE()

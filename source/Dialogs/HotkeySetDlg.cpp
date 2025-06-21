@@ -175,12 +175,8 @@ bool CHotkeySetDlg::UnregisterDialogManagement(void)
 	return SDialog::UnregisterDialogManagement();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CHotkeySetDlg dialog items ID map
-//
-//////////////////////////////////////////////////////////////////////////
 
+// CHotkeySetDlg dialog items ID map
 BEGIN_RESOURCEID_MAP(CHotkeySetDlg)
 	ON_ID_DIALOG(IDD_HOTKEYSET_DLG,					"HotkeySetDlg")
 	ON_ID_CONTROL(IDC_HOTKEYSET_ITEM_LISTBOX,		"HotkeySetList")
@@ -203,12 +199,7 @@ BEGIN_RESOURCEID_MAP(CHotkeySetDlg)
 END_RESOURCEID_MAP()
 
 
-//////////////////////////////////////////////////////////////////////////
-//
-//	CHotkeySetDlg dialog message map
-//
-//////////////////////////////////////////////////////////////////////////
-
+// CHotkeySetDlg dialog message map
 BEGIN_MESSAGE_MAP(CHotkeySetDlg, SDialog)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()

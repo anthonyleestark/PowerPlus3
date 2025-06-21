@@ -131,6 +131,7 @@ namespace Language
 		{ COMBOBOX_ACTION_SIGNOUT,								_T("Sign out") },
 		{ COMBOBOX_ACTION_HIBERNATE,							_T("Hibernate") },
 		{ COMBOBOX_ACTION_SHOWMENU,								_T("Just show the menu") },
+
 		{ COMBOBOX_LANGUAGE_ENGLISH,							_T("English") },
 		{ COMBOBOX_LANGUAGE_VIETNAMESE,							_T("Vietnamese") },
 		{ COMBOBOX_LANGUAGE_SIMPCHINESE,						_T("Chinese") },
@@ -200,12 +201,14 @@ namespace Language
 		{ IDC_MULTISCHEDULE_SETDEFAULT_BTN,						_T("Set Default") },
 		{ IDC_MULTISCHEDULE_APPLY_BTN,		 					_T("Save") },
 		{ IDC_MULTISCHEDULE_CANCEL_BTN, 						_T("Close") },
+
 		{ GRIDCOLUMN_MULTISCHEDULE_INDEX,						_T("No.") },
 		{ GRIDCOLUMN_MULTISCHEDULE_STATE,						_T("Enable") },
 		{ GRIDCOLUMN_MULTISCHEDULE_ACTIONID,					_T("Action") },
 		{ GRIDCOLUMN_MULTISCHEDULE_TIMEVALUE,					_T("Time") },
 		{ GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT,					_T("At %02d:%02d %2s") },
 		{ GRIDCOLUMN_MULTISCHEDULE_REPEAT,						_T("Repeat") },
+
 		{ IDD_EDITSCHEDULE_DLG,  								_T("Schedule Details") },
 		{ IDC_EDITSCHEDULE_ENABLE_CHK,							_T("Active schedule action") },
 		{ IDC_EDITSCHEDULE_ACTION_LABEL,						_T("Action") },
@@ -220,6 +223,7 @@ namespace Language
 		{ IDC_LOGVIEWER_REMOVEALL_BTN,							_T("Remove All Records") },
 		{ IDC_LOGVIEWER_DETAILS_BTN,							_T("Details") },
 		{ IDC_LOGVIEWER_CLOSE_BTN,								_T("Close") },
+
 		{ GRIDCOLUMN_LOGVIEWER_DATETIME,						_T("Date/Time") },
 		{ GRIDCOLUMN_LOGVIEWER_CATEGORY,						_T("Category") },
 		{ GRIDCOLUMN_LOGVIEWER_DESCRIPTION,						_T("Additional Description") },
@@ -248,9 +252,11 @@ namespace Language
 		{ IDC_HOTKEYSET_FUNCKEY_TITLE,							_T("Function Key") },
 		{ IDC_HOTKEYSET_APPLY_BTN,								_T("Apply") },
 		{ IDC_HOTKEYSET_CANCEL_BTN,								_T("Cancel") },
+
 		{ GRIDCOLUMN_HOTKEYSET_STATE,							_T("") },
 		{ GRIDCOLUMN_HOTKEYSET_HKACTIONID,						_T("Action") },
 		{ GRIDCOLUMN_HOTKEYSET_KEYSTROKES,						_T("Keystrokes") },
+
 		{ HKEYSET_KEYSTROKES_NULL,								_T("Undefined") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -277,6 +283,11 @@ namespace Language
 		{ IDC_PWRREMINDER_MSGSTYLE_TITLE,						_T("Message Style") },
 		{ IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,				_T("Message Box style") },
 		{ IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,				_T("Dialog Box style") },
+		{ IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE,			_T("Style customization") },
+		{ IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN,			_T("Use common style configuration") },
+		{ IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN,			_T("Use custom style configuration") },
+		{ IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN,				_T("Customize") },
+
 		{ IDC_RMDREPEATSET_REPEAT_CHK,							_T("Repeat") },
 		{ IDC_RMDREPEATSET_SNOOZE_CHK,							_T("Snooze") },
 		{ IDC_RMDREPEATSET_ACTIVE_MONDAY_CHK,					_T("Monday") },
@@ -286,6 +297,28 @@ namespace Language
 		{ IDC_RMDREPEATSET_ACTIVE_FRIDAY_CHK,					_T("Friday") },
 		{ IDC_RMDREPEATSET_ACTIVE_SATURDAY_CHK,					_T("Saturday") },
 		{ IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK,					_T("Sunday") },
+
+		{ IDD_MSGSTYLESET_DLG,									_T("Customize") },
+		{ IDC_MSGSTYLESET_BKGRDCLR_TITLE,						_T("Background color") },
+		{ IDC_MSGSTYLESET_TEXTCLR_TITLE,						_T("Text color") },
+		{ IDC_MSGSTYLESET_FONTSET_TITLE,						_T("Font") },
+		{ IDC_MSGSTYLESET_ICONID_TITLE,							_T("Icon") },
+		{ IDC_MSGSTYLESET_ICONSIZE_TITLE,						_T("Icon size") },
+		{ IDC_MSGSTYLESET_ICONPOS_TITLE,						_T("Icon position") },
+		{ IDC_MSGSTYLESET_ICONPOS_TOP_RAD,						_T("On the top") },
+		{ IDC_MSGSTYLESET_ICONPOS_LEFT_RAD,						_T("On the left") },
+		{ IDC_MSGSTYLESET_TIMEOUT_TITLE,						_T("Timeout") },
+		{ IDC_MSGSTYLESET_TIMEOUT_UNIT,							_T("second(s)") },
+		{ IDC_MSGSTYLESET_DISPLAYPOS_TITLE,						_T("Display position") },
+		{ IDC_MSGSTYLESET_HMARGIN_TITLE,						_T("Horizontal margin") },
+		{ IDC_MSGSTYLESET_HMARGIN_UNIT,							_T("pixel") },
+		{ IDC_MSGSTYLESET_VMARGIN_TITLE,						_T("Vertical margin") },
+		{ IDC_MSGSTYLESET_VMARGIN_UNIT,							_T("pixel") },
+		{ IDC_MSGSTYLESET_PREVIEW_BTN,							_T("Preview") },
+		{ IDC_MSGSTYLESET_RESET_BTN,							_T("Reset") },
+		{ IDC_MSGSTYLESET_APPLY_BTN,							_T("Apply") },
+		{ IDC_MSGSTYLESET_CANCEL_BTN,							_T("Cancel") },
+
 		{ GRIDCOLUMN_PWRREMINDER_INDEX,							_T("No.") },
 		{ GRIDCOLUMN_PWRREMINDER_STATE,							_T("Enable") },
 		{ GRIDCOLUMN_PWRREMINDER_ITEMID,						_T("Item ID") },
@@ -293,6 +326,7 @@ namespace Language
 		{ GRIDCOLUMN_PWRREMINDER_EVENTID,						_T("Event") },
 		{ GRIDCOLUMN_PWRREMINDER_STYLE,							_T("Style") },
 		{ GRIDCOLUMN_PWRREMINDER_REPEAT,						_T("Repeat") },
+
 		{ PWRRMD_MSGCONTENT_SAMPLE,								_T("Sample #%d") },
 		{ PWRRMD_EVENT_AT_SETTIME,								_T("At %02d:%02d %2s") },
 		{ PWRRMD_EVENT_AT_APPSTARTUP,							_T("At app startup") },
@@ -318,9 +352,11 @@ namespace Language
 		{ MSGBOX_CONFIG_RELOAD_CAPTION,							_T("Reload Settings") },
 		{ MSGBOX_CONFIG_CHANGED_CONTENT,						_T("Some options had been changed.\nDo you want to abort all changes and reload the settings?") },
 		{ MSGBOX_CONFIG_NOTCHANGED_CONTENT,						_T("All settings are up to date. There is nothing to reload.") },
+
 		{ MSGBOX_EDITSCHEDULE_CAPTION,							_T("Schedule Details") },
 		{ MSGBOX_EDITSCHEDULE_CHANGED_CAPTION,					_T("Save options") },
 		{ MSGBOX_EDITSCHEDULE_CHANGED_CONTENT,					_T("Some options had been changed.\nDo you want to save them?") },
+
 		{ MSGBOX_MULTISCHEDULE_CAPTION,							_T("Action Schedule") },
 		{ MSGBOX_MULTISCHEDULE_CHANGED_CAPTION,					_T("Save data") },
 		{ MSGBOX_MULTISCHEDULE_CHANGED_CONTENT,					_T("Some data had been changed.\nDo you want to save them?") },
@@ -336,9 +372,11 @@ namespace Language
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_SNOOZEINTERVAL,		_T("Schedule data is invalid.\nSnooze interval value is empty or invalid.") },
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIVEDAYS,			_T("Schedule data is invalid.\nRepeat can not be enabled when no day of week is activated.") },
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT,			_T("\nData will be automatically reset to default.") },
+
 		{ MSGBOX_PROCESSSCHEDULE_NOTIFY,						_T("Your %s in 30 seconds") },
 		{ MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL,					_T("\nYou can press [Cancel] to cancel the schedule action") },
 		{ MSGBOX_PROCESSSCHEDULE_CANCELED,						_T("Schedule has been canceled successfully.") },
+
 		{ MSGBOX_HOTKEYSET_CAPTION,								_T("Hotkey Set") },
 		{ MSGBOX_HOTKEYSET_REG_FAILED,							_T("Failed to register background hotkey.") },
 		{ MSGBOX_HOTKEYSET_UNREG_FAILED,						_T("Failed to unregister background hotkey.") },
@@ -350,6 +388,7 @@ namespace Language
 		{ MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY,					_T("HotkeySet is invalid.\nFunction key option cannot be empty or invalid.") },
 		{ MSGBOX_HOTKEYSET_INVALIDITEM_EMPTY,					_T("HotkeySet is invalid.\nData cannot empty or invalid.") },
 		{ MSGBOX_HOTKEYSET_EXISTED_HOTKEY,						_T("System key shortcut already existed.\n%s\nPlease select other hotkey options.") },
+
 		{ MSGBOX_PWRREMINDER_CAPTION,							_T("Power Reminder") },
 		{ MSGBOX_PWRREMINDER_DISPLAY_FAILED,					_T("Something is wrong when displaying reminder content.") },
 		{ MSGBOX_PWRREMINDER_CHANGED_CONTENT,					_T("Some data had been changed.\nDo you want to save them?") },
@@ -366,8 +405,10 @@ namespace Language
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL,		_T("Reminder data is invalid.\nSnooze interval value is empty or invalid.") },
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS,			_T("Reminder data is invalid.\nRepeat can not be enabled when no day of week is activated.") },
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT,			_T("\nData will be automatically reset to default.") },
+
 		{ MSGBOX_LOGVIEWER_CAPTION,								_T("LogViewer") },
 		{ MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS,			_T("Are you sure you want to remove all log records?") },
+
 		{ MSGBOX_OTHER_NOTRUNASADMIN,							_T("The application is not currently running with admin privileges.") },
 		{ MSGBOX_OTHER_REQUEST_RESTARTASADMIN,					_T("Do you want to restart the application with admin privileges?") },
 		{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("The application will run with admin privileges in the next startup.") },
@@ -421,6 +462,7 @@ namespace Language
 	/*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 		{ FORMAT_TIMEPERIOD_ANTE_MERIDIEM,						_T("AM") },
 		{ FORMAT_TIMEPERIOD_POST_MERIDIEM,						_T("PM") },
+
 		{ DAYOFWEEK_TITLE_MONDAY,								_T("Monday") },
 		{ DAYOFWEEK_TITLE_TUESDAY,								_T("Tuesday") },
 		{ DAYOFWEEK_TITLE_WEDNESDAY,							_T("Wednesday") },
@@ -428,23 +470,26 @@ namespace Language
 		{ DAYOFWEEK_TITLE_FRIDAY,								_T("Friday") },
 		{ DAYOFWEEK_TITLE_SATURDAY,								_T("Saturday") },
 		{ DAYOFWEEK_TITLE_SUNDAY,								_T("Sunday") },
+
 		{ HKEYSET_EXISTED_ALT_F4,								_T("Close active window") },
 		{ HKEYSET_EXISTED_ALT_F8,								_T("Reveals typed password in Sign-in screen") },
 		{ HKEYSET_EXISTED_CTRL_F3,								_T("Start search") },
 		{ HKEYSET_EXISTED_CTRL_F4,								_T("Close the active document") },
 		{ HKEYSET_EXISTED_CTRL_F5,								_T("Refresh current window") },
 		{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("Close active virtual desktop") },
-		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("Default Application") },
-		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("Question Mark") },
+
+		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("Default application icon") },
+		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("Question mark icon") },
 #if(WINVER >= 0x0400)
-		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Windows Logo") },
+		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Windows logo icon") },
 #endif /* WINVER >= 0x0400 */
 #if(WINVER >= 0x0600)
-		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("Shield Icon") },
+		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("Security shield icon") },
 #endif /* WINVER >= 0x0600 */
-		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("Warning Icon") },
-		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("Error Icon") },
+		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("Warning icon") },
+		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("Error icon") },
 		{ MSGSTYLE_ICONID_INFORMATION_ICON,						_T("Information Icon") },
+
 		{ MSGSTYLE_DISPLAYPOS_AT_CENTER,						_T("At the center of the screen")},
 		{ MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,						_T("On the top-left corner of the screen") },
 		{ MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,						_T("On the top-right corner of the screen") },
@@ -608,6 +653,7 @@ namespace Language
 		{ COMBOBOX_ACTION_SIGNOUT,								_T("Đăng xuất") },
 		{ COMBOBOX_ACTION_HIBERNATE,							_T("Ngủ đông") },
 		{ COMBOBOX_ACTION_SHOWMENU,								_T("Chỉ hiển thị menu") },
+
 		{ COMBOBOX_LANGUAGE_ENGLISH,							_T("Tiếng Anh") },
 		{ COMBOBOX_LANGUAGE_VIETNAMESE,							_T("Tiếng Việt") },
 		{ COMBOBOX_LANGUAGE_SIMPCHINESE,						_T("Tiếng Trung") },
@@ -677,12 +723,14 @@ namespace Language
 		{ IDC_MULTISCHEDULE_SETDEFAULT_BTN,						_T("Đặt làm mặc định") },
 		{ IDC_MULTISCHEDULE_APPLY_BTN,  						_T("Lưu") },
 		{ IDC_MULTISCHEDULE_CANCEL_BTN, 						_T("Đóng") },
+
 		{ GRIDCOLUMN_MULTISCHEDULE_INDEX,						_T("Số") },
 		{ GRIDCOLUMN_MULTISCHEDULE_STATE,						_T("K.hoạt") },
 		{ GRIDCOLUMN_MULTISCHEDULE_ACTIONID,					_T("Hành động") },
 		{ GRIDCOLUMN_MULTISCHEDULE_TIMEVALUE,					_T("Thời gian") },
 		{ GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT,					_T("Vào %02d:%02d %2s") },
 		{ GRIDCOLUMN_MULTISCHEDULE_REPEAT,						_T("Lặp lại") },
+
 		{ IDD_EDITSCHEDULE_DLG,  								_T("Tuỳ chỉnh Hẹn giờ") },
 		{ IDC_EDITSCHEDULE_ENABLE_CHK,							_T("Kích hoạt chức năng lịch hoạt động") },
 		{ IDC_EDITSCHEDULE_ACTION_LABEL,						_T("Hành động") },
@@ -697,6 +745,7 @@ namespace Language
 		{ IDC_LOGVIEWER_REMOVEALL_BTN,							_T("Xoá hết Bản ghi") },
 		{ IDC_LOGVIEWER_DETAILS_BTN,							_T("Chi tiết") },
 		{ IDC_LOGVIEWER_CLOSE_BTN,								_T("Đóng") },
+
 		{ GRIDCOLUMN_LOGVIEWER_DATETIME,						_T("Ngày/Giờ") },
 		{ GRIDCOLUMN_LOGVIEWER_CATEGORY,						_T("Sự kiện") },
 		{ GRIDCOLUMN_LOGVIEWER_DESCRIPTION,						_T("Thông tin bổ sung") },
@@ -725,9 +774,11 @@ namespace Language
 		{ IDC_HOTKEYSET_FUNCKEY_TITLE,							_T("Phím chức năng") },
 		{ IDC_HOTKEYSET_APPLY_BTN,								_T("Lưu") },
 		{ IDC_HOTKEYSET_CANCEL_BTN,								_T("Huỷ bỏ") },
+
 		{ GRIDCOLUMN_HOTKEYSET_STATE,							_T("") },
 		{ GRIDCOLUMN_HOTKEYSET_HKACTIONID,						_T("Hành động") },
 		{ GRIDCOLUMN_HOTKEYSET_KEYSTROKES,						_T("Phím tắt") },
+
 		{ HKEYSET_KEYSTROKES_NULL,								_T("Chưa thiết lập") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -754,6 +805,11 @@ namespace Language
 		{ IDC_PWRREMINDER_MSGSTYLE_TITLE,						_T("Kiểu thông điệp") },
 		{ IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,				_T("Dạng Hộp thông báo") },
 		{ IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,				_T("Dạng Hộp thoại") },
+		{ IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE,			_T("Tùy chỉnh phong cách") },
+		{ IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN,			_T("Sử dụng thiết lập chung") },
+		{ IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN,			_T("Sử dụng thiết lập riêng") },
+		{ IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN,				_T("Tuỳ chỉnh") },
+
 		{ IDC_RMDREPEATSET_REPEAT_CHK,							_T("Lặp lại") },
 		{ IDC_RMDREPEATSET_SNOOZE_CHK,							_T("Báo lại sau") },
 		{ IDC_RMDREPEATSET_ACTIVE_MONDAY_CHK,					_T("Thứ hai") },
@@ -763,6 +819,28 @@ namespace Language
 		{ IDC_RMDREPEATSET_ACTIVE_FRIDAY_CHK,					_T("Thứ sáu") },
 		{ IDC_RMDREPEATSET_ACTIVE_SATURDAY_CHK,					_T("Thứ bảy") },
 		{ IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK,					_T("Chủ nhật") },
+
+		{ IDD_MSGSTYLESET_DLG,									_T("Tuỳ chỉnh") },
+		{ IDC_MSGSTYLESET_BKGRDCLR_TITLE,						_T("Màu nền") },
+		{ IDC_MSGSTYLESET_TEXTCLR_TITLE,						_T("Màu chữ") },
+		{ IDC_MSGSTYLESET_FONTSET_TITLE,						_T("Phông chữ") },
+		{ IDC_MSGSTYLESET_ICONID_TITLE,							_T("Biểu tượng") },
+		{ IDC_MSGSTYLESET_ICONSIZE_TITLE,						_T("Kích thước") },
+		{ IDC_MSGSTYLESET_ICONPOS_TITLE,						_T("Vị trí biểu tượng") },
+		{ IDC_MSGSTYLESET_ICONPOS_TOP_RAD,						_T("Ở phía trên") },
+		{ IDC_MSGSTYLESET_ICONPOS_LEFT_RAD,						_T("Ở phía bên trái") },
+		{ IDC_MSGSTYLESET_TIMEOUT_TITLE,						_T("Thời gian chờ") },
+		{ IDC_MSGSTYLESET_TIMEOUT_UNIT,							_T("giây") },
+		{ IDC_MSGSTYLESET_DISPLAYPOS_TITLE,						_T("Vị trí hiển thị") },
+		{ IDC_MSGSTYLESET_HMARGIN_TITLE,						_T("Lề ngang") },
+		{ IDC_MSGSTYLESET_HMARGIN_UNIT,							_T("điểm ảnh") },
+		{ IDC_MSGSTYLESET_VMARGIN_TITLE,						_T("Lề dọc") },
+		{ IDC_MSGSTYLESET_VMARGIN_UNIT,							_T("điểm ảnh") },
+		{ IDC_MSGSTYLESET_PREVIEW_BTN,							_T("Xem trước") },
+		{ IDC_MSGSTYLESET_RESET_BTN,							_T("Đặt lại") },
+		{ IDC_MSGSTYLESET_APPLY_BTN,							_T("Áp dụng") },
+		{ IDC_MSGSTYLESET_CANCEL_BTN,							_T("Huỷ bỏ") },
+
 		{ GRIDCOLUMN_PWRREMINDER_INDEX,							_T("Số") },
 		{ GRIDCOLUMN_PWRREMINDER_STATE,							_T("K.hoạt") },
 		{ GRIDCOLUMN_PWRREMINDER_ITEMID,						_T("Số hiệu") },
@@ -770,6 +848,7 @@ namespace Language
 		{ GRIDCOLUMN_PWRREMINDER_EVENTID,						_T("Sự kiện") },
 		{ GRIDCOLUMN_PWRREMINDER_STYLE,							_T("Kiểu") },
 		{ GRIDCOLUMN_PWRREMINDER_REPEAT,						_T("Lặp lại") },
+
 		{ PWRRMD_MSGCONTENT_SAMPLE,								_T("Ví dụ #%d") },
 		{ PWRRMD_EVENT_AT_SETTIME,								_T("Vào %02d:%02d %2s") },
 		{ PWRRMD_EVENT_AT_APPSTARTUP,							_T("Khi ứ.dụng k.động") },
@@ -795,9 +874,11 @@ namespace Language
 		{ MSGBOX_CONFIG_RELOAD_CAPTION,							_T("Tải lại thiết lập") },
 		{ MSGBOX_CONFIG_CHANGED_CONTENT,						_T("Một vài thiết lập đã bị thay đổi.\nBạn có chắc muốn bỏ qua tất cả thay đổi và tải lại thiết lập không?") },
 		{ MSGBOX_CONFIG_NOTCHANGED_CONTENT,						_T("Tất cả thiết lập đều không thay đổi. Không có gì để tải lại.") },
+
 		{ MSGBOX_EDITSCHEDULE_CAPTION,							_T("Tuỳ chỉnh Hẹn giờ") },
 		{ MSGBOX_EDITSCHEDULE_CHANGED_CAPTION,					_T("Lưu thiết lập") },
 		{ MSGBOX_EDITSCHEDULE_CHANGED_CONTENT,					_T("Một số thiết lập đã bị thay đổi.\nBạn có muốn lưu chúng lại không?") },
+
 		{ MSGBOX_MULTISCHEDULE_CAPTION,							_T("Hẹn giờ") },
 		{ MSGBOX_MULTISCHEDULE_CHANGED_CAPTION,					_T("Lưu thiết lập") },
 		{ MSGBOX_MULTISCHEDULE_CHANGED_CONTENT,					_T("Một số thiết lập đã bị thay đổi.\nBạn có muốn lưu chúng lại không?") },
@@ -813,9 +894,11 @@ namespace Language
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_SNOOZEINTERVAL,		_T("Thiết lập không hợp lệ.\nThiếp lập thời gian hoãn hẹn giờ nằm ngoài phạm vi cho phép.") },
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIVEDAYS,			_T("Thiết lập không hợp lệ.\nKhông thể bật tuỳ chọn lặp lại khi không có ngày trong tuần nào được chọn.") },
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT,			_T("\nThiết lập sẽ được tự động đặt lại về giá trị mặc định.") },
+
 		{ MSGBOX_PROCESSSCHEDULE_NOTIFY,						_T("%s sau 30 giây nữa") },
 		{ MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL,					_T("\nBạn có thể bấm [Huỷ bỏ/Cancel] để huỷ hẹn giờ") },
 		{ MSGBOX_PROCESSSCHEDULE_CANCELED,						_T("Đã huỷ hẹn giờ thành công.") },
+
 		{ MSGBOX_HOTKEYSET_CAPTION,								_T("Thiết lập phím tắt") },
 		{ MSGBOX_HOTKEYSET_REG_FAILED,							_T("Đăng ký phím tắt trong nền thất bại.") },
 		{ MSGBOX_HOTKEYSET_UNREG_FAILED,						_T("Huỷ đăng ký phím tắt trong nền thất bại.") },
@@ -827,6 +910,7 @@ namespace Language
 		{ MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY,					_T("Thiết lập phím tắt không hợp lệ.\nTuỳ chọn phím chức năng không thể để trống hoặc nằm ngoài phạm vi cho phép.") },
 		{ MSGBOX_HOTKEYSET_INVALIDITEM_EMPTY,					_T("Thiết lập phím tắt không hợp lệ.\nDữ liệu không thể để trống hoặc nằm ngoài phạm vi cho phép.") },
 		{ MSGBOX_HOTKEYSET_EXISTED_HOTKEY,						_T("Phím tắt hệ thống đã tồn tại.\n%s\nVui lòng chọn lại thiết lập phím tắt khác.") },
+
 		{ MSGBOX_PWRREMINDER_CAPTION,							_T("Power Reminder") },
 		{ MSGBOX_PWRREMINDER_DISPLAY_FAILED,					_T("Có lỗi xảy ra khi hiển thị nội dung nhắc nhở.") },
 		{ MSGBOX_PWRREMINDER_CHANGED_CONTENT,					_T("Một vài dữ liệu đã bị thay đổi.\nBạn có muốn lưu chúng lại không?") },
@@ -843,8 +927,10 @@ namespace Language
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL,		_T("Thiết lập không hợp lệ.\nThiếp lập thời gian hiển thị thông báo lại nằm ngoài phạm vi cho phép") },
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS,			_T("Thiết lập không hợp lệ.\nKhông thể bật tuỳ chọn lặp lại khi không có ngày trong tuần nào được chọn.") },
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT,			_T("\nThiết lập sẽ được tự động đặt lại về giá trị mặc định.") },
+
 		{ MSGBOX_LOGVIEWER_CAPTION,								_T("LogViewer") },
 		{ MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS,			_T("Bạn có chắc muốn xoá hết tất cả các mục bản ghi hay ko?") },
+
 		{ MSGBOX_OTHER_NOTRUNASADMIN,							_T("Ứng dụng hiện đang không được chạy dưới quyền admin.") },
 		{ MSGBOX_OTHER_REQUEST_RESTARTASADMIN,					_T("Bạn có muốn khởi động lại ứng dụng với quyền admin không?") },
 		{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("Ứng dụng sẽ được chạy dưới quyền admin ở lần khởi động tiếp theo.") },
@@ -898,6 +984,7 @@ namespace Language
 	/*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 		{ FORMAT_TIMEPERIOD_ANTE_MERIDIEM,						_T("SA") },
 		{ FORMAT_TIMEPERIOD_POST_MERIDIEM,						_T("CH") },
+
 		{ DAYOFWEEK_TITLE_MONDAY,								_T("Thứ hai") },
 		{ DAYOFWEEK_TITLE_TUESDAY,								_T("Thứ ba") },
 		{ DAYOFWEEK_TITLE_WEDNESDAY,							_T("Thứ tư") },
@@ -905,28 +992,31 @@ namespace Language
 		{ DAYOFWEEK_TITLE_FRIDAY,								_T("Thứ sáu") },
 		{ DAYOFWEEK_TITLE_SATURDAY,								_T("Thứ bảy") },
 		{ DAYOFWEEK_TITLE_SUNDAY,								_T("Chủ nhật") },
+
 		{ HKEYSET_EXISTED_ALT_F4,								_T("Đóng cửa sổ hiện tại") },
 		{ HKEYSET_EXISTED_ALT_F8,								_T("Hiển thị mật khẩu đã nhập trong màn hình Đăng nhập") },
 		{ HKEYSET_EXISTED_CTRL_F3,								_T("Bắt đầu tìm kiếm") },
 		{ HKEYSET_EXISTED_CTRL_F4,								_T("Đóng tài liệu hiện tại") },
 		{ HKEYSET_EXISTED_CTRL_F5,								_T("Làm mới cửa sổ hiện tại") },
 		{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("Đóng màn hình nền ảo hiện tại") },
-		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("Default Application") },
-		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("Question Mark") },
+
+		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("Biểu tượng ứng dụng mặc định") },
+		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("Biểu tượng dấu hỏi") },
 #if(WINVER >= 0x0400)
-		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Windows Logo") },
+		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Biểu tượng logo Windows") },
 #endif /* WINVER >= 0x0400 */
 #if(WINVER >= 0x0600)
-		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("Shield Icon") },
+		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("Biểu tượng khiên bảo vệ") },
 #endif /* WINVER >= 0x0600 */
-		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("Warning Icon") },
-		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("Error Icon") },
-		{ MSGSTYLE_ICONID_INFORMATION_ICON,						_T("Information Icon") },
-		{ MSGSTYLE_DISPLAYPOS_AT_CENTER,						_T("At the center of the screen") },
-		{ MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,						_T("On the top-left corner of the screen") },
-		{ MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,						_T("On the top-right corner of the screen") },
-		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMLEFT,					_T("On the bottom-left corner of the screen") },
-		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMRIGHT,					_T("On the bottom-right corner of the screen") },
+		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("Biểu tượng cảnh báo") },
+		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("Biểu tượng lỗi") },
+		{ MSGSTYLE_ICONID_INFORMATION_ICON,						_T("Biểu tượng thông tin") },
+
+		{ MSGSTYLE_DISPLAYPOS_AT_CENTER,						_T("Ở chính giữa màn hình") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,						_T("Ở góc trên bên trái của màn hình") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,						_T("Ở góc trên bên phải của màn hình") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMLEFT,					_T("Ở góc dưới bên trái của màn hình") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMRIGHT,					_T("Ở góc dưới bên phải của màn hình") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*--------Logging macro ID--------------------------------------------------------------Language String---------------------------------------------------------------*/
@@ -1086,6 +1176,7 @@ namespace Language
 		{ COMBOBOX_ACTION_SIGNOUT,								_T("登出") },
 		{ COMBOBOX_ACTION_HIBERNATE,							_T("休眠") },
 		{ COMBOBOX_ACTION_SHOWMENU,								_T("仅显示菜单") },
+
 		{ COMBOBOX_LANGUAGE_ENGLISH,							_T("英文") },
 		{ COMBOBOX_LANGUAGE_VIETNAMESE,							_T("越语") },
 		{ COMBOBOX_LANGUAGE_SIMPCHINESE,						_T("中文") },
@@ -1155,12 +1246,14 @@ namespace Language
 		{ IDC_MULTISCHEDULE_SETDEFAULT_BTN,						_T("设为默认") },
 		{ IDC_MULTISCHEDULE_APPLY_BTN,		 					_T("应用") },
 		{ IDC_MULTISCHEDULE_CANCEL_BTN, 						_T("关闭") },
+
 		{ GRIDCOLUMN_MULTISCHEDULE_INDEX,						_T("号") },
 		{ GRIDCOLUMN_MULTISCHEDULE_STATE,						_T("启用") },
 		{ GRIDCOLUMN_MULTISCHEDULE_ACTIONID,					_T("行动") },
 		{ GRIDCOLUMN_MULTISCHEDULE_TIMEVALUE,					_T("时间") },
 		{ GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT,					_T("在 %02d:%02d %2s") },
 		{ GRIDCOLUMN_MULTISCHEDULE_REPEAT,						_T("重复") },
+
 		{ IDD_EDITSCHEDULE_DLG,  								_T("自定义行动计划") },
 		{ IDC_EDITSCHEDULE_ENABLE_CHK,							_T("启用行动计划") },
 		{ IDC_EDITSCHEDULE_ACTION_LABEL,						_T("行动") },
@@ -1175,6 +1268,7 @@ namespace Language
 		{ IDC_LOGVIEWER_REMOVEALL_BTN,							_T("删除所有记录") },
 		{ IDC_LOGVIEWER_DETAILS_BTN,							_T("细节") },
 		{ IDC_LOGVIEWER_CLOSE_BTN,								_T("关闭") },
+
 		{ GRIDCOLUMN_LOGVIEWER_DATETIME,						_T("时间") },
 		{ GRIDCOLUMN_LOGVIEWER_CATEGORY,						_T("事件") },
 		{ GRIDCOLUMN_LOGVIEWER_DESCRIPTION,						_T("附加描述") },
@@ -1203,9 +1297,11 @@ namespace Language
 		{ IDC_HOTKEYSET_FUNCKEY_TITLE,							_T("功能键") },
 		{ IDC_HOTKEYSET_APPLY_BTN,								_T("应用") },
 		{ IDC_HOTKEYSET_CANCEL_BTN,								_T("取消") },
+
 		{ GRIDCOLUMN_HOTKEYSET_STATE,							_T("") },
 		{ GRIDCOLUMN_HOTKEYSET_HKACTIONID,						_T("行动") },
 		{ GRIDCOLUMN_HOTKEYSET_KEYSTROKES,						_T("按键") },
+
 		{ HKEYSET_KEYSTROKES_NULL,								_T("尚未设置") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -1232,6 +1328,11 @@ namespace Language
 		{ IDC_PWRREMINDER_MSGSTYLE_TITLE,						_T("消息样式") },
 		{ IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,				_T("消息框样式") },
 		{ IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,				_T("对话框样式") },
+		{ IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE,			_T("风格定制") },
+		{ IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN,			_T("使用通用消息风格配置") },
+		{ IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN,			_T("使用自定义消息风格配置") },
+		{ IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN,				_T("定制") },
+
 		{ IDC_RMDREPEATSET_REPEAT_CHK,							_T("重复") },
 		{ IDC_RMDREPEATSET_SNOOZE_CHK,							_T("暂停") },
 		{ IDC_RMDREPEATSET_ACTIVE_MONDAY_CHK,					_T("星期一") },
@@ -1241,6 +1342,28 @@ namespace Language
 		{ IDC_RMDREPEATSET_ACTIVE_FRIDAY_CHK,					_T("星期五") },
 		{ IDC_RMDREPEATSET_ACTIVE_SATURDAY_CHK,					_T("星期六") },
 		{ IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK,					_T("星期日") },
+
+		{ IDD_MSGSTYLESET_DLG,									_T("定制") },
+		{ IDC_MSGSTYLESET_BKGRDCLR_TITLE,						_T("背景颜色") },
+		{ IDC_MSGSTYLESET_TEXTCLR_TITLE,						_T("文本颜色") },
+		{ IDC_MSGSTYLESET_FONTSET_TITLE,						_T("字体") },
+		{ IDC_MSGSTYLESET_ICONID_TITLE,							_T("图标") },
+		{ IDC_MSGSTYLESET_ICONSIZE_TITLE,						_T("图标大小") },
+		{ IDC_MSGSTYLESET_ICONPOS_TITLE,						_T("图标位置") },
+		{ IDC_MSGSTYLESET_ICONPOS_TOP_RAD,						_T("在文本上方") },
+		{ IDC_MSGSTYLESET_ICONPOS_LEFT_RAD,						_T("在文本左侧") },
+		{ IDC_MSGSTYLESET_TIMEOUT_TITLE,						_T("到期时间") },
+		{ IDC_MSGSTYLESET_TIMEOUT_UNIT,							_T("秒") },
+		{ IDC_MSGSTYLESET_DISPLAYPOS_TITLE,						_T("显示位置") },
+		{ IDC_MSGSTYLESET_HMARGIN_TITLE,						_T("水平边距") },
+		{ IDC_MSGSTYLESET_HMARGIN_UNIT,							_T("像素") },
+		{ IDC_MSGSTYLESET_VMARGIN_TITLE,						_T("垂直边距") },
+		{ IDC_MSGSTYLESET_VMARGIN_UNIT,							_T("像素") },
+		{ IDC_MSGSTYLESET_PREVIEW_BTN,							_T("预览") },
+		{ IDC_MSGSTYLESET_RESET_BTN,							_T("重置") },
+		{ IDC_MSGSTYLESET_APPLY_BTN,							_T("应用") },
+		{ IDC_MSGSTYLESET_CANCEL_BTN,							_T("取消") },
+
 		{ GRIDCOLUMN_PWRREMINDER_INDEX,							_T("号") },
 		{ GRIDCOLUMN_PWRREMINDER_STATE,							_T("启用") },
 		{ GRIDCOLUMN_PWRREMINDER_ITEMID,						_T("项目ID") },
@@ -1248,6 +1371,7 @@ namespace Language
 		{ GRIDCOLUMN_PWRREMINDER_EVENTID,						_T("事件") },
 		{ GRIDCOLUMN_PWRREMINDER_STYLE,							_T("样式") },
 		{ GRIDCOLUMN_PWRREMINDER_REPEAT,						_T("重复") },
+
 		{ PWRRMD_MSGCONTENT_SAMPLE,								_T("样本 #%d") },
 		{ PWRRMD_EVENT_AT_SETTIME,								_T("在 %02d:%02d %2s") },
 		{ PWRRMD_EVENT_AT_APPSTARTUP,							_T("在软件启动时") },
@@ -1273,9 +1397,11 @@ namespace Language
 		{ MSGBOX_CONFIG_RELOAD_CAPTION,							_T("重新加载设置") },
 		{ MSGBOX_CONFIG_CHANGED_CONTENT,						_T("一些选项已经改变。\n您是否要中止所有更改并重新加载设置？") },
 		{ MSGBOX_CONFIG_NOTCHANGED_CONTENT,						_T("所有设置均已更新。无需重新加载。") },
+
 		{ MSGBOX_EDITSCHEDULE_CAPTION,							_T("自定义行动计划") },
 		{ MSGBOX_EDITSCHEDULE_CHANGED_CAPTION,					_T("保存选项") },
 		{ MSGBOX_EDITSCHEDULE_CHANGED_CONTENT,					_T("一些选项已经改变。\n你想拯救它们吗？") },
+
 		{ MSGBOX_MULTISCHEDULE_CAPTION,							_T("行动计划") },
 		{ MSGBOX_MULTISCHEDULE_CHANGED_CAPTION,					_T("保存选项") },
 		{ MSGBOX_MULTISCHEDULE_CHANGED_CONTENT,					_T("一些选项已经改变。\n你想拯救它们吗？") },
@@ -1291,9 +1417,11 @@ namespace Language
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_SNOOZEINTERVAL,		_T("计划数据无效。\n贪睡间隔值设置为空或者无效。") },
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIVEDAYS,			_T("计划数据无效。\n当没有激活​​星期几时，无法启用重复。") },
 		{ MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT,			_T("\n数据将自动重置为默认值。") },
+
 		{ MSGBOX_PROCESSSCHEDULE_NOTIFY,						_T("您的%s在30秒后") },
 		{ MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL,					_T("\n您可以按[取消]取消计划操作") },
 		{ MSGBOX_PROCESSSCHEDULE_CANCELED,						_T("计划已成功取消。") },
+
 		{ MSGBOX_HOTKEYSET_CAPTION,								_T("Hotkey Set") },
 		{ MSGBOX_HOTKEYSET_REG_FAILED,							_T("无法注册后台热键。") },
 		{ MSGBOX_HOTKEYSET_UNREG_FAILED,						_T("无法取消注册后台热键。") },
@@ -1305,6 +1433,7 @@ namespace Language
 		{ MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY,					_T("HotkeySet 无效。\n功能键选项不能为空或者无效。") },
 		{ MSGBOX_HOTKEYSET_INVALIDITEM_EMPTY,					_T("HotkeySet 无效。\n数据不能为空或者无效。") },
 		{ MSGBOX_HOTKEYSET_EXISTED_HOTKEY,						_T("系统键快捷键已存在。\n%s\n请选择其他热键选项。") },
+
 		{ MSGBOX_PWRREMINDER_CAPTION,							_T("Power Reminder") },
 		{ MSGBOX_PWRREMINDER_DISPLAY_FAILED,					_T("提醒内容显示中发生些错吴的。") },
 		{ MSGBOX_PWRREMINDER_CHANGED_CONTENT,					_T("部分数据已被更改。\n你想拯救它们吗？") },
@@ -1321,8 +1450,10 @@ namespace Language
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL,		_T("提醒数据无效。\n贪睡间隔值设置为空或者无效。") },
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS,			_T("提醒数据无效。\n当没有激活​​星期几时，无法启用重复。") },
 		{ MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT,			_T("\n数据将自动重置为默认值。") },
+
 		{ MSGBOX_LOGVIEWER_CAPTION,								_T("日志查看器") },
 		{ MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS,			_T("您确实要删除所有日志记录吗？") },
+
 		{ MSGBOX_OTHER_NOTRUNASADMIN,							_T("该应用程序当前未以管理员权限运行。") },
 		{ MSGBOX_OTHER_REQUEST_RESTARTASADMIN,					_T("您是否要以管理员权限重新启动该应用程序？") },
 		{ MSGBOX_OTHER_RUNASADMIN_NEXTTIME,						_T("该应用程序将在下次启动时以管理员权限运行。") },
@@ -1376,6 +1507,7 @@ namespace Language
 	/*--------String ID---------------------------------------------------------------Language String---------------------------------------------------------------------*/
 		{ FORMAT_TIMEPERIOD_ANTE_MERIDIEM,						_T("午前") },
 		{ FORMAT_TIMEPERIOD_POST_MERIDIEM,						_T("下午") },
+
 		{ DAYOFWEEK_TITLE_MONDAY,								_T("星期一") },
 		{ DAYOFWEEK_TITLE_TUESDAY,								_T("星期二") },
 		{ DAYOFWEEK_TITLE_WEDNESDAY,							_T("星期三") },
@@ -1383,28 +1515,31 @@ namespace Language
 		{ DAYOFWEEK_TITLE_FRIDAY,								_T("星期五") },
 		{ DAYOFWEEK_TITLE_SATURDAY,								_T("星期六") },
 		{ DAYOFWEEK_TITLE_SUNDAY,								_T("星期日") },
+
 		{ HKEYSET_EXISTED_ALT_F4,								_T("关闭活动窗口") },
 		{ HKEYSET_EXISTED_ALT_F8,								_T("在登录屏幕中显示输入的密码") },
 		{ HKEYSET_EXISTED_CTRL_F3,								_T("开始搜索") },
 		{ HKEYSET_EXISTED_CTRL_F4,								_T("关闭活动文档") },
 		{ HKEYSET_EXISTED_CTRL_F5,								_T("刷新当前窗口") },
 		{ HKEYSET_EXISTED_CTRL_WIN_F4,							_T("关闭活动虚拟桌面") },
-		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("Default Application") },
-		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("Question Mark") },
+
+		{ MSGSTYLE_ICONID_DEFAULT_APPLICATION,					_T("默认应用程序图标") },
+		{ MSGSTYLE_ICONID_QUESTION_MARK,						_T("问号图标") },
 #if(WINVER >= 0x0400)
-		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Windows Logo") },
+		{ MSGSTYLE_ICONID_WIN_LOGO,								_T("Windows 徽标图标") },
 #endif /* WINVER >= 0x0400 */
 #if(WINVER >= 0x0600)
-		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("Shield Icon") },
+		{ MSGSTYLE_ICONID_SHIELD_ICON,							_T("安全防护图标") },
 #endif /* WINVER >= 0x0600 */
-		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("Warning Icon") },
-		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("Error Icon") },
-		{ MSGSTYLE_ICONID_INFORMATION_ICON,						_T("Information Icon") },
-		{ MSGSTYLE_DISPLAYPOS_AT_CENTER,						_T("At the center of the screen") },
-		{ MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,						_T("On the top-left corner of the screen") },
-		{ MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,						_T("On the top-right corner of the screen") },
-		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMLEFT,					_T("On the bottom-left corner of the screen") },
-		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMRIGHT,					_T("On the bottom-right corner of the screen") },
+		{ MSGSTYLE_ICONID_WARNING_MESSAGE,						_T("警告图标") },
+		{ MSGSTYLE_ICONID_ERROR_MESSAGE,						_T("错误图标") },
+		{ MSGSTYLE_ICONID_INFORMATION_ICON,						_T("“信息”图标") },
+
+		{ MSGSTYLE_DISPLAYPOS_AT_CENTER,						_T("位于屏幕中央") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPLEFT,						_T("在屏幕左上角") },
+		{ MSGSTYLE_DISPLAYPOS_ON_TOPRIGHT,						_T("在屏幕右上角") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMLEFT,					_T("在屏幕左下角") },
+		{ MSGSTYLE_DISPLAYPOS_ON_BOTTOMRIGHT,					_T("在屏幕右下角") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*--------Logging macro ID--------------------------------------------------------------Language String---------------------------------------------------------------*/

@@ -82,6 +82,9 @@ private:
 	CButton*		 m_pStyleMsgBoxRad;
 	CButton*		 m_pStyleDialogBoxRad;
 	CComboBox*		 m_pMsgStyleCombo;
+	CButton*		 m_pStyleUseCommonRad;
+	CButton*		 m_pStyleUseCustomRad;
+	CButton*		 m_pStyleCustomizeBtn;
 
 	// Properties child dialogs
 	CReminderMsgDlg*	m_pRmdPreviewMsgDlg;
@@ -97,6 +100,8 @@ private:
 	BOOL m_bEvtAppExitRad;
 	BOOL m_bStyleMsgBoxRad;
 	BOOL m_bStyleDialogRad;
+	BOOL m_bStyleUseCommonRad;
+	BOOL m_bStyleUseCustomRad;
 
 	// Data container variables
 	Data m_pwrReminderData;
