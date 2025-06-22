@@ -20,6 +20,9 @@ class CRmdMsgStyleSetDlg : public SDialog
 	DECLARE_DYNAMIC(CRmdMsgStyleSetDlg)
 
 public:
+	enum class DataSetFlag { commonStyle, customStyle };
+
+public:
 	CRmdMsgStyleSetDlg();		// constructor
 	~CRmdMsgStyleSetDlg();		// destructor
 
@@ -60,6 +63,7 @@ private:
 	RmdMsgStyleSet m_rmsMsgStyleTemp;
 	COLORREF	   m_clrMsgBackground;
 	COLORREF	   m_clrMsgText;
+	DataSetFlag	   m_flagDataSet;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -71,7 +75,6 @@ protected:
 public:
 	// Generated message handle functions
 	virtual BOOL OnInitDialog();
-	virtual void OnClose();
 	afx_msg void OnApply();
 	afx_msg void OnCancel();
 	afx_msg void OnPreview();
@@ -100,6 +103,12 @@ public:
 	void SetData(const RmdMsgStyleSet& msgStyleData) {
 		m_rmsMsgStyleData.Copy(msgStyleData);
 		m_rmsMsgStyleTemp.Copy(m_rmsMsgStyleData);
+	};
+	DataSetFlag GetDataFlag(void) const {
+		return m_flagDataSet;
+	};
+	void SetDataFlag(DataSetFlag flag) {
+		m_flagDataSet = flag;
 	};
 	bool ValidateAndCorrect(int& inputVal, int minVal, int maxVal) {
 		if (maxVal < minVal) std::swap(minVal, maxVal);

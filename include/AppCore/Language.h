@@ -158,6 +158,9 @@ namespace Language
 		{ BALLOON_TIP_RESTART, 									_T("The computer will restart") },
 		{ BALLOON_TIP_SIGNOUT,  								_T("The current account will sign out") },
 		{ BALLOON_TIP_HIBERNATE,  								_T("The computer will hibernate") },
+
+		{ BALLOON_TIP_INVALID_VALUE_TITLE,						_T("Invalid value") },
+		{ BALLOON_TIP_INVALID_VALUE_FORMAT,						_T("Please enter a number between %d and %d.") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*-----About Dialog Item--------------------------------------------------------------------Language String-----------------------------------------------------------*/
@@ -337,6 +340,8 @@ namespace Language
 		{ PWRRMD_STYLE_MESSAGEBOX,								_T("Message Box") },
 		{ PWRRMD_STYLE_DIALOG,									_T("Dialog Box") },
 		{ PWRRMD_REPEATSET_SNOOZEINTERVAL,						_T("%d min(s)") },
+		{ PWRRMD_STYLE_COMMONSTYLE,								_T("Common style") },
+		{ PWRRMD_STYLE_CUSTOMSTYLE,								_T("Custom style") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
@@ -680,6 +685,9 @@ namespace Language
 		{ BALLOON_TIP_RESTART, 									_T("Máy tính sẽ khởi động lại") },
 		{ BALLOON_TIP_SIGNOUT,  								_T("Tài khoản hiện tại sẽ đăng xuất") },
 		{ BALLOON_TIP_HIBERNATE,							 	_T("Máy tính sẽ chuyển sang chế độ ngủ đông") },
+
+		{ BALLOON_TIP_INVALID_VALUE_TITLE,						_T("Giá trị không hợp lệ") },
+		{ BALLOON_TIP_INVALID_VALUE_FORMAT,						_T("Vui lòng nhập giá trị trong khoảng từ %d đến %d.") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*-----About Dialog Item---------------------------------------------------------------Language String----------------------------------------------------------------*/
@@ -806,8 +814,8 @@ namespace Language
 		{ IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,				_T("Dạng Hộp thông báo") },
 		{ IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN,				_T("Dạng Hộp thoại") },
 		{ IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE,			_T("Tùy chỉnh phong cách") },
-		{ IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN,			_T("Sử dụng thiết lập chung") },
-		{ IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN,			_T("Sử dụng thiết lập riêng") },
+		{ IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN,			_T("Sử dụng thiết lập phong cách chung") },
+		{ IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN,			_T("Sử dụng thiết lập phong cách riêng") },
 		{ IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN,				_T("Tuỳ chỉnh") },
 
 		{ IDC_RMDREPEATSET_REPEAT_CHK,							_T("Lặp lại") },
@@ -859,6 +867,8 @@ namespace Language
 		{ PWRRMD_STYLE_MESSAGEBOX,								_T("Hộp thông báo") },
 		{ PWRRMD_STYLE_DIALOG,									_T("Hộp thoại") },
 		{ PWRRMD_REPEATSET_SNOOZEINTERVAL,						_T("%d phút") },
+		{ PWRRMD_STYLE_COMMONSTYLE,								_T("Phong cách chung") },
+		{ PWRRMD_STYLE_CUSTOMSTYLE,								_T("Phong cách riêng") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/
@@ -1203,6 +1213,9 @@ namespace Language
 		{ BALLOON_TIP_RESTART, 									_T("电脑将重新启动") },
 		{ BALLOON_TIP_SIGNOUT,  								_T("当前帐户将退出") },
 		{ BALLOON_TIP_HIBERNATE,  								_T("电脑将进入休眠状态") },
+
+		{ BALLOON_TIP_INVALID_VALUE_TITLE,						_T("无效值") },
+		{ BALLOON_TIP_INVALID_VALUE_FORMAT,						_T("请输入一个介于 %d 和 %d 之间的数字。") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*-----About Dialog Item--------------------------------------------------------------------Language String-----------------------------------------------------------*/
@@ -1382,6 +1395,8 @@ namespace Language
 		{ PWRRMD_STYLE_MESSAGEBOX,								_T("消息框") },
 		{ PWRRMD_STYLE_DIALOG,									_T("对话框") },
 		{ PWRRMD_REPEATSET_SNOOZEINTERVAL,						_T("%d 分钟") },
+		{ PWRRMD_STYLE_COMMONSTYLE,								_T("通用消息风格") },
+		{ PWRRMD_STYLE_CUSTOMSTYLE,								_T("自定义消息风格") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*----------MessageBox ID------------------------------------------------------------------Language String------------------------------------------------------------*/

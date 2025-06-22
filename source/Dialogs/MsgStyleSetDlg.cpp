@@ -30,6 +30,13 @@ constexpr const unsigned maxIconSizeDigits = 3;
 constexpr const unsigned maxTimeoutDigits = 4;
 constexpr const unsigned maxMarginValDigits = 3;
 
+// Caption format
+constexpr const wchar_t* captionDetailFormat = _T(" - [%s]");
+
+// Local string variables
+String balloonTitleInvalidValue;
+String balloonFormatInvalidValue;
+
 
 // Implement methods for CRmdMsgStyleSetDlg
 IMPLEMENT_DYNAMIC(CRmdMsgStyleSetDlg, SDialog)
@@ -71,6 +78,7 @@ CRmdMsgStyleSetDlg::CRmdMsgStyleSetDlg() : SDialog(IDD_MSGSTYLESET_DLG)
 	m_rmsMsgStyleTemp = RmdMsgStyleSet();
 	m_clrMsgBackground = RmdMsgStyleSet::defaultBkgrdColor;
 	m_clrMsgText = RmdMsgStyleSet::defaultTextColor;
+	m_flagDataSet = DataSetFlag::commonStyle;
 }
 
 /**
@@ -91,7 +99,6 @@ void CRmdMsgStyleSetDlg::DoDataExchange(CDataExchange* pDX)
 
 // CRmdMsgStyleSetDlg dialog message map
 BEGIN_MESSAGE_MAP(CRmdMsgStyleSetDlg, SDialog)
-	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_MSGSTYLESET_APPLY_BTN,	&CRmdMsgStyleSetDlg::OnApply)
 	ON_BN_CLICKED(IDC_MSGSTYLESET_CANCEL_BTN,	&CRmdMsgStyleSetDlg::OnCancel)
 	ON_BN_CLICKED(IDC_MSGSTYLESET_PREVIEW_BTN,	&CRmdMsgStyleSetDlg::OnPreview)
@@ -123,17 +130,6 @@ BOOL CRmdMsgStyleSetDlg::OnInitDialog()
 }
 
 /**
- * @brief	Default method for dialog closing
- * @param	None
- * @return	None
- */
-void CRmdMsgStyleSetDlg::OnClose()
-{
-	// Hide the dialog itself
-	this->ShowWindow(SW_HIDE);
-}
-
-/**
  * @brief	Handle click event for [Apply] button
  * @param	None
  * @return	None
@@ -144,8 +140,9 @@ void CRmdMsgStyleSetDlg::OnApply()
 	UpdateDialogData(true);
 	m_rmsMsgStyleData.Copy(m_rmsMsgStyleTemp);
 
-	// Hide the dialog itself
-	this->ShowWindow(SW_HIDE);
+	// Close the dialog
+	SetReturnFlag(ReturnFlag::OK);
+	EndDialog(IDC_MSGSTYLESET_APPLY_BTN);
 }
 
 /**
@@ -155,8 +152,9 @@ void CRmdMsgStyleSetDlg::OnApply()
  */
 void CRmdMsgStyleSetDlg::OnCancel()
 {
-	// Hide the dialog itself
-	this->ShowWindow(SW_HIDE);
+	// Close the dialog
+	SetReturnFlag(ReturnFlag::Cancel);
+	EndDialog(IDC_MSGSTYLESET_CANCEL_BTN);
 }
 
 /**
@@ -243,6 +241,7 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 			return true;
 		}
+
 		case IDC_MSGSTYLESET_FONTSIZE_COMBO:
 		{
 			if (HIWORD(wParam) == CBN_EDITCHANGE && m_pFontSizePickCombo != NULL)
@@ -267,6 +266,7 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 			break;
 		}
+
 		case IDC_MSGSTYLESET_ICONID_COMBO:
 		{
 			if (HIWORD(wParam) == CBN_SELCHANGE && m_pIconPreviewStatic != NULL)
@@ -278,6 +278,7 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 			break;
 		}
+
 		case IDC_MSGSTYLESET_ICONSIZE_EDIT:
 		{
 			if (HIWORD(wParam) == EN_CHANGE && m_pIconSizeEdit != NULL)
@@ -308,6 +309,7 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 			break;
 		}
+
 		case IDC_MSGSTYLESET_TIMEOUT_EDIT:
 		{
 			if (HIWORD(wParam) == EN_CHANGE && m_pTimeoutEdit != NULL)
@@ -334,6 +336,7 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 			break;
 		}
+
 		case IDC_MSGSTYLESET_HMARGIN_EDIT:
 		{
 			if (HIWORD(wParam) == EN_CHANGE && m_pHorizontalMarginEdit != NULL)
@@ -356,6 +359,7 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 			break;
 		}
+
 		case IDC_MSGSTYLESET_VMARGIN_EDIT:
 		{
 			if (HIWORD(wParam) == EN_CHANGE && m_pVerticalMarginEdit != NULL)
@@ -395,6 +399,11 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 {
 	switch (message)
 	{
+		case WM_CLOSE:
+			SetReturnFlag(ReturnFlag::Close);
+			EndDialog(IDC_MSGSTYLESET_CANCEL_BTN);
+			break;
+
 		case WM_DRAWITEM:
 		{
 			LPDRAWITEMSTRUCT pDrawItemStruct = (LPDRAWITEMSTRUCT)lParam;
@@ -424,6 +433,7 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 
 			return true;
 		}
+
 		case WM_PAINT:
 		{
 			if (m_pIconPreviewStatic != NULL)
@@ -431,6 +441,7 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 
 			break;
 		}
+
 		case WM_NOTIFY:
 		{
 			LPNMHDR lpNMHDR = reinterpret_cast<LPNMHDR>(lParam);
@@ -466,6 +477,14 @@ void CRmdMsgStyleSetDlg::SetupLanguage()
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
+	// Set dialog caption
+	String dialogCaption = GetLanguageString(pAppLang, GetDialogID());
+	if (m_flagDataSet == DataSetFlag::commonStyle)
+		dialogCaption += StringUtils::StringFormat(captionDetailFormat, GetLanguageString(pAppLang, PWRRMD_STYLE_COMMONSTYLE));
+	else if (m_flagDataSet == DataSetFlag::customStyle)
+		dialogCaption += StringUtils::StringFormat(captionDetailFormat, GetLanguageString(pAppLang, PWRRMD_STYLE_CUSTOMSTYLE));
+	this->SetCaption(dialogCaption);
+
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
 	{
@@ -496,6 +515,10 @@ void CRmdMsgStyleSetDlg::SetupLanguage()
 			break;
 		}
 	}
+
+	// Initialize local string variables
+	balloonTitleInvalidValue = GetLanguageString(pAppLang, BALLOON_TIP_INVALID_VALUE_TITLE);
+	balloonFormatInvalidValue = GetLanguageString(pAppLang, BALLOON_TIP_INVALID_VALUE_FORMAT);
 
 	// Default
 	SDialog::SetupLanguage();
@@ -877,8 +900,8 @@ bool CRmdMsgStyleSetDlg::ValidateEditValue(HWND hEditCtrl, int& inputVal, int mi
 			if (showWarning)
 			{
 				EDITBALLOONTIP editBalloonTip = { sizeof(EDITBALLOONTIP) };
-				editBalloonTip.pszTitle = L"Invalid Value";
-				editBalloonTip.pszText = StringUtils::StringFormat(L"Please enter a number between %d and %d.", minVal, maxVal);
+				editBalloonTip.pszTitle = balloonTitleInvalidValue;
+				editBalloonTip.pszText = StringUtils::StringFormat(balloonFormatInvalidValue, minVal, maxVal);
 				editBalloonTip.ttiIcon = TTI_WARNING;
 
 				::SendMessage(hEditCtrl, EM_SHOWBALLOONTIP, 0, reinterpret_cast<LPARAM>(&editBalloonTip));

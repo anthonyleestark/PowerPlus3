@@ -29,6 +29,10 @@ constexpr const int fixedColumnNum = 1;
 constexpr const int fixedRowNum = 1;
 
 
+// Data flag for Customize dialog
+using MsgStyleSetFlag = CRmdMsgStyleSetDlg::DataSetFlag;
+
+
 // Implement methods for CPwrReminderDlg
 IMPLEMENT_DYNAMIC(CPwrReminderDlg, SDialog)
 
@@ -518,6 +522,9 @@ void CPwrReminderDlg::OnAdd()
 		// Do nothing
 	}
 	else {
+		// Mark an empty item as in editting
+		m_pwrItemInEdit = PwrReminderItem();
+
 		// Switch mode
 		SetCurMode(Mode::Add);
 	}
@@ -539,9 +546,9 @@ void CPwrReminderDlg::OnEdit()
 	// Mode: Edit
 	if (nCurMode & Mode::Update) {
 		// Check if any item is selected or not
-		bool bIsSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
+		bool isSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
 
-		if (bIsSelected == true) {
+		if (isSelected == true) {
 			// Edit current selected item
 			Edit(m_nCurSelIndex);
 		}
@@ -554,6 +561,11 @@ void CPwrReminderDlg::OnEdit()
 		// Do nothing
 	}
 	else {
+		// Mark current selected item as in editting
+		bool isSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
+		if (isSelected == true)
+			m_pwrItemInEdit.Copy(m_pwrReminderDataTemp.GetItemAt(m_nCurSelIndex));
+
 		// Switch mode
 		SetCurMode(Mode::Update);
 	}
@@ -980,7 +992,7 @@ void CPwrReminderDlg::OnRepeatSet()
 	}
 
 	// Get button position
-	RECT rcButton;
+	RECT rcButton{};
 	if (m_pEvtRepeatSetBtn != NULL) {
 		// Get button rectangle
 		m_pEvtRepeatSetBtn->GetWindowRect(&rcButton);
@@ -1021,21 +1033,38 @@ void CPwrReminderDlg::OnCustomizeStyle()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN);
 
 	// Initialize Customize dialog if not available
-	if (m_pMsgStyleSetDlg == NULL) {
+	if (!m_pMsgStyleSetDlg || !IsWindow(m_pMsgStyleSetDlg->GetSafeHwnd())) {
+		delete m_pMsgStyleSetDlg;
 		m_pMsgStyleSetDlg = new CRmdMsgStyleSetDlg;
-		m_pMsgStyleSetDlg->Create(IDD_MSGSTYLESET_DLG);
 		m_pMsgStyleSetDlg->SetParentWnd(this);
 	}
 
-	// If the dialog has already been initialized
-	if (m_pMsgStyleSetDlg != NULL) {
+	// Preparation
+	RmdMsgStyleSet styleSetData;
+	MsgStyleSetFlag styleSetDataFlag;
 
-		// If the dialog is currently displaying
-		if (!m_pMsgStyleSetDlg->IsWindowVisible()) {
+	// Which style configuration data???
+	if (m_pStyleUseCommonRad && m_pStyleUseCommonRad->GetCheck() == true) {
+		styleSetData = m_pwrReminderDataTemp.GetCommonStyle();
+		styleSetDataFlag = MsgStyleSetFlag::commonStyle;
+	}
+	else if (m_pStyleUseCustomRad && m_pStyleUseCustomRad->GetCheck() == true) {
+		styleSetData = m_pwrItemInEdit.GetMessageStyleData();
+		styleSetDataFlag = MsgStyleSetFlag::customStyle;
+	}
+	else return;
 
-			// Show the dialog
-			m_pMsgStyleSetDlg->ShowWindow(SW_SHOW);
-		}
+	// Set dialog data
+	m_pMsgStyleSetDlg->SetData(styleSetData);
+	m_pMsgStyleSetDlg->SetDataFlag(styleSetDataFlag);
+
+	// Show the dialog in modal state
+	m_pMsgStyleSetDlg->DoModal();
+
+	// Update common style data
+	if (m_pMsgStyleSetDlg->GetReturnFlag() == ReturnFlag::OK && styleSetDataFlag == MsgStyleSetFlag::commonStyle) {
+		m_pMsgStyleSetDlg->GetData(styleSetData);
+		m_pwrReminderDataTemp.GetCommonStyle().Copy(styleSetData);
 	}
 }
 
@@ -1945,7 +1974,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	}
 
 	// Initialize RepeatSet dialog if not available
-	if (m_pRepeatSetDlg == NULL) {
+	if (!m_pRepeatSetDlg) {
 		m_pRepeatSetDlg = new CRmdRepeatSetDlg;
 		m_pRepeatSetDlg->Create(IDD_RMDREPEATSET_DLG);
 		m_pRepeatSetDlg->RemoveStyle(DS_MODALFRAME | WS_CAPTION);
@@ -1953,9 +1982,9 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	}
 
 	// Initialize Customize dialog if not available
-	if (m_pMsgStyleSetDlg == NULL) {
+	if (!m_pMsgStyleSetDlg || !IsWindow(m_pMsgStyleSetDlg->GetSafeHwnd())) {
+		delete m_pMsgStyleSetDlg;
 		m_pMsgStyleSetDlg = new CRmdMsgStyleSetDlg;
-		m_pMsgStyleSetDlg->Create(IDD_MSGSTYLESET_DLG);
 		m_pMsgStyleSetDlg->SetParentWnd(this);
 	}
 
@@ -2177,6 +2206,19 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 	if (m_pStyleDialogBoxRad != NULL) {
 		m_pStyleDialogBoxRad->EnableWindow(bEnable);
 	}
+	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
+	if (pWnd != NULL) {
+		pWnd->EnableWindow(bEnable);
+	}
+	if (m_pStyleUseCommonRad != NULL) {
+		m_pStyleUseCommonRad->EnableWindow(bEnable);
+	}
+	if (m_pStyleUseCustomRad != NULL) {
+		m_pStyleUseCustomRad->EnableWindow(bEnable);
+	}
+	if (m_pStyleCustomizeBtn != NULL) {
+		m_pStyleCustomizeBtn->EnableWindow(bEnable);
+	}
 }
 
 /**
@@ -2366,6 +2408,13 @@ bool CPwrReminderDlg::CheckDataChangeState()
 	// Check if number of items changed
 	int nItemNum = GetItemNum();
 	bChangeFlag |= (nItemNum != m_pwrReminderData.GetItemNum());
+	if (bChangeFlag == true)
+		return bChangeFlag;
+
+	// Check if common style data changed
+	const RmdMsgStyleSet& rmdCurCommonStyle = m_pwrReminderData.GetCommonStyle();
+	const RmdMsgStyleSet& rmdTempCommonStyle = m_pwrReminderDataTemp.GetCommonStyle();
+	bChangeFlag |= (rmdCurCommonStyle.Compare(rmdTempCommonStyle) != true);
 	if (bChangeFlag == true)
 		return bChangeFlag;
 
@@ -2689,9 +2738,25 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 				pwrItem.SetMessageStyle(Style::dialogBox);
 			}
 		}
+		// Style Configuration: Use common style
+		if (m_pStyleUseCommonRad != NULL) {
+			bTemp = m_pStyleUseCommonRad->GetCheck();
+			if (bTemp == true) {
+				pwrItem.EnableCustomStyle(false);
+			}
+		}
+		// Style Configuration: Use common style
+		if (m_pStyleUseCustomRad != NULL) {
+			bTemp = m_pStyleUseCustomRad->GetCheck();
+			if (bTemp == true) {
+				pwrItem.EnableCustomStyle(true);
+			}
+		}
 		// Update data for Customize dialog
-		if (m_pMsgStyleSetDlg != NULL) {
-			m_pMsgStyleSetDlg->UpdateDialogData(true);
+		// Note: Common style data is updated in OnCustomizeStyle()
+		if (m_pMsgStyleSetDlg != NULL &&
+			m_pMsgStyleSetDlg->GetDataFlag() == MsgStyleSetFlag::customStyle) {
+			m_pMsgStyleSetDlg->GetData(pwrItem.GetMessageStyleData());
 		}
 
 		/*-------------------------------------------------------------*/
@@ -2832,12 +2897,12 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		// Use common style configuration
 		if (m_pStyleUseCommonRad != NULL) {
 			m_pStyleUseCommonRad->EnableWindow(bEnable);
-			m_pStyleUseCommonRad->SetCheck(bUseCustomStyle);
+			m_pStyleUseCommonRad->SetCheck(!bUseCustomStyle);
 		}
 		// Use custom style configuration
 		if (m_pStyleUseCustomRad != NULL) {
 			m_pStyleUseCustomRad->EnableWindow(bEnable);
-			m_pStyleUseCustomRad->SetCheck(!bUseCustomStyle);
+			m_pStyleUseCustomRad->SetCheck(bUseCustomStyle);
 		}
 		// [Customize] button
 		if (m_pStyleCustomizeBtn != NULL) {
@@ -2845,10 +2910,14 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 		// Update data for Customize dialog
 		if (m_pMsgStyleSetDlg != NULL) {
-			RmdMsgStyleSet rmdStyleData = m_pwrReminderDataTemp.GetCommonStyle();
-			if (bUseCustomStyle)
-				rmdStyleData = pwrItem.GetMessageStyleData();
-			m_pMsgStyleSetDlg->SetData(rmdStyleData);
+			if (!bUseCustomStyle) {
+				m_pMsgStyleSetDlg->SetData(m_pwrReminderDataTemp.GetCommonStyle());
+				m_pMsgStyleSetDlg->SetDataFlag(MsgStyleSetFlag::commonStyle);
+			}
+			else {
+				m_pMsgStyleSetDlg->SetData(pwrItem.GetMessageStyleData());
+				m_pMsgStyleSetDlg->SetDataFlag(MsgStyleSetFlag::customStyle);
+			}
 			m_pMsgStyleSetDlg->UpdateDialogData(false);
 		}
 

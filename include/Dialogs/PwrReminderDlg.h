@@ -106,6 +106,7 @@ private:
 	// Data container variables
 	Data m_pwrReminderData;
 	Data m_pwrReminderDataTemp;
+	Item m_pwrItemInEdit;
 
 	// Table format and properties
 	int m_nColNum;
