@@ -2037,7 +2037,7 @@ void CPowerPlusDlg::GetAppData(unsigned dwDataType /* = APPDATA_ALL */)
 
 	// Get config data
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
-		PCONFIGDATA pcfgData = pApp->GetAppConfigData();
+		ConfigData* pcfgData = pApp->GetAppConfigData();
 		if (pcfgData != NULL) {
 			m_cfgAppConfig.Copy(*pcfgData);
 			m_cfgTempConfig.Copy(m_cfgAppConfig);

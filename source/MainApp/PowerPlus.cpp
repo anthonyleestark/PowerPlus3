@@ -648,7 +648,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 		return false;
 
 	// Create temporary data
-	PCONFIGDATA pcfgTempData = new CONFIGDATA;
+	ConfigData* pcfgTempData = new ConfigData;
 	ScheduleData* pschTempData = new ScheduleData;
 	HotkeySetData* phksTempData = new HotkeySetData;
 	PwrReminderData* ppwrTempData = new PwrReminderData;
@@ -1168,9 +1168,9 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeleteConfigSection();
 
 		// Get a copy of config data
-		CONFIGDATA cfgConfigTemp{};
+		ConfigData cfgConfigTemp{};
 		if (m_pcfgAppConfig != NULL) {
-			m_pcfgAppConfig->GetData(cfgConfigTemp);
+			cfgConfigTemp.Copy(*m_pcfgAppConfig);
 		}
 
 		// Save registry data
@@ -1714,8 +1714,8 @@ void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
 	if (pcfgData == NULL) return;
 
 	// Backup data
-	CONFIGDATA BakData;
-	GetAppConfigData()->GetData(BakData);
+	ConfigData BakData;
+	BakData.Copy(*GetAppConfigData());
 
 	// Copy value of data pointer
 	GetAppConfigData()->Copy(*pcfgData);

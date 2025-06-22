@@ -52,7 +52,7 @@ ConfigData::ConfigData()
  * @param	other - Pointer of input data
  * @return	None
  */
-void ConfigData::Copy(const CONFIGDATA& other) noexcept
+void ConfigData::Copy(const ConfigData& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
@@ -87,7 +87,7 @@ void ConfigData::Copy(const CONFIGDATA& other) noexcept
  * @param	other - Pointer of given data
  * @return	true/false
  */
-constexpr bool ConfigData::Compare(const CONFIGDATA& other) const noexcept
+constexpr bool ConfigData::Compare(const ConfigData& other) const noexcept
 {
 	bool bRet = true;
 
@@ -123,7 +123,7 @@ constexpr bool ConfigData::Compare(const CONFIGDATA& other) const noexcept
  * @param	pData - Output config data (out)
  * @return	None
  */
- void ConfigData::GetData(CONFIGDATA& pData) const noexcept
+ void ConfigData::GetData(CONFIGDATAINFO& pData) const noexcept
 {
 	// Main settings
 	pData.nLMBAction = this->nLMBAction;								// Left mouse button action

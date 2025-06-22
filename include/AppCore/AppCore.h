@@ -34,7 +34,7 @@ typedef enum eFILETYPE {
 
 
 // Store application settings and configurations
-struct CONFIGDATA
+struct CONFIGDATAINFO
 {
 	// Main settings
 	int		nLMBAction;												// Left mouse button action
@@ -60,12 +60,9 @@ struct CONFIGDATA
 	BOOL	bEnablePowerReminder;									// Enable Power Peminder feature
 };
 
-// Define typename
-using PCONFIGDATA = CONFIGDATA*;
-
 
 // For application config data management
-class ConfigData : public CONFIGDATA
+class ConfigData : public CONFIGDATAINFO
 {
 public:
 	enum AppOptionID {
@@ -96,21 +93,21 @@ public:
 public:
 	// Construction
 	ConfigData();
-	ConfigData(const CONFIGDATA& other) {
+	ConfigData(const ConfigData& other) {
 		this->Copy(other);
 	};
 
 public:
 	// Data processing
-	void Copy(const CONFIGDATA& other) noexcept;
-	constexpr bool Compare(const CONFIGDATA& other) const noexcept;
+	void Copy(const ConfigData& other) noexcept;
+	constexpr bool Compare(const ConfigData& other) const noexcept;
 	void SetDefaultData(void) noexcept {
-		static const CONFIGDATA defaultConfig;
+		static const ConfigData defaultConfig;
 		this->Copy(defaultConfig);
 	}
 
 	// Access data
-	void GetData(CONFIGDATA& pData) const noexcept;
+	void GetData(CONFIGDATAINFO& pData) const noexcept;
 	int GetAppOption(AppOptionID eAppOptionID) const noexcept;
 };
 

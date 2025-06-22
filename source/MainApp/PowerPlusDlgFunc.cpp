@@ -581,7 +581,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("print"))) {
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("config")))) {
 			// Print app config data
-			PCONFIGDATA pcfgDataTemp = pApp->GetAppConfigData();
+			const ConfigData* pcfgDataTemp = pApp->GetAppConfigData();
 			if (pcfgDataTemp != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
@@ -643,7 +643,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("schedule")))) {
 			// Print schedule data
-			ScheduleData* pSchedDataTemp = pApp->GetAppScheduleData();
+			const ScheduleData* pSchedDataTemp = pApp->GetAppScheduleData();
 			if (pSchedDataTemp != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
@@ -658,7 +658,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print each item data
 				for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
-					ScheduleItem schExtraItem = pSchedDataTemp->GetItemAt(nExtraIndex);
+					const ScheduleItem schExtraItem = pSchedDataTemp->GetItemAt(nExtraIndex);
 
 					// Print item
 					String extraItemPrint;
@@ -670,7 +670,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("hksetdata")))) {
 			// Print HotkeySet data
-			HotkeySetData* pHksDataTemp = pApp->GetAppHotkeySetData();
+			const HotkeySetData* pHksDataTemp = pApp->GetAppHotkeySetData();
 			if (pHksDataTemp != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
@@ -680,7 +680,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print each item data
 				for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-					HotkeySetItem hksItem = pHksDataTemp->GetItemAt(nIndex);
+					const HotkeySetItem hksItem = pHksDataTemp->GetItemAt(nIndex);
 
 					// Print item
 					String hotKeyItemPrint;
@@ -692,7 +692,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("rmddata")))) {
 			// Print Power Reminder data
-			PwrReminderData* pRmdDataTemp = pApp->GetAppPwrReminderData();
+			const PwrReminderData* pRmdDataTemp = pApp->GetAppPwrReminderData();
 			if (pRmdDataTemp != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
@@ -702,7 +702,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print each item data
 				for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-					PwrReminderItem pwrItem = pRmdDataTemp->GetItemAt(nIndex);
+					const PwrReminderItem pwrItem = pRmdDataTemp->GetItemAt(nIndex);
 
 					// Print item
 					String reminderItemPrint;
@@ -714,7 +714,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("resourceidmap")))) {
 			// Print application resource ID map data
-			SResourceIDMap* pResourceIDMap = GET_RESOURCEID_MAP();
+			const SResourceIDMap* pResourceIDMap = GET_RESOURCEID_MAP();
 			if (pResourceIDMap != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
