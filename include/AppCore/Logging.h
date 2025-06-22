@@ -519,7 +519,7 @@ inline void OutputDebugLog(const wchar_t* debugLog, int forceStyle = -1) {
 	DebugLogging::OutputDebugLog(debugLog, forceStyle);
 };
 inline void OutputDebugLogFormat(const wchar_t* debugLogFormat, ...) {
-	ATLASSERT(AtlIsValidString(debugStringFormat));
+	ATLASSERT(AtlIsValidString(debugLogFormat));
 
 	va_list argList;
 	va_start(argList, debugLogFormat);

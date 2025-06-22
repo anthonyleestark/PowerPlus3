@@ -1578,6 +1578,8 @@ SystemEvent& SystemEvent::operator=(const SystemEvent& other)
 	// Copy data
 	m_sysEventID = other.m_sysEventID;						// System event ID
 	m_timeStamp = other.m_timeStamp;						// Event timestamp
+
+	return *this;
 }
 
 
@@ -1606,6 +1608,8 @@ SystemEventTracker& SystemEventTracker::operator=(const SystemEventTracker& othe
 {
 	// Copy data
 	m_arrTrackingData = other.m_arrTrackingData;			// System event tracking data
+
+	return *this;
 }
 
 
@@ -1630,7 +1634,7 @@ String StringUtils::StringFormat(unsigned formatTemplateID, ...)
 
 	// Format string
 	va_list argList;
-	va_start(argList, templateString.GetString());
+	va_start(argList, formatTemplateID);
 	resultString.FormatV(templateString, argList);
 	va_end(argList);
 

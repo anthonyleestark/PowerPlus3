@@ -475,6 +475,9 @@ CSize CGridCellBase::GetTextExtent(LPCTSTR szText, CDC* pDC /*= NULL*/)
         {
             CGridDefaultCell* pDefCell = (CGridDefaultCell*) GetDefaultCell();
             ASSERT(pDefCell);
+			if (!pDefCell)
+				return CSize(0, 0);
+
             return CSize(pDefCell->GetWidth(), pDefCell->GetHeight());
         }
         bReleaseDC = TRUE;
@@ -553,7 +556,7 @@ CSize CGridCellBase::GetCellExtent(CDC* pDC)
         CGridCtrl* pGrid = GetGrid();        
         ASSERT(pGrid);        
         IMAGEINFO Info;        
-        if (pGrid->GetImageList() && pGrid->GetImageList()->GetImageInfo(nImage, &Info))         
+        if (pGrid && pGrid->GetImageList() && pGrid->GetImageList()->GetImageInfo(nImage, &Info))         
         {            
             ImageSize = CSize(Info.rcImage.right-Info.rcImage.left,                                 
                 Info.rcImage.bottom-Info.rcImage.top);            

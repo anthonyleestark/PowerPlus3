@@ -662,7 +662,7 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pHotkeySetListTable->SetFixedColumnCount(fixedColumnNum);
 	m_pHotkeySetListTable->SetRowCount(nRowNum);
 	m_pHotkeySetListTable->SetFixedRowCount(fixedRowNum);
-	m_pHotkeySetListTable->SetRowHeight(Constant::UI::GridCtrl::Height::Row, Constant::UI::GridCtrl::Height::Row);
+	m_pHotkeySetListTable->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Row);
 
 	// Draw table
 	DrawHotkeySetTable(GetReadOnlyMode());

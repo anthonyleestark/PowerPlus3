@@ -2977,7 +2977,7 @@ void CGridCtrl::OnUpdateEditSelectAll(CCmdUI* pCmdUI)
 // hittest-like functions
 
 // TRUE if the mouse is over a row resize area
-BOOL CGridCtrl::MouseOverRowResizeArea(CPoint& point)
+BOOL CGridCtrl::MouseOverRowResizeArea(const CPoint& point)
 {
     if (point.x >= GetFixedColumnWidth())
         return FALSE;
@@ -2999,7 +2999,7 @@ BOOL CGridCtrl::MouseOverRowResizeArea(CPoint& point)
 }
 
 // TRUE if the mouse is over a column resize area. point is in Client coords
-BOOL CGridCtrl::MouseOverColumnResizeArea(CPoint& point)
+BOOL CGridCtrl::MouseOverColumnResizeArea(const CPoint& point)
 {
     if (point.y >= GetFixedRowHeight())
         return FALSE;
@@ -4278,7 +4278,7 @@ BOOL CGridCtrl::SetCellType(int nRow, int nCol, CRuntimeClass* pRuntimeClass)
 BOOL CGridCtrl::SetDefaultCellType( CRuntimeClass* pRuntimeClass)
 {
     ASSERT( pRuntimeClass != NULL );
-    if (!pRuntimeClass->IsDerivedFrom(RUNTIME_CLASS(CGridCellBase)))
+    if (pRuntimeClass && !pRuntimeClass->IsDerivedFrom(RUNTIME_CLASS(CGridCellBase)))
     {
         ASSERT( FALSE);
         return FALSE;
@@ -4501,7 +4501,7 @@ void CGridCtrl::AutoFill()
 // CGridCtrl data functions
 
 // Set CListCtrl::GetNextItem for details
-CCellID CGridCtrl::GetNextItem(CCellID& cell, int nFlags) const
+CCellID CGridCtrl::GetNextItem(const CCellID& cell, int nFlags) const
 {
     if ((nFlags & GVNI_ALL) == GVNI_ALL)
     {    // GVNI_ALL Search whole Grid beginning from cell
@@ -5796,7 +5796,7 @@ void CGridCtrl::EnsureVisible(int nRow, int nCol)
 	if (!m_idTopLeftCell.IsValid()) Invalidate();
 }
 
-BOOL CGridCtrl::IsCellEditable(CCellID &cell) const
+BOOL CGridCtrl::IsCellEditable(const CCellID& cell) const
 {
     return IsCellEditable(cell.row, cell.col);
 }
@@ -5806,7 +5806,7 @@ BOOL CGridCtrl::IsCellEditable(int nRow, int nCol) const
 	return (IsEditable() || GetItemState(nRow, nCol) & GVIS_EDITABLE) && ((GetItemState(nRow, nCol) & GVIS_READONLY) != GVIS_READONLY);
 }
 
-BOOL CGridCtrl::IsCellSelected(CCellID &cell) const
+BOOL CGridCtrl::IsCellSelected(const CCellID &cell) const
 {
     return IsCellSelected(cell.row, cell.col);
 }
@@ -5827,7 +5827,7 @@ BOOL CGridCtrl::IsCellSelected(int nRow, int nCol) const
         return IsSelectable() && ((GetItemState(nRow, nCol) & GVIS_SELECTED) == GVIS_SELECTED);
 }
 
-BOOL CGridCtrl::IsCellVisible(CCellID cell) 
+BOOL CGridCtrl::IsCellVisible(const CCellID& cell)
 {
     return IsCellVisible(cell.row, cell.col);
 }
@@ -8153,7 +8153,7 @@ void CGridCtrl::SplitCells(INT_PTR nMergeID)
 	}
 }
 
-BOOL CGridCtrl::IsMergedCell(int row, int col, CCellRange& mergedCellRange)
+BOOL CGridCtrl::IsMergedCell(int row, int col, const CCellRange& mergedCellRange)
 {
 	if((mergedCellRange.GetMinRow() <= row) && (mergedCellRange.GetMinCol() <= col)
 		&& (mergedCellRange.GetMaxRow() >= row) && (mergedCellRange.GetMaxCol() >= col))
@@ -8165,7 +8165,7 @@ BOOL CGridCtrl::IsMergedCell(int row, int col, CCellRange& mergedCellRange)
 }
 
 
-BOOL CGridCtrl::GetMergedCellRect(CCellRange& mergedCell, CRect& rect)
+BOOL CGridCtrl::GetMergedCellRect(const CCellRange& mergedCell, CRect& rect)
 { 	
 	CCellID idTopLeftMin = GetTopleftNonFixedCell();
 

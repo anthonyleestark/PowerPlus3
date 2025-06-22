@@ -277,7 +277,6 @@ void SResourceIDMap::Remove(DWORD dwResID)
 void SResourceIDMap::RemoveAll(void)
 {
 	// Check data validity
-	ASSERT(m_pIDMapData != NULL);
 	if (m_pIDMapData == NULL)
 		return;
 

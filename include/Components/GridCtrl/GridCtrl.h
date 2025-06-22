@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file		GridCtrl.h
  * @brief		CGridCtrl header file
  * @date		2024.07.20
@@ -189,9 +189,9 @@ public:
 	INT_PTR MergeCells(CCellRange& mergedCellRange);
 	void SplitCells(INT_PTR nMergeID);
 
-	BOOL IsMergedCell(int row, int col, CCellRange& mergedCellRange);
+	BOOL IsMergedCell(int row, int col, const CCellRange& mergedCellRange);
 	BOOL GetMergedCellRect(int row, int col, CRect& rect);
-	BOOL GetMergedCellRect(CCellRange& mergedCell, CRect& rect);
+	BOOL GetMergedCellRect(const CCellRange& mergedCell, CRect& rect);
 	BOOL GetTopLeftMergedCell(int& row, int& col, CRect& mergeRect);
 	BOOL GetBottomRightMergedCell(int& row, int& col, CRect& mergeRect);
 	virtual BOOL IsFocused(CGridCellBase& cell, int nRow, int nCol);
@@ -480,14 +480,14 @@ public:
     void Refresh();
     void AutoFill();   // Fill grid with blank cells
 
-    void EnsureVisible(CCellID &cell)       { EnsureVisible(cell.row, cell.col); }
+    void EnsureVisible(const CCellID &cell)       { EnsureVisible(cell.row, cell.col); }
     void EnsureVisible(int nRow, int nCol);
     BOOL IsCellVisible(int nRow, int nCol);
-    BOOL IsCellVisible(CCellID cell);
+    BOOL IsCellVisible(const CCellID& cell);
     BOOL IsCellEditable(int nRow, int nCol) const;
-    BOOL IsCellEditable(CCellID &cell) const;
+    BOOL IsCellEditable(const CCellID &cell) const;
     BOOL IsCellSelected(int nRow, int nCol) const;
-    BOOL IsCellSelected(CCellID &cell) const;
+    BOOL IsCellSelected(const CCellID &cell) const;
 
     // SetRedraw stops/starts redraws on things like changing the # rows/columns
     // and autosizing, but not for user-intervention such as resizes
@@ -544,7 +544,7 @@ public:
 // Misc.
 ///////////////////////////////////////////////////////////////////////////////////
 public:
-    CCellID GetNextItem(CCellID& cell, int nFlags) const;
+    CCellID GetNextItem(const CCellID& cell, int nFlags) const;
 
 	BOOL SortItems(int nCol, BOOL bAscending, LPARAM data = 0);
     BOOL SortTextItems(int nCol, BOOL bAscending, LPARAM data = 0);
@@ -614,8 +614,8 @@ protected:
     int  SetMouseMode(int nMode) { int nOldMode = m_MouseMode; m_MouseMode = nMode; return nOldMode; }
     int  GetMouseMode() const    { return m_MouseMode; }
 
-    BOOL MouseOverRowResizeArea(CPoint& point);
-    BOOL MouseOverColumnResizeArea(CPoint& point);
+    BOOL MouseOverRowResizeArea(const CPoint& point);
+    BOOL MouseOverColumnResizeArea(const CPoint& point);
 
     CCellRange GetUnobstructedNonFixedCellRange(BOOL bForceRecalculation = FALSE);
     CCellRange GetVisibleNonFixedCellRange(LPRECT pRect = NULL, BOOL bForceRecalculation = FALSE);

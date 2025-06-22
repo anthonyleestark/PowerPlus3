@@ -27,9 +27,9 @@ using namespace MapTable;
 using namespace Language;
 using namespace AppCore;
 
-
-// TaskbarCreated message constant
-const unsigned WM_TASKBARCREATED = ::RegisterWindowMessage(_T("TaskbarCreated"));
+// Special contants
+const unsigned IDM_ABOUTBOX = 0x0010;
+const unsigned WM_TASKBARCREATED = RegisterWindowMessage(_T("TaskbarCreated"));
 
 
 // Implement methods for CPowerPlusDlg

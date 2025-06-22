@@ -1226,7 +1226,7 @@ bool SLogging::Write(void)
 		// Check if file is opening, if not, open it
 		if (fLogFile.m_hFile == CFile::hFileNull)
 		{
-			bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
+			bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
 			if (bResult == false) {
 
 				// Open file failed
@@ -1322,7 +1322,7 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
 	{
-		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
+		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
 		if (bResult == false) {
 
 			// Open file failed
@@ -1414,7 +1414,7 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
 	{
-		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
+		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
 		if (bResult == false) {
 
 			// Open file failed
@@ -1521,7 +1521,7 @@ bool DebugLogging::InitTraceErrorLogFile(void)
 	while (m_pFileLogTraceError->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogTraceError->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
+		if (!m_pFileLogTraceError->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
 			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
@@ -1596,7 +1596,7 @@ bool DebugLogging::InitTraceDebugLogFile(void)
 	while (m_pFileLogTraceDebug->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogTraceDebug->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
+		if (!m_pFileLogTraceDebug->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
 			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
@@ -1671,7 +1671,7 @@ bool DebugLogging::InitDebugInfoLogFile(void)
 	while (m_pFileLogDebugInfo->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogDebugInfo->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText | CFile::shareDenyWrite)) {
+		if (!m_pFileLogDebugInfo->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
 			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
@@ -1978,7 +1978,7 @@ void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wc
 	// Check if file is opening, if not, open it
 	while (fTrcDbgLogFile.m_hFile == CFile::hFileNull) {
 
-		bool bResult = fTrcDbgLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
+		bool bResult = fTrcDbgLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
 		if (bResult == false) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();

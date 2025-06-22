@@ -2909,7 +2909,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 			m_pStyleCustomizeBtn->EnableWindow(bEnable);
 		}
 		// Update data for Customize dialog
-		if (m_pMsgStyleSetDlg != NULL) {
+		if (m_pMsgStyleSetDlg && IsWindow(m_pMsgStyleSetDlg->GetSafeHwnd())) {
 			if (!bUseCustomStyle) {
 				m_pMsgStyleSetDlg->SetData(m_pwrReminderDataTemp.GetCommonStyle());
 				m_pMsgStyleSetDlg->SetDataFlag(MsgStyleSetFlag::commonStyle);

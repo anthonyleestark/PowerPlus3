@@ -321,7 +321,7 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pLogViewerList->SetColumnCount(nColNum);
 	m_pLogViewerList->SetRowCount(nRowNum);
 	m_pLogViewerList->SetFixedRowCount(fixedRowNum);
-	m_pLogViewerList->SetRowHeight(Constant::UI::GridCtrl::Height::Row, Constant::UI::GridCtrl::Height::Row);
+	m_pLogViewerList->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Row);
 
 	// Draw table
 	DrawLogViewerTable();

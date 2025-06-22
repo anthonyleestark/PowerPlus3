@@ -23,8 +23,6 @@
 
 //********************************* Basic resource IDs ***********************************
 
-#define IDM_ABOUTBOX		           					100
-
 #define IDI_ICON_APP    	            		 		102
 #define IDI_ICON_NOTIFY         	       				103
 #define IDI_ICON_ABOUT_LARGE							104

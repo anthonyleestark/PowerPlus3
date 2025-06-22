@@ -1729,7 +1729,7 @@ void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
 ScheduleData* CPowerPlusApp::GetAppScheduleData()
 {
 	// Check validity
-	ASSERT(m_pschSheduleData != NULL);
+	ASSERT(m_pschScheduleData != NULL);
 	return m_pschScheduleData;
 }
 

@@ -193,13 +193,17 @@ BOOL CReminderMsgDlg::OnInitDialog()
  */
 void CReminderMsgDlg::OnClose()
 {
+	// Kill timer if set
+	if (m_bTimerSet == true && KillTimer(TIMERID_RMDMSG_AUTOCLOSE))
+		m_bTimerSet = false;	// Reset flag
+
 	// Close dialog
 	SDialog::OnClose();
 }
 
 /**
  * @brief	Destroy dialog
- * @param	None
+ * @param	Noíe
  * @return	None
  */
 void CReminderMsgDlg::OnDestroy()
@@ -215,15 +219,6 @@ void CReminderMsgDlg::OnDestroy()
  */
 void CReminderMsgDlg::PostNcDestroy()
 {
-	// Kill timer if set
-	if (m_bTimerSet == true) {
-		bool bRet = KillTimer(TIMERID_RMDMSG_AUTOCLOSE);
-		if (bRet == true) {
-			// Reset flag
-			m_bTimerSet = false;
-		}
-	}
-
 	// Default
 	SDialog::PostNcDestroy();
 }
