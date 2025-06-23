@@ -79,22 +79,22 @@ namespace Language
 		{ IDC_DEFAULT_BTN,										_T("Default") },
 		{ IDC_SYSTEM_TITLE, 									_T("Advanced Options") },
 		{ IDC_SHOWATSTARTUP_CHK,								_T("Show this dialog box at startup") },
-		{ IDC_ENABLEAUTOSTART_CHK,						 		_T("Startup with Windows") },
+		{ IDC_ENABLEAUTOSTART_CHK,						 		_T("Start with Windows") },
 		{ IDC_CONFIRMACTION_CHK,								_T("Confirm before executing action") },
-		{ IDC_SAVEHISTORYLOG_CHK,								_T("Save the log of actions") },
-		{ IDC_SAVEAPPEVENTLOG_CHK,								_T("Save the log of app events") },
-		{ IDC_RUNASADMIN_CHK,									_T("Run with admin privileges") },
-		{ IDC_SHOWERROR_CHK,									_T("Show error message on screen") },
-		{ IDC_SCHEDNOTIFY_CHK, 									_T("Notify before doing scheduled action") },
-		{ IDC_SCHEDALLOWCANCEL_CHK,				 				_T("Allow canceling schedule when notify") },
+		{ IDC_SAVEHISTORYLOG_CHK,								_T("Save action history log") },
+		{ IDC_SAVEAPPEVENTLOG_CHK,								_T("Save application event log") },
+		{ IDC_RUNASADMIN_CHK,									_T("Run with administrator privileges") },
+		{ IDC_SHOWERROR_CHK,									_T("Show error messages on screen") },
+		{ IDC_SCHEDNOTIFY_CHK, 									_T("Notify before scheduled action") },
+		{ IDC_SCHEDALLOWCANCEL_CHK,				 				_T("Allow canceling scheduled actions") },
 		{ IDC_ENBBKGRDHOTKEYS_CHK,								_T("Enable background action hotkeys") },
 		{ IDC_ENBPWRREMINDER_CHK,								_T("Enable Power Reminder feature") },
 		{ IDC_LANGUAGE_TITLE,									_T("Language") },
-		{ IDC_VIEWACTIONLOG_BTN,								_T("View the log of actions") },
+		{ IDC_VIEWACTIONLOG_BTN,								_T("View action history log") },
 		{ IDC_BACKUPCFG_BTN,									_T("Backup settings") },
 		{ IDC_SCHEDULE_BTN,										_T("Action Schedule") },
 		{ IDC_LOGVIEWER_BTN,									_T("LogViewer") },
-		{ IDC_HOTKEYSET_BTN,									_T("Hotkeys Set") },
+		{ IDC_HOTKEYSET_BTN,									_T("Hotkey Set") },
 		{ IDC_PWRREMINDER_BTN,									_T("Power Reminder") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -102,15 +102,15 @@ namespace Language
 		{ IDM_NOTIFY_OPENDLG_ABOUT,								_T("About") },
 		{ IDM_NOTIFY_OPENDLG_HELP,								_T("Help") },
 		{ IDM_NOTIFY_VIEW_ACTIONLOG,							_T("View action history log") },
-		{ IDM_NOTIFY_BACKUP_CONFIG,								_T("Backup configurations") },
-		{ IDM_NOTIFY_VIEW_BAKCONFIG,							_T("View backup configurations") },
+		{ IDM_NOTIFY_BACKUP_CONFIG,								_T("Backup settings") },
+		{ IDM_NOTIFY_VIEW_BAKCONFIG,							_T("View backup settings") },
 		{ IDM_NOTIFY_OPENDLG_LOGVIEWER,							_T("LogViewer") },
 		{ IDM_NOTIFY_OPENDLG_SCHEDULE,							_T("Schedule") },
 		{ IDM_NOTIFY_OPENDLG_HOTKEYSET,							_T("Hotkey Set") },
 		{ IDM_NOTIFY_OPENDLG_PWRREMINDER,						_T("Power Reminder") },
 		{ IDM_NOTIFY_ACTIONS_TITLE,								_T("Actions") },
 		{ IDM_NOTIFY_RESTART_APP,								_T("Restart application") },
-		{ IDM_NOTIFY_RESTART_ASADMIN,							_T("Restart with admin privileges") },
+		{ IDM_NOTIFY_RESTART_ASADMIN,							_T("Restart with administrator privileges") },
 		{ IDM_NOTIFY_SHOW_WINDOW,								_T("Main Window") },
 		{ IDM_NOTIFY_EXIT_APP,									_T("Exit") },
 
@@ -138,16 +138,16 @@ namespace Language
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*------Notify String ID-------------------------------------------------------------------Language String------------------------------------------------------------*/
-		{ NOTIFY_TIP_TEMPLATE,						 			_T("Click left mouse here to %s.\n")
-																_T("Click middle mouse here to %s.\n")
-																_T("Click right mouse to %s.") },
+		{ NOTIFY_TIP_TEMPLATE,						 			_T("Click left mouse button here to %s.\n")
+																_T("Click middle mouse button to %s.\n")
+																_T("Click right mouse button to %s.") },
 		{ NOTIFY_TIP_DISPLAYOFF,								_T("turn off display") },
 		{ NOTIFY_TIP_SLEEP,  									_T("sleep") },
 		{ NOTIFY_TIP_SHUTDOWN,						 			_T("shut down") },
 		{ NOTIFY_TIP_RESTART,			 						_T("restart") },
 		{ NOTIFY_TIP_SIGNOUT,  									_T("sign out") },
 		{ NOTIFY_TIP_HIBERNATE,  								_T("hibernate") },
-		{ NOTIFY_TIP_SHOWMENU, 									_T("show menu") },
+		{ NOTIFY_TIP_SHOWMENU, 									_T("show tray menu") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	/*------Balloon String ID-------------------------------------------------------------------Language String-----------------------------------------------------------*/
@@ -169,16 +169,17 @@ namespace Language
 		{ IDC_COPYRIGHT_LABEL, 							 		_T("Copyright (C) 2017 - 2024 AnthonyLeeStark.") },
 		{ IDC_AUTH_LABEL,  										_T("Developed by: Anthony Lee Stark (@AnthonyLeeStark)") },
 		{ IDC_VIEW_FACEBOOK_PROFILE_LINK,	 					_T("<a>View Developer's Facebook Profile</a>") },
-		{ IDC_APPINFO_LABEL,						 			_T("Power++ - Quick power action utility\n")
-																_T("Doing power action and setting up power schedule simplier.\n\n")
+		{ IDC_APPINFO_LABEL,						 			_T("Power++ - Quick Power Action Utility\n")
+																_T("Perform power actions and schedule them with ease.\n\n")
 																_T("Developer's Profile:\n")
 																_T("Name: AnthonyLeeStark\n")
 																_T("Email: anthonyleestark.official@gmail.com\n")
 																_T("Facebook: https://www.facebook.com/anthonyleestark \n")
 																_T("Twitter: https://twitter.com/AnthonyLeeStark \n\n")
-																_T("Power++ v%s is an utility which allow you to do some power actions quickly and to set up schedule to excute those actions. ")
-																_T("This tool helps you turn off screen, turn PC to sleep, shutdown, reboot, hibernate, or sign off from current account just by one-click. ")
-																_T("It also helps you setup alarms to do those actions automatically or setup hotkeys for each of them. ") },
+																_T("Power++ v%s is a lightweight utility for Windows that allows you to instantly execute power actions—")
+																_T("such as shutdown, restart, sleep, hibernate, turn off display, or sign out—by simply clicking a small icon ")
+																_T("in the system tray. It also includes advanced features such as Power Action Scheduling, Background Hotkeys, ")
+																_T("and Power Reminder, giving you full control over when and how power actions are performed.") },
 		{ IDC_ABOUT_CLOSE_BTN,	 								_T("Close") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -277,10 +278,10 @@ namespace Language
 		{ IDC_PWRREMINDER_CANCEL_BTN,							_T("Cancel") },
 		{ IDC_PWRREMINDER_MSGSTRING_TITLE,						_T("Message Content") },
 		{ IDC_PWRREMINDER_EVENT_TITLE,							_T("Event") },
-		{ IDC_PWRREMINDER_EVENT_SETTIME_RADBTN,					_T("At the specific set time") },
+		{ IDC_PWRREMINDER_EVENT_SETTIME_RADBTN,					_T("At the specific time") },
 		{ IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN,				_T("At the moment of this application startup") },
-		{ IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN,				_T("At the moment of the system wakeup (required \"Startup with Windows\")") },
-		{ IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN,			_T("Before this application executes any power action") },
+		{ IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN,				_T("At the moment the system wakes up (required \"Startup with Windows\")") },
+		{ IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN,			_T("Before this application executes power actions") },
 		{ IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN,			_T("After system waking up from any power action") },
 		{ IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN,				_T("At the moment right before this application exits") },
 		{ IDC_PWRREMINDER_MSGSTYLE_TITLE,						_T("Message Style") },
@@ -607,17 +608,17 @@ namespace Language
 		{ IDC_SYSTEM_TITLE,	 									_T("Thiết lập Nâng cao") },
 		{ IDC_SHOWATSTARTUP_CHK,								_T("Hiển thị hộp thoại này khi khởi động") },
 		{ IDC_ENABLEAUTOSTART_CHK, 								_T("Khởi động cùng Windows") },
-		{ IDC_CONFIRMACTION_CHK,								_T("Hỏi trước khi thực hiện") },
+		{ IDC_CONFIRMACTION_CHK,								_T("Xác nhận trước khi thực hiện hành động") },
 		{ IDC_SAVEHISTORYLOG_CHK,								_T("Lưu nhật ký hành động") },
-		{ IDC_SAVEAPPEVENTLOG_CHK,								_T("Lưu nhật ký ứng dụng") },
-		{ IDC_RUNASADMIN_CHK,									_T("Chạy với quyền admin") },
+		{ IDC_SAVEAPPEVENTLOG_CHK,								_T("Lưu nhật ký sự kiện ứng dụng") },
+		{ IDC_RUNASADMIN_CHK,									_T("Chạy với quyền quản trị viên") },
 		{ IDC_SHOWERROR_CHK,							 		_T("Hiển thị thông báo lỗi trên màn hình") },
-		{ IDC_SCHEDNOTIFY_CHK, 									_T("Nhắc nhở trước khi thực hiện lịch") },
-		{ IDC_SCHEDALLOWCANCEL_CHK,								_T("Cho phép huỷ hẹn giờ khi có nhắc nhở") },
+		{ IDC_SCHEDNOTIFY_CHK, 									_T("Thông báo trước hành động hẹn giờ") },
+		{ IDC_SCHEDALLOWCANCEL_CHK,								_T("Cho phép huỷ hành động đã hẹn giờ") },
 		{ IDC_ENBBKGRDHOTKEYS_CHK,								_T("Kích hoạt phím tắt hành động trong nền") },
 		{ IDC_ENBPWRREMINDER_CHK,								_T("Kích hoạt chức năng Power Reminder") },
 		{ IDC_LANGUAGE_TITLE, 									_T("Ngôn ngữ") },
-		{ IDC_VIEWACTIONLOG_BTN,								_T("Xem nhật ký hoạt động") },
+		{ IDC_VIEWACTIONLOG_BTN,								_T("Xem nhật ký hành động") },
 		{ IDC_BACKUPCFG_BTN, 									_T("Sao lưu thiết lập") },
 		{ IDC_SCHEDULE_BTN, 									_T("Hẹn giờ") },
 		{ IDC_LOGVIEWER_BTN, 									_T("LogViewer") },
@@ -666,7 +667,7 @@ namespace Language
 
 	/*------Notify String ID---------------------------------------------------------------Language String----------------------------------------------------------------*/
 		{ NOTIFY_TIP_TEMPLATE,									_T("Bấm chuột trái vào đây để %s.\n")
-																_T("Bấm chuột giữa để %s.\n")
+																_T("Bấm chuột giữa vào đây để %s.\n")
 																_T("Bấm chuột phải để %s.") },
 		{ NOTIFY_TIP_DISPLAYOFF,								_T("tắt màn hình") },
 		{ NOTIFY_TIP_SLEEP,  									_T("ngủ") },
@@ -696,16 +697,17 @@ namespace Language
 		{ IDC_COPYRIGHT_LABEL, 									_T("Bản quyền thuộc (C) AnthonyLeeStark 2017 - 2024.") },
 		{ IDC_AUTH_LABEL,  										_T("Phát triển bởi: Anthony Lee Stark (@AnthonyLeeStark)") },
 		{ IDC_VIEW_FACEBOOK_PROFILE_LINK,						_T("<a>Xem trang Facebook cá nhân của tác giả</a>") },
-		{ IDC_APPINFO_LABEL,									_T("Power++ - Tiện ích tắt máy tính nhanh\n")
-																_T("Tắt máy và hẹn giờ tắt nhanh hơn và đơn giản hơn.\n\n")
+		{ IDC_APPINFO_LABEL,									_T("Power++ - Tiện ích bật/tắt máy tính nhanh\n")
+																_T("Bật/tắt máy và lên lịch thực hiện một cách đơn giản.\n\n")
 																_T("Thông tin người phát triển:\n")
 																_T("Tên: Anthony Lee Stark\n")
 																_T("Email: anthonyleestark.official@gmail.com\n")
 																_T("Facebook: https://www.facebook.com/anthonyleestark \n")
 																_T("Twitter: https://twitter.com/AnthonyLeeStark \n\n")
-																_T("Power++ v%s là một tiện ích cho phép người dùng thực hiện các hành động nguồn điện và hẹn giờ một cách nhanh chóng. ")
-																_T("Nó giúp bạn tắt màn hình, chuyển máy tính sang chế độ ngủ và ngủ đông, tắt máy, khởi động lại và đăng xuất chỉ bằng một cú nhấp chuột. ")
-																_T("Nó cũng giúp bạn hẹn giờ để thực hiện những hành động này một cách tự động hoặc thiết lập phím tắt cho từng hành động.") },
+																_T("Power++ v%s là một tiện ích nhẹ dành cho Windows cho phép bạn thực hiện ngay lập tức các hành động nguồn-")
+																_T("như tắt máy, khởi động lại, ngủ, ngủ đông, tắt màn hình hoặc đăng xuất—chỉ bằng cách nhấp vào một biểu tượng nhỏ ")
+																_T("trên khay hệ thống. Nó cũng bao gồm các tính năng nâng cao như Lên lịch Hành động nguồn, Phím tắt trong nền (Hotkey Set) ")
+																_T("và Trình nhắc nhở (Power Reminder), cho phép bạn kiểm soát hoàn toàn thời điểm và cách thực hiện các hành động nguồn.") },
 		{ IDC_ABOUT_CLOSE_BTN,	 								_T("Đóng") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -740,10 +742,10 @@ namespace Language
 		{ GRIDCOLUMN_MULTISCHEDULE_REPEAT,						_T("Lặp lại") },
 
 		{ IDD_EDITSCHEDULE_DLG,  								_T("Tuỳ chỉnh Hẹn giờ") },
-		{ IDC_EDITSCHEDULE_ENABLE_CHK,							_T("Kích hoạt chức năng lịch hoạt động") },
+		{ IDC_EDITSCHEDULE_ENABLE_CHK,							_T("Kích hoạt hẹn giờ hành động") },
 		{ IDC_EDITSCHEDULE_ACTION_LABEL,						_T("Hành động") },
 		{ IDC_EDITSCHEDULE_TIME_LABEL,  						_T("Thời gian") },
-		{ IDC_EDITSCHEDULE_REPEATDAILY_CHK,						_T("Lặp lại hành động hàng ngày") },
+		{ IDC_EDITSCHEDULE_REPEATDAILY_CHK,						_T("Lặp lại hành động vào") },
 		{ IDC_EDITSCHEDULE_APPLY_BTN,  							_T("Lưu") },
 		{ IDC_EDITSCHEDULE_CANCEL_BTN, 							_T("Đóng") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -807,8 +809,8 @@ namespace Language
 		{ IDC_PWRREMINDER_EVENT_SETTIME_RADBTN,					_T("Vào thời gian được thiết lập cụ thể") },
 		{ IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN,				_T("Vào thời điểm khi ứng dụng này được khởi chạy") },
 		{ IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN,				_T("Vào thời điểm hệ thống khởi động (yêu cầu thiết lập \"Khởi động cùng Windows\")") },
-		{ IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN,			_T("Trước khi ứng dụng thực hiện một hành động nguồn điện bất kỳ") },
-		{ IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN,			_T("Vào thời điểm hệ thống thức/khởi động sau khi thực hiện hành động nguồn điện") },
+		{ IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN,			_T("Trước khi ứng dụng thực hiện các hành động nguồn") },
+		{ IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN,			_T("Vào thời điểm hệ thống thức/khởi động sau khi thực hiện hành động nguồn") },
 		{ IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN,				_T("Vào thời điểm trước khi chuẩn bị thoát khỏi ứng dụng") },
 		{ IDC_PWRREMINDER_MSGSTYLE_TITLE,						_T("Kiểu thông điệp") },
 		{ IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN,				_T("Dạng Hộp thông báo") },
@@ -1224,16 +1226,17 @@ namespace Language
 		{ IDC_COPYRIGHT_LABEL, 							 		_T("版权(C)属于2017 - 2024 AnthonyLeeStark.") },
 		{ IDC_AUTH_LABEL,  										_T("开发者：Anthony Lee Stark (@AnthonyLeeStark)") },
 		{ IDC_VIEW_FACEBOOK_PROFILE_LINK,	 					_T("<a>查看开发者的Facebook个人资料</a>") },
-		{ IDC_APPINFO_LABEL,						 			_T("Power++ - 快速电源行动实用程序\n")
-																_T("执行电源操作和设置电源计划更简单。\n\n")
+		{ IDC_APPINFO_LABEL,						 			_T("Power++ - 快速电源操作实用程序\n")
+																_T("轻松执行电源操作并安排其时间。\n\n")
 																_T("开发者简介：\n")
 																_T("姓名：AnthonyLeeStark\n")
 																_T("电子邮件：anthonyleestark.official@gmail.com\n")
 																_T("Facebook： https://www.facebook.com/anthonyleestark \n")
 																_T("Twitter: https://twitter.com/AnthonyLeeStark \n\n")
-																_T("Power++ v%s 是一个实用程序，它允许您快速执行一些电源操作并设置执行这些操作的计划。")
-																_T("此软件可帮助您只需单击一下即可关闭屏幕、使 PC 进入睡眠状态、关机、重启、休眠或退出当前帐户。")
-																_T("它还可以帮助您设置闹钟来自动执行这些操作或为每个操作设置热键。") },
+																_T("Power++ v%s 是一款适用于 Windows 的轻量级实用程序，只需点击系")
+																_T("统托盘中的小图标即可立即执行电源操作，例如关机、重启、睡眠、")
+																_T("休眠、关闭显示器或退出登录。它还包含电源操作计划、后台热键和电源")
+																_T("提醒等高级功能，让您可以完全控制电源操作的执行时间和方式。") },
 		{ IDC_ABOUT_CLOSE_BTN,	 								_T("关闭") },
 	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 

@@ -260,16 +260,14 @@ void CHelpDlg::SetupEditbox(CEdit& pEdit)
 bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 {
 	// Get currently displaying language
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	unsigned nCurLanguage = pApp->GetAppLanguageOption(true);
+	unsigned currentLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption(true);
 
 	// Remove existing data
-	if (!strRCFileData.IsEmpty())
-		strRCFileData.Empty();
+	strRCFileData.Empty();
 
 	// View help file mode
 	if (GetViewMode() == ViewMode::HelpFile) {
-		switch (nCurLanguage)
+		switch (currentLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
 			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_HELP_ENG);
@@ -284,7 +282,7 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 	}
 	//View changelog mode
 	else if (GetViewMode() == ViewMode::Changelog) {
-		switch (nCurLanguage)
+		switch (currentLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
 			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_CHANGELOG_ENG);

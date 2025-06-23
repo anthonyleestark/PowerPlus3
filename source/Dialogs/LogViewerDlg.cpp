@@ -259,6 +259,9 @@ void CLogViewerDlg::SetupLanguage(void)
 		case IDC_LOGVIEWER_LOGDATA_LISTBOX:
 			// Skip these items
 			break;
+		case IDC_LOGVIEWER_DETAILS_BTN:
+			ShowItem(nID, false);
+			break;
 		default:
 			SetControlText(pWndChild, nID, pAppLang);
 			break;
@@ -573,7 +576,7 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 
 	// Check selection index validity
 	CWnd* pDetailBtn = (CWnd*)GetDlgItem(IDC_LOGVIEWER_DETAILS_BTN);
-	if (pDetailBtn == NULL) return;
+	if (!pDetailBtn || !pDetailBtn->IsWindowVisible()) return;
 	if (m_nCurSelIndex < 0 || m_nCurSelIndex > m_nLogCount) {
 		// Disable [Details] button
 		pDetailBtn->EnableWindow(FALSE);

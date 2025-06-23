@@ -1738,16 +1738,13 @@ bool StringUtils::LoadResourceString(String& resultStr, unsigned resourceStringI
  */
 String StringUtils::LoadResourceTextData(unsigned resourceFileID)
 {
-	// Empty result text data
-	String resultTextData;
-
 	// Get resource handle
 	HINSTANCE hResInstance = AfxGetResourceHandle();
 	if (hResInstance == NULL) {
 		// Trace error
 		TRACE_ERROR("Error: Get resource handle failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return resultTextData;
+		return Constant::String::Empty;
 	}
 
 	// Find resource file by ID
@@ -1758,13 +1755,19 @@ String StringUtils::LoadResourceTextData(unsigned resourceFileID)
 		HGLOBAL hData = LoadResource(hResInstance, hRes);
 		if (hData != NULL) {
 
-			// Convert data to text data
+			// Convert resource data to text data
+			const size_t dataSize = SizeofResource(hResInstance, hRes);
 			const wchar_t* dataBuffer = static_cast<const wchar_t*>(LockResource(hData));
-			resultTextData = dataBuffer;
+			if (dataBuffer) {
+				const size_t wcharCount = dataSize / sizeof(wchar_t);
+				std::vector<wchar_t> textBuffer(dataBuffer, dataBuffer + wcharCount);
+				textBuffer.push_back(Constant::Char::EndString);
+				return String(textBuffer.data());
+			}
 		}
 	}
 
-	return resultTextData;
+	return Constant::String::Empty;
 }
 
 
