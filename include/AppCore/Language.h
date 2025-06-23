@@ -166,7 +166,7 @@ namespace Language
 	/*-----About Dialog Item--------------------------------------------------------------------Language String-----------------------------------------------------------*/
 		{ IDD_ABOUT_DLG,										_T("About Power++") },
 		{ IDC_APPNAME_LABEL,								  	_T("Power++ %s (v%s)") },
-		{ IDC_COPYRIGHT_LABEL, 							 		_T("Copyright (C) 2017 - 2024 AnthonyLeeStark.") },
+		{ IDC_COPYRIGHT_LABEL, 							 		_T("Copyright (C) 2017 - 2025 AnthonyLeeStark.") },
 		{ IDC_AUTH_LABEL,  										_T("Developed by: Anthony Lee Stark (@AnthonyLeeStark)") },
 		{ IDC_VIEW_FACEBOOK_PROFILE_LINK,	 					_T("<a>View Developer's Facebook Profile</a>") },
 		{ IDC_APPINFO_LABEL,						 			_T("Power++ - Quick Power Action Utility\n")
