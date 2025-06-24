@@ -18,6 +18,8 @@ using namespace AppCore;
 
 // Dialog constant
 constexpr const int defaultTextIconSpacing = 10;
+constexpr const int screenCornerHMargin = 20;
+constexpr const int screenCornerVMargin = 20;
 
 
 // Implement methods for CReminderMsgDlg
@@ -121,19 +123,17 @@ BOOL CReminderMsgDlg::OnInitDialog()
 		Rect dialogMargin;
 		this->GetMargin(dialogMargin);
 
-		BYTE byIconPosition = m_rmdMsgStyleSet.GetIconPosition();
-		if (byIconPosition == RmdMsgStyleSet::IconPosition::IconOnTheTop) {
+		byte iconPosVal = m_rmdMsgStyleSet.GetIconPosition();
+		if (iconPosVal == MsgIconPosition::IconOnTheTop) {
 
 			// Shift top margin
-			dialogMargin._top += m_szIconSize.Height();
-			dialogMargin._top -= defaultTextIconSpacing;
+			dialogMargin._top += m_szIconSize.Height() + defaultTextIconSpacing;
 			this->SetTopMargin(dialogMargin.Top());
 		}
-		else if (byIconPosition == RmdMsgStyleSet::IconPosition::IconOnTheLeft) {
+		else if (iconPosVal == MsgIconPosition::IconOnTheLeft) {
 
 			// Shift left margin
-			dialogMargin._left += m_szIconSize.Width();
-			dialogMargin._left -= defaultTextIconSpacing;
+			dialogMargin._left += m_szIconSize.Width() + defaultTextIconSpacing;
 			this->SetLeftMargin(dialogMargin.Left());
 		}
 	}
@@ -182,6 +182,12 @@ BOOL CReminderMsgDlg::OnInitDialog()
 		unsigned nRet = SetTimer(TIMERID_RMDMSG_AUTOCLOSE, 1000, NULL);
 		m_bTimerSet = (nRet != 0);
 	}
+
+	// Move to specific display position
+	MoveToDisplayPosition((MsgDispPosition)m_rmdMsgStyleSet.GetDisplayPosition());
+
+	// Bring to top (by default)
+	this->PostMessage(SM_WND_SHOWDIALOG, true);
 
 	return true;
 }
@@ -350,6 +356,65 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 }
 
 /**
+ * @brief	Handle window messages
+ * @param	message - Message ID
+ * @param	wParam - First param (HIWORD)
+ * @param	lParam - Second param (LOWORD)
+ * @return	LRESULT
+ */
+LRESULT CReminderMsgDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+		case SM_WND_SHOWDIALOG:
+		{
+			// Get flag value
+			bool bShowFlag = static_cast<bool>(wParam);
+
+			// Show/hide dialog
+			if (bShowFlag == true) {
+
+				// Show dialog
+				this->ShowWindow(SW_SHOW);
+
+				// Bring window to top
+				this->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+				this->SetForegroundWindow();
+				this->BringWindowToTop();
+
+				// If the application is not foreground
+				if (GetForegroundWindow() != this)
+				{
+					// Flash the taskbar
+					FLASHWINFO fwInfo = { sizeof(FLASHWINFO) };
+					fwInfo.hwnd = this->m_hWnd;
+					fwInfo.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
+					fwInfo.uCount = 5;
+					fwInfo.dwTimeout = 0;
+					::FlashWindowEx(&fwInfo);
+
+					// Show tray icon balloon tip
+					if (HWND hMainWnd = GET_HANDLE_MAINWND()) {
+						WPARAM wParam = MAKE_WPARAM_STRING(this->GetDispMessage());
+						LPARAM lParam = MAKE_LPARAM_STRING(this->GetDispMessage());
+						::PostMessage(hMainWnd, SM_APP_SHOW_REMINDER_BALLOON_TIP, wParam, lParam);
+					}
+				}
+			}
+			else {
+				// Hide dialog
+				this->ShowWindow(SW_HIDE);
+			}
+
+			return true;
+		}
+	}
+
+	// Default
+	return SDialog::WindowProc(message, wParam, lParam);
+}
+
+/**
  * @brief	Initialize message style info data
  * @param	None
  * @return	true/false
@@ -474,18 +539,78 @@ bool CReminderMsgDlg::CalcMsgIconPosition(Point& iconPosition) const
 	this->GetClientRect(&rcClient);
 
 	// Calculate icon top-left point
-	int nText2IconDist = defaultTextIconSpacing;
-	BYTE byIconPosition = m_rmdMsgStyleSet.GetIconPosition();
-	if (byIconPosition == RmdMsgStyleSet::IconPosition::IconOnTheTop) {
-		iconPosition._y = currentMargin.Top() - (m_szIconSize.Height() + nText2IconDist);
+	int textIconSpacing = defaultTextIconSpacing;
+	byte iconPosVal = m_rmdMsgStyleSet.GetIconPosition();
+	if (iconPosVal == MsgIconPosition::IconOnTheTop) {
+		iconPosition._y = currentMargin.Top() - (m_szIconSize.Height() + textIconSpacing);
 		iconPosition._x = ((rcClient.right - rcClient.left) - m_szIconSize.Width()) / 2;
 	}
-	else if (byIconPosition == RmdMsgStyleSet::IconPosition::IconOnTheLeft) {
-		iconPosition._x = currentMargin.Left() - (m_szIconSize.Width() + nText2IconDist);
+	else if (iconPosVal == MsgIconPosition::IconOnTheLeft) {
+		iconPosition._x = currentMargin.Left() - (m_szIconSize.Width() + textIconSpacing);
 		iconPosition._y = ((rcClient.bottom - rcClient.top) - m_szIconSize.Height()) / 2;
 	}
 
 	return true;
+}
+
+/**
+ * @brief	Move the dialog to specific display position
+ * @param	displayPosition - Display position
+ * @return	void
+ */
+void CReminderMsgDlg::MoveToDisplayPosition(MsgDispPosition displayPosition)
+{
+	// Get desktop screen size
+	Size screenSize;
+	screenSize._width = GetSystemMetrics(SM_CXSCREEN);
+	screenSize._height = GetSystemMetrics(SM_CYSCREEN);
+
+	// Get this dialog rect
+	RECT dialogRect;
+	this->GetWindowRect(&dialogRect);
+
+	// Dialog size
+	Size dialogSize;
+	dialogSize._width = dialogRect.right - dialogRect.left;
+	dialogSize._height = dialogRect.bottom - dialogRect.top;
+
+	// Top-left position
+	Point topLeft = Point(dialogRect.left, dialogRect.top);
+
+	// Calculate new top-left position based on display position
+	switch (displayPosition)
+	{
+	case MsgDispPosition::AtCenter:
+		topLeft._x = (screenSize.Width() - dialogSize.Width()) / 2;
+		topLeft._y = (screenSize.Height() - dialogSize.Height()) / 2;
+		break;
+
+	case MsgDispPosition::OnTopLeft:
+		topLeft._x = screenCornerHMargin;
+		topLeft._y = screenCornerVMargin;
+		break;
+
+	case MsgDispPosition::OnTopRight:
+		topLeft._y = screenCornerVMargin;
+		topLeft._x = screenSize.Width() - dialogSize.Width() - screenCornerHMargin;
+		break;
+
+	case MsgDispPosition::OnBottomLeft:
+		topLeft._x = screenCornerHMargin;
+		topLeft._y = screenSize.Height() - dialogSize.Height() - screenCornerVMargin;
+		break;
+
+	case MsgDispPosition::OnBottomRight:
+		topLeft._x = screenSize.Width() - dialogSize.Width() - screenCornerHMargin;
+		topLeft._y = screenSize.Height() - dialogSize.Height() - screenCornerVMargin;
+		break;
+
+	default:
+		return;
+	}
+
+	// Move to new position
+	this->SetWindowPos(NULL, topLeft.GetX(), topLeft.GetY(), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
 
 /**

@@ -1684,42 +1684,62 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-	case SM_APP_TRAYICON:
-		switch (lParam)
+		case SM_APP_TRAYICON:
 		{
-		case WM_LBUTTONDOWN:
-			OutputEventLog(LOG_EVENT_TRAYICO_LMBCLICKED);
-			ExecuteAction(APP_MACRO_LEFT_MOUSE);
-			break;
-		case WM_MBUTTONDOWN:
-			OutputEventLog(LOG_EVENT_TRAYICO_MMBCLICKED);
-			ExecuteAction(APP_MACRO_MIDDLE_MOUSE);
-			break;
-		case WM_RBUTTONUP:
-			OutputEventLog(LOG_EVENT_TRAYICO_RMBCLICKED);
-			ExecuteAction(APP_MACRO_RIGHT_MOUSE);
-			break;
+			switch (lParam)
+			{
+				case WM_LBUTTONDOWN:
+					OutputEventLog(LOG_EVENT_TRAYICO_LMBCLICKED);
+					ExecuteAction(APP_MACRO_LEFT_MOUSE);
+					break;
+				case WM_MBUTTONDOWN:
+					OutputEventLog(LOG_EVENT_TRAYICO_MMBCLICKED);
+					ExecuteAction(APP_MACRO_MIDDLE_MOUSE);
+					break;
+				case WM_RBUTTONUP:
+					OutputEventLog(LOG_EVENT_TRAYICO_RMBCLICKED);
+					ExecuteAction(APP_MACRO_RIGHT_MOUSE);
+					break;
+			}
+			return true;
 		}
-		return true;
 
-	case SM_WND_DEBUGTEST:
-		OpenChildDialogEx(IDD_DEBUGTEST_DLG);
-		break;
-	case WM_QUERYENDSESSION:
-		OnQuerryEndSession(NULL, NULL);
-		break;
-	case WM_HOTKEY:
-		ProcessHotkey(static_cast<unsigned>(wParam));
-		break;
-	case SM_APP_LOCKSTATE_HOTKEY:
-		ProcessLockStateHotkey(static_cast<DWORD>(wParam));
-		break;
-	case WM_POWERBROADCAST:
-		OnPowerBroadcastEvent(wParam, NULL);
-		break;
-	case WM_WTSSESSION_CHANGE:
-		OnWTSSessionChange(wParam, lParam);
-		break;
+		case SM_APP_SHOW_REMINDER_BALLOON_TIP:
+		{
+			if (lParam == NULL)
+				return false;
+
+			// Get application language package
+			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+
+			// Prepare balloon tip content
+			String balloonTitle = GetLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
+			String balloonInfoContent = LPARAM_TO_STRING(lParam);
+
+			// Show tray icon balloon tip
+			SetBalloonTipText(balloonTitle, balloonInfoContent);
+
+			return true;
+		}
+
+		case SM_WND_DEBUGTEST:
+			OpenChildDialogEx(IDD_DEBUGTEST_DLG);
+			break;
+		case WM_QUERYENDSESSION:
+			OnQuerryEndSession(NULL, NULL);
+			break;
+		case WM_HOTKEY:
+			ProcessHotkey(static_cast<unsigned>(wParam));
+			break;
+		case SM_APP_LOCKSTATE_HOTKEY:
+			ProcessLockStateHotkey(static_cast<DWORD>(wParam));
+			break;
+		case WM_POWERBROADCAST:
+			OnPowerBroadcastEvent(wParam, NULL);
+			break;
+		case WM_WTSSESSION_CHANGE:
+			OnWTSSessionChange(wParam, lParam);
+			break;
 	}
 
 	// Special messages
@@ -2665,13 +2685,12 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 
 
 /**
- * @brief	Show balloon tip to notify schedule
- * @param	nCurLanguage - Current language ID
- * @param	nScheduleAction - Upcoming schedule action
- * @param	nSecondLeft  - Number of second left
+ * @brief	Show tray icon balloon tip
+ * @param	balloonTitle	   - Balloon tip title
+ * @param	balloonInfoContent - Balloon tip content
  * @return	None
  */
-void CPowerPlusDlg::SetBalloonTipText(unsigned /*nCurLanguage*/, unsigned nScheduleAction, unsigned nSecondLeft)
+void CPowerPlusDlg::SetBalloonTipText(const wchar_t* balloonTitle, const wchar_t* balloonInfoContent)
 {
 	// If notify icon doesn't exist, do nothing
 	if (m_pNotifyIconData == NULL) {
@@ -2684,20 +2703,13 @@ void CPowerPlusDlg::SetBalloonTipText(unsigned /*nCurLanguage*/, unsigned nSched
 	// Setup balloon tip properties
 	m_pNotifyIconData->uFlags = NIF_INFO;
 	m_pNotifyIconData->dwInfoFlags = NIIF_INFO;
-	m_pNotifyIconData->uTimeout = 300;
-
-	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-
-	// Load language strings
-	const wchar_t* formatString = GetLanguageString(pAppLang, BALLOON_TIP_TEMPLATE);
-	const wchar_t* balloonText = GetLanguageString(pAppLang, GetPairedID(IDTable::BalloonTip, nScheduleAction));
-
-	String balloonTipText = StringUtils::StringFormat(formatString, balloonText, nSecondLeft);
+	m_pNotifyIconData->uTimeout = 10000;
 
 	// Set balloon tip text
-	StrCpy(m_pNotifyIconData->szInfoTitle, (wchar_t*)(const wchar_t*)GetLanguageString(pAppLang, IDC_APPNAME_LABEL));
-	StrCpy(m_pNotifyIconData->szInfo, (wchar_t*)balloonTipText.GetString());
+	wcscpy_s(m_pNotifyIconData->szInfoTitle, balloonTitle);
+	wcscpy_s(m_pNotifyIconData->szInfo, balloonInfoContent);
+
+	// Show the balloon tip
 	Shell_NotifyIcon(NIM_MODIFY, m_pNotifyIconData);
 }
 

@@ -916,36 +916,22 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 	Rect currentMargin;
 	this->GetMargin(currentMargin);
 
-	// Horizontal center margin
-	bool bHorzCenter = false;
-	if (currentMargin.Left() == currentMargin.Right()) {
-		bHorzCenter = true;
-	}
-
-	// Vertical center margin
-	bool bVertCenter = false;
-	if (currentMargin.Top() == currentMargin.Bottom()) {
-		bVertCenter = true;
-	}
+	// Is center margin???
+	bool bHorzCenter = (currentMargin.Left() == currentMargin.Right());
+	bool bVertCenter = (currentMargin.Top() == currentMargin.Bottom());
 
 	// New dialog margin
 	Rect newMargin = currentMargin;
 
-	// Get current client size
-	RECT currentClientRect;
+	// Get current client and dialog rectangle
+	RECT currentClientRect, currentDialogRect;
 	this->GetClientRect(&currentClientRect);
 	this->ClientToScreen(&currentClientRect);
-
-	// Get current display area
-	Rect currentDispArea;
-	this->GetDisplayArea(currentDispArea);
-
-	// Calculate current display area size
-	Size curDispAreaSize = currentDispArea.GetSize();
-
-	// Get current dialog rectangle
-	RECT currentDialogRect;
 	this->GetWindowRect(&currentDialogRect);
+
+	// Get dialog size
+	Size dialogSize;
+	this->GetSize(dialogSize);
 
 	// Dialog and client rectangle offset
 	Rect dialogClientOffset;
@@ -954,14 +940,12 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 	dialogClientOffset._right = abs(currentDialogRect.right - currentClientRect.right);
 	dialogClientOffset._bottom = abs(currentDialogRect.bottom - currentClientRect.bottom);
 
-	// Get dialog size
-	Size dialogSize;
-	this->GetSize(dialogSize);
+	// Get current display area
+	Rect currentDispArea;
+	this->GetDisplayArea(currentDispArea);
 
-	// New dialog rectangle
-	Rect newDialogRect;
-
-	// Calculate new display area size
+	// Calculate display area size
+	Size curDispAreaSize = currentDispArea.GetSize();
 	Size newDispAreaSize = newDispArea.GetSize();
 
 	// Update margin
@@ -978,12 +962,16 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 		}
 	}
 
+	// New dialog rectangle
+	Rect newDialogRect;
+
 	// Set new dialog rectangle top-left
 	newDialogRect._left = (newDispArea.Left() - newMargin.Left()) - dialogClientOffset.Left();
 	newDialogRect._top = (newDispArea.Top() - newMargin.Top()) - dialogClientOffset.Top();
 
 	// If resize is specified
 	if (bResizeDialog == true) {
+
 		// Set new dialog rectangle bottom-right
 		newDialogRect._right = (newDispArea.Right() + newMargin.Right()) + dialogClientOffset.Right();
 		newDialogRect._bottom = (newDispArea.Bottom() + newMargin.Bottom()) + dialogClientOffset.Bottom();
@@ -997,14 +985,6 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 		newDialogRect._left += (newMargin.Left() - currentMargin.Left());
 		newDialogRect._top += (newMargin.Top() - currentMargin.Top());
 
-		// Set new dialog rectangle bottom-right
-		newDialogRect._right = (newDialogRect.Left() + dialogSize.Width());
-		newDialogRect._bottom = (newDialogRect.Top() + dialogSize.Height());
-
-		// Recalculate bottom-right margin
-		newMargin._right = (newDialogRect.Right() - dialogClientOffset.Right()) - newDispArea.Right();
-		newMargin._bottom = (newDialogRect.Bottom() - dialogClientOffset.Bottom()) - newDispArea.Bottom();
-
 		// Reposition dialog
 		SetWindowPos(NULL, newDialogRect.Left(), newDialogRect.Top(), 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
@@ -1015,6 +995,14 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 		if (bCenter == true) {
 			this->CenterWindow(GetParentWnd());
 		}
+
+		// Get new rect after repositioning
+		RECT newRect;
+		this->GetWindowRect(&newRect);
+
+		// Recalculate bottom-right margin
+		newMargin._right = (newRect.right - dialogClientOffset.Right()) - newDispArea.Right();
+		newMargin._bottom = (newRect.bottom - dialogClientOffset.Bottom()) - newDispArea.Bottom();
 	}
 
 	// Save margin update

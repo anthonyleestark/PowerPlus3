@@ -69,6 +69,7 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 public:
 	// Get/set display content
@@ -127,6 +128,9 @@ protected:
 
 	// Calculate icon position
 	bool CalcMsgIconPosition(Point& iconPosition) const;
+
+	// Move the dialog to specific display position
+	void MoveToDisplayPosition(MsgDispPosition displayPosition);
 
 	// Convert text and client rectangle
 	void ClientToText(Rect& rect) const;

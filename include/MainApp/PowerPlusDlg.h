@@ -186,7 +186,7 @@ protected:
 	void UpdateMenuItemState(CMenu* pMenu);
 	const wchar_t* GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
 	void SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
-	void SetBalloonTipText(unsigned nCurLanguage, unsigned nScheduleAction, unsigned nSecondLeft);
+	void SetBalloonTipText(const wchar_t* balloonTitle, const wchar_t* balloonInfoContent);
 
 private:
 	// Core functions
