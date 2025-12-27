@@ -89,13 +89,13 @@
 		}; \
 		__pragma(warning(pop)) \
 		size_t _resourceIDMapCount = 0;	\
-		SResourceIDMap* _pResourceIDMap = GET_RESOURCEID_MAP(); \
-		ASSERT(_pResourceIDMap != NULL); \
-		if (_pResourceIDMap != NULL) \
+		SResourceIDMap* _resourceIDMap = GET_RESOURCEID_MAP(); \
+		ASSERT(_resourceIDMap != NULL); \
+		if (_resourceIDMap != NULL) \
 		{ \
 			size_t _srcMapSize = sizeof(_mapEntries) / sizeof(_mapEntries[0]); \
-			_pResourceIDMap->Append(&_mapEntries[0], --(_srcMapSize)); \
-			_resourceIDMapCount = _pResourceIDMap->GetMapCount(); \
+			_resourceIDMap->Append(&_mapEntries[0], --(_srcMapSize)); \
+			_resourceIDMapCount = _resourceIDMap->GetMapCount(); \
 		} \
 		return _resourceIDMapCount; \
 	} \
@@ -114,9 +114,9 @@ enum ResourceType {
 // For resource ID mapping function
 struct RESOURCE_ID_MAP_ENTRY
 {
-	byte	 byTypeID;					// Resource type ID
-	DWORD	 dwResourceID;				// Resource ID (integer type)
-	CStringA strNameID;					// Resource mapped name string ID
+	byte	 typeID;					// Resource type ID
+	DWORD	 resourceID;				// Resource ID (integer type)
+	CStringA nameID;					// Resource mapped name string ID
 };
 
 // Define new typename for Resource ID Map data
@@ -130,8 +130,8 @@ class SResourceIDMap : public CObject
 
 private:
 	// Data container
-	RESOURCE_ID_MAP m_pIDMapData;
-	size_t			m_nSize;
+	RESOURCE_ID_MAP m_idMapData;
+	size_t			m_size;
 
 	// Single instance and thread safety guard
 	static SResourceIDMap*	m_thisInstance;
@@ -146,7 +146,7 @@ private:
 public:
 	// Operators
 	SResourceIDMap& operator=(const SResourceIDMap&) = delete;		// no copy assignment operator
-	const RESOURCE_ID_MAP_ENTRY& operator[](size_t nIndex);
+	const RESOURCE_ID_MAP_ENTRY& operator[](size_t index);
 
 public:
 	// Get the single map instance:
@@ -156,22 +156,22 @@ public:
 	static void DestroyResourceIDMap(void);
 
 	// Initialization
-	void Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize);
-	void Append(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize);
+	void Copy(const RESOURCE_ID_MAP_ENTRY* src, size_t size);
+	void Append(const RESOURCE_ID_MAP_ENTRY* src, size_t size);
 
 	// Data processing functions
-	void Add(byte byTypeID, DWORD dwResID, const char* lpszNameID);
-	void Modify(DWORD dwResID, const char* lpszNewNameID);
-	void Remove(DWORD dwResID);
+	void Add(byte typeID, DWORD resID, const char* nameID);
+	void Modify(DWORD resID, const char* newNameID);
+	void Remove(DWORD resID);
 	void RemoveAll(void);
 	
 	// Data acquirement functions
-	unsigned	GetResourceID(const char* lpszNameID) const;
-	const char*	GetNameID(DWORD dwResID) const;
-	long long	FindResourceID(DWORD dwResID) const;
-	long long	FindNameID(const char* lpszNameID) const;
+	unsigned	GetResourceID(const char* nameID) const;
+	const char*	GetNameID(DWORD resID) const;
+	long long	FindResourceID(DWORD resID) const;
+	long long	FindNameID(const char* nameID) const;
 
 	// Attributes get/set functions
-	const RESOURCE_ID_MAP_ENTRY& GetAt(size_t nIndex) const;
+	const RESOURCE_ID_MAP_ENTRY& GetAt(size_t index) const;
 	size_t GetMapCount(void) const;
 };

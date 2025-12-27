@@ -590,54 +590,54 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				// Format and print data
 				String strValue = Constant::String::Empty;
 				// Left mouse button action
-				int nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->nLMBAction);
+				int nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->leftMouseAction);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LMBAction, GetLanguageString(ptrLanguage, nActionStringID));
 				// Middle mouse button action
-				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->nMMBAction);
+				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->middleMouseAction);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::MMBAction, GetLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button action
-				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->nRMBAction);
+				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->rightMouseAction);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBAction, GetLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button: Only show menu
-				strValue = ((pcfgDataTemp->bRMBShowMenu) ? Constant::Value::True : _T("NO"));
+				strValue = ((pcfgDataTemp->rightMouseShowMenu) ? Constant::Value::True : _T("NO"));
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBShowMenu, strValue.GetString());
 				// Language setting
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LanguageID, GetLanguageName(pcfgDataTemp->nLanguageID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LanguageID, GetLanguageName(pcfgDataTemp->languageID));
 				// Show dialog at startup
-				strValue = ((pcfgDataTemp->bShowDlgAtStartup) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->showDialogAtStartup) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowDlgAtStartup, strValue.GetString());
 				// Startup with Windows
-				strValue = ((pcfgDataTemp->bStartupEnabled) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->enableAutoStart) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::StartupEnabled, strValue.GetString());
 				// Show confirm message before executing action
-				strValue = ((pcfgDataTemp->bConfirmAction) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->actionConfirmation) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ConfirmAction, strValue.GetString());
 				// Save action log
-				strValue = ((pcfgDataTemp->bSaveHistoryLog) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->saveActionHistory) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveHistoryLog, strValue.GetString());
 				// Save app event log
-				strValue = ((pcfgDataTemp->bSaveAppEventLog) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->saveAppEventLog) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveAppEventLog, strValue.GetString());
 				// Run with admin privileges
-				strValue = ((pcfgDataTemp->bRunAsAdmin) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->runAsAdmin) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RunAsAdmin, strValue.GetString());
 				// Show action error message
-				strValue = ((pcfgDataTemp->bShowErrorMsg) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->showErrorMessage) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowErrorMsg, strValue.GetString());
 				// Show notify tip for schedule action
-				strValue = ((pcfgDataTemp->bNotifySchedule) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->scheduleNotification) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::NotifySchedule, strValue.GetString());
 				// Allow canceling schedule when notify
-				strValue = ((pcfgDataTemp->bAllowCancelSchedule) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->allowScheduleCancellation) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::AllowCancelSchedule, strValue.GetString());
 				// Enable background action hotkeys
-				strValue = ((pcfgDataTemp->bEnableBackgroundHotkey) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->enableBackgroundHotkey) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnableBackgroundHotkey, strValue.GetString());
 				// Allow background hotkeys on lockscreen
-				strValue = ((pcfgDataTemp->bLockStateHotkey) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->allowLockscreenHotkey) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LockStateHotkey, strValue.GetString());
 				// Enable Power Peminder feature
-				strValue = ((pcfgDataTemp->bEnablePowerReminder) ? Constant::Value::True : Constant::Value::False);
+				strValue = ((pcfgDataTemp->enablePowerReminder) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnablePowerReminder, strValue.GetString());
 			}
 		}
@@ -725,7 +725,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				// Print each resource ID map entry
 				for (size_t nIndex = 0; nIndex < nSize; nIndex++) {
 					const RESOURCE_ID_MAP_ENTRY& resourceIDMapEntry = pResourceIDMap->GetAt(nIndex);
-					logOutputResult.Format(_T("Index=%lld: { ResourceID=%d, NameID=%s }"), nIndex, resourceIDMapEntry.dwResourceID, MAKEUNICODE(resourceIDMapEntry.strNameID));
+					logOutputResult.Format(_T("Index=%lld: { ResourceID=%d, NameID=%s }"), nIndex, resourceIDMapEntry.resourceID, MAKEUNICODE(resourceIDMapEntry.nameID));
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}
 			}

@@ -58,20 +58,20 @@ namespace MapTable
 	// Hotkey info description
 	struct HOTKEYINFO
 	{
-		DWORD		dwModifiers;							// Modifier keys
-		DWORD		dwVirtualKey;							// Virtual key code
-		unsigned	nHotkeyDescription;						// Hotkey description (string ID)
+		DWORD		modifiers;							// Modifier keys
+		DWORD		virtualKey;							// Virtual key code
+		unsigned	hotkeyDescription;					// Hotkey description (string ID)
 	};
 
 	// Action definition/combination table
 	struct ACTIONDEF
 	{
-		unsigned nActionDefID;								// Action ID
-		unsigned nActionNameID;								// Action Name ID
-		unsigned nActionMsgID;								// Action message ID
-		unsigned nSchedNotifyID;							// Schedule notify message ID
-		unsigned nNotifyTipID;								// Notify file tip ID
-		unsigned nBalloonTipID;								// Balloon tip ID
+		unsigned actionDefID;							// Action ID
+		unsigned actionNameID;							// Action Name ID
+		unsigned actionMsgID;							// Action message ID
+		unsigned schedNotifyID;							// Schedule notify message ID
+		unsigned notifyTipID;							// Notify file tip ID
+		unsigned balloonTipID;							// Balloon tip ID
 	};
 
 	
@@ -454,7 +454,7 @@ namespace MapTable
 
 
 	//	Define methods for processing data map tables
-	unsigned GetPairedID(IDMAPTABLE_REF pIDTableRef, unsigned nID, bool bReverse = false);
-	unsigned GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input);
-	const wchar_t* GetString(STRINGTABLE_REF pStringTableRef, unsigned nID);
+	unsigned GetPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reverse = false);
+	unsigned GetStringID(STRINGTABLE_REF stringTableRef, const wchar_t* input);
+	const wchar_t* GetString(STRINGTABLE_REF stringTableRef, unsigned id);
 };

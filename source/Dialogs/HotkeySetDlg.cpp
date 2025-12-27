@@ -1406,8 +1406,8 @@ bool CHotkeySetDlg::Validate(const Item& hksItem, bool bShowMsg /* = false */)
 	// Check if system hotkey existed
 	int nExistedSysHotkeyNum = TABLE_SIZE(OtherTable::ExistedSysHotkeyList);
 	for (int nIndex = 0; nIndex < nExistedSysHotkeyNum; nIndex++) {
-		if ((dwModifiers == OtherTable::ExistedSysHotkeyList[nIndex].dwModifiers) &&
-			(dwVirtualKey == OtherTable::ExistedSysHotkeyList[nIndex].dwVirtualKey)) {
+		if ((dwModifiers == OtherTable::ExistedSysHotkeyList[nIndex].modifiers) &&
+			(dwVirtualKey == OtherTable::ExistedSysHotkeyList[nIndex].virtualKey)) {
 			// Hotkey info format
 			String keyStrokesString = Constant::String::Empty;
 			if (dwModifiers & MOD_CONTROL)	keyStrokesString += _T("Ctrl + ");
@@ -1415,7 +1415,7 @@ bool CHotkeySetDlg::Validate(const Item& hksItem, bool bShowMsg /* = false */)
 			if (dwModifiers & MOD_WIN)		keyStrokesString += _T("Win + ");
 			keyStrokesString += GetString(StringTable::FunctionKeys, dwVirtualKey);
 			String keyInfoString = Constant::String::Empty;
-			keyInfoString.Format(_T("%s - %s"), keyStrokesString.GetString(), GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].nHotkeyDescription));
+			keyInfoString.Format(_T("%s - %s"), keyStrokesString.GetString(), GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].hotkeyDescription));
 
 			// Message format
 			String messageFormat;

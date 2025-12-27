@@ -264,7 +264,7 @@ BOOL CPowerPlusApp::InitInstance()
 	m_pMainWnd = pMainDlg;
 
 	// Show/hide main dialog at startup
-	if (GetAppOption(AppOptionID::showDlgAtStartup) == false) {
+	if (GetAppOption(AppOptionID::showDialogAtStartup) == false) {
 
 		// Hide dialog
 		pMainDlg->Create(IDD_POWERPLUS_DIALOG, NULL);
@@ -346,7 +346,7 @@ int CPowerPlusApp::ExitInstance()
 	}
 
 	// Write action history logging data to file if enabled
-	if (GetAppOption(AppOptionID::saveAppHistoryLog) == true) {
+	if (GetAppOption(AppOptionID::saveActionHistory) == true) {
 		GetAppHistoryLog()->Write();
 	}
 
@@ -425,8 +425,8 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 
 				// Only process if both options are enabled
 				if ((pApp != NULL) &&
-					(pApp->GetAppOption(AppOptionID::backgroundHotkeyEnabled) == true) &&		// Enable background action hotkeys
-					(pApp->GetAppOption(AppOptionID::lockStateHotkeyEnabled) == true)) {		// Allow background hotkeys on lockscreen
+					(pApp->GetAppOption(AppOptionID::enableBackgroundHotkey) == true) &&		// Enable background action hotkeys
+					(pApp->GetAppOption(AppOptionID::allowLockscreenHotkey) == true)) {		// Allow background hotkeys on lockscreen
 
 					// Keycode param
 					DWORD dwHKeyParam = NULL;
@@ -664,23 +664,23 @@ bool CPowerPlusApp::LoadRegistryAppData()
 
 		// Read configuration data
 		int nConfigRet = INT_NULL;
-		nConfigRet += GetConfig(Key::ConfigData::LMBAction,					(int&)pcfgTempData->nLMBAction);
-		nConfigRet += GetConfig(Key::ConfigData::MMBAction,					(int&)pcfgTempData->nMMBAction);
-		nConfigRet += GetConfig(Key::ConfigData::RMBAction,					(int&)pcfgTempData->nRMBAction);
-		nConfigRet += GetConfig(Key::ConfigData::RMBShowMenu,				pcfgTempData->bRMBShowMenu);
-		nConfigRet += GetConfig(Key::ConfigData::LanguageID,				(int&)pcfgTempData->nLanguageID);
-		nConfigRet += GetConfig(Key::ConfigData::ShowDlgAtStartup,			pcfgTempData->bShowDlgAtStartup);
-		nConfigRet += GetConfig(Key::ConfigData::StartupEnabled,			pcfgTempData->bStartupEnabled);
-		nConfigRet += GetConfig(Key::ConfigData::ConfirmAction,				pcfgTempData->bConfirmAction);
-		nConfigRet += GetConfig(Key::ConfigData::SaveHistoryLog,			pcfgTempData->bSaveHistoryLog);
-		nConfigRet += GetConfig(Key::ConfigData::SaveAppEventLog,			pcfgTempData->bSaveAppEventLog);
-		nConfigRet += GetConfig(Key::ConfigData::RunAsAdmin,				pcfgTempData->bRunAsAdmin);
-		nConfigRet += GetConfig(Key::ConfigData::ShowErrorMsg,				pcfgTempData->bShowErrorMsg);
-		nConfigRet += GetConfig(Key::ConfigData::NotifySchedule,			pcfgTempData->bNotifySchedule);
-		nConfigRet += GetConfig(Key::ConfigData::AllowCancelSchedule,		pcfgTempData->bAllowCancelSchedule);
-		nConfigRet += GetConfig(Key::ConfigData::EnableBackgroundHotkey,	pcfgTempData->bEnableBackgroundHotkey);
-		nConfigRet += GetConfig(Key::ConfigData::LockStateHotkey,			pcfgTempData->bLockStateHotkey);
-		nConfigRet += GetConfig(Key::ConfigData::EnablePowerReminder,		pcfgTempData->bEnablePowerReminder);
+		nConfigRet += GetConfig(Key::ConfigData::LMBAction,					(int&)pcfgTempData->leftMouseAction);
+		nConfigRet += GetConfig(Key::ConfigData::MMBAction,					(int&)pcfgTempData->middleMouseAction);
+		nConfigRet += GetConfig(Key::ConfigData::RMBAction,					(int&)pcfgTempData->rightMouseAction);
+		nConfigRet += GetConfig(Key::ConfigData::RMBShowMenu,				pcfgTempData->rightMouseShowMenu);
+		nConfigRet += GetConfig(Key::ConfigData::LanguageID,				(int&)pcfgTempData->languageID);
+		nConfigRet += GetConfig(Key::ConfigData::ShowDlgAtStartup,			pcfgTempData->showDialogAtStartup);
+		nConfigRet += GetConfig(Key::ConfigData::StartupEnabled,			pcfgTempData->enableAutoStart);
+		nConfigRet += GetConfig(Key::ConfigData::ConfirmAction,				pcfgTempData->actionConfirmation);
+		nConfigRet += GetConfig(Key::ConfigData::SaveHistoryLog,			pcfgTempData->saveActionHistory);
+		nConfigRet += GetConfig(Key::ConfigData::SaveAppEventLog,			pcfgTempData->saveAppEventLog);
+		nConfigRet += GetConfig(Key::ConfigData::RunAsAdmin,				pcfgTempData->runAsAdmin);
+		nConfigRet += GetConfig(Key::ConfigData::ShowErrorMsg,				pcfgTempData->showErrorMessage);
+		nConfigRet += GetConfig(Key::ConfigData::NotifySchedule,			pcfgTempData->scheduleNotification);
+		nConfigRet += GetConfig(Key::ConfigData::AllowCancelSchedule,		pcfgTempData->allowScheduleCancellation);
+		nConfigRet += GetConfig(Key::ConfigData::EnableBackgroundHotkey,	pcfgTempData->enableBackgroundHotkey);
+		nConfigRet += GetConfig(Key::ConfigData::LockStateHotkey,			pcfgTempData->allowLockscreenHotkey);
+		nConfigRet += GetConfig(Key::ConfigData::EnablePowerReminder,		pcfgTempData->enablePowerReminder);
 
 		// Mark data as reading failed
 		// only if all values were read unsuccessfully
@@ -1174,23 +1174,23 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		}
 
 		// Save registry data
-		bResult &= WriteConfig(Key::ConfigData::LMBAction,				cfgConfigTemp.nLMBAction);
-		bResult &= WriteConfig(Key::ConfigData::MMBAction,				cfgConfigTemp.nMMBAction);
-		bResult &= WriteConfig(Key::ConfigData::RMBAction,				cfgConfigTemp.nRMBAction);
-		bResult &= WriteConfig(Key::ConfigData::RMBShowMenu,			cfgConfigTemp.bRMBShowMenu);
-		bResult &= WriteConfig(Key::ConfigData::LanguageID,				cfgConfigTemp.nLanguageID);
-		bResult &= WriteConfig(Key::ConfigData::ShowDlgAtStartup,		cfgConfigTemp.bShowDlgAtStartup);
-		bResult &= WriteConfig(Key::ConfigData::StartupEnabled,			cfgConfigTemp.bStartupEnabled);
-		bResult &= WriteConfig(Key::ConfigData::ConfirmAction,			cfgConfigTemp.bConfirmAction);
-		bResult &= WriteConfig(Key::ConfigData::SaveHistoryLog,			cfgConfigTemp.bSaveHistoryLog);
-		bResult &= WriteConfig(Key::ConfigData::SaveAppEventLog,		cfgConfigTemp.bSaveAppEventLog);
-		bResult &= WriteConfig(Key::ConfigData::RunAsAdmin,				cfgConfigTemp.bRunAsAdmin);
-		bResult &= WriteConfig(Key::ConfigData::ShowErrorMsg,			cfgConfigTemp.bShowErrorMsg);
-		bResult &= WriteConfig(Key::ConfigData::NotifySchedule,			cfgConfigTemp.bNotifySchedule);
-		bResult &= WriteConfig(Key::ConfigData::AllowCancelSchedule,	cfgConfigTemp.bAllowCancelSchedule);
-		bResult &= WriteConfig(Key::ConfigData::EnableBackgroundHotkey,	cfgConfigTemp.bEnableBackgroundHotkey);
-		bResult &= WriteConfig(Key::ConfigData::LockStateHotkey,		cfgConfigTemp.bLockStateHotkey);
-		bResult &= WriteConfig(Key::ConfigData::EnablePowerReminder,	cfgConfigTemp.bEnablePowerReminder);
+		bResult &= WriteConfig(Key::ConfigData::LMBAction,				cfgConfigTemp.leftMouseAction);
+		bResult &= WriteConfig(Key::ConfigData::MMBAction,				cfgConfigTemp.middleMouseAction);
+		bResult &= WriteConfig(Key::ConfigData::RMBAction,				cfgConfigTemp.rightMouseAction);
+		bResult &= WriteConfig(Key::ConfigData::RMBShowMenu,			cfgConfigTemp.rightMouseShowMenu);
+		bResult &= WriteConfig(Key::ConfigData::LanguageID,				cfgConfigTemp.languageID);
+		bResult &= WriteConfig(Key::ConfigData::ShowDlgAtStartup,		cfgConfigTemp.showDialogAtStartup);
+		bResult &= WriteConfig(Key::ConfigData::StartupEnabled,			cfgConfigTemp.enableAutoStart);
+		bResult &= WriteConfig(Key::ConfigData::ConfirmAction,			cfgConfigTemp.actionConfirmation);
+		bResult &= WriteConfig(Key::ConfigData::SaveHistoryLog,			cfgConfigTemp.saveActionHistory);
+		bResult &= WriteConfig(Key::ConfigData::SaveAppEventLog,		cfgConfigTemp.saveAppEventLog);
+		bResult &= WriteConfig(Key::ConfigData::RunAsAdmin,				cfgConfigTemp.runAsAdmin);
+		bResult &= WriteConfig(Key::ConfigData::ShowErrorMsg,			cfgConfigTemp.showErrorMessage);
+		bResult &= WriteConfig(Key::ConfigData::NotifySchedule,			cfgConfigTemp.scheduleNotification);
+		bResult &= WriteConfig(Key::ConfigData::AllowCancelSchedule,	cfgConfigTemp.allowScheduleCancellation);
+		bResult &= WriteConfig(Key::ConfigData::EnableBackgroundHotkey,	cfgConfigTemp.enableBackgroundHotkey);
+		bResult &= WriteConfig(Key::ConfigData::LockStateHotkey,		cfgConfigTemp.allowLockscreenHotkey);
+		bResult &= WriteConfig(Key::ConfigData::EnablePowerReminder,	cfgConfigTemp.enablePowerReminder);
 
 		// Trace error
 		if (bResult == false) {
@@ -1273,8 +1273,8 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	// Save auto-start status info
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
 
-		bool bStartupEnabled = m_pcfgAppConfig->bStartupEnabled;
-		bool bRunAsAdmin = m_pcfgAppConfig->bRunAsAdmin;
+		bool bStartupEnabled = m_pcfgAppConfig->enableAutoStart;
+		bool bRunAsAdmin = m_pcfgAppConfig->runAsAdmin;
 		int nRetAutoStartEnabled = EnableAutoStart(bStartupEnabled, bRunAsAdmin);
 		bResult &= nRetAutoStartEnabled ? true : false;
 
@@ -1896,7 +1896,7 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
 	SLogging* ptrAppHistoryLog = GetAppHistoryLog();
 	
 	// Only output log if option is ON
-	if ((ptrAppHistoryLog != NULL) && (GetAppOption(AppOptionID::saveAppHistoryLog) != false)) {
+	if ((ptrAppHistoryLog != NULL) && (GetAppOption(AppOptionID::saveActionHistory) != false)) {
 		ptrAppHistoryLog->OutputItem(logItem);
 	}
 }

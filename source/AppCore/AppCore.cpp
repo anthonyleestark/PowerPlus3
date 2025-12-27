@@ -23,27 +23,27 @@
 ConfigData::ConfigData()
 {
 	// Main settings
-	this->nLMBAction = APP_ACTION_DISPLAYOFF;							// Left mouse button action
-	this->nMMBAction = APP_ACTION_SLEEP;								// Middle mouse button action
-	this->nRMBAction = APP_ACTION_SHOWMENU;								// Right mouse button action
-	this->bRMBShowMenu = true;											// Right mouse button: Only show menu
+	this->leftMouseAction = APP_ACTION_DISPLAYOFF;						// Left mouse button action
+	this->middleMouseAction = APP_ACTION_SLEEP;							// Middle mouse button action
+	this->rightMouseAction = APP_ACTION_SHOWMENU;						// Right mouse button action
+	this->rightMouseShowMenu = true;									// Right mouse button: Only show menu
 
 	// Display setting
-	this->nLanguageID = APP_LANGUAGE_ENGLISH;							// Language setting
+	this->languageID = APP_LANGUAGE_ENGLISH;							// Language setting
 
 	// System settings
-	this->bShowDlgAtStartup = true;										// Show dialog at startup
-	this->bStartupEnabled = true;										// Startup with Windows
-	this->bConfirmAction = true;										// Show confirm message before doing action
-	this->bSaveHistoryLog = false;										// Save app history log
-	this->bSaveAppEventLog = true;										// Save app event log
-	this->bRunAsAdmin = false;											// Run with admin privileges
-	this->bShowErrorMsg = true;											// Show action error message
-	this->bNotifySchedule = true;										// Show notify tip for schedule action
-	this->bAllowCancelSchedule = false;									// Allow canceling schedule when notify
-	this->bEnableBackgroundHotkey = false;								// Enable background action hotkeys
-	this->bLockStateHotkey = true;										// Allow background hotkeys on lockscreen
-	this->bEnablePowerReminder = true;									// Enable Power Peminder feature
+	this->showDialogAtStartup = true;									// Show dialog at startup
+	this->enableAutoStart = true;										// Startup with Windows
+	this->actionConfirmation = true;									// Show confirm message before doing action
+	this->saveActionHistory = false;									// Save app history log
+	this->saveAppEventLog = true;										// Save app event log
+	this->runAsAdmin = false;											// Run with admin privileges
+	this->showErrorMessage = true;										// Show action error message
+	this->scheduleNotification = true;									// Show notify tip for schedule action
+	this->allowScheduleCancellation = false;							// Allow canceling schedule when notify
+	this->enableBackgroundHotkey = false;								// Enable background action hotkeys
+	this->allowLockscreenHotkey = true;									// Allow background hotkeys on lockscreen
+	this->enablePowerReminder = true;									// Enable Power Peminder feature
 }
 
 
@@ -58,27 +58,27 @@ void ConfigData::Copy(const ConfigData& other) noexcept
 	if (this == &other) return;
 
 	// Main settings
-	this->nLMBAction = other.nLMBAction;								// Left mouse button action
-	this->nMMBAction = other.nMMBAction;								// Middle mouse button action
-	this->nRMBAction = other.nRMBAction;								// Right mouse button action
-	this->bRMBShowMenu = other.bRMBShowMenu;							// Right mouse button: Only show menu
+	this->leftMouseAction = other.leftMouseAction;							// Left mouse button action
+	this->middleMouseAction = other.middleMouseAction;						// Middle mouse button action
+	this->rightMouseAction = other.rightMouseAction;						// Right mouse button action
+	this->rightMouseShowMenu = other.rightMouseShowMenu;					// Right mouse button: Only show menu
 
 	// Display setting
-	this->nLanguageID = other.nLanguageID;								// Language setting
+	this->languageID = other.languageID;									// Language setting
 
 	// System advanced settings
-	this->bShowDlgAtStartup = other.bShowDlgAtStartup;					// Show dialog at startup
-	this->bStartupEnabled = other.bStartupEnabled;						// Startup with Windows
-	this->bConfirmAction = other.bConfirmAction;						// Show confirm message before doing action
-	this->bSaveHistoryLog = other.bSaveHistoryLog;						// Save app history log
-	this->bSaveAppEventLog = other.bSaveAppEventLog;					// Save app event log
-	this->bRunAsAdmin = other.bRunAsAdmin;								// Run with admin privileges
-	this->bShowErrorMsg = other.bShowErrorMsg;							// Show action error message
-	this->bNotifySchedule = other.bNotifySchedule;						// Show notify tip for schedule action
-	this->bAllowCancelSchedule = other.bAllowCancelSchedule;			// Allow canceling schedule when notify
-	this->bEnableBackgroundHotkey = other.bEnableBackgroundHotkey;		// Enable background action hotkeys
-	this->bLockStateHotkey = other.bLockStateHotkey;					// Allow background hotkeys on lockscreen
-	this->bEnablePowerReminder = other.bEnablePowerReminder;			// Enable Power Peminder feature
+	this->showDialogAtStartup = other.showDialogAtStartup;					// Show dialog at startup
+	this->enableAutoStart = other.enableAutoStart;							// Startup with Windows
+	this->actionConfirmation = other.actionConfirmation;					// Show confirm message before doing action
+	this->saveActionHistory = other.saveActionHistory;						// Save app history log
+	this->saveAppEventLog = other.saveAppEventLog;							// Save app event log
+	this->runAsAdmin = other.runAsAdmin;									// Run with admin privileges
+	this->showErrorMessage = other.showErrorMessage;						// Show action error message
+	this->scheduleNotification = other.scheduleNotification;				// Show notify tip for schedule action
+	this->allowScheduleCancellation = other.allowScheduleCancellation;		// Allow canceling schedule when notify
+	this->enableBackgroundHotkey = other.enableBackgroundHotkey;			// Enable background action hotkeys
+	this->allowLockscreenHotkey = other.allowLockscreenHotkey;				// Allow background hotkeys on lockscreen
+	this->enablePowerReminder = other.enablePowerReminder;					// Enable Power Peminder feature
 }
 
 
@@ -89,32 +89,32 @@ void ConfigData::Copy(const ConfigData& other) noexcept
  */
 constexpr bool ConfigData::Compare(const ConfigData& other) const noexcept
 {
-	bool bRet = true;
+	bool ret = true;
 
 	// Compare Main settings
-	bRet &= (this->nLMBAction == other.nLMBAction);								// Left mouse button action
-	bRet &= (this->nMMBAction == other.nMMBAction);								// Middle mouse button action
-	bRet &= (this->nRMBAction == other.nRMBAction);								// Right mouse button action
-	bRet &= (this->bRMBShowMenu == other.bRMBShowMenu);							// Right mouse button: Only show menu
+	ret &= (this->leftMouseAction == other.leftMouseAction);						// Left mouse button action
+	ret &= (this->middleMouseAction == other.middleMouseAction);					// Middle mouse button action
+	ret &= (this->rightMouseAction == other.rightMouseAction);						// Right mouse button action
+	ret &= (this->rightMouseShowMenu == other.rightMouseShowMenu);					// Right mouse button: Only show menu
 
 	// Compare Display setting
-	bRet &= (this->nLanguageID == other.nLanguageID);							// Language setting
+	ret &= (this->languageID == other.languageID);									// Language setting
 
 	// Compare System advanced settings
-	bRet &= (this->bShowDlgAtStartup == other.bShowDlgAtStartup);				// Show dialog at startup
-	bRet &= (this->bStartupEnabled == other.bStartupEnabled);					// Startup with Windows
-	bRet &= (this->bConfirmAction == other.bConfirmAction);						// Show confirm message before doing action
-	bRet &= (this->bSaveHistoryLog == other.bSaveHistoryLog);					// Save app history log
-	bRet &= (this->bSaveAppEventLog == other.bSaveAppEventLog);					// Save app event log
-	bRet &= (this->bRunAsAdmin == other.bRunAsAdmin);							// Run with admin privileges
-	bRet &= (this->bShowErrorMsg == other.bShowErrorMsg);						// Show action error message
-	bRet &= (this->bNotifySchedule == other.bNotifySchedule);					// Show notify tip for schedule action
-	bRet &= (this->bAllowCancelSchedule == other.bAllowCancelSchedule);			// Allow canceling schedule when notify
-	bRet &= (this->bEnableBackgroundHotkey == other.bEnableBackgroundHotkey);	// Enable background action hotkeys
-	bRet &= (this->bLockStateHotkey == other.bLockStateHotkey);					// Allow background hotkeys on lockscreen
-	bRet &= (this->bEnablePowerReminder == other.bEnablePowerReminder);			// Enable Power Peminder feature
+	ret &= (this->showDialogAtStartup == other.showDialogAtStartup);				// Show dialog at startup
+	ret &= (this->enableAutoStart == other.enableAutoStart);						// Startup with Windows
+	ret &= (this->actionConfirmation == other.actionConfirmation);					// Show confirm message before doing action
+	ret &= (this->saveActionHistory == other.saveActionHistory);					// Save app history log
+	ret &= (this->saveAppEventLog == other.saveAppEventLog);						// Save app event log
+	ret &= (this->runAsAdmin == other.runAsAdmin);									// Run with admin privileges
+	ret &= (this->showErrorMessage == other.showErrorMessage);						// Show action error message
+	ret &= (this->scheduleNotification == other.scheduleNotification);				// Show notify tip for schedule action
+	ret &= (this->allowScheduleCancellation == other.allowScheduleCancellation);	// Allow canceling schedule when notify
+	ret &= (this->enableBackgroundHotkey == other.enableBackgroundHotkey);			// Enable background action hotkeys
+	ret &= (this->allowLockscreenHotkey == other.allowLockscreenHotkey);			// Allow background hotkeys on lockscreen
+	ret &= (this->enablePowerReminder == other.enablePowerReminder);				// Enable Power Peminder feature
 
-	return bRet;
+	return ret;
 }
 
 
@@ -123,30 +123,30 @@ constexpr bool ConfigData::Compare(const ConfigData& other) const noexcept
  * @param	pData - Output config data (out)
  * @return	None
  */
- void ConfigData::GetData(CONFIGDATAINFO& pData) const noexcept
+ void ConfigData::GetData(CONFIGDATAINFO& data) const noexcept
 {
 	// Main settings
-	pData.nLMBAction = this->nLMBAction;								// Left mouse button action
-	pData.nMMBAction = this->nMMBAction;								// Middle mouse button action
-	pData.nRMBAction = this->nRMBAction;								// Right mouse button action
-	pData.bRMBShowMenu = this->bRMBShowMenu;							// Right mouse button: Only show menu
+	data.leftMouseAction = this->leftMouseAction;								// Left mouse button action
+	data.middleMouseAction = this->middleMouseAction;							// Middle mouse button action
+	data.rightMouseAction = this->rightMouseAction;								// Right mouse button action
+	data.rightMouseShowMenu = this->rightMouseShowMenu;							// Right mouse button: Only show menu
 
 	// Display setting
-	pData.nLanguageID = this->nLanguageID;								// Language setting
+	data.languageID = this->languageID;											// Language setting
 
 	// System advanced settings
-	pData.bShowDlgAtStartup = this->bShowDlgAtStartup;					// Show dialog at startup
-	pData.bStartupEnabled = this->bStartupEnabled;						// Startup with Windows
-	pData.bConfirmAction = this->bConfirmAction;						// Show confirm message before doing action
-	pData.bSaveHistoryLog = this->bSaveHistoryLog;						// Save app history log
-	pData.bSaveAppEventLog = this->bSaveAppEventLog;					// Save app event log
-	pData.bRunAsAdmin = this->bRunAsAdmin;								// Run with admin privileges
-	pData.bShowErrorMsg = this->bShowErrorMsg;							// Show action error message
-	pData.bNotifySchedule = this->bNotifySchedule;						// Show notify tip for schedule action
-	pData.bAllowCancelSchedule = this->bAllowCancelSchedule;			// Allow canceling schedule when notify
-	pData.bEnableBackgroundHotkey = this->bEnableBackgroundHotkey;		// Enable background action hotkeys
-	pData.bLockStateHotkey = this->bLockStateHotkey;					// Allow background hotkeys on lockscreen
-	pData.bEnablePowerReminder = this->bEnablePowerReminder;			// Enable Power Peminder feature
+	data.showDialogAtStartup = this->showDialogAtStartup;						// Show dialog at startup
+	data.enableAutoStart = this->enableAutoStart;								// Startup with Windows
+	data.actionConfirmation = this->actionConfirmation;							// Show confirm message before doing action
+	data.saveActionHistory = this->saveActionHistory;							// Save app history log
+	data.saveAppEventLog = this->saveAppEventLog;								// Save app event log
+	data.runAsAdmin = this->runAsAdmin;											// Run with admin privileges
+	data.showErrorMessage = this->showErrorMessage;								// Show action error message
+	data.scheduleNotification = this->scheduleNotification;						// Show notify tip for schedule action
+	data.allowScheduleCancellation = this->allowScheduleCancellation;			// Allow canceling schedule when notify
+	data.enableBackgroundHotkey = this->enableBackgroundHotkey;					// Enable background action hotkeys
+	data.allowLockscreenHotkey = this->allowLockscreenHotkey;					// Allow background hotkeys on lockscreen
+	data.enablePowerReminder = this->enablePowerReminder;						// Enable Power Peminder feature
 }
 
 
@@ -155,69 +155,69 @@ constexpr bool ConfigData::Compare(const ConfigData& other) const noexcept
  * @param	eAppOptionID - Option ID
  * @return	int - Option value
  */
- int ConfigData::GetAppOption(AppOptionID eAppOptionID) const noexcept
+ int ConfigData::GetAppOption(AppOptionID appOptionID) const noexcept
 {
-	int nResult = INT_INVALID;
+	int result = INT_INVALID;
 
-	switch (eAppOptionID)
+	switch (appOptionID)
 	{
 	case AppOptionID::invalid:
-		nResult = INT_INVALID;
+		result = INT_INVALID;
 		break;
 	case AppOptionID::leftMouseAction:
-		nResult = this->nLMBAction;
+		result = this->leftMouseAction;
 		break;
 	case AppOptionID::middleMouseAction:
-		nResult = this->nMMBAction;
+		result = this->middleMouseAction;
 		break;
 	case AppOptionID::rightMouseAction:
-		nResult = this->nRMBAction;
+		result = this->rightMouseAction;
 		break;
 	case AppOptionID::rightMouseShowMenu:
-		nResult = this->bRMBShowMenu;
+		result = this->rightMouseShowMenu;
 		break;
 	case AppOptionID::languageID:
-		nResult = this->nLanguageID;
+		result = this->languageID;
 		break;
-	case AppOptionID::showDlgAtStartup:
-		nResult = this->bShowDlgAtStartup;
+	case AppOptionID::showDialogAtStartup:
+		result = this->showDialogAtStartup;
 		break;
-	case AppOptionID::startupEnabled:
-		nResult = this->bStartupEnabled;
+	case AppOptionID::enableAutoStart:
+		result = this->enableAutoStart;
 		break;
-	case AppOptionID::confirmBeforeExecuting:
-		nResult = this->bConfirmAction;
+	case AppOptionID::actionConfirmation:
+		result = this->actionConfirmation;
 		break;
 	case AppOptionID::saveAppEventLog:
-		nResult = this->bSaveAppEventLog;
+		result = this->saveAppEventLog;
 		break;
-	case AppOptionID::saveAppHistoryLog:
-		nResult = this->bSaveHistoryLog;
+	case AppOptionID::saveActionHistory:
+		result = this->saveActionHistory;
 		break;
 	case AppOptionID::runAsAdmin:
-		nResult = this->bRunAsAdmin;
+		result = this->runAsAdmin;
 		break;
 	case AppOptionID::showErrorMessage:
-		nResult = this->bShowErrorMsg;
+		result = this->showErrorMessage;
 		break;
-	case AppOptionID::notifySchedule:
-		nResult = this->bNotifySchedule;
+	case AppOptionID::scheduleNotification:
+		result = this->scheduleNotification;
 		break;
-	case AppOptionID::allowCancelingSchedule:
-		nResult = this->bAllowCancelSchedule;
+	case AppOptionID::allowScheduleCancellation:
+		result = this->allowScheduleCancellation;
 		break;
-	case AppOptionID::backgroundHotkeyEnabled:
-		nResult = this->bEnableBackgroundHotkey;
+	case AppOptionID::enableBackgroundHotkey:
+		result = this->enableBackgroundHotkey;
 		break;
-	case AppOptionID::lockStateHotkeyEnabled:
-		nResult = this->bLockStateHotkey;
+	case AppOptionID::allowLockscreenHotkey:
+		result = this->allowLockscreenHotkey;
 		break;
-	case AppOptionID::pwrReminderEnabled:
-		nResult = this->bEnablePowerReminder;
+	case AppOptionID::enablePowerReminder:
+		result = this->enablePowerReminder;
 		break;
 	}
 
-	return nResult;
+	return result;
 }
 
 
@@ -227,10 +227,10 @@ constexpr bool ConfigData::Compare(const ConfigData& other) const noexcept
  PwrRepeatSet::PwrRepeatSet()
 {
 	// Init data
-	m_bRepeat = false;										// Repeat daily
-	m_bAllowSnooze = true;									// Allow snoozing mode
-	m_nSnoozeInterval = defaultSnoozeInterval;				// Snooze interval
-	m_byRepeatDays = defaultActiveDays;						// Default repeat: All days of week
+	m_isRepeated = false;									// Repeat daily
+	m_allowSnoozing = true;									// Allow snoozing mode
+	m_snoozeInterval = defaultSnoozeInterval;				// Snooze interval
+	m_repeatDays = defaultActiveDays;						// Default repeat: All days of week
 }
 
 
@@ -245,10 +245,10 @@ void PwrRepeatSet::Copy(const PwrRepeatSet& other) noexcept
 	if (this == &other) return;
 
 	// Copy data
-	m_bRepeat = other.m_bRepeat;							// Repeat daily
-	m_bAllowSnooze = other.m_bAllowSnooze;					// Allow snoozing mode
-	m_nSnoozeInterval = other.m_nSnoozeInterval;			// Snooze interval
-	m_byRepeatDays = other.m_byRepeatDays;					// Days of week (for repeating)
+	m_isRepeated = other.m_isRepeated;							// Repeat daily
+	m_allowSnoozing = other.m_allowSnoozing;					// Allow snoozing mode
+	m_snoozeInterval = other.m_snoozeInterval;					// Snooze interval
+	m_repeatDays = other.m_repeatDays;							// Days of week (for repeating)
 }
 
 
@@ -259,15 +259,15 @@ void PwrRepeatSet::Copy(const PwrRepeatSet& other) noexcept
  */
 constexpr bool PwrRepeatSet::Compare(const PwrRepeatSet& other) const noexcept
 {
-	bool bRetCompare = true;
+	bool retCompare = true;
 
 	// Compare data
-	bRetCompare &= (this->m_bRepeat == other.m_bRepeat);					// Repeat daily
-	bRetCompare &= (this->m_bAllowSnooze == other.m_bAllowSnooze);			// Allow snoozing mode
-	bRetCompare &= (this->m_nSnoozeInterval == other.m_nSnoozeInterval);	// Snooze interval
-	bRetCompare &= (this->m_byRepeatDays == other.m_byRepeatDays);			// Days of week (for repeating)
+	retCompare &= (this->m_isRepeated == other.m_isRepeated);			// Repeat daily
+	retCompare &= (this->m_allowSnoozing == other.m_allowSnoozing);		// Allow snoozing mode
+	retCompare &= (this->m_snoozeInterval == other.m_snoozeInterval);	// Snooze interval
+	retCompare &= (this->m_repeatDays == other.m_repeatDays);			// Days of week (for repeating)
 
-	return bRetCompare;
+	return retCompare;
 }
 
 
@@ -277,21 +277,21 @@ constexpr bool PwrRepeatSet::Compare(const PwrRepeatSet& other) const noexcept
 ScheduleItem::ScheduleItem()
 {
 	// Initialize
-	m_nItemID = ScheduleData::minItemID;				// Item ID
-	m_bEnabled = false;									// Enable/disable status
-	m_nActionID = APP_ACTION_NOTHING;					// Schedule action ID
-	m_stTime = ClockTime();								// Schedule time
-	m_rpsRepeatSet = PwrRepeatSet();					// Repeat set data
+	m_itemID = ScheduleData::minItemID;					// Item ID
+	m_isEnabled = false;								// Enable/disable status
+	m_actionID = APP_ACTION_NOTHING;					// Schedule action ID
+	m_timeValue = ClockTime();							// Schedule time
+	m_repeatSetInfo = PwrRepeatSet();					// Repeat set data
 }
 
-ScheduleItem::ScheduleItem(unsigned nItemID)
+ScheduleItem::ScheduleItem(unsigned itemID)
 {
 	// Initialize
-	m_nItemID = nItemID;								// Item ID
-	m_bEnabled = false;									// Enable/disable status
-	m_nActionID = APP_ACTION_NOTHING;					// Schedule action
-	m_stTime = ClockTime();								// Schedule time
-	m_rpsRepeatSet = PwrRepeatSet();					// Repeat set data
+	m_itemID = itemID;									// Item ID
+	m_isEnabled = false;								// Enable/disable status
+	m_actionID = APP_ACTION_NOTHING;					// Schedule action
+	m_timeValue = ClockTime();							// Schedule time
+	m_repeatSetInfo = PwrRepeatSet();					// Repeat set data
 }
 
 
@@ -306,11 +306,11 @@ void ScheduleItem::Copy(const ScheduleItem& other) noexcept
 	if (this == &other) return;
 
 	// Copy data
-	m_nItemID = other.m_nItemID;						// Item ID
-	m_bEnabled = other.m_bEnabled;						// Enable/disable status
-	m_nActionID = other.m_nActionID;					// Schedule action ID
-	m_stTime = other.m_stTime;							// Schedule time
-	m_rpsRepeatSet.Copy(other.m_rpsRepeatSet);			// Repeat set data
+	m_itemID = other.m_itemID;							// Item ID
+	m_isEnabled = other.m_isEnabled;					// Enable/disable status
+	m_actionID = other.m_actionID;						// Schedule action ID
+	m_timeValue = other.m_timeValue;					// Schedule time
+	m_repeatSetInfo.Copy(other.m_repeatSetInfo);		// Repeat set data
 }
 
 
@@ -321,16 +321,16 @@ void ScheduleItem::Copy(const ScheduleItem& other) noexcept
  */
 constexpr bool ScheduleItem::Compare(const ScheduleItem& other) const noexcept
 {
-	bool bRet = true;
+	bool ret = true;
 
 	// Compare item (do not compare item ID)
-	bRet &= (this->m_bEnabled == other.m_bEnabled);
-	bRet &= (this->m_nActionID == other.m_nActionID);
-	bRet &= (this->m_stTime.Hour() == other.m_stTime.Hour());
-	bRet &= (this->m_stTime.Minute() == other.m_stTime.Minute());
-	bRet &= (this->m_rpsRepeatSet.Compare(other.m_rpsRepeatSet));
+	ret &= (this->m_isEnabled == other.m_isEnabled);
+	ret &= (this->m_actionID == other.m_actionID);
+	ret &= (this->m_timeValue.Hour() == other.m_timeValue.Hour());
+	ret &= (this->m_timeValue.Minute() == other.m_timeValue.Minute());
+	ret &= (this->m_repeatSetInfo.Compare(other.m_repeatSetInfo));
 
-	return bRet;
+	return ret;
 }
 
 
@@ -350,15 +350,15 @@ void ScheduleItem::Print(String& outputString) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format schedule data
-	const wchar_t* enableState = (m_bEnabled == true) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
-	unsigned nActionStringID = GetPairedID(IDTable::ActionName, m_nActionID);
-	const wchar_t* actionName = GetLanguageString(ptrLanguage, nActionStringID);												// Schedule action
-	const wchar_t* timeFormat = ClockTimeUtils::Format(ptrLanguage, IDS_FORMAT_SHORTTIME, m_stTime).GetString();				// Schedule time
-	const wchar_t* repeatState = (m_rpsRepeatSet.IsRepeatEnabled() == true) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
+	const wchar_t* enableState = (m_isEnabled == true) ? Constant::Value::True : Constant::Value::False;						// Enable/disable state
+	unsigned actionStringID = GetPairedID(IDTable::ActionName, m_actionID);
+	const wchar_t* actionName = GetLanguageString(ptrLanguage, actionStringID);													// Schedule action
+	const wchar_t* timeFormat = ClockTimeUtils::Format(ptrLanguage, IDS_FORMAT_SHORTTIME, m_timeValue).GetString();				// Schedule time
+	const wchar_t* repeatState = (m_repeatSetInfo.IsRepeatEnabled() == true) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
 
 	// Print item
 	outputString.Format(_T("Active=(%s), ItemID=%d, Action=(%s), Time=(%s), Repeat=(%s)"),
-					enableState, m_nItemID, actionName, timeFormat, repeatState);
+					enableState, m_itemID, actionName, timeFormat, repeatState);
 }
 
 
@@ -368,8 +368,8 @@ void ScheduleItem::Print(String& outputString) const
 ScheduleData::ScheduleData()
 {
 	// Initialize
-	m_schDefaultItem = ScheduleItem(ScheduleData::defaultItemID);
-	m_arrSchedExtraItemList.clear();
+	m_defaultItem = ScheduleItem(ScheduleData::defaultItemID);
+	m_extraScheduleItemList.clear();
 }
 
 
@@ -387,12 +387,12 @@ void ScheduleData::Copy(const ScheduleData& other)
 	this->DeleteAll();
 
 	// Copy default item
-	this->m_schDefaultItem.Copy(other.m_schDefaultItem);
+	this->m_defaultItem.Copy(other.m_defaultItem);
 
 	// Copy extra data
-	for (int nIndex = 0; nIndex < other.GetExtraItemNum(); nIndex++) {
-		ScheduleItem schItem = other.m_arrSchedExtraItemList.at(nIndex);
-		this->m_arrSchedExtraItemList.push_back(schItem);
+	for (int index = 0; index < other.GetExtraItemNum(); index++) {
+		ScheduleItem item = other.m_extraScheduleItemList.at(index);
+		this->m_extraScheduleItemList.push_back(item);
 	}
 }
 
@@ -402,25 +402,25 @@ void ScheduleData::Copy(const ScheduleData& other)
  * @param	pItem - Pointer of input item
  * @return	DWORD - Error code
  */
-DWORD ScheduleData::Add(const ScheduleItem& pItem)
+DWORD ScheduleData::Add(const ScheduleItem& item)
 {
 	// If item is empty, can not update
-	if (pItem.IsEmpty())
+	if (item.IsEmpty())
 		return Error::ItemIsEmpty;
 
 	// If default item is currently empty
-	if (m_schDefaultItem.IsEmpty()) {
+	if (m_defaultItem.IsEmpty()) {
 		// Make item as default
-		ScheduleItem schDefaultTemp(pItem);
-		schDefaultTemp.SetItemID(ScheduleData::defaultItemID);
-		m_schDefaultItem.Copy(schDefaultTemp);
+		ScheduleItem defaultTemp(item);
+		defaultTemp.SetItemID(ScheduleData::defaultItemID);
+		m_defaultItem.Copy(defaultTemp);
 		return Error::Success;
 	}
 
 	// If extra schedule data is currently empty
-	if (m_arrSchedExtraItemList.empty()) {
+	if (m_extraScheduleItemList.empty()) {
 		// Just add the item
-		m_arrSchedExtraItemList.push_back(pItem);
+		m_extraScheduleItemList.push_back(item);
 		return Error::Success;
 	}
 
@@ -429,13 +429,13 @@ DWORD ScheduleData::Add(const ScheduleItem& pItem)
 		return Error::MaxItemReached;
 
 	// Check if item is duplicated, if yes, do not add
-	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
-		ScheduleItem pItemTemp = GetItemAt(nIndex);
-		if (pItemTemp.Compare(pItem) == true) {
+	for (int index = 0; index < GetExtraItemNum(); index++) {
+		ScheduleItem itemTemp = GetItemAt(index);
+		if (itemTemp.Compare(item) == true) {
 			// All data is duplicated
 			return Error::ItemDuplicated;
 		}
-		else if (ClockTimeUtils::IsMatching(pItemTemp.GetTime(), pItem.GetTime())) {
+		else if (ClockTimeUtils::IsMatching(itemTemp.GetTime(), item.GetTime())) {
 			// Time value is duplicated
 			// Can not execute multiple action at the same time
 			return Error::TimeDuplicated;
@@ -443,25 +443,25 @@ DWORD ScheduleData::Add(const ScheduleItem& pItem)
 	}
 
 	// Create new temporary data
-	ScheduleData* pNew = new ScheduleData;
-	pNew->m_arrSchedExtraItemList.clear();
+	ScheduleData* newData = new ScheduleData;
+	newData->m_extraScheduleItemList.clear();
 
 	// Copy old data to new one
-	pNew->m_schDefaultItem.Copy(this->m_schDefaultItem);
-	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
-		ScheduleItem schItem = this->GetItemAt(nIndex);
-		pNew->m_arrSchedExtraItemList.push_back(schItem);
+	newData->m_defaultItem.Copy(this->m_defaultItem);
+	for (int index = 0; index < this->GetExtraItemNum(); index++) {
+		ScheduleItem scheduleItem = this->GetItemAt(index);
+		newData->m_extraScheduleItemList.push_back(scheduleItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->m_arrSchedExtraItemList.push_back(pItem);
-	this->Copy(*pNew);
+	newData->m_extraScheduleItemList.push_back(item);
+	this->Copy(*newData);
 
 	// Delete data
-	pNew->DeleteAll();
-	if (pNew != NULL) {
-		delete pNew;
-		pNew = NULL;
+	newData->DeleteAll();
+	if (newData != NULL) {
+		delete newData;
+		newData = NULL;
 	}
 
 	return Error::Success;
@@ -473,44 +473,44 @@ DWORD ScheduleData::Add(const ScheduleItem& pItem)
  * @param	pItem - Pointer of input item
  * @return	DWORD - Error code
  */
-DWORD ScheduleData::Update(const ScheduleItem& pItem)
+DWORD ScheduleData::Update(const ScheduleItem& item)
 {
 	// If default item or extra schedule data is currently empty
 	if (GetDefaultItem().IsEmpty() || IsAllEmpty()) {
 		// Just add item
-		return Add(pItem);
+		return Add(item);
 	}
 
 	// If item is empty, can not update
-	if (pItem.IsEmpty())
+	if (item.IsEmpty())
 		return Error::ItemIsEmpty;
 
 	// If item ID is matching with default item
-	if (pItem.GetItemID() == ScheduleData::defaultItemID) {
+	if (item.GetItemID() == ScheduleData::defaultItemID) {
 		// Update default item
-		GetDefaultItem().Copy(pItem);
+		GetDefaultItem().Copy(item);
 		return Error::Success;
 	}
 
 	// Find extra item with matching ID
-	int nRetItemIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
-		if (GetItemAt(nIndex).GetItemID() == pItem.GetItemID()) {
-			nRetItemIndex = nIndex;
+	int retItemIndex = INT_INVALID;
+	for (int index = 0; index < GetExtraItemNum(); index++) {
+		if (GetItemAt(index).GetItemID() == item.GetItemID()) {
+			retItemIndex = index;
 			break;
 		}
 	}
 
 	// Update item if found
-	if (nRetItemIndex != INT_INVALID) {
-		ScheduleItem& schTemp = GetItemAt(nRetItemIndex);
-		schTemp.Copy(pItem);
+	if (retItemIndex != INT_INVALID) {
+		ScheduleItem& temp = GetItemAt(retItemIndex);
+		temp.Copy(item);
 		return Error::Success;
 	}
 	// Otherwise,
 	else {
 		// Just add new
-		return Add(pItem);
+		return Add(item);
 	}
 }
 
@@ -520,17 +520,17 @@ DWORD ScheduleData::Update(const ScheduleItem& pItem)
  * @param	nAtIndex - Index of item to remove
  * @return	None
  */
-void ScheduleData::Remove(int nAtIndex)
+void ScheduleData::Remove(int atIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= GetExtraItemNum()))
+	if ((atIndex < 0) || (atIndex >= GetExtraItemNum()))
 		return;
 
 	// Get item data
-	ScheduleItem& schItem = GetItemAt(nAtIndex);
+	ScheduleItem& item = GetItemAt(atIndex);
 
 	// Reset item value
-	schItem.Copy(ScheduleItem());
+	item.Copy(ScheduleItem());
 }
 
 
@@ -544,20 +544,20 @@ void ScheduleData::Adjust(void)
 	// If default item is empty but extra data is not
 	if (IsDefaultEmpty() && IsExtraEmpty() == false) {
 		// Make first extra item default
-		m_schDefaultItem.Copy(GetItemAt(0));
-		m_schDefaultItem.SetItemID(ScheduleData::defaultItemID);
+		m_defaultItem.Copy(GetItemAt(0));
+		m_defaultItem.SetItemID(ScheduleData::defaultItemID);
 
 		// Remove that extra item
 		Delete(0);
 	}
 
 	// Check and remove empty extra items
-	for (int nIndex = (GetExtraItemNum() - 1); nIndex >= 0; nIndex--) {
-		ScheduleItem schTemp = GetItemAt(nIndex);
-		if (!schTemp.IsEmpty()) continue;
+	for (int index = (GetExtraItemNum() - 1); index >= 0; index--) {
+		ScheduleItem temp = GetItemAt(index);
+		if (!temp.IsEmpty()) continue;
 
 		// Remove item
-		Delete(nIndex);
+		Delete(index);
 	}
 }
 
@@ -570,18 +570,18 @@ void ScheduleData::Adjust(void)
 unsigned ScheduleData::GetNextID(void) const
 {
 	// Get currently max ID
-	unsigned nRetNextID = ScheduleData::minItemID;
-	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
-		ScheduleItem schItem = GetItemAt(nIndex);
-		if (schItem.GetItemID() > nRetNextID) {
-			nRetNextID = schItem.GetItemID();
+	unsigned retNextID = ScheduleData::minItemID;
+	for (int index = 0; index < GetExtraItemNum(); index++) {
+		ScheduleItem item = GetItemAt(index);
+		if (item.GetItemID() > retNextID) {
+			retNextID = item.GetItemID();
 		}
 	}
 
 	// Increase value
-	nRetNextID++;
+	retNextID++;
 
-	return nRetNextID;
+	return retNextID;
 }
 
 
@@ -593,19 +593,19 @@ unsigned ScheduleData::GetNextID(void) const
 constexpr bool ScheduleData::IsExtraEmpty(void) const noexcept
 {
 	// If there's no item, return true
-	if (m_arrSchedExtraItemList.empty())
+	if (m_extraScheduleItemList.empty())
 		return true;
 
 	// Check each item
-	bool bExtraEmpty = true;
-	for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++) {
-		if (IsEmpty(nIndex) == false) {
-			bExtraEmpty = false;
+	bool extraEmpty = true;
+	for (int index = 0; index < GetExtraItemNum(); index++) {
+		if (IsEmpty(index) == false) {
+			extraEmpty = false;
 			break;
 		}
 	}
 
-	return bExtraEmpty;
+	return extraEmpty;
 }
 
 
@@ -614,31 +614,31 @@ constexpr bool ScheduleData::IsExtraEmpty(void) const noexcept
  * @param	nAtIndex - Index of item to delete
  * @return	None
  */
-void ScheduleData::Delete(int nAtIndex)
+void ScheduleData::Delete(int atIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= GetExtraItemNum()))
+	if ((atIndex < 0) || (atIndex >= GetExtraItemNum()))
 		return;
 
 	// Create new temporary data
-	ScheduleData* pNew = new ScheduleData;
-	pNew->m_arrSchedExtraItemList.clear();
+	ScheduleData* newData = new ScheduleData;
+	newData->m_extraScheduleItemList.clear();
 
 	// Copy old data to new one (except the AtIndex item)
-	pNew->m_schDefaultItem.Copy(this->m_schDefaultItem);
-	for (int nIndex = 0; nIndex < this->GetExtraItemNum(); nIndex++) {
-		if (nIndex == nAtIndex) continue;
-		pNew->m_arrSchedExtraItemList.push_back(this->m_arrSchedExtraItemList.at(nIndex));
+	newData->m_defaultItem.Copy(this->m_defaultItem);
+	for (int index = 0; index < this->GetExtraItemNum(); index++) {
+		if (index == atIndex) continue;
+		newData->m_extraScheduleItemList.push_back(this->m_extraScheduleItemList.at(index));
 	}
 
 	// Copy back to old data
-	this->Copy(*pNew);
+	this->Copy(*newData);
 
 	// Delete temporary data
-	pNew->DeleteAll();
-	if (pNew != NULL) {
-		delete pNew;
-		pNew = NULL;
+	newData->DeleteAll();
+	if (newData != NULL) {
+		delete newData;
+		newData = NULL;
 	}
 }
 
@@ -649,19 +649,19 @@ void ScheduleData::Delete(int nAtIndex)
 HotkeySetItem::HotkeySetItem()
 {
 	// Initialize
-	m_bEnabled = false;								// Hotkey enabled/disabled
-	m_nHKActionID = 0;								// Hotkey action ID
-	m_dwModifiers = 0;								// Modifier keys
-	m_dwVirtualKey = 0;								// Virtual key code
+	m_isEnabled = false;							// Hotkey enabled/disabled
+	m_hotkeyActionID = 0;							// Hotkey action ID
+	m_modifiers = 0;								// Modifier keys
+	m_virtualKey = 0;								// Virtual key code
 }
 
-HotkeySetItem::HotkeySetItem(unsigned nHKActionID)
+HotkeySetItem::HotkeySetItem(unsigned hkActionID)
 {
 	// Initialize
-	m_bEnabled = false;								// Hotkey enabled/disabled
-	m_nHKActionID = nHKActionID;					// Hotkey action ID
-	m_dwModifiers = 0;								// Modifier keys
-	m_dwVirtualKey = 0;								// Virtual key code
+	m_isEnabled = false;							// Hotkey enabled/disabled
+	m_hotkeyActionID = hkActionID;					// Hotkey action ID
+	m_modifiers = 0;								// Modifier keys
+	m_virtualKey = 0;								// Virtual key code
 }
 
 
@@ -676,10 +676,10 @@ void HotkeySetItem::Copy(const HotkeySetItem& other) noexcept
 	if (this == &other) return;
 
 	// Copy data
-	m_bEnabled = other.m_bEnabled;					// Hotkey enabled/disabled
-	m_nHKActionID = other.m_nHKActionID;			// Hotkey action ID
-	m_dwModifiers = other.m_dwModifiers;			// Modifier keys
-	m_dwVirtualKey = other.m_dwVirtualKey;			// Virtual key code
+	m_isEnabled = other.m_isEnabled;				// Hotkey enabled/disabled
+	m_hotkeyActionID = other.m_hotkeyActionID;		// Hotkey action ID
+	m_modifiers = other.m_modifiers;				// Modifier keys
+	m_virtualKey = other.m_virtualKey;				// Virtual key code
 }
 
 
@@ -698,14 +698,14 @@ void HotkeySetItem::Print(String& outputString) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	const wchar_t* lpszEnable = (m_bEnabled == true) ? _T("Enabled") : _T("Disabled");
-	unsigned nActionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, m_nHKActionID));
-	const wchar_t* lpszAction = GetLanguageString(ptrLanguage, nActionNameID);
+	const wchar_t* enable = (m_isEnabled == true) ? _T("Enabled") : _T("Disabled");
+	unsigned actionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, m_hotkeyActionID));
+	const wchar_t* action = GetLanguageString(ptrLanguage, actionNameID);
 	String keyStrokesStr = Constant::String::Empty;
 	PrintKeyStrokes(keyStrokesStr);
 
 	// Print item
-	outputString.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  lpszEnable, lpszAction, keyStrokesStr.GetString());
+	outputString.Format(_T("State=(%s), Action=(%s), Keystrokes=(%s)"),  enable, action, keyStrokesStr.GetString());
 }
 
 
@@ -721,15 +721,15 @@ void HotkeySetItem::PrintKeyStrokes(String& outputString) const
 	using namespace Language;
 
 	// Format keystrokes
-	String strKeyStrokes = Constant::String::Empty;
-	if (m_dwModifiers & MOD_CONTROL)	strKeyStrokes += _T("Ctrl + ");
-	if (m_dwModifiers & MOD_ALT)		strKeyStrokes += _T("Alt + ");
-	if (m_dwModifiers & MOD_WIN)		strKeyStrokes += _T("Win + ");
-	strKeyStrokes += GetString(StringTable::FunctionKeys, m_dwVirtualKey);
+	String keyStrokes = Constant::String::Empty;
+	if (m_modifiers & MOD_CONTROL)	keyStrokes += _T("Ctrl + ");
+	if (m_modifiers & MOD_ALT)		keyStrokes += _T("Alt + ");
+	if (m_modifiers & MOD_WIN)		keyStrokes += _T("Win + ");
+	keyStrokes += GetString(StringTable::FunctionKeys, m_virtualKey);
 
 	// Output string
 	outputString.Empty();
-	outputString = strKeyStrokes;
+	outputString = keyStrokes;
 }
 
 
@@ -747,9 +747,9 @@ void HotkeySetData::Copy(const HotkeySetData& other) noexcept
 	this->DeleteAll();
 
 	// Copy data
-	for (int nIndex = 0; nIndex < other.GetItemNum(); nIndex++) {
-		const Item& hksItem = other.m_arrHotkeySetList.at(nIndex);
-		this->m_arrHotkeySetList.push_back(hksItem);
+	for (int index = 0; index < other.GetItemNum(); index++) {
+		const Item& item = other.m_hotkeySetList.at(index);
+		this->m_hotkeySetList.push_back(item);
 	}
 }
 
@@ -765,13 +765,13 @@ void HotkeySetData::SetDefaultData(void)
 	this->Init();
 
 	// Create default data
-	m_arrHotkeySetList.reserve(6);
-	m_arrHotkeySetList.push_back(Item(HKID::displayOff));
-	m_arrHotkeySetList.push_back(Item(HKID::sleep));
-	m_arrHotkeySetList.push_back(Item(HKID::shutdown));
-	m_arrHotkeySetList.push_back(Item(HKID::restart));
-	m_arrHotkeySetList.push_back(Item(HKID::signOut));
-	m_arrHotkeySetList.push_back(Item(HKID::hibernate));
+	m_hotkeySetList.reserve(6);
+	m_hotkeySetList.push_back(Item(HKID::displayOff));
+	m_hotkeySetList.push_back(Item(HKID::sleep));
+	m_hotkeySetList.push_back(Item(HKID::shutdown));
+	m_hotkeySetList.push_back(Item(HKID::restart));
+	m_hotkeySetList.push_back(Item(HKID::signOut));
+	m_hotkeySetList.push_back(Item(HKID::hibernate));
 }
 
 
@@ -780,41 +780,41 @@ void HotkeySetData::SetDefaultData(void)
  * @param	pItem - Pointer of input item
  * @return	None
  */
-void HotkeySetData::Add(const Item& pItem)
+void HotkeySetData::Add(const Item& item)
 {
 	// If data list is current empty
-	if (m_arrHotkeySetList.empty()) {
+	if (m_hotkeySetList.empty()) {
 		// Just add item
-		m_arrHotkeySetList.push_back(pItem);
+		m_hotkeySetList.push_back(item);
 		return;
 	}
 
 	// Check if item exists, if yes, do not add
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		const Item& pItemTemp = GetItemAt(nIndex);
-		if (pItemTemp.Compare(pItem) == true)
+	for (int index = 0; index < GetItemNum(); index++) {
+		const Item& itemTemp = GetItemAt(index);
+		if (itemTemp.Compare(item) == true)
 			return;
 	}
 
 	// Create new temporary data
-	HotkeySetData* pNew = new HotkeySetData;
-	pNew->m_arrHotkeySetList.clear();
+	HotkeySetData* newData = new HotkeySetData;
+	newData->m_hotkeySetList.clear();
 	
 	// Copy old data to new one
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		const Item& hksItem = this->GetItemAt(nIndex);
-		pNew->m_arrHotkeySetList.push_back(hksItem);
+	for (int index = 0; index < this->GetItemNum(); index++) {
+		const Item& hotkeyItem = this->GetItemAt(index);
+		newData->m_hotkeySetList.push_back(hotkeyItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->m_arrHotkeySetList.push_back(pItem);
-	this->Copy(*pNew);
+	newData->m_hotkeySetList.push_back(item);
+	this->Copy(*newData);
 	
 	// Delete temporary data
-	pNew->DeleteAll();
-	if (pNew != NULL) {
-		delete pNew;
-		pNew = NULL;
+	newData->DeleteAll();
+	if (newData != NULL) {
+		delete newData;
+		newData = NULL;
 	}
 }
 
@@ -824,51 +824,51 @@ void HotkeySetData::Add(const Item& pItem)
  * @param	pItem - Pointer of input item
  * @return	None
  */
-void HotkeySetData::Update(const Item& pItem)
+void HotkeySetData::Update(const Item& item)
 {
 	// If data list is current empty
-	if (m_arrHotkeySetList.empty()) {
+	if (m_hotkeySetList.empty()) {
 		// Just add item
-		Add(pItem);
+		Add(item);
 		return;
 	}
 
 	// Check if item with same action ID or keystrokes exists
-	int nDupActionIndex = INT_INVALID;
-	int nDupKeyIndex = INT_INVALID;
+	int dupActionIndex = INT_INVALID;
+	int dupKeyIndex = INT_INVALID;
 
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		const Item& hksTemp = GetItemAt(nIndex);
-		if (hksTemp.GetActionID() == pItem.GetActionID()) {
+	for (int index = 0; index < GetItemNum(); index++) {
+		const Item& temp = GetItemAt(index);
+		if (temp.GetActionID() == item.GetActionID()) {
 			// Duplicate action ID found
-			nDupActionIndex = nIndex;
+			dupActionIndex = index;
 		}
-		if (hksTemp.CompareKeycode(pItem) == true) {
+		if (temp.CompareKeycode(item) == true) {
 			// Duplicate keystrokes found
-			nDupKeyIndex = nIndex;
+			dupKeyIndex = index;
 		}
 	}
 
 	// If same item existed (same action ID and same keystrokes), update its state
-	if (nDupActionIndex == nDupKeyIndex) {
-		Item& hksTemp = GetItemAt(nDupActionIndex);
-		hksTemp.EnableItem(pItem.IsEnabled());
+	if (dupActionIndex == dupKeyIndex) {
+		Item& temp = GetItemAt(dupActionIndex);
+		temp.EnableItem(item.IsEnabled());
 		return;
 	}
 
 	// Delete existed duplicate keystrokes
-	if (nDupKeyIndex != INT_INVALID) {
-		Remove(nDupKeyIndex);
+	if (dupKeyIndex != INT_INVALID) {
+		Remove(dupKeyIndex);
 	}
 
 	// If item with same action ID existed, update its data
-	if (nDupActionIndex != INT_INVALID) {
-		Item& hksTemp = GetItemAt(nDupActionIndex);
-		hksTemp.Copy(pItem);
+	if (dupActionIndex != INT_INVALID) {
+		Item& temp = GetItemAt(dupActionIndex);
+		temp.Copy(item);
 	}
 	// Otherwise, add new
 	else {
-		Add(pItem);
+		Add(item);
 	}
 }
 
@@ -878,18 +878,18 @@ void HotkeySetData::Update(const Item& pItem)
  * @param	nAtIndex - Index of item to remove
  * @return	None
  */
-void HotkeySetData::Remove(int nAtIndex)
+void HotkeySetData::Remove(int atIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
+	if ((atIndex < 0) || (atIndex >= GetItemNum()))
 		return;
 
 	// Get item data
-	Item& hksItem = GetItemAt(nAtIndex);
+	Item& item = GetItemAt(atIndex);
 
 	// Reset item value
-	hksItem.EnableItem(false);
-	hksItem.SetKeyCode(NULL, NULL);
+	item.EnableItem(false);
+	item.SetKeyCode(NULL, NULL);
 }
 
 
@@ -900,17 +900,17 @@ void HotkeySetData::Remove(int nAtIndex)
  */
 void HotkeySetData::Adjust(void)
 {
-	DWORD dwCtrlKey, dwFuncKey;
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
+	DWORD ctrlKey, funcKey;
+	for (int index = 0; index < GetItemNum(); index++) {
 
 		// Get hotkeyset item keycode
-		Item& hksItem = GetItemAt(nIndex);
-		hksItem.GetKeyCode(dwCtrlKey, dwFuncKey);
+		Item& item = GetItemAt(index);
+		item.GetKeyCode(ctrlKey, funcKey);
 
 		// Not enable hotkeyset item if no keystroke data
-		if ((dwCtrlKey == 0) || (dwFuncKey == 0)) {
-			hksItem.EnableItem(false);
-			hksItem.SetKeyCode(NULL, NULL);
+		if ((ctrlKey == 0) || (funcKey == 0)) {
+			item.EnableItem(false);
+			item.SetKeyCode(NULL, NULL);
 		}
 	}
 }
@@ -924,19 +924,19 @@ void HotkeySetData::Adjust(void)
 bool HotkeySetData::IsAllEmpty(void) const noexcept
 {
 	// If there's no item, return true
-	if (m_arrHotkeySetList.empty())
+	if (m_hotkeySetList.empty())
 		return true;
 
 	// Check each item
-	bool bAllEmpty = true;
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		if (IsEmpty(nIndex) == false) {
-			bAllEmpty = false;
+	bool allEmpty = true;
+	for (int index = 0; index < GetItemNum(); index++) {
+		if (IsEmpty(index) == false) {
+			allEmpty = false;
 			break;
 		}
 	}
 
-	return bAllEmpty;
+	return allEmpty;
 }
 
 
@@ -945,30 +945,30 @@ bool HotkeySetData::IsAllEmpty(void) const noexcept
  * @param	nAtIndex - Index of item to delete
  * @return	None
  */
-void HotkeySetData::Delete(int nAtIndex)
+void HotkeySetData::Delete(int atIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
+	if ((atIndex < 0) || (atIndex >= GetItemNum()))
 		return;
 
 	// Create new temporary data
-	HotkeySetData* pNew = new HotkeySetData;
-	pNew->m_arrHotkeySetList.clear();
+	HotkeySetData* newData = new HotkeySetData;
+	newData->m_hotkeySetList.clear();
 
 	// Copy old data to new one (except the AtIndex item)
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		if (nIndex == nAtIndex) continue;
-		pNew->m_arrHotkeySetList.push_back(this->GetItemAt(nIndex));
+	for (int index = 0; index < this->GetItemNum(); index++) {
+		if (index == atIndex) continue;
+		newData->m_hotkeySetList.push_back(this->GetItemAt(index));
 	}
 
 	// Copy back to old data
-	this->Copy(*pNew);
+	this->Copy(*newData);
 
 	// Delete temporary data
-	pNew->DeleteAll();
-	if (pNew != NULL) {
-		delete pNew;
-		pNew = NULL;
+	newData->DeleteAll();
+	if (newData != NULL) {
+		delete newData;
+		newData = NULL;
 	}
 }
 
@@ -979,14 +979,14 @@ void HotkeySetData::Delete(int nAtIndex)
  * @param	outputString - Output printed keystrokes string
  * @return	None
  */
-void HotkeySetData::PrintKeyStrokes(unsigned nHKID, String& outputString) const
+void HotkeySetData::PrintKeyStrokes(unsigned hkID, String& outputString) const
 {
 	// Search for hotkey ID and get keystrokes string
 	String keyStrokesStr = Constant::String::Empty;
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		Item hksItem = this->GetItemAt(nIndex);
-		if (hksItem.GetActionID() == nHKID) {
-			hksItem.PrintKeyStrokes(keyStrokesStr);
+	for (int index = 0; index < this->GetItemNum(); index++) {
+		Item item = this->GetItemAt(index);
+		if (item.GetActionID() == hkID) {
+			item.PrintKeyStrokes(keyStrokesStr);
 			break;
 		}
 	}
@@ -1005,15 +1005,15 @@ RmdMsgStyleSet::RmdMsgStyleSet()
 	// Init data
 	m_colorBkgrd = defaultBkgrdColor;							// Background color
 	m_colorText = defaultTextColor;								// Text color
-	m_strFontName = defaultFontName;							// Font name
-	m_uiFontSize = defaultFontSize;								// Font size
-	m_uiTimeout = defaultTimeout;								// Timeout (auto-close) interval
-	m_uiIconID = defaultIconID;									// Message icon ID
-	m_nIconSize = defaultIconSize;								// Message icon size
-	m_byIconPos = defaultIconPosition;							// Message icon position
-	m_byDisplayPos = defaultDisplayPosition;					// Message display position
-	m_uiHMargin = defaultHorizontalMargin;						// Display area horizontal margin
-	m_uiVMargin = defaultVerticalMargin;						// Display area vertical margin
+	m_fontName = defaultFontName;								// Font name
+	m_fontSize = defaultFontSize;								// Font size
+	m_timeout = defaultTimeout;									// Timeout (auto-close) interval
+	m_iconID = defaultIconID;									// Message icon ID
+	m_iconSize = defaultIconSize;								// Message icon size
+	m_iconPosition = defaultIconPosition;						// Message icon position
+	m_displayPosition = defaultDisplayPosition;					// Message display position
+	m_marginHorizontal = defaultHorizontalMargin;				// Display area horizontal margin
+	m_marginVertical = defaultVerticalMargin;					// Display area vertical margin
 }
 
 
@@ -1028,17 +1028,17 @@ void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& other) noexcept
 	if (this == &other) return;
 
 	// Copy data
-	m_colorBkgrd = other.m_colorBkgrd;							// Background color
-	m_colorText = other.m_colorText;							// Text color
-	m_strFontName = other.m_strFontName;						// Font name
-	m_uiFontSize = other.m_uiFontSize;							// Font size
-	m_uiTimeout = other.m_uiTimeout;							// Timeout (auto-close) interval
-	m_uiIconID = other.m_uiIconID;								// Message icon ID
-	m_nIconSize = other.m_nIconSize;							// Message icon size
-	m_byIconPos = other.m_byIconPos;							// Message icon position
-	m_byDisplayPos = other.m_byDisplayPos;						// Message display position
-	m_uiHMargin = other.m_uiHMargin;							// Display area horizontal margin
-	m_uiVMargin = other.m_uiVMargin;							// Display area vertical margin
+	m_colorBkgrd = other.m_colorBkgrd;						// Background color
+	m_colorText = other.m_colorText;						// Text color
+	m_fontName = other.m_fontName;							// Font name
+	m_fontSize = other.m_fontSize;							// Font size
+	m_timeout = other.m_timeout;							// Timeout (auto-close) interval
+	m_iconID = other.m_iconID;								// Message icon ID
+	m_iconSize = other.m_iconSize;							// Message icon size
+	m_iconPosition = other.m_iconPosition;					// Message icon position
+	m_displayPosition = other.m_displayPosition;			// Message display position
+	m_marginHorizontal = other.m_marginHorizontal;			// Display area horizontal margin
+	m_marginVertical = other.m_marginVertical;				// Display area vertical margin
 }
 
 
@@ -1049,22 +1049,22 @@ void RmdMsgStyleSet::Copy(const RmdMsgStyleSet& other) noexcept
  */
 bool RmdMsgStyleSet::Compare(const RmdMsgStyleSet& other) const noexcept
 {
-	bool bRetCompare = true;
+	bool retCompare = true;
 
 	// Compare data
-	bRetCompare &= (this->m_colorBkgrd == other.m_colorBkgrd);		// Background color
-	bRetCompare &= (this->m_colorText == other.m_colorText);		// Text color
-	bRetCompare &= (this->m_strFontName == other.m_strFontName);	// Font name
-	bRetCompare &= (this->m_uiFontSize == other.m_uiFontSize);		// Font size
-	bRetCompare &= (this->m_uiTimeout == other.m_uiTimeout);		// Timeout (auto-close) interval
-	bRetCompare &= (this->m_uiIconID == other.m_uiIconID);			// Message icon ID
-	bRetCompare &= (this->m_nIconSize == other.m_nIconSize);		// Message icon size
-	bRetCompare &= (this->m_byIconPos == other.m_byIconPos);		// Message icon position
-	bRetCompare &= (this->m_byDisplayPos == other.m_byDisplayPos);	// Message display position
-	bRetCompare &= (this->m_uiHMargin == other.m_uiHMargin);		// Display area horizontal margin
-	bRetCompare &= (this->m_uiVMargin == other.m_uiVMargin);		// Display area vertical margin
+	retCompare &= (this->m_colorBkgrd == other.m_colorBkgrd);				// Background color
+	retCompare &= (this->m_colorText == other.m_colorText);					// Text color
+	retCompare &= (this->m_fontName == other.m_fontName);					// Font name
+	retCompare &= (this->m_fontSize == other.m_fontSize);					// Font size
+	retCompare &= (this->m_timeout == other.m_timeout);						// Timeout (auto-close) interval
+	retCompare &= (this->m_iconID == other.m_iconID);						// Message icon ID
+	retCompare &= (this->m_iconSize == other.m_iconSize);					// Message icon size
+	retCompare &= (this->m_iconPosition == other.m_iconPosition);			// Message icon position
+	retCompare &= (this->m_displayPosition == other.m_displayPosition);		// Message display position
+	retCompare &= (this->m_marginHorizontal == other.m_marginHorizontal);	// Display area horizontal margin
+	retCompare &= (this->m_marginVertical == other.m_marginVertical);		// Display area vertical margin
 
-	return bRetCompare;
+	return retCompare;
 }
 
 
@@ -1074,15 +1074,15 @@ bool RmdMsgStyleSet::Compare(const RmdMsgStyleSet& other) const noexcept
 PwrReminderItem::PwrReminderItem()
 {
 	// Init data
-	m_bEnabled = false;										// Enable state
-	m_nItemID = PwrReminderData::minItemID;					// Item ID
-	m_strMessage = Constant::String::Empty;					// Message content
-	m_nEventID = Event::atSetTime;							// Event ID
-	m_stTime = ClockTime();									// Event time
-	m_dwMsgStyle = Style::messageBox;						// Reminder style
-	m_rpsRepeatSet = PwrRepeatSet();						// Repeat set
-	m_bUseCustomStyle = false;								// Use message custom style
-	m_rmsMsgStyleSet = RmdMsgStyleSet();					// Reminder message style set
+	m_isEnabled = false;									// Enable state
+	m_itemID = PwrReminderData::minItemID;					// Item ID
+	m_messageContent = Constant::String::Empty;				// Message content
+	m_eventID = Event::atSetTime;							// Event ID
+	m_timeValue = ClockTime();								// Event time
+	m_messageStyle = Style::messageBox;						// Reminder style
+	m_repeatSetInfo = PwrRepeatSet();						// Repeat set
+	m_useCustomStyle = false;								// Use message custom style
+	m_msgStyleSetInfo = RmdMsgStyleSet();					// Reminder message style set
 }
 
 
@@ -1097,15 +1097,15 @@ void PwrReminderItem::Copy(const PwrReminderItem& other) noexcept
 	if (this == &other) return;
 
 	// Copy data
-	m_bEnabled = other.m_bEnabled;							// Enable state
-	m_nItemID = other.m_nItemID;							// Item ID
-	m_strMessage = other.m_strMessage;						// Message content
-	m_nEventID = other.m_nEventID;							// Event ID
-	m_stTime = other.m_stTime;								// Event time
-	m_dwMsgStyle = other.m_dwMsgStyle;						// Reminder style
-	m_rpsRepeatSet.Copy(other.m_rpsRepeatSet);				// Repeat set
-	m_bUseCustomStyle = other.m_bUseCustomStyle;			// Use message custom style
-	m_rmsMsgStyleSet.Copy(other.m_rmsMsgStyleSet);			// Reminder message style set
+	m_isEnabled = other.m_isEnabled;					// Enable state
+	m_itemID = other.m_itemID;							// Item ID
+	m_messageContent = other.m_messageContent;			// Message content
+	m_eventID = other.m_eventID;						// Event ID
+	m_timeValue = other.m_timeValue;					// Event time
+	m_messageStyle = other.m_messageStyle;				// Reminder style
+	m_repeatSetInfo.Copy(other.m_repeatSetInfo);		// Repeat set
+	m_useCustomStyle = other.m_useCustomStyle;			// Use message custom style
+	m_msgStyleSetInfo.Copy(other.m_msgStyleSetInfo);	// Reminder message style set
 }
 
 
@@ -1119,14 +1119,14 @@ bool PwrReminderItem::Compare(const PwrReminderItem& other) const noexcept
 	bool bRet = true;
 
 	// Compare item (do not compare item ID)
-	bRet &= (this->m_strMessage == other.m_strMessage);
-	bRet &= (this->m_nEventID == other.m_nEventID);
-	bRet &= (this->m_stTime.Hour() == other.m_stTime.Hour());
-	bRet &= (this->m_stTime.Minute() == other.m_stTime.Minute());
-	bRet &= (this->m_dwMsgStyle == other.m_dwMsgStyle);
-	bRet &= (this->m_rpsRepeatSet.Compare(other.m_rpsRepeatSet));
-	bRet &= (this->m_bUseCustomStyle == other.m_bUseCustomStyle);
-	bRet &= (this->m_rmsMsgStyleSet.Compare(other.m_rmsMsgStyleSet));
+	bRet &= (this->m_messageContent == other.m_messageContent);
+	bRet &= (this->m_eventID == other.m_eventID);
+	bRet &= (this->m_timeValue.Hour() == other.m_timeValue.Hour());
+	bRet &= (this->m_timeValue.Minute() == other.m_timeValue.Minute());
+	bRet &= (this->m_messageStyle == other.m_messageStyle);
+	bRet &= (this->m_repeatSetInfo.Compare(other.m_repeatSetInfo));
+	bRet &= (this->m_useCustomStyle == other.m_useCustomStyle);
+	bRet &= (this->m_msgStyleSetInfo.Compare(other.m_msgStyleSetInfo));
 
 	return bRet;
 }
@@ -1140,7 +1140,7 @@ bool PwrReminderItem::Compare(const PwrReminderItem& other) const noexcept
 bool PwrReminderItem::IsAllowSnoozing(void) const noexcept
 {
 	// If current eventID is not at settime
-	if (m_nEventID != Event::atSetTime) {
+	if (m_eventID != Event::atSetTime) {
 		// Not allow snooze mode
 		return false;
 	}
@@ -1150,7 +1150,7 @@ bool PwrReminderItem::IsAllowSnoozing(void) const noexcept
 		return false;
 	}
 	// If allow snooze option is OFF
-	if (m_rpsRepeatSet.IsAllowSnoozing() != true) {
+	if (m_repeatSetInfo.IsAllowSnoozing() != true) {
 		// Not allow snooze mode
 		return false;
 	}
@@ -1175,24 +1175,24 @@ void PwrReminderItem::Print(String& outputString) const
 	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
 
 	// Format item data
-	const wchar_t* enableStr = (m_bEnabled == true) ? _T("Enabled") : _T("Disabled");
-	String messageStr = m_strMessage;
+	const wchar_t* enableStr = (m_isEnabled == true) ? _T("Enabled") : _T("Disabled");
+	String messageStr = m_messageContent;
 	if (messageStr.GetLength() > (Constant::Max::DisplayLogStringLength + 3)) {
-		messageStr = m_strMessage.Left(Constant::Max::DisplayLogStringLength) + _T("...");
+		messageStr = m_messageContent.Left(Constant::Max::DisplayLogStringLength) + _T("...");
 	}
-	int nTemp = GetPairedID(IDTable::PwrReminderEvent, m_nEventID);
-	String eventStr = GetLanguageString(ptrLanguage, nTemp);
-	if (m_nEventID == Event::atSetTime) {
+	int temp = GetPairedID(IDTable::PwrReminderEvent, m_eventID);
+	String eventStr = GetLanguageString(ptrLanguage, temp);
+	if (m_eventID == Event::atSetTime) {
 		// Format time string
 		String formatString = eventStr;
-		eventStr = ClockTimeUtils::Format(ptrLanguage, formatString, m_stTime);
+		eventStr = ClockTimeUtils::Format(ptrLanguage, formatString, m_timeValue);
 	}
-	nTemp = GetPairedID(IDTable::PwrReminderStyle, m_dwMsgStyle);
-	const wchar_t* styleStr = GetLanguageString(ptrLanguage, nTemp);
+	temp = GetPairedID(IDTable::PwrReminderStyle, m_messageStyle);
+	const wchar_t* styleStr = GetLanguageString(ptrLanguage, temp);
 
 	// Print item
 	outputString.Format(_T("State=(%s), ItemID=%d, Msg=(%s), Event=(%s), Style=(%s), Repeat=%d"),
-		enableStr, m_nItemID, messageStr.GetString(), eventStr.GetString(), styleStr, m_rpsRepeatSet.IsRepeatEnabled());
+		enableStr, m_itemID, messageStr.GetString(), eventStr.GetString(), styleStr, m_repeatSetInfo.IsRepeatEnabled());
 }
 
 
@@ -1202,8 +1202,8 @@ void PwrReminderItem::Print(String& outputString) const
 PwrReminderData::PwrReminderData()
 {
 	// Initialize
-	m_arrRmdItemList.clear();
-	m_rmdCommonStyle = RmdMsgStyleSet();
+	m_reminderItemList.clear();
+	m_commonStyleSet = RmdMsgStyleSet();
 }
 
 
@@ -1215,8 +1215,8 @@ PwrReminderData::PwrReminderData()
 void PwrReminderData::Init() noexcept
 {
 	// Initialize
-	m_arrRmdItemList.clear();
-	m_rmdCommonStyle = RmdMsgStyleSet();
+	m_reminderItemList.clear();
+	m_commonStyleSet = RmdMsgStyleSet();
 }
 
 
@@ -1234,13 +1234,13 @@ void PwrReminderData::Init() noexcept
 	this->DeleteAll();
 
 	// Copy reminder data
-	for (int nIndex = 0; nIndex < other.GetItemNum(); nIndex++) {
-		PwrReminderItem pwrItem = other.m_arrRmdItemList.at(nIndex);
-		this->m_arrRmdItemList.push_back(pwrItem);
+	for (int index = 0; index < other.GetItemNum(); index++) {
+		PwrReminderItem item = other.m_reminderItemList.at(index);
+		this->m_reminderItemList.push_back(item);
 	}
 
 	// Copy common message style data
-	this->m_rmdCommonStyle.Copy(other.m_rmdCommonStyle);
+	this->m_commonStyleSet.Copy(other.m_commonStyleSet);
 }
 
 
@@ -1249,44 +1249,44 @@ void PwrReminderData::Init() noexcept
  * @param	pItem - Pointer of input item
  * @return	None
  */
- void PwrReminderData::Add(const PwrReminderItem& pItem)
+ void PwrReminderData::Add(const PwrReminderItem& item)
 {
 	// If data list is current empty
-	if (m_arrRmdItemList.empty()) {
+	if (m_reminderItemList.empty()) {
 		// Just add item
-		m_arrRmdItemList.push_back(pItem);
+		m_reminderItemList.push_back(item);
 		return;
 	}
 
 	// Check if item exists, if yes, do not add
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		PwrReminderItem pItemTemp = GetItemAt(nIndex);
-		if (pItemTemp.Compare(pItem) == true)
+	for (int index = 0; index < GetItemNum(); index++) {
+		PwrReminderItem itemTemp = GetItemAt(index);
+		if (itemTemp.Compare(item) == true)
 			return;
 	}
 
 	// Create new temporary data
-	PwrReminderData* pNew = new PwrReminderData;
-	pNew->m_arrRmdItemList.clear();
+	PwrReminderData* newData = new PwrReminderData;
+	newData->m_reminderItemList.clear();
 
 	// Copy common message style data
-	pNew->m_rmdCommonStyle.Copy(this->m_rmdCommonStyle);
+	newData->m_commonStyleSet.Copy(this->m_commonStyleSet);
 
 	// Copy old data to new one
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		PwrReminderItem pwrItem = this->GetItemAt(nIndex);
-		pNew->m_arrRmdItemList.push_back(pwrItem);
+	for (int index = 0; index < this->GetItemNum(); index++) {
+		PwrReminderItem reminderItem = this->GetItemAt(index);
+		newData->m_reminderItemList.push_back(reminderItem);
 	}
 
 	// Add new item and copy back to old data
-	pNew->m_arrRmdItemList.push_back(pItem);
-	this->Copy(*pNew);
+	newData->m_reminderItemList.push_back(item);
+	this->Copy(*newData);
 
 	// Delete data
-	pNew->DeleteAll();
-	if (pNew != NULL) {
-		delete pNew;
-		pNew = NULL;
+	newData->DeleteAll();
+	if (newData != NULL) {
+		delete newData;
+		newData = NULL;
 	}
 }
 
@@ -1296,32 +1296,32 @@ void PwrReminderData::Init() noexcept
  * @param	pItem - Pointer of input item
  * @return	None
  */
- void PwrReminderData::Update(const PwrReminderItem& pItem)
+ void PwrReminderData::Update(const PwrReminderItem& item)
 {
 	// If data list is current empty
-	if (m_arrRmdItemList.empty()) {
+	if (m_reminderItemList.empty()) {
 		// Just add item
-		Add(pItem);
+		Add(item);
 		return;
 	}
 
 	// Find item index
-	int nRetItemIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		if (GetItemAt(nIndex).GetItemID() == pItem.GetItemID()) {
-			nRetItemIndex = nIndex;
+	int retItemIndex = INT_INVALID;
+	for (int index = 0; index < GetItemNum(); index++) {
+		if (GetItemAt(index).GetItemID() == item.GetItemID()) {
+			retItemIndex = index;
 			break;
 		}
 	}
 
 	// Update item if found
-	if (nRetItemIndex != INT_INVALID) {
-		PwrReminderItem& pwrTemp = GetItemAt(nRetItemIndex);
-		pwrTemp.Copy(pItem);
+	if (retItemIndex != INT_INVALID) {
+		PwrReminderItem& temp = GetItemAt(retItemIndex);
+		temp.Copy(item);
 	}
 	// Otherwise, add new
 	else {
-		Add(pItem);
+		Add(item);
 	}
 }
 
@@ -1331,17 +1331,17 @@ void PwrReminderData::Init() noexcept
  * @param	nAtIndex - Index of item to remove
  * @return	None
  */
- void PwrReminderData::Remove(int nAtIndex)
+ void PwrReminderData::Remove(int atIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
+	if ((atIndex < 0) || (atIndex >= GetItemNum()))
 		return;
 
 	// Get item data
-	PwrReminderItem& pwrItem = GetItemAt(nAtIndex);
+	PwrReminderItem& item = GetItemAt(atIndex);
 
 	// Reset item value
-	pwrItem.Copy(PwrReminderItem());
+	item.Copy(PwrReminderItem());
 }
 
 
@@ -1353,13 +1353,13 @@ void PwrReminderData::Init() noexcept
  void PwrReminderData::Adjust(void)
 {
 	// Remove garbage items
-	for (int nIndex = (GetItemNum() - 1); nIndex >= 0; nIndex--) {
+	for (int index = (GetItemNum() - 1); index >= 0; index--) {
 		// Get item
-		PwrReminderItem pwrTemp = GetItemAt(nIndex);
-		if (!pwrTemp.IsEmpty()) continue;
+		PwrReminderItem temp = GetItemAt(index);
+		if (!temp.IsEmpty()) continue;
 
 		// Remove empty if item
-		Delete(nIndex);
+		Delete(index);
 	}
 }
 
@@ -1372,18 +1372,18 @@ void PwrReminderData::Init() noexcept
  unsigned PwrReminderData::GetNextID(void) const noexcept
 {
 	// Get max ID
-	unsigned nRetNextID = PwrReminderData::minItemID;
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		PwrReminderItem pwrItem = GetItemAt(nIndex);
-		if (pwrItem.GetItemID() > nRetNextID) {
-			nRetNextID = pwrItem.GetItemID();
+	unsigned retNextID = PwrReminderData::minItemID;
+	for (int index = 0; index < GetItemNum(); index++) {
+		PwrReminderItem item = GetItemAt(index);
+		if (item.GetItemID() > retNextID) {
+			retNextID = item.GetItemID();
 		}
 	}
 
 	// Increase value
-	nRetNextID++;
+	retNextID++;
 
-	return nRetNextID;
+	return retNextID;
 }
 
 
@@ -1395,19 +1395,19 @@ void PwrReminderData::Init() noexcept
  bool PwrReminderData::IsAllEmpty() const noexcept
 {
 	// If there's no item, return true
-	if (m_arrRmdItemList.empty())
+	if (m_reminderItemList.empty())
 		return true;
 
 	// Check each item
-	bool bAllEmpty = true;
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		if (IsEmpty(nIndex) == false) {
-			bAllEmpty = false;
+	bool allEmpty = true;
+	for (int index = 0; index < GetItemNum(); index++) {
+		if (IsEmpty(index) == false) {
+			allEmpty = false;
 			break;
 		}
 	}
 
-	return bAllEmpty;
+	return allEmpty;
 }
 
 
@@ -1416,33 +1416,33 @@ void PwrReminderData::Init() noexcept
  * @param	nAtIndex - Index of item to delete
  * @return	None
  */
- void PwrReminderData::Delete(int nAtIndex)
+ void PwrReminderData::Delete(int atIndex)
 {
 	// Check index validity
-	if ((nAtIndex < 0) || (nAtIndex >= GetItemNum()))
+	if ((atIndex < 0) || (atIndex >= GetItemNum()))
 		return;
 
 	// Create new temporary data
-	PwrReminderData* pNew = new PwrReminderData;
-	pNew->m_arrRmdItemList.clear();
+	PwrReminderData* newData = new PwrReminderData;
+	newData->m_reminderItemList.clear();
 
 	// Copy common message style data
-	pNew->m_rmdCommonStyle.Copy(this->m_rmdCommonStyle);
+	newData->m_commonStyleSet.Copy(this->m_commonStyleSet);
 
 	// Copy old data to new one (except the AtIndex item)
-	for (int nIndex = 0; nIndex < this->GetItemNum(); nIndex++) {
-		if (nIndex == nAtIndex) continue;
-		pNew->m_arrRmdItemList.push_back(this->m_arrRmdItemList.at(nIndex));
+	for (int index = 0; index < this->GetItemNum(); index++) {
+		if (index == atIndex) continue;
+		newData->m_reminderItemList.push_back(this->m_reminderItemList.at(index));
 	}
 
 	// Copy back to old data
-	this->Copy(*pNew);
+	this->Copy(*newData);
 
 	// Delete temporary data
-	pNew->DeleteAll();
-	if (pNew != NULL) {
-		delete pNew;
-		pNew = NULL;
+	newData->DeleteAll();
+	if (newData != NULL) {
+		delete newData;
+		newData = NULL;
 	}
 }
 
@@ -1453,12 +1453,12 @@ void PwrReminderData::Init() noexcept
  PwrRuntimeItem::PwrRuntimeItem()
 {
 	// Init data
-	m_nCategory = INT_INVALID;								// Item category
-	m_nItemID = INT_NULL;									// Power Reminder item ID
-	m_nDisplayFlag = FLAG_OFF;								// Item displaying flag
-	m_nSkipFlag = FLAG_OFF;									// Item skip flag
-	m_nSnoozeFlag = FLAG_OFF;								// Item snooze trigger flag
-	m_stNextSnoozeTime = ClockTime();						// Next snooze trigger time
+	m_categoryID = INT_INVALID;							// Item category
+	m_itemID = INT_NULL;								// Power Reminder item ID
+	m_displayFlag = FLAG_OFF;							// Item displaying flag
+	m_skipFlag = FLAG_OFF;								// Item skip flag
+	m_snoozeFlag = FLAG_OFF;							// Item snooze trigger flag
+	m_nextSnoozeTime = ClockTime();						// Next snooze trigger time
 }
 
 
@@ -1473,12 +1473,12 @@ void PwrReminderData::Init() noexcept
 	if (this == &other) return;
 
 	// Copy data
-	m_nCategory = other.m_nCategory;						// Item category
-	m_nItemID = other.m_nItemID;							// Power Reminder item ID
-	m_nDisplayFlag = other.m_nDisplayFlag;					// Item displaying flag
-	m_nSkipFlag = other.m_nSkipFlag;						// Item skip flag
-	m_nSnoozeFlag = other.m_nSnoozeFlag;					// Item snooze trigger flag
-	m_stNextSnoozeTime = other.m_stNextSnoozeTime;			// Next snooze trigger time
+	m_categoryID = other.m_categoryID;					// Item category
+	m_itemID = other.m_itemID;							// Power Reminder item ID
+	m_displayFlag = other.m_displayFlag;				// Item displaying flag
+	m_skipFlag = other.m_skipFlag;						// Item skip flag
+	m_snoozeFlag = other.m_snoozeFlag;					// Item snooze trigger flag
+	m_nextSnoozeTime = other.m_nextSnoozeTime;			// Next snooze trigger time
 }
 
 
@@ -1487,9 +1487,9 @@ void PwrReminderData::Init() noexcept
  * @param	nInterval - Snooze interval
  * @return	None
  */
-void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval) noexcept
+void PwrRuntimeItem::CalcNextSnoozeTime(int interval) noexcept
 {
-	ClockTimeUtils::CalculateOffset(m_stNextSnoozeTime, nInterval);
+	ClockTimeUtils::CalculateOffset(m_nextSnoozeTime, interval);
 }
 
 
@@ -1499,14 +1499,14 @@ void PwrRuntimeItem::CalcNextSnoozeTime(int nInterval) noexcept
  HistoryInfoData::HistoryInfoData()
 {
 	// Init data
-	m_bInitState = false;									// Init state
-	m_nCategoryID = INT_NULL;								// Category ID
-	m_stTimestamp = DateTime();								// Timestamp of history
-	m_nItemID = INT_NULL;									// Item ID
-	m_nActionID = INT_NULL;									// History action ID
-	m_bActionResult = true;									// Action result
-	m_dwErrorCode = APP_ERROR_SUCCESS;						// Returned error code
-	m_strDescription = Constant::String::Empty;				// History description (attached info)
+	m_initState = false;								// Init state
+	m_categoryID = INT_NULL;							// Category ID
+	m_timestamp = DateTime();							// Timestamp of history
+	m_itemID = INT_NULL;								// Item ID
+	m_actionID = INT_NULL;								// History action ID
+	m_actionResult = true;								// Action result
+	m_errorCode = APP_ERROR_SUCCESS;					// Returned error code
+	m_description = Constant::String::Empty;			// History description (attached info)
 }
 
 
@@ -1521,14 +1521,14 @@ void HistoryInfoData::Copy(const HistoryInfoData& other) noexcept
 	if (this == &other) return;
 
 	// Copy data
-	m_bInitState = other.m_bInitState;						// Init state
-	m_nCategoryID = other.m_nCategoryID;					// Category ID
-	m_stTimestamp = other.m_stTimestamp;					// Timestamp of history
-	m_nItemID = other.m_nItemID;							// Item ID
-	m_nActionID = other.m_nActionID;						// History action ID
-	m_bActionResult = other.m_bActionResult;				// Action result
-	m_dwErrorCode = other.m_dwErrorCode;					// Returned error code
-	m_strDescription = other.m_strDescription;				// History description (attached info)
+	m_initState = other.m_initState;					// Init state
+	m_categoryID = other.m_categoryID;					// Category ID
+	m_timestamp = other.m_timestamp;					// Timestamp of history
+	m_itemID = other.m_itemID;							// Item ID
+	m_actionID = other.m_actionID;						// History action ID
+	m_actionResult = other.m_actionResult;				// Action result
+	m_errorCode = other.m_errorCode;					// Returned error code
+	m_description = other.m_description;				// History description (attached info)
 }
 
 
@@ -1537,16 +1537,16 @@ void HistoryInfoData::Copy(const HistoryInfoData& other) noexcept
  * @param	nCategoryID - Category ID
  * @return	None
  */
-void HistoryInfoData::Init(unsigned nCategoryID) noexcept
+void HistoryInfoData::Init(unsigned categoryID) noexcept
 {
 	// Reset data
 	RemoveAll();
-	m_bInitState = true;									// Init state
-	m_nCategoryID = nCategoryID;							// Category ID
-	m_stTimestamp = DateTimeUtils::GetCurrentDateTime();	// Timestamp of history
-	m_bActionResult = true;									// Action result
-	m_dwErrorCode = APP_ERROR_SUCCESS;						// Returned error code
-	m_strDescription = Constant::String::Empty;				// History description (attached info)
+	m_initState = true;									// Init state
+	m_categoryID = categoryID;							// Category ID
+	m_timestamp = DateTimeUtils::GetCurrentDateTime();	// Timestamp of history
+	m_actionResult = true;								// Action result
+	m_errorCode = APP_ERROR_SUCCESS;					// Returned error code
+	m_description = Constant::String::Empty;			// History description (attached info)
 }
 
 
@@ -1556,15 +1556,15 @@ void HistoryInfoData::Init(unsigned nCategoryID) noexcept
 SystemEvent::SystemEvent(EventID eventID)
 {
 	// Initialize
-	m_sysEventID = eventID;									// System event ID
-	m_timeStamp = DateTime();								// Event timestamp
+	m_eventID = eventID;								// System event ID
+	m_timestamp = DateTime();							// Event timestamp
 }
 
 SystemEvent::SystemEvent(const SystemEvent& other)
 {
 	// Copy data
-	m_sysEventID = other.m_sysEventID;						// System event ID
-	m_timeStamp = other.m_timeStamp;						// Event timestamp
+	m_eventID = other.m_eventID;						// System event ID
+	m_timestamp = other.m_timestamp;					// Event timestamp
 }
 
 
@@ -1576,8 +1576,8 @@ SystemEvent::SystemEvent(const SystemEvent& other)
 SystemEvent& SystemEvent::operator=(const SystemEvent& other)
 {
 	// Copy data
-	m_sysEventID = other.m_sysEventID;						// System event ID
-	m_timeStamp = other.m_timeStamp;						// Event timestamp
+	m_eventID = other.m_eventID;						// System event ID
+	m_timestamp = other.m_timestamp;					// Event timestamp
 
 	return *this;
 }
@@ -1589,13 +1589,13 @@ SystemEvent& SystemEvent::operator=(const SystemEvent& other)
 SystemEventTracker::SystemEventTracker()
 {
 	// Initialize
-	m_arrTrackingData.clear();								// System event tracking data
+	m_trackingData.clear();							// System event tracking data
 }
 
 SystemEventTracker::SystemEventTracker(const SystemEventTracker& other)
 {
 	// Copy data
-	m_arrTrackingData = other.m_arrTrackingData;			// System event tracking data
+	m_trackingData = other.m_trackingData;			// System event tracking data
 }
 
 
@@ -1607,7 +1607,7 @@ SystemEventTracker::SystemEventTracker(const SystemEventTracker& other)
 SystemEventTracker& SystemEventTracker::operator=(const SystemEventTracker& other)
 {
 	// Copy data
-	m_arrTrackingData = other.m_arrTrackingData;			// System event tracking data
+	m_trackingData = other.m_trackingData;			// System event tracking data
 
 	return *this;
 }
@@ -2188,76 +2188,76 @@ SYSTEMTIME ClockTimeUtils::ToSystemTime(const ClockTime& clockTime)
 bool ClockTimeUtils::InputText2Time(ClockTime& clockTime, const wchar_t* inputText)
 {
 	// Check input text validity
-	int nLength = wcslen(inputText);
-	if ((nLength == 0) || (nLength > 4))
+	int length = wcslen(inputText);
+	if ((length == 0) || (length > 4))
 		return false;
 
 	String timeString(inputText);
 
-	int nHour = INT_INVALID;
-	int nMinute = INT_INVALID;
+	int hour = INT_INVALID;
+	int minute = INT_INVALID;
 
 	// Break the time value into combinations of digits
-	int nLeft1Digit = _tstoi(timeString.Left(1));
-	int nLeft2Digits = _tstoi(timeString.Left(2));
-	int	nRight1Digit = _tstoi(timeString.Right(1));
-	int nRight2Digits = _tstoi(timeString.Right(2));
+	int left1Digit = _tstoi(timeString.Left(1));
+	int left2Digits = _tstoi(timeString.Left(2));
+	int	right1Digit = _tstoi(timeString.Right(1));
+	int right2Digits = _tstoi(timeString.Right(2));
 
 	// Convert
-	switch (nLength)
+	switch (length)
 	{
 	case 1:
 		// Ex: 3 -> 03:00, 9 -> 09:00, ...
-		nHour = _tstoi(timeString);			// The given time value will be the hour value
-		nMinute = 0;						// The minute value will be zero (0)
+		hour = _tstoi(timeString);			// The given time value will be the hour value
+		minute = 0;						// The minute value will be zero (0)
 		break;
 
 	case 2:
-		if ((nLeft1Digit == 0) ||													// Ex: 08 -> 00:08
-			((nLeft1Digit > 2) || ((nLeft1Digit == 2) && (nRight1Digit > 3)))) {	// Ex: 35 -> 03:05, 24 -> 02:04, ...
-			nHour = nLeft1Digit;													// The first half will be the hour value
-			nMinute = nRight1Digit;													// The remaining will be the minute value
+		if ((left1Digit == 0) ||													// Ex: 08 -> 00:08
+			((left1Digit > 2) || ((left1Digit == 2) && (right1Digit > 3)))) {	// Ex: 35 -> 03:05, 24 -> 02:04, ...
+			hour = left1Digit;													// The first half will be the hour value
+			minute = right1Digit;													// The remaining will be the minute value
 		}
 		else {
 			// Ex: 13 -> 13:00, 18 -> 18:00, ...
-			nHour = _tstoi(timeString);				// All digits will be the hour value
-			nMinute = 0;							// The minute value will be zero (0)
+			hour = _tstoi(timeString);				// All digits will be the hour value
+			minute = 0;							// The minute value will be zero (0)
 		} break;
 
 	case 3:
-		if ((nLeft1Digit == 0) ||								// Ex: 034 -> 00:34, ...
-			((nLeft1Digit > 2) || (nLeft2Digits >= 24)) ||		// Ex: 320 -> 03:20, 250 -> 02:50, ...
-			((nRight2Digits > 0) && (nRight2Digits < 60))) {	// Ex: 225 -> 02:25, 132 -> 01:32, ...
-			nHour = nLeft1Digit;								// The first digit will be the hour value
-			nMinute = nRight2Digits;							// The remaining will be the minute value
+		if ((left1Digit == 0) ||								// Ex: 034 -> 00:34, ...
+			((left1Digit > 2) || (left2Digits >= 24)) ||		// Ex: 320 -> 03:20, 250 -> 02:50, ...
+			((right2Digits > 0) && (right2Digits < 60))) {	// Ex: 225 -> 02:25, 132 -> 01:32, ...
+			hour = left1Digit;								// The first digit will be the hour value
+			minute = right2Digits;							// The remaining will be the minute value
 		}
 		else {
 			// Ex: 180 -> 18:00, 1530 -> 15:30, ...
-			nHour = nLeft2Digits;					// The first 2 digits will be the hour value
-			nMinute = nRight1Digit;					// The remaining will be the minute value
+			hour = left2Digits;					// The first 2 digits will be the hour value
+			minute = right1Digit;					// The remaining will be the minute value
 		} break;
 
 	case 4:
 		// Ex: 1235 -> 12:35, 1840 -> 18:40, ...
-		nHour = nLeft2Digits;						// The first half will be the hour value
-		nMinute = nRight2Digits;					// The remaining will be the minute value
+		hour = left2Digits;						// The first half will be the hour value
+		minute = right2Digits;					// The remaining will be the minute value
 		break;
 	}
 
 	// If the minute value is larger than 60
-	if (nMinute >= 60) {
-		nHour++;			// The hour value increases by 1
-		nMinute -= 60;		// The minute value decreases by 60
+	if (minute >= 60) {
+		hour++;			// The hour value increases by 1
+		minute -= 60;		// The minute value decreases by 60
 	}
 
 	// If the hour value exceeds 24, return invalid
-	if (nHour >= 24)
+	if (hour >= 24)
 		return false;
 
 	// Only return if both the hour and minute values are valid
-	if ((nHour > INT_INVALID) && (nMinute > INT_INVALID)) {
-		clockTime.SetHour(nHour);
-		clockTime.SetMinute(nMinute);
+	if ((hour > INT_INVALID) && (minute > INT_INVALID)) {
+		clockTime.SetHour(hour);
+		clockTime.SetMinute(minute);
 	}
 
 	return true;
@@ -2274,62 +2274,62 @@ bool ClockTimeUtils::InputText2Time(ClockTime& clockTime, const wchar_t* inputTe
 bool ClockTimeUtils::InputText2TimeBase(ClockTime& clockTime, const wchar_t* inputText)
 {
 	// Check input text validity
-	int nLength = wcslen(inputText);
-	if ((nLength == 0) || (nLength > 4))
+	int length = wcslen(inputText);
+	if ((length == 0) || (length > 4))
 		return false;
 
 	// Get input text length
-	unsigned nTime = _tstoi(inputText);
-	unsigned nTimeTemp = nTime;
-	nLength = 0;
+	unsigned time = _tstoi(inputText);
+	unsigned timeTemp = time;
+	length = 0;
 	do {
-		nLength++;
-		nTimeTemp /= 10;
-	} while (nTimeTemp != 0);
+		length++;
+		timeTemp /= 10;
+	} while (timeTemp != 0);
 
 	// Convert
-	int nHour = -1, nMinute = -1;
-	switch (nLength)
+	int hour = -1, minute = -1;
+	switch (length)
 	{
 	case 1: 	// Ex: 3, 9, ...
-		nHour = nTime;
-		nMinute = 0;
+		hour = time;
+		minute = 0;
 		break;
 
 	case 2:
-		if ((nTime / 10 > 2) ||
-			((nTime / 10 == 2) && (nTime % 10 > 3))) {	// Ex: 35, 24, ...
-			nHour = nTime / 10;
-			nMinute = nTime % 10;
+		if ((time / 10 > 2) ||
+			((time / 10 == 2) && (time % 10 > 3))) {	// Ex: 35, 24, ...
+			hour = time / 10;
+			minute = time % 10;
 		}
 		else {	// Ex: 13, 18, ...
-			nHour = nTime;
-			nMinute = 0;
+			hour = time;
+			minute = 0;
 		} break;
 
 	case 3:
-		if ((nTime / 100 > 2) || (nTime / 10 >= 24)) {	// Ex: 320, 240
-			nHour = nTime / 100;
-			nMinute = nTime % 100;
+		if ((time / 100 > 2) || (time / 10 >= 24)) {	// Ex: 320, 240
+			hour = time / 100;
+			minute = time % 100;
 		}
 		else {	// Ex: 320, 245
-			nHour = nTime / 10;
-			nMinute = nTime % 10;
+			hour = time / 10;
+			minute = time % 10;
 		} break;
 
 	case 4:
-		nHour = nTime / 100;
-		nMinute = nTime % 100;
+		hour = time / 100;
+		minute = time % 100;
 		break;
 	}
 
 	// Validate
-	if ((nHour >= 24) || (nMinute >= 60))
+	if ((hour >= 24) || (minute >= 60))
 		return false;
 
-	if ((nHour > -1) && (nMinute > -1)) {
-		clockTime.SetHour(nHour);
-		clockTime.SetMinute(nMinute);
+	if ((hour > -1) && (minute > -1)) {
+		clockTime.SetHour(hour);
+		clockTime.SetMinute(minute);
 	}
 
 	return true;
@@ -2342,22 +2342,22 @@ bool ClockTimeUtils::InputText2TimeBase(ClockTime& clockTime, const wchar_t* inp
  * @param	nPos	- Input spin position
  * @return	None
  */
-void ClockTimeUtils::SpinPos2Time(ClockTime& clockTime, int nPos)
+void ClockTimeUtils::SpinPos2Time(ClockTime& clockTime, int pos)
 {
 	// Invalid input position
-	if (nPos < Constant::Min::TimeSpin)
-		nPos = Constant::Min::TimeSpin;
-	else if (nPos > Constant::Max::TimeSpin)
-		nPos = Constant::Max::TimeSpin;
+	if (pos < Constant::Min::TimeSpin)
+		pos = Constant::Min::TimeSpin;
+	else if (pos > Constant::Max::TimeSpin)
+		pos = Constant::Max::TimeSpin;
 
 	// Convert
-	int nHour = nPos / 60;
-	int nMinute = nPos - (nHour * 60);
+	int hour = pos / 60;
+	int minute = pos - (hour * 60);
 
 	// Validate
-	if ((nHour != INT_INVALID) && (nMinute != INT_INVALID)) {
-		clockTime.SetHour(nHour);
-		clockTime.SetMinute(nMinute);
+	if ((hour != INT_INVALID) && (minute != INT_INVALID)) {
+		clockTime.SetHour(hour);
+		clockTime.SetMinute(minute);
 	}
 }
 
@@ -2368,16 +2368,16 @@ void ClockTimeUtils::SpinPos2Time(ClockTime& clockTime, int nPos)
  * @param	nPos	- Input spin position (ref-value)
  * @return	None
  */
-void ClockTimeUtils::Time2SpinPos(const ClockTime& clockTime, int& nPos)
+void ClockTimeUtils::Time2SpinPos(const ClockTime& clockTime, int& pos)
 {
 	// Convert
-	nPos = (clockTime.Hour() * 60) + clockTime.Minute();
+	pos = (clockTime.Hour() * 60) + clockTime.Minute();
 
 	// Invalid result
-	if (nPos < Constant::Min::TimeSpin)
-		nPos = Constant::Min::TimeSpin;
-	else if (nPos > Constant::Max::TimeSpin)
-		nPos = Constant::Max::TimeSpin;
+	if (pos < Constant::Min::TimeSpin)
+		pos = Constant::Min::TimeSpin;
+	else if (pos > Constant::Max::TimeSpin)
+		pos = Constant::Max::TimeSpin;
 }
 
 
@@ -2423,11 +2423,11 @@ bool ClockTimeUtils::IsMatching(ClockTime thisTime, ClockTime otherTime, int off
  * @param	clockTime - Given clock-time data
  * @return	String - Format clock-time string
  */
-String ClockTimeUtils::Format(LANGTABLE_PTR pLang, unsigned nFormatID, const ClockTime& clockTime)
+String ClockTimeUtils::Format(LANGTABLE_PTR lang, unsigned formatID, const ClockTime& clockTime)
 {
 	// Load format string
-	String formatString = StringUtils::LoadResourceString(nFormatID);
-	return Format(pLang, formatString, clockTime);
+	String formatString = StringUtils::LoadResourceString(formatID);
+	return Format(lang, formatString, clockTime);
 }
 
 
@@ -2438,11 +2438,11 @@ String ClockTimeUtils::Format(LANGTABLE_PTR pLang, unsigned nFormatID, const Clo
  * @param	clockTime	 - Given clock-time data
  * @return	String - Format clock-time string
  */
-String ClockTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const ClockTime& clockTime)
+String ClockTimeUtils::Format(LANGTABLE_PTR lang, const wchar_t* formatString, const ClockTime& clockTime)
 {
 	// Format time string
-	unsigned nTimePeriod = (clockTime.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	const wchar_t* timePeriodFormat = Language::GetLanguageString(pLang, nTimePeriod);
+	unsigned timePeriod = (clockTime.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	const wchar_t* timePeriodFormat = Language::GetLanguageString(lang, timePeriod);
 	int hourVal = (clockTime.Hour() > 12) ? (clockTime.Hour() - 12) : clockTime.Hour();
 	int minuteVal = clockTime.Minute();
 
@@ -2511,11 +2511,11 @@ SYSTEMTIME DateTimeUtils::ToSystemTime(const DateTime& dateTime)
  * @param	dateTime  - Given date/time data
  * @return	String - Format date/time string
  */
-String DateTimeUtils::Format(LANGTABLE_PTR pLang, unsigned nFormatID, const DateTime& dateTime)
+String DateTimeUtils::Format(LANGTABLE_PTR lang, unsigned formatID, const DateTime& dateTime)
 {
 	// Load format string
-	String formatString = StringUtils::LoadResourceString(nFormatID);
-	return Format(pLang, formatString, dateTime);
+	String formatString = StringUtils::LoadResourceString(formatID);
+	return Format(lang, formatString, dateTime);
 }
 
 
@@ -2526,11 +2526,11 @@ String DateTimeUtils::Format(LANGTABLE_PTR pLang, unsigned nFormatID, const Date
  * @param	dateTime	 - Given date/time data
  * @return	String - Format time string
  */
-String DateTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const DateTime& dateTime)
+String DateTimeUtils::Format(LANGTABLE_PTR lang, const wchar_t* formatString, const DateTime& dateTime)
 {
 	// Format time string
-	unsigned nTimePeriod = (dateTime.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	const wchar_t* timePeriodFormat = Language::GetLanguageString(pLang, nTimePeriod);
+	unsigned timePeriod = (dateTime.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	const wchar_t* timePeriodFormat = Language::GetLanguageString(lang, timePeriod);
 	int hourVal = (dateTime.Hour() > 12) ? (dateTime.Hour() - 12) : dateTime.Hour();
 	int minuteVal = dateTime.Minute();
 
@@ -2544,8 +2544,8 @@ String DateTimeUtils::Format(LANGTABLE_PTR pLang, const wchar_t* formatString, c
 PerformanceCounter::PerformanceCounter()
 {
 	// Initialization
-	this->m_bIsRunning = false;
-	QueryPerformanceFrequency(&m_liFrequency);
+	this->m_isRunning = false;
+	QueryPerformanceFrequency(&m_frequency);
 }
 
 
@@ -2567,9 +2567,9 @@ PerformanceCounter::~PerformanceCounter()
 void PerformanceCounter::Start(void)
 {
 	// Start performance counter
-	if (!m_bIsRunning) {
-		QueryPerformanceCounter(&m_liStartTime);
-		this->m_bIsRunning = true;
+	if (!m_isRunning) {
+		QueryPerformanceCounter(&m_startTime);
+		this->m_isRunning = true;
 	}
 }
 
@@ -2582,9 +2582,9 @@ void PerformanceCounter::Start(void)
 void PerformanceCounter::Stop(void)
 {
 	// Stop performance counter
-	if (m_bIsRunning) {
-		QueryPerformanceCounter(&m_liEndTime);
-		this->m_bIsRunning = false;
+	if (m_isRunning) {
+		QueryPerformanceCounter(&m_endTime);
+		this->m_isRunning = false;
 	}
 }
 
@@ -2594,14 +2594,14 @@ void PerformanceCounter::Stop(void)
  * @param	None
  * @return	None
  */
-double PerformanceCounter::GetElapsedTime(bool bToMillisecs) const noexcept
+double PerformanceCounter::GetElapsedTime(bool toMillisecs) const noexcept
 {
 	// Get elapsed time
-	double dRetCounter = static_cast<double>(m_liEndTime.QuadPart - m_liStartTime.QuadPart) / m_liFrequency.QuadPart;
-	if (bToMillisecs == true) {
-		dRetCounter *= 1000;
+	double retCounter = static_cast<double>(m_endTime.QuadPart - m_startTime.QuadPart) / m_frequency.QuadPart;
+	if (toMillisecs == true) {
+		retCounter *= 1000;
 	}
-	return dRetCounter;
+	return retCounter;
 }
 
 
@@ -2618,20 +2618,20 @@ double PerformanceCounter::GetElapsedTime(bool bToMillisecs) const noexcept
  * @param	bGetDescription - Get language package description
  * @return	const wchar_t* - Language name
  */
-const wchar_t* Language::GetLanguageName(unsigned nCurLanguage, bool bGetDescription /* = false */)
+const wchar_t* Language::GetLanguageName(unsigned curLanguage, bool getDescription /* = false */)
 {
 	// Load language table package
-	LANGTABLE_PTR ptrLangTable = LoadLanguageTable(nCurLanguage);
-	if (ptrLangTable == NULL)
+	LANGTABLE_PTR langTable = LoadLanguageTable(curLanguage);
+	if (langTable == NULL)
 		return Constant::Value::Unknown;
 
 	// Get language package info
-	unsigned nInfoTargetID = (bGetDescription) ? LANGPACKINFO_DESCRIPTIONFULL : LANGPACKINFO_LANGNAMEID;
-	const wchar_t* retInfoString = GetLanguageString(ptrLangTable, nInfoTargetID);
-	if (IS_NULL_STRING(retInfoString))
-		retInfoString = Constant::Value::Unknown;
+	unsigned infoTargetID = (getDescription) ? LANGPACKINFO_DESCRIPTIONFULL : LANGPACKINFO_LANGNAMEID;
+	const wchar_t* infoString = GetLanguageString(langTable, infoTargetID);
+	if (IS_NULL_STRING(infoString))
+		infoString = Constant::Value::Unknown;
 
-	return retInfoString;
+	return infoString;
 }
 
 
@@ -2640,34 +2640,34 @@ const wchar_t* Language::GetLanguageName(unsigned nCurLanguage, bool bGetDescrip
  * @param	nCurLanguage   - Current language ID
  * @return	LANGTABLE_PTR - Language package pointer
  */
-LANGTABLE_PTR Language::LoadLanguageTable(unsigned nCurLanguage)
+LANGTABLE_PTR Language::LoadLanguageTable(unsigned curLanguage)
 {
-	LANGTABLE_PTR ptrLangTable = NULL;
+	LANGTABLE_PTR langTable = NULL;
 
-	switch (nCurLanguage)
+	switch (curLanguage)
 	{
 	case APP_LANGUAGE_ENGLISH:
 		// Language: English (United States)
-		ptrLangTable = &langtable_en_US;
+		langTable = &langtable_en_US;
 		break;
 
 	case APP_LANGUAGE_VIETNAMESE:
 		// Language: Vietnamese (Vietnam)
-		ptrLangTable = &langtable_vi_VN;
+		langTable = &langtable_vi_VN;
 		break;
 
 	case APP_LANGUAGE_SIMPCHINESE:
 		// Language: Simplified Chinese (China mainland)
-		ptrLangTable = &langtable_zh_CH;
+		langTable = &langtable_zh_CH;
 		break;
 
 	default:
 		// Default language: English
-		ptrLangTable = &langtable_en_US;
+		langTable = &langtable_en_US;
 		break;
 	}
 
-	return ptrLangTable;
+	return langTable;
 }
 
 
@@ -2678,17 +2678,17 @@ LANGTABLE_PTR Language::LoadLanguageTable(unsigned nCurLanguage)
  * @param	pszResult  - Result string (reference-type)
  * @return	const wchar_t*	- Language string
  */
-const wchar_t* Language::GetLanguageString(LANGTABLE_PTR ptLanguage, unsigned nID)
+const wchar_t* Language::GetLanguageString(LANGTABLE_PTR language, unsigned id)
 {
 	// Return NULL string if language table is empty
-	if ((ptLanguage == NULL) || (ptLanguage->empty()))
+	if ((language == NULL) || (language->empty()))
 		return Constant::String::Null;
 
 	// Find and return corresponding language string paired with specified ID
-	for (int nIndex = 0; nIndex < ptLanguage->size(); nIndex++) {
-		LANGTEXT langText = ptLanguage->at(nIndex);
+	for (int index = 0; index < language->size(); index++) {
+		LANGTEXT langText = language->at(index);
 
-		if (langText.id == nID)
+		if (langText.id == id)
 			return langText.langString;
 	}
 
@@ -2703,70 +2703,70 @@ const wchar_t* Language::GetLanguageString(LANGTABLE_PTR ptLanguage, unsigned nI
  * @param	dwErrorCode - Return error code (ref-value)
  * @return	bool - Result of action execution
  */
-bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD& dwErrCode)
+bool AppCore::ExecutePowerAction(unsigned actionType, unsigned message, DWORD& errCode)
 {
-	bool bRet = true;
+	bool ret = true;
 
 	// Execute Power Actions in here
-	switch (nActionType)
+	switch (actionType)
 	{
 		// Monitor typed action
 		case APP_ACTIONTYPE_MONITOR:
 			// Turn off display
-			PostMessage(HWND_BROADCAST, WM_SYSCOMMAND, (WPARAM)nMessage, (LPARAM)2);
-			dwErrCode = APP_ERROR_SUCCESS;
+			PostMessage(HWND_BROADCAST, WM_SYSCOMMAND, (WPARAM)message, (LPARAM)2);
+			errCode = APP_ERROR_SUCCESS;
 			break;
 
 		// Power typed actions
 		case APP_ACTIONTYPE_POWER:
 		{
-			switch (nMessage)
+			switch (message)
 			{
 				case APP_MESSAGE_SHUTDOWN:
 				case APP_MESSAGE_REBOOT:
 				case APP_MESSAGE_SIGNOUT:
 				{
 					// Force action
-					unsigned uExitWinExFlags = nMessage;
-					uExitWinExFlags |= EWX_FORCE;
+					unsigned exitWinExFlags = message;
+					exitWinExFlags |= EWX_FORCE;
 
-					HANDLE hToken;
-					TOKEN_PRIVILEGES tkPrivileges{};
+					HANDLE token;
+					TOKEN_PRIVILEGES privileges{};
 
 					// Get process token
-					if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
+					if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token)) {
 						// Get error code
-						dwErrCode = GetLastError();
-						TRACE_FORMAT("Error: Cannot execute action, OpenProcessToken failed!!! (Code: 0x%08X)", dwErrCode);
+						errCode = GetLastError();
+						TRACE_FORMAT("Error: Cannot execute action, OpenProcessToken failed!!! (Code: 0x%08X)", errCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return false;
 					}
 
 					// Lookup privilege value
-					if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkPrivileges.Privileges[0].Luid)) {
+					if (!LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &privileges.Privileges[0].Luid)) {
 						// Get error code
-						dwErrCode = GetLastError();
-						TRACE_FORMAT("Error: Cannot execute action, LookupPrivilegeValue failed!!! (Code: 0x%08X)", dwErrCode);
+						errCode = GetLastError();
+						TRACE_FORMAT("Error: Cannot execute action, LookupPrivilegeValue failed!!! (Code: 0x%08X)", errCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return false;
 					}
 
 					// Adjust token privileges
-					tkPrivileges.PrivilegeCount = 1;
-					tkPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-					if (!AdjustTokenPrivileges(hToken, false, &tkPrivileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
+					privileges.PrivilegeCount = 1;
+					privileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+					if (!AdjustTokenPrivileges(token, false, &privileges, 0, (PTOKEN_PRIVILEGES)NULL, 0)) {
 						// Adjust token privileges failed
-						dwErrCode = GetLastError();
-						TRACE_FORMAT("Error: Cannot execute action, AdjustTokenPrivileges failed!!! (Code: 0x%08X)", dwErrCode);
+						errCode = GetLastError();
+						TRACE_FORMAT("Error: Cannot execute action, AdjustTokenPrivileges failed!!! (Code: 0x%08X)", errCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return false;
 					}
 
 					// Exit Windows
-					if (!ExitWindowsEx(uExitWinExFlags, 0)) {
+					if (!ExitWindowsEx(exitWinExFlags, 0)) {
 						// Get exit Windows error
-						dwErrCode = GetLastError();
-						TRACE_FORMAT("Error: Cannot execute action, ExitWindowsEx failed!!! (Code: 0x%08X)", dwErrCode);
+						errCode = GetLastError();
+						TRACE_FORMAT("Error: Cannot execute action, ExitWindowsEx failed!!! (Code: 0x%08X)", errCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return false;
 					}
@@ -2776,8 +2776,8 @@ bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD&
 				case APP_MESSAGE_SLEEP:
 					// Sleep mode
 					if (!SetSuspendState(false, false, false)) {		// Stand by (sleep)
-						dwErrCode = GetLastError();
-						TRACE_FORMAT("Error: Cannot execute action, SetSuspendState failed!!! (Code: 0x%08X)", dwErrCode);
+						errCode = GetLastError();
+						TRACE_FORMAT("Error: Cannot execute action, SetSuspendState failed!!! (Code: 0x%08X)", errCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return false;
 					}
@@ -2786,8 +2786,8 @@ bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD&
 				case APP_MESSAGE_HIBERNATE:
 					// Hibernate mode
 					if (!SetSuspendState(true, false, false)) {			// Hibernate
-						dwErrCode = GetLastError();
-						TRACE_FORMAT("Error: Cannot execute action, SetSuspendState failed!!! (Code: 0x%08X)", dwErrCode);
+						errCode = GetLastError();
+						TRACE_FORMAT("Error: Cannot execute action, SetSuspendState failed!!! (Code: 0x%08X)", errCode);
 						TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 						return false;
 					}
@@ -2797,14 +2797,14 @@ bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD&
 
 	default:
 		// Wrong argument
-		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-		TRACE_FORMAT("Error: Cannot execute action, wrong argument!!! (Code: 0x%08X)", dwErrCode);
+		errCode = APP_ERROR_WRONG_ARGUMENT;
+		TRACE_FORMAT("Error: Cannot execute action, wrong argument!!! (Code: 0x%08X)", errCode);
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		bRet = false;
+		ret = false;
 		break;
 	}
 
-	return bRet;
+	return ret;
 }
 
 
@@ -2815,61 +2815,61 @@ bool AppCore::ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD&
  * @param	dwErrorCode - Return error code (ref-value)
  * @return	bool - Result of action execution
  */
-bool AppCore::ExecutePowerActionDummy(unsigned nActionType, unsigned nMessage, DWORD& dwErrCode)
+bool AppCore::ExecutePowerActionDummy(unsigned actionType, unsigned message, DWORD& errCode)
 {
 	// Get action execution time
 	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
 
 	// Get action name
 	String actionInfoString;
-	if (nActionType == APP_ACTIONTYPE_MONITOR) {
+	if (actionType == APP_ACTIONTYPE_MONITOR) {
 		actionInfoString.SetString(_T("Turn off display"));
-		dwErrCode = ERROR_SUCCESS;
+		errCode = ERROR_SUCCESS;
 	}
-	else if (nActionType == APP_ACTIONTYPE_POWER && 
-			(nMessage != APP_MESSAGE_SLEEP && nMessage != APP_MESSAGE_HIBERNATE)) {
-		switch (nMessage)
+	else if (actionType == APP_ACTIONTYPE_POWER && 
+			(message != APP_MESSAGE_SLEEP && message != APP_MESSAGE_HIBERNATE)) {
+		switch (message)
 		{
 		case APP_MESSAGE_SHUTDOWN:
 			// Shutdown
 			actionInfoString.SetString(_T("Shutdown"));
-			dwErrCode = ERROR_SUCCESS;
+			errCode = ERROR_SUCCESS;
 			break;
 
 		case APP_MESSAGE_REBOOT:
 			// Restart
 			actionInfoString.SetString(_T("Restart"));
-			dwErrCode = ERROR_SUCCESS;
+			errCode = ERROR_SUCCESS;
 			break;
 
 		case APP_MESSAGE_SIGNOUT:
 			// Sign out
 			actionInfoString.SetString(_T("Sign out"));
-			dwErrCode = ERROR_SUCCESS;
+			errCode = ERROR_SUCCESS;
 			break;
 		}
 	}
-	else if (nActionType == APP_ACTIONTYPE_POWER && 
-			(nMessage == APP_MESSAGE_SLEEP || nMessage == APP_MESSAGE_HIBERNATE)) {
-		switch (nMessage)
+	else if (actionType == APP_ACTIONTYPE_POWER && 
+			(message == APP_MESSAGE_SLEEP || message == APP_MESSAGE_HIBERNATE)) {
+		switch (message)
 		{
 		case APP_MESSAGE_SLEEP:
 			// Sleep
 			actionInfoString.SetString(_T("Sleep"));
-			dwErrCode = ERROR_SUCCESS;
+			errCode = ERROR_SUCCESS;
 			break;
 
 		case APP_MESSAGE_HIBERNATE:
 			// Hibernate
 			actionInfoString.SetString(_T("Hibernate"));
-			dwErrCode = ERROR_SUCCESS;
+			errCode = ERROR_SUCCESS;
 			break;
 		}
 	}
 	else {
 		// Wrong argument
 		actionInfoString.SetString(_T("Invalid"));
-		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
+		errCode = APP_ERROR_WRONG_ARGUMENT;
 	}
 
 	// Time format
@@ -2897,36 +2897,36 @@ bool AppCore::ExecutePowerActionDummy(unsigned nActionType, unsigned nMessage, D
  * @return	LRESULT
  * @note	Be careful when using this function, it may cause the program to be not responding
  */
-LRESULT	AppCore::WaitMessage(unsigned nMsg, int nTimeout /* = DEF_WAITMESSAGE_TIMEOUT */)
+LRESULT	AppCore::WaitMessage(unsigned msg, int timeout /* = DEF_WAITMESSAGE_TIMEOUT */)
 {
-	LRESULT lResult = Result::Success;
+	LRESULT result = Result::Success;
 
 	// Get begin timestamp (for timeout counter)
-	ULONGLONG ullBeginTimestamp = GetTickCount64();
+	ULONGLONG beginTimestamp = GetTickCount64();
 
 	// Wait for message
 	while (1) {
-		MSG msg = {0};
-		if (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
+		MSG message = {0};
+		if (::PeekMessage(&message, NULL, 0, 0, PM_NOREMOVE)) {
 
 			// If received specified message, break the loop
-			if (msg.message == nMsg) {
+			if (message.message == msg) {
 
 				// Success
-				lResult = Result::Success;
+				result = Result::Success;
 				break;
 			}
 		}
 		// Check for timeout
-		if (GetTickCount64() - ullBeginTimestamp >= nTimeout) {
+		if (GetTickCount64() - beginTimestamp >= timeout) {
 
 			// Timeout --> Failed
-			lResult = Result::Failure;
+			result = Result::Failure;
 			break;
 		}
 	}
 
-	return lResult;
+	return result;
 }
 
 
@@ -2938,45 +2938,45 @@ LRESULT	AppCore::WaitMessage(unsigned nMsg, int nTimeout /* = DEF_WAITMESSAGE_TI
  * @param	lParam		 - Additional attached param (description string)
  * @return	None
  */
-void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, unsigned nLanguageID, DWORD dwErrorCode, LPARAM lParam /* = NULL */)
+void AppCore::ShowErrorMessage(HWND msgOwnerWnd, unsigned languageID, DWORD errorCode, LPARAM lParam /* = NULL */)
 {
 	// Use table and language functions
 	using namespace MapTable;
 	using namespace Language;
 
 	// Get application-defined error code from system-defined error code
-	DWORD dwAppErrCode = GetPairedID(IDTable::ErrorCode, dwErrorCode, true);
-	if (dwAppErrCode != INT_INVALID) {
+	DWORD appErrCode = GetPairedID(IDTable::ErrorCode, errorCode, true);
+	if (appErrCode != INT_INVALID) {
 		// Replace with application-defined error code
-		dwErrorCode = dwAppErrCode;
+		errorCode = appErrCode;
 	}
 
 	// Get error message string ID
-	int nErrMsgID = GetPairedID(IDTable::ErrorMessage, dwErrorCode);
+	int errMsgID = GetPairedID(IDTable::ErrorMessage, errorCode);
 
 	// Invalid error message ID
-	if (nErrMsgID == INT_INVALID) {
+	if (errMsgID == INT_INVALID) {
 		// Show unknown error message
-		nErrMsgID = MSGBOX_ERROR_UNKNOWN;
+		errMsgID = MSGBOX_ERROR_UNKNOWN;
 	}
 
 	// If error message ID is NULL, do nothing
-	if (nErrMsgID == INT_NULL)
+	if (errMsgID == INT_NULL)
 		return;
 
 	// Load language package
-	LANGTABLE_PTR pAppLang = LoadLanguageTable(nLanguageID);
-	if (pAppLang == NULL) 
+	LANGTABLE_PTR appLang = LoadLanguageTable(languageID);
+	if (appLang == NULL) 
 		return;
 
 	// Get language strings
-	String errorMessage = GetLanguageString(pAppLang, nErrMsgID);
-	const wchar_t* errorCaption = GetLanguageString(pAppLang, MSGBOX_ERROR_CAPTION);
+	String errorMessage = GetLanguageString(appLang, errMsgID);
+	const wchar_t* errorCaption = GetLanguageString(appLang, MSGBOX_ERROR_CAPTION);
 
 	// In case of unknown error, attach the error code
-	if (nErrMsgID == MSGBOX_ERROR_UNKNOWN) {
+	if (errMsgID == MSGBOX_ERROR_UNKNOWN) {
 		String tempStr;
-		tempStr.Format(errorMessage, dwErrorCode);
+		tempStr.Format(errorMessage, errorCode);
 		errorMessage = tempStr;
 	}
 
@@ -2994,12 +2994,12 @@ void AppCore::ShowErrorMessage(HWND hMsgOwnerWnd, unsigned nLanguageID, DWORD dw
 	}
 
 	// Show error message
-	MessageBox(hMsgOwnerWnd, errorMessage, errorCaption, MB_OK | MB_ICONERROR | MB_TOPMOST | MB_SETFOREGROUND);
+	MessageBox(msgOwnerWnd, errorMessage, errorCaption, MB_OK | MB_ICONERROR | MB_TOPMOST | MB_SETFOREGROUND);
 
 	// Notify application class about error message showing
-	WPARAM wAppMsgParam = (WPARAM)dwErrorCode;
-	LPARAM lAppMsgParam = MAKE_LPARAM_STRING(errorMessage);
-	PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, wAppMsgParam, lAppMsgParam);
+	WPARAM appMsgParam = (WPARAM)errorCode;
+	LPARAM appMsgParam2 = MAKE_LPARAM_STRING(errorMessage);
+	PostMessage(NULL, SM_APP_SHOW_ERROR_MSG, appMsgParam, appMsgParam2);
 }
 
 
@@ -3022,18 +3022,18 @@ HWND AppCore::FindDebugTestDlg()
  * @param	nRow & nCol - Cell position (row & column)
  * @return	None
  */
-void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
+void AppCore::SetFixedCellStyle(CGridCtrl* gridCtrl, int row, int col)
 {
 	// Check control validity
-	if (pGridCtrl == NULL) return;
+	if (gridCtrl == NULL) return;
 
 	// Set base style
-	CGridCellBase* pHeaderCell = (CGridCellBase*)pGridCtrl->GetCell(nRow, nCol);
-	if (pHeaderCell == NULL) return;
-	pHeaderCell->SetFormat(pHeaderCell->GetFormat() | DT_CENTER);
-	pHeaderCell->SetMargin(0);
-	pHeaderCell->SetBackClr(Color::Gray);
-	pHeaderCell->SetTextClr(Color::Black);
+	CGridCellBase* headerCell = (CGridCellBase*)gridCtrl->GetCell(row, col);
+	if (headerCell == NULL) return;
+	headerCell->SetFormat(headerCell->GetFormat() | DT_CENTER);
+	headerCell->SetMargin(0);
+	headerCell->SetBackClr(Color::Gray);
+	headerCell->SetTextClr(Color::Black);
 }
 
 
@@ -3043,11 +3043,11 @@ void AppCore::SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol)
  * @param	bEnableDarkMode - Enable/disable dark mode
  * @return	bool - Result of dark mode setting process
  */
-bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
+bool AppCore::SetDarkMode(CWnd* wnd, bool enableDarkMode)
 {
 	// Load theme library
-	HMODULE hUxTheme = LoadLibraryEx(_T("uxtheme.dll"), nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-	if (hUxTheme == NULL) {
+	HMODULE uxTheme = LoadLibraryEx(_T("uxtheme.dll"), nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+	if (uxTheme == NULL) {
 		// Trace error
 		TRACE_FORMAT("Error: Load UXTheme library failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -3056,7 +3056,7 @@ bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
 
 	// Get function pointer
 	using fnAllowDarkMode = bool (WINAPI*)(HWND hWND, bool bAllow);
-	static const fnAllowDarkMode AllowDarkModeForWindow = (fnAllowDarkMode)GetProcAddress(hUxTheme, MAKEINTRESOURCEA(133));
+	static const fnAllowDarkMode AllowDarkModeForWindow = (fnAllowDarkMode)GetProcAddress(uxTheme, MAKEINTRESOURCEA(133));
 	if (AllowDarkModeForWindow == NULL) {
 		// Trace error
 		TRACE_FORMAT("Error: Get AllowDarkModeForWindow function address failed!!! (Code: 0x%08X)", GetLastError());
@@ -3065,13 +3065,13 @@ bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
 	}
 
 	// Set dark mode for each dialog item
-	CWnd* pWndChild = NULL;
-	for (pWndChild = pWnd->GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	CWnd* wndChild = NULL;
+	for (wndChild = wnd->GetTopWindow(); wndChild != NULL; wndChild = wndChild->GetWindow(GW_HWNDNEXT))
 	{
-		HWND hWndChild = pWndChild->GetSafeHwnd();
-		AllowDarkModeForWindow(hWndChild, bEnableDarkMode);
-		SetWindowTheme(hWndChild, _T("DarkMode_Explorer"), NULL);
-		SendMessage(hWndChild, WM_THEMECHANGED, 0, 0);
+		HWND childWnd = wndChild->GetSafeHwnd();
+		AllowDarkModeForWindow(childWnd, enableDarkMode);
+		SetWindowTheme(childWnd, _T("DarkMode_Explorer"), NULL);
+		SendMessage(childWnd, WM_THEMECHANGED, 0, 0);
 	}
 
 	return true;
@@ -3085,34 +3085,34 @@ bool AppCore::SetDarkMode(CWnd* pWnd, bool bEnableDarkMode)
  * @param	lpszBtnTitle - Title of button
  * @return	None
  */
-void AppCore::DrawButton(CButton*& pBtn, unsigned nIconID, const wchar_t* buttonTitle /* = Constant::String::Empty */)
+void AppCore::DrawButton(CButton*& btn, unsigned iconID, const wchar_t* buttonTitle /* = Constant::String::Empty */)
 {
 	// Check validity
-	if (pBtn == NULL)
+	if (btn == NULL)
 		return;
 
 	// Load icon
-	HICON hBtnIcon = AfxGetApp()->LoadIcon(nIconID);
-	if (hBtnIcon == NULL)
+	HICON btnIcon = AfxGetApp()->LoadIcon(iconID);
+	if (btnIcon == NULL)
 		return;
 
 	// Button rect
-	CRect rcBtnRect;
-	pBtn->GetWindowRect(&rcBtnRect);
+	CRect btnRect;
+	btn->GetWindowRect(&btnRect);
 
 	// Button title
 	String buttonTitleString;
 	buttonTitleString.SetString(buttonTitle);
 	if (!buttonTitleString.IsEmpty()) {
 		wchar_t _tempBuffer[Constant::Max::StringLength] = { 0 };
-		pBtn->GetWindowText(_tempBuffer, Constant::Max::StringLength);
+		btn->GetWindowText(_tempBuffer, Constant::Max::StringLength);
 		buttonTitleString.SetString(_tempBuffer);
 	}
 
 	// Update button
-	pBtn->SetButtonStyle(BS_ICON);
-	pBtn->SetIcon(hBtnIcon);
-	pBtn->UpdateWindow();
+	btn->SetButtonStyle(BS_ICON);
+	btn->SetIcon(btnIcon);
+	btn->UpdateWindow();
 }
 
 
@@ -3128,8 +3128,8 @@ void AppCore::DrawButton(CButton*& pBtn, unsigned nIconID, const wchar_t* button
 unsigned AppCore::GetWindowsOSVersion(void)
 {
 	// Init info data
-	OSVERSIONINFOEX oviOSVersion{};
-	oviOSVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	OSVERSIONINFOEX osVersion{};
+	osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
 	// Get function address
 	NTSTATUS(WINAPI * RtlGetVersion)(LPOSVERSIONINFOEXW);
@@ -3142,34 +3142,34 @@ unsigned AppCore::GetWindowsOSVersion(void)
 	}
 
 	// Get Window OS version
-	RtlGetVersion(&oviOSVersion);
+	RtlGetVersion(&osVersion);
 
 	// Return Windows OS version macro
-	unsigned nRetWinVer = WINDOWS_VERSION_NONE;
-	if (oviOSVersion.dwBuildNumber >= OS_BUILDNUMBER_W11_EARLIEST) {
+	unsigned retWinVer = WINDOWS_VERSION_NONE;
+	if (osVersion.dwBuildNumber >= OS_BUILDNUMBER_W11_EARLIEST) {
 		// Is Windows 11
-		nRetWinVer = WINDOWS_VERSION_11;
+		retWinVer = WINDOWS_VERSION_11;
 	}
-	else if (oviOSVersion.dwBuildNumber >= OS_BUILDNUMBER_W10_ORIGINAL) {
+	else if (osVersion.dwBuildNumber >= OS_BUILDNUMBER_W10_ORIGINAL) {
 		// Is Windows 10
-		nRetWinVer = WINDOWS_VERSION_10;
+		retWinVer = WINDOWS_VERSION_10;
 	}
-	else if ((oviOSVersion.dwBuildNumber >= OS_BUILDNUMBER_W8_EARLIEST) &&
-		(oviOSVersion.dwBuildNumber <= OS_BUILDNUMBER_W8_LATEST)) {
+	else if ((osVersion.dwBuildNumber >= OS_BUILDNUMBER_W8_EARLIEST) &&
+		(osVersion.dwBuildNumber <= OS_BUILDNUMBER_W8_LATEST)) {
 		// Is Windows 8/8.1
-		nRetWinVer = WINDOWS_VERSION_8;
+		retWinVer = WINDOWS_VERSION_8;
 	}
-	else if ((oviOSVersion.dwBuildNumber >= OS_BUILDNUMBER_W7_EARLIEST) &&
-		(oviOSVersion.dwBuildNumber <= OS_BUILDNUMBER_W7_LATEST)) {
+	else if ((osVersion.dwBuildNumber >= OS_BUILDNUMBER_W7_EARLIEST) &&
+		(osVersion.dwBuildNumber <= OS_BUILDNUMBER_W7_LATEST)) {
 		// Is Windows 7
-		nRetWinVer = WINDOWS_VERSION_7;
+		retWinVer = WINDOWS_VERSION_7;
 	}
 	else {
 		// Unknown version
-		nRetWinVer = WINDOWS_VERSION_UNKNOWN;
+		retWinVer = WINDOWS_VERSION_UNKNOWN;
 	}
 
-	return nRetWinVer;
+	return retWinVer;
 }
 
 
@@ -3179,14 +3179,14 @@ unsigned AppCore::GetWindowsOSVersion(void)
  * @param	nTypeOfSound - Type of sound
  * @return	None
  */
-void AppCore::PlaySound(bool bSoundEnable, unsigned nTypeOfSound)
+void AppCore::PlaySound(bool soundEnable, unsigned typeOfSound)
 {
 	// If sound is not enabled, do nothing
-	if (!bSoundEnable)
+	if (!soundEnable)
 		return;
 
 	// Play sound by type here
-	switch (nTypeOfSound)
+	switch (typeOfSound)
 	{
 	case APP_SOUND_ERROR:
 		::PlaySound(_T("SystemExclamination"), NULL, SND_ASYNC);
@@ -3204,11 +3204,11 @@ void AppCore::PlaySound(bool bSoundEnable, unsigned nTypeOfSound)
  * @param	filePath  - Path of file
  * @return	bool - Result of file opening process
  */
-bool AppCore::FileViewStd(FILETYPE eFileType, const wchar_t* filePath)
+bool AppCore::FileViewStd(FILETYPE fileType, const wchar_t* filePath)
 {
 	String appPath = Constant::String::Empty;
 
-	switch (eFileType) 
+	switch (fileType) 
 	{
 	case FILETYPE_TEXT:
 		appPath = Constant::Path::Notepad;
@@ -3220,9 +3220,9 @@ bool AppCore::FileViewStd(FILETYPE eFileType, const wchar_t* filePath)
 	}
 
 	// Run a file viewer instance
-	HWND hWnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
-	HINSTANCE hInstance = ShellExecute(hWnd, Constant::Command::Open, appPath, filePath, NULL, SW_SHOW);
-	return (hInstance != NULL);
+	HWND wnd = AfxGetApp()->GetMainWnd()->GetSafeHwnd();
+	HINSTANCE instance = ShellExecute(wnd, Constant::Command::Open, appPath, filePath, NULL, SW_SHOW);
+	return (instance != NULL);
 }
 
 
@@ -3246,15 +3246,15 @@ bool AppCore::OpenWebURL(const wchar_t* webUrl)
  * @param	bShowFlag	- Show window flag
  * @return	LRESULT - Result of app launching process
  */
-LRESULT AppCore::RunApp(const wchar_t* appPath, bool bRunAsAdmin /* = false */, bool bShowFlag /* = true */)
+LRESULT AppCore::RunApp(const wchar_t* appPath, bool runAsAdmin /* = false */, bool showFlag /* = true */)
 {
 	// Param set
-	String runAsFlag = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
-	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
+	String runAsFlag = (runAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
+	int showFlagValue = (showFlag) ? SW_SHOW : SW_HIDE;
 
 	// Run an executable instance
-	HINSTANCE hInstance = ShellExecute(NULL, runAsFlag, appPath, 0, 0, nShowFlag);
-	return (LRESULT)(hInstance != NULL);
+	HINSTANCE instance = ShellExecute(NULL, runAsFlag, appPath, 0, 0, showFlagValue);
+	return (LRESULT)(instance != NULL);
 }
 
 
@@ -3265,18 +3265,18 @@ LRESULT AppCore::RunApp(const wchar_t* appPath, bool bRunAsAdmin /* = false */, 
  * @param	bShowFlag	  - Show window flag
  * @return	LRESULT - Result of command execution process
  */
-LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, bool bRunAsAdmin /* = true */, bool bShowFlag /* = true */)
+LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, bool runAsAdmin /* = true */, bool showFlag /* = true */)
 {
 	// Format input command
 	String commandFormat = StringUtils::StringFormat(_T("/C %s"), commandString);
 
 	// Flag param set
-	String strRunAsFlag = (bRunAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
-	int nShowFlag = (bShowFlag) ? SW_SHOW : SW_HIDE;
+	String runAsFlag = (runAsAdmin) ? Constant::Command::RunAs : Constant::Command::Open;
+	int showFlagValue = (showFlag) ? SW_SHOW : SW_HIDE;
 
 	// Excute command
-	HINSTANCE hInstance = ShellExecute(NULL, strRunAsFlag, Constant::Path::SystemCMD, commandFormat, 0, nShowFlag);
-	return (LRESULT)(hInstance != NULL);
+	HINSTANCE instance = ShellExecute(NULL, runAsFlag, Constant::Path::SystemCMD, commandFormat, 0, showFlagValue);
+	return (LRESULT)(instance != NULL);
 }
 
 
@@ -3288,40 +3288,40 @@ LRESULT AppCore::ExecuteCommand(const wchar_t* commandString, bool bRunAsAdmin /
  * @param	dwErrorCode	 - Returned error code
  * @return	bool
  */
-bool AppCore::CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, unsigned nStyle, DWORD& dwErrorCode)
+bool AppCore::CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, unsigned style, DWORD& errorCode)
 {
 	// Startup info
-	STARTUPINFO StartupInfo;
-	ZeroMemory(&StartupInfo, sizeof(STARTUPINFO));
-	StartupInfo.cb = sizeof(STARTUPINFO);
+	STARTUPINFO startupInfo;
+	ZeroMemory(&startupInfo, sizeof(STARTUPINFO));
+	startupInfo.cb = sizeof(STARTUPINFO);
 
 	// Process info
-	PROCESS_INFORMATION ProcessInfo;
-	ZeroMemory(&ProcessInfo, sizeof(PROCESS_INFORMATION));
+	PROCESS_INFORMATION processInfo;
+	ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
 
 	// Create process
-	bool bResult = CreateProcess(appPath, commandLine, (LPSECURITY_ATTRIBUTES)NULL,
-		(LPSECURITY_ATTRIBUTES)NULL, false, (DWORD)nStyle, NULL, NULL, &StartupInfo, &ProcessInfo);
+	bool result = CreateProcess(appPath, commandLine, (LPSECURITY_ATTRIBUTES)NULL,
+		(LPSECURITY_ATTRIBUTES)NULL, false, (DWORD)style, NULL, NULL, &startupInfo, &processInfo);
 
-	if (bResult == false) {
+	if (result == false) {
 		// Get error code
-		dwErrorCode = GetLastError();
-		TRACE_FORMAT("Error: Create app process failed!!! (Code: 0x%08X)", dwErrorCode);
+		errorCode = GetLastError();
+		TRACE_FORMAT("Error: Create app process failed!!! (Code: 0x%08X)", errorCode);
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return bResult;
+		return result;
 	}
 
 	// Wait for process exitting
-	WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+	WaitForSingleObject(processInfo.hProcess, INFINITE);
 
 	// Check whether our command succeeded?
-	GetExitCodeProcess(ProcessInfo.hProcess, &dwErrorCode);
+	GetExitCodeProcess(processInfo.hProcess, &errorCode);
 
 	// Avoid memory leak by closing process handle
-	CloseHandle(ProcessInfo.hProcess);
-	CloseHandle(ProcessInfo.hThread);
+	CloseHandle(processInfo.hProcess);
+	CloseHandle(processInfo.hThread);
 
-	return bResult;
+	return result;
 }
 
 
@@ -3347,13 +3347,13 @@ static bool CALLBACK EnumFontFamiliesExProc(ENUMLOGFONTEX* lpelfe, NEWTEXTMETRIC
 bool AppCore::EnumFontNames(std::vector<std::wstring>& fontNames)
 {
 	// Define temp font
-	LOGFONT logfont = {0};
-	logfont.lfCharSet = DEFAULT_CHARSET;
+	LOGFONT logFont = {0};
+	logFont.lfCharSet = DEFAULT_CHARSET;
 
 	// Get font families
-	HDC hdc = GetDC(NULL);
-	EnumFontFamiliesEx(hdc, &logfont, (FONTENUMPROC)EnumFontFamiliesExProc, (LPARAM)&fontNames, 0);
-	ReleaseDC(NULL, hdc);
+	HDC dc = GetDC(NULL);
+	EnumFontFamiliesEx(dc, &logFont, (FONTENUMPROC)EnumFontFamiliesExProc, (LPARAM)&fontNames, 0);
+	ReleaseDC(NULL, dc);
 
 	// Remove duplicated font names
 	std::sort(fontNames.begin(), fontNames.end());
@@ -3374,8 +3374,8 @@ bool AppCore::ValidateFontName(const wchar_t* fontName)
 	std::vector<std::wstring> fontNames;
 
 	// Enumerate all currently available fonts
-	bool bRet = EnumFontNames(fontNames);
-	if (!bRet) {
+	bool ret = EnumFontNames(fontNames);
+	if (!ret) {
 		// Trace error
 		TRACE_ERROR("Error: Enumerate fonts failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -3383,9 +3383,9 @@ bool AppCore::ValidateFontName(const wchar_t* fontName)
 	}
 
 	// Find for input font name within the acquired font families
-	bRet = (std::find(fontNames.begin(), fontNames.end(), fontName) != fontNames.end());
-	if (bRet)
-		return bRet;
+	ret = (std::find(fontNames.begin(), fontNames.end(), fontName) != fontNames.end());
+	if (ret)
+		return ret;
 
 	// For easier comparison, convert all to lowercase
 	std::wstring lowerInput(fontName);
@@ -3397,8 +3397,8 @@ bool AppCore::ValidateFontName(const wchar_t* fontName)
 	}
 
 	// Find for input font name within the lower font name array
-	bRet = (std::find(fontLowNames.begin(), fontLowNames.end(), lowerInput) != fontNames.end());
+	ret = (std::find(fontLowNames.begin(), fontLowNames.end(), lowerInput) != fontNames.end());
 
-	return bRet;
+	return ret;
 }
 

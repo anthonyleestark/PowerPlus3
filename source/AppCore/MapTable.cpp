@@ -21,34 +21,34 @@
  * @param	bReverse	- Reverse search
  * @return	unsigned - Second paired ID
  */
-unsigned MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, unsigned nID, bool bReverse /* = false */)
+unsigned MapTable::GetPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reverse /* = false */)
 {
 	// Return INVALID if ID mapping table is invalid
-	ASSERT(pIDTableRef != NULL);
-	if (pIDTableRef == NULL) {
+	ASSERT(idTableRef != NULL);
+	if (idTableRef == NULL) {
 		return (unsigned)INT_INVALID;
 	}
 
 	// Find and return corresponding ID paired with specified macro ID
-	int nIndex = 0;
+	int index = 0;
 	do {
 		// Get ID pair entry
-		IDPAIR idPair = pIDTableRef[nIndex++];
+		IDPAIR idPair = idTableRef[index++];
 
 		// End of table
 		if (idPair.first == INFINITE)
 			break;
 
 		// Reverse search
-		if (bReverse == true) {
-			if (idPair.second == nID)
+		if (reverse == true) {
+			if (idPair.second == id)
 				return idPair.first;
 		}
 		else {
-			if (idPair.first == nID)
+			if (idPair.first == id)
 				return idPair.second;
 		}
-	} while (nIndex < MAX_TABLESIZE);
+	} while (index < MAX_TABLESIZE);
 
 	// Return INVALID if not found
 	return (unsigned)INT_INVALID;
@@ -60,11 +60,11 @@ unsigned MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, unsigned nID, bool bR
  * @param	input			- Given string
  * @return	unsigned - String ID
  */
-unsigned MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input)
+unsigned MapTable::GetStringID(STRINGTABLE_REF stringTableRef, const wchar_t* input)
 {
 	// Return NULL string if language table is invalid
-	ASSERT(pStringTableRef != NULL);
-	if (pStringTableRef == NULL) {
+	ASSERT(stringTableRef != NULL);
+	if (stringTableRef == NULL) {
 		return (unsigned)INT_INVALID;
 	}
 
@@ -73,11 +73,11 @@ unsigned MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* i
 	inputString.ToLower();
 
 	// Find and return corresponding ID paired with specified string
-	int nIndex = 0;
+	int index = 0;
 	String pairedString;
 	do {
 		// Get string pair entry
-		LANGTEXT stringPair = pStringTableRef[nIndex++];
+		LANGTEXT stringPair = stringTableRef[index++];
 
 		// End of table
 		if (stringPair.id == INFINITE)
@@ -91,7 +91,7 @@ unsigned MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* i
 		if (!_tcscmp(pairedString, inputString)) {
 			return stringPair.id;
 		}
-	} while (nIndex < MAX_TABLESIZE);
+	} while (index < MAX_TABLESIZE);
 
 	// Return INVALID if not found
 	return (unsigned)INT_INVALID;
@@ -103,28 +103,28 @@ unsigned MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* i
  * @param	nID				 - String ID
  * @return	const wchar_t* - Paired string
  */
-const wchar_t* MapTable::GetString(STRINGTABLE_REF pStringTableRef, unsigned nID)
+const wchar_t* MapTable::GetString(STRINGTABLE_REF stringTableRef, unsigned id)
 {
 	// Return NULL string if language table is invalid
-	ASSERT(pStringTableRef != NULL);
-	if (pStringTableRef == NULL)
+	ASSERT(stringTableRef != NULL);
+	if (stringTableRef == NULL)
 		return Constant::String::Null;
 
 	// Find and return corresponding string paired with specified ID
-	int nIndex = 0;
+	int index = 0;
 	do {
 		// Get string pair entry
-		LANGTEXT stringPair = pStringTableRef[nIndex++];
+		LANGTEXT stringPair = stringTableRef[index++];
 
 		// End of table
 		if (stringPair.id == INFINITE)
 			break;
 
 		// Compare string
-		if (stringPair.id == nID)
+		if (stringPair.id == id)
 			return stringPair.langString;
 
-	} while (nIndex < MAX_TABLESIZE);
+	} while (index < MAX_TABLESIZE);
 
 	return Constant::String::Null;
 }

@@ -1147,7 +1147,7 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 	// Timer ID: Power Reminder
 	else if (nIDEvent == TIMERID_STD_POWERREMINDER) {
 		// Process Power Reminder at set time event
-		bool bPwrReminderActive = GetAppOption(AppOptionID::pwrReminderEnabled);
+		bool bPwrReminderActive = GetAppOption(AppOptionID::enablePowerReminder);
 		if (bPwrReminderActive == true) {
 			// Execute Power reminder
 			ExecutePowerReminder(PwrReminderEvent::atSetTime);
@@ -2147,36 +2147,36 @@ void CPowerPlusDlg::UpdateDialogData(bool bSaveAndValidate /* = true */)
 	/*----------------------------<Bind config data to dialog items>----------------------------*/
 
 		// Left mouse button action combo-box
-		nCmbSel = m_cfgTempConfig.nLMBAction;
+		nCmbSel = m_cfgTempConfig.leftMouseAction;
 		m_cmbLMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
 
 		// Middle mouse button action combo-box
-		nCmbSel = m_cfgTempConfig.nMMBAction;
+		nCmbSel = m_cfgTempConfig.middleMouseAction;
 		m_cmbMMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
 
 		// Right mouse button show menu checkbox
-		m_bRMBShowMenu = m_cfgTempConfig.bRMBShowMenu;
+		m_bRMBShowMenu = m_cfgTempConfig.rightMouseShowMenu;
 
 		// Right mouse button action combo-box
-		nCmbSel = (m_bRMBShowMenu == true) ? APP_ACTION_SHOWMENU : m_cfgTempConfig.nRMBAction;
+		nCmbSel = (m_bRMBShowMenu == true) ? APP_ACTION_SHOWMENU : m_cfgTempConfig.rightMouseAction;
 		m_cmbRMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
 		EnableItem(IDC_RMBACTION_LIST, !m_bRMBShowMenu);
 
 		// Update other checkbox-es
-		m_bShowDlgAtStartup = m_cfgTempConfig.bShowDlgAtStartup;
-		m_bStartupEnabled = m_cfgTempConfig.bStartupEnabled;
-		m_bConfirmAction = m_cfgTempConfig.bConfirmAction;
-		m_bSaveHistoryLog = m_cfgTempConfig.bSaveHistoryLog;
-		m_bSaveAppEventLog = m_cfgTempConfig.bSaveAppEventLog;
-		m_bRunAsAdmin = m_cfgTempConfig.bRunAsAdmin;
-		m_bShowErrorMsg = m_cfgTempConfig.bShowErrorMsg;
-		m_bNotifySchedule = m_cfgTempConfig.bNotifySchedule;
-		m_bAllowCancelSchedule = m_cfgTempConfig.bAllowCancelSchedule;
-		m_bEnableBackgroundHotkey = m_cfgTempConfig.bEnableBackgroundHotkey;
-		m_bEnablePowerReminder = m_cfgTempConfig.bEnablePowerReminder;
+		m_bShowDlgAtStartup = m_cfgTempConfig.showDialogAtStartup;
+		m_bStartupEnabled = m_cfgTempConfig.enableAutoStart;
+		m_bConfirmAction = m_cfgTempConfig.actionConfirmation;
+		m_bSaveHistoryLog = m_cfgTempConfig.saveActionHistory;
+		m_bSaveAppEventLog = m_cfgTempConfig.saveAppEventLog;
+		m_bRunAsAdmin = m_cfgTempConfig.runAsAdmin;
+		m_bShowErrorMsg = m_cfgTempConfig.showErrorMessage;
+		m_bNotifySchedule = m_cfgTempConfig.scheduleNotification;
+		m_bAllowCancelSchedule = m_cfgTempConfig.allowScheduleCancellation;
+		m_bEnableBackgroundHotkey = m_cfgTempConfig.enableBackgroundHotkey;
+		m_bEnablePowerReminder = m_cfgTempConfig.enablePowerReminder;
 
 		// Language list combo-box
-		nCmbSel = Opt2Sel(APP_LANGUAGE, m_cfgTempConfig.nLanguageID);
+		nCmbSel = Opt2Sel(APP_LANGUAGE, m_cfgTempConfig.languageID);
 		m_cmbLanguages.SetCurSel(nCmbSel);
 
 		// Update buttons
@@ -2197,36 +2197,36 @@ void CPowerPlusDlg::UpdateDialogData(bool bSaveAndValidate /* = true */)
 
 		// Left mouse button action combo-box
 		nCmbSel = m_cmbLMBAction.GetCurSel();
-		m_cfgTempConfig.nLMBAction = Sel2Opt(APP_ACTION, nCmbSel);
+		m_cfgTempConfig.leftMouseAction = Sel2Opt(APP_ACTION, nCmbSel);
 
 		// Middle mouse button action combo-box
 		nCmbSel = m_cmbMMBAction.GetCurSel();
-		m_cfgTempConfig.nMMBAction = Sel2Opt(APP_ACTION, nCmbSel);
+		m_cfgTempConfig.middleMouseAction = Sel2Opt(APP_ACTION, nCmbSel);
 
 		// Right mouse button show menu checkbox
-		m_cfgTempConfig.bRMBShowMenu = m_bRMBShowMenu;
+		m_cfgTempConfig.rightMouseShowMenu = m_bRMBShowMenu;
 
 		// Right mouse button action combo-box
 		nCmbSel = Opt2Sel(APP_ACTION, APP_ACTION_SHOWMENU);
-		nCmbSel = (m_cfgTempConfig.bRMBShowMenu == true) ? nCmbSel : m_cmbRMBAction.GetCurSel();
-		m_cfgTempConfig.nRMBAction = Sel2Opt(APP_ACTION, nCmbSel);
+		nCmbSel = (m_cfgTempConfig.rightMouseShowMenu == true) ? nCmbSel : m_cmbRMBAction.GetCurSel();
+		m_cfgTempConfig.rightMouseAction = Sel2Opt(APP_ACTION, nCmbSel);
 
 		// Update other checkbox-es
-		m_cfgTempConfig.bShowDlgAtStartup = m_bShowDlgAtStartup;
-		m_cfgTempConfig.bStartupEnabled = m_bStartupEnabled;
-		m_cfgTempConfig.bConfirmAction = m_bConfirmAction;
-		m_cfgTempConfig.bSaveHistoryLog = m_bSaveHistoryLog;
-		m_cfgTempConfig.bSaveAppEventLog = m_bSaveAppEventLog;
-		m_cfgTempConfig.bRunAsAdmin = m_bRunAsAdmin;
-		m_cfgTempConfig.bShowErrorMsg = m_bShowErrorMsg;
-		m_cfgTempConfig.bNotifySchedule = m_bNotifySchedule;
-		m_cfgTempConfig.bAllowCancelSchedule = m_bAllowCancelSchedule;
-		m_cfgTempConfig.bEnableBackgroundHotkey = m_bEnableBackgroundHotkey;
-		m_cfgTempConfig.bEnablePowerReminder = m_bEnablePowerReminder;
+		m_cfgTempConfig.showDialogAtStartup = m_bShowDlgAtStartup;
+		m_cfgTempConfig.enableAutoStart = m_bStartupEnabled;
+		m_cfgTempConfig.actionConfirmation = m_bConfirmAction;
+		m_cfgTempConfig.saveActionHistory = m_bSaveHistoryLog;
+		m_cfgTempConfig.saveAppEventLog = m_bSaveAppEventLog;
+		m_cfgTempConfig.runAsAdmin = m_bRunAsAdmin;
+		m_cfgTempConfig.showErrorMessage = m_bShowErrorMsg;
+		m_cfgTempConfig.scheduleNotification = m_bNotifySchedule;
+		m_cfgTempConfig.allowScheduleCancellation = m_bAllowCancelSchedule;
+		m_cfgTempConfig.enableBackgroundHotkey = m_bEnableBackgroundHotkey;
+		m_cfgTempConfig.enablePowerReminder = m_bEnablePowerReminder;
 
 		// Language list combo-box
 		nCmbSel = m_cmbLanguages.GetCurSel();
-		m_cfgTempConfig.nLanguageID = Sel2Opt(APP_LANGUAGE, nCmbSel);
+		m_cfgTempConfig.languageID = Sel2Opt(APP_LANGUAGE, nCmbSel);
 
 	/*------------------------------------------------------------------------------------------*/
 	}
@@ -2245,23 +2245,23 @@ bool CPowerPlusDlg::CheckSettingChangeState(void)
 {
 	bool bChangeFlag = false;
 
-	bChangeFlag |= (m_cfgTempConfig.nLMBAction != m_cfgAppConfig.nLMBAction);
-	bChangeFlag |= (m_cfgTempConfig.nMMBAction != m_cfgAppConfig.nMMBAction);
-	bChangeFlag |= (m_cfgTempConfig.nRMBAction != m_cfgAppConfig.nRMBAction);
-	bChangeFlag |= (m_cfgTempConfig.bRMBShowMenu != m_cfgAppConfig.bRMBShowMenu);
-	bChangeFlag |= (m_cfgTempConfig.nLanguageID != m_cfgAppConfig.nLanguageID);
-	bChangeFlag |= (m_cfgTempConfig.bShowDlgAtStartup != m_cfgAppConfig.bShowDlgAtStartup);
-	bChangeFlag |= (m_cfgTempConfig.bStartupEnabled != m_cfgAppConfig.bStartupEnabled);
-	bChangeFlag |= (m_cfgTempConfig.bConfirmAction != m_cfgAppConfig.bConfirmAction);
-	bChangeFlag |= (m_cfgTempConfig.bSaveHistoryLog != m_cfgAppConfig.bSaveHistoryLog);
-	bChangeFlag |= (m_cfgTempConfig.bSaveAppEventLog != m_cfgAppConfig.bSaveAppEventLog);
-	bChangeFlag |= (m_cfgTempConfig.bRunAsAdmin != m_cfgAppConfig.bRunAsAdmin);
-	bChangeFlag |= (m_cfgTempConfig.bShowErrorMsg != m_cfgAppConfig.bShowErrorMsg);
-	bChangeFlag |= (m_cfgTempConfig.bNotifySchedule != m_cfgAppConfig.bNotifySchedule);
-	bChangeFlag |= (m_cfgTempConfig.bAllowCancelSchedule != m_cfgAppConfig.bAllowCancelSchedule);
-	bChangeFlag |= (m_cfgTempConfig.bEnableBackgroundHotkey != m_cfgAppConfig.bEnableBackgroundHotkey);
-	bChangeFlag |= (m_cfgTempConfig.bLockStateHotkey != m_cfgAppConfig.bLockStateHotkey);
-	bChangeFlag |= (m_cfgTempConfig.bEnablePowerReminder != m_cfgAppConfig.bEnablePowerReminder);
+	bChangeFlag |= (m_cfgTempConfig.leftMouseAction != m_cfgAppConfig.leftMouseAction);
+	bChangeFlag |= (m_cfgTempConfig.middleMouseAction != m_cfgAppConfig.middleMouseAction);
+	bChangeFlag |= (m_cfgTempConfig.rightMouseAction != m_cfgAppConfig.rightMouseAction);
+	bChangeFlag |= (m_cfgTempConfig.rightMouseShowMenu != m_cfgAppConfig.rightMouseShowMenu);
+	bChangeFlag |= (m_cfgTempConfig.languageID != m_cfgAppConfig.languageID);
+	bChangeFlag |= (m_cfgTempConfig.showDialogAtStartup != m_cfgAppConfig.showDialogAtStartup);
+	bChangeFlag |= (m_cfgTempConfig.enableAutoStart != m_cfgAppConfig.enableAutoStart);
+	bChangeFlag |= (m_cfgTempConfig.actionConfirmation != m_cfgAppConfig.actionConfirmation);
+	bChangeFlag |= (m_cfgTempConfig.saveActionHistory != m_cfgAppConfig.saveActionHistory);
+	bChangeFlag |= (m_cfgTempConfig.saveAppEventLog != m_cfgAppConfig.saveAppEventLog);
+	bChangeFlag |= (m_cfgTempConfig.runAsAdmin != m_cfgAppConfig.runAsAdmin);
+	bChangeFlag |= (m_cfgTempConfig.showErrorMessage != m_cfgAppConfig.showErrorMessage);
+	bChangeFlag |= (m_cfgTempConfig.scheduleNotification != m_cfgAppConfig.scheduleNotification);
+	bChangeFlag |= (m_cfgTempConfig.allowScheduleCancellation != m_cfgAppConfig.allowScheduleCancellation);
+	bChangeFlag |= (m_cfgTempConfig.enableBackgroundHotkey != m_cfgAppConfig.enableBackgroundHotkey);
+	bChangeFlag |= (m_cfgTempConfig.allowLockscreenHotkey != m_cfgAppConfig.allowLockscreenHotkey);
+	bChangeFlag |= (m_cfgTempConfig.enablePowerReminder != m_cfgAppConfig.enablePowerReminder);
 
 	return bChangeFlag;
 }
@@ -2588,11 +2588,11 @@ void CPowerPlusDlg::UpdateMenuItemState(CMenu* pMenu)
 			break;
 
 		case IDM_NOTIFY_OPENDLG_HOTKEYSET:
-			bShowItem = GetAppOption(AppOptionID::backgroundHotkeyEnabled, true);
+			bShowItem = GetAppOption(AppOptionID::enableBackgroundHotkey, true);
 			break;
 
 		case IDM_NOTIFY_OPENDLG_PWRREMINDER:
-			bShowItem = GetAppOption(AppOptionID::pwrReminderEnabled, true);
+			bShowItem = GetAppOption(AppOptionID::enablePowerReminder, true);
 			break;
 
 		default:
@@ -2672,9 +2672,9 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 
 	// Load language strings
 	String formatString = GetLanguageString(pAppLang, NOTIFY_TIP_TEMPLATE);
-	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nLMBAction)));
-	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nMMBAction)));
-	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.nRMBAction)));
+	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.leftMouseAction)));
+	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.middleMouseAction)));
+	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.rightMouseAction)));
 
 	// Format notify tip text
 	String notifyTipText = StringUtils::StringFormat(formatString, arrTipText.at(0).GetString(), arrTipText.at(1).GetString(), arrTipText.at(2).GetString());
@@ -2936,7 +2936,7 @@ void CPowerPlusDlg::ApplySettings(bool bMinimize)
 	SetupBackgroundHotkey(Mode::Update);
 
 	// Disable Power Reminder snooze queue if feature's disabled
-	if (GetAppOption(AppOptionID::pwrReminderEnabled) == NULL) {
+	if (GetAppOption(AppOptionID::enablePowerReminder) == NULL) {
 		UpdatePwrReminderSnooze(Mode::Disable);
 	}
 
@@ -3410,7 +3410,7 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 		if (bSkipProcess != true) {
 
 			// Check for time matching and trigger schedule notifying if enabled
-			if (GetAppOption(AppOptionID::notifySchedule) == true) {
+			if (GetAppOption(AppOptionID::scheduleNotification) == true) {
 				bool bTriggerNotify = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schDefaultItem.GetTime(), -30);
 				if (bTriggerNotify == true) {
 					// Do notify schedule (and check for trigger reupdate)
@@ -3470,7 +3470,7 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 			continue;
 
 		// Check for time matching and trigger schedule notifying if enabled
-		if (GetAppOption(AppOptionID::notifySchedule) == true) {
+		if (GetAppOption(AppOptionID::scheduleNotification) == true) {
 			bool bTriggerNotify = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schExtraItem.GetTime(), -30);
 			if (bTriggerNotify == true) {
 				// Do notify schedule (and check for trigger reupdate)
@@ -3824,7 +3824,7 @@ bool CPowerPlusDlg::GetActionScheduleSnoozeStatus(unsigned nItemID, const ClockT
 void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 {
 	// Get option and flag values
-	bool bHKSEnable = GetAppOption(AppOptionID::backgroundHotkeyEnabled);
+	bool bHKSEnable = GetAppOption(AppOptionID::enableBackgroundHotkey);
 	bool bHKRegisterFlag = GetFlagValue(AppFlagID::hotkeyRegistered);
 
 	// If background hotkey feature is disabled and no hotkey registered, do nothing
@@ -3989,7 +3989,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 bool CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 {
 	// If "Background hotkey" option is not enabled, do nothing
-	if (GetAppOption(AppOptionID::backgroundHotkeyEnabled) == false) {
+	if (GetAppOption(AppOptionID::enableBackgroundHotkey) == false) {
 		TRACE("Background hotkey option is not enabled!!!");
 		return false;
 	}
@@ -4146,8 +4146,8 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 bool CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 {
 	// Only process if both options are enabled
-	if ((GetAppOption(AppOptionID::backgroundHotkeyEnabled) != true) ||
-		(GetAppOption(AppOptionID::lockStateHotkeyEnabled) != true)) {
+	if ((GetAppOption(AppOptionID::enableBackgroundHotkey) != true) ||
+		(GetAppOption(AppOptionID::allowLockscreenHotkey) != true)) {
 		TRACE("[LockState Hotkey] Either required options are not enabled!!!");
 		return false;
 	}
@@ -4209,7 +4209,7 @@ bool CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 bool CPowerPlusDlg::ExecutePowerReminder(unsigned nExecEventID)
 {
 	// If "Power Reminder" option is not enabled, do nothing
-	if (GetAppOption(AppOptionID::pwrReminderEnabled) == false) {
+	if (GetAppOption(AppOptionID::enablePowerReminder) == false) {
 		TRACE("Power Reminder option is not enabled!!!");
 		return false;
 	}
@@ -4994,7 +4994,7 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 int CPowerPlusDlg::ConfirmActionExec(unsigned nActionType, unsigned nActionID)
 {
 	// If "Confirm action" option is not enabled, return YES
-	if (GetAppOption(AppOptionID::confirmBeforeExecuting) == false) {
+	if (GetAppOption(AppOptionID::actionConfirmation) == false) {
 		TRACE("Confirm action option is not enabled, always allow execution!!!");
 		return IDYES;
 	}
@@ -5049,7 +5049,7 @@ int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, bool& bReupdate)
 	String messageContent = StringUtils::StringFormat(messageTemplate, messageScheduleAction);
 
 	// Allow cancelling schedule when notify
-	bool bAllowCancel = GetAppOption(AppOptionID::allowCancelingSchedule);
+	bool bAllowCancel = GetAppOption(AppOptionID::allowScheduleCancellation);
 	if (bAllowCancel == true)
 	{
 		// Update message content
@@ -5120,21 +5120,21 @@ void CPowerPlusDlg::RequestRestartApp(unsigned uiCmdSenderID, bool bRestartAsAdm
 	// Request from [Apply] button
 	if (uiCmdSenderID == IDC_APPLY_BTN) {
 		bool bRestartTrigger = GetFlagValue(AppFlagID::restartAsAdmin);
-		reqRestart.bRequest = bRestartTrigger;
-		reqRestart.bAdminCheck = true;
-		reqRestart.bNotAdminShowMsg = true;
-		reqRestart.bIsAdminDoNothing = true;
-		reqRestart.bShowMsgWhenDeny = true;
-		reqRestart.bResetFlag = true;
+		reqRestart.request = bRestartTrigger;
+		reqRestart.adminCheck = true;
+		reqRestart.showMsgIfNotAdmin = true;
+		reqRestart.doNothingIfAdmin = true;
+		reqRestart.showMsgWhenDeny = true;
+		reqRestart.resetFlag = true;
 	}
 	// Request from [Restart with admin priviledges] menu
 	else if (uiCmdSenderID == IDM_NOTIFY_RESTART_ASADMIN) {
-		reqRestart.bRequest = true;
-		reqRestart.bAdminCheck = true;
-		reqRestart.bNotAdminShowMsg = false;
-		reqRestart.bIsAdminDoNothing = true;
-		reqRestart.bShowMsgWhenDeny = false;
-		reqRestart.bResetFlag = false;
+		reqRestart.request = true;
+		reqRestart.adminCheck = true;
+		reqRestart.showMsgIfNotAdmin = false;
+		reqRestart.doNothingIfAdmin = true;
+		reqRestart.showMsgWhenDeny = false;
+		reqRestart.resetFlag = false;
 	}
 	// Request from [Restart app] menu or debug command
 	else if ((uiCmdSenderID == IDM_NOTIFY_RESTART_APP) ||
@@ -5168,7 +5168,7 @@ void CPowerPlusDlg::RequestRestartApp(unsigned uiCmdSenderID, bool bRestartAsAdm
 void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 {
 	// If there's no request, do nothing
-	if (reqRestart.bRequest == false) {
+	if (reqRestart.request == false) {
 		TRACE("There is no restart request!!!");
 		return;
 	}
@@ -5182,12 +5182,12 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 
 	// Check if the application is currently running as admin
 	bool bIsAdmin = false;
-	if (reqRestart.bAdminCheck == true) {
+	if (reqRestart.adminCheck == true) {
 		bIsAdmin = IsUserAnAdmin();
 		if (bIsAdmin == true) {
 			// If already running as admin, do nothing
-			if (reqRestart.bIsAdminDoNothing == true) {
-				if (reqRestart.bShowMsgWhenDeny == false) {
+			if (reqRestart.doNothingIfAdmin == true) {
+				if (reqRestart.showMsgWhenDeny == false) {
 					DisplayMessageBox(MSGBOX_OTHER_ALREADY_ADMIN, (unsigned)NULL, MB_OK | MB_ICONINFORMATION);
 				}
 				return;
@@ -5195,7 +5195,7 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 		}
 		else if (bIsAdmin == false) {
 			// Show "not admin" message
-			if (reqRestart.bNotAdminShowMsg == true) {
+			if (reqRestart.showMsgIfNotAdmin == true) {
 				const wchar_t* notAdminMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_NOTRUNASADMIN);
 				messageFormatString.Format(_T("%s\n%s"), notAdminMsg, requestMessage);
 			}
@@ -5210,12 +5210,12 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 	}
 	else if (nRet == IDNO) {
 		// Run as admin next time
-		if (reqRestart.bShowMsgWhenDeny == true) {
+		if (reqRestart.showMsgWhenDeny == true) {
 			// Show message when denied
 			DisplayMessageBox(MSGBOX_OTHER_RUNASADMIN_NEXTTIME, (unsigned)NULL, MB_OK | MB_ICONINFORMATION);
 		}
 
-		if (reqRestart.bResetFlag == true) {
+		if (reqRestart.resetFlag == true) {
 			// Reset flag
 			SetFlagValue(AppFlagID::restartAsAdmin, false);
 		}
