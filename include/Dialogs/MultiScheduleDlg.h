@@ -142,7 +142,7 @@ protected:
 		return GetExtraItemNum() + ScheduleData::defaultItemNum;
 	};
 	int GetExtraItemNum() const {
-		return m_schScheduleTemp.GetExtraItemNum();
+		return m_schScheduleTemp.getExtraItemNum();
 	};
 };
 

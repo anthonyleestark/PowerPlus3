@@ -63,19 +63,19 @@ CPowerPlusApp::~CPowerPlusApp()
 	}
 
 	if (m_pschScheduleData != NULL) {
-		m_pschScheduleData->DeleteAll();
+		m_pschScheduleData->deleteAll();
 		delete m_pschScheduleData;
 		m_pschScheduleData = NULL;
 	}
 
 	if (m_phksHotkeySetData != NULL) {
-		m_phksHotkeySetData->DeleteAll();
+		m_phksHotkeySetData->deleteAll();
 		delete m_phksHotkeySetData;
 		m_phksHotkeySetData = NULL;
 	}
 
 	if (m_ppwrReminderData != NULL) {
-		m_ppwrReminderData->DeleteAll();
+		m_ppwrReminderData->deleteAll();
 		delete m_ppwrReminderData;
 		m_ppwrReminderData = NULL;
 	}
@@ -87,7 +87,7 @@ CPowerPlusApp::~CPowerPlusApp()
 	}
 
 	// Destroy DebugTest dialog
-	DestroyDebugTestDlg();
+	destroyDebugTestDlg();
 }
 
 
@@ -108,7 +108,7 @@ BOOL CPowerPlusApp::InitInstance()
 	DWORD dwErrorCode;
 
 	// Set application launch time
-	SetAppLaunchTime(DateTimeUtils::GetCurrentDateTime());
+	setAppLaunchTime(DateTimeUtils::getCurrentDateTime());
 
 	// Set application window caption (with product version number)
 	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, true)) {
@@ -161,7 +161,7 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 
 	// Initialize DebugTest dialog
-	InitDebugTestDlg();
+	initDebugTestDlg();
 
 	// Check CTRL key press state and open DebugTest dialog
 	if (IS_PRESSED(VK_CONTROL)) {
@@ -173,17 +173,17 @@ BOOL CPowerPlusApp::InitInstance()
 	SetRegistryKey(AppProfile::CompanyName);
 
 	// Update application profile info data
-	UpdateAppLaunchTimeProfileInfo();
+	updateAppLaunchTimeProfileInfo();
 
 	// Create neccessary sub-folders
-	String subDirectory = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String subDirectory = StringUtils::getSubFolderPath(Constant::Folder::Log);
 	CreateDirectory(subDirectory, NULL);
 
 	// Setup low-level keyboard hook
 	m_hAppKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
 
 	// Initialize app data
-	if (!InitAppData()) {
+	if (!initAppData()) {
 
 		// Trace log
 		TRACE_ERROR("Error: Init app data failed!!!");
@@ -195,20 +195,20 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 	
 	// Initialize default data
-	m_pcfgAppConfig->SetDefaultData();
-	m_pschScheduleData->SetDefaultData();
-	m_phksHotkeySetData->SetDefaultData();
-	m_ppwrReminderData->SetDefaultData();
+	m_pcfgAppConfig->setDefaultData();
+	m_pschScheduleData->setDefaultData();
+	m_phksHotkeySetData->setDefaultData();
+	m_ppwrReminderData->setDefaultData();
 
 	// Load registry app data
-	if (!LoadRegistryAppData()) {
+	if (!loadRegistryAppData()) {
 		// Trace log
 		TRACE_ERROR("Error: Load registry app data failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 
 	// Initialize application language
-	SetAppLanguageOption(GetAppOption(AppOptionID::languageID));
+	SetAppLanguageOption(getAppOption(AppOptionID::languageID));
 	if (!InitAppLanguage()) {
 
 		// Trace log
@@ -222,7 +222,7 @@ BOOL CPowerPlusApp::InitInstance()
 	
 	// Initialize log objects
 	InitAppEventLog();
-	InitAppHistoryLog();
+	initAppHistoryLog();
 
 	// Output event log: InitInstance
 	OutputEventLog(LOG_EVENT_INIT_INSTANCE);
@@ -264,7 +264,7 @@ BOOL CPowerPlusApp::InitInstance()
 	m_pMainWnd = pMainDlg;
 
 	// Show/hide main dialog at startup
-	if (GetAppOption(AppOptionID::showDialogAtStartup) == false) {
+	if (getAppOption(AppOptionID::showDialogAtStartup) == false) {
 
 		// Hide dialog
 		pMainDlg->Create(IDD_POWERPLUS_DIALOG, NULL);
@@ -315,7 +315,7 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 
 	// Destroy DebugTest dialog
-	DestroyDebugTestDlg();
+	destroyDebugTestDlg();
 
 	// Delete the main dialog pointer
 	if (pMainDlg != NULL) {
@@ -341,20 +341,20 @@ int CPowerPlusApp::ExitInstance()
 	OutputEventLog(LOG_EVENT_EXIT_INSTANCE);
 
 	// Write application event logging data to file if enabled
-	if (GetAppOption(AppOptionID::saveAppEventLog) == true) {
+	if (getAppOption(AppOptionID::saveAppEventLog) == true) {
 		GetAppEventLog()->Write();
 	}
 
 	// Write action history logging data to file if enabled
-	if (GetAppOption(AppOptionID::saveActionHistory) == true) {
-		GetAppHistoryLog()->Write();
+	if (getAppOption(AppOptionID::saveActionHistory) == true) {
+		getAppHistoryLog()->Write();
 	}
 
 	// Close DebugTest dialog
-	DestroyDebugTestDlg();
+	destroyDebugTestDlg();
 
 	// Find if the DebugTest dialog is still running
-	HWND hDebugTestWnd = FindDebugTestDlg();
+	HWND hDebugTestWnd = AppCore::findDebugTestDlg();
 	if (hDebugTestWnd != NULL) {
 		// Destroy dialog
 		::DestroyWindow(hDebugTestWnd);
@@ -364,8 +364,8 @@ int CPowerPlusApp::ExitInstance()
 	UnhookWindowsHookEx(m_hAppKeyboardHook);
 
 	// Mark as safe-termination
-	SetSafeTerminationFlag(FLAG_ON);
-	SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+	setSafeTerminationFlag(FLAG_ON);
+	saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 
 	// Default
 	return SWinApp::ExitInstance();
@@ -390,7 +390,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 		/*																	 */
 		/*********************************************************************/
 
-		if (GetSessionLockFlag() == FLAG_OFF) {
+		if (getSessionLockFlag() == FLAG_OFF) {
 			// Process when Alt & Backspace keys are pressed
 			if ((dwKeyCode == VK_BACK) && (dwKeyFlags & LLKHF_ALTDOWN)) {
 
@@ -413,7 +413,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 		/*																	 */
 		/*********************************************************************/
 
-		else if (GetSessionLockFlag() == FLAG_ON) {
+		else if (getSessionLockFlag() == FLAG_ON) {
 			// Process hotkey when the screen is locked
 			if (((dwKeyCode >= VK_F1) && (dwKeyCode <= VK_F12)) &&					// Only process if a function key (F1 -> F12) and
 				((dwKeyFlags & LLKHF_ALTDOWN) ||									// either at least one of these control keys: Alt key (left or right)
@@ -425,8 +425,8 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 
 				// Only process if both options are enabled
 				if ((pApp != NULL) &&
-					(pApp->GetAppOption(AppOptionID::enableBackgroundHotkey) == true) &&		// Enable background action hotkeys
-					(pApp->GetAppOption(AppOptionID::allowLockscreenHotkey) == true)) {		// Allow background hotkeys on lockscreen
+					(pApp->getAppOption(AppOptionID::enableBackgroundHotkey) == true) &&		// Enable background action hotkeys
+					(pApp->getAppOption(AppOptionID::allowLockscreenHotkey) == true)) {		// Allow background hotkeys on lockscreen
 
 					// Keycode param
 					DWORD dwHKeyParam = NULL;
@@ -471,20 +471,20 @@ ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID /*pContext*/, ULONG ulTyp
 		return ULONG(Result::Failure);
 
 	// Get current date/time
-	DateTime curDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime curDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Processing
 	switch (ulType)
 	{
 	case PBT_APMSUSPEND:					// System suspend event
 		// Save last system suspend time
-		pApp->SaveLastSysEventTime(SystemEventID::SystemSuspend, curDateTime);
+		pApp->saveLastSysEventTime(SystemEventID::SystemSuspend, curDateTime);
 		break;
 
 	case PBT_APMRESUMESUSPEND:				// System resume from suspend event
 	case PBT_APMRESUMEAUTOMATIC:			// System automatic resume event
 		// Save last system wakeup time
-		pApp->SaveLastSysEventTime(SystemEventID::SystemWakeUp, curDateTime);
+		pApp->saveLastSysEventTime(SystemEventID::SystemWakeUp, curDateTime);
 		break;
 
 	default:
@@ -531,7 +531,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 		// and the main window has not been initialized, or the app language has not been loaded,
 		// handle message and show error messagebox here
 		if (((hRcvWnd == NULL) && (this->GetMainWnd() == NULL)) || (this->GetAppLanguage() == NULL)) {
-			ShowErrorMessage(NULL, NULL, dwErrCode);
+			AppCore::showErrorMessage(NULL, NULL, dwErrCode);
 			return true;
 		}
 
@@ -577,7 +577,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
  * @param	None
  * @return	bool - Result of initialization
  */
-bool CPowerPlusApp::InitAppData()
+bool CPowerPlusApp::initAppData()
 {
 	// Initialize app config data
 	if (m_pcfgAppConfig == NULL) {
@@ -632,7 +632,7 @@ bool CPowerPlusApp::InitAppData()
  * @param	None
  * @return	bool - Result of loading process
  */
-bool CPowerPlusApp::LoadRegistryAppData()
+bool CPowerPlusApp::loadRegistryAppData()
 {
 	bool bResult = true;
 	bool bFinalResult = true;
@@ -644,7 +644,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	ClockTime clockTimeTemp;
 
 	// Check data validity first
-	if (!DataSerializeCheck(Mode::Load))
+	if (!dataSerializeCheck(Mode::Load))
 		return false;
 
 	// Create temporary data
@@ -690,14 +690,14 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	// Trace error
 	if (bResult == false) {
 		wLoadRet = APP_ERROR_LOAD_CFG_FAILED;
-		TraceSerializeData(wLoadRet);
+		traceSerializeData(wLoadRet);
 		bFinalResult = false;	// Set final result
 		bResult = true;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (pcfgTempData != NULL) {
-			m_pcfgAppConfig->Copy(*pcfgTempData);
+			m_pcfgAppConfig->copy(*pcfgTempData);
 			bResult = true;		// Reset flag
 		}
 	}
@@ -717,7 +717,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	if (pschTempData != NULL) {
 
 		// Initialize temp data
-		pschTempData->Init();
+		pschTempData->init();
 
 		// Initialize default item
 		ScheduleItem schDefaultTemp(ScheduleData::defaultItemID);
@@ -727,28 +727,28 @@ bool CPowerPlusApp::LoadRegistryAppData()
 
 			// Enable state
 			nDefSchedRet += GetDefaultSchedule(Key::ScheduleItem::IsEnabled, nDataTemp);
-			schDefaultTemp.EnableItem(nDataTemp);
+			schDefaultTemp.enableItem(nDataTemp);
 
 			// Action ID
 			nDefSchedRet += GetDefaultSchedule(Key::ScheduleItem::ActionID, nDataTemp);
-			schDefaultTemp.SetAction(nDataTemp);
+			schDefaultTemp.setAction(nDataTemp);
 
 			// Repeat enable state
 			nDefSchedRet += GetDefaultSchedule(Key::PwrRepeatSet::IsRepeated, nDataTemp);
-			schDefaultTemp.EnableRepeat(nDataTemp);
+			schDefaultTemp.enableRepeat(nDataTemp);
 
 			// Repeat days
 			nDefSchedRet += GetDefaultSchedule(Key::PwrRepeatSet::RepeatDays, nDataTemp);
-			schDefaultTemp.SetActiveDays(BYTE(nDataTemp));
+			schDefaultTemp.setActiveDays(BYTE(nDataTemp));
 
 			// Time value
 			nDefSchedRet += GetDefaultSchedule(Key::ScheduleItem::Time, nTimeTemp);
 			if (nTimeTemp != INT_INVALID) {
 
 				// Convert time value and set time
-				clockTimeTemp.SetHour(GET_REGTIME_HOUR(nTimeTemp));
-				clockTimeTemp.SetMinute(GET_REGTIME_MINUTE(nTimeTemp));
-				schDefaultTemp.SetTime(clockTimeTemp);
+				clockTimeTemp.setHour(GET_REGTIME_HOUR(nTimeTemp));
+				clockTimeTemp.setMinute(GET_REGTIME_MINUTE(nTimeTemp));
+				schDefaultTemp.setTime(clockTimeTemp);
 
 				// Reset temp data
 				clockTimeTemp = ClockTime();
@@ -762,14 +762,14 @@ bool CPowerPlusApp::LoadRegistryAppData()
 			// Trace error
 			if (bResult == false) {
 				wLoadRet = APP_ERROR_LOAD_SCHED_FAILED;
-				TraceSerializeData(wLoadRet);
+				traceSerializeData(wLoadRet);
 				bFinalResult = false;	// Set final result
 				bResult = true;			// Reset flag
 			}
 			else {
 				// Update default item data
-				ScheduleItem& schDefaultItem = pschTempData->GetDefaultItem();
-				schDefaultItem.Copy(schDefaultTemp);
+				ScheduleItem& schDefaultItem = pschTempData->getDefaultItem();
+				schDefaultItem.copy(schDefaultTemp);
 			}
 		}
 
@@ -789,32 +789,32 @@ bool CPowerPlusApp::LoadRegistryAppData()
 
 				// Enable state
 				nSchedRet += GetScheduleExtra(nExtraIndex, Key::ScheduleItem::IsEnabled, nDataTemp);
-				schExtraTemp.EnableItem(nDataTemp);
+				schExtraTemp.enableItem(nDataTemp);
 
 				// Item ID
 				nSchedRet += GetScheduleExtra(nExtraIndex, Key::ScheduleItem::ItemID, nDataTemp);
-				schExtraTemp.SetItemID(nDataTemp);
+				schExtraTemp.setItemId(nDataTemp);
 
 				// Action ID
 				nSchedRet += GetScheduleExtra(nExtraIndex, Key::ScheduleItem::ActionID, nDataTemp);
-				schExtraTemp.SetAction(nDataTemp);
+				schExtraTemp.setAction(nDataTemp);
 
 				// Repeat enable state
 				nSchedRet += GetScheduleExtra(nExtraIndex, Key::PwrRepeatSet::IsRepeated, nDataTemp);
-				schExtraTemp.EnableRepeat(nDataTemp);
+				schExtraTemp.enableRepeat(nDataTemp);
 
 				// Repeat days
 				nSchedRet += GetScheduleExtra(nExtraIndex, Key::PwrRepeatSet::RepeatDays, nDataTemp);
-				schExtraTemp.SetActiveDays(BYTE(nDataTemp));
+				schExtraTemp.setActiveDays(BYTE(nDataTemp));
 
 				// Time value
 				nSchedRet += GetScheduleExtra(nExtraIndex, Key::ScheduleItem::Time, nTimeTemp);
 				if (nTimeTemp != INT_INVALID) {
 
 					// Convert time value and set time
-					clockTimeTemp.SetHour(GET_REGTIME_HOUR(nTimeTemp));
-					clockTimeTemp.SetMinute(GET_REGTIME_MINUTE(nTimeTemp));
-					schExtraTemp.SetTime(clockTimeTemp);
+					clockTimeTemp.setHour(GET_REGTIME_HOUR(nTimeTemp));
+					clockTimeTemp.setMinute(GET_REGTIME_MINUTE(nTimeTemp));
+					schExtraTemp.setTime(clockTimeTemp);
 
 					// Reset temp data
 					clockTimeTemp = ClockTime();
@@ -828,13 +828,13 @@ bool CPowerPlusApp::LoadRegistryAppData()
 				// Trace error
 				if (bResult == false) {
 					wLoadRet = APP_ERROR_LOAD_SCHED_FAILED;
-					TraceSerializeData(wLoadRet);
+					traceSerializeData(wLoadRet);
 					bFinalResult = false;	// Set final result
 					bResult = true;			// Reset flag
 				}
 
 				// Update item data
-				pschTempData->Update(schExtraTemp);
+				pschTempData->update(schExtraTemp);
 			}
 		}
 	}
@@ -842,14 +842,14 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	// Trace error
 	if (bResult == false) {
 		wLoadRet = APP_ERROR_LOAD_SCHED_FAILED;
-		TraceSerializeData(wLoadRet);
+		traceSerializeData(wLoadRet);
 		bFinalResult = false;	// Set final result
 		bResult = true;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (pschTempData != NULL) {
-			m_pschScheduleData->Copy(*pschTempData);
+			m_pschScheduleData->copy(*pschTempData);
 			bResult = true;		// Reset flag
 		}
 	}
@@ -871,13 +871,13 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	if (phksTempData != NULL) {
 
 		// Copy data
-		phksTempData->Copy(*m_phksHotkeySetData);
+		phksTempData->copy(*m_phksHotkeySetData);
 
 		// Load number of items
 		bResult &= GetHotkeyItemNum(Key::HotkeySetData::ItemNum, nItemNum);
-		if (nItemNum > phksTempData->GetItemNum()) {
+		if (nItemNum > phksTempData->getItemNum()) {
 			// Limit the hotkeyset data item number
-			nItemNum = phksTempData->GetItemNum();
+			nItemNum = phksTempData->getItemNum();
 		}
 
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
@@ -891,17 +891,17 @@ bool CPowerPlusApp::LoadRegistryAppData()
 
 			// Enable state
 			nItemRet += GetHotkeySet(nIndex, Key::HotkeySetItem::IsEnabled, nDataTemp);
-			hksTemp.EnableItem(nDataTemp);
+			hksTemp.enableItem(nDataTemp);
 
 			// Action ID
 			nItemRet += GetHotkeySet(nIndex, Key::HotkeySetItem::HKActionID, nDataTemp);
-			hksTemp.SetActionID(nDataTemp);
+			hksTemp.setActionId(nDataTemp);
 
 			// Keycode
 			int nModifiersTemp, nVirtKeyTemp;
 			nItemRet += GetHotkeySet(nIndex, Key::HotkeySetItem::Modifiers, nModifiersTemp);
 			nItemRet += GetHotkeySet(nIndex, Key::HotkeySetItem::VirtualKey, nVirtKeyTemp);
-			hksTemp.SetKeyCode(nModifiersTemp, nVirtKeyTemp);
+			hksTemp.setKeyCode(nModifiersTemp, nVirtKeyTemp);
 
 			// Mark the item as reading failed
 			// only if all values were read unsuccessfully
@@ -910,35 +910,35 @@ bool CPowerPlusApp::LoadRegistryAppData()
 			// Trace error
 			if (bResult == false) {
 				wLoadRet = APP_ERROR_LOAD_HKEYSET_FAILED;
-				TraceSerializeData(wLoadRet);
+				traceSerializeData(wLoadRet);
 				bFinalResult = false;	// Set final result
 				bResult = true;			// Reset flag
 				continue;
 			}
 
 			// Update item data
-			phksTempData->Update(hksTemp);
+			phksTempData->update(hksTemp);
 		}
 	}
 
 	// Trace error
 	if (bResult == false) {
 		wLoadRet = APP_ERROR_LOAD_HKEYSET_FAILED;
-		TraceSerializeData(wLoadRet);
+		traceSerializeData(wLoadRet);
 		bFinalResult = false;	// Set final result
 		bResult = true;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (phksTempData != NULL) {
-			m_phksHotkeySetData->Copy(*phksTempData);
+			m_phksHotkeySetData->copy(*phksTempData);
 			bResult = true;		// Reset flag
 		}
 	}
 
 	// Delete temporary data
 	if (phksTempData != NULL) {
-		phksTempData->DeleteAll();
+		phksTempData->deleteAll();
 		delete phksTempData;
 		phksTempData = NULL;
 	}
@@ -956,7 +956,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 		if (bResult != false) {
 
 			// Initialize temp data
-			ppwrTempData->Init();
+			ppwrTempData->init();
 
 			// Initialize Power Reminder common style data
 			RmdMsgStyleSet rmdCommonStyleTemp;
@@ -966,47 +966,47 @@ bool CPowerPlusApp::LoadRegistryAppData()
 
 				// Background color
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor, nDataTemp);
-				rmdCommonStyleTemp.SetBkgrdColor((COLORREF)nDataTemp);
+				rmdCommonStyleTemp.setBkgrdColor((COLORREF)nDataTemp);
 
 				// Text color
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor, nDataTemp);
-				rmdCommonStyleTemp.SetTextColor((COLORREF)nDataTemp);
+				rmdCommonStyleTemp.setTextColor((COLORREF)nDataTemp);
 
 				// Font name
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName, tempString);
-				rmdCommonStyleTemp.SetFontName(tempString);
+				rmdCommonStyleTemp.setFontName(tempString);
 
 				// Font size
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize, nDataTemp);
-				rmdCommonStyleTemp.SetFontSize(nDataTemp);
+				rmdCommonStyleTemp.setFontSize(nDataTemp);
 
 				// Timeout (auto-close) interval
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout, nDataTemp);
-				rmdCommonStyleTemp.SetTimeout(nDataTemp);
+				rmdCommonStyleTemp.setTimeout(nDataTemp);
 
 				// Message icon ID
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID, nDataTemp);
-				rmdCommonStyleTemp.SetIconID(nDataTemp);
+				rmdCommonStyleTemp.setIconId(nDataTemp);
 
 				// Message icon size
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize, nDataTemp);
-				rmdCommonStyleTemp.SetIconSize(nDataTemp);
+				rmdCommonStyleTemp.setIconSize(nDataTemp);
 
 				// Message icon position
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition, nDataTemp);
-				rmdCommonStyleTemp.SetIconPosition(nDataTemp);
+				rmdCommonStyleTemp.setIconPosition(nDataTemp);
 
 				// Message display position
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition, nDataTemp);
-				rmdCommonStyleTemp.SetDisplayPosition(nDataTemp);
+				rmdCommonStyleTemp.setDisplayPosition(nDataTemp);
 
 				// Display area horizontal margin
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin, nDataTemp);
-				rmdCommonStyleTemp.SetHorizontalMargin(nDataTemp);
+				rmdCommonStyleTemp.setHorizontalMargin(nDataTemp);
 
 				// Display area vertical margin
 				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin, nDataTemp);
-				rmdCommonStyleTemp.SetVerticalMargin(nDataTemp);
+				rmdCommonStyleTemp.setVerticalMargin(nDataTemp);
 
 				// Mark data as reading failed
 				// only if all values were read unsuccessfully
@@ -1015,14 +1015,14 @@ bool CPowerPlusApp::LoadRegistryAppData()
 				// Trace error
 				if (bResult == false) {
 					wLoadRet = APP_ERROR_LOAD_PWRRMD_FAILED;
-					TraceSerializeData(wLoadRet);
+					traceSerializeData(wLoadRet);
 					bFinalResult = false;	// Set final result
 					bResult = true;			// Reset flag
 				}
 				else {
 					// Update Power Reminder common style data
-					RmdMsgStyleSet& rmdCommonStyle = ppwrTempData->GetCommonStyle();
-					rmdCommonStyle.Copy(rmdCommonStyleTemp);
+					RmdMsgStyleSet& rmdCommonStyle = ppwrTempData->getCommonStyle();
+					rmdCommonStyle.copy(rmdCommonStyleTemp);
 				}
 			}
 
@@ -1037,48 +1037,48 @@ bool CPowerPlusApp::LoadRegistryAppData()
 
 				// Item ID
 				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::ItemID, nDataTemp);
-				pwrTemp.SetItemID(nDataTemp);
+				pwrTemp.setItemId(nDataTemp);
 
 				// Enable state
 				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::IsEnabled, nDataTemp);
-				pwrTemp.EnableItem(nDataTemp);
+				pwrTemp.enableItem(nDataTemp);
 
 				// Message content
 				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::Message, tempString);
-				pwrTemp.SetMessage(tempString);
+				pwrTemp.setMessage(tempString);
 
 				// Event ID
 				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::EventID, nDataTemp);
-				pwrTemp.SetEventID(nDataTemp);
+				pwrTemp.setEventId(nDataTemp);
 
 				// Message style
 				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::MsgStyle, nDataTemp);
-				pwrTemp.SetMessageStyle(nDataTemp);
+				pwrTemp.setMessageStyle(nDataTemp);
 
 				// Repeat enable state
 				nItemRet += GetPwrReminder(nIndex, Key::PwrRepeatSet::IsRepeated, nDataTemp);
-				pwrTemp.EnableRepeat(nDataTemp);
+				pwrTemp.enableRepeat(nDataTemp);
 
 				// Allow snoozing
 				nItemRet += GetPwrReminder(nIndex, Key::PwrRepeatSet::AllowSnooze, nDataTemp);
-				pwrTemp.EnableSnoozing(nDataTemp);
+				pwrTemp.enableSnoozing(nDataTemp);
 
 				// Snooze interval
 				nItemRet += GetPwrReminder(nIndex, Key::PwrRepeatSet::SnoozeInterval, nDataTemp);
-				pwrTemp.SetSnoozeInterval(nDataTemp);
+				pwrTemp.setSnoozeInterval(nDataTemp);
 
 				// Repeat days
 				nItemRet += GetPwrReminder(nIndex, Key::PwrRepeatSet::RepeatDays, nDataTemp);
-				pwrTemp.SetActiveDays(nDataTemp);
+				pwrTemp.setActiveDays(nDataTemp);
 
 				// Time value
 				nItemRet += GetPwrReminder(nIndex, Key::PwrReminderItem::Time, nTimeTemp);
 				if (nTimeTemp != INT_INVALID) {
 
 					// Convert time value and set time
-					clockTimeTemp.SetHour(GET_REGTIME_HOUR(nTimeTemp));
-					clockTimeTemp.SetMinute(GET_REGTIME_MINUTE(nTimeTemp));
-					pwrTemp.SetTime(clockTimeTemp);
+					clockTimeTemp.setHour(GET_REGTIME_HOUR(nTimeTemp));
+					clockTimeTemp.setMinute(GET_REGTIME_MINUTE(nTimeTemp));
+					pwrTemp.setTime(clockTimeTemp);
 
 					// Reset temp data
 					clockTimeTemp = ClockTime();
@@ -1092,14 +1092,14 @@ bool CPowerPlusApp::LoadRegistryAppData()
 				// Trace error
 				if (bResult == false) {
 					wLoadRet = APP_ERROR_LOAD_PWRRMD_FAILED;
-					TraceSerializeData(wLoadRet);
+					traceSerializeData(wLoadRet);
 					bFinalResult = false;	// Set final result
 					bResult = true;			// Reset flag
 					continue;
 				}
 
 				// Update item data
-				ppwrTempData->Update(pwrTemp);
+				ppwrTempData->update(pwrTemp);
 			}
 		}
 	}
@@ -1107,22 +1107,22 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	// Trace error
 	if (bResult == false) {
 		wLoadRet = APP_ERROR_LOAD_PWRRMD_FAILED;
-		TraceSerializeData(wLoadRet);
+		traceSerializeData(wLoadRet);
 		bFinalResult = false;	// Set final result
 		bResult = true;			// Reset flag
 	}
 	else {
 		// Copy temporary data
 		if (ppwrTempData != NULL) {
-			m_ppwrReminderData->Copy(*ppwrTempData);
-			m_ppwrReminderData->Adjust();
+			m_ppwrReminderData->copy(*ppwrTempData);
+			m_ppwrReminderData->adjust();
 			bResult = true;		// Reset flag
 		}
 	}
 
 	// Delete temporary data
 	if (ppwrTempData != NULL) {
-		ppwrTempData->DeleteAll();
+		ppwrTempData->deleteAll();
 		delete ppwrTempData;
 		ppwrTempData = NULL;
 	}
@@ -1134,7 +1134,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
 	/***********************************************************************************************/
 
 	// Load global data values
-	LoadGlobalData();
+	loadGlobalData();
 	
 	return bFinalResult;
 }
@@ -1144,7 +1144,7 @@ bool CPowerPlusApp::LoadRegistryAppData()
  * @param	dwDataType - App data type to save
  * @return	bool - Result of saving process
  */
-bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
+bool CPowerPlusApp::saveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 {
 	bool bResult = true;
 	bool bFinalResult = true;
@@ -1152,7 +1152,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	int nTimeTemp = INT_INVALID;
 
 	// Check data validity first
-	if (!DataSerializeCheck(Mode::Save, dwDataType))
+	if (!dataSerializeCheck(Mode::Save, dwDataType))
 		return false;
 
 	/***********************************************************************************************/
@@ -1170,7 +1170,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		// Get a copy of config data
 		ConfigData cfgConfigTemp{};
 		if (m_pcfgAppConfig != NULL) {
-			cfgConfigTemp.Copy(*m_pcfgAppConfig);
+			cfgConfigTemp.copy(*m_pcfgAppConfig);
 		}
 
 		// Save registry data
@@ -1195,7 +1195,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		// Trace error
 		if (bResult == false) {
 			wSaveRet = APP_ERROR_SAVE_CFG_FAILED;
-			TraceSerializeData(wSaveRet);
+			traceSerializeData(wSaveRet);
 			bFinalResult = false; // Set final result
 			bResult = true; // Reset flag
 		}
@@ -1214,50 +1214,50 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeleteScheduleSection();
 
 		// Save default schedule item
-		ScheduleItem schTempDefault = m_pschScheduleData->GetDefaultItem();
+		ScheduleItem schTempDefault = m_pschScheduleData->getDefaultItem();
 		{
 			// Convert time data
-			nTimeTemp = FORMAT_REG_TIME(schTempDefault.GetTime());
+			nTimeTemp = FORMAT_REG_TIME(schTempDefault.getTime());
 
 			// Save registry data
-			bResult &= WriteDefaultSchedule(Key::ScheduleItem::IsEnabled,		schTempDefault.IsEnabled());
-			bResult &= WriteDefaultSchedule(Key::ScheduleItem::ActionID,		schTempDefault.GetAction());
-			bResult &= WriteDefaultSchedule(Key::PwrRepeatSet::IsRepeated,		schTempDefault.IsRepeatEnabled());
-			bResult &= WriteDefaultSchedule(Key::PwrRepeatSet::RepeatDays,		schTempDefault.GetActiveDays());
+			bResult &= WriteDefaultSchedule(Key::ScheduleItem::IsEnabled,		schTempDefault.isEnabled());
+			bResult &= WriteDefaultSchedule(Key::ScheduleItem::ActionID,		schTempDefault.getAction());
+			bResult &= WriteDefaultSchedule(Key::PwrRepeatSet::IsRepeated,		schTempDefault.isRepeatEnabled());
+			bResult &= WriteDefaultSchedule(Key::PwrRepeatSet::RepeatDays,		schTempDefault.getActiveDays());
 			bResult &= WriteDefaultSchedule(Key::ScheduleItem::Time,			nTimeTemp);
 
 			// Trace error
 			if (bResult == false) {
 				wSaveRet = APP_ERROR_SAVE_SCHED_FAILED;
-				TraceSerializeData(wSaveRet);
+				traceSerializeData(wSaveRet);
 				bFinalResult = false; // Set final result
 				bResult = true; // Reset flag
 			}
 		}
 
 		// Save schedule extra data
-		int nExtraItemNum = m_pschScheduleData->GetExtraItemNum();
+		int nExtraItemNum = m_pschScheduleData->getExtraItemNum();
 		bResult &= WriteScheduleExtraItemNum(Key::ScheduleData::ExtraItemNum, nExtraItemNum);
 		for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
 
 			// Get schedule extra item
-			ScheduleItem schTempExtra = m_pschScheduleData->GetItemAt(nExtraIndex);
+			ScheduleItem schTempExtra = m_pschScheduleData->getItemAt(nExtraIndex);
 
 			// Convert time data
-			nTimeTemp = FORMAT_REG_TIME(schTempExtra.GetTime());
+			nTimeTemp = FORMAT_REG_TIME(schTempExtra.getTime());
 
 			// Save registry data
-			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::IsEnabled,	schTempExtra.IsEnabled());
-			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::ItemID,		schTempExtra.GetItemID());
-			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::ActionID,		schTempExtra.GetAction());
-			bResult &= WriteScheduleExtra(nExtraIndex, Key::PwrRepeatSet::IsRepeated,	schTempExtra.IsRepeatEnabled());
-			bResult &= WriteScheduleExtra(nExtraIndex, Key::PwrRepeatSet::RepeatDays,	schTempExtra.GetActiveDays());
+			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::IsEnabled,	schTempExtra.isEnabled());
+			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::ItemID,		schTempExtra.getItemId());
+			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::ActionID,		schTempExtra.getAction());
+			bResult &= WriteScheduleExtra(nExtraIndex, Key::PwrRepeatSet::IsRepeated,	schTempExtra.isRepeatEnabled());
+			bResult &= WriteScheduleExtra(nExtraIndex, Key::PwrRepeatSet::RepeatDays,	schTempExtra.getActiveDays());
 			bResult &= WriteScheduleExtra(nExtraIndex, Key::ScheduleItem::Time,			nTimeTemp);
 
 			// Trace error
 			if (bResult == false) {
 				wSaveRet = APP_ERROR_SAVE_SCHED_FAILED;
-				TraceSerializeData(wSaveRet);
+				traceSerializeData(wSaveRet);
 				bFinalResult = false; // Set final result
 				bResult = true; // Reset flag
 			}
@@ -1275,13 +1275,13 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 		bool bStartupEnabled = m_pcfgAppConfig->enableAutoStart;
 		bool bRunAsAdmin = m_pcfgAppConfig->runAsAdmin;
-		int nRetAutoStartEnabled = EnableAutoStart(bStartupEnabled, bRunAsAdmin);
+		int nRetAutoStartEnabled = enableAutoStart(bStartupEnabled, bRunAsAdmin);
 		bResult &= nRetAutoStartEnabled ? true : false;
 
 		// Trace error
 		if (bResult == false) {
 			wSaveRet = APP_ERROR_SAVE_CFG_FAILED;
-			TraceSerializeData(wSaveRet);
+			traceSerializeData(wSaveRet);
 			bFinalResult = false; // Set final result
 			bResult = true; // Reset flag
 		}
@@ -1300,20 +1300,20 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeleteHotkeySetSection();
 
 		// Save registry data
-		int nItemNum = m_phksHotkeySetData->GetItemNum();
+		int nItemNum = m_phksHotkeySetData->getItemNum();
 		bResult &= WriteHotkeyItemNum(Key::HotkeySetData::ItemNum, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Get HotkeySet item
-			HotkeySetItem hksTemp = m_phksHotkeySetData->GetItemAt(nIndex);
+			HotkeySetItem hksTemp = m_phksHotkeySetData->getItemAt(nIndex);
 
 			// Get keycode
 			DWORD dwModifiersTemp, dwVirtKeyTemp;
-			hksTemp.GetKeyCode(dwModifiersTemp, dwVirtKeyTemp);
+			hksTemp.getKeyCode(dwModifiersTemp, dwVirtKeyTemp);
 
 			// Write item data
-			bResult &= WriteHotkeySet(nIndex, Key::HotkeySetItem::IsEnabled,	hksTemp.IsEnabled());
-			bResult &= WriteHotkeySet(nIndex, Key::HotkeySetItem::HKActionID,	hksTemp.GetActionID());
+			bResult &= WriteHotkeySet(nIndex, Key::HotkeySetItem::IsEnabled,	hksTemp.isEnabled());
+			bResult &= WriteHotkeySet(nIndex, Key::HotkeySetItem::HKActionID,	hksTemp.getActionId());
 			bResult &= WriteHotkeySet(nIndex, Key::HotkeySetItem::Modifiers,	dwModifiersTemp);
 			bResult &= WriteHotkeySet(nIndex, Key::HotkeySetItem::VirtualKey,	dwVirtKeyTemp);
 		}
@@ -1321,7 +1321,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		// Trace error
 		if (bResult == false) {
 			wSaveRet = APP_ERROR_SAVE_HKEYSET_FAILED;
-			TraceSerializeData(wSaveRet);
+			traceSerializeData(wSaveRet);
 			bFinalResult = false; // Set final result
 			bResult = true; // Reset flag
 		}
@@ -1340,58 +1340,58 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeletePwrReminderSection();
 
 		// Save Power Reminder common style data
-		RmdMsgStyleSet& rmdTempCommonStyle = m_ppwrReminderData->GetCommonStyle();
+		RmdMsgStyleSet& rmdTempCommonStyle = m_ppwrReminderData->getCommonStyle();
 		{
 			// Save registry data
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor,		rmdTempCommonStyle.GetBkgrdColor());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor,			rmdTempCommonStyle.GetTextColor());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName,			rmdTempCommonStyle.GetFontName());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize,			rmdTempCommonStyle.GetFontSize());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout,			rmdTempCommonStyle.GetTimeout());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID,			rmdTempCommonStyle.GetIconID());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize,	 		rmdTempCommonStyle.GetIconSize());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition,		rmdTempCommonStyle.GetIconPosition());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition,	rmdTempCommonStyle.GetDisplayPosition());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin,	rmdTempCommonStyle.GetHorizontalMargin());
-			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin,	rmdTempCommonStyle.GetVerticalMargin());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor,		rmdTempCommonStyle.getBkgrdColor());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor,			rmdTempCommonStyle.getTextColor());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName,			rmdTempCommonStyle.getFontName());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize,			rmdTempCommonStyle.getFontSize());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout,			rmdTempCommonStyle.getTimeout());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID,			rmdTempCommonStyle.getIconId());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize,	 		rmdTempCommonStyle.getIconSize());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition,		rmdTempCommonStyle.getIconPosition());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition,	rmdTempCommonStyle.getDisplayPosition());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin,	rmdTempCommonStyle.getHorizontalMargin());
+			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin,	rmdTempCommonStyle.getVerticalMargin());
 
 			// Trace error
 			if (bResult == false) {
 				wSaveRet = APP_ERROR_SAVE_PWRRMD_FAILED;
-				TraceSerializeData(wSaveRet);
+				traceSerializeData(wSaveRet);
 				bFinalResult = false; // Set final result
 				bResult = true; // Reset flag
 			}
 		}
 
 		// Save registry data
-		int nItemNum = m_ppwrReminderData->GetItemNum();
+		int nItemNum = m_ppwrReminderData->getItemNum();
 		bResult &= WritePwrReminderItemNum(Key::PwrReminderData::ItemNum, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Get Power Reminder item
-			PwrReminderItem pwrTemp = m_ppwrReminderData->GetItemAt(nIndex);
+			PwrReminderItem pwrTemp = m_ppwrReminderData->getItemAt(nIndex);
 
 			// Convert time data
-			nTimeTemp = FORMAT_REG_TIME(pwrTemp.GetTime());
+			nTimeTemp = FORMAT_REG_TIME(pwrTemp.getTime());
 
 			// Write item data
-			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::ItemID,		pwrTemp.GetItemID());
-			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::IsEnabled,	pwrTemp.IsEnabled());
-			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::Message,		pwrTemp.GetMessage());
-			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::EventID,		pwrTemp.GetEventID());
+			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::ItemID,		pwrTemp.getItemId());
+			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::IsEnabled,	pwrTemp.isEnabled());
+			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::Message,		pwrTemp.getMessage());
+			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::EventID,		pwrTemp.getEventId());
 			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::Time,			nTimeTemp);
-			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::MsgStyle,		pwrTemp.GetMessageStyle());
-			bResult &= WritePwrReminder(nIndex, Key::PwrRepeatSet::IsRepeated,		pwrTemp.IsRepeatEnabled());
-			bResult &= WritePwrReminder(nIndex, Key::PwrRepeatSet::AllowSnooze,		pwrTemp.IsAllowSnoozing());
-			bResult &= WritePwrReminder(nIndex, Key::PwrRepeatSet::SnoozeInterval,	pwrTemp.GetSnoozeInterval());
-			bResult &= WritePwrReminder(nIndex, Key::PwrRepeatSet::RepeatDays,		pwrTemp.GetActiveDays());
+			bResult &= WritePwrReminder(nIndex, Key::PwrReminderItem::MsgStyle,		pwrTemp.getMessageStyle());
+			bResult &= WritePwrReminder(nIndex, Key::PwrRepeatSet::IsRepeated,		pwrTemp.isRepeatEnabled());
+			bResult &= WritePwrReminder(nIndex, Key::PwrRepeatSet::AllowSnooze,		pwrTemp.isAllowSnoozing());
+			bResult &= WritePwrReminder(nIndex, Key::PwrRepeatSet::SnoozeInterval,	pwrTemp.getSnoozeInterval());
+			bResult &= WritePwrReminder(nIndex, Key::PwrRepeatSet::RepeatDays,		pwrTemp.getActiveDays());
 		}
 
 		// Trace error
 		if (bResult == false) {
 			wSaveRet = APP_ERROR_SAVE_PWRRMD_FAILED;
-			TraceSerializeData(wSaveRet);
+			traceSerializeData(wSaveRet);
 			bFinalResult = false; // Set final result
 			bResult = true; // Reset flag
 		}
@@ -1405,7 +1405,7 @@ bool CPowerPlusApp::SaveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
  * @param	None
  * @return	bool - Result of backing up process
  */
-bool CPowerPlusApp::BackupRegistryAppData()
+bool CPowerPlusApp::backupRegistryAppData()
 {
 	// Auto backup using Registry Export
 	return BackupSystem::RegistryExport();
@@ -1416,7 +1416,7 @@ bool CPowerPlusApp::BackupRegistryAppData()
  * @param	None
  * @return	bool - Result of loading process
  */
-bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
+bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 {
 	bool bRet = false;
 
@@ -1428,13 +1428,13 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 
 	// Load info from registry
 	if (GetProfileInfo(AppProfile::LaunchInfo::LaunchCounter, nValue)) {
-		SetAppLaunchTimeCounter(nValue);
+		setAppLaunchTimeCounter(nValue);
 		bRet = true;
 	}
 
 	// Update and overwrite data
-	UpdateAppLaunchTimeCounter();
-	uiValue = GetAppLaunchTimeCounter();
+	updateAppLaunchTimeCounter();
+	uiValue = getAppLaunchTimeCounter();
 	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchCounter, uiValue)) {
 		bRet = false;
 	}
@@ -1444,12 +1444,12 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	/*-----------------------------<Application launch-time>-----------------------------*/
 
 	// Format launch-time
-	DateTime dateTimeAppLaunch = GetAppLaunchTime();
-	unsigned nTimePeriod = (dateTimeAppLaunch.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	DateTime dateTimeAppLaunch = getAppLaunchTime();
+	unsigned nTimePeriod = (dateTimeAppLaunch.hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = GetLanguageString(LoadLanguageTable(NULL), nTimePeriod);
-	const wchar_t* timeFormatString = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	strValue = StringUtils::StringFormat(timeFormatString, dateTimeAppLaunch.Year(), dateTimeAppLaunch.Month(), dateTimeAppLaunch.Day(),
-		dateTimeAppLaunch.Hour(), dateTimeAppLaunch.Minute(), dateTimeAppLaunch.Second(), dateTimeAppLaunch.Millisecond(), timePeriodFormat);
+	const wchar_t* timeFormatString = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	strValue = StringUtils::stringFormat(timeFormatString, dateTimeAppLaunch.year(), dateTimeAppLaunch.month(), dateTimeAppLaunch.day(),
+		dateTimeAppLaunch.hour(), dateTimeAppLaunch.minute(), dateTimeAppLaunch.second(), dateTimeAppLaunch.millisecond(), timePeriodFormat);
 
 	// Store launch-time info data
 	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchTime, strValue)) {
@@ -1461,16 +1461,16 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	/*------------------------<Application directory/file info>--------------------------*/
 
 	// Directory path (not including the executable file name)
-	strValue = StringUtils::GetApplicationPath(false);
-	if (!strValue.IsEmpty()) {
+		strValue = StringUtils::getApplicationPath(false);
+	if (!strValue.isEmpty()) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::Directory, strValue)) {
 			bRet = false;
 		}
 	}
 
 	// Executable file name
-	strValue = StringUtils::GetApplicationPath(true);
-	if (!strValue.IsEmpty()) {
+		strValue = StringUtils::getApplicationPath(true);
+	if (!strValue.isEmpty()) {
 		String execFileName = PathFindFileName(strValue);
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::FileName, execFileName)) {
 			bRet = false;
@@ -1478,8 +1478,8 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	}
 
 	// Product version (full version)
-	strValue = StringUtils::GetProductVersion(true);
-	if (!strValue.IsEmpty()) {
+		strValue = StringUtils::getProductVersion(true);
+	if (!strValue.isEmpty()) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::ProductVersion, strValue)) {
 			bRet = false;
 		}
@@ -1490,16 +1490,16 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
 	/*--------------------------<Device, system and user info>---------------------------*/
 
 	// Device name
-	bool bRetGetInfo = StringUtils::GetDeviceName(strValue);
-	if ((bRetGetInfo != false) && (!strValue.IsEmpty())) {
+		bool bRetGetInfo = StringUtils::getDeviceName(strValue);
+	if ((bRetGetInfo != false) && (!strValue.isEmpty())) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::DeviceName, strValue)) {
 			bRet = false;
 		}
 	}
 
 	// User name
-	bRetGetInfo = StringUtils::GetCurrentUserName(strValue);
-	if ((bRetGetInfo != false) && (!strValue.IsEmpty())) {
+		bRetGetInfo = StringUtils::getCurrentUserName(strValue);
+	if ((bRetGetInfo != false) && (!strValue.isEmpty())) {
 		if (!WriteProfileInfo(AppProfile::LaunchInfo::UserName, strValue)) {
 			bRet = false;
 		}
@@ -1534,7 +1534,7 @@ bool CPowerPlusApp::UpdateAppLaunchTimeProfileInfo(void)
  * @param	None
  * @return	bool - Result of loading process
  */
-bool CPowerPlusApp::LoadGlobalData(void)
+bool CPowerPlusApp::loadGlobalData(void)
 {
 	bool bRet = false;
 
@@ -1550,22 +1550,22 @@ bool CPowerPlusApp::LoadGlobalData(void)
 
 	// DummyTest mode
 	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, nGlbValue)) {
-		SetDummyTestMode(nGlbValue);
+		setDummyTestMode(nGlbValue);
 		bRet |= true;
 	}
 	// Debug mode
 	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, nGlbValue)) {
-		SetDebugMode(nGlbValue);
+		setDebugMode(nGlbValue);
 		bRet |= true;
 	}
 	// Debug log output target
 	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, nGlbValue)) {
-		SetDebugOutputTarget(nGlbValue);
+		setDebugOutputTarget(nGlbValue);
 		bRet |= true;
 	}
 	// Test feature enable
 	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, nGlbValue)) {
-		SetTestFeatureEnable(nGlbValue);
+		setTestFeatureEnable(nGlbValue);
 		bRet |= true;
 	}
 
@@ -1578,25 +1578,25 @@ bool CPowerPlusApp::LoadGlobalData(void)
 
 	// Power action trace flag
 	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, nGlbValue)) {
-		SetPwrActionFlag((BYTE)nGlbValue);
+		setPwrActionFlag((BYTE)nGlbValue);
 		bRet |= true;
 	}
 
 	// System suspended trace flag
 	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, nGlbValue)) {
-		SetSystemSuspendFlag((BYTE)nGlbValue);
+		setSystemSuspendFlag((BYTE)nGlbValue);
 		bRet |= true;
 	}
 
 	// Session ending trace flag
 	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, nGlbValue)) {
-		SetSessionEndFlag((BYTE)nGlbValue);
+		setSessionEndFlag((BYTE)nGlbValue);
 		bRet |= true;
 	}
 
 	// Previously safe termination trace flag
 	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, nGlbValue)) {
-		SetSafeTerminationFlag((BYTE)nGlbValue);
+		setSafeTerminationFlag((BYTE)nGlbValue);
 		bRet |= true;
 	}
 
@@ -1610,7 +1610,7 @@ bool CPowerPlusApp::LoadGlobalData(void)
  * @param	byCateID - Category ID
  * @return	bool - Result of loading process
  */
-bool CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
+bool CPowerPlusApp::saveGlobalData(BYTE byCateID /* = 0xFF */)
 {
 	bool bRet = true;
 
@@ -1628,22 +1628,22 @@ bool CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 		subSectionName = Section::GlobalData::DebugTest;
 
 		// DummyTest mode
-		nGlbValue = GetDummyTestMode();
+		nGlbValue = getDummyTestMode();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, nGlbValue)) {
 			bRet = false;
 		}
 		// Debug mode
-		nGlbValue = GetDebugMode();
+		nGlbValue = getDebugMode();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, nGlbValue)) {
 			bRet = false;
 		}
 		// Debug log output target
-		nGlbValue = GetDebugOutputTarget();
+		nGlbValue = getDebugOutputTarget();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, nGlbValue)) {
 			bRet = false;
 		}
 		// Test feature enable
-		nGlbValue = GetTestFeatureEnable();
+		nGlbValue = getTestFeatureEnable();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, nGlbValue)) {
 			bRet = false;
 		}
@@ -1658,25 +1658,25 @@ bool CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
 		subSectionName = Section::GlobalData::AppFlag;
 
 		// Power action trace flag
-		byGlbValue = GetPwrActionFlag();
+		byGlbValue = getPwrActionFlag();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, byGlbValue)) {
 			bRet = false;
 		}
 
 		// System suspended trace flag
-		byGlbValue = GetSystemSuspendFlag();
+		byGlbValue = getSystemSuspendFlag();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, byGlbValue)) {
 			bRet = false;
 		}
 
 		// Session ending trace flag
-		byGlbValue = GetSessionEndFlag();
+		byGlbValue = getSessionEndFlag();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, byGlbValue)) {
 			bRet = false;
 		}
 
 		// Previously safe termination trace flag
-		byGlbValue = GetSafeTerminationFlag();
+		byGlbValue = getSafeTerminationFlag();
 		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, byGlbValue)) {
 			bRet = false;
 		}
@@ -1695,7 +1695,7 @@ bool CPowerPlusApp::SaveGlobalData(BYTE byCateID /* = 0xFF */)
  * @param	None
  * @return	ConfigData* - Config data pointer
  */
-ConfigData* CPowerPlusApp::GetAppConfigData()
+ConfigData* CPowerPlusApp::getAppConfigData()
 {
 	// Check validity
 	ASSERT(m_pcfgAppConfig != NULL);
@@ -1707,7 +1707,7 @@ ConfigData* CPowerPlusApp::GetAppConfigData()
  * @param	pcfgData - Config data pointer
  * @return	None
  */
-void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
+void CPowerPlusApp::setAppConfigData(ConfigData* pcfgData)
 {
 	// Check data validity
 	ASSERT(pcfgData != NULL);
@@ -1715,10 +1715,10 @@ void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
 
 	// Backup data
 	ConfigData BakData;
-	BakData.Copy(*GetAppConfigData());
+	BakData.copy(*getAppConfigData());
 
 	// Copy value of data pointer
-	GetAppConfigData()->Copy(*pcfgData);
+	getAppConfigData()->copy(*pcfgData);
 }
 
 /**
@@ -1726,7 +1726,7 @@ void CPowerPlusApp::SetAppConfigData(ConfigData* pcfgData)
  * @param	None
  * @return	ScheduleData* - Schedule data pointer
  */
-ScheduleData* CPowerPlusApp::GetAppScheduleData()
+ScheduleData* CPowerPlusApp::getAppScheduleData()
 {
 	// Check validity
 	ASSERT(m_pschScheduleData != NULL);
@@ -1738,7 +1738,7 @@ ScheduleData* CPowerPlusApp::GetAppScheduleData()
  * @param	pschData - Schedule data pointer
  * @return	None
  */
-void CPowerPlusApp::SetAppScheduleData(ScheduleData* pschData)
+void CPowerPlusApp::setAppScheduleData(ScheduleData* pschData)
 {
 	// Check data validity
 	ASSERT(pschData != NULL);
@@ -1746,10 +1746,10 @@ void CPowerPlusApp::SetAppScheduleData(ScheduleData* pschData)
 
 	// Backup data
 	ScheduleData BakData;
-	BakData.Copy(*GetAppScheduleData());
+	BakData.copy(*getAppScheduleData());
 
 	// Copy value of data pointer
-	GetAppScheduleData()->Copy(*pschData);
+	getAppScheduleData()->copy(*pschData);
 }
 
 /**
@@ -1757,7 +1757,7 @@ void CPowerPlusApp::SetAppScheduleData(ScheduleData* pschData)
  * @param	None
  * @return	HotkeySetData* - HotkeySet data pointer
  */
-HotkeySetData* CPowerPlusApp::GetAppHotkeySetData()
+HotkeySetData* CPowerPlusApp::getAppHotkeySetData()
 {
 	// Check validity
 	ASSERT(m_phksHotkeySetData != NULL);
@@ -1769,7 +1769,7 @@ HotkeySetData* CPowerPlusApp::GetAppHotkeySetData()
  * @param	phksData - HotkeySet data pointer
  * @return	None
  */
-void CPowerPlusApp::SetAppHotkeySetData(HotkeySetData* phksData)
+void CPowerPlusApp::setAppHotkeySetData(HotkeySetData* phksData)
 {
 	// Check data validity
 	ASSERT(phksData != NULL);
@@ -1777,10 +1777,10 @@ void CPowerPlusApp::SetAppHotkeySetData(HotkeySetData* phksData)
 
 	// Backup data
 	HotkeySetData BakData;
-	BakData.Copy(*GetAppHotkeySetData());
+	BakData.copy(*getAppHotkeySetData());
 
 	// Copy value of data pointer
-	GetAppHotkeySetData()->Copy(*phksData);
+	getAppHotkeySetData()->copy(*phksData);
 }
 
 /**
@@ -1788,7 +1788,7 @@ void CPowerPlusApp::SetAppHotkeySetData(HotkeySetData* phksData)
  * @param	None
  * @return	PwrReminderData* - Power Reminder data pointer
  */
-PwrReminderData* CPowerPlusApp::GetAppPwrReminderData()
+PwrReminderData* CPowerPlusApp::getAppPwrReminderData()
 {
 	// Check validity
 	ASSERT(m_ppwrReminderData != NULL);
@@ -1800,7 +1800,7 @@ PwrReminderData* CPowerPlusApp::GetAppPwrReminderData()
  * @param	ppwrData - Power Reminder data pointer
  * @return	None
  */
-void CPowerPlusApp::SetAppPwrReminderData(PwrReminderData* ppwrData)
+void CPowerPlusApp::setAppPwrReminderData(PwrReminderData* ppwrData)
 {
 	// Check data validity
 	ASSERT(ppwrData != NULL);
@@ -1808,10 +1808,10 @@ void CPowerPlusApp::SetAppPwrReminderData(PwrReminderData* ppwrData)
 
 	// Backup data
 	PwrReminderData BakData;
-	BakData.Copy(*GetAppPwrReminderData());
+	BakData.copy(*getAppPwrReminderData());
 
 	// Copy value of data pointer
-	GetAppPwrReminderData()->Copy(*ppwrData);
+	getAppPwrReminderData()->copy(*ppwrData);
 }
 
 
@@ -1823,7 +1823,7 @@ void CPowerPlusApp::SetAppPwrReminderData(PwrReminderData* ppwrData)
  * @param	eAppOptionID - ID of specific option
  * @return	int - Option value
  */
-int CPowerPlusApp::GetAppOption(AppOptionID eAppOptionID) const
+int CPowerPlusApp::getAppOption(AppOptionID eAppOptionID) const
 {
 	int nResult = INT_INVALID;
 
@@ -1833,16 +1833,16 @@ int CPowerPlusApp::GetAppOption(AppOptionID eAppOptionID) const
 		nResult = SWinApp::GetAppLanguageOption(true);
 		break;
 	case AppOptionID::defaultScheduleActiveState:
-		nResult = m_pschScheduleData->GetDefaultItem().IsEnabled();
+		nResult = m_pschScheduleData->getDefaultItem().isEnabled();
 		break;
 	case AppOptionID::defaultScheduleActionID:
-		nResult = m_pschScheduleData->GetDefaultItem().GetAction();
+		nResult = m_pschScheduleData->getDefaultItem().getAction();
 		break;
 	case AppOptionID::defaultScheduleRepeat:
-		nResult = m_pschScheduleData->GetDefaultItem().IsRepeatEnabled();
+		nResult = m_pschScheduleData->getDefaultItem().isRepeatEnabled();
 		break;
 	default:
-		nResult = m_pcfgAppConfig->GetAppOption(eAppOptionID);
+		nResult = m_pcfgAppConfig->getAppOption(eAppOptionID);
 		break;
 	}
 
@@ -1854,7 +1854,7 @@ int CPowerPlusApp::GetAppOption(AppOptionID eAppOptionID) const
  * @param	None
  * @return	None
  */
-void CPowerPlusApp::InitAppHistoryLog()
+void CPowerPlusApp::initAppHistoryLog()
 {
 	// Initialization
 	if (m_pAppHistoryLog == NULL) {
@@ -1878,7 +1878,7 @@ void CPowerPlusApp::InitAppHistoryLog()
  * @param	None
  * @return	SLogging - Action history log pointer
  */
-SLogging* CPowerPlusApp::GetAppHistoryLog()
+SLogging* CPowerPlusApp::getAppHistoryLog()
 {
 	// Check validity
 	VERIFY(m_pAppHistoryLog != NULL);
@@ -1890,13 +1890,13 @@ SLogging* CPowerPlusApp::GetAppHistoryLog()
  * @param	logItem - Log item data
  * @return	None
  */
-void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
+void CPowerPlusApp::outputAppHistoryLog(LOGITEM logItem)
 {
 	// Get app history logging pointer
-	SLogging* ptrAppHistoryLog = GetAppHistoryLog();
+	SLogging* ptrAppHistoryLog = getAppHistoryLog();
 	
 	// Only output log if option is ON
-	if ((ptrAppHistoryLog != NULL) && (GetAppOption(AppOptionID::saveActionHistory) != false)) {
+	if ((ptrAppHistoryLog != NULL) && (getAppOption(AppOptionID::saveActionHistory) != false)) {
 		ptrAppHistoryLog->OutputItem(logItem);
 	}
 }
@@ -1906,7 +1906,7 @@ void CPowerPlusApp::OutputAppHistoryLog(LOGITEM logItem)
  * @param	wErrCode - Error code
  * @return	None
  */
-void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
+void CPowerPlusApp::traceSerializeData(WORD wErrCode)
 {
 	String traceMessageTitle = Constant::String::Empty;
 	String traceLogFormat = Constant::String::Empty;
@@ -1923,97 +1923,97 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 	case APP_ERROR_LOAD_CFG_INVALID:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Load config failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_CFG_FAILED:
-		bSkipFlag = IsAppFirstLaunch();
+		bSkipFlag = isAppFirstLaunch();
 		traceMessageTitle = _T("Load config failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _readFailedString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_SCHED_INVALID:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Load schedule failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_SCHED_FAILED:
-		bSkipFlag = IsAppFirstLaunch();
+		bSkipFlag = isAppFirstLaunch();
 		traceMessageTitle = _T("Load schedule failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _readFailedString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_INVALID:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Load hotkeyset failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_HKEYSET_FAILED:
-		bSkipFlag = IsAppFirstLaunch();
+		bSkipFlag = isAppFirstLaunch();
 		traceMessageTitle = _T("Load hotkeyset failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _readFailedString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _readFailedString);
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_INVALID:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Load reminder failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _dataNullString);
 		break;
 
 	case APP_ERROR_LOAD_PWRRMD_FAILED:
-		bSkipFlag = IsAppFirstLaunch();
+		bSkipFlag = isAppFirstLaunch();
 		traceMessageTitle = _T("Load reminder failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _readFailedString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _readFailedString);
 		break;
 
 	case APP_ERROR_SAVE_CFG_INVALID:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save config failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_CFG_FAILED:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save config failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_INVALID:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save schedule failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_SCHED_FAILED:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save schedule failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_INVALID:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save hotkeyset failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_HKEYSET_FAILED:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save hotkeyset failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _writeFailedString);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_INVALID:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save reminder failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _dataNullString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _dataNullString);
 		break;
 
 	case APP_ERROR_SAVE_PWRRMD_FAILED:
 		bSkipFlag = false;							// Do not skip
 		traceMessageTitle = _T("Save reminder failed");
-		traceLogFormat.Format(_T("%s: %s"), traceMessageTitle.GetString(), _writeFailedString);
+		traceLogFormat.format(_T("%s: %s"), traceMessageTitle.getString(), _writeFailedString);
 		break;
 	}
 
@@ -2022,7 +2022,7 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
 		return;
 
 	// Output trace error log
-	if (!traceLogFormat.IsEmpty()) {
+	if (!traceLogFormat.isEmpty()) {
 		TRACE_ERROR(traceLogFormat);
 	}
 
@@ -2049,57 +2049,57 @@ void CPowerPlusApp::TraceSerializeData(WORD wErrCode)
  * @param	nSaveFlag		- Data saving type flag
  * @return	true/false
  */
-bool CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = APPDATA_ALL */)
+bool CPowerPlusApp::dataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = APPDATA_ALL */)
 {
 	bool bResult = true;
 	WORD wLoadRet = APP_ERROR_SUCCESS;
 	WORD wSaveRet = APP_ERROR_SUCCESS;
 
 	// Validate app config data
-	if (GetAppConfigData() == NULL) {
+	if (getAppConfigData() == NULL) {
 		if (bySerializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_CFG_INVALID;
-			TraceSerializeData(wLoadRet);
+			traceSerializeData(wLoadRet);
 		}
 		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_CONFIG) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_CFG_INVALID;
-			TraceSerializeData(wSaveRet);
+			traceSerializeData(wSaveRet);
 		}
 		bResult = false;
 	}
 	// Validate schedule data
-	if (GetAppScheduleData() == NULL) {
+	if (getAppScheduleData() == NULL) {
 		if (bySerializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_SCHED_INVALID;
-			TraceSerializeData(wLoadRet);
+			traceSerializeData(wLoadRet);
 		}
 		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_SCHEDULE) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_SCHED_INVALID;
-			TraceSerializeData(wSaveRet);
+			traceSerializeData(wSaveRet);
 		}
 		bResult = false;
 	}
 	// Validate HotkeySet data
-	if (GetAppHotkeySetData() == NULL) {
+	if (getAppHotkeySetData() == NULL) {
 		if (bySerializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_HKEYSET_INVALID;
-			TraceSerializeData(wLoadRet);
+			traceSerializeData(wLoadRet);
 		}
 		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_HOTKEYSET) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_HKEYSET_INVALID;
-			TraceSerializeData(wSaveRet);
+			traceSerializeData(wSaveRet);
 		}
 		bResult = false;
 	}
 	// Validate Power Reminder data
-	if (GetAppPwrReminderData() == NULL) {
+	if (getAppPwrReminderData() == NULL) {
 		if (bySerializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_PWRRMD_INVALID;
-			TraceSerializeData(wLoadRet);
+			traceSerializeData(wLoadRet);
 		}
 		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_PWRREMINDER) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_PWRRMD_INVALID;
-			TraceSerializeData(wSaveRet);
+			traceSerializeData(wSaveRet);
 		}
 		bResult = false;
 	}
@@ -2116,7 +2116,7 @@ bool CPowerPlusApp::DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
  * @param	None
  * @return	true/false
  */
-bool CPowerPlusApp::InitDebugTestDlg(void)
+bool CPowerPlusApp::initDebugTestDlg(void)
 {
 	// Initialize dialog
 	m_pDebugTestDlg = new CDebugTestDlg();
@@ -2139,7 +2139,7 @@ bool CPowerPlusApp::InitDebugTestDlg(void)
  * @param	None
  * @return	SDialog*
  */
-SDialog* CPowerPlusApp::GetDebugTestDlg(void)
+SDialog* CPowerPlusApp::getDebugTestDlg(void)
 {
 	return m_pDebugTestDlg;
 }
@@ -2149,7 +2149,7 @@ SDialog* CPowerPlusApp::GetDebugTestDlg(void)
  * @param	None
  * @return	None
  */
-void CPowerPlusApp::DestroyDebugTestDlg(void)
+void CPowerPlusApp::destroyDebugTestDlg(void)
 {
 	// Destroy DebugTest dialog
 	if (m_pDebugTestDlg != NULL) {
@@ -2170,7 +2170,7 @@ void CPowerPlusApp::DestroyDebugTestDlg(void)
  * @param	hAutoStartRootKey - Returned root key handle (ref-value)
  * @return	None
  */
-void CPowerPlusApp::GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
+void CPowerPlusApp::getAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
 {
 	// Init info data
 	OSVERSIONINFOEX oviOSVersion{};
@@ -2200,7 +2200,7 @@ void CPowerPlusApp::GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
  * @param	bRunAsAdmin - Run as admin option
  * @return	int - Result of registry writing process
  */
-int CPowerPlusApp::EnableAutoStart(bool bEnable, bool bRunAsAdmin)
+int CPowerPlusApp::enableAutoStart(bool bEnable, bool bRunAsAdmin)
 {
 	long lRes;
 	HKEY hRootKey, hKey;
@@ -2209,7 +2209,7 @@ int CPowerPlusApp::EnableAutoStart(bool bEnable, bool bRunAsAdmin)
 	int nRet;
 
 	// Get root key
-	GetAutoStartRegistryRootKey(hRootKey);
+	getAutoStartRegistryRootKey(hRootKey);
 
 	// Create registry key
 	lRes = RegCreateKeyEx(hRootKey, Registry::Path::AutoStart, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hKey, &dwState);
@@ -2228,12 +2228,12 @@ int CPowerPlusApp::EnableAutoStart(bool bEnable, bool bRunAsAdmin)
 
 		if (bRunAsAdmin == true) {
 			// Register to run as admin
-			execCommand.Format(Constant::Command::RunAsAdmin::Register, AppProfile::ProjectName, StringUtils::GetApplicationPath(true).GetString());
+			execCommand.format(Constant::Command::RunAsAdmin::Register, AppProfile::ProjectName, StringUtils::getApplicationPath(true).getString());
 			WinExec(MAKEANSI(execCommand), SW_HIDE);
 		}
 		else {
 			// Unregister to run as admin
-			execCommand.Format(Constant::Command::RunAsAdmin::Unregister, AppProfile::ProjectName);
+			execCommand.format(Constant::Command::RunAsAdmin::Unregister, AppProfile::ProjectName);
 			WinExec(MAKEANSI(execCommand), SW_HIDE);
 		}
 
@@ -2259,13 +2259,13 @@ int CPowerPlusApp::EnableAutoStart(bool bEnable, bool bRunAsAdmin)
  * @param	None
  * @return	int - Result of querrying process
  */
-int CPowerPlusApp::GetAutoStartRegisterStatus(void)
+int CPowerPlusApp::getAutoStartRegisterStatus(void)
 {
 	long lRes;
 	HKEY hRootKey, hKey;
 
 	// Get root directory
-	GetAutoStartRegistryRootKey(hRootKey);
+	getAutoStartRegistryRootKey(hRootKey);
 
 	// Open registry key
 	lRes = RegOpenKeyEx(hRootKey, Registry::Path::AutoStart, 0, KEY_SET_VALUE | KEY_QUERY_VALUE, &hKey);
@@ -2289,7 +2289,7 @@ int CPowerPlusApp::GetAutoStartRegisterStatus(void)
  * @param	timeSysEvent - Event time value
  * @return	true/false
  */
-bool CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent)
+bool CPowerPlusApp::getLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent)
 {
 	// Get key name
 	String keyName;
@@ -2327,7 +2327,7 @@ bool CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent
 	// Extract time data from result string
 	wchar_t tcTimePeriod[5] = {0};
 	int year, month, day, hour, minute, second, millisecs;
-	int nRet = swscanf_s(sysEventTrackingInfo.GetString(), L"%d/%d/%d %d:%d:%d.%d %ls", &year, &month, &day,
+	int nRet = swscanf_s(sysEventTrackingInfo.getString(), L"%d/%d/%d %d:%d:%d.%d %ls", &year, &month, &day,
 		&hour, &minute, &second, &millisecs, tcTimePeriod, static_cast<unsigned int>(_countof(tcTimePeriod)));
 
 	if (nRet != 8) {
@@ -2349,7 +2349,7 @@ bool CPowerPlusApp::GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent
  * @param	timeSysEvent - Event time value
  * @return	true/false
  */
-bool CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent)
+bool CPowerPlusApp::saveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent)
 {
 	// Get key name
 	String keyName;
@@ -2375,11 +2375,11 @@ bool CPowerPlusApp::SaveLastSysEventTime(BYTE byEventType, const DateTime& timeS
 	}
 
 	// Format date/time
-	unsigned nTimePeriod = (timeSysEvent.Hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
+	unsigned nTimePeriod = (timeSysEvent.hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = GetLanguageString(GetAppLanguage(), nTimePeriod);
-	const wchar_t* timeFormatString = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String dateTimeFormat = StringUtils::StringFormat(timeFormatString, timeSysEvent.Year(), timeSysEvent.Month(), timeSysEvent.Day(),
-		timeSysEvent.Hour(), timeSysEvent.Minute(), timeSysEvent.Second(), timeSysEvent.Millisecond(), timePeriodFormat);
+	const wchar_t* timeFormatString = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String dateTimeFormat = StringUtils::stringFormat(timeFormatString, timeSysEvent.year(), timeSysEvent.month(), timeSysEvent.day(),
+		timeSysEvent.hour(), timeSysEvent.minute(), timeSysEvent.second(), timeSysEvent.millisecond(), timePeriodFormat);
 
 	// Save registry data
 	if (!WriteSysEventTracking(keyName, dateTimeFormat)) {
@@ -2403,11 +2403,11 @@ void CPowerPlusApp::OnExecuteDebugCommand(WPARAM /*wParam*/, LPARAM lParam)
 {
 	// If debug command is empty, do nothing
 	String strDebugCommand(LPARAM_TO_STRING(lParam));
-	if (strDebugCommand.IsEmpty())
+	if (strDebugCommand.isEmpty())
 		return;
 
 	// Format debug command
-	strDebugCommand.ToLower();
+	strDebugCommand.toLower();
 
 	// Output event log
 	OutputEventLog(LOG_EVENT_EXEC_DEBUGCMD, strDebugCommand);
@@ -2423,7 +2423,7 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 {
 	// Error code
 	DWORD dwErrCode = DWORD(wParam);
-	String description = StringUtils::StringFormat(_T("Error code: 0x%04X"), dwErrCode);
+	String description = StringUtils::stringFormat(_T("Error code: 0x%04X"), dwErrCode);
 
 	// Event log detail info
 	LOGDETAILINFO logDetailInfo;

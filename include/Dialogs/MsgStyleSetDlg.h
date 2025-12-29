@@ -98,11 +98,11 @@ public:
 	// Data processing functions
 	void UpdateDialogData(bool bUpdate);
 	void GetData(RmdMsgStyleSet& msgStyleData) const {
-		msgStyleData.Copy(m_rmsMsgStyleData);
+		msgStyleData.copy(m_rmsMsgStyleData);
 	};
 	void SetData(const RmdMsgStyleSet& msgStyleData) {
-		m_rmsMsgStyleData.Copy(msgStyleData);
-		m_rmsMsgStyleTemp.Copy(m_rmsMsgStyleData);
+		m_rmsMsgStyleData.copy(msgStyleData);
+		m_rmsMsgStyleTemp.copy(m_rmsMsgStyleData);
 	};
 	DataSetFlag GetDataFlag(void) const {
 		return m_flagDataSet;

@@ -70,7 +70,7 @@ unsigned MapTable::GetStringID(STRINGTABLE_REF stringTableRef, const wchar_t* in
 
 	// Convert input string to lowercase
 	String inputString(input);
-	inputString.ToLower();
+	inputString.toLower();
 
 	// Find and return corresponding ID paired with specified string
 	int index = 0;
@@ -85,7 +85,7 @@ unsigned MapTable::GetStringID(STRINGTABLE_REF stringTableRef, const wchar_t* in
 
 		// Also convert language string to lower for easier comparison
 		pairedString = stringPair.langString;
-		pairedString.ToLower();
+		pairedString.toLower();
 
 		// Compare string ID
 		if (!_tcscmp(pairedString, inputString)) {

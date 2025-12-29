@@ -263,20 +263,20 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 	unsigned currentLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption(true);
 
 	// Remove existing data
-	strRCFileData.Empty();
+	strRCFileData.empty();
 
 	// View help file mode
 	if (GetViewMode() == ViewMode::HelpFile) {
 		switch (currentLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_HELP_ENG);
+			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_HELP_ENG);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_HELP_VIE);
+			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_HELP_VIE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_HELP_CHS);
+			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_HELP_CHS);
 			break;
 		}
 	}
@@ -285,19 +285,19 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 		switch (currentLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_CHANGELOG_ENG);
+			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_ENG);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_CHANGELOG_VIE);
+			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_VIE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			strRCFileData = StringUtils::LoadResourceTextData(IDR_FILE_CHANGELOG_CHS);
+			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_CHS);
 			break;
 		}
 	}
 
 	// Load RCData failed
-	if (strRCFileData.IsEmpty()) {
+	if (strRCFileData.isEmpty()) {
 
 		// Load app language package
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -319,7 +319,7 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 		}
 	}
 
-	return (!strRCFileData.IsEmpty());
+	return (!strRCFileData.isEmpty());
 }
 
 /**

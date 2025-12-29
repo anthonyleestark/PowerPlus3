@@ -85,7 +85,7 @@ LogDetail::LogDetail()
 	m_usCategory = INT_NULL;								// Detail category
 	m_nFlag = LogDetailFlag::Flag_Null;						// Detail info flag
 	m_nDetailValue = INT_NULL;								// Detail value (integer)
-	m_strDetailInfo.Empty();								// Detail info (string)
+	m_strDetailInfo.empty();								// Detail info (string)
 	m_ptrDetailData = NULL;									// Detail data (pointer)
 	m_byPointerType = LogDataType::Void;					// Detail info pointer data type
 	m_szPointerSize = INT_NULL;								// Detail info pointer data size
@@ -102,7 +102,7 @@ void LogDetail::Init(void) noexcept
 	m_usCategory = INT_NULL;								// Detail category
 	m_nFlag = LogDetailFlag::Flag_Null;						// Detail info flag
 	m_nDetailValue = INT_NULL;								// Detail value (integer)
-	m_strDetailInfo.Empty();								// Detail info (string)
+	m_strDetailInfo.empty();								// Detail info (string)
 	m_ptrDetailData = NULL;									// Detail data (pointer)
 	m_byPointerType = LogDataType::Void;					// Detail info pointer data type
 	m_szPointerSize = INT_NULL;								// Detail info pointer data sizesize
@@ -374,10 +374,10 @@ void LogItem::RemoveAll(void) noexcept
  */
 String LogItem::FormatDateTime(void) const
 {
-	const wchar_t* middayFlag = (m_stTime.Hour() >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
-	String templateFormatStr = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormatStr, m_stTime.Year(), m_stTime.Month(), m_stTime.Day(),
-		m_stTime.Hour(), m_stTime.Minute(), m_stTime.Second(), m_stTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (m_stTime.hour() >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
+	String templateFormatStr = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormatStr, m_stTime.year(), m_stTime.month(), m_stTime.day(),
+		m_stTime.hour(), m_stTime.minute(), m_stTime.second(), m_stTime.millisecond(), middayFlag);
 
 	return timeFormatString;
 }
@@ -492,7 +492,7 @@ String LogItem::FormatOutput(void) const
 
 	String logYAMLFormat;
 	jsonData.PrintYAML(logYAMLFormat, 0);
-	logYAMLFormat.Append(Constant::String::NewLine);
+	logYAMLFormat.append(Constant::String::NewLine);
 
 	return logYAMLFormat;
 }
@@ -694,7 +694,7 @@ void JSON::RemoveProperty(const wchar_t* keyName)
 void JSON::RemoveAll(void)
 {
 	// Reset data
-	this->m_strObjectName.Empty();					// JSON object name
+	this->m_strObjectName.empty();					// JSON object name
 	this->m_arrKeyValuePairs.clear();				// Key-value pairs
 
 	// Remove all child objects
@@ -747,7 +747,7 @@ void JSON::AddString(const wchar_t* keyName, const wchar_t* value)
 void JSON::AddInteger(const wchar_t* keyName, int nValue)
 {
 	// Convert integer to string
-	String valueStr = StringUtils::StringFormat(_T("%d"), nValue);
+	String valueStr = StringUtils::stringFormat(_T("%d"), nValue);
 
 	// Add property
 	AddString(keyName, valueStr);
@@ -763,7 +763,7 @@ void JSON::AddInteger(const wchar_t* keyName, int nValue)
 void JSON::AddFloat(const wchar_t* keyName, DOUBLE dbValue)
 {
 	// Convert float number to string
-	String valueStr = StringUtils::StringFormat(_T("%f"), dbValue);
+	String valueStr = StringUtils::stringFormat(_T("%f"), dbValue);
 
 	// Add property
 	AddString(keyName, valueStr);
@@ -822,36 +822,36 @@ void JSON::AddChildObject(JSON* pSrc)
 void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMultiline /* = true */) const
 {
 	// Empty output result string
-	outputString.Empty();
+	outputString.empty();
 
 	// Make indentation
 	String indentationStr = Constant::String::Empty;
 	for (int nTabCount = 1; nTabCount <= nIndent; nTabCount++) {
 		// Add indent (tab character)
-		indentationStr.Append(Constant::Symbol::JSON_Indent);
+		indentationStr.append(Constant::Symbol::JSON_Indent);
 	}
 
 	// Do not use indentation if printing in single line
 	// This will make better visualization
 	if (bMultiline != true) {
-		indentationStr.Empty();
+		indentationStr.empty();
 	}
 
 	// Add indentation
-	outputString.Append(indentationStr);
+	outputString.append(indentationStr);
 
 	String formatStr = Constant::String::Empty;
 
 	// Print object name (if set)
-	if (!this->m_strObjectName.IsEmpty()) {
-		formatStr.Format(_T("\"%s\": "), this->m_strObjectName.GetString());
-		outputString.Append(formatStr);
+	if (!this->m_strObjectName.isEmpty()) {
+		formatStr.format(_T("\"%s\": "), this->m_strObjectName.getString());
+		outputString.append(formatStr);
 	}
 
 	// Opening bracket
-	outputString.Append(_T("{ "));
+	outputString.append(_T("{ "));
 	if (bMultiline == true) {
-		outputString.Append(Constant::String::EndLine);
+		outputString.append(Constant::String::EndLine);
 	}
 
 	// Print list of properties
@@ -859,7 +859,7 @@ void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMulti
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 		// Add indentation
-		outputString.Append(indentationStr);
+		outputString.append(indentationStr);
 
 		// Get key and value
 		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
@@ -869,18 +869,18 @@ void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMulti
 			((this->m_nChildObjectCount <= 0) || (this->m_apChildObjectList == NULL))) {
 
 			// Last property (no other child object following) has no comma in the end
-			formatStr.Format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
-			outputString.Append(formatStr);
+			formatStr.format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.getString(), jsonEntry.strValue.getString());
+			outputString.append(formatStr);
 			if (bMultiline == true) {
-				outputString.Append(Constant::String::EndLine);
+				outputString.append(Constant::String::EndLine);
 			}
 		}
 		else {
 			// Add comma character at the end of each property
-			formatStr.Format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
-			outputString.Append(formatStr);
+			formatStr.format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.getString(), jsonEntry.strValue.getString());
+			outputString.append(formatStr);
 			if (bMultiline == true) {
-				outputString.Append(Constant::String::EndLine);
+				outputString.append(Constant::String::EndLine);
 			}
 		}
 	}
@@ -892,21 +892,21 @@ void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMulti
 			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
 			if (pSubItem != NULL) {
 				pSubItem->Print(subItemOutput, nIndent + 1, false, bMultiline);
-				outputString.Append(subItemOutput);
+				outputString.append(subItemOutput);
 			}
 		}
 	}
 
 	// Add indentation and closing bracket
-	outputString.Append(indentationStr);
-	outputString.Append(_T("} "));
+	outputString.append(indentationStr);
+	outputString.append(_T("} "));
 	if (bMultiline == true) {
-		outputString.Append(Constant::String::EndLine);
+		outputString.append(Constant::String::EndLine);
 	}
 
 	// Add a blank line as separator
 	if (bSeparator == true) {
-		outputString.Append(Constant::String::EndLine);
+		outputString.append(Constant::String::EndLine);
 	}
 }
 
@@ -919,28 +919,28 @@ void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMulti
 void JSON::PrintYAML(String& outputString, int nIndent) const
 {
 	// Empty output result string
-	outputString.Empty();
+	outputString.empty();
 
 	// Indentation
 	String indentationStr = Constant::String::Empty;
 	for (int nCount = 1; nCount < nIndent; nCount++) {
-		indentationStr.Append(Constant::Symbol::YAML_Indent);
+		indentationStr.append(Constant::Symbol::YAML_Indent);
 	}
 
 	String formatStr = Constant::String::Empty;
 
 	// Print object name (if set)
-	if (!this->m_strObjectName.IsEmpty()) {
-		formatStr = StringUtils::StringFormat(_T("%s%s:\n"), indentationStr.GetString(), this->m_strObjectName.GetString());
-		outputString.Append(formatStr);
-		indentationStr.Append(Constant::Symbol::YAML_Indent); // Add one more indent for properties
+	if (!this->m_strObjectName.isEmpty()) {
+		formatStr = StringUtils::stringFormat(_T("%s%s:\n"), indentationStr.getString(), this->m_strObjectName.getString());
+		outputString.append(formatStr);
+		indentationStr.append(Constant::Symbol::YAML_Indent); // Add one more indent for properties
 	}
 
 	// Print key-value pairs
 	for (int nIndex = 0; nIndex < this->m_arrKeyValuePairs.size(); nIndex++) {
 		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
-		formatStr = StringUtils::StringFormat(_T("%s%s: \"%s\"\n"), indentationStr.GetString(), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
-		outputString.Append(formatStr);
+		formatStr = StringUtils::stringFormat(_T("%s%s: \"%s\"\n"), indentationStr.getString(), jsonEntry.strKey.getString(), jsonEntry.strValue.getString());
+		outputString.append(formatStr);
 	}
 
 	// Print child objects
@@ -950,7 +950,7 @@ void JSON::PrintYAML(String& outputString, int nIndent) const
 			if (pSubItem != NULL) {
 				String subItemOutput;
 				pSubItem->PrintYAML(subItemOutput, nIndent + 1);
-				outputString.Append(subItemOutput);
+				outputString.append(subItemOutput);
 			}
 		}
 	}
@@ -1099,7 +1099,7 @@ void SLogging::OutputString(const wchar_t* logString, bool bUseLastTemplate /* =
 	}
 	else {
 		// Get log time
-		DateTime stLogTime = DateTimeUtils::GetCurrentDateTime();
+		DateTime stLogTime = DateTimeUtils::getCurrentDateTime();
 
 		// Prepare log item
 		LOGITEM logItem;
@@ -1157,7 +1157,7 @@ bool SLogging::Write(void)
 	String currentFileName;
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	LOGITEM logItem;
 	DateTime stTemp;
@@ -1166,7 +1166,7 @@ bool SLogging::Write(void)
 
 	// Setup performance counter for tracking
 	PerformanceCounter counter;
-	counter.Start();
+	counter.start();
 
 	for (int nIndex = 0; nIndex < GetLogCount(); nIndex++)
 	{
@@ -1179,9 +1179,9 @@ bool SLogging::Write(void)
 		{
 		case LOGTYPE_APP_EVENT:
 			// Format app event log filename
-			fileName.Format(Constant::File::Name::AppEventLog, stTemp.Year(), stTemp.Month());
-			filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
-			if (currentFileName.IsEmpty()) {
+			fileName.format(Constant::File::Name::AppEventLog, stTemp.year(), stTemp.month());
+			filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
+			if (currentFileName.isEmpty()) {
 				// Set current file name
 				currentFileName = fileName;
 			}
@@ -1190,13 +1190,13 @@ bool SLogging::Write(void)
 			// write down all current log strings and close the file
 			if ((fLogFile.m_hFile != CFile::hFileNull) && (fileName != currentFileName))
 			{
-				if (!logFormatString.IsEmpty()) {
+				if (!logFormatString.isEmpty()) {
 
 					// Write log strings to file
-					fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
+					fLogFile.Write(logFormatString, logFormatString.getLength() * sizeof(wchar_t));
 					fLogFile.Flush();
 
-					logFormatString.Empty();
+					logFormatString.empty();
 				}
 
 				// Close current file
@@ -1210,7 +1210,7 @@ bool SLogging::Write(void)
 		case LOGTYPE_HISTORY_LOG:
 			// App history log
 			fileName = Constant::File::Name::AppHistory;
-			filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
+			filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 			break;
 
 		default:
@@ -1249,9 +1249,9 @@ bool SLogging::Write(void)
 		logFormatString += logItem.FormatOutput();
 	}
 
-	if (!logFormatString.IsEmpty()) {
+	if (!logFormatString.isEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
+		fLogFile.Write(logFormatString, logFormatString.getLength() * sizeof(wchar_t));
 		fLogFile.Flush();
 	}
 
@@ -1261,8 +1261,8 @@ bool SLogging::Write(void)
 	}
 
 	// Display performance counter
-	counter.Stop();
-	OutputDebugLogFormat(_T("Total write log time: %.4f (ms)"), counter.GetElapsedTime(true));
+	counter.stop();
+	OutputDebugLogFormat(_T("Total write log time: %.4f (ms)"), counter.getElapsedTime(true));
 
 	return true;
 }
@@ -1296,7 +1296,7 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		fileName.Format(Constant::File::Name::AppEventLog, stTimeTemp.Year(), stTimeTemp.Month());
+		fileName.format(Constant::File::Name::AppEventLog, stTimeTemp.year(), stTimeTemp.month());
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
@@ -1314,10 +1314,10 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	}
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Get file path
-	String filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -1345,9 +1345,9 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	// Format output log strings
 	logFormatString = logItem.FormatOutput();
 
-	if (!logFormatString.IsEmpty()) {
+	if (!logFormatString.isEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
+		fLogFile.Write(logFormatString, logFormatString.getLength() * sizeof(wchar_t));
 		fLogFile.Flush();
 	}
 
@@ -1380,14 +1380,14 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	String logFormatString;
 
 	// Get log time
-	DateTime stCurTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime stCurTime = DateTimeUtils::getCurrentDateTime();
 
 	// Get filename according to type of logs
 	switch (m_byLogType)
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		fileName.Format(Constant::File::Name::AppEventLog, stCurTime.Year(), stCurTime.Month());
+		fileName.format(Constant::File::Name::AppEventLog, stCurTime.year(), stCurTime.month());
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
@@ -1406,10 +1406,10 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	}
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Get file path
-	String filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
@@ -1440,9 +1440,9 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	logItem.SetLogString(logString);
 	logFormatString = logItem.FormatOutput();
 
-	if (!logFormatString.IsEmpty()) {
+	if (!logFormatString.isEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
+		fLogFile.Write(logFormatString, logFormatString.getLength() * sizeof(wchar_t));
 		fLogFile.Flush();
 	}
 
@@ -1512,10 +1512,10 @@ bool DebugLogging::InitTraceErrorLogFile(void)
 	NULL_POINTER_BREAK(m_pFileLogTraceError, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceError, Constant::File::Extension::Log);
+	String strFilePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::TraceError, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogTraceError->m_hFile == CFile::hFileNull) {
@@ -1524,7 +1524,7 @@ bool DebugLogging::InitTraceErrorLogFile(void)
 		if (!m_pFileLogTraceError->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			AppCore::showErrorMessage(NULL, NULL, dwErrorCode);
 			return false;
 		}
 
@@ -1587,10 +1587,10 @@ bool DebugLogging::InitTraceDebugLogFile(void)
 	NULL_POINTER_BREAK(m_pFileLogTraceDebug, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
+	String strFilePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogTraceDebug->m_hFile == CFile::hFileNull) {
@@ -1599,7 +1599,7 @@ bool DebugLogging::InitTraceDebugLogFile(void)
 		if (!m_pFileLogTraceDebug->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			AppCore::showErrorMessage(NULL, NULL, dwErrorCode);
 			return false;
 		}
 
@@ -1662,10 +1662,10 @@ bool DebugLogging::InitDebugInfoLogFile(void)
 	NULL_POINTER_BREAK(m_pFileLogDebugInfo, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
+	String strFilePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogDebugInfo->m_hFile == CFile::hFileNull) {
@@ -1674,7 +1674,7 @@ bool DebugLogging::InitDebugInfoLogFile(void)
 		if (!m_pFileLogDebugInfo->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			AppCore::showErrorMessage(NULL, NULL, dwErrorCode);
 			return false;
 		}
 
@@ -1732,22 +1732,22 @@ bool DebugLogging::BackupOldLogFile(const String& filePath, const wchar_t* logFi
 	CFileFind Finder;
 
 	// If file path is not specified, do nothing
-	if (filePath.IsEmpty()) return false;
+	if (filePath.isEmpty()) return false;
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Search for backup file list
 	for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
 
 		// Make backup file path template
-		String filePathTemp = StringUtils::MakeFilePath(folderPath, logFileName, Constant::File::Extension::Backup_Log);
-		if (filePathTemp.IsEmpty())
+		String filePathTemp = StringUtils::makeFilePath(folderPath, logFileName, Constant::File::Extension::Backup_Log);
+		if (filePathTemp.isEmpty())
 			return false;
 
 		// Format backup file path
 		String bakFilePath;
-		bakFilePath.Format(filePathTemp, nNum);
+		bakFilePath.format(filePathTemp, nNum);
 
 		// Check if file has already existed
 		if (Finder.FindFile(bakFilePath) == true) {
@@ -1775,20 +1775,20 @@ bool DebugLogging::BackupOldLogFile(const String& filePath, const wchar_t* logFi
 void DebugLogging::WriteTraceErrorLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (currentDateTime.hour() >= 12) ? _T("PM") : _T("AM");
+	String templateFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormat, currentDateTime.year(), currentDateTime.month(), currentDateTime.day(),
+		currentDateTime.hour(), currentDateTime.minute(), currentDateTime.second(), currentDateTime.millisecond(), middayFlag);
 
 	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::loadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::stringFormat(templateFormat, timeFormatString.getString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty())
+	if (logOutputFormatString.isEmpty())
 		return;
 
 	// If the file is not initialized or had been released
@@ -1802,7 +1802,7 @@ void DebugLogging::WriteTraceErrorLogFile(const wchar_t* logStringW)
 	NULL_POINTER_BREAK(pTraceErrorLogFile, return NOTHING);
 	{
 		// Write log string to file
-		pTraceErrorLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
+		pTraceErrorLogFile->Write(logOutputFormatString, logOutputFormatString.getLength() * sizeof(wchar_t));
 		pTraceErrorLogFile->Flush();
 	}
 
@@ -1818,8 +1818,8 @@ void DebugLogging::WriteTraceErrorLogFile(const wchar_t* logStringW)
 			pTraceErrorLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath.GetString(), Constant::File::Name::TraceError, Constant::File::Extension::Log);
+			String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
+			String strOrgFilePath = StringUtils::makeFilePath(strFolderPath.getString(), Constant::File::Name::TraceError, Constant::File::Extension::Log);
 			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::TraceError))
 				return;
 
@@ -1841,20 +1841,20 @@ void DebugLogging::WriteTraceErrorLogFile(const wchar_t* logStringW)
 void DebugLogging::WriteTraceDebugLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (currentDateTime.hour() >= 12) ? _T("PM") : _T("AM");
+	String templateFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormat, currentDateTime.year(), currentDateTime.month(), currentDateTime.day(),
+		currentDateTime.hour(), currentDateTime.minute(), currentDateTime.second(), currentDateTime.millisecond(), middayFlag);
 
 	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::loadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::stringFormat(templateFormat, timeFormatString.getString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty()) return;
+	if (logOutputFormatString.isEmpty()) return;
 
 	// If the file is not initialized or had been released
 	if (GetTraceDebugLogFile() == NULL) {
@@ -1867,7 +1867,7 @@ void DebugLogging::WriteTraceDebugLogFile(const wchar_t* logStringW)
 	NULL_POINTER_BREAK(pTraceDebugLogFile, return NOTHING);
 	{
 		// Write log string to file
-		pTraceDebugLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
+		pTraceDebugLogFile->Write(logOutputFormatString, logOutputFormatString.getLength() * sizeof(wchar_t));
 		pTraceDebugLogFile->Flush();
 	}
 
@@ -1883,8 +1883,8 @@ void DebugLogging::WriteTraceDebugLogFile(const wchar_t* logStringW)
 			pTraceDebugLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
+			String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
+			String strOrgFilePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
 			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::TraceDebug))
 				return;
 
@@ -1906,20 +1906,20 @@ void DebugLogging::WriteTraceDebugLogFile(const wchar_t* logStringW)
 void DebugLogging::WriteDebugInfoLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (currentDateTime.hour() >= 12) ? _T("PM") : _T("AM");
+	String templateFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormat, currentDateTime.year(), currentDateTime.month(), currentDateTime.day(),
+		currentDateTime.hour(), currentDateTime.minute(), currentDateTime.second(), currentDateTime.millisecond(), middayFlag);
 
 	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::loadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::stringFormat(templateFormat, timeFormatString.getString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty()) return;
+	if (logOutputFormatString.isEmpty()) return;
 
 	// If the file is not initialized or had been released
 	if (GetDebugInfoLogFile() == NULL) {
@@ -1932,7 +1932,7 @@ void DebugLogging::WriteDebugInfoLogFile(const wchar_t* logStringW)
 	NULL_POINTER_BREAK(pDebugInfoLogFile, return NOTHING);
 	{
 		// Write log string to file
-		pDebugInfoLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
+		pDebugInfoLogFile->Write(logOutputFormatString, logOutputFormatString.getLength() * sizeof(wchar_t));
 		pDebugInfoLogFile->Flush();
 	}
 
@@ -1948,8 +1948,8 @@ void DebugLogging::WriteDebugInfoLogFile(const wchar_t* logStringW)
 			pDebugInfoLogFile->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
+			String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
+			String strOrgFilePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
 			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::DebugInfo))
 				return;
 
@@ -1971,7 +1971,7 @@ void DebugLogging::WriteDebugInfoLogFile(const wchar_t* logStringW)
 void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
 {
 	// Log file path
-	String filePath = StringUtils::MakeFilePath(Constant::Folder::Log, fileName, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(Constant::Folder::Log, fileName, Constant::File::Extension::Log);
 
 	CFile fTrcDbgLogFile;
 
@@ -1983,7 +1983,7 @@ void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wc
 			// Show error message
 			DWORD dwErrorCode = GetLastError();
 			LPARAM lParam = reinterpret_cast<LPARAM>(fileName);
-			ShowErrorMessage(NULL, NULL, dwErrorCode, lParam);
+			AppCore::showErrorMessage(NULL, NULL, dwErrorCode, lParam);
 			return;
 		}
 
@@ -2000,7 +2000,7 @@ void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wc
 			CFileFind Finder;
 			String backupFilePath;
 			for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
-				backupFilePath.Format((filePath + Constant::File::Extension::Backup_Log), nNum);
+				backupFilePath.format((filePath + Constant::File::Extension::Backup_Log), nNum);
 				if (Finder.FindFile(backupFilePath) == true) {
 					if (nNum == (Constant::Max::BackupFileNumber - 1)) return;
 					else continue;
@@ -2015,21 +2015,21 @@ void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wc
 	}
 
 	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (currentDateTime.hour() >= 12) ? _T("PM") : _T("AM");
+	String templateFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormat, currentDateTime.year(), currentDateTime.month(), currentDateTime.day(),
+		currentDateTime.hour(), currentDateTime.minute(), currentDateTime.second(), currentDateTime.millisecond(), middayFlag);
 
 	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::loadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::stringFormat(templateFormat, timeFormatString.getString(), logStringW, Constant::String::Empty);
 
-	if (!logOutputFormatString.IsEmpty()) {
+	if (!logOutputFormatString.isEmpty()) {
 		// Write log string to file
-		fTrcDbgLogFile.Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
+		fTrcDbgLogFile.Write(logOutputFormatString, logOutputFormatString.getLength() * sizeof(wchar_t));
 		fTrcDbgLogFile.Flush();
 	}
 
@@ -2099,7 +2099,7 @@ void DebugLogging::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
 
 	va_list argList;
 	va_start(argList, traceLogFormatW);
-	logFormatStringW.FormatV(traceLogFormatW, argList);
+	logFormatStringW.formatV(traceLogFormatW, argList);
 	va_end(argList);
 
 	// Output trace log
@@ -2120,10 +2120,10 @@ void DebugLogging::TraceDebugInfo(const char* funcName, const char* fileName, in
 	const wchar_t* _fileName = MAKEUNICODE(fileName);
 
 	// Format debug trace log
-	String debugTraceFormat = StringUtils::StringFormat(_T("Function: %s, File: %s(%d)"), _funcName, _fileName, lineIndex);
+	String debugTraceFormat = StringUtils::stringFormat(_T("Function: %s, File: %s(%d)"), _funcName, _fileName, lineIndex);
 
 	// Write debug trace log: TraceDebug.log
-	WriteTraceDebugLogFile(debugTraceFormat.GetString());
+	WriteTraceDebugLogFile(debugTraceFormat.getString());
 }
 
 /**
@@ -2135,18 +2135,18 @@ void DebugLogging::TraceDebugInfo(const char* funcName, const char* fileName, in
 void DebugLogging::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_INVALID */)
 {
 	// Get debug mode enable state
-	bool bDebugModeEnable = GetDebugMode();
+	bool bDebugModeEnable = getDebugMode();
 
 	// Get debug log string
 	String debugLogStr = debugLog;
 
 	// Get DebugTest tool dialog handle
-	HWND hDebugTestWnd = FindDebugTestDlg();
+	HWND hDebugTestWnd = AppCore::findDebugTestDlg();
 
 	// Debug log output target
 	int nDebugOutputTarget = forceOutput;
 	if (nDebugOutputTarget == INT_INVALID) {
-		nDebugOutputTarget = GetDebugOutputTarget();
+		nDebugOutputTarget = getDebugOutputTarget();
 	}
 	if ((hDebugTestWnd != NULL) &&
 		(IsWindowVisible(hDebugTestWnd))) {
@@ -2189,7 +2189,7 @@ void DebugLogging::OutputDebugLogFormat(const wchar_t* debugLogFormat, va_list a
 {
 	// Format source string
 	String logFormatString;
-	logFormatString.FormatV(debugLogFormat, args);
+	logFormatString.formatV(debugLogFormat, args);
 
 	// Output debug string
 	OutputDebugLog(logFormatString);
@@ -2205,7 +2205,7 @@ void DebugLogging::OutputDebugStringFormat(const wchar_t* debugStringFormat, va_
 {
 	// Format source string
 	String logDebugStringFormat;
-	logDebugStringFormat.FormatV(debugStringFormat, args);
+	logDebugStringFormat.formatV(debugStringFormat, args);
 
 	// Output debug string
 	OutputDebugString(logDebugStringFormat);

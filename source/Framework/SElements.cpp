@@ -37,10 +37,10 @@ SCtrlInfoWrap::SCtrlInfoWrap() : CObject()
 	// Control ID info
 	m_nTypeID = Control_Base;
 	m_nTemplateID = 0;
-	m_strTemplateID.Empty();
+	m_strTemplateID.empty();
 
 	// Control attributes
-	m_strCaption.Empty();
+	m_strCaption.empty();
 	m_bVisible = false;
 	m_bEnabled = false;
 	m_bFocused = false;

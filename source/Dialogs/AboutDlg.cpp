@@ -223,7 +223,7 @@ void CAboutDlg::SetAppNameLabel(void)
 	// Get product version info
 	String fullProdVersion;
 	String shortProdVersion;
-	if (!StringUtils::GetProductVersion(fullProdVersion, shortProdVersion))
+	if (!StringUtils::getProductVersion(fullProdVersion, shortProdVersion))
 		return;
 
 	// Get app name label format from app language package
@@ -232,7 +232,7 @@ void CAboutDlg::SetAppNameLabel(void)
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app name label
-	String appNameLabel = StringUtils::StringFormat(formatString, shortProdVersion.GetString(), fullProdVersion.GetString());
+	String appNameLabel = StringUtils::stringFormat(formatString, shortProdVersion.getString(), fullProdVersion.getString());
 	pAppNameLabel->SetWindowText(appNameLabel);
 }
 
@@ -248,8 +248,8 @@ void CAboutDlg::SetAppInfoLabel(void)
 	if (pAppInfoLabel == NULL) return;
 
 	// Get product version info (short number)
-	String productVersion = StringUtils::GetProductVersion(false);
-	if (productVersion.IsEmpty()) return;
+	String productVersion = StringUtils::getProductVersion(false);
+	if (productVersion.isEmpty()) return;
 
 	// Get app info label format from app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -257,7 +257,7 @@ void CAboutDlg::SetAppInfoLabel(void)
 	if (IS_NULL_STRING(strFormat)) return;
 
 	// Set app info label
-	String appInfoLabel = StringUtils::StringFormat(strFormat, productVersion.GetString());
+	String appInfoLabel = StringUtils::stringFormat(strFormat, productVersion.getString());
 	pAppInfoLabel->SetWindowText(appInfoLabel);
 }
 
@@ -287,7 +287,7 @@ void CAboutDlg::OnViewFacebookProfileLink(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEW_FACEBOOK_PROFILE_LINK);
 
 	// Open profile link
-	OpenWebURL(_T("https://facebook.com/anthonyleestark"));
+	AppCore::openWebURL(_T("https://facebook.com/anthonyleestark"));
 
 	// Return result
 	*pResult = 0;

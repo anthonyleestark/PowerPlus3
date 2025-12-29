@@ -110,7 +110,7 @@ public:
 	virtual bool SetAppWindowCaption(unsigned nResourceStringID, bool bShowProdVersion = false, bool bFullVersion = false);
 
 	virtual const wchar_t* GetAppWindowCaption(void) const {
-		return m_strWindowCaption.GetString();
+		return m_strWindowCaption.getString();
 	};
 	virtual void GetAppWindowCaption(String& windowCaption) const {
 		windowCaption = m_strWindowCaption;
@@ -137,8 +137,8 @@ public:
 	};
 
 	// Flag management functions
-	virtual int  GetFlagValue(AppFlagID eFlagID) const;
-	virtual void SetFlagValue(AppFlagID eFlagID, int nValue);
+	virtual int  getFlagValue(AppFlagID eFlagID) const;
+	virtual void setFlagValue(AppFlagID eFlagID, int nValue);
 	virtual FlagManager& GetAppFlagManager(void) {
 		return m_flagManager;
 	};

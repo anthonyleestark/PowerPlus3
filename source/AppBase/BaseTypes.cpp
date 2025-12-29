@@ -11,7 +11,7 @@
 
 
 // Format string
-String& String::FormatV(const wchar_t* formatStr, va_list vargs)
+String& String::formatV(const wchar_t* formatStr, va_list vargs)
 {
 	if (!formatStr) _buffer.clear();
 	else {
@@ -42,7 +42,7 @@ String& String::FormatV(const wchar_t* formatStr, va_list vargs)
 }
 
 // Upper first character of each word
-String& String::UpperEachWord(void)
+String& String::upperEachWord(void)
 {
 	if (_buffer.length() <= 0) _buffer.clear();
 	else {
@@ -63,7 +63,7 @@ String& String::UpperEachWord(void)
 }
 
 // Tokenization
-TokenList String::Tokenize(const wchar_t* delimiters) const
+TokenList String::tokenize(const wchar_t* delimiters) const
 {
 	TokenList _tokens;
 	_tokens.reserve(Constant::Max::TokenNumber);
@@ -150,7 +150,7 @@ TokenList String::Tokenize(const wchar_t* delimiters) const
 #endif
 
 // Rectangle rotation around center
-Rect Rect::Rotate(Rotation rotation) const noexcept
+Rect Rect::rotate(Rotation rotation) const noexcept
 {
 	double _angleRadians = 0.0;
 
@@ -164,12 +164,12 @@ Rect Rect::Rotate(Rotation rotation) const noexcept
 	}
 
 	// Rotate around center
-	return RotateAround(Center(), _angleRadians);
+	return rotateAround(center(), _angleRadians);
 }
 
 // Rotate point around a pivot
 // Helper for Rect::RotatedAround() function
-Vector2D RotatePointAround(const Vector2D& point, const Vector2D& pivot, double angle) noexcept
+Vector2D rotatePointAround(const Vector2D& point, const Vector2D& pivot, double angle) noexcept
 {
 	double _sin = std::sin(angle);
 	double _cos = std::cos(angle);
@@ -186,7 +186,7 @@ Vector2D RotatePointAround(const Vector2D& point, const Vector2D& pivot, double 
 }
 
 // Rectangle rotation around a pivot (any point)
-Rect Rect::RotateAround(const Vector2D& pivot, double angleRadians) const noexcept
+Rect Rect::rotateAround(const Vector2D& pivot, double angleRadians) const noexcept
 {
 	// Get the 4 corners (respecting inversion)
 	std::array<Vector2D, 4> _corners = {
@@ -198,7 +198,7 @@ Rect Rect::RotateAround(const Vector2D& pivot, double angleRadians) const noexce
 
 	// Rotate each corner around the pivot
 	for (auto& _point : _corners)
-		_point = RotatePointAround(_point, pivot, angleRadians);
+		_point = rotatePointAround(_point, pivot, angleRadians);
 
 	// Compute the new bounding box
 	double _minX = _corners[0]._x, _maxX = _corners[0]._x;

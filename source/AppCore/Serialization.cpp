@@ -35,7 +35,7 @@ unsigned AppRegistry::GetRegistryValueInt(const wchar_t* sectionName, const wcha
 	String sectionNameFormat;
 	if (subSectionName != NULL) {
 		// Format section full name
-		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
+		sectionNameFormat.format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
@@ -52,7 +52,7 @@ bool AppRegistry::WriteRegistryValueInt(const wchar_t* sectionName, const wchar_
 	String sectionNameFormat;
 	if (subSectionName != NULL) {
 		// Format section full name
-		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
+		sectionNameFormat.format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
@@ -78,7 +78,7 @@ String AppRegistry::GetRegistryValueString(const wchar_t* sectionName, const wch
 	String sectionNameFormat;
 	if (subSectionName != NULL) {
 		// Format section full name
-		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
+		sectionNameFormat.format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
@@ -95,7 +95,7 @@ bool AppRegistry::WriteRegistryValueString(const wchar_t* sectionName, const wch
 	String sectionNameFormat;
 	if (subSectionName != NULL) {
 		// Format section full name
-		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
+		sectionNameFormat.format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
@@ -118,7 +118,7 @@ bool AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_
 	String sectionNameFormat;
 	if (subSectionName != NULL) {
 		// Format section full name
-		sectionNameFormat.Format(_T("%s\\%s"), sectionName, subSectionName);
+		sectionNameFormat.format(_T("%s\\%s"), sectionName, subSectionName);
 	}
 	else {
 		// Format section name
@@ -623,8 +623,8 @@ BackupSystem::~BackupSystem()
 bool BackupSystem::RegistryExport()
 {
 	// Registry export destination file
-	String destFilePath = StringUtils::MakeFilePath(NULL, Constant::File::Name::Backup_Config, Constant::File::Extension::Reg);
-	if (destFilePath.IsEmpty()) {
+	String destFilePath = StringUtils::makeFilePath(NULL, Constant::File::Name::Backup_Config, Constant::File::Extension::Reg);
+	if (destFilePath.isEmpty()) {
 		// Make file path failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to make destination file path!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -637,8 +637,8 @@ bool BackupSystem::RegistryExport()
 	registryPath += Registry::Path::Application;
 
 	// Execute registry export command
-	String execCommand = StringUtils::StringFormat(Constant::Command::Registry::Export, registryPath.GetString(), destFilePath.GetString());
-	if (!ExecuteCommand(execCommand, false, false)) {
+	String execCommand = StringUtils::stringFormat(Constant::Command::Registry::Export, registryPath.getString(), destFilePath.getString());
+	if (!AppCore::executeCommand(execCommand, false, false)) {
 		// Execute command failed
 		TRACE_ERROR("Error: AutoRegistryExport fail to execute export command!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);

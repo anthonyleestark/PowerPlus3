@@ -29,24 +29,24 @@ namespace Global {
 };
 
 // Access application launch-time data
-static inline const DateTime& GetAppLaunchTime(void) {
+static inline const DateTime& getAppLaunchTime(void) {
 	return Global::g_stAppLaunchTime;
 };
-static inline void SetAppLaunchTime(const DateTime& stTime) {
+static inline void setAppLaunchTime(const DateTime& stTime) {
 	Global::g_stAppLaunchTime = stTime;
 };
 
 // Access application launch-time counter data
-static inline const unsigned GetAppLaunchTimeCounter(void) {
+static inline const unsigned getAppLaunchTimeCounter(void) {
 	return Global::g_uiAppLaunchTimeCounter;
 };
-static inline const bool IsAppFirstLaunch(void) {
+static inline const bool isAppFirstLaunch(void) {
 	return (Global::g_uiAppLaunchTimeCounter <= 1);
 };
-static inline void SetAppLaunchTimeCounter(unsigned uiValue) {
+static inline void setAppLaunchTimeCounter(unsigned uiValue) {
 	Global::g_uiAppLaunchTimeCounter = uiValue;
 };
-static inline void UpdateAppLaunchTimeCounter(void) {
+static inline void updateAppLaunchTimeCounter(void) {
 	++Global::g_uiAppLaunchTimeCounter;
 };
 
@@ -55,7 +55,7 @@ static inline void UpdateAppLaunchTimeCounter(void) {
 
 // Application global/shared flag manager
 extern FlagManager g_sharedFlagManager;
-extern inline FlagManager& GetGlobalFlagManager(void) {
+extern inline FlagManager& getGlobalFlagManager(void) {
 	return g_sharedFlagManager;
 };
 
@@ -69,19 +69,19 @@ extern inline FlagManager& GetGlobalFlagManager(void) {
 #define DEFAULT_TESTFEATURE			FALSE
 
 // Dummy test mode flag
-static inline const bool GetDummyTestMode(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::dummyTestMode);
+static inline const bool getDummyTestMode(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::dummyTestMode);
 };
-static inline void SetDummyTestMode(bool bValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::dummyTestMode, bValue);
+static inline void setDummyTestMode(bool bValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::dummyTestMode, bValue);
 };
 
 // Debug mode flag
-static inline const bool GetDebugMode(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::debugMode);
+static inline const bool getDebugMode(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::debugMode);
 };
-static inline void SetDebugMode(bool bValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::debugMode, bValue);
+static inline void setDebugMode(bool bValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::debugMode, bValue);
 };
 
 // Debug log output target flag
@@ -90,19 +90,19 @@ enum DebugOutput {
 	DebugInfoFile,
 	DebugTestTool,
 };
-static inline const int GetDebugOutputTarget(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::debugOutputTarget);
+static inline const int getDebugOutputTarget(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::debugOutputTarget);
 };
-static inline void SetDebugOutputTarget(int nValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::debugOutputTarget, nValue);
+static inline void setDebugOutputTarget(int nValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::debugOutputTarget, nValue);
 };
 
 // Test feature enable flag
-static inline const bool GetTestFeatureEnable(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::testFeatureEnabled);
+static inline const bool getTestFeatureEnable(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::testFeatureEnabled);
 };
-static inline void SetTestFeatureEnable(bool bValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::testFeatureEnabled, bValue);
+static inline void setTestFeatureEnable(bool bValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::testFeatureEnabled, bValue);
 };
 
 /*-----------------------------------------------------------------------------------------------------------*/
@@ -111,35 +111,35 @@ static inline void SetTestFeatureEnable(bool bValue) {
 /*---------------------------------------------App tracing flags---------------------------------------------*/
 
 // Power action trace flag
-static inline const byte GetPwrActionFlag(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::pwrActionFlag);
+static inline const byte getPwrActionFlag(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::pwrActionFlag);
 };
-static inline void SetPwrActionFlag(byte byValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::pwrActionFlag, byValue);
+static inline void setPwrActionFlag(byte byValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::pwrActionFlag, byValue);
 };
 
 // System suspended trace flag
-static inline const byte GetSystemSuspendFlag(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::systemSuspendFlag);
+static inline const byte getSystemSuspendFlag(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::systemSuspendFlag);
 };
-static inline void SetSystemSuspendFlag(byte byValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::systemSuspendFlag, byValue);
+static inline void setSystemSuspendFlag(byte byValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::systemSuspendFlag, byValue);
 };
 
 // Session ended trace flag
-static inline const byte GetSessionEndFlag(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::sessionEndFlag);
+static inline const byte getSessionEndFlag(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::sessionEndFlag);
 };
-static inline void SetSessionEndFlag(byte byValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::sessionEndFlag, byValue);
+static inline void setSessionEndFlag(byte byValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::sessionEndFlag, byValue);
 };
 
 // Previously safe termination trace flag
-static inline const byte GetSafeTerminationFlag(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::safeTerminationFlag);
+static inline const byte getSafeTerminationFlag(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::safeTerminationFlag);
 };
-static inline void SetSafeTerminationFlag(byte byValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::safeTerminationFlag, byValue);
+static inline void setSafeTerminationFlag(byte byValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::safeTerminationFlag, byValue);
 };
 
 /*-----------------------------------------------------------------------------------------------------------*/
@@ -147,11 +147,11 @@ static inline void SetSafeTerminationFlag(byte byValue) {
 /*---------------------------------------------Memory-only flags---------------------------------------------*/
 
 // Session lock trace flag
-static inline const byte GetSessionLockFlag(void) {
-	return GetGlobalFlagManager().GetFlagValue(AppFlagID::sessionLockFlag);
+static inline const byte getSessionLockFlag(void) {
+	return getGlobalFlagManager().getFlagValue(AppFlagID::sessionLockFlag);
 };
-static inline void SetSessionLockFlag(byte byValue) {
-	GetGlobalFlagManager().SetFlagValue(AppFlagID::sessionLockFlag, byValue);
+static inline void setSessionLockFlag(byte byValue) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::sessionLockFlag, byValue);
 };
 
 /*-----------------------------------------------------------------------------------------------------------*/

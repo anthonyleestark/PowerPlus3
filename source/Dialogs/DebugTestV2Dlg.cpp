@@ -549,7 +549,7 @@ bool CDebugTestV2Dlg::SendDebugCommand(void)
 
 	// Prepare params
 	WPARAM wParam = MAKE_WPARAM_STRING(debugCommand);
-	LPARAM lParam = MAKE_LPARAM_STRING(debugCommand.GetString());
+	LPARAM lParam = MAKE_LPARAM_STRING(debugCommand.getString());
 
 	// Send debug command message to parent window
 	this->NotifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);
@@ -761,7 +761,7 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 		// Menu "Clear buffer" item
 		else if (nItemID == IDM_DEBUGTEST_CLEAR_BUFFER) {
 			// If DebugTest buffer screen is empty
-			if (m_strBuffer.IsEmpty()) {
+			if (m_strBuffer.isEmpty()) {
 				// Disable menu item
 				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
@@ -785,28 +785,28 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 int CDebugTestV2Dlg::FormatDebugCommand(String& debugCommand) const
 {
 	// If debug command is empty, do nothing
-	if (debugCommand.IsEmpty())
+	if (debugCommand.isEmpty())
 		return 0;
 
 	// Remove prefix
-	int nSrcLength = debugCommand.GetLength();
+	int nSrcLength = debugCommand.getLength();
 	if (m_bDispCommandPrefix == true) {
 		nSrcLength -= wcslen(debugCommandPrefix);
-		String tempString = debugCommand.Right(nSrcLength);
+		String tempString = debugCommand.right(nSrcLength);
 		debugCommand = tempString;
 	}
 
 	// Remove leading/trailing spaces
-	debugCommand.Trim();
+	debugCommand.trim();
 
 	// Initialize a temporary string buffer
-	nSrcLength = debugCommand.GetLength();
+	nSrcLength = debugCommand.getLength();
 	std::vector<wchar_t> tempBuff(nSrcLength + 1);
 
 	// Remove invalid characters
 	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
 
-		wchar_t ch = debugCommand.GetAt(nIndex);
+		wchar_t ch = debugCommand.getAt(nIndex);
 		switch (ch)
 		{
 		case Constant::Char::Return:
@@ -824,14 +824,14 @@ int CDebugTestV2Dlg::FormatDebugCommand(String& debugCommand) const
 	}
 
 	// Copy back formatted string
-	debugCommand.Empty();
-	debugCommand.SetString(tempBuff.data());
+	debugCommand.empty();
+	debugCommand.setString(tempBuff.data());
 
 	// Remove leading/trailing spaces again
-	debugCommand.Trim();
+	debugCommand.trim();
 
 	// Return the debug command's new length
-	return debugCommand.GetLength();
+	return debugCommand.getLength();
 }
 
 /**
@@ -887,32 +887,32 @@ void CDebugTestV2Dlg::ClearDebugViewBuffer(void)
 void CDebugTestV2Dlg::AddLine(const wchar_t* lineString, bool bNewLine /* = true */)
 {
 	// If buffer not empty
-	if (!m_strBuffer.IsEmpty()) {
+	if (!m_strBuffer.isEmpty()) {
 		// Get end of buffer character
-		int nBuffLength = m_strBuffer.GetLength();
-		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
+		int nBuffLength = m_strBuffer.getLength();
+		TCHAR tcEndChar = m_strBuffer.getAt(nBuffLength - 1);
 
 		// If end of buffer is not an endline
 		if (tcEndChar != Constant::Char::Return && tcEndChar != Constant::Char::EndLine) {
 			// Add an endline first
-			m_strBuffer.Append(Constant::String::NewLine);
+			m_strBuffer.append(Constant::String::NewLine);
 		}
 	}
 
 	// Add string line
 	if (IS_NOT_EMPTY_STRING(lineString)) {
-		m_strBuffer.Append(lineString);
+		m_strBuffer.append(lineString);
 	}
 
 	// Re-check the end of buffer character
 	if (bNewLine == true) {
-		int nBuffLength = m_strBuffer.GetLength();
-		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
+		int nBuffLength = m_strBuffer.getLength();
+		TCHAR tcEndChar = m_strBuffer.getAt(nBuffLength - 1);
 
 		// If end of buffer is not an endline
 		if (tcEndChar != Constant::Char::Return && tcEndChar != Constant::Char::EndLine) {
 			// Add a new empty line
-			m_strBuffer.Append(Constant::String::NewLine);
+			m_strBuffer.append(Constant::String::NewLine);
 		}
 	}
 }
@@ -984,7 +984,7 @@ void CDebugTestV2Dlg::DispDebugCommandHistory(int nHistoryIndex)
 
 	// Get command at index
 	String commandString = m_astrCommandHistory.at(nHistoryIndex);
-	if (commandString.IsEmpty())
+	if (commandString.isEmpty())
 		return;
 
 	// Check if DebugTest edit view is available and focused

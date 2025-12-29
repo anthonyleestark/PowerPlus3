@@ -39,8 +39,8 @@ SDialog::SDialog() : CDialogEx()
 
 	// Dialog special flags
 	m_nDescendantCount = INT_NULL;
-	SetFlagValue(AppFlagID::dialogUseEnterKey, true);
-	SetFlagValue(AppFlagID::dialogUseEscapeKey, true);
+	setFlagValue(AppFlagID::dialogUseEnterKey, true);
+	setFlagValue(AppFlagID::dialogUseEscapeKey, true);
 	SetReturnFlag(ReturnFlag::Invalid);
 
 	// Lock state exception IDs
@@ -64,9 +64,9 @@ SDialog::SDialog() : CDialogEx()
 	m_rcClientMargin = MARGIN_DEFAULT;
 
 	// Other properties
-	m_strCaption.Empty();
+	m_strCaption.empty();
 	m_hDefaultIcon = NULL;
-	m_strMsgCaption.Empty();
+	m_strMsgCaption.empty();
 
 	m_pBkgrdBrush = NULL;
 	m_clBkgrdColor = Color::White;
@@ -86,8 +86,8 @@ SDialog::SDialog(unsigned nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogE
 
 	// Dialog special flags
 	m_nDescendantCount = INT_NULL;
-	SetFlagValue(AppFlagID::dialogUseEnterKey, true);
-	SetFlagValue(AppFlagID::dialogUseEscapeKey, true);
+	setFlagValue(AppFlagID::dialogUseEnterKey, true);
+	setFlagValue(AppFlagID::dialogUseEscapeKey, true);
 	SetReturnFlag(ReturnFlag::Invalid);
 
 	// Lock state exception IDs
@@ -111,9 +111,9 @@ SDialog::SDialog(unsigned nIDTemplate, CWnd* pParentWnd /* = NULL */) : CDialogE
 	m_rcClientMargin = MARGIN_DEFAULT;
 
 	// Other properties
-	m_strCaption.Empty();
+	m_strCaption.empty();
 	m_hDefaultIcon = NULL;
-	m_strMsgCaption.Empty();
+	m_strMsgCaption.empty();
 
 	m_pBkgrdBrush = NULL;
 	m_clBkgrdColor = Color::White;
@@ -133,8 +133,8 @@ SDialog::SDialog(const wchar_t* templateName, CWnd* pParentWnd /* = NULL */) : C
 
 	// Dialog special flags
 	m_nDescendantCount = INT_NULL;
-	SetFlagValue(AppFlagID::dialogUseEnterKey, true);
-	SetFlagValue(AppFlagID::dialogUseEscapeKey, true);
+	setFlagValue(AppFlagID::dialogUseEnterKey, true);
+	setFlagValue(AppFlagID::dialogUseEscapeKey, true);
 	SetReturnFlag(ReturnFlag::Invalid);
 
 	// Lock state exception IDs
@@ -158,9 +158,9 @@ SDialog::SDialog(const wchar_t* templateName, CWnd* pParentWnd /* = NULL */) : C
 	m_rcClientMargin = MARGIN_DEFAULT;
 
 	// Other properties
-	m_strCaption.Empty();
+	m_strCaption.empty();
 	m_hDefaultIcon = NULL;
-	m_strMsgCaption.Empty();
+	m_strMsgCaption.empty();
 
 	m_pBkgrdBrush = NULL;
 	m_clBkgrdColor = Color::White;
@@ -285,7 +285,7 @@ BOOL SDialog::OnInitDialog()
 	}
 
 	// If dialog custom caption is set
-	if (!m_strCaption.IsEmpty()) {
+	if (!m_strCaption.isEmpty()) {
 
 		// Update dialog caption
 		this->SetWindowText(m_strCaption);
@@ -308,19 +308,19 @@ BOOL SDialog::OnInitDialog()
 	m_szDefaultSize._height = (dialogRect.bottom - dialogRect.top);
 
 	// If dialog size is not registered, use default
-	if (m_szRegisterSize.IsEmpty()) {
+	if (m_szRegisterSize.isEmpty()) {
 		m_szRegisterSize = m_szDefaultSize;
 	}
 
 	// Resize dialog
 	if (m_szRegisterSize != m_szDefaultSize) {
 		// Set width
-		if (m_szRegisterSize.Width() > -1) {
-			dialogRect.right = (dialogRect.left + m_szRegisterSize.Width());
+		if (m_szRegisterSize.width() > -1) {
+			dialogRect.right = (dialogRect.left + m_szRegisterSize.width());
 		}
 		// Set height
-		if (m_szRegisterSize.Height() > -1) {
-			dialogRect.bottom = (dialogRect.top + m_szRegisterSize.Height());
+		if (m_szRegisterSize.height() > -1) {
+			dialogRect.bottom = (dialogRect.top + m_szRegisterSize.height());
 		}
 	}
 	
@@ -332,13 +332,13 @@ BOOL SDialog::OnInitDialog()
 	this->CreateBrush();
 
 	// If dialog is set as top-most 
-	if (GetFlagValue(AppFlagID::dialogSetTopMost) == true) {
+	if (getFlagValue(AppFlagID::dialogSetTopMost) == true) {
 		// Set window position
 		SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 	}
 
 	// If init sound is set
-	if (GetFlagValue(AppFlagID::dialogSetInitSound) == true) {
+	if (getFlagValue(AppFlagID::dialogSetInitSound) == true) {
 		MessageBeep(0xFFFFFFFF);
 	}
 	
@@ -462,13 +462,13 @@ LRESULT SDialog::OnChildDialogDestroy(WPARAM /*wParam*/, LPARAM /*lParam*/)
 void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
 {
 	// Fix min/max size
-	if (GetFlagValue(AppFlagID::dialogSetMinSize) == true) {
-		pMinMaxInfo->ptMinTrackSize.x = m_szMinSize.Width();
-		pMinMaxInfo->ptMinTrackSize.y = m_szMinSize.Height();
+	if (getFlagValue(AppFlagID::dialogSetMinSize) == true) {
+		pMinMaxInfo->ptMinTrackSize.x = m_szMinSize.width();
+		pMinMaxInfo->ptMinTrackSize.y = m_szMinSize.height();
 	}
-	if (GetFlagValue(AppFlagID::dialogSetMaxSize) == true) {
-		pMinMaxInfo->ptMaxTrackSize.x = m_szMaxSize.Width();
-		pMinMaxInfo->ptMaxTrackSize.y = m_szMaxSize.Height();
+	if (getFlagValue(AppFlagID::dialogSetMaxSize) == true) {
+		pMinMaxInfo->ptMaxTrackSize.x = m_szMaxSize.width();
+		pMinMaxInfo->ptMaxTrackSize.y = m_szMaxSize.height();
 	}
 
 	// Default
@@ -487,14 +487,14 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 		switch (pMsg->wParam) 
 		{
 		case VK_ESCAPE:
-			if (GetFlagValue(AppFlagID::dialogUseEscapeKey) != true) {
+			if (getFlagValue(AppFlagID::dialogUseEscapeKey) != true) {
 				// Do not use Escape button
 				return true;
 			}
 			break;
 
 		case VK_RETURN:
-			if (GetFlagValue(AppFlagID::dialogUseEnterKey) != true) {
+			if (getFlagValue(AppFlagID::dialogUseEnterKey) != true) {
 				// Do not use Enter button
 				return true;
 			}
@@ -858,9 +858,9 @@ void SDialog::ResizeDialog(bool bCenterDialog)
 	this->GetWindowRect(&rectDlg);
 
 	// Set new rectangle
-	if (!m_szRegisterSize.IsEmpty()) {
-		rectDlg.right = (rectDlg.left + m_szRegisterSize.Width());
-		rectDlg.bottom = (rectDlg.top + m_szRegisterSize.Height());
+	if (!m_szRegisterSize.isEmpty()) {
+		rectDlg.right = (rectDlg.left + m_szRegisterSize.width());
+		rectDlg.bottom = (rectDlg.top + m_szRegisterSize.height());
 	}
 
 	// Resize
@@ -883,7 +883,7 @@ void SDialog::ResizeDialog(bool bCenterDialog)
 void SDialog::ResetDialogSize(void)
 {
 	// No default size
-	if (m_szDefaultSize.IsEmpty())
+	if (m_szDefaultSize.isEmpty())
 		return;
 
 	// Get current size
@@ -893,7 +893,7 @@ void SDialog::ResetDialogSize(void)
 	// If current size is default size, do nothing
 	LONG lCurWidth = (rcCurRect.right - rcCurRect.left);
 	LONG lCurHeight = (rcCurRect.bottom - rcCurRect.top);
-	if ((lCurWidth == m_szDefaultSize.Width()) && (lCurHeight == m_szDefaultSize.Height()))
+	if ((lCurWidth == m_szDefaultSize.width()) && (lCurHeight == m_szDefaultSize.height()))
 		return;
 
 	// Reset to default
@@ -917,8 +917,8 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 	this->GetMargin(currentMargin);
 
 	// Is center margin???
-	bool bHorzCenter = (currentMargin.Left() == currentMargin.Right());
-	bool bVertCenter = (currentMargin.Top() == currentMargin.Bottom());
+	bool bHorzCenter = (currentMargin.left() == currentMargin.right());
+	bool bVertCenter = (currentMargin.top() == currentMargin.bottom());
 
 	// New dialog margin
 	Rect newMargin = currentMargin;
@@ -945,20 +945,20 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 	this->GetDisplayArea(currentDispArea);
 
 	// Calculate display area size
-	Size curDispAreaSize = currentDispArea.GetSize();
-	Size newDispAreaSize = newDispArea.GetSize();
+	Size curDispAreaSize = currentDispArea.getSize();
+	Size newDispAreaSize = newDispArea.getSize();
 
 	// Update margin
 	if ((bResizeDialog != true) && (bCenter == true)) {
 		// Horizontal center margin
 		if (bHorzCenter == true) {
-			newMargin._left = currentMargin.Left() + (curDispAreaSize.Width() - newDispAreaSize.Width());
-			newMargin._right = newMargin.Left();
+			newMargin._left = currentMargin.left() + (curDispAreaSize.width() - newDispAreaSize.width());
+			newMargin._right = newMargin.left();
 		}
 		// Vertical center margin
 		if (bVertCenter == true) {
-			newMargin._top = currentMargin.Top() + (curDispAreaSize.Height() - newDispAreaSize.Height());
-			newMargin._bottom = newMargin.Top();
+			newMargin._top = currentMargin.top() + (curDispAreaSize.height() - newDispAreaSize.height());
+			newMargin._bottom = newMargin.top();
 		}
 	}
 
@@ -966,27 +966,27 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 	Rect newDialogRect;
 
 	// Set new dialog rectangle top-left
-	newDialogRect._left = (newDispArea.Left() - newMargin.Left()) - dialogClientOffset.Left();
-	newDialogRect._top = (newDispArea.Top() - newMargin.Top()) - dialogClientOffset.Top();
+	newDialogRect._left = (newDispArea.left() - newMargin.left()) - dialogClientOffset.left();
+	newDialogRect._top = (newDispArea.top() - newMargin.top()) - dialogClientOffset.top();
 
 	// If resize is specified
 	if (bResizeDialog == true) {
 
 		// Set new dialog rectangle bottom-right
-		newDialogRect._right = (newDispArea.Right() + newMargin.Right()) + dialogClientOffset.Right();
-		newDialogRect._bottom = (newDispArea.Bottom() + newMargin.Bottom()) + dialogClientOffset.Bottom();
+		newDialogRect._right = (newDispArea.right() + newMargin.right()) + dialogClientOffset.right();
+		newDialogRect._bottom = (newDispArea.bottom() + newMargin.bottom()) + dialogClientOffset.bottom();
 
 		// Resize dialog
-		this->SetSize(newDialogRect.Width(), newDialogRect.Height());
+		this->SetSize(newDialogRect.width(), newDialogRect.height());
 		this->ResizeDialog(bCenter);
 	}
 	else {
 		// Reposition following new margin offset
-		newDialogRect._left += (newMargin.Left() - currentMargin.Left());
-		newDialogRect._top += (newMargin.Top() - currentMargin.Top());
+		newDialogRect._left += (newMargin.left() - currentMargin.left());
+		newDialogRect._top += (newMargin.top() - currentMargin.top());
 
 		// Reposition dialog
-		SetWindowPos(NULL, newDialogRect.Left(), newDialogRect.Top(), 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowPos(NULL, newDialogRect.left(), newDialogRect.top(), 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 		// Make sure that the entire dialog box is visible on the screen
 		SendMessage(DM_REPOSITION, 0, 0);
@@ -1001,15 +1001,15 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
 		this->GetWindowRect(&newRect);
 
 		// Recalculate bottom-right margin
-		newMargin._right = (newRect.right - dialogClientOffset.Right()) - newDispArea.Right();
-		newMargin._bottom = (newRect.bottom - dialogClientOffset.Bottom()) - newDispArea.Bottom();
+		newMargin._right = (newRect.right - dialogClientOffset.right()) - newDispArea.right();
+		newMargin._bottom = (newRect.bottom - dialogClientOffset.bottom()) - newDispArea.bottom();
 	}
 
 	// Save margin update
-	this->SetLeftMargin(newMargin.Left());
-	this->SetTopMargin(newMargin.Top());
-	this->SetRightMargin(newMargin.Right());
-	this->SetBottomMargin(newMargin.Bottom());
+	this->SetLeftMargin(newMargin.left());
+	this->SetTopMargin(newMargin.top());
+	this->SetRightMargin(newMargin.right());
+	this->SetBottomMargin(newMargin.bottom());
 }
 
 /**
@@ -1019,9 +1019,9 @@ void SDialog::SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool b
  */
 void SDialog::SetCaptionFromResource(unsigned nResourceStringID)
 {
-	String captionString = StringUtils::LoadResourceString(nResourceStringID);
-	ASSERT(!captionString.IsEmpty());
-	if (!captionString.IsEmpty()) {
+	String captionString = StringUtils::loadResourceString(nResourceStringID);
+	ASSERT(!captionString.isEmpty());
+	if (!captionString.isEmpty()) {
 		this->SetCaption(captionString);
 	}
 }
@@ -1047,7 +1047,7 @@ void SDialog::SetCaptionFromLanguage(unsigned nLangStringID)
  */
 bool SDialog::CreateBrush(void)
 {
-	if (GetFlagValue(AppFlagID::dialogSetBackgroundColor)) {
+	if (getFlagValue(AppFlagID::dialogSetBackgroundColor)) {
 
 		// Re-create if brush existed
 		if (m_pBkgrdBrush != NULL) {
@@ -1090,7 +1090,7 @@ void SDialog::RegisterMessageBoxCaption(unsigned nCaptionID)
 	}
 
 	// If caption is empty
-	if (captionString.IsEmpty()) {
+	if (captionString.isEmpty()) {
 		// Use default app window caption
 		captionString = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
 	}
@@ -1122,7 +1122,7 @@ int SDialog::DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID /* = NULL
 	}
 	else {
 		// Using registered message box caption
-		if (!m_strMsgCaption.IsEmpty()) {
+		if (!m_strMsgCaption.isEmpty()) {
 			messageCaption = m_strMsgCaption;
 		}
 	}
@@ -1150,10 +1150,10 @@ int SDialog::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
 
 	// If caption is not set
 	String messageCaption(caption);
-	if (messageCaption.IsEmpty()) {
+	if (messageCaption.isEmpty()) {
 
 		// If message box caption is registered
-		if (!m_strMsgCaption.IsEmpty()) {
+		if (!m_strMsgCaption.isEmpty()) {
 			// Use registered caption
 			messageCaption = m_strMsgCaption;
 		}
@@ -1182,7 +1182,7 @@ void SDialog::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NUL
 	// Prepare event log info
 	LOGITEM logItemDialogEvent;
 	logItemDialogEvent.SetCategory(usEvent);
-	logItemDialogEvent.SetTime(DateTimeUtils::GetCurrentDateTime());
+	logItemDialogEvent.SetTime(DateTimeUtils::getCurrentDateTime());
 	logItemDialogEvent.SetProcessID();
 	if (description) {
 		// Include event description
@@ -1861,7 +1861,7 @@ int SDialog::GetAppOption(AppOptionID eAppOptionID, bool bTemp /* = false */) co
  * @param	eFlagID - ID of specific flag
  * @return	int - Flag value
  */
-int SDialog::GetFlagValue(AppFlagID eFlagID) const
+int SDialog::getFlagValue(AppFlagID eFlagID) const
 {
 	int nValue = FLAG_OFF;
 
@@ -1869,7 +1869,7 @@ int SDialog::GetFlagValue(AppFlagID eFlagID) const
 	{
 	// Special dialog-base flags (not managed by FlagManager)
 	case AppFlagID::dialogSetMinSize:
-		nValue = (!m_szMinSize.IsEmpty() &&	!m_szMinSize.IsZero());
+		nValue = (!m_szMinSize.isEmpty() &&	!m_szMinSize.isZero());
 		break;
 	case AppFlagID::dialogSetMaxSize:
 		nValue = (m_szMaxSize > m_szMinSize);
@@ -1888,12 +1888,12 @@ int SDialog::GetFlagValue(AppFlagID eFlagID) const
 	case AppFlagID::dialogSetTextColor:
 	case AppFlagID::dialogSetTopMost:
 	case AppFlagID::dialogSetInitSound:
-		nValue = m_flagManager.GetFlagValue(eFlagID);
+		nValue = m_flagManager.getFlagValue(eFlagID);
 		break;
 
 	default:
 		// Request the flag value from application
-		nValue = ((SWinApp*)AfxGetApp())->GetFlagValue(eFlagID);
+		nValue = ((SWinApp*)AfxGetApp())->getFlagValue(eFlagID);
 		break;
 	}
 
@@ -1906,7 +1906,7 @@ int SDialog::GetFlagValue(AppFlagID eFlagID) const
  * @param	nValue  - Value to set
  * @return	None
  */
-void SDialog::SetFlagValue(AppFlagID eFlagID, int nValue)
+void SDialog::setFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
 	if (nValue == INT_INVALID)
@@ -1932,12 +1932,12 @@ void SDialog::SetFlagValue(AppFlagID eFlagID, int nValue)
 	case AppFlagID::dialogSetTextColor:
 	case AppFlagID::dialogSetTopMost:
 	case AppFlagID::dialogSetInitSound:
-		m_flagManager.SetFlagValue(eFlagID, nValue);
+		m_flagManager.setFlagValue(eFlagID, nValue);
 		break;
 
 	default:
 		// Let the application manage the flags
-		((SWinApp*)AfxGetApp())->SetFlagValue(eFlagID, nValue);
+		((SWinApp*)AfxGetApp())->setFlagValue(eFlagID, nValue);
 		break;
 	}
 }
@@ -1950,7 +1950,7 @@ void SDialog::SetFlagValue(AppFlagID eFlagID, int nValue)
 LRESULT SDialog::RequestCloseDialog(void)
 {
 	// Set force closing flag
-	SetFlagValue(AppFlagID::dialogForceClosing, true);
+	setFlagValue(AppFlagID::dialogForceClosing, true);
 
 	// Default: Close the dialog
 	this->PostMessage(WM_CLOSE);

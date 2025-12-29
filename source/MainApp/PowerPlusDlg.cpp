@@ -137,13 +137,13 @@ CPowerPlusDlg::~CPowerPlusDlg()
 	}
 
 	// Clear Action Schedule data
-	m_schScheduleData.DeleteAll();
+	m_schScheduleData.deleteAll();
 	
 	// Clear HotkeySet data
-	m_hksHotkeySetData.DeleteAll();
+	m_hksHotkeySetData.deleteAll();
 
 	// Clear Power Reminder data
-	m_prdReminderData.DeleteAll();
+	m_prdReminderData.deleteAll();
 
 	// Clear registered hotkey list
 	m_arrCurRegHKeyList.clear();
@@ -453,12 +453,12 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	CMenu* pSysMenu = GetSystemMenu(false);
 	if (pSysMenu != NULL)
 	{
-		String aboutMenuFormat = StringUtils::LoadResourceString(IDS_APP_SYSMENU_ABOUT);
-		if (!aboutMenuFormat.IsEmpty())
+		String aboutMenuFormat = StringUtils::loadResourceString(IDS_APP_SYSMENU_ABOUT);
+		if (!aboutMenuFormat.isEmpty())
 		{
 			// Add product version number
 			String aboutMenuTitle;
-			aboutMenuTitle.Format(aboutMenuFormat, StringUtils::GetProductVersion(false).GetString());
+			aboutMenuTitle.format(aboutMenuFormat, StringUtils::getProductVersion(false).getString());
 
 			// Add menu item
 			pSysMenu->AppendMenu(MF_SEPARATOR);
@@ -494,11 +494,11 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
 
 	// First, init all default data
-	m_cfgAppConfig.SetDefaultData();
-	m_cfgTempConfig.SetDefaultData();
-	m_schScheduleData.SetDefaultData();
-	m_hksHotkeySetData.SetDefaultData();
-	m_prdReminderData.SetDefaultData();
+	m_cfgAppConfig.setDefaultData();
+	m_cfgTempConfig.setDefaultData();
+	m_schScheduleData.setDefaultData();
+	m_hksHotkeySetData.setDefaultData();
+	m_prdReminderData.setDefaultData();
 
 	// Load data
 	GetAppData(APPDATA_ALL);
@@ -520,7 +520,7 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	UpdateDialogManagement();
 
 	// Initialize dialog state as collapsed
-	SetFlagValue(AppFlagID::dialogExpanded, true);
+	setFlagValue(AppFlagID::dialogExpanded, true);
 	ExpandDialog(false);
 
 	// Initialize Power++ runtime queue
@@ -537,25 +537,25 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	ExecutePowerReminder(PwrReminderEvent::atAppStartup);
 
 	// Execute Power Reminder after power action awake
-	if (GetPwrActionFlag() == FLAG_ON) {
+	if (getPwrActionFlag() == FLAG_ON) {
 		ExecutePowerReminder(PwrReminderEvent::wakeAfterAction);
-		SetPwrActionFlag(FLAG_OFF);						// Reset flag
-		SetSystemSuspendFlag(FLAG_OFF);					// Reset flag
-		SetSessionEndFlag(FLAG_OFF);					// Reset flag
+		setPwrActionFlag(FLAG_OFF);						// Reset flag
+		setSystemSuspendFlag(FLAG_OFF);					// Reset flag
+		setSessionEndFlag(FLAG_OFF);					// Reset flag
 		if (pApp != NULL) {
 			// Save flag value update
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+			pApp->saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 		}
 	}
 
 	// Execute Power Reminder after system awake (or after session ending)
-	if ((GetSystemSuspendFlag() == FLAG_ON) || (GetSessionEndFlag() == FLAG_ON)) {
+	if ((getSystemSuspendFlag() == FLAG_ON) || (getSessionEndFlag() == FLAG_ON)) {
 		ExecutePowerReminder(PwrReminderEvent::atSysWakeUp);
-		SetSystemSuspendFlag(FLAG_OFF);					// Reset flag
-		SetSessionEndFlag(FLAG_OFF);					// Reset flag
+		setSystemSuspendFlag(FLAG_OFF);					// Reset flag
+		setSessionEndFlag(FLAG_OFF);					// Reset flag
 		if (pApp != NULL) {
 			// Save flag value update
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+			pApp->saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 		}
 	}
 
@@ -758,7 +758,7 @@ void CPowerPlusDlg::OnReload()
 
 	// Check for setting changed
 	bool bIsChanged = CheckSettingChangeState();
-	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 	if (bIsChanged == true) {
 		int nRet = DisplayMessageBox(MSGBOX_CONFIG_CHANGED_CONTENT, nCaptionID, MB_YESNO | MB_ICONINFORMATION);
 		if (nRet == IDYES) {
@@ -797,7 +797,7 @@ void CPowerPlusDlg::OnClose()
 {
 	// Check for setting changed
 	bool bIsChanged = CheckSettingChangeState();
-	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 	if (bIsChanged == true) {
 		// Apply settings and hide dialog
 		ApplySettings(true);
@@ -820,7 +820,7 @@ void CPowerPlusDlg::OnExpand()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EXPAND_BTN);
 
 	// Expand/collapse dialog
-	bool bCurState = GetFlagValue(AppFlagID::dialogExpanded);
+	bool bCurState = getFlagValue(AppFlagID::dialogExpanded);
 	ExpandDialog(!bCurState);
 	UpdateDialogData(false);
 }
@@ -883,7 +883,7 @@ void CPowerPlusDlg::OnChangeLMBAction()
 	m_cmbLMBAction.GetCurSel();
 
 	// Check for settings change
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Save app event log if enabled
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_LMBACTION_LIST);
@@ -902,7 +902,7 @@ void CPowerPlusDlg::OnChangeMMBAction()
 	m_cmbMMBAction.GetCurSel();
 
 	// Check for settings change
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Save app event log if enabled
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_MMBACTION_LIST);
@@ -921,7 +921,7 @@ void CPowerPlusDlg::OnChangeRMBAction()
 	m_cmbRMBAction.GetCurSel();
 
 	// Check for settings change
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Save app event log if enabled
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_RMBACTION_LIST);
@@ -951,7 +951,7 @@ void CPowerPlusDlg::OnChangeLanguage()
 	((CPowerPlusApp*)AfxGetApp())->ReloadAppLanguage(nCurLanguage);
 
 	// Check for settings change
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Refresh dialog display
 	SetupLanguage();
@@ -987,7 +987,7 @@ void CPowerPlusDlg::OnCheckboxClicked(UINT nChkBoxID)
 	int nState = pChkCtrl->GetCheck();
 
 	// Update setting change flag
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckSettingChangeState());
 
 	// Save app event log if enabled
 	OutputCheckBoxLog(LOG_EVENT_CHK_CLICKED, nChkBoxID);
@@ -1030,7 +1030,7 @@ void CPowerPlusDlg::OnBackupConfig()
 	bool bRet = false;
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		bRet = pApp->BackupRegistryAppData();
+		bRet = pApp->backupRegistryAppData();
 	}
 
 	// Backup failed
@@ -1157,10 +1157,10 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 	// Timer ID: Event skip counter
 	else if (nIDEvent == TIMERID_STD_EVENTSKIPCOUNTER) {
 		// Process Power Broadcast event skip counter
-		int nCounter = GetFlagValue(AppFlagID::pwrBroadcastSkipCount);
+		int nCounter = getFlagValue(AppFlagID::pwrBroadcastSkipCount);
 		if (nCounter > 0) {
 			// Count down (decrease value by 1)
-			SetFlagValue(AppFlagID::pwrBroadcastSkipCount, --nCounter);
+			setFlagValue(AppFlagID::pwrBroadcastSkipCount, --nCounter);
 		}
 	}
 
@@ -1250,9 +1250,9 @@ LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM /*wParam*/, LPARAM /*lParam*/
 	// Update data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		ScheduleData* pschData = pApp->GetAppScheduleData();
+		ScheduleData* pschData = pApp->getAppScheduleData();
 		if (pschData != NULL) {
-			m_schScheduleData.Copy(*pschData);
+			m_schScheduleData.copy(*pschData);
 			UpdateActionScheduleQueue(Mode::Update);
 		}
 	}
@@ -1273,9 +1273,9 @@ LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM /*wParam*/, LPARAM /*lParam*
 	// Update data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		HotkeySetData* phksData = pApp->GetAppHotkeySetData();
+		HotkeySetData* phksData = pApp->getAppHotkeySetData();
 		if (phksData != NULL) {
-			m_hksHotkeySetData.Copy(*phksData);
+			m_hksHotkeySetData.copy(*phksData);
 			SetupBackgroundHotkey(Mode::Update);
 		}
 	}
@@ -1296,9 +1296,9 @@ LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM /*wParam*/, LPARAM /*lPara
 	// Update data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		PwrReminderData* ppwrData = pApp->GetAppPwrReminderData();
+		PwrReminderData* ppwrData = pApp->getAppPwrReminderData();
 		if (ppwrData != NULL) {
-			m_prdReminderData.Copy(*ppwrData);
+			m_prdReminderData.copy(*ppwrData);
 			UpdatePwrReminderSnooze(Mode::Update);
 		}
 	}
@@ -1342,10 +1342,10 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 
 			// Get command character list
 			String commandCharList;
-			StringUtils::PrintCharList(debugCommand, commandCharList);
+			StringUtils::printCharList(debugCommand, commandCharList);
 
 			// Output debug info (to file)
-			String debugLog = StringUtils::StringFormat(_T("Failed debug command: %s"), commandCharList.GetString());
+			String debugLog = StringUtils::stringFormat(_T("Failed debug command: %s"), commandCharList.getString());
 			OutputDebugLog(debugLog, DebugInfoFile);
 		}
 		else {
@@ -1420,7 +1420,7 @@ LRESULT CPowerPlusDlg::OnShowErrorMessage(WPARAM wParam, LPARAM /*lParam*/)
 LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Check if event skip counter is triggered
-	if (GetFlagValue(AppFlagID::pwrBroadcastSkipCount) > 0) {
+	if (getFlagValue(AppFlagID::pwrBroadcastSkipCount) > 0) {
 		TRACE("Power Broadcast Event will be skipped!!!");
 		return LRESULT(Result::Failure);
 	}
@@ -1439,14 +1439,14 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 
 		// Trigger skip event counter
 		// Temporarily skip processing PowerBroadcastEvent in 3 seconds
-		SetFlagValue(AppFlagID::pwrBroadcastSkipCount, 3);
+		setFlagValue(AppFlagID::pwrBroadcastSkipCount, 3);
 
 		// If Power action flag is triggered, 
 		// handle it like a wakeup event after power action
-		if (GetPwrActionFlag() == FLAG_ON) {
+		if (getPwrActionFlag() == FLAG_ON) {
 			// Execute Power Reminder after power action awake
 			ExecutePowerReminder(PwrReminderEvent::wakeAfterAction);
-			SetPwrActionFlag(FLAG_OFF);		// Reset flag
+			setPwrActionFlag(FLAG_OFF);		// Reset flag
 		}
 		// Otherwise,
 		// handle it like regular system wakeup event
@@ -1456,13 +1456,13 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 		}
 
 		// Reset session ending flag
-		SetSessionEndFlag(FLAG_OFF);
+		setSessionEndFlag(FLAG_OFF);
 
 		// Reset system suspended flag
-		SetSystemSuspendFlag(FLAG_OFF);
+		setSystemSuspendFlag(FLAG_OFF);
 		if (pApp != NULL) {
 			// Save flag value updates
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+			pApp->saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 		}
 		
 		// Output action history after waken up
@@ -1474,10 +1474,10 @@ LRESULT CPowerPlusDlg::OnPowerBroadcastEvent(WPARAM wParam, LPARAM /*lParam*/)
 	else if (ulEvent == PBT_APMSUSPEND) {
 
 		// Turn on system suspended flag
-		SetSystemSuspendFlag(FLAG_ON);
+		setSystemSuspendFlag(FLAG_ON);
 		if (pApp != NULL) {
 			// Save flag value update
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+			pApp->saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 		}
 
 		// Save action history if remaining unsaved
@@ -1508,12 +1508,12 @@ LRESULT CPowerPlusDlg::OnQuerryEndSession(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	/*---------- Process querry ending session event ----------*/
 
 	// Turn on session ending flag
-	SetSessionEndFlag(FLAG_ON);
-	pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+	setSessionEndFlag(FLAG_ON);
+	pApp->saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 
 	// Save last session ending time
-	DateTime curSysDateTime = DateTimeUtils::GetCurrentDateTime();
-	pApp->SaveLastSysEventTime(SystemEventID::SessionEnded, curSysDateTime);
+	DateTime curSysDateTime = DateTimeUtils::getCurrentDateTime();
+	pApp->saveLastSysEventTime(SystemEventID::SessionEnded, curSysDateTime);
 
 	// Save action history if remaining unsaved
 	SaveHistoryInfoData();
@@ -1538,13 +1538,13 @@ LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM /*lParam*/)
 	{
 	case WTS_SESSION_LOCK:
 		// Screen locked
-		SetSessionLockFlag(FLAG_ON);
+		setSessionLockFlag(FLAG_ON);
 		OutputDebugLog(_T("The screen is LOCKED!!!"));
 		break;
 
 	case WTS_SESSION_UNLOCK:
 		// Screen unlocked
-		SetSessionLockFlag(FLAG_OFF);
+		setSessionLockFlag(FLAG_OFF);
 		OutputDebugLog(_T("The screen is UNLOCKED!!!"));
 		break;
 
@@ -1625,7 +1625,7 @@ BOOL CPowerPlusDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 	case IDM_NOTIFY_BACKUP_CONFIG:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_BACKUP_CONFIG);
-		((CPowerPlusApp*)AfxGetApp())->BackupRegistryAppData();
+		((CPowerPlusApp*)AfxGetApp())->backupRegistryAppData();
 		break;
 	case IDM_NOTIFY_VIEW_BAKCONFIG:
 		OutputMenuLog(LOG_EVENT_MENU_SELECTED, IDM_NOTIFY_VIEW_BAKCONFIG);
@@ -1766,7 +1766,7 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 void CPowerPlusDlg::ExpandDialog(bool bExpand)
 {
 	// If new state is the same as current state, do nothing
-	bool bCurState = GetFlagValue(AppFlagID::dialogExpanded);
+	bool bCurState = getFlagValue(AppFlagID::dialogExpanded);
 	if (bExpand == bCurState) {
 		TRACE("State doesn't change, do not process!!!");
 		return;
@@ -1868,7 +1868,7 @@ void CPowerPlusDlg::ExpandDialog(bool bExpand)
 	}
 	else {
 		// Resize dialog
-		SetWindowPos(NULL, 0, 0, m_pDialogSize->Width(), m_pDialogSize->Height(), SWP_NOMOVE | SWP_NOZORDER);
+		SetWindowPos(NULL, 0, 0, m_pDialogSize->width(), m_pDialogSize->height(), SWP_NOMOVE | SWP_NOZORDER);
 
 		// Make sure that the entire dialog box is visible on the screen
 		SendMessage(DM_REPOSITION, 0, 0);
@@ -1883,7 +1883,7 @@ void CPowerPlusDlg::ExpandDialog(bool bExpand)
 
 	// Update flag
 	bool bNewState = !bCurState;
-	SetFlagValue(AppFlagID::dialogExpanded, bNewState);
+	setFlagValue(AppFlagID::dialogExpanded, bNewState);
 }
 
 
@@ -1899,7 +1899,7 @@ void CPowerPlusDlg::ExpandDialog(bool bExpand)
 bool CPowerPlusDlg::CreateNotifyIcon(void)
 {
 	// If notify icon is showed, re-create it
-	if (GetFlagValue(AppFlagID::notifyIconShowed)) {
+	if (getFlagValue(AppFlagID::notifyIconShowed)) {
 		TRACE("Notify icon is showed, now it will be removed and re-created!!!");
 		RemoveNotifyIcon();
 	}
@@ -1940,7 +1940,7 @@ bool CPowerPlusDlg::CreateNotifyIcon(void)
 	}
 
 	// Update flag
-	SetFlagValue(AppFlagID::notifyIconShowed, bRetCreate);
+	setFlagValue(AppFlagID::notifyIconShowed, bRetCreate);
 
 	return true;
 }
@@ -2014,7 +2014,7 @@ void CPowerPlusDlg::UpdateNotifyIcon(void)
 void CPowerPlusDlg::RemoveNotifyIcon(void)
 {
 	// If notify icon is not showed, do nothing
-	if (!GetFlagValue(AppFlagID::notifyIconShowed)) {
+	if (!getFlagValue(AppFlagID::notifyIconShowed)) {
 		TRACE("Notify icon is not showed!!!");
 		return;
 	}
@@ -2032,7 +2032,7 @@ void CPowerPlusDlg::RemoveNotifyIcon(void)
 	Shell_NotifyIcon(NIM_DELETE, m_pNotifyIconData);
 
 	// Update flag
-	SetFlagValue(AppFlagID::notifyIconShowed, false);
+	setFlagValue(AppFlagID::notifyIconShowed, false);
 }
 
 
@@ -2057,34 +2057,34 @@ void CPowerPlusDlg::GetAppData(unsigned dwDataType /* = APPDATA_ALL */)
 
 	// Get config data
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
-		ConfigData* pcfgData = pApp->GetAppConfigData();
+		ConfigData* pcfgData = pApp->getAppConfigData();
 		if (pcfgData != NULL) {
-			m_cfgAppConfig.Copy(*pcfgData);
-			m_cfgTempConfig.Copy(m_cfgAppConfig);
+			m_cfgAppConfig.copy(*pcfgData);
+			m_cfgTempConfig.copy(m_cfgAppConfig);
 		}
 	}
 
 	// Get schedule data
 	if ((dwDataType & APPDATA_SCHEDULE) != 0) {
-		ScheduleData* pschData = pApp->GetAppScheduleData();
+		ScheduleData* pschData = pApp->getAppScheduleData();
 		if (pschData != NULL) {
-			m_schScheduleData.Copy(*pschData);
+			m_schScheduleData.copy(*pschData);
 		}
 	}
 
 	// Get HotkeySet data
 	if ((dwDataType & APPDATA_HOTKEYSET) != 0) {
-		HotkeySetData* phksData = pApp->GetAppHotkeySetData();
+		HotkeySetData* phksData = pApp->getAppHotkeySetData();
 		if (phksData != NULL) {
-			m_hksHotkeySetData.Copy(*phksData);
+			m_hksHotkeySetData.copy(*phksData);
 		}
 	}
 
 	// Get Power Reminder data
 	if ((dwDataType & APPDATA_PWRREMINDER) != 0) {
-		PwrReminderData* ppwrData = pApp->GetAppPwrReminderData();
+		PwrReminderData* ppwrData = pApp->getAppPwrReminderData();
 		if (ppwrData != NULL) {
-			m_prdReminderData.Copy(*ppwrData);
+			m_prdReminderData.copy(*ppwrData);
 		}
 	}
 }
@@ -2108,20 +2108,20 @@ int CPowerPlusDlg::GetAppOption(AppOptionID eAppOptionID, bool bTemp /* = false 
 		nTempResult = nResult;		// No temp data
 		break;
 	case AppOptionID::defaultScheduleActiveState:
-		nResult = m_schScheduleData.GetDefaultItem().IsEnabled();
+		nResult = m_schScheduleData.getDefaultItem().isEnabled();
 		nTempResult = nResult;		// No temp data
 		break;
 	case AppOptionID::defaultScheduleActionID:
-		nResult = m_schScheduleData.GetDefaultItem().GetAction();
+		nResult = m_schScheduleData.getDefaultItem().getAction();
 		nTempResult = nResult;		// No temp data
 		break;
 	case AppOptionID::defaultScheduleRepeat:
-		nResult = m_schScheduleData.GetDefaultItem().IsRepeatEnabled();
+		nResult = m_schScheduleData.getDefaultItem().isRepeatEnabled();
 		nTempResult = nResult;		// No temp data
 		break;
 	default:
-		nResult = m_cfgAppConfig.GetAppOption(eAppOptionID);
-		nTempResult = m_cfgTempConfig.GetAppOption(eAppOptionID);
+		nResult = m_cfgAppConfig.getAppOption(eAppOptionID);
+		nTempResult = m_cfgTempConfig.getAppOption(eAppOptionID);
 		break;
 	}
 
@@ -2148,18 +2148,18 @@ void CPowerPlusDlg::UpdateDialogData(bool bSaveAndValidate /* = true */)
 
 		// Left mouse button action combo-box
 		nCmbSel = m_cfgTempConfig.leftMouseAction;
-		m_cmbLMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
+		m_cmbLMBAction.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
 
 		// Middle mouse button action combo-box
 		nCmbSel = m_cfgTempConfig.middleMouseAction;
-		m_cmbMMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
+		m_cmbMMBAction.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
 
 		// Right mouse button show menu checkbox
 		m_bRMBShowMenu = m_cfgTempConfig.rightMouseShowMenu;
 
 		// Right mouse button action combo-box
 		nCmbSel = (m_bRMBShowMenu == true) ? APP_ACTION_SHOWMENU : m_cfgTempConfig.rightMouseAction;
-		m_cmbRMBAction.SetCurSel(Opt2Sel(APP_ACTION, nCmbSel));
+		m_cmbRMBAction.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
 		EnableItem(IDC_RMBACTION_LIST, !m_bRMBShowMenu);
 
 		// Update other checkbox-es
@@ -2176,7 +2176,7 @@ void CPowerPlusDlg::UpdateDialogData(bool bSaveAndValidate /* = true */)
 		m_bEnablePowerReminder = m_cfgTempConfig.enablePowerReminder;
 
 		// Language list combo-box
-		nCmbSel = Opt2Sel(APP_LANGUAGE, m_cfgTempConfig.languageID);
+		nCmbSel = AppCore::opt2Sel(APP_LANGUAGE, m_cfgTempConfig.languageID);
 		m_cmbLanguages.SetCurSel(nCmbSel);
 
 		// Update buttons
@@ -2197,19 +2197,19 @@ void CPowerPlusDlg::UpdateDialogData(bool bSaveAndValidate /* = true */)
 
 		// Left mouse button action combo-box
 		nCmbSel = m_cmbLMBAction.GetCurSel();
-		m_cfgTempConfig.leftMouseAction = Sel2Opt(APP_ACTION, nCmbSel);
+		m_cfgTempConfig.leftMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
 
 		// Middle mouse button action combo-box
 		nCmbSel = m_cmbMMBAction.GetCurSel();
-		m_cfgTempConfig.middleMouseAction = Sel2Opt(APP_ACTION, nCmbSel);
+		m_cfgTempConfig.middleMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
 
 		// Right mouse button show menu checkbox
 		m_cfgTempConfig.rightMouseShowMenu = m_bRMBShowMenu;
 
 		// Right mouse button action combo-box
-		nCmbSel = Opt2Sel(APP_ACTION, APP_ACTION_SHOWMENU);
+		nCmbSel = AppCore::opt2Sel(APP_ACTION, APP_ACTION_SHOWMENU);
 		nCmbSel = (m_cfgTempConfig.rightMouseShowMenu == true) ? nCmbSel : m_cmbRMBAction.GetCurSel();
-		m_cfgTempConfig.rightMouseAction = Sel2Opt(APP_ACTION, nCmbSel);
+		m_cfgTempConfig.rightMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
 
 		// Update other checkbox-es
 		m_cfgTempConfig.showDialogAtStartup = m_bShowDlgAtStartup;
@@ -2226,7 +2226,7 @@ void CPowerPlusDlg::UpdateDialogData(bool bSaveAndValidate /* = true */)
 
 		// Language list combo-box
 		nCmbSel = m_cmbLanguages.GetCurSel();
-		m_cfgTempConfig.languageID = Sel2Opt(APP_LANGUAGE, nCmbSel);
+		m_cfgTempConfig.languageID = AppCore::sel2Opt(APP_LANGUAGE, nCmbSel);
 
 	/*------------------------------------------------------------------------------------------*/
 	}
@@ -2272,7 +2272,7 @@ bool CPowerPlusDlg::CheckSettingChangeState(void)
  * @param	eFlagID - ID of specific flag
  * @return	int - Flag value
  */
-int CPowerPlusDlg::GetFlagValue(AppFlagID eFlagID) const
+int CPowerPlusDlg::getFlagValue(AppFlagID eFlagID) const
 {
 	int nValue = FLAG_OFF;
 
@@ -2284,12 +2284,12 @@ int CPowerPlusDlg::GetFlagValue(AppFlagID eFlagID) const
 	case AppFlagID::restartAsAdmin:
 	case AppFlagID::pwrBroadcastSkipCount:
 	case AppFlagID::wtsSessionNotifyRegistered:
-		nValue = GetAppFlagManager().GetFlagValue(eFlagID);
+		nValue = GetAppFlagManager().getFlagValue(eFlagID);
 		break;
 
 	default:
 		// Get dialog-base flag value and others
-		nValue = SDialog::GetFlagValue(eFlagID);
+		nValue = SDialog::getFlagValue(eFlagID);
 		break;
 	}
 
@@ -2303,7 +2303,7 @@ int CPowerPlusDlg::GetFlagValue(AppFlagID eFlagID) const
  * @param	nValue  - Value to set
  * @return	None
  */
-void CPowerPlusDlg::SetFlagValue(AppFlagID eFlagID, int nValue)
+void CPowerPlusDlg::setFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
 	if (nValue == INT_INVALID)
@@ -2317,12 +2317,12 @@ void CPowerPlusDlg::SetFlagValue(AppFlagID eFlagID, int nValue)
 	case AppFlagID::restartAsAdmin:
 	case AppFlagID::pwrBroadcastSkipCount:
 	case AppFlagID::wtsSessionNotifyRegistered:
-		GetAppFlagManager().SetFlagValue(eFlagID, nValue);
+		GetAppFlagManager().setFlagValue(eFlagID, nValue);
 		break;
 
 	default:
 		// Set dialog-base-class flag value
-		SDialog::SetFlagValue(eFlagID, nValue);
+		SDialog::setFlagValue(eFlagID, nValue);
 		break;
 	}
 }
@@ -2366,7 +2366,7 @@ void CPowerPlusDlg::SetupLanguage(void)
 		case IDC_EXPAND_BTN:
 		{
 			// Check dialog current state
-			int nState = GetFlagValue(AppFlagID::dialogExpanded);
+			int nState = getFlagValue(AppFlagID::dialogExpanded);
 			if (nState == true)	nID = IDC_COLLAPSE_BTN;
 			else nID = IDC_EXPAND_BTN;
 			SetControlText(pWndChild, nID, pAppLang);
@@ -2467,7 +2467,7 @@ void CPowerPlusDlg::EnableLogViewer(bool bEnable)
 	bool bCheck = bEnable;
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		bCheck = pApp->GetAppOption(AppOptionID::saveAppEventLog);
+		bCheck = pApp->getAppOption(AppOptionID::saveAppEventLog);
 	}
 	if (bCheck == false) {
 		EnableItem(IDC_LOGVIEWER_BTN, bCheck);
@@ -2515,7 +2515,7 @@ void CPowerPlusDlg::UpdateRestartAsAdminFlag(bool bFlag)
 	if (bCheck == true)	return;
 
 	// Update flag
-	SetFlagValue(AppFlagID::restartAsAdmin, bFlag);
+	setFlagValue(AppFlagID::restartAsAdmin, bFlag);
 }
 
 
@@ -2677,10 +2677,10 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.rightMouseAction)));
 
 	// Format notify tip text
-	String notifyTipText = StringUtils::StringFormat(formatString, arrTipText.at(0).GetString(), arrTipText.at(1).GetString(), arrTipText.at(2).GetString());
+	String notifyTipText = StringUtils::stringFormat(formatString, arrTipText.at(0).getString(), arrTipText.at(1).getString(), arrTipText.at(2).getString());
 
 	// Set notify tip text
-	StrCpyW(pNotifyIconData->szTip, notifyTipText.GetString());
+	StrCpyW(pNotifyIconData->szTip, notifyTipText.getString());
 }
 
 
@@ -2864,22 +2864,22 @@ bool CPowerPlusDlg::ExecuteAction(unsigned nActionMacro, WPARAM wParam /* = NULL
 		ExecutePowerReminder(PwrReminderEvent::beforePwrAction);
 
 		// Check if DummyTest mode is enabled or not
-		bool bDummyTestMode = GetDummyTestMode();
+		bool bDummyTestMode = getDummyTestMode();
 
 		if (bDummyTestMode != true) {
 			// Normal mode
-			bResult = ExecutePowerAction(nActionType, nMessage, dwErrorCode);
+			bResult = AppCore::executePowerAction(nActionType, nMessage, dwErrorCode);
 		}
 		else {
 			// DummyTest mode
-			bResult = ExecutePowerActionDummy(nActionType, nMessage, dwErrorCode);
+			bResult = AppCore::executePowerActionDummy(nActionType, nMessage, dwErrorCode);
 		}
 
 		// Save Power Action trace flag
-		SetPwrActionFlag((bResult == true) ? FLAG_ON : FLAG_OFF);
+		setPwrActionFlag((bResult == true) ? FLAG_ON : FLAG_OFF);
 		CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 		if (pApp != NULL) {
-			pApp->SaveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+			pApp->saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 		}
 
 		// Collect power action history info
@@ -2914,11 +2914,11 @@ void CPowerPlusDlg::ApplySettings(bool bMinimize)
 	UpdateDialogData(true);
 
 	// Copy configurations and save
-	m_cfgAppConfig.Copy(m_cfgTempConfig);
+	m_cfgAppConfig.copy(m_cfgTempConfig);
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		pApp->SetAppConfigData(&m_cfgAppConfig);
-		bool bRet = pApp->SaveRegistryAppData();
+		pApp->setAppConfigData(&m_cfgAppConfig);
+		bool bRet = pApp->saveRegistryAppData();
 		if (bRet == false) {
 			// Show error message
 			DWORD dwErr = APP_ERROR_SAVE_CFG_FAILED;
@@ -2927,7 +2927,7 @@ void CPowerPlusDlg::ApplySettings(bool bMinimize)
 	}
 
 	// Restart as admin privileges if triggered
-	bool bRestartTrigger = GetFlagValue(AppFlagID::restartAsAdmin);
+	bool bRestartTrigger = getFlagValue(AppFlagID::restartAsAdmin);
 	if (bRestartTrigger == true) {
 		RequestRestartApp(IDC_APPLY_BTN, true);
 	}
@@ -2969,7 +2969,7 @@ void CPowerPlusDlg::ReloadSettings(void)
 	UpdateDialogData(false);
 
 	// Reset data change flag
-	SetFlagValue(AppFlagID::dialogDataChanged, false);
+	setFlagValue(AppFlagID::dialogDataChanged, false);
 }
 
 
@@ -2981,7 +2981,7 @@ void CPowerPlusDlg::ReloadSettings(void)
 void CPowerPlusDlg::SetDefaultConfig(void)
 {
 	// Set default options
-	m_cfgTempConfig.SetDefaultData();
+	m_cfgTempConfig.setDefaultData();
 
 	// Reload app language & reset language display
 	((CPowerPlusApp*)AfxGetApp())->ReloadAppLanguage();
@@ -3006,7 +3006,7 @@ void CPowerPlusDlg::RestartApp(bool bRestartAsAdmin)
 	ExitApp(ExitCode::RestartApp);
 
 	// Restart immediately
-	RunApp(StringUtils::GetApplicationPath(true), bRestartAsAdmin);
+	AppCore::runApp(StringUtils::getApplicationPath(true), bRestartAsAdmin);
 }
 
 
@@ -3024,7 +3024,7 @@ void CPowerPlusDlg::ExitApp(int nExitCode)
 	}
 
 	// Tell the application by updating flag value
-	SetFlagValue(AppFlagID::appExitCode, nExitCode);
+	setFlagValue(AppFlagID::appExitCode, nExitCode);
 
 	// Termination
 	// Trigger exitting by posting quit message
@@ -3170,15 +3170,15 @@ void CPowerPlusDlg::OpenChildDialogEx(unsigned nDialogID)
 	// DebugTest dialog
 	else if (nDialogID == IDD_DEBUGTEST_DLG) {
 		// Get app DebugTest dialog
-		SDialog* pDialog = pApp->GetDebugTestDlg();
+		SDialog* pDialog = pApp->getDebugTestDlg();
 		if (pDialog == NULL) {
 
 			// Initialize dialog
-			bool bRetInit = pApp->InitDebugTestDlg();
+			bool bRetInit = pApp->initDebugTestDlg();
 			if (bRetInit != false) {
 
 				// Re-acquire DebugTest dialog pointer
-				pDialog = pApp->GetDebugTestDlg();
+				pDialog = pApp->getDebugTestDlg();
 				if (pDialog != NULL) {
 					// Set parent window
 					pDialog->SetParentWnd(this);
@@ -3229,7 +3229,7 @@ void CPowerPlusDlg::OpenDialogBase(unsigned nDialogID, bool bReadOnlyMode /* = f
 	HWND hDialogWnd = NULL;
 	if (nDialogID == IDD_DEBUGTEST_DLG) {
 		// Find DebugTest dialog
-		hDialogWnd = FindDebugTestDlg();
+		hDialogWnd = AppCore::findDebugTestDlg();
 	}
 	else {
 		// Find dialog by title
@@ -3355,17 +3355,17 @@ bool CPowerPlusDlg::OpenTextFileToView(const wchar_t* fileName, const wchar_t* e
 	// Get file name
 	VERIFY(fileName != NULL);
 	String filePath(fileName);
-	filePath.Append(extension);
+	filePath.append(extension);
 	
 	// If sub-directory name is not empty
 	if (IS_NOT_EMPTY_STRING(subDir)) {
 		// Format file path with sub-directory
-		String folderPath = StringUtils::GetSubFolderPath(subDir);
-		filePath = StringUtils::MakeFilePath(folderPath, fileName, extension);
+		String folderPath = StringUtils::getSubFolderPath(subDir);
+		filePath = StringUtils::makeFilePath(folderPath, fileName, extension);
 	}
 
 	// Standard file view
-	return FileViewStd(FILETYPE_TEXT, filePath);
+	return AppCore::fileViewStd(FILETYPE_TEXT, filePath);
 }
 
 
@@ -3383,25 +3383,25 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 	bool bResult = false;
 
 	// Get current time
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Flag that trigger to reupdate schedule data
 	bool bTriggerReupdate = false;
 
 	// Get default schedule item
-	ScheduleItem& schDefaultItem = m_schScheduleData.GetDefaultItem();
+	ScheduleItem& schDefaultItem = m_schScheduleData.getDefaultItem();
 	{
 		// Flag to skip processing schedule item
 		bool bSkipProcess = false;
 
 		// If item is not enabled
-		if (schDefaultItem.IsEnabled() == false) {
+		if (schDefaultItem.isEnabled() == false) {
 			// Do not process
 			bSkipProcess = true;
 		}
 
 		// If repeat option is ON and is set as active in current day of week
-		if ((schDefaultItem.IsRepeatEnabled() == true) && (!schDefaultItem.IsDayActive((DayOfWeek)currentDateTime.DayOfWeek()))) {
+		if ((schDefaultItem.isRepeatEnabled() == true) && (!schDefaultItem.isDayActive((DayOfWeek)currentDateTime.dayOfWeek()))) {
 			// Do not process
 			bSkipProcess = true;
 		}
@@ -3411,7 +3411,7 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 
 			// Check for time matching and trigger schedule notifying if enabled
 			if (GetAppOption(AppOptionID::scheduleNotification) == true) {
-				bool bTriggerNotify = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schDefaultItem.GetTime(), -30);
+				bool bTriggerNotify = ClockTimeUtils::isMatching(currentDateTime.getClockTime(), schDefaultItem.getTime(), -30);
 				if (bTriggerNotify == true) {
 					// Do notify schedule (and check for trigger reupdate)
 					NotifySchedule(&schDefaultItem, bTriggerReupdate);
@@ -3420,11 +3420,11 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 			}
 
 			// Check for time matching and trigger the scheduled action
-			bool bTriggerAction = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schDefaultItem.GetTime());
+			bool bTriggerAction = ClockTimeUtils::isMatching(currentDateTime.getClockTime(), schDefaultItem.getTime());
 			if (bTriggerAction == true) {
 				
 				// Check if item is marked as skipped
-				bool bSkipFlag = GetActionScheduleSkipStatus(schDefaultItem.GetItemID());
+				bool bSkipFlag = GetActionScheduleSkipStatus(schDefaultItem.getItemId());
 				if (bSkipFlag != true) {
 
 					// Output event log: Schedule executed
@@ -3435,12 +3435,12 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 					SaveHistoryInfoData();
 
 					// Execute schedule action
-					bResult = ExecuteAction(APP_MACRO_ACTION_SCHEDULE, schDefaultItem.GetAction());
+					bResult = ExecuteAction(APP_MACRO_ACTION_SCHEDULE, schDefaultItem.getAction());
 
 					// If "Repeat" option is not ON,
 					// --> Disable schedule item after done
-					if (schDefaultItem.IsRepeatEnabled() == false) {
-						schDefaultItem.EnableItem(false);
+					if (schDefaultItem.isRepeatEnabled() == false) {
+						schDefaultItem.enableItem(false);
 						bTriggerReupdate |= true;
 					}
 				}
@@ -3460,18 +3460,18 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 	}
 
 	// Loop through each extra item and process
-	for (int nExtraIndex = 0; nExtraIndex < m_schScheduleData.GetExtraItemNum(); nExtraIndex++) {
+	for (int nExtraIndex = 0; nExtraIndex < m_schScheduleData.getExtraItemNum(); nExtraIndex++) {
 
 		// Get schedule item
-		ScheduleItem& schExtraItem = m_schScheduleData.GetItemAt(nExtraIndex);
+		ScheduleItem& schExtraItem = m_schScheduleData.getItemAt(nExtraIndex);
 
 		// Do not process if repeat option is ON but is not set as active in current day of week
-		if ((schExtraItem.IsRepeatEnabled() == true) && (!schExtraItem.IsDayActive((DayOfWeek)currentDateTime.DayOfWeek())))
+		if ((schExtraItem.isRepeatEnabled() == true) && (!schExtraItem.isDayActive((DayOfWeek)currentDateTime.dayOfWeek())))
 			continue;
 
 		// Check for time matching and trigger schedule notifying if enabled
 		if (GetAppOption(AppOptionID::scheduleNotification) == true) {
-			bool bTriggerNotify = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schExtraItem.GetTime(), -30);
+			bool bTriggerNotify = ClockTimeUtils::isMatching(currentDateTime.getClockTime(), schExtraItem.getTime(), -30);
 			if (bTriggerNotify == true) {
 				// Do notify schedule (and check for trigger reupdate)
 				NotifySchedule(&schExtraItem, bTriggerReupdate);
@@ -3481,11 +3481,11 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 		}
 
 		// Check for time matching and trigger the scheduled action
-		bool bTriggerAction = ClockTimeUtils::IsMatching(currentDateTime.GetClockTime(), schExtraItem.GetTime());
+		bool bTriggerAction = ClockTimeUtils::isMatching(currentDateTime.getClockTime(), schExtraItem.getTime());
 		if (bTriggerAction == true) {
 
 			// Check if item is marked as skipped
-			bool bSkipFlag = GetActionScheduleSkipStatus(schExtraItem.GetItemID());
+			bool bSkipFlag = GetActionScheduleSkipStatus(schExtraItem.getItemId());
 			if (bSkipFlag != true) {
 
 				// Output event log: Schedule executed
@@ -3496,12 +3496,12 @@ bool CPowerPlusDlg::ProcessActionSchedule(void)
 				SaveHistoryInfoData();
 
 				// Execute schedule action
-				bResult = ExecuteAction(APP_MACRO_ACTION_SCHEDULE, schExtraItem.GetAction());
+				bResult = ExecuteAction(APP_MACRO_ACTION_SCHEDULE, schExtraItem.getAction());
 
 				// If "Repeat" option is not ON,
 				// --> Disable schedule item after done
-				if (schExtraItem.IsRepeatEnabled() == false) {
-					schExtraItem.EnableItem(false);
+				if (schExtraItem.isRepeatEnabled() == false) {
+					schExtraItem.enableItem(false);
 					bTriggerReupdate |= true;
 				}
 			}
@@ -3537,8 +3537,8 @@ void CPowerPlusDlg::ReupdateActionScheduleData(void)
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
 		// Update schedule data
-		pApp->SetAppScheduleData(&m_schScheduleData);
-		pApp->SaveRegistryAppData(APPDATA_SCHEDULE);
+		pApp->setAppScheduleData(&m_schScheduleData);
+		pApp->saveRegistryAppData(APPDATA_SCHEDULE);
 	}
 
 	// Trigger reupdate schedule data
@@ -3555,7 +3555,7 @@ void CPowerPlusDlg::ReupdateActionScheduleData(void)
 void CPowerPlusDlg::SetActionScheduleSkip(const ScheduleItem& schItem, int nSkipFlag)
 {
 	// If item is empty, do nothing
-	if (schItem.IsEmpty()) return;
+	if (schItem.isEmpty()) return;
 
 	// Find if item skip mode is already setup
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
@@ -3564,22 +3564,22 @@ void CPowerPlusDlg::SetActionScheduleSkip(const ScheduleItem& schItem, int nSkip
 		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.GetItemID() == schItem.GetItemID()) {
+		if (pwrRuntimeItem.getItemId() == schItem.getItemId()) {
 
 			// Update item skip mode data
-			pwrRuntimeItem.SetSkipFlag(nSkipFlag);
+			pwrRuntimeItem.setSkipFlag(nSkipFlag);
 			return;
 		}
 	}
 
 	// Prepare runtime item info to add
 	PwrRuntimeItem pwrRuntimeItem;
-	pwrRuntimeItem.SetCategory(PwrFeatureID::schedule);
-	pwrRuntimeItem.SetItemID(schItem.GetItemID());
-	pwrRuntimeItem.SetSkipFlag(nSkipFlag);
+	pwrRuntimeItem.setCategory(PwrFeatureID::schedule);
+	pwrRuntimeItem.setItemId(schItem.getItemId());
+	pwrRuntimeItem.setSkipFlag(nSkipFlag);
 
 	// Add item to runtime queue
 	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
@@ -3595,10 +3595,10 @@ void CPowerPlusDlg::SetActionScheduleSkip(const ScheduleItem& schItem, int nSkip
 void CPowerPlusDlg::SetActionScheduleSnooze(const ScheduleItem& schItem, int nSnoozeFlag)
 {
 	// If item is empty, do nothing
-	if (schItem.IsEmpty()) return;
+	if (schItem.isEmpty()) return;
 
 	// If snoozing option is not available
-	if (schItem.IsAllowSnoozing() != true) {
+	if (schItem.isAllowSnoozing() != true) {
 		// Turn off flag
 		nSnoozeFlag = FLAG_OFF;
 	}
@@ -3613,18 +3613,18 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const ScheduleItem& schItem, int nSn
 		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.GetItemID() == schItem.GetItemID()) {
+		if (pwrRuntimeItem.getItemId() == schItem.getItemId()) {
 
 			// Update item skip mode data
-			pwrRuntimeItem.SetSnoozeFlag(nSnoozeFlag);
+			pwrRuntimeItem.setSnoozeFlag(nSnoozeFlag);
 
-			if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_ON) {
+			if (pwrRuntimeItem.getSnoozeFlag() == FLAG_ON) {
 				// Calculate next snooze trigger time
-				pwrRuntimeItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
-				pwrRuntimeItem.CalcNextSnoozeTime(nInterval);
+				pwrRuntimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
+				pwrRuntimeItem.calcNextSnoozeTime(nInterval);
 			}
 			return;
 		}
@@ -3632,13 +3632,13 @@ void CPowerPlusDlg::SetActionScheduleSnooze(const ScheduleItem& schItem, int nSn
 
 	// Prepare runtime item info to add
 	PwrRuntimeItem pwrRuntimeItem;
-	pwrRuntimeItem.SetCategory(PwrFeatureID::schedule);
-	pwrRuntimeItem.SetItemID(schItem.GetItemID());
-	pwrRuntimeItem.SetSnoozeFlag(nSnoozeFlag);
-	if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_ON) {
+	pwrRuntimeItem.setCategory(PwrFeatureID::schedule);
+	pwrRuntimeItem.setItemId(schItem.getItemId());
+	pwrRuntimeItem.setSnoozeFlag(nSnoozeFlag);
+	if (pwrRuntimeItem.getSnoozeFlag() == FLAG_ON) {
 		// Calculate next snooze trigger time
-		pwrRuntimeItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
-		pwrRuntimeItem.CalcNextSnoozeTime(nInterval);
+		pwrRuntimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
+		pwrRuntimeItem.calcNextSnoozeTime(nInterval);
 	}
 
 	// Add item to runtime queue
@@ -3657,9 +3657,9 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 
 		// Initialize Action Schedule runtime queue
 		// Set all items as not skipped
-		SetActionScheduleSkip(m_schScheduleData.GetDefaultItem(), FLAG_OFF);
-		for (int nItemIdx = 0; nItemIdx < m_schScheduleData.GetExtraItemNum(); nItemIdx++) {
-			SetActionScheduleSkip(m_schScheduleData.GetItemAt(nItemIdx), FLAG_OFF);
+		SetActionScheduleSkip(m_schScheduleData.getDefaultItem(), FLAG_OFF);
+		for (int nItemIdx = 0; nItemIdx < m_schScheduleData.getExtraItemNum(); nItemIdx++) {
+			SetActionScheduleSkip(m_schScheduleData.getItemAt(nItemIdx), FLAG_OFF);
 		}
 	}
 	else if (nMode == Mode::Update) {
@@ -3671,19 +3671,19 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
 
 			// Skip if it's not an Action Schedule item
-			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
+			if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 			// Item found flag
 			bool bItemFound = false;
 
 			// Check if item ID is default schedule item
-			const ScheduleItem& schDefaultItem = m_schScheduleData.GetDefaultItem();
-			if (schDefaultItem.GetItemID() == pwrRuntimeItem.GetItemID()) {
+			const ScheduleItem& schDefaultItem = m_schScheduleData.getDefaultItem();
+			if (schDefaultItem.getItemId() == pwrRuntimeItem.getItemId()) {
 
 				// If item's snoozing mode is no longer available
-				if (!schDefaultItem.IsAllowSnoozing()) {
+				if (!schDefaultItem.isAllowSnoozing()) {
 					// Disable snooze mode
-					pwrRuntimeItem.SetSnoozeFlag(FLAG_OFF);
+					pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
 				}
 				
 				// Mark as found
@@ -3692,14 +3692,14 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 			}
 
 			// Search for item ID in Action Schedule extra item data
-			for (int nItemIdx = 0; nItemIdx < m_schScheduleData.GetExtraItemNum(); nItemIdx++) {
-				const ScheduleItem& schItem = m_schScheduleData.GetItemAt(nItemIdx);
-				if (schItem.GetItemID() == pwrRuntimeItem.GetItemID()) {
+			for (int nItemIdx = 0; nItemIdx < m_schScheduleData.getExtraItemNum(); nItemIdx++) {
+				const ScheduleItem& schItem = m_schScheduleData.getItemAt(nItemIdx);
+				if (schItem.getItemId() == pwrRuntimeItem.getItemId()) {
 
 					// If item's snoozing mode is no longer available
-					if (!schItem.IsAllowSnoozing()) {
+					if (!schItem.isAllowSnoozing()) {
 						// Disable snooze mode
-						pwrRuntimeItem.SetSnoozeFlag(FLAG_OFF);
+						pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
 					}
 
 					// Mark as found
@@ -3725,13 +3725,13 @@ void CPowerPlusDlg::UpdateActionScheduleQueue(int nMode)
 			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 			// Skip if it's not an Action Schedule item
-			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
+			if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 			// Update item skip mode data
-			pwrRuntimeItem.SetSkipFlag(FLAG_OFF);
+			pwrRuntimeItem.setSkipFlag(FLAG_OFF);
 
 			// Update item snooze mode data
-			pwrRuntimeItem.SetSnoozeFlag(FLAG_OFF);
+			pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
 		}
 	}
 }
@@ -3755,13 +3755,13 @@ bool CPowerPlusDlg::GetActionScheduleSkipStatus(unsigned nItemID)
 		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.GetItemID() == nItemID) {
+		if (pwrRuntimeItem.getItemId() == nItemID) {
 
 			// Get skip enable flag
-			if (pwrRuntimeItem.GetSkipFlag() == FLAG_ON)
+			if (pwrRuntimeItem.getSkipFlag() == FLAG_ON)
 				return true;
 
 			return false;
@@ -3791,17 +3791,17 @@ bool CPowerPlusDlg::GetActionScheduleSnoozeStatus(unsigned nItemID, const ClockT
 		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::schedule) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.GetItemID() == nItemID) {
+		if (pwrRuntimeItem.getItemId() == nItemID) {
 
 			// Get snooze enable flag
-			if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_OFF)
+			if (pwrRuntimeItem.getSnoozeFlag() == FLAG_OFF)
 				return false;
 
 			// Check for next snooze time matching
-			if (ClockTimeUtils::IsMatching(currentTime, pwrRuntimeItem.GetTime()))
+			if (ClockTimeUtils::isMatching(currentTime, pwrRuntimeItem.getTime()))
 				return true;
 
 			return false;
@@ -3825,7 +3825,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 {
 	// Get option and flag values
 	bool bHKSEnable = GetAppOption(AppOptionID::enableBackgroundHotkey);
-	bool bHKRegisterFlag = GetFlagValue(AppFlagID::hotkeyRegistered);
+	bool bHKRegisterFlag = getFlagValue(AppFlagID::hotkeyRegistered);
 
 	// If background hotkey feature is disabled and no hotkey registered, do nothing
 	if ((bHKSEnable == false) &&											// HotkeySet option OFF
@@ -3861,7 +3861,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 					OutputDebugLogFormat(_T("Unregistered hotkey: %d"), nHKID);
 					m_arrCurRegHKeyList.erase(m_arrCurRegHKeyList.begin() + nIndex);
 					if (nIndex == 0) {										// Last item unregistered
-						SetFlagValue(AppFlagID::hotkeyRegistered, false);	// Reset hotkey registered flag
+						setFlagValue(AppFlagID::hotkeyRegistered, false);	// Reset hotkey registered flag
 						m_arrCurRegHKeyList.clear();						// Cleanup registered hotkey list
 					}
 				}
@@ -3900,14 +3900,14 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 		}
 
 		// If there's no item, do nothing
-		int nItemNum = m_hksHotkeySetData.GetItemNum();
+		int nItemNum = m_hksHotkeySetData.getItemNum();
 		if (nItemNum <= 0) {
 			TRACE("There is not Hotkey item!!!");
 			return;
 		}
 
 		// Reset flag and re-initialize registered hotkey list
-		SetFlagValue(AppFlagID::hotkeyRegistered, false);
+		setFlagValue(AppFlagID::hotkeyRegistered, false);
 		m_arrCurRegHKeyList.clear();
 		m_arrCurRegHKeyList.reserve(nItemNum);
 
@@ -3919,18 +3919,18 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Get hotkey item
-			HotkeySetItem hksItem = m_hksHotkeySetData.GetItemAt(nIndex);
+			HotkeySetItem hksItem = m_hksHotkeySetData.getItemAt(nIndex);
 
 			// If item is empty, skip this item
-			if (hksItem.IsEmpty()) 
+			if (hksItem.isEmpty()) 
 				continue;
 
 			// Get hotkey action ID
-			unsigned nHKActionID = hksItem.GetActionID();
+			unsigned nHKActionID = hksItem.getActionId();
 
 			// Get keycode
 			DWORD dwModifiers, dwVirtualKey;
-			hksItem.GetKeyCode(dwModifiers, dwVirtualKey);
+			hksItem.getKeyCode(dwModifiers, dwVirtualKey);
 			if ((dwModifiers == 0) || (dwVirtualKey == 0))
 				continue;
 
@@ -3938,14 +3938,14 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 			dwModifiers |= MOD_NOREPEAT;
 
 			// Debug log format
-			logTempString.Format(_T("ActionID=%d, Modifiers=%d, VirtualKey=%d"), nHKActionID, dwModifiers, dwVirtualKey);
+			logTempString.format(_T("ActionID=%d, Modifiers=%d, VirtualKey=%d"), nHKActionID, dwModifiers, dwVirtualKey);
 
 			// Get enable/disable status
-			bool bEnabled = hksItem.IsEnabled();
+			bool bEnabled = hksItem.isEnabled();
 
 			// Skip registering item if disabled
 			if (bEnabled == false) {
-				OutputDebugLogFormat(_T("Skip registering hotkey (disabled): %s"), logTempString.GetString());
+				OutputDebugLogFormat(_T("Skip registering hotkey (disabled): %s"), logTempString.getString());
 				continue;
 			}
 
@@ -3954,11 +3954,11 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 
 			// Trigger flag
 			bRegistered |= bRet;
-			SetFlagValue(AppFlagID::hotkeyRegistered, bRegistered);
+			setFlagValue(AppFlagID::hotkeyRegistered, bRegistered);
 
 			if (bRet == true) {
 				// Register successfully
-				OutputDebugLogFormat(_T("Registered hotkey: %s"), logTempString.GetString());
+				OutputDebugLogFormat(_T("Registered hotkey: %s"), logTempString.getString());
 				m_arrCurRegHKeyList.push_back(nHKActionID);						// Update registered hotkey list
 			}
 			else {
@@ -3966,7 +3966,7 @@ void CPowerPlusDlg::SetupBackgroundHotkey(int nMode)
 				dwErrorCode = GetLastError();
 
 				// Output debug log
-				OutputDebugLogFormat(_T("Register hotkey failed: %s"), logTempString.GetString());
+				OutputDebugLogFormat(_T("Register hotkey failed: %s"), logTempString.getString());
 
 				// Trace error
 				TRACE_FORMAT("Error: Hotkey register failed!!! (Code=0x%X)", dwErrorCode);
@@ -3999,21 +3999,21 @@ bool CPowerPlusDlg::ProcessHotkey(int nHotkeyID)
 
 	// Get HotkeySet item by ID
 	HotkeySetItem hksItem;
-	for (int nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
-		HotkeySetItem& hksTemp = m_hksHotkeySetData.GetItemAt(nIndex);
-		if (hksTemp.GetActionID() == static_cast<unsigned>(nHotkeyID)) {
-			hksItem.Copy(hksTemp);
+	for (int nIndex = 0; nIndex < m_hksHotkeySetData.getItemNum(); nIndex++) {
+		HotkeySetItem& hksTemp = m_hksHotkeySetData.getItemAt(nIndex);
+		if (hksTemp.getActionId() == static_cast<unsigned>(nHotkeyID)) {
+			hksItem.copy(hksTemp);
 			break;
 		}
 	}
 
 	// Check item validity
-	if (hksItem.IsEmpty())
+	if (hksItem.isEmpty())
 		return false;
 
 	// Output hotkey event log
 	String hotkeyDescription;
-	hksItem.PrintKeyStrokes(hotkeyDescription);
+	hksItem.printKeyStrokes(hotkeyDescription);
 	OutputEventLog(LOG_EVENT_EXEC_HOTKEY, hotkeyDescription);
 
 	// Get Power action ID by HotkeyID
@@ -4083,11 +4083,11 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	if ((nMode == Mode::Disable) || (nMode == Mode::Update)) {
 
 		// Only unregister if the flag is not OFF
-		if (GetFlagValue(AppFlagID::wtsSessionNotifyRegistered)) {
+		if (getFlagValue(AppFlagID::wtsSessionNotifyRegistered)) {
 
 			if (WTSUnRegisterSessionNotification(hCurWnd)) {
 				// Mark flag as OFF
-				SetFlagValue(AppFlagID::wtsSessionNotifyRegistered, false);
+				setFlagValue(AppFlagID::wtsSessionNotifyRegistered, false);
 			}
 			else {
 				// Unregister failed
@@ -4113,11 +4113,11 @@ void CPowerPlusDlg::RegisterSessionNotification(int nMode)
 	if ((nMode == Mode::Init) || (nMode == Mode::Update)) {
 
 		// Only register if the flag is not ON
-		if (!GetFlagValue(AppFlagID::wtsSessionNotifyRegistered)) {
+		if (!getFlagValue(AppFlagID::wtsSessionNotifyRegistered)) {
 
 			if (WTSRegisterSessionNotification(hCurWnd, NOTIFY_FOR_THIS_SESSION)) {
 				// Mark flag as ON
-				SetFlagValue(AppFlagID::wtsSessionNotifyRegistered, true);
+				setFlagValue(AppFlagID::wtsSessionNotifyRegistered, true);
 			}
 			else {
 				// Register failed
@@ -4158,11 +4158,11 @@ bool CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 
 	// Look for corresponding HotkeyID in HotkeySet data
 	unsigned nHKActionID = INT_NULL;
-	for (size_t nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
-		const HotkeySetItem& hksItem = m_hksHotkeySetData.GetItemAt(nIndex);
-		if ((hksItem.IsEnabled() == true) &&						// HotkeySet item is enabled
-			(hksItem.CompareKeycode(wModifiers, wVirtualKey))) {	// Keycode is matching
-			nHKActionID = hksItem.GetActionID();
+	for (size_t nIndex = 0; nIndex < m_hksHotkeySetData.getItemNum(); nIndex++) {
+		const HotkeySetItem& hksItem = m_hksHotkeySetData.getItemAt(nIndex);
+		if ((hksItem.isEnabled() == true) &&						// HotkeySet item is enabled
+			(hksItem.compareKeycode(wModifiers, wVirtualKey))) {	// Keycode is matching
+			nHKActionID = hksItem.getActionId();
 			break;
 		}
 	}
@@ -4177,7 +4177,7 @@ bool CPowerPlusDlg::ProcessLockStateHotkey(DWORD dwHKeyParam)
 	OutputDebugLogFormat(_T("[LockState Hotkey] HotkeyID found: HKeyID=0x%04X (%d)"), nHKActionID, nHKActionID);
 		
 	// Check if HotkeyID is registered
-	if (GetFlagValue(AppFlagID::hotkeyRegistered) != true) {
+	if (getFlagValue(AppFlagID::hotkeyRegistered) != true) {
 		// Trace error
 		TRACE_ERROR("[LockState Hotkey] No hotkey registered!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -4215,7 +4215,7 @@ bool CPowerPlusDlg::ExecutePowerReminder(unsigned nExecEventID)
 	}
 
 	// If there's no item, do nothing
-	int nItemNum = m_prdReminderData.GetItemNum();
+	int nItemNum = m_prdReminderData.getItemNum();
 	if (nItemNum <= 0) {
 		TRACE("There is no Power Reminder items!!!");
 		return false;
@@ -4225,8 +4225,8 @@ bool CPowerPlusDlg::ExecutePowerReminder(unsigned nExecEventID)
 	DateTime currentDateTime;
 	ClockTime currentClockTime;
 	if (nExecEventID == PwrReminderEvent::atSetTime) {
-		currentDateTime = DateTimeUtils::GetCurrentDateTime();
-		currentClockTime = currentDateTime.GetClockTime();
+		currentDateTime = DateTimeUtils::getCurrentDateTime();
+		currentClockTime = currentDateTime.getClockTime();
 	}
 
 	// Flag that trigger to reupdate Power Reminder data
@@ -4234,18 +4234,18 @@ bool CPowerPlusDlg::ExecutePowerReminder(unsigned nExecEventID)
 
 	// Search all items and process reminder
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		PwrReminderItem& pwrCurItem = m_prdReminderData.GetItemAt(nIndex);
+		PwrReminderItem& pwrCurItem = m_prdReminderData.getItemAt(nIndex);
 
 		// If item is empty, skip this item
-		if (pwrCurItem.IsEmpty())
+		if (pwrCurItem.isEmpty())
 			continue;
 
 		// If event ID is not matching, skip this item
-		if (pwrCurItem.GetEventID() != nExecEventID)
+		if (pwrCurItem.getEventId() != nExecEventID)
 			continue;
 
 		// If item is not enabled, skip this item
-		if (pwrCurItem.IsEnabled() == false)
+		if (pwrCurItem.isEnabled() == false)
 			continue;
 
 		// Process item
@@ -4254,14 +4254,14 @@ bool CPowerPlusDlg::ExecutePowerReminder(unsigned nExecEventID)
 		{
 		case PwrReminderEvent::atSetTime:
 			// If item is set to repeat but not set active in current day of week
-			if ((pwrCurItem.IsRepeatEnabled() == true) && (!pwrCurItem.IsDayActive((DayOfWeek)currentDateTime.DayOfWeek())))
+			if ((pwrCurItem.isRepeatEnabled() == true) && (!pwrCurItem.isDayActive((DayOfWeek)currentDateTime.dayOfWeek())))
 				continue;
 
 			// If set time matching or snooze time is triggered
-			if ((ClockTimeUtils::IsMatching(currentClockTime, pwrCurItem.GetTime())) ||
-				(GetPwrReminderSnoozeStatus(pwrCurItem.GetItemID(), currentClockTime))) {
+			if ((ClockTimeUtils::isMatching(currentClockTime, pwrCurItem.getTime())) ||
+				(GetPwrReminderSnoozeStatus(pwrCurItem.getItemId(), currentClockTime))) {
 				// Prepare to display
-				pwrDispItem.Copy(pwrCurItem);
+				pwrDispItem.copy(pwrCurItem);
 				SetPwrReminderSnooze(pwrCurItem, FLAG_OFF);
 			}
 			else continue;
@@ -4269,23 +4269,23 @@ bool CPowerPlusDlg::ExecutePowerReminder(unsigned nExecEventID)
 
 		case PwrReminderEvent::atSysWakeUp:
 			// If System suspend flag and Session ending flag are both OFF, do not display
-			if ((GetSystemSuspendFlag() == FLAG_OFF) && (GetSessionEndFlag() == FLAG_OFF)) continue;
+			if ((getSystemSuspendFlag() == FLAG_OFF) && (getSessionEndFlag() == FLAG_OFF)) continue;
 			// Otherwise, just prepare to display
-			pwrDispItem.Copy(pwrCurItem);
+			pwrDispItem.copy(pwrCurItem);
 			break;
 
 		case PwrReminderEvent::wakeAfterAction:
 			// If Power Action flag is OFF, do not display
-			if (GetPwrActionFlag() == FLAG_OFF) continue;
+			if (getPwrActionFlag() == FLAG_OFF) continue;
 			// Otherwise, prepare to display
-			pwrDispItem.Copy(pwrCurItem);
+			pwrDispItem.copy(pwrCurItem);
 			break;
 
 		case PwrReminderEvent::atAppStartup:
 		case PwrReminderEvent::beforePwrAction:
 		case PwrReminderEvent::atAppExit:
 			// Just prepare to display
-			pwrDispItem.Copy(pwrCurItem);
+			pwrDispItem.copy(pwrCurItem);
 			break;
 
 		default:
@@ -4293,16 +4293,16 @@ bool CPowerPlusDlg::ExecutePowerReminder(unsigned nExecEventID)
 		}
 
 		// Display reminder
-		if (!pwrDispItem.IsEmpty() && !GetPwrReminderDispFlag(pwrDispItem)) {
+		if (!pwrDispItem.isEmpty() && !GetPwrReminderDispFlag(pwrDispItem)) {
 
 			// Display reminder item
 			DisplayPwrReminder(pwrDispItem);
 
 			// If repeat daily option is not enabled
 			// --> Disable reminder item after displaying
-			if (pwrDispItem.IsRepeatEnabled() == false) {
+			if (pwrDispItem.isRepeatEnabled() == false) {
 				bTriggerReupdate |= true;
-				pwrCurItem.EnableItem(false);
+				pwrCurItem.enableItem(false);
 			}
 		}
 	}
@@ -4325,15 +4325,15 @@ bool CPowerPlusDlg::ExecutePowerReminder(unsigned nExecEventID)
 int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 {
 	// Check message content validity
-	String messageContent = pwrDispItem.GetMessage();
-	if ((messageContent.IsEmpty()) || (IS_NULL_STRING(messageContent))) {
+	String messageContent = pwrDispItem.getMessage();
+	if ((messageContent.isEmpty()) || (IS_NULL_STRING(messageContent))) {
 		// Invalid message content
 		TRACE("Invalid message content!!!");
 		return INT_INVALID;
 	}
 
 	// Output debug log
-	OutputDebugLogFormat(_T("Display reminder: ItemID=%d"), pwrDispItem.GetItemID());
+	OutputDebugLogFormat(_T("Display reminder: ItemID=%d"), pwrDispItem.getItemId());
 
 	// Get app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -4352,14 +4352,14 @@ int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 	SaveHistoryInfoData();
 
 	// Style: MessageBox
-	if (pwrDispItem.GetMessageStyle() == PwrReminderStyle::messageBox) {
+	if (pwrDispItem.getMessageStyle() == PwrReminderStyle::messageBox) {
 
 		const wchar_t* messageCaption = GetLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
 		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
 		nRespond = DisplayMessageBox(messageContent, messageCaption, dwMsgStyle);
 	}
 	// Style: Dialog
-	else if (pwrDispItem.GetMessageStyle() == PwrReminderStyle::dialogBox) {
+	else if (pwrDispItem.getMessageStyle() == PwrReminderStyle::dialogBox) {
 
 		// Init reminder message dialog
 		CReminderMsgDlg* pMsgDlg = new CReminderMsgDlg(this);
@@ -4375,15 +4375,15 @@ int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 		}
 
 		// Message style
-		RmdMsgStyleSet rmdMessageStyle = m_prdReminderData.GetCommonStyle();
-		if (pwrDispItem.IsCustomStyleEnabled())
-			rmdMessageStyle = pwrDispItem.GetMessageStyleData();
+		RmdMsgStyleSet rmdMessageStyle = m_prdReminderData.getCommonStyle();
+		if (pwrDispItem.isCustomStyleEnabled())
+			rmdMessageStyle = pwrDispItem.getMessageStyleData();
 
 		// Message auto-close interval
-		int nTimeout = rmdMessageStyle.GetTimeout();
+		int nTimeout = rmdMessageStyle.getTimeout();
 
 		// Allow snooze mode
-		bool bAllowSnooze = pwrDispItem.IsAllowSnoozing();
+		bool bAllowSnooze = pwrDispItem.isAllowSnoozing();
 
 		// Set allow snooze mode
 		pMsgDlg->SetAllowSnoozeMode(bAllowSnooze);
@@ -4426,8 +4426,8 @@ void CPowerPlusDlg::ReupdatePwrReminderData(void)
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
 		// Update Power Reminder data
-		pApp->SetAppPwrReminderData(&m_prdReminderData);
-		pApp->SaveRegistryAppData(APPDATA_PWRREMINDER);
+		pApp->setAppPwrReminderData(&m_prdReminderData);
+		pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
 	}
 
 	// Trigger reupdate Power Reminder data
@@ -4444,20 +4444,20 @@ void CPowerPlusDlg::ReupdatePwrReminderData(void)
 void CPowerPlusDlg::SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSnoozeFlag)
 {
 	// If item is empty, do nothing
-	if (pwrItem.IsEmpty()) return;
+	if (pwrItem.isEmpty()) return;
 
 	// If item event ID is not "At set time", do nothing
-	if (pwrItem.GetEventID() != PwrReminderEvent::atSetTime)
+	if (pwrItem.getEventId() != PwrReminderEvent::atSetTime)
 		return;
 
 	// If snoozing option is not available
-	if (pwrItem.IsAllowSnoozing() != true) {
+	if (pwrItem.isAllowSnoozing() != true) {
 		// Turn off flag
 		nSnoozeFlag = FLAG_OFF;
 	}
 
 	// Snooze interval
-	int nInterval = pwrItem.GetSnoozeInterval();
+	int nInterval = pwrItem.getSnoozeInterval();
 
 	// Find if item snooze mode is already setup
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
@@ -4466,18 +4466,18 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSn
 		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.GetItemID() == pwrItem.GetItemID()) {
+		if (pwrRuntimeItem.getItemId() == pwrItem.getItemId()) {
 
 			// Update item snooze mode data
-			pwrRuntimeItem.SetSnoozeFlag(nSnoozeFlag);
+			pwrRuntimeItem.setSnoozeFlag(nSnoozeFlag);
 
-			if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_ON) {
+			if (pwrRuntimeItem.getSnoozeFlag() == FLAG_ON) {
 				// Calculate next snooze trigger time
-				pwrRuntimeItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
-				pwrRuntimeItem.CalcNextSnoozeTime(nInterval);
+				pwrRuntimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
+				pwrRuntimeItem.calcNextSnoozeTime(nInterval);
 			}
 			return;
 		}
@@ -4485,13 +4485,13 @@ void CPowerPlusDlg::SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSn
 
 	// Prepare runtime item info to add
 	PwrRuntimeItem pwrRuntimeItem;
-	pwrRuntimeItem.SetCategory(PwrFeatureID::pwrReminder);
-	pwrRuntimeItem.SetItemID(pwrItem.GetItemID());
-	pwrRuntimeItem.SetSnoozeFlag(nSnoozeFlag);
-	if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_ON) {
+	pwrRuntimeItem.setCategory(PwrFeatureID::pwrReminder);
+	pwrRuntimeItem.setItemId(pwrItem.getItemId());
+	pwrRuntimeItem.setSnoozeFlag(nSnoozeFlag);
+	if (pwrRuntimeItem.getSnoozeFlag() == FLAG_ON) {
 		// Calculate next snooze trigger time
-		pwrRuntimeItem.SetTime(ClockTimeUtils::GetCurrentClockTime());
-		pwrRuntimeItem.CalcNextSnoozeTime(nInterval);
+		pwrRuntimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
+		pwrRuntimeItem.calcNextSnoozeTime(nInterval);
 	}
 
 	// Add item to runtime queue
@@ -4510,8 +4510,8 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 
 		// Initialize Power Reminder runtime snooze queue
 		// Set all items as not snoozed
-		for (int nItemIdx = 0; nItemIdx < m_prdReminderData.GetItemNum(); nItemIdx++) {
-			SetPwrReminderSnooze(m_prdReminderData.GetItemAt(nItemIdx), FLAG_OFF);
+		for (int nItemIdx = 0; nItemIdx < m_prdReminderData.getItemNum(); nItemIdx++) {
+			SetPwrReminderSnooze(m_prdReminderData.getItemAt(nItemIdx), FLAG_OFF);
 		}
 	}
 	else if (nMode == Mode::Update) {
@@ -4523,18 +4523,18 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
 
 			// Skip if it's not Power Reminder item
-			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
+			if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 			// Search for item ID in Power Reminder data
 			bool bItemFound = false;
-			for (int nItemIdx = 0; nItemIdx < m_prdReminderData.GetItemNum(); nItemIdx++) {
-				const PwrReminderItem& pwrItem = m_prdReminderData.GetItemAt(nItemIdx);
-				if (pwrItem.GetItemID() == pwrRuntimeItem.GetItemID()) {
+			for (int nItemIdx = 0; nItemIdx < m_prdReminderData.getItemNum(); nItemIdx++) {
+				const PwrReminderItem& pwrItem = m_prdReminderData.getItemAt(nItemIdx);
+				if (pwrItem.getItemId() == pwrRuntimeItem.getItemId()) {
 
 					// If item's snoozing mode is no longer available
-					if (!pwrItem.IsAllowSnoozing()) {
+					if (!pwrItem.isAllowSnoozing()) {
 						// Disable snooze mode
-						pwrRuntimeItem.SetSnoozeFlag(FLAG_OFF);
+						pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
 					}
 
 					// Mark as found
@@ -4560,10 +4560,10 @@ void CPowerPlusDlg::UpdatePwrReminderSnooze(int nMode)
 			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 			// Skip if it's not Power Reminder item
-			if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
+			if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 			// Update item snooze mode data
-			pwrRuntimeItem.SetSnoozeFlag(FLAG_OFF);
+			pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
 		}
 	}
 }
@@ -4588,17 +4588,17 @@ bool CPowerPlusDlg::GetPwrReminderSnoozeStatus(unsigned nItemID, const ClockTime
 		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.GetItemID() == nItemID) {
+		if (pwrRuntimeItem.getItemId() == nItemID) {
 
 			// Get snooze enable flag
-			if (pwrRuntimeItem.GetSnoozeFlag() == FLAG_OFF)
+			if (pwrRuntimeItem.getSnoozeFlag() == FLAG_OFF)
 				return false;
 			
 			// Check for next snooze time matching
-			if (ClockTimeUtils::IsMatching(currentTime, pwrRuntimeItem.GetTime()))
+			if (ClockTimeUtils::isMatching(currentTime, pwrRuntimeItem.getTime()))
 				return true;
 
 			return false;
@@ -4617,7 +4617,7 @@ bool CPowerPlusDlg::GetPwrReminderSnoozeStatus(unsigned nItemID, const ClockTime
 bool CPowerPlusDlg::GetPwrReminderDispFlag(const PwrReminderItem& pwrItem)
 {
 	// If item is empty, it can not be displayed
-	if (pwrItem.IsEmpty()) return false;
+	if (pwrItem.isEmpty()) return false;
 
 	// Find if item runtime data is already setup
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
@@ -4626,13 +4626,13 @@ bool CPowerPlusDlg::GetPwrReminderDispFlag(const PwrReminderItem& pwrItem)
 		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.GetItemID() == pwrItem.GetItemID()) {
+		if (pwrRuntimeItem.getItemId() == pwrItem.getItemId()) {
 
 			// Get snooze enable flag
-			if (pwrRuntimeItem.GetDisplayFlag() == FLAG_ON)
+			if (pwrRuntimeItem.getDisplayFlag() == FLAG_ON)
 				return true;
 
 			return false;
@@ -4652,7 +4652,7 @@ bool CPowerPlusDlg::GetPwrReminderDispFlag(const PwrReminderItem& pwrItem)
 void CPowerPlusDlg::SetPwrReminderDispFlag(const PwrReminderItem& pwrItem, int nDispFlag)
 {
 	// If item is empty, do nothing
-	if (pwrItem.IsEmpty()) return;
+	if (pwrItem.isEmpty()) return;
 
 	// Find if item runtime data is already setup
 	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
@@ -4661,21 +4661,21 @@ void CPowerPlusDlg::SetPwrReminderDispFlag(const PwrReminderItem& pwrItem, int n
 		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.GetItemID() == pwrItem.GetItemID()) {
+		if (pwrRuntimeItem.getItemId() == pwrItem.getItemId()) {
 			// Update item displaying flag
-			pwrRuntimeItem.SetDisplayFlag(nDispFlag);
+			pwrRuntimeItem.setDisplayFlag(nDispFlag);
 			return;
 		}
 	}
 
 	// Prepare item info to add
 	PwrRuntimeItem pwrRuntimeItem;
-	pwrRuntimeItem.SetCategory(PwrFeatureID::pwrReminder);
-	pwrRuntimeItem.SetItemID(pwrItem.GetItemID());
-	pwrRuntimeItem.SetDisplayFlag(nDispFlag);
+	pwrRuntimeItem.setCategory(PwrFeatureID::pwrReminder);
+	pwrRuntimeItem.setItemId(pwrItem.getItemId());
+	pwrRuntimeItem.setDisplayFlag(nDispFlag);
 
 	// Add item to runtime queue
 	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
@@ -4704,12 +4704,12 @@ size_t CPowerPlusDlg::GetPwrReminderDispList(UIntArray& arrPwrDispList)
 		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.GetCategory() != PwrFeatureID::pwrReminder) continue;
+		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item displaying flag is marked as ON
-		if (pwrRuntimeItem.GetDisplayFlag() == FLAG_ON) {
+		if (pwrRuntimeItem.getDisplayFlag() == FLAG_ON) {
 			// Add item ID into output data list
-			arrPwrDispList.push_back(pwrRuntimeItem.GetItemID());
+			arrPwrDispList.push_back(pwrRuntimeItem.getItemId());
 		}
 	}
 
@@ -4734,12 +4734,12 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& s
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Schedule action name
-	int nActionNameID = GetPairedID(IDTable::ActionName, schItem.GetAction());
+	int nActionNameID = GetPairedID(IDTable::ActionName, schItem.getAction());
 	const wchar_t* actionNameString = GetLanguageString(pAppLang, nActionNameID);
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
-	logDetailInfo.AddDetail(EventDetail::ContentID, schItem.GetItemID());
+	logDetailInfo.AddDetail(EventDetail::ContentID, schItem.getItemId());
 
 	// Output event log
 	OutputEventLog(usEvent, actionNameString, &logDetailInfo);
@@ -4755,11 +4755,11 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& s
 void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PwrReminderItem& pwrItem)
 {
 	// Message content
-	const wchar_t* messageContent = pwrItem.GetMessage();
+	const wchar_t* messageContent = pwrItem.getMessage();
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
-	logDetailInfo.AddDetail(EventDetail::ContentID, pwrItem.GetItemID());
+	logDetailInfo.AddDetail(EventDetail::ContentID, pwrItem.getItemId());
 
 	// Output event log
 	OutputEventLog(usEvent, messageContent, &logDetailInfo);
@@ -4776,12 +4776,12 @@ void CPowerPlusDlg::OutputPwrReminderEventLog(USHORT usEvent, const PwrReminderI
 void CPowerPlusDlg::InitPwrActionHistoryInfo(unsigned nActionID, bool bResult, DWORD dwErrorCode)
 {
 	// Initialize action history info data to save logs
-	m_hidHistoryInfoData.Init(PowerAction);
-	m_hidHistoryInfoData.SetActionID(nActionID);
+	m_hidHistoryInfoData.init(PowerAction);
+	m_hidHistoryInfoData.setActionId(nActionID);
 
 	// Collect action result
-	m_hidHistoryInfoData.SetResult(bResult);
-	m_hidHistoryInfoData.SetErrorCode(dwErrorCode);
+	m_hidHistoryInfoData.setResult(bResult);
+	m_hidHistoryInfoData.setErrorCode(dwErrorCode);
 }
 
 
@@ -4793,12 +4793,12 @@ void CPowerPlusDlg::InitPwrActionHistoryInfo(unsigned nActionID, bool bResult, D
 void CPowerPlusDlg::InitScheduleHistoryInfo(const ScheduleItem& schItem)
 {
 	// Check item validity
-	if (schItem.IsEmpty())
+	if (schItem.isEmpty())
 		return;
 
 	// Get schedule action name ID
 	unsigned nActionID = NULL;
-	switch (schItem.GetAction())
+	switch (schItem.getAction())
 	{
 	case APP_ACTION_NOTHING:
 		nActionID = HistoryAction::DoNothing;
@@ -4824,9 +4824,9 @@ void CPowerPlusDlg::InitScheduleHistoryInfo(const ScheduleItem& schItem)
 	}
 
 	// Initialize schedule history info data
-	m_hidHistoryInfoData.Init(ScheduleAction);
-	m_hidHistoryInfoData.SetItemID(schItem.GetItemID());
-	m_hidHistoryInfoData.SetActionID(nActionID);
+	m_hidHistoryInfoData.init(ScheduleAction);
+	m_hidHistoryInfoData.setItemId(schItem.getItemId());
+	m_hidHistoryInfoData.setActionId(nActionID);
 }
 
 
@@ -4839,21 +4839,21 @@ void CPowerPlusDlg::InitHotkeyHistoryInfo(unsigned nHKID)
 {
 	// Get HotkeySet item by ID
 	HotkeySetItem hksItem;
-	for (int nIndex = 0; nIndex < m_hksHotkeySetData.GetItemNum(); nIndex++) {
-		HotkeySetItem& hksTemp = m_hksHotkeySetData.GetItemAt(nIndex);
-		if (hksTemp.GetActionID() == nHKID) {
-			hksItem.Copy(hksTemp);
+	for (int nIndex = 0; nIndex < m_hksHotkeySetData.getItemNum(); nIndex++) {
+		HotkeySetItem& hksTemp = m_hksHotkeySetData.getItemAt(nIndex);
+		if (hksTemp.getActionId() == nHKID) {
+			hksItem.copy(hksTemp);
 			break;
 		}
 	}
 
 	// Check item validity
-	if (hksItem.IsEmpty())
+	if (hksItem.isEmpty())
 		return;
 
 	// Get hotkey action name ID
 	unsigned nActionID = NULL;
-	switch (hksItem.GetActionID())
+	switch (hksItem.getActionId())
 	{
 	case HotkeyID::displayOff:
 		nActionID = HistoryAction::DisplayOff;
@@ -4878,11 +4878,11 @@ void CPowerPlusDlg::InitHotkeyHistoryInfo(unsigned nHKID)
 	}
 
 	// Initialize hotkey action history info
-	m_hidHistoryInfoData.Init(HotkeySet);
-	m_hidHistoryInfoData.SetActionID(nActionID);
+	m_hidHistoryInfoData.init(HotkeySet);
+	m_hidHistoryInfoData.setActionId(nActionID);
 	String keyStrokesString;
-	hksItem.PrintKeyStrokes(keyStrokesString);
-	m_hidHistoryInfoData.SetDescription(keyStrokesString);
+	hksItem.printKeyStrokes(keyStrokesString);
+	m_hidHistoryInfoData.setDescription(keyStrokesString);
 }
 
 
@@ -4894,12 +4894,12 @@ void CPowerPlusDlg::InitHotkeyHistoryInfo(unsigned nHKID)
 void CPowerPlusDlg::InitPwrReminderHistoryInfo(const PwrReminderItem& pwrItem)
 {
 	// Check item validity
-	if (pwrItem.IsEmpty()) return;
+	if (pwrItem.isEmpty()) return;
 
 	// Initialize history info data
-	m_hidHistoryInfoData.Init(PowerReminder);
-	m_hidHistoryInfoData.SetItemID(pwrItem.GetItemID());
-	m_hidHistoryInfoData.SetDescription(pwrItem.GetMessage());
+	m_hidHistoryInfoData.init(PowerReminder);
+	m_hidHistoryInfoData.setItemId(pwrItem.getItemId());
+	m_hidHistoryInfoData.setDescription(pwrItem.getMessage());
 }
 
 
@@ -4911,40 +4911,40 @@ void CPowerPlusDlg::InitPwrReminderHistoryInfo(const PwrReminderItem& pwrItem)
 void CPowerPlusDlg::SaveHistoryInfoData(void)
 {
 	// If history info data is empty (not yet initialized), do nothing
-	if (!m_hidHistoryInfoData.IsInit())
+	if (!m_hidHistoryInfoData.isInit())
 		return;
 
 	// Prepare common history log info
 	LOGITEM actionLogItem;
-	actionLogItem.SetTime(m_hidHistoryInfoData.GetTime());
+	actionLogItem.SetTime(m_hidHistoryInfoData.getTime());
 
 	// Get current process ID
 	actionLogItem.SetProcessID();
 
 	// Attach history detail info by category ID
-	switch (m_hidHistoryInfoData.GetCategoryID())
+	switch (m_hidHistoryInfoData.getCategoryId())
 	{
 	case HistoryCategory::PowerAction:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_PWRACTION);
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.GetActionID(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.getActionId(), LogDetailFlag::LookUp_Dict);
 		break;
 
 	case HistoryCategory::ScheduleAction:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_SCHEDULE);
-		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.GetItemID());
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.GetActionID(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.getItemId());
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.getActionId(), LogDetailFlag::LookUp_Dict);
 		break;
 
 	case HistoryCategory::HotkeySet:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_HOTKEY);
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.GetActionID(), LogDetailFlag::LookUp_Dict);
-		actionLogItem.AddDetail(HistoryDetail::Keystrokes, m_hidHistoryInfoData.GetDescription());
+		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.getActionId(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.AddDetail(HistoryDetail::Keystrokes, m_hidHistoryInfoData.getDescription());
 		break;
 
 	case HistoryCategory::PowerReminder:
 		actionLogItem.SetCategory(LOG_HISTORY_DISP_PWRREMINDER);
-		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.GetItemID());
-		actionLogItem.AddDetail(HistoryDetail::Message, m_hidHistoryInfoData.GetDescription());
+		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.getItemId());
+		actionLogItem.AddDetail(HistoryDetail::Message, m_hidHistoryInfoData.getDescription());
 		break;
 
 	default:
@@ -4952,11 +4952,11 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 	}
 
 	// Attach history action result detail info
-	if (m_hidHistoryInfoData.IsSuccess() || m_hidHistoryInfoData.GetErrorCode() == APP_ERROR_SUCCESS) {
+	if (m_hidHistoryInfoData.isSuccess() || m_hidHistoryInfoData.getErrorCode() == APP_ERROR_SUCCESS) {
 		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::SuccessNoError, LogDetailFlag::LookUp_Dict);
 	}
 	else {
-		if (m_hidHistoryInfoData.GetErrorCode() == APP_ERROR_UNKNOWN) {
+		if (m_hidHistoryInfoData.getErrorCode() == APP_ERROR_UNKNOWN) {
 
 			// If error code is NULL or unknown, set as failed with unknown reason
 			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedUnknown, LogDetailFlag::LookUp_Dict);
@@ -4966,18 +4966,18 @@ void CPowerPlusDlg::SaveHistoryInfoData(void)
 			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedWithErrorCode, LogDetailFlag::LookUp_Dict);
 
 			// Attach error code detail info
-			actionLogItem.AddDetail(HistoryDetail::ActionError, m_hidHistoryInfoData.GetErrorCode());
+			actionLogItem.AddDetail(HistoryDetail::ActionError, m_hidHistoryInfoData.getErrorCode());
 		}
 	}
 
 	// Output action history log if enabled
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		pApp->OutputAppHistoryLog(actionLogItem);
+		pApp->outputAppHistoryLog(actionLogItem);
 	}
 
 	// Empty history data after done output
-	m_hidHistoryInfoData.RemoveAll();
+	m_hidHistoryInfoData.removeAll();
 }
 
 
@@ -5030,13 +5030,13 @@ int CPowerPlusDlg::ConfirmActionExec(unsigned nActionType, unsigned nActionID)
 int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, bool& bReupdate)
 {
 	// Do not notify if schedule action is "Do nothing"
-	if (pschItem->GetAction() == APP_ACTION_NOTHING) {
+	if (pschItem->getAction() == APP_ACTION_NOTHING) {
 		TRACE("Do not notify when schedule action is DO NOTHING");
 		return INT_INVALID;
 	}
 
 	// Get action info
-	unsigned nActionStringID = GetPairedID(IDTable::ScheduleNotifyMessage, pschItem->GetAction());
+	unsigned nActionStringID = GetPairedID(IDTable::ScheduleNotifyMessage, pschItem->getAction());
 
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -5046,7 +5046,7 @@ int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, bool& bReupdate)
 	const wchar_t* messageScheduleAction = GetLanguageString(pAppLang, nActionStringID);
 	const wchar_t* messageTemplate = GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_NOTIFY);
 	
-	String messageContent = StringUtils::StringFormat(messageTemplate, messageScheduleAction);
+	String messageContent = StringUtils::stringFormat(messageTemplate, messageScheduleAction);
 
 	// Allow cancelling schedule when notify
 	bool bAllowCancel = GetAppOption(AppOptionID::allowScheduleCancellation);
@@ -5062,9 +5062,9 @@ int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, bool& bReupdate)
 
 			// If "Repeat" option is not ON,
 			// --> Disable schedule item after canceling
-			if (pschItem->IsRepeatEnabled() == false) {
+			if (pschItem->isRepeatEnabled() == false) {
 				// Deactivate schedule
-				pschItem->EnableItem(false);
+				pschItem->enableItem(false);
 				bReupdate = true;
 			}
 
@@ -5101,7 +5101,7 @@ void CPowerPlusDlg::ShowErrorMessage(DWORD dwError)
 	unsigned nCurLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption();
 
 	// Show error message
-	AppCore::ShowErrorMessage(hWnd, nCurLang, dwError);
+	AppCore::showErrorMessage(hWnd, nCurLang, dwError);
 }
 
 
@@ -5119,7 +5119,7 @@ void CPowerPlusDlg::RequestRestartApp(unsigned uiCmdSenderID, bool bRestartAsAdm
 
 	// Request from [Apply] button
 	if (uiCmdSenderID == IDC_APPLY_BTN) {
-		bool bRestartTrigger = GetFlagValue(AppFlagID::restartAsAdmin);
+		bool bRestartTrigger = getFlagValue(AppFlagID::restartAsAdmin);
 		reqRestart.request = bRestartTrigger;
 		reqRestart.adminCheck = true;
 		reqRestart.showMsgIfNotAdmin = true;
@@ -5197,7 +5197,7 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 			// Show "not admin" message
 			if (reqRestart.showMsgIfNotAdmin == true) {
 				const wchar_t* notAdminMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_NOTRUNASADMIN);
-				messageFormatString.Format(_T("%s\n%s"), notAdminMsg, requestMessage);
+				messageFormatString.format(_T("%s\n%s"), notAdminMsg, requestMessage);
 			}
 		}
 	}
@@ -5217,7 +5217,7 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 
 		if (reqRestart.resetFlag == true) {
 			// Reset flag
-			SetFlagValue(AppFlagID::restartAsAdmin, false);
+			setFlagValue(AppFlagID::restartAsAdmin, false);
 		}
 	}
 }

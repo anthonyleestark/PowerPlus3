@@ -219,7 +219,7 @@ void CEditScheduleDlg::OnClose()
 	if (!IsForceClosingByRequest()) {
 
 		// If data changed, ask for saving before closing dialog
-		if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
+		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -272,7 +272,7 @@ void CEditScheduleDlg::OnDestroy()
 LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 {
 	// If data changed, ask for saving before closing dialog
-	if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
+	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -470,9 +470,9 @@ void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
 	}
 
 	// Setup display size
-	int nFrameHeight = m_pszActiveTableFrameSize->Height();
-	int nFrameWidth = m_pszActiveTableFrameSize->Width();
-	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
+	int nFrameHeight = m_pszActiveTableFrameSize->height();
+	int nFrameWidth = m_pszActiveTableFrameSize->width();
+	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 	}
@@ -529,8 +529,8 @@ void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
 void CEditScheduleDlg::SetupDialogItemState()
 {
 	// Setup checkboxes
-	m_bEnabled = m_schScheduleItemTemp.IsEnabled();
-	m_bRepeat = m_schScheduleItemTemp.IsRepeatEnabled();
+	m_bEnabled = m_schScheduleItemTemp.isEnabled();
+	m_bRepeat = m_schScheduleItemTemp.isRepeatEnabled();
 
 	// If is currently in read-only or view mode
 	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
@@ -542,16 +542,16 @@ void CEditScheduleDlg::SetupDialogItemState()
 	EnableSubItems(m_bEnabled);
 
 	// Setup action list combo value
-	m_nAction = m_schScheduleItemTemp.GetAction();
+	m_nAction = m_schScheduleItemTemp.getAction();
 	if (m_pActionList != NULL) {
-		m_pActionList->SetCurSel(Opt2Sel(APP_ACTION, m_nAction));
+		m_pActionList->SetCurSel(AppCore::opt2Sel(APP_ACTION, m_nAction));
 	}
 
 	UpdateData(false);
 
 	// Setup time spin button properties
 	int nTimeSpinPos = 0;
-	ClockTimeUtils::Time2SpinPos(m_schScheduleItemTemp.GetTime(), nTimeSpinPos);
+	ClockTimeUtils::time2SpinPos(m_schScheduleItemTemp.getTime(), nTimeSpinPos);
 
 	// Time spin initialization
 	if (m_pTimeSpin == NULL) {
@@ -571,11 +571,11 @@ void CEditScheduleDlg::SetupDialogItemState()
 	}
 
 	// Setup time editbox
-	ClockTime clockTimeTemp = m_schScheduleItemTemp.GetTime();
+	ClockTime clockTimeTemp = m_schScheduleItemTemp.getTime();
 	UpdateTimeSetting(clockTimeTemp, false);
 
 	// Enable/disable active day table (also update its display)
-	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() && m_schScheduleItemTemp.IsRepeatEnabled()));
+	DisableActiveDayTable(!(m_schScheduleItemTemp.isEnabled() && m_schScheduleItemTemp.isRepeatEnabled()));
 
 	// Disable save button at first
 	EnableSaveButton(false);
@@ -615,7 +615,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 		nDayOfWeekID = nRowIndex;
 
 		// Active state
-		bool bActive = (m_schScheduleItemTemp.IsDayActive((DayOfWeek)nDayOfWeekID)) ? true : false;
+		bool bActive = (m_schScheduleItemTemp.isDayActive((DayOfWeek)nDayOfWeekID)) ? true : false;
 		pCellCheck = (CGridCellCheck*)m_pActiveDayListTable->GetCell(nRowIndex, checkboxColID);
 		if (pCellCheck != NULL) {
 			pCellCheck->SetCheck(bActive);
@@ -680,7 +680,7 @@ void CEditScheduleDlg::GetScheduleItem(PScheduleItem pschItem)
 {
 	// Copy data
 	if (pschItem == NULL) return;
-	pschItem->Copy(m_schScheduleItem);
+	pschItem->copy(m_schScheduleItem);
 }
 
 /**
@@ -691,8 +691,8 @@ void CEditScheduleDlg::GetScheduleItem(PScheduleItem pschItem)
 void CEditScheduleDlg::SetScheduleItem(const ScheduleItem& pschItem)
 {
 	// Copy data
-	m_schScheduleItem.Copy(pschItem);
-	m_schScheduleItemTemp.Copy(m_schScheduleItem);
+	m_schScheduleItem.copy(pschItem);
+	m_schScheduleItemTemp.copy(m_schScheduleItem);
 }
 
 /**
@@ -706,19 +706,19 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	UpdateData(true);
 
 	// Update checkbox values
-	m_schScheduleItemTemp.EnableItem(m_bEnabled);
-	m_schScheduleItemTemp.EnableRepeat(m_bRepeat);
+	m_schScheduleItemTemp.enableItem(m_bEnabled);
+	m_schScheduleItemTemp.enableRepeat(m_bRepeat);
 
 	// Update action list combo value
 	int nCurSel = m_pActionList->GetCurSel();
-	m_nAction = Sel2Opt(APP_ACTION, nCurSel);
-	m_schScheduleItemTemp.SetAction(m_nAction);
+	m_nAction = AppCore::sel2Opt(APP_ACTION, nCurSel);
+	m_schScheduleItemTemp.setAction(m_nAction);
 
 	// Update time value
 	ClockTime stTimeTemp;
 	UpdateTimeSetting(stTimeTemp, true);
 
-	m_schScheduleItemTemp.SetTime(stTimeTemp);
+	m_schScheduleItemTemp.setTime(stTimeTemp);
 
 	// Update active day table changes
 	BYTE byRepeatDays = 0;
@@ -737,7 +737,7 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	}
 
 	// Update active day data
-	m_schScheduleItemTemp.SetActiveDays(byRepeatDays);
+	m_schScheduleItemTemp.setActiveDays(byRepeatDays);
 }
 
 /**
@@ -749,7 +749,7 @@ void CEditScheduleDlg::SaveScheduleItem()
 {
 	// Update settings
 	UpdateScheduleItem();
-	m_schScheduleItem.Copy(m_schScheduleItemTemp);
+	m_schScheduleItem.copy(m_schScheduleItemTemp);
 }
 
 /**
@@ -763,7 +763,7 @@ bool CEditScheduleDlg::CheckDataChangeState()
 	UpdateScheduleItem();
 
 	// Data comparison
-	bool bChangeFlag = (m_schScheduleItemTemp.Compare(m_schScheduleItem) != true);
+	bool bChangeFlag = (m_schScheduleItemTemp.compare(m_schScheduleItem) != true);
 
 	return bChangeFlag;
 }
@@ -843,28 +843,28 @@ void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* =
 		String timeFormatString = tempBuff.data();
 
 		// Get hour value
-		int hour = _wtoi(timeFormatString.Left(2));
-		const String timePeriod = timeFormatString.Right(2);
+		int hour = _wtoi(timeFormatString.left(2));
+		const String timePeriod = timeFormatString.right(2);
 		if (timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
-			clockTime.SetHour(hour);
+			clockTime.setHour(hour);
 		}
 		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
 			// After midday
-			clockTime.SetHour(hour + 12);
+			clockTime.setHour(hour + 12);
 		}
 		else {
 			// Keep value
-			clockTime.SetHour(hour);
+			clockTime.setHour(hour);
 		}
 
 		// Get minute value
-		clockTime.SetMinute(_wtoi(timeFormatString.Mid(3, 2)));
+		clockTime.setMinute(_wtoi(timeFormatString.mid(3, 2)));
 	}
 	else {
 		// Set value for time editbox
 		String timeFormatString;
-		timeFormatString = ClockTimeUtils::Format(pLang, IDS_FORMAT_SHORTTIME, clockTime);
+		timeFormatString = ClockTimeUtils::format(pLang, IDS_FORMAT_SHORTTIME, clockTime);
 		m_pTimeEdit->SetWindowText(timeFormatString);
 	}
 }
@@ -900,7 +900,7 @@ void CEditScheduleDlg::OnApply()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_APPLY_BTN);
 
 	// Save data if changed
-	if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
+	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 
 		// Update data
 		SaveScheduleItem();
@@ -931,7 +931,7 @@ void CEditScheduleDlg::OnExit()
 		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_CANCEL_BTN);
 
 		// If data changed, ask for saving before closing dialog
-		if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
+		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
@@ -974,13 +974,13 @@ void CEditScheduleDlg::OnEnableSchedule()
 	EnableSubItems(m_bEnabled);
 
 	// Check for data change
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable active day table
-	DisableActiveDayTable(!(m_schScheduleItemTemp.IsEnabled() && m_schScheduleItemTemp.IsRepeatEnabled()));
+	DisableActiveDayTable(!(m_schScheduleItemTemp.isEnabled() && m_schScheduleItemTemp.isRepeatEnabled()));
 
 	// Enable/disable save button
-	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
+	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
 /**
@@ -995,8 +995,8 @@ void CEditScheduleDlg::OnChangeAction()
 	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_EDITSCHEDULE_ACTION_LIST);
 
 	// Check for value change and enable/disable save button
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
-	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
+	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
 /**
@@ -1007,13 +1007,13 @@ void CEditScheduleDlg::OnChangeAction()
 void CEditScheduleDlg::OnChangeRepeatDaily()
 {
 	// Check for data change
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable active day table
-	DisableActiveDayTable(!m_schScheduleItemTemp.IsRepeatEnabled());
+	DisableActiveDayTable(!m_schScheduleItemTemp.isRepeatEnabled());
 
 	// Enable/disable save button
-	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
+	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
 /**
@@ -1073,28 +1073,28 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	String timeTextValue = tempBuff.data();
 
 	ClockTime clockTime;
-	if (ClockTimeUtils::InputText2Time(clockTime, timeTextValue)) {
+	if (ClockTimeUtils::inputText2Time(clockTime, timeTextValue)) {
 
 		// Update new time value
 		UpdateTimeSetting(clockTime, false);
 		
 		// Update timespin new position
 		int nSpinPos = 0;
-		ClockTimeUtils::Time2SpinPos(clockTime, nSpinPos);
+		ClockTimeUtils::time2SpinPos(clockTime, nSpinPos);
 		if (m_pTimeSpin != NULL) {
 			m_pTimeSpin->SetPos(nSpinPos);
 		}
 	}
 	else {
 		// Restore old time value
-		clockTime = m_schScheduleItemTemp.GetTime();
+		clockTime = m_schScheduleItemTemp.getTime();
 		UpdateTimeSetting(clockTime, false);
 		return;
 	}
 
 	// Check for value change and enable/disable save button
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
-	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
+	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
 /**
@@ -1110,14 +1110,14 @@ void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get timespin position and convert to time value
 	int nPos = pNMUpDown->iPos;
 	ClockTime clockTime;
-	ClockTimeUtils::SpinPos2Time(clockTime, nPos);
+	ClockTimeUtils::spinPos2Time(clockTime, nPos);
 	UpdateTimeSetting(clockTime, false);
 
 	*pResult = NULL;
 
 	// Check for value change and enable/disable save button
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
-	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
+	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
 /**
@@ -1132,10 +1132,10 @@ void CEditScheduleDlg::OnClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Update data (also check change state)
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable save button
-	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
+	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
 /**
@@ -1150,10 +1150,10 @@ void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pRe
 	*pResult = NULL;
 
 	// Update data (also check change state)
-	SetFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
 
 	// Enable/disable save button
-	EnableSaveButton(GetFlagValue(AppFlagID::dialogDataChanged));
+	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
 /**

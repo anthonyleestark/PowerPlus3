@@ -191,7 +191,7 @@ private:
 protected:
 	// Get/set functions
 	int GetItemNum() const {
-		return m_pwrReminderDataTemp.GetItemNum();
+		return m_pwrReminderDataTemp.getItemNum();
 	};
 	int GetCurMode() const {
 		return m_nCurMode;

@@ -58,48 +58,48 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	// App data serialization functions
-	bool InitAppData();
-	bool LoadRegistryAppData();
-	bool SaveRegistryAppData(DWORD dwDataType = APPDATA_ALL);
-	bool BackupRegistryAppData();
-	bool UpdateAppLaunchTimeProfileInfo(void);
-	bool LoadGlobalData(void);
-	bool SaveGlobalData(BYTE byCateID = 0xFF);
+	bool initAppData();
+	bool loadRegistryAppData();
+	bool saveRegistryAppData(DWORD dwDataType = APPDATA_ALL);
+	bool backupRegistryAppData();
+	bool updateAppLaunchTimeProfileInfo(void);
+	bool loadGlobalData(void);
+	bool saveGlobalData(BYTE byCateID = 0xFF);
 
 	// App data processing functions
-	ConfigData* GetAppConfigData();
-	void SetAppConfigData(ConfigData* pcfgData);
-	ScheduleData* GetAppScheduleData();
-	void SetAppScheduleData(ScheduleData* pschData);
-	HotkeySetData* GetAppHotkeySetData();
-	void SetAppHotkeySetData(HotkeySetData* phksData);
-	PwrReminderData* GetAppPwrReminderData();
-	void SetAppPwrReminderData(PwrReminderData* ppwrData);
+	ConfigData* getAppConfigData();
+	void setAppConfigData(ConfigData* pcfgData);
+	ScheduleData* getAppScheduleData();
+	void setAppScheduleData(ScheduleData* pschData);
+	HotkeySetData* getAppHotkeySetData();
+	void setAppHotkeySetData(HotkeySetData* phksData);
+	PwrReminderData* getAppPwrReminderData();
+	void setAppPwrReminderData(PwrReminderData* ppwrData);
 
 	// Data options and flags get/set functions
-	int GetAppOption(AppOptionID eAppOptionID) const;
+	int getAppOption(AppOptionID eAppOptionID) const;
 
 	// App history logging functions
-	void InitAppHistoryLog();
-	SLogging* GetAppHistoryLog();
-	void OutputAppHistoryLog(LOGITEM logItem);
+	void initAppHistoryLog();
+	SLogging* getAppHistoryLog();
+	void outputAppHistoryLog(LOGITEM logItem);
 
 	// Data validity checking functions
-	void TraceSerializeData(WORD wErrCode);
-	bool DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag = APPDATA_ALL);
+	void traceSerializeData(WORD wErrCode);
+	bool dataSerializeCheck(BYTE bySerializeMode, int nSaveFlag = APPDATA_ALL);
 
 	// DebugTest dialog function
-	bool InitDebugTestDlg(void);
-	SDialog* GetDebugTestDlg(void);
-	void DestroyDebugTestDlg(void);
+	bool initDebugTestDlg(void);
+	SDialog* getDebugTestDlg(void);
+	void destroyDebugTestDlg(void);
 
 	// Registry functions
-	void GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey);
-	int EnableAutoStart(bool bEnable, bool bRunAsAdmin);
-	int GetAutoStartRegisterStatus(void);
+	void getAutoStartRegistryRootKey(HKEY& hAutoStartRootKey);
+	int enableAutoStart(bool bEnable, bool bRunAsAdmin);
+	int getAutoStartRegisterStatus(void);
 
-	bool GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent);
-	bool SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent);
+	bool getLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent);
+	bool saveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent);
 
 protected:
 	// Application message handlers

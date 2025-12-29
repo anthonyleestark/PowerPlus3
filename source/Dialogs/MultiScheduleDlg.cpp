@@ -46,8 +46,8 @@ CMultiScheduleDlg::CMultiScheduleDlg() : SDialog(IDD_MULTISCHEDULE_DLG)
 	m_pEditScheduleDlg = NULL;
 
 	// Data container variables
-	m_schSchedule.Init();
-	m_schScheduleTemp.Init();
+	m_schSchedule.init();
+	m_schScheduleTemp.init();
 
 	// Table format and properties
 	m_nColNum = 0;
@@ -81,8 +81,8 @@ CMultiScheduleDlg::~CMultiScheduleDlg()
 	}
 
 	// Remove schedule data
-	m_schSchedule.DeleteAll();
-	m_schScheduleTemp.DeleteAll();
+	m_schSchedule.deleteAll();
+	m_schScheduleTemp.deleteAll();
 
 	// Other variables
 	if (m_apGrdColFormat != NULL) {
@@ -255,7 +255,7 @@ void CMultiScheduleDlg::OnClose()
 	if (!IsForceClosingByRequest()) {
 
 		// If data changed, ask for saving before closing dialog
-		if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
+		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
@@ -308,7 +308,7 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 	}
 
 	// If data changed, ask for saving before closing dialog
-	if (GetFlagValue(AppFlagID::dialogDataChanged) == true) {
+	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
@@ -476,9 +476,9 @@ void CMultiScheduleDlg::DrawDataTable(bool bReadOnly /* = false */)
 	int nRowNum = (GetTotalItemNum() + fixedRowNum);
 
 	// Setup display size
-	int nFrameHeight = m_pszDataTableFrameSize->Height();
-	int nFrameWidth = m_pszDataTableFrameSize->Width();
-	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
+	int nFrameHeight = m_pszDataTableFrameSize->height();
+	int nFrameWidth = m_pszDataTableFrameSize->width();
+	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
@@ -497,7 +497,7 @@ void CMultiScheduleDlg::DrawDataTable(bool bReadOnly /* = false */)
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pDataItemListTable, Constant::UI::GridCtrl::Index::Header_Row, nCol);
+		AppCore::setFixedCellStyle(m_pDataItemListTable, Constant::UI::GridCtrl::Index::Header_Row, nCol);
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
@@ -545,7 +545,7 @@ void CMultiScheduleDlg::DrawDataTable(bool bReadOnly /* = false */)
 			// Base column - header-like style
 			if (nColStyle == COLSTYLE_FIXED) {
 				// Set fixed cell style
-				SetFixedCellStyle(m_pDataItemListTable, nRow, nCol);
+				AppCore::setFixedCellStyle(m_pDataItemListTable, nRow, nCol);
 			}
 
 			// Checkbox column
@@ -722,41 +722,41 @@ void CMultiScheduleDlg::UpdateDataItemList()
 		Item schItem;
 		if (nRowIndex == defaultRowIndex) {
 			// Get schedule default item
-			schItem = m_schScheduleTemp.GetDefaultItem();
+			schItem = m_schScheduleTemp.getDefaultItem();
 		}
 		else {
 			// Get schedule extra item
 			nExtraItemIndex = nRowIndex - extraStartRowIndex;
-			schItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
+			schItem = m_schScheduleTemp.getItemAt(nExtraItemIndex);
 		}
 
 		// If schedule item is empty
-		if (schItem.IsEmpty()) continue;
+		if (schItem.isEmpty()) continue;
 
 		// Item index
-		String tempString = StringUtils::StringFormat(_T("%d"), nRowIndex);
+		String tempString = StringUtils::stringFormat(_T("%d"), nRowIndex);
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::Index, tempString);
 
 		// Enable state
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(schItem.IsEnabled());
+			pCellCheck->SetCheck(schItem.isEnabled());
 		}
 
 		// Action name
-		nTemp = GetPairedID(IDTable::ActionName, schItem.GetAction());
+		nTemp = GetPairedID(IDTable::ActionName, schItem.getAction());
 		tempString = GetLanguageString(ptrLanguage, nTemp);
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ActionID, tempString);
 
 		// Time setting
 		const wchar_t* formatString = GetLanguageString(ptrLanguage, GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT);
-		tempString = ClockTimeUtils::Format(ptrLanguage, formatString, schItem.GetTime());
+		tempString = ClockTimeUtils::format(ptrLanguage, formatString, schItem.getTime());
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::TimeValue, tempString);
 
 		// Repeat
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(schItem.IsRepeatEnabled());
+			pCellCheck->SetCheck(schItem.isRepeatEnabled());
 		}
 	}
 }
@@ -826,7 +826,7 @@ void CMultiScheduleDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 	bool bIsMaxNum = (GetExtraItemNum() >= ScheduleData::maxItemNum);
 
 	// Check if data is all empty or not
-	bool bIsAllEmpty = m_schScheduleTemp.IsAllEmpty();
+	bool bIsAllEmpty = m_schScheduleTemp.isAllEmpty();
 
 	// Get app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -870,7 +870,7 @@ void CMultiScheduleDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 
 	// Check if data is changed or not
 	bool bIsChanged = CheckDataChangeState();
-	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 
 	// Enable [Apply] button if data is changed
 	pBtn = GetDlgItem(IDC_MULTISCHEDULE_APPLY_BTN);
@@ -917,14 +917,14 @@ void CMultiScheduleDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
 		// Reset counter
 		m_nCheckCount = 0;
 		// Check default item
-		if (m_schScheduleTemp.GetDefaultItem().IsEnabled() == true) {
+		if (m_schScheduleTemp.getDefaultItem().isEnabled() == true) {
 			// Increase counter
 			m_nCheckCount++;
 		}
 		// Check extra items
 		for (int nExtraIndex = 0; nExtraIndex < GetExtraItemNum(); nExtraIndex++) {
-			const Item& schTemp = m_schScheduleTemp.GetItemAt(nExtraIndex);
-			if (schTemp.IsEnabled() == true) {
+			const Item& schTemp = m_schScheduleTemp.getItemAt(nExtraIndex);
+			if (schTemp.isEnabled() == true) {
 				// Increase counter
 				m_nCheckCount++;
 			}
@@ -962,16 +962,16 @@ bool CMultiScheduleDlg::LoadScheduleSettings()
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	VERIFY(pApp != NULL);
 	if (pApp == NULL) return false;
-	Data* pschData = pApp->GetAppScheduleData();
+	Data* pschData = pApp->getAppScheduleData();
 	if (pschData == NULL)
 		return false;
 
 	// Copy data
-	m_schSchedule.Copy(*pschData);
-	m_schScheduleTemp.Copy(m_schSchedule);
+	m_schSchedule.copy(*pschData);
+	m_schScheduleTemp.copy(m_schSchedule);
 
 	// Reset change flag
-	SetFlagValue(AppFlagID::dialogDataChanged, false);
+	setFlagValue(AppFlagID::dialogDataChanged, false);
 
 	return true;
 }
@@ -984,14 +984,14 @@ bool CMultiScheduleDlg::LoadScheduleSettings()
 bool CMultiScheduleDlg::SaveScheduleSettings()
 {
 	// Update settings
-	m_schSchedule.Copy(m_schScheduleTemp);
+	m_schSchedule.copy(m_schScheduleTemp);
 
 	// Save app schedule data
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	VERIFY(pApp != NULL);
 	if (pApp == NULL) return false;
-	pApp->SetAppScheduleData(&m_schSchedule);
-	pApp->SaveRegistryAppData(APPDATA_SCHEDULE);
+	pApp->setAppScheduleData(&m_schSchedule);
+	pApp->saveRegistryAppData(APPDATA_SCHEDULE);
 
 	// Notify main dialog to re-update schedule data
 	CPowerPlusDlg* pMainDlg = (CPowerPlusDlg*)(pApp->GetMainWnd());
@@ -1000,7 +1000,7 @@ bool CMultiScheduleDlg::SaveScheduleSettings()
 	pMainDlg->PostMessage(SM_APP_UPDATE_SCHEDULEDATA, NULL, NULL);
 
 	// Reset change flag
-	SetFlagValue(AppFlagID::dialogDataChanged, false);
+	setFlagValue(AppFlagID::dialogDataChanged, false);
 
 	return true;
 }
@@ -1037,15 +1037,15 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 		// Update item enable and repeat states
 		if (nRowIndex == defaultRowIndex) {
 			// Update default item data
-			Item& schTempDefault = m_schScheduleTemp.GetDefaultItem();
-			schTempDefault.EnableItem(bEnabled);
-			schTempDefault.EnableRepeat(bRepeat);
+			Item& schTempDefault = m_schScheduleTemp.getDefaultItem();
+			schTempDefault.enableItem(bEnabled);
+			schTempDefault.enableRepeat(bRepeat);
 		}
 		else {
 			// Update extra item data
-			Item& schTempItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
-			schTempItem.EnableItem(bEnabled);
-			schTempItem.EnableRepeat(bRepeat);
+			Item& schTempItem = m_schScheduleTemp.getItemAt(nExtraItemIndex);
+			schTempItem.enableItem(bEnabled);
+			schTempItem.enableRepeat(bRepeat);
 		}
 	}
 }
@@ -1063,24 +1063,24 @@ bool CMultiScheduleDlg::CheckDataChangeState()
 	UpdateScheduleSettings();
 
 	// Check if number of extra items changed
-	int nExtraItemNum = m_schScheduleTemp.GetExtraItemNum();
-	bChangeFlag |= (nExtraItemNum != m_schSchedule.GetExtraItemNum());
+	int nExtraItemNum = m_schScheduleTemp.getExtraItemNum();
+	bChangeFlag |= (nExtraItemNum != m_schSchedule.getExtraItemNum());
 	if (bChangeFlag == true)
 		return bChangeFlag;
 
 	// Check if default item's data changed
-	bChangeFlag |= (m_schScheduleTemp.GetDefaultItem().Compare(m_schSchedule.GetDefaultItem()) != true);
+	bChangeFlag |= (m_schScheduleTemp.getDefaultItem().compare(m_schSchedule.getDefaultItem()) != true);
 	if (bChangeFlag == true)
 		return bChangeFlag;
 
 	// Check if each extra item's data changed
 	for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
 		// Get current item and temp item
-		const Item& schCurItem = m_schSchedule.GetItemAt(nExtraIndex);
-		const Item& schTempItem = m_schScheduleTemp.GetItemAt(nExtraIndex);
+		const Item& schCurItem = m_schSchedule.getItemAt(nExtraIndex);
+		const Item& schTempItem = m_schScheduleTemp.getItemAt(nExtraIndex);
 
 		// Data comparison
-		bChangeFlag |= (schTempItem.Compare(schCurItem) != true);
+		bChangeFlag |= (schTempItem.compare(schCurItem) != true);
 
 		// Stop on the first different item encountered
 		if (bChangeFlag == true) break;
@@ -1097,7 +1097,7 @@ bool CMultiScheduleDlg::CheckDataChangeState()
 void CMultiScheduleDlg::Add(Item& schItem)
 {
 	// If item is empty, do nothing
-	if (schItem.IsEmpty())
+	if (schItem.isEmpty())
 		return;
 
 	// Check data validity
@@ -1106,7 +1106,7 @@ void CMultiScheduleDlg::Add(Item& schItem)
 		return;
 
 	// Update item to Action Schedule data item list
-	m_schScheduleTemp.Update(schItem);
+	m_schScheduleTemp.update(schItem);
 
 	// Update table
 	RedrawDataTable();
@@ -1123,7 +1123,7 @@ void CMultiScheduleDlg::Add(Item& schItem)
 void CMultiScheduleDlg::Update(Item& schItem)
 {
 	// If item is empty, do nothing
-	if (schItem.IsEmpty())
+	if (schItem.isEmpty())
 		return;
 
 	// Check data validity
@@ -1132,7 +1132,7 @@ void CMultiScheduleDlg::Update(Item& schItem)
 		return;
 
 	// Update item to Action Schedule data item list
-	m_schScheduleTemp.Update(schItem);
+	m_schScheduleTemp.update(schItem);
 
 	// Update table
 	RedrawDataTable();
@@ -1149,7 +1149,7 @@ void CMultiScheduleDlg::Update(Item& schItem)
 void CMultiScheduleDlg::Remove(int nIndex)
 {
 	// Remove item at index
-	m_schScheduleTemp.Delete(nIndex);
+	m_schScheduleTemp.deleteItem(nIndex);
 
 	// Update table
 	RedrawDataTable();
@@ -1166,7 +1166,7 @@ void CMultiScheduleDlg::Remove(int nIndex)
 void CMultiScheduleDlg::RemoveAll()
 {
 	// Remove all items
-	m_schScheduleTemp.DeleteExtra();
+	m_schScheduleTemp.deleteExtra();
 
 	// Update table
 	RedrawDataTable();
@@ -1183,16 +1183,16 @@ void CMultiScheduleDlg::RemoveAll()
 void CMultiScheduleDlg::SetAllItemState(bool bState)
 {
 	// Check/uncheck all --> Update all items enable state
-	Item& schDefTemp = m_schScheduleTemp.GetDefaultItem();
-	if (schDefTemp.IsEnabled() != bState) {
+	Item& schDefTemp = m_schScheduleTemp.getDefaultItem();
+	if (schDefTemp.isEnabled() != bState) {
 		// Change checked state
-		schDefTemp.EnableItem(bState);
+		schDefTemp.enableItem(bState);
 	}
 	for (int nExtraIndex = 0; nExtraIndex < GetExtraItemNum(); nExtraIndex++) {
-		Item& schTemp = m_schScheduleTemp.GetItemAt(nExtraIndex);
-		if (schTemp.IsEnabled() != bState) {
+		Item& schTemp = m_schScheduleTemp.getItemAt(nExtraIndex);
+		if (schTemp.isEnabled() != bState) {
 			// Change checked state
-			schTemp.EnableItem(bState);
+			schTemp.enableItem(bState);
 		}
 	}
 
@@ -1225,8 +1225,8 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Check item ID
-	if ((schItem.GetItemID() != ScheduleData::defaultItemID) &&
-		((schItem.GetItemID() < ScheduleData::minItemID) || (schItem.GetItemID() > ScheduleData::maxItemID))) {
+	if ((schItem.getItemId() != ScheduleData::defaultItemID) &&
+		((schItem.getItemId() < ScheduleData::minItemID) || (schItem.getItemId() > ScheduleData::maxItemID))) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ITEMID;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = false;
@@ -1234,12 +1234,12 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Get next item ID
-			schItem.SetItemID(m_schScheduleTemp.GetNextID());
+			schItem.setItemId(m_schScheduleTemp.getNextId());
 		}
 	}
 
 	// Check action ID
-	if ((schItem.GetAction() < APP_ACTION_NOTHING) || (schItem.GetAction() > APP_ACTION_HIBERNATE)) {
+	if ((schItem.getAction() < APP_ACTION_NOTHING) || (schItem.getAction() > APP_ACTION_HIBERNATE)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIONID;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = false;
@@ -1247,12 +1247,12 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Set default action
-			schItem.SetAction(ScheduleData::defaultActionID);
+			schItem.setAction(ScheduleData::defaultActionID);
 		}
 	}
 
 	// Check repeat data
-	if ((schItem.IsRepeatEnabled() == true) && (schItem.GetActiveDays() == NULL)) {
+	if ((schItem.isRepeatEnabled() == true) && (schItem.getActiveDays() == NULL)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIVEDAYS;
 		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
 		bResult = false;
@@ -1260,7 +1260,7 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Set default data
-			schItem.SetActiveDays(PwrRepeatSet::defaultActiveDays);
+			schItem.setActiveDays(PwrRepeatSet::defaultActiveDays);
 		}
 	}
 
@@ -1299,7 +1299,7 @@ void CMultiScheduleDlg::OnApply()
 
 	// Save data if changed
 	bool bIsChanged = CheckDataChangeState();
-	SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 	if (bIsChanged == true) {
 		SaveScheduleSettings();
 	}
@@ -1323,7 +1323,7 @@ void CMultiScheduleDlg::OnExit()
 
 		// If data changed, ask for saving before closing dialog
 		bool bIsChanged = CheckDataChangeState();
-		SetFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 		if (bIsChanged == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -1355,8 +1355,8 @@ void CMultiScheduleDlg::OnAdd()
 
 	// Initialize new item template
 	Item schTemp;
-	schTemp.SetItemID(m_schScheduleTemp.GetNextID());
-	schTemp.SetAction(ScheduleData::defaultActionID);
+	schTemp.setItemId(m_schScheduleTemp.getNextId());
+	schTemp.setAction(ScheduleData::defaultActionID);
 
 	// Open edit schedule dialog
 	if (m_pEditScheduleDlg == NULL) {
@@ -1398,16 +1398,16 @@ void CMultiScheduleDlg::OnEdit()
 		Item schItem;
 		if (nSelRowIndex == defaultRowIndex) {
 			// Get default item
-			schItem = m_schScheduleTemp.GetDefaultItem();
+			schItem = m_schScheduleTemp.getDefaultItem();
 		}
 		else {
 			// Get extra item
 			int nExtraItemIndex = nSelRowIndex - extraStartRowIndex;
-			schItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
+			schItem = m_schScheduleTemp.getItemAt(nExtraItemIndex);
 		}
 
 		// If item is empty, do nothing
-		if (schItem.IsEmpty())
+		if (schItem.isEmpty())
 			return;
 
 		// Open edit schedule dialog
@@ -1461,7 +1461,7 @@ void CMultiScheduleDlg::OnRemove()
 	}
 
 	// If item at selected index is empy, do nothing
-	if (m_schScheduleTemp.IsEmpty(nSelItemIndex) == true)
+	if (m_schScheduleTemp.isEmpty(nSelItemIndex) == true)
 		return;
 
 	// Ask before remove
@@ -1483,7 +1483,7 @@ void CMultiScheduleDlg::OnRemoveAll()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_MULTISCHEDULE_REMOVEALL_BTN);
 
 	// If all item are empty, do nothing
-	if (m_schScheduleTemp.IsAllEmpty() == true)
+	if (m_schScheduleTemp.isAllEmpty() == true)
 		return;
 
 	// Ask before remove
@@ -1505,7 +1505,7 @@ void CMultiScheduleDlg::OnCheckAll()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_MULTISCHEDULE_CHECKALL_BTN);
 
 	// If all item are empty, do nothing
-	if (m_schScheduleTemp.IsAllEmpty() == true)
+	if (m_schScheduleTemp.isAllEmpty() == true)
 		return;
 
 	// Check all items
@@ -1523,7 +1523,7 @@ void CMultiScheduleDlg::OnUncheckAll()
 	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_MULTISCHEDULE_UNCHECKALL_BTN);
 
 	// If all item are empty, do nothing
-	if (m_schScheduleTemp.IsAllEmpty() == true)
+	if (m_schScheduleTemp.isAllEmpty() == true)
 		return;
 
 	// Uncheck all items
@@ -1552,16 +1552,16 @@ void CMultiScheduleDlg::OnViewDetails()
 		Item schItem;
 		if (nSelRowIndex == defaultRowIndex) {
 			// Get default item
-			schItem = m_schScheduleTemp.GetDefaultItem();
+			schItem = m_schScheduleTemp.getDefaultItem();
 		}
 		else {
 			// Get extra item
 			int nExtraItemIndex = nSelRowIndex - extraStartRowIndex;
-			schItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
+			schItem = m_schScheduleTemp.getItemAt(nExtraItemIndex);
 		}
 
 		// If item is empty, do nothing
-		if (schItem.IsEmpty())
+		if (schItem.isEmpty())
 			return;
 
 		// Open edit schedule dialog
@@ -1609,17 +1609,17 @@ void CMultiScheduleDlg::OnSetDefault()
 		if (nConfirm == IDYES) {
 			// Check if currently selected item is empty
 			int nExtraItemIndex = nSelRowIndex - extraStartRowIndex;
-			const Item& schCurSelItem = m_schScheduleTemp.GetItemAt(nExtraItemIndex);
-			if (schCurSelItem.IsEmpty())
+			const Item& schCurSelItem = m_schScheduleTemp.getItemAt(nExtraItemIndex);
+			if (schCurSelItem.isEmpty())
 				return;
 			
 			// Overwrite default item data with currently selected extra item data
-			Item& schDefaultItem = m_schScheduleTemp.GetDefaultItem();
-			schDefaultItem.Copy(schCurSelItem);
-			schDefaultItem.SetItemID(ScheduleData::defaultItemID);
+			Item& schDefaultItem = m_schScheduleTemp.getDefaultItem();
+			schDefaultItem.copy(schCurSelItem);
+			schDefaultItem.setItemId(ScheduleData::defaultItemID);
 
 			// Remove the selected extra item after changing
-			m_schScheduleTemp.Delete(nExtraItemIndex);
+			m_schScheduleTemp.deleteItem(nExtraItemIndex);
 
 			// Update table
 			RedrawDataTable();
@@ -1739,7 +1739,7 @@ LRESULT CMultiScheduleDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM /*lParam*/
 		}
 
 		// Validate return info
-		if ((!schItemTemp.IsEmpty()) && (nRetFlag == ReturnFlag::Update)) {
+		if ((!schItemTemp.isEmpty()) && (nRetFlag == ReturnFlag::Update)) {
 			// Update data by mode
 			if (nMode == Mode::Add) {
 				// Add item

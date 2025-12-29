@@ -375,10 +375,10 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	int nRowNum = (m_nLogCount + fixedRowNum);
 
 	// Setup display size
-	int nFrameHeight = m_pszTableFrameSize->Height();
-	int nFrameWidth = m_pszTableFrameSize->Width();
+	int nFrameHeight = m_pszTableFrameSize->height();
+	int nFrameWidth = m_pszTableFrameSize->width();
 	int nColWidthOffset = 0;
-	if (GetWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
 		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 		nFrameHeight -= Constant::UI::Offset::Height::ListCtrl_Win10;
@@ -398,7 +398,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	// Setup columns
 	for (int nCol = 0; nCol < nColNum; nCol++) {
 		// Set header row style
-		SetFixedCellStyle(m_pLogViewerList, Constant::UI::GridCtrl::Index::Header_Row, nCol);
+		AppCore::setFixedCellStyle(m_pLogViewerList, Constant::UI::GridCtrl::Index::Header_Row, nCol);
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
@@ -438,7 +438,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 			// Base column - header-like style
 			if (nColStyle == COLSTYLE_FIXED) {
 				// Set fixed cell style
-				SetFixedCellStyle(m_pLogViewerList, nRow, nCol);
+				AppCore::setFixedCellStyle(m_pLogViewerList, nRow, nCol);
 			}
 
 			// Checkbox column

@@ -167,8 +167,8 @@ protected:
 	int  GetAppOption(AppOptionID eAppOptionID, bool bTemp = false) const;
 	void UpdateDialogData(bool bSaveAndValidate = true);
 	bool CheckSettingChangeState(void);
-	int  GetFlagValue(AppFlagID eFlagID) const;
-	void SetFlagValue(AppFlagID eFlagID, int nValue);
+	int  getFlagValue(AppFlagID eFlagID) const;
+	void setFlagValue(AppFlagID eFlagID, int nValue);
 
 	// Dialog setup functions
 	void SetupLanguage(void);

@@ -396,7 +396,7 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 		return;
 
 	// Show snooze interval value
-	String snoozeIntervalString = StringUtils::StringFormat(formatString, nValue);
+	String snoozeIntervalString = StringUtils::stringFormat(formatString, nValue);
 	if (m_pSnoozeIntervalEdit != NULL) {
 		// Display
 		m_pSnoozeIntervalEdit->SetWindowText(snoozeIntervalString);
@@ -418,7 +418,7 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpdate)
 {
 	// Get repeat set data
-	PwrRepeatSet& rpsRepeatData = pwrItemData.GetRepeatSetData();
+	PwrRepeatSet& rpsRepeatData = pwrItemData.getRepeatSetData();
 
 	if (bUpdate == true) {
 
@@ -432,17 +432,17 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 		int nState = 0;
 		if (m_pRepeatEnableChk != NULL) {
 			nState = m_pRepeatEnableChk->GetCheck();
-			rpsRepeatData.EnableRepeat((nState == 1) ? true : false);
+			rpsRepeatData.enableRepeat((nState == 1) ? true : false);
 		}
 
 		// Snooze enable
 		if (m_pSnoozeEnableChk != NULL) {
 			nState = m_pSnoozeEnableChk->GetCheck();
-			rpsRepeatData.EnableSnoozing((nState == 1) ? true : false);
+			rpsRepeatData.enableSnoozing((nState == 1) ? true : false);
 
 			if (m_pSnoozeIntervalSpin != NULL) {
 				// Get snooze interval value (in seconds)
-				rpsRepeatData.SetSnoozeInterval(this->GetSnoozeInterval());
+				rpsRepeatData.setSnoozeInterval(this->GetSnoozeInterval());
 			}
 		}
 
@@ -500,7 +500,7 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 			}
 			byRepeatDays |= bSaturdayEnable << DayOfWeek::Saturday;
 		}
-		rpsRepeatData.SetActiveDays(byRepeatDays);
+		rpsRepeatData.setActiveDays(byRepeatDays);
 	}
 	else {
 
@@ -514,22 +514,22 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 
 		// Repeat enable
 		if (m_pRepeatEnableChk != NULL) {
-			nState = (rpsRepeatData.IsRepeatEnabled()) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isRepeatEnabled()) ? FLAG_ON : FLAG_OFF;
 			m_pRepeatEnableChk->SetCheck(nState);
 		}
 
 		// Snooze enable
 		if (m_pSnoozeEnableChk != NULL) {
-			nState = (rpsRepeatData.IsAllowSnoozing()) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isAllowSnoozing()) ? FLAG_ON : FLAG_OFF;
 			m_pSnoozeEnableChk->SetCheck(nState);
 			
 			if (m_pSnoozeIntervalSpin != NULL) {
 				// Set spin edit value (in minutes)
-				int nSnoozeMinute = rpsRepeatData.GetSnoozeInterval() / 60;
+				int nSnoozeMinute = rpsRepeatData.getSnoozeInterval() / 60;
 				m_pSnoozeIntervalSpin->SetPos(nSnoozeMinute);
 				SetSnoozeIntervalEdit(nSnoozeMinute);
 				// Set snooze interval value (in seconds)
-				SetSnoozeInterval(rpsRepeatData.GetSnoozeInterval());
+				SetSnoozeInterval(rpsRepeatData.getSnoozeInterval());
 			}
 		}
 
@@ -537,31 +537,31 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 		// Note: Bind data from Monday first
 
 		if (m_pActiveMondayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Monday)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isDayActive(DayOfWeek::Monday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveMondayChk->SetCheck(nState);
 		}
 		if (m_pActiveTuesdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Tuesday)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isDayActive(DayOfWeek::Tuesday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveTuesdayChk->SetCheck(nState);
 		}
 		if (m_pActiveWednesdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Wednesday)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isDayActive(DayOfWeek::Wednesday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveWednesdayChk->SetCheck(nState);
 		}
 		if (m_pActiveThursdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Thursday)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isDayActive(DayOfWeek::Thursday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveThursdayChk->SetCheck(nState);
 		}
 		if (m_pActiveFridayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Friday)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isDayActive(DayOfWeek::Friday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveFridayChk->SetCheck(nState);
 		}
 		if (m_pActiveSaturdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Saturday)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isDayActive(DayOfWeek::Saturday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveSaturdayChk->SetCheck(nState);
 		}
 		if (m_pActiveSundayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Sunday)) ? FLAG_ON : FLAG_OFF;
+			nState = (rpsRepeatData.isDayActive(DayOfWeek::Sunday)) ? FLAG_ON : FLAG_OFF;
 			m_pActiveSundayChk->SetCheck(nState);
 		}
 

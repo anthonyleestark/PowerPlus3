@@ -172,7 +172,7 @@ bool SWinApp::ReloadAppLanguage(unsigned nCurLanguage /* = NULL */)
 		// Output event log
 		const wchar_t* oldLangName = GetLanguageName(m_nCurDispLang);
 		const wchar_t* newLangName = GetLanguageName(nCurLanguage);
-		String eventDescription = StringUtils::StringFormat(L"%s -> %s", oldLangName, newLangName);
+		String eventDescription = StringUtils::stringFormat(L"%s -> %s", oldLangName, newLangName);
 		OutputEventLog(LOG_EVENT_CHANGE_LANGUAGE, eventDescription);
 	}
 
@@ -197,14 +197,14 @@ bool SWinApp::ReloadAppLanguage(unsigned nCurLanguage /* = NULL */)
 bool SWinApp::SetAppName(unsigned nResourceStringID)
 {
 	// Load resource string
-	String tempString = StringUtils::LoadResourceString(nResourceStringID);
-	ASSERT(!tempString.IsEmpty());
-	if (!tempString.IsEmpty()) {
+	String tempString = StringUtils::loadResourceString(nResourceStringID);
+	ASSERT(!tempString.isEmpty());
+	if (!tempString.isEmpty()) {
 		// Set app name
 		SetAppName(tempString);
 	}
 
-	return (!tempString.IsEmpty());
+	return (!tempString.isEmpty());
 }
 
 /**
@@ -219,8 +219,8 @@ void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, bool bShowProdVe
 
 	// Show product version
 	if (bShowProdVersion == true) {
-		String tempString = StringUtils::StringFormat(_T(" %s"), StringUtils::GetProductVersion(bFullVersion).GetString());
-		m_strWindowCaption.Append(tempString);
+		String tempString = StringUtils::stringFormat(_T(" %s"), StringUtils::getProductVersion(bFullVersion).getString());
+		m_strWindowCaption.append(tempString);
 	}
 }
 
@@ -232,14 +232,14 @@ void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, bool bShowProdVe
 bool SWinApp::SetAppWindowCaption(unsigned nResourceStringID, bool bShowProdVersion /* = false */, bool bFullVersion /* = false */)
 {
 	// Load resource string
-	String tempWindowCaption = StringUtils::LoadResourceString(nResourceStringID);
-	ASSERT(!tempWindowCaption.IsEmpty());
-	if (!tempWindowCaption.IsEmpty()) {
+	String tempWindowCaption = StringUtils::loadResourceString(nResourceStringID);
+	ASSERT(!tempWindowCaption.isEmpty());
+	if (!tempWindowCaption.isEmpty()) {
 		// Set app window caption 
 		SetAppWindowCaption(tempWindowCaption, bShowProdVersion, bFullVersion);
 	}
 
-	return (!tempWindowCaption.IsEmpty());
+	return (!tempWindowCaption.isEmpty());
 }
 
 /**
@@ -264,7 +264,7 @@ void SWinApp::RegisterMessageBoxCaption(unsigned nCaptionID)
 	}
 
 	// If caption is empty
-	if (messageCaption.IsEmpty()) {
+	if (messageCaption.isEmpty()) {
 		// Use default app window caption
 		messageCaption = this->GetAppWindowCaption();
 	}
@@ -287,7 +287,7 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned nType, unsigned nIDPro
 	String messageCaption;
 
 	// If application message box caption is registered
-	if (!m_strMessageCaption.IsEmpty()) {
+	if (!m_strMessageCaption.isEmpty()) {
 		// Use registered message box caption
 		messageCaption = m_strMessageCaption;
 	}
@@ -299,7 +299,7 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned nType, unsigned nIDPro
 
 	// If message caption is empty (not registered)
 	// or the global application window title is not set
-	if (messageCaption.IsEmpty()) {
+	if (messageCaption.isEmpty()) {
 		// Use the default AfxMessageBox
 		return CWinApp::DoMessageBox(prompt, nType, nIDPrompt);
 	}
@@ -333,7 +333,7 @@ int SWinApp::DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID /* = NULL
 	}
 	else {
 		// Using registered message box caption
-		if (!m_strMessageCaption.IsEmpty()) {
+		if (!m_strMessageCaption.isEmpty()) {
 			messageCaption = m_strMessageCaption;
 		}
 	}
@@ -361,9 +361,9 @@ int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
 
 	// If caption is not set
 	String messageCaption(caption);
-	if (messageCaption.IsEmpty()) {
+	if (messageCaption.isEmpty()) {
 		// If application message box caption is registered
-		if (!m_strMessageCaption.IsEmpty()) {
+		if (!m_strMessageCaption.isEmpty()) {
 			// Use registered message box caption
 			messageCaption = m_strMessageCaption;
 		}
@@ -415,7 +415,7 @@ void SWinApp::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NUL
 	// Prepare event log info
 	LOGITEM logItemAppEvent;
 	logItemAppEvent.SetCategory(usEvent);
-	logItemAppEvent.SetTime(DateTimeUtils::GetCurrentDateTime());
+	logItemAppEvent.SetTime(DateTimeUtils::getCurrentDateTime());
 	logItemAppEvent.SetProcessID();
 	if (description) {
 		// Include event description
@@ -439,7 +439,7 @@ void SWinApp::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NUL
  * @param	eFlagID - ID of specific flag
  * @return	int - Flag value
  */
-int SWinApp::GetFlagValue(AppFlagID eFlagID) const
+int SWinApp::getFlagValue(AppFlagID eFlagID) const
 {
 	int nValue = FLAG_OFF;
 
@@ -450,12 +450,12 @@ int SWinApp::GetFlagValue(AppFlagID eFlagID) const
 	case AppFlagID::appReadOnlyMode:
 	case AppFlagID::appForceClosing:
 	case AppFlagID::appExitCode:
-		nValue = m_flagManager.GetFlagValue(eFlagID);
+		nValue = m_flagManager.getFlagValue(eFlagID);
 		break;
 
 	default:
 		// Request the flag value from global flag manager
-		nValue = GetGlobalFlagManager().GetFlagValue(eFlagID);
+		nValue = getGlobalFlagManager().getFlagValue(eFlagID);
 		break;
 	}
 
@@ -468,7 +468,7 @@ int SWinApp::GetFlagValue(AppFlagID eFlagID) const
  * @param	nValue  - Value to set
  * @return	None
  */
-void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
+void SWinApp::setFlagValue(AppFlagID eFlagID, int nValue)
 {
 	// Check value validity
 	if (nValue == INT_INVALID)
@@ -481,12 +481,12 @@ void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
 	case AppFlagID::appReadOnlyMode:
 	case AppFlagID::appForceClosing:
 	case AppFlagID::appExitCode:
-		m_flagManager.SetFlagValue(eFlagID, nValue);
+		m_flagManager.setFlagValue(eFlagID, nValue);
 		break;
 
 	default:
 		// Let the global flag manager do its job
-		GetGlobalFlagManager().SetFlagValue(eFlagID, nValue);
+		getGlobalFlagManager().setFlagValue(eFlagID, nValue);
 		break;
 	}
 }

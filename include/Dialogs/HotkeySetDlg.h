@@ -130,7 +130,7 @@ protected:
 protected:
 	// Get/set functions
 	int GetItemNum() const {
-		return m_hksHotkeySetTemp.GetItemNum();
+		return m_hksHotkeySetTemp.getItemNum();
 	};
 	int	GetListCurSel(void) const {
 		return m_nCurSelIndex;

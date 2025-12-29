@@ -203,22 +203,22 @@ public:
 		return m_nIDHelp;
 	};
 	virtual bool GetReadOnlyMode(void) const {
-		return m_flagManager.GetFlagValue(AppFlagID::dialogReadOnlyMode);
+		return m_flagManager.getFlagValue(AppFlagID::dialogReadOnlyMode);
 	};
 	virtual void SetReadOnlyMode(bool bReadOnly) {
-		m_flagManager.SetFlagValue(AppFlagID::dialogReadOnlyMode, bReadOnly);
+		m_flagManager.setFlagValue(AppFlagID::dialogReadOnlyMode, bReadOnly);
 	};
 	virtual bool GetLockState(void) const {
-		return m_flagManager.GetFlagValue(AppFlagID::dialogLockState);
+		return m_flagManager.getFlagValue(AppFlagID::dialogLockState);
 	};
 	virtual void SetLockState(bool bIsLocked) {
-		m_flagManager.SetFlagValue(AppFlagID::dialogLockState, bIsLocked);
+		m_flagManager.setFlagValue(AppFlagID::dialogLockState, bIsLocked);
 	};
 	virtual void SetUseEnter(bool bUseEnter) {
-		m_flagManager.SetFlagValue(AppFlagID::dialogUseEnterKey, bUseEnter);
+		m_flagManager.setFlagValue(AppFlagID::dialogUseEnterKey, bUseEnter);
 	};
 	virtual void SetUseEscape(bool bUseEscape) {
-		m_flagManager.SetFlagValue(AppFlagID::dialogUseEscapeKey, bUseEscape);
+		m_flagManager.setFlagValue(AppFlagID::dialogUseEscapeKey, bUseEscape);
 	};
 
 	// Lock state exception ID list
@@ -256,7 +256,7 @@ public:
 	// Get/set dialog size functions
 	virtual void GetSize(Size& regSize) const {
 		// If size is not set, return default
-		if (m_szRegisterSize.IsEmpty()) regSize = m_szDefaultSize;
+		if (m_szRegisterSize.isEmpty()) regSize = m_szDefaultSize;
 
 		// Return dialog size
 		regSize = m_szRegisterSize;
@@ -277,10 +277,10 @@ public:
 
 	// Other properties
 	virtual void SetTopMost(bool bTopMost) {
-		SetFlagValue(AppFlagID::dialogSetTopMost, bTopMost);;
+		setFlagValue(AppFlagID::dialogSetTopMost, bTopMost);;
 	};
 	virtual void SetInitSound(bool bInitSound) {
-		SetFlagValue(AppFlagID::dialogSetInitSound, bInitSound);
+		setFlagValue(AppFlagID::dialogSetInitSound, bInitSound);
 	};
 
 	// Dialog margins and display area
@@ -297,22 +297,22 @@ public:
 		m_rcClientMargin._bottom = lMargin;
 	};
 	virtual void SetCenterMargin(const Point& ptMargin) {
-		m_rcClientMargin.SetTopLeft(ptMargin);
-		m_rcClientMargin.SetBottomRight(ptMargin);
+		m_rcClientMargin.setTopLeft(ptMargin);
+		m_rcClientMargin.setBottomRight(ptMargin);
 	};
 	virtual void SetCenterMargin(long lHMargin, long lVMargin) {
-		m_rcClientMargin.SetTopLeft(lHMargin, lVMargin);
-		m_rcClientMargin.SetBottomRight(lHMargin, lVMargin);
+		m_rcClientMargin.setTopLeft(lHMargin, lVMargin);
+		m_rcClientMargin.setBottomRight(lHMargin, lVMargin);
 	};
 	virtual void GetDisplayArea(Rect& displayAreaRect) const {
 		RECT rcTemp; this->GetClientRect(&rcTemp);
 		displayAreaRect = Rect(rcTemp.left, rcTemp.top, rcTemp.right, rcTemp.bottom);
 
 		// Calculate display area with margin
-		displayAreaRect._left += m_rcClientMargin.Left();
-		displayAreaRect._top += m_rcClientMargin.Top();
-		displayAreaRect._right -= m_rcClientMargin.Right();
-		displayAreaRect._bottom -= m_rcClientMargin.Bottom();
+		displayAreaRect._left += m_rcClientMargin.left();
+		displayAreaRect._top += m_rcClientMargin.top();
+		displayAreaRect._right -= m_rcClientMargin.right();
+		displayAreaRect._bottom -= m_rcClientMargin.bottom();
 	};
 	virtual void SetDisplayArea(const Rect& newDispArea, bool bResizeDialog, bool bCenter);
 	virtual void GetMargin(Rect& dialogMargin) const {
@@ -353,14 +353,14 @@ public:
 	};
 	virtual void SetBkgrdColor(COLORREF clBkgrdColor) {
 		m_clBkgrdColor = clBkgrdColor;
-		SetFlagValue(AppFlagID::dialogSetBackgroundColor, true);
+		setFlagValue(AppFlagID::dialogSetBackgroundColor, true);
 	};
 	virtual void GetTextColor(COLORREF& clTextColor) const {
 		clTextColor = m_clTextColor;
 	};
 	virtual void SetTextColor(COLORREF clTextColor) {
 		m_clTextColor = clTextColor;
-		SetFlagValue(AppFlagID::dialogSetTextColor, true);
+		setFlagValue(AppFlagID::dialogSetTextColor, true);
 	};
 
 	// MessageBox functions
@@ -421,8 +421,8 @@ public:
 	virtual int  GetAppOption(AppOptionID eAppOptionID, bool bTemp = false) const;
 
 	// Dialog flag management
-	virtual int  GetFlagValue(AppFlagID eFlagID) const;
-	virtual void SetFlagValue(AppFlagID eFlagID, int nValue);
+	virtual int  getFlagValue(AppFlagID eFlagID) const;
+	virtual void setFlagValue(AppFlagID eFlagID, int nValue);
 	virtual FlagManager& GetAppFlagManager(void) {
 		return ((SWinApp*)AfxGetApp())->GetAppFlagManager();
 	};
@@ -438,10 +438,10 @@ public:
 
 	// Directly access flag values
 	virtual bool GetChangeFlagValue(void) const {
-		return m_flagManager.GetFlagValue(AppFlagID::dialogDataChanged);
+		return m_flagManager.getFlagValue(AppFlagID::dialogDataChanged);
 	};
 	virtual void SetChangeFlagValue(bool bValue) {
-		m_flagManager.SetFlagValue(AppFlagID::dialogDataChanged, bValue);
+		m_flagManager.setFlagValue(AppFlagID::dialogDataChanged, bValue);
 	};
 	virtual bool CheckDataChangeState(void) {
 		return true;
@@ -450,13 +450,13 @@ public:
 		return true;
 	};
 	virtual bool IsForceClosingByRequest(void) const {
-		return m_flagManager.GetFlagValue(AppFlagID::dialogForceClosing);
+		return m_flagManager.getFlagValue(AppFlagID::dialogForceClosing);
 	};
 	virtual int GetReturnFlag(void) const {
-		return m_flagManager.GetFlagValue(AppFlagID::dialogReturnFlag);
+		return m_flagManager.getFlagValue(AppFlagID::dialogReturnFlag);
 	};
 	virtual void SetReturnFlag(int nValue) {
-		m_flagManager.SetFlagValue(AppFlagID::dialogReturnFlag, nValue);
+		m_flagManager.setFlagValue(AppFlagID::dialogReturnFlag, nValue);
 	};
 
 	// Request processing functions

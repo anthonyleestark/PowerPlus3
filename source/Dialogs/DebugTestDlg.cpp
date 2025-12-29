@@ -259,8 +259,8 @@ void CDebugTestDlg::OnDebugViewEditChange(void)
 	m_strBuffer = tempBuff.data();
 
 	// If buffer length did not increase
-	int nBufferLength = m_strBuffer.GetLength();
-	int nBufferBakLength = m_strBufferBak.GetLength();
+	int nBufferLength = m_strBuffer.getLength();
+	int nBufferBakLength = m_strBufferBak.getLength();
 	if (nBufferLength <= nBufferBakLength) {
 		// Backup buffer
 		BackupDebugViewBuffer();
@@ -281,7 +281,7 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 
 	// Format debug output log string
 	String debugOutputLogStr;
-	debugOutputLogStr.Format(debugOutputFormat, LPARAM_TO_STRING(lParam));
+	debugOutputLogStr.format(debugOutputFormat, LPARAM_TO_STRING(lParam));
 
 	// Add debug output string
 	AddLine(debugOutputLogStr);
@@ -487,7 +487,7 @@ BOOL CDebugTestDlg::PreTranslateMessage(MSG* pMsg)
 			else if ((dwKey == VK_BACK) || (dwKey == VK_DELETE)) {
 
 				// Only allow erasing inputted content
-				if (m_strBuffer.Compare(m_strBufferBak) == 0)
+				if (m_strBuffer.compare(m_strBufferBak) == 0)
 					return true;
 
 				// [Backspace] key --> Can not delete empty line
@@ -632,7 +632,7 @@ bool CDebugTestDlg::SendDebugCommand(void)
 
 	// Prepare params
 	WPARAM wParam = MAKE_WPARAM_STRING(debugCommand);
-	LPARAM lParam = MAKE_LPARAM_STRING(debugCommand.GetString());
+	LPARAM lParam = MAKE_LPARAM_STRING(debugCommand.getString());
 	
 	// Send debug command message to parent window
 	this->NotifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);
@@ -820,7 +820,7 @@ bool CDebugTestDlg::ShowDebugTestEditViewMenu(void)
 		// Menu "Clear buffer" item
 		else if (nItemID == IDM_DEBUGTEST_CLEAR_BUFFER) {
 			// If DebugTest buffer screen is empty
-			if (m_strBuffer.IsEmpty()) {
+			if (m_strBuffer.isEmpty()) {
 				// Disable menu item
 				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
@@ -844,11 +844,11 @@ bool CDebugTestDlg::ShowDebugTestEditViewMenu(void)
 int CDebugTestDlg::FormatDebugCommand(String& debugCommand)
 {
 	// If debug command is empty, do nothing
-	if (debugCommand.IsEmpty())
+	if (debugCommand.isEmpty())
 		return 0;
 
 	// Remove whitespace
-	debugCommand.Trim();
+	debugCommand.trim();
 
 	// Initialize a temporary string buffer
 	std::wstring copyBuffer = debugCommand;
@@ -874,11 +874,11 @@ int CDebugTestDlg::FormatDebugCommand(String& debugCommand)
 	}
 
 	// Copy back formatted string
-	debugCommand.Empty();
-	debugCommand.SetString(tempNewBuffer);
+	debugCommand.empty();
+	debugCommand.setString(tempNewBuffer);
 
 	// Return the debug command's new length
-	return debugCommand.GetLength();
+	return debugCommand.getLength();
 }
 
 /**
@@ -908,32 +908,32 @@ void CDebugTestDlg::ClearViewBuffer(void)
 void CDebugTestDlg::AddLine(const wchar_t* lineString, bool bNewLine /* = true */)
 {
 	// If buffer not empty
-	if (!m_strBuffer.IsEmpty()) {
+	if (!m_strBuffer.isEmpty()) {
 		// Get end of buffer character
-		int nBuffLength = m_strBuffer.GetLength();
-		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
+		int nBuffLength = m_strBuffer.getLength();
+		TCHAR tcEndChar = m_strBuffer.getAt(nBuffLength - 1);
 
 		// If end of buffer is not an endline
 		if (tcEndChar != Constant::Char::Return && tcEndChar != Constant::Char::EndLine) {
 			// Add an endline first
-			m_strBuffer.Append(Constant::String::NewLine);
+			m_strBuffer.append(Constant::String::NewLine);
 		}
 	}
 
 	// Add string line
 	if (IS_NOT_EMPTY_STRING(lineString)) {
-		m_strBuffer.Append(lineString);
+		m_strBuffer.append(lineString);
 	}
 
 	// Re-check the end of buffer character
 	if (bNewLine == true) {
-		int nBuffLength = m_strBuffer.GetLength();
-		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
+		int nBuffLength = m_strBuffer.getLength();
+		TCHAR tcEndChar = m_strBuffer.getAt(nBuffLength - 1);
 
 		// If end of buffer is not an endline
 		if (tcEndChar != Constant::Char::Return && tcEndChar != Constant::Char::EndLine) {
 			// Add a new empty line
-			m_strBuffer.Append(Constant::String::NewLine);
+			m_strBuffer.append(Constant::String::NewLine);
 		}
 	}
 }
@@ -1005,7 +1005,7 @@ void CDebugTestDlg::DispDebugCommandHistory(int nHistoryIndex)
 
 	// Get command at index
 	String commandString = m_astrCommandHistory.at(nHistoryIndex);
-	if (commandString.IsEmpty())
+	if (commandString.isEmpty())
 		return;
 
 	// Check if DebugTest edit view is available and focused

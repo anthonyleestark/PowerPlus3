@@ -74,7 +74,7 @@ public:
 public:
 	// Get/set display content
 	virtual const wchar_t* GetDispMessage(void) const {
-		return m_strBuffer.GetString();
+		return m_strBuffer.getString();
 	};
 	virtual void SetDispMessage(const wchar_t* dispMsg) {
 		m_strBuffer = dispMsg;
@@ -82,10 +82,10 @@ public:
 
 	// Get/set message style
 	virtual void GetMessageStyle(RmdMsgStyleSet& rmdMsgStyle) const {
-		rmdMsgStyle.Copy(m_rmdMsgStyleSet);
+		rmdMsgStyle.copy(m_rmdMsgStyleSet);
 	};
 	virtual void SetMessageStyle(const RmdMsgStyleSet& rmdMsgStyle) {
-		m_rmdMsgStyleSet.Copy(rmdMsgStyle);
+		m_rmdMsgStyleSet.copy(rmdMsgStyle);
 	};
 	
 	// Auto-close message
