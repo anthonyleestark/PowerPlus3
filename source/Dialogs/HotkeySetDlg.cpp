@@ -745,14 +745,14 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
-		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
+		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
 			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
 		m_pHotkeySetListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
 		// Column width
-		int nColWidth = m_apGrdColFormat[nCol].nWidth;
+		int nColWidth = m_apGrdColFormat[nCol].width;
 		if (nColWidth != -1) {
 			// Set column width as defined
 			if (m_pHotkeySetListTable->SetColumnWidth(nCol, nColWidth)) {
@@ -773,7 +773,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 
 			// Get column style & item state
-			nColStyle = m_apGrdColFormat[nCol].nColStyle;
+			nColStyle = m_apGrdColFormat[nCol].columnStyle;
 			nItemState = m_pHotkeySetListTable->GetItemState(nRow, nCol);
 			nItemState |= GVIS_READONLY;
 
@@ -793,7 +793,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 				CGridCellCheck* pCell = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRow, nCol);
 
 				// Set center alignment if defined
-				if (m_apGrdColFormat[nCol].bCenter == true) {
+				if (m_apGrdColFormat[nCol].isCentered == true) {
 					if (pCell == NULL) continue;
 					pCell->SetCheckPlacement(SCP_CENTERING);
 				}
@@ -809,7 +809,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 				CGridCellBase* pCell = (CGridCellBase*)m_pHotkeySetListTable->GetCell(nRow, nCol);
 
 				// Set center alignment if defined
-				if (m_apGrdColFormat[nCol].bCenter == true) {
+				if (m_apGrdColFormat[nCol].isCentered == true) {
 					if (pCell == NULL) continue;
 					pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
 				}
@@ -1098,7 +1098,7 @@ void CHotkeySetDlg::UpdateLayoutInfo(void)
 	// Update size of table columns
 	for (int nIndex = 0; nIndex < nColNum; nIndex++) {
 		int nColSize = m_pHotkeySetListTable->GetColumnWidth(nIndex);
-		m_apGrdColFormat[nIndex].nWidth = nColSize;
+		m_apGrdColFormat[nIndex].width = nColSize;
 	}
 }
 
@@ -1137,7 +1137,7 @@ void CHotkeySetDlg::LoadLayoutInfo(void)
 		keyName = Key::LayoutInfo::GridColSize(nIndex);
 		if (GetLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, nRet)) {
 			if (m_apGrdColFormat != NULL) {
-				m_apGrdColFormat[nIndex].nWidth = nRet;
+				m_apGrdColFormat[nIndex].width = nRet;
 			}
 		}
 	}
@@ -1157,7 +1157,7 @@ void CHotkeySetDlg::SaveLayoutInfo(void)
 	int nRef = 0;
 	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		nRef = m_apGrdColFormat[nIndex].nWidth;
+		nRef = m_apGrdColFormat[nIndex].width;
 		keyName = Key::LayoutInfo::GridColSize(nIndex);
 		WriteLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, nRef);
 	}

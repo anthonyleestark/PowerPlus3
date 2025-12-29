@@ -402,14 +402,14 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
-		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].nHeaderTitleID;
+		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
 			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
 		}
 		m_pLogViewerList->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
 		// Column width
-		int nColWidth = m_apGrdColFormat[nCol].nWidth;
+		int nColWidth = m_apGrdColFormat[nCol].width;
 		if (nColWidth != -1) {
 			// Set column width as defined (with offset)
 			int nColWidthPx = nColWidth - nColWidthOffset;
@@ -431,7 +431,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 
 			// Get column style & item state
-			nColStyle = m_apGrdColFormat[nCol].nColStyle;
+			nColStyle = m_apGrdColFormat[nCol].columnStyle;
 			nItemState = m_pLogViewerList->GetItemState(nRow, nCol);
 			nItemState |= GVIS_READONLY;
 
@@ -451,7 +451,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 				CGridCellCheck* pCell = (CGridCellCheck*)m_pLogViewerList->GetCell(nRow, nCol);
 
 				// Set center alignment if defined
-				if (m_apGrdColFormat[nCol].bCenter == TRUE) {
+				if (m_apGrdColFormat[nCol].isCentered == TRUE) {
 					if (pCell == NULL) continue;
 					pCell->SetCheckPlacement(SCP_CENTERING);
 				}
@@ -467,7 +467,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 				CGridCellBase* pCell = (CGridCellBase*)m_pLogViewerList->GetCell(nRow, nCol);
 
 				// Set center alignment if defined
-				if (m_apGrdColFormat[nCol].bCenter == TRUE) {
+				if (m_apGrdColFormat[nCol].isCentered == TRUE) {
 					if (pCell == NULL) continue;
 					pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
 				}
@@ -617,7 +617,7 @@ void CLogViewerDlg::UpdateLayoutInfo(void)
 	// Update size of table columns
 	for (int nIndex = 0; nIndex < nColNum; nIndex++) {
 		int nColSize = m_pLogViewerList->GetColumnWidth(nIndex);
-		m_apGrdColFormat[nIndex].nWidth = nColSize;
+		m_apGrdColFormat[nIndex].width = nColSize;
 	}
 }
 
@@ -656,7 +656,7 @@ void CLogViewerDlg::LoadLayoutInfo(void)
 		keyName = Key::LayoutInfo::GridColSize(nIndex);
 		if (GetLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, nRet)) {
 			if (m_apGrdColFormat != NULL) {
-				m_apGrdColFormat[nIndex].nWidth = nRet;
+				m_apGrdColFormat[nIndex].width = nRet;
 			}
 		}
 	}
@@ -676,7 +676,7 @@ void CLogViewerDlg::SaveLayoutInfo(void)
 	int nRef = 0;
 	String keyName;
 	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		nRef = m_apGrdColFormat[nIndex].nWidth;
+		nRef = m_apGrdColFormat[nIndex].width;
 		keyName = Key::LayoutInfo::GridColSize(nIndex);
 		WriteLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, nRef);
 	}
