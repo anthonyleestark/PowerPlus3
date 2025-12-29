@@ -478,11 +478,11 @@ void CRmdMsgStyleSetDlg::SetupLanguage()
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Set dialog caption
-	String dialogCaption = GetLanguageString(pAppLang, GetDialogID());
+	String dialogCaption = getLanguageString(pAppLang, GetDialogID());
 	if (m_flagDataSet == DataSetFlag::commonStyle)
-		dialogCaption += StringUtils::stringFormat(captionDetailFormat, GetLanguageString(pAppLang, PWRRMD_STYLE_COMMONSTYLE));
+		dialogCaption += StringUtils::stringFormat(captionDetailFormat, getLanguageString(pAppLang, PWRRMD_STYLE_COMMONSTYLE));
 	else if (m_flagDataSet == DataSetFlag::customStyle)
-		dialogCaption += StringUtils::stringFormat(captionDetailFormat, GetLanguageString(pAppLang, PWRRMD_STYLE_CUSTOMSTYLE));
+		dialogCaption += StringUtils::stringFormat(captionDetailFormat, getLanguageString(pAppLang, PWRRMD_STYLE_CUSTOMSTYLE));
 	this->SetCaption(dialogCaption);
 
 	// Loop through all dialog items and setup languages for each one of them
@@ -517,8 +517,8 @@ void CRmdMsgStyleSetDlg::SetupLanguage()
 	}
 
 	// Initialize local string variables
-	balloonTitleInvalidValue = GetLanguageString(pAppLang, BALLOON_TIP_INVALID_VALUE_TITLE);
-	balloonFormatInvalidValue = GetLanguageString(pAppLang, BALLOON_TIP_INVALID_VALUE_FORMAT);
+	balloonTitleInvalidValue = getLanguageString(pAppLang, BALLOON_TIP_INVALID_VALUE_TITLE);
+	balloonFormatInvalidValue = getLanguageString(pAppLang, BALLOON_TIP_INVALID_VALUE_FORMAT);
 
 	// Default
 	SDialog::SetupLanguage();
@@ -586,7 +586,7 @@ void CRmdMsgStyleSetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLangu
 			// List-up available system icon IDs
 			m_pIconIDPickCombo->ResetContent();
 			for (int nIndex = 0; nIndex < TABLE_SIZE(IDTable::SystemIcon); nIndex++)
-				m_pIconIDPickCombo->AddString(GetLanguageString(ptrLanguage, IDTable::SystemIcon[nIndex].second));
+				m_pIconIDPickCombo->AddString(getLanguageString(ptrLanguage, IDTable::SystemIcon[nIndex].second));
 
 			return;
 		}
@@ -602,7 +602,7 @@ void CRmdMsgStyleSetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLangu
 			// List-up available message display positions
 			m_pDisplayPosCombo->ResetContent();
 			for (int nIndex = 0; nIndex < TABLE_SIZE(IDTable::DisplayPosition); nIndex++)
-				m_pDisplayPosCombo->AddString(GetLanguageString(ptrLanguage, IDTable::DisplayPosition[nIndex].second));
+				m_pDisplayPosCombo->AddString(getLanguageString(ptrLanguage, IDTable::DisplayPosition[nIndex].second));
 
 			return;
 		}
@@ -1046,7 +1046,7 @@ void CRmdMsgStyleSetDlg::UpdateDialogData(bool bUpdate)
 		// Icon ID
 		int nIconID = m_rmsMsgStyleTemp.getIconId();
 		if (m_pIconIDPickCombo != NULL) {
-			String iconName = GetLanguageString(pAppLang, GetPairedID(IDTable::SystemIcon, nIconID));
+			String iconName = getLanguageString(pAppLang, GetPairedID(IDTable::SystemIcon, nIconID));
 			if (IS_NOT_NULL_STRING(iconName))
 				m_pIconIDPickCombo->SelectString(-1, iconName);
 		}
@@ -1079,7 +1079,7 @@ void CRmdMsgStyleSetDlg::UpdateDialogData(bool bUpdate)
 		// Display position
 		int nDisplayPos = m_rmsMsgStyleTemp.getDisplayPosition();
 		if (m_pDisplayPosCombo != NULL) {
-			String displayPosStr = GetLanguageString(pAppLang, GetPairedID(IDTable::DisplayPosition, nDisplayPos));
+			String displayPosStr = getLanguageString(pAppLang, GetPairedID(IDTable::DisplayPosition, nDisplayPos));
 			if (IS_NOT_NULL_STRING(displayPosStr))
 				m_pDisplayPosCombo->SelectString(-1, displayPosStr);
 		}

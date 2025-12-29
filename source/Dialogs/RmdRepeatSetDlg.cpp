@@ -387,7 +387,7 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Get format string
-	const wchar_t* formatString = GetLanguageString(pAppLang, PWRRMD_REPEATSET_SNOOZEINTERVAL);
+	const wchar_t* formatString = getLanguageString(pAppLang, PWRRMD_REPEATSET_SNOOZEINTERVAL);
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Check validity

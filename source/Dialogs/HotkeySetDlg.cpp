@@ -747,7 +747,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 		String headerTitle = Constant::String::Empty;
 		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = getLanguageString(ptrLanguage, nHeaderTitleID);
 		}
 		m_pHotkeySetListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
@@ -835,12 +835,12 @@ void CHotkeySetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 	{
 	case IDC_HOTKEYSET_ACTION_LIST:
 		m_cmbActionList.ResetContent();
-		m_cmbActionList.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
-		m_cmbActionList.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
-		m_cmbActionList.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));		// Shutdown
-		m_cmbActionList.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbActionList.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Log out
-		m_cmbActionList.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));		// Shutdown
+		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Log out
+		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
 
 	case IDC_HOTKEYSET_FUNCKEY_LIST:
@@ -979,14 +979,14 @@ void CHotkeySetDlg::UpdateHotkeySet()
 
 		// Hotkey action
 		nTemp = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hksItem.getActionId()));
-		tempString = GetLanguageString(ptrLanguage, nTemp);
+		tempString = getLanguageString(ptrLanguage, nTemp);
 		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::HKActionID, tempString);
 
 		// Keystrokes
 		hksItem.printKeyStrokes(tempString);
 		if (IS_NULL_STRING(tempString)) {
 			// Undefined keystrokes
-			tempString = GetLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
+			tempString = getLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
 		}
 		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::Keystrokes, tempString);
 	}
@@ -1380,7 +1380,7 @@ bool CHotkeySetDlg::Validate(const Item& hksItem, bool bShowMsg /* = false */)
 	// Check action ID
 	if ((hksItem.getActionId() < HKID::displayOff) || (hksItem.getActionId() > HKID::hibernate)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_ACTIONID;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 	}
 
@@ -1392,14 +1392,14 @@ bool CHotkeySetDlg::Validate(const Item& hksItem, bool bShowMsg /* = false */)
 	if ((dwModifiers <= 0) ||
 		((dwModifiers & MOD_CONTROL) == false) && ((dwModifiers & MOD_ALT) == false) && ((dwModifiers & MOD_WIN) == false)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_CTRLKEY;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 	}
 
 	// Validate virtual key code
 	if ((dwVirtualKey < VK_F1) || (dwVirtualKey > VK_F12)) {
 		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 	}
 
@@ -1415,11 +1415,11 @@ bool CHotkeySetDlg::Validate(const Item& hksItem, bool bShowMsg /* = false */)
 			if (dwModifiers & MOD_WIN)		keyStrokesString += _T("Win + ");
 			keyStrokesString += GetString(StringTable::FunctionKeys, dwVirtualKey);
 			String keyInfoString = Constant::String::Empty;
-			keyInfoString.format(_T("%s - %s"), keyStrokesString.getString(), GetLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].hotkeyDescription));
+			keyInfoString.format(_T("%s - %s"), keyStrokesString.getString(), getLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].hotkeyDescription));
 
 			// Message format
 			String messageFormat;
-			messageFormat.format(GetLanguageString(pLang, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), keyInfoString.getString());
+			messageFormat.format(getLanguageString(pLang, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), keyInfoString.getString());
 
 			arrMsgString.push_back(messageFormat);
 			bResult = false;

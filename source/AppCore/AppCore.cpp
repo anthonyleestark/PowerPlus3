@@ -347,12 +347,12 @@ void ScheduleItem::print(String& outputString) const
 	using namespace AppCore;
 
 	// Get language table
-	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
+	LANGTABLE_PTR ptrLanguage = loadLanguageTable(NULL);
 
 	// Format schedule data
 	const wchar_t* enableState = (isEnabled_ == true) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
 	unsigned actionStringID = GetPairedID(IDTable::ActionName, actionId_);
-	const wchar_t* actionName = GetLanguageString(ptrLanguage, actionStringID);													// Schedule action
+	const wchar_t* actionName = getLanguageString(ptrLanguage, actionStringID);													// Schedule action
 	const wchar_t* timeFormat = ClockTimeUtils::format(ptrLanguage, IDS_FORMAT_SHORTTIME, timeValue_).getString();				// Schedule time
 	const wchar_t* repeatState = (repeatSetInfo_.isRepeatEnabled() == true) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
 
@@ -695,12 +695,12 @@ void HotkeySetItem::print(String& outputString) const
 	using namespace Language;
 
 	// Get language table
-	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
+	LANGTABLE_PTR ptrLanguage = loadLanguageTable(NULL);
 
 	// Format item data
 	const wchar_t* enable = (isEnabled_ == true) ? _T("Enabled") : _T("Disabled");
 	unsigned actionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hotkeyActionId_));
-	const wchar_t* action = GetLanguageString(ptrLanguage, actionNameID);
+	const wchar_t* action = getLanguageString(ptrLanguage, actionNameID);
 	String keyStrokesStr = Constant::String::Empty;
 	printKeyStrokes(keyStrokesStr);
 
@@ -1172,7 +1172,7 @@ void PwrReminderItem::print(String& outputString) const
 	using namespace AppCore;
 
 	// Get language table
-	LANGTABLE_PTR ptrLanguage = LoadLanguageTable(NULL);
+	LANGTABLE_PTR ptrLanguage = loadLanguageTable(NULL);
 
 	// Format item data
 	const wchar_t* enableStr = (isEnabled_ == true) ? _T("Enabled") : _T("Disabled");
@@ -1181,14 +1181,14 @@ void PwrReminderItem::print(String& outputString) const
 		messageStr = messageContent_.left(Constant::Max::DisplayLogStringLength) + _T("...");
 	}
 	int temp = GetPairedID(IDTable::PwrReminderEvent, eventId_);
-	String eventStr = GetLanguageString(ptrLanguage, temp);
+	String eventStr = getLanguageString(ptrLanguage, temp);
 	if (eventId_ == Event::atSetTime) {
 		// Format time string
 		String formatString = eventStr;
 		eventStr = ClockTimeUtils::format(ptrLanguage, formatString, timeValue_);
 	}
 	temp = GetPairedID(IDTable::PwrReminderStyle, messageStyle_);
-	const wchar_t* styleStr = GetLanguageString(ptrLanguage, temp);
+	const wchar_t* styleStr = getLanguageString(ptrLanguage, temp);
 
 	// Print item
 	outputString.format(_T("State=(%s), ItemID=%d, Msg=(%s), Event=(%s), Style=(%s), Repeat=%d"),
@@ -2442,7 +2442,7 @@ String ClockTimeUtils::format(LANGTABLE_PTR lang, const wchar_t* formatString, c
 {
 	// Format time string
 	unsigned timePeriod = (clockTime.hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	const wchar_t* timePeriodFormat = Language::GetLanguageString(lang, timePeriod);
+	const wchar_t* timePeriodFormat = Language::getLanguageString(lang, timePeriod);
 	int hourVal = (clockTime.hour() > 12) ? (clockTime.hour() - 12) : clockTime.hour();
 	int minuteVal = clockTime.minute();
 
@@ -2530,7 +2530,7 @@ String DateTimeUtils::format(LANGTABLE_PTR lang, const wchar_t* formatString, co
 {
 	// Format time string
 	unsigned timePeriod = (dateTime.hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	const wchar_t* timePeriodFormat = Language::GetLanguageString(lang, timePeriod);
+	const wchar_t* timePeriodFormat = Language::getLanguageString(lang, timePeriod);
 	int hourVal = (dateTime.hour() > 12) ? (dateTime.hour() - 12) : dateTime.hour();
 	int minuteVal = dateTime.minute();
 
@@ -2618,16 +2618,16 @@ double PerformanceCounter::getElapsedTime(bool toMillisecs) const noexcept
  * @param	bGetDescription - Get language package description
  * @return	const wchar_t* - Language name
  */
-const wchar_t* Language::GetLanguageName(unsigned currentLanguage, bool getDescription /* = false */)
+const wchar_t* Language::getLanguageName(unsigned currentLanguage, bool getDescription /* = false */)
 {
 	// Load language table package
-	LANGTABLE_PTR langTable = LoadLanguageTable(currentLanguage);
+	LANGTABLE_PTR langTable = loadLanguageTable(currentLanguage);
 	if (langTable == NULL)
 		return Constant::Value::Unknown;
 
 	// Get language package info
 	unsigned infoTargetID = (getDescription) ? LANGPACKINFO_DESCRIPTIONFULL : LANGPACKINFO_LANGNAMEID;
-	const wchar_t* infoString = GetLanguageString(langTable, infoTargetID);
+	const wchar_t* infoString = getLanguageString(langTable, infoTargetID);
 	if (IS_NULL_STRING(infoString))
 		infoString = Constant::Value::Unknown;
 
@@ -2640,7 +2640,7 @@ const wchar_t* Language::GetLanguageName(unsigned currentLanguage, bool getDescr
  * @param	nCurLanguage   - Current language ID
  * @return	LANGTABLE_PTR - Language package pointer
  */
-LANGTABLE_PTR Language::LoadLanguageTable(unsigned currentLanguage)
+LANGTABLE_PTR Language::loadLanguageTable(unsigned currentLanguage)
 {
 	LANGTABLE_PTR langTable = NULL;
 
@@ -2678,7 +2678,7 @@ LANGTABLE_PTR Language::LoadLanguageTable(unsigned currentLanguage)
  * @param	pszResult		 - Result string (reference-type)
  * @return	const wchar_t*	 - Language string
  */
-const wchar_t* Language::GetLanguageString(LANGTABLE_PTR languageTablePtr, unsigned id)
+const wchar_t* Language::getLanguageString(LANGTABLE_PTR languageTablePtr, unsigned id)
 {
 	// Return NULL string if language table is empty
 	if ((languageTablePtr == NULL) || (languageTablePtr->empty()))
@@ -2965,13 +2965,13 @@ void AppCore::showErrorMessage(HWND msgOwnerWnd, unsigned languageId, DWORD erro
 		return;
 
 	// Load language package
-	LANGTABLE_PTR appLang = LoadLanguageTable(languageId);
+	LANGTABLE_PTR appLang = loadLanguageTable(languageId);
 	if (appLang == NULL) 
 		return;
 
 	// Get language strings
-	String errorMessage = GetLanguageString(appLang, errMsgID);
-	const wchar_t* errorCaption = GetLanguageString(appLang, MSGBOX_ERROR_CAPTION);
+	String errorMessage = getLanguageString(appLang, errMsgID);
+	const wchar_t* errorCaption = getLanguageString(appLang, MSGBOX_ERROR_CAPTION);
 
 	// In case of unknown error, attach the error code
 	if (errMsgID == MSGBOX_ERROR_UNKNOWN) {

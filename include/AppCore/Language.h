@@ -1618,7 +1618,7 @@ namespace Language
 
 
 	// Language table package processing functions
-	const wchar_t* GetLanguageName(unsigned currentLanguage, bool getDescription = false);
-	LANGTABLE_PTR LoadLanguageTable(unsigned currentLanguage);
-	const wchar_t* GetLanguageString(LANGTABLE_PTR languageTablePtr, unsigned id);
+	const wchar_t* getLanguageName(unsigned currentLanguage, bool getDescription = false);
+	LANGTABLE_PTR loadLanguageTable(unsigned currentLanguage);
+	const wchar_t* getLanguageString(LANGTABLE_PTR languageTablePtr, unsigned id);
 };

@@ -396,7 +396,7 @@ String LogItem::FormatOutput(void) const
 	String logValue;
 
 	// Load default language table package
-	LANGTABLE_PTR pDefLang = LoadLanguageTable(NULL);
+	LANGTABLE_PTR pDefLang = loadLanguageTable(NULL);
 
 	/*********************************************************************/
 	/*																	 */
@@ -414,7 +414,7 @@ String LogItem::FormatOutput(void) const
 
 	// Log category
 	logKey = GetString(StringTable::LogKey, BaseLog::LogCategory);
-	logValue = GetLanguageString(pDefLang, m_usCategory);
+	logValue = getLanguageString(pDefLang, m_usCategory);
 	jsonData.AddString(logKey, logValue);
 
 	// Log description string

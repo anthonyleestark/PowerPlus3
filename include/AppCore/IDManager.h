@@ -14,11 +14,11 @@
 
 // Get application-managed resource ID map data pointer
 #define GET_RESOURCEID_MAP()	\
-		SResourceIDMap::GetResourceIDMap()
+		SResourceIDMap::getResourceIdMap()
 
 // Destroy and clean-up application-managed resource ID map data
 #define DESTROY_RESOURCEID_MAP()	\
-		SResourceIDMap::DestroyResourceIDMap();
+		SResourceIDMap::destroyResourceIdMap();
 
 // Declare descendant-class-level resource ID map
 #define DECLARE_RESOURCEID_MAP()	\
@@ -60,28 +60,28 @@
 
 // Add resource ID to map
 #define ADD_RESOURCE_ID(typeID, resourceID, nameID) \
-		if (GET_RESOURCEID_MAP()->FindResourceID(resourceID) == -1) \
-			GET_RESOURCEID_MAP()->Add(typeID, resourceID, nameID);
+		if (GET_RESOURCEID_MAP()->findResourceId(resourceID) == -1) \
+			GET_RESOURCEID_MAP()->add(typeID, resourceID, nameID);
 
 // Modify resource name ID
 #define MODIFY_RESOURCE_ID(resourceID, newNameID) \
-		GET_RESOURCEID_MAP()->Modify(resourceID, newNameID);
+		GET_RESOURCEID_MAP()->modify(resourceID, newNameID);
 
 // Remove resource ID from map
 #define REMOVE_RESOURCE_ID(resourceID) \
-		GET_RESOURCEID_MAP()->Remove(resourceID);
+		GET_RESOURCEID_MAP()->remove(resourceID);
 
 // Get control name ID from map
 #define GET_RESOURCE_ID(nameID) \
-		GET_RESOURCEID_MAP()->GetResourceID(nameID)
+		GET_RESOURCEID_MAP()->getResourceId(nameID)
 
 // Get resource name ID from map
 #define GET_NAME_ID(resourceID) \
-		GET_RESOURCEID_MAP()->GetNameID(resourceID)
+		GET_RESOURCEID_MAP()->getNameId(resourceID)
 
 // Clean-up resource ID map data
 #define CLEAR_RESOURCE_ID_MAP() \
-		GET_RESOURCEID_MAP()->RemoveAll();
+		GET_RESOURCEID_MAP()->removeAll();
 
 // End the sequece of updating class resource ID map data
 #define END_RESOURCEID_MAP() \
@@ -94,8 +94,8 @@
 		if (_resourceIDMap != NULL) \
 		{ \
 			size_t _srcMapSize = sizeof(_mapEntries) / sizeof(_mapEntries[0]); \
-			_resourceIDMap->Append(&_mapEntries[0], --(_srcMapSize)); \
-			_resourceIDMapCount = _resourceIDMap->GetMapCount(); \
+			_resourceIDMap->append(&_mapEntries[0], --(_srcMapSize)); \
+			_resourceIDMapCount = _resourceIDMap->getMapCount(); \
 		} \
 		return _resourceIDMapCount; \
 	} \
@@ -130,12 +130,12 @@ class SResourceIDMap : public CObject
 
 private:
 	// Data container
-	RESOURCE_ID_MAP m_idMapData;
-	size_t			m_size;
+	RESOURCE_ID_MAP idMapData_;
+	size_t			mapSize_;
 
 	// Single instance and thread safety guard
-	static SResourceIDMap*	m_thisInstance;
-	static std::mutex		m_mutexLockGuard;
+	static SResourceIDMap*	resourceIdMapInstance_;
+	static std::mutex		mutexLockGuard_;
 
 private:
 	// Singleton
@@ -152,26 +152,26 @@ public:
 	// Get the single map instance:
 	// Because the resource ID map will be applied for the entire program,
 	// there must be one and only instance of it
-	static SResourceIDMap* GetResourceIDMap(void);
-	static void DestroyResourceIDMap(void);
+	static SResourceIDMap* getResourceIdMap(void);
+	static void destroyResourceIdMap(void);
 
 	// Initialization
-	void Copy(const RESOURCE_ID_MAP_ENTRY* src, size_t size);
-	void Append(const RESOURCE_ID_MAP_ENTRY* src, size_t size);
+	void copy(const RESOURCE_ID_MAP_ENTRY* src, size_t size);
+	void append(const RESOURCE_ID_MAP_ENTRY* src, size_t size);
 
 	// Data processing functions
-	void Add(byte typeID, DWORD resID, const char* nameID);
-	void Modify(DWORD resID, const char* newNameID);
-	void Remove(DWORD resID);
-	void RemoveAll(void);
+	void add(byte typeID, DWORD resID, const char* nameID);
+	void modify(DWORD resID, const char* newNameID);
+	void remove(DWORD resID);
+	void removeAll(void);
 	
 	// Data acquirement functions
-	unsigned	GetResourceID(const char* nameID) const;
-	const char*	GetNameID(DWORD resID) const;
-	long long	FindResourceID(DWORD resID) const;
-	long long	FindNameID(const char* nameID) const;
+	unsigned	getResourceId(const char* nameID) const;
+	const char*	getNameId(DWORD resID) const;
+	long long	findResourceId(DWORD resID) const;
+	long long	findNameID(const char* nameID) const;
 
 	// Attributes get/set functions
-	const RESOURCE_ID_MAP_ENTRY& GetAt(size_t index) const;
-	size_t GetMapCount(void) const;
+	const RESOURCE_ID_MAP_ENTRY& getAt(size_t index) const;
+	size_t getMapCount(void) const;
 };

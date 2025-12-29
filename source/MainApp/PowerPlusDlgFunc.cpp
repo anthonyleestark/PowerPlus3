@@ -591,18 +591,18 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				String strValue = Constant::String::Empty;
 				// Left mouse button action
 				int nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->leftMouseAction);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LMBAction, GetLanguageString(ptrLanguage, nActionStringID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LMBAction, getLanguageString(ptrLanguage, nActionStringID));
 				// Middle mouse button action
 				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->middleMouseAction);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::MMBAction, GetLanguageString(ptrLanguage, nActionStringID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::MMBAction, getLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button action
 				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->rightMouseAction);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBAction, GetLanguageString(ptrLanguage, nActionStringID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBAction, getLanguageString(ptrLanguage, nActionStringID));
 				// Right mouse button: Only show menu
 				strValue = ((pcfgDataTemp->rightMouseShowMenu) ? Constant::Value::True : _T("NO"));
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBShowMenu, strValue.getString());
 				// Language setting
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LanguageID, GetLanguageName(pcfgDataTemp->languageID));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LanguageID, getLanguageName(pcfgDataTemp->languageID));
 				// Show dialog at startup
 				strValue = ((pcfgDataTemp->showDialogAtStartup) ? Constant::Value::True : Constant::Value::False);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowDlgAtStartup, strValue.getString());
@@ -719,12 +719,12 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
 				// Print number of entries
-				size_t nSize = pResourceIDMap->GetMapCount();
+				size_t nSize = pResourceIDMap->getMapCount();
 				logOutputResult.format(_T("Resource ID map count=%lld"), nSize);
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print each resource ID map entry
 				for (size_t nIndex = 0; nIndex < nSize; nIndex++) {
-					const RESOURCE_ID_MAP_ENTRY& resourceIDMapEntry = pResourceIDMap->GetAt(nIndex);
+					const RESOURCE_ID_MAP_ENTRY& resourceIDMapEntry = pResourceIDMap->getAt(nIndex);
 					logOutputResult.format(_T("Index=%lld: { ResourceID=%d, NameID=%s }"), nIndex, resourceIDMapEntry.resourceID, MAKEUNICODE(resourceIDMapEntry.nameID));
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}

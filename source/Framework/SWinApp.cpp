@@ -142,7 +142,7 @@ bool SWinApp::InitAppLanguage(void)
 	m_nCurDispLang = nCurLanguage;
 
 	// Load language package
-	m_pAppLangPtr = LoadLanguageTable(nCurLanguage);
+	m_pAppLangPtr = loadLanguageTable(nCurLanguage);
 
 	// Check validity after loading
 	if (m_pAppLangPtr == NULL) {
@@ -170,8 +170,8 @@ bool SWinApp::ReloadAppLanguage(unsigned nCurLanguage /* = NULL */)
 	// If language changed
 	if (m_nCurDispLang != nCurLanguage) {
 		// Output event log
-		const wchar_t* oldLangName = GetLanguageName(m_nCurDispLang);
-		const wchar_t* newLangName = GetLanguageName(nCurLanguage);
+		const wchar_t* oldLangName = getLanguageName(m_nCurDispLang);
+		const wchar_t* newLangName = getLanguageName(nCurLanguage);
 		String eventDescription = StringUtils::stringFormat(L"%s -> %s", oldLangName, newLangName);
 		OutputEventLog(LOG_EVENT_CHANGE_LANGUAGE, eventDescription);
 	}
@@ -180,7 +180,7 @@ bool SWinApp::ReloadAppLanguage(unsigned nCurLanguage /* = NULL */)
 	m_nCurDispLang = nCurLanguage;
 
 	// Reload language package
-	m_pAppLangPtr = LoadLanguageTable(nCurLanguage);
+	m_pAppLangPtr = loadLanguageTable(nCurLanguage);
 
 	// Check validity
 	if (m_pAppLangPtr == NULL)
@@ -256,7 +256,7 @@ void SWinApp::RegisterMessageBoxCaption(unsigned nCaptionID)
 	if (nCaptionID != NULL) {
 
 		// Get language string caption
-		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		String langCaption = getLanguageString(pAppLang, nCaptionID);
 		if (IS_NOT_NULL_STRING(langCaption)) {
 			// Set caption string
 			messageCaption = langCaption;
@@ -323,11 +323,11 @@ int SWinApp::DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID /* = NULL
 	// Load app language package
 	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
 
-	String messagePrompt = GetLanguageString(pAppLang, nPromptID);
+	String messagePrompt = getLanguageString(pAppLang, nPromptID);
 	String messageCaption = this->GetAppWindowCaption();
 	if (nCaptionID != NULL) {
 		// Get language string caption
-		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		String langCaption = getLanguageString(pAppLang, nCaptionID);
 		if (IS_NOT_NULL_STRING(langCaption))
 			messageCaption = langCaption;
 	}

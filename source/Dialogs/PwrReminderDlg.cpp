@@ -1375,7 +1375,7 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 		String headerTitle = Constant::String::Empty;
 		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = getLanguageString(ptrLanguage, nHeaderTitleID);
 		}
 		m_pDataItemListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
@@ -1464,8 +1464,8 @@ void CPwrReminderDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage
 	{
 	case IDC_PWRREMINDER_MSGSTYLE_COMBO:
 		m_pMsgStyleCombo->ResetContent();
-		m_pMsgStyleCombo->AddString(GetLanguageString(ptrLanguage, COMBOBOX_MSGSTYLE_MESSAGEBOX));		// Message Box
-		m_pMsgStyleCombo->AddString(GetLanguageString(ptrLanguage, COMBOBOX_MSGSTYLE_DIALOGBOX));		// Dialog Box
+		m_pMsgStyleCombo->AddString(getLanguageString(ptrLanguage, COMBOBOX_MSGSTYLE_MESSAGEBOX));		// Message Box
+		m_pMsgStyleCombo->AddString(getLanguageString(ptrLanguage, COMBOBOX_MSGSTYLE_DIALOGBOX));		// Dialog Box
 		break;
 
 	default:
@@ -1871,7 +1871,7 @@ void CPwrReminderDlg::UpdateDataItemList()
 
 		// EventID
 		nTemp = GetPairedID(IDTable::PwrReminderEvent, pwrItem.getEventId());
-		tempString = GetLanguageString(ptrLanguage, nTemp);
+		tempString = getLanguageString(ptrLanguage, nTemp);
 		if (pwrItem.getEventId() == Event::atSetTime) {
 			// Format time string
 			String formatTime = tempString;
@@ -1881,7 +1881,7 @@ void CPwrReminderDlg::UpdateDataItemList()
 
 		// Message style
 		nTemp = GetPairedID(IDTable::PwrReminderStyle, pwrItem.getMessageStyle());
-		tempString = GetLanguageString(ptrLanguage, nTemp);
+		tempString = getLanguageString(ptrLanguage, nTemp);
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MsgStyle, tempString);
 
 		// Repeat
@@ -2021,7 +2021,7 @@ void CPwrReminderDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 	pBtn = GetDlgItem(IDC_PWRREMINDER_ADD_BTN);
 	if (pBtn != NULL) {
 		pBtn->EnableWindow(!bIsMaxNum);
-		pBtn->SetWindowText(GetLanguageString(pAppLang, IDC_PWRREMINDER_ADD_BTN));
+		pBtn->SetWindowText(getLanguageString(pAppLang, IDC_PWRREMINDER_ADD_BTN));
 	}
 
 	// Disable [Remove/Remove All] buttons if data is all empty
@@ -2041,7 +2041,7 @@ void CPwrReminderDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 	pBtn = GetDlgItem(IDC_PWRREMINDER_EDIT_BTN);
 	if (pBtn != NULL) {
 		pBtn->EnableWindow(bIsSelected);
-		pBtn->SetWindowText(GetLanguageString(pAppLang, IDC_PWRREMINDER_EDIT_BTN));
+		pBtn->SetWindowText(getLanguageString(pAppLang, IDC_PWRREMINDER_EDIT_BTN));
 	}
 	pBtn = GetDlgItem(IDC_PWRREMINDER_PREVIEW_BTN);
 	if (pBtn != NULL) {
@@ -2273,11 +2273,11 @@ void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = 
 		// Get hour value
 		int hour = _wtoi(timeTextValue.left(2));
 		const String timePeriod = timeTextValue.right(2);
-		if (timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
+		if (timePeriod == getLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
 			clockTime.setHour(hour);
 		}
-		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
+		else if ((timePeriod == getLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
 			// After midday
 			clockTime.setHour(hour + 12);
 		}
@@ -2591,7 +2591,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	// Style: MessageBox
 	if (pwrDispItem.getMessageStyle() == Style::messageBox) {
 		// Display message box
-		const wchar_t* messageCaption = GetLanguageString(pAppLang, IDC_PWRREMINDER_PREVIEW_BTN);
+		const wchar_t* messageCaption = getLanguageString(pAppLang, IDC_PWRREMINDER_PREVIEW_BTN);
 		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
 		DisplayMessageBox(messageContent, messageCaption, dwMsgStyle);
 	}
@@ -2946,7 +2946,7 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	// Check item ID
 	if ((pwrItem.getItemId() < PwrReminderData::minItemID) || (pwrItem.getItemId() > PwrReminderData::maxItemID)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ITEMID;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -2960,12 +2960,12 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	String messageContent = pwrItem.getMessage();
 	if (messageContent.isEmpty()) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_EMPTY;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
 		if (bAutoCorrect == true) {
-			pwrItem.setMessage(GetLanguageString(pLang, PWRRMD_MSGCONTENT_SAMPLE));
+			pwrItem.setMessage(getLanguageString(pLang, PWRRMD_MSGCONTENT_SAMPLE));
 			if (IS_NOT_NULL_STRING(pwrItem.getMessage())) {
 				// Re-format sample message
 				String messageFormat = pwrItem.getMessage();
@@ -2976,7 +2976,7 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	}
 	else if (messageContent.getLength() > Constant::Max::StringLength) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -2990,7 +2990,7 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	// Check event ID
 	if ((pwrItem.getEventId() < Event::atSetTime) || (pwrItem.getEventId() > Event::atAppExit)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_EVENTID;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -3003,7 +3003,7 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	// Check snooze interval data
 	if ((pwrItem.getSnoozeInterval() < PwrRepeatSet::minSnoozeInterval) || (pwrItem.getSnoozeInterval() > PwrRepeatSet::maxSnoozeInterval)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -3016,7 +3016,7 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	// Check repeat set data
 	if ((pwrItem.isRepeatEnabled() == true) && (pwrItem.getActiveDays() == NULL)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -3029,7 +3029,7 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	// Check style ID
 	if ((pwrItem.getMessageStyle() < Style::messageBox) || (pwrItem.getMessageStyle() > Style::dialogBox)) {
 		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_STYLEID;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -3046,7 +3046,7 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 			if (bAutoCorrect == true) {
 				// Add "Data will be automatically reset to default"
 				String errorMessage = arrMsgString.at(nIndex);
-				errorMessage += GetLanguageString(pLang, MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT);
+				errorMessage += getLanguageString(pLang, MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT);
 				DisplayMessageBox(errorMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {

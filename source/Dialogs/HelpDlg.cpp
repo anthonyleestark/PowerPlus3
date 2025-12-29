@@ -222,7 +222,7 @@ void CHelpDlg::SetupLanguage()
 	// Set [Close] button title
 	CWnd* pWnd = GetDlgItem(IDC_HELP_CLOSE_BTN);
 	if (pWnd != NULL) {
-		const wchar_t* wndText = GetLanguageString(pAppLang, IDC_HELP_CLOSE_BTN);
+		const wchar_t* wndText = getLanguageString(pAppLang, IDC_HELP_CLOSE_BTN);
 		pWnd->SetWindowText(wndText);
 	}
 
@@ -303,7 +303,7 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		if (GetViewMode() == ViewMode::HelpFile) {
 			// Can not load help file
-			strRCFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
+			strRCFileData = getLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
 
 			// Trace error
 			TRACE_ERROR("Error: [RCData] Help file not found!!!");
@@ -311,7 +311,7 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 		}
 		else if (GetViewMode() == ViewMode::Changelog) {
 			// Can not load change log file
-			strRCFileData = GetLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
+			strRCFileData = getLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
 
 			// Trace error
 			TRACE_ERROR("Error: [RCData] Changelog file not found!!!");
@@ -346,7 +346,7 @@ void CHelpDlg::UpdateSwitchViewModeButton(void)
 
 	// Get app current language package
 	LANGTABLE_PTR ptrLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	const wchar_t* titleString = GetLanguageString(ptrLang, nStringID);
+	const wchar_t* titleString = getLanguageString(ptrLang, nStringID);
 
 	// Reupdate button title
 	CButton* pBtn = (CButton*)GetDlgItem(IDC_HELP_SWITCHVIEWMODE_BTN);

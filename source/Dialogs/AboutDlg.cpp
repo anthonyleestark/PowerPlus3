@@ -228,7 +228,7 @@ void CAboutDlg::SetAppNameLabel(void)
 
 	// Get app name label format from app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	const wchar_t* formatString = GetLanguageString(pAppLang, IDC_APPNAME_LABEL);
+	const wchar_t* formatString = getLanguageString(pAppLang, IDC_APPNAME_LABEL);
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app name label
@@ -253,7 +253,7 @@ void CAboutDlg::SetAppInfoLabel(void)
 
 	// Get app info label format from app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	String strFormat = GetLanguageString(pAppLang, IDC_APPINFO_LABEL);
+	String strFormat = getLanguageString(pAppLang, IDC_APPINFO_LABEL);
 	if (IS_NULL_STRING(strFormat)) return;
 
 	// Set app info label

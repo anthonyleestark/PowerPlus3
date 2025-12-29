@@ -258,8 +258,8 @@ void CMultiScheduleDlg::OnClose()
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
-			const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
+			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
 			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);
@@ -311,8 +311,8 @@ LRESULT CMultiScheduleDlg::RequestCloseDialog(void)
 	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
-		const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
+		const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
+		const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 
 		int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
@@ -503,7 +503,7 @@ void CMultiScheduleDlg::DrawDataTable(bool bReadOnly /* = false */)
 		String headerTitle = Constant::String::Empty;
 		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = getLanguageString(ptrLanguage, nHeaderTitleID);
 		}
 		m_pDataItemListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
@@ -745,11 +745,11 @@ void CMultiScheduleDlg::UpdateDataItemList()
 
 		// Action name
 		nTemp = GetPairedID(IDTable::ActionName, schItem.getAction());
-		tempString = GetLanguageString(ptrLanguage, nTemp);
+		tempString = getLanguageString(ptrLanguage, nTemp);
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ActionID, tempString);
 
 		// Time setting
-		const wchar_t* formatString = GetLanguageString(ptrLanguage, GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT);
+		const wchar_t* formatString = getLanguageString(ptrLanguage, GRIDCOLUMN_MULTISCHEDULE_TIMEFORMAT);
 		tempString = ClockTimeUtils::format(ptrLanguage, formatString, schItem.getTime());
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::TimeValue, tempString);
 
@@ -835,7 +835,7 @@ void CMultiScheduleDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 	pBtn = GetDlgItem(IDC_MULTISCHEDULE_ADD_BTN);
 	if (pBtn != NULL) {
 		pBtn->EnableWindow(!bIsMaxNum);
-		pBtn->SetWindowText(GetLanguageString(pAppLang, IDC_MULTISCHEDULE_ADD_BTN));
+		pBtn->SetWindowText(getLanguageString(pAppLang, IDC_MULTISCHEDULE_ADD_BTN));
 	}
 
 	// Disable [Remove/Remove All] buttons if data is all empty
@@ -855,7 +855,7 @@ void CMultiScheduleDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 	pBtn = GetDlgItem(IDC_MULTISCHEDULE_EDIT_BTN);
 	if (pBtn != NULL) {
 		pBtn->EnableWindow(bIsSelected);
-		pBtn->SetWindowText(GetLanguageString(pAppLang, IDC_MULTISCHEDULE_EDIT_BTN));
+		pBtn->SetWindowText(getLanguageString(pAppLang, IDC_MULTISCHEDULE_EDIT_BTN));
 	}
 	pBtn = GetDlgItem(IDC_MULTISCHEDULE_VIEWDETAILS_BTN);
 	if (pBtn != NULL) {
@@ -1228,7 +1228,7 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 	if ((schItem.getItemId() != ScheduleData::defaultItemID) &&
 		((schItem.getItemId() < ScheduleData::minItemID) || (schItem.getItemId() > ScheduleData::maxItemID))) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ITEMID;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -1241,7 +1241,7 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 	// Check action ID
 	if ((schItem.getAction() < APP_ACTION_NOTHING) || (schItem.getAction() > APP_ACTION_HIBERNATE)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIONID;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -1254,7 +1254,7 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 	// Check repeat data
 	if ((schItem.isRepeatEnabled() == true) && (schItem.getActiveDays() == NULL)) {
 		nMsgStringID = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIVEDAYS;
-		arrMsgString.push_back(GetLanguageString(pLang, nMsgStringID));
+		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
 		bResult = false;
 
 		// Auto correction
@@ -1271,7 +1271,7 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 			if (bAutoCorrect == true) {
 				// Add "Data will be automatically reset to default"
 				String errorMessage = arrMsgString.at(nIndex);
-				errorMessage += GetLanguageString(pLang, MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT);
+				errorMessage += getLanguageString(pLang, MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT);
 				DisplayMessageBox(errorMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {
@@ -1327,8 +1327,8 @@ void CMultiScheduleDlg::OnExit()
 		if (bIsChanged == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
-			const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
+			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
 			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);

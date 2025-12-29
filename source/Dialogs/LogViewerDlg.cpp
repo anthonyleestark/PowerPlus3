@@ -404,7 +404,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 		String headerTitle = Constant::String::Empty;
 		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = GetLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = getLanguageString(ptrLanguage, nHeaderTitleID);
 		}
 		m_pLogViewerList->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
@@ -542,7 +542,7 @@ void CLogViewerDlg::UpdateLogViewer(void)
 		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::DateTime, tempString);
 
 		// Category
-		tempString = GetLanguageString(ptrLanguage, logItem.GetCategory());
+		tempString = getLanguageString(ptrLanguage, logItem.GetCategory());
 		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::CategoryID, tempString);
 
 		// Additional description

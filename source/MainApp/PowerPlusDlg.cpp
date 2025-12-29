@@ -1713,7 +1713,7 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 			// Prepare balloon tip content
-			String balloonTitle = GetLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
+			String balloonTitle = getLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
 			String balloonInfoContent = LPARAM_TO_STRING(lParam);
 
 			// Show tray icon balloon tip
@@ -2396,43 +2396,43 @@ void CPowerPlusDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 	case IDC_LMBACTION_LIST:
 		// Left mouse button action list
 		m_cmbLMBAction.ResetContent();
-		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
-		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
-		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbLMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
 
 	case IDC_MMBACTION_LIST:
 		// Middle mouse button action list
 		m_cmbMMBAction.ResetContent();
-		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
-		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
-		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbMMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
 
 	case IDC_RMBACTION_LIST:
 		// Right mouse button action list
 		m_cmbRMBAction.ResetContent();
-		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
-		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
-		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
-		m_cmbRMBAction.AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHOWMENU));			// Just show menu
+		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHOWMENU));			// Just show menu
 		break;
 
 	case IDC_LANGUAGE_LIST:
 		// App language list
 		m_cmbLanguages.ResetContent();
-		m_cmbLanguages.AddString(GetLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_ENGLISH));		// English
-		m_cmbLanguages.AddString(GetLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_VIETNAMESE));		// Vietnamese
-		m_cmbLanguages.AddString(GetLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_SIMPCHINESE));	// Chinese
+		m_cmbLanguages.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_ENGLISH));		// English
+		m_cmbLanguages.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_VIETNAMESE));		// Vietnamese
+		m_cmbLanguages.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_SIMPCHINESE));	// Chinese
 		break;
 	}
 
@@ -2539,12 +2539,12 @@ void CPowerPlusDlg::SetMenuItemText(CMenu* pMenu)
 		if (nID == 0) continue;
 		// "Actions" child pop-up menu title
 		if (nItem == IDM_NOTIFY_ACTIONS_TITLE) {
-			pMenu->ModifyMenu(nItem, MF_BYPOSITION | MF_STRING, NULL, GetLanguageString(pAppLang, nItem));
+			pMenu->ModifyMenu(nItem, MF_BYPOSITION | MF_STRING, NULL, getLanguageString(pAppLang, nItem));
 			continue;
 		}
 
 		// Set menu item title
-		pMenu->ModifyMenu(nItem, MF_BYPOSITION | MF_STRING, nID, GetLanguageString(pAppLang, nID));
+		pMenu->ModifyMenu(nItem, MF_BYPOSITION | MF_STRING, nID, getLanguageString(pAppLang, nID));
 	}
 
 	// Setup language for sub menu
@@ -2555,7 +2555,7 @@ void CPowerPlusDlg::SetMenuItemText(CMenu* pMenu)
 		if (nID == 0) continue;
 
 		// Set menu item title
-		pSubMenu->ModifyMenu(nItem, MF_BYPOSITION | MF_STRING, nID, GetLanguageString(pAppLang, nID));
+		pSubMenu->ModifyMenu(nItem, MF_BYPOSITION | MF_STRING, nID, getLanguageString(pAppLang, nID));
 	}
 }
 
@@ -2671,10 +2671,10 @@ void CPowerPlusDlg::SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 	arrTipText.reserve(3);
 
 	// Load language strings
-	String formatString = GetLanguageString(pAppLang, NOTIFY_TIP_TEMPLATE);
-	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.leftMouseAction)));
-	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.middleMouseAction)));
-	arrTipText.push_back(GetLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.rightMouseAction)));
+	String formatString = getLanguageString(pAppLang, NOTIFY_TIP_TEMPLATE);
+	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.leftMouseAction)));
+	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.middleMouseAction)));
+	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.rightMouseAction)));
 
 	// Format notify tip text
 	String notifyTipText = StringUtils::stringFormat(formatString, arrTipText.at(0).getString(), arrTipText.at(1).getString(), arrTipText.at(2).getString());
@@ -2894,7 +2894,7 @@ bool CPowerPlusDlg::ExecuteAction(unsigned nActionMacro, WPARAM wParam /* = NULL
 		String pwrActionNameString;
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 		if (pAppLang != NULL) {
-			pwrActionNameString = GetLanguageString(pAppLang, nActionNameLangID);
+			pwrActionNameString = getLanguageString(pAppLang, nActionNameLangID);
 		}
 		OutputEventLog(LOG_EVENT_CANCEL_PWRACTION, pwrActionNameString);
 	}
@@ -3234,7 +3234,7 @@ void CPowerPlusDlg::OpenDialogBase(unsigned nDialogID, bool bReadOnlyMode /* = f
 	else {
 		// Find dialog by title
 		LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		String dialogTitle = GetLanguageString(pLang, nDialogID);
+		String dialogTitle = getLanguageString(pLang, nDialogID);
 		hDialogWnd = ::FindWindow(NULL, dialogTitle);
 	}
 
@@ -4354,7 +4354,7 @@ int CPowerPlusDlg::DisplayPwrReminder(const PwrReminderItem& pwrDispItem)
 	// Style: MessageBox
 	if (pwrDispItem.getMessageStyle() == PwrReminderStyle::messageBox) {
 
-		const wchar_t* messageCaption = GetLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
+		const wchar_t* messageCaption = getLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
 		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
 		nRespond = DisplayMessageBox(messageContent, messageCaption, dwMsgStyle);
 	}
@@ -4735,7 +4735,7 @@ void CPowerPlusDlg::OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& s
 
 	// Schedule action name
 	int nActionNameID = GetPairedID(IDTable::ActionName, schItem.getAction());
-	const wchar_t* actionNameString = GetLanguageString(pAppLang, nActionNameID);
+	const wchar_t* actionNameString = getLanguageString(pAppLang, nActionNameID);
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
@@ -5042,9 +5042,9 @@ int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, bool& bReupdate)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Format message
-	const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CAPTION);
-	const wchar_t* messageScheduleAction = GetLanguageString(pAppLang, nActionStringID);
-	const wchar_t* messageTemplate = GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_NOTIFY);
+	const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CAPTION);
+	const wchar_t* messageScheduleAction = getLanguageString(pAppLang, nActionStringID);
+	const wchar_t* messageTemplate = getLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_NOTIFY);
 	
 	String messageContent = StringUtils::stringFormat(messageTemplate, messageScheduleAction);
 
@@ -5053,7 +5053,7 @@ int CPowerPlusDlg::NotifySchedule(PScheduleItem pschItem, bool& bReupdate)
 	if (bAllowCancel == true)
 	{
 		// Update message content
-		messageContent += GetLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL);
+		messageContent += getLanguageString(pAppLang, MSGBOX_PROCESSSCHEDULE_ALLOWCANCEL);
 		int nRespond = DisplayMessageBox(messageContent, messageCaption, MB_OKCANCEL | MB_ICONINFORMATION);
 		if (nRespond == IDCANCEL)
 		{
@@ -5176,7 +5176,7 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
-	const wchar_t* requestMessage = GetLanguageString(pAppLang, MSGBOX_OTHER_REQUEST_RESTARTASADMIN);
+	const wchar_t* requestMessage = getLanguageString(pAppLang, MSGBOX_OTHER_REQUEST_RESTARTASADMIN);
 	const wchar_t* messageCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowCaption();
 	String messageFormatString = requestMessage;
 
@@ -5196,7 +5196,7 @@ void CPowerPlusDlg::RequestRestartAsAdmin(RESTARTREQ reqRestart)
 		else if (bIsAdmin == false) {
 			// Show "not admin" message
 			if (reqRestart.showMsgIfNotAdmin == true) {
-				const wchar_t* notAdminMsg = GetLanguageString(pAppLang, MSGBOX_OTHER_NOTRUNASADMIN);
+				const wchar_t* notAdminMsg = getLanguageString(pAppLang, MSGBOX_OTHER_NOTRUNASADMIN);
 				messageFormatString.format(_T("%s\n%s"), notAdminMsg, requestMessage);
 			}
 		}

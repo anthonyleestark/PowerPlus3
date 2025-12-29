@@ -222,8 +222,8 @@ void CEditScheduleDlg::OnClose()
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-			const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
 			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);
@@ -275,8 +275,8 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 		// Setup messagebox language
 		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-		const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-		const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+		const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+		const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 		int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
@@ -365,12 +365,12 @@ void CEditScheduleDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguag
 		// Setup data
 		if (m_pActionList != NULL) {
 			m_pActionList->ResetContent();
-			m_pActionList->AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));	// Turn off display
-			m_pActionList->AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));		// Sleep
-			m_pActionList->AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));		// Shutdown
-			m_pActionList->AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));		// Restart
-			m_pActionList->AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));		// Log out
-			m_pActionList->AddString(GetLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));	// Hibernate
+			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));	// Turn off display
+			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));		// Sleep
+			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));		// Shutdown
+			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));		// Restart
+			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));		// Log out
+			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));	// Hibernate
 		}
 	}
 
@@ -622,7 +622,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 		}
 
 		// Day title
-		const wchar_t* tempString = GetLanguageString(ptrLanguage, GetPairedID(IDTable::DayOfWeek, nDayOfWeekID));
+		const wchar_t* tempString = getLanguageString(ptrLanguage, GetPairedID(IDTable::DayOfWeek, nDayOfWeekID));
 		m_pActiveDayListTable->SetItemText(nRowIndex, daytitleColID, tempString);
 	}
 }
@@ -845,11 +845,11 @@ void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* =
 		// Get hour value
 		int hour = _wtoi(timeFormatString.left(2));
 		const String timePeriod = timeFormatString.right(2);
-		if (timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
+		if (timePeriod == getLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
 			clockTime.setHour(hour);
 		}
-		else if ((timePeriod == GetLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
+		else if ((timePeriod == getLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
 			// After midday
 			clockTime.setHour(hour + 12);
 		}
@@ -934,8 +934,8 @@ void CEditScheduleDlg::OnExit()
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
 			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-			const wchar_t* messagePrompt = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-			const wchar_t* messageCaption = GetLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
 			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);

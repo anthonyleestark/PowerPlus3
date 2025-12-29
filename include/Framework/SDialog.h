@@ -89,7 +89,7 @@ public:
 protected:
 	// Dialog resource ID mapping
 	static const size_t PASCAL UpdateThisResourceIDMap() {
-		return GET_RESOURCEID_MAP()->GetMapCount();
+		return GET_RESOURCEID_MAP()->getMapCount();
 	};
 	virtual const size_t UpdateResourceIDMap() {
 		return UpdateThisResourceIDMap();

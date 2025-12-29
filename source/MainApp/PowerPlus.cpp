@@ -1446,7 +1446,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	// Format launch-time
 	DateTime dateTimeAppLaunch = getAppLaunchTime();
 	unsigned nTimePeriod = (dateTimeAppLaunch.hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	const wchar_t* timePeriodFormat = GetLanguageString(LoadLanguageTable(NULL), nTimePeriod);
+	const wchar_t* timePeriodFormat = getLanguageString(loadLanguageTable(NULL), nTimePeriod);
 	const wchar_t* timeFormatString = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
 	strValue = StringUtils::stringFormat(timeFormatString, dateTimeAppLaunch.year(), dateTimeAppLaunch.month(), dateTimeAppLaunch.day(),
 		dateTimeAppLaunch.hour(), dateTimeAppLaunch.minute(), dateTimeAppLaunch.second(), dateTimeAppLaunch.millisecond(), timePeriodFormat);
@@ -2376,7 +2376,7 @@ bool CPowerPlusApp::saveLastSysEventTime(BYTE byEventType, const DateTime& timeS
 
 	// Format date/time
 	unsigned nTimePeriod = (timeSysEvent.hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	const wchar_t* timePeriodFormat = GetLanguageString(GetAppLanguage(), nTimePeriod);
+	const wchar_t* timePeriodFormat = getLanguageString(GetAppLanguage(), nTimePeriod);
 	const wchar_t* timeFormatString = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
 	String dateTimeFormat = StringUtils::stringFormat(timeFormatString, timeSysEvent.year(), timeSysEvent.month(), timeSysEvent.day(),
 		timeSysEvent.hour(), timeSysEvent.minute(), timeSysEvent.second(), timeSysEvent.millisecond(), timePeriodFormat);

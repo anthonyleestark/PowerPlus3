@@ -1036,7 +1036,7 @@ void SDialog::SetCaptionFromLanguage(unsigned nLangStringID)
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
 
-	String captionString = GetLanguageString(pAppLang, nLangStringID);
+	String captionString = getLanguageString(pAppLang, nLangStringID);
 	this->SetCaption(captionString);
 }
 
@@ -1082,7 +1082,7 @@ void SDialog::RegisterMessageBoxCaption(unsigned nCaptionID)
 	if (nCaptionID != NULL) {
 
 		// Get language string caption
-		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		String langCaption = getLanguageString(pAppLang, nCaptionID);
 		if (IS_NOT_NULL_STRING(langCaption)) {
 			// Set caption string
 			captionString = langCaption;
@@ -1111,12 +1111,12 @@ int SDialog::DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID /* = NULL
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
 
-	String messagePrompt = GetLanguageString(pAppLang, nPromptID);
+	String messagePrompt = getLanguageString(pAppLang, nPromptID);
 	String messageCaption = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
 	if (nCaptionID != NULL) {
 
 		// Get language string caption
-		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		String langCaption = getLanguageString(pAppLang, nCaptionID);
 		if (IS_NOT_NULL_STRING(langCaption))
 			messageCaption = langCaption;
 	}
@@ -1477,7 +1477,7 @@ void SDialog::OutputMenuLog(USHORT usEvent, unsigned nMenuItemID)
 	String menuItemCaption;
 	LANGTABLE_PTR pLanguage = ((SWinApp*)AfxGetApp())->GetAppLanguage();
 	if (pLanguage != NULL) {
-		menuItemCaption = GetLanguageString(pLanguage, nMenuItemID);
+		menuItemCaption = getLanguageString(pLanguage, nMenuItemID);
 	}
 
 	// Detail info
@@ -1612,11 +1612,11 @@ void SDialog::UpdateItemText(unsigned nCtrlID , unsigned nNewCaptionID /* = NULL
 	String wndItemText;
 	if (nNewCaptionID != NULL) {
 		// Get new caption
-		wndItemText = GetLanguageString(ptrLanguage, nNewCaptionID);
+		wndItemText = getLanguageString(ptrLanguage, nNewCaptionID);
 	}
 	else {
 		// Get its own caption string ID
-		wndItemText = GetLanguageString(ptrLanguage, nCtrlID);
+		wndItemText = getLanguageString(ptrLanguage, nCtrlID);
 	}
 
 	// Update item text
@@ -1647,7 +1647,7 @@ void SDialog::SetControlText(CWnd* pCtrlWnd, unsigned nCtrlID, LANGTABLE_PTR ptr
 	}
 
 	// Get language string
-	String wndItemText = GetLanguageString(ptrLanguage, nCtrlID);
+	String wndItemText = getLanguageString(ptrLanguage, nCtrlID);
 	
 	// Set control text
 	pCtrlWnd->SetWindowText(wndItemText);
