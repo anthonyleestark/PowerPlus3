@@ -47,9 +47,9 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual void UpdateDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual void updateDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -80,10 +80,10 @@ private:
 	BOOL m_bSaveAppEventLog;
 	BOOL m_bRunAsAdmin;
 	BOOL m_bShowErrorMsg;
-	BOOL m_bNotifySchedule;
+	BOOL m_bnotifySchedule;
 	BOOL m_bAllowCancelSchedule;
-	BOOL m_bEnableBackgroundHotkey;
-	BOOL m_bEnablePowerReminder;
+	BOOL m_benableBackgroundHotkey;
+	BOOL m_benablePowerReminder;
 
 	// Notify icon variables
 	HICON			m_hNotifyIcon;
@@ -154,97 +154,97 @@ protected:
 
 protected:
 	// Member functions using for resizing dialog
-	void ExpandDialog(bool bExpand);
+	void expandDialog(bool bExpand);
 
 	// Notify icon functions
-	bool CreateNotifyIcon(void);
-	void UpdateNotifyIcon(void);
-	void RemoveNotifyIcon(void);
-	bool ShowNotifyMenu(void);
+	bool createNotifyIcon(void);
+	void updateNotifyIcon(void);
+	void removeNotifyIcon(void);
+	bool showNotifyMenu(void);
 
 	// Data processing functions
-	void GetAppData(unsigned dwDataType = APPDATA_ALL);
-	int  GetAppOption(AppOptionID eAppOptionID, bool bTemp = false) const;
-	void UpdateDialogData(bool bSaveAndValidate = true);
-	bool CheckSettingChangeState(void);
+	void getAppData(unsigned dwDataType = APPDATA_ALL);
+	int  getAppOption(AppOptionID eAppOptionID, bool isTemp = false) const;
+	void updateDialogData(bool saveAndValidate = true);
+	bool checkSettingChangeState(void);
 	int  getFlagValue(AppFlagID eFlagID) const;
 	void setFlagValue(AppFlagID eFlagID, int nValue);
 
 	// Dialog setup functions
-	void SetupLanguage(void);
-	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
+	void setupLanguage(void);
+	void setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
 
 	// Item state/checkbox update functions
-	void EnableRightMouseMenu(bool bEnable);
-	void EnableLogViewer(bool bEnable);
-	void EnableBackgroundHotkey(bool bEnable);
-	void EnablePowerReminder(bool bEnable);
-	void UpdateRestartAsAdminFlag(bool bFlag);
+	void enableRightMouseMenu(bool bEnable);
+	void enableLogViewer(bool bEnable);
+	void enableBackgroundHotkey(bool bEnable);
+	void enablePowerReminder(bool bEnable);
+	void updateRestartAsAdminFlag(bool bFlag);
 
 	// Component update functions
-	void SetMenuItemText(CMenu* pMenu);
-	void UpdateMenuItemState(CMenu* pMenu);
-	const wchar_t* GetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
-	void SetNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
-	void SetBalloonTipText(const wchar_t* balloonTitle, const wchar_t* balloonInfoContent);
+	void setMenuItemText(CMenu* pMenu);
+	void updateMenuItemState(CMenu* pMenu);
+	const wchar_t* getNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
+	void setNotifyTipText(PNOTIFYICONDATA pNotifyIconData);
+	void setBalloonTipText(const wchar_t* balloonTitle, const wchar_t* balloonInfoContent);
 
 private:
 	// Core functions
-	bool ExecuteAction(unsigned nActionMacro, WPARAM wParam = NULL, LPARAM lParam = NULL);
-	void ApplySettings(bool bMinimize);
-	void ReloadSettings(void);
-	void SetDefaultConfig(void);
-	void RestartApp(bool bRestartAsAdmin);
-	void ExitApp(int nExitCode);
+	bool executeAction(unsigned nActionMacro, WPARAM wParam = NULL, LPARAM lParam = NULL);
+	void applySettings(bool bMinimize);
+	void reloadSettings(void);
+	void setDefaultConfig(void);
+	void restartApp(bool bRestartAsAdmin);
+	void exitApp(int nExitCode);
 
 	// Dialog and window functions
-	void ShowDialog(CWnd* pWnd, bool bShowFlag = true);
-	void OpenChildDialogEx(unsigned nDialogID);
-	void OpenDialogBase(unsigned nDialogID, bool bReadOnlyMode = false, int nOpenMode = MODE_OPENDLG_MODAL);
-	bool OpenTextFileToView(const wchar_t* fileName, const wchar_t* extension, const wchar_t* subDir = Constant::String::Empty);
+	void showDialog(CWnd* pWnd, bool bShowFlag = true);
+	void openChildDialogEx(unsigned nDialogID);
+	void openDialogBase(unsigned nDialogID, bool bReadOnlyMode = false, int nOpenMode = MODE_OPENDLG_MODAL);
+	bool openTextFileToView(const wchar_t* fileName, const wchar_t* extension, const wchar_t* subDir = Constant::String::Empty);
 
 	// Action Schedule feature functions
-	bool ProcessActionSchedule(void);
-	void ReupdateActionScheduleData(void);
-	void SetActionScheduleSkip(const ScheduleItem& schItem, int nSkipFlag);
-	void SetActionScheduleSnooze(const ScheduleItem& schItem, int nSnoozeFlag);
-	void UpdateActionScheduleQueue(int nMode);
-	bool GetActionScheduleSkipStatus(unsigned nItemID);
-	bool GetActionScheduleSnoozeStatus(unsigned nItemID, const ClockTime& currentTime);
+	bool processActionSchedule(void);
+	void reupdateActionScheduleData(void);
+	void setActionScheduleSkip(const ScheduleItem& schItem, int nSkipFlag);
+	void setActionScheduleSnooze(const ScheduleItem& schItem, int nSnoozeFlag);
+	void updateActionScheduleQueue(int nMode);
+	bool getActionScheduleSkipStatus(unsigned nItemID);
+	bool getActionScheduleSnoozeStatus(unsigned nItemID, const ClockTime& currentTime);
 
 	// HotkeySet feature functions
-	void SetupBackgroundHotkey(int nMode);
-	bool ProcessHotkey(int nHotkeyID);
-	void RegisterSessionNotification(int nMode);
-	bool ProcessLockStateHotkey(DWORD dwHKeyParam);
+	void setupBackgroundHotkey(int nMode);
+	bool processHotkey(int nHotkeyID);
+	void registerSessionNotification(int nMode);
+	bool processLockStateHotkey(DWORD dwHKeyParam);
 
 	// Power Reminder feature functions
-	bool ExecutePowerReminder(unsigned nExecEventID);
-	int  DisplayPwrReminder(const PwrReminderItem& pwrDispItem);
-	void ReupdatePwrReminderData(void);
-	void SetPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSnoozeFlag);
-	void UpdatePwrReminderSnooze(int nMode);
-	bool GetPwrReminderSnoozeStatus(unsigned nItemID, const ClockTime& currentTime);
-	bool GetPwrReminderDispFlag(const PwrReminderItem& pwrItem);
-	void SetPwrReminderDispFlag(const PwrReminderItem& pwrItem, int nDispFlag);
-	size_t GetPwrReminderDispList(UIntArray& arrPwrDispList);
+	bool executePowerReminder(unsigned nExecEventID);
+	int  displayPwrReminder(const PwrReminderItem& pwrDispItem);
+	void reupdatePwrReminderData(void);
+	void setPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSnoozeFlag);
+	void updatePwrReminderSnooze(int nMode);
+	bool getPwrReminderSnoozeStatus(unsigned nItemID, const ClockTime& currentTime);
+	bool getPwrReminderDispFlag(const PwrReminderItem& pwrItem);
+	void setPwrReminderDispFlag(const PwrReminderItem& pwrItem, int nDispFlag);
+	size_t getPwrReminderDispList(UIntArray& arrPwrDispList);
 
 	// Debugging functions
-	bool ProcessDebugCommand(const wchar_t* commandString, DWORD& dwErrorCode);
+	bool processDebugCommand(const wchar_t* commandString, DWORD& dwErrorCode);
 
 	// History and logging functions
-	void OutputScheduleEventLog(USHORT usEvent, const ScheduleItem& schItem);
-	void OutputPwrReminderEventLog(USHORT usEvent, const PwrReminderItem& pwrItem);
-	void InitPwrActionHistoryInfo(unsigned nActionID, bool bResult, DWORD dwErrorCode);
-	void InitScheduleHistoryInfo(const ScheduleItem& schItem);
-	void InitHotkeyHistoryInfo(unsigned nHKID);
-	void InitPwrReminderHistoryInfo(const PwrReminderItem& pwrItem);
-	void SaveHistoryInfoData(void);
+	void outputScheduleEventLog(USHORT usEvent, const ScheduleItem& schItem);
+	void outputPwrReminderEventLog(USHORT usEvent, const PwrReminderItem& pwrItem);
+	void initPwrActionHistoryInfo(unsigned nActionID, bool bResult, DWORD dwErrorCode);
+	void initScheduleHistoryInfo(const ScheduleItem& schItem);
+	void initHotkeyHistoryInfo(unsigned nHKID);
+	void initPwrReminderHistoryInfo(const PwrReminderItem& pwrItem);
+	void saveHistoryInfoData(void);
 
 	// Notification and error message functions
-	int	 ConfirmActionExec(unsigned nActionType, unsigned nActionID);
-	int  NotifySchedule(PScheduleItem pschItem, bool& bReupdate);
-	void ShowErrorMessage(DWORD dwError);
-	void RequestRestartApp(unsigned uiCommandID, bool bRestartAsAdmin);
-	void RequestRestartAsAdmin(RESTARTREQ reqRestart);
+	int	 confirmActionExec(unsigned nActionType, unsigned nActionID);
+	int  notifySchedule(PScheduleItem pschItem, bool& bReupdate);
+	void showErrorMessage(DWORD dwError);
+	void requestRestartApp(unsigned uiCommandID, bool bRestartAsAdmin);
+	void requestRestartAsAdmin(RESTARTREQ reqRestart);
 };

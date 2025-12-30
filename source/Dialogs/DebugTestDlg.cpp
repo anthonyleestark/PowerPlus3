@@ -116,7 +116,7 @@ BOOL CDebugTestDlg::OnInitDialog()
 	this->ShowWindow(SW_HIDE);
 
 	// Set dialog title
-	this->SetCaptionFromResource(IDS_APP_DEBUGTESTDLG_TITLE);
+	this->setCaptionFromResource(IDS_APP_DEBUGTESTDLG_TITLE);
 
 	// Get DebugTest edit view
 	bool bRet = InitDebugEditView(IDC_DEBUGTEST_EDITVIEW);
@@ -635,7 +635,7 @@ bool CDebugTestDlg::SendDebugCommand(void)
 	LPARAM lParam = MAKE_LPARAM_STRING(debugCommand.getString());
 	
 	// Send debug command message to parent window
-	this->NotifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);
+	this->notifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);
 
 	// Update debug command history
 	AddDebugCommandHistory(debugCommand);
@@ -962,7 +962,7 @@ void CDebugTestDlg::UpdateDisplay(bool bSeekToEnd /* = false */, bool bNotifyPar
 
 	// Notify to parent window about display update
 	if (bNotifyParent == true) {
-		this->NotifyParent(SM_WND_DEBUGOUTPUT_DISP, NULL, NULL);
+		this->notifyParent(SM_WND_DEBUGOUTPUT_DISP, NULL, NULL);
 	}
 }
 

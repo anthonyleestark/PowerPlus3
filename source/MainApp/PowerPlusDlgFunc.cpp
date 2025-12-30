@@ -32,7 +32,7 @@ using namespace AppCore;
  * @param	errorCode	  - Returned error code
  * @return	true/false
  */
-bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& errorCode)
+bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& errorCode)
 {
 	String debugCommand(commandString);
 
@@ -79,12 +79,12 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 
 	if (!_tcscmp(debugCommand, _T("exit"))) {
 		// Exit application
-		ExitApp(ExitCode::FromDebugCommand);
+		exitApp(ExitCode::FromDebugCommand);
 		return true;
 	}
 	else if (!_tcscmp(debugCommand, _T("reload"))) {
 		// Reload settings
-		ReloadSettings();
+		reloadSettings();
 		logOutputResult.format(_T("Settings reloaded!!!"));
 		OutputDebugLog(logOutputResult, DebugTestTool);
 		bNoReply = false;	// Reset flag
@@ -92,7 +92,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(debugCommand, _T("setdefault"))) {
 		// Set default settings
-		SetDefaultConfig();
+		setDefaultConfig();
 		logOutputResult.format(_T("Reset default settings!!!"));
 		OutputDebugLog(logOutputResult, DebugTestTool);
 		bNoReply = false;	// Reset flag
@@ -100,17 +100,17 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(debugCommand, _T("restartapp"))) {
 		// Restart app (non-admin)
-		RequestRestartApp(IDD_DEBUGTEST_DLG, false);
+		requestRestartApp(IDD_DEBUGTEST_DLG, false);
 		return true;
 	}
 	else if (!_tcscmp(debugCommand, _T("restartadmin"))) {
 		// Restart app (as admin)
-		RequestRestartApp(IDD_DEBUGTEST_DLG, true);
+		requestRestartApp(IDD_DEBUGTEST_DLG, true);
 		return true;
 	}
 	else if (!_tcscmp(debugCommand, _T("logviewer"))) {
 		// Open Logviewer dialog
-		OpenChildDialogEx(IDD_LOGVIEWER_DLG);
+		openChildDialogEx(IDD_LOGVIEWER_DLG);
 		logOutputResult.format(_T("Logviewer opened!!!"));
 		OutputDebugLog(logOutputResult, DebugTestTool);
 		bNoReply = false;	// Reset flag
@@ -142,7 +142,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(debugCommand, _T("viewbakconfig"))) {
 		// View backup configuration file
-		OpenTextFileToView(Constant::File::Name::Backup_Config, Constant::File::Extension::Reg);
+		openTextFileToView(Constant::File::Name::Backup_Config, Constant::File::Extension::Reg);
 		logOutputResult.format(_T("Opening backup config file..."));
 		OutputDebugLog(logOutputResult, DebugTestTool);
 		bNoReply = false;	// Reset flag
@@ -150,7 +150,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(debugCommand, _T("viewhistory"))) {
 		// View action history log file
-		OpenTextFileToView(Constant::File::Name::AppHistory, Constant::File::Extension::Log, Constant::Folder::Log);
+		openTextFileToView(Constant::File::Name::AppHistory, Constant::File::Extension::Log, Constant::Folder::Log);
 		logOutputResult.format(_T("Opening action history log file..."));
 		OutputDebugLog(logOutputResult, DebugTestTool);
 		bNoReply = false;	// Reset flag
@@ -422,13 +422,13 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 			// Test show error message
 			int nErrCode = _tstoi(tokenList.at(2).c_str());
 			if (nErrCode >= 0) {
-				if (GetAppOption(AppOptionID::showErrorMessage) == false) {
+				if (getAppOption(AppOptionID::showErrorMessage) == false) {
 					OutputDebugLog(_T("Show error message OFF"));
 					bNoReply = false;	// Reset flag
 				}
 				else {
 					// Show error message
-					ShowErrorMessage(nErrCode);
+					showErrorMessage(nErrCode);
 					OutputDebugLog(_T("Error message showed!!!"));
 					bNoReply = false;	// Reset flag
 				}
@@ -514,7 +514,7 @@ bool CPowerPlusDlg::ProcessDebugCommand(const wchar_t* commandString, DWORD& err
 				pwrTemp = m_prdReminderData.getItemAt(nIndex);
 				if (pwrTemp.getItemId() == static_cast<unsigned>(nItemID)) {
 					bFindRet = true;
-					DisplayPwrReminder(pwrTemp);
+					displayPwrReminder(pwrTemp);
 					OutputDebugLog(_T("Reminder item displayed!!!"));
 					bNoReply = false;	// Reset flag
 					break;

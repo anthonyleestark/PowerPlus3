@@ -272,7 +272,7 @@ BOOL CPowerPlusApp::InitInstance()
 
 		// Set parent window for DebugTest dialog if available
 		if (m_pDebugTestDlg != NULL) {
-			m_pDebugTestDlg->SetParentWnd(pMainDlg);
+			m_pDebugTestDlg->setParent(pMainDlg);
 		}
 
 		// Notification sound
@@ -285,7 +285,7 @@ BOOL CPowerPlusApp::InitInstance()
 
 		// Set parent window for DebugTest dialog if available
 		if (m_pDebugTestDlg != NULL) {
-			m_pDebugTestDlg->SetParentWnd(pMainDlg);
+			m_pDebugTestDlg->setParent(pMainDlg);
 		}
 
 		// Show dialog in modal state

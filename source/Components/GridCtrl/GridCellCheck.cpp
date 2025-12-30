@@ -128,12 +128,12 @@ void CGridCellCheck::OnClick(CPoint PointCellRelative)
 
 BOOL CGridCellCheck::SetCheck(BOOL bChecked /*=TRUE*/)
 {
-	BOOL bTemp = m_bChecked;
+	BOOL isTemp = m_bChecked;
 	m_bChecked = bChecked;
 	if (!m_Rect.IsRectEmpty())
 		GetGrid()->InvalidateRect(m_Rect);
 
-	return bTemp;
+	return isTemp;
 }
 
 BOOL CGridCellCheck::GetCheck()

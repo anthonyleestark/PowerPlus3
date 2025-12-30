@@ -54,9 +54,9 @@ void CHelpDlg::DoDataExchange(CDataExchange* pDX)
  * @param	None
  * @return	int
  */
-int CHelpDlg::RegisterDialogManagement(void)
+int CHelpDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::registerDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -64,7 +64,7 @@ int CHelpDlg::RegisterDialogManagement(void)
 	}
 
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
@@ -81,10 +81,10 @@ int CHelpDlg::RegisterDialogManagement(void)
  * @param	None
  * @return	true/false
  */
-bool CHelpDlg::UnregisterDialogManagement(void)
+bool CHelpDlg::unregisterDialogManagement(void)
 {
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
@@ -93,7 +93,7 @@ bool CHelpDlg::UnregisterDialogManagement(void)
 		pCtrlMan->RemoveControl(IDC_HELP_SWITCHVIEWMODE_BTN);
 	}
 
-	return SDialog::UnregisterDialogManagement();
+	return SDialog::unregisterDialogManagement();
 }
 
 
@@ -131,10 +131,10 @@ BOOL CHelpDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Setup dialog interface
-	SetupLanguage();
+	setupLanguage();
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
 
 	return true;
 }
@@ -158,7 +158,7 @@ void CHelpDlg::OnClose()
 void CHelpDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_DESTROYED, this->getCaption());
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -172,7 +172,7 @@ void CHelpDlg::OnDestroy()
 void CHelpDlg::OnCloseButton()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_CLOSE_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_CLOSE_BTN);
 
 	// Close dialog
 	EndDialog(IDOK);
@@ -186,7 +186,7 @@ void CHelpDlg::OnCloseButton()
 void CHelpDlg::OnSwitchViewMode()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_SWITCHVIEWMODE_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_SWITCHVIEWMODE_BTN);
 
 	// Switch view mode
 	if (GetViewMode() == ViewMode::HelpFile) {
@@ -211,13 +211,13 @@ void CHelpDlg::OnSwitchViewMode()
  * @param	None
  * @return	None
  */
-void CHelpDlg::SetupLanguage()
+void CHelpDlg::setupLanguage()
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetCaptionFromLanguage(GetDialogID());
+	this->setCaptionFromLanguage(getDialogId());
 
 	// Set [Close] button title
 	CWnd* pWnd = GetDlgItem(IDC_HELP_CLOSE_BTN);
@@ -237,7 +237,7 @@ void CHelpDlg::SetupLanguage()
 	}
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**

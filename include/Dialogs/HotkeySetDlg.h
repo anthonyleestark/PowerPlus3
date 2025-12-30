@@ -45,8 +45,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -93,17 +93,17 @@ public:
 	afx_msg void OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnRightClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult);
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 
 protected:
 	// Dialog setup functions
-	void SetupLanguage();
+	void setupLanguage();
 	void SetupHotkeySetList(LANGTABLE_PTR ptrLanguage);
 	void DrawHotkeySetTable(bool bReadOnly = false);
-	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
+	void setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
 
 	// Dialog item properties functions
-	void RefreshDialogItemState(bool bRecheckState = false);
+	void refreshDialogItemState(bool bRecheckState = false);
 	void UpdateCheckAllBtnState(bool bRecheck = true);
 	void UpdateHotkeySet();
 	void DisableHotkeySetTable(bool bDisable);
@@ -111,14 +111,14 @@ protected:
 	void DisplayHotkeyDetails(int nIndex);
 
 	// Layout functions
-	void UpdateLayoutInfo(void);
-	void LoadLayoutInfo(void);
-	void SaveLayoutInfo(void);
+	void updateLayoutInfo(void);
+	void loadLayoutInfo(void);
+	void saveLayoutInfo(void);
 
 	// Data processing functions
 	bool LoadHotkeySetData();
 	bool SaveHotkeySetData();
-	bool CheckDataChangeState();
+	bool checkDataChangeState();
 
 	// Data processing handlers
 	void Add(void);

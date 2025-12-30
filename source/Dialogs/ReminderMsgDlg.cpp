@@ -49,8 +49,8 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 	m_nSnoozeFlag = FLAG_OFF;
 
 	// Properties
-	m_clBkgrdColor = Color::White;
-	m_clTextColor = Color::Black;
+	backgroundColor_ = Color::White;
+	textColor_ = Color::Black;
 	m_nAutoCloseInterval = 0;
 }
 
@@ -114,37 +114,37 @@ BOOL CReminderMsgDlg::OnInitDialog()
 	// Set margin
 	int nHMargin = m_rmdMsgStyleSet.getHorizontalMargin();
 	int nVMargin = m_rmdMsgStyleSet.getVerticalMargin();
-	SetCenterMargin(nHMargin, nVMargin);
+	setCenterMargin(nHMargin, nVMargin);
 
 	// Shift margin if icon is displaying
 	if ((m_bDispIcon == true) && (m_hMsgIcon != NULL)) {
 
 		// Get current margin
 		Rect dialogMargin;
-		this->GetMargin(dialogMargin);
+		this->getMargin(dialogMargin);
 
 		byte iconPosVal = m_rmdMsgStyleSet.getIconPosition();
 		if (iconPosVal == MsgIconPosition::IconOnTheTop) {
 
 			// Shift top margin
 			dialogMargin._top += m_szIconSize.height() + defaultTextIconSpacing;
-			this->SetTopMargin(dialogMargin.top());
+			this->setTopMargin(dialogMargin.top());
 		}
 		else if (iconPosVal == MsgIconPosition::IconOnTheLeft) {
 
 			// Shift left margin
 			dialogMargin._left += m_szIconSize.width() + defaultTextIconSpacing;
-			this->SetLeftMargin(dialogMargin.left());
+			this->setLeftMargin(dialogMargin.left());
 		}
 	}
 
 	// Get display area
 	Rect displayArea;
-	GetDisplayArea(displayArea);
+	getDisplayArea(displayArea);
 
 	// Get dialog size
 	Size dialogSize;
-	this->GetSize(dialogSize);
+	this->getSize(dialogSize);
 
 	// If set lock font size
 	if (m_bLockFontSize == true) {
@@ -153,7 +153,7 @@ BOOL CReminderMsgDlg::OnInitDialog()
 		TextToClient(displayArea);
 
 		// Set display area and resize dialog
-		SetDisplayArea(displayArea, true, true);
+		setDisplayArea(displayArea, true, true);
 	}
 
 	// Display message content
@@ -334,21 +334,21 @@ HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	if (pWnd == this) {
-		if ((getFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (m_pBkgrdBrush != NULL)) {
+		if ((getFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (backgroudBrush_ != NULL)) {
 			// Get brush
-			hBrush = (HBRUSH)(*m_pBkgrdBrush);
+			hBrush = (HBRUSH)(*backgroudBrush_);
 		}
 	}
 
 	if (nCtlColor == CTLCOLOR_STATIC) {
 		// Set background color
-		if ((getFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (m_pBkgrdBrush != NULL)) {
-			hBrush = (HBRUSH)(*m_pBkgrdBrush);
-			pDC->SetBkColor(m_clBkgrdColor);
+		if ((getFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (backgroudBrush_ != NULL)) {
+			hBrush = (HBRUSH)(*backgroudBrush_);
+			pDC->SetBkColor(backgroundColor_);
 		}
 		// Set text color
 		if (getFlagValue(AppFlagID::dialogSetTextColor) == true) {
-			pDC->SetTextColor(m_clTextColor);
+			pDC->SetTextColor(textColor_);
 		}
 	}
 
@@ -422,9 +422,9 @@ LRESULT CReminderMsgDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 bool CReminderMsgDlg::InitMessageStyle(void)
 {
 	// Background & text color
-	SetBkgrdColor(m_rmdMsgStyleSet.getBkgrdColor());
-	SetTextColor(m_rmdMsgStyleSet.getTextColor());
-	if (!CreateBrush()) {
+	setBackgroundColor(m_rmdMsgStyleSet.getBkgrdColor());
+	setTextColor(m_rmdMsgStyleSet.getTextColor());
+	if (!createBrush()) {
 
 		// Error: Apply color failed
 		TRACE_ERROR("Error: Apply color failed!!!");
@@ -532,7 +532,7 @@ bool CReminderMsgDlg::CalcMsgIconPosition(Point& iconPosition) const
 {
 	// Get display margin
 	Rect currentMargin;
-	this->GetMargin(currentMargin);
+	this->getMargin(currentMargin);
 
 	// Get client rectangle
 	RECT rcClient;

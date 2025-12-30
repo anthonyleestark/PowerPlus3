@@ -97,12 +97,12 @@ public:
 	};
 
 	// Dialog size
-	virtual void SetSize(Size regSize) {
-		SDialog::SetSize(regSize);
+	virtual void setSize(Size regSize) {
+		SDialog::setSize(regSize);
 		m_bLockDlgSize = true;
 	};
-	virtual void SetSize(long lWidth, long lHeight) {
-		SDialog::SetSize(lWidth, lHeight);
+	virtual void setSize(long lWidth, long lHeight) {
+		SDialog::setSize(lWidth, lHeight);
 		m_bLockDlgSize = true;
 	};
 

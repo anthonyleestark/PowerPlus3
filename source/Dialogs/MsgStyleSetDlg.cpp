@@ -122,9 +122,9 @@ BOOL CRmdMsgStyleSetDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Setup display
-	SetupLanguage();
-	SetupDialogItemState();
-	UpdateDialogData(false);
+	setupLanguage();
+	setupDialogItemState();
+	updateDialogData(false);
 
 	return true;
 }
@@ -137,11 +137,11 @@ BOOL CRmdMsgStyleSetDlg::OnInitDialog()
 void CRmdMsgStyleSetDlg::OnApply()
 {
 	// Save data
-	UpdateDialogData(true);
+	updateDialogData(true);
 	m_rmsMsgStyleData.copy(m_rmsMsgStyleTemp);
 
 	// Close the dialog
-	SetReturnFlag(ReturnFlag::OK);
+	setReturnFlag(ReturnFlag::OK);
 	EndDialog(IDC_MSGSTYLESET_APPLY_BTN);
 }
 
@@ -153,7 +153,7 @@ void CRmdMsgStyleSetDlg::OnApply()
 void CRmdMsgStyleSetDlg::OnCancel()
 {
 	// Close the dialog
-	SetReturnFlag(ReturnFlag::Cancel);
+	setReturnFlag(ReturnFlag::Cancel);
 	EndDialog(IDC_MSGSTYLESET_CANCEL_BTN);
 }
 
@@ -165,21 +165,21 @@ void CRmdMsgStyleSetDlg::OnCancel()
 void CRmdMsgStyleSetDlg::OnPreview()
 {
 	// Update data
-	UpdateDialogData(true);
+	updateDialogData(true);
 
 	// Default timeout for previewing
 	int nDefTimeout = PwrReminderData::previewTimeout;
 
 	// Initialize preview message
 	CReminderMsgDlg m_previewMsgDlg;
-	m_previewMsgDlg.SetCaptionFromLanguage(IDC_MSGSTYLESET_PREVIEW_BTN);
+	m_previewMsgDlg.setCaptionFromLanguage(IDC_MSGSTYLESET_PREVIEW_BTN);
 	m_previewMsgDlg.SetDispMessage(L"Preview message style");
 	m_previewMsgDlg.SetMessageStyle(m_rmsMsgStyleTemp);
 	m_previewMsgDlg.SetAutoCloseInterval(nDefTimeout);
 
 	// Set notify state flags
-	m_previewMsgDlg.SetTopMost(false);
-	m_previewMsgDlg.SetInitSound(true);
+	m_previewMsgDlg.setTopMost(false);
+	m_previewMsgDlg.setInitSound(true);
 
 	// Display message
 	m_previewMsgDlg.DoModal();
@@ -196,7 +196,7 @@ void CRmdMsgStyleSetDlg::OnReset()
 	m_rmsMsgStyleTemp = RmdMsgStyleSet();
 
 	// Apply state
-	UpdateDialogData(false);
+	updateDialogData(false);
 }
 
 /**
@@ -400,7 +400,7 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 	switch (message)
 	{
 		case WM_CLOSE:
-			SetReturnFlag(ReturnFlag::Close);
+			setReturnFlag(ReturnFlag::Close);
 			EndDialog(IDC_MSGSTYLESET_CANCEL_BTN);
 			break;
 
@@ -472,18 +472,18 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
  * @param	None
  * @return	None
  */
-void CRmdMsgStyleSetDlg::SetupLanguage()
+void CRmdMsgStyleSetDlg::setupLanguage()
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Set dialog caption
-	String dialogCaption = getLanguageString(pAppLang, GetDialogID());
+	String dialogCaption = getLanguageString(pAppLang, getDialogId());
 	if (m_flagDataSet == DataSetFlag::commonStyle)
 		dialogCaption += StringUtils::stringFormat(captionDetailFormat, getLanguageString(pAppLang, PWRRMD_STYLE_COMMONSTYLE));
 	else if (m_flagDataSet == DataSetFlag::customStyle)
 		dialogCaption += StringUtils::stringFormat(captionDetailFormat, getLanguageString(pAppLang, PWRRMD_STYLE_CUSTOMSTYLE));
-	this->SetCaption(dialogCaption);
+	this->setCaption(dialogCaption);
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -507,11 +507,11 @@ void CRmdMsgStyleSetDlg::SetupLanguage()
 		case IDC_MSGSTYLESET_FONTSIZE_COMBO:
 		case IDC_MSGSTYLESET_ICONID_COMBO:
 		case IDC_MSGSTYLESET_DISPLAYPOS_COMBO:
-			SetupComboBox(nID, pAppLang);
+			setupComboBox(nID, pAppLang);
 			break;
 
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(pWndChild, nID, pAppLang);
 			break;
 		}
 	}
@@ -521,7 +521,7 @@ void CRmdMsgStyleSetDlg::SetupLanguage()
 	balloonFormatInvalidValue = getLanguageString(pAppLang, BALLOON_TIP_INVALID_VALUE_FORMAT);
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -530,7 +530,7 @@ void CRmdMsgStyleSetDlg::SetupLanguage()
  * @param	ptrLanguage - Language package pointer
  * @return	None
  */
-void CRmdMsgStyleSetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
+void CRmdMsgStyleSetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	switch (nComboID)
 	{
@@ -609,7 +609,7 @@ void CRmdMsgStyleSetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLangu
 	}
 
 	// Default
-	SDialog::SetupComboBox(nComboID, ptrLanguage);
+	SDialog::setupComboBox(nComboID, ptrLanguage);
 }
 	
 /**
@@ -617,7 +617,7 @@ void CRmdMsgStyleSetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLangu
  * @param	None
  * @return	None
  */
-void CRmdMsgStyleSetDlg::SetupDialogItemState(void)
+void CRmdMsgStyleSetDlg::setupDialogItemState(void)
 {
 	// Initialize dialog items
 	if (m_pBkgrdColorPickBtn == NULL) {
@@ -772,7 +772,7 @@ void CRmdMsgStyleSetDlg::SetupDialogItemState(void)
 		m_pVerticalMarginEdit->SetLimitText(maxMarginValDigits);
 
 	// Default
-	SDialog::SetupDialogItemState();
+	SDialog::setupDialogItemState();
 }
 
 /**
@@ -780,7 +780,7 @@ void CRmdMsgStyleSetDlg::SetupDialogItemState(void)
  * @param	bRecheckState - Recheck all item's state
  * @return	None
  */
-void CRmdMsgStyleSetDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
+void CRmdMsgStyleSetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 {
 	// Redraw background/text color picker
 	if (m_pBkgrdColorPickBtn != NULL)
@@ -793,7 +793,7 @@ void CRmdMsgStyleSetDlg::RefreshDialogItemState(bool bRecheckState /* = false */
 		::InvalidateRect(m_pIconPreviewStatic->GetSafeHwnd(), NULL, true);
 
 	// Default
-	SDialog::RefreshDialogItemState(bRecheckState);
+	SDialog::refreshDialogItemState(bRecheckState);
 }
 
 /**
@@ -920,7 +920,7 @@ bool CRmdMsgStyleSetDlg::ValidateEditValue(HWND hEditCtrl, int& inputVal, int mi
  * @param	bUpdate - Update data flag
  * @return	None
  */
-void CRmdMsgStyleSetDlg::UpdateDialogData(bool bUpdate)
+void CRmdMsgStyleSetDlg::updateDialogData(bool bUpdate)
 {
 	if (bUpdate == true) {
 
@@ -1102,6 +1102,6 @@ void CRmdMsgStyleSetDlg::UpdateDialogData(bool bUpdate)
 
 		// Update data
 		UpdateData(false);
-		RefreshDialogItemState();
+		refreshDialogItemState();
 	}
 }

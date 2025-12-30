@@ -162,9 +162,9 @@ void CPwrReminderDlg::DoDataExchange(CDataExchange* pDX)
  * @param	None
  * @return	int
  */
-int CPwrReminderDlg::RegisterDialogManagement(void)
+int CPwrReminderDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::registerDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -172,7 +172,7 @@ int CPwrReminderDlg::RegisterDialogManagement(void)
 	}
 
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
@@ -217,10 +217,10 @@ int CPwrReminderDlg::RegisterDialogManagement(void)
  * @param	None
  * @return	true/false
  */
-bool CPwrReminderDlg::UnregisterDialogManagement(void)
+bool CPwrReminderDlg::unregisterDialogManagement(void)
 {
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
@@ -257,7 +257,7 @@ bool CPwrReminderDlg::UnregisterDialogManagement(void)
 		pCtrlMan->RemoveControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN);
 	}
 
-	return SDialog::UnregisterDialogManagement();
+	return SDialog::unregisterDialogManagement();
 }
 
 
@@ -340,29 +340,29 @@ BOOL CPwrReminderDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
-	SetUseEnter(false);
+	setUseEnter(false);
 
 	// Register message box caption
-	RegisterMessageBoxCaption(MSGBOX_PWRREMINDER_CAPTION);
+	registerMessageBoxCaption(MSGBOX_PWRREMINDER_CAPTION);
 
 	// Load data
 	LoadPwrReminderData();
 
 	// Init dialog items
-	LoadLayoutInfo();
-	SetupLanguage();
-	SetupDialogItemState();
+	loadLayoutInfo();
+	setupLanguage();
+	setupDialogItemState();
 
 	// Update data
 	UpdateDataItemList();
 	DisplayItemDetails(INT_INVALID);
-	RefreshDialogItemState(true);
+	refreshDialogItemState(true);
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
 
 	// Read-only mode (if enabled)
-	if (GetReadOnlyMode() == true) {
+	if (isReadOnlyMode() == true) {
 		CWnd* pWndChild = GetTopWindow();
 		while (pWndChild != NULL) {
 			pWndChild->EnableWindow(false);
@@ -381,14 +381,14 @@ BOOL CPwrReminderDlg::OnInitDialog()
 void CPwrReminderDlg::OnClose()
 {
 	// If not forced closing by request
-	if (!IsForceClosingByRequest()) {
+	if (!isForceClosingByRequest()) {
 
 		// Exit current mode
 		int nConfirm = -1;
 		int nCurMode = GetCurMode();
 		if ((nCurMode == Mode::Add) || (nCurMode == Mode::Update)) {
 			// Show switch mode confirmation message
-			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
+			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Switch mode
 				SetCurMode(Mode::View);
@@ -397,11 +397,11 @@ void CPwrReminderDlg::OnClose()
 		}
 
 		// Ask for saving before exiting if data changed
-		bool bIsChanged = CheckDataChangeState();
+		bool bIsChanged = checkDataChangeState();
 		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 		if (bIsChanged == true) {
 			// Show save confirmation message
-			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
+			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Save data
 				SavePwrReminderData();
@@ -421,11 +421,11 @@ void CPwrReminderDlg::OnClose()
 void CPwrReminderDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_DESTROYED, this->getCaption());
 
 	// Save layout info data
-	UpdateLayoutInfo();
-	SaveLayoutInfo();
+	updateLayoutInfo();
+	saveLayoutInfo();
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -439,10 +439,10 @@ void CPwrReminderDlg::OnDestroy()
 void CPwrReminderDlg::OnApply()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_APPLY_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_APPLY_BTN);
 
 	// Save data if changed
-	bool bIsChanged = CheckDataChangeState();
+	bool bIsChanged = checkDataChangeState();
 	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 	if (bIsChanged == true) {
 		// Save data
@@ -461,17 +461,17 @@ void CPwrReminderDlg::OnApply()
 void CPwrReminderDlg::OnCancel()
 {
 	// If not forced closing by request
-	if (!IsForceClosingByRequest()) {
+	if (!isForceClosingByRequest()) {
 
 		// Save app event log if enabled
-		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_CANCEL_BTN);
+		outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_CANCEL_BTN);
 
 		// Exit current mode
 		int nConfirm = -1;
 		int nCurMode = GetCurMode();
 		if ((nCurMode & Mode::Add) || (nCurMode & Mode::Update)) {
 			// Show switch mode confirmation message
-			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
+			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Switch mode
 				SetCurMode(Mode::View);
@@ -480,11 +480,11 @@ void CPwrReminderDlg::OnCancel()
 		}
 
 		// Ask for saving before exiting if data changed
-		bool bIsChanged = CheckDataChangeState();
+		bool bIsChanged = checkDataChangeState();
 		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 		if (bIsChanged == true) {
 			// Show save confirmation message
-			nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
+			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Save data
 				SavePwrReminderData();
@@ -504,7 +504,7 @@ void CPwrReminderDlg::OnCancel()
 void CPwrReminderDlg::OnAdd()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_ADD_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_ADD_BTN);
 
 	// Get current mode
 	int nCurMode = GetCurMode();
@@ -538,7 +538,7 @@ void CPwrReminderDlg::OnAdd()
 void CPwrReminderDlg::OnEdit()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_EDIT_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_EDIT_BTN);
 
 	// Get current mode
 	int nCurMode = GetCurMode();
@@ -579,7 +579,7 @@ void CPwrReminderDlg::OnEdit()
 void CPwrReminderDlg::OnRemove()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_REMOVE_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_REMOVE_BTN);
 
 	// If there's no item, do nothing
 	int nItemNum = GetItemNum();
@@ -594,7 +594,7 @@ void CPwrReminderDlg::OnRemove()
 		return;
 
 	// Ask before remove
-	int nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
+	int nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
 		// Remove item
 		Remove(nIndex);
@@ -609,14 +609,14 @@ void CPwrReminderDlg::OnRemove()
 void CPwrReminderDlg::OnRemoveAll()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_REMOVEALL_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_REMOVEALL_BTN);
 	
 	// If all item are empty, do nothing
 	if (m_pwrReminderDataTemp.isAllEmpty() == true)
 		return;
 
 	// Ask before remove
-	int nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
+	int nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
 		// Remove all items
 		RemoveAll();
@@ -631,7 +631,7 @@ void CPwrReminderDlg::OnRemoveAll()
 void CPwrReminderDlg::OnCheckAll()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_CHECKALL_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_CHECKALL_BTN);
 
 	// If all item are empty, do nothing
 	if (m_pwrReminderDataTemp.isAllEmpty() == true)
@@ -649,7 +649,7 @@ void CPwrReminderDlg::OnCheckAll()
 void CPwrReminderDlg::OnUncheckAll()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_UNCHECKALL_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_UNCHECKALL_BTN);
 
 	// If all item are empty, do nothing
 	if (m_pwrReminderDataTemp.isAllEmpty() == true)
@@ -667,7 +667,7 @@ void CPwrReminderDlg::OnUncheckAll()
 void CPwrReminderDlg::OnPreviewItem()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_PREVIEW_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_PREVIEW_BTN);
 
 	// If all item are empty, do nothing
 	if (m_pwrReminderDataTemp.isAllEmpty() == true)
@@ -713,7 +713,7 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Display item details
 	DisplayItemDetails(m_nCurSelIndex);
-	RefreshDialogItemState(true);
+	refreshDialogItemState(true);
 }
 
 /**
@@ -745,7 +745,7 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Refresh button states
-	RefreshDialogItemState(true);
+	refreshDialogItemState(true);
 }
 
 /**
@@ -777,7 +777,7 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Refresh button states
-	RefreshDialogItemState(true);
+	refreshDialogItemState(true);
 }
 
 /**
@@ -884,7 +884,7 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 	}
 
 	// Check for value change and enable/disable save button
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 }
 
 /**
@@ -910,7 +910,7 @@ void CPwrReminderDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Check for value change and enable/disable save button
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 }
 
 /**
@@ -981,14 +981,14 @@ void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
 void CPwrReminderDlg::OnRepeatSet()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_EVENT_REPEATSET_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_EVENT_REPEATSET_BTN);
 
 	// Initialize RepeatSet dialog if not available
 	if (m_pRepeatSetDlg == NULL) {
 		m_pRepeatSetDlg = new CRmdRepeatSetDlg;
 		m_pRepeatSetDlg->Create(IDD_RMDREPEATSET_DLG);
-		m_pRepeatSetDlg->RemoveStyle(DS_MODALFRAME | WS_CAPTION);
-		m_pRepeatSetDlg->SetParentWnd(this);
+		m_pRepeatSetDlg->removeStyle(DS_MODALFRAME | WS_CAPTION);
+		m_pRepeatSetDlg->setParent(this);
 	}
 
 	// Get button position
@@ -1008,13 +1008,13 @@ void CPwrReminderDlg::OnRepeatSet()
 		else {
 			// Set dialog alignment
 			unsigned nAlign = SDA_LEFTALIGN | SDA_TOPALIGN;
-			m_pRepeatSetDlg->SetAlignment(nAlign);
+			m_pRepeatSetDlg->setAlignment(nAlign);
 
 			// Get button top-right point
 			Point btnTopRight(rcButton.right, rcButton.top);
 
 			// Set dialog anchor point
-			m_pRepeatSetDlg->SetAnchorPoint(btnTopRight);
+			m_pRepeatSetDlg->setAnchorPoint(btnTopRight);
 
 			// Show dialog
 			m_pRepeatSetDlg->ShowWindow(SW_SHOW);
@@ -1030,13 +1030,13 @@ void CPwrReminderDlg::OnRepeatSet()
 void CPwrReminderDlg::OnCustomizeStyle()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN);
 
 	// Initialize Customize dialog if not available
 	if (!m_pMsgStyleSetDlg || !IsWindow(m_pMsgStyleSetDlg->GetSafeHwnd())) {
 		delete m_pMsgStyleSetDlg;
 		m_pMsgStyleSetDlg = new CRmdMsgStyleSetDlg;
-		m_pMsgStyleSetDlg->SetParentWnd(this);
+		m_pMsgStyleSetDlg->setParent(this);
 	}
 
 	// Preparation
@@ -1062,7 +1062,7 @@ void CPwrReminderDlg::OnCustomizeStyle()
 	m_pMsgStyleSetDlg->DoModal();
 
 	// Update common style data
-	if (m_pMsgStyleSetDlg->GetReturnFlag() == ReturnFlag::OK && styleSetDataFlag == MsgStyleSetFlag::commonStyle) {
+	if (m_pMsgStyleSetDlg->getReturnFlag() == ReturnFlag::OK && styleSetDataFlag == MsgStyleSetFlag::commonStyle) {
 		m_pMsgStyleSetDlg->GetData(styleSetData);
 		m_pwrReminderDataTemp.getCommonStyle().copy(styleSetData);
 	}
@@ -1073,12 +1073,12 @@ void CPwrReminderDlg::OnCustomizeStyle()
  * @param	None
  * @return	LRESULT (0:Success, else:Failed)
  */
-LRESULT CPwrReminderDlg::RequestCloseDialog(void)
+LRESULT CPwrReminderDlg::requestCloseDialog(void)
 {
 	// Close preview message dialog if opening
 	if (m_pRmdPreviewMsgDlg != NULL) {
 		// Request close message dialog
-		LRESULT resClosePreview = m_pRmdPreviewMsgDlg->RequestCloseDialog();
+		LRESULT resClosePreview = m_pRmdPreviewMsgDlg->requestCloseDialog();
 		if (resClosePreview != Result::Success) {
 			// Request denied
 			return LRESULT(Result::Failure);
@@ -1088,7 +1088,7 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	// If RepeatSet edit dialog is opening
 	if (m_pRepeatSetDlg != NULL) {
 		// Request close dialog
-		LRESULT resCloseRepeatSet = m_pRepeatSetDlg->RequestCloseDialog();
+		LRESULT resCloseRepeatSet = m_pRepeatSetDlg->requestCloseDialog();
 		if (resCloseRepeatSet != Result::Success)
 			return resCloseRepeatSet;
 	}
@@ -1097,7 +1097,7 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	int nConfirm = -1;
 	int nCurMode = GetCurMode();
 	if ((nCurMode == Mode::Add) || (nCurMode == Mode::Update)) {
-		nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
+		nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Switch mode
 			SetCurMode(Mode::View);
@@ -1109,10 +1109,10 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	}
 
 	// Ask for saving before exiting if data changed
-	bool bIsChanged = CheckDataChangeState();
+	bool bIsChanged = checkDataChangeState();
 	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 	if (bIsChanged == true) {
-		nConfirm = DisplayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
+		nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Save data
 			SavePwrReminderData();
@@ -1124,7 +1124,7 @@ LRESULT CPwrReminderDlg::RequestCloseDialog(void)
 	}
 
 	// Request accepted
-	return SDialog::RequestCloseDialog();
+	return SDialog::requestCloseDialog();
 }
 
 /**
@@ -1188,13 +1188,13 @@ LRESULT CPwrReminderDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
  * @param	None
  * @return	None
  */
-void CPwrReminderDlg::SetupLanguage()
+void CPwrReminderDlg::setupLanguage()
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetCaptionFromLanguage(GetDialogID());
+	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup language for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -1218,7 +1218,7 @@ void CPwrReminderDlg::SetupLanguage()
 			break;
 
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(pWndChild, nID, pAppLang);
 			break;
 		}
 	}
@@ -1227,7 +1227,7 @@ void CPwrReminderDlg::SetupLanguage()
 	SetupDataItemList(pAppLang);
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -1286,7 +1286,7 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	DrawDataTable(m_pszFrameWndSize, nColNum, nRowNum, false, ptrLanguage);
 
 	// Update layout info
-	UpdateLayoutInfo();
+	updateLayoutInfo();
 
 	// Display table
 	m_pDataItemListTable->SetListMode(true);
@@ -1455,7 +1455,7 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
  * @param	ptrLanguage - Language package pointer
  * @return	None
  */
-void CPwrReminderDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
+void CPwrReminderDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	// Check combo validity
 	if (m_pMsgStyleCombo == NULL) return;
@@ -1473,7 +1473,7 @@ void CPwrReminderDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage
 	}
 
 	// Default
-	SDialog::SetupComboBox(nComboID, ptrLanguage);
+	SDialog::setupComboBox(nComboID, ptrLanguage);
 }
 
 /**
@@ -1486,11 +1486,11 @@ void CPwrReminderDlg::SwitchMode(bool /* bRedraw = false */)
 	int nCurMode = GetCurMode();
 	if (nCurMode == Mode::Init) {
 		// Unlock dialog items
-		SetLockState(false);
+		setLockState(false);
 
 		// Restore [Add/Edit] buttons caption
-		UpdateItemText(IDC_PWRREMINDER_ADD_BTN);
-		UpdateItemText(IDC_PWRREMINDER_EDIT_BTN);
+		updateItemText(IDC_PWRREMINDER_ADD_BTN);
+		updateItemText(IDC_PWRREMINDER_EDIT_BTN);
 
 		// Enable table
 		DisableTable(false);
@@ -1499,15 +1499,15 @@ void CPwrReminderDlg::SwitchMode(bool /* bRedraw = false */)
 		RefreshDetailView(Mode::Init);
 
 		// Refresh dialog item states
-		RefreshDialogItemState(true);
+		refreshDialogItemState(true);
 	}
 	else if (nCurMode == Mode::View) {
 		// Lock dialog items
-		SetLockState(false);
+		setLockState(false);
 
 		// Restore [Add/Edit] buttons caption
-		UpdateItemText(IDC_PWRREMINDER_ADD_BTN);
-		UpdateItemText(IDC_PWRREMINDER_EDIT_BTN);
+		updateItemText(IDC_PWRREMINDER_ADD_BTN);
+		updateItemText(IDC_PWRREMINDER_EDIT_BTN);
 
 		// Enable table
 		DisableTable(false);
@@ -1517,24 +1517,24 @@ void CPwrReminderDlg::SwitchMode(bool /* bRedraw = false */)
 		DisplayItemDetails(m_nCurSelIndex);
 
 		// Refresh dialog item states
-		RefreshDialogItemState(true);
+		refreshDialogItemState(true);
 	}
 	else if (nCurMode == Mode::Add) {
 		// Lock dialog items
-		SetLockState(true);
+		setLockState(true);
 
 		// Enable/disable controls
-		EnableItem(IDC_PWRREMINDER_ADD_BTN,			true);
-		EnableItem(IDC_PWRREMINDER_EDIT_BTN,		false);
-		EnableItem(IDC_PWRREMINDER_REMOVE_BTN,		false);
-		EnableItem(IDC_PWRREMINDER_REMOVEALL_BTN,	false);
-		EnableItem(IDC_PWRREMINDER_CHECKALL_BTN,	false);
-		EnableItem(IDC_PWRREMINDER_UNCHECKALL_BTN,	false);
-		EnableItem(IDC_PWRREMINDER_PREVIEW_BTN,		false);
-		EnableItem(IDC_PWRREMINDER_APPLY_BTN,		false);
+		enableItem(IDC_PWRREMINDER_ADD_BTN,			true);
+		enableItem(IDC_PWRREMINDER_EDIT_BTN,		false);
+		enableItem(IDC_PWRREMINDER_REMOVE_BTN,		false);
+		enableItem(IDC_PWRREMINDER_REMOVEALL_BTN,	false);
+		enableItem(IDC_PWRREMINDER_CHECKALL_BTN,	false);
+		enableItem(IDC_PWRREMINDER_UNCHECKALL_BTN,	false);
+		enableItem(IDC_PWRREMINDER_PREVIEW_BTN,		false);
+		enableItem(IDC_PWRREMINDER_APPLY_BTN,		false);
 
 		// Change [Add] button title to [Save]
-		UpdateItemText(IDC_PWRREMINDER_ADD_BTN, BTN_PWRRMDDLG_SAVECHANGES);
+		updateItemText(IDC_PWRREMINDER_ADD_BTN, BTN_PWRRMDDLG_SAVECHANGES);
 
 		// Disable table
 		DisableTable(true);
@@ -1545,20 +1545,20 @@ void CPwrReminderDlg::SwitchMode(bool /* bRedraw = false */)
 	}
 	else if (nCurMode == Mode::Update) {
 		// Lock dialog items
-		SetLockState(true);
+		setLockState(true);
 
 		// Enable/disable controls
-		EnableItem(IDC_PWRREMINDER_ADD_BTN,			false);
-		EnableItem(IDC_PWRREMINDER_EDIT_BTN,		true);
-		EnableItem(IDC_PWRREMINDER_REMOVE_BTN,		false);
-		EnableItem(IDC_PWRREMINDER_REMOVEALL_BTN,	false);
-		EnableItem(IDC_PWRREMINDER_CHECKALL_BTN,	false);
-		EnableItem(IDC_PWRREMINDER_UNCHECKALL_BTN,	false);
-		EnableItem(IDC_PWRREMINDER_PREVIEW_BTN,		false);
-		EnableItem(IDC_PWRREMINDER_APPLY_BTN,		false);
+		enableItem(IDC_PWRREMINDER_ADD_BTN,			false);
+		enableItem(IDC_PWRREMINDER_EDIT_BTN,		true);
+		enableItem(IDC_PWRREMINDER_REMOVE_BTN,		false);
+		enableItem(IDC_PWRREMINDER_REMOVEALL_BTN,	false);
+		enableItem(IDC_PWRREMINDER_CHECKALL_BTN,	false);
+		enableItem(IDC_PWRREMINDER_UNCHECKALL_BTN,	false);
+		enableItem(IDC_PWRREMINDER_PREVIEW_BTN,		false);
+		enableItem(IDC_PWRREMINDER_APPLY_BTN,		false);
 
 		// Change [Edit] button title to [Save]
-		UpdateItemText(IDC_PWRREMINDER_EDIT_BTN, BTN_PWRRMDDLG_SAVECHANGES);
+		updateItemText(IDC_PWRREMINDER_EDIT_BTN, BTN_PWRRMDDLG_SAVECHANGES);
 
 		// Disable table
 		DisableTable(true);
@@ -1568,17 +1568,17 @@ void CPwrReminderDlg::SwitchMode(bool /* bRedraw = false */)
 	}
 	else if (nCurMode == Mode::Disable) {
 		// Lock dialog items
-		SetLockState(true);
+		setLockState(true);
 
 		// Restore [Add/Edit] buttons caption
-		UpdateItemText(IDC_PWRREMINDER_ADD_BTN);
-		UpdateItemText(IDC_PWRREMINDER_EDIT_BTN);
+		updateItemText(IDC_PWRREMINDER_ADD_BTN);
+		updateItemText(IDC_PWRREMINDER_EDIT_BTN);
 
 		// Disable table
 		DisableTable(true);
 
 		// Refresh dialog item states
-		RefreshDialogItemState(true);
+		refreshDialogItemState(true);
 	}
 }
 
@@ -1587,7 +1587,7 @@ void CPwrReminderDlg::SwitchMode(bool /* bRedraw = false */)
  * @param	None
  * @return	None
  */
-void CPwrReminderDlg::UpdateLayoutInfo(void)
+void CPwrReminderDlg::updateLayoutInfo(void)
 {
 	// Check table validity
 	if (m_pDataItemListTable == NULL) return;
@@ -1610,7 +1610,7 @@ void CPwrReminderDlg::UpdateLayoutInfo(void)
  * @param	None
  * @return	None
  */
-void CPwrReminderDlg::LoadLayoutInfo(void)
+void CPwrReminderDlg::loadLayoutInfo(void)
 {
 	// Define default table columns format
 	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
@@ -1655,7 +1655,7 @@ void CPwrReminderDlg::LoadLayoutInfo(void)
  * @param	None
  * @return	None
  */
-void CPwrReminderDlg::SaveLayoutInfo(void)
+void CPwrReminderDlg::saveLayoutInfo(void)
 {
 	// Check table column format data validity
 	if (m_apGrdColFormat == NULL) return;
@@ -1675,7 +1675,7 @@ void CPwrReminderDlg::SaveLayoutInfo(void)
  * @param	None
  * @return	None
  */
-void CPwrReminderDlg::SetupDialogItemState()
+void CPwrReminderDlg::setupDialogItemState()
 {
 	// Initialize dialog items
 	if (m_pMsgStringEdit == NULL) {
@@ -1818,7 +1818,7 @@ void CPwrReminderDlg::SetupDialogItemState()
 	UpdateMsgCounter(0);
 
 	// Default
-	SDialog::SetupDialogItemState();
+	SDialog::setupDialogItemState();
 }
 
 /**
@@ -1977,15 +1977,15 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	if (!m_pRepeatSetDlg) {
 		m_pRepeatSetDlg = new CRmdRepeatSetDlg;
 		m_pRepeatSetDlg->Create(IDD_RMDREPEATSET_DLG);
-		m_pRepeatSetDlg->RemoveStyle(DS_MODALFRAME | WS_CAPTION);
-		m_pRepeatSetDlg->SetParentWnd(this);
+		m_pRepeatSetDlg->removeStyle(DS_MODALFRAME | WS_CAPTION);
+		m_pRepeatSetDlg->setParent(this);
 	}
 
 	// Initialize Customize dialog if not available
 	if (!m_pMsgStyleSetDlg || !IsWindow(m_pMsgStyleSetDlg->GetSafeHwnd())) {
 		delete m_pMsgStyleSetDlg;
 		m_pMsgStyleSetDlg = new CRmdMsgStyleSetDlg;
-		m_pMsgStyleSetDlg->SetParentWnd(this);
+		m_pMsgStyleSetDlg->setParent(this);
 	}
 
 	// Display item details
@@ -1997,12 +1997,12 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
  * @param	bRecheckState - Recheck all item's state
  * @return	None
  */
-void CPwrReminderDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
+void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 {
 	CWnd* pBtn = NULL;
 
 	// If dialog items are being locked, do nothing
-	if (GetLockState() == true)
+	if (getLockState() == true)
 		return;
 
 	// Check if any item is selected or not
@@ -2049,7 +2049,7 @@ void CPwrReminderDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 	}
 
 	// Check if data is changed or not
-	bool bIsChanged = CheckDataChangeState();
+	bool bIsChanged = checkDataChangeState();
 	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 
 	// Enable [Apply] button if data is changed
@@ -2062,7 +2062,7 @@ void CPwrReminderDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 	UpdateCheckAllBtnState(bRecheckState);
 
 	// Default
-	SDialog::RefreshDialogItemState(bRecheckState);
+	SDialog::refreshDialogItemState(bRecheckState);
 }
 
 /**
@@ -2073,7 +2073,7 @@ void CPwrReminderDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 void CPwrReminderDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
 {
 	// If dialog items are being locked, do nothing
-	if (GetLockState() == true)
+	if (getLockState() == true)
 		return;
 
 	// Get buttons
@@ -2377,7 +2377,7 @@ bool CPwrReminderDlg::SavePwrReminderData()
  * @param	None
  * @return	None
  */
-bool CPwrReminderDlg::CheckDataChangeState()
+bool CPwrReminderDlg::checkDataChangeState()
 {
 	bool bChangeFlag = false;
 
@@ -2465,7 +2465,7 @@ void CPwrReminderDlg::Add()
 	RedrawDataTable();
 
 	// Refresh button state
-	RefreshDialogItemState(true);
+	refreshDialogItemState(true);
 }
 
 /**
@@ -2500,7 +2500,7 @@ void CPwrReminderDlg::Edit(int nIndex)
 	RedrawDataTable();
 
 	// Refresh button state
-	RefreshDialogItemState(true);
+	refreshDialogItemState(true);
 }
 
 /**
@@ -2517,7 +2517,7 @@ void CPwrReminderDlg::Remove(int nIndex)
 	RedrawDataTable();
 
 	// Refresh button state
-	RefreshDialogItemState(true);
+	refreshDialogItemState(true);
 }
 
 /**
@@ -2534,7 +2534,7 @@ void CPwrReminderDlg::RemoveAll()
 	RedrawDataTable();
 
 	// Refresh button state
-	RefreshDialogItemState(true);
+	refreshDialogItemState(true);
 }
 
 /**
@@ -2560,7 +2560,7 @@ void CPwrReminderDlg::SetAllItemState(bool bState)
 	UpdateDataItemList();
 
 	// Refresh button state
-	RefreshDialogItemState(false);
+	refreshDialogItemState(false);
 }
 
 /**
@@ -2593,7 +2593,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 		// Display message box
 		const wchar_t* messageCaption = getLanguageString(pAppLang, IDC_PWRREMINDER_PREVIEW_BTN);
 		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
-		DisplayMessageBox(messageContent, messageCaption, dwMsgStyle);
+		displayMessageBox(messageContent, messageCaption, dwMsgStyle);
 	}
 	// Style: Dialog
 	else if (pwrDispItem.getMessageStyle() == Style::dialogBox) {
@@ -2621,14 +2621,14 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 			int nDefTimeout = PwrReminderData::previewTimeout;
 
 			// Set properties
-			m_pRmdPreviewMsgDlg->SetCaptionFromLanguage(IDC_PWRREMINDER_PREVIEW_BTN);
+			m_pRmdPreviewMsgDlg->setCaptionFromLanguage(IDC_PWRREMINDER_PREVIEW_BTN);
 			m_pRmdPreviewMsgDlg->SetDispMessage(messageContent);
 			m_pRmdPreviewMsgDlg->SetMessageStyle(rmdMessageStyle);
 			m_pRmdPreviewMsgDlg->SetAutoCloseInterval(nDefTimeout);
 
 			// Set notify state flags
-			m_pRmdPreviewMsgDlg->SetTopMost(false);
-			m_pRmdPreviewMsgDlg->SetInitSound(true);
+			m_pRmdPreviewMsgDlg->setTopMost(false);
+			m_pRmdPreviewMsgDlg->setInitSound(true);
 
 			// Display message
 			m_pRmdPreviewMsgDlg->DoModal();
@@ -2668,12 +2668,12 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 
 		/*----------------------------Event----------------------------*/
 
-		bool bTemp = false;
+		bool isTemp = false;
 
 		// Event: At set time
 		if (m_pEvtSetTimeRad != NULL) {
-			bTemp = m_pEvtSetTimeRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pEvtSetTimeRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.setEventId(Event::atSetTime);
 				if (m_pEvtSetTimeEdit != NULL) {
 					ClockTime clockTimeTemp;
@@ -2684,40 +2684,40 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 		// Update data for RepeatSet dialog
 		if (m_pRepeatSetDlg != NULL) {
-			m_pRepeatSetDlg->UpdateDialogData(pwrItem, true);
+			m_pRepeatSetDlg->updateDialogData(pwrItem, true);
 		}
 		// Event: At app startup
 		if (m_pEvtAppStartupRad != NULL) {
-			bTemp = m_pEvtAppStartupRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pEvtAppStartupRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.setEventId(Event::atAppStartup);
 			}
 		}
 		// Event: At system wake
 		if (m_pEvtSysWakeupRad != NULL) {
-			bTemp = m_pEvtSysWakeupRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pEvtSysWakeupRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.setEventId(Event::atSysWakeUp);
 			}
 		}
 		// Event: Before power action
 		if (m_pEvtBfrPwrActionRad != NULL) {
-			bTemp = m_pEvtBfrPwrActionRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pEvtBfrPwrActionRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.setEventId(Event::beforePwrAction);
 			}
 		}
 		// Event: Wake after action
 		if (m_pEvtPwrActionWakeRad != NULL) {
-			bTemp = m_pEvtPwrActionWakeRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pEvtPwrActionWakeRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.setEventId(Event::wakeAfterAction);
 			}
 		}
 		// Event: Before app exit
 		if (m_pEvtAtAppExitRad != NULL) {
-			bTemp = m_pEvtAtAppExitRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pEvtAtAppExitRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.setEventId(Event::atAppExit);
 			}
 		}
@@ -2726,29 +2726,29 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 
 		// Style: MessageBox
 		if (m_pStyleMsgBoxRad != NULL) {
-			bTemp = m_pStyleMsgBoxRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pStyleMsgBoxRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.setMessageStyle(Style::messageBox);
 			}
 		}
 		// Style: Dialog Box
 		if (m_pStyleDialogBoxRad != NULL) {
-			bTemp = m_pStyleDialogBoxRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pStyleDialogBoxRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.setMessageStyle(Style::dialogBox);
 			}
 		}
 		// Style Configuration: Use common style
 		if (m_pStyleUseCommonRad != NULL) {
-			bTemp = m_pStyleUseCommonRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pStyleUseCommonRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.enableCustomStyle(false);
 			}
 		}
 		// Style Configuration: Use common style
 		if (m_pStyleUseCustomRad != NULL) {
-			bTemp = m_pStyleUseCustomRad->GetCheck();
-			if (bTemp == true) {
+			isTemp = m_pStyleUseCustomRad->GetCheck();
+			if (isTemp == true) {
 				pwrItem.enableCustomStyle(true);
 			}
 		}
@@ -2813,7 +2813,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 
 		/*----------------------------Event----------------------------*/
 
-		bool bTemp = false;
+		bool isTemp = false;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
 		if (pWnd != NULL) {
 			pWnd->EnableWindow(bEnable);
@@ -2822,52 +2822,52 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		// Event: At set time
 		if (m_pEvtSetTimeRad != NULL) {
 			m_pEvtSetTimeRad->EnableWindow(bEnable);
-			bTemp = (nEventID == Event::atSetTime);
-			m_pEvtSetTimeRad->SetCheck(bTemp);
+			isTemp = (nEventID == Event::atSetTime);
+			m_pEvtSetTimeRad->SetCheck(isTemp);
 
 			// Set time edit and spin value
-			bTemp &= bEnable;
+			isTemp &= bEnable;
 			if (m_pEvtSetTimeEdit != NULL) {
-				m_pEvtSetTimeEdit->EnableWindow(bTemp);
+				m_pEvtSetTimeEdit->EnableWindow(isTemp);
 				UpdateTimeSetting(itemTime, false);
 			}
 			if (m_pEvtSetTimeSpin != NULL) {
-				m_pEvtSetTimeSpin->EnableWindow(bTemp);
+				m_pEvtSetTimeSpin->EnableWindow(isTemp);
 			}
 		}
 		// Update data for RepeatSet dialog
 		if (m_pRepeatSetDlg != NULL) {
-			m_pRepeatSetDlg->UpdateDialogData(pwrItem, false);
+			m_pRepeatSetDlg->updateDialogData(pwrItem, false);
 		}
 		// Event: At app startup
 		if (m_pEvtAppStartupRad != NULL) {
 			m_pEvtAppStartupRad->EnableWindow(bEnable);
-			bTemp = (nEventID == Event::atAppStartup);
-			m_pEvtAppStartupRad->SetCheck(bTemp);
+			isTemp = (nEventID == Event::atAppStartup);
+			m_pEvtAppStartupRad->SetCheck(isTemp);
 		}
 		// Event: At system wake
 		if (m_pEvtSysWakeupRad != NULL) {
 			m_pEvtSysWakeupRad->EnableWindow(bEnable);
-			bTemp = (nEventID == Event::atSysWakeUp);
-			m_pEvtSysWakeupRad->SetCheck(bTemp);
+			isTemp = (nEventID == Event::atSysWakeUp);
+			m_pEvtSysWakeupRad->SetCheck(isTemp);
 		}
 		// Event: Before power action
 		if (m_pEvtBfrPwrActionRad != NULL) {
 			m_pEvtBfrPwrActionRad->EnableWindow(bEnable);
-			bTemp = (nEventID == Event::beforePwrAction);
-			m_pEvtBfrPwrActionRad->SetCheck(bTemp);
+			isTemp = (nEventID == Event::beforePwrAction);
+			m_pEvtBfrPwrActionRad->SetCheck(isTemp);
 		}
 		// Event: Wake after action
 		if (m_pEvtPwrActionWakeRad != NULL) {
 			m_pEvtPwrActionWakeRad->EnableWindow(bEnable);
-			bTemp = (nEventID == Event::wakeAfterAction);
-			m_pEvtPwrActionWakeRad->SetCheck(bTemp);
+			isTemp = (nEventID == Event::wakeAfterAction);
+			m_pEvtPwrActionWakeRad->SetCheck(isTemp);
 		}
 		// Event: Before app exit
 		if (m_pEvtAtAppExitRad != NULL) {
 			m_pEvtAtAppExitRad->EnableWindow(bEnable);
-			bTemp = (nEventID == Event::atAppExit);
-			m_pEvtAtAppExitRad->SetCheck(bTemp);
+			isTemp = (nEventID == Event::atAppExit);
+			m_pEvtAtAppExitRad->SetCheck(isTemp);
 		}
 
 		/*------------------------Message style------------------------*/
@@ -2879,14 +2879,14 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		// Message Box style
 		if (m_pStyleMsgBoxRad != NULL) {
 			m_pStyleMsgBoxRad->EnableWindow(bEnable);
-			bTemp = (dwMsgStyle == Style::messageBox);
-			m_pStyleMsgBoxRad->SetCheck(bTemp);
+			isTemp = (dwMsgStyle == Style::messageBox);
+			m_pStyleMsgBoxRad->SetCheck(isTemp);
 		}
 		// Dialog Box style
 		if (m_pStyleDialogBoxRad != NULL) {
 			m_pStyleDialogBoxRad->EnableWindow(bEnable);
-			bTemp = (dwMsgStyle == Style::dialogBox);
-			m_pStyleDialogBoxRad->SetCheck(bTemp);
+			isTemp = (dwMsgStyle == Style::dialogBox);
+			m_pStyleDialogBoxRad->SetCheck(isTemp);
 		}
 
 		// Style customization
@@ -2918,7 +2918,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 				m_pMsgStyleSetDlg->SetData(pwrItem.getMessageStyleData());
 				m_pMsgStyleSetDlg->SetDataFlag(MsgStyleSetFlag::customStyle);
 			}
-			m_pMsgStyleSetDlg->UpdateDialogData(false);
+			m_pMsgStyleSetDlg->updateDialogData(false);
 		}
 
 		/*-------------------------------------------------------------*/
@@ -3047,11 +3047,11 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 				// Add "Data will be automatically reset to default"
 				String errorMessage = arrMsgString.at(nIndex);
 				errorMessage += getLanguageString(pLang, MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT);
-				DisplayMessageBox(errorMessage, NULL, MB_OK | MB_ICONERROR);
+				displayMessageBox(errorMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {
 				// Display error message
-				DisplayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
+				displayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
 			}
 		}
 	}

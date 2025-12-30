@@ -63,9 +63,9 @@ public:
 
 protected:
 	// Dialog and items setup functions
-	virtual void SetupLanguage();
-	virtual void SetupDialogItemState();
-	virtual void RefreshDialogItemState(bool bRecheckState = false);
+	virtual void setupLanguage();
+	virtual void setupDialogItemState();
+	virtual void refreshDialogItemState(bool bRecheckState = false);
 
 	void SetSnoozeIntervalEdit(int nValue);
 	
@@ -79,6 +79,6 @@ protected:
 
 public:
 	// Data processing functions
-	void UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpdate);
+	void updateDialogData(PwrReminderItem& pwrItemData, bool bUpdate);
 };
 

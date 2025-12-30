@@ -35,8 +35,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -68,16 +68,16 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	afx_msg void OnDestroy();
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 
 	// Member functions
-	void SetupLanguage();
-	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
+	void setupLanguage();
+	void setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
 	void SetupActiveDayList(LANGTABLE_PTR ptrLanguage);
 	void DrawActiveDayTable(bool bReadOnly = false);
 
 	// Dialog item properties functions
-	void SetupDialogItemState();
+	void setupDialogItemState();
 	void UpdateActiveDayList();
 	void DisableActiveDayTable(bool bDisable);
 	void RedrawActiveDayTable(bool bReadOnly = false);
@@ -88,7 +88,7 @@ public:
 	void UpdateScheduleItem(void);
 	void SaveScheduleItem(void);
 
-	bool CheckDataChangeState(void);
+	bool checkDataChangeState(void);
 	void EnableSaveButton(bool bEnable);
 	void EnableSubItems(bool bEnable);
 	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);

@@ -91,9 +91,9 @@ BOOL CRmdRepeatSetDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Setup display
-	SetupLanguage();
-	SetupDialogItemState();
-	RefreshDialogItemState();
+	setupLanguage();
+	setupDialogItemState();
+	refreshDialogItemState();
 
 	return true;
 }
@@ -155,7 +155,7 @@ void CRmdRepeatSetDlg::OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
  */
 void CRmdRepeatSetDlg::OnCheckboxClicked(UINT /*nID*/)
 {
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -163,7 +163,7 @@ void CRmdRepeatSetDlg::OnCheckboxClicked(UINT /*nID*/)
  * @param	None
  * @return	None
  */
-void CRmdRepeatSetDlg::SetupLanguage()
+void CRmdRepeatSetDlg::setupLanguage()
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
@@ -184,13 +184,13 @@ void CRmdRepeatSetDlg::SetupLanguage()
 			break;
 
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(pWndChild, nID, pAppLang);
 			break;
 		}
 	}
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -198,7 +198,7 @@ void CRmdRepeatSetDlg::SetupLanguage()
  * @param	None
  * @return	None
  */
-void CRmdRepeatSetDlg::SetupDialogItemState()
+void CRmdRepeatSetDlg::setupDialogItemState()
 {
 	// Initialize dialog items
 	if (m_pSnoozeIntervalEdit == NULL) {
@@ -311,7 +311,7 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
 	}
 
 	// Default
-	SDialog::SetupDialogItemState();
+	SDialog::setupDialogItemState();
 }
 
 /**
@@ -319,7 +319,7 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
  * @param	bRecheckState - Recheck all item's state
  * @return	None
  */
-void CRmdRepeatSetDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
+void CRmdRepeatSetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 {
 	int nRepeatState = INT_NULL;
 	int nSnoozeState = INT_NULL;
@@ -373,7 +373,7 @@ void CRmdRepeatSetDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 	}
 
 	// Default
-	SDialog::RefreshDialogItemState(bRecheckState);
+	SDialog::refreshDialogItemState(bRecheckState);
 }
 
 /**
@@ -415,7 +415,7 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
  * @param	bUpdate		- Update data flag
  * @return	None
  */
-void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpdate)
+void CRmdRepeatSetDlg::updateDialogData(PwrReminderItem& pwrItemData, bool bUpdate)
 {
 	// Get repeat set data
 	PwrRepeatSet& rpsRepeatData = pwrItemData.getRepeatSetData();
@@ -567,7 +567,7 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 
 		// Update data
 		UpdateData(false);
-		RefreshDialogItemState();
+		refreshDialogItemState();
 	}
 }
 

@@ -121,17 +121,17 @@ BOOL CLogViewerDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
-	SetUseEnter(FALSE);
+	setUseEnter(FALSE);
 
 	// Register message box caption
-	RegisterMessageBoxCaption(MSGBOX_LOGVIEWER_CAPTION);
+	registerMessageBoxCaption(MSGBOX_LOGVIEWER_CAPTION);
 
 	// Load app event log data pointer
 	LoadAppEventLogData();
 
 	// Setup dialog
-	LoadLayoutInfo();
-	SetupLanguage();
+	loadLayoutInfo();
+	setupLanguage();
 	UpdateLogViewer();
 
 	// Disable [Details] button
@@ -141,7 +141,7 @@ BOOL CLogViewerDlg::OnInitDialog()
 	}
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
 
 	return TRUE;
 }
@@ -165,11 +165,11 @@ void CLogViewerDlg::OnClose()
 void CLogViewerDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_DESTROYED, this->getCaption());
 
 	// Save layout info data
-	UpdateLayoutInfo();
-	SaveLayoutInfo();
+	updateLayoutInfo();
+	saveLayoutInfo();
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -180,10 +180,10 @@ void CLogViewerDlg::OnDestroy()
  * @param	None
  * @return	LRESULT (0:Success, else:Failed)
  */
-LRESULT CLogViewerDlg::RequestCloseDialog(void)
+LRESULT CLogViewerDlg::requestCloseDialog(void)
 {
 	// Request accepted
-	return SDialog::RequestCloseDialog();
+	return SDialog::requestCloseDialog();
 }
 
 /**
@@ -197,7 +197,7 @@ void CLogViewerDlg::OnRemoveAllBtn()
 	if (m_ptrAppEventLog == NULL) return;
 
 	// Confirm before removing
-	int nRet = DisplayMessageBox(MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS, NULL, MB_YESNO | MB_ICONQUESTION);
+	int nRet = displayMessageBox(MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nRet == IDNO) return;
 
 	// Remove all app event log records
@@ -241,13 +241,13 @@ void CLogViewerDlg::OnCloseBtn()
  * @param	None
  * @return	None
  */
-void CLogViewerDlg::SetupLanguage(void)
+void CLogViewerDlg::setupLanguage(void)
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetCaptionFromLanguage(GetDialogID());
+	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -260,10 +260,10 @@ void CLogViewerDlg::SetupLanguage(void)
 			// Skip these items
 			break;
 		case IDC_LOGVIEWER_DETAILS_BTN:
-			ShowItem(nID, false);
+			showItem(nID, false);
 			break;
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(pWndChild, nID, pAppLang);
 			break;
 		}
 	}
@@ -272,7 +272,7 @@ void CLogViewerDlg::SetupLanguage(void)
 	SetupLogViewerList(pAppLang);
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -330,7 +330,7 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 	DrawLogViewerTable();
 
 	// Update layout info
-	UpdateLayoutInfo();
+	updateLayoutInfo();
 
 	// Display table
 	m_pLogViewerList->SetListMode(TRUE);
@@ -603,7 +603,7 @@ void CLogViewerDlg::DisplayLogDetails(int /*nIndex*/)
  * @param	None
  * @return	None
  */
-void CLogViewerDlg::UpdateLayoutInfo(void)
+void CLogViewerDlg::updateLayoutInfo(void)
 {
 	// Check table validity
 	if (m_pLogViewerList == NULL) return;
@@ -626,7 +626,7 @@ void CLogViewerDlg::UpdateLayoutInfo(void)
  * @param	None
  * @return	None
  */
-void CLogViewerDlg::LoadLayoutInfo(void)
+void CLogViewerDlg::loadLayoutInfo(void)
 {
 	// Define default table columns format
 	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
@@ -667,7 +667,7 @@ void CLogViewerDlg::LoadLayoutInfo(void)
  * @param	None
  * @return	None
  */
-void CLogViewerDlg::SaveLayoutInfo(void)
+void CLogViewerDlg::saveLayoutInfo(void)
 {
 	// Check table column format data validity
 	if (m_apGrdColFormat == NULL) return;

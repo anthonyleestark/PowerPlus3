@@ -61,7 +61,7 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	afx_msg void OnDestroy();
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 	afx_msg void OnRemoveAllBtn();
 	afx_msg void OnDetailBtn();
 	afx_msg void OnCloseBtn();
@@ -73,7 +73,7 @@ public:
 
 public:
 	// Member functions
-	void SetupLanguage(void);
+	void setupLanguage(void);
 	void SetupLogViewerList(LANGTABLE_PTR ptrLanguage);
 	void DrawLogViewerTable(void);
 	BOOL LoadAppEventLogData(void);
@@ -81,7 +81,7 @@ public:
 	void DisplayLogDetails(int nIndex);
 
 	// Layout functions
-	void UpdateLayoutInfo(void);
-	void LoadLayoutInfo(void);
-	void SaveLayoutInfo(void);
+	void updateLayoutInfo(void);
+	void loadLayoutInfo(void);
+	void saveLayoutInfo(void);
 };

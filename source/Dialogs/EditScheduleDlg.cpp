@@ -89,9 +89,9 @@ void CEditScheduleDlg::DoDataExchange(CDataExchange* pDX)
  * @param	None
  * @return	int
  */
-int CEditScheduleDlg::RegisterDialogManagement(void)
+int CEditScheduleDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::registerDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -99,7 +99,7 @@ int CEditScheduleDlg::RegisterDialogManagement(void)
 	}
 
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
@@ -123,10 +123,10 @@ int CEditScheduleDlg::RegisterDialogManagement(void)
  * @param	None
  * @return	true/false
  */
-bool CEditScheduleDlg::UnregisterDialogManagement(void)
+bool CEditScheduleDlg::unregisterDialogManagement(void)
 {
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
@@ -142,7 +142,7 @@ bool CEditScheduleDlg::UnregisterDialogManagement(void)
 		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_CANCEL_BTN);
 	}
 
-	return SDialog::UnregisterDialogManagement();
+	return SDialog::unregisterDialogManagement();
 }
 
 
@@ -194,16 +194,16 @@ BOOL CEditScheduleDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
-	SetUseEnter(false);
+	setUseEnter(false);
 
 	// Init dialog items
-	SetupLanguage();
+	setupLanguage();
 
 	// Update data
-	SetupDialogItemState();
+	setupDialogItemState();
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
 
 	return true;
 }
@@ -216,7 +216,7 @@ BOOL CEditScheduleDlg::OnInitDialog()
 void CEditScheduleDlg::OnClose()
 {
 	// If not forced closing by request
-	if (!IsForceClosingByRequest()) {
+	if (!isForceClosingByRequest()) {
 
 		// If data changed, ask for saving before closing dialog
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
@@ -233,17 +233,17 @@ void CEditScheduleDlg::OnClose()
 				SaveScheduleItem();
 
 				// Return UPDATE flag
-				SetReturnFlag(ReturnFlag::Update);
+				setReturnFlag(ReturnFlag::Update);
 			}
 			else {
 				// Return CLOSE flag
-				SetReturnFlag(ReturnFlag::Close);
+				setReturnFlag(ReturnFlag::Close);
 			}
 		}
 	}
 	else {
 		// Return CLOSE flag
-		SetReturnFlag(ReturnFlag::Close);
+		setReturnFlag(ReturnFlag::Close);
 	}
 
 	// Close dialog
@@ -258,7 +258,7 @@ void CEditScheduleDlg::OnClose()
 void CEditScheduleDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_DESTROYED, this->getCaption());
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -269,7 +269,7 @@ void CEditScheduleDlg::OnDestroy()
  * @param	None
  * @return	LRESULT (0:Success, else:Failed)
  */
-LRESULT CEditScheduleDlg::RequestCloseDialog(void)
+LRESULT CEditScheduleDlg::requestCloseDialog(void)
 {
 	// If data changed, ask for saving before closing dialog
 	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
@@ -285,7 +285,7 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 			SaveScheduleItem();
 
 			// Return UPDATE flag
-			SetReturnFlag(ReturnFlag::Update);
+			setReturnFlag(ReturnFlag::Update);
 		}
 		else if (nConfirm == IDCANCEL) {
 			// Request denied
@@ -294,11 +294,11 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
 	}
 	else {
 		// Return CLOSE flag
-		SetReturnFlag(ReturnFlag::Close);
+		setReturnFlag(ReturnFlag::Close);
 	}
 
 	// Request accepted
-	return SDialog::RequestCloseDialog();
+	return SDialog::requestCloseDialog();
 }
 
 /**
@@ -306,13 +306,13 @@ LRESULT CEditScheduleDlg::RequestCloseDialog(void)
  * @param	None
  * @return	None
  */
-void CEditScheduleDlg::SetupLanguage()
+void CEditScheduleDlg::setupLanguage()
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetCaptionFromLanguage(GetDialogID());
+	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -330,11 +330,11 @@ void CEditScheduleDlg::SetupLanguage()
 			break;
 
 		case IDC_EDITSCHEDULE_ACTION_LIST:
-			SetupComboBox(nID, pAppLang);
+			setupComboBox(nID, pAppLang);
 			break;
 
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(pWndChild, nID, pAppLang);
 			break;
 		}
 	}
@@ -343,7 +343,7 @@ void CEditScheduleDlg::SetupLanguage()
 	SetupActiveDayList(pAppLang);
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -352,7 +352,7 @@ void CEditScheduleDlg::SetupLanguage()
  * @param	ptrLanguage - Language package pointer
  * @return	None
  */
-void CEditScheduleDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
+void CEditScheduleDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	// Action list
 	if (nComboID == IDC_EDITSCHEDULE_ACTION_LIST) {
@@ -375,7 +375,7 @@ void CEditScheduleDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguag
 	}
 
 	// Default
-	SDialog::SetupComboBox(nComboID, ptrLanguage);
+	SDialog::setupComboBox(nComboID, ptrLanguage);
 }
 
 /**
@@ -424,7 +424,7 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pActiveDayListTable->SetRowCount(Constant::Max::DaysOfWeek);
 
 	// Draw table
-	DrawActiveDayTable(GetReadOnlyMode());
+	DrawActiveDayTable(isReadOnlyMode());
 
 	// Display table
 	m_pActiveDayListTable->SetListMode(true);
@@ -526,16 +526,16 @@ void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
  * @param	None
  * @return	None
  */
-void CEditScheduleDlg::SetupDialogItemState()
+void CEditScheduleDlg::setupDialogItemState()
 {
 	// Setup checkboxes
 	m_bEnabled = m_schScheduleItemTemp.isEnabled();
 	m_bRepeat = m_schScheduleItemTemp.isRepeatEnabled();
 
 	// If is currently in read-only or view mode
-	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
+	if ((isReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Disable top checkbox
-		EnableItem(IDC_EDITSCHEDULE_ENABLE_CHK, false);
+		enableItem(IDC_EDITSCHEDULE_ENABLE_CHK, false);
 	}
 
 	// Enable/disable sub-items
@@ -581,7 +581,7 @@ void CEditScheduleDlg::SetupDialogItemState()
 	EnableSaveButton(false);
 
 	// Read-only mode (if enabled)
-	if (GetReadOnlyMode() == true) {
+	if (isReadOnlyMode() == true) {
 		CWnd* pWndChild = GetTopWindow();
 		while (pWndChild != NULL) {
 			pWndChild->EnableWindow(false);
@@ -590,7 +590,7 @@ void CEditScheduleDlg::SetupDialogItemState()
 	}
 
 	// Default
-	SDialog::SetupDialogItemState();
+	SDialog::setupDialogItemState();
 }
 
 /**
@@ -635,7 +635,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 void CEditScheduleDlg::DisableActiveDayTable(bool bDisable)
 {
 	// If is currently in read-only or view mode
-	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
+	if ((isReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Force disable
 		bDisable = true;
 	}
@@ -757,7 +757,7 @@ void CEditScheduleDlg::SaveScheduleItem()
  * @param	None
  * @return	bool - Flag to mark data changed or not
  */
-bool CEditScheduleDlg::CheckDataChangeState()
+bool CEditScheduleDlg::checkDataChangeState()
 {
 	// Update item
 	UpdateScheduleItem();
@@ -776,7 +776,7 @@ bool CEditScheduleDlg::CheckDataChangeState()
 void CEditScheduleDlg::EnableSaveButton(bool bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
-	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
+	if ((isReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Force disable
 		bEnable = false;
 	}
@@ -800,7 +800,7 @@ void CEditScheduleDlg::EnableSaveButton(bool bEnable)
 void CEditScheduleDlg::EnableSubItems(bool bEnable)
 {
 	// If is currently in read-only or view mode, do not enable
-	if ((GetReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
+	if ((isReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Force disable
 		bEnable = false;
 	}
@@ -897,7 +897,7 @@ void CEditScheduleDlg::SetDispMode(int nMode)
 void CEditScheduleDlg::OnApply()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_APPLY_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_APPLY_BTN);
 
 	// Save data if changed
 	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
@@ -906,11 +906,11 @@ void CEditScheduleDlg::OnApply()
 		SaveScheduleItem();
 
 		// Return UPDATE flag
-		SetReturnFlag(ReturnFlag::Update);
+		setReturnFlag(ReturnFlag::Update);
 	}
 	else {
 		// Return OK flag
-		SetReturnFlag(ReturnFlag::OK);
+		setReturnFlag(ReturnFlag::OK);
 	}
 
 	// Close dialog
@@ -925,10 +925,10 @@ void CEditScheduleDlg::OnApply()
 void CEditScheduleDlg::OnExit()
 {
 	// If not forced closing by request
-	if (!IsForceClosingByRequest()) {
+	if (!isForceClosingByRequest()) {
 
 		// Save app event log if enabled
-		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_CANCEL_BTN);
+		outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_EDITSCHEDULE_CANCEL_BTN);
 
 		// If data changed, ask for saving before closing dialog
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
@@ -945,17 +945,17 @@ void CEditScheduleDlg::OnExit()
 				SaveScheduleItem();
 
 				// Return UPDATE flag
-				SetReturnFlag(ReturnFlag::Update);
+				setReturnFlag(ReturnFlag::Update);
 			}
 			else {
 				// Return CANCEL flag
-				SetReturnFlag(ReturnFlag::Cancel);
+				setReturnFlag(ReturnFlag::Cancel);
 			}
 		}
 	}
 	else {
 		// Return CANCEL flag
-		SetReturnFlag(ReturnFlag::Cancel);
+		setReturnFlag(ReturnFlag::Cancel);
 	}
 
 	// Close dialog
@@ -974,7 +974,7 @@ void CEditScheduleDlg::OnEnableSchedule()
 	EnableSubItems(m_bEnabled);
 
 	// Check for data change
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 
 	// Enable/disable active day table
 	DisableActiveDayTable(!(m_schScheduleItemTemp.isEnabled() && m_schScheduleItemTemp.isRepeatEnabled()));
@@ -992,10 +992,10 @@ void CEditScheduleDlg::OnChangeAction()
 {
 	// Save app event log if enabled
 	m_pActionList->GetCurSel();
-	OutputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_EDITSCHEDULE_ACTION_LIST);
+	outputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_EDITSCHEDULE_ACTION_LIST);
 
 	// Check for value change and enable/disable save button
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
@@ -1007,7 +1007,7 @@ void CEditScheduleDlg::OnChangeAction()
 void CEditScheduleDlg::OnChangeRepeatDaily()
 {
 	// Check for data change
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 
 	// Enable/disable active day table
 	DisableActiveDayTable(!m_schScheduleItemTemp.isRepeatEnabled());
@@ -1093,7 +1093,7 @@ void CEditScheduleDlg::OnTimeEditKillFocus()
 	}
 
 	// Check for value change and enable/disable save button
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
@@ -1116,7 +1116,7 @@ void CEditScheduleDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Check for value change and enable/disable save button
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
 }
 
@@ -1132,7 +1132,7 @@ void CEditScheduleDlg::OnClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Update data (also check change state)
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 
 	// Enable/disable save button
 	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));
@@ -1150,7 +1150,7 @@ void CEditScheduleDlg::OnRightClickActiveDayList(NMHDR* /*pNMHDR*/, LRESULT* pRe
 	*pResult = NULL;
 
 	// Update data (also check change state)
-	setFlagValue(AppFlagID::dialogDataChanged, CheckDataChangeState());
+	setFlagValue(AppFlagID::dialogDataChanged, checkDataChangeState());
 
 	// Enable/disable save button
 	EnableSaveButton(getFlagValue(AppFlagID::dialogDataChanged));

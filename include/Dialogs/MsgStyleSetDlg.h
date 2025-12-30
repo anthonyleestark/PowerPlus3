@@ -84,10 +84,10 @@ public:
 
 protected:
 	// Dialog and items setup functions
-	virtual void SetupLanguage(void);
-	virtual void SetupComboBox(unsigned nComboID, LANGTABLE_PTR pLanguage);
-	virtual void SetupDialogItemState(void);
-	virtual void RefreshDialogItemState(bool bRecheckState = false);
+	virtual void setupLanguage(void);
+	virtual void setupComboBox(unsigned nComboID, LANGTABLE_PTR pLanguage);
+	virtual void setupDialogItemState(void);
+	virtual void refreshDialogItemState(bool bRecheckState = false);
 
 	// Displaying functions
 	void RedrawIconPreview(LPDRAWITEMSTRUCT lpDrawItemStruct);
@@ -96,7 +96,7 @@ protected:
 
 public:
 	// Data processing functions
-	void UpdateDialogData(bool bUpdate);
+	void updateDialogData(bool bUpdate);
 	void GetData(RmdMsgStyleSet& msgStyleData) const {
 		msgStyleData.copy(m_rmsMsgStyleData);
 	};

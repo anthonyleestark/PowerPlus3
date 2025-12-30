@@ -105,9 +105,9 @@ void CHotkeySetDlg::DoDataExchange(CDataExchange* pDX)
  * @param	None
  * @return	int
  */
-int CHotkeySetDlg::RegisterDialogManagement(void)
+int CHotkeySetDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::registerDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -115,7 +115,7 @@ int CHotkeySetDlg::RegisterDialogManagement(void)
 	}
 
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
@@ -146,10 +146,10 @@ int CHotkeySetDlg::RegisterDialogManagement(void)
  * @param	None
  * @return	true/false
  */
-bool CHotkeySetDlg::UnregisterDialogManagement(void)
+bool CHotkeySetDlg::unregisterDialogManagement(void)
 {
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
@@ -172,7 +172,7 @@ bool CHotkeySetDlg::UnregisterDialogManagement(void)
 		pCtrlMan->RemoveControl(IDC_HOTKEYSET_FUNCKEY_LIST);
 	}
 
-	return SDialog::UnregisterDialogManagement();
+	return SDialog::unregisterDialogManagement();
 }
 
 
@@ -233,28 +233,28 @@ BOOL CHotkeySetDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Do not use Enter button
-	SetUseEnter(false);
+	setUseEnter(false);
 
 	// Register message box caption
-	RegisterMessageBoxCaption(MSGBOX_HOTKEYSET_CAPTION);
+	registerMessageBoxCaption(MSGBOX_HOTKEYSET_CAPTION);
 
 	// Load data
 	LoadHotkeySetData();
 
 	// Init dialog items
-	LoadLayoutInfo();
-	SetupLanguage();
+	loadLayoutInfo();
+	setupLanguage();
 
 	// Update data
 	UpdateHotkeySet();
 	DisplayHotkeyDetails(INT_INVALID);
-	RefreshDialogItemState();
+	refreshDialogItemState();
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
 
 	// Read-only mode (if enabled)
-	if (GetReadOnlyMode() == true) {
+	if (isReadOnlyMode() == true) {
 		CWnd* pWndChild = GetTopWindow();
 		while (pWndChild != NULL) {
 			pWndChild->EnableWindow(false);
@@ -273,14 +273,14 @@ BOOL CHotkeySetDlg::OnInitDialog()
 void CHotkeySetDlg::OnClose()
 {
 	// If not forced closing by request
-	if (!IsForceClosingByRequest()) {
+	if (!isForceClosingByRequest()) {
 
 		// Ask for saving before exiting if data changed
-		bool bIsChanged = CheckDataChangeState();
+		bool bIsChanged = checkDataChangeState();
 		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 		if (bIsChanged == true) {
 			// Show save confirmation message
-			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
+			int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Save data
 				SaveHotkeySetData();
@@ -300,11 +300,11 @@ void CHotkeySetDlg::OnClose()
 void CHotkeySetDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_DESTROYED, this->getCaption());
 
 	// Save layout info data
-	UpdateLayoutInfo();
-	SaveLayoutInfo();
+	updateLayoutInfo();
+	saveLayoutInfo();
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -318,10 +318,10 @@ void CHotkeySetDlg::OnDestroy()
 void CHotkeySetDlg::OnApply()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_APPLY_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_APPLY_BTN);
 
 	// Save data if changed
-	bool bIsChanged = CheckDataChangeState();
+	bool bIsChanged = checkDataChangeState();
 	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 	if (bIsChanged == true) {
 		// Save data
@@ -340,17 +340,17 @@ void CHotkeySetDlg::OnApply()
 void CHotkeySetDlg::OnCancel()
 {
 	// If not forced closing by request
-	if (!IsForceClosingByRequest()) {
+	if (!isForceClosingByRequest()) {
 
 		// Save app event log if enabled
-		OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_CANCEL_BTN);
+		outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_CANCEL_BTN);
 
 		// Ask for saving before exiting if data changed
-		bool bIsChanged = CheckDataChangeState();
+		bool bIsChanged = checkDataChangeState();
 		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 		if (bIsChanged == true) {
 			// Show save confirmation message
-			int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
+			int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
 				// Save data
 				SaveHotkeySetData();
@@ -370,7 +370,7 @@ void CHotkeySetDlg::OnCancel()
 void CHotkeySetDlg::OnAdd()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_ADD_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_ADD_BTN);
 
 	// Update data
 	Add();
@@ -387,7 +387,7 @@ void CHotkeySetDlg::OnAdd()
 void CHotkeySetDlg::OnRemove()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_REMOVE_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_REMOVE_BTN);
 
 	// If there's no item, do nothing
 	int nItemNum = m_hksHotkeySetTemp.getItemNum();
@@ -400,7 +400,7 @@ void CHotkeySetDlg::OnRemove()
 		return;
 
 	// Ask before remove
-	int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
+	int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
 
 		// Update data
@@ -419,14 +419,14 @@ void CHotkeySetDlg::OnRemove()
 void CHotkeySetDlg::OnRemoveAll()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_REMOVEALL_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_REMOVEALL_BTN);
 
 	// If all item are empty, do nothing
 	if (m_hksHotkeySetTemp.isAllEmpty() == true)
 		return;
 
 	// Ask before remove
-	int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
+	int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
 
 		// Update data
@@ -445,7 +445,7 @@ void CHotkeySetDlg::OnRemoveAll()
 void CHotkeySetDlg::OnCheckAll()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_CHECKALL_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_CHECKALL_BTN);
 
 	// If all item are empty, do nothing
 	if (m_hksHotkeySetTemp.isAllEmpty() == true)
@@ -463,7 +463,7 @@ void CHotkeySetDlg::OnCheckAll()
 void CHotkeySetDlg::OnUncheckAll()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_UNCHECKALL_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_UNCHECKALL_BTN);
 
 	// If all item are empty, do nothing
 	if (m_hksHotkeySetTemp.isAllEmpty() == true)
@@ -481,7 +481,7 @@ void CHotkeySetDlg::OnUncheckAll()
 void CHotkeySetDlg::OnExport()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_EXPORT_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_EXPORT_BTN);
 }
 
 /**
@@ -509,7 +509,7 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 	// Display item details
 	DisplayHotkeyDetails(GetListCurSel());
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -524,7 +524,7 @@ void CHotkeySetDlg::OnClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Refresh button states
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -539,7 +539,7 @@ void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 	*pResult = NULL;
 
 	// Refresh button states
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -547,13 +547,13 @@ void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
  * @param	None
  * @return	LRESULT (0:Success, else:Failed)
  */
-LRESULT CHotkeySetDlg::RequestCloseDialog(void)
+LRESULT CHotkeySetDlg::requestCloseDialog(void)
 {
 	// Ask for saving before exiting if data changed
-	bool bIsChanged = CheckDataChangeState();
+	bool bIsChanged = checkDataChangeState();
 	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 	if (bIsChanged == true) {
-		int nConfirm = DisplayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
+		int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Save data
 			SaveHotkeySetData();
@@ -565,7 +565,7 @@ LRESULT CHotkeySetDlg::RequestCloseDialog(void)
 	}
 
 	// Request accepted
-	return SDialog::RequestCloseDialog();
+	return SDialog::requestCloseDialog();
 }
 
 /**
@@ -573,13 +573,13 @@ LRESULT CHotkeySetDlg::RequestCloseDialog(void)
  * @param	None
  * @return	None
  */
-void CHotkeySetDlg::SetupLanguage()
+void CHotkeySetDlg::setupLanguage()
 {
 	// Load app language package
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetCaptionFromLanguage(GetDialogID());
+	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup language for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -596,11 +596,11 @@ void CHotkeySetDlg::SetupLanguage()
 
 		case IDC_HOTKEYSET_ACTION_LIST:
 		case IDC_HOTKEYSET_FUNCKEY_LIST:
-			SetupComboBox(nID, pAppLang);
+			setupComboBox(nID, pAppLang);
 			break;
 
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(pWndChild, nID, pAppLang);
 			break;
 		}
 	}
@@ -609,7 +609,7 @@ void CHotkeySetDlg::SetupLanguage()
 	SetupHotkeySetList(pAppLang);
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -665,10 +665,10 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 	m_pHotkeySetListTable->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Row);
 
 	// Draw table
-	DrawHotkeySetTable(GetReadOnlyMode());
+	DrawHotkeySetTable(isReadOnlyMode());
 
 	// Update layout info
-	UpdateLayoutInfo();
+	updateLayoutInfo();
 
 	// Display table
 	m_pHotkeySetListTable->SetListMode(true);
@@ -829,7 +829,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
  * @param	ptrLanguage - Language package pointer
  * @return	None
  */
-void CHotkeySetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
+void CHotkeySetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 {
 	switch (nComboID)
 	{
@@ -854,7 +854,7 @@ void CHotkeySetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 	}
 
 	// Default
-	SDialog::SetupComboBox(nComboID, ptrLanguage);
+	SDialog::setupComboBox(nComboID, ptrLanguage);
 }
 
 /**
@@ -862,23 +862,23 @@ void CHotkeySetDlg::SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
  * @param	bRecheckState - Recheck all item's state
  * @return	None
  */
-void CHotkeySetDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
+void CHotkeySetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 {
 	// Enable/disable buttons if data is all empty or not
 	bool bIsAllEmpty = m_hksHotkeySetTemp.isAllEmpty();
-	EnableItem(IDC_HOTKEYSET_REMOVE_BTN, !bIsAllEmpty);
-	EnableItem(IDC_HOTKEYSET_REMOVEALL_BTN, !bIsAllEmpty);
+	enableItem(IDC_HOTKEYSET_REMOVE_BTN, !bIsAllEmpty);
+	enableItem(IDC_HOTKEYSET_REMOVEALL_BTN, !bIsAllEmpty);
 
 	// Enable/disable buttons if data changed or not
-	bool bIsChanged = CheckDataChangeState();
+	bool bIsChanged = checkDataChangeState();
 	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-	EnableItem(IDC_HOTKEYSET_APPLY_BTN, bIsChanged);
+	enableItem(IDC_HOTKEYSET_APPLY_BTN, bIsChanged);
 
 	// Update "Check All" button state
 	UpdateCheckAllBtnState();
 
 	// Default
-	SDialog::RefreshDialogItemState(bRecheckState);
+	SDialog::refreshDialogItemState(bRecheckState);
 }
 
 /**
@@ -889,7 +889,7 @@ void CHotkeySetDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
 void CHotkeySetDlg::UpdateCheckAllBtnState(bool bRecheck /* = true */)
 {
 	// If dialog items are being locked, do nothing
-	if (GetLockState() == true)
+	if (getLockState() == true)
 		return;
 
 	// Get buttons
@@ -1084,7 +1084,7 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
  * @param	None
  * @return	None
  */
-void CHotkeySetDlg::UpdateLayoutInfo(void)
+void CHotkeySetDlg::updateLayoutInfo(void)
 {
 	// Check table validity
 	if (m_pHotkeySetListTable == NULL) return;
@@ -1107,7 +1107,7 @@ void CHotkeySetDlg::UpdateLayoutInfo(void)
  * @param	None
  * @return	None
  */
-void CHotkeySetDlg::LoadLayoutInfo(void)
+void CHotkeySetDlg::loadLayoutInfo(void)
 {
 	// Define default table columns format
 	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
@@ -1148,7 +1148,7 @@ void CHotkeySetDlg::LoadLayoutInfo(void)
  * @param	None
  * @return	None
  */
-void CHotkeySetDlg::SaveLayoutInfo(void)
+void CHotkeySetDlg::saveLayoutInfo(void)
 {
 	// Check table column format data validity
 	if (m_apGrdColFormat == NULL) return;
@@ -1222,7 +1222,7 @@ bool CHotkeySetDlg::SaveHotkeySetData()
  * @param	None
  * @return	None
  */
-bool CHotkeySetDlg::CheckDataChangeState()
+bool CHotkeySetDlg::checkDataChangeState()
 {
 	bool bChangeFlag = false;
 
@@ -1307,7 +1307,7 @@ void CHotkeySetDlg::Add(void)
 	m_hksHotkeySetTemp.update(hksTemp);
 
 	// Refresh button state
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -1321,7 +1321,7 @@ void CHotkeySetDlg::Remove(int nIndex)
 	m_hksHotkeySetTemp.remove(nIndex);
 
 	// Refresh button state
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -1335,7 +1335,7 @@ void CHotkeySetDlg::RemoveAll(void)
 	m_hksHotkeySetTemp.removeAll();
 
 	// Refresh button state
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -1358,7 +1358,7 @@ void CHotkeySetDlg::SwitchAllItemState(bool bState)
 	UpdateHotkeySet();
 
 	// Refresh button state
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -1429,7 +1429,7 @@ bool CHotkeySetDlg::Validate(const Item& hksItem, bool bShowMsg /* = false */)
 	// Show error message if enabled
 	if ((bShowMsg == true) && (!arrMsgString.empty())) {
 		for (int nIndex = 0; nIndex < arrMsgString.size(); nIndex++) {
-			DisplayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
+			displayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
 		}
 	}
 

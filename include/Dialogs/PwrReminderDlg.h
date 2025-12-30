@@ -58,8 +58,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -144,29 +144,29 @@ public:
 	afx_msg void OnPwrEventRadBtnClicked(UINT nID);
 	afx_msg void OnRepeatSet();
 	afx_msg void OnCustomizeStyle();
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 protected:
 	// Dialog setup functions
-	void SetupLanguage();
+	void setupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
 	void DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly = false, LANGTABLE_PTR ptrLanguage = NULL);
-	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
+	void setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
 	void SwitchMode(bool bRedraw = false);
 
 	// Layout functions
-	void UpdateLayoutInfo(void);
-	void LoadLayoutInfo(void);
-	void SaveLayoutInfo(void);
+	void updateLayoutInfo(void);
+	void loadLayoutInfo(void);
+	void saveLayoutInfo(void);
 
 	// Dialog item properties functions
-	void SetupDialogItemState();
+	void setupDialogItemState();
 	void UpdateDataItemList();
 	void DisableTable(bool bDisable);
 	void RedrawDataTable(bool bReadOnly = false);
 	void DisplayItemDetails(int nIndex);
-	void RefreshDialogItemState(bool bRecheckState = false);
+	void refreshDialogItemState(bool bRecheckState = false);
 	void UpdateCheckAllBtnState(bool bRecheck = false);
 	void RefreshDetailView(int nMode);
 	void UpdateMsgCounter(int nCount);
@@ -176,7 +176,7 @@ private:
 	// Data processing functions
 	bool LoadPwrReminderData();
 	bool SavePwrReminderData();
-	bool CheckDataChangeState();
+	bool checkDataChangeState();
 
 	// Data processing handlers
 	void Add();

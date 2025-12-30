@@ -50,9 +50,9 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
  * @param	None
  * @return	int
  */
-int CAboutDlg::RegisterDialogManagement(void)
+int CAboutDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::RegisterDialogManagement();
+	size_t nRet = SDialog::registerDialogManagement();
 	if (nRet != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -60,7 +60,7 @@ int CAboutDlg::RegisterDialogManagement(void)
 	}
 
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
@@ -80,10 +80,10 @@ int CAboutDlg::RegisterDialogManagement(void)
  * @param	None
  * @return	true/false
  */
-bool CAboutDlg::UnregisterDialogManagement(void)
+bool CAboutDlg::unregisterDialogManagement(void)
 {
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
@@ -95,7 +95,7 @@ bool CAboutDlg::UnregisterDialogManagement(void)
 		pCtrlMan->RemoveControl(IDC_ABOUT_CLOSE_BTN);
 	}
 
-	return SDialog::UnregisterDialogManagement();
+	return SDialog::unregisterDialogManagement();
 }
 
 
@@ -134,10 +134,10 @@ BOOL CAboutDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Setup dialog interface
-	SetupLanguage();
+	setupLanguage();
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
 
 	return true;
 }
@@ -161,7 +161,7 @@ void CAboutDlg::OnClose()
 void CAboutDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_DESTROYED, this->getCaption());
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -172,13 +172,13 @@ void CAboutDlg::OnDestroy()
  * @param	None
  * @return	None
  */
-void CAboutDlg::SetupLanguage(void)
+void CAboutDlg::setupLanguage(void)
 {
 	// Load app language packages
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
 
 	// Setup dialog title
-	this->SetCaptionFromLanguage(GetDialogID());
+	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -200,13 +200,13 @@ void CAboutDlg::SetupLanguage(void)
 			break;
 
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(pWndChild, nID, pAppLang);
 			break;
 		}
 	}
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -269,7 +269,7 @@ void CAboutDlg::SetAppInfoLabel(void)
 void CAboutDlg::OnCloseButton()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_ABOUT_CLOSE_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_ABOUT_CLOSE_BTN);
 
 	// Close dialog
 	EndDialog(IDOK);
@@ -284,7 +284,7 @@ void CAboutDlg::OnCloseButton()
 void CAboutDlg::OnViewFacebookProfileLink(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEW_FACEBOOK_PROFILE_LINK);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEW_FACEBOOK_PROFILE_LINK);
 
 	// Open profile link
 	AppCore::openWebURL(_T("https://facebook.com/anthonyleestark"));

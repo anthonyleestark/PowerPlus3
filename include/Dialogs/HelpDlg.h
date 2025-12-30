@@ -44,8 +44,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -62,7 +62,7 @@ public:
 
 protected:
 	// Member functions
-	void SetupLanguage(void);
+	void setupLanguage(void);
 	void SetupEditbox(CEdit& pEdit);
 	bool LoadRCFileData(String& strRCFileData);
 	void UpdateSwitchViewModeButton(void);

@@ -50,8 +50,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -85,31 +85,31 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	afx_msg void OnDestroy();
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 
 	// Member functions
-	void SetupLanguage();
+	void setupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
 	void DrawDataTable(bool bReadOnly = false);
 
 	// Layout functions
-	void UpdateLayoutInfo(void);
-	void LoadLayoutInfo(void);
-	void SaveLayoutInfo(void);
+	void updateLayoutInfo(void);
+	void loadLayoutInfo(void);
+	void saveLayoutInfo(void);
 
 	// Dialog item properties functions
-	void SetupDialogItemState();
+	void setupDialogItemState();
 	void UpdateDataItemList();
 	void DisableDataTable(bool bDisable);
 	void RedrawDataTable(bool bReadOnly = false);
-	void RefreshDialogItemState(bool bRecheckState = false);
+	void refreshDialogItemState(bool bRecheckState = false);
 	void UpdateCheckAllBtnState(bool bRecheck = false);
 
 	// Data processing functions
 	bool LoadScheduleSettings();
 	bool SaveScheduleSettings();
 	void UpdateScheduleSettings();
-	bool CheckDataChangeState();
+	bool checkDataChangeState();
 
 	// Data processing handlers
 	void Add(Item& schItem);
