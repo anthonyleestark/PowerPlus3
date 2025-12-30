@@ -214,7 +214,7 @@ void CHelpDlg::OnSwitchViewMode()
 void CHelpDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
@@ -260,7 +260,7 @@ void CHelpDlg::SetupEditbox(CEdit& pEdit)
 bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 {
 	// Get currently displaying language
-	unsigned currentLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption(true);
+	unsigned currentLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguageOption(true);
 
 	// Remove existing data
 	strRCFileData.empty();
@@ -300,7 +300,7 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 	if (strRCFileData.isEmpty()) {
 
 		// Load app language package
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 		if (GetViewMode() == ViewMode::HelpFile) {
 			// Can not load help file
 			strRCFileData = getLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
@@ -345,7 +345,7 @@ void CHelpDlg::UpdateSwitchViewModeButton(void)
 	}
 
 	// Get app current language package
-	LANGTABLE_PTR ptrLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR ptrLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 	const wchar_t* titleString = getLanguageString(ptrLang, nStringID);
 
 	// Reupdate button title

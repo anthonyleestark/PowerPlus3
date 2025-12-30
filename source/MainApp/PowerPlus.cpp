@@ -36,19 +36,19 @@ CPowerPlusApp::CPowerPlusApp() : SWinApp()
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
 
 	// Init application data pointers
-	m_pcfgAppConfig = NULL;
-	m_pschScheduleData = NULL;
-	m_phksHotkeySetData = NULL;
-	m_ppwrReminderData = NULL;
+	appConfigDataPtr_ = NULL;
+	scheduleDataPtr_ = NULL;
+	hotkeySetDataPtr_ = NULL;
+	reminderDataPtr_ = NULL;
 
 	// Init logging pointers
-	m_pAppHistoryLog = NULL;
+	appHistoryLogPtr_ = NULL;
 
 	// Hook procedure handle
-	m_hAppKeyboardHook = NULL;
+	appKeyboardHookHandler_ = NULL;
 
 	// Init DebugTest dialog
-	m_pDebugTestDlg = NULL;
+	debugTestDlgPtr_ = NULL;
 }
 
 /**
@@ -57,33 +57,33 @@ CPowerPlusApp::CPowerPlusApp() : SWinApp()
 CPowerPlusApp::~CPowerPlusApp()
 {
 	// Delete app data pointers
-	if (m_pcfgAppConfig != NULL) {
-		delete m_pcfgAppConfig;
-		m_pcfgAppConfig = NULL;
+	if (appConfigDataPtr_ != NULL) {
+		delete appConfigDataPtr_;
+		appConfigDataPtr_ = NULL;
 	}
 
-	if (m_pschScheduleData != NULL) {
-		m_pschScheduleData->deleteAll();
-		delete m_pschScheduleData;
-		m_pschScheduleData = NULL;
+	if (scheduleDataPtr_ != NULL) {
+		scheduleDataPtr_->deleteAll();
+		delete scheduleDataPtr_;
+		scheduleDataPtr_ = NULL;
 	}
 
-	if (m_phksHotkeySetData != NULL) {
-		m_phksHotkeySetData->deleteAll();
-		delete m_phksHotkeySetData;
-		m_phksHotkeySetData = NULL;
+	if (hotkeySetDataPtr_ != NULL) {
+		hotkeySetDataPtr_->deleteAll();
+		delete hotkeySetDataPtr_;
+		hotkeySetDataPtr_ = NULL;
 	}
 
-	if (m_ppwrReminderData != NULL) {
-		m_ppwrReminderData->deleteAll();
-		delete m_ppwrReminderData;
-		m_ppwrReminderData = NULL;
+	if (reminderDataPtr_ != NULL) {
+		reminderDataPtr_->deleteAll();
+		delete reminderDataPtr_;
+		reminderDataPtr_ = NULL;
 	}
 
 	// Delete log data pointers
-	if (m_pAppHistoryLog != NULL) {
-		delete m_pAppHistoryLog;
-		m_pAppHistoryLog = NULL;
+	if (appHistoryLogPtr_ != NULL) {
+		delete appHistoryLogPtr_;
+		appHistoryLogPtr_ = NULL;
 	}
 
 	// Destroy DebugTest dialog
@@ -111,20 +111,20 @@ BOOL CPowerPlusApp::InitInstance()
 	setAppLaunchTime(DateTimeUtils::getCurrentDateTime());
 
 	// Set application window caption (with product version number)
-	if (!SetAppWindowCaption(IDS_APP_WINDOW_CAPTION, true)) {
+	if (!setAppWindowCaption(IDS_APP_WINDOW_CAPTION, true)) {
 
 		// Set title string failed
 		TRACE_ERROR("Error: Set app window caption failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
-		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
+		postErrorMessage(APP_ERROR_APP_INIT_FAILURE);
 		return false;
 	}
 
 	// Check if there is any other instance currently running
 	// If yes, bring that instance to top and exit current instance
-	if (HWND hPrevWnd = FindWindow(NULL, GetAppWindowCaption())) {
+	if (HWND hPrevWnd = FindWindow(NULL, getAppWindowCaption())) {
 		PostMessage(hPrevWnd, SM_WND_SHOWDIALOG, true, (LPARAM)0);
 		BringWindowToTop(hPrevWnd);
 		SetForegroundWindow(hPrevWnd);
@@ -156,7 +156,7 @@ BOOL CPowerPlusApp::InitInstance()
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
-		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
+		postErrorMessage(APP_ERROR_APP_INIT_FAILURE);
 		return false;
 	}
 
@@ -165,7 +165,7 @@ BOOL CPowerPlusApp::InitInstance()
 
 	// Check CTRL key press state and open DebugTest dialog
 	if (IS_PRESSED(VK_CONTROL)) {
-		HWND hDebugTestDlg = m_pDebugTestDlg->GetSafeHwnd();
+		HWND hDebugTestDlg = debugTestDlgPtr_->GetSafeHwnd();
 		PostMessage(hDebugTestDlg, SM_WND_SHOWDIALOG, true, NULL);
 	}
 
@@ -180,7 +180,7 @@ BOOL CPowerPlusApp::InitInstance()
 	CreateDirectory(subDirectory, NULL);
 
 	// Setup low-level keyboard hook
-	m_hAppKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
+	appKeyboardHookHandler_ = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
 
 	// Initialize app data
 	if (!initAppData()) {
@@ -190,15 +190,15 @@ BOOL CPowerPlusApp::InitInstance()
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
-		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
+		postErrorMessage(APP_ERROR_APP_INIT_FAILURE);
 		return false;
 	}
 	
 	// Initialize default data
-	m_pcfgAppConfig->setDefaultData();
-	m_pschScheduleData->setDefaultData();
-	m_phksHotkeySetData->setDefaultData();
-	m_ppwrReminderData->setDefaultData();
+	appConfigDataPtr_->setDefaultData();
+	scheduleDataPtr_->setDefaultData();
+	hotkeySetDataPtr_->setDefaultData();
+	reminderDataPtr_->setDefaultData();
 
 	// Load registry app data
 	if (!loadRegistryAppData()) {
@@ -208,24 +208,24 @@ BOOL CPowerPlusApp::InitInstance()
 	}
 
 	// Initialize application language
-	SetAppLanguageOption(getAppOption(AppOptionID::languageID));
-	if (!InitAppLanguage()) {
+	setAppLanguageOption(getAppOption(AppOptionID::languageID));
+	if (!initAppLanguage()) {
 
 		// Trace log
 		TRACE_ERROR("Error: Init app language failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
-		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
+		postErrorMessage(APP_ERROR_APP_INIT_FAILURE);
 		return false;
 	}
 	
 	// Initialize log objects
-	InitAppEventLog();
+	initAppEventLog();
 	initAppHistoryLog();
 
 	// Output event log: InitInstance
-	OutputEventLog(LOG_EVENT_INIT_INSTANCE);
+	outputEventLog(LOG_EVENT_INIT_INSTANCE);
 
 	// Register to system wakeup event notifications
 	DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS paramDevNotifySubs;
@@ -239,7 +239,7 @@ BOOL CPowerPlusApp::InitInstance()
 		// Handle error and show message
 		TRACE_FORMAT("Error: Power event notification register failed!!! (Code: 0x%08X)", dwErrorCode);
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		PostErrorMessage(dwErrorCode);
+		postErrorMessage(dwErrorCode);
 	}
 
 	/************************************************************************************/
@@ -256,7 +256,7 @@ BOOL CPowerPlusApp::InitInstance()
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 		// Show error message
-		PostErrorMessage(APP_ERROR_APP_INIT_FAILURE);
+		postErrorMessage(APP_ERROR_APP_INIT_FAILURE);
 		return false;
 	}
 
@@ -271,8 +271,8 @@ BOOL CPowerPlusApp::InitInstance()
 		pMainDlg->ShowWindow(SW_HIDE);
 
 		// Set parent window for DebugTest dialog if available
-		if (m_pDebugTestDlg != NULL) {
-			m_pDebugTestDlg->setParent(pMainDlg);
+		if (debugTestDlgPtr_ != NULL) {
+			debugTestDlgPtr_->setParent(pMainDlg);
 		}
 
 		// Notification sound
@@ -284,8 +284,8 @@ BOOL CPowerPlusApp::InitInstance()
 	else {
 
 		// Set parent window for DebugTest dialog if available
-		if (m_pDebugTestDlg != NULL) {
-			m_pDebugTestDlg->setParent(pMainDlg);
+		if (debugTestDlgPtr_ != NULL) {
+			debugTestDlgPtr_->setParent(pMainDlg);
 		}
 
 		// Show dialog in modal state
@@ -310,7 +310,7 @@ BOOL CPowerPlusApp::InitInstance()
 			// Handle error and show message
 			TRACE_FORMAT("Error: Power event notification unregister failed!!! (Code: 0x%08X)", dwErrorCode);
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-			PostErrorMessage(dwErrorCode);
+			postErrorMessage(dwErrorCode);
 		}
 	}
 
@@ -338,11 +338,11 @@ BOOL CPowerPlusApp::InitInstance()
 int CPowerPlusApp::ExitInstance()
 {
 	// Output event log: ExitInstance
-	OutputEventLog(LOG_EVENT_EXIT_INSTANCE);
+	outputEventLog(LOG_EVENT_EXIT_INSTANCE);
 
 	// Write application event logging data to file if enabled
 	if (getAppOption(AppOptionID::saveAppEventLog) == true) {
-		GetAppEventLog()->Write();
+		getAppEventLog()->Write();
 	}
 
 	// Write action history logging data to file if enabled
@@ -361,7 +361,7 @@ int CPowerPlusApp::ExitInstance()
 	}
 
 	// Unhook keyboard
-	UnhookWindowsHookEx(m_hAppKeyboardHook);
+	UnhookWindowsHookEx(appKeyboardHookHandler_);
 
 	// Mark as safe-termination
 	setSafeTerminationFlag(FLAG_ON);
@@ -530,7 +530,7 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 		// If the message window handle is invalid (HWND is NULL), 
 		// and the main window has not been initialized, or the app language has not been loaded,
 		// handle message and show error messagebox here
-		if (((hRcvWnd == NULL) && (this->GetMainWnd() == NULL)) || (this->GetAppLanguage() == NULL)) {
+		if (((hRcvWnd == NULL) && (this->GetMainWnd() == NULL)) || (this->getAppLanguage() == NULL)) {
 			AppCore::showErrorMessage(NULL, NULL, dwErrCode);
 			return true;
 		}
@@ -580,45 +580,45 @@ BOOL CPowerPlusApp::PreTranslateMessage(MSG* pMsg)
 bool CPowerPlusApp::initAppData()
 {
 	// Initialize app config data
-	if (m_pcfgAppConfig == NULL) {
-		m_pcfgAppConfig = new ConfigData;
+	if (appConfigDataPtr_ == NULL) {
+		appConfigDataPtr_ = new ConfigData;
 	}
 	// Initialize schedule data
-	if (m_pschScheduleData == NULL) {
-		m_pschScheduleData = new ScheduleData;
+	if (scheduleDataPtr_ == NULL) {
+		scheduleDataPtr_ = new ScheduleData;
 	}
 	// Initialize HotkeySet data
-	if (m_phksHotkeySetData == NULL) {
-		m_phksHotkeySetData = new HotkeySetData;
+	if (hotkeySetDataPtr_ == NULL) {
+		hotkeySetDataPtr_ = new HotkeySetData;
 	}
 	// Initialize Power Reminder data
-	if (m_ppwrReminderData == NULL) {
-		m_ppwrReminderData = new PwrReminderData;
+	if (reminderDataPtr_ == NULL) {
+		reminderDataPtr_ = new PwrReminderData;
 	}
 
 	// Check data validity
 	bool bResult = true;
 
 	// Check app config data
-	if (m_pcfgAppConfig == NULL) {
+	if (appConfigDataPtr_ == NULL) {
 		bResult = false;
 		TRACE_ERROR("Error: App config data init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check schedule data
-	if (m_pschScheduleData == NULL) {
+	if (scheduleDataPtr_ == NULL) {
 		bResult = false;
 		TRACE_ERROR("Error: Schedule data init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check HotkeySet data
-	if (m_phksHotkeySetData == NULL) {
+	if (hotkeySetDataPtr_ == NULL) {
 		bResult = false;
 		TRACE_ERROR("Error: HotkeySet data init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	// Check Power Reminder data
-	if (m_ppwrReminderData == NULL) {
+	if (reminderDataPtr_ == NULL) {
 		bResult = false;
 		TRACE_ERROR("Error: Power Reminder data init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -697,7 +697,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 	else {
 		// Copy temporary data
 		if (pcfgTempData != NULL) {
-			m_pcfgAppConfig->copy(*pcfgTempData);
+			appConfigDataPtr_->copy(*pcfgTempData);
 			bResult = true;		// Reset flag
 		}
 	}
@@ -849,7 +849,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 	else {
 		// Copy temporary data
 		if (pschTempData != NULL) {
-			m_pschScheduleData->copy(*pschTempData);
+			scheduleDataPtr_->copy(*pschTempData);
 			bResult = true;		// Reset flag
 		}
 	}
@@ -871,7 +871,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 	if (phksTempData != NULL) {
 
 		// Copy data
-		phksTempData->copy(*m_phksHotkeySetData);
+		phksTempData->copy(*hotkeySetDataPtr_);
 
 		// Load number of items
 		bResult &= GetHotkeyItemNum(Key::HotkeySetData::ItemNum, nItemNum);
@@ -931,7 +931,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 	else {
 		// Copy temporary data
 		if (phksTempData != NULL) {
-			m_phksHotkeySetData->copy(*phksTempData);
+			hotkeySetDataPtr_->copy(*phksTempData);
 			bResult = true;		// Reset flag
 		}
 	}
@@ -1114,8 +1114,8 @@ bool CPowerPlusApp::loadRegistryAppData()
 	else {
 		// Copy temporary data
 		if (ppwrTempData != NULL) {
-			m_ppwrReminderData->copy(*ppwrTempData);
-			m_ppwrReminderData->adjust();
+			reminderDataPtr_->copy(*ppwrTempData);
+			reminderDataPtr_->adjust();
 			bResult = true;		// Reset flag
 		}
 	}
@@ -1169,8 +1169,8 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 
 		// Get a copy of config data
 		ConfigData cfgConfigTemp{};
-		if (m_pcfgAppConfig != NULL) {
-			cfgConfigTemp.copy(*m_pcfgAppConfig);
+		if (appConfigDataPtr_ != NULL) {
+			cfgConfigTemp.copy(*appConfigDataPtr_);
 		}
 
 		// Save registry data
@@ -1214,7 +1214,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeleteScheduleSection();
 
 		// Save default schedule item
-		ScheduleItem schTempDefault = m_pschScheduleData->getDefaultItem();
+		ScheduleItem schTempDefault = scheduleDataPtr_->getDefaultItem();
 		{
 			// Convert time data
 			nTimeTemp = FORMAT_REG_TIME(schTempDefault.getTime());
@@ -1236,12 +1236,12 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		}
 
 		// Save schedule extra data
-		int nExtraItemNum = m_pschScheduleData->getExtraItemNum();
+		int nExtraItemNum = scheduleDataPtr_->getExtraItemNum();
 		bResult &= WriteScheduleExtraItemNum(Key::ScheduleData::ExtraItemNum, nExtraItemNum);
 		for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
 
 			// Get schedule extra item
-			ScheduleItem schTempExtra = m_pschScheduleData->getItemAt(nExtraIndex);
+			ScheduleItem schTempExtra = scheduleDataPtr_->getItemAt(nExtraIndex);
 
 			// Convert time data
 			nTimeTemp = FORMAT_REG_TIME(schTempExtra.getTime());
@@ -1273,8 +1273,8 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 	// Save auto-start status info
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
 
-		bool bStartupEnabled = m_pcfgAppConfig->enableAutoStart;
-		bool bRunAsAdmin = m_pcfgAppConfig->runAsAdmin;
+		bool bStartupEnabled = appConfigDataPtr_->enableAutoStart;
+		bool bRunAsAdmin = appConfigDataPtr_->runAsAdmin;
 		int nRetAutoStartEnabled = enableAutoStart(bStartupEnabled, bRunAsAdmin);
 		bResult &= nRetAutoStartEnabled ? true : false;
 
@@ -1300,12 +1300,12 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeleteHotkeySetSection();
 
 		// Save registry data
-		int nItemNum = m_phksHotkeySetData->getItemNum();
+		int nItemNum = hotkeySetDataPtr_->getItemNum();
 		bResult &= WriteHotkeyItemNum(Key::HotkeySetData::ItemNum, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Get HotkeySet item
-			HotkeySetItem hksTemp = m_phksHotkeySetData->getItemAt(nIndex);
+			HotkeySetItem hksTemp = hotkeySetDataPtr_->getItemAt(nIndex);
 
 			// Get keycode
 			DWORD dwModifiersTemp, dwVirtKeyTemp;
@@ -1340,7 +1340,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		DeletePwrReminderSection();
 
 		// Save Power Reminder common style data
-		RmdMsgStyleSet& rmdTempCommonStyle = m_ppwrReminderData->getCommonStyle();
+		RmdMsgStyleSet& rmdTempCommonStyle = reminderDataPtr_->getCommonStyle();
 		{
 			// Save registry data
 			bResult &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor,		rmdTempCommonStyle.getBkgrdColor());
@@ -1365,12 +1365,12 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dwDataType /* = APPDATA_ALL */)
 		}
 
 		// Save registry data
-		int nItemNum = m_ppwrReminderData->getItemNum();
+		int nItemNum = reminderDataPtr_->getItemNum();
 		bResult &= WritePwrReminderItemNum(Key::PwrReminderData::ItemNum, nItemNum);
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Get Power Reminder item
-			PwrReminderItem pwrTemp = m_ppwrReminderData->getItemAt(nIndex);
+			PwrReminderItem pwrTemp = reminderDataPtr_->getItemAt(nIndex);
 
 			// Convert time data
 			nTimeTemp = FORMAT_REG_TIME(pwrTemp.getTime());
@@ -1698,8 +1698,8 @@ bool CPowerPlusApp::saveGlobalData(BYTE byCateID /* = 0xFF */)
 ConfigData* CPowerPlusApp::getAppConfigData()
 {
 	// Check validity
-	ASSERT(m_pcfgAppConfig != NULL);
-	return m_pcfgAppConfig;
+	ASSERT(appConfigDataPtr_ != NULL);
+	return appConfigDataPtr_;
 }
 
 /**
@@ -1729,8 +1729,8 @@ void CPowerPlusApp::setAppConfigData(ConfigData* pcfgData)
 ScheduleData* CPowerPlusApp::getAppScheduleData()
 {
 	// Check validity
-	ASSERT(m_pschScheduleData != NULL);
-	return m_pschScheduleData;
+	ASSERT(scheduleDataPtr_ != NULL);
+	return scheduleDataPtr_;
 }
 
 /**
@@ -1760,8 +1760,8 @@ void CPowerPlusApp::setAppScheduleData(ScheduleData* pschData)
 HotkeySetData* CPowerPlusApp::getAppHotkeySetData()
 {
 	// Check validity
-	ASSERT(m_phksHotkeySetData != NULL);
-	return m_phksHotkeySetData;
+	ASSERT(hotkeySetDataPtr_ != NULL);
+	return hotkeySetDataPtr_;
 }
 
 /**
@@ -1791,8 +1791,8 @@ void CPowerPlusApp::setAppHotkeySetData(HotkeySetData* phksData)
 PwrReminderData* CPowerPlusApp::getAppPwrReminderData()
 {
 	// Check validity
-	ASSERT(m_ppwrReminderData != NULL);
-	return m_ppwrReminderData;
+	ASSERT(reminderDataPtr_ != NULL);
+	return reminderDataPtr_;
 }
 
 /**
@@ -1830,19 +1830,19 @@ int CPowerPlusApp::getAppOption(AppOptionID eAppOptionID) const
 	switch (eAppOptionID)
 	{
 	case AppOptionID::curDispLanguage:
-		nResult = SWinApp::GetAppLanguageOption(true);
+		nResult = SWinApp::getAppLanguageOption(true);
 		break;
 	case AppOptionID::defaultScheduleActiveState:
-		nResult = m_pschScheduleData->getDefaultItem().isEnabled();
+		nResult = scheduleDataPtr_->getDefaultItem().isEnabled();
 		break;
 	case AppOptionID::defaultScheduleActionID:
-		nResult = m_pschScheduleData->getDefaultItem().getAction();
+		nResult = scheduleDataPtr_->getDefaultItem().getAction();
 		break;
 	case AppOptionID::defaultScheduleRepeat:
-		nResult = m_pschScheduleData->getDefaultItem().isRepeatEnabled();
+		nResult = scheduleDataPtr_->getDefaultItem().isRepeatEnabled();
 		break;
 	default:
-		nResult = m_pcfgAppConfig->getAppOption(eAppOptionID);
+		nResult = appConfigDataPtr_->getAppOption(eAppOptionID);
 		break;
 	}
 
@@ -1857,20 +1857,20 @@ int CPowerPlusApp::getAppOption(AppOptionID eAppOptionID) const
 void CPowerPlusApp::initAppHistoryLog()
 {
 	// Initialization
-	if (m_pAppHistoryLog == NULL) {
-		m_pAppHistoryLog = new SLogging(LOGTYPE_HISTORY_LOG);
+	if (appHistoryLogPtr_ == NULL) {
+		appHistoryLogPtr_ = new SLogging(LOGTYPE_HISTORY_LOG);
 	}
 	
 	// Check validity after allocating
-	if (m_pAppHistoryLog == NULL) {
+	if (appHistoryLogPtr_ == NULL) {
 		TRACE_ERROR("Error: AppHistoryLog initialization failed");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Set properties
-	m_pAppHistoryLog->Init();
-	m_pAppHistoryLog->SetWriteMode(WriteInstantly);
+	appHistoryLogPtr_->Init();
+	appHistoryLogPtr_->SetWriteMode(WriteInstantly);
 }
 
 /**
@@ -1881,8 +1881,8 @@ void CPowerPlusApp::initAppHistoryLog()
 SLogging* CPowerPlusApp::getAppHistoryLog()
 {
 	// Check validity
-	VERIFY(m_pAppHistoryLog != NULL);
-	return m_pAppHistoryLog;
+	VERIFY(appHistoryLogPtr_ != NULL);
+	return appHistoryLogPtr_;
 }
 
 /**
@@ -2119,19 +2119,19 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 bool CPowerPlusApp::initDebugTestDlg(void)
 {
 	// Initialize dialog
-	m_pDebugTestDlg = new CDebugTestDlg();
+	debugTestDlgPtr_ = new CDebugTestDlg();
 
 	// Check initialization validity
-	if (m_pDebugTestDlg == NULL) {
+	if (debugTestDlgPtr_ == NULL) {
 		TRACE_ERROR("Error: DebugTest dialog init failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
 	else {
-		m_pDebugTestDlg->Create(IDD_DEBUGTEST_DLG, NULL);
-		m_pDebugTestDlg->ShowWindow(SW_HIDE);
+		debugTestDlgPtr_->Create(IDD_DEBUGTEST_DLG, NULL);
+		debugTestDlgPtr_->ShowWindow(SW_HIDE);
 	}
 
-	return (m_pDebugTestDlg != NULL);
+	return (debugTestDlgPtr_ != NULL);
 }
 
 /**
@@ -2141,7 +2141,7 @@ bool CPowerPlusApp::initDebugTestDlg(void)
  */
 SDialog* CPowerPlusApp::getDebugTestDlg(void)
 {
-	return m_pDebugTestDlg;
+	return debugTestDlgPtr_;
 }
 
 /**
@@ -2152,12 +2152,12 @@ SDialog* CPowerPlusApp::getDebugTestDlg(void)
 void CPowerPlusApp::destroyDebugTestDlg(void)
 {
 	// Destroy DebugTest dialog
-	if (m_pDebugTestDlg != NULL) {
-		if (::IsWindow(m_pDebugTestDlg->GetSafeHwnd())) {
-			m_pDebugTestDlg->DestroyWindow();
+	if (debugTestDlgPtr_ != NULL) {
+		if (::IsWindow(debugTestDlgPtr_->GetSafeHwnd())) {
+			debugTestDlgPtr_->DestroyWindow();
 		}
-		delete m_pDebugTestDlg;
-		m_pDebugTestDlg = NULL;
+		delete debugTestDlgPtr_;
+		debugTestDlgPtr_ = NULL;
 	}
 }
 
@@ -2196,11 +2196,11 @@ void CPowerPlusApp::getAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
 
 /**
  * @brief	Enable/disable start-up with Windows function
- * @param	bEnable		- Auto startup option
+ * @param	isEnabled		- Auto startup option
  * @param	bRunAsAdmin - Run as admin option
  * @return	int - Result of registry writing process
  */
-int CPowerPlusApp::enableAutoStart(bool bEnable, bool bRunAsAdmin)
+int CPowerPlusApp::enableAutoStart(bool isEnabled, bool bRunAsAdmin)
 {
 	long lRes;
 	HKEY hRootKey, hKey;
@@ -2222,7 +2222,7 @@ int CPowerPlusApp::enableAutoStart(bool bEnable, bool bRunAsAdmin)
 	}
 
 	// Enable auto-start
-	if (bEnable == true) {
+	if (isEnabled == true) {
 
 		String execCommand;
 
@@ -2376,7 +2376,7 @@ bool CPowerPlusApp::saveLastSysEventTime(BYTE byEventType, const DateTime& timeS
 
 	// Format date/time
 	unsigned nTimePeriod = (timeSysEvent.hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
-	const wchar_t* timePeriodFormat = getLanguageString(GetAppLanguage(), nTimePeriod);
+	const wchar_t* timePeriodFormat = getLanguageString(getAppLanguage(), nTimePeriod);
 	const wchar_t* timeFormatString = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
 	String dateTimeFormat = StringUtils::stringFormat(timeFormatString, timeSysEvent.year(), timeSysEvent.month(), timeSysEvent.day(),
 		timeSysEvent.hour(), timeSysEvent.minute(), timeSysEvent.second(), timeSysEvent.millisecond(), timePeriodFormat);
@@ -2410,7 +2410,7 @@ void CPowerPlusApp::OnExecuteDebugCommand(WPARAM /*wParam*/, LPARAM lParam)
 	strDebugCommand.toLower();
 
 	// Output event log
-	OutputEventLog(LOG_EVENT_EXEC_DEBUGCMD, strDebugCommand);
+	outputEventLog(LOG_EVENT_EXEC_DEBUGCMD, strDebugCommand);
 }
 
 /**
@@ -2436,6 +2436,6 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 	}
 
 	// Output event log
-	OutputEventLog(LOG_EVENT_ERROR_MESSAGE, description, &logDetailInfo);
+	outputEventLog(LOG_EVENT_ERROR_MESSAGE, description, &logDetailInfo);
 }
 

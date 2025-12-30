@@ -469,7 +469,7 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	// Set application's main window caption
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		this->setCaption(pApp->GetAppWindowCaption());
+		this->setCaption(pApp->getAppWindowCaption());
 	}
 
 	// Load app default icon
@@ -948,7 +948,7 @@ void CPowerPlusDlg::OnChangeLanguage()
 
 	// Reload app language
 	unsigned nCurLanguage = getAppOption(AppOptionID::languageID, true);
-	((CPowerPlusApp*)AfxGetApp())->ReloadAppLanguage(nCurLanguage);
+	((CPowerPlusApp*)AfxGetApp())->reloadAppLanguage(nCurLanguage);
 
 	// Check for settings change
 	setFlagValue(AppFlagID::dialogDataChanged, checkSettingChangeState());
@@ -1710,7 +1710,7 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 				return false;
 
 			// Get application language package
-			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 			// Prepare balloon tip content
 			String balloonTitle = getLanguageString(pAppLang, IDD_PWRREMINDER_DLG);
@@ -1847,7 +1847,7 @@ void CPowerPlusDlg::expandDialog(bool bExpand)
 	}
 
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Initialize dialog size pointer
 	VERIFY_INITIALIZATION(m_pDialogSize, Size);
@@ -2104,7 +2104,7 @@ int CPowerPlusDlg::getAppOption(AppOptionID eAppOptionID, bool isTemp /* = false
 	switch (eAppOptionID)
 	{
 	case AppOptionID::curDispLanguage:
-		nResult = ((SWinApp*)AfxGetApp())->GetAppLanguageOption(true);
+		nResult = ((SWinApp*)AfxGetApp())->getAppLanguageOption(true);
 		nTempResult = nResult;		// No temp data
 		break;
 	case AppOptionID::defaultScheduleActiveState:
@@ -2340,7 +2340,7 @@ void CPowerPlusDlg::setFlagValue(AppFlagID eFlagID, int nValue)
 void CPowerPlusDlg::setupLanguage(void)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -2447,10 +2447,10 @@ void CPowerPlusDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 
 /**
  * @brief	Enable/disable right mouse action combo-box
- * @param	bEnable - Enable or disable
+ * @param	isEnabled - Enable or disable
  * @return	None
  */
-void CPowerPlusDlg::enableRightMouseMenu(bool /*bEnable*/)
+void CPowerPlusDlg::enableRightMouseMenu(bool /*isEnabled*/)
 {
 	updateDialogData(false);
 }
@@ -2458,13 +2458,13 @@ void CPowerPlusDlg::enableRightMouseMenu(bool /*bEnable*/)
 
 /**
  * @brief	Enable/disable LogViewer function
- * @param	bEnable - Enable or disable
+ * @param	isEnabled - Enable or disable
  * @return	None
  */
-void CPowerPlusDlg::enableLogViewer(bool bEnable)
+void CPowerPlusDlg::enableLogViewer(bool isEnabled)
 {
 	// Prefer using app data option than temp config option
-	bool bCheck = bEnable;
+	bool bCheck = isEnabled;
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
 		bCheck = pApp->getAppOption(AppOptionID::saveAppEventLog);
@@ -2481,10 +2481,10 @@ void CPowerPlusDlg::enableLogViewer(bool bEnable)
 
 /**
  * @brief	Enable/disable HotKeySet button
- * @param	bEnable - Enable or disable
+ * @param	isEnabled - Enable or disable
  * @return	None
  */
-void CPowerPlusDlg::enableBackgroundHotkey(bool /*bEnable*/)
+void CPowerPlusDlg::enableBackgroundHotkey(bool /*isEnabled*/)
 {
 	updateDialogData(false);
 }
@@ -2492,10 +2492,10 @@ void CPowerPlusDlg::enableBackgroundHotkey(bool /*bEnable*/)
 
 /**
  * @brief	Enable/disable Power Reminder button
- * @param	bEnable - Enable or disable
+ * @param	isEnabled - Enable or disable
  * @return	None
  */
-void CPowerPlusDlg::enablePowerReminder(bool /*bEnable*/)
+void CPowerPlusDlg::enablePowerReminder(bool /*isEnabled*/)
 {
 	updateDialogData(false);
 }
@@ -2531,7 +2531,7 @@ void CPowerPlusDlg::updateRestartAsAdminFlag(bool bFlag)
 void CPowerPlusDlg::setMenuItemText(CMenu* pMenu)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup language for entry menu
 	for (int nItem = 0; nItem < pMenu->GetMenuItemCount(); nItem++) {
@@ -2665,7 +2665,7 @@ void CPowerPlusDlg::setNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 	}
 
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	StringArray arrTipText;
 	arrTipText.reserve(3);
@@ -2892,7 +2892,7 @@ bool CPowerPlusDlg::executeAction(unsigned nActionMacro, WPARAM wParam /* = NULL
 	else {
 		// Power action canceled --> Output event log
 		String pwrActionNameString;
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 		if (pAppLang != NULL) {
 			pwrActionNameString = getLanguageString(pAppLang, nActionNameLangID);
 		}
@@ -2962,7 +2962,7 @@ void CPowerPlusDlg::reloadSettings(void)
 	getAppData();
 
 	// Reload app language
-	((CPowerPlusApp*)AfxGetApp())->ReloadAppLanguage();
+	((CPowerPlusApp*)AfxGetApp())->reloadAppLanguage();
 
 	// Reupdate dialog items
 	setupLanguage();
@@ -2984,7 +2984,7 @@ void CPowerPlusDlg::setDefaultConfig(void)
 	m_cfgTempConfig.setDefaultData();
 
 	// Reload app language & reset language display
-	((CPowerPlusApp*)AfxGetApp())->ReloadAppLanguage();
+	((CPowerPlusApp*)AfxGetApp())->reloadAppLanguage();
 	setupLanguage();
 
 	// Reupdate dialog items
@@ -3233,7 +3233,7 @@ void CPowerPlusDlg::openDialogBase(unsigned nDialogID, bool bReadOnlyMode /* = f
 	}
 	else {
 		// Find dialog by title
-		LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 		String dialogTitle = getLanguageString(pLang, nDialogID);
 		hDialogWnd = ::FindWindow(NULL, dialogTitle);
 	}
@@ -4336,7 +4336,7 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& pwrDispItem)
 	OutputDebugLogFormat(_T("Display reminder: ItemID=%d"), pwrDispItem.getItemId());
 
 	// Get app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	int nRetFlag = FLAG_OFF;
 	int nRespond = INT_NULL;
@@ -4731,7 +4731,7 @@ size_t CPowerPlusDlg::getPwrReminderDispList(UIntArray& arrPwrDispList)
  */
 void CPowerPlusDlg::outputScheduleEventLog(USHORT usEvent, const ScheduleItem& schItem)
 {
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Schedule action name
 	int nActionNameID = GetPairedID(IDTable::ActionName, schItem.getAction());
@@ -5039,7 +5039,7 @@ int CPowerPlusDlg::notifySchedule(PScheduleItem pschItem, bool& bReupdate)
 	unsigned nActionStringID = GetPairedID(IDTable::ScheduleNotifyMessage, pschItem->getAction());
 
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Format message
 	const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CAPTION);
@@ -5098,7 +5098,7 @@ void CPowerPlusDlg::showErrorMessage(DWORD dwError)
 
 	// Get window handle and language ID
 	HWND hWnd = this->GetSafeHwnd();
-	unsigned nCurLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguageOption();
+	unsigned nCurLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguageOption();
 
 	// Show error message
 	AppCore::showErrorMessage(hWnd, nCurLang, dwError);
@@ -5174,10 +5174,10 @@ void CPowerPlusDlg::requestRestartAsAdmin(RESTARTREQ reqRestart)
 	}
 
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	const wchar_t* requestMessage = getLanguageString(pAppLang, MSGBOX_OTHER_REQUEST_RESTARTASADMIN);
-	const wchar_t* messageCaption = ((CPowerPlusApp*)AfxGetApp())->GetAppWindowCaption();
+	const wchar_t* messageCaption = ((CPowerPlusApp*)AfxGetApp())->getAppWindowCaption();
 	String messageFormatString = requestMessage;
 
 	// Check if the application is currently running as admin

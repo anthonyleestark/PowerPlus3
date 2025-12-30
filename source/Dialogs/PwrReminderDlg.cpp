@@ -1191,7 +1191,7 @@ LRESULT CPwrReminderDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 void CPwrReminderDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
@@ -1330,7 +1330,7 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 
 	// Load app language package
 	if (ptrLanguage == NULL) {
-		ptrLanguage = pApp->GetAppLanguage();
+		ptrLanguage = pApp->getAppLanguage();
 	}
 
 	// Re-update default cell properties
@@ -1837,7 +1837,7 @@ void CPwrReminderDlg::UpdateDataItemList()
 		return;
 
 	// Load app language package
-	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 	
 	// Print items
 	int nTemp = -1;
@@ -2015,7 +2015,7 @@ void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	bool bIsAllEmpty = m_pwrReminderDataTemp.isAllEmpty();
 
 	// Get app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Disable [Add] button if item number has reached the limit
 	pBtn = GetDlgItem(IDC_PWRREMINDER_ADD_BTN);
@@ -2130,15 +2130,15 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
 void CPwrReminderDlg::RefreshDetailView(int nMode)
 {
 	// Set state and init value by mode
-	bool bEnable = true;
+	bool isEnabled = true;
 	if ((nMode == Mode::Init) || (nMode == Mode::View)) {
-		bEnable = false;
+		isEnabled = false;
 	}
 	else if ((nMode == Mode::Add) || (nMode == Mode::Update)) {
-		bEnable = true;
+		isEnabled = true;
 	}
 	else if (nMode == Mode::Disable) {
-		bEnable = false;
+		isEnabled = false;
 	}
 
 	/***************************************************************/
@@ -2152,23 +2152,23 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 	// Message content
 	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_TITLE);
 	if (pWnd != NULL) {
-		pWnd->EnableWindow(bEnable);
+		pWnd->EnableWindow(isEnabled);
 	}
 	if (m_pMsgStringEdit != NULL) {
-		m_pMsgStringEdit->EnableWindow(bEnable);
+		m_pMsgStringEdit->EnableWindow(isEnabled);
 	}
 	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_COUNTER);
 	if (pWnd != NULL) {
-		pWnd->EnableWindow(bEnable);
+		pWnd->EnableWindow(isEnabled);
 	}
 	// Event
 	pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
 	if (pWnd != NULL) {
-		pWnd->EnableWindow(bEnable);
+		pWnd->EnableWindow(isEnabled);
 	}
 	if (m_pEvtSetTimeRad != NULL) {
-		m_pEvtSetTimeRad->EnableWindow(bEnable);
-		bool bEnableSetTime = (bEnable && m_pEvtSetTimeRad->GetCheck());
+		m_pEvtSetTimeRad->EnableWindow(isEnabled);
+		bool bEnableSetTime = (isEnabled && m_pEvtSetTimeRad->GetCheck());
 		if (m_pEvtSetTimeEdit != NULL) {
 			m_pEvtSetTimeEdit->EnableWindow(bEnableSetTime);
 			UpdateTimeSetting(m_stDispTimeBak, false);
@@ -2181,43 +2181,43 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 		}
 	}
 	if (m_pEvtAppStartupRad != NULL) {
-		m_pEvtAppStartupRad->EnableWindow(bEnable);
+		m_pEvtAppStartupRad->EnableWindow(isEnabled);
 	}
 	if (m_pEvtSysWakeupRad != NULL) {
-		m_pEvtSysWakeupRad->EnableWindow(bEnable);
+		m_pEvtSysWakeupRad->EnableWindow(isEnabled);
 	}
 	if (m_pEvtBfrPwrActionRad != NULL) {
-		m_pEvtBfrPwrActionRad->EnableWindow(bEnable);
+		m_pEvtBfrPwrActionRad->EnableWindow(isEnabled);
 	}
 	if (m_pEvtPwrActionWakeRad != NULL) {
-		m_pEvtPwrActionWakeRad->EnableWindow(bEnable);
+		m_pEvtPwrActionWakeRad->EnableWindow(isEnabled);
 	}
 	if (m_pEvtAtAppExitRad != NULL) {
-		m_pEvtAtAppExitRad->EnableWindow(bEnable);
+		m_pEvtAtAppExitRad->EnableWindow(isEnabled);
 	}
 	// Message style
 	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_TITLE);
 	if (pWnd != NULL) {
-		pWnd->EnableWindow(bEnable);
+		pWnd->EnableWindow(isEnabled);
 	}
 	if (m_pStyleMsgBoxRad != NULL) {
-		m_pStyleMsgBoxRad->EnableWindow(bEnable);
+		m_pStyleMsgBoxRad->EnableWindow(isEnabled);
 	}
 	if (m_pStyleDialogBoxRad != NULL) {
-		m_pStyleDialogBoxRad->EnableWindow(bEnable);
+		m_pStyleDialogBoxRad->EnableWindow(isEnabled);
 	}
 	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
 	if (pWnd != NULL) {
-		pWnd->EnableWindow(bEnable);
+		pWnd->EnableWindow(isEnabled);
 	}
 	if (m_pStyleUseCommonRad != NULL) {
-		m_pStyleUseCommonRad->EnableWindow(bEnable);
+		m_pStyleUseCommonRad->EnableWindow(isEnabled);
 	}
 	if (m_pStyleUseCustomRad != NULL) {
-		m_pStyleUseCustomRad->EnableWindow(bEnable);
+		m_pStyleUseCustomRad->EnableWindow(isEnabled);
 	}
 	if (m_pStyleCustomizeBtn != NULL) {
-		m_pStyleCustomizeBtn->EnableWindow(bEnable);
+		m_pStyleCustomizeBtn->EnableWindow(isEnabled);
 	}
 }
 
@@ -2250,7 +2250,7 @@ void CPwrReminderDlg::UpdateMsgCounter(int nCount)
 void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = true */)
 {
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check time editbox validity
 	if (m_pEvtSetTimeEdit == NULL) {
@@ -2586,7 +2586,7 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	}
 
 	// Get app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Style: MessageBox
 	if (pwrDispItem.getMessageStyle() == Style::messageBox) {
@@ -2771,19 +2771,19 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 
 		/*-----------------Set state and init value by mode------------*/
 
-		bool bEnable = true;
+		bool isEnabled = true;
 		int nMode = GetCurMode();
 		if ((nMode == Mode::Init) || (nMode == Mode::View)) {
 			// Disable items
-			bEnable = false;
+			isEnabled = false;
 		}
 		else if ((nMode == Mode::Add) || (nMode == Mode::Update)) {
 			// Enable items
-			bEnable = true;
+			isEnabled = true;
 		}
 		else if (nMode == Mode::Disable) {
 			// Disable items
-			bEnable = false;
+			isEnabled = false;
 		}
 
 		/*----------------------Get item details-----------------------*/
@@ -2799,15 +2799,15 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		CWnd* pWnd = NULL;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_TITLE);
 		if (pWnd != NULL) {
-			pWnd->EnableWindow(bEnable);
+			pWnd->EnableWindow(isEnabled);
 		}
 		if (m_pMsgStringEdit != NULL) {
-			m_pMsgStringEdit->EnableWindow(bEnable);
+			m_pMsgStringEdit->EnableWindow(isEnabled);
 			m_pMsgStringEdit->SetWindowText(messageContent);
 		}
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_COUNTER);
 		if (pWnd != NULL) {
-			pWnd->EnableWindow(bEnable);
+			pWnd->EnableWindow(isEnabled);
 			UpdateMsgCounter(messageContent.getLength());
 		}
 
@@ -2816,17 +2816,17 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		bool isTemp = false;
 		pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
 		if (pWnd != NULL) {
-			pWnd->EnableWindow(bEnable);
+			pWnd->EnableWindow(isEnabled);
 		}
 
 		// Event: At set time
 		if (m_pEvtSetTimeRad != NULL) {
-			m_pEvtSetTimeRad->EnableWindow(bEnable);
+			m_pEvtSetTimeRad->EnableWindow(isEnabled);
 			isTemp = (nEventID == Event::atSetTime);
 			m_pEvtSetTimeRad->SetCheck(isTemp);
 
 			// Set time edit and spin value
-			isTemp &= bEnable;
+			isTemp &= isEnabled;
 			if (m_pEvtSetTimeEdit != NULL) {
 				m_pEvtSetTimeEdit->EnableWindow(isTemp);
 				UpdateTimeSetting(itemTime, false);
@@ -2841,31 +2841,31 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 		// Event: At app startup
 		if (m_pEvtAppStartupRad != NULL) {
-			m_pEvtAppStartupRad->EnableWindow(bEnable);
+			m_pEvtAppStartupRad->EnableWindow(isEnabled);
 			isTemp = (nEventID == Event::atAppStartup);
 			m_pEvtAppStartupRad->SetCheck(isTemp);
 		}
 		// Event: At system wake
 		if (m_pEvtSysWakeupRad != NULL) {
-			m_pEvtSysWakeupRad->EnableWindow(bEnable);
+			m_pEvtSysWakeupRad->EnableWindow(isEnabled);
 			isTemp = (nEventID == Event::atSysWakeUp);
 			m_pEvtSysWakeupRad->SetCheck(isTemp);
 		}
 		// Event: Before power action
 		if (m_pEvtBfrPwrActionRad != NULL) {
-			m_pEvtBfrPwrActionRad->EnableWindow(bEnable);
+			m_pEvtBfrPwrActionRad->EnableWindow(isEnabled);
 			isTemp = (nEventID == Event::beforePwrAction);
 			m_pEvtBfrPwrActionRad->SetCheck(isTemp);
 		}
 		// Event: Wake after action
 		if (m_pEvtPwrActionWakeRad != NULL) {
-			m_pEvtPwrActionWakeRad->EnableWindow(bEnable);
+			m_pEvtPwrActionWakeRad->EnableWindow(isEnabled);
 			isTemp = (nEventID == Event::wakeAfterAction);
 			m_pEvtPwrActionWakeRad->SetCheck(isTemp);
 		}
 		// Event: Before app exit
 		if (m_pEvtAtAppExitRad != NULL) {
-			m_pEvtAtAppExitRad->EnableWindow(bEnable);
+			m_pEvtAtAppExitRad->EnableWindow(isEnabled);
 			isTemp = (nEventID == Event::atAppExit);
 			m_pEvtAtAppExitRad->SetCheck(isTemp);
 		}
@@ -2874,17 +2874,17 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_TITLE);
 		if (pWnd != NULL) {
-			pWnd->EnableWindow(bEnable);
+			pWnd->EnableWindow(isEnabled);
 		}
 		// Message Box style
 		if (m_pStyleMsgBoxRad != NULL) {
-			m_pStyleMsgBoxRad->EnableWindow(bEnable);
+			m_pStyleMsgBoxRad->EnableWindow(isEnabled);
 			isTemp = (dwMsgStyle == Style::messageBox);
 			m_pStyleMsgBoxRad->SetCheck(isTemp);
 		}
 		// Dialog Box style
 		if (m_pStyleDialogBoxRad != NULL) {
-			m_pStyleDialogBoxRad->EnableWindow(bEnable);
+			m_pStyleDialogBoxRad->EnableWindow(isEnabled);
 			isTemp = (dwMsgStyle == Style::dialogBox);
 			m_pStyleDialogBoxRad->SetCheck(isTemp);
 		}
@@ -2892,21 +2892,21 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		// Style customization
 		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
 		if (pWnd != NULL) {
-			pWnd->EnableWindow(bEnable);
+			pWnd->EnableWindow(isEnabled);
 		}
 		// Use common style configuration
 		if (m_pStyleUseCommonRad != NULL) {
-			m_pStyleUseCommonRad->EnableWindow(bEnable);
+			m_pStyleUseCommonRad->EnableWindow(isEnabled);
 			m_pStyleUseCommonRad->SetCheck(!bUseCustomStyle);
 		}
 		// Use custom style configuration
 		if (m_pStyleUseCustomRad != NULL) {
-			m_pStyleUseCustomRad->EnableWindow(bEnable);
+			m_pStyleUseCustomRad->EnableWindow(isEnabled);
 			m_pStyleUseCustomRad->SetCheck(bUseCustomStyle);
 		}
 		// [Customize] button
 		if (m_pStyleCustomizeBtn != NULL) {
-			m_pStyleCustomizeBtn->EnableWindow(bEnable);
+			m_pStyleCustomizeBtn->EnableWindow(isEnabled);
 		}
 		// Update data for Customize dialog
 		if (m_pMsgStyleSetDlg && IsWindow(m_pMsgStyleSetDlg->GetSafeHwnd())) {
@@ -2941,7 +2941,7 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	arrMsgString.clear();
 
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check item ID
 	if ((pwrItem.getItemId() < PwrReminderData::minItemID) || (pwrItem.getItemId() > PwrReminderData::maxItemID)) {

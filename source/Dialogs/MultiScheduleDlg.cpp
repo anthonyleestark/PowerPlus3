@@ -257,7 +257,7 @@ void CMultiScheduleDlg::OnClose()
 		// If data changed, ask for saving before closing dialog
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
-			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
 			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 
@@ -310,7 +310,7 @@ LRESULT CMultiScheduleDlg::requestCloseDialog(void)
 	// If data changed, ask for saving before closing dialog
 	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 		// Setup messagebox language
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 		const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
 		const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 
@@ -337,7 +337,7 @@ LRESULT CMultiScheduleDlg::requestCloseDialog(void)
 void CMultiScheduleDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
@@ -710,7 +710,7 @@ void CMultiScheduleDlg::UpdateDataItemList()
 		return;
 
 	// Load app language package
-	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Print items
 	int nTemp = -1;
@@ -829,7 +829,7 @@ void CMultiScheduleDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	bool bIsAllEmpty = m_schScheduleTemp.isAllEmpty();
 
 	// Get app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Disable [Add] button if item number has reached the limit
 	pBtn = GetDlgItem(IDC_MULTISCHEDULE_ADD_BTN);
@@ -1222,7 +1222,7 @@ bool CMultiScheduleDlg::Validate(Item& schItem, bool bShowMsg /* = false */, boo
 	arrMsgString.clear();
 
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check item ID
 	if ((schItem.getItemId() != ScheduleData::defaultItemID) &&
@@ -1326,7 +1326,7 @@ void CMultiScheduleDlg::OnExit()
 		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
 		if (bIsChanged == true) {
 			// Setup messagebox language
-			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CONTENT);
 			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_MULTISCHEDULE_CHANGED_CAPTION);
 

@@ -244,7 +244,7 @@ void CLogViewerDlg::OnCloseBtn()
 void CLogViewerDlg::setupLanguage(void)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
@@ -364,7 +364,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	if (pApp == NULL) return;
 
 	// Get app language package
-	LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
+	LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
 
 	// Re-update default cell properties
 	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pLogViewerList->GetDefaultCell(FALSE, FALSE);
@@ -491,7 +491,7 @@ BOOL CLogViewerDlg::LoadAppEventLogData(void)
 	// Get app event logging pointer
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp == NULL) return FALSE;
-	m_ptrAppEventLog = pApp->GetAppEventLog();
+	m_ptrAppEventLog = pApp->getAppEventLog();
 	if (m_ptrAppEventLog == NULL) return FALSE;
 
 	// Get log data item count
@@ -524,7 +524,7 @@ void CLogViewerDlg::UpdateLogViewer(void)
 	// Load app language package
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp == NULL) return;
-	LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
+	LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
 
 	// Print items
 	int nItemIndex = 0;

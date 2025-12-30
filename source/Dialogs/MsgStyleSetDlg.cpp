@@ -475,7 +475,7 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 void CRmdMsgStyleSetDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Set dialog caption
 	String dialogCaption = getLanguageString(pAppLang, getDialogId());
@@ -1022,7 +1022,7 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool bUpdate)
 		/***************************************************************/
 
 		// Load app language package
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 		// Background color
 		m_clrMsgBackground = m_rmsMsgStyleTemp.getBkgrdColor();

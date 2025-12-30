@@ -175,7 +175,7 @@ void CAboutDlg::OnDestroy()
 void CAboutDlg::setupLanguage(void)
 {
 	// Load app language packages
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
@@ -227,7 +227,7 @@ void CAboutDlg::SetAppNameLabel(void)
 		return;
 
 	// Get app name label format from app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 	const wchar_t* formatString = getLanguageString(pAppLang, IDC_APPNAME_LABEL);
 	if (IS_NULL_STRING(formatString)) return;
 
@@ -252,7 +252,7 @@ void CAboutDlg::SetAppInfoLabel(void)
 	if (productVersion.isEmpty()) return;
 
 	// Get app info label format from app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 	String strFormat = getLanguageString(pAppLang, IDC_APPINFO_LABEL);
 	if (IS_NULL_STRING(strFormat)) return;
 

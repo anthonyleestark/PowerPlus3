@@ -350,7 +350,7 @@ public:
     BOOL GetSingleRowSelection()                  { return m_bSingleRowSelection & m_bListMode; }
     void SetSingleColSelection(BOOL bSing = TRUE) { m_bSingleColSelection = bSing;    }
     BOOL GetSingleColSelection()                  { return m_bSingleColSelection;     }
-    void EnableSelection(BOOL bEnable = TRUE)     { ResetSelectedRange(); m_bEnableSelection = bEnable; ResetSelectedRange(); }
+    void EnableSelection(BOOL isEnabled = TRUE)     { ResetSelectedRange(); m_bEnableSelection = isEnabled; ResetSelectedRange(); }
     BOOL IsSelectable() const                     { return m_bEnableSelection;        }
     void SetFixedColumnSelection(BOOL bSelect)    { m_bFixedColumnSelection = bSelect;}
     BOOL GetFixedColumnSelection()                { return m_bFixedColumnSelection;   }
@@ -368,7 +368,7 @@ public:
     BOOL GetHandleTabKey() const                  { return m_bHandleTabKey;           }
     void SetDoubleBuffering(BOOL bBuffer = TRUE)  { m_bDoubleBuffer = bBuffer;        }
     BOOL GetDoubleBuffering() const               { return m_bDoubleBuffer;           }
-    void EnableTitleTips(BOOL bEnable = TRUE)     { m_bTitleTips = bEnable;           }
+    void EnableTitleTips(BOOL isEnabled = TRUE)     { m_bTitleTips = isEnabled;           }
     BOOL GetTitleTips()                           { return m_bTitleTips;              }
     void SetSortColumn(int nCol);
     int  GetSortColumn() const                    { return m_nSortColumn;             }
@@ -381,14 +381,14 @@ public:
     void SetAutoSizeStyle(int nStyle = GVS_BOTH)  { m_nAutoSizeColumnStyle = nStyle;  }
     int  GetAutoSizeStyle()                       { return m_nAutoSizeColumnStyle; }
 
-    void EnableHiddenColUnhide(BOOL bEnable = TRUE){ m_bHiddenColUnhide = bEnable;    }
+    void EnableHiddenColUnhide(BOOL isEnabled = TRUE){ m_bHiddenColUnhide = isEnabled;    }
     BOOL GetHiddenColUnhide()                     { return m_bHiddenColUnhide;        }
-    void EnableHiddenRowUnhide(BOOL bEnable = TRUE){ m_bHiddenRowUnhide = bEnable;    }
+    void EnableHiddenRowUnhide(BOOL isEnabled = TRUE){ m_bHiddenRowUnhide = isEnabled;    }
     BOOL GetHiddenRowUnhide()                     { return m_bHiddenRowUnhide;        }
 
-    void EnableColumnHide(BOOL bEnable = TRUE)    { m_bAllowColHide = bEnable;        }
+    void EnableColumnHide(BOOL isEnabled = TRUE)    { m_bAllowColHide = isEnabled;        }
     BOOL GetColumnHide()                          { return m_bAllowColHide;           }
-    void EnableRowHide(BOOL bEnable = TRUE)       { m_bAllowRowHide = bEnable;        }
+    void EnableRowHide(BOOL isEnabled = TRUE)       { m_bAllowRowHide = isEnabled;        }
     BOOL GetRowHide()                             { return m_bAllowRowHide;           }
 
     void SetForceVScroll(BOOL bForce)             { m_bForceVScroll = bForce;         }
@@ -564,10 +564,10 @@ public:
     void Print(CPrintDialog* pPrntDialog = NULL);
 
     // EFW - New printing support functions
-    void EnableWysiwygPrinting(BOOL bEnable = TRUE) { m_bWysiwygPrinting = bEnable;     }
+    void EnableWysiwygPrinting(BOOL isEnabled = TRUE) { m_bWysiwygPrinting = isEnabled;     }
     BOOL GetWysiwygPrinting()                       { return m_bWysiwygPrinting;        }
 
-    void SetShadedPrintOut(BOOL bEnable = TRUE)     {   m_bShadedPrintOut = bEnable;    }
+    void SetShadedPrintOut(BOOL isEnabled = TRUE)     {   m_bShadedPrintOut = isEnabled;    }
     BOOL GetShadedPrintOut(void)                    {   return m_bShadedPrintOut;       }
 
     // Use -1 to have it keep the existing value
@@ -624,7 +624,7 @@ protected:
     BOOL IsVisibleVScroll() { return ( (m_nBarState & GVL_VERT) > 0); } 
     BOOL IsVisibleHScroll() { return ( (m_nBarState & GVL_HORZ) > 0); }
     void ResetScrollBars();
-    void EnableScrollBars(int nBar, BOOL bEnable = TRUE);
+    void EnableScrollBars(int nBar, BOOL isEnabled = TRUE);
     int  GetScrollPos32(int nBar, BOOL bGetTrackPos = FALSE);
     BOOL SetScrollPos32(int nBar, int nPos, BOOL bRedraw = TRUE);
 

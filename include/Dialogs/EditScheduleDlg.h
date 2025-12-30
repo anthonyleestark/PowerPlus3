@@ -89,8 +89,8 @@ public:
 	void SaveScheduleItem(void);
 
 	bool checkDataChangeState(void);
-	void EnableSaveButton(bool bEnable);
-	void EnableSubItems(bool bEnable);
+	void EnableSaveButton(bool isEnabled);
+	void EnableSubItems(bool isEnabled);
 	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);
 
 public:

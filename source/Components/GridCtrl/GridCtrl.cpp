@@ -3426,11 +3426,11 @@ BOOL CGridCtrl::SetScrollPos32(int nBar, int nPos, BOOL bRedraw /* = TRUE */)
     return SetScrollInfo(nBar, &si, bRedraw);
 }
 
-void CGridCtrl::EnableScrollBars(int nBar, BOOL bEnable /*=TRUE*/)
+void CGridCtrl::EnableScrollBars(int nBar, BOOL isEnabled /*=TRUE*/)
 {
 	// Vertical scrollbar
 	if (nBar == SB_VERT || nBar == SB_BOTH) {
-		BOOL bEnableVScroll = bEnable | m_bForceVScroll;
+		BOOL bEnableVScroll = isEnabled | m_bForceVScroll;
 		if (bEnableVScroll) {
 			if (!IsVisibleVScroll()) {
 				m_nBarState |= GVL_VERT;
@@ -3447,7 +3447,7 @@ void CGridCtrl::EnableScrollBars(int nBar, BOOL bEnable /*=TRUE*/)
 
 	// Horizontal scrollbar
 	if (nBar == SB_HORZ || nBar == SB_BOTH) {
-		BOOL bEnableHScroll = bEnable | m_bForceHScroll;
+		BOOL bEnableHScroll = isEnabled | m_bForceHScroll;
 		if (bEnableHScroll) {
 			if (!IsVisibleHScroll()) {
 				m_nBarState |= GVL_HORZ;

@@ -221,7 +221,7 @@ void CEditScheduleDlg::OnClose()
 		// If data changed, ask for saving before closing dialog
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
-			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
 			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
@@ -274,7 +274,7 @@ LRESULT CEditScheduleDlg::requestCloseDialog(void)
 	// If data changed, ask for saving before closing dialog
 	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 		// Setup messagebox language
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 		const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
 		const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
@@ -309,7 +309,7 @@ LRESULT CEditScheduleDlg::requestCloseDialog(void)
 void CEditScheduleDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
@@ -604,7 +604,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 	if (m_pActiveDayListTable == NULL) return;
 
 	// Load app language package
-	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Print items
 	int nDayOfWeekID = INT_INVALID;
@@ -770,48 +770,48 @@ bool CEditScheduleDlg::checkDataChangeState()
 
 /**
  * @brief	Enable/disable save button
- * @param	bEnable - Enable or disable button
+ * @param	isEnabled - Enable or disable button
  * @return	None
  */
-void CEditScheduleDlg::EnableSaveButton(bool bEnable)
+void CEditScheduleDlg::EnableSaveButton(bool isEnabled)
 {
 	// If is currently in read-only or view mode, do not enable
 	if ((isReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Force disable
-		bEnable = false;
+		isEnabled = false;
 	}
 
 	// If new state is the same as current state, do nothing
 	CButton* pSaveBtn = (CButton*)GetDlgItem(IDC_EDITSCHEDULE_APPLY_BTN);
 	if (pSaveBtn != NULL) {
-		if (pSaveBtn->IsWindowEnabled() == bEnable)
+		if (pSaveBtn->IsWindowEnabled() == isEnabled)
 			return;
 	}
 
 	// Update state
-	pSaveBtn->EnableWindow(bEnable);
+	pSaveBtn->EnableWindow(isEnabled);
 }
 
 /**
  * @brief	Enable/disable sub items of function
- * @param	bEnable - Enable or disable sub items
+ * @param	isEnabled - Enable or disable sub items
  * @return	None
  */
-void CEditScheduleDlg::EnableSubItems(bool bEnable)
+void CEditScheduleDlg::EnableSubItems(bool isEnabled)
 {
 	// If is currently in read-only or view mode, do not enable
 	if ((isReadOnlyMode() == true) || (GetDispMode() == Mode::View)) {
 		// Force disable
-		bEnable = false;
+		isEnabled = false;
 	}
 
 	// Enable/disable items
-	GetDlgItem(IDC_EDITSCHEDULE_ACTION_LABEL)->EnableWindow(bEnable);
-	GetDlgItem(IDC_EDITSCHEDULE_ACTION_LIST)->EnableWindow(bEnable);
-	GetDlgItem(IDC_EDITSCHEDULE_TIME_LABEL)->EnableWindow(bEnable);
-	GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX)->EnableWindow(bEnable);
-	GetDlgItem(IDC_EDITSCHEDULE_TIME_SPIN)->EnableWindow(bEnable);
-	GetDlgItem(IDC_EDITSCHEDULE_REPEATDAILY_CHK)->EnableWindow(bEnable);
+	GetDlgItem(IDC_EDITSCHEDULE_ACTION_LABEL)->EnableWindow(isEnabled);
+	GetDlgItem(IDC_EDITSCHEDULE_ACTION_LIST)->EnableWindow(isEnabled);
+	GetDlgItem(IDC_EDITSCHEDULE_TIME_LABEL)->EnableWindow(isEnabled);
+	GetDlgItem(IDC_EDITSCHEDULE_TIME_EDITBOX)->EnableWindow(isEnabled);
+	GetDlgItem(IDC_EDITSCHEDULE_TIME_SPIN)->EnableWindow(isEnabled);
+	GetDlgItem(IDC_EDITSCHEDULE_REPEATDAILY_CHK)->EnableWindow(isEnabled);
 }
 
 /**
@@ -823,7 +823,7 @@ void CEditScheduleDlg::EnableSubItems(bool bEnable)
 void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = true */)
 {
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Get time editbox pointer
 	if (m_pTimeEdit == NULL) {
@@ -933,7 +933,7 @@ void CEditScheduleDlg::OnExit()
 		// If data changed, ask for saving before closing dialog
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
-			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
 			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 

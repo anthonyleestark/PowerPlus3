@@ -175,10 +175,10 @@ protected:
 	void setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
 
 	// Item state/checkbox update functions
-	void enableRightMouseMenu(bool bEnable);
-	void enableLogViewer(bool bEnable);
-	void enableBackgroundHotkey(bool bEnable);
-	void enablePowerReminder(bool bEnable);
+	void enableRightMouseMenu(bool isEnabled);
+	void enableLogViewer(bool isEnabled);
+	void enableBackgroundHotkey(bool isEnabled);
+	void enablePowerReminder(bool isEnabled);
 	void updateRestartAsAdminFlag(bool bFlag);
 
 	// Component update functions

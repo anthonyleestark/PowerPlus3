@@ -424,10 +424,10 @@ public:
 	virtual int  getFlagValue(AppFlagID eFlagId) const;
 	virtual void setFlagValue(AppFlagID eFlagId, int value);
 	FlagManager& getAppFlagManager(void) {
-		return ((SWinApp*)AfxGetApp())->GetAppFlagManager();
+		return ((SWinApp*)AfxGetApp())->getAppFlagManager();
 	}
 	const FlagManager& getAppFlagManager(void) const {
-		return ((SWinApp*)AfxGetApp())->GetAppFlagManager();
+		return ((SWinApp*)AfxGetApp())->getAppFlagManager();
 	}
 	FlagManager& getDialogFlagManager(void) {
 		return flagManager_;

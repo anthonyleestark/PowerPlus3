@@ -166,7 +166,7 @@ void CRmdRepeatSetDlg::OnCheckboxClicked(UINT /*nID*/)
 void CRmdRepeatSetDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -329,30 +329,30 @@ void CRmdRepeatSetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 		nRepeatState = m_pRepeatEnableChk->GetCheck();
 
 		// Enable/disable all other sub-controls
-		bool bEnable = (nRepeatState == 1) ? true : false;
+		bool isEnabled = (nRepeatState == 1) ? true : false;
 		if (m_pSnoozeEnableChk != NULL) {
-			m_pSnoozeEnableChk->EnableWindow(bEnable);
+			m_pSnoozeEnableChk->EnableWindow(isEnabled);
 		}
 		if (m_pActiveMondayChk != NULL) {
-			m_pActiveMondayChk->EnableWindow(bEnable);
+			m_pActiveMondayChk->EnableWindow(isEnabled);
 		}
 		if (m_pActiveTuesdayChk != NULL) {
-			m_pActiveTuesdayChk->EnableWindow(bEnable);
+			m_pActiveTuesdayChk->EnableWindow(isEnabled);
 		}
 		if (m_pActiveWednesdayChk != NULL) {
-			m_pActiveWednesdayChk->EnableWindow(bEnable);
+			m_pActiveWednesdayChk->EnableWindow(isEnabled);
 		}
 		if (m_pActiveThursdayChk != NULL) {
-			m_pActiveThursdayChk->EnableWindow(bEnable);
+			m_pActiveThursdayChk->EnableWindow(isEnabled);
 		}
 		if (m_pActiveFridayChk != NULL) {
-			m_pActiveFridayChk->EnableWindow(bEnable);
+			m_pActiveFridayChk->EnableWindow(isEnabled);
 		}
 		if (m_pActiveSaturdayChk != NULL) {
-			m_pActiveSaturdayChk->EnableWindow(bEnable);
+			m_pActiveSaturdayChk->EnableWindow(isEnabled);
 		}
 		if (m_pActiveSundayChk != NULL) {
-			m_pActiveSundayChk->EnableWindow(bEnable);
+			m_pActiveSundayChk->EnableWindow(isEnabled);
 		}
 
 	}
@@ -384,7 +384,7 @@ void CRmdRepeatSetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Get format string
 	const wchar_t* formatString = getLanguageString(pAppLang, PWRRMD_REPEATSET_SNOOZEINTERVAL);

@@ -1034,7 +1034,7 @@ void SDialog::setCaptionFromResource(unsigned resourceStringId)
 void SDialog::setCaptionFromLanguage(unsigned langStringId)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->getAppLanguage();
 
 	String captionString = getLanguageString(pAppLang, langStringId);
 	this->setCaption(captionString);
@@ -1077,7 +1077,7 @@ bool SDialog::createBrush(void)
 void SDialog::registerMessageBoxCaption(unsigned nCaptionID)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->getAppLanguage();
 	String captionString = Constant::String::Empty;
 	if (nCaptionID != NULL) {
 
@@ -1092,7 +1092,7 @@ void SDialog::registerMessageBoxCaption(unsigned nCaptionID)
 	// If caption is empty
 	if (captionString.isEmpty()) {
 		// Use default app window caption
-		captionString = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
+		captionString = ((SWinApp*)AfxGetApp())->getAppWindowCaption();
 	}
 
 	// Register message box caption
@@ -1109,10 +1109,10 @@ void SDialog::registerMessageBoxCaption(unsigned nCaptionID)
 int SDialog::displayMessageBox(unsigned promptId, unsigned captionId /* = NULL */, unsigned style /* = NULL */)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->getAppLanguage();
 
 	String messagePrompt = getLanguageString(pAppLang, promptId);
-	String messageCaption = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
+	String messageCaption = ((SWinApp*)AfxGetApp())->getAppWindowCaption();
 	if (captionId != NULL) {
 
 		// Get language string caption
@@ -1161,7 +1161,7 @@ int SDialog::displayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
 		// Otherwise,
 		else {
 			// Use app window caption
-			messageCaption = ((SWinApp*)AfxGetApp())->GetAppWindowCaption();
+			messageCaption = ((SWinApp*)AfxGetApp())->getAppWindowCaption();
 		}
 	}
 	
@@ -1199,7 +1199,7 @@ void SDialog::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 	SWinApp* pApp = (SWinApp*)AfxGetApp();
 	ASSERT(pApp);
 	if (pApp == NULL) return;
-	if (SLogging* ptrAppEventLog = pApp->GetAppEventLog()) {
+	if (SLogging* ptrAppEventLog = pApp->getAppEventLog()) {
 		ptrAppEventLog->OutputItem(logItemDialogEvent);
 	}
 }
@@ -1475,7 +1475,7 @@ void SDialog::outputMenuLog(USHORT eventId, unsigned menuItemId)
 	// Prepare menu event log info
 	// Get menu item title from language table
 	String menuItemCaption;
-	LANGTABLE_PTR pLanguage = ((SWinApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pLanguage = ((SWinApp*)AfxGetApp())->getAppLanguage();
 	if (pLanguage != NULL) {
 		menuItemCaption = getLanguageString(pLanguage, menuItemId);
 	}
@@ -1502,7 +1502,7 @@ void SDialog::outputMenuLog(USHORT eventId, unsigned menuItemId)
 void SDialog::setupLanguage(void)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->getAppLanguage();
 
 	// Loop through all dialog items and setup languages for each one of them
 	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
@@ -1603,7 +1603,7 @@ void SDialog::updateItemText(unsigned controlId , unsigned newCaptionId /* = NUL
 {
 	// Check language package validity
 	if (langTablePtr == NULL) {
-		langTablePtr = ((SWinApp*)AfxGetApp())->GetAppLanguage();
+		langTablePtr = ((SWinApp*)AfxGetApp())->getAppLanguage();
 		if (langTablePtr == NULL)
 			return;
 	}
@@ -1641,7 +1641,7 @@ void SDialog::setControlText(CWnd* controlPtr, unsigned controlId, LANGTABLE_PTR
 	
 	// Check language package validity
 	if (langTablePtr == NULL) {
-		langTablePtr = ((SWinApp*)AfxGetApp())->GetAppLanguage();
+		langTablePtr = ((SWinApp*)AfxGetApp())->getAppLanguage();
 		if (langTablePtr == NULL)
 			return;
 	}

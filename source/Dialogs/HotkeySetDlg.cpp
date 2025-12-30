@@ -576,7 +576,7 @@ LRESULT CHotkeySetDlg::requestCloseDialog(void)
 void CHotkeySetDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
@@ -701,7 +701,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 	if (pApp == NULL) return;
 
 	// Get app language package
-	LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
+	LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
 
 	// Re-update default cell properties
 	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pHotkeySetListTable->GetDefaultCell(false, false);
@@ -958,7 +958,7 @@ void CHotkeySetDlg::UpdateHotkeySet()
 		return;
 
 	// Load app language package
-	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Print items
 	String tempString;
@@ -1375,7 +1375,7 @@ bool CHotkeySetDlg::Validate(const Item& hksItem, bool bShowMsg /* = false */)
 	arrMsgString.clear();
 
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check action ID
 	if ((hksItem.getActionId() < HKID::displayOff) || (hksItem.getActionId() > HKID::hibernate)) {

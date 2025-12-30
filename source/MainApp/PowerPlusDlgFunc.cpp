@@ -446,7 +446,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("appeventlog"))) {
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("clear")))) {
 			// Clear all app event log data in memory
-			SLogging* pAppEventLog = ((CPowerPlusApp*)AfxGetApp())->GetAppEventLog();
+			SLogging* pAppEventLog = ((CPowerPlusApp*)AfxGetApp())->getAppEventLog();
 			if (pAppEventLog != NULL) {
 				pAppEventLog->Init();
 				OutputDebugLog(_T("App event log data cleared"));
@@ -455,7 +455,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("write")))) {
 			// Force writing app event log data from memory to file
-			SLogging* pAppEventLog = ((CPowerPlusApp*)AfxGetApp())->GetAppEventLog();
+			SLogging* pAppEventLog = ((CPowerPlusApp*)AfxGetApp())->getAppEventLog();
 			if (pAppEventLog != NULL) {
 				bool bRet = pAppEventLog->Write();
 				if (bRet == true) {
@@ -586,7 +586,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
 				// Load app language package
-				LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
+				LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
 				// Format and print data
 				String strValue = Constant::String::Empty;
 				// Left mouse button action
