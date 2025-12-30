@@ -455,7 +455,7 @@ void CMultiScheduleDlg::DrawDataTable(bool bReadOnly /* = false */)
 	if (pApp == NULL) return;
 
 	// Get app language package
-	LANGTABLE_PTR ptrLanguage = pApp->GetAppLanguage();
+	LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
 
 	// Re-update default cell properties
 	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pDataItemListTable->GetDefaultCell(false, false);

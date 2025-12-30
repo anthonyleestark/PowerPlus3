@@ -46,40 +46,40 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 	defaultIcon_ = NULL;
 
 	// Initialize boolean variables for checkboxes
-	m_bRMBShowMenu = false;
-	m_bShowDlgAtStartup = false;
-	m_bStartupEnabled = false;
-	m_bConfirmAction = false;
-	m_bSaveHistoryLog = false;
-	m_bSaveAppEventLog = false;
-	m_bRunAsAdmin = false;
-	m_bShowErrorMsg = false;
-	m_bnotifySchedule = false;
-	m_bAllowCancelSchedule = false;
-	m_benableBackgroundHotkey = false;
-	m_benablePowerReminder = false;
+	rightMouseShowMenu_ = false;
+	showDialogAtStartup_ = false;
+	isStartupEnabled_ = false;
+	confirmBeforeAction_ = false;
+	saveHistoryLog_ = false;
+	saveAppEventLog_ = false;
+	isRunAsAdmin_ = false;
+	showErrorMsg_ = false;
+	notifySchedule_ = false;
+	allowCancelSchedule_ = false;
+	enableBackgroundHotkey_ = false;
+	enablePowerReminder_ = false;
 
 	// Initialize notify icon variables
-	m_hNotifyIcon = NULL;
-	m_pNotifyIconData = NULL;
-	m_pNotifyMenu = NULL;
+	notifyIconHandle_ = NULL;
+	notifyIconDataPtr_ = NULL;
+	notifyMenuPtr_ = NULL;
 
 	// Init member variables for resizing dialog
-	m_pDialogSize = NULL;
+	dialogSize_ = NULL;
 
 	// Init hotkey register data
-	m_arrCurRegHKeyList.clear();
+	currentRegHotkeyList_.clear();
 
 	// Init Power++ runtime queue data
-	m_arrRuntimeQueue.clear();
+	runtimeQueue_.clear();
 
 	// Init child dialogs
-	m_pAboutDlg = NULL;
-	m_pHelpDlg = NULL;
-	m_pLogViewerDlg = NULL;
-	m_pMultiScheduleDlg = NULL;
-	m_pHotkeySetDlg = NULL;
-	m_pPwrReminderDlg = NULL;
+	aboutDlgPtr_ = NULL;
+	helpDlgPtr_ = NULL;
+	logViewerDlgPtr_ = NULL;
+	multiScheduleDlgPtr_ = NULL;
+	hotkeySetDlgPtr_ = NULL;
+	pwrReminderDlgPtr_ = NULL;
 }
 
 
@@ -89,67 +89,67 @@ CPowerPlusDlg::CPowerPlusDlg(CWnd* pParent /*=NULL*/)
 CPowerPlusDlg::~CPowerPlusDlg()
 {
 	// Delete member pointers
-	if (m_pNotifyIconData != NULL) {
-		delete m_pNotifyIconData;
-		m_pNotifyIconData = NULL;
+	if (notifyIconDataPtr_ != NULL) {
+		delete notifyIconDataPtr_;
+		notifyIconDataPtr_ = NULL;
 	}
 
-	if (m_pDialogSize != NULL) {
-		delete m_pDialogSize;
-		m_pDialogSize = NULL;
+	if (dialogSize_ != NULL) {
+		delete dialogSize_;
+		dialogSize_ = NULL;
 	}
 
 	// Destroy child dialogs
-	if (m_pAboutDlg != NULL) {
+	if (aboutDlgPtr_ != NULL) {
 		// Destroy dialog
-		delete m_pAboutDlg;
-		m_pAboutDlg = NULL;
+		delete aboutDlgPtr_;
+		aboutDlgPtr_ = NULL;
 	}
 
-	if (m_pHelpDlg != NULL) {
+	if (helpDlgPtr_ != NULL) {
 		// Destroy dialog
-		delete m_pHelpDlg;
-		m_pHelpDlg = NULL;
+		delete helpDlgPtr_;
+		helpDlgPtr_ = NULL;
 	}
 
-	if (m_pMultiScheduleDlg != NULL) {
+	if (multiScheduleDlgPtr_ != NULL) {
 		// Destroy dialog
-		delete m_pMultiScheduleDlg;
-		m_pMultiScheduleDlg = NULL;
+		delete multiScheduleDlgPtr_;
+		multiScheduleDlgPtr_ = NULL;
 	}
 
-	if (m_pLogViewerDlg != NULL) {
+	if (logViewerDlgPtr_ != NULL) {
 		// Destroy dialog
-		delete m_pLogViewerDlg;
-		m_pLogViewerDlg = NULL;
+		delete logViewerDlgPtr_;
+		logViewerDlgPtr_ = NULL;
 	}
 
-	if (m_pHotkeySetDlg != NULL) {
+	if (hotkeySetDlgPtr_ != NULL) {
 		// Destroy dialog
-		delete m_pHotkeySetDlg;
-		m_pHotkeySetDlg = NULL;
+		delete hotkeySetDlgPtr_;
+		hotkeySetDlgPtr_ = NULL;
 	}
 
-	if (m_pPwrReminderDlg != NULL) {
+	if (pwrReminderDlgPtr_ != NULL) {
 		// Destroy dialog
-		delete m_pPwrReminderDlg;
-		m_pPwrReminderDlg = NULL;
+		delete pwrReminderDlgPtr_;
+		pwrReminderDlgPtr_ = NULL;
 	}
 
 	// Clear Action Schedule data
-	m_schScheduleData.deleteAll();
+	scheduleData_.deleteAll();
 	
 	// Clear HotkeySet data
-	m_hksHotkeySetData.deleteAll();
+	hotkeySetData_.deleteAll();
 
 	// Clear Power Reminder data
-	m_prdReminderData.deleteAll();
+	reminderData_.deleteAll();
 
 	// Clear registered hotkey list
-	m_arrCurRegHKeyList.clear();
+	currentRegHotkeyList_.clear();
 
 	// Clean Power++ runtime queue data
-	m_arrRuntimeQueue.clear();
+	runtimeQueue_.clear();
 
 	// Kill timers
 	KillTimer(TIMERID_STD_ACTIONSCHEDULE);
@@ -167,22 +167,22 @@ CPowerPlusDlg::~CPowerPlusDlg()
 void CPowerPlusDlg::DoDataExchange(CDataExchange* pDX)
 {
 	SDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LMBACTION_LIST,		m_cmbLMBAction);
-	DDX_Control(pDX, IDC_MMBACTION_LIST,		m_cmbMMBAction);
-	DDX_Control(pDX, IDC_RMBACTION_LIST,		m_cmbRMBAction);
-	DDX_Control(pDX, IDC_LANGUAGE_LIST,			m_cmbLanguages);
-	DDX_Check(pDX,	IDC_ENABLERMBMENU_CHK,		m_bRMBShowMenu);
-	DDX_Check(pDX,	IDC_SHOWATSTARTUP_CHK,		m_bShowDlgAtStartup);
-	DDX_Check(pDX,	IDC_ENABLEAUTOSTART_CHK,	m_bStartupEnabled);
-	DDX_Check(pDX,	IDC_CONFIRMACTION_CHK,		m_bConfirmAction);
-	DDX_Check(pDX,	IDC_SAVEHISTORYLOG_CHK,		m_bSaveHistoryLog);
-	DDX_Check(pDX,	IDC_SAVEAPPEVENTLOG_CHK,	m_bSaveAppEventLog);
-	DDX_Check(pDX,	IDC_RUNASADMIN_CHK,			m_bRunAsAdmin);
-	DDX_Check(pDX,	IDC_SHOWERROR_CHK,			m_bShowErrorMsg);
-	DDX_Check(pDX,	IDC_SCHEDNOTIFY_CHK,		m_bnotifySchedule);
-	DDX_Check(pDX,	IDC_SCHEDALLOWCANCEL_CHK,	m_bAllowCancelSchedule);
-	DDX_Check(pDX,	IDC_ENBBKGRDHOTKEYS_CHK,	m_benableBackgroundHotkey);
-	DDX_Check(pDX,	IDC_ENBPWRREMINDER_CHK,		m_benablePowerReminder);
+	DDX_Control(pDX, IDC_LMBACTION_LIST,		leftMouseActionCombo_);
+	DDX_Control(pDX, IDC_MMBACTION_LIST,		middleMouseActionCombo_);
+	DDX_Control(pDX, IDC_RMBACTION_LIST,		rightMouseActionCombo_);
+	DDX_Control(pDX, IDC_LANGUAGE_LIST,			languageCombo_);
+	DDX_Check(pDX,	IDC_ENABLERMBMENU_CHK,		rightMouseShowMenu_);
+	DDX_Check(pDX,	IDC_SHOWATSTARTUP_CHK,		showDialogAtStartup_);
+	DDX_Check(pDX,	IDC_ENABLEAUTOSTART_CHK,	isStartupEnabled_);
+	DDX_Check(pDX,	IDC_CONFIRMACTION_CHK,		confirmBeforeAction_);
+	DDX_Check(pDX,	IDC_SAVEHISTORYLOG_CHK,		saveHistoryLog_);
+	DDX_Check(pDX,	IDC_SAVEAPPEVENTLOG_CHK,	saveAppEventLog_);
+	DDX_Check(pDX,	IDC_RUNASADMIN_CHK,			isRunAsAdmin_);
+	DDX_Check(pDX,	IDC_SHOWERROR_CHK,			showErrorMsg_);
+	DDX_Check(pDX,	IDC_SCHEDNOTIFY_CHK,		notifySchedule_);
+	DDX_Check(pDX,	IDC_SCHEDALLOWCANCEL_CHK,	allowCancelSchedule_);
+	DDX_Check(pDX,	IDC_ENBBKGRDHOTKEYS_CHK,	enableBackgroundHotkey_);
+	DDX_Check(pDX,	IDC_ENBPWRREMINDER_CHK,		enablePowerReminder_);
 }
 
 
@@ -494,11 +494,11 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
 
 	// First, init all default data
-	m_cfgAppConfig.setDefaultData();
-	m_cfgTempConfig.setDefaultData();
-	m_schScheduleData.setDefaultData();
-	m_hksHotkeySetData.setDefaultData();
-	m_prdReminderData.setDefaultData();
+	appConfigData_.setDefaultData();
+	tempConfigData_.setDefaultData();
+	scheduleData_.setDefaultData();
+	hotkeySetData_.setDefaultData();
+	reminderData_.setDefaultData();
 
 	// Load data
 	getAppData(APPDATA_ALL);
@@ -574,44 +574,44 @@ int CPowerPlusDlg::PreDestroyDialog()
 	LRESULT resCloseReq;
 
 	// About dialog
-	if (m_pAboutDlg != NULL) {
+	if (aboutDlgPtr_ != NULL) {
 		// Request close dialog
-		resCloseReq = m_pAboutDlg->requestCloseDialog();
+		resCloseReq = aboutDlgPtr_->requestCloseDialog();
 		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// Help dialog
-	if (m_pHelpDlg != NULL) {
+	if (helpDlgPtr_ != NULL) {
 		// Request close dialog
-		resCloseReq = m_pHelpDlg->requestCloseDialog();
+		resCloseReq = helpDlgPtr_->requestCloseDialog();
 		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// LogViewer dialog
-	if (m_pLogViewerDlg != NULL) {
+	if (logViewerDlgPtr_ != NULL) {
 		// Request close dialog
-		resCloseReq = m_pLogViewerDlg->requestCloseDialog();
+		resCloseReq = logViewerDlgPtr_->requestCloseDialog();
 		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// Multi schedule dialog
-	if (m_pMultiScheduleDlg != NULL) {
+	if (multiScheduleDlgPtr_ != NULL) {
 		// Request close dialog
-		resCloseReq = m_pMultiScheduleDlg->requestCloseDialog();
+		resCloseReq = multiScheduleDlgPtr_->requestCloseDialog();
 		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// HotkeySet dialog
-	if (m_pHotkeySetDlg != NULL) {
+	if (hotkeySetDlgPtr_ != NULL) {
 		// Request close dialog
-		resCloseReq = m_pHotkeySetDlg->requestCloseDialog();
+		resCloseReq = hotkeySetDlgPtr_->requestCloseDialog();
 		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
 	// Power Reminder dialog
-	if (m_pPwrReminderDlg != NULL) {
+	if (pwrReminderDlgPtr_ != NULL) {
 		// Request close dialog
-		resCloseReq = m_pPwrReminderDlg->requestCloseDialog();
+		resCloseReq = pwrReminderDlgPtr_->requestCloseDialog();
 		if (resCloseReq != Result::Success)
 			return resCloseReq;
 	}
@@ -880,7 +880,7 @@ void CPowerPlusDlg::OnChangeLMBAction()
 {
 	// Update data
 	updateDialogData(true);
-	m_cmbLMBAction.GetCurSel();
+	leftMouseActionCombo_.GetCurSel();
 
 	// Check for settings change
 	setFlagValue(AppFlagID::dialogDataChanged, checkSettingChangeState());
@@ -899,7 +899,7 @@ void CPowerPlusDlg::OnChangeMMBAction()
 {
 	// Update data
 	updateDialogData(true);
-	m_cmbMMBAction.GetCurSel();
+	middleMouseActionCombo_.GetCurSel();
 
 	// Check for settings change
 	setFlagValue(AppFlagID::dialogDataChanged, checkSettingChangeState());
@@ -918,7 +918,7 @@ void CPowerPlusDlg::OnChangeRMBAction()
 {
 	// Update data
 	updateDialogData(true);
-	m_cmbRMBAction.GetCurSel();
+	rightMouseActionCombo_.GetCurSel();
 
 	// Check for settings change
 	setFlagValue(AppFlagID::dialogDataChanged, checkSettingChangeState());
@@ -927,7 +927,7 @@ void CPowerPlusDlg::OnChangeRMBAction()
 	outputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_RMBACTION_LIST);
 
 	// Refresh dialog item state
-	m_cmbRMBAction.EnableWindow(!m_bRMBShowMenu);
+	rightMouseActionCombo_.EnableWindow(!rightMouseShowMenu_);
 	updateDialogData(false);
 }
 
@@ -941,7 +941,7 @@ void CPowerPlusDlg::OnChangeLanguage()
 {
 	// Update data
 	updateDialogData(true);
-	m_cmbLanguages.GetCurSel();
+	languageCombo_.GetCurSel();
 
 	// Save app event log if enabled
 	outputComboBoxLog(LOG_EVENT_CMB_SELCHANGE, IDC_LANGUAGE_LIST);
@@ -1182,50 +1182,50 @@ LRESULT CPowerPlusDlg::OnChildDialogDestroy(WPARAM wParam, LPARAM lParam)
 
 	// About dialog
 	if (nDialogID == IDD_ABOUT_DLG) {
-		if (m_pAboutDlg != NULL) {
+		if (aboutDlgPtr_ != NULL) {
 			// Delete dialog
-			delete m_pAboutDlg;
-			m_pAboutDlg = NULL;
+			delete aboutDlgPtr_;
+			aboutDlgPtr_ = NULL;
 		}
 	}
 	// Help dialog
 	else if (nDialogID == IDD_HELP_DLG) {
-		if (m_pHelpDlg != NULL) {
+		if (helpDlgPtr_ != NULL) {
 			// Delete dialog
-			delete m_pHelpDlg;
-			m_pHelpDlg = NULL;
+			delete helpDlgPtr_;
+			helpDlgPtr_ = NULL;
 		}
 	}
 	// Multi schedule dialog
 	else if (nDialogID == IDD_MULTISCHEDULE_DLG) {
-		if (m_pMultiScheduleDlg != NULL) {
+		if (multiScheduleDlgPtr_ != NULL) {
 			// Delete dialog
-			delete m_pMultiScheduleDlg;
-			m_pMultiScheduleDlg = NULL;
+			delete multiScheduleDlgPtr_;
+			multiScheduleDlgPtr_ = NULL;
 		}
 	}
 	// LogViewer dialog
 	else if (nDialogID == IDD_LOGVIEWER_DLG) {
-		if (m_pLogViewerDlg != NULL) {
+		if (logViewerDlgPtr_ != NULL) {
 			// Delete dialog
-			delete m_pLogViewerDlg;
-			m_pLogViewerDlg = NULL;
+			delete logViewerDlgPtr_;
+			logViewerDlgPtr_ = NULL;
 		}
 	}
 	// HotkeySet dialog
 	else if (nDialogID == IDD_HOTKEYSET_DLG) {
-		if (m_pHotkeySetDlg != NULL) {
+		if (hotkeySetDlgPtr_ != NULL) {
 			// Delete dialog
-			delete m_pHotkeySetDlg;
-			m_pHotkeySetDlg = NULL;
+			delete hotkeySetDlgPtr_;
+			hotkeySetDlgPtr_ = NULL;
 		}
 	}
 	// Power Reminder dialog
 	else if (nDialogID == IDD_PWRREMINDER_DLG) {
-		if (m_pPwrReminderDlg != NULL) {
+		if (pwrReminderDlgPtr_ != NULL) {
 			// Delete dialog
-			delete m_pPwrReminderDlg;
-			m_pPwrReminderDlg = NULL;
+			delete pwrReminderDlgPtr_;
+			pwrReminderDlgPtr_ = NULL;
 		}
 	}
 	// DebugTest dialog
@@ -1252,7 +1252,7 @@ LRESULT CPowerPlusDlg::OnUpdateScheduleData(WPARAM /*wParam*/, LPARAM /*lParam*/
 	if (pApp != NULL) {
 		ScheduleData* pschData = pApp->getAppScheduleData();
 		if (pschData != NULL) {
-			m_schScheduleData.copy(*pschData);
+			scheduleData_.copy(*pschData);
 			updateActionScheduleQueue(Mode::Update);
 		}
 	}
@@ -1275,7 +1275,7 @@ LRESULT CPowerPlusDlg::OnUpdateHotkeySetData(WPARAM /*wParam*/, LPARAM /*lParam*
 	if (pApp != NULL) {
 		HotkeySetData* phksData = pApp->getAppHotkeySetData();
 		if (phksData != NULL) {
-			m_hksHotkeySetData.copy(*phksData);
+			hotkeySetData_.copy(*phksData);
 			setupBackgroundHotkey(Mode::Update);
 		}
 	}
@@ -1298,7 +1298,7 @@ LRESULT CPowerPlusDlg::OnUpdatePwrReminderData(WPARAM /*wParam*/, LPARAM /*lPara
 	if (pApp != NULL) {
 		PwrReminderData* ppwrData = pApp->getAppPwrReminderData();
 		if (ppwrData != NULL) {
-			m_prdReminderData.copy(*ppwrData);
+			reminderData_.copy(*ppwrData);
 			updatePwrReminderSnooze(Mode::Update);
 		}
 	}
@@ -1760,14 +1760,14 @@ LRESULT CPowerPlusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 
 /**
  * @brief	Expand/collapse dialog
- * @param	bExpand - Flag to expand or collapse
+ * @param	isExpandOrCollapse - Flag to expand or collapse
  * @return	None
  */
-void CPowerPlusDlg::expandDialog(bool bExpand)
+void CPowerPlusDlg::expandDialog(bool isExpandOrCollapse)
 {
 	// If new state is the same as current state, do nothing
 	bool bCurState = getFlagValue(AppFlagID::dialogExpanded);
-	if (bExpand == bCurState) {
+	if (isExpandOrCollapse == bCurState) {
 		TRACE("State doesn't change, do not process!!!");
 		return;
 	}
@@ -1808,7 +1808,7 @@ void CPowerPlusDlg::expandDialog(bool bExpand)
 			case IDC_LANGUAGE_TITLE:
 			case IDC_LANGUAGE_LIST:
 				// Show/hide these items
-				pWndChild->ShowWindow(bExpand);
+				pWndChild->ShowWindow(isExpandOrCollapse);
 				break;
 
 			case IDC_HELP_BTN:
@@ -1819,7 +1819,7 @@ void CPowerPlusDlg::expandDialog(bool bExpand)
 					CRect rcChildNew, rcChildOld;
 					this->GetDlgItem(pWndChild->GetDlgCtrlID())->GetWindowRect(&rcChildOld);
 					this->ScreenToClient(&rcChildOld);
-					if (!bExpand) {
+					if (!isExpandOrCollapse) {
 						CRect rcCollapseBtn;
 						GetDlgItem(IDC_COLLAPSE_BTNPOS)->GetWindowRect(&rcCollapseBtn);
 						this->ScreenToClient(&rcCollapseBtn);
@@ -1840,7 +1840,7 @@ void CPowerPlusDlg::expandDialog(bool bExpand)
 				break;
 
 			default:
-				pWndChild->EnableWindow(bExpand);
+				pWndChild->EnableWindow(isExpandOrCollapse);
 				break;
 			}
 		}
@@ -1850,15 +1850,15 @@ void CPowerPlusDlg::expandDialog(bool bExpand)
 	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Initialize dialog size pointer
-	VERIFY_INITIALIZATION(m_pDialogSize, Size);
+	VERIFY_INITIALIZATION(dialogSize_, Size);
 
 	// Expand/collapse dialog
-	if (!bExpand) {
+	if (!isExpandOrCollapse) {
 
 		// Calculate dialog size
 		GetWindowRect(&rcWnd);
-		m_pDialogSize->_width = rcWnd.right - rcWnd.left;
-		m_pDialogSize->_height = rcWnd.bottom - rcWnd.top;
+		dialogSize_->_width = rcWnd.right - rcWnd.left;
+		dialogSize_->_height = rcWnd.bottom - rcWnd.top;
 
 		// Resize dialog
 		SetWindowPos(NULL, 0, 0, rcWnd.right - rcWnd.left, rcFrameWnd.bottom - rcWnd.top, SWP_NOMOVE | SWP_NOZORDER);
@@ -1868,7 +1868,7 @@ void CPowerPlusDlg::expandDialog(bool bExpand)
 	}
 	else {
 		// Resize dialog
-		SetWindowPos(NULL, 0, 0, m_pDialogSize->width(), m_pDialogSize->height(), SWP_NOMOVE | SWP_NOZORDER);
+		SetWindowPos(NULL, 0, 0, dialogSize_->width(), dialogSize_->height(), SWP_NOMOVE | SWP_NOZORDER);
 
 		// Make sure that the entire dialog box is visible on the screen
 		SendMessage(DM_REPOSITION, 0, 0);
@@ -1878,7 +1878,7 @@ void CPowerPlusDlg::expandDialog(bool bExpand)
 	}
 
 	// Save app event log if enabled
-	unsigned nEventID = bExpand ? LOG_EVENT_DLG_EXPANDED : LOG_EVENT_DLG_COLLAPSED;
+	unsigned nEventID = isExpandOrCollapse ? LOG_EVENT_DLG_EXPANDED : LOG_EVENT_DLG_COLLAPSED;
 	outputEventLog(nEventID, this->getCaption());
 
 	// Update flag
@@ -1905,9 +1905,9 @@ bool CPowerPlusDlg::createNotifyIcon(void)
 	}
 
 	// Init notify icon
-	if (m_pNotifyIconData == NULL) {
-		m_pNotifyIconData = new NOTIFYICONDATA;
-		if (m_pNotifyIconData == NULL) {
+	if (notifyIconDataPtr_ == NULL) {
+		notifyIconDataPtr_ = new NOTIFYICONDATA;
+		if (notifyIconDataPtr_ == NULL) {
 			// Initialization failed
 			TRACE_ERROR("Error: Notify icon initialization failed!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1916,18 +1916,18 @@ bool CPowerPlusDlg::createNotifyIcon(void)
 	}
 
 	// Setup notify icon properties
-	m_pNotifyIconData->hWnd = this->GetSafeHwnd();
-	m_pNotifyIconData->cbSize = sizeof(NOTIFYICONDATA);
-	m_pNotifyIconData->hIcon = defaultIcon_;
-	m_pNotifyIconData->uCallbackMessage = SM_APP_TRAYICON;
-	m_pNotifyIconData->uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
-	m_pNotifyIconData->uID = 500;
-	setNotifyTipText(m_pNotifyIconData);
+	notifyIconDataPtr_->hWnd = this->GetSafeHwnd();
+	notifyIconDataPtr_->cbSize = sizeof(NOTIFYICONDATA);
+	notifyIconDataPtr_->hIcon = defaultIcon_;
+	notifyIconDataPtr_->uCallbackMessage = SM_APP_TRAYICON;
+	notifyIconDataPtr_->uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+	notifyIconDataPtr_->uID = 500;
+	setNotifyTipText(notifyIconDataPtr_);
 
 	// Create and show notify icon
 	bool bRetCreate = false;
 	for (int nRetry = 0; nRetry < Constant::Max::RetryTime; nRetry++) {
-		bRetCreate = Shell_NotifyIcon(NIM_ADD, m_pNotifyIconData);
+		bRetCreate = Shell_NotifyIcon(NIM_ADD, notifyIconDataPtr_);
 		if (bRetCreate != false) break;
 	}
 
@@ -1954,15 +1954,15 @@ bool CPowerPlusDlg::createNotifyIcon(void)
 bool CPowerPlusDlg::showNotifyMenu(void)
 {
 	// Reset notify menu
-	if (m_pNotifyMenu != NULL) {
-		m_pNotifyMenu->DestroyMenu();
+	if (notifyMenuPtr_ != NULL) {
+		notifyMenuPtr_->DestroyMenu();
 	}
 
 	// Prepare notify menu
 	CMenu menuNotify;
 	menuNotify.LoadMenu(IDR_MENU_NOTIFY_DEFAULT);
-	m_pNotifyMenu = menuNotify.GetSubMenu(0);
-	if (m_pNotifyMenu == NULL) {
+	notifyMenuPtr_ = menuNotify.GetSubMenu(0);
+	if (notifyMenuPtr_ == NULL) {
 		// Trace error
 		TRACE_ERROR("Error: Show notify menu failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1970,16 +1970,16 @@ bool CPowerPlusDlg::showNotifyMenu(void)
 	}
 
 	// Setup menu properties
-	setMenuItemText(m_pNotifyMenu);
-	updateMenuItemState(m_pNotifyMenu);
-	SetMenuDefaultItem(m_pNotifyMenu->m_hMenu, IDM_NOTIFY_SHOW_WINDOW, NULL);
+	setMenuItemText(notifyMenuPtr_);
+	updateMenuItemState(notifyMenuPtr_);
+	SetMenuDefaultItem(notifyMenuPtr_->m_hMenu, IDM_NOTIFY_SHOW_WINDOW, NULL);
 	this->SetForegroundWindow();
 
 	// Show notify menu
 	POINT ptCursor;
 	GetCursorPos(&ptCursor);
 	unsigned nFlags = TPM_RIGHTALIGN | TPM_BOTTOMALIGN;
-	bool bResult = m_pNotifyMenu->TrackPopupMenu(nFlags, ptCursor.x, ptCursor.y, (CWnd*)this, NULL);
+	bool bResult = notifyMenuPtr_->TrackPopupMenu(nFlags, ptCursor.x, ptCursor.y, (CWnd*)this, NULL);
 
 	return bResult;
 }
@@ -1993,7 +1993,7 @@ bool CPowerPlusDlg::showNotifyMenu(void)
 void CPowerPlusDlg::updateNotifyIcon(void)
 {
 	// If notify icon doesn't exist, do nothing
-	if (m_pNotifyIconData == NULL) {
+	if (notifyIconDataPtr_ == NULL) {
 		// Trace error
 		TRACE_ERROR("Error: Notify icon does not exist!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -2001,8 +2001,8 @@ void CPowerPlusDlg::updateNotifyIcon(void)
 	}
 
 	// Update notify icon tip text
-	setNotifyTipText(m_pNotifyIconData);
-	Shell_NotifyIcon(NIM_MODIFY, m_pNotifyIconData);
+	setNotifyTipText(notifyIconDataPtr_);
+	Shell_NotifyIcon(NIM_MODIFY, notifyIconDataPtr_);
 }
 
 
@@ -2020,7 +2020,7 @@ void CPowerPlusDlg::removeNotifyIcon(void)
 	}
 
 	// If notify icon doesn't exist, do nothing
-	if (m_pNotifyIconData == NULL) {
+	if (notifyIconDataPtr_ == NULL) {
 		// Trace error
 		TRACE_ERROR("Error: Notify icon does not exist!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -2028,8 +2028,8 @@ void CPowerPlusDlg::removeNotifyIcon(void)
 	}
 
 	// Remove notify icon
-	m_pNotifyIconData->hIcon = NULL;
-	Shell_NotifyIcon(NIM_DELETE, m_pNotifyIconData);
+	notifyIconDataPtr_->hIcon = NULL;
+	Shell_NotifyIcon(NIM_DELETE, notifyIconDataPtr_);
 
 	// Update flag
 	setFlagValue(AppFlagID::notifyIconShowed, false);
@@ -2059,8 +2059,8 @@ void CPowerPlusDlg::getAppData(unsigned dwDataType /* = APPDATA_ALL */)
 	if ((dwDataType & APPDATA_CONFIG) != 0) {
 		ConfigData* pcfgData = pApp->getAppConfigData();
 		if (pcfgData != NULL) {
-			m_cfgAppConfig.copy(*pcfgData);
-			m_cfgTempConfig.copy(m_cfgAppConfig);
+			appConfigData_.copy(*pcfgData);
+			tempConfigData_.copy(appConfigData_);
 		}
 	}
 
@@ -2068,7 +2068,7 @@ void CPowerPlusDlg::getAppData(unsigned dwDataType /* = APPDATA_ALL */)
 	if ((dwDataType & APPDATA_SCHEDULE) != 0) {
 		ScheduleData* pschData = pApp->getAppScheduleData();
 		if (pschData != NULL) {
-			m_schScheduleData.copy(*pschData);
+			scheduleData_.copy(*pschData);
 		}
 	}
 
@@ -2076,7 +2076,7 @@ void CPowerPlusDlg::getAppData(unsigned dwDataType /* = APPDATA_ALL */)
 	if ((dwDataType & APPDATA_HOTKEYSET) != 0) {
 		HotkeySetData* phksData = pApp->getAppHotkeySetData();
 		if (phksData != NULL) {
-			m_hksHotkeySetData.copy(*phksData);
+			hotkeySetData_.copy(*phksData);
 		}
 	}
 
@@ -2084,7 +2084,7 @@ void CPowerPlusDlg::getAppData(unsigned dwDataType /* = APPDATA_ALL */)
 	if ((dwDataType & APPDATA_PWRREMINDER) != 0) {
 		PwrReminderData* ppwrData = pApp->getAppPwrReminderData();
 		if (ppwrData != NULL) {
-			m_prdReminderData.copy(*ppwrData);
+			reminderData_.copy(*ppwrData);
 		}
 	}
 }
@@ -2108,20 +2108,20 @@ int CPowerPlusDlg::getAppOption(AppOptionID eAppOptionID, bool isTemp /* = false
 		nTempResult = nResult;		// No temp data
 		break;
 	case AppOptionID::defaultScheduleActiveState:
-		nResult = m_schScheduleData.getDefaultItem().isEnabled();
+		nResult = scheduleData_.getDefaultItem().isEnabled();
 		nTempResult = nResult;		// No temp data
 		break;
 	case AppOptionID::defaultScheduleActionID:
-		nResult = m_schScheduleData.getDefaultItem().getAction();
+		nResult = scheduleData_.getDefaultItem().getAction();
 		nTempResult = nResult;		// No temp data
 		break;
 	case AppOptionID::defaultScheduleRepeat:
-		nResult = m_schScheduleData.getDefaultItem().isRepeatEnabled();
+		nResult = scheduleData_.getDefaultItem().isRepeatEnabled();
 		nTempResult = nResult;		// No temp data
 		break;
 	default:
-		nResult = m_cfgAppConfig.getAppOption(eAppOptionID);
-		nTempResult = m_cfgTempConfig.getAppOption(eAppOptionID);
+		nResult = appConfigData_.getAppOption(eAppOptionID);
+		nTempResult = tempConfigData_.getAppOption(eAppOptionID);
 		break;
 	}
 
@@ -2147,42 +2147,42 @@ void CPowerPlusDlg::updateDialogData(bool saveAndValidate /* = true */)
 	/*----------------------------<Bind config data to dialog items>----------------------------*/
 
 		// Left mouse button action combo-box
-		nCmbSel = m_cfgTempConfig.leftMouseAction;
-		m_cmbLMBAction.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
+		nCmbSel = tempConfigData_.leftMouseAction;
+		leftMouseActionCombo_.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
 
 		// Middle mouse button action combo-box
-		nCmbSel = m_cfgTempConfig.middleMouseAction;
-		m_cmbMMBAction.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
+		nCmbSel = tempConfigData_.middleMouseAction;
+		middleMouseActionCombo_.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
 
 		// Right mouse button show menu checkbox
-		m_bRMBShowMenu = m_cfgTempConfig.rightMouseShowMenu;
+		rightMouseShowMenu_ = tempConfigData_.rightMouseShowMenu;
 
 		// Right mouse button action combo-box
-		nCmbSel = (m_bRMBShowMenu == true) ? APP_ACTION_SHOWMENU : m_cfgTempConfig.rightMouseAction;
-		m_cmbRMBAction.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
-		enableItem(IDC_RMBACTION_LIST, !m_bRMBShowMenu);
+		nCmbSel = (rightMouseShowMenu_ == true) ? APP_ACTION_SHOWMENU : tempConfigData_.rightMouseAction;
+		rightMouseActionCombo_.SetCurSel(AppCore::opt2Sel(APP_ACTION, nCmbSel));
+		enableItem(IDC_RMBACTION_LIST, !rightMouseShowMenu_);
 
 		// Update other checkbox-es
-		m_bShowDlgAtStartup = m_cfgTempConfig.showDialogAtStartup;
-		m_bStartupEnabled = m_cfgTempConfig.enableAutoStart;
-		m_bConfirmAction = m_cfgTempConfig.actionConfirmation;
-		m_bSaveHistoryLog = m_cfgTempConfig.saveActionHistory;
-		m_bSaveAppEventLog = m_cfgTempConfig.saveAppEventLog;
-		m_bRunAsAdmin = m_cfgTempConfig.runAsAdmin;
-		m_bShowErrorMsg = m_cfgTempConfig.showErrorMessage;
-		m_bnotifySchedule = m_cfgTempConfig.scheduleNotification;
-		m_bAllowCancelSchedule = m_cfgTempConfig.allowScheduleCancellation;
-		m_benableBackgroundHotkey = m_cfgTempConfig.enableBackgroundHotkey;
-		m_benablePowerReminder = m_cfgTempConfig.enablePowerReminder;
+		showDialogAtStartup_ = tempConfigData_.showDialogAtStartup;
+		isStartupEnabled_ = tempConfigData_.enableAutoStart;
+		confirmBeforeAction_ = tempConfigData_.actionConfirmation;
+		saveHistoryLog_ = tempConfigData_.saveActionHistory;
+		saveAppEventLog_ = tempConfigData_.saveAppEventLog;
+		isRunAsAdmin_ = tempConfigData_.runAsAdmin;
+		showErrorMsg_ = tempConfigData_.showErrorMessage;
+		notifySchedule_ = tempConfigData_.scheduleNotification;
+		allowCancelSchedule_ = tempConfigData_.allowScheduleCancellation;
+		enableBackgroundHotkey_ = tempConfigData_.enableBackgroundHotkey;
+		enablePowerReminder_ = tempConfigData_.enablePowerReminder;
 
 		// Language list combo-box
-		nCmbSel = AppCore::opt2Sel(APP_LANGUAGE, m_cfgTempConfig.languageID);
-		m_cmbLanguages.SetCurSel(nCmbSel);
+		nCmbSel = AppCore::opt2Sel(APP_LANGUAGE, tempConfigData_.languageID);
+		languageCombo_.SetCurSel(nCmbSel);
 
 		// Update buttons
-		enableItem(IDC_LOGVIEWER_BTN, m_bSaveAppEventLog);
-		enableItem(IDC_HOTKEYSET_BTN, m_benableBackgroundHotkey);
-		enableItem(IDC_PWRREMINDER_BTN, m_benablePowerReminder);
+		enableItem(IDC_LOGVIEWER_BTN, saveAppEventLog_);
+		enableItem(IDC_HOTKEYSET_BTN, enableBackgroundHotkey_);
+		enableItem(IDC_PWRREMINDER_BTN, enablePowerReminder_);
 
 		// Update dialog items
 		UpdateData(false);
@@ -2196,37 +2196,37 @@ void CPowerPlusDlg::updateDialogData(bool saveAndValidate /* = true */)
 		UpdateData(true);
 
 		// Left mouse button action combo-box
-		nCmbSel = m_cmbLMBAction.GetCurSel();
-		m_cfgTempConfig.leftMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
+		nCmbSel = leftMouseActionCombo_.GetCurSel();
+		tempConfigData_.leftMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
 
 		// Middle mouse button action combo-box
-		nCmbSel = m_cmbMMBAction.GetCurSel();
-		m_cfgTempConfig.middleMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
+		nCmbSel = middleMouseActionCombo_.GetCurSel();
+		tempConfigData_.middleMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
 
 		// Right mouse button show menu checkbox
-		m_cfgTempConfig.rightMouseShowMenu = m_bRMBShowMenu;
+		tempConfigData_.rightMouseShowMenu = rightMouseShowMenu_;
 
 		// Right mouse button action combo-box
 		nCmbSel = AppCore::opt2Sel(APP_ACTION, APP_ACTION_SHOWMENU);
-		nCmbSel = (m_cfgTempConfig.rightMouseShowMenu == true) ? nCmbSel : m_cmbRMBAction.GetCurSel();
-		m_cfgTempConfig.rightMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
+		nCmbSel = (tempConfigData_.rightMouseShowMenu == true) ? nCmbSel : rightMouseActionCombo_.GetCurSel();
+		tempConfigData_.rightMouseAction = AppCore::sel2Opt(APP_ACTION, nCmbSel);
 
 		// Update other checkbox-es
-		m_cfgTempConfig.showDialogAtStartup = m_bShowDlgAtStartup;
-		m_cfgTempConfig.enableAutoStart = m_bStartupEnabled;
-		m_cfgTempConfig.actionConfirmation = m_bConfirmAction;
-		m_cfgTempConfig.saveActionHistory = m_bSaveHistoryLog;
-		m_cfgTempConfig.saveAppEventLog = m_bSaveAppEventLog;
-		m_cfgTempConfig.runAsAdmin = m_bRunAsAdmin;
-		m_cfgTempConfig.showErrorMessage = m_bShowErrorMsg;
-		m_cfgTempConfig.scheduleNotification = m_bnotifySchedule;
-		m_cfgTempConfig.allowScheduleCancellation = m_bAllowCancelSchedule;
-		m_cfgTempConfig.enableBackgroundHotkey = m_benableBackgroundHotkey;
-		m_cfgTempConfig.enablePowerReminder = m_benablePowerReminder;
+		tempConfigData_.showDialogAtStartup = showDialogAtStartup_;
+		tempConfigData_.enableAutoStart = isStartupEnabled_;
+		tempConfigData_.actionConfirmation = confirmBeforeAction_;
+		tempConfigData_.saveActionHistory = saveHistoryLog_;
+		tempConfigData_.saveAppEventLog = saveAppEventLog_;
+		tempConfigData_.runAsAdmin = isRunAsAdmin_;
+		tempConfigData_.showErrorMessage = showErrorMsg_;
+		tempConfigData_.scheduleNotification = notifySchedule_;
+		tempConfigData_.allowScheduleCancellation = allowCancelSchedule_;
+		tempConfigData_.enableBackgroundHotkey = enableBackgroundHotkey_;
+		tempConfigData_.enablePowerReminder = enablePowerReminder_;
 
 		// Language list combo-box
-		nCmbSel = m_cmbLanguages.GetCurSel();
-		m_cfgTempConfig.languageID = AppCore::sel2Opt(APP_LANGUAGE, nCmbSel);
+		nCmbSel = languageCombo_.GetCurSel();
+		tempConfigData_.languageID = AppCore::sel2Opt(APP_LANGUAGE, nCmbSel);
 
 	/*------------------------------------------------------------------------------------------*/
 	}
@@ -2245,23 +2245,23 @@ bool CPowerPlusDlg::checkSettingChangeState(void)
 {
 	bool bChangeFlag = false;
 
-	bChangeFlag |= (m_cfgTempConfig.leftMouseAction != m_cfgAppConfig.leftMouseAction);
-	bChangeFlag |= (m_cfgTempConfig.middleMouseAction != m_cfgAppConfig.middleMouseAction);
-	bChangeFlag |= (m_cfgTempConfig.rightMouseAction != m_cfgAppConfig.rightMouseAction);
-	bChangeFlag |= (m_cfgTempConfig.rightMouseShowMenu != m_cfgAppConfig.rightMouseShowMenu);
-	bChangeFlag |= (m_cfgTempConfig.languageID != m_cfgAppConfig.languageID);
-	bChangeFlag |= (m_cfgTempConfig.showDialogAtStartup != m_cfgAppConfig.showDialogAtStartup);
-	bChangeFlag |= (m_cfgTempConfig.enableAutoStart != m_cfgAppConfig.enableAutoStart);
-	bChangeFlag |= (m_cfgTempConfig.actionConfirmation != m_cfgAppConfig.actionConfirmation);
-	bChangeFlag |= (m_cfgTempConfig.saveActionHistory != m_cfgAppConfig.saveActionHistory);
-	bChangeFlag |= (m_cfgTempConfig.saveAppEventLog != m_cfgAppConfig.saveAppEventLog);
-	bChangeFlag |= (m_cfgTempConfig.runAsAdmin != m_cfgAppConfig.runAsAdmin);
-	bChangeFlag |= (m_cfgTempConfig.showErrorMessage != m_cfgAppConfig.showErrorMessage);
-	bChangeFlag |= (m_cfgTempConfig.scheduleNotification != m_cfgAppConfig.scheduleNotification);
-	bChangeFlag |= (m_cfgTempConfig.allowScheduleCancellation != m_cfgAppConfig.allowScheduleCancellation);
-	bChangeFlag |= (m_cfgTempConfig.enableBackgroundHotkey != m_cfgAppConfig.enableBackgroundHotkey);
-	bChangeFlag |= (m_cfgTempConfig.allowLockscreenHotkey != m_cfgAppConfig.allowLockscreenHotkey);
-	bChangeFlag |= (m_cfgTempConfig.enablePowerReminder != m_cfgAppConfig.enablePowerReminder);
+	bChangeFlag |= (tempConfigData_.leftMouseAction != appConfigData_.leftMouseAction);
+	bChangeFlag |= (tempConfigData_.middleMouseAction != appConfigData_.middleMouseAction);
+	bChangeFlag |= (tempConfigData_.rightMouseAction != appConfigData_.rightMouseAction);
+	bChangeFlag |= (tempConfigData_.rightMouseShowMenu != appConfigData_.rightMouseShowMenu);
+	bChangeFlag |= (tempConfigData_.languageID != appConfigData_.languageID);
+	bChangeFlag |= (tempConfigData_.showDialogAtStartup != appConfigData_.showDialogAtStartup);
+	bChangeFlag |= (tempConfigData_.enableAutoStart != appConfigData_.enableAutoStart);
+	bChangeFlag |= (tempConfigData_.actionConfirmation != appConfigData_.actionConfirmation);
+	bChangeFlag |= (tempConfigData_.saveActionHistory != appConfigData_.saveActionHistory);
+	bChangeFlag |= (tempConfigData_.saveAppEventLog != appConfigData_.saveAppEventLog);
+	bChangeFlag |= (tempConfigData_.runAsAdmin != appConfigData_.runAsAdmin);
+	bChangeFlag |= (tempConfigData_.showErrorMessage != appConfigData_.showErrorMessage);
+	bChangeFlag |= (tempConfigData_.scheduleNotification != appConfigData_.scheduleNotification);
+	bChangeFlag |= (tempConfigData_.allowScheduleCancellation != appConfigData_.allowScheduleCancellation);
+	bChangeFlag |= (tempConfigData_.enableBackgroundHotkey != appConfigData_.enableBackgroundHotkey);
+	bChangeFlag |= (tempConfigData_.allowLockscreenHotkey != appConfigData_.allowLockscreenHotkey);
+	bChangeFlag |= (tempConfigData_.enablePowerReminder != appConfigData_.enablePowerReminder);
 
 	return bChangeFlag;
 }
@@ -2395,44 +2395,44 @@ void CPowerPlusDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 	{
 	case IDC_LMBACTION_LIST:
 		// Left mouse button action list
-		m_cmbLMBAction.ResetContent();
-		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
-		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
-		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbLMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		leftMouseActionCombo_.ResetContent();
+		leftMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		leftMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		leftMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		leftMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		leftMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		leftMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
 
 	case IDC_MMBACTION_LIST:
 		// Middle mouse button action list
-		m_cmbMMBAction.ResetContent();
-		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
-		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
-		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbMMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		middleMouseActionCombo_.ResetContent();
+		middleMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		middleMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		middleMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		middleMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		middleMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		middleMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
 
 	case IDC_RMBACTION_LIST:
 		// Right mouse button action list
-		m_cmbRMBAction.ResetContent();
-		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
-		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
-		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
-		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
-		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
-		m_cmbRMBAction.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHOWMENU));			// Just show menu
+		rightMouseActionCombo_.ResetContent();
+		rightMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		rightMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
+		rightMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));			// Shutdown
+		rightMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
+		rightMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Sign out
+		rightMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		rightMouseActionCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHOWMENU));			// Just show menu
 		break;
 
 	case IDC_LANGUAGE_LIST:
 		// App language list
-		m_cmbLanguages.ResetContent();
-		m_cmbLanguages.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_ENGLISH));		// English
-		m_cmbLanguages.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_VIETNAMESE));		// Vietnamese
-		m_cmbLanguages.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_SIMPCHINESE));	// Chinese
+		languageCombo_.ResetContent();
+		languageCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_ENGLISH));		// English
+		languageCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_VIETNAMESE));		// Vietnamese
+		languageCombo_.AddString(getLanguageString(ptrLanguage, COMBOBOX_LANGUAGE_SIMPCHINESE));	// Chinese
 		break;
 	}
 
@@ -2672,9 +2672,9 @@ void CPowerPlusDlg::setNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 
 	// Load language strings
 	String formatString = getLanguageString(pAppLang, NOTIFY_TIP_TEMPLATE);
-	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.leftMouseAction)));
-	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.middleMouseAction)));
-	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, m_cfgAppConfig.rightMouseAction)));
+	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, appConfigData_.leftMouseAction)));
+	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, appConfigData_.middleMouseAction)));
+	arrTipText.push_back(getLanguageString(pAppLang, GetPairedID(IDTable::NotifyTip, appConfigData_.rightMouseAction)));
 
 	// Format notify tip text
 	String notifyTipText = StringUtils::stringFormat(formatString, arrTipText.at(0).getString(), arrTipText.at(1).getString(), arrTipText.at(2).getString());
@@ -2693,7 +2693,7 @@ void CPowerPlusDlg::setNotifyTipText(PNOTIFYICONDATA pNotifyIconData)
 void CPowerPlusDlg::setBalloonTipText(const wchar_t* balloonTitle, const wchar_t* balloonInfoContent)
 {
 	// If notify icon doesn't exist, do nothing
-	if (m_pNotifyIconData == NULL) {
+	if (notifyIconDataPtr_ == NULL) {
 		// Trace error
 		TRACE_ERROR("Error: Notify icon does not exist!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -2701,16 +2701,16 @@ void CPowerPlusDlg::setBalloonTipText(const wchar_t* balloonTitle, const wchar_t
 	}
 
 	// Setup balloon tip properties
-	m_pNotifyIconData->uFlags = NIF_INFO;
-	m_pNotifyIconData->dwInfoFlags = NIIF_INFO;
-	m_pNotifyIconData->uTimeout = 10000;
+	notifyIconDataPtr_->uFlags = NIF_INFO;
+	notifyIconDataPtr_->dwInfoFlags = NIIF_INFO;
+	notifyIconDataPtr_->uTimeout = 10000;
 
 	// Set balloon tip text
-	wcscpy_s(m_pNotifyIconData->szInfoTitle, balloonTitle);
-	wcscpy_s(m_pNotifyIconData->szInfo, balloonInfoContent);
+	wcscpy_s(notifyIconDataPtr_->szInfoTitle, balloonTitle);
+	wcscpy_s(notifyIconDataPtr_->szInfo, balloonInfoContent);
 
 	// Show the balloon tip
-	Shell_NotifyIcon(NIM_MODIFY, m_pNotifyIconData);
+	Shell_NotifyIcon(NIM_MODIFY, notifyIconDataPtr_);
 }
 
 
@@ -2914,10 +2914,10 @@ void CPowerPlusDlg::applySettings(bool bMinimize)
 	updateDialogData(true);
 
 	// Copy configurations and save
-	m_cfgAppConfig.copy(m_cfgTempConfig);
+	appConfigData_.copy(tempConfigData_);
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
-		pApp->setAppConfigData(&m_cfgAppConfig);
+		pApp->setAppConfigData(&appConfigData_);
 		bool bRet = pApp->saveRegistryAppData();
 		if (bRet == false) {
 			// Show error message
@@ -2981,7 +2981,7 @@ void CPowerPlusDlg::reloadSettings(void)
 void CPowerPlusDlg::setDefaultConfig(void)
 {
 	// Set default options
-	m_cfgTempConfig.setDefaultData();
+	tempConfigData_.setDefaultData();
 
 	// Reload app language & reset language display
 	((CPowerPlusApp*)AfxGetApp())->reloadAppLanguage();
@@ -3085,86 +3085,86 @@ void CPowerPlusDlg::openChildDialogEx(unsigned nDialogID)
 
 	// About dialog
 	if (nDialogID == IDD_ABOUT_DLG) {
-		if (m_pAboutDlg == NULL) {
+		if (aboutDlgPtr_ == NULL) {
 			// Initialize dialog
-			m_pAboutDlg = new CAboutDlg();
-			m_pAboutDlg->setParent(this);
-			m_pAboutDlg->DoModal();
+			aboutDlgPtr_ = new CAboutDlg();
+			aboutDlgPtr_->setParent(this);
+			aboutDlgPtr_->DoModal();
 		}
 		else {
 			// Show dialog
-			m_pAboutDlg->setParent(this);
-			showDialog(m_pAboutDlg, true);
+			aboutDlgPtr_->setParent(this);
+			showDialog(aboutDlgPtr_, true);
 		}
 	}
 	// Help dialog
 	else if (nDialogID == IDD_HELP_DLG) {
-		if (m_pHelpDlg == NULL) {
+		if (helpDlgPtr_ == NULL) {
 			// Initialize dialog
-			m_pHelpDlg = new CHelpDlg();
-			m_pHelpDlg->setParent(this);
-			m_pHelpDlg->DoModal();
+			helpDlgPtr_ = new CHelpDlg();
+			helpDlgPtr_->setParent(this);
+			helpDlgPtr_->DoModal();
 		}
 		else {
 			// Show dialog
-			m_pHelpDlg->setParent(this);
-			showDialog(m_pHelpDlg, true);
+			helpDlgPtr_->setParent(this);
+			showDialog(helpDlgPtr_, true);
 		}
 	}
 	// Multi schedule dialog
 	else if (nDialogID == IDD_MULTISCHEDULE_DLG) {
-		if (m_pMultiScheduleDlg == NULL) {
+		if (multiScheduleDlgPtr_ == NULL) {
 			// Initialize dialog
-			m_pMultiScheduleDlg = new CMultiScheduleDlg();
-			m_pMultiScheduleDlg->setParent(this);
-			m_pMultiScheduleDlg->DoModal();
+			multiScheduleDlgPtr_ = new CMultiScheduleDlg();
+			multiScheduleDlgPtr_->setParent(this);
+			multiScheduleDlgPtr_->DoModal();
 		}
 		else {
 			// Show dialog
-			m_pMultiScheduleDlg->setParent(this);
-			showDialog(m_pMultiScheduleDlg, true);
+			multiScheduleDlgPtr_->setParent(this);
+			showDialog(multiScheduleDlgPtr_, true);
 		}
 	}
 	// LogViewer dialog
 	else if (nDialogID == IDD_LOGVIEWER_DLG) {
-		if (m_pLogViewerDlg == NULL) {
+		if (logViewerDlgPtr_ == NULL) {
 			// Initialize dialog
-			m_pLogViewerDlg = new CLogViewerDlg();
-			m_pLogViewerDlg->setParent(this);
-			m_pLogViewerDlg->DoModal();
+			logViewerDlgPtr_ = new CLogViewerDlg();
+			logViewerDlgPtr_->setParent(this);
+			logViewerDlgPtr_->DoModal();
 		}
 		else {
 			// Show dialog
-			m_pLogViewerDlg->setParent(this);
-			showDialog(m_pLogViewerDlg, true);
+			logViewerDlgPtr_->setParent(this);
+			showDialog(logViewerDlgPtr_, true);
 		}
 	}
 	// HotkeySet dialog
 	else if (nDialogID == IDD_HOTKEYSET_DLG) {
-		if (m_pHotkeySetDlg == NULL) {
+		if (hotkeySetDlgPtr_ == NULL) {
 			// Initialize dialog
-			m_pHotkeySetDlg = new CHotkeySetDlg();
-			m_pHotkeySetDlg->setParent(this);
-			m_pHotkeySetDlg->DoModal();
+			hotkeySetDlgPtr_ = new CHotkeySetDlg();
+			hotkeySetDlgPtr_->setParent(this);
+			hotkeySetDlgPtr_->DoModal();
 		}
 		else {
 			// Show dialog
-			m_pHotkeySetDlg->setParent(this);
-			showDialog(m_pHotkeySetDlg, true);
+			hotkeySetDlgPtr_->setParent(this);
+			showDialog(hotkeySetDlgPtr_, true);
 		}
 	}
 	// Power Reminder dialog
 	else if (nDialogID == IDD_PWRREMINDER_DLG) {
-		if (m_pPwrReminderDlg == NULL) {
+		if (pwrReminderDlgPtr_ == NULL) {
 			// Initialize dialog
-			m_pPwrReminderDlg = new CPwrReminderDlg();
-			m_pPwrReminderDlg->setParent(this);
-			m_pPwrReminderDlg->DoModal();
+			pwrReminderDlgPtr_ = new CPwrReminderDlg();
+			pwrReminderDlgPtr_->setParent(this);
+			pwrReminderDlgPtr_->DoModal();
 		}
 		else {
 			// Show dialog
-			m_pPwrReminderDlg->setParent(this);
-			showDialog(m_pPwrReminderDlg, true);
+			pwrReminderDlgPtr_->setParent(this);
+			showDialog(pwrReminderDlgPtr_, true);
 		}
 	}
 	// DebugTest dialog
@@ -3389,7 +3389,7 @@ bool CPowerPlusDlg::processActionSchedule(void)
 	bool bTriggerReupdate = false;
 
 	// Get default schedule item
-	ScheduleItem& schDefaultItem = m_schScheduleData.getDefaultItem();
+	ScheduleItem& schDefaultItem = scheduleData_.getDefaultItem();
 	{
 		// Flag to skip processing schedule item
 		bool bSkipProcess = false;
@@ -3460,10 +3460,10 @@ bool CPowerPlusDlg::processActionSchedule(void)
 	}
 
 	// Loop through each extra item and process
-	for (int nExtraIndex = 0; nExtraIndex < m_schScheduleData.getExtraItemNum(); nExtraIndex++) {
+	for (int nExtraIndex = 0; nExtraIndex < scheduleData_.getExtraItemNum(); nExtraIndex++) {
 
 		// Get schedule item
-		ScheduleItem& schExtraItem = m_schScheduleData.getItemAt(nExtraIndex);
+		ScheduleItem& schExtraItem = scheduleData_.getItemAt(nExtraIndex);
 
 		// Do not process if repeat option is ON but is not set as active in current day of week
 		if ((schExtraItem.isRepeatEnabled() == true) && (!schExtraItem.isDayActive((DayOfWeek)currentDateTime.dayOfWeek())))
@@ -3537,7 +3537,7 @@ void CPowerPlusDlg::reupdateActionScheduleData(void)
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
 		// Update schedule data
-		pApp->setAppScheduleData(&m_schScheduleData);
+		pApp->setAppScheduleData(&scheduleData_);
 		pApp->saveRegistryAppData(APPDATA_SCHEDULE);
 	}
 
@@ -3558,10 +3558,10 @@ void CPowerPlusDlg::setActionScheduleSkip(const ScheduleItem& schItem, int nSkip
 	if (schItem.isEmpty()) return;
 
 	// Find if item skip mode is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
@@ -3582,7 +3582,7 @@ void CPowerPlusDlg::setActionScheduleSkip(const ScheduleItem& schItem, int nSkip
 	pwrRuntimeItem.setSkipFlag(nSkipFlag);
 
 	// Add item to runtime queue
-	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
+	runtimeQueue_.push_back(pwrRuntimeItem);
 }
 
 
@@ -3607,10 +3607,10 @@ void CPowerPlusDlg::setActionScheduleSnooze(const ScheduleItem& schItem, int nSn
 	int nInterval = PwrRepeatSet::defaultSnoozeInterval;
 
 	// Find if item skip mode is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
@@ -3642,7 +3642,7 @@ void CPowerPlusDlg::setActionScheduleSnooze(const ScheduleItem& schItem, int nSn
 	}
 
 	// Add item to runtime queue
-	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
+	runtimeQueue_.push_back(pwrRuntimeItem);
 }
 
 
@@ -3657,18 +3657,18 @@ void CPowerPlusDlg::updateActionScheduleQueue(int nMode)
 
 		// Initialize Action Schedule runtime queue
 		// Set all items as not skipped
-		setActionScheduleSkip(m_schScheduleData.getDefaultItem(), FLAG_OFF);
-		for (int nItemIdx = 0; nItemIdx < m_schScheduleData.getExtraItemNum(); nItemIdx++) {
-			setActionScheduleSkip(m_schScheduleData.getItemAt(nItemIdx), FLAG_OFF);
+		setActionScheduleSkip(scheduleData_.getDefaultItem(), FLAG_OFF);
+		for (int nItemIdx = 0; nItemIdx < scheduleData_.getExtraItemNum(); nItemIdx++) {
+			setActionScheduleSkip(scheduleData_.getItemAt(nItemIdx), FLAG_OFF);
 		}
 	}
 	else if (nMode == Mode::Update) {
 
 		// Update skip queue items
-		for (int nQueueIdx = (m_arrRuntimeQueue.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
+		for (int nQueueIdx = (runtimeQueue_.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
 
 			// Get runtime item from queue
-			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
+			PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nQueueIdx);
 
 			// Skip if it's not an Action Schedule item
 			if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
@@ -3677,7 +3677,7 @@ void CPowerPlusDlg::updateActionScheduleQueue(int nMode)
 			bool bItemFound = false;
 
 			// Check if item ID is default schedule item
-			const ScheduleItem& schDefaultItem = m_schScheduleData.getDefaultItem();
+			const ScheduleItem& schDefaultItem = scheduleData_.getDefaultItem();
 			if (schDefaultItem.getItemId() == pwrRuntimeItem.getItemId()) {
 
 				// If item's snoozing mode is no longer available
@@ -3692,8 +3692,8 @@ void CPowerPlusDlg::updateActionScheduleQueue(int nMode)
 			}
 
 			// Search for item ID in Action Schedule extra item data
-			for (int nItemIdx = 0; nItemIdx < m_schScheduleData.getExtraItemNum(); nItemIdx++) {
-				const ScheduleItem& schItem = m_schScheduleData.getItemAt(nItemIdx);
+			for (int nItemIdx = 0; nItemIdx < scheduleData_.getExtraItemNum(); nItemIdx++) {
+				const ScheduleItem& schItem = scheduleData_.getItemAt(nItemIdx);
 				if (schItem.getItemId() == pwrRuntimeItem.getItemId()) {
 
 					// If item's snoozing mode is no longer available
@@ -3712,17 +3712,17 @@ void CPowerPlusDlg::updateActionScheduleQueue(int nMode)
 			// which means item maybe removed and no longer exists
 			if (bItemFound == false) {
 				// Remove item from runtime queue
-				m_arrRuntimeQueue.erase(m_arrRuntimeQueue.begin() + nQueueIdx);
+				runtimeQueue_.erase(runtimeQueue_.begin() + nQueueIdx);
 			}
 		}
 	}
 	else if (nMode == Mode::Disable) {
 
 		// Disable skip mode for all items in queue
-		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+		for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 			// Get runtime item from queue
-			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+			PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 			// Skip if it's not an Action Schedule item
 			if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
@@ -3745,14 +3745,14 @@ void CPowerPlusDlg::updateActionScheduleQueue(int nMode)
 bool CPowerPlusDlg::getActionScheduleSkipStatus(unsigned nItemID)
 {
 	// If runtime queue data is empty, do not trigger
-	if (m_arrRuntimeQueue.empty())
+	if (runtimeQueue_.empty())
 		return false;
 
 	// Find for item ID
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		const PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
@@ -3781,14 +3781,14 @@ bool CPowerPlusDlg::getActionScheduleSkipStatus(unsigned nItemID)
 bool CPowerPlusDlg::getActionScheduleSnoozeStatus(unsigned nItemID, const ClockTime& currentTime)
 {
 	// If runtime queue data is empty, do not trigger
-	if (m_arrRuntimeQueue.empty())
+	if (runtimeQueue_.empty())
 		return false;
 
 	// Find for item ID
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		const PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not an Action Schedule item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
@@ -3830,7 +3830,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int nMode)
 	// If background hotkey feature is disabled and no hotkey registered, do nothing
 	if ((bHKSEnable == false) &&											// HotkeySet option OFF
 		(bHKRegisterFlag == false) &&										// Hotkey registered flag OFF
-		(m_arrCurRegHKeyList.empty())) {									// Registered hotkey list empty
+		(currentRegHotkeyList_.empty())) {									// Registered hotkey list empty
 		TRACE("Background hotkey setup will be skipped!!!");
 		return;
 	}
@@ -3849,20 +3849,20 @@ void CPowerPlusDlg::setupBackgroundHotkey(int nMode)
 	if ((nMode == Mode::Disable) || (nMode == Mode::Update)) {
 
 		if ((bHKRegisterFlag == true) &&									// Hotkey registered flag ON
-			(!m_arrCurRegHKeyList.empty())) {								// Registered hotkey list is NOT empty
+			(!currentRegHotkeyList_.empty())) {								// Registered hotkey list is NOT empty
 
 			// Unregister currently registered hotkeys
-			int nRegItemNum = m_arrCurRegHKeyList.size();
+			int nRegItemNum = currentRegHotkeyList_.size();
 			for (int nIndex = (nRegItemNum - 1); nIndex >= 0; nIndex--) {
-				unsigned nHKID = m_arrCurRegHKeyList.at(nIndex);
+				unsigned nHKID = currentRegHotkeyList_.at(nIndex);
 				bool bRet = UnregisterHotKey(hWnd, nHKID);
 				if (bRet == true) {
 					// Unregister successfully
 					OutputDebugLogFormat(_T("Unregistered hotkey: %d"), nHKID);
-					m_arrCurRegHKeyList.erase(m_arrCurRegHKeyList.begin() + nIndex);
+					currentRegHotkeyList_.erase(currentRegHotkeyList_.begin() + nIndex);
 					if (nIndex == 0) {										// Last item unregistered
 						setFlagValue(AppFlagID::hotkeyRegistered, false);	// Reset hotkey registered flag
-						m_arrCurRegHKeyList.clear();						// Cleanup registered hotkey list
+						currentRegHotkeyList_.clear();						// Cleanup registered hotkey list
 					}
 				}
 				else {
@@ -3900,7 +3900,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int nMode)
 		}
 
 		// If there's no item, do nothing
-		int nItemNum = m_hksHotkeySetData.getItemNum();
+		int nItemNum = hotkeySetData_.getItemNum();
 		if (nItemNum <= 0) {
 			TRACE("There is not Hotkey item!!!");
 			return;
@@ -3908,8 +3908,8 @@ void CPowerPlusDlg::setupBackgroundHotkey(int nMode)
 
 		// Reset flag and re-initialize registered hotkey list
 		setFlagValue(AppFlagID::hotkeyRegistered, false);
-		m_arrCurRegHKeyList.clear();
-		m_arrCurRegHKeyList.reserve(nItemNum);
+		currentRegHotkeyList_.clear();
+		currentRegHotkeyList_.reserve(nItemNum);
 
 		// Debug log
 		String logTempString;
@@ -3919,7 +3919,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int nMode)
 		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
 
 			// Get hotkey item
-			HotkeySetItem hksItem = m_hksHotkeySetData.getItemAt(nIndex);
+			HotkeySetItem hksItem = hotkeySetData_.getItemAt(nIndex);
 
 			// If item is empty, skip this item
 			if (hksItem.isEmpty()) 
@@ -3959,7 +3959,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int nMode)
 			if (bRet == true) {
 				// Register successfully
 				OutputDebugLogFormat(_T("Registered hotkey: %s"), logTempString.getString());
-				m_arrCurRegHKeyList.push_back(nHKActionID);						// Update registered hotkey list
+				currentRegHotkeyList_.push_back(nHKActionID);						// Update registered hotkey list
 			}
 			else {
 				// Register failed
@@ -3999,8 +3999,8 @@ bool CPowerPlusDlg::processHotkey(int nHotkeyID)
 
 	// Get HotkeySet item by ID
 	HotkeySetItem hksItem;
-	for (int nIndex = 0; nIndex < m_hksHotkeySetData.getItemNum(); nIndex++) {
-		HotkeySetItem& hksTemp = m_hksHotkeySetData.getItemAt(nIndex);
+	for (int nIndex = 0; nIndex < hotkeySetData_.getItemNum(); nIndex++) {
+		HotkeySetItem& hksTemp = hotkeySetData_.getItemAt(nIndex);
 		if (hksTemp.getActionId() == static_cast<unsigned>(nHotkeyID)) {
 			hksItem.copy(hksTemp);
 			break;
@@ -4158,8 +4158,8 @@ bool CPowerPlusDlg::processLockStateHotkey(DWORD dwHKeyParam)
 
 	// Look for corresponding HotkeyID in HotkeySet data
 	unsigned nHKActionID = INT_NULL;
-	for (size_t nIndex = 0; nIndex < m_hksHotkeySetData.getItemNum(); nIndex++) {
-		const HotkeySetItem& hksItem = m_hksHotkeySetData.getItemAt(nIndex);
+	for (size_t nIndex = 0; nIndex < hotkeySetData_.getItemNum(); nIndex++) {
+		const HotkeySetItem& hksItem = hotkeySetData_.getItemAt(nIndex);
 		if ((hksItem.isEnabled() == true) &&						// HotkeySet item is enabled
 			(hksItem.compareKeycode(wModifiers, wVirtualKey))) {	// Keycode is matching
 			nHKActionID = hksItem.getActionId();
@@ -4185,8 +4185,8 @@ bool CPowerPlusDlg::processLockStateHotkey(DWORD dwHKeyParam)
 	}
 
 	// Only process if HotkeyID is registered
-	for (size_t nIndex = 0; nIndex < m_arrCurRegHKeyList.size(); nIndex++) {
-		unsigned nRegHKeyID = m_arrCurRegHKeyList.at(nIndex);
+	for (size_t nIndex = 0; nIndex < currentRegHotkeyList_.size(); nIndex++) {
+		unsigned nRegHKeyID = currentRegHotkeyList_.at(nIndex);
 		if (nRegHKeyID == nHKActionID) {
 			// Process Hotkey by ID
 			return processHotkey(nHKActionID);
@@ -4215,7 +4215,7 @@ bool CPowerPlusDlg::executePowerReminder(unsigned nExecEventID)
 	}
 
 	// If there's no item, do nothing
-	int nItemNum = m_prdReminderData.getItemNum();
+	int nItemNum = reminderData_.getItemNum();
 	if (nItemNum <= 0) {
 		TRACE("There is no Power Reminder items!!!");
 		return false;
@@ -4234,7 +4234,7 @@ bool CPowerPlusDlg::executePowerReminder(unsigned nExecEventID)
 
 	// Search all items and process reminder
 	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		PwrReminderItem& pwrCurItem = m_prdReminderData.getItemAt(nIndex);
+		PwrReminderItem& pwrCurItem = reminderData_.getItemAt(nIndex);
 
 		// If item is empty, skip this item
 		if (pwrCurItem.isEmpty())
@@ -4375,7 +4375,7 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& pwrDispItem)
 		}
 
 		// Message style
-		RmdMsgStyleSet rmdMessageStyle = m_prdReminderData.getCommonStyle();
+		RmdMsgStyleSet rmdMessageStyle = reminderData_.getCommonStyle();
 		if (pwrDispItem.isCustomStyleEnabled())
 			rmdMessageStyle = pwrDispItem.getMessageStyleData();
 
@@ -4426,7 +4426,7 @@ void CPowerPlusDlg::reupdatePwrReminderData(void)
 	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
 	if (pApp != NULL) {
 		// Update Power Reminder data
-		pApp->setAppPwrReminderData(&m_prdReminderData);
+		pApp->setAppPwrReminderData(&reminderData_);
 		pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
 	}
 
@@ -4460,10 +4460,10 @@ void CPowerPlusDlg::setPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSn
 	int nInterval = pwrItem.getSnoozeInterval();
 
 	// Find if item snooze mode is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4495,7 +4495,7 @@ void CPowerPlusDlg::setPwrReminderSnooze(const PwrReminderItem& pwrItem, int nSn
 	}
 
 	// Add item to runtime queue
-	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
+	runtimeQueue_.push_back(pwrRuntimeItem);
 }
 
 
@@ -4510,25 +4510,25 @@ void CPowerPlusDlg::updatePwrReminderSnooze(int nMode)
 
 		// Initialize Power Reminder runtime snooze queue
 		// Set all items as not snoozed
-		for (int nItemIdx = 0; nItemIdx < m_prdReminderData.getItemNum(); nItemIdx++) {
-			setPwrReminderSnooze(m_prdReminderData.getItemAt(nItemIdx), FLAG_OFF);
+		for (int nItemIdx = 0; nItemIdx < reminderData_.getItemNum(); nItemIdx++) {
+			setPwrReminderSnooze(reminderData_.getItemAt(nItemIdx), FLAG_OFF);
 		}
 	}
 	else if (nMode == Mode::Update) {
 
 		// Update snooze queue items
-		for (int nQueueIdx = (m_arrRuntimeQueue.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
+		for (int nQueueIdx = (runtimeQueue_.size() - 1); nQueueIdx >= 0; nQueueIdx--) {
 			
 			// Get runtime item from queue
-			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nQueueIdx);
+			PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nQueueIdx);
 
 			// Skip if it's not Power Reminder item
 			if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 			// Search for item ID in Power Reminder data
 			bool bItemFound = false;
-			for (int nItemIdx = 0; nItemIdx < m_prdReminderData.getItemNum(); nItemIdx++) {
-				const PwrReminderItem& pwrItem = m_prdReminderData.getItemAt(nItemIdx);
+			for (int nItemIdx = 0; nItemIdx < reminderData_.getItemNum(); nItemIdx++) {
+				const PwrReminderItem& pwrItem = reminderData_.getItemAt(nItemIdx);
 				if (pwrItem.getItemId() == pwrRuntimeItem.getItemId()) {
 
 					// If item's snoozing mode is no longer available
@@ -4547,17 +4547,17 @@ void CPowerPlusDlg::updatePwrReminderSnooze(int nMode)
 			// which means item maybe removed and no longer exists
 			if (bItemFound == false) {
 				// Remove item from snooze queue
-				m_arrRuntimeQueue.erase(m_arrRuntimeQueue.begin() + nQueueIdx);
+				runtimeQueue_.erase(runtimeQueue_.begin() + nQueueIdx);
 			}
 		}
 	}
 	else if (nMode == Mode::Disable) {
 
 		// Disable snooze mode for all items in queue
-		for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+		for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 			// Get runtime item from queue
-			PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+			PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 			// Skip if it's not Power Reminder item
 			if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4578,14 +4578,14 @@ void CPowerPlusDlg::updatePwrReminderSnooze(int nMode)
 bool CPowerPlusDlg::getPwrReminderSnoozeStatus(unsigned nItemID, const ClockTime& currentTime)
 {
 	// If runtime queue data is empty, do not trigger
-	if (m_arrRuntimeQueue.empty())
+	if (runtimeQueue_.empty())
 		return false;
 
 	// Find for item ID
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		const PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4620,10 +4620,10 @@ bool CPowerPlusDlg::getPwrReminderDispFlag(const PwrReminderItem& pwrItem)
 	if (pwrItem.isEmpty()) return false;
 
 	// Find if item runtime data is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4655,10 +4655,10 @@ void CPowerPlusDlg::setPwrReminderDispFlag(const PwrReminderItem& pwrItem, int n
 	if (pwrItem.isEmpty()) return;
 
 	// Find if item runtime data is already setup
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4678,7 +4678,7 @@ void CPowerPlusDlg::setPwrReminderDispFlag(const PwrReminderItem& pwrItem, int n
 	pwrRuntimeItem.setDisplayFlag(nDispFlag);
 
 	// Add item to runtime queue
-	m_arrRuntimeQueue.push_back(pwrRuntimeItem);
+	runtimeQueue_.push_back(pwrRuntimeItem);
 }
 
 
@@ -4693,15 +4693,15 @@ size_t CPowerPlusDlg::getPwrReminderDispList(UIntArray& arrPwrDispList)
 	arrPwrDispList.clear();
 
 	// If runtime queue data is empty, return no item
-	if (m_arrRuntimeQueue.empty())
+	if (runtimeQueue_.empty())
 		return INT_NULL;
 
 	// Get runtime displaying item ID list
-	arrPwrDispList.reserve(m_arrRuntimeQueue.size());
-	for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+	arrPwrDispList.reserve(runtimeQueue_.size());
+	for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 
 		// Get runtime item from queue
-		const PwrRuntimeItem& pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+		const PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(nIndex);
 
 		// Skip if it's not Power Reminder item
 		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
@@ -4776,12 +4776,12 @@ void CPowerPlusDlg::outputPwrReminderEventLog(USHORT usEvent, const PwrReminderI
 void CPowerPlusDlg::initPwrActionHistoryInfo(unsigned nActionID, bool bResult, DWORD dwErrorCode)
 {
 	// Initialize action history info data to save logs
-	m_hidHistoryInfoData.init(PowerAction);
-	m_hidHistoryInfoData.setActionId(nActionID);
+	historyInfoData_.init(PowerAction);
+	historyInfoData_.setActionId(nActionID);
 
 	// Collect action result
-	m_hidHistoryInfoData.setResult(bResult);
-	m_hidHistoryInfoData.setErrorCode(dwErrorCode);
+	historyInfoData_.setResult(bResult);
+	historyInfoData_.setErrorCode(dwErrorCode);
 }
 
 
@@ -4824,9 +4824,9 @@ void CPowerPlusDlg::initScheduleHistoryInfo(const ScheduleItem& schItem)
 	}
 
 	// Initialize schedule history info data
-	m_hidHistoryInfoData.init(ScheduleAction);
-	m_hidHistoryInfoData.setItemId(schItem.getItemId());
-	m_hidHistoryInfoData.setActionId(nActionID);
+	historyInfoData_.init(ScheduleAction);
+	historyInfoData_.setItemId(schItem.getItemId());
+	historyInfoData_.setActionId(nActionID);
 }
 
 
@@ -4839,8 +4839,8 @@ void CPowerPlusDlg::initHotkeyHistoryInfo(unsigned nHKID)
 {
 	// Get HotkeySet item by ID
 	HotkeySetItem hksItem;
-	for (int nIndex = 0; nIndex < m_hksHotkeySetData.getItemNum(); nIndex++) {
-		HotkeySetItem& hksTemp = m_hksHotkeySetData.getItemAt(nIndex);
+	for (int nIndex = 0; nIndex < hotkeySetData_.getItemNum(); nIndex++) {
+		HotkeySetItem& hksTemp = hotkeySetData_.getItemAt(nIndex);
 		if (hksTemp.getActionId() == nHKID) {
 			hksItem.copy(hksTemp);
 			break;
@@ -4878,11 +4878,11 @@ void CPowerPlusDlg::initHotkeyHistoryInfo(unsigned nHKID)
 	}
 
 	// Initialize hotkey action history info
-	m_hidHistoryInfoData.init(HotkeySet);
-	m_hidHistoryInfoData.setActionId(nActionID);
+	historyInfoData_.init(HotkeySet);
+	historyInfoData_.setActionId(nActionID);
 	String keyStrokesString;
 	hksItem.printKeyStrokes(keyStrokesString);
-	m_hidHistoryInfoData.setDescription(keyStrokesString);
+	historyInfoData_.setDescription(keyStrokesString);
 }
 
 
@@ -4897,9 +4897,9 @@ void CPowerPlusDlg::initPwrReminderHistoryInfo(const PwrReminderItem& pwrItem)
 	if (pwrItem.isEmpty()) return;
 
 	// Initialize history info data
-	m_hidHistoryInfoData.init(PowerReminder);
-	m_hidHistoryInfoData.setItemId(pwrItem.getItemId());
-	m_hidHistoryInfoData.setDescription(pwrItem.getMessage());
+	historyInfoData_.init(PowerReminder);
+	historyInfoData_.setItemId(pwrItem.getItemId());
+	historyInfoData_.setDescription(pwrItem.getMessage());
 }
 
 
@@ -4911,40 +4911,40 @@ void CPowerPlusDlg::initPwrReminderHistoryInfo(const PwrReminderItem& pwrItem)
 void CPowerPlusDlg::saveHistoryInfoData(void)
 {
 	// If history info data is empty (not yet initialized), do nothing
-	if (!m_hidHistoryInfoData.isInit())
+	if (!historyInfoData_.isInit())
 		return;
 
 	// Prepare common history log info
 	LOGITEM actionLogItem;
-	actionLogItem.SetTime(m_hidHistoryInfoData.getTime());
+	actionLogItem.SetTime(historyInfoData_.getTime());
 
 	// Get current process ID
 	actionLogItem.SetProcessID();
 
 	// Attach history detail info by category ID
-	switch (m_hidHistoryInfoData.getCategoryId())
+	switch (historyInfoData_.getCategoryId())
 	{
 	case HistoryCategory::PowerAction:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_PWRACTION);
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.getActionId(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.AddDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
 		break;
 
 	case HistoryCategory::ScheduleAction:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_SCHEDULE);
-		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.getItemId());
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.getActionId(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.AddDetail(HistoryDetail::ItemID, historyInfoData_.getItemId());
+		actionLogItem.AddDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
 		break;
 
 	case HistoryCategory::HotkeySet:
 		actionLogItem.SetCategory(LOG_HISTORY_EXEC_HOTKEY);
-		actionLogItem.AddDetail(HistoryDetail::Action, m_hidHistoryInfoData.getActionId(), LogDetailFlag::LookUp_Dict);
-		actionLogItem.AddDetail(HistoryDetail::Keystrokes, m_hidHistoryInfoData.getDescription());
+		actionLogItem.AddDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.AddDetail(HistoryDetail::Keystrokes, historyInfoData_.getDescription());
 		break;
 
 	case HistoryCategory::PowerReminder:
 		actionLogItem.SetCategory(LOG_HISTORY_DISP_PWRREMINDER);
-		actionLogItem.AddDetail(HistoryDetail::ItemID, m_hidHistoryInfoData.getItemId());
-		actionLogItem.AddDetail(HistoryDetail::Message, m_hidHistoryInfoData.getDescription());
+		actionLogItem.AddDetail(HistoryDetail::ItemID, historyInfoData_.getItemId());
+		actionLogItem.AddDetail(HistoryDetail::Message, historyInfoData_.getDescription());
 		break;
 
 	default:
@@ -4952,11 +4952,11 @@ void CPowerPlusDlg::saveHistoryInfoData(void)
 	}
 
 	// Attach history action result detail info
-	if (m_hidHistoryInfoData.isSuccess() || m_hidHistoryInfoData.getErrorCode() == APP_ERROR_SUCCESS) {
+	if (historyInfoData_.isSuccess() || historyInfoData_.getErrorCode() == APP_ERROR_SUCCESS) {
 		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::SuccessNoError, LogDetailFlag::LookUp_Dict);
 	}
 	else {
-		if (m_hidHistoryInfoData.getErrorCode() == APP_ERROR_UNKNOWN) {
+		if (historyInfoData_.getErrorCode() == APP_ERROR_UNKNOWN) {
 
 			// If error code is NULL or unknown, set as failed with unknown reason
 			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedUnknown, LogDetailFlag::LookUp_Dict);
@@ -4966,7 +4966,7 @@ void CPowerPlusDlg::saveHistoryInfoData(void)
 			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedWithErrorCode, LogDetailFlag::LookUp_Dict);
 
 			// Attach error code detail info
-			actionLogItem.AddDetail(HistoryDetail::ActionError, m_hidHistoryInfoData.getErrorCode());
+			actionLogItem.AddDetail(HistoryDetail::ActionError, historyInfoData_.getErrorCode());
 		}
 	}
 
@@ -4977,7 +4977,7 @@ void CPowerPlusDlg::saveHistoryInfoData(void)
 	}
 
 	// Empty history data after done output
-	m_hidHistoryInfoData.removeAll();
+	historyInfoData_.removeAll();
 }
 
 

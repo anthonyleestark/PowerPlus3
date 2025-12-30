@@ -509,9 +509,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Find and display reminder item by ID
 			bool bFindRet = false;
 			PwrReminderItem pwrTemp;
-			int nItemNum = m_prdReminderData.getItemNum();
+			int nItemNum = reminderData_.getItemNum();
 			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-				pwrTemp = m_prdReminderData.getItemAt(nIndex);
+				pwrTemp = reminderData_.getItemAt(nIndex);
 				if (pwrTemp.getItemId() == static_cast<unsigned>(nItemID)) {
 					bFindRet = true;
 					displayPwrReminder(pwrTemp);
@@ -1353,7 +1353,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("runtimequeue"))) {
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("print")))) {
 			// Print Power++ runtime queue list
-			if (m_arrRuntimeQueue.empty()) {
+			if (runtimeQueue_.empty()) {
 				// Empty list
 				OutputDebugLog(_T("Runtime queue empty!"));
 				bNoReply = false;	// Reset flag
@@ -1361,9 +1361,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Print each item
 				PwrRuntimeItem pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+				for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+					pwrRuntimeItem = runtimeQueue_.at(nIndex);
 					// Print runtime item info
 					OutputDebugLogFormat(_T("Item%03d: CategoryID=%d, ItemID=%d, Display=%d, Skip=%d, Snooze=%d"), nIndex, pwrRuntimeItem.getCategory(),
 						pwrRuntimeItem.getItemId(), pwrRuntimeItem.getDisplayFlag(), pwrRuntimeItem.getSkipFlag(), pwrRuntimeItem.getSnoozeFlag());
@@ -1379,7 +1379,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("rmdsnooze"))) {
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("prntqueue")))) {
 			// Print Power Reminder snooze queue list
-			if (m_arrRuntimeQueue.empty()) {
+			if (runtimeQueue_.empty()) {
 				// Empty list
 				OutputDebugLog(_T("Reminder snooze queue empty!"));
 				bNoReply = false;	// Reset flag
@@ -1387,9 +1387,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Print each item
 				PwrRuntimeItem pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+				for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+					pwrRuntimeItem = runtimeQueue_.at(nIndex);
 					// Skip if it's not Power Reminder item
 					if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info
@@ -1408,7 +1408,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("rmdruntime"))) {
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("prntdata")))) {
 			// Print Power Reminder runtime data list
-			if (m_arrRuntimeQueue.empty()) {
+			if (runtimeQueue_.empty()) {
 				// Empty list
 				OutputDebugLog(_T("Reminder runtime data empty!"));
 				bNoReply = false;	// Reset flag
@@ -1416,9 +1416,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Print each item
 				PwrRuntimeItem pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < m_arrRuntimeQueue.size(); nIndex++) {
+				for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = m_arrRuntimeQueue.at(nIndex);
+					pwrRuntimeItem = runtimeQueue_.at(nIndex);
 					// Skip if it's not Power Reminder item
 					if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info

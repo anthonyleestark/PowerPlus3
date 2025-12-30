@@ -1704,21 +1704,21 @@ ConfigData* CPowerPlusApp::getAppConfigData()
 
 /**
  * @brief	Set app configuration data
- * @param	pcfgData - Config data pointer
+ * @param	data - Config data pointer
  * @return	None
  */
-void CPowerPlusApp::setAppConfigData(ConfigData* pcfgData)
+void CPowerPlusApp::setAppConfigData(ConfigData* data)
 {
 	// Check data validity
-	ASSERT(pcfgData != NULL);
-	if (pcfgData == NULL) return;
+	ASSERT(data != NULL);
+	if (data == NULL) return;
 
 	// Backup data
 	ConfigData BakData;
 	BakData.copy(*getAppConfigData());
 
 	// Copy value of data pointer
-	getAppConfigData()->copy(*pcfgData);
+	getAppConfigData()->copy(*data);
 }
 
 /**
@@ -1735,21 +1735,21 @@ ScheduleData* CPowerPlusApp::getAppScheduleData()
 
 /**
  * @brief	Set app schedule data
- * @param	pschData - Schedule data pointer
+ * @param	data - Schedule data pointer
  * @return	None
  */
-void CPowerPlusApp::setAppScheduleData(ScheduleData* pschData)
+void CPowerPlusApp::setAppScheduleData(ScheduleData* data)
 {
 	// Check data validity
-	ASSERT(pschData != NULL);
-	if (pschData == NULL) return;
+	ASSERT(data != NULL);
+	if (data == NULL) return;
 
 	// Backup data
 	ScheduleData BakData;
 	BakData.copy(*getAppScheduleData());
 
 	// Copy value of data pointer
-	getAppScheduleData()->copy(*pschData);
+	getAppScheduleData()->copy(*data);
 }
 
 /**
@@ -1766,21 +1766,21 @@ HotkeySetData* CPowerPlusApp::getAppHotkeySetData()
 
 /**
  * @brief	Set app hotkeyset data
- * @param	phksData - HotkeySet data pointer
+ * @param	data - HotkeySet data pointer
  * @return	None
  */
-void CPowerPlusApp::setAppHotkeySetData(HotkeySetData* phksData)
+void CPowerPlusApp::setAppHotkeySetData(HotkeySetData* data)
 {
 	// Check data validity
-	ASSERT(phksData != NULL);
-	if (phksData == NULL) return;
+	ASSERT(data != NULL);
+	if (data == NULL) return;
 
 	// Backup data
 	HotkeySetData BakData;
 	BakData.copy(*getAppHotkeySetData());
 
 	// Copy value of data pointer
-	getAppHotkeySetData()->copy(*phksData);
+	getAppHotkeySetData()->copy(*data);
 }
 
 /**
@@ -1797,21 +1797,21 @@ PwrReminderData* CPowerPlusApp::getAppPwrReminderData()
 
 /**
  * @brief	Set app Power Reminder data
- * @param	ppwrData - Power Reminder data pointer
+ * @param	data - Power Reminder data pointer
  * @return	None
  */
-void CPowerPlusApp::setAppPwrReminderData(PwrReminderData* ppwrData)
+void CPowerPlusApp::setAppPwrReminderData(PwrReminderData* data)
 {
 	// Check data validity
-	ASSERT(ppwrData != NULL);
-	if (ppwrData == NULL) return;
+	ASSERT(data != NULL);
+	if (data == NULL) return;
 
 	// Backup data
 	PwrReminderData BakData;
 	BakData.copy(*getAppPwrReminderData());
 
 	// Copy value of data pointer
-	getAppPwrReminderData()->copy(*ppwrData);
+	getAppPwrReminderData()->copy(*data);
 }
 
 
@@ -1820,14 +1820,14 @@ void CPowerPlusApp::setAppPwrReminderData(PwrReminderData* ppwrData)
 
 /**
  * @brief	Return option value by ID
- * @param	eAppOptionID - ID of specific option
+ * @param	eAppOptionId - ID of specific option
  * @return	int - Option value
  */
-int CPowerPlusApp::getAppOption(AppOptionID eAppOptionID) const
+int CPowerPlusApp::getAppOption(AppOptionID eAppOptionId) const
 {
 	int nResult = INT_INVALID;
 
-	switch (eAppOptionID)
+	switch (eAppOptionId)
 	{
 	case AppOptionID::curDispLanguage:
 		nResult = SWinApp::getAppLanguageOption(true);
@@ -1842,7 +1842,7 @@ int CPowerPlusApp::getAppOption(AppOptionID eAppOptionID) const
 		nResult = scheduleDataPtr_->getDefaultItem().isRepeatEnabled();
 		break;
 	default:
-		nResult = appConfigDataPtr_->getAppOption(eAppOptionID);
+		nResult = appConfigDataPtr_->getAppOption(eAppOptionId);
 		break;
 	}
 
@@ -1903,10 +1903,10 @@ void CPowerPlusApp::outputAppHistoryLog(LOGITEM logItem)
 
 /**
  * @brief	Output trace log of data serialization
- * @param	wErrCode - Error code
+ * @param	errorCode - Error code
  * @return	None
  */
-void CPowerPlusApp::traceSerializeData(WORD wErrCode)
+void CPowerPlusApp::traceSerializeData(WORD errorCode)
 {
 	String traceMessageTitle = Constant::String::Empty;
 	String traceLogFormat = Constant::String::Empty;
@@ -1918,7 +1918,7 @@ void CPowerPlusApp::traceSerializeData(WORD wErrCode)
 	// Note: If the application is launching for the 1st time, do not trace data loading error
 	bool bSkipFlag = false;
 	
-	switch (wErrCode)
+	switch (errorCode)
 	{
 	case APP_ERROR_LOAD_CFG_INVALID:
 		bSkipFlag = false;							// Do not skip
@@ -2028,7 +2028,7 @@ void CPowerPlusApp::traceSerializeData(WORD wErrCode)
 
 	// Show error message
 	unsigned nMsg = SM_APP_ERROR_MESSAGE;
-	WPARAM wParam = (WPARAM)wErrCode;
+	WPARAM wParam = (WPARAM)errorCode;
 	CWnd* pMainWnd = this->GetMainWnd();
 	if (pMainWnd != NULL) {
 		// Post message to main window
@@ -2045,11 +2045,11 @@ void CPowerPlusApp::traceSerializeData(WORD wErrCode)
 
 /**
  * @brief	Check validity of data for serialization
- * @param	bySerializeMode - Data serializing mode (load/save)
- * @param	nSaveFlag		- Data saving type flag
+ * @param	serializeMode - Data serializing mode (load/save)
+ * @param	saveFlag - Data saving type flag
  * @return	true/false
  */
-bool CPowerPlusApp::dataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = APPDATA_ALL */)
+bool CPowerPlusApp::dataSerializeCheck(BYTE serializeMode, int saveFlag /* = APPDATA_ALL */)
 {
 	bool bResult = true;
 	WORD wLoadRet = APP_ERROR_SUCCESS;
@@ -2057,11 +2057,11 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 
 	// Validate app config data
 	if (getAppConfigData() == NULL) {
-		if (bySerializeMode == Mode::Load) {
+		if (serializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_CFG_INVALID;
 			traceSerializeData(wLoadRet);
 		}
-		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_CONFIG) != 0)) {
+		else if ((serializeMode == Mode::Save) && ((saveFlag & APPDATA_CONFIG) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_CFG_INVALID;
 			traceSerializeData(wSaveRet);
 		}
@@ -2069,11 +2069,11 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 	}
 	// Validate schedule data
 	if (getAppScheduleData() == NULL) {
-		if (bySerializeMode == Mode::Load) {
+		if (serializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_SCHED_INVALID;
 			traceSerializeData(wLoadRet);
 		}
-		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_SCHEDULE) != 0)) {
+		else if ((serializeMode == Mode::Save) && ((saveFlag & APPDATA_SCHEDULE) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_SCHED_INVALID;
 			traceSerializeData(wSaveRet);
 		}
@@ -2081,11 +2081,11 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 	}
 	// Validate HotkeySet data
 	if (getAppHotkeySetData() == NULL) {
-		if (bySerializeMode == Mode::Load) {
+		if (serializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_HKEYSET_INVALID;
 			traceSerializeData(wLoadRet);
 		}
-		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_HOTKEYSET) != 0)) {
+		else if ((serializeMode == Mode::Save) && ((saveFlag & APPDATA_HOTKEYSET) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_HKEYSET_INVALID;
 			traceSerializeData(wSaveRet);
 		}
@@ -2093,11 +2093,11 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE bySerializeMode, int nSaveFlag /* = 
 	}
 	// Validate Power Reminder data
 	if (getAppPwrReminderData() == NULL) {
-		if (bySerializeMode == Mode::Load) {
+		if (serializeMode == Mode::Load) {
 			wLoadRet = APP_ERROR_LOAD_PWRRMD_INVALID;
 			traceSerializeData(wLoadRet);
 		}
-		else if ((bySerializeMode == Mode::Save) && ((nSaveFlag & APPDATA_PWRREMINDER) != 0)) {
+		else if ((serializeMode == Mode::Save) && ((saveFlag & APPDATA_PWRREMINDER) != 0)) {
 			wSaveRet = APP_ERROR_SAVE_PWRRMD_INVALID;
 			traceSerializeData(wSaveRet);
 		}
@@ -2196,11 +2196,11 @@ void CPowerPlusApp::getAutoStartRegistryRootKey(HKEY& hAutoStartRootKey)
 
 /**
  * @brief	Enable/disable start-up with Windows function
- * @param	isEnabled		- Auto startup option
- * @param	bRunAsAdmin - Run as admin option
+ * @param	isEnabled	 - Auto startup option
+ * @param	isRunAsAdmin - Run as admin option
  * @return	int - Result of registry writing process
  */
-int CPowerPlusApp::enableAutoStart(bool isEnabled, bool bRunAsAdmin)
+int CPowerPlusApp::enableAutoStart(bool isEnabled, bool isRunAsAdmin)
 {
 	long lRes;
 	HKEY hRootKey, hKey;
@@ -2226,7 +2226,7 @@ int CPowerPlusApp::enableAutoStart(bool isEnabled, bool bRunAsAdmin)
 
 		String execCommand;
 
-		if (bRunAsAdmin == true) {
+		if (isRunAsAdmin == true) {
 			// Register to run as admin
 			execCommand.format(Constant::Command::RunAsAdmin::Register, AppProfile::ProjectName, StringUtils::getApplicationPath(true).getString());
 			WinExec(MAKEANSI(execCommand), SW_HIDE);
@@ -2285,15 +2285,15 @@ int CPowerPlusApp::getAutoStartRegisterStatus(void)
 
 /**
  * @brief	Get last system event time
- * @param	byEventType  - Event type (suspend/wakeup)
+ * @param	eventType  - Event type (suspend/wakeup)
  * @param	timeSysEvent - Event time value
  * @return	true/false
  */
-bool CPowerPlusApp::getLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent)
+bool CPowerPlusApp::getLastSysEventTime(BYTE eventType, DateTime& timeSysEvent)
 {
 	// Get key name
 	String keyName;
-	switch (byEventType)
+	switch (eventType)
 	{
 	case SystemEventID::SystemSuspend:
 		keyName = Key::SystemEventTracking::LastSysSuspend;
@@ -2345,15 +2345,15 @@ bool CPowerPlusApp::getLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent
 
 /**
  * @brief	Save last system event time
- * @param	byEventType  - Event type (suspend/wakeup)
+ * @param	eventType  - Event type (suspend/wakeup)
  * @param	timeSysEvent - Event time value
  * @return	true/false
  */
-bool CPowerPlusApp::saveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent)
+bool CPowerPlusApp::saveLastSysEventTime(BYTE eventType, const DateTime& timeSysEvent)
 {
 	// Get key name
 	String keyName;
-	switch (byEventType)
+	switch (eventType)
 	{
 	case SystemEventID::SystemSuspend:
 		keyName = Key::SystemEventTracking::LastSysSuspend;

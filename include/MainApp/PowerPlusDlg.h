@@ -58,54 +58,54 @@ protected:
 
 private:
 	// App data variables
-	ConfigData		m_cfgAppConfig;
-	ConfigData		m_cfgTempConfig;
-	ScheduleData	m_schScheduleData;
-	HotkeySetData	m_hksHotkeySetData;
-	PwrReminderData m_prdReminderData;
-	HistoryInfoData	m_hidHistoryInfoData;
+	ConfigData		appConfigData_;
+	ConfigData		tempConfigData_;
+	ScheduleData	scheduleData_;
+	HotkeySetData	hotkeySetData_;
+	PwrReminderData reminderData_;
+	HistoryInfoData	historyInfoData_;
 
 	// Dialog control variables:
-	CComboBox m_cmbLMBAction;
-	CComboBox m_cmbMMBAction;
-	CComboBox m_cmbRMBAction;
-	CComboBox m_cmbLanguages;
+	CComboBox leftMouseActionCombo_;
+	CComboBox middleMouseActionCombo_;
+	CComboBox rightMouseActionCombo_;
+	CComboBox languageCombo_;
 
 	// Boolean variables for checkboxes
-	BOOL m_bRMBShowMenu;
-	BOOL m_bShowDlgAtStartup;
-	BOOL m_bStartupEnabled;
-	BOOL m_bConfirmAction;
-	BOOL m_bSaveHistoryLog;
-	BOOL m_bSaveAppEventLog;
-	BOOL m_bRunAsAdmin;
-	BOOL m_bShowErrorMsg;
-	BOOL m_bnotifySchedule;
-	BOOL m_bAllowCancelSchedule;
-	BOOL m_benableBackgroundHotkey;
-	BOOL m_benablePowerReminder;
+	BOOL rightMouseShowMenu_;
+	BOOL showDialogAtStartup_;
+	BOOL isStartupEnabled_;
+	BOOL confirmBeforeAction_;
+	BOOL saveHistoryLog_;
+	BOOL saveAppEventLog_;
+	BOOL isRunAsAdmin_;
+	BOOL showErrorMsg_;
+	BOOL notifySchedule_;
+	BOOL allowCancelSchedule_;
+	BOOL enableBackgroundHotkey_;
+	BOOL enablePowerReminder_;
 
 	// Notify icon variables
-	HICON			m_hNotifyIcon;
-	PNOTIFYICONDATA	m_pNotifyIconData;
-	CMenu*			m_pNotifyMenu;
+	HICON			notifyIconHandle_;
+	PNOTIFYICONDATA	notifyIconDataPtr_;
+	CMenu*			notifyMenuPtr_;
 
 	// Member variables using for resizing dialog
-	Size* m_pDialogSize;
+	Size* dialogSize_;
 
 	// Hotkey register data
-	UIntArray m_arrCurRegHKeyList;
+	UIntArray currentRegHotkeyList_;
 
 	// Power++ runtime queue data
-	PwrRuntimeQueue m_arrRuntimeQueue;
+	PwrRuntimeQueue runtimeQueue_;
 
 	// Child dialogs
-	CAboutDlg*			m_pAboutDlg;
-	CHelpDlg*			m_pHelpDlg;
-	CLogViewerDlg*		m_pLogViewerDlg;
-	CMultiScheduleDlg*	m_pMultiScheduleDlg;
-	CHotkeySetDlg*		m_pHotkeySetDlg;
-	CPwrReminderDlg*	m_pPwrReminderDlg;
+	CAboutDlg*			aboutDlgPtr_;
+	CHelpDlg*			helpDlgPtr_;
+	CLogViewerDlg*		logViewerDlgPtr_;
+	CMultiScheduleDlg*	multiScheduleDlgPtr_;
+	CHotkeySetDlg*		hotkeySetDlgPtr_;
+	CPwrReminderDlg*	pwrReminderDlgPtr_;
 
 protected:
 	// Generated message map functions
@@ -154,7 +154,7 @@ protected:
 
 protected:
 	// Member functions using for resizing dialog
-	void expandDialog(bool bExpand);
+	void expandDialog(bool isExpandOrCollapse);
 
 	// Notify icon functions
 	bool createNotifyIcon(void);

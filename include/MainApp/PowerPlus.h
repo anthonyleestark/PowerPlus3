@@ -30,10 +30,10 @@ public:
 
 private:
 	// Application data
-	ConfigData*			appConfigDataPtr_;
-	ScheduleData*		scheduleDataPtr_;
-	HotkeySetData*		hotkeySetDataPtr_;
-	PwrReminderData*	reminderDataPtr_;
+	ConfigData*		 appConfigDataPtr_;
+	ScheduleData*	 scheduleDataPtr_;
+	HotkeySetData*	 hotkeySetDataPtr_;
+	PwrReminderData* reminderDataPtr_;
 
 	// Logging pointers
 	SLogging* appHistoryLogPtr_;
