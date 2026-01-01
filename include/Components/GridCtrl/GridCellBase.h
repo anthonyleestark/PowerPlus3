@@ -44,7 +44,7 @@ class CGridCtrl;
 typedef struct _GV_ITEM {
     int      row,col;     // Row and Column of item
     UINT     mask;        // Mask for use in getting/setting cell data
-    UINT     nState;      // cell state (focus/hilighted etc)
+    UINT     state;      // cell state (focus/hilighted etc)
     DWORD    nFormat;     // Format of cell
     int      iImage;      // index of the list view item痴 icon
     COLORREF crBkClr;     // Background colour (or CLR_DEFAULT)
@@ -75,7 +75,7 @@ public:
     virtual void SetText(LPCTSTR /* szText */)              = 0 ;
     virtual void SetImage(int /* nImage */)                 = 0 ;
     virtual void SetData(LPARAM /* lParam */)               = 0 ;
-    virtual void SetState(DWORD nState)                     { m_nState = nState; }
+    virtual void SetState(DWORD state)                     { m_nState = state; }
     virtual void SetFormat(DWORD /* nFormat */)             = 0 ;
     virtual void SetTextClr(COLORREF /* clr */)             = 0 ;
     virtual void SetBackClr(COLORREF /* clr */)             = 0 ;
@@ -131,7 +131,7 @@ public:
 
     // Editing
     virtual BOOL Edit( int /* nRow */, int /* nCol */, CRect /* rect */, CPoint /* point */, 
-                       UINT /* nID */, UINT /* nChar */) { ASSERT( FALSE); return FALSE;}
+                       UINT /* id */, UINT /* nChar */) { ASSERT( FALSE); return FALSE;}
 	virtual BOOL ValidateEdit(LPCTSTR str);
     virtual void EndEdit() {}
 
@@ -139,7 +139,7 @@ public:
     virtual BOOL PrintCell(CDC* pDC, int nRow, int nCol, CRect rect);
 
     // add additional protected grid members required of cells
-    LRESULT SendMessageToParent(int nRow, int nCol, int nMessage);
+    LRESULT SendMessageToParent(int nRow, int nCol, int message);
 
 protected:
     virtual void OnEndEdit();

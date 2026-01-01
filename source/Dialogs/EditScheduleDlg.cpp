@@ -91,11 +91,11 @@ void CEditScheduleDlg::DoDataExchange(CDataExchange* pDX)
  */
 int CEditScheduleDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::registerDialogManagement();
-	if (nRet != 0) {
+	size_t returnValue = SDialog::registerDialogManagement();
+	if (returnValue != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return nRet;
+		return returnValue;
 	}
 
 	// Get control manager
@@ -103,19 +103,19 @@ int CEditScheduleDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ENABLE_CHK, Check_Box);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTION_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTION_LIST, Combo_Box);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_EDITBOX, Edit_Control);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_SPIN, Spin_Control);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_REPEATDAILY_CHK, Check_Box);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX, List_Box);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_APPLY_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_EDITSCHEDULE_CANCEL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ENABLE_CHK, Check_Box);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTION_LABEL, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTION_LIST, Combo_Box);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_LABEL, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_EDITBOX, Edit_Control);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_SPIN, Spin_Control);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_REPEATDAILY_CHK, Check_Box);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX, List_Box);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_APPLY_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_CANCEL_BTN, Button);
 	}
 
-	return nRet;
+	return returnValue;
 }
 
 /**
@@ -221,9 +221,9 @@ void CEditScheduleDlg::OnClose()
 		// If data changed, ask for saving before closing dialog
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
-			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+			LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+			const wchar_t* messagePrompt = getLanguageString(languageTablePtr, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = getLanguageString(languageTablePtr, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
 			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);
@@ -274,9 +274,9 @@ LRESULT CEditScheduleDlg::requestCloseDialog(void)
 	// If data changed, ask for saving before closing dialog
 	if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 		// Setup messagebox language
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-		const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-		const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+		LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+		const wchar_t* messagePrompt = getLanguageString(languageTablePtr, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+		const wchar_t* messageCaption = getLanguageString(languageTablePtr, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 		int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
@@ -309,18 +309,18 @@ LRESULT CEditScheduleDlg::requestCloseDialog(void)
 void CEditScheduleDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup languages for each one of them
-	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	for (CWnd* childWndPtr = GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
 		// Get item ID
-		unsigned nID = pWndChild->GetDlgCtrlID();
+		unsigned id = childWndPtr->GetDlgCtrlID();
 
-		switch (nID)
+		switch (id)
 		{
 		case IDC_EDITSCHEDULE_SUBDETAIL_STATIC:
 		case IDC_EDITSCHEDULE_TIME_EDITBOX:
@@ -330,17 +330,17 @@ void CEditScheduleDlg::setupLanguage()
 			break;
 
 		case IDC_EDITSCHEDULE_ACTION_LIST:
-			setupComboBox(nID, pAppLang);
+			setupComboBox(id, languageTablePtr);
 			break;
 
 		default:
-			setControlText(pWndChild, nID, pAppLang);
+			setControlText(childWndPtr, id, languageTablePtr);
 			break;
 		}
 	}
 
 	// Setup Active day list
-	SetupActiveDayList(pAppLang);
+	SetupActiveDayList(languageTablePtr);
 
 	// Default
 	SDialog::setupLanguage();
@@ -349,10 +349,10 @@ void CEditScheduleDlg::setupLanguage()
 /**
  * @brief	Setup data for combo-boxes
  * @param	nComboID	- ID of combo box
- * @param	ptrLanguage - Language package pointer
+ * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CEditScheduleDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
+void CEditScheduleDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr)
 {
 	// Action list
 	if (nComboID == IDC_EDITSCHEDULE_ACTION_LIST) {
@@ -365,25 +365,25 @@ void CEditScheduleDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguag
 		// Setup data
 		if (m_pActionList != NULL) {
 			m_pActionList->ResetContent();
-			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));	// Turn off display
-			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));		// Sleep
-			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));		// Shutdown
-			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));		// Restart
-			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));		// Log out
-			m_pActionList->AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));	// Hibernate
+			m_pActionList->AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_DISPLAYOFF));	// Turn off display
+			m_pActionList->AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_SLEEP));		// Sleep
+			m_pActionList->AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_SHUTDOWN));		// Shutdown
+			m_pActionList->AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_RESTART));		// Restart
+			m_pActionList->AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_SIGNOUT));		// Log out
+			m_pActionList->AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_HIBERNATE));	// Hibernate
 		}
 	}
 
 	// Default
-	SDialog::setupComboBox(nComboID, ptrLanguage);
+	SDialog::setupComboBox(nComboID, languageTablePtr);
 }
 
 /**
  * @brief	Initialize and setup language for Active Day list
- * @param	ptrLanguage - Language package pointer
+ * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
+void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*languageTablePtr*/)
 {
 	// Get parent list frame rect
 	CWnd* pListFrameWnd = GetDlgItem(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX);
@@ -404,8 +404,8 @@ void CEditScheduleDlg::SetupActiveDayList(LANGTABLE_PTR /*ptrLanguage*/)
 
 	// Create table
 	if (m_pActiveDayListTable == NULL) return;
-	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
-	m_pActiveDayListTable->Create(rcListFrameWnd, this, IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX, dwStyle);
+	DWORD style = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
+	m_pActiveDayListTable->Create(rcListFrameWnd, this, IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX, style);
 
 	// Destroy frame
 	pListFrameWnd->DestroyWindow();
@@ -452,8 +452,8 @@ void CEditScheduleDlg::DrawActiveDayTable(bool bReadOnly /* = false */)
 	if (m_pszActiveTableFrameSize == NULL) return;
 
 	// Get app pointer
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	if (pApp == NULL) return;
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	if (theAppPtr == NULL) return;
 
 	// Re-update default cell properties
 	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pActiveDayListTable->GetDefaultCell(false, false);
@@ -582,10 +582,10 @@ void CEditScheduleDlg::setupDialogItemState()
 
 	// Read-only mode (if enabled)
 	if (isReadOnlyMode() == true) {
-		CWnd* pWndChild = GetTopWindow();
-		while (pWndChild != NULL) {
-			pWndChild->EnableWindow(false);
-			pWndChild = pWndChild->GetWindow(GW_HWNDNEXT);
+		CWnd* childWndPtr = GetTopWindow();
+		while (childWndPtr != NULL) {
+			childWndPtr->EnableWindow(false);
+			childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT);
 		}
 	}
 
@@ -604,7 +604,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 	if (m_pActiveDayListTable == NULL) return;
 
 	// Load app language package
-	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Print items
 	int nDayOfWeekID = INT_INVALID;
@@ -622,7 +622,7 @@ void CEditScheduleDlg::UpdateActiveDayList()
 		}
 
 		// Day title
-		const wchar_t* tempString = getLanguageString(ptrLanguage, GetPairedID(IDTable::DayOfWeek, nDayOfWeekID));
+		const wchar_t* tempString = getLanguageString(languageTablePtr, GetPairedID(IDTable::DayOfWeek, nDayOfWeekID));
 		m_pActiveDayListTable->SetItemText(nRowIndex, daytitleColID, tempString);
 	}
 }
@@ -673,14 +673,14 @@ void CEditScheduleDlg::RedrawActiveDayTable(bool bReadOnly /* = false */)
 
 /**
  * @brief	Get schedule item data
- * @param	pschItem - Return item
+ * @param	scheduleItemPtr - Return item
  * @return	None
  */
-void CEditScheduleDlg::GetScheduleItem(PScheduleItem pschItem)
+void CEditScheduleDlg::GetScheduleItem(PScheduleItem scheduleItemPtr)
 {
 	// Copy data
-	if (pschItem == NULL) return;
-	pschItem->copy(m_schScheduleItem);
+	if (scheduleItemPtr == NULL) return;
+	scheduleItemPtr->copy(m_schScheduleItem);
 }
 
 /**
@@ -688,10 +688,10 @@ void CEditScheduleDlg::GetScheduleItem(PScheduleItem pschItem)
  * @param	None
  * @return	None
  */
-void CEditScheduleDlg::SetScheduleItem(const ScheduleItem& pschItem)
+void CEditScheduleDlg::SetScheduleItem(const ScheduleItem& scheduleItemPtr)
 {
 	// Copy data
-	m_schScheduleItem.copy(pschItem);
+	m_schScheduleItem.copy(scheduleItemPtr);
 	m_schScheduleItemTemp.copy(m_schScheduleItem);
 }
 
@@ -710,8 +710,8 @@ void CEditScheduleDlg::UpdateScheduleItem()
 	m_schScheduleItemTemp.enableRepeat(m_bRepeat);
 
 	// Update action list combo value
-	int nCurSel = m_pActionList->GetCurSel();
-	m_nAction = AppCore::sel2Opt(APP_ACTION, nCurSel);
+	int currenSelection = m_pActionList->GetCurSel();
+	m_nAction = AppCore::sel2Opt(APP_ACTION, currenSelection);
 	m_schScheduleItemTemp.setAction(m_nAction);
 
 	// Update time value
@@ -763,9 +763,9 @@ bool CEditScheduleDlg::checkDataChangeState()
 	UpdateScheduleItem();
 
 	// Data comparison
-	bool bChangeFlag = (m_schScheduleItemTemp.compare(m_schScheduleItem) != true);
+	bool changeFlag = (m_schScheduleItemTemp.compare(m_schScheduleItem) != true);
 
-	return bChangeFlag;
+	return changeFlag;
 }
 
 /**
@@ -823,7 +823,7 @@ void CEditScheduleDlg::EnableSubItems(bool isEnabled)
 void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = true */)
 {
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Get time editbox pointer
 	if (m_pTimeEdit == NULL) {
@@ -845,11 +845,11 @@ void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* =
 		// Get hour value
 		int hour = _wtoi(timeFormatString.left(2));
 		const String timePeriod = timeFormatString.right(2);
-		if (timePeriod == getLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
+		if (timePeriod == getLanguageString(languageTablePtr, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
 			clockTime.setHour(hour);
 		}
-		else if ((timePeriod == getLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
+		else if ((timePeriod == getLanguageString(languageTablePtr, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
 			// After midday
 			clockTime.setHour(hour + 12);
 		}
@@ -864,7 +864,7 @@ void CEditScheduleDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* =
 	else {
 		// Set value for time editbox
 		String timeFormatString;
-		timeFormatString = ClockTimeUtils::format(pLang, IDS_FORMAT_SHORTTIME, clockTime);
+		timeFormatString = ClockTimeUtils::format(languageTablePtr, IDS_FORMAT_SHORTTIME, clockTime);
 		m_pTimeEdit->SetWindowText(timeFormatString);
 	}
 }
@@ -881,12 +881,12 @@ int CEditScheduleDlg::GetDispMode(void) const
 
 /**
  * @brief	Set dialog display mode
- * @param	nMode - Display mode
+ * @param	mode - Display mode
  * @return	None
  */
-void CEditScheduleDlg::SetDispMode(int nMode)
+void CEditScheduleDlg::SetDispMode(int mode)
 {
-	m_nDispMode = nMode;
+	m_nDispMode = mode;
 }
 
 /**
@@ -933,9 +933,9 @@ void CEditScheduleDlg::OnExit()
 		// If data changed, ask for saving before closing dialog
 		if (getFlagValue(AppFlagID::dialogDataChanged) == true) {
 			// Setup messagebox language
-			LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-			const wchar_t* messagePrompt = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
-			const wchar_t* messageCaption = getLanguageString(pAppLang, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
+			LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+			const wchar_t* messagePrompt = getLanguageString(languageTablePtr, MSGBOX_EDITSCHEDULE_CHANGED_CONTENT);
+			const wchar_t* messageCaption = getLanguageString(languageTablePtr, MSGBOX_EDITSCHEDULE_CHANGED_CAPTION);
 
 			// Show save confirmation message
 			int nConfirm = MessageBox(messagePrompt, messageCaption, MB_YESNO | MB_ICONQUESTION);

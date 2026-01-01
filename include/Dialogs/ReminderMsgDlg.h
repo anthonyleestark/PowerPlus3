@@ -20,7 +20,7 @@ class CReminderMsgDlg : public SDialog
 	DECLARE_DYNAMIC(CReminderMsgDlg)
 
 public:
-	CReminderMsgDlg(CWnd *pParentWnd = NULL);	// constructor
+	CReminderMsgDlg(CWnd *parentWnd = NULL);	// constructor
 	~CReminderMsgDlg();							// destructor
 
 	// Dialog Data
@@ -67,8 +67,8 @@ public:
 	afx_msg void OnPaint();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnSysCommand(UINT id, LPARAM lParam);
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 public:
@@ -115,11 +115,11 @@ public:
 	};
 
 	// Flags
-	virtual void GetSnoozeTriggerFlag(int& nValue) const {
-		nValue = m_nSnoozeFlag;
+	virtual void GetSnoozeTriggerFlag(int& value) const {
+		value = m_nSnoozeFlag;
 	};
-	virtual void SetSnoozeTriggerFLag(int nValue) {
-		m_nSnoozeFlag = nValue;
+	virtual void SetSnoozeTriggerFLag(int value) {
+		m_nSnoozeFlag = value;
 	};
 
 protected:

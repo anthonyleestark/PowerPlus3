@@ -46,7 +46,7 @@ public:
 	};
 
 public:
-	CPwrReminderDlg(CWnd* pParent = nullptr);			// standard constructor
+	CPwrReminderDlg(CWnd* parentWnd = nullptr);			// standard constructor
 	virtual ~CPwrReminderDlg();							// destructor
 
 	// Dialog Data
@@ -141,7 +141,7 @@ public:
 	afx_msg void OnTimeEditSetFocus();
 	afx_msg void OnTimeEditKillFocus();
 	afx_msg void OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnPwrEventRadBtnClicked(UINT nID);
+	afx_msg void OnPwrEventRadBtnClicked(UINT id);
 	afx_msg void OnRepeatSet();
 	afx_msg void OnCustomizeStyle();
 	virtual LRESULT requestCloseDialog(void);
@@ -150,9 +150,9 @@ public:
 protected:
 	// Dialog setup functions
 	void setupLanguage();
-	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
-	void DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly = false, LANGTABLE_PTR ptrLanguage = NULL);
-	void setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
+	void SetupDataItemList(LANGTABLE_PTR languageTablePtr);
+	void DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly = false, LANGTABLE_PTR languageTablePtr = NULL);
+	void setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr);
 	void SwitchMode(bool bRedraw = false);
 
 	// Layout functions
@@ -165,10 +165,10 @@ protected:
 	void UpdateDataItemList();
 	void DisableTable(bool bDisable);
 	void RedrawDataTable(bool bReadOnly = false);
-	void DisplayItemDetails(int nIndex);
+	void DisplayItemDetails(int index);
 	void refreshDialogItemState(bool bRecheckState = false);
 	void UpdateCheckAllBtnState(bool bRecheck = false);
-	void RefreshDetailView(int nMode);
+	void RefreshDetailView(int mode);
 	void UpdateMsgCounter(int nCount);
 	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);
 
@@ -180,13 +180,13 @@ private:
 
 	// Data processing handlers
 	void Add();
-	void Edit(int nIndex);
-	void Remove(int nIndex);
+	void Edit(int index);
+	void Remove(int index);
 	void RemoveAll();
 	void SetAllItemState(bool bState);
-	void PreviewItem(int nIndex);
-	void UpdateItemData(Item& pwrItem, bool bUpdate);
-	bool Validate(Item& pwrItem, bool bShowMsg = false, bool bAutoCorrect = false);
+	void PreviewItem(int index);
+	void UpdateItemData(Item& reminderItem, bool bUpdate);
+	bool Validate(Item& reminderItem, bool bShowMsg = false, bool bAutoCorrect = false);
 
 protected:
 	// Get/set functions
@@ -196,7 +196,7 @@ protected:
 	int GetCurMode() const {
 		return m_nCurMode;
 	};
-	void SetCurMode(int nMode);
+	void SetCurMode(int mode);
 	void DrawRepeatSetButton(void);
 };
 

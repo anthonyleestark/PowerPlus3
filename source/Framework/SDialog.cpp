@@ -396,19 +396,19 @@ void SDialog::OnDestroy()
  * @param	Default
  * @return	None
  */
-void SDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+void SDialog::OnActivate(UINT state, CWnd* otherWndPtr, BOOL isMinimized)
 {
 	// Default
-	CDialogEx::OnActivate(nState, pWndOther, bMinimized);
+	CDialogEx::OnActivate(state, otherWndPtr, isMinimized);
 
 	// Get dialog ID
 	WPARAM wParam = static_cast<WPARAM>(getDialogId());
 
 	// Notify parent window about dialog active/inactive state
-	if (nState == WA_ACTIVE) {
+	if (state == WA_ACTIVE) {
 		this->notifyParent(SCM_NOTIFY_DIALOG_ACTIVE, wParam, NULL);
 	}
-	else if (nState == WA_INACTIVE) {
+	else if (state == WA_INACTIVE) {
 		this->notifyParent(SCM_NOTIFY_DIALOG_INACTIVE, wParam, NULL);
 	}
 }
@@ -418,10 +418,10 @@ void SDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
  * @param	Default
  * @return	None
  */
-void SDialog::OnMouseMove(UINT nFlags, CPoint point)
+void SDialog::OnMouseMove(UINT flags, CPoint point)
 {
 	// Default
-	CDialogEx::OnMouseMove(nFlags, point);
+	CDialogEx::OnMouseMove(flags, point);
 }
 
 /**
@@ -459,32 +459,32 @@ LRESULT SDialog::OnChildDialogDestroy(WPARAM /*wParam*/, LPARAM /*lParam*/)
  * @param	Default
  * @return	None
  */
-void SDialog::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
+void SDialog::OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr)
 {
 	// Fix min/max size
 	if (getFlagValue(AppFlagID::dialogSetMinSize) == true) {
-		pMinMaxInfo->ptMinTrackSize.x = minSize_.width();
-		pMinMaxInfo->ptMinTrackSize.y = minSize_.height();
+		minMaxInfoPtr->ptMinTrackSize.x = minSize_.width();
+		minMaxInfoPtr->ptMinTrackSize.y = minSize_.height();
 	}
 	if (getFlagValue(AppFlagID::dialogSetMaxSize) == true) {
-		pMinMaxInfo->ptMaxTrackSize.x = maxSize_.width();
-		pMinMaxInfo->ptMaxTrackSize.y = maxSize_.height();
+		minMaxInfoPtr->ptMaxTrackSize.x = maxSize_.width();
+		minMaxInfoPtr->ptMaxTrackSize.y = maxSize_.height();
 	}
 
 	// Default
-	CDialogEx::OnGetMinMaxInfo(pMinMaxInfo);
+	CDialogEx::OnGetMinMaxInfo(minMaxInfoPtr);
 }
 
 /**
  * @brief	Default method for pre-translate message
- * @param	pMsg - Default
+ * @param	messagePtr - Default
  * @return	None
  */
-BOOL SDialog::PreTranslateMessage(MSG* pMsg)
+BOOL SDialog::PreTranslateMessage(MSG* messagePtr)
 {
 	// Handle system key pressed message
-	if (pMsg->message == WM_KEYDOWN) {
-		switch (pMsg->wParam) 
+	if (messagePtr->message == WM_KEYDOWN) {
+		switch (messagePtr->wParam) 
 		{
 		case VK_ESCAPE:
 			if (getFlagValue(AppFlagID::dialogUseEscapeKey) != true) {
@@ -507,11 +507,11 @@ BOOL SDialog::PreTranslateMessage(MSG* pMsg)
 
 	// Allow the tooltip to receive mouse messages
 	if (isTooltipAvailable()) {
-		this->tooltipCtrlPtr_->RelayEvent(pMsg);
+		this->tooltipCtrlPtr_->RelayEvent(messagePtr);
 	}
 
 	// Default
-	return CDialogEx::PreTranslateMessage(pMsg);
+	return CDialogEx::PreTranslateMessage(messagePtr);
 }
 
 /**
@@ -559,25 +559,25 @@ INT_PTR SDialog::DoModal()
  */
 bool SDialog::notifyParent(unsigned message, WPARAM wParam, LPARAM lParam)
 {
-	bool bRetNotify = false;
+	bool notifyResult = false;
 
 	// If parent window is set and available
 	if (isParentAvailable()) {
 		// Notify to parent window
-		bRetNotify = m_pParentWnd->PostMessage(message, wParam, lParam);
+		notifyResult = m_pParentWnd->PostMessage(message, wParam, lParam);
 	}
 	// Check if main window is available
-	else if (CWnd* pMainWnd = AfxGetMainWnd()) {
+	else if (CWnd* mainWndPtr = AfxGetMainWnd()) {
 		// Send to main window to process
-		bRetNotify = pMainWnd->PostMessage(message, wParam, lParam);
+		notifyResult = mainWndPtr->PostMessage(message, wParam, lParam);
 	}
 	else {
 		// Notify to application's main thread instead
 		// and let it handle the message on its own
-		bRetNotify = ::PostMessage(NULL, message, wParam, lParam);
+		notifyResult = ::PostMessage(NULL, message, wParam, lParam);
 	}
 
-	return bRetNotify;
+	return notifyResult;
 }
 
 /**
@@ -590,25 +590,25 @@ bool SDialog::notifyParent(unsigned message, WPARAM wParam, LPARAM lParam)
  */
 LRESULT SDialog::sendMessageToParent(unsigned message, WPARAM wParam, LPARAM lParam)
 {
-	LRESULT lRetNotify = Result::Failure;
+	LRESULT notifyResult = Result::Failure;
 
 	// If parent window is set and available
 	if (isParentAvailable()) {
 		// Send message to parent window
-		lRetNotify = m_pParentWnd->SendMessage(message, wParam, lParam);
+		notifyResult = m_pParentWnd->SendMessage(message, wParam, lParam);
 	}
 	// Check if main window is available
-	else if (CWnd* pMainWnd = AfxGetMainWnd()) {
+	else if (CWnd* mainWndPtr = AfxGetMainWnd()) {
 		// Send to main window to process
-		lRetNotify = pMainWnd->SendMessage(message, wParam, lParam);
+		notifyResult = mainWndPtr->SendMessage(message, wParam, lParam);
 	}
 	else {
 		// Send message to application's main thread instead
 		// and let it handle the message on its own
-		lRetNotify = ::SendMessage(NULL, message, wParam, lParam);
+		notifyResult = ::SendMessage(NULL, message, wParam, lParam);
 	}
 
-	return lRetNotify;
+	return notifyResult;
 }
 
 /**
@@ -675,10 +675,10 @@ bool SDialog::unregisterDialogManagement(void)
  */
 bool SDialog::addStyle(DWORD style)
 {
-	DWORD dwStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
-	dwStyle |= style;
-	LONG lRet = SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, dwStyle);
-	return (lRet != 0);
+	DWORD currentStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
+	currentStyle |= style;
+	LONG result = SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, currentStyle);
+	return (result != 0);
 }
 
 /**
@@ -688,15 +688,15 @@ bool SDialog::addStyle(DWORD style)
  */
 bool SDialog::removeStyle(DWORD style)
 {
-	DWORD dwStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
-	dwStyle &= ~style;
-	LONG lRet = SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, dwStyle);
-	return (lRet != 0);
+	DWORD currentStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
+	currentStyle &= ~style;
+	LONG result = SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, currentStyle);
+	return (result != 0);
 }
 
 /**
  * @brief	Add a control ID to lock state exception list
- * @param	nID - Control ID
+ * @param	id - Control ID
  * @return	None
  */
 void SDialog::addLockStateException(unsigned id)
@@ -708,9 +708,9 @@ void SDialog::addLockStateException(unsigned id)
 	}
 
 	// Loop through all list and find if item existed in list
-	int nItemNum = lockExceptionIdList_->size();
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		if (lockExceptionIdList_->at(nIndex) == id) {
+	int itemNum = lockExceptionIdList_->size();
+	for (int index = 0; index < itemNum; index++) {
+		if (lockExceptionIdList_->at(index) == id) {
 			// No need to add
 			return;
 		}
@@ -722,7 +722,7 @@ void SDialog::addLockStateException(unsigned id)
 
 /**
  * @brief	Remove a control ID out of lock state exception list
- * @param	nID - Control ID
+ * @param	id - Control ID
  * @return	None
  */
 void SDialog::removeLockStateException(unsigned id)
@@ -732,17 +732,17 @@ void SDialog::removeLockStateException(unsigned id)
 		return;
 
 	// Loop through all list and remove item
-	int nItemNum = lockExceptionIdList_->size();
-	for (int nIndex = (nItemNum - 1); nIndex >= 0; nIndex--) {
-		if (lockExceptionIdList_->at(nIndex) == id) {
-			lockExceptionIdList_->erase(lockExceptionIdList_->begin() + nIndex);
+	int itemNum = lockExceptionIdList_->size();
+	for (int index = (itemNum - 1); index >= 0; index--) {
+		if (lockExceptionIdList_->at(index) == id) {
+			lockExceptionIdList_->erase(lockExceptionIdList_->begin() + index);
 		}
 	}
 }
 
 /**
  * @brief	Remove all lock state exception list
- * @param	nID - Control ID
+ * @param	id - Control ID
  * @return	None
  */
 void SDialog::resetLockStateExceptionList(void)
@@ -761,43 +761,43 @@ void SDialog::resetLockStateExceptionList(void)
 void SDialog::move(const Point& position, Rect* newRect /* = nullptr */)
 {
 	// Get current dialog rectangle
-	RECT rcCurPos;
-	this->GetWindowRect(&rcCurPos);
+	RECT currentPositionRect;
+	this->GetWindowRect(&currentPositionRect);
 
 	// Get dialog alignment
-	unsigned nAlign = getAlignment();
+	unsigned alignment = getAlignment();
 
 	// Calculate moving delta by alignments
 	LONG dx = 0, dy = 0;
 
 	// --> Calculate horizontal delta
-	if (nAlign & SDA_LEFTALIGN) {
+	if (alignment & SDA_LEFTALIGN) {
 		// Move left rect
-		dx = position._x - rcCurPos.left;
+		dx = position._x - currentPositionRect.left;
 	}
-	else if (nAlign & SDA_RIGHTALIGN) {
+	else if (alignment & SDA_RIGHTALIGN) {
 		// Move right rect
-		dx = position._x - rcCurPos.right;
+		dx = position._x - currentPositionRect.right;
 	}
-	else if (nAlign & SDA_HCENTERALIGN) {
+	else if (alignment & SDA_HCENTERALIGN) {
 		// Move center rect
-		LONG nHCenter = rcCurPos.right - rcCurPos.left;
+		LONG nHCenter = currentPositionRect.right - currentPositionRect.left;
 		dx = position._x - nHCenter;
 	}
 
 	// --> Calculate vertical delta
-	if (nAlign & SDA_TOPALIGN) {
+	if (alignment & SDA_TOPALIGN) {
 		// Move top rect
-		dy = position._y - rcCurPos.top;
+		dy = position._y - currentPositionRect.top;
 	}
-	else if (nAlign & SDA_BOTTOMALIGN) {
+	else if (alignment & SDA_BOTTOMALIGN) {
 		// Move bottom rect
-		dy = position._y - rcCurPos.bottom;
+		dy = position._y - currentPositionRect.bottom;
 	}
-	else if (nAlign & SDA_VCENTERALIGN) {
+	else if (alignment & SDA_VCENTERALIGN) {
 		// Move center rect
-		LONG nVCenter = rcCurPos.bottom - rcCurPos.top;
-		dy = position._y - nVCenter;
+		LONG verticalCenter = currentPositionRect.bottom - currentPositionRect.top;
+		dy = position._y - verticalCenter;
 	}
 
 	// Move dialog
@@ -814,34 +814,34 @@ void SDialog::move(const Point& position, Rect* newRect /* = nullptr */)
 void SDialog::move(long dx, long dy, Rect* newRect /* = nullptr */)
 {
 	// Get current dialog rectangle
-	RECT rcCurPos;
-	this->GetWindowRect(&rcCurPos);
+	RECT dialogRect;
+	this->GetWindowRect(&dialogRect);
 
 	// Shift rectangle
 	if (dx != 0) {
 		// Move horizontal direction --> Shift X value
-		rcCurPos.left += dx;
-		rcCurPos.right += dx;
+		dialogRect.left += dx;
+		dialogRect.right += dx;
 	}
 	if (dy != 0) {
 		// Move vertical direction --> Shift Y value
-		rcCurPos.top += dy;
-		rcCurPos.bottom += dy;
+		dialogRect.top += dy;
+		dialogRect.bottom += dy;
 	}
 
 	// Move dialog
 	if ((dx != 0) || (dy != 0)) {
 		// Top-left point
-		LONG x = rcCurPos.left;
-		LONG y = rcCurPos.top;
+		LONG x = dialogRect.left;
+		LONG y = dialogRect.top;
 		// Set dialog position
-		bool bRet = this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		bool returnFlag = this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		// If moving successfully, update new rectangle 
-		if ((bRet == true) && (newRect != nullptr)) {
-			newRect->_left = rcCurPos.left;
-			newRect->_right = rcCurPos.right;
-			newRect->_top = rcCurPos.top;
-			newRect->_bottom = rcCurPos.bottom;
+		if ((returnFlag == true) && (newRect != nullptr)) {
+			newRect->_left = dialogRect.left;
+			newRect->_right = dialogRect.right;
+			newRect->_top = dialogRect.top;
+			newRect->_bottom = dialogRect.bottom;
 		}
 	}
 }
@@ -854,17 +854,17 @@ void SDialog::move(long dx, long dy, Rect* newRect /* = nullptr */)
 void SDialog::resize(bool isCentered)
 {
 	// Get current dialog rectangle
-	RECT rectDlg;
-	this->GetWindowRect(&rectDlg);
+	RECT dialogRect;
+	this->GetWindowRect(&dialogRect);
 
 	// Set new rectangle
 	if (!registeredSize_.isEmpty()) {
-		rectDlg.right = (rectDlg.left + registeredSize_.width());
-		rectDlg.bottom = (rectDlg.top + registeredSize_.height());
+		dialogRect.right = (dialogRect.left + registeredSize_.width());
+		dialogRect.bottom = (dialogRect.top + registeredSize_.height());
 	}
 
 	// Resize
-	SetWindowPos(NULL, 0, 0, (rectDlg.right - rectDlg.left), (rectDlg.bottom - rectDlg.top), SWP_NOMOVE | SWP_NOZORDER);
+	SetWindowPos(NULL, 0, 0, (dialogRect.right - dialogRect.left), (dialogRect.bottom - dialogRect.top), SWP_NOMOVE | SWP_NOZORDER);
 
 	// Make sure that the entire dialog box is visible on the screen
 	SendMessage(DM_REPOSITION, 0, 0);
@@ -887,13 +887,13 @@ void SDialog::resetSize(void)
 		return;
 
 	// Get current size
-	RECT rcCurRect;
-	this->GetWindowRect(&rcCurRect);
+	RECT currentRect;
+	this->GetWindowRect(&currentRect);
 
 	// If current size is default size, do nothing
-	LONG lCurWidth = (rcCurRect.right - rcCurRect.left);
-	LONG lCurHeight = (rcCurRect.bottom - rcCurRect.top);
-	if ((lCurWidth == defaultSize_.width()) && (lCurHeight == defaultSize_.height()))
+	LONG currentWidth = (currentRect.right - currentRect.left);
+	LONG currentHeight = (currentRect.bottom - currentRect.top);
+	if ((currentWidth == defaultSize_.width()) && (currentHeight == defaultSize_.height()))
 		return;
 
 	// Reset to default
@@ -917,8 +917,8 @@ void SDialog::setDisplayArea(const Rect& newDispArea, bool isResized, bool isCen
 	this->getMargin(currentMargin);
 
 	// Is center margin???
-	bool bHorzCenter = (currentMargin.left() == currentMargin.right());
-	bool bVertCenter = (currentMargin.top() == currentMargin.bottom());
+	bool isHorizontalCenter = (currentMargin.left() == currentMargin.right());
+	bool isVerticalCenter = (currentMargin.top() == currentMargin.bottom());
 
 	// New dialog margin
 	Rect newMargin = currentMargin;
@@ -951,12 +951,12 @@ void SDialog::setDisplayArea(const Rect& newDispArea, bool isResized, bool isCen
 	// Update margin
 	if ((isResized != true) && (isCentered == true)) {
 		// Horizontal center margin
-		if (bHorzCenter == true) {
+		if (isHorizontalCenter == true) {
 			newMargin._left = currentMargin.left() + (curDispAreaSize.width() - newDispAreaSize.width());
 			newMargin._right = newMargin.left();
 		}
 		// Vertical center margin
-		if (bVertCenter == true) {
+		if (isVerticalCenter == true) {
 			newMargin._top = currentMargin.top() + (curDispAreaSize.height() - newDispAreaSize.height());
 			newMargin._bottom = newMargin.top();
 		}
@@ -1034,9 +1034,9 @@ void SDialog::setCaptionFromResource(unsigned resourceStringId)
 void SDialog::setCaptionFromLanguage(unsigned langStringId)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((SWinApp*)AfxGetApp())->getAppLanguage();
 
-	String captionString = getLanguageString(pAppLang, langStringId);
+	String captionString = getLanguageString(languageTablePtr, langStringId);
 	this->setCaption(captionString);
 }
 
@@ -1070,19 +1070,19 @@ bool SDialog::createBrush(void)
 
 /**
  * @brief	Register default caption for message box-es
- * @param	nCaptionID  - ID of message caption string
+ * @param	captionId  - ID of message caption string
  * @param	lpszCaption	- Message caption string
  * @return	None
  */
-void SDialog::registerMessageBoxCaption(unsigned nCaptionID)
+void SDialog::registerMessageBoxCaption(unsigned captionId)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((SWinApp*)AfxGetApp())->getAppLanguage();
 	String captionString = Constant::String::Empty;
-	if (nCaptionID != NULL) {
+	if (captionId != NULL) {
 
 		// Get language string caption
-		String langCaption = getLanguageString(pAppLang, nCaptionID);
+		String langCaption = getLanguageString(languageTablePtr, captionId);
 		if (IS_NOT_NULL_STRING(langCaption)) {
 			// Set caption string
 			captionString = langCaption;
@@ -1102,21 +1102,21 @@ void SDialog::registerMessageBoxCaption(unsigned nCaptionID)
 /**
  * @brief	Display message box using language string ID
  * @param	nPromptID  - ID of prompt message string
- * @param	nCaptionID - ID of message caption string
+ * @param	captionId - ID of message caption string
  * @param	nStyle	   - Message box style
  * @return	int	- Result of message box
  */
 int SDialog::displayMessageBox(unsigned promptId, unsigned captionId /* = NULL */, unsigned style /* = NULL */)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((SWinApp*)AfxGetApp())->getAppLanguage();
 
-	String messagePrompt = getLanguageString(pAppLang, promptId);
+	String messagePrompt = getLanguageString(languageTablePtr, promptId);
 	String messageCaption = ((SWinApp*)AfxGetApp())->getAppWindowCaption();
 	if (captionId != NULL) {
 
 		// Get language string caption
-		String langCaption = getLanguageString(pAppLang, captionId);
+		String langCaption = getLanguageString(languageTablePtr, captionId);
 		if (IS_NOT_NULL_STRING(langCaption))
 			messageCaption = langCaption;
 	}
@@ -1128,9 +1128,9 @@ int SDialog::displayMessageBox(unsigned promptId, unsigned captionId /* = NULL *
 	}
 
 	// Display message box
-	int nResult = displayMessageBox(messagePrompt, messageCaption, style);
+	int result = displayMessageBox(messagePrompt, messageCaption, style);
 
-	return nResult;
+	return result;
 }
 
 /**
@@ -1190,17 +1190,17 @@ void SDialog::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 	}
 	if (detailInfoPtr != NULL) {
 		// Include event detail info data
-		for (int nIndex = 0; nIndex < detailInfoPtr->size(); nIndex++) {
-			logItemDialogEvent.AddDetail(detailInfoPtr->at(nIndex));
+		for (int index = 0; index < detailInfoPtr->size(); index++) {
+			logItemDialogEvent.AddDetail(detailInfoPtr->at(index));
 		}
 	}
 
 	// Output dialog event log
-	SWinApp* pApp = (SWinApp*)AfxGetApp();
-	ASSERT(pApp);
-	if (pApp == NULL) return;
-	if (SLogging* ptrAppEventLog = pApp->getAppEventLog()) {
-		ptrAppEventLog->OutputItem(logItemDialogEvent);
+	SWinApp* theAppPtr = (SWinApp*)AfxGetApp();
+	ASSERT(theAppPtr);
+	if (theAppPtr == NULL) return;
+	if (SLogging* appEventLoggerPtr = theAppPtr->getAppEventLog()) {
+		appEventLoggerPtr->OutputItem(logItemDialogEvent);
 	}
 }
 
@@ -1213,13 +1213,13 @@ void SDialog::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 void SDialog::outputButtonLog(USHORT eventId, unsigned buttonId)
 {
 	// Prepare button event log info
-	CButton* pButton = (CButton*)GetDlgItem(buttonId);
-	if (pButton == NULL) return;
+	CButton* buttonPtr = (CButton*)GetDlgItem(buttonId);
+	if (buttonPtr == NULL) return;
 
 	// Get button caption
-	const int captionLength = pButton->GetWindowTextLength();
+	const int captionLength = buttonPtr->GetWindowTextLength();
 	std::vector<wchar_t> tempBuff(captionLength + 1);
-	pButton->GetWindowText(tempBuff.data(), captionLength + 1);
+	buttonPtr->GetWindowText(tempBuff.data(), captionLength + 1);
 	String buttonCaption = tempBuff.data();
 
 	// Detail info
@@ -1245,13 +1245,13 @@ void SDialog::outputButtonLog(USHORT eventId, unsigned buttonId)
 void SDialog::outputCheckBoxLog(USHORT eventId, unsigned checkboxId)
 {
 	// Prepare checkbox event log info
-	CButton* pChkBtn = (CButton*)GetDlgItem(checkboxId);
-	if (pChkBtn == NULL) return;
+	CButton* checkboxPtr = (CButton*)GetDlgItem(checkboxId);
+	if (checkboxPtr == NULL) return;
 
 	// Get checkbox caption
-	const int captionLength = pChkBtn->GetWindowTextLength();
+	const int captionLength = checkboxPtr->GetWindowTextLength();
 	std::vector<wchar_t> tempBuff(captionLength + 1);
-	pChkBtn->GetWindowText(tempBuff.data(), captionLength + 1);
+	checkboxPtr->GetWindowText(tempBuff.data(), captionLength + 1);
 	String checkBoxCaption = tempBuff.data();
 
 	// Detail info
@@ -1264,7 +1264,7 @@ void SDialog::outputCheckBoxLog(USHORT eventId, unsigned checkboxId)
 		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(checkboxId)));
 
 		// Checkbox checked state
-		logDetailInfo.AddDetail(EventDetail::CheckState, pChkBtn->GetCheck());
+		logDetailInfo.AddDetail(EventDetail::CheckState, checkboxPtr->GetCheck());
 	}
 
 	// Output checkbox event log
@@ -1280,13 +1280,13 @@ void SDialog::outputCheckBoxLog(USHORT eventId, unsigned checkboxId)
 void SDialog::outputRadButtonLog(USHORT eventId, unsigned radButtonId)
 {
 	// Prepare radio button event log info
-	CButton* pRadBtn = (CButton*)GetDlgItem(radButtonId);
-	if (pRadBtn == NULL) return;
+	CButton* radioButtonPtr = (CButton*)GetDlgItem(radButtonId);
+	if (radioButtonPtr == NULL) return;
 
 	// Get radio button caption
-	const int captionLength = pRadBtn->GetWindowTextLength();
+	const int captionLength = radioButtonPtr->GetWindowTextLength();
 	std::vector<wchar_t> tempBuff(captionLength + 1);
-	pRadBtn->GetWindowText(tempBuff.data(), captionLength + 1);
+	radioButtonPtr->GetWindowText(tempBuff.data(), captionLength + 1);
 	String radButtonCaption = tempBuff.data();
 
 	// Detail info
@@ -1299,7 +1299,7 @@ void SDialog::outputRadButtonLog(USHORT eventId, unsigned radButtonId)
 		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(radButtonId)));
 
 		// Radio button checked state
-		logDetailInfo.AddDetail(EventDetail::CheckState, pRadBtn->GetCheck());
+		logDetailInfo.AddDetail(EventDetail::CheckState, radioButtonPtr->GetCheck());
 	}
 
 	// Output radio button event log
@@ -1315,8 +1315,8 @@ void SDialog::outputRadButtonLog(USHORT eventId, unsigned radButtonId)
 void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
 {
 	// Prepare combo-box event log info
-	CComboBox* pCombo = (CComboBox*)GetDlgItem(comboId);
-	if (pCombo == NULL) return;
+	CComboBox* comboBoxPtr = (CComboBox*)GetDlgItem(comboId);
+	if (comboBoxPtr == NULL) return;
 
 	// Detail info
 	String comboBoxCaption;
@@ -1331,17 +1331,17 @@ void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
 		// Combo-box control info
 		SControlManager* pCtrlMan = getControlManager();
 		if (pCtrlMan != NULL) {
-			SCtrlInfoWrap* pComboWrap = pCtrlMan->GetControl(comboId);
-			if (pComboWrap != NULL) {
+			SCtrlInfoWrap* comboInfoWrapPtr = pCtrlMan->GetControl(comboId);
+			if (comboInfoWrapPtr != NULL) {
 				// Combo-box caption
-				pComboWrap->GetCaption(comboBoxCaption);
+				comboInfoWrapPtr->GetCaption(comboBoxCaption);
 
 				// Combo-box current selection string
-				size_t nCurSel = pComboWrap->GetInteger();
-				StringArray arrDataList;
-				pComboWrap->GetStringArray(arrDataList);
-				if ((!arrDataList.empty()) && (arrDataList.size() > nCurSel)) {
-					logDetailInfo.AddDetail(EventDetail::Selection, arrDataList.at(nCurSel));
+				size_t currenSelection = comboInfoWrapPtr->GetInteger();
+				StringArray dataList;
+				comboInfoWrapPtr->GetStringArray(dataList);
+				if ((!dataList.empty()) && (dataList.size() > currenSelection)) {
+					logDetailInfo.AddDetail(EventDetail::Selection, dataList.at(currenSelection));
 				}
 			}
 		}
@@ -1360,8 +1360,8 @@ void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
 void SDialog::outputEditBoxLog(USHORT eventId, unsigned editId)
 {
 	// Prepare edit box event log info
-	CEdit* pEdit = (CEdit*)GetDlgItem(editId);
-	if (pEdit == NULL) return;
+	CEdit* editCtrlPtr = (CEdit*)GetDlgItem(editId);
+	if (editCtrlPtr == NULL) return;
 
 	// Detail info
 	String editBoxCaption;
@@ -1402,8 +1402,8 @@ void SDialog::outputEditBoxLog(USHORT eventId, unsigned editId)
 void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
 {
 	// Prepare list box event log info
-	CListBox* pListBox = (CListBox*)GetDlgItem(listBoxId);
-	if (pListBox == NULL) return;
+	CListBox* listBoxPtr = (CListBox*)GetDlgItem(listBoxId);
+	if (listBoxPtr == NULL) return;
 
 	// Detail info
 	String listBoxCaption;
@@ -1418,17 +1418,17 @@ void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
 		// List box control info
 		SControlManager* pCtrlMan = getControlManager();
 		if (pCtrlMan != NULL) {
-			SCtrlInfoWrap* pListBoxWrap = pCtrlMan->GetControl(listBoxId);
-			if (pListBoxWrap != NULL) {
+			SCtrlInfoWrap* listBoxInfoWrapPtr = pCtrlMan->GetControl(listBoxId);
+			if (listBoxInfoWrapPtr != NULL) {
 				// List box caption
-				pListBoxWrap->GetCaption(listBoxCaption);
+				listBoxInfoWrapPtr->GetCaption(listBoxCaption);
 
 				// List box current selection string
-				size_t nCurSel = pListBoxWrap->GetInteger();
-				StringArray arrDataList;
-				pListBoxWrap->GetStringArray(arrDataList);
-				if ((!arrDataList.empty()) && (arrDataList.size() > nCurSel)) {
-					logDetailInfo.AddDetail(EventDetail::Selection, arrDataList.at(nCurSel));
+				size_t currenSelection = listBoxInfoWrapPtr->GetInteger();
+				StringArray dataList;
+				listBoxInfoWrapPtr->GetStringArray(dataList);
+				if ((!dataList.empty()) && (dataList.size() > currenSelection)) {
+					logDetailInfo.AddDetail(EventDetail::Selection, dataList.at(currenSelection));
 				}
 			}
 		}
@@ -1447,8 +1447,8 @@ void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
 void SDialog::outputSpinCtrlLog(USHORT eventId, unsigned spinCtrlId)
 {
 	// Prepare spin control event log info
-	CSpinButtonCtrl* pSpinCtrl = (CSpinButtonCtrl*)GetDlgItem(spinCtrlId);
-	if (pSpinCtrl == NULL) return;
+	CSpinButtonCtrl* spinCtrlPtr = (CSpinButtonCtrl*)GetDlgItem(spinCtrlId);
+	if (spinCtrlPtr == NULL) return;
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
@@ -1502,18 +1502,18 @@ void SDialog::outputMenuLog(USHORT eventId, unsigned menuItemId)
 void SDialog::setupLanguage(void)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((SWinApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((SWinApp*)AfxGetApp())->getAppLanguage();
 
 	// Loop through all dialog items and setup languages for each one of them
-	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	for (CWnd* childWndPtr = GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
-		unsigned nID = pWndChild->GetDlgCtrlID();
+		unsigned id = childWndPtr->GetDlgCtrlID();
 
-		switch (nID)
+		switch (id)
 		{
 		case IDOK:
 		case IDCANCEL:
-			setControlText(pWndChild, nID, pAppLang);
+			setControlText(childWndPtr, id, languageTablePtr);
 			break;
 		}
 	}
@@ -1544,15 +1544,15 @@ void SDialog::setupComboBox(unsigned /*comboId*/, LANGTABLE_PTR /*langTablePtr*/
 void SDialog::setButtonIcon(unsigned buttonId, unsigned iconId, bool reupdateTitle /* = false */)
 {
 	// Get button
-	CWnd* pButton = GetDlgItem(buttonId);
-	if (!pButton) return;
+	CWnd* buttonPtr = GetDlgItem(buttonId);
+	if (!buttonPtr) return;
 
 	// Backup title
 	String buttonTitle;
 	if (reupdateTitle == true) {
-		const int captionLength = pButton->GetWindowTextLength();
+		const int captionLength = buttonPtr->GetWindowTextLength();
 		std::vector<wchar_t> tempBuff(captionLength + 1);
-		pButton->GetWindowText(tempBuff.data(), captionLength + 1);
+		buttonPtr->GetWindowText(tempBuff.data(), captionLength + 1);
 		buttonTitle = tempBuff.data();
 	}
 
@@ -1665,51 +1665,51 @@ void SDialog::moveItemGroup(const UIntArray& controlIdGroup, const Point& newPos
 	if (controlIdGroup.empty())
 		return;
 
-	RECT rcCtrlWnd;
+	RECT controlRect;
 	CWnd* controlPtr = NULL;
-	LONG lOrgX = INT_INVALID, lOrgY = INT_INVALID;
+	LONG originX = INT_INVALID, originY = INT_INVALID;
 
 	// Find the original point
-	for (int nIndex = 0; nIndex < controlIdGroup.size(); nIndex++)
+	for (int index = 0; index < controlIdGroup.size(); index++)
 	{
 		// Get item
-		controlPtr = GetDlgItem(controlIdGroup.at(nIndex));
+		controlPtr = GetDlgItem(controlIdGroup.at(index));
 		if (controlPtr == NULL)
 			continue;
 
 		// Get item rect
-		controlPtr->GetWindowRect(&rcCtrlWnd);
+		controlPtr->GetWindowRect(&controlRect);
 
 		// Find smallest X
-		if ((lOrgX == INT_INVALID) || (rcCtrlWnd.left <= lOrgX)) {
-			lOrgX = rcCtrlWnd.left;
+		if ((originX == INT_INVALID) || (controlRect.left <= originX)) {
+			originX = controlRect.left;
 		}
 
 		// Find smallest Y
-		if ((lOrgY == INT_INVALID) || (rcCtrlWnd.top <= lOrgY)) {
-			lOrgY = rcCtrlWnd.top;
+		if ((originY == INT_INVALID) || (controlRect.top <= originY)) {
+			originY = controlRect.top;
 		}
 	}
 
 	// Calculate moving distance
-	int nDeltaX = newPosition._x - lOrgX;
-	int nDeltaY = newPosition._y - lOrgY;
+	int deltaX = newPosition._x - originX;
+	int deltaY = newPosition._y - originY;
 
 	// Move all items to new position
 	int nNewX = 0, nNewY = 0;
-	for (int nIndex = 0; nIndex < controlIdGroup.size(); nIndex++)
+	for (int index = 0; index < controlIdGroup.size(); index++)
 	{
 		// Get item
-		controlPtr = GetDlgItem(controlIdGroup.at(nIndex));
+		controlPtr = GetDlgItem(controlIdGroup.at(index));
 		if (controlPtr == NULL)
 			continue;
 
 		// Get item rect
-		controlPtr->GetWindowRect(&rcCtrlWnd);
+		controlPtr->GetWindowRect(&controlRect);
 
 		// Move item
-		nNewX = rcCtrlWnd.left + nDeltaX;
-		nNewY = rcCtrlWnd.top + nDeltaY;
+		nNewX = controlRect.left + deltaX;
+		nNewY = controlRect.top + deltaY;
 		controlPtr->SetWindowPos(NULL, nNewX, nNewY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 }
@@ -1727,33 +1727,33 @@ void SDialog::moveItemGroup(const UIntArray& controlIdGroup, int direction, int 
 	if (controlIdGroup.empty())
 		return;
 
-	RECT rcCtrlWnd;
+	RECT controlRect;
 	CWnd* controlPtr = NULL;
-	LONG lNewX = 0, lNewY = 0;
+	LONG newX = 0, newY = 0;
 
 	// Loop through each item and move
-	for (int nIndex = 0; nIndex < controlIdGroup.size(); nIndex++)
+	for (int index = 0; index < controlIdGroup.size(); index++)
 	{
 		// Get item
-		controlPtr = GetDlgItem(controlIdGroup.at(nIndex));
+		controlPtr = GetDlgItem(controlIdGroup.at(index));
 		if (controlPtr == NULL)
 			continue;
 
 		// Get item rect
-		controlPtr->GetWindowRect(&rcCtrlWnd);
+		controlPtr->GetWindowRect(&controlRect);
 
 		// Move horizontal direction
 		if (direction == MOVDIR_HORIZONTAL) {
-			lNewX = rcCtrlWnd.left + distance;
-			lNewY = rcCtrlWnd.top;
-			controlPtr->SetWindowPos(NULL, lNewX, lNewY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			newX = controlRect.left + distance;
+			newY = controlRect.top;
+			controlPtr->SetWindowPos(NULL, newX, newY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		}
 
 		// Move vertical direction
 		else if (direction == MOVDIR_VERTICAL) {
-			lNewX = rcCtrlWnd.left;
-			lNewY = rcCtrlWnd.top + distance;
-			controlPtr->SetWindowPos(NULL, lNewX, lNewY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			newX = controlRect.left;
+			newY = controlRect.top + distance;
+			controlPtr->SetWindowPos(NULL, newX, newY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 }
@@ -1833,46 +1833,46 @@ void SDialog::updateDialogData(bool /* saveAndValidate = true */)
 
 /**
  * @brief	Return option value by ID
- * @param	eAppOptionID - ID of specific option
+ * @param	optionId - ID of specific option
  * @param	isTemp		 - Temp value or saved value (saved value by default)
  * @return	int - Option value
  */
-int SDialog::getAppOption(AppOptionID eAppOptionID, bool isTemp /* = false */) const
+int SDialog::getAppOption(AppOptionID optionId, bool isTemp /* = false */) const
 {
-	int nResult = INT_INVALID;
-	int nTempResult = INT_INVALID;
+	int result = INT_INVALID;
+	int tempResult = INT_INVALID;
 
 	// Acquire option value from application main window
-	SDialog* pMainDlg = (SDialog*)AfxGetMainWnd();
-	if (pMainDlg != NULL) {
-		nResult = pMainDlg->getAppOption(eAppOptionID, false);
-		nTempResult = pMainDlg->getAppOption(eAppOptionID, true);
+	SDialog* mainDialogPtr = (SDialog*)AfxGetMainWnd();
+	if (mainDialogPtr != NULL) {
+		result = mainDialogPtr->getAppOption(optionId, false);
+		tempResult = mainDialogPtr->getAppOption(optionId, true);
 	}
 
 	// Return temp data if required and the result is valid
-	if ((isTemp == true) && (nTempResult != INT_INVALID))
-		return nTempResult;
+	if ((isTemp == true) && (tempResult != INT_INVALID))
+		return tempResult;
 
-	return nResult;
+	return result;
 }
 
 /**
  * @brief	Return flag value by ID
- * @param	eFlagID - ID of specific flag
+ * @param	flagId - ID of specific flag
  * @return	int - Flag value
  */
-int SDialog::getFlagValue(AppFlagID eFlagID) const
+int SDialog::getFlagValue(AppFlagID flagId) const
 {
-	int nValue = FLAG_OFF;
+	int value = FLAG_OFF;
 
-	switch (eFlagID)
+	switch (flagId)
 	{
 	// Special dialog-base flags (not managed by FlagManager)
 	case AppFlagID::dialogSetMinSize:
-		nValue = (!minSize_.isEmpty() &&	!minSize_.isZero());
+		value = (!minSize_.isEmpty() &&	!minSize_.isZero());
 		break;
 	case AppFlagID::dialogSetMaxSize:
-		nValue = (maxSize_ > minSize_);
+		value = (maxSize_ > minSize_);
 		break;
 
 	// Dialog-base properties/flags
@@ -1888,31 +1888,31 @@ int SDialog::getFlagValue(AppFlagID eFlagID) const
 	case AppFlagID::dialogSetTextColor:
 	case AppFlagID::dialogSetTopMost:
 	case AppFlagID::dialogSetInitSound:
-		nValue = flagManager_.getFlagValue(eFlagID);
+		value = flagManager_.getFlagValue(flagId);
 		break;
 
 	default:
 		// Request the flag value from application
-		nValue = ((SWinApp*)AfxGetApp())->getFlagValue(eFlagID);
+		value = ((SWinApp*)AfxGetApp())->getFlagValue(flagId);
 		break;
 	}
 
-	return nValue;
+	return value;
 }
 
 /**
  * @brief	Update flag value by ID
- * @param	eFlagID - ID of specific flag
+ * @param	flagId - ID of specific flag
  * @param	value  - Value to set
  * @return	None
  */
-void SDialog::setFlagValue(AppFlagID eFlagID, int value)
+void SDialog::setFlagValue(AppFlagID flagId, int value)
 {
 	// Check value validity
 	if (value == INT_INVALID)
 		return;
 
-	switch (eFlagID)
+	switch (flagId)
 	{
 	// Special flags (not managed by FlagManager)
 	case AppFlagID::dialogSetMinSize:
@@ -1932,12 +1932,12 @@ void SDialog::setFlagValue(AppFlagID eFlagID, int value)
 	case AppFlagID::dialogSetTextColor:
 	case AppFlagID::dialogSetTopMost:
 	case AppFlagID::dialogSetInitSound:
-		flagManager_.setFlagValue(eFlagID, value);
+		flagManager_.setFlagValue(flagId, value);
 		break;
 
 	default:
 		// Let the application manage the flags
-		((SWinApp*)AfxGetApp())->setFlagValue(eFlagID, value);
+		((SWinApp*)AfxGetApp())->setFlagValue(flagId, value);
 		break;
 	}
 }

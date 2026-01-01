@@ -200,23 +200,23 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
 
 /**
  * @brief	Initialize control info wrap object
- * @param	pParentWnd - Parent window
+ * @param	parentWnd - Parent window
  * @param	pBuddyWnd  - Buddy window
  * @param	nCtrlID	   - Control ID
  * @param	nTypeID	   - Control type ID
  * @return	true/false
  */
-bool SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID)
+bool SCtrlInfoWrap::Initialize(CWnd* parentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID)
 {
-	ASSERT(pParentWnd->GetSafeHwnd());
-	if (pParentWnd == NULL)
+	ASSERT(parentWnd->GetSafeHwnd());
+	if (parentWnd == NULL)
 		return false;
 
 	// Set base control pointer (maybe NULL)
-	this->m_pBaseControl = pParentWnd->GetDlgItem(nCtrlID);
+	this->m_pBaseControl = parentWnd->GetDlgItem(nCtrlID);
 
 	// Set relative windows
-	this->m_pParentWnd = pParentWnd;
+	this->m_pParentWnd = parentWnd;
 	this->m_pBuddyWnd = pBuddyWnd;
 
 	// Set control ID info
@@ -579,16 +579,16 @@ void SCtrlInfoWrap::GetTime(_Out_ SYSTEMTIME& timeValue) const
 
 /**
  * @brief	Set current control's check state
- * @param	bCheck - Checked state (BOOLEAN)
+ * @param	isChecked - Checked state (BOOLEAN)
  * @return	None
  */
-void SCtrlInfoWrap::SetCheck(_In_ const bool& bCheck)
+void SCtrlInfoWrap::SetCheck(_In_ const bool& isChecked)
 {
 	if (this->m_pbCheck == NULL)
-		this->m_pbCheck = new bool(bCheck);
+		this->m_pbCheck = new bool(isChecked);
 	else {
 		delete (this->m_pbCheck);
-		this->m_pbCheck = new bool(bCheck);
+		this->m_pbCheck = new bool(isChecked);
 	}
 }
 
@@ -953,7 +953,7 @@ IMPLEMENT_DYNAMIC(SMenu, CMenu)
 /**
  * @brief	Constructor
  */
-SMenu::SMenu(CWnd* /* pParentWnd = NULL */) : CMenu()
+SMenu::SMenu(CWnd* /* parentWnd = NULL */) : CMenu()
 {
 	// User menu layout
 	m_pMenuLayout = NULL;
@@ -983,13 +983,13 @@ IMPLEMENT_DYNAMIC(SControlManager, CObject)
 /**
  * @brief	Constructor
  */
-SControlManager::SControlManager(CWnd* pParentWnd /* = NULL */) : CObject()
+SControlManager::SControlManager(CWnd* parentWnd /* = NULL */) : CObject()
 {
 	// List of control info wrappers
 	m_pCtrlInfoArray = NULL;
 
 	// Parent window
-	m_pParentWnd = pParentWnd;
+	m_pParentWnd = parentWnd;
 }
 
 /**
@@ -1039,8 +1039,8 @@ bool SControlManager::DeleteAll(void)
 		return false;
 
 	// Delete all control info wrapper pointers
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
-		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
+	for (int index = 0; index < (this->m_pCtrlInfoArray->size()); index++) {
+		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(index);
 		if (pExControl != NULL) {
 			delete pExControl;
 			pExControl = NULL;
@@ -1069,12 +1069,12 @@ long long SControlManager::AddControl(SCtrlInfoWrap* pControl)
 		return INT_INVALID;
 
 	// Search if control ID had already existed
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
-		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
+	for (int index = 0; index < (this->m_pCtrlInfoArray->size()); index++) {
+		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(index);
 		if (pExControl == NULL) continue;
 		if (pExControl->GetTemplateID() == pControl->GetTemplateID()) {
 			// Return control index
-			return nIndex;
+			return index;
 		}
 	}
 
@@ -1126,14 +1126,14 @@ long long SControlManager::RemoveControl(unsigned nCtrlID)
 		return INT_INVALID;
 
 	// Search for control ID
-	for (int nIndex = 0; nIndex < (m_pCtrlInfoArray->size()); nIndex++) {
-		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
+	for (int index = 0; index < (m_pCtrlInfoArray->size()); index++) {
+		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(index);
 		if (pExControl == NULL) continue;
 		if (pExControl->GetTemplateID() == nCtrlID) {
 			delete pExControl;
 
 			// Remove control from list
-			m_pCtrlInfoArray->erase(m_pCtrlInfoArray->begin() + nIndex);
+			m_pCtrlInfoArray->erase(m_pCtrlInfoArray->begin() + index);
 			return (m_pCtrlInfoArray->size());
 		}
 	}
@@ -1154,8 +1154,8 @@ SCtrlInfoWrap* SControlManager::GetControl(unsigned nCtrlID)
 		return NULL;
 
 	// Search for control ID
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
-		SCtrlInfoWrap* pControl = m_pCtrlInfoArray->at(nIndex);
+	for (int index = 0; index < (this->m_pCtrlInfoArray->size()); index++) {
+		SCtrlInfoWrap* pControl = m_pCtrlInfoArray->at(index);
 		if (pControl == NULL) continue;
 		if (pControl->GetTemplateID() == nCtrlID)
 			return pControl;
@@ -1211,14 +1211,14 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 
 	// Loop through control management list
 	int nTriggerForceRetFlag = FLAG_OFF;
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
+	for (int index = 0; index < (this->m_pCtrlInfoArray->size()); index++) {
 
 		// If force return flag is ON, break the loop
 		if (nTriggerForceRetFlag == FLAG_ON)
 			break;
 
 		// Get control wrapper pointer
-		SCtrlInfoWrap* pCurControl = m_pCtrlInfoArray->at(nIndex);
+		SCtrlInfoWrap* pCurControl = m_pCtrlInfoArray->at(index);
 		if (pCurControl == NULL) continue;
 
 		// Only update data for specified control
@@ -1253,8 +1253,8 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			case Radio_Button:
 			{
 				// Update control's checked state
-				bool bCheck = ((CButton*)pBaseControl)->GetCheck();
-				pCurControl->SetCheck(bCheck);
+				bool isChecked = ((CButton*)pBaseControl)->GetCheck();
+				pCurControl->SetCheck(isChecked);
 			} break;
 
 			// Edit box
@@ -1272,15 +1272,15 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			case Combo_Box:
 			{
 				// Update control's current selection index
-				size_t nCurSel = ((CComboBox*)pBaseControl)->GetCurSel();
-				pCurControl->SetInteger(nCurSel);
+				size_t currenSelection = ((CComboBox*)pBaseControl)->GetCurSel();
+				pCurControl->SetInteger(currenSelection);
 				// Update all item strings
 				StringArray arrStringData;
 				size_t nCount = ((CComboBox*)pBaseControl)->GetCount();
 				arrStringData.reserve(nCount);
-				for (size_t nIndex = 0; nIndex < nCount; nIndex++) {
+				for (size_t index = 0; index < nCount; index++) {
 					wchar_t tempBuff[Constant::Max::StringLength] = {0};
-					((CComboBox*)pBaseControl)->GetLBText(nIndex, tempBuff);
+					((CComboBox*)pBaseControl)->GetLBText(index, tempBuff);
 					arrStringData.push_back(tempBuff);
 				}
 				pCurControl->SetStringArray(arrStringData);
@@ -1290,15 +1290,15 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			case List_Box:
 			{
 				// Update control's current selection index
-				size_t nCurSel = ((CListBox*)pBaseControl)->GetCurSel();
-				pCurControl->SetInteger(nCurSel);
+				size_t currenSelection = ((CListBox*)pBaseControl)->GetCurSel();
+				pCurControl->SetInteger(currenSelection);
 				// Update all item strings
 				StringArray arrStringData;
 				size_t nCount = ((CListBox*)pBaseControl)->GetCount();
 				arrStringData.reserve(nCount);
-				for (size_t nIndex = 0; nIndex < nCount; nIndex++) {
+				for (size_t index = 0; index < nCount; index++) {
 					wchar_t tempBuff[Constant::Max::StringLength] = {0};
-					((CListBox*)pBaseControl)->GetText(nIndex, tempBuff);
+					((CListBox*)pBaseControl)->GetText(index, tempBuff);
 					arrStringData.push_back(tempBuff);
 				}
 				pCurControl->SetStringArray(arrStringData);
@@ -1319,20 +1319,20 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 				// Update control's data current selection index(es)
 				ULongArray arrSelection;
 				arrSelection.reserve(nItemCount);
-				for (size_t nIndex = 0; nIndex < nItemCount; nIndex++) {
+				for (size_t index = 0; index < nItemCount; index++) {
 					// Get selection index
-					if ((((CListCtrl*)pBaseControl)->GetItemState(nIndex, LVIS_SELECTED) & LVIS_SELECTED) == LVIS_SELECTED) {
-						arrSelection.push_back(nIndex);
+					if ((((CListCtrl*)pBaseControl)->GetItemState(index, LVIS_SELECTED) & LVIS_SELECTED) == LVIS_SELECTED) {
+						arrSelection.push_back(index);
 					}
 				}
 				pCurControl->SetIntArray(arrSelection);
 				// Update all item strings
 				StringArray arrStringData;
 				arrStringData.reserve(nItemCount);
-				for (size_t nIndex = 0; nIndex < nItemCount; nIndex++) {
+				for (size_t index = 0; index < nItemCount; index++) {
 					for (size_t nColIndex = 0; nColIndex < nColumnCount; nColIndex++) {
 						// Get item text
-						String tempText = ((CListCtrl*)pBaseControl)->GetItemText(nIndex, nColIndex).GetString();
+						String tempText = ((CListCtrl*)pBaseControl)->GetItemText(index, nColIndex).GetString();
 						arrStringData.push_back(tempText);
 					}
 				}
@@ -1351,10 +1351,10 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 				TCITEM tabInfo;
 				StringArray arrTabTitles;
 				arrTabTitles.reserve(nTabCount);
-				for (size_t nIndex = 0; nIndex < nTabCount; nIndex++) {
+				for (size_t index = 0; index < nTabCount; index++) {
 					String tempText = Constant::String::Empty;
-					bool bRet = ((CTabCtrl*)pBaseControl)->GetItem(nIndex, &tabInfo);
-					if (bRet == true && ((tabInfo.mask & TCIF_TEXT) != 0)) {
+					bool returnFlag = ((CTabCtrl*)pBaseControl)->GetItem(index, &tabInfo);
+					if (returnFlag == true && ((tabInfo.mask & TCIF_TEXT) != 0)) {
 						tempText = tabInfo.pszText;
 					}
 					arrTabTitles.push_back(tempText);

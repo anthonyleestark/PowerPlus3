@@ -29,8 +29,8 @@ IMPLEMENT_DYNAMIC(CReminderMsgDlg, SDialog)
 /**
  * @brief	Constructor
  */
-CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
-	: SDialog(IDD_REMINDERMSG_DLG, pParentWnd)
+CReminderMsgDlg::CReminderMsgDlg(CWnd* parentWnd /*= NULL*/)
+	: SDialog(IDD_REMINDERMSG_DLG, parentWnd)
 {
 	// Message string buffer
 	m_strBuffer = Constant::String::Empty;
@@ -179,8 +179,8 @@ BOOL CReminderMsgDlg::OnInitDialog()
 
 	// Start auto-close timer if set
 	if (GetAutoCloseInterval() != 0) {
-		unsigned nRet = SetTimer(TIMERID_RMDMSG_AUTOCLOSE, 1000, NULL);
-		m_bTimerSet = (nRet != 0);
+		unsigned returnValue = SetTimer(TIMERID_RMDMSG_AUTOCLOSE, 1000, NULL);
+		m_bTimerSet = (returnValue != 0);
 	}
 
 	// Move to specific display position
@@ -265,12 +265,12 @@ void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
 	// Handle auto-close timer if set
 	if (nIDEvent == TIMERID_RMDMSG_AUTOCLOSE) {
 		if (m_bTimerSet == true) {
-			unsigned nCounter = GetAutoCloseInterval();
-			if (nCounter > 0) {
+			unsigned count = GetAutoCloseInterval();
+			if (count > 0) {
 				// Countdown
-				SetAutoCloseInterval(--nCounter);
+				SetAutoCloseInterval(--count);
 			}
-			if (nCounter == 0) {
+			if (count == 0) {
 				// Close message
 				EndDialog(IDCANCEL);
 			}
@@ -307,9 +307,9 @@ int CReminderMsgDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
  * @param	Default
  * @return	None
  */
-void CReminderMsgDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CReminderMsgDlg::OnSysCommand(UINT id, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == SC_MINIMIZE) {
+	if ((id & 0xFFF0) == SC_MINIMIZE) {
 		// Handle minimize button event
 		if (GetAllowSnoozeMode() == true) {
 			// Trigger snooze mode
@@ -319,7 +319,7 @@ void CReminderMsgDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 	else {
 		// Execute default syscommand
-		SDialog::OnSysCommand(nID, lParam);
+		SDialog::OnSysCommand(id, lParam);
 	}
 }
 
@@ -328,12 +328,12 @@ void CReminderMsgDlg::OnSysCommand(UINT nID, LPARAM lParam)
  * @param	Default
  * @return	HBRUSH
  */
-HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor)
 {
 	// Default initialization
-	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hBrush = SDialog::OnCtlColor(pDC, windowPtr, nCtlColor);
 
-	if (pWnd == this) {
+	if (windowPtr == this) {
 		if ((getFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (backgroudBrush_ != NULL)) {
 			// Get brush
 			hBrush = (HBRUSH)(*backgroudBrush_);
@@ -369,10 +369,10 @@ LRESULT CReminderMsgDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		case SM_WND_SHOWDIALOG:
 		{
 			// Get flag value
-			bool bShowFlag = static_cast<bool>(wParam);
+			bool showFlag = static_cast<bool>(wParam);
 
 			// Show/hide dialog
-			if (bShowFlag == true) {
+			if (showFlag == true) {
 
 				// Show dialog
 				this->ShowWindow(SW_SHOW);
@@ -394,10 +394,10 @@ LRESULT CReminderMsgDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					::FlashWindowEx(&fwInfo);
 
 					// Show tray icon balloon tip
-					if (HWND hMainWnd = GET_HANDLE_MAINWND()) {
+					if (HWND mainWndHandle = GET_HANDLE_MAINWND()) {
 						WPARAM wParam = MAKE_WPARAM_STRING(this->GetDispMessage());
 						LPARAM lParam = MAKE_LPARAM_STRING(this->GetDispMessage());
-						::PostMessage(hMainWnd, SM_APP_SHOW_REMINDER_BALLOON_TIP, wParam, lParam);
+						::PostMessage(mainWndHandle, SM_APP_SHOW_REMINDER_BALLOON_TIP, wParam, lParam);
 					}
 				}
 			}
@@ -494,8 +494,8 @@ bool CReminderMsgDlg::InitMessageStyle(void)
 
 	// Get icon info
 	ICONINFO iiIconInfo;
-	bool bRet = ::GetIconInfo(m_hMsgIcon, &iiIconInfo);
-	if (bRet == false) {
+	bool returnFlag = ::GetIconInfo(m_hMsgIcon, &iiIconInfo);
+	if (returnFlag == false) {
 		TRACE_ERROR("Error: Get icon info failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return false;
@@ -647,15 +647,15 @@ void CReminderMsgDlg::TextToClient(Rect& rect) const
 	}
 
 	// Set draw area
-	CWnd* pWnd = this->GetDlgItem(IDC_REMINDERMSG_MSGTEXT_STATIC);
-	if (pWnd == NULL) {
+	CWnd* windowPtr = this->GetDlgItem(IDC_REMINDERMSG_MSGTEXT_STATIC);
+	if (windowPtr == NULL) {
 		TRACE_ERROR("Error: Message text draw area not found!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Set font
-	CDC* pDC = pWnd->GetDC();
+	CDC* pDC = windowPtr->GetDC();
 	CFont* pDefFont = NULL;
 	pDefFont = pDC->SelectObject(pMsgFont);
 
@@ -673,5 +673,5 @@ void CReminderMsgDlg::TextToClient(Rect& rect) const
 
 	// Reset device context
 	pDC->SelectObject(pDefFont);
-	pWnd->ReleaseDC(pDC);
+	windowPtr->ReleaseDC(pDC);
 }

@@ -43,6 +43,6 @@ public:
 	// Generated message handle functions
 	virtual BOOL OnInitDialog();
 	virtual void OnDestroy();
-	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
+	virtual void OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr);
 	virtual void OnSize(UINT nType, int nWidth, int nHeight);
 };

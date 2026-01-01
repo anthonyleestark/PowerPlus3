@@ -45,8 +45,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 
 	// Get application class
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	if (pApp == NULL) {
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	if (theAppPtr == NULL) {
 		// Error: Get app failed
 		errorCode = APP_ERROR_DBG_GETAPP_FAILED;
 		// Trace error
@@ -62,7 +62,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	String logOutputResult;
 
 	// Return result
-	bool bRet = true;
+	bool returnFlag = true;
 
 	// No replying flag
 	bool bNoReply = true;
@@ -158,16 +158,16 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(debugCommand, _T("clrscr"))) {
 		// Clear debug view screen buffer
-		HWND hDebugTestDlg = AppCore::findDebugTestDlg();
-		if (hDebugTestDlg != NULL) {
+		HWND debugTestDlgHandle = AppCore::findDebugTestDlg();
+		if (debugTestDlgHandle != NULL) {
 			// Post clear screen message
-			::PostMessage(hDebugTestDlg, SM_WND_DEBUGVIEW_CLRSCR, NULL, NULL);
+			::PostMessage(debugTestDlgHandle, SM_WND_DEBUGVIEW_CLRSCR, NULL, NULL);
 		}
 		return true;
 	}
 	else if (!_tcscmp(debugCommand, _T("close"))) {
 		// Close DebugTest dialog if opening
-		SDialog* pDebugTestDlg = pApp->getDebugTestDlg();
+		SDialog* pDebugTestDlg = theAppPtr->getDebugTestDlg();
 		if (pDebugTestDlg != NULL) {
 			pDebugTestDlg->ShowWindow(SW_HIDE);
 			pDebugTestDlg->PostMessage(SM_APP_DEBUGCMD_NOREPLY);
@@ -233,8 +233,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("dmyteststs"))) {
 		// Get dummy test mode
-		int nRet = getDummyTestMode();
-		OutputDebugLogFormat(_T("DummyTest status = %d"), nRet);
+		int returnValue = getDummyTestMode();
+		OutputDebugLogFormat(_T("DummyTest status = %d"), returnValue);
 		bNoReply = false;	// Reset flag
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("debugmode"))) {
@@ -261,8 +261,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("debugmodests"))) {
 		// Get debug mode
-		int nRet = getDebugMode();
-		OutputDebugLogFormat(_T("DebugMode status = %d"), nRet);
+		int returnValue = getDebugMode();
+		OutputDebugLogFormat(_T("DebugMode status = %d"), returnValue);
 		bNoReply = false;	// Reset flag
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("debuglog"))) {
@@ -295,8 +295,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount >= 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("getoutput")))) {
 			// Get debug log output target
-			int nRet = getDebugOutputTarget();
-			OutputDebugLogFormat(_T("DebugLogOutputTarget = %d"), nRet);
+			int returnValue = getDebugOutputTarget();
+			OutputDebugLogFormat(_T("DebugLogOutputTarget = %d"), returnValue);
 			bNoReply = false;	// Reset flag
 		}
 		else {
@@ -328,8 +328,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("testfeaturests"))) {
 		// Get test feature enable
-		int nRet = getTestFeatureEnable();
-		OutputDebugLogFormat(_T("TestFeature status = %d"), nRet);
+		int returnValue = getTestFeatureEnable();
+		OutputDebugLogFormat(_T("TestFeature status = %d"), returnValue);
 		bNoReply = false;	// Reset flag
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("logtest"))) {
@@ -457,8 +457,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Force writing app event log data from memory to file
 			SLogging* pAppEventLog = ((CPowerPlusApp*)AfxGetApp())->getAppEventLog();
 			if (pAppEventLog != NULL) {
-				bool bRet = pAppEventLog->Write();
-				if (bRet == true) {
+				bool returnFlag = pAppEventLog->Write();
+				if (returnFlag == true) {
 					// Write log succeeded
 					OutputDebugLog(_T("App event log data written"));
 					bNoReply = false;	// Reset flag
@@ -505,14 +505,14 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("reminderdisp"))) {
 		if ((tokenCount > 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("id")))) {
-			int nItemID = _tstoi(tokenList.at(2).c_str());
+			int itemId = _tstoi(tokenList.at(2).c_str());
 			// Find and display reminder item by ID
 			bool bFindRet = false;
 			PwrReminderItem pwrTemp;
-			int nItemNum = reminderData_.getItemNum();
-			for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-				pwrTemp = reminderData_.getItemAt(nIndex);
-				if (pwrTemp.getItemId() == static_cast<unsigned>(nItemID)) {
+			int itemNum = reminderData_.getItemNum();
+			for (int index = 0; index < itemNum; index++) {
+				pwrTemp = reminderData_.getItemAt(index);
+				if (pwrTemp.getItemId() == static_cast<unsigned>(itemId)) {
 					bFindRet = true;
 					displayPwrReminder(pwrTemp);
 					OutputDebugLog(_T("Reminder item displayed!!!"));
@@ -534,7 +534,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("saveglobaldata"))) {
 		if (tokenCount == 1) {
 			// Save all global data variables
-			pApp->saveGlobalData(0xFF);
+			theAppPtr->saveGlobalData(0xFF);
 			logOutputResult.format(_T("Global variables stored"));
 			OutputDebugLog(logOutputResult, DebugTestTool);
 			bNoReply = false;	// Reset flag
@@ -542,28 +542,28 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if (tokenCount == 2) {
 			if (!_tcscmp(tokenList.at(1).c_str(), _T("all"))) {
 				// Save all global variables
-				pApp->saveGlobalData(0xFF);
+				theAppPtr->saveGlobalData(0xFF);
 				logOutputResult.format(_T("Global variables stored"));
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				bNoReply = false;	// Reset flag
 			}
 			else if (!_tcscmp(tokenList.at(1).c_str(), _T("dbtest"))) {
 				// Save debugging/testing config (global variables)
-				pApp->saveGlobalData(DEF_GLBDATA_CATE_DEBUGTEST);
+				theAppPtr->saveGlobalData(DEF_GLBDATA_CATE_DEBUGTEST);
 				logOutputResult.format(_T("Debug/test config stored"));
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				bNoReply = false;	// Reset flag
 			}
 			else if (!_tcscmp(tokenList.at(1).c_str(), _T("appflags"))) {
 				// Save app flags (global variables)
-				pApp->saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
+				theAppPtr->saveGlobalData(DEF_GLBDATA_CATE_APPFLAGS);
 				logOutputResult.format(_T("Global app flags stored"));
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				bNoReply = false;	// Reset flag
 			}
 			else if (!_tcscmp(tokenList.at(1).c_str(), _T("features"))) {
 				// Save special variables (global variables)
-				pApp->saveGlobalData(DEF_GLBDATA_CATE_FEATURES);
+				theAppPtr->saveGlobalData(DEF_GLBDATA_CATE_FEATURES);
 				logOutputResult.format(_T("Global special feature variables stored"));
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				bNoReply = false;	// Reset flag
@@ -581,69 +581,69 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("print"))) {
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("config")))) {
 			// Print app config data
-			const ConfigData* pcfgDataTemp = pApp->getAppConfigData();
+			const ConfigData* pcfgDataTemp = theAppPtr->getAppConfigData();
 			if (pcfgDataTemp != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
 				// Load app language package
-				LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
+				LANGTABLE_PTR languageTablePtr = theAppPtr->getAppLanguage();
 				// Format and print data
-				String strValue = Constant::String::Empty;
+				String valueString = Constant::String::Empty;
 				// Left mouse button action
-				int nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->leftMouseAction);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LMBAction, getLanguageString(ptrLanguage, nActionStringID));
+				int actionStringId = GetPairedID(IDTable::ActionName, pcfgDataTemp->leftMouseAction);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LMBAction, getLanguageString(languageTablePtr, actionStringId));
 				// Middle mouse button action
-				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->middleMouseAction);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::MMBAction, getLanguageString(ptrLanguage, nActionStringID));
+				actionStringId = GetPairedID(IDTable::ActionName, pcfgDataTemp->middleMouseAction);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::MMBAction, getLanguageString(languageTablePtr, actionStringId));
 				// Right mouse button action
-				nActionStringID = GetPairedID(IDTable::ActionName, pcfgDataTemp->rightMouseAction);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBAction, getLanguageString(ptrLanguage, nActionStringID));
+				actionStringId = GetPairedID(IDTable::ActionName, pcfgDataTemp->rightMouseAction);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBAction, getLanguageString(languageTablePtr, actionStringId));
 				// Right mouse button: Only show menu
-				strValue = ((pcfgDataTemp->rightMouseShowMenu) ? Constant::Value::True : _T("NO"));
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBShowMenu, strValue.getString());
+				valueString = ((pcfgDataTemp->rightMouseShowMenu) ? Constant::Value::True : _T("NO"));
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBShowMenu, valueString.getString());
 				// Language setting
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LanguageID, getLanguageName(pcfgDataTemp->languageID));
 				// Show dialog at startup
-				strValue = ((pcfgDataTemp->showDialogAtStartup) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowDlgAtStartup, strValue.getString());
+				valueString = ((pcfgDataTemp->showDialogAtStartup) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowDlgAtStartup, valueString.getString());
 				// Startup with Windows
-				strValue = ((pcfgDataTemp->enableAutoStart) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::StartupEnabled, strValue.getString());
+				valueString = ((pcfgDataTemp->enableAutoStart) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::StartupEnabled, valueString.getString());
 				// Show confirm message before executing action
-				strValue = ((pcfgDataTemp->actionConfirmation) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ConfirmAction, strValue.getString());
+				valueString = ((pcfgDataTemp->actionConfirmation) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ConfirmAction, valueString.getString());
 				// Save action log
-				strValue = ((pcfgDataTemp->saveActionHistory) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveHistoryLog, strValue.getString());
+				valueString = ((pcfgDataTemp->saveActionHistory) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveHistoryLog, valueString.getString());
 				// Save app event log
-				strValue = ((pcfgDataTemp->saveAppEventLog) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveAppEventLog, strValue.getString());
+				valueString = ((pcfgDataTemp->saveAppEventLog) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::SaveAppEventLog, valueString.getString());
 				// Run with admin privileges
-				strValue = ((pcfgDataTemp->runAsAdmin) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RunAsAdmin, strValue.getString());
+				valueString = ((pcfgDataTemp->runAsAdmin) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RunAsAdmin, valueString.getString());
 				// Show action error message
-				strValue = ((pcfgDataTemp->showErrorMessage) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowErrorMsg, strValue.getString());
+				valueString = ((pcfgDataTemp->showErrorMessage) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::ShowErrorMsg, valueString.getString());
 				// Show notify tip for schedule action
-				strValue = ((pcfgDataTemp->scheduleNotification) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::NotifySchedule, strValue.getString());
+				valueString = ((pcfgDataTemp->scheduleNotification) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::NotifySchedule, valueString.getString());
 				// Allow canceling schedule when notify
-				strValue = ((pcfgDataTemp->allowScheduleCancellation) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::AllowCancelSchedule, strValue.getString());
+				valueString = ((pcfgDataTemp->allowScheduleCancellation) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::AllowCancelSchedule, valueString.getString());
 				// Enable background action hotkeys
-				strValue = ((pcfgDataTemp->enableBackgroundHotkey) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnableBackgroundHotkey, strValue.getString());
+				valueString = ((pcfgDataTemp->enableBackgroundHotkey) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnableBackgroundHotkey, valueString.getString());
 				// Allow background hotkeys on lockscreen
-				strValue = ((pcfgDataTemp->allowLockscreenHotkey) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LockStateHotkey, strValue.getString());
+				valueString = ((pcfgDataTemp->allowLockscreenHotkey) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LockStateHotkey, valueString.getString());
 				// Enable Power Peminder feature
-				strValue = ((pcfgDataTemp->enablePowerReminder) ? Constant::Value::True : Constant::Value::False);
-				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnablePowerReminder, strValue.getString());
+				valueString = ((pcfgDataTemp->enablePowerReminder) ? Constant::Value::True : Constant::Value::False);
+				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::EnablePowerReminder, valueString.getString());
 			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("schedule")))) {
 			// Print schedule data
-			const ScheduleData* pSchedDataTemp = pApp->getAppScheduleData();
+			const ScheduleData* pSchedDataTemp = theAppPtr->getAppScheduleData();
 			if (pSchedDataTemp != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
@@ -653,61 +653,61 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				logOutputResult.format(_T("DefaultSchedule: %s"), defaultItemPrint.getString());
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print extra item number
-				int nExtraItemNum = pSchedDataTemp->getExtraItemNum();
-				logOutputResult.format(_T("ScheduleExtraData: ItemNum = %d"), nExtraItemNum);
+				int extraItemNum = pSchedDataTemp->getExtraItemNum();
+				logOutputResult.format(_T("ScheduleExtraData: ItemNum = %d"), extraItemNum);
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print each item data
-				for (int nExtraIndex = 0; nExtraIndex < nExtraItemNum; nExtraIndex++) {
-					const ScheduleItem schExtraItem = pSchedDataTemp->getItemAt(nExtraIndex);
+				for (int extraIndex = 0; extraIndex < extraItemNum; extraIndex++) {
+					const ScheduleItem extraScheduleItem = pSchedDataTemp->getItemAt(extraIndex);
 
 					// Print item
 					String extraItemPrint;
-					schExtraItem.print(extraItemPrint);
-					logOutputResult.format(_T("Index=%d, %s"), nExtraIndex, extraItemPrint.getString());
+					extraScheduleItem.print(extraItemPrint);
+					logOutputResult.format(_T("Index=%d, %s"), extraIndex, extraItemPrint.getString());
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}
 			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("hksetdata")))) {
 			// Print HotkeySet data
-			const HotkeySetData* pHksDataTemp = pApp->getAppHotkeySetData();
+			const HotkeySetData* pHksDataTemp = theAppPtr->getAppHotkeySetData();
 			if (pHksDataTemp != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
 				// Print item number
-				int nItemNum = pHksDataTemp->getItemNum();
-				logOutputResult.format(_T("HotkeySetData: ItemNum = %d"), nItemNum);
+				int itemNum = pHksDataTemp->getItemNum();
+				logOutputResult.format(_T("HotkeySetData: ItemNum = %d"), itemNum);
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print each item data
-				for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-					const HotkeySetItem hksItem = pHksDataTemp->getItemAt(nIndex);
+				for (int index = 0; index < itemNum; index++) {
+					const HotkeySetItem hotkeyItem = pHksDataTemp->getItemAt(index);
 
 					// Print item
 					String hotKeyItemPrint;
-					hksItem.print(hotKeyItemPrint);
-					logOutputResult.format(_T("Index=%d, %s"), nIndex, hotKeyItemPrint.getString());
+					hotkeyItem.print(hotKeyItemPrint);
+					logOutputResult.format(_T("Index=%d, %s"), index, hotKeyItemPrint.getString());
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}
 			}
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("rmddata")))) {
 			// Print Power Reminder data
-			const PwrReminderData* pRmdDataTemp = pApp->getAppPwrReminderData();
+			const PwrReminderData* pRmdDataTemp = theAppPtr->getAppPwrReminderData();
 			if (pRmdDataTemp != NULL) {
 				// Prepare for replying
 				bNoReply = false;	// Reset flag
 				// Print item number
-				int nItemNum = pRmdDataTemp->getItemNum();
-				logOutputResult.format(_T("PwrReminderData: ItemNum = %d"), nItemNum);
+				int itemNum = pRmdDataTemp->getItemNum();
+				logOutputResult.format(_T("PwrReminderData: ItemNum = %d"), itemNum);
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print each item data
-				for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-					const PwrReminderItem pwrItem = pRmdDataTemp->getItemAt(nIndex);
+				for (int index = 0; index < itemNum; index++) {
+					const PwrReminderItem reminderItem = pRmdDataTemp->getItemAt(index);
 
 					// Print item
 					String reminderItemPrint;
-					pwrItem.print(reminderItemPrint);
-					logOutputResult.format(_T("Index=%d, %s"), nIndex, reminderItemPrint.getString());
+					reminderItem.print(reminderItemPrint);
+					logOutputResult.format(_T("Index=%d, %s"), index, reminderItemPrint.getString());
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}
 			}
@@ -723,9 +723,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				logOutputResult.format(_T("Resource ID map count=%lld"), nSize);
 				OutputDebugLog(logOutputResult, DebugTestTool);
 				// Print each resource ID map entry
-				for (size_t nIndex = 0; nIndex < nSize; nIndex++) {
-					const RESOURCE_ID_MAP_ENTRY& resourceIDMapEntry = pResourceIDMap->getAt(nIndex);
-					logOutputResult.format(_T("Index=%lld: { ResourceID=%d, NameID=%s }"), nIndex, resourceIDMapEntry.resourceID, MAKEUNICODE(resourceIDMapEntry.nameID));
+				for (size_t index = 0; index < nSize; index++) {
+					const RESOURCE_ID_MAP_ENTRY& resourceIDMapEntry = pResourceIDMap->getAt(index);
+					logOutputResult.format(_T("Index=%lld: { ResourceID=%d, NameID=%s }"), index, resourceIDMapEntry.resourceID, MAKEUNICODE(resourceIDMapEntry.nameID));
 					OutputDebugLog(logOutputResult, DebugTestTool);
 				}
 			}
@@ -737,7 +737,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("rmdmsgset"))) {
 		// Get Power Reminder data
-		PwrReminderData* pRmdData = pApp->getAppPwrReminderData();
+		PwrReminderData* pRmdData = theAppPtr->getAppPwrReminderData();
 		if ((tokenCount >= 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("bkgclr")))) {
 			if (tokenCount == 3) {
 				// Set message background color by name
@@ -747,7 +747,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 					// Set background color
 					if (pRmdData != NULL) {
 						pRmdData->getCommonStyle().setBkgrdColor(dwRetColorID);
-						pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+						theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 						OutputDebugLogFormat(_T("Message background color set: %s"), colorName.toUpper().getString());
 						bNoReply = false;	// Reset flag
 					}
@@ -776,7 +776,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 					COLORREF clrRGB = RGB(nRValue, nGValue, nBValue);
 					if (pRmdData != NULL) {
 						pRmdData->getCommonStyle().setBkgrdColor(clrRGB);
-						pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+						theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 						OutputDebugLogFormat(_T("Message background color set: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
 						bNoReply = false;	// Reset flag
 					}
@@ -800,7 +800,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 					// Set text color
 					if (pRmdData != NULL) {
 						pRmdData->getCommonStyle().setTextColor(dwRetColorID);
-						pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+						theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 						OutputDebugLogFormat(_T("Message text color set: %s"), colorName.toUpper().getString());
 						bNoReply = false;	// Reset flag
 					}
@@ -829,7 +829,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 					COLORREF clrRGB = RGB(nRValue, nGValue, nBValue);
 					if (pRmdData != NULL) {
 						pRmdData->getCommonStyle().setTextColor(clrRGB);
-						pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+						theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 						OutputDebugLogFormat(_T("Message text color set: RGB(%d,%d,%d)"), nRValue, nGValue, nBValue);
 						bNoReply = false;	// Reset flag
 					}
@@ -851,8 +851,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// it needs to be re-formatted by capitalizing first character of each word
 			strFontName.trim().upperEachWord();
 			// Validate font name
-			bool bRet = AppCore::validateFontName(strFontName);
-			if (bRet != true) {
+			bool returnFlag = AppCore::validateFontName(strFontName);
+			if (returnFlag != true) {
 				// Invalid font name
 				OutputDebugLog(_T("Invalid font name"));
 				bNoReply = false;	// Reset flag
@@ -861,7 +861,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set message font
 				if (pRmdData != NULL) {
 					pRmdData->getCommonStyle().setFontName(strFontName);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 					OutputDebugLogFormat(_T("Message font name set: %s"), strFontName.getString());
 					bNoReply = false;	// Reset flag
 				}
@@ -883,7 +883,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set font size
 				if (pRmdData != NULL) {
 					pRmdData->getCommonStyle().setFontSize(nFontSize);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 					OutputDebugLogFormat(_T("Message font size set: %dpt"), nFontSize);
 					bNoReply = false;	// Reset flag
 				}
@@ -895,8 +895,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("timeout")))) {
 			// Set reminder message auto-close interval (timeout)
-			int nTimeout = _tstoi(tokenList.at(2).c_str());
-			if ((nTimeout < RmdMsgStyleSet::minTimeOut) || (nTimeout > RmdMsgStyleSet::maxTimeOut)) {
+			int timeoutValue = _tstoi(tokenList.at(2).c_str());
+			if ((timeoutValue < RmdMsgStyleSet::minTimeOut) || (timeoutValue > RmdMsgStyleSet::maxTimeOut)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 10 -> 1800)"));
 				bNoReply = false;	// Reset flag
@@ -904,9 +904,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Set timeout
 				if (pRmdData != NULL) {
-					pRmdData->getCommonStyle().setTimeout(nTimeout);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
-					OutputDebugLogFormat(_T("Message time-out set: %ds"), nTimeout);
+					pRmdData->getCommonStyle().setTimeout(timeoutValue);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					OutputDebugLogFormat(_T("Message time-out set: %ds"), timeoutValue);
 					bNoReply = false;	// Reset flag
 				}
 				else {
@@ -919,7 +919,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// No reminder message timeout (default 0)
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setTimeout(RmdMsgStyleSet::defaultTimeout);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLog(_T("Message time-out disabled"));
 				bNoReply = false;	// Reset flag
 			}
@@ -936,7 +936,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set icon ID
 				if (pRmdData != NULL) {
 					pRmdData->getCommonStyle().setIconId(dwRetIconID);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 					OutputDebugLogFormat(_T("Message icon ID set: %s (%d)"), iconName.toUpper().getString(), dwRetIconID);
 					bNoReply = false;	// Reset flag
 				}
@@ -954,7 +954,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// No reminder message icon (default 0)
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setIconId(0);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLog(_T("Message icon disabled"));
 				bNoReply = false;	// Reset flag
 			}
@@ -975,7 +975,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set icon size
 				if (pRmdData != NULL) {
 					pRmdData->getCommonStyle().setIconSize(nIconSize);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 					OutputDebugLogFormat(_T("Message icon size set: %dx%dpx"), nIconSize, nIconSize);
 					bNoReply = false;	// Reset flag
 				}
@@ -992,7 +992,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set icon position: Icon on the Left
 				if (pRmdData != NULL) {
 					pRmdData->getCommonStyle().setIconPosition(RmdMsgStyleSet::IconOnTheLeft);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 					OutputDebugLog(_T("Message icon position set: Left"));
 					bNoReply = false;	// Reset flag
 				}
@@ -1005,7 +1005,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set icon position: Icon on the Top
 				if (pRmdData != NULL) {
 					pRmdData->getCommonStyle().setIconPosition(RmdMsgStyleSet::IconOnTheTop);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 					OutputDebugLog(_T("Message icon position set: Top"));
 					bNoReply = false;	// Reset flag
 				}
@@ -1031,7 +1031,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set margin
 				if (pRmdData != NULL) {
 					pRmdData->getCommonStyle().setHorizontalMargin(nHMargin);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 					OutputDebugLogFormat(_T("Message horizontal margin set: %dpx"), nHMargin);
 					bNoReply = false;	// Reset flag
 				}
@@ -1053,7 +1053,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set margin
 				if (pRmdData != NULL) {
 					pRmdData->getCommonStyle().setVerticalMargin(nVMargin);
-					pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 					OutputDebugLogFormat(_T("Message vertical margin set: %dpx"), nVMargin);
 					bNoReply = false;	// Reset flag
 				}
@@ -1070,12 +1070,12 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("rmdmsgreset"))) {
 		// Get Power Reminder data
-		PwrReminderData* pRmdData = pApp->getAppPwrReminderData();
+		PwrReminderData* pRmdData = theAppPtr->getAppPwrReminderData();
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("bkgclr")))) {
 			// Reset message background color
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setBkgrdColor(RmdMsgStyleSet::defaultBkgrdColor);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLogFormat(_T("Message background color reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1088,7 +1088,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Set message text color by name
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setTextColor(RmdMsgStyleSet::defaultTextColor);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLogFormat(_T("Message text color reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1101,7 +1101,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Set reminder message font name
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setFontName(RmdMsgStyleSet::defaultFontName);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLogFormat(_T("Message font name reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1114,7 +1114,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Set reminder message font size
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setFontSize(RmdMsgStyleSet::defaultFontSize);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLogFormat(_T("Message font size reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1127,7 +1127,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message auto-close interval (time-out)
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setTimeout(RmdMsgStyleSet::defaultTimeout);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLog(_T("Message time-out reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1140,7 +1140,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message icon ID
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setIconId(RmdMsgStyleSet::defaultIconID);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLog(_T("Message icon ID reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1153,7 +1153,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message icon size
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setIconSize(RmdMsgStyleSet::defaultIconSize);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLog(_T("Message icon size reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1166,7 +1166,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message icon position
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setIconPosition(RmdMsgStyleSet::defaultIconPosition);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLog(_T("Message icon position reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1179,7 +1179,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message horizontal margin
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setHorizontalMargin(RmdMsgStyleSet::defaultHorizontalMargin);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLogFormat(_T("Message horizontal margin reset)"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1192,7 +1192,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message vertical margin
 			if (pRmdData != NULL) {
 				pRmdData->getCommonStyle().setVerticalMargin(RmdMsgStyleSet::defaultVerticalMargin);
-				pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				OutputDebugLogFormat(_T("Message vertical margin reset"));
 				bNoReply = false;	// Reset flag
 			}
@@ -1208,7 +1208,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	}
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("rmdmsgget"))) {
 		// Get Power Reminder data
-		PwrReminderData* pRmdData = pApp->getAppPwrReminderData();
+		PwrReminderData* pRmdData = theAppPtr->getAppPwrReminderData();
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("bkgclr")))) {
 			// Get reminder message background color
 			if (pRmdData != NULL) {
@@ -1266,8 +1266,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("timeout")))) {
 			// Get reminder message auto-close interval (time-out)
 			if (pRmdData != NULL) {
-				int nTimeout = pRmdData->getCommonStyle().getTimeout();
-				OutputDebugLogFormat(_T("Message time-out: %ds"), nTimeout);
+				int timeoutValue = pRmdData->getCommonStyle().getTimeout();
+				OutputDebugLogFormat(_T("Message time-out: %ds"), timeoutValue);
 				bNoReply = false;	// Reset flag
 			}
 			else {
@@ -1361,11 +1361,11 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Print each item
 				PwrRuntimeItem pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
+				for (int index = 0; index < runtimeQueue_.size(); index++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = runtimeQueue_.at(nIndex);
+					pwrRuntimeItem = runtimeQueue_.at(index);
 					// Print runtime item info
-					OutputDebugLogFormat(_T("Item%03d: CategoryID=%d, ItemID=%d, Display=%d, Skip=%d, Snooze=%d"), nIndex, pwrRuntimeItem.getCategory(),
+					OutputDebugLogFormat(_T("Item%03d: CategoryID=%d, ItemID=%d, Display=%d, Skip=%d, Snooze=%d"), index, pwrRuntimeItem.getCategory(),
 						pwrRuntimeItem.getItemId(), pwrRuntimeItem.getDisplayFlag(), pwrRuntimeItem.getSkipFlag(), pwrRuntimeItem.getSnoozeFlag());
 					bNoReply = false;	// Reset flag
 				}
@@ -1387,14 +1387,14 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Print each item
 				PwrRuntimeItem pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
+				for (int index = 0; index < runtimeQueue_.size(); index++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = runtimeQueue_.at(nIndex);
+					pwrRuntimeItem = runtimeQueue_.at(index);
 					// Skip if it's not Power Reminder item
 					if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info
 					ClockTime timeNextSnooze = pwrRuntimeItem.getTime();
-					OutputDebugLogFormat(_T("Item%03d: ID=%d, Snooze=%d, NextTrigger=%02d:%02d"), nIndex, pwrRuntimeItem.getItemId(),
+					OutputDebugLogFormat(_T("Item%03d: ID=%d, Snooze=%d, NextTrigger=%02d:%02d"), index, pwrRuntimeItem.getItemId(),
 						pwrRuntimeItem.getSnoozeFlag(), timeNextSnooze.hour(), timeNextSnooze.minute());
 					bNoReply = false;	// Reset flag
 				}
@@ -1416,14 +1416,14 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Print each item
 				PwrRuntimeItem pwrRuntimeItem;
-				for (int nIndex = 0; nIndex < runtimeQueue_.size(); nIndex++) {
+				for (int index = 0; index < runtimeQueue_.size(); index++) {
 					// Get runtime item from queue
-					pwrRuntimeItem = runtimeQueue_.at(nIndex);
+					pwrRuntimeItem = runtimeQueue_.at(index);
 					// Skip if it's not Power Reminder item
 					if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 					// Print runtime item info
 					ClockTime timeNextSnooze = pwrRuntimeItem.getTime();
-					OutputDebugLogFormat(_T("Item%03d: ID=%d, Display=%d, Snooze=%d, NextTrigger=%02d:%02d"), nIndex, pwrRuntimeItem.getItemId(),
+					OutputDebugLogFormat(_T("Item%03d: ID=%d, Display=%d, Snooze=%d, NextTrigger=%02d:%02d"), index, pwrRuntimeItem.getItemId(),
 						pwrRuntimeItem.getDisplayFlag(), pwrRuntimeItem.getSnoozeFlag(), timeNextSnooze.hour(), timeNextSnooze.minute());
 					bNoReply = false;	// Reset flag
 				}
@@ -1447,8 +1447,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontnames")))) {
 			// Enumerate all currently available fonts
 			std::vector<std::wstring> fontNames;
-			bool bRet = AppCore::enumFontNames(fontNames);
-			if (bRet == false) {
+			bool returnFlag = AppCore::enumFontNames(fontNames);
+			if (returnFlag == false) {
 				// Enumerate fonts failed
 				OutputDebugLog(_T("Enumerate fonts failed"));
 				bNoReply = false;	// Reset flag
@@ -1477,7 +1477,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		DateTime dateTimeTemp;
 		String dateTimeFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
 		// Get last system suspend time
-		if (pApp->getLastSysEventTime(SystemEventID::SystemSuspend, dateTimeTemp)) {
+		if (theAppPtr->getLastSysEventTime(SystemEventID::SystemSuspend, dateTimeTemp)) {
 			// Format date time
 			const wchar_t* middayFlag = (dateTimeTemp.hour() >= 12) ? _T("PM") : _T("AM");
 			String logTemp = StringUtils::stringFormat(dateTimeFormat, dateTimeTemp.year(), dateTimeTemp.month(), dateTimeTemp.day(),
@@ -1492,7 +1492,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			bNoReply = false;	// Reset flag
 		}
 		// Get last system wakeup time
-		if (pApp->getLastSysEventTime(SystemEventID::SystemWakeUp, dateTimeTemp)) {
+		if (theAppPtr->getLastSysEventTime(SystemEventID::SystemWakeUp, dateTimeTemp)) {
 			// Format date time
 			const wchar_t* middayFlag = (dateTimeTemp.hour() >= 12) ? _T("PM") : _T("AM");
 			String logTemp = StringUtils::stringFormat(dateTimeFormat, dateTimeTemp.year(), dateTimeTemp.month(), dateTimeTemp.day(),
@@ -1650,13 +1650,13 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		// Error: Invalid command
 		errorCode = APP_ERROR_DBG_INVALID_COMMAND;
 		bNoReply = false;	// Reset flag
-		bRet = false;		// Return failed
+		returnFlag = false;		// Return failed
 	}
 
 	// If command is executed but no reply
 	if (bNoReply == true) {
 		// Notify to the DebugTest dialog
-		SDialog* pDebugTestDlg = pApp->getDebugTestDlg();
+		SDialog* pDebugTestDlg = theAppPtr->getDebugTestDlg();
 		if (pDebugTestDlg != NULL) {
 			pDebugTestDlg->PostMessage(SM_APP_DEBUGCMD_NOREPLY);
 		}
@@ -1665,9 +1665,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		bNoReply = false;			// Reset flag
 		bNoReplySilent = false;		// Reset flag
-		bRet = true;				// Return successful
+		returnFlag = true;				// Return successful
 	}
 
-	return bRet;
+	return returnFlag;
 }
 

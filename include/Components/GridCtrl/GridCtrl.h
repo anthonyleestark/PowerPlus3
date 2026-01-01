@@ -174,8 +174,8 @@ class CGridCtrl : public CWnd
 public:
     CGridCtrl(int nRows = 0, int nCols = 0, int nFixedRows = 0, int nFixedCols = 0);
 
-    BOOL Create(const RECT& rect, CWnd* parent, UINT nID,
-                DWORD dwStyle = WS_CHILD | WS_BORDER | WS_TABSTOP | WS_VISIBLE);
+    BOOL Create(const RECT& rect, CWnd* parent, UINT id,
+                DWORD style = WS_CHILD | WS_BORDER | WS_TABSTOP | WS_VISIBLE);
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Attributes
@@ -426,7 +426,7 @@ public:
     // Also supports use with a string resource ID
 #if !defined(_WIN32_WCE) || (_WIN32_WCE >= 210)
     BOOL   SetItemTextFmt(int nRow, int nCol, LPCTSTR szFmt, ...);
-    BOOL   SetItemTextFmtID(int nRow, int nCol, UINT nID, ...);
+    BOOL   SetItemTextFmtID(int nRow, int nCol, UINT id, ...);
 #endif
 
     BOOL   SetItemData(int nRow, int nCol, LPARAM lParam);
@@ -544,7 +544,7 @@ public:
 // Misc.
 ///////////////////////////////////////////////////////////////////////////////////
 public:
-    CCellID GetNextItem(const CCellID& cell, int nFlags) const;
+    CCellID GetNextItem(const CCellID& cell, int flags) const;
 
 	BOOL SortItems(int nCol, BOOL bAscending, LPARAM data = 0);
     BOOL SortTextItems(int nCol, BOOL bAscending, LPARAM data = 0);
@@ -598,7 +598,7 @@ protected:
     BOOL Initialise();
     void SetupDefaultCells();
 
-    LRESULT SendMessageToParent(int nRow, int nCol, int nMessage) const;
+    LRESULT SendMessageToParent(int nRow, int nCol, int message) const;
     LRESULT SendDisplayRequestToParent(GV_DISPINFO* pDisplayInfo) const;
     LRESULT SendCacheHintToParent(const CCellRange& range) const;
 
@@ -611,7 +611,7 @@ protected:
 
     BOOL SetCell(int nRow, int nCol, CGridCellBase* pCell);
 
-    int  SetMouseMode(int nMode) { int nOldMode = m_MouseMode; m_MouseMode = nMode; return nOldMode; }
+    int  SetMouseMode(int mode) { int nOldMode = m_MouseMode; m_MouseMode = mode; return nOldMode; }
     int  GetMouseMode() const    { return m_MouseMode; }
 
     BOOL MouseOverRowResizeArea(const CPoint& point);
@@ -800,29 +800,29 @@ protected:
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     afx_msg void OnSize(UINT nType, int cx, int cy);
-    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonUp(UINT flags, CPoint point);
+    afx_msg void OnLButtonDown(UINT flags, CPoint point);
+    afx_msg void OnMouseMove(UINT flags, CPoint point);
     afx_msg void OnTimer(UINT_PTR nIDEvent);
     afx_msg UINT OnGetDlgCode();
-    afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
-    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-    afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+    afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT flags);
+	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT flags);
+    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT flags);
+    afx_msg void OnLButtonDblClk(UINT flags, CPoint point);
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-    afx_msg void OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg void OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT flags);
     afx_msg void OnUpdateEditSelectAll(CCmdUI* pCmdUI);
     //}}AFX_MSG
 #ifndef _WIN32_WCE_NO_CURSOR
-    afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+    afx_msg BOOL OnSetCursor(CWnd* windowPtr, UINT nHitTest, UINT message);
 #endif
 #ifndef _WIN32_WCE
-    afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-    afx_msg void OnRButtonUp(UINT nFlags, CPoint point);    // EFW - Added
+    afx_msg void OnRButtonDown(UINT flags, CPoint point);
+    afx_msg void OnRButtonUp(UINT flags, CPoint point);    // EFW - Added
     afx_msg void OnSysColorChange();
 #endif
 #ifndef _WIN32_WCE_NO_CURSOR
-    afx_msg void OnCaptureChanged(CWnd *pWnd);
+    afx_msg void OnCaptureChanged(CWnd *windowPtr);
 #endif
 #ifndef GRIDCONTROL_NO_CLIPBOARD
     afx_msg void OnUpdateEditCopy(CCmdUI* pCmdUI);
@@ -833,7 +833,7 @@ protected:
     afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 #endif
 #if !defined(_WIN32_WCE) && (_MFC_VER >= 0x0421)
-    afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+    afx_msg BOOL OnMouseWheel(UINT flags, short zDelta, CPoint pt);
 #endif
     afx_msg LRESULT OnSetFont(WPARAM hFont, LPARAM lParam);
     afx_msg LRESULT OnGetFont(WPARAM hFont, LPARAM lParam);

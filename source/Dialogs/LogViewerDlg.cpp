@@ -34,8 +34,8 @@ IMPLEMENT_DYNAMIC(CLogViewerDlg, SDialog)
 /**
  * @brief	Constructor
  */
-CLogViewerDlg::CLogViewerDlg(CWnd* pParent /*=nullptr*/)
-	: SDialog(IDD_LOGVIEWER_DLG, pParent)
+CLogViewerDlg::CLogViewerDlg(CWnd* parentWnd /*=nullptr*/)
+	: SDialog(IDD_LOGVIEWER_DLG, parentWnd)
 {
 	// Init member variables
 	m_pLogViewerList = NULL;
@@ -197,8 +197,8 @@ void CLogViewerDlg::OnRemoveAllBtn()
 	if (m_ptrAppEventLog == NULL) return;
 
 	// Confirm before removing
-	int nRet = displayMessageBox(MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS, NULL, MB_YESNO | MB_ICONQUESTION);
-	if (nRet == IDNO) return;
+	int returnValue = displayMessageBox(MSGBOX_LOGVIEWER_CONFIRM_REMOVEALLRECORDS, NULL, MB_YESNO | MB_ICONQUESTION);
+	if (returnValue == IDNO) return;
 
 	// Remove all app event log records
 	m_ptrAppEventLog->DeleteAll();
@@ -244,32 +244,32 @@ void CLogViewerDlg::OnCloseBtn()
 void CLogViewerDlg::setupLanguage(void)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup languages for each one of them
-	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	for (CWnd* childWndPtr = GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
-		unsigned nID = pWndChild->GetDlgCtrlID();
+		unsigned id = childWndPtr->GetDlgCtrlID();
 
-		switch (nID)
+		switch (id)
 		{
 		case IDC_LOGVIEWER_LOGDATA_LISTBOX:
 			// Skip these items
 			break;
 		case IDC_LOGVIEWER_DETAILS_BTN:
-			showItem(nID, false);
+			showItem(id, false);
 			break;
 		default:
-			setControlText(pWndChild, nID, pAppLang);
+			setControlText(childWndPtr, id, languageTablePtr);
 			break;
 		}
 	}
 
 	// Setup LogViewer list
-	SetupLogViewerList(pAppLang);
+	SetupLogViewerList(languageTablePtr);
 
 	// Default
 	SDialog::setupLanguage();
@@ -277,10 +277,10 @@ void CLogViewerDlg::setupLanguage(void)
 
 /**
  * @brief	Initialize and setup language for LogViewer list
- * @param	ptrLanguage - Language package pointer
+ * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
+void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*languageTablePtr*/)
 {
 	// Get parent list frame rect
 	CWnd* pListFrameWnd = GetDlgItem(IDC_LOGVIEWER_LOGDATA_LISTBOX);
@@ -301,8 +301,8 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*ptrLanguage*/)
 
 	// Create table
 	if (m_pLogViewerList == NULL) return;
-	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
-	m_pLogViewerList->Create(rcListFrameWnd, this, IDC_LOGVIEWER_LOGDATA_LISTBOX, dwStyle);
+	DWORD style = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
+	m_pLogViewerList->Create(rcListFrameWnd, this, IDC_LOGVIEWER_LOGDATA_LISTBOX, style);
 
 	// Destroy frame
 	pListFrameWnd->DestroyWindow();
@@ -360,11 +360,11 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	if (m_pszTableFrameSize == NULL) return;
 
 	// Get app pointer
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	if (pApp == NULL) return;
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	if (theAppPtr == NULL) return;
 
 	// Get app language package
-	LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = theAppPtr->getAppLanguage();
 
 	// Re-update default cell properties
 	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pLogViewerList->GetDefaultCell(FALSE, FALSE);
@@ -404,7 +404,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 		String headerTitle = Constant::String::Empty;
 		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = getLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = getLanguageString(languageTablePtr, nHeaderTitleID);
 		}
 		m_pLogViewerList->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
@@ -489,9 +489,9 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 BOOL CLogViewerDlg::LoadAppEventLogData(void)
 {
 	// Get app event logging pointer
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	if (pApp == NULL) return FALSE;
-	m_ptrAppEventLog = pApp->getAppEventLog();
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	if (theAppPtr == NULL) return FALSE;
+	m_ptrAppEventLog = theAppPtr->getAppEventLog();
 	if (m_ptrAppEventLog == NULL) return FALSE;
 
 	// Get log data item count
@@ -522,17 +522,17 @@ void CLogViewerDlg::UpdateLogViewer(void)
 	}
 
 	// Load app language package
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	if (pApp == NULL) return;
-	LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	if (theAppPtr == NULL) return;
+	LANGTABLE_PTR languageTablePtr = theAppPtr->getAppLanguage();
 
 	// Print items
-	int nItemIndex = 0;
+	int itemIndex = 0;
 	for (int nRowIndex = startRowIndex; nRowIndex <= m_nLogCount; nRowIndex++) {
 		
 		// Get log item
-		nItemIndex = nRowIndex - startRowIndex;
-		Item logItem = m_ptrAppEventLog->GetLogItem(nItemIndex);
+		itemIndex = nRowIndex - startRowIndex;
+		Item logItem = m_ptrAppEventLog->GetLogItem(itemIndex);
 
 		// If log item is empty
 		if (logItem.IsEmpty()) continue;
@@ -542,7 +542,7 @@ void CLogViewerDlg::UpdateLogViewer(void)
 		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::DateTime, tempString);
 
 		// Category
-		tempString = getLanguageString(ptrLanguage, logItem.GetCategory());
+		tempString = getLanguageString(languageTablePtr, logItem.GetCategory());
 		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::CategoryID, tempString);
 
 		// Additional description
@@ -589,10 +589,10 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 
 /**
  * @brief	Display details of log item at specified index
- * @param	nIndex - Index of item to display
+ * @param	index - Index of item to display
  * @return	None
  */
-void CLogViewerDlg::DisplayLogDetails(int /*nIndex*/)
+void CLogViewerDlg::DisplayLogDetails(int /*index*/)
 {
 	// Get app event logging pointer
 	if (m_ptrAppEventLog == NULL) return;
@@ -615,9 +615,9 @@ void CLogViewerDlg::updateLayoutInfo(void)
 	int nColNum = m_pLogViewerList->GetColumnCount();
 
 	// Update size of table columns
-	for (int nIndex = 0; nIndex < nColNum; nIndex++) {
-		int nColSize = m_pLogViewerList->GetColumnWidth(nIndex);
-		m_apGrdColFormat[nIndex].width = nColSize;
+	for (int index = 0; index < nColNum; index++) {
+		int nColSize = m_pLogViewerList->GetColumnWidth(index);
+		m_apGrdColFormat[index].width = nColSize;
 	}
 }
 
@@ -643,20 +643,20 @@ void CLogViewerDlg::loadLayoutInfo(void)
 	// Initialize table format info data
 	if (m_apGrdColFormat == NULL) {
 		m_apGrdColFormat = new GRIDCTRLCOLFORMAT[m_nColNum];
-		for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
+		for (int index = 0; index < m_nColNum; index++) {
 			// Copy default table column format data
-			m_apGrdColFormat[nIndex] = arrGrdColFormat[nIndex];
+			m_apGrdColFormat[index] = arrGrdColFormat[index];
 		}
 	}
 
 	// Load layout info data from registry
-	int nRet = 0;
+	int returnValue = 0;
 	String keyName;
-	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		keyName = Key::LayoutInfo::GridColSize(nIndex);
-		if (GetLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, nRet)) {
+	for (int index = 0; index < m_nColNum; index++) {
+		keyName = Key::LayoutInfo::GridColSize(index);
+		if (GetLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, returnValue)) {
 			if (m_apGrdColFormat != NULL) {
-				m_apGrdColFormat[nIndex].width = nRet;
+				m_apGrdColFormat[index].width = returnValue;
 			}
 		}
 	}
@@ -675,9 +675,9 @@ void CLogViewerDlg::saveLayoutInfo(void)
 	// Save layout info data to registry
 	int nRef = 0;
 	String keyName;
-	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		nRef = m_apGrdColFormat[nIndex].width;
-		keyName = Key::LayoutInfo::GridColSize(nIndex);
+	for (int index = 0; index < m_nColNum; index++) {
+		nRef = m_apGrdColFormat[index].width;
+		keyName = Key::LayoutInfo::GridColSize(index);
 		WriteLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, nRef);
 	}
 }

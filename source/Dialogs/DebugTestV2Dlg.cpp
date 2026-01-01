@@ -128,11 +128,11 @@ BOOL CDebugTestV2Dlg::OnInitDialog()
 	this->setCaptionFromResource(IDS_APP_DEBUGTESTDLG_TITLE);
 
 	// Get DebugScreen (DebugView & Debug command input)
-	bool bRet = InitDebugScreen();
-	if (bRet == false) {
+	bool returnFlag = InitDebugScreen();
+	if (returnFlag == false) {
 		TRACE_ERROR("Error: DebugScreen initialization failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return bRet;
+		return returnFlag;
 	}
 
 	// Refresh DebugScreen
@@ -182,18 +182,18 @@ void CDebugTestV2Dlg::OnDestroy()
  * @param	Default
  * @return	None
  */
-void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
+void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr)
 {
 	// Fix min size
-	pMinMaxInfo->ptMinTrackSize.x = defaultMinWidth;
-	pMinMaxInfo->ptMinTrackSize.y = defaultMinHeight;
+	minMaxInfoPtr->ptMinTrackSize.x = defaultMinWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = defaultMinHeight;
 
 	// Fix max size
-	pMinMaxInfo->ptMaxTrackSize.x = defaultMaxWidth;
-	pMinMaxInfo->ptMinTrackSize.y = defaultMaxHeight;
+	minMaxInfoPtr->ptMaxTrackSize.x = defaultMaxWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = defaultMaxHeight;
 
 	// Default
-	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
+	SDialog::OnGetMinMaxInfo(minMaxInfoPtr);
 }
 
 /**
@@ -201,9 +201,9 @@ void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
  * @param	Default
  * @return	None
  */
-HBRUSH CDebugTestV2Dlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CDebugTestV2Dlg::OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor)
 {
-	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hBrush = SDialog::OnCtlColor(pDC, windowPtr, nCtlColor);
 
 	if (nCtlColor == CTLCOLOR_EDIT || nCtlColor == CTLCOLOR_STATIC)
 	{
@@ -233,8 +233,8 @@ void CDebugTestV2Dlg::OnSize(UINT nType, int nWidth, int nHeight)
 
 	// Get DebugScreen
 	if (!IsDebugScreenValid()) {
-		bool bRet = InitDebugScreen();
-		if (bRet == false)
+		bool returnFlag = InitDebugScreen();
+		if (returnFlag == false)
 			return;
 	}
 
@@ -319,13 +319,13 @@ LRESULT CDebugTestV2Dlg::OnDebugViewClear(WPARAM /*wParam*/, LPARAM /*lParam*/)
 LRESULT CDebugTestV2Dlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get flag value
-	bool bShowFlag = true;
+	bool showFlag = true;
 	if (wParam != NULL) {
-		bShowFlag = static_cast<bool>(wParam);
+		showFlag = static_cast<bool>(wParam);
 	}
 
 	// Show/hide dialog
-	if (bShowFlag == true) {
+	if (showFlag == true) {
 
 		// Show dialog
 		this->ShowWindow(SW_SHOW);
@@ -397,16 +397,16 @@ BOOL CDebugTestV2Dlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 /**
  * @brief	Pre-translate message
- * @param	pMsg - Default
+ * @param	messagePtr - Default
  * @return	BOOL
  */
-BOOL CDebugTestV2Dlg::PreTranslateMessage(MSG* pMsg)
+BOOL CDebugTestV2Dlg::PreTranslateMessage(MSG* messagePtr)
 {
 	// Handle key pressed event for DebugTest edit view
-	if (pMsg->message == WM_KEYDOWN) {
+	if (messagePtr->message == WM_KEYDOWN) {
 
 		// Get pressed key
-		DWORD dwKey = pMsg->wParam;
+		DWORD dwKey = messagePtr->wParam;
 
 		// Process "Ctrl + Key" shortcuts
 		if (IS_PRESSED(VK_CONTROL)) {
@@ -482,14 +482,14 @@ BOOL CDebugTestV2Dlg::PreTranslateMessage(MSG* pMsg)
 	}
 
 	// Handle right mouse click for DebugTest edit view
-	else if (pMsg->message == WM_RBUTTONDOWN ||
-		pMsg->message == WM_RBUTTONUP ||
-		pMsg->message == WM_RBUTTONDBLCLK) {
+	else if (messagePtr->message == WM_RBUTTONDOWN ||
+		messagePtr->message == WM_RBUTTONUP ||
+		messagePtr->message == WM_RBUTTONDBLCLK) {
 
 		// Get clicked point
 		POINT pt;
-		pt.x = GET_X_LPARAM(pMsg->lParam);
-		pt.y = GET_Y_LPARAM(pMsg->lParam);
+		pt.x = GET_X_LPARAM(messagePtr->lParam);
+		pt.y = GET_Y_LPARAM(messagePtr->lParam);
 
 		// Check DebugScreen validity
 		if (!IsDebugScreenValid())
@@ -514,12 +514,12 @@ BOOL CDebugTestV2Dlg::PreTranslateMessage(MSG* pMsg)
 	}
 
 	// Default
-	return SDialog::PreTranslateMessage(pMsg);
+	return SDialog::PreTranslateMessage(messagePtr);
 }
 
 /**
  * @brief	Send debug command to main parts of program
- * @param	hRcvWnd - Receive window handle
+ * @param	receivedWndHandle - Receive window handle
  * @return	None
  */
 bool CDebugTestV2Dlg::SendDebugCommand(void)
@@ -626,12 +626,12 @@ bool CDebugTestV2Dlg::CreateDebugScreenFont(void)
 	lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 
 	// Create font
-	bool bRet = false;
+	bool returnFlag = false;
 	if (m_pDebugScreenFont != NULL) {
-		bRet = m_pDebugScreenFont->CreateFontIndirect(&lf);
+		returnFlag = m_pDebugScreenFont->CreateFontIndirect(&lf);
 	}
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -653,12 +653,12 @@ bool CDebugTestV2Dlg::CreateDebugScreenBrush(void)
 	}
 
 	// Create brush
-	bool bRet = false;
+	bool returnFlag = false;
 	if (m_pDebugScreenBrush != NULL) {
-		bRet = m_pDebugScreenBrush->CreateSolidBrush(Color::Black);
+		returnFlag = m_pDebugScreenBrush->CreateSolidBrush(Color::Black);
 	}
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -716,9 +716,9 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 	// Modify menu items
 	for (int nMenuItem = 0; nMenuItem < pContextMenu->GetMenuItemCount(); nMenuItem++) {
 		// Get menu item ID
-		unsigned nItemID = pContextMenu->GetMenuItemID(nMenuItem);
+		unsigned itemId = pContextMenu->GetMenuItemID(nMenuItem);
 		// Menu "Copy" item
-		if (nItemID == IDM_DEBUGTEST_COPY) {
+		if (itemId == IDM_DEBUGTEST_COPY) {
 			// If currently not selecting any text
 			int nStartSel, nEndSel;
 			GetDebugView()->GetSel(nStartSel, nEndSel);
@@ -730,7 +730,7 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 			}
 		}
 		// Menu "Paste" item
-		else if (nItemID == IDM_DEBUGTEST_PASTE) {
+		else if (itemId == IDM_DEBUGTEST_PASTE) {
 			// Check if clipboard content available in text format
 			bool bClipboardTextAvailable = IsClipboardFormatAvailable(CF_TEXT);
 			// If not available
@@ -740,7 +740,7 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 			}
 		}
 		// Menu "Previous command" item
-		else if (nItemID == IDM_DEBUGTEST_DISP_PREVCOMMAND) {
+		else if (itemId == IDM_DEBUGTEST_DISP_PREVCOMMAND) {
 			// If debug command history is empty
 			// or it is currently displaying first command
 			if ((IsDebugCommandHistoryEmpty()) || (GetHistoryCurrentDispIndex() == 0)) {
@@ -749,7 +749,7 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 			}
 		}
 		// Menu "Next command" item
-		else if (nItemID == IDM_DEBUGTEST_DISP_NEXTCOMMAND) {
+		else if (itemId == IDM_DEBUGTEST_DISP_NEXTCOMMAND) {
 			// If debug command history is empty
 			// or it is currently displaying last command
 			if ((IsDebugCommandHistoryEmpty()) ||
@@ -759,7 +759,7 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 			}
 		}
 		// Menu "Clear buffer" item
-		else if (nItemID == IDM_DEBUGTEST_CLEAR_BUFFER) {
+		else if (itemId == IDM_DEBUGTEST_CLEAR_BUFFER) {
 			// If DebugTest buffer screen is empty
 			if (m_strBuffer.isEmpty()) {
 				// Disable menu item
@@ -769,12 +769,12 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
 	}
 
 	// Show menu
-	POINT ptCursor;
-	GetCursorPos(&ptCursor);
-	unsigned nFlags = TPM_LEFTALIGN | TPM_TOPALIGN;
-	bool bResult = pContextMenu->TrackPopupMenu(nFlags, ptCursor.x, ptCursor.y, (CWnd*)this, NULL);
+	POINT cursorPoint;
+	GetCursorPos(&cursorPoint);
+	unsigned flags = TPM_LEFTALIGN | TPM_TOPALIGN;
+	bool result = pContextMenu->TrackPopupMenu(flags, cursorPoint.x, cursorPoint.y, (CWnd*)this, NULL);
 
-	return bResult;
+	return result;
 }
 
 /**
@@ -804,9 +804,9 @@ int CDebugTestV2Dlg::FormatDebugCommand(String& debugCommand) const
 	std::vector<wchar_t> tempBuff(nSrcLength + 1);
 
 	// Remove invalid characters
-	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
+	for (int index = 0; index < nSrcLength; index++) {
 
-		wchar_t ch = debugCommand.getAt(nIndex);
+		wchar_t ch = debugCommand.getAt(index);
 		switch (ch)
 		{
 		case Constant::Char::Return:

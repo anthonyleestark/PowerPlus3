@@ -67,15 +67,15 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	virtual void OnDestroy();
-	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
-	virtual HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	virtual void OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr);
+	virtual HBRUSH OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor);
 	virtual void OnSize(UINT nType, int nWidth, int nHeight);
 	afx_msg LRESULT OnDebugOutput(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugCmdNoReply(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugViewClear(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnShowDialog(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* messagePtr);
 	virtual bool SendDebugCommand(void);
 
 private:

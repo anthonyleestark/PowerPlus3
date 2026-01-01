@@ -152,7 +152,7 @@ constexpr bool ConfigData::compare(const ConfigData& other) const noexcept
 
 /**
  * @brief	Get application option data by ID
- * @param	eAppOptionID - Option ID
+ * @param	optionId - Option ID
  * @return	int - Option value
  */
  int ConfigData::getAppOption(AppOptionID appOptionID) const noexcept
@@ -347,13 +347,13 @@ void ScheduleItem::print(String& outputString) const
 	using namespace AppCore;
 
 	// Get language table
-	LANGTABLE_PTR ptrLanguage = loadLanguageTable(NULL);
+	LANGTABLE_PTR languageTablePtr = loadLanguageTable(NULL);
 
 	// Format schedule data
 	const wchar_t* enableState = (isEnabled_ == true) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
 	unsigned actionStringID = GetPairedID(IDTable::ActionName, actionId_);
-	const wchar_t* actionName = getLanguageString(ptrLanguage, actionStringID);													// Schedule action
-	const wchar_t* timeFormat = ClockTimeUtils::format(ptrLanguage, IDS_FORMAT_SHORTTIME, timeValue_).getString();				// Schedule time
+	const wchar_t* actionName = getLanguageString(languageTablePtr, actionStringID);													// Schedule action
+	const wchar_t* timeFormat = ClockTimeUtils::format(languageTablePtr, IDS_FORMAT_SHORTTIME, timeValue_).getString();				// Schedule time
 	const wchar_t* repeatState = (repeatSetInfo_.isRepeatEnabled() == true) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
 
 	// Print item
@@ -695,12 +695,12 @@ void HotkeySetItem::print(String& outputString) const
 	using namespace Language;
 
 	// Get language table
-	LANGTABLE_PTR ptrLanguage = loadLanguageTable(NULL);
+	LANGTABLE_PTR languageTablePtr = loadLanguageTable(NULL);
 
 	// Format item data
 	const wchar_t* enable = (isEnabled_ == true) ? _T("Enabled") : _T("Disabled");
 	unsigned actionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hotkeyActionId_));
-	const wchar_t* action = getLanguageString(ptrLanguage, actionNameID);
+	const wchar_t* action = getLanguageString(languageTablePtr, actionNameID);
 	String keyStrokesStr = Constant::String::Empty;
 	printKeyStrokes(keyStrokesStr);
 
@@ -975,7 +975,7 @@ void HotkeySetData::deleteItem(int atIndex)
 
 /**
  * @brief	Print HotkeySet item keystrokes data by ID
- * @param	nHKID		 - Item hotkey ID
+ * @param	hotkeyId		 - Item hotkey ID
  * @param	outputString - Output printed keystrokes string
  * @return	None
  */
@@ -1116,19 +1116,19 @@ void PwrReminderItem::copy(const PwrReminderItem& other) noexcept
  */
 bool PwrReminderItem::compare(const PwrReminderItem& other) const noexcept
 {
-	bool bRet = true;
+	bool returnFlag = true;
 
 	// Compare item (do not compare item ID)
-	bRet &= (this->messageContent_ == other.messageContent_);
-	bRet &= (this->eventId_ == other.eventId_);
-	bRet &= (this->timeValue_.hour() == other.timeValue_.hour());
-	bRet &= (this->timeValue_.minute() == other.timeValue_.minute());
-	bRet &= (this->messageStyle_ == other.messageStyle_);
-	bRet &= (this->repeatSetInfo_.compare(other.repeatSetInfo_));
-	bRet &= (this->useCustomStyle_ == other.useCustomStyle_);
-	bRet &= (this->msgStyleSetInfo_.compare(other.msgStyleSetInfo_));
+	returnFlag &= (this->messageContent_ == other.messageContent_);
+	returnFlag &= (this->eventId_ == other.eventId_);
+	returnFlag &= (this->timeValue_.hour() == other.timeValue_.hour());
+	returnFlag &= (this->timeValue_.minute() == other.timeValue_.minute());
+	returnFlag &= (this->messageStyle_ == other.messageStyle_);
+	returnFlag &= (this->repeatSetInfo_.compare(other.repeatSetInfo_));
+	returnFlag &= (this->useCustomStyle_ == other.useCustomStyle_);
+	returnFlag &= (this->msgStyleSetInfo_.compare(other.msgStyleSetInfo_));
 
-	return bRet;
+	return returnFlag;
 }
 
 
@@ -1172,7 +1172,7 @@ void PwrReminderItem::print(String& outputString) const
 	using namespace AppCore;
 
 	// Get language table
-	LANGTABLE_PTR ptrLanguage = loadLanguageTable(NULL);
+	LANGTABLE_PTR languageTablePtr = loadLanguageTable(NULL);
 
 	// Format item data
 	const wchar_t* enableStr = (isEnabled_ == true) ? _T("Enabled") : _T("Disabled");
@@ -1181,14 +1181,14 @@ void PwrReminderItem::print(String& outputString) const
 		messageStr = messageContent_.left(Constant::Max::DisplayLogStringLength) + _T("...");
 	}
 	int temp = GetPairedID(IDTable::PwrReminderEvent, eventId_);
-	String eventStr = getLanguageString(ptrLanguage, temp);
+	String eventStr = getLanguageString(languageTablePtr, temp);
 	if (eventId_ == Event::atSetTime) {
 		// Format time string
 		String formatString = eventStr;
-		eventStr = ClockTimeUtils::format(ptrLanguage, formatString, timeValue_);
+		eventStr = ClockTimeUtils::format(languageTablePtr, formatString, timeValue_);
 	}
 	temp = GetPairedID(IDTable::PwrReminderStyle, messageStyle_);
-	const wchar_t* styleStr = getLanguageString(ptrLanguage, temp);
+	const wchar_t* styleStr = getLanguageString(languageTablePtr, temp);
 
 	// Print item
 	outputString.format(_T("State=(%s), ItemID=%d, Msg=(%s), Event=(%s), Style=(%s), Repeat=%d"),
@@ -1484,7 +1484,7 @@ void PwrReminderData::init() noexcept
 
 /**
  * @brief	Calculate next snooze trigger time
- * @param	nInterval - Snooze interval
+ * @param	interval - Snooze interval
  * @return	None
  */
 void PwrRuntimeItem::calcNextSnoozeTime(int interval) noexcept
@@ -2098,8 +2098,8 @@ int StringUtils::printCharList(const wchar_t* srcStr, String& outputStr)
 	// Print character list
 	String replaceStr = Constant::String::Empty;
 	int nSrcLength = wcslen(srcStr);
-	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
-		wchar_t ch = _srcStr.at(nIndex);
+	for (int index = 0; index < nSrcLength; index++) {
+		wchar_t ch = _srcStr.at(index);
 		switch (ch)
 		{
 		case Constant::Char::Tab:
@@ -2120,7 +2120,7 @@ int StringUtils::printCharList(const wchar_t* srcStr, String& outputStr)
 		}
 
 		// Add separator
-		if (nIndex < nSrcLength - 1) {
+		if (index < nSrcLength - 1) {
 			outputStr.append(_T(", "));
 		}
 	}
@@ -2418,8 +2418,8 @@ bool ClockTimeUtils::isMatching(ClockTime thisTime, ClockTime otherTime, int off
 
 /**
  * @brief	Format clock-time value for displaying or printing
- * @param	pLang	  - Language table pointer
- * @param	nFormatID - Format string ID
+ * @param	languageTablePtr	  - Language table pointer
+ * @param	formatId - Format string ID
  * @param	clockTime - Given clock-time data
  * @return	String - Format clock-time string
  */
@@ -2433,7 +2433,7 @@ String ClockTimeUtils::format(LANGTABLE_PTR lang, unsigned formatID, const Clock
 
 /**
  * @brief	Format clock-time value for displaying or printing
- * @param	pLang		 - Language table pointer
+ * @param	languageTablePtr		 - Language table pointer
  * @param	formatString - Format string
  * @param	clockTime	 - Given clock-time data
  * @return	String - Format clock-time string
@@ -2506,8 +2506,8 @@ SYSTEMTIME DateTimeUtils::toSystemTime(const DateTime& dateTime)
 
 /**
  * @brief	Format date/time value for displaying or printing
- * @param	pLang	  - Language table pointer
- * @param	nFormatID - Format string ID
+ * @param	languageTablePtr	  - Language table pointer
+ * @param	formatId - Format string ID
  * @param	dateTime  - Given date/time data
  * @return	String - Format date/time string
  */
@@ -2521,7 +2521,7 @@ String DateTimeUtils::format(LANGTABLE_PTR lang, unsigned formatID, const DateTi
 
 /**
  * @brief	Format date/time value for displaying or printing
- * @param	pLang		 - Language table pointer
+ * @param	languageTablePtr		 - Language table pointer
  * @param	formatString - Format string
  * @param	dateTime	 - Given date/time data
  * @return	String - Format time string
@@ -2698,9 +2698,9 @@ const wchar_t* Language::getLanguageString(LANGTABLE_PTR languageTablePtr, unsig
 
 /**
  * @brief	Main power action function
- * @param	nActionType - Type of action
- * @param	nMessage	- Action message
- * @param	dwErrorCode - Return error code (ref-value)
+ * @param	actionType - Type of action
+ * @param	message	- Action message
+ * @param	errorCode - Return error code (ref-value)
  * @return	bool - Result of action execution
  */
 bool AppCore::executePowerAction(unsigned actionType, unsigned message, DWORD& errorCode)
@@ -2810,9 +2810,9 @@ bool AppCore::executePowerAction(unsigned actionType, unsigned message, DWORD& e
 
 /**
  * @brief	Dummy power action function (use for testing)
- * @param	nActionType - Type of action
- * @param	nMessage	- Action message
- * @param	dwErrorCode - Return error code (ref-value)
+ * @param	actionType - Type of action
+ * @param	message	- Action message
+ * @param	errorCode - Return error code (ref-value)
  * @return	bool - Result of action execution
  */
 bool AppCore::executePowerActionDummy(unsigned actionType, unsigned message, DWORD& errorCode)
@@ -2884,8 +2884,8 @@ bool AppCore::executePowerActionDummy(unsigned actionType, unsigned message, DWO
 	messageFormatStr.format(_T("[ExecutePowerAction]\nAction: %s\nTime: %s"), actionInfoString.getString(), timeFormatStr.getString());
 
 	// Show dummy test message
-	HWND hWnd = GET_HANDLE_MAINWND();
-	MessageBox(hWnd, messageFormatStr, _T("DummyTest"), MB_OK | MB_ICONINFORMATION);
+	HWND windowHandle = GET_HANDLE_MAINWND();
+	MessageBox(windowHandle, messageFormatStr, _T("DummyTest"), MB_OK | MB_ICONINFORMATION);
 	return true;
 }
 
@@ -2893,7 +2893,7 @@ bool AppCore::executePowerActionDummy(unsigned actionType, unsigned message, DWO
 /**
  * @brief	Create a loop and wait for specified message
  * @param	message	 - Message to wait for
- * @param	nTimeout - Timeout (tick-count)
+ * @param	timeoutValue - Timeout (tick-count)
  * @return	LRESULT
  * @note	Be careful when using this function, it may cause the program to be not responding
  */
@@ -2934,7 +2934,7 @@ LRESULT	AppCore::waitMessage(unsigned message, int timeout /* = DEF_WAITMESSAGE_
  * @brief	Show error message by error code
  * @param	hMsgOwnerWnd - Handle of Message Box's owner window
  * @param	nLanguageID	 - Language option ID
- * @param	dwErrorCode	 - Error code
+ * @param	errorCode	 - Error code
  * @param	lParam		 - Additional attached param (description string)
  * @return	None
  */
@@ -3039,7 +3039,7 @@ void AppCore::setFixedCellStyle(CGridCtrl* gridCtrlPtr, int row, int col)
 
 /**
  * @brief	Set dark mode for dialog with specified handle
- * @param	pWnd			- Pointer of window
+ * @param	windowPtr			- Pointer of window
  * @param	bEnableDarkMode - Enable/disable dark mode
  * @return	bool - Result of dark mode setting process
  */
@@ -3242,8 +3242,8 @@ bool AppCore::openWebURL(const wchar_t* webUrl)
 /**
  * @brief	Run an application by specified path
  * @param	appPath		- Path of excutive file
- * @param	bRunAsAdmin	- Run as admin flag
- * @param	bShowFlag	- Show window flag
+ * @param	isRunAsAdmin	- Run as admin flag
+ * @param	showFlag	- Show window flag
  * @return	LRESULT - Result of app launching process
  */
 LRESULT AppCore::runApp(const wchar_t* appPath, bool runAsAdmin /* = false */, bool showFlag /* = true */)
@@ -3261,8 +3261,8 @@ LRESULT AppCore::runApp(const wchar_t* appPath, bool runAsAdmin /* = false */, b
 /**
  * @brief	Execute CMD command
  * @param	commandString - Command string
- * @param	bRunAsAdmin	  - Run as admin flag
- * @param	bShowFlag	  - Show window flag
+ * @param	isRunAsAdmin	  - Run as admin flag
+ * @param	showFlag	  - Show window flag
  * @return	LRESULT - Result of command execution process
  */
 LRESULT AppCore::executeCommand(const wchar_t* commandString, bool runAsAdmin /* = true */, bool showFlag /* = true */)
@@ -3285,7 +3285,7 @@ LRESULT AppCore::executeCommand(const wchar_t* commandString, bool runAsAdmin /*
  * @param	appPath		 - App executable file path
  * @param	commandLine	 - Command line
  * @param	nStyle		 - App process style
- * @param	dwErrorCode	 - Returned error code
+ * @param	errorCode	 - Returned error code
  * @return	bool
  */
 bool AppCore::createAppProcess(const wchar_t* appPath, wchar_t* commandLine, unsigned style, DWORD& errorCode)

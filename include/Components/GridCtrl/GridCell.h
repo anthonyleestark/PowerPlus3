@@ -36,7 +36,7 @@ public:
     virtual void  SetImage(int nImage)           { m_nImage = nImage;   }                        
     virtual void  SetData(LPARAM lParam)         { m_lParam = lParam;   }      
     virtual void  SetGrid(CGridCtrl* pGrid)      { m_pGrid = pGrid;     }                          
-    // virtual void SetState(const DWORD nState);  -  use base class version   
+    // virtual void SetState(const DWORD state);  -  use base class version   
     virtual void  SetFormat(DWORD nFormat)       { m_nFormat = nFormat; }                      
     virtual void  SetTextClr(COLORREF clr)       { m_crFgClr = clr;     }                          
     virtual void  SetBackClr(COLORREF clr)       { m_crBkClr = clr;     }                          
@@ -68,7 +68,7 @@ public:
 
 // editing cells
 public:
-    virtual BOOL Edit(int nRow, int nCol, CRect rect, CPoint point, UINT nID, UINT nChar);
+    virtual BOOL Edit(int nRow, int nCol, CRect rect, CPoint point, UINT id, UINT nChar);
     virtual void EndEdit();
 protected:
     virtual void OnEndEdit();
@@ -104,7 +104,7 @@ public:
 
 public:
     virtual DWORD GetStyle() const                      { return m_dwStyle;      }
-    virtual void  SetStyle(DWORD dwStyle)               { m_dwStyle = dwStyle;   }
+    virtual void  SetStyle(DWORD style)               { m_dwStyle = style;   }
     virtual int   GetWidth() const                      { return m_Size.cx;      }
     virtual int   GetHeight() const                     { return m_Size.cy;      }
     virtual void  SetWidth(int nWidth)                  { m_Size.cx = nWidth;    }
@@ -112,7 +112,7 @@ public:
 
     // Disable these properties
     virtual void     SetData(LPARAM /*lParam*/)             { ASSERT(FALSE);         }      
-    virtual void     SetState(DWORD /*nState*/)             { ASSERT(FALSE);         }
+    virtual void     SetState(DWORD /*state*/)             { ASSERT(FALSE);         }
     virtual DWORD    GetState() const                       { return CGridCell::GetState()|GVIS_READONLY; }
     virtual void     SetCoords( int /*row*/, int /*col*/)   { ASSERT(FALSE);         }
     virtual void     SetFont(const LOGFONT* /*plf*/);

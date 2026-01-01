@@ -26,8 +26,8 @@ IMPLEMENT_DYNAMIC(CHelpDlg, SDialog)
 /**
  * @brief	Constructor
  */
-CHelpDlg::CHelpDlg(CWnd* pParent /*=NULL*/)
-	: SDialog(IDD_HELP_DLG, pParent)
+CHelpDlg::CHelpDlg(CWnd* parentWnd /*=NULL*/)
+	: SDialog(IDD_HELP_DLG, parentWnd)
 {
 	// Initialize member variables
 	m_strFileData = Constant::String::Empty;
@@ -56,11 +56,11 @@ void CHelpDlg::DoDataExchange(CDataExchange* pDX)
  */
 int CHelpDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::registerDialogManagement();
-	if (nRet != 0) {
+	size_t returnValue = SDialog::registerDialogManagement();
+	if (returnValue != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return nRet;
+		return returnValue;
 	}
 
 	// Get control manager
@@ -68,12 +68,12 @@ int CHelpDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_HELPINFO_EDITBOX, Edit_Control);
-		nRet = pCtrlMan->AddControl(IDC_HELP_CLOSE_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HELP_SWITCHVIEWMODE_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HELPINFO_EDITBOX, Edit_Control);
+		returnValue = pCtrlMan->AddControl(IDC_HELP_CLOSE_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HELP_SWITCHVIEWMODE_BTN, Button);
 	}
 
-	return nRet;
+	return returnValue;
 }
 
 /**
@@ -198,9 +198,9 @@ void CHelpDlg::OnSwitchViewMode()
 
 	// Reupdate file data
 	LoadRCFileData(m_strFileData);
-	CEdit* pEdit = (CEdit*)GetDlgItem(IDC_HELPINFO_EDITBOX);
-	if (pEdit != NULL)
-		pEdit->SetWindowText(m_strFileData);
+	CEdit* editCtrlPtr = (CEdit*)GetDlgItem(IDC_HELPINFO_EDITBOX);
+	if (editCtrlPtr != NULL)
+		editCtrlPtr->SetWindowText(m_strFileData);
 
 	// Update switch view mode button
 	UpdateSwitchViewModeButton();
@@ -214,16 +214,16 @@ void CHelpDlg::OnSwitchViewMode()
 void CHelpDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
 
 	// Set [Close] button title
-	CWnd* pWnd = GetDlgItem(IDC_HELP_CLOSE_BTN);
-	if (pWnd != NULL) {
-		const wchar_t* wndText = getLanguageString(pAppLang, IDC_HELP_CLOSE_BTN);
-		pWnd->SetWindowText(wndText);
+	CWnd* windowPtr = GetDlgItem(IDC_HELP_CLOSE_BTN);
+	if (windowPtr != NULL) {
+		const wchar_t* wndText = getLanguageString(languageTablePtr, IDC_HELP_CLOSE_BTN);
+		windowPtr->SetWindowText(wndText);
 	}
 
 	// Set [Switch view mode] button title
@@ -231,9 +231,9 @@ void CHelpDlg::setupLanguage()
 
 	// Load help contents by default
 	LoadRCFileData(m_strFileData);
-	pWnd = GetDlgItem(IDC_HELPINFO_EDITBOX);
-	if (pWnd != NULL) {
-		pWnd->SetWindowText(m_strFileData);
+	windowPtr = GetDlgItem(IDC_HELPINFO_EDITBOX);
+	if (windowPtr != NULL) {
+		windowPtr->SetWindowText(m_strFileData);
 	}
 
 	// Default
@@ -242,14 +242,14 @@ void CHelpDlg::setupLanguage()
 
 /**
  * @brief	Setup help info box
- * @param	pEdit - Pointer of edit control
+ * @param	editCtrlPtr - Pointer of edit control
  * @return	None
  */
-void CHelpDlg::SetupEditbox(CEdit& pEdit)
+void CHelpDlg::SetupEditbox(CEdit& editCtrlPtr)
 {
 	// Setup editbox property: UPPERCASE
-	SetWindowLong(pEdit.m_hWnd, IDC_HELPINFO_EDITBOX, ES_UPPERCASE);
-	pEdit.UpdateWindow();
+	SetWindowLong(editCtrlPtr.m_hWnd, IDC_HELPINFO_EDITBOX, ES_UPPERCASE);
+	editCtrlPtr.UpdateWindow();
 }
 
 /**
@@ -300,10 +300,10 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 	if (strRCFileData.isEmpty()) {
 
 		// Load app language package
-		LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+		LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 		if (GetViewMode() == ViewMode::HelpFile) {
 			// Can not load help file
-			strRCFileData = getLanguageString(pAppLang, ERROR_HELPDLG_NOHELPFILE);
+			strRCFileData = getLanguageString(languageTablePtr, ERROR_HELPDLG_NOHELPFILE);
 
 			// Trace error
 			TRACE_ERROR("Error: [RCData] Help file not found!!!");
@@ -311,7 +311,7 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 		}
 		else if (GetViewMode() == ViewMode::Changelog) {
 			// Can not load change log file
-			strRCFileData = getLanguageString(pAppLang, ERROR_HELPDLG_NOCHANGELOGFILE);
+			strRCFileData = getLanguageString(languageTablePtr, ERROR_HELPDLG_NOCHANGELOGFILE);
 
 			// Trace error
 			TRACE_ERROR("Error: [RCData] Changelog file not found!!!");
@@ -345,8 +345,8 @@ void CHelpDlg::UpdateSwitchViewModeButton(void)
 	}
 
 	// Get app current language package
-	LANGTABLE_PTR ptrLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-	const wchar_t* titleString = getLanguageString(ptrLang, nStringID);
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	const wchar_t* titleString = getLanguageString(languageTablePtr, nStringID);
 
 	// Reupdate button title
 	CButton* pBtn = (CButton*)GetDlgItem(IDC_HELP_SWITCHVIEWMODE_BTN);

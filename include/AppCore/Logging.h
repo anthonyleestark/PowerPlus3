@@ -250,15 +250,15 @@ struct JSON_ENTRY
 {
 	// Member variables
 	String strKey;			// Key name
-	String strValue;		// Value (string)
+	String valueString;		// Value (string)
 
 	// Construction
-	JSON_ENTRY() : strKey(Constant::String::Empty), strValue(Constant::String::Empty) {};
-	JSON_ENTRY(const String& key, const String& value) : strKey(key), strValue(value) {};
+	JSON_ENTRY() : strKey(Constant::String::Empty), valueString(Constant::String::Empty) {};
+	JSON_ENTRY(const String& key, const String& value) : strKey(key), valueString(value) {};
 
 	// Operators
 	bool operator==(const JSON_ENTRY& other) const {
-		return ((strKey == other.strKey) && (strValue == other.strValue));
+		return ((strKey == other.strKey) && (valueString == other.valueString));
 	};
 	bool operator!=(const JSON_ENTRY& other) const {
 		return !(*this == other);
@@ -266,7 +266,7 @@ struct JSON_ENTRY
 	JSON_ENTRY& operator=(const JSON_ENTRY& other) {
 		if (this != &other) {
 			strKey = other.strKey;
-			strValue = other.strValue;
+			valueString = other.valueString;
 		}
 		return *this;
 	};
@@ -315,9 +315,9 @@ protected:
 	bool IsEmpty(void) const noexcept;
 
 	// Remove property by index
-	void RemoveProperty(size_t nIndex) {
-		if ((nIndex < 0) || (nIndex >= this->m_arrKeyValuePairs.size())) return;
-		m_arrKeyValuePairs.erase(m_arrKeyValuePairs.begin() + nIndex);
+	void RemoveProperty(size_t index) {
+		if ((index < 0) || (index >= this->m_arrKeyValuePairs.size())) return;
+		m_arrKeyValuePairs.erase(m_arrKeyValuePairs.begin() + index);
 	}
 
 	// Remove property by key name
@@ -332,7 +332,7 @@ public:
 		this->m_strObjectName = objectName;
 	};
 	void AddString(const wchar_t* keyName, const wchar_t* value);
-	void AddInteger(const wchar_t* keyName, int nValue);
+	void AddInteger(const wchar_t* keyName, int value);
 	void AddFloat(const wchar_t* keyName, DOUBLE dbValue);
 	void AddChildObject(JSON* pSrc);
 
@@ -381,8 +381,8 @@ public:
 	virtual constexpr size_t GetLogCount(void) const noexcept {
 		return m_arrLogData.size();
 	};
-	virtual LOGITEM& GetLogItem(int nIndex);
-	virtual const LOGITEM& GetLogItem(int nIndex) const;
+	virtual LOGITEM& GetLogItem(int index);
+	virtual const LOGITEM& GetLogItem(int index) const;
 
 	// Get/set properties function
 	virtual constexpr size_t GetMaxSize(void) const noexcept {

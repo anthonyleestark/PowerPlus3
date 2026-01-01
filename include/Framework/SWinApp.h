@@ -74,7 +74,7 @@ public:
 	virtual int  ExitInstance();
 	virtual int	 PreExitInstance();
 
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* messagePtr);
 
 	// App language management
 	virtual bool initAppLanguage(void);
@@ -137,8 +137,8 @@ public:
 	}
 
 	// Flag management functions
-	virtual int  getFlagValue(AppFlagID eFlagID) const;
-	virtual void setFlagValue(AppFlagID eFlagID, int value);
+	virtual int  getFlagValue(AppFlagID flagId) const;
+	virtual void setFlagValue(AppFlagID flagId, int value);
 	FlagManager& getAppFlagManager(void) {
 		return flagManager_;
 	}
@@ -171,7 +171,7 @@ public:
 
 	// Request processing functions
 	virtual LRESULT requestCloseDialog(unsigned dialogId);
-	virtual LRESULT requestCloseDialog(HWND dialogWnd);
+	virtual LRESULT requestCloseDialog(HWND dialogWndHandle);
 	virtual void postErrorMessage(DWORD errorCode, LPARAM lParam = NULL) {
 		PostMessage(NULL, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, lParam);
 	};

@@ -55,7 +55,7 @@ public:
 
 	// Message processing functions
 	virtual BOOL ProcessMessageFilter(int nCode, LPMSG lpMsg);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* messagePtr);
 
 	// App data serialization functions
 	bool initAppData();
@@ -77,7 +77,7 @@ public:
 	void setAppPwrReminderData(PwrReminderData* data);
 
 	// Data options and flags get/set functions
-	int getAppOption(AppOptionID eAppOptionId) const;
+	int getAppOption(AppOptionID optionId) const;
 
 	// App history logging functions
 	void initAppHistoryLog();

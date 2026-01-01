@@ -90,17 +90,17 @@ void CCustomMsgDlg::OnDestroy()
  * @param	Default
  * @return	None
  */
-void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
+void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr)
 {
 	// Fix min size
-	pMinMaxInfo->ptMinTrackSize.x = defaultWidth;
-	pMinMaxInfo->ptMinTrackSize.y = defaultHeight;
+	minMaxInfoPtr->ptMinTrackSize.x = defaultWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = defaultHeight;
 
 	// Fix max size
-	pMinMaxInfo->ptMaxTrackSize.x = defaultWidth * 3;
-	pMinMaxInfo->ptMinTrackSize.y = defaultHeight * 3;
+	minMaxInfoPtr->ptMaxTrackSize.x = defaultWidth * 3;
+	minMaxInfoPtr->ptMinTrackSize.y = defaultHeight * 3;
 
-	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
+	SDialog::OnGetMinMaxInfo(minMaxInfoPtr);
 }
 
 /**

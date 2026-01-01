@@ -376,14 +376,14 @@ public:
 	}
 
 	// Set RepeatSet data
-	void enableRepeat(bool bEnabled) noexcept {
-		repeatSetInfo_.enableRepeat(bEnabled);
+	void enableRepeat(bool isEnabled) noexcept {
+		repeatSetInfo_.enableRepeat(isEnabled);
 	}
-	void enableSnoozing(bool bEnabled) noexcept {
-		repeatSetInfo_.enableSnoozing(bEnabled);
+	void enableSnoozing(bool isEnabled) noexcept {
+		repeatSetInfo_.enableSnoozing(isEnabled);
 	}
-	void setSnoozeInterval(int nValue) noexcept {
-		repeatSetInfo_.setSnoozeInterval(nValue);
+	void setSnoozeInterval(int value) noexcept {
+		repeatSetInfo_.setSnoozeInterval(value);
 	}
 	void setActiveDays(byte byActiveDays) noexcept {
 		repeatSetInfo_.setActiveDays(byActiveDays);
@@ -506,7 +506,7 @@ public:
 	}
 
 	// Clean-up
-	void deleteItem(int nIndex);
+	void deleteItem(int index);
 	void deleteExtra(void) noexcept {
 		extraItemList_.clear();
 	}
@@ -919,14 +919,14 @@ public:
 	constexpr bool isEnabled(void) const noexcept {
 		return isEnabled_;
 	}
-	void enableItem(bool bEnabled) noexcept {
-		isEnabled_ = bEnabled;
+	void enableItem(bool isEnabled) noexcept {
+		isEnabled_ = isEnabled;
 	}
 	constexpr unsigned getItemId(void) const noexcept {
 		return itemId_;
 	}
-	void setItemId(unsigned nItemID) noexcept {
-		itemId_ = nItemID;
+	void setItemId(unsigned itemId) noexcept {
+		itemId_ = itemId;
 	}
 	constexpr const wchar_t* getMessage(void) const noexcept {
 		return messageContent_.getString();
@@ -937,8 +937,8 @@ public:
 	constexpr unsigned getEventId(void) const noexcept {
 		return eventId_;
 	}
-	void setEventId(unsigned nEventID) noexcept {
-		eventId_ = nEventID;
+	void setEventId(unsigned eventId) noexcept {
+		eventId_ = eventId;
 	}
 	ClockTime getTime(void) const noexcept {
 		return timeValue_;
@@ -955,8 +955,8 @@ public:
 	constexpr bool isCustomStyleEnabled(void) const noexcept {
 		return useCustomStyle_;
 	}
-	void enableCustomStyle(bool bEnabled) noexcept {
-		useCustomStyle_ = bEnabled;
+	void enableCustomStyle(bool isEnabled) noexcept {
+		useCustomStyle_ = isEnabled;
 	}
 
 	// Get RepeatSet data
@@ -975,14 +975,14 @@ public:
 	}
 
 	// Set RepeatSet data
-	void enableRepeat(bool bEnabled) noexcept {
-		repeatSetInfo_.enableRepeat(bEnabled);
+	void enableRepeat(bool isEnabled) noexcept {
+		repeatSetInfo_.enableRepeat(isEnabled);
 	}
-	void enableSnoozing(bool bEnabled) noexcept {
-		repeatSetInfo_.enableSnoozing(bEnabled);
+	void enableSnoozing(bool isEnabled) noexcept {
+		repeatSetInfo_.enableSnoozing(isEnabled);
 	}
-	void setSnoozeInterval(int nValue) noexcept {
-		repeatSetInfo_.setSnoozeInterval(nValue);
+	void setSnoozeInterval(int value) noexcept {
+		repeatSetInfo_.setSnoozeInterval(value);
 	}
 	void setActiveDays(byte byActiveDays) noexcept {
 		repeatSetInfo_.setActiveDays(byActiveDays);
@@ -1053,17 +1053,17 @@ public:
 	}
 
 	// Access items
-	const PwrReminderItem& getItemAt(int nIndex) const {
-		ASSERT((nIndex >= 0) && (nIndex < getItemNum()));
-		if ((nIndex >= 0) && (nIndex < getItemNum()))
-			return reminderItemList_.at(nIndex);
+	const PwrReminderItem& getItemAt(int index) const {
+		ASSERT((index >= 0) && (index < getItemNum()));
+		if ((index >= 0) && (index < getItemNum()))
+			return reminderItemList_.at(index);
 
 		AfxThrowInvalidArgException();
 	}
-	PwrReminderItem& getItemAt(int nIndex) {
-		ASSERT((nIndex >= 0) && (nIndex < getItemNum()));
-		if ((nIndex >= 0) && (nIndex < getItemNum()))
-			return reminderItemList_.at(nIndex);
+	PwrReminderItem& getItemAt(int index) {
+		ASSERT((index >= 0) && (index < getItemNum()));
+		if ((index >= 0) && (index < getItemNum()))
+			return reminderItemList_.at(index);
 
 		AfxThrowInvalidArgException();
 	}
@@ -1071,25 +1071,25 @@ public:
 	// Item processing
 	void adjust(void);
 	unsigned getNextId(void) const noexcept;
-	void remove(int nIndex);
+	void remove(int index);
 	void removeAll(void) {
-		for (int nIndex = 0; nIndex < getItemNum(); nIndex++)
-			remove(nIndex);
+		for (int index = 0; index < getItemNum(); index++)
+			remove(index);
 	}
 
 	// Get attributes
 	size_t getItemNum(void) const noexcept {
 		return reminderItemList_.size();
 	}
-	bool isEmpty(int nIndex) const noexcept {
-		if ((nIndex < 0) || (nIndex >= getItemNum())) return true;
-		const PwrReminderItem& pwrItem = getItemAt(nIndex);
-		return pwrItem.isEmpty();
+	bool isEmpty(int index) const noexcept {
+		if ((index < 0) || (index >= getItemNum())) return true;
+		const PwrReminderItem& reminderItem = getItemAt(index);
+		return reminderItem.isEmpty();
 	}
 	bool isAllEmpty(void) const noexcept;
 
 	// Clean-up
-	void deleteItem(int nIndex);
+	void deleteItem(int index);
 	void deleteAll(void) noexcept {
 		// Reset data
 		reminderItemList_.clear();
@@ -1133,39 +1133,39 @@ public:
 
 	// Data processing
 	void copy(const PwrRuntimeItem& other) noexcept;
-	void calcNextSnoozeTime(int nInterval) noexcept;
+	void calcNextSnoozeTime(int interval) noexcept;
 
 public:
 	// Get/set attributes
 	constexpr int getCategory(void) const noexcept {
 		return categoryId_;
 	}
-	void setCategory(int nValue) noexcept {
-		categoryId_ = nValue;
+	void setCategory(int value) noexcept {
+		categoryId_ = value;
 	}
 	constexpr unsigned getItemId(void) const noexcept {
 		return itemId_;
 	}
-	void setItemId(unsigned nValue) noexcept {
-		itemId_ = nValue;
+	void setItemId(unsigned value) noexcept {
+		itemId_ = value;
 	}
 	constexpr int getDisplayFlag(void) const noexcept {
 		return displayFlag_;
 	}
-	void setDisplayFlag(int nValue) noexcept {
-		displayFlag_ = nValue;
+	void setDisplayFlag(int value) noexcept {
+		displayFlag_ = value;
 	}
 	constexpr int getSkipFlag(void) const noexcept {
 		return skipFlag_;
 	}
-	void setSkipFlag(int nValue) noexcept {
-		skipFlag_ = nValue;
+	void setSkipFlag(int value) noexcept {
+		skipFlag_ = value;
 	}
 	constexpr int getSnoozeFlag(void) const noexcept {
 		return snoozeFlag_;
 	}
-	void setSnoozeFlag(int nValue) noexcept {
-		snoozeFlag_ = nValue;
+	void setSnoozeFlag(int value) noexcept {
+		snoozeFlag_ = value;
 	}
 	ClockTime getTime(void) const noexcept {
 		return nextSnoozeTime_;
@@ -1238,26 +1238,26 @@ public:
 	constexpr unsigned getItemId(void) const noexcept {
 		return itemId_;
 	}
-	void setItemId(unsigned nItemID) noexcept {
-		itemId_ = nItemID;
+	void setItemId(unsigned itemId) noexcept {
+		itemId_ = itemId;
 	}
 	constexpr unsigned getActionId(void) const noexcept {
 		return actionId_;
 	}
-	void setActionId(unsigned nActionID) noexcept {
-		actionId_ = nActionID;
+	void setActionId(unsigned actionId) noexcept {
+		actionId_ = actionId;
 	}
 	constexpr bool isSuccess(void) const noexcept {
 		return actionResult_;
 	}
-	void setResult(bool bResult) noexcept {
-		actionResult_ = bResult;
+	void setResult(bool result) noexcept {
+		actionResult_ = result;
 	};
 	constexpr DWORD getErrorCode(void) const noexcept {
 		return errorCode_;
 	}
-	void setErrorCode(DWORD dwErrorCode) noexcept {
-		errorCode_ = dwErrorCode;
+	void setErrorCode(DWORD errorCode) noexcept {
+		errorCode_ = errorCode;
 	}
 	void getDescription(String& strDescription) const noexcept {
 		strDescription = description_;
@@ -1360,8 +1360,8 @@ public:
 	}
 
 	// Access items
-	const SystemEvent& getAt(int nIndex) const {
-		return (trackingData_.at(nIndex));
+	const SystemEvent& getAt(int index) const {
+		return (trackingData_.at(index));
 	}
 };
 
@@ -1461,8 +1461,8 @@ public:
 	static bool isMatching(ClockTime thisTime, ClockTime otherTime, int offInSecs = 0);
 
 	// Format for displaying/printing
-	static String format(LANGTABLE_PTR pLang, unsigned nFormatID, const ClockTime& clockTime);
-	static String format(LANGTABLE_PTR pLang, const wchar_t* formatString, const ClockTime& clockTime);
+	static String format(LANGTABLE_PTR languageTablePtr, unsigned formatId, const ClockTime& clockTime);
+	static String format(LANGTABLE_PTR languageTablePtr, const wchar_t* formatString, const ClockTime& clockTime);
 };
 
 
@@ -1478,8 +1478,8 @@ public:
 	static SYSTEMTIME toSystemTime(const DateTime& dateTime);
 
 	// Format for displaying/printing
-	static String format(LANGTABLE_PTR pLang, unsigned nFormatID, const DateTime& dateTime);
-	static String format(LANGTABLE_PTR pLang, const wchar_t* formatString, const DateTime& dateTime);
+	static String format(LANGTABLE_PTR languageTablePtr, unsigned formatId, const DateTime& dateTime);
+	static String format(LANGTABLE_PTR languageTablePtr, const wchar_t* formatString, const DateTime& dateTime);
 };
 
 

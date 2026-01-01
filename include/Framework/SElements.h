@@ -64,7 +64,7 @@ enum ControlType {
 // Menu item info
 struct USERMENUITEM
 {
-	unsigned	nItemID;				// Menu item ID
+	unsigned	itemId;				// Menu item ID
 	unsigned	nItemType;				// Menu item type
 	LPTSTR	lpszItemCaption;		// Menu item text
 	unsigned	nParentID;				// Item parent ID
@@ -148,7 +148,7 @@ protected:
 
 public:
 	// Initialization
-	virtual bool	Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID);
+	virtual bool	Initialize(CWnd* parentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID);
 
 	// Base control window pointer access
 	virtual CWnd* GetBaseControl(void) {
@@ -162,8 +162,8 @@ public:
 	virtual CWnd* GetParent(void) {
 		return m_pParentWnd;
 	};
-	virtual void SetParent(CWnd* pParentWnd) {
-		m_pParentWnd = pParentWnd;
+	virtual void SetParent(CWnd* parentWnd) {
+		m_pParentWnd = parentWnd;
 	};
 	virtual bool IsParentAvailable(void) const {
 		return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
@@ -230,8 +230,8 @@ public:
 	virtual void SetVisibleState(_In_ bool bVisible) {
 		m_bVisible = bVisible;
 	};
-	virtual void SetEnableState(_In_ bool bEnabled) {
-		m_bEnabled = bEnabled;
+	virtual void SetEnableState(_In_ bool isEnabled) {
+		m_bEnabled = isEnabled;
 	};
 	virtual void SetFocusedState(_In_ bool bFocused) {
 		m_bFocused = bFocused;
@@ -271,7 +271,7 @@ public:
 	virtual void		GetTime(_Out_ SYSTEMTIME& timeValue) const;
 
 	// Set boolean data values
-	virtual void	SetCheck(_In_ const bool& bCheck);
+	virtual void	SetCheck(_In_ const bool& isChecked);
 
 	// Set integer data values
 	virtual void	SetInteger(_In_ const LONG_PTR& lValue);
@@ -319,7 +319,7 @@ class SMenu : public CMenu
 
 public:
 	// Construction
-	SMenu(CWnd* pParentWnd = NULL);			// constructor
+	SMenu(CWnd* parentWnd = NULL);			// constructor
 	virtual ~SMenu();						// destructor
 
 protected:
@@ -335,7 +335,7 @@ class SControlManager : public CObject
 
 public:
 	// Construction
-	SControlManager(CWnd* pParentWnd = NULL);		// constructor
+	SControlManager(CWnd* parentWnd = NULL);		// constructor
 	virtual ~SControlManager();						// destructor
 
 private:
@@ -364,8 +364,8 @@ public:
 	CWnd* GetParent(void) {
 		return m_pParentWnd;
 	};
-	void SetParent(CWnd* pParentWnd) {
-		m_pParentWnd = pParentWnd;
+	void SetParent(CWnd* parentWnd) {
+		m_pParentWnd = parentWnd;
 	};
 	bool IsParentAvailable(void) const {
 		return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));

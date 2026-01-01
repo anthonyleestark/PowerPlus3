@@ -39,15 +39,15 @@ CSize CGridCellCheck::GetCellExtent(CDC* pDC)
 // i/o:  i=dims of cell rect; o=dims of text rect
 BOOL CGridCellCheck::GetTextRect( LPRECT pRect)
 {
-    BOOL bResult = CGridCell::GetTextRect(pRect);
-    if (bResult)
+    BOOL result = CGridCell::GetTextRect(pRect);
+    if (result)
     {
         int nWidth = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();
         pRect->left += nWidth;
         if (pRect->left > pRect->right)
             pRect->left = pRect->right;
     }
-    return bResult;
+    return result;
 }
 
 // Set the dimensions and placement of the checkbox in client coords.
@@ -75,7 +75,7 @@ BOOL CGridCellCheck::IsClickPtInBox(void)
 // Override draw so that when the cell is selected, a drop arrow is shown in the RHS.
 BOOL CGridCellCheck::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
 {
-    BOOL bResult = CGridCell::Draw(pDC, nRow, nCol, rect,  bEraseBkgnd);
+    BOOL result = CGridCell::Draw(pDC, nRow, nCol, rect,  bEraseBkgnd);
 
 #ifndef _WIN32_WCE
     // Store the cell's dimensions for later
@@ -93,7 +93,7 @@ BOOL CGridCellCheck::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bErase
 
     // }
 #endif
-    return bResult;
+    return result;
 }
 
 void CGridCellCheck::OnClick(CPoint PointCellRelative)

@@ -32,7 +32,7 @@ public:
 	};
 
 public:
-	CLogViewerDlg(CWnd* pParent = nullptr);			// standard constructor
+	CLogViewerDlg(CWnd* parentWnd = nullptr);			// standard constructor
 	virtual ~CLogViewerDlg();						// destructor
 
 // Dialog Data
@@ -74,11 +74,11 @@ public:
 public:
 	// Member functions
 	void setupLanguage(void);
-	void SetupLogViewerList(LANGTABLE_PTR ptrLanguage);
+	void SetupLogViewerList(LANGTABLE_PTR languageTablePtr);
 	void DrawLogViewerTable(void);
 	BOOL LoadAppEventLogData(void);
 	void UpdateLogViewer(void);
-	void DisplayLogDetails(int nIndex);
+	void DisplayLogDetails(int index);
 
 	// Layout functions
 	void updateLayoutInfo(void);

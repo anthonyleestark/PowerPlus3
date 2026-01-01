@@ -32,7 +32,7 @@ private:
 	unsigned m_nViewMode;
 
 public:
-	CHelpDlg(CWnd* pParent = NULL);   // standard constructor
+	CHelpDlg(CWnd* parentWnd = NULL);   // standard constructor
 	virtual ~CHelpDlg();
 
 	// Dialog Data
@@ -63,7 +63,7 @@ public:
 protected:
 	// Member functions
 	void setupLanguage(void);
-	void SetupEditbox(CEdit& pEdit);
+	void SetupEditbox(CEdit& editCtrlPtr);
 	bool LoadRCFileData(String& strRCFileData);
 	void UpdateSwitchViewModeButton(void);
 

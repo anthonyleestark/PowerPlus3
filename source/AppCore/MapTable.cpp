@@ -17,7 +17,7 @@
 /**
  * @brief	Find and return ID paired with specified macro ID
  * @param	pIDTableRef - Reference ID mapping table
- * @param	nID			- First ID
+ * @param	id			- First ID
  * @param	bReverse	- Reverse search
  * @return	unsigned - Second paired ID
  */
@@ -100,7 +100,7 @@ unsigned MapTable::GetStringID(STRINGTABLE_REF stringTableRef, const wchar_t* in
 /**
  * @brief	Find and return string paired with specified ID
  * @param	pStringTableRef  - Reference string table
- * @param	nID				 - String ID
+ * @param	id				 - String ID
  * @return	const wchar_t* - Paired string
  */
 const wchar_t* MapTable::GetString(STRINGTABLE_REF stringTableRef, unsigned id)

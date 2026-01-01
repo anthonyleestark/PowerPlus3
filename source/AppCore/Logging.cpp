@@ -148,16 +148,16 @@ void LogDetail::PointerCopy(const LogDetail& other)
  */
 bool LogDetail::Compare(const LogDetail& other) const
 {
-	bool bRet = false;
+	bool returnFlag = false;
 
 	// Compare items
-	bRet &= (m_usCategory == other.m_usCategory);				// Detail category
-	bRet &= (m_nFlag == other.m_nFlag);							// Detail flag
-	bRet &= (m_nDetailValue == other.m_nDetailValue);			// Detail value (integer)
-	bRet &= (m_strDetailInfo == other.m_strDetailInfo);			// Detail info (string)
-	bRet &= PointerCompare(other);								// Detail data (pointer)
+	returnFlag &= (m_usCategory == other.m_usCategory);				// Detail category
+	returnFlag &= (m_nFlag == other.m_nFlag);							// Detail flag
+	returnFlag &= (m_nDetailValue == other.m_nDetailValue);			// Detail value (integer)
+	returnFlag &= (m_strDetailInfo == other.m_strDetailInfo);			// Detail info (string)
+	returnFlag &= PointerCompare(other);								// Detail data (pointer)
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -167,18 +167,18 @@ bool LogDetail::Compare(const LogDetail& other) const
  */
 bool LogDetail::PointerCompare(const LogDetail& other) const
 {
-	bool bRet = false;
+	bool returnFlag = false;
 
 	// Compare properties
-	bRet &= (m_byPointerType == other.m_byPointerType);			// Detail info pointer data type
-	bRet &= (m_szPointerSize == other.m_szPointerSize);			// Detail info pointer data size
+	returnFlag &= (m_byPointerType == other.m_byPointerType);			// Detail info pointer data type
+	returnFlag &= (m_szPointerSize == other.m_szPointerSize);			// Detail info pointer data size
 
 	// Only compare pointer values if properties are matching
-	if (bRet != false) {
-		bRet &= memcmp(m_ptrDetailData, other.m_ptrDetailData, m_szPointerSize);
+	if (returnFlag != false) {
+		returnFlag &= memcmp(m_ptrDetailData, other.m_ptrDetailData, m_szPointerSize);
 	}
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -310,13 +310,13 @@ void LogItem::Copy(const LogItem& other) noexcept
  */
 bool LogItem::Compare(const LogItem& other) const noexcept
 {
-	bool bRet = false;
+	bool returnFlag = false;
 
 	// Compare item
-	bRet &= (m_stTime == other.m_stTime);
-	bRet &= (m_dwProcessID == other.m_dwProcessID);
-	bRet &= (m_usCategory == other.m_usCategory);
-	bRet &= (m_strLogString == other.m_strLogString);
+	returnFlag &= (m_stTime == other.m_stTime);
+	returnFlag &= (m_dwProcessID == other.m_dwProcessID);
+	returnFlag &= (m_usCategory == other.m_usCategory);
+	returnFlag &= (m_strLogString == other.m_strLogString);
 
 	// Compare log detail info
 	bool bDetailInfoCompare = true;
@@ -324,16 +324,16 @@ bool LogItem::Compare(const LogItem& other) const noexcept
 		bDetailInfoCompare = false;
 	}
 	else {
-		for (int nIndex = 0; nIndex < this->m_arrDetailInfo.size(); nIndex++) {
-			if (this->m_arrDetailInfo.at(nIndex).Compare(other.m_arrDetailInfo.at(nIndex)) != true) {
+		for (int index = 0; index < this->m_arrDetailInfo.size(); index++) {
+			if (this->m_arrDetailInfo.at(index).Compare(other.m_arrDetailInfo.at(index)) != true) {
 				bDetailInfoCompare = false;
 				break;
 			}
 		}
 	}
-	bRet &= bDetailInfoCompare;
+	returnFlag &= bDetailInfoCompare;
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -440,10 +440,10 @@ String LogItem::FormatOutput(void) const
 		jsonDetailData.SetObjectName(GetString(StringTable::LogKey, BaseLog::Details));
 
 		// Convert data
-		for (int nIndex = 0; nIndex < (m_arrDetailInfo.size()); nIndex++) {
+		for (int index = 0; index < (m_arrDetailInfo.size()); index++) {
 
 			// Get detail info item
-			LOGDETAIL logDetail = m_arrDetailInfo.at(nIndex);
+			LOGDETAIL logDetail = m_arrDetailInfo.at(index);
 
 			// Skip if detail item is read-only
 			int nDetailFlag = logDetail.GetFlag();
@@ -539,8 +539,8 @@ void JSON::CopyArrayData(const JSON& other)
 	this->m_arrKeyValuePairs.reserve(other.m_arrKeyValuePairs.size());
 
 	// Copy list of key-value pairs
-	for (int nIndex = 0; nIndex < other.m_arrKeyValuePairs.size(); nIndex++) {
-		this->m_arrKeyValuePairs.push_back(other.m_arrKeyValuePairs.at(nIndex));
+	for (int index = 0; index < other.m_arrKeyValuePairs.size(); index++) {
+		this->m_arrKeyValuePairs.push_back(other.m_arrKeyValuePairs.at(index));
 	}
 }
 
@@ -597,10 +597,10 @@ void JSON::CopyPtrData(const JSON& other)
  */
 bool JSON::Compare(const JSON& other) const
 {
-	bool bRet = false;
+	bool returnFlag = false;
 
 	// Compare object name
-	bRet &= (this->m_strObjectName == other.m_strObjectName);
+	returnFlag &= (this->m_strObjectName == other.m_strObjectName);
 
 	// Compare detail item info
 	bool bRetCompareDetail = true;
@@ -608,14 +608,14 @@ bool JSON::Compare(const JSON& other) const
 		bRetCompareDetail = false;
 	}
 	if (bRetCompareDetail != false) {
-		for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
-			if (this->m_arrKeyValuePairs.at(nIndex) != other.m_arrKeyValuePairs.at(nIndex)) {
+		for (int index = 0; index < (this->m_arrKeyValuePairs.size()); index++) {
+			if (this->m_arrKeyValuePairs.at(index) != other.m_arrKeyValuePairs.at(index)) {
 				bRetCompareDetail = false;
 				break;
 			}
 		}
 	}
-	bRet &= bRetCompareDetail;
+	returnFlag &= bRetCompareDetail;
 
 	// Compare child objects
 	if (this->m_apChildObjectList != NULL && other.m_apChildObjectList != NULL) {
@@ -642,10 +642,10 @@ bool JSON::Compare(const JSON& other) const
 				}
 			}
 		}
-		bRet &= bRetCompareDetail;
+		returnFlag &= bRetCompareDetail;
 	}
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -675,9 +675,9 @@ void JSON::RemoveProperty(const wchar_t* keyName)
 
 	// Search for key name
 	int nFoundIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
-		if (this->m_arrKeyValuePairs.at(nIndex).strKey == keyName) {
-			nFoundIndex = nIndex;
+	for (int index = 0; index < (this->m_arrKeyValuePairs.size()); index++) {
+		if (this->m_arrKeyValuePairs.at(index).strKey == keyName) {
+			nFoundIndex = index;
 			break;
 		}
 	}
@@ -724,11 +724,11 @@ void JSON::RemoveAll(void)
 void JSON::AddString(const wchar_t* keyName, const wchar_t* value)
 {
 	// Search if key name already existed
-	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
-		JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
+	for (int index = 0; index < (this->m_arrKeyValuePairs.size()); index++) {
+		JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(index);
 		if (jsonEntry.strKey == keyName) {
 			// Replace existed value with new value
-			jsonEntry.strValue = value;
+			jsonEntry.valueString = value;
 			return;
 		}
 	}
@@ -741,13 +741,13 @@ void JSON::AddString(const wchar_t* keyName, const wchar_t* value)
  * @brief	Add an integer-typed key-value pair, update value if
 					the given key name already existed
  * @param	keyName - Item name
- * @param	nValue	- Signed integer value
+ * @param	value	- Signed integer value
  * @return	None
  */
-void JSON::AddInteger(const wchar_t* keyName, int nValue)
+void JSON::AddInteger(const wchar_t* keyName, int value)
 {
 	// Convert integer to string
-	String valueStr = StringUtils::stringFormat(_T("%d"), nValue);
+	String valueStr = StringUtils::stringFormat(_T("%d"), value);
 
 	// Add property
 	AddString(keyName, valueStr);
@@ -781,7 +781,7 @@ void JSON::AddChildObject(JSON* pSrc)
 		return;
 
 	// Index to copy
-	size_t nIndex = 0;
+	size_t index = 0;
 
 	// Allocate child object array data memory if not yet allocated
 	if (this->m_apChildObjectList == NULL) {
@@ -793,19 +793,19 @@ void JSON::AddChildObject(JSON* pSrc)
 		}
 	}
 	else {
-		nIndex = this->m_nChildObjectCount;
+		index = this->m_nChildObjectCount;
 	}
 	
 	// Allocated destination child object memory
-	this->m_apChildObjectList[nIndex] = new JSONDATA;
-	if (this->m_apChildObjectList[nIndex] == NULL) {
-		TRACE_FORMAT("Error: JSON new child object data allocation failed!!! (Index=%d)", nIndex);
+	this->m_apChildObjectList[index] = new JSONDATA;
+	if (this->m_apChildObjectList[index] == NULL) {
+		TRACE_FORMAT("Error: JSON new child object data allocation failed!!! (Index=%d)", index);
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Copy child object data (do not use 'memcpy' in here)
-	*(this->m_apChildObjectList[nIndex]) = *pSrc;
+	*(this->m_apChildObjectList[index]) = *pSrc;
 
 	// Increase child object counter
 	this->m_nChildObjectCount++;
@@ -855,21 +855,21 @@ void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMulti
 	}
 
 	// Print list of properties
-	size_t nItemNum = this->m_arrKeyValuePairs.size();
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+	size_t itemNum = this->m_arrKeyValuePairs.size();
+	for (int index = 0; index < itemNum; index++) {
 
 		// Add indentation
 		outputString.append(indentationStr);
 
 		// Get key and value
-		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
+		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(index);
 
 		// Format properties
-		if ((nIndex == (nItemNum - 1)) &&
+		if ((index == (itemNum - 1)) &&
 			((this->m_nChildObjectCount <= 0) || (this->m_apChildObjectList == NULL))) {
 
 			// Last property (no other child object following) has no comma in the end
-			formatStr.format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.getString(), jsonEntry.strValue.getString());
+			formatStr.format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.getString(), jsonEntry.valueString.getString());
 			outputString.append(formatStr);
 			if (bMultiline == true) {
 				outputString.append(Constant::String::EndLine);
@@ -877,7 +877,7 @@ void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMulti
 		}
 		else {
 			// Add comma character at the end of each property
-			formatStr.format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.getString(), jsonEntry.strValue.getString());
+			formatStr.format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.getString(), jsonEntry.valueString.getString());
 			outputString.append(formatStr);
 			if (bMultiline == true) {
 				outputString.append(Constant::String::EndLine);
@@ -937,9 +937,9 @@ void JSON::PrintYAML(String& outputString, int nIndent) const
 	}
 
 	// Print key-value pairs
-	for (int nIndex = 0; nIndex < this->m_arrKeyValuePairs.size(); nIndex++) {
-		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
-		formatStr = StringUtils::stringFormat(_T("%s%s: \"%s\"\n"), indentationStr.getString(), jsonEntry.strKey.getString(), jsonEntry.strValue.getString());
+	for (int index = 0; index < this->m_arrKeyValuePairs.size(); index++) {
+		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(index);
+		formatStr = StringUtils::stringFormat(_T("%s%s: \"%s\"\n"), indentationStr.getString(), jsonEntry.strKey.getString(), jsonEntry.valueString.getString());
 		outputString.append(formatStr);
 	}
 
@@ -989,10 +989,10 @@ SLogging::~SLogging()
 
 /**
  * @brief	Return a specific log item of log list
- * @param	nIndex - Item index
+ * @param	index - Item index
  * @return	LOGITEM - Return log item
  */
-LOGITEM& SLogging::GetLogItem(int nIndex)
+LOGITEM& SLogging::GetLogItem(int index)
 {
 	// If current log data is empty
 	if (this->IsEmpty()) {
@@ -1002,19 +1002,19 @@ LOGITEM& SLogging::GetLogItem(int nIndex)
 	}
 
 	// Invalid index
-	if (nIndex < 0) {
+	if (index < 0) {
 		// Return 1st item
-		nIndex = 0;
+		index = 0;
 	}
-	else if (nIndex >= GetLogCount()) {
+	else if (index >= GetLogCount()) {
 		// Return last item
-		nIndex = (GetLogCount() - 1);
+		index = (GetLogCount() - 1);
 	}
 
-	return m_arrLogData.at(nIndex);
+	return m_arrLogData.at(index);
 }
 
-const LOGITEM& SLogging::GetLogItem(int nIndex) const
+const LOGITEM& SLogging::GetLogItem(int index) const
 {
 	// If current log data is empty
 	if (this->IsEmpty()) {
@@ -1024,16 +1024,16 @@ const LOGITEM& SLogging::GetLogItem(int nIndex) const
 	}
 
 	// Invalid index
-	if (nIndex < 0) {
+	if (index < 0) {
 		// Return 1st item
-		nIndex = 0;
+		index = 0;
 	}
-	else if (nIndex >= GetLogCount()) {
+	else if (index >= GetLogCount()) {
 		// Return last item
-		nIndex = (GetLogCount() - 1);
+		index = (GetLogCount() - 1);
 	}
 
-	return m_arrLogData.at(nIndex);
+	return m_arrLogData.at(index);
 }
 
 /**
@@ -1142,9 +1142,9 @@ void SLogging::OutputString(const wchar_t* logString, bool bUseLastTemplate /* =
  */
 bool SLogging::Write(void)
 {
-	bool bResult = true;
-	DWORD dwErrCode;
-	HWND hMainWnd = GET_HANDLE_MAINWND();
+	bool result = true;
+	DWORD errorCode;
+	HWND mainWndHandle = GET_HANDLE_MAINWND();
 
 	// Quit if current log is set as Read-only
 	// or current log mode is write instantly mode
@@ -1168,10 +1168,10 @@ bool SLogging::Write(void)
 	PerformanceCounter counter;
 	counter.start();
 
-	for (int nIndex = 0; nIndex < GetLogCount(); nIndex++)
+	for (int index = 0; index < GetLogCount(); index++)
 	{
 		// Get log item
-		logItem = GetLogItem(nIndex);
+		logItem = GetLogItem(index);
 		stTemp = logItem.GetTime();
 
 		// Get filename according to type of logs
@@ -1218,27 +1218,27 @@ bool SLogging::Write(void)
 			TRACE_ERROR("Write log failed: Invalid log type!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			// Show error message
-			dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+			errorCode = APP_ERROR_WRONG_ARGUMENT;
+			PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
 			break;
 		}
 
 		// Check if file is opening, if not, open it
 		if (fLogFile.m_hFile == CFile::hFileNull)
 		{
-			bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
-			if (bResult == false) {
+			result = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+			if (result == false) {
 
 				// Open file failed
-				dwErrCode = GetLastError();
+				errorCode = GetLastError();
 
 				// Trace error
-				TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+				TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", errorCode);
 				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 				// Show error message
-				PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
-				return bResult;
+				PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
+				return result;
 			}
 
 			// Go to end of file
@@ -1275,9 +1275,9 @@ bool SLogging::Write(void)
  */
 bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
 {
-	bool bResult = true;
-	DWORD dwErrCode;
-	HWND hMainWnd = GET_HANDLE_MAINWND();
+	bool result = true;
+	DWORD errorCode;
+	HWND mainWndHandle = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
 	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
@@ -1308,8 +1308,8 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 		// Wrong argument
 		TRACE_ERROR("Error: Invalid log type!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+		errorCode = APP_ERROR_WRONG_ARGUMENT;
+		PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
 		return false;
 	}
 
@@ -1322,20 +1322,20 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
 	{
-		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
-		if (bResult == false) {
+		result = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+		if (result == false) {
 
 			// Open file failed
-			dwErrCode = GetLastError();
+			errorCode = GetLastError();
 
 			// Trace error
-			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", errorCode);
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
-			dwErrCode = GetLastError();
-			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
-			return bResult;
+			errorCode = GetLastError();
+			PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
+			return result;
 		}
 
 		// Go to end of file
@@ -1366,9 +1366,9 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
  */
 bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
 {
-	bool bResult = true;
-	DWORD dwErrCode;
-	HWND hMainWnd = GET_HANDLE_MAINWND();
+	bool result = true;
+	DWORD errorCode;
+	HWND mainWndHandle = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
 	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
@@ -1400,8 +1400,8 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 		TRACE_ERROR("Error: Invalid log type!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		// Show error message
-		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+		errorCode = APP_ERROR_WRONG_ARGUMENT;
+		PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
 		return false;
 	}
 
@@ -1414,20 +1414,20 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 	// Check if file is opening, if not, open it
 	if (fLogFile.m_hFile == CFile::hFileNull)
 	{
-		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
-		if (bResult == false) {
+		result = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+		if (result == false) {
 
 			// Open file failed
-			dwErrCode = GetLastError();
+			errorCode = GetLastError();
 
 			// Trace error
-			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", errorCode);
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
-			dwErrCode = GetLastError();
-			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
-			return bResult;
+			errorCode = GetLastError();
+			PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
+			return result;
 		}
 
 		// Go to end of file
@@ -1523,8 +1523,8 @@ bool DebugLogging::InitTraceErrorLogFile(void)
 		// Open the log file
 		if (!m_pFileLogTraceError->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::showErrorMessage(NULL, NULL, dwErrorCode);
+			DWORD errorCode = GetLastError();
+			AppCore::showErrorMessage(NULL, NULL, errorCode);
 			return false;
 		}
 
@@ -1598,8 +1598,8 @@ bool DebugLogging::InitTraceDebugLogFile(void)
 		// Open the log file
 		if (!m_pFileLogTraceDebug->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::showErrorMessage(NULL, NULL, dwErrorCode);
+			DWORD errorCode = GetLastError();
+			AppCore::showErrorMessage(NULL, NULL, errorCode);
 			return false;
 		}
 
@@ -1673,8 +1673,8 @@ bool DebugLogging::InitDebugInfoLogFile(void)
 		// Open the log file
 		if (!m_pFileLogDebugInfo->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::showErrorMessage(NULL, NULL, dwErrorCode);
+			DWORD errorCode = GetLastError();
+			AppCore::showErrorMessage(NULL, NULL, errorCode);
 			return false;
 		}
 
@@ -1978,12 +1978,12 @@ void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wc
 	// Check if file is opening, if not, open it
 	while (fTrcDbgLogFile.m_hFile == CFile::hFileNull) {
 
-		bool bResult = fTrcDbgLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
-		if (bResult == false) {
+		bool result = fTrcDbgLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+		if (result == false) {
 			// Show error message
-			DWORD dwErrorCode = GetLastError();
+			DWORD errorCode = GetLastError();
 			LPARAM lParam = reinterpret_cast<LPARAM>(fileName);
-			AppCore::showErrorMessage(NULL, NULL, dwErrorCode, lParam);
+			AppCore::showErrorMessage(NULL, NULL, errorCode, lParam);
 			return;
 		}
 
@@ -2141,15 +2141,15 @@ void DebugLogging::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = 
 	String debugLogStr = debugLog;
 
 	// Get DebugTest tool dialog handle
-	HWND hDebugTestWnd = AppCore::findDebugTestDlg();
+	HWND debugTestDlgHandle = AppCore::findDebugTestDlg();
 
 	// Debug log output target
 	int nDebugOutputTarget = forceOutput;
 	if (nDebugOutputTarget == INT_INVALID) {
 		nDebugOutputTarget = getDebugOutputTarget();
 	}
-	if ((hDebugTestWnd != NULL) &&
-		(IsWindowVisible(hDebugTestWnd))) {
+	if ((debugTestDlgHandle != NULL) &&
+		(IsWindowVisible(debugTestDlgHandle))) {
 		// Force enable debug mode and
 		// prefer output target to DebugTest tool if it's displaying
 		bDebugModeEnable = true;
@@ -2172,10 +2172,10 @@ void DebugLogging::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = 
 	}
 	else if (nDebugOutputTarget == DebugTestTool) {
 		// Output debug log to DebugTest tool
-		if (hDebugTestWnd == NULL) return;
+		if (debugTestDlgHandle == NULL) return;
 		WPARAM wParam = MAKE_WPARAM_STRING(debugLogStr);
 		LPARAM lParam = MAKE_LPARAM_STRING(debugLogStr);
-		SendMessage(hDebugTestWnd, SM_APP_DEBUG_OUTPUT, wParam, lParam);
+		SendMessage(debugTestDlgHandle, SM_APP_DEBUG_OUTPUT, wParam, lParam);
 	}
 }
 

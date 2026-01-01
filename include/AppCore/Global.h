@@ -43,8 +43,8 @@ static inline const unsigned getAppLaunchTimeCounter(void) {
 static inline const bool isAppFirstLaunch(void) {
 	return (Global::g_uiAppLaunchTimeCounter <= 1);
 };
-static inline void setAppLaunchTimeCounter(unsigned uiValue) {
-	Global::g_uiAppLaunchTimeCounter = uiValue;
+static inline void setAppLaunchTimeCounter(unsigned valueUnsigned) {
+	Global::g_uiAppLaunchTimeCounter = valueUnsigned;
 };
 static inline void updateAppLaunchTimeCounter(void) {
 	++Global::g_uiAppLaunchTimeCounter;
@@ -93,8 +93,8 @@ enum DebugOutput {
 static inline const int getDebugOutputTarget(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::debugOutputTarget);
 };
-static inline void setDebugOutputTarget(int nValue) {
-	getGlobalFlagManager().setFlagValue(AppFlagID::debugOutputTarget, nValue);
+static inline void setDebugOutputTarget(int value) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::debugOutputTarget, value);
 };
 
 // Test feature enable flag

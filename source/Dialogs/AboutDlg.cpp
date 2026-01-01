@@ -52,11 +52,11 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
  */
 int CAboutDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::registerDialogManagement();
-	if (nRet != 0) {
+	size_t returnValue = SDialog::registerDialogManagement();
+	if (returnValue != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return nRet;
+		return returnValue;
 	}
 
 	// Get control manager
@@ -64,15 +64,15 @@ int CAboutDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_APPNAME_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_COPYRIGHT_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_VIEW_FACEBOOK_PROFILE_LINK, SysLink_Control);
-		nRet = pCtrlMan->AddControl(IDC_AUTH_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_APPINFO_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_ABOUT_CLOSE_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_APPNAME_LABEL, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_COPYRIGHT_LABEL, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_VIEW_FACEBOOK_PROFILE_LINK, SysLink_Control);
+		returnValue = pCtrlMan->AddControl(IDC_AUTH_LABEL, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_APPINFO_LABEL, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_ABOUT_CLOSE_BTN, Button);
 	}
 
-	return nRet;
+	return returnValue;
 }
 
 /**
@@ -175,16 +175,16 @@ void CAboutDlg::OnDestroy()
 void CAboutDlg::setupLanguage(void)
 {
 	// Load app language packages
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup languages for each one of them
-	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	for (CWnd* childWndPtr = GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
-		unsigned nID = pWndChild->GetDlgCtrlID();
-		switch (nID)
+		unsigned id = childWndPtr->GetDlgCtrlID();
+		switch (id)
 		{
 		case IDI_ICON_APP:
 		case IDC_STATIC:
@@ -200,7 +200,7 @@ void CAboutDlg::setupLanguage(void)
 			break;
 
 		default:
-			setControlText(pWndChild, nID, pAppLang);
+			setControlText(childWndPtr, id, languageTablePtr);
 			break;
 		}
 	}
@@ -227,8 +227,8 @@ void CAboutDlg::SetAppNameLabel(void)
 		return;
 
 	// Get app name label format from app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-	const wchar_t* formatString = getLanguageString(pAppLang, IDC_APPNAME_LABEL);
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	const wchar_t* formatString = getLanguageString(languageTablePtr, IDC_APPNAME_LABEL);
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app name label
@@ -252,8 +252,8 @@ void CAboutDlg::SetAppInfoLabel(void)
 	if (productVersion.isEmpty()) return;
 
 	// Get app info label format from app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-	String strFormat = getLanguageString(pAppLang, IDC_APPINFO_LABEL);
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	String strFormat = getLanguageString(languageTablePtr, IDC_APPINFO_LABEL);
 	if (IS_NULL_STRING(strFormat)) return;
 
 	// Set app info label

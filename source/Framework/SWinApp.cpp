@@ -121,13 +121,13 @@ int SWinApp::PreExitInstance()
 
 /**
  * @brief	Default method for pre-translate message
- * @param	pMsg - Default
+ * @param	messagePtr - Default
  * @return	None
  */
-BOOL SWinApp::PreTranslateMessage(MSG* pMsg)
+BOOL SWinApp::PreTranslateMessage(MSG* messagePtr)
 {
 	// Default
-	return CWinAppEx::PreTranslateMessage(pMsg);
+	return CWinAppEx::PreTranslateMessage(messagePtr);
 }
 
 /**
@@ -251,12 +251,12 @@ bool SWinApp::setAppWindowCaption(unsigned resourceStringId, bool showProdVersio
 void SWinApp::registerMessageBoxCaption(unsigned captionId)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = this->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = this->getAppLanguage();
 	String messageCaption = Constant::String::Empty;
 	if (captionId != NULL) {
 
 		// Get language string caption
-		String langCaption = getLanguageString(pAppLang, captionId);
+		String langCaption = getLanguageString(languageTablePtr, captionId);
 		if (IS_NOT_NULL_STRING(langCaption)) {
 			// Set caption string
 			messageCaption = langCaption;
@@ -306,8 +306,8 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned type, unsigned nIDProm
 	else {
 		// Use the MessageBox function, which we can specify the caption with
 		type |= MB_SYSTEMMODAL;							// Show message box as Top-most
-		HWND hMainWnd = GET_HANDLE_MAINWND();			// Get main window handle
-		return MessageBox(hMainWnd, prompt, messageCaption, type);
+		HWND mainWndHandle = GET_HANDLE_MAINWND();			// Get main window handle
+		return MessageBox(mainWndHandle, prompt, messageCaption, type);
 	}
 }
 
@@ -321,13 +321,13 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned type, unsigned nIDProm
 int SWinApp::displayMessageBox(unsigned promptId, unsigned captionId /* = NULL */, unsigned style /* = NULL */)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = this->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = this->getAppLanguage();
 
-	String messagePrompt = getLanguageString(pAppLang, promptId);
+	String messagePrompt = getLanguageString(languageTablePtr, promptId);
 	String messageCaption = this->getAppWindowCaption();
 	if (captionId != NULL) {
 		// Get language string caption
-		String langCaption = getLanguageString(pAppLang, captionId);
+		String langCaption = getLanguageString(languageTablePtr, captionId);
 		if (IS_NOT_NULL_STRING(langCaption))
 			messageCaption = langCaption;
 	}
@@ -339,9 +339,9 @@ int SWinApp::displayMessageBox(unsigned promptId, unsigned captionId /* = NULL *
 	}
 
 	// Display message box
-	int nResult = displayMessageBox(messagePrompt, messageCaption, style);
+	int result = displayMessageBox(messagePrompt, messageCaption, style);
 
-	return nResult;
+	return result;
 }
 
 /**
@@ -423,39 +423,39 @@ void SWinApp::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data
-		for (int nIndex = 0; nIndex < pDetailInfo->size(); nIndex++) {
-			logItemAppEvent.AddDetail(pDetailInfo->at(nIndex));
+		for (int index = 0; index < pDetailInfo->size(); index++) {
+			logItemAppEvent.AddDetail(pDetailInfo->at(index));
 		}
 	}
 
 	// Output app event log
-	if (SLogging* ptrAppEventLog = getAppEventLog()) {
-		ptrAppEventLog->OutputItem(logItemAppEvent);
+	if (SLogging* appEventLoggerPtr = getAppEventLog()) {
+		appEventLoggerPtr->OutputItem(logItemAppEvent);
 	}
 }
 
 /**
  * @brief	Return flag value by ID
- * @param	eFlagID - ID of specific flag
+ * @param	flagId - ID of specific flag
  * @return	int - Flag value
  */
-int SWinApp::getFlagValue(AppFlagID eFlagID) const
+int SWinApp::getFlagValue(AppFlagID flagId) const
 {
 	int value = FLAG_OFF;
 
-	switch (eFlagID)
+	switch (flagId)
 	{
 	// Application-base flags
 	case AppFlagID::appDataChanged:
 	case AppFlagID::appReadOnlyMode:
 	case AppFlagID::appForceClosing:
 	case AppFlagID::appExitCode:
-		value = flagManager_.getFlagValue(eFlagID);
+		value = flagManager_.getFlagValue(flagId);
 		break;
 
 	default:
 		// Request the flag value from global flag manager
-		value = getGlobalFlagManager().getFlagValue(eFlagID);
+		value = getGlobalFlagManager().getFlagValue(flagId);
 		break;
 	}
 
@@ -464,46 +464,46 @@ int SWinApp::getFlagValue(AppFlagID eFlagID) const
 
 /**
  * @brief	Update flag value by ID
- * @param	eFlagID - ID of specific flag
+ * @param	flagId - ID of specific flag
  * @param	value  - Value to set
  * @return	None
  */
-void SWinApp::setFlagValue(AppFlagID eFlagID, int value)
+void SWinApp::setFlagValue(AppFlagID flagId, int value)
 {
 	// Check value validity
 	if (value == INT_INVALID)
 		return;
 
-	switch (eFlagID)
+	switch (flagId)
 	{
 	// Application-base flags
 	case AppFlagID::appDataChanged:
 	case AppFlagID::appReadOnlyMode:
 	case AppFlagID::appForceClosing:
 	case AppFlagID::appExitCode:
-		flagManager_.setFlagValue(eFlagID, value);
+		flagManager_.setFlagValue(flagId, value);
 		break;
 
 	default:
 		// Let the global flag manager do its job
-		getGlobalFlagManager().setFlagValue(eFlagID, value);
+		getGlobalFlagManager().setFlagValue(flagId, value);
 		break;
 	}
 }
 
 /**
  * @brief	Request current dialog to close
- * @param	nDialogID  - Dialog ID
- * @param	hDialogWnd - Dialog window handle
+ * @param	dialogId  - Dialog ID
+ * @param	dialogWndHandle - Dialog window handle
  * @return	LRESULT (0:Success, else:Failed)
  */
-LRESULT SWinApp::requestCloseDialog(unsigned /*nDialogID*/)
+LRESULT SWinApp::requestCloseDialog(unsigned /*dialogId*/)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED
 }
 
-LRESULT SWinApp::requestCloseDialog(HWND /*hDialogWnd*/)
+LRESULT SWinApp::requestCloseDialog(HWND /*dialogWndHandle*/)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED

@@ -34,8 +34,8 @@ IMPLEMENT_DYNAMIC(CHotkeySetDlg, SDialog)
 /**
  * @brief	Constructor
  */
-CHotkeySetDlg::CHotkeySetDlg(CWnd* pParent /*=nullptr*/)
-	: SDialog(IDD_HOTKEYSET_DLG, pParent)
+CHotkeySetDlg::CHotkeySetDlg(CWnd* parentWnd /*=nullptr*/)
+	: SDialog(IDD_HOTKEYSET_DLG, parentWnd)
 {
 	// Initialize member variables
 
@@ -107,11 +107,11 @@ void CHotkeySetDlg::DoDataExchange(CDataExchange* pDX)
  */
 int CHotkeySetDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::registerDialogManagement();
-	if (nRet != 0) {
+	size_t returnValue = SDialog::registerDialogManagement();
+	if (returnValue != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return nRet;
+		return returnValue;
 	}
 
 	// Get control manager
@@ -119,26 +119,26 @@ int CHotkeySetDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ITEM_LISTBOX, List_Box);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ADD_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVE_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVEALL_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CHECKALL_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_UNCHECKALL_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_EXPORT_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_APPLY_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CANCEL_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_TITLE, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_LIST, Combo_Box);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CONTROLKEY_STATIC, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_CTRLKEY_CHK, Check_Box);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_ALTKEY_CHK, Check_Box);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_WINKEY_CHK, Check_Box);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_TITLE, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_LIST, Combo_Box);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ITEM_LISTBOX, List_Box);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ADD_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVE_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVEALL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_CHECKALL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_UNCHECKALL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_EXPORT_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_APPLY_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_CANCEL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_TITLE, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_LIST, Combo_Box);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_CONTROLKEY_STATIC, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_CTRLKEY_CHK, Check_Box);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ALTKEY_CHK, Check_Box);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_WINKEY_CHK, Check_Box);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_TITLE, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_LIST, Combo_Box);
 	}
 
-	return nRet;
+	return returnValue;
 }
 
 /**
@@ -255,10 +255,10 @@ BOOL CHotkeySetDlg::OnInitDialog()
 
 	// Read-only mode (if enabled)
 	if (isReadOnlyMode() == true) {
-		CWnd* pWndChild = GetTopWindow();
-		while (pWndChild != NULL) {
-			pWndChild->EnableWindow(false);
-			pWndChild = pWndChild->GetWindow(GW_HWNDNEXT);
+		CWnd* childWndPtr = GetTopWindow();
+		while (childWndPtr != NULL) {
+			childWndPtr->EnableWindow(false);
+			childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT);
 		}
 	}
 
@@ -276,9 +276,9 @@ void CHotkeySetDlg::OnClose()
 	if (!isForceClosingByRequest()) {
 
 		// Ask for saving before exiting if data changed
-		bool bIsChanged = checkDataChangeState();
-		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-		if (bIsChanged == true) {
+		bool isChanged = checkDataChangeState();
+		setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+		if (isChanged == true) {
 			// Show save confirmation message
 			int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
@@ -321,9 +321,9 @@ void CHotkeySetDlg::OnApply()
 	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_APPLY_BTN);
 
 	// Save data if changed
-	bool bIsChanged = checkDataChangeState();
-	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-	if (bIsChanged == true) {
+	bool isChanged = checkDataChangeState();
+	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+	if (isChanged == true) {
 		// Save data
 		SaveHotkeySetData();
 	}
@@ -346,9 +346,9 @@ void CHotkeySetDlg::OnCancel()
 		outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_CANCEL_BTN);
 
 		// Ask for saving before exiting if data changed
-		bool bIsChanged = checkDataChangeState();
-		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-		if (bIsChanged == true) {
+		bool isChanged = checkDataChangeState();
+		setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+		if (isChanged == true) {
 			// Show save confirmation message
 			int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
@@ -390,13 +390,13 @@ void CHotkeySetDlg::OnRemove()
 	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HOTKEYSET_REMOVE_BTN);
 
 	// If there's no item, do nothing
-	int nItemNum = m_hksHotkeySetTemp.getItemNum();
-	if (nItemNum <= 0)
+	int itemNum = m_hksHotkeySetTemp.getItemNum();
+	if (itemNum <= 0)
 		return;
 
 	// Get current select item index
-	int nIndex = GetListCurSel();
-	if (m_hksHotkeySetTemp.isEmpty(nIndex) == true)
+	int index = GetListCurSel();
+	if (m_hksHotkeySetTemp.isEmpty(index) == true)
 		return;
 
 	// Ask before remove
@@ -404,7 +404,7 @@ void CHotkeySetDlg::OnRemove()
 	if (nConfirm == IDYES) {
 
 		// Update data
-		Remove(nIndex);
+		Remove(index);
 
 		// Redraw HotkeySet table
 		RedrawHotkeySetTable();
@@ -550,9 +550,9 @@ void CHotkeySetDlg::OnRightClickHotkeyList(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 LRESULT CHotkeySetDlg::requestCloseDialog(void)
 {
 	// Ask for saving before exiting if data changed
-	bool bIsChanged = checkDataChangeState();
-	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-	if (bIsChanged == true) {
+	bool isChanged = checkDataChangeState();
+	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+	if (isChanged == true) {
 		int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Save data
@@ -576,18 +576,18 @@ LRESULT CHotkeySetDlg::requestCloseDialog(void)
 void CHotkeySetDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup language for each one of them
-	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	for (CWnd* childWndPtr = GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
 		// Get item ID
-		unsigned nID = pWndChild->GetDlgCtrlID();
+		unsigned id = childWndPtr->GetDlgCtrlID();
 
-		switch (nID)
+		switch (id)
 		{
 		case IDC_HOTKEYSET_DETAIL_STATIC:
 		case IDC_HOTKEYSET_ITEM_LISTBOX:
@@ -596,17 +596,17 @@ void CHotkeySetDlg::setupLanguage()
 
 		case IDC_HOTKEYSET_ACTION_LIST:
 		case IDC_HOTKEYSET_FUNCKEY_LIST:
-			setupComboBox(nID, pAppLang);
+			setupComboBox(id, languageTablePtr);
 			break;
 
 		default:
-			setControlText(pWndChild, nID, pAppLang);
+			setControlText(childWndPtr, id, languageTablePtr);
 			break;
 		}
 	}
 
 	// Setup HotkeySet list table
-	SetupHotkeySetList(pAppLang);
+	SetupHotkeySetList(languageTablePtr);
 
 	// Default
 	SDialog::setupLanguage();
@@ -614,10 +614,10 @@ void CHotkeySetDlg::setupLanguage()
 
 /**
  * @brief	Initialize and setup language for HotkeySet list
- * @param	ptrLanguage - Language package pointer
+ * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
+void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*languageTablePtr*/)
 {
 	// Get parent list frame rect
 	CWnd* pListFrameWnd = GetDlgItem(IDC_HOTKEYSET_ITEM_LISTBOX);
@@ -638,8 +638,8 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*ptrLanguage*/)
 
 	// Create table
 	if (m_pHotkeySetListTable == NULL) return;
-	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
-	m_pHotkeySetListTable->Create(rcListFrameWnd, this, IDC_HOTKEYSET_ITEM_LISTBOX, dwStyle);
+	DWORD style = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
+	m_pHotkeySetListTable->Create(rcListFrameWnd, this, IDC_HOTKEYSET_ITEM_LISTBOX, style);
 
 	// Destroy frame
 	pListFrameWnd->DestroyWindow();
@@ -697,11 +697,11 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 	if (m_pszDataTableFrameSize == NULL) return;
 
 	// Get app pointer
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	if (pApp == NULL) return;
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	if (theAppPtr == NULL) return;
 
 	// Get app language package
-	LANGTABLE_PTR ptrLanguage = pApp->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = theAppPtr->getAppLanguage();
 
 	// Re-update default cell properties
 	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pHotkeySetListTable->GetDefaultCell(false, false);
@@ -747,7 +747,7 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 		String headerTitle = Constant::String::Empty;
 		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = getLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = getLanguageString(languageTablePtr, nHeaderTitleID);
 		}
 		m_pHotkeySetListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
@@ -826,27 +826,27 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 /**
  * @brief	Setup data for combo-boxes
  * @param	nComboID	- ID of combo box
- * @param	ptrLanguage - Language package pointer
+ * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CHotkeySetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
+void CHotkeySetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr)
 {
 	switch (nComboID)
 	{
 	case IDC_HOTKEYSET_ACTION_LIST:
 		m_cmbActionList.ResetContent();
-		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
-		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SLEEP));			// Sleep
-		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SHUTDOWN));		// Shutdown
-		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_RESTART));			// Restart
-		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_SIGNOUT));			// Log out
-		m_cmbActionList.AddString(getLanguageString(ptrLanguage, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
+		m_cmbActionList.AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_DISPLAYOFF));		// Turn off display
+		m_cmbActionList.AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_SLEEP));			// Sleep
+		m_cmbActionList.AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_SHUTDOWN));		// Shutdown
+		m_cmbActionList.AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_RESTART));			// Restart
+		m_cmbActionList.AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_SIGNOUT));			// Log out
+		m_cmbActionList.AddString(getLanguageString(languageTablePtr, COMBOBOX_ACTION_HIBERNATE));		// Hibernate
 		break;
 
 	case IDC_HOTKEYSET_FUNCKEY_LIST:
 		m_cmbFuncKeyList.ResetContent();
-		for (int nIndex = 0; nIndex < TABLE_SIZE(StringTable::FunctionKeys); nIndex++)
-			m_cmbFuncKeyList.AddString(StringTable::FunctionKeys[nIndex].langString);
+		for (int index = 0; index < TABLE_SIZE(StringTable::FunctionKeys); index++)
+			m_cmbFuncKeyList.AddString(StringTable::FunctionKeys[index].langString);
 		break;
 
 	default:
@@ -854,7 +854,7 @@ void CHotkeySetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
 	}
 
 	// Default
-	SDialog::setupComboBox(nComboID, ptrLanguage);
+	SDialog::setupComboBox(nComboID, languageTablePtr);
 }
 
 /**
@@ -870,9 +870,9 @@ void CHotkeySetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	enableItem(IDC_HOTKEYSET_REMOVEALL_BTN, !bIsAllEmpty);
 
 	// Enable/disable buttons if data changed or not
-	bool bIsChanged = checkDataChangeState();
-	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-	enableItem(IDC_HOTKEYSET_APPLY_BTN, bIsChanged);
+	bool isChanged = checkDataChangeState();
+	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+	enableItem(IDC_HOTKEYSET_APPLY_BTN, isChanged);
 
 	// Update "Check All" button state
 	UpdateCheckAllBtnState();
@@ -899,8 +899,8 @@ void CHotkeySetDlg::UpdateCheckAllBtnState(bool bRecheck /* = true */)
 		return;
 
 	// Get number of items
-	int nItemNum = GetItemNum();
-	if (nItemNum == 0) {
+	int itemNum = GetItemNum();
+	if (itemNum == 0) {
 		// Disable both [Check/Uncheck All] buttons
 		pCheckAllBtn->EnableWindow(false);
 		pUncheckAllBtn->EnableWindow(false);
@@ -913,9 +913,9 @@ void CHotkeySetDlg::UpdateCheckAllBtnState(bool bRecheck /* = true */)
 		// Reset counter
 		m_nCheckCount = 0;
 		// Check for item states
-		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-			const Item& hksTemp = m_hksHotkeySetTemp.getItemAt(nIndex);
-			if (hksTemp.isEnabled() == true) {
+		for (int index = 0; index < itemNum; index++) {
+			const Item& tempHotkeyItem = m_hksHotkeySetTemp.getItemAt(index);
+			if (tempHotkeyItem.isEnabled() == true) {
 				// Increase counter
 				m_nCheckCount++;
 			}
@@ -929,7 +929,7 @@ void CHotkeySetDlg::UpdateCheckAllBtnState(bool bRecheck /* = true */)
 		// Disable [Uncheck All] button
 		pUncheckAllBtn->EnableWindow(false);
 	}
-	else if (m_nCheckCount == nItemNum) {
+	else if (m_nCheckCount == itemNum) {
 		// Disable [Check All] button
 		pCheckAllBtn->EnableWindow(false);
 		// Enable [Uncheck All] button
@@ -953,40 +953,40 @@ void CHotkeySetDlg::UpdateHotkeySet()
 	if (m_pHotkeySetListTable == NULL) return;
 
 	// If there's no item, do nothing
-	int nItemNum = GetItemNum();
-	if (nItemNum <= 0)
+	int itemNum = GetItemNum();
+	if (itemNum <= 0)
 		return;
 
 	// Load app language package
-	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Print items
 	String tempString;
 	int nTemp = -1;
-	int nItemIndex = 0;
+	int itemIndex = 0;
 	CGridCellCheck* pCellCheck = NULL;
-	for (int nRowIndex = startRowIndex; nRowIndex <= nItemNum; nRowIndex++) {
+	for (int nRowIndex = startRowIndex; nRowIndex <= itemNum; nRowIndex++) {
 
 		// Get item
-		nItemIndex = nRowIndex - startRowIndex;
-		const Item& hksItem = m_hksHotkeySetTemp.getItemAt(nItemIndex);
+		itemIndex = nRowIndex - startRowIndex;
+		const Item& hotkeyItem = m_hksHotkeySetTemp.getItemAt(itemIndex);
 
 		// Enable state
 		pCellCheck = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, ColumnID::EnableState);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(hksItem.isEnabled());
+			pCellCheck->SetCheck(hotkeyItem.isEnabled());
 		}
 
 		// Hotkey action
-		nTemp = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hksItem.getActionId()));
-		tempString = getLanguageString(ptrLanguage, nTemp);
+		nTemp = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hotkeyItem.getActionId()));
+		tempString = getLanguageString(languageTablePtr, nTemp);
 		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::HKActionID, tempString);
 
 		// Keystrokes
-		hksItem.printKeyStrokes(tempString);
+		hotkeyItem.printKeyStrokes(tempString);
 		if (IS_NULL_STRING(tempString)) {
 			// Undefined keystrokes
-			tempString = getLanguageString(ptrLanguage, HKEYSET_KEYSTROKES_NULL);
+			tempString = getLanguageString(languageTablePtr, HKEYSET_KEYSTROKES_NULL);
 		}
 		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::Keystrokes, tempString);
 	}
@@ -1036,10 +1036,10 @@ void CHotkeySetDlg::RedrawHotkeySetTable(bool bReadOnly /* = false */)
 
 /**
  * @brief	Display details of an item at specified index
- * @param	nIndex - Index of item to display
+ * @param	index - Index of item to display
  * @return	None
  */
-void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
+void CHotkeySetDlg::DisplayHotkeyDetails(int index)
 {
 	// Reset default control states
 	m_bCtrlBtn = false;
@@ -1047,7 +1047,7 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 	m_bWinKeyBtn = false;
 
 	// If index is invalid, display dummy details
-	if ((nIndex < 0) || (nIndex >= m_hksHotkeySetTemp.getItemNum())) {
+	if ((index < 0) || (index >= m_hksHotkeySetTemp.getItemNum())) {
 		m_cmbActionList.SetWindowText(_T("---"));
 		m_cmbFuncKeyList.SetWindowText(_T("---"));
 		UpdateData(false);
@@ -1055,26 +1055,26 @@ void CHotkeySetDlg::DisplayHotkeyDetails(int nIndex)
 	}
 
 	// Get item at index
-		const Item& hksCurItem = m_hksHotkeySetTemp.getItemAt(nIndex);
+		const Item& hksCurItem = m_hksHotkeySetTemp.getItemAt(index);
 
 	// Get item keycode
-	DWORD dwModifiers, dwVirtualKey;
-	hksCurItem.getKeyCode(dwModifiers, dwVirtualKey);
+	DWORD modifiers, virtualKey;
+	hksCurItem.getKeyCode(modifiers, virtualKey);
 
 	// Update checkboxes
 	m_bCtrlBtn = false;
-	if (dwModifiers & MOD_CONTROL)		m_bCtrlBtn = true;
+	if (modifiers & MOD_CONTROL)		m_bCtrlBtn = true;
 	m_bAltBtn = false;
-	if (dwModifiers & MOD_ALT)			m_bAltBtn = true;
+	if (modifiers & MOD_ALT)			m_bAltBtn = true;
 	m_bWinKeyBtn = false;
-	if (dwModifiers & MOD_WIN)			m_bWinKeyBtn = true;
+	if (modifiers & MOD_WIN)			m_bWinKeyBtn = true;
 
 	// Update combo-boxes
-	unsigned nActionID = GetPairedID(IDTable::HKActionID, hksCurItem.getActionId());
-	m_cmbActionList.SetCurSel(AppCore::opt2Sel(APP_ACTION, nActionID));
+	unsigned actionId = GetPairedID(IDTable::HKActionID, hksCurItem.getActionId());
+	m_cmbActionList.SetCurSel(AppCore::opt2Sel(APP_ACTION, actionId));
 	m_cmbFuncKeyList.SetWindowText(_T("---"));
-	if (dwVirtualKey > 0)
-		m_cmbFuncKeyList.SetCurSel(dwVirtualKey - VK_F1);
+	if (virtualKey > 0)
+		m_cmbFuncKeyList.SetCurSel(virtualKey - VK_F1);
 
 	UpdateData(false);
 }
@@ -1096,9 +1096,9 @@ void CHotkeySetDlg::updateLayoutInfo(void)
 	int nColNum = m_pHotkeySetListTable->GetColumnCount();
 
 	// Update size of table columns
-	for (int nIndex = 0; nIndex < nColNum; nIndex++) {
-		int nColSize = m_pHotkeySetListTable->GetColumnWidth(nIndex);
-		m_apGrdColFormat[nIndex].width = nColSize;
+	for (int index = 0; index < nColNum; index++) {
+		int nColSize = m_pHotkeySetListTable->GetColumnWidth(index);
+		m_apGrdColFormat[index].width = nColSize;
 	}
 }
 
@@ -1124,20 +1124,20 @@ void CHotkeySetDlg::loadLayoutInfo(void)
 	// Initialize table format info data
 	if (m_apGrdColFormat == NULL) {
 		m_apGrdColFormat = new GRIDCTRLCOLFORMAT[m_nColNum];
-		for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
+		for (int index = 0; index < m_nColNum; index++) {
 			// Copy default table column format data
-			m_apGrdColFormat[nIndex] = arrGrdColFormat[nIndex];
+			m_apGrdColFormat[index] = arrGrdColFormat[index];
 		}
 	}
 
 	// Load layout info data from registry
-	int nRet = 0;
+	int returnValue = 0;
 	String keyName;
-	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		keyName = Key::LayoutInfo::GridColSize(nIndex);
-		if (GetLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, nRet)) {
+	for (int index = 0; index < m_nColNum; index++) {
+		keyName = Key::LayoutInfo::GridColSize(index);
+		if (GetLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, returnValue)) {
 			if (m_apGrdColFormat != NULL) {
-				m_apGrdColFormat[nIndex].width = nRet;
+				m_apGrdColFormat[index].width = returnValue;
 			}
 		}
 	}
@@ -1156,9 +1156,9 @@ void CHotkeySetDlg::saveLayoutInfo(void)
 	// Save layout info data to registry
 	int nRef = 0;
 	String keyName;
-	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		nRef = m_apGrdColFormat[nIndex].width;
-		keyName = Key::LayoutInfo::GridColSize(nIndex);
+	for (int index = 0; index < m_nColNum; index++) {
+		nRef = m_apGrdColFormat[index].width;
+		keyName = Key::LayoutInfo::GridColSize(index);
 		WriteLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, nRef);
 	}
 }
@@ -1171,15 +1171,15 @@ void CHotkeySetDlg::saveLayoutInfo(void)
 bool CHotkeySetDlg::LoadHotkeySetData()
 {
 	// Get app hotkeyset data pointer
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	VERIFY(pApp != NULL);
-	if (pApp == NULL) return false;
-	HotkeySetData* phksData = pApp->getAppHotkeySetData();
-	if (phksData == NULL)
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	VERIFY(theAppPtr != NULL);
+	if (theAppPtr == NULL) return false;
+	HotkeySetData* hotkeySetDataPtr = theAppPtr->getAppHotkeySetData();
+	if (hotkeySetDataPtr == NULL)
 		return false;
 
 	// Copy data
-	m_hksHotkeySet.copy(*phksData);
+	m_hksHotkeySet.copy(*hotkeySetDataPtr);
 	m_hksHotkeySetTemp.copy(m_hksHotkeySet);
 
 	// Reset change flag
@@ -1202,17 +1202,17 @@ bool CHotkeySetDlg::SaveHotkeySetData()
 	setFlagValue(AppFlagID::dialogDataChanged, false);
 
 	// Save app HotkeySet data
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	VERIFY(pApp != NULL);
-	if (pApp == NULL) return false;
-	pApp->setAppHotkeySetData(&m_hksHotkeySet);
-	pApp->saveRegistryAppData(APPDATA_HOTKEYSET);
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	VERIFY(theAppPtr != NULL);
+	if (theAppPtr == NULL) return false;
+	theAppPtr->setAppHotkeySetData(&m_hksHotkeySet);
+	theAppPtr->saveRegistryAppData(APPDATA_HOTKEYSET);
 
 	// Notify main dialog to re-update HotkeySet data
-	CPowerPlusDlg* pMainDlg = (CPowerPlusDlg*)(pApp->GetMainWnd());
-	VERIFY(pMainDlg != NULL);
-	if (pMainDlg == NULL) return false;
-	pMainDlg->PostMessage(SM_APP_UPDATE_HOTKEYSETDATA, NULL, NULL);
+	CPowerPlusDlg* mainDialogPtr = (CPowerPlusDlg*)(theAppPtr->GetMainWnd());
+	VERIFY(mainDialogPtr != NULL);
+	if (mainDialogPtr == NULL) return false;
+	mainDialogPtr->PostMessage(SM_APP_UPDATE_HOTKEYSETDATA, NULL, NULL);
 
 	return true;
 }
@@ -1224,10 +1224,10 @@ bool CHotkeySetDlg::SaveHotkeySetData()
  */
 bool CHotkeySetDlg::checkDataChangeState()
 {
-	bool bChangeFlag = false;
+	bool changeFlag = false;
 
 	// Update enable state of all item before checking
-	int nItemIndex = 0;
+	int itemIndex = 0;
 	CGridCellCheck* pCellCheckEnable = NULL;
 	for (int nRowIndex = startRowIndex; nRowIndex <= GetItemNum(); nRowIndex++) {
 		// Get checkbox cell
@@ -1235,34 +1235,34 @@ bool CHotkeySetDlg::checkDataChangeState()
 		if (pCellCheckEnable == NULL) continue;
 
 		// Get checked states
-		bool bEnabled = pCellCheckEnable->GetCheck();
+		bool isEnabled = pCellCheckEnable->GetCheck();
 
 		// Update item checked state
-		nItemIndex = nRowIndex - startRowIndex;
-		Item& hksTempItem = m_hksHotkeySetTemp.getItemAt(nItemIndex);
-		hksTempItem.enableItem(bEnabled);
+		itemIndex = nRowIndex - startRowIndex;
+		Item& hksTempItem = m_hksHotkeySetTemp.getItemAt(itemIndex);
+		hksTempItem.enableItem(isEnabled);
 	}
 
 	// Check if number of items changed
-	bChangeFlag |= (m_hksHotkeySetTemp.getItemNum() != m_hksHotkeySet.getItemNum());
-	if (bChangeFlag == true)
-		return bChangeFlag;
+	changeFlag |= (m_hksHotkeySetTemp.getItemNum() != m_hksHotkeySet.getItemNum());
+	if (changeFlag == true)
+		return changeFlag;
 
 	// Check if each item's data changed
-	for (int nIndex = 0; nIndex < m_hksHotkeySetTemp.getItemNum(); nIndex++) {
+	for (int index = 0; index < m_hksHotkeySetTemp.getItemNum(); index++) {
 		// Get current item and temp item
-		const Item& hksCurItem = m_hksHotkeySet.getItemAt(nIndex);
-		const Item& hksTempItem = m_hksHotkeySetTemp.getItemAt(nIndex);
+		const Item& hksCurItem = m_hksHotkeySet.getItemAt(index);
+		const Item& hksTempItem = m_hksHotkeySetTemp.getItemAt(index);
  
 		// Data comparison
-		bChangeFlag |= (hksTempItem.isEnabled() != hksCurItem.isEnabled());
-		bChangeFlag |= (hksTempItem.compare(hksCurItem) != true);
+		changeFlag |= (hksTempItem.isEnabled() != hksCurItem.isEnabled());
+		changeFlag |= (hksTempItem.compare(hksCurItem) != true);
 
 		// Stop on the first different item encountered
-		if (bChangeFlag == true) break;
+		if (changeFlag == true) break;
 	}
 
-	return bChangeFlag;
+	return changeFlag;
 }
 
 /**
@@ -1276,35 +1276,35 @@ void CHotkeySetDlg::Add(void)
 	UpdateData(true);
 
 	// Create temp hotkeyset item
-	Item hksTemp = {0};
+	Item tempHotkeyItem = {0};
 
 	// Keycode
-	DWORD dwModifiers = 0, dwVirtualKey = 0;
+	DWORD modifiers = 0, virtualKey = 0;
 
 	// Update modifier keys
-	if (m_bCtrlBtn == true)		dwModifiers |= MOD_CONTROL;
-	if (m_bAltBtn == true)		dwModifiers |= MOD_ALT;
-	if (m_bWinKeyBtn == true)	dwModifiers |= MOD_WIN;
+	if (m_bCtrlBtn == true)		modifiers |= MOD_CONTROL;
+	if (m_bAltBtn == true)		modifiers |= MOD_ALT;
+	if (m_bWinKeyBtn == true)	modifiers |= MOD_WIN;
 
 	// Update action ID
-	int nCurSel = m_cmbActionList.GetCurSel();
-	int nHKActionID = IDTable::HKActionID[nCurSel].first;
-	hksTemp.setActionId(nHKActionID);
+	int currenSelection = m_cmbActionList.GetCurSel();
+	int hotkeyActionId = IDTable::HKActionID[currenSelection].first;
+	tempHotkeyItem.setActionId(hotkeyActionId);
 
 	// Update virtual key code
-	nCurSel = m_cmbFuncKeyList.GetCurSel();
-	dwVirtualKey = (nCurSel + VK_F1);
+	currenSelection = m_cmbFuncKeyList.GetCurSel();
+	virtualKey = (currenSelection + VK_F1);
 
 	// Update item hotkey code
-	hksTemp.setKeyCode(dwModifiers, dwVirtualKey);
+	tempHotkeyItem.setKeyCode(modifiers, virtualKey);
 
 	// Check data validity
-	bool bValid = Validate(hksTemp, true);
+	bool bValid = Validate(tempHotkeyItem, true);
 	if (bValid == false)
 		return;
 
 	// Update item to HotkeySet data list
-	m_hksHotkeySetTemp.update(hksTemp);
+	m_hksHotkeySetTemp.update(tempHotkeyItem);
 
 	// Refresh button state
 	refreshDialogItemState();
@@ -1312,13 +1312,13 @@ void CHotkeySetDlg::Add(void)
 
 /**
  * @brief	Remove a HotkeySet item by index
- * @param	nIndex - Index of item to remove
+ * @param	index - Index of item to remove
  * @return	None
  */
-void CHotkeySetDlg::Remove(int nIndex)
+void CHotkeySetDlg::Remove(int index)
 {
 	// Remove item at index
-	m_hksHotkeySetTemp.remove(nIndex);
+	m_hksHotkeySetTemp.remove(index);
 
 	// Refresh button state
 	refreshDialogItemState();
@@ -1346,11 +1346,11 @@ void CHotkeySetDlg::RemoveAll(void)
 void CHotkeySetDlg::SwitchAllItemState(bool bState)
 {
 	// Check/uncheck all --> Update all item enable state
-	int nItemNum = m_hksHotkeySetTemp.getItemNum();
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		Item& hksTemp = m_hksHotkeySetTemp.getItemAt(nIndex);
-		if (hksTemp.isEnabled() != bState) {
-			hksTemp.enableItem(bState);
+	int itemNum = m_hksHotkeySetTemp.getItemNum();
+	for (int index = 0; index < itemNum; index++) {
+		Item& tempHotkeyItem = m_hksHotkeySetTemp.getItemAt(index);
+		if (tempHotkeyItem.isEnabled() != bState) {
+			tempHotkeyItem.enableItem(bState);
 		}
 	}
 
@@ -1363,77 +1363,77 @@ void CHotkeySetDlg::SwitchAllItemState(bool bState)
 
 /**
  * @brief	Check hotkeyset item validity
- * @param	hksItem  - Item to validate
+ * @param	hotkeyItem  - Item to validate
  * @param	bShowMsg - Show validation message box or not
  * @return	bool - Result of validation process
  */
-bool CHotkeySetDlg::Validate(const Item& hksItem, bool bShowMsg /* = false */)
+bool CHotkeySetDlg::Validate(const Item& hotkeyItem, bool bShowMsg /* = false */)
 {
-	bool bResult = true;
-	int nMsgStringID;
+	bool result = true;
+	int messageStringId;
 	StringArray arrMsgString;
 	arrMsgString.clear();
 
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check action ID
-	if ((hksItem.getActionId() < HKID::displayOff) || (hksItem.getActionId() > HKID::hibernate)) {
-		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_ACTIONID;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+	if ((hotkeyItem.getActionId() < HKID::displayOff) || (hotkeyItem.getActionId() > HKID::hibernate)) {
+		messageStringId = MSGBOX_HOTKEYSET_INVALIDITEM_ACTIONID;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 	}
 
 	// Get item keycode
-	DWORD dwModifiers, dwVirtualKey;
-	hksItem.getKeyCode(dwModifiers, dwVirtualKey);
+	DWORD modifiers, virtualKey;
+	hotkeyItem.getKeyCode(modifiers, virtualKey);
 
 	// Validate modifier keys
-	if ((dwModifiers <= 0) ||
-		((dwModifiers & MOD_CONTROL) == false) && ((dwModifiers & MOD_ALT) == false) && ((dwModifiers & MOD_WIN) == false)) {
-		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_CTRLKEY;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+	if ((modifiers <= 0) ||
+		((modifiers & MOD_CONTROL) == false) && ((modifiers & MOD_ALT) == false) && ((modifiers & MOD_WIN) == false)) {
+		messageStringId = MSGBOX_HOTKEYSET_INVALIDITEM_CTRLKEY;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 	}
 
 	// Validate virtual key code
-	if ((dwVirtualKey < VK_F1) || (dwVirtualKey > VK_F12)) {
-		nMsgStringID = MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+	if ((virtualKey < VK_F1) || (virtualKey > VK_F12)) {
+		messageStringId = MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 	}
 
 	// Check if system hotkey existed
 	int nExistedSysHotkeyNum = TABLE_SIZE(OtherTable::ExistedSysHotkeyList);
-	for (int nIndex = 0; nIndex < nExistedSysHotkeyNum; nIndex++) {
-		if ((dwModifiers == OtherTable::ExistedSysHotkeyList[nIndex].modifiers) &&
-			(dwVirtualKey == OtherTable::ExistedSysHotkeyList[nIndex].virtualKey)) {
+	for (int index = 0; index < nExistedSysHotkeyNum; index++) {
+		if ((modifiers == OtherTable::ExistedSysHotkeyList[index].modifiers) &&
+			(virtualKey == OtherTable::ExistedSysHotkeyList[index].virtualKey)) {
 			// Hotkey info format
 			String keyStrokesString = Constant::String::Empty;
-			if (dwModifiers & MOD_CONTROL)	keyStrokesString += _T("Ctrl + ");
-			if (dwModifiers & MOD_ALT)		keyStrokesString += _T("Alt + ");
-			if (dwModifiers & MOD_WIN)		keyStrokesString += _T("Win + ");
-			keyStrokesString += GetString(StringTable::FunctionKeys, dwVirtualKey);
+			if (modifiers & MOD_CONTROL)	keyStrokesString += _T("Ctrl + ");
+			if (modifiers & MOD_ALT)		keyStrokesString += _T("Alt + ");
+			if (modifiers & MOD_WIN)		keyStrokesString += _T("Win + ");
+			keyStrokesString += GetString(StringTable::FunctionKeys, virtualKey);
 			String keyInfoString = Constant::String::Empty;
-			keyInfoString.format(_T("%s - %s"), keyStrokesString.getString(), getLanguageString(pLang, OtherTable::ExistedSysHotkeyList[nIndex].hotkeyDescription));
+			keyInfoString.format(_T("%s - %s"), keyStrokesString.getString(), getLanguageString(languageTablePtr, OtherTable::ExistedSysHotkeyList[index].hotkeyDescription));
 
 			// Message format
 			String messageFormat;
-			messageFormat.format(getLanguageString(pLang, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), keyInfoString.getString());
+			messageFormat.format(getLanguageString(languageTablePtr, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), keyInfoString.getString());
 
 			arrMsgString.push_back(messageFormat);
-			bResult = false;
+			result = false;
 		}
 	}
 	
 	// Show error message if enabled
 	if ((bShowMsg == true) && (!arrMsgString.empty())) {
-		for (int nIndex = 0; nIndex < arrMsgString.size(); nIndex++) {
-			displayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
+		for (int index = 0; index < arrMsgString.size(); index++) {
+			displayMessageBox(arrMsgString.at(index), NULL, MB_OK | MB_ICONERROR);
 		}
 	}
 
 	// Remove all message after displaying
 	arrMsgString.clear();
-	return bResult;
+	return result;
 }

@@ -153,12 +153,12 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	afx_msg void OnDestroy();
-	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnActivate(UINT state, CWnd* otherWndPtr, BOOL isMinimized);
+	afx_msg void OnMouseMove(UINT flags, CPoint point);
 	afx_msg LRESULT OnChildDialogInit(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnChildDialogDestroy(WPARAM wParam, LPARAM lParam);
-	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual void OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr);
+	virtual BOOL PreTranslateMessage(MSG* messagePtr);
 	virtual int	 PreDestroyDialog();
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -418,11 +418,11 @@ public:
 
 	// Data processing functions
 	virtual void updateDialogData(bool saveAndValidate = true);
-	virtual int  getAppOption(AppOptionID eAppOptionId, bool isTemp = false) const;
+	virtual int  getAppOption(AppOptionID optionId, bool isTemp = false) const;
 
 	// Dialog flag management
-	virtual int  getFlagValue(AppFlagID eFlagId) const;
-	virtual void setFlagValue(AppFlagID eFlagId, int value);
+	virtual int  getFlagValue(AppFlagID flagId) const;
+	virtual void setFlagValue(AppFlagID flagId, int value);
 	FlagManager& getAppFlagManager(void) {
 		return ((SWinApp*)AfxGetApp())->getAppFlagManager();
 	}

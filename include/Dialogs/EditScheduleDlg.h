@@ -72,8 +72,8 @@ public:
 
 	// Member functions
 	void setupLanguage();
-	void setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
-	void SetupActiveDayList(LANGTABLE_PTR ptrLanguage);
+	void setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr);
+	void SetupActiveDayList(LANGTABLE_PTR languageTablePtr);
 	void DrawActiveDayTable(bool bReadOnly = false);
 
 	// Dialog item properties functions
@@ -83,8 +83,8 @@ public:
 	void RedrawActiveDayTable(bool bReadOnly = false);
 
 	// Data processing functions
-	void GetScheduleItem(PScheduleItem pschItem);
-	void SetScheduleItem(const ScheduleItem& pschItem);
+	void GetScheduleItem(PScheduleItem scheduleItemPtr);
+	void SetScheduleItem(const ScheduleItem& scheduleItemPtr);
 	void UpdateScheduleItem(void);
 	void SaveScheduleItem(void);
 
@@ -96,7 +96,7 @@ public:
 public:
 	// Get/set functions
 	int	GetDispMode(void) const;
-	void SetDispMode(int nMode);
+	void SetDispMode(int mode);
 
 protected:
 	// Message handlers

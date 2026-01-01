@@ -57,9 +57,9 @@ public:
 	// Generated message handle functions
 	virtual BOOL OnInitDialog();
 	virtual void OnDestroy();
-	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	afx_msg void OnActivate(UINT state, CWnd* otherWndPtr, BOOL isMinimized);
 	afx_msg void OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnCheckboxClicked(UINT nID);
+	afx_msg void OnCheckboxClicked(UINT id);
 
 protected:
 	// Dialog and items setup functions
@@ -67,14 +67,14 @@ protected:
 	virtual void setupDialogItemState();
 	virtual void refreshDialogItemState(bool bRecheckState = false);
 
-	void SetSnoozeIntervalEdit(int nValue);
+	void SetSnoozeIntervalEdit(int value);
 	
 	// Get/set value functions
 	int GetSnoozeInterval() const {
 		return m_nSnoozeInterval;
 	};
-	void SetSnoozeInterval(int nValue) {
-		m_nSnoozeInterval = nValue;
+	void SetSnoozeInterval(int value) {
+		m_nSnoozeInterval = value;
 	};
 
 public:

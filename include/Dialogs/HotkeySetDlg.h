@@ -33,7 +33,7 @@ public:
 	};
 
 public:
-	CHotkeySetDlg(CWnd* pParent = nullptr);				// standard constructor
+	CHotkeySetDlg(CWnd* parentWnd = nullptr);				// standard constructor
 	virtual ~CHotkeySetDlg();							// destructor
 
 	// Dialog Data
@@ -98,9 +98,9 @@ public:
 protected:
 	// Dialog setup functions
 	void setupLanguage();
-	void SetupHotkeySetList(LANGTABLE_PTR ptrLanguage);
+	void SetupHotkeySetList(LANGTABLE_PTR languageTablePtr);
 	void DrawHotkeySetTable(bool bReadOnly = false);
-	void setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
+	void setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr);
 
 	// Dialog item properties functions
 	void refreshDialogItemState(bool bRecheckState = false);
@@ -108,7 +108,7 @@ protected:
 	void UpdateHotkeySet();
 	void DisableHotkeySetTable(bool bDisable);
 	void RedrawHotkeySetTable(bool bReadOnly = false);
-	void DisplayHotkeyDetails(int nIndex);
+	void DisplayHotkeyDetails(int index);
 
 	// Layout functions
 	void updateLayoutInfo(void);
@@ -122,10 +122,10 @@ protected:
 
 	// Data processing handlers
 	void Add(void);
-	void Remove(int nIndex);
+	void Remove(int index);
 	void RemoveAll(void);
 	void SwitchAllItemState(bool bState);
-	bool Validate(const Item& hksItem, bool bShowMsg = false);
+	bool Validate(const Item& hotkeyItem, bool bShowMsg = false);
 
 protected:
 	// Get/set functions

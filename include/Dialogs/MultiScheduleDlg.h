@@ -89,7 +89,7 @@ public:
 
 	// Member functions
 	void setupLanguage();
-	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
+	void SetupDataItemList(LANGTABLE_PTR languageTablePtr);
 	void DrawDataTable(bool bReadOnly = false);
 
 	// Layout functions
@@ -112,12 +112,12 @@ public:
 	bool checkDataChangeState();
 
 	// Data processing handlers
-	void Add(Item& schItem);
-	void Update(Item& schItem);
-	void Remove(int nIndex);
+	void Add(Item& scheduleItem);
+	void Update(Item& scheduleItem);
+	void Remove(int index);
 	void RemoveAll();
 	void SetAllItemState(bool bState);
-	bool Validate(Item& schItem, bool bShowMsg = false, bool bAutoCorrect = false);
+	bool Validate(Item& scheduleItem, bool bShowMsg = false, bool bAutoCorrect = false);
 
 	// Message handlers
 	afx_msg void OnApply();

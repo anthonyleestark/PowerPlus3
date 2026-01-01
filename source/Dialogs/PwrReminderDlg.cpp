@@ -40,8 +40,8 @@ IMPLEMENT_DYNAMIC(CPwrReminderDlg, SDialog)
 /**
  * @brief	Constructor
  */
-CPwrReminderDlg::CPwrReminderDlg(CWnd* pParent /*=nullptr*/)
-	: SDialog(IDD_PWRREMINDER_DLG, pParent)
+CPwrReminderDlg::CPwrReminderDlg(CWnd* parentWnd /*=nullptr*/)
+	: SDialog(IDD_PWRREMINDER_DLG, parentWnd)
 {
 	// Initialize member variables
 	m_pDataItemListTable = NULL;
@@ -164,11 +164,11 @@ void CPwrReminderDlg::DoDataExchange(CDataExchange* pDX)
  */
 int CPwrReminderDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::registerDialogManagement();
-	if (nRet != 0) {
+	size_t returnValue = SDialog::registerDialogManagement();
+	if (returnValue != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return nRet;
+		return returnValue;
 	}
 
 	// Get control manager
@@ -176,40 +176,40 @@ int CPwrReminderDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_ITEM_LISTBOX, List_Control);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_ADD_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EDIT_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_REMOVE_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_REMOVEALL_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_CHECKALL_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_UNCHECKALL_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_PREVIEW_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_APPLY_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_CANCEL_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_DETAIL_STATIC, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_TITLE, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_EDITBOX, Edit_Control);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_COUNTER, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_TITLE, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX, Edit_Control);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_SPIN, Spin_Control);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_REPEATSET_BTN, Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_TITLE, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN, Radio_Button);
-		nRet = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_ITEM_LISTBOX, List_Control);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_ADD_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EDIT_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_REMOVE_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_REMOVEALL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_CHECKALL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_UNCHECKALL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_PREVIEW_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_APPLY_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_CANCEL_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_DETAIL_STATIC, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_TITLE, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_EDITBOX, Edit_Control);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTRING_COUNTER, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_TITLE, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX, Edit_Control);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SETTIME_SPIN, Spin_Control);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_REPEATSET_BTN, Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_APPSTARTUP_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_SYSWAKEUP_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_BFRPWRACTION_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_PWRACTIONWAKE_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_EVENT_ATAPPEXIT_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_TITLE, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_MSGBOX_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_DIALOG_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE, Static_Text);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_USECOMMON_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_USECUSTOM_RADBTN, Radio_Button);
+		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZE_BTN, Button);
 	}
 
-	return nRet;
+	return returnValue;
 }
 
 /**
@@ -363,10 +363,10 @@ BOOL CPwrReminderDlg::OnInitDialog()
 
 	// Read-only mode (if enabled)
 	if (isReadOnlyMode() == true) {
-		CWnd* pWndChild = GetTopWindow();
-		while (pWndChild != NULL) {
-			pWndChild->EnableWindow(false);
-			pWndChild = pWndChild->GetWindow(GW_HWNDNEXT);
+		CWnd* childWndPtr = GetTopWindow();
+		while (childWndPtr != NULL) {
+			childWndPtr->EnableWindow(false);
+			childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT);
 		}
 	}
 
@@ -397,9 +397,9 @@ void CPwrReminderDlg::OnClose()
 		}
 
 		// Ask for saving before exiting if data changed
-		bool bIsChanged = checkDataChangeState();
-		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-		if (bIsChanged == true) {
+		bool isChanged = checkDataChangeState();
+		setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+		if (isChanged == true) {
 			// Show save confirmation message
 			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
@@ -442,9 +442,9 @@ void CPwrReminderDlg::OnApply()
 	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_APPLY_BTN);
 
 	// Save data if changed
-	bool bIsChanged = checkDataChangeState();
-	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-	if (bIsChanged == true) {
+	bool isChanged = checkDataChangeState();
+	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+	if (isChanged == true) {
 		// Save data
 		SavePwrReminderData();
 	}
@@ -480,9 +480,9 @@ void CPwrReminderDlg::OnCancel()
 		}
 
 		// Ask for saving before exiting if data changed
-		bool bIsChanged = checkDataChangeState();
-		setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-		if (bIsChanged == true) {
+		bool isChanged = checkDataChangeState();
+		setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+		if (isChanged == true) {
 			// Show save confirmation message
 			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
 			if (nConfirm == IDYES) {
@@ -582,22 +582,22 @@ void CPwrReminderDlg::OnRemove()
 	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_REMOVE_BTN);
 
 	// If there's no item, do nothing
-	int nItemNum = GetItemNum();
-	if (nItemNum <= 0)
+	int itemNum = GetItemNum();
+	if (itemNum <= 0)
 		return;
 
 	// Get current select item index
-	int nIndex = m_nCurSelIndex;
+	int index = m_nCurSelIndex;
 
 	// If item at selected index is empy, do nothing
-	if (m_pwrReminderDataTemp.isEmpty(nIndex) == true)
+	if (m_pwrReminderDataTemp.isEmpty(index) == true)
 		return;
 
 	// Ask before remove
 	int nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
 	if (nConfirm == IDYES) {
 		// Remove item
-		Remove(nIndex);
+		Remove(index);
 	}
 }
 
@@ -674,13 +674,13 @@ void CPwrReminderDlg::OnPreviewItem()
 		return;
 
 	// Get current selection index
-	int nCurSel = m_nCurSelIndex;
-	if (m_pwrReminderDataTemp.isEmpty(nCurSel) == true)
+	int currenSelection = m_nCurSelIndex;
+	if (m_pwrReminderDataTemp.isEmpty(currenSelection) == true)
 		return;
 
 	// Preview item
-	int nIndex = nCurSel;
-	PreviewItem(nIndex);
+	int index = currenSelection;
+	PreviewItem(index);
 }
 
 /**
@@ -731,8 +731,8 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	int nClickedRow = pItem->iRow;
 
 	// Check value validity
-	int nItemNum = GetItemNum();
-	if ((nClickedRow <= Constant::UI::GridCtrl::Index::Header_Row) || (nClickedRow > nItemNum)) {
+	int itemNum = GetItemNum();
+	if ((nClickedRow <= Constant::UI::GridCtrl::Index::Header_Row) || (nClickedRow > itemNum)) {
 		return;
 	}
 
@@ -763,8 +763,8 @@ void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 	int nClickedRow = pItem->iRow;
 
 	// Check value validity
-	int nItemNum = GetItemNum();
-	if ((nClickedRow <= Constant::UI::GridCtrl::Index::Header_Row) || (nClickedRow > nItemNum)) {
+	int itemNum = GetItemNum();
+	if ((nClickedRow <= Constant::UI::GridCtrl::Index::Header_Row) || (nClickedRow > itemNum)) {
 		return;
 	}
 
@@ -915,14 +915,14 @@ void CPwrReminderDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 
 /**
  * @brief	Handle clicked for event radio buttons
- * @param	nID - ID of button
+ * @param	id - ID of button
  * @return	None
  */
-void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
+void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT id)
 {
 	// Ignore if clicked on items with in-range IDs but not radio buttons
-	if ((nID == IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX) ||
-		(nID == IDC_PWRREMINDER_EVENT_SETTIME_SPIN))
+	if ((id == IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX) ||
+		(id == IDC_PWRREMINDER_EVENT_SETTIME_SPIN))
 		return;
 
 	// Get EventSetTime radio button
@@ -940,7 +940,7 @@ void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
 		return;
 
 	// Update checked state
-	int nState = m_pEvtSetTimeRad->GetCheck();
+	int state = m_pEvtSetTimeRad->GetCheck();
 
 	// Check control validity
 	if (m_pEvtSetTimeEdit == NULL) {
@@ -961,7 +961,7 @@ void CPwrReminderDlg::OnPwrEventRadBtnClicked(UINT nID)
 	}
 
 	// Enable/disable time spinedit and [RepeatSet] button
-	if (nState == 1) {
+	if (state == 1) {
 		m_pEvtSetTimeEdit->EnableWindow(true);
 		m_pEvtSetTimeSpin->EnableWindow(true);
 		m_pEvtRepeatSetBtn->EnableWindow(true);
@@ -1007,8 +1007,8 @@ void CPwrReminderDlg::OnRepeatSet()
 		}
 		else {
 			// Set dialog alignment
-			unsigned nAlign = SDA_LEFTALIGN | SDA_TOPALIGN;
-			m_pRepeatSetDlg->setAlignment(nAlign);
+			unsigned alignment = SDA_LEFTALIGN | SDA_TOPALIGN;
+			m_pRepeatSetDlg->setAlignment(alignment);
 
 			// Get button top-right point
 			Point btnTopRight(rcButton.right, rcButton.top);
@@ -1109,9 +1109,9 @@ LRESULT CPwrReminderDlg::requestCloseDialog(void)
 	}
 
 	// Ask for saving before exiting if data changed
-	bool bIsChanged = checkDataChangeState();
-	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
-	if (bIsChanged == true) {
+	bool isChanged = checkDataChangeState();
+	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
+	if (isChanged == true) {
 		nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
 		if (nConfirm == IDYES) {
 			// Save data
@@ -1191,18 +1191,18 @@ LRESULT CPwrReminderDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 void CPwrReminderDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
 	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup language for each one of them
-	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	for (CWnd* childWndPtr = GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
 		// Get item ID
-		unsigned nID = pWndChild->GetDlgCtrlID();
+		unsigned id = childWndPtr->GetDlgCtrlID();
 
-		switch (nID)
+		switch (id)
 		{
 		case IDC_PWRREMINDER_DETAIL_STATIC:
 		case IDC_PWRREMINDER_ITEM_LISTBOX:
@@ -1218,13 +1218,13 @@ void CPwrReminderDlg::setupLanguage()
 			break;
 
 		default:
-			setControlText(pWndChild, nID, pAppLang);
+			setControlText(childWndPtr, id, languageTablePtr);
 			break;
 		}
 	}
 
 	// Setup data item list
-	SetupDataItemList(pAppLang);
+	SetupDataItemList(languageTablePtr);
 
 	// Default
 	SDialog::setupLanguage();
@@ -1232,10 +1232,10 @@ void CPwrReminderDlg::setupLanguage()
 
 /**
  * @brief	Initialize and setup language for Power Reminder data item list
- * @param	ptrLanguage - Language package pointer
+ * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
+void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR languageTablePtr)
 {
 	// Get parent list frame rect
 	CWnd* pListFrameWnd = GetDlgItem(IDC_PWRREMINDER_ITEM_LISTBOX);
@@ -1256,8 +1256,8 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 
 	// Create table
 	if (m_pDataItemListTable == NULL) return;
-	DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
-	m_pDataItemListTable->Create(rcListFrameWnd, this, IDC_PWRREMINDER_ITEM_LISTBOX, dwStyle);
+	DWORD style = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
+	m_pDataItemListTable->Create(rcListFrameWnd, this, IDC_PWRREMINDER_ITEM_LISTBOX, style);
 
 	// Destroy frame
 	pListFrameWnd->DestroyWindow();
@@ -1283,7 +1283,7 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
 	m_pDataItemListTable->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Header);
 
 	// Draw table
-	DrawDataTable(m_pszFrameWndSize, nColNum, nRowNum, false, ptrLanguage);
+	DrawDataTable(m_pszFrameWndSize, nColNum, nRowNum, false, languageTablePtr);
 
 	// Update layout info
 	updateLayoutInfo();
@@ -1307,10 +1307,10 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR ptrLanguage)
  * @param	nColNum			- Number of table columns
  * @param	nRowNum			- Number of table rows
  * @param	bReadOnly		- Read-only mode
- * @param	ptrLanguage		- Pointer to app language
+ * @param	languageTablePtr		- Pointer to app language
  * @return	None
  */
-void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly /* = false */, LANGTABLE_PTR ptrLanguage /* = NULL */)
+void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly /* = false */, LANGTABLE_PTR languageTablePtr /* = NULL */)
 {
 	// Check table validity
 	if (m_pDataItemListTable == NULL)
@@ -1325,12 +1325,12 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 		return;
 
 	// Get app pointer
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	if (pApp == NULL) return;
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	if (theAppPtr == NULL) return;
 
 	// Load app language package
-	if (ptrLanguage == NULL) {
-		ptrLanguage = pApp->getAppLanguage();
+	if (languageTablePtr == NULL) {
+		languageTablePtr = theAppPtr->getAppLanguage();
 	}
 
 	// Re-update default cell properties
@@ -1375,7 +1375,7 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 		String headerTitle = Constant::String::Empty;
 		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = getLanguageString(ptrLanguage, nHeaderTitleID);
+			headerTitle = getLanguageString(languageTablePtr, nHeaderTitleID);
 		}
 		m_pDataItemListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
@@ -1452,10 +1452,10 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 /**
  * @brief	Setup data for combo-boxes
  * @param	nComboID	- ID of combo box
- * @param	ptrLanguage - Language package pointer
+ * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CPwrReminderDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage)
+void CPwrReminderDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr)
 {
 	// Check combo validity
 	if (m_pMsgStyleCombo == NULL) return;
@@ -1464,8 +1464,8 @@ void CPwrReminderDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage
 	{
 	case IDC_PWRREMINDER_MSGSTYLE_COMBO:
 		m_pMsgStyleCombo->ResetContent();
-		m_pMsgStyleCombo->AddString(getLanguageString(ptrLanguage, COMBOBOX_MSGSTYLE_MESSAGEBOX));		// Message Box
-		m_pMsgStyleCombo->AddString(getLanguageString(ptrLanguage, COMBOBOX_MSGSTYLE_DIALOGBOX));		// Dialog Box
+		m_pMsgStyleCombo->AddString(getLanguageString(languageTablePtr, COMBOBOX_MSGSTYLE_MESSAGEBOX));		// Message Box
+		m_pMsgStyleCombo->AddString(getLanguageString(languageTablePtr, COMBOBOX_MSGSTYLE_DIALOGBOX));		// Dialog Box
 		break;
 
 	default:
@@ -1473,7 +1473,7 @@ void CPwrReminderDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage
 	}
 
 	// Default
-	SDialog::setupComboBox(nComboID, ptrLanguage);
+	SDialog::setupComboBox(nComboID, languageTablePtr);
 }
 
 /**
@@ -1599,9 +1599,9 @@ void CPwrReminderDlg::updateLayoutInfo(void)
 	int nColNum = m_pDataItemListTable->GetColumnCount();
 
 	// Update size of table columns
-	for (int nIndex = 0; nIndex < nColNum; nIndex++) {
-		int nColSize = m_pDataItemListTable->GetColumnWidth(nIndex);
-		m_apGrdColFormat[nIndex].width = nColSize;
+	for (int index = 0; index < nColNum; index++) {
+		int nColSize = m_pDataItemListTable->GetColumnWidth(index);
+		m_apGrdColFormat[index].width = nColSize;
 	}
 }
 
@@ -1631,20 +1631,20 @@ void CPwrReminderDlg::loadLayoutInfo(void)
 	// Initialize table format info data
 	if (m_apGrdColFormat == NULL) {
 		m_apGrdColFormat = new GRIDCTRLCOLFORMAT[m_nColNum];
-		for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
+		for (int index = 0; index < m_nColNum; index++) {
 			// Copy default table column format data
-			m_apGrdColFormat[nIndex] = arrGrdColFormat[nIndex];
+			m_apGrdColFormat[index] = arrGrdColFormat[index];
 		}
 	}
 
 	// Load layout info data from registry
-	int nRet = 0;
+	int returnValue = 0;
 	String keyName;
-	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		keyName = Key::LayoutInfo::GridColSize(nIndex);
-		if (GetLayoutInfo(Section::LayoutInfo::PwrReminderTable, keyName, nRet)) {
+	for (int index = 0; index < m_nColNum; index++) {
+		keyName = Key::LayoutInfo::GridColSize(index);
+		if (GetLayoutInfo(Section::LayoutInfo::PwrReminderTable, keyName, returnValue)) {
 			if (m_apGrdColFormat != NULL) {
-				m_apGrdColFormat[nIndex].width = nRet;
+				m_apGrdColFormat[index].width = returnValue;
 			}
 		}
 	}
@@ -1663,9 +1663,9 @@ void CPwrReminderDlg::saveLayoutInfo(void)
 	// Save layout info data to registry
 	int nRef = 0;
 	String keyName;
-	for (int nIndex = 0; nIndex < m_nColNum; nIndex++) {
-		nRef = m_apGrdColFormat[nIndex].width;
-		keyName = Key::LayoutInfo::GridColSize(nIndex);
+	for (int index = 0; index < m_nColNum; index++) {
+		nRef = m_apGrdColFormat[index].width;
+		keyName = Key::LayoutInfo::GridColSize(index);
 		WriteLayoutInfo(Section::LayoutInfo::PwrReminderTable, keyName, nRef);
 	}
 }
@@ -1832,24 +1832,24 @@ void CPwrReminderDlg::UpdateDataItemList()
 	if (m_pDataItemListTable == NULL) return;
 
 	// If there's no item, do nothing
-	int nItemNum = GetItemNum();
-	if (nItemNum <= 0)
+	int itemNum = GetItemNum();
+	if (itemNum <= 0)
 		return;
 
 	// Load app language package
-	LANGTABLE_PTR ptrLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 	
 	// Print items
 	int nTemp = -1;
 	int nRowIndex = 0;
 	CGridCellCheck* pCellCheck = NULL;
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+	for (int index = 0; index < itemNum; index++) {
 
 		// Get row index
-		nRowIndex = nIndex + fixedRowNum;
+		nRowIndex = index + fixedRowNum;
 
 		// Get item
-		const Item& pwrItem = m_pwrReminderDataTemp.getItemAt(nIndex);
+		const Item& reminderItem = m_pwrReminderDataTemp.getItemAt(index);
 
 		// Item index
 		String tempString = StringUtils::stringFormat(_T("%d"), nRowIndex);
@@ -1858,36 +1858,36 @@ void CPwrReminderDlg::UpdateDataItemList()
 		// Enable state
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(pwrItem.isEnabled());
+			pCellCheck->SetCheck(reminderItem.isEnabled());
 		}
 
 		// ItemID
-		tempString.format(_T("%d"), pwrItem.getItemId());
+		tempString.format(_T("%d"), reminderItem.getItemId());
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ItemID, tempString);
 
 		// Message content
-		tempString = pwrItem.getMessage();
+		tempString = reminderItem.getMessage();
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MessageContent, tempString);
 
 		// EventID
-		nTemp = GetPairedID(IDTable::PwrReminderEvent, pwrItem.getEventId());
-		tempString = getLanguageString(ptrLanguage, nTemp);
-		if (pwrItem.getEventId() == Event::atSetTime) {
+		nTemp = GetPairedID(IDTable::PwrReminderEvent, reminderItem.getEventId());
+		tempString = getLanguageString(languageTablePtr, nTemp);
+		if (reminderItem.getEventId() == Event::atSetTime) {
 			// Format time string
 			String formatTime = tempString;
-			tempString = ClockTimeUtils::format(ptrLanguage, formatTime, pwrItem.getTime());
+			tempString = ClockTimeUtils::format(languageTablePtr, formatTime, reminderItem.getTime());
 		}
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::EventID, tempString);
 
 		// Message style
-		nTemp = GetPairedID(IDTable::PwrReminderStyle, pwrItem.getMessageStyle());
-		tempString = getLanguageString(ptrLanguage, nTemp);
+		nTemp = GetPairedID(IDTable::PwrReminderStyle, reminderItem.getMessageStyle());
+		tempString = getLanguageString(languageTablePtr, nTemp);
 		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MsgStyle, tempString);
 
 		// Repeat
 		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
 		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(pwrItem.isRepeatEnabled());
+			pCellCheck->SetCheck(reminderItem.isRepeatEnabled());
 		}
 	}
 }
@@ -1936,41 +1936,41 @@ void CPwrReminderDlg::RedrawDataTable(bool bReadOnly /* = false */)
 
 /**
  * @brief	Display details of an item at specified index
- * @param	nIndex - Index of item to display
+ * @param	index - Index of item to display
  * @return	None
  */
-void CPwrReminderDlg::DisplayItemDetails(int nIndex)
+void CPwrReminderDlg::DisplayItemDetails(int index)
 {
 	// Check index validity
-	if ((nIndex < INT_INVALID) || (nIndex > GetItemNum()))
+	if ((index < INT_INVALID) || (index > GetItemNum()))
 		return;
 
 	// Get item at index
-	Item pwrItem;
-	if (nIndex != INT_INVALID) {
-		pwrItem = m_pwrReminderDataTemp.getItemAt(nIndex);
+	Item reminderItem;
+	if (index != INT_INVALID) {
+		reminderItem = m_pwrReminderDataTemp.getItemAt(index);
 	}
 
 	// Init default data for mode add
 	if (GetCurMode() == Mode::Add) {
-		pwrItem.setMessage(Constant::String::Empty);
-		pwrItem.setEventId(Event::atSetTime);
-		pwrItem.setTime(ClockTimeUtils::getCurrentClockTime());
-		pwrItem.setMessageStyle(Style::messageBox);
-		pwrItem.enableCustomStyle(false);
-		pwrItem.resetRepeatInfo();
-		pwrItem.resetMessageStyleInfo();
+		reminderItem.setMessage(Constant::String::Empty);
+		reminderItem.setEventId(Event::atSetTime);
+		reminderItem.setTime(ClockTimeUtils::getCurrentClockTime());
+		reminderItem.setMessageStyle(Style::messageBox);
+		reminderItem.enableCustomStyle(false);
+		reminderItem.resetRepeatInfo();
+		reminderItem.resetMessageStyleInfo();
 	}
 
 	// If item is empty
-	if (pwrItem.isEmpty()) {
+	if (reminderItem.isEmpty()) {
 		// TODO: Disable all detail item controls
 		RefreshDetailView(Mode::Init);
 	}
 	else {
 		// TODO: Update current displaying item index
 		RefreshDetailView(GetCurMode());
-		m_nCurDispIndex = nIndex;
+		m_nCurDispIndex = index;
 	}
 
 	// Initialize RepeatSet dialog if not available
@@ -1989,7 +1989,7 @@ void CPwrReminderDlg::DisplayItemDetails(int nIndex)
 	}
 
 	// Display item details
-	UpdateItemData(pwrItem, false);
+	UpdateItemData(reminderItem, false);
 }
 
 /**
@@ -2015,13 +2015,13 @@ void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	bool bIsAllEmpty = m_pwrReminderDataTemp.isAllEmpty();
 
 	// Get app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Disable [Add] button if item number has reached the limit
 	pBtn = GetDlgItem(IDC_PWRREMINDER_ADD_BTN);
 	if (pBtn != NULL) {
 		pBtn->EnableWindow(!bIsMaxNum);
-		pBtn->SetWindowText(getLanguageString(pAppLang, IDC_PWRREMINDER_ADD_BTN));
+		pBtn->SetWindowText(getLanguageString(languageTablePtr, IDC_PWRREMINDER_ADD_BTN));
 	}
 
 	// Disable [Remove/Remove All] buttons if data is all empty
@@ -2041,7 +2041,7 @@ void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	pBtn = GetDlgItem(IDC_PWRREMINDER_EDIT_BTN);
 	if (pBtn != NULL) {
 		pBtn->EnableWindow(bIsSelected);
-		pBtn->SetWindowText(getLanguageString(pAppLang, IDC_PWRREMINDER_EDIT_BTN));
+		pBtn->SetWindowText(getLanguageString(languageTablePtr, IDC_PWRREMINDER_EDIT_BTN));
 	}
 	pBtn = GetDlgItem(IDC_PWRREMINDER_PREVIEW_BTN);
 	if (pBtn != NULL) {
@@ -2049,13 +2049,13 @@ void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	}
 
 	// Check if data is changed or not
-	bool bIsChanged = checkDataChangeState();
-	setFlagValue(AppFlagID::dialogDataChanged, bIsChanged);
+	bool isChanged = checkDataChangeState();
+	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 
 	// Enable [Apply] button if data is changed
 	pBtn = GetDlgItem(IDC_PWRREMINDER_APPLY_BTN);
 	if (pBtn != NULL) {
-		pBtn->EnableWindow(bIsChanged);
+		pBtn->EnableWindow(isChanged);
 	}
 
 	// Update [Check/Uncheck All] button state
@@ -2083,8 +2083,8 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
 		return;
 
 	// Get number of items
-	int nItemNum = GetItemNum();
-	if (nItemNum == 0) {
+	int itemNum = GetItemNum();
+	if (itemNum == 0) {
 		// Disable both [Check/Uncheeck All] buttons
 		pCheckAllBtn->EnableWindow(false);
 		pUncheckAllBtn->EnableWindow(false);
@@ -2094,8 +2094,8 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
 	// Recheck all items state
 	if (bRecheck == true) {
 		m_nCheckCount = 0; // Reset counter
-		for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-			const Item& pwrTemp = m_pwrReminderDataTemp.getItemAt(nIndex);
+		for (int index = 0; index < itemNum; index++) {
+			const Item& pwrTemp = m_pwrReminderDataTemp.getItemAt(index);
 			if (pwrTemp.isEnabled() == true) {
 				m_nCheckCount++;
 			}
@@ -2109,7 +2109,7 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
 		// Disable [Uncheck All] button
 		pUncheckAllBtn->EnableWindow(false);
 	}
-	else if (m_nCheckCount == nItemNum) {
+	else if (m_nCheckCount == itemNum) {
 		// Disable [Check All] button
 		pCheckAllBtn->EnableWindow(false);
 		// Enable [Uncheck All] button
@@ -2124,20 +2124,20 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
 
 /**
  * @brief	Refresh and update state for detail view
- * @param	nMode - Detail view mode
+ * @param	mode - Detail view mode
  * @return	None
  */
-void CPwrReminderDlg::RefreshDetailView(int nMode)
+void CPwrReminderDlg::RefreshDetailView(int mode)
 {
 	// Set state and init value by mode
 	bool isEnabled = true;
-	if ((nMode == Mode::Init) || (nMode == Mode::View)) {
+	if ((mode == Mode::Init) || (mode == Mode::View)) {
 		isEnabled = false;
 	}
-	else if ((nMode == Mode::Add) || (nMode == Mode::Update)) {
+	else if ((mode == Mode::Add) || (mode == Mode::Update)) {
 		isEnabled = true;
 	}
-	else if (nMode == Mode::Disable) {
+	else if (mode == Mode::Disable) {
 		isEnabled = false;
 	}
 
@@ -2147,24 +2147,24 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 	/*															   */
 	/***************************************************************/
 
-	CWnd* pWnd = NULL;
+	CWnd* windowPtr = NULL;
 
 	// Message content
-	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_TITLE);
-	if (pWnd != NULL) {
-		pWnd->EnableWindow(isEnabled);
+	windowPtr = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_TITLE);
+	if (windowPtr != NULL) {
+		windowPtr->EnableWindow(isEnabled);
 	}
 	if (m_pMsgStringEdit != NULL) {
 		m_pMsgStringEdit->EnableWindow(isEnabled);
 	}
-	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_COUNTER);
-	if (pWnd != NULL) {
-		pWnd->EnableWindow(isEnabled);
+	windowPtr = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_COUNTER);
+	if (windowPtr != NULL) {
+		windowPtr->EnableWindow(isEnabled);
 	}
 	// Event
-	pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
-	if (pWnd != NULL) {
-		pWnd->EnableWindow(isEnabled);
+	windowPtr = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
+	if (windowPtr != NULL) {
+		windowPtr->EnableWindow(isEnabled);
 	}
 	if (m_pEvtSetTimeRad != NULL) {
 		m_pEvtSetTimeRad->EnableWindow(isEnabled);
@@ -2196,9 +2196,9 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 		m_pEvtAtAppExitRad->EnableWindow(isEnabled);
 	}
 	// Message style
-	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_TITLE);
-	if (pWnd != NULL) {
-		pWnd->EnableWindow(isEnabled);
+	windowPtr = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_TITLE);
+	if (windowPtr != NULL) {
+		windowPtr->EnableWindow(isEnabled);
 	}
 	if (m_pStyleMsgBoxRad != NULL) {
 		m_pStyleMsgBoxRad->EnableWindow(isEnabled);
@@ -2206,9 +2206,9 @@ void CPwrReminderDlg::RefreshDetailView(int nMode)
 	if (m_pStyleDialogBoxRad != NULL) {
 		m_pStyleDialogBoxRad->EnableWindow(isEnabled);
 	}
-	pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
-	if (pWnd != NULL) {
-		pWnd->EnableWindow(isEnabled);
+	windowPtr = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
+	if (windowPtr != NULL) {
+		windowPtr->EnableWindow(isEnabled);
 	}
 	if (m_pStyleUseCommonRad != NULL) {
 		m_pStyleUseCommonRad->EnableWindow(isEnabled);
@@ -2250,7 +2250,7 @@ void CPwrReminderDlg::UpdateMsgCounter(int nCount)
 void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = true */)
 {
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check time editbox validity
 	if (m_pEvtSetTimeEdit == NULL) {
@@ -2273,11 +2273,11 @@ void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = 
 		// Get hour value
 		int hour = _wtoi(timeTextValue.left(2));
 		const String timePeriod = timeTextValue.right(2);
-		if (timePeriod == getLanguageString(pLang, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
+		if (timePeriod == getLanguageString(languageTablePtr, FORMAT_TIMEPERIOD_ANTE_MERIDIEM)) {
 			// Before midday
 			clockTime.setHour(hour);
 		}
-		else if ((timePeriod == getLanguageString(pLang, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
+		else if ((timePeriod == getLanguageString(languageTablePtr, FORMAT_TIMEPERIOD_POST_MERIDIEM)) && hour < 12) {
 			// After midday
 			clockTime.setHour(hour + 12);
 		}
@@ -2292,7 +2292,7 @@ void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = 
 	else {
 		// Set value for time editbox
 		String timeFormatString;
-		timeFormatString = ClockTimeUtils::format(pLang, IDS_FORMAT_SHORTTIME, clockTime);
+		timeFormatString = ClockTimeUtils::format(languageTablePtr, IDS_FORMAT_SHORTTIME, clockTime);
 		m_pEvtSetTimeEdit->SetWindowText(timeFormatString);
 
 		// Backup current displaying time value
@@ -2315,26 +2315,26 @@ void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = 
 bool CPwrReminderDlg::LoadPwrReminderData()
 {
 	// Get app Reminder data pointer
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	VERIFY(pApp != NULL);
-	if (pApp == NULL) return false;
-	Data* ppwrData = pApp->getAppPwrReminderData();
-	if (ppwrData == NULL)
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	VERIFY(theAppPtr != NULL);
+	if (theAppPtr == NULL) return false;
+	Data* reminderDataPtr = theAppPtr->getAppPwrReminderData();
+	if (reminderDataPtr == NULL)
 		return false;
 
 	// Copy data
-	m_pwrReminderData.copy(*ppwrData);
+	m_pwrReminderData.copy(*reminderDataPtr);
 	m_pwrReminderDataTemp.copy(m_pwrReminderData);
 
 	// Reset change flag
 	setFlagValue(AppFlagID::dialogDataChanged, false);
 
 	// Validate data and auto-correction
-	for (int nIndex = 0; nIndex < GetItemNum(); nIndex++) {
-		Item& pwrItem = m_pwrReminderDataTemp.getItemAt(nIndex);
-		if (!Validate(pwrItem, true, true)) {
+	for (int index = 0; index < GetItemNum(); index++) {
+		Item& reminderItem = m_pwrReminderDataTemp.getItemAt(index);
+		if (!Validate(reminderItem, true, true)) {
 			// Update temp data
-			m_pwrReminderDataTemp.update(pwrItem);
+			m_pwrReminderDataTemp.update(reminderItem);
 			setFlagValue(AppFlagID::dialogDataChanged, true);	// Update change flag
 		}
 	}
@@ -2354,17 +2354,17 @@ bool CPwrReminderDlg::SavePwrReminderData()
 	m_pwrReminderData.adjust();
 
 	// Save app Power Reminder data
-	CPowerPlusApp* pApp = (CPowerPlusApp*)AfxGetApp();
-	VERIFY(pApp != NULL);
-	if (pApp == NULL) return false;
-	pApp->setAppPwrReminderData(&m_pwrReminderData);
-	pApp->saveRegistryAppData(APPDATA_PWRREMINDER);
+	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
+	VERIFY(theAppPtr != NULL);
+	if (theAppPtr == NULL) return false;
+	theAppPtr->setAppPwrReminderData(&m_pwrReminderData);
+	theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 
 	// Notify main dialog to re-update Power Reminder data
-	CPowerPlusDlg* pMainDlg = (CPowerPlusDlg*)(pApp->GetMainWnd());
-	VERIFY(pMainDlg != NULL);
-	if (pMainDlg == NULL) return false;
-	pMainDlg->PostMessage(SM_APP_UPDATE_PWRREMINDERDATA, NULL, NULL);
+	CPowerPlusDlg* mainDialogPtr = (CPowerPlusDlg*)(theAppPtr->GetMainWnd());
+	VERIFY(mainDialogPtr != NULL);
+	if (mainDialogPtr == NULL) return false;
+	mainDialogPtr->PostMessage(SM_APP_UPDATE_PWRREMINDERDATA, NULL, NULL);
 
 	// Reset change flag
 	setFlagValue(AppFlagID::dialogDataChanged, false);
@@ -2379,16 +2379,16 @@ bool CPwrReminderDlg::SavePwrReminderData()
  */
 bool CPwrReminderDlg::checkDataChangeState()
 {
-	bool bChangeFlag = false;
+	bool changeFlag = false;
 
 	// Update enable and repeat states of each item
 	int nRowIndex = 0;
 	CGridCellCheck* pCellCheckEnable = NULL;
 	CGridCellCheck* pCellCheckRepeat = NULL;
 	int nItemRowNum = (m_pDataItemListTable->GetRowCount() - fixedRowNum);
-	for (int nIndex = 0; nIndex < nItemRowNum; nIndex++) {
+	for (int index = 0; index < nItemRowNum; index++) {
 		// Get row index
-		nRowIndex = (nIndex + fixedRowNum);
+		nRowIndex = (index + fixedRowNum);
 
 		// Get checkbox cells
 		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
@@ -2396,44 +2396,44 @@ bool CPwrReminderDlg::checkDataChangeState()
 		if ((pCellCheckEnable == NULL) || (pCellCheckRepeat == NULL)) continue;
 		
 		// Get checked states
-		bool bEnabled = pCellCheckEnable->GetCheck();
+		bool isEnabled = pCellCheckEnable->GetCheck();
 		bool bRepeat = pCellCheckRepeat->GetCheck();
 		
 		// Update item enable and repeat states
-		Item& pwrTempItem = m_pwrReminderDataTemp.getItemAt(nIndex);
-		pwrTempItem.enableItem(bEnabled);
+		Item& pwrTempItem = m_pwrReminderDataTemp.getItemAt(index);
+		pwrTempItem.enableItem(isEnabled);
 		pwrTempItem.enableRepeat(bRepeat);
 	}
 
 	// Check if number of items changed
-	int nItemNum = GetItemNum();
-	bChangeFlag |= (nItemNum != m_pwrReminderData.getItemNum());
-	if (bChangeFlag == true)
-		return bChangeFlag;
+	int itemNum = GetItemNum();
+	changeFlag |= (itemNum != m_pwrReminderData.getItemNum());
+	if (changeFlag == true)
+		return changeFlag;
 
 	// Check if common style data changed
 	const RmdMsgStyleSet& rmdCurCommonStyle = m_pwrReminderData.getCommonStyle();
 	const RmdMsgStyleSet& rmdTempCommonStyle = m_pwrReminderDataTemp.getCommonStyle();
-	bChangeFlag |= (rmdCurCommonStyle.compare(rmdTempCommonStyle) != true);
-	if (bChangeFlag == true)
-		return bChangeFlag;
+	changeFlag |= (rmdCurCommonStyle.compare(rmdTempCommonStyle) != true);
+	if (changeFlag == true)
+		return changeFlag;
 
 	// Check if each item's data changed
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+	for (int index = 0; index < itemNum; index++) {
 		// Get current item and temp item
-		const Item& pwrCurItem = m_pwrReminderData.getItemAt(nIndex);
-		const Item& pwrTempItem = m_pwrReminderDataTemp.getItemAt(nIndex);
+		const Item& pwrCurItem = m_pwrReminderData.getItemAt(index);
+		const Item& pwrTempItem = m_pwrReminderDataTemp.getItemAt(index);
  
 		// Data comparison
-		bChangeFlag |= (pwrTempItem.isEnabled() != pwrCurItem.isEnabled());
-		bChangeFlag |= (pwrTempItem.getItemId() != pwrCurItem.getItemId());
-		bChangeFlag |= (pwrTempItem.compare(pwrCurItem) != true);
+		changeFlag |= (pwrTempItem.isEnabled() != pwrCurItem.isEnabled());
+		changeFlag |= (pwrTempItem.getItemId() != pwrCurItem.getItemId());
+		changeFlag |= (pwrTempItem.compare(pwrCurItem) != true);
 
 		// Stop on the first different item encountered
-		if (bChangeFlag == true) break;
+		if (changeFlag == true) break;
 	}
 	
-	return bChangeFlag;
+	return changeFlag;
 }
 
 /**
@@ -2470,20 +2470,20 @@ void CPwrReminderDlg::Add()
 
 /**
  * @brief	Edit a reminder item by index
- * @param	nIndex - Index of item to edit
+ * @param	index - Index of item to edit
  * @return	None
  */
-void CPwrReminderDlg::Edit(int nIndex)
+void CPwrReminderDlg::Edit(int index)
 {
 	// Update data
 	UpdateData(true);
 
 	// Check index validity
-	if ((nIndex < 0) || (nIndex > GetItemNum()))
+	if ((index < 0) || (index > GetItemNum()))
 		return;
 
 	// Get item at given index
-	Item pwrTemp = m_pwrReminderDataTemp.getItemAt(nIndex);
+	Item pwrTemp = m_pwrReminderDataTemp.getItemAt(index);
 
 	// Update data
 	UpdateItemData(pwrTemp, true);
@@ -2505,13 +2505,13 @@ void CPwrReminderDlg::Edit(int nIndex)
 
 /**
  * @brief	Remove a reminder item by index
- * @param	nIndex - Index of item to remove
+ * @param	index - Index of item to remove
  * @return	None
  */
-void CPwrReminderDlg::Remove(int nIndex)
+void CPwrReminderDlg::Remove(int index)
 {
 	// Remove item at index
-	m_pwrReminderDataTemp.deleteItem(nIndex);
+	m_pwrReminderDataTemp.deleteItem(index);
 
 	// Update table
 	RedrawDataTable();
@@ -2545,16 +2545,16 @@ void CPwrReminderDlg::RemoveAll()
 void CPwrReminderDlg::SetAllItemState(bool bState)
 {
 	// Check/uncheck all --> Update all items enable state
-	int nItemNum = GetItemNum();
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
-		Item& pwrTemp = m_pwrReminderDataTemp.getItemAt(nIndex);
+	int itemNum = GetItemNum();
+	for (int index = 0; index < itemNum; index++) {
+		Item& pwrTemp = m_pwrReminderDataTemp.getItemAt(index);
 		if (pwrTemp.isEnabled() != bState) {
 			pwrTemp.enableItem(bState);
 		}
 	}
 
 	// Update number of checked items
-	m_nCheckCount = (bState == false) ? 0 : nItemNum;
+	m_nCheckCount = (bState == false) ? 0 : itemNum;
 	
 	// Update data item list
 	UpdateDataItemList();
@@ -2565,20 +2565,20 @@ void CPwrReminderDlg::SetAllItemState(bool bState)
 
 /**
  * @brief	Preview Power Reminder item
- * @param	nIndex - Item index
+ * @param	index - Item index
  * @return	None
  */
-void CPwrReminderDlg::PreviewItem(int nIndex)
+void CPwrReminderDlg::PreviewItem(int index)
 {
 	// Check index validity
-	if ((nIndex < 0) || (nIndex >= GetItemNum()))
+	if ((index < 0) || (index >= GetItemNum()))
 		return;
 
 	// Get item
-	const Item& pwrDispItem = m_pwrReminderDataTemp.getItemAt(nIndex);
+	const Item& displayItem = m_pwrReminderDataTemp.getItemAt(index);
 
 	// Check message content validity
-	String messageContent = pwrDispItem.getMessage();
+	String messageContent = displayItem.getMessage();
 	if ((messageContent.isEmpty()) ||
 		(IS_NULL_STRING(messageContent))) {
 		// Invalid message content
@@ -2586,17 +2586,17 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 	}
 
 	// Get app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Style: MessageBox
-	if (pwrDispItem.getMessageStyle() == Style::messageBox) {
+	if (displayItem.getMessageStyle() == Style::messageBox) {
 		// Display message box
-		const wchar_t* messageCaption = getLanguageString(pAppLang, IDC_PWRREMINDER_PREVIEW_BTN);
-		DWORD dwMsgStyle = MB_OK | MB_ICONINFORMATION;
-		displayMessageBox(messageContent, messageCaption, dwMsgStyle);
+		const wchar_t* messageCaption = getLanguageString(languageTablePtr, IDC_PWRREMINDER_PREVIEW_BTN);
+		DWORD messageStyle = MB_OK | MB_ICONINFORMATION;
+		displayMessageBox(messageContent, messageCaption, messageStyle);
 	}
 	// Style: Dialog
-	else if (pwrDispItem.getMessageStyle() == Style::dialogBox) {
+	else if (displayItem.getMessageStyle() == Style::dialogBox) {
 		// Destroy preview reminder message dialog if is opening
 		if (m_pRmdPreviewMsgDlg != NULL) {
 			// Destroy dialog
@@ -2614,8 +2614,8 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 
 			// Message style
 			RmdMsgStyleSet rmdMessageStyle = m_pwrReminderDataTemp.getCommonStyle();
-			if (pwrDispItem.isCustomStyleEnabled())
-				rmdMessageStyle = pwrDispItem.getMessageStyleData();
+			if (displayItem.isCustomStyleEnabled())
+				rmdMessageStyle = displayItem.getMessageStyleData();
 
 			// Default timeout for previewing
 			int nDefTimeout = PwrReminderData::previewTimeout;
@@ -2641,11 +2641,11 @@ void CPwrReminderDlg::PreviewItem(int nIndex)
 
 /**
  * @brief	Update reminder data from/to dialog controls
- * @param	pwrItem - Power Reminder item
+ * @param	reminderItem - Power Reminder item
  * @param	bUpdate - Update data flag
  * @return	None
  */
-void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
+void CPwrReminderDlg::UpdateItemData(Item& reminderItem, bool bUpdate)
 {
 	if (bUpdate == true) {
 
@@ -2663,7 +2663,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 			std::vector<wchar_t> tempBuff(buffLength + 1);
 			m_pMsgStringEdit->GetWindowText(tempBuff.data(), buffLength + 1);
 			tempString = tempBuff.data();
-			pwrItem.setMessage(tempString);
+			reminderItem.setMessage(tempString);
 		}
 
 		/*----------------------------Event----------------------------*/
@@ -2674,51 +2674,51 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		if (m_pEvtSetTimeRad != NULL) {
 			isTemp = m_pEvtSetTimeRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.setEventId(Event::atSetTime);
+				reminderItem.setEventId(Event::atSetTime);
 				if (m_pEvtSetTimeEdit != NULL) {
 					ClockTime clockTimeTemp;
 					UpdateTimeSetting(clockTimeTemp, true);
-					pwrItem.setTime(clockTimeTemp);
+					reminderItem.setTime(clockTimeTemp);
 				}
 			}
 		}
 		// Update data for RepeatSet dialog
 		if (m_pRepeatSetDlg != NULL) {
-			m_pRepeatSetDlg->updateDialogData(pwrItem, true);
+			m_pRepeatSetDlg->updateDialogData(reminderItem, true);
 		}
 		// Event: At app startup
 		if (m_pEvtAppStartupRad != NULL) {
 			isTemp = m_pEvtAppStartupRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.setEventId(Event::atAppStartup);
+				reminderItem.setEventId(Event::atAppStartup);
 			}
 		}
 		// Event: At system wake
 		if (m_pEvtSysWakeupRad != NULL) {
 			isTemp = m_pEvtSysWakeupRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.setEventId(Event::atSysWakeUp);
+				reminderItem.setEventId(Event::atSysWakeUp);
 			}
 		}
 		// Event: Before power action
 		if (m_pEvtBfrPwrActionRad != NULL) {
 			isTemp = m_pEvtBfrPwrActionRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.setEventId(Event::beforePwrAction);
+				reminderItem.setEventId(Event::beforePwrAction);
 			}
 		}
 		// Event: Wake after action
 		if (m_pEvtPwrActionWakeRad != NULL) {
 			isTemp = m_pEvtPwrActionWakeRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.setEventId(Event::wakeAfterAction);
+				reminderItem.setEventId(Event::wakeAfterAction);
 			}
 		}
 		// Event: Before app exit
 		if (m_pEvtAtAppExitRad != NULL) {
 			isTemp = m_pEvtAtAppExitRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.setEventId(Event::atAppExit);
+				reminderItem.setEventId(Event::atAppExit);
 			}
 		}
 
@@ -2728,35 +2728,35 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		if (m_pStyleMsgBoxRad != NULL) {
 			isTemp = m_pStyleMsgBoxRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.setMessageStyle(Style::messageBox);
+				reminderItem.setMessageStyle(Style::messageBox);
 			}
 		}
 		// Style: Dialog Box
 		if (m_pStyleDialogBoxRad != NULL) {
 			isTemp = m_pStyleDialogBoxRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.setMessageStyle(Style::dialogBox);
+				reminderItem.setMessageStyle(Style::dialogBox);
 			}
 		}
 		// Style Configuration: Use common style
 		if (m_pStyleUseCommonRad != NULL) {
 			isTemp = m_pStyleUseCommonRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.enableCustomStyle(false);
+				reminderItem.enableCustomStyle(false);
 			}
 		}
 		// Style Configuration: Use common style
 		if (m_pStyleUseCustomRad != NULL) {
 			isTemp = m_pStyleUseCustomRad->GetCheck();
 			if (isTemp == true) {
-				pwrItem.enableCustomStyle(true);
+				reminderItem.enableCustomStyle(true);
 			}
 		}
 		// Update data for Customize dialog
 		// Note: Common style data is updated in OnCustomizeStyle()
 		if (m_pMsgStyleSetDlg != NULL &&
 			m_pMsgStyleSetDlg->GetDataFlag() == MsgStyleSetFlag::customStyle) {
-			m_pMsgStyleSetDlg->GetData(pwrItem.getMessageStyleData());
+			m_pMsgStyleSetDlg->GetData(reminderItem.getMessageStyleData());
 		}
 
 		/*-------------------------------------------------------------*/
@@ -2772,57 +2772,57 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		/*-----------------Set state and init value by mode------------*/
 
 		bool isEnabled = true;
-		int nMode = GetCurMode();
-		if ((nMode == Mode::Init) || (nMode == Mode::View)) {
+		int mode = GetCurMode();
+		if ((mode == Mode::Init) || (mode == Mode::View)) {
 			// Disable items
 			isEnabled = false;
 		}
-		else if ((nMode == Mode::Add) || (nMode == Mode::Update)) {
+		else if ((mode == Mode::Add) || (mode == Mode::Update)) {
 			// Enable items
 			isEnabled = true;
 		}
-		else if (nMode == Mode::Disable) {
+		else if (mode == Mode::Disable) {
 			// Disable items
 			isEnabled = false;
 		}
 
 		/*----------------------Get item details-----------------------*/
 
-		String messageContent = pwrItem.getMessage();
-		ClockTime itemTime = pwrItem.getTime();
-		unsigned nEventID = pwrItem.getEventId();
-		DWORD dwMsgStyle = pwrItem.getMessageStyle();
-		bool bUseCustomStyle = pwrItem.isCustomStyleEnabled();
+		String messageContent = reminderItem.getMessage();
+		ClockTime itemTime = reminderItem.getTime();
+		unsigned eventId = reminderItem.getEventId();
+		DWORD messageStyle = reminderItem.getMessageStyle();
+		bool bUseCustomStyle = reminderItem.isCustomStyleEnabled();
 
 		/*-----------------------Message content-----------------------*/
 
-		CWnd* pWnd = NULL;
-		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_TITLE);
-		if (pWnd != NULL) {
-			pWnd->EnableWindow(isEnabled);
+		CWnd* windowPtr = NULL;
+		windowPtr = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_TITLE);
+		if (windowPtr != NULL) {
+			windowPtr->EnableWindow(isEnabled);
 		}
 		if (m_pMsgStringEdit != NULL) {
 			m_pMsgStringEdit->EnableWindow(isEnabled);
 			m_pMsgStringEdit->SetWindowText(messageContent);
 		}
-		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_COUNTER);
-		if (pWnd != NULL) {
-			pWnd->EnableWindow(isEnabled);
+		windowPtr = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_COUNTER);
+		if (windowPtr != NULL) {
+			windowPtr->EnableWindow(isEnabled);
 			UpdateMsgCounter(messageContent.getLength());
 		}
 
 		/*----------------------------Event----------------------------*/
 
 		bool isTemp = false;
-		pWnd = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
-		if (pWnd != NULL) {
-			pWnd->EnableWindow(isEnabled);
+		windowPtr = GetDlgItem(IDC_PWRREMINDER_EVENT_TITLE);
+		if (windowPtr != NULL) {
+			windowPtr->EnableWindow(isEnabled);
 		}
 
 		// Event: At set time
 		if (m_pEvtSetTimeRad != NULL) {
 			m_pEvtSetTimeRad->EnableWindow(isEnabled);
-			isTemp = (nEventID == Event::atSetTime);
+			isTemp = (eventId == Event::atSetTime);
 			m_pEvtSetTimeRad->SetCheck(isTemp);
 
 			// Set time edit and spin value
@@ -2837,62 +2837,62 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 		}
 		// Update data for RepeatSet dialog
 		if (m_pRepeatSetDlg != NULL) {
-			m_pRepeatSetDlg->updateDialogData(pwrItem, false);
+			m_pRepeatSetDlg->updateDialogData(reminderItem, false);
 		}
 		// Event: At app startup
 		if (m_pEvtAppStartupRad != NULL) {
 			m_pEvtAppStartupRad->EnableWindow(isEnabled);
-			isTemp = (nEventID == Event::atAppStartup);
+			isTemp = (eventId == Event::atAppStartup);
 			m_pEvtAppStartupRad->SetCheck(isTemp);
 		}
 		// Event: At system wake
 		if (m_pEvtSysWakeupRad != NULL) {
 			m_pEvtSysWakeupRad->EnableWindow(isEnabled);
-			isTemp = (nEventID == Event::atSysWakeUp);
+			isTemp = (eventId == Event::atSysWakeUp);
 			m_pEvtSysWakeupRad->SetCheck(isTemp);
 		}
 		// Event: Before power action
 		if (m_pEvtBfrPwrActionRad != NULL) {
 			m_pEvtBfrPwrActionRad->EnableWindow(isEnabled);
-			isTemp = (nEventID == Event::beforePwrAction);
+			isTemp = (eventId == Event::beforePwrAction);
 			m_pEvtBfrPwrActionRad->SetCheck(isTemp);
 		}
 		// Event: Wake after action
 		if (m_pEvtPwrActionWakeRad != NULL) {
 			m_pEvtPwrActionWakeRad->EnableWindow(isEnabled);
-			isTemp = (nEventID == Event::wakeAfterAction);
+			isTemp = (eventId == Event::wakeAfterAction);
 			m_pEvtPwrActionWakeRad->SetCheck(isTemp);
 		}
 		// Event: Before app exit
 		if (m_pEvtAtAppExitRad != NULL) {
 			m_pEvtAtAppExitRad->EnableWindow(isEnabled);
-			isTemp = (nEventID == Event::atAppExit);
+			isTemp = (eventId == Event::atAppExit);
 			m_pEvtAtAppExitRad->SetCheck(isTemp);
 		}
 
 		/*------------------------Message style------------------------*/
 
-		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_TITLE);
-		if (pWnd != NULL) {
-			pWnd->EnableWindow(isEnabled);
+		windowPtr = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_TITLE);
+		if (windowPtr != NULL) {
+			windowPtr->EnableWindow(isEnabled);
 		}
 		// Message Box style
 		if (m_pStyleMsgBoxRad != NULL) {
 			m_pStyleMsgBoxRad->EnableWindow(isEnabled);
-			isTemp = (dwMsgStyle == Style::messageBox);
+			isTemp = (messageStyle == Style::messageBox);
 			m_pStyleMsgBoxRad->SetCheck(isTemp);
 		}
 		// Dialog Box style
 		if (m_pStyleDialogBoxRad != NULL) {
 			m_pStyleDialogBoxRad->EnableWindow(isEnabled);
-			isTemp = (dwMsgStyle == Style::dialogBox);
+			isTemp = (messageStyle == Style::dialogBox);
 			m_pStyleDialogBoxRad->SetCheck(isTemp);
 		}
 
 		// Style customization
-		pWnd = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
-		if (pWnd != NULL) {
-			pWnd->EnableWindow(isEnabled);
+		windowPtr = GetDlgItem(IDC_PWRREMINDER_MSGSTYLE_CUSTOMIZATION_TITLE);
+		if (windowPtr != NULL) {
+			windowPtr->EnableWindow(isEnabled);
 		}
 		// Use common style configuration
 		if (m_pStyleUseCommonRad != NULL) {
@@ -2915,7 +2915,7 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 				m_pMsgStyleSetDlg->SetDataFlag(MsgStyleSetFlag::commonStyle);
 			}
 			else {
-				m_pMsgStyleSetDlg->SetData(pwrItem.getMessageStyleData());
+				m_pMsgStyleSetDlg->SetData(reminderItem.getMessageStyleData());
 				m_pMsgStyleSetDlg->SetDataFlag(MsgStyleSetFlag::customStyle);
 			}
 			m_pMsgStyleSetDlg->updateDialogData(false);
@@ -2927,131 +2927,131 @@ void CPwrReminderDlg::UpdateItemData(Item& pwrItem, bool bUpdate)
 
 /**
  * @brief	Check Power Reminder item validity
- * @param	pwrItem		 - Item to validate
+ * @param	reminderItem		 - Item to validate
  * @param	bShowMsg	 - Show validation message box or not
  * @param	bAutoCorrect - Invalid value auto correction (ON/OFF)
  * @return	bool - Result of validation process
  */
-bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool bAutoCorrect /* = false */)
+bool CPwrReminderDlg::Validate(Item& reminderItem, bool bShowMsg /* = false */, bool bAutoCorrect /* = false */)
 {
-	bool bResult = true;
+	bool result = true;
 
-	int nMsgStringID;
+	int messageStringId;
 	StringArray arrMsgString;
 	arrMsgString.clear();
 
 	// Get app language package
-	LANGTABLE_PTR pLang = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check item ID
-	if ((pwrItem.getItemId() < PwrReminderData::minItemID) || (pwrItem.getItemId() > PwrReminderData::maxItemID)) {
-		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ITEMID;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+	if ((reminderItem.getItemId() < PwrReminderData::minItemID) || (reminderItem.getItemId() > PwrReminderData::maxItemID)) {
+		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_ITEMID;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Get next item ID
-			pwrItem.setItemId(m_pwrReminderDataTemp.getNextId());
+			reminderItem.setItemId(m_pwrReminderDataTemp.getNextId());
 		}
 	}
 
 	// Check message content
-	String messageContent = pwrItem.getMessage();
+	String messageContent = reminderItem.getMessage();
 	if (messageContent.isEmpty()) {
-		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_EMPTY;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_EMPTY;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 
 		// Auto correction
 		if (bAutoCorrect == true) {
-			pwrItem.setMessage(getLanguageString(pLang, PWRRMD_MSGCONTENT_SAMPLE));
-			if (IS_NOT_NULL_STRING(pwrItem.getMessage())) {
+			reminderItem.setMessage(getLanguageString(languageTablePtr, PWRRMD_MSGCONTENT_SAMPLE));
+			if (IS_NOT_NULL_STRING(reminderItem.getMessage())) {
 				// Re-format sample message
-				String messageFormat = pwrItem.getMessage();
-				messageContent.format(messageFormat, pwrItem.getItemId());
-				pwrItem.setMessage(messageContent);
+				String messageFormat = reminderItem.getMessage();
+				messageContent.format(messageFormat, reminderItem.getItemId());
+				reminderItem.setMessage(messageContent);
 			}
 		}
 	}
 	else if (messageContent.getLength() > Constant::Max::StringLength) {
-		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_MESSAGE_OUTOFLIMIT;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Only get character numbers in range
 			String tempString = messageContent.left(Constant::Max::StringLength);
-			pwrItem.setMessage(tempString);
+			reminderItem.setMessage(tempString);
 		}
 	}
 
 	// Check event ID
-	if ((pwrItem.getEventId() < Event::atSetTime) || (pwrItem.getEventId() > Event::atAppExit)) {
-		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_EVENTID;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+	if ((reminderItem.getEventId() < Event::atSetTime) || (reminderItem.getEventId() > Event::atAppExit)) {
+		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_EVENTID;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Set default event ID
-			pwrItem.setEventId(Event::atSetTime);
+			reminderItem.setEventId(Event::atSetTime);
 		}
 	}
 
 	// Check snooze interval data
-	if ((pwrItem.getSnoozeInterval() < PwrRepeatSet::minSnoozeInterval) || (pwrItem.getSnoozeInterval() > PwrRepeatSet::maxSnoozeInterval)) {
-		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+	if ((reminderItem.getSnoozeInterval() < PwrRepeatSet::minSnoozeInterval) || (reminderItem.getSnoozeInterval() > PwrRepeatSet::maxSnoozeInterval)) {
+		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Set default snooze interval
-			pwrItem.setSnoozeInterval(PwrRepeatSet::defaultSnoozeInterval);
+			reminderItem.setSnoozeInterval(PwrRepeatSet::defaultSnoozeInterval);
 		}
 	}
 
 	// Check repeat set data
-	if ((pwrItem.isRepeatEnabled() == true) && (pwrItem.getActiveDays() == NULL)) {
-		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+	if ((reminderItem.isRepeatEnabled() == true) && (reminderItem.getActiveDays() == NULL)) {
+		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_ACTIVEDAYS;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Set default data
-			pwrItem.setActiveDays(PwrRepeatSet::defaultActiveDays);
+			reminderItem.setActiveDays(PwrRepeatSet::defaultActiveDays);
 		}
 	}
 
 	// Check style ID
-	if ((pwrItem.getMessageStyle() < Style::messageBox) || (pwrItem.getMessageStyle() > Style::dialogBox)) {
-		nMsgStringID = MSGBOX_PWRREMINDER_INVALIDITEM_STYLEID;
-		arrMsgString.push_back(getLanguageString(pLang, nMsgStringID));
-		bResult = false;
+	if ((reminderItem.getMessageStyle() < Style::messageBox) || (reminderItem.getMessageStyle() > Style::dialogBox)) {
+		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_STYLEID;
+		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		result = false;
 
 		// Auto correction
 		if (bAutoCorrect == true) {
 			// Set default style ID
-			pwrItem.setMessageStyle(Style::messageBox);
+			reminderItem.setMessageStyle(Style::messageBox);
 		}
 	}
 	
 	// Show error message if enabled
 	if ((bShowMsg == true) && (!arrMsgString.empty())) {
-		for (int nIndex = 0; nIndex < arrMsgString.size(); nIndex++) {
+		for (int index = 0; index < arrMsgString.size(); index++) {
 			// If auto correction is ON
 			if (bAutoCorrect == true) {
 				// Add "Data will be automatically reset to default"
-				String errorMessage = arrMsgString.at(nIndex);
-				errorMessage += getLanguageString(pLang, MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT);
+				String errorMessage = arrMsgString.at(index);
+				errorMessage += getLanguageString(languageTablePtr, MSGBOX_PWRREMINDER_INVALIDITEM_AUTOCORRECT);
 				displayMessageBox(errorMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {
 				// Display error message
-				displayMessageBox(arrMsgString.at(nIndex), NULL, MB_OK | MB_ICONERROR);
+				displayMessageBox(arrMsgString.at(index), NULL, MB_OK | MB_ICONERROR);
 			}
 		}
 	}
@@ -3059,21 +3059,21 @@ bool CPwrReminderDlg::Validate(Item& pwrItem, bool bShowMsg /* = false */, bool 
 	// Remove all message after displaying
 	arrMsgString.clear();
 
-	return bResult;
+	return result;
 }
 
 /**
  * @brief	Set current mode
- * @param	nMode - Mode to set
+ * @param	mode - Mode to set
  * @return	None
  */
-void CPwrReminderDlg::SetCurMode(int nMode)
+void CPwrReminderDlg::SetCurMode(int mode)
 {
 	// If new mode is the same, do nothing
-	if (nMode == GetCurMode()) return;
+	if (mode == GetCurMode()) return;
 
 	// Set new mode
-	m_nCurMode = nMode;
+	m_nCurMode = mode;
 	
 	// Switch mode
 	SwitchMode(true);
