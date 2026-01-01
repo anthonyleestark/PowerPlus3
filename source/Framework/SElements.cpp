@@ -202,25 +202,25 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
  * @brief	Initialize control info wrap object
  * @param	parentWnd - Parent window
  * @param	pBuddyWnd  - Buddy window
- * @param	nCtrlID	   - Control ID
+ * @param	controlId	   - Control ID
  * @param	nTypeID	   - Control type ID
  * @return	true/false
  */
-bool SCtrlInfoWrap::Initialize(CWnd* parentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID)
+bool SCtrlInfoWrap::Initialize(CWnd* parentWnd, CWnd* pBuddyWnd, unsigned controlId, int nTypeID)
 {
 	ASSERT(parentWnd->GetSafeHwnd());
 	if (parentWnd == NULL)
 		return false;
 
 	// Set base control pointer (maybe NULL)
-	this->m_pBaseControl = parentWnd->GetDlgItem(nCtrlID);
+	this->m_pBaseControl = parentWnd->GetDlgItem(controlId);
 
 	// Set relative windows
 	this->m_pParentWnd = parentWnd;
 	this->m_pBuddyWnd = pBuddyWnd;
 
 	// Set control ID info
-	this->m_nTemplateID = nCtrlID;
+	this->m_nTemplateID = controlId;
 	this->m_nTypeID = nTypeID;
 	this->m_strTemplateID = MAKEUNICODE(GET_NAME_ID(this->m_nTemplateID));
 
@@ -1085,24 +1085,24 @@ long long SControlManager::AddControl(SCtrlInfoWrap* pControl)
 
 /**
  * @brief	Add dialog/window control to management
- * @param	nCtrlID - Dialog control ID
+ * @param	controlId - Dialog control ID
  * @param	nTypeID - Control type ID
  * @return	long long
  */
-long long SControlManager::AddControl(unsigned nCtrlID, unsigned nTypeID)
+long long SControlManager::AddControl(unsigned controlId, unsigned nTypeID)
 {
 	// If parent window is not set, do nothing
 	if (this->m_pParentWnd == NULL)
 		return INT_INVALID;
 
 	// Get base control window pointer
-	CWnd* pCtrlWnd = m_pParentWnd->GetDlgItem(nCtrlID);
+	CWnd* pCtrlWnd = m_pParentWnd->GetDlgItem(controlId);
 	if (pCtrlWnd == NULL)
 		return INT_INVALID;
 
 	// Initialize control info
 	SCtrlInfoWrap* pControl = new SCtrlInfoWrap();
-	pControl->Initialize(m_pParentWnd, NULL, nCtrlID, nTypeID);
+	pControl->Initialize(m_pParentWnd, NULL, controlId, nTypeID);
 
 	// Add control to management list
 	size_t nRetIndex = this->AddControl(pControl);
@@ -1116,10 +1116,10 @@ long long SControlManager::AddControl(unsigned nCtrlID, unsigned nTypeID)
 
 /**
  * @brief	Remove dialog/window control from management
- * @param	nCtrlID - Dialog control ID
+ * @param	controlId - Dialog control ID
  * @return	size_t
  */
-long long SControlManager::RemoveControl(unsigned nCtrlID)
+long long SControlManager::RemoveControl(unsigned controlId)
 {
 	// If data is not initialized or is empty
 	if ((m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
@@ -1129,7 +1129,7 @@ long long SControlManager::RemoveControl(unsigned nCtrlID)
 	for (int index = 0; index < (m_pCtrlInfoArray->size()); index++) {
 		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(index);
 		if (pExControl == NULL) continue;
-		if (pExControl->GetTemplateID() == nCtrlID) {
+		if (pExControl->GetTemplateID() == controlId) {
 			delete pExControl;
 
 			// Remove control from list
@@ -1144,10 +1144,10 @@ long long SControlManager::RemoveControl(unsigned nCtrlID)
 
 /**
  * @brief	Remove dialog/window control from management
- * @param	nCtrlID - Dialog control ID
+ * @param	controlId - Dialog control ID
  * @return	None
  */
-SCtrlInfoWrap* SControlManager::GetControl(unsigned nCtrlID)
+SCtrlInfoWrap* SControlManager::GetControl(unsigned controlId)
 {
 	// If data is not initialized or is empty
 	if ((this->m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
@@ -1157,7 +1157,7 @@ SCtrlInfoWrap* SControlManager::GetControl(unsigned nCtrlID)
 	for (int index = 0; index < (this->m_pCtrlInfoArray->size()); index++) {
 		SCtrlInfoWrap* pControl = m_pCtrlInfoArray->at(index);
 		if (pControl == NULL) continue;
-		if (pControl->GetTemplateID() == nCtrlID)
+		if (pControl->GetTemplateID() == controlId)
 			return pControl;
 	}
 
@@ -1196,10 +1196,10 @@ bool SControlManager::SetBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID)
 
 /**
  * @brief	Update data for specified control or all controls
- * @param	nCtrlID - Control ID (NULL means all controls)
+ * @param	controlId - Control ID (NULL means all controls)
  * @return	None
  */
-void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
+void SControlManager::UpdateData(unsigned controlId /* = NULL */)
 {
 	// If data is not initialized or is empty
 	if ((this->m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
@@ -1222,8 +1222,8 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 		if (pCurControl == NULL) continue;
 
 		// Only update data for specified control
-		if (nCtrlID != NULL) {
-			if (pCurControl->GetTemplateID() != nCtrlID) {
+		if (controlId != NULL) {
+			if (pCurControl->GetTemplateID() != controlId) {
 				// Skip this control
 				continue;
 			}
@@ -1276,9 +1276,9 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 				pCurControl->SetInteger(currenSelection);
 				// Update all item strings
 				StringArray arrStringData;
-				size_t nCount = ((CComboBox*)pBaseControl)->GetCount();
-				arrStringData.reserve(nCount);
-				for (size_t index = 0; index < nCount; index++) {
+				size_t count = ((CComboBox*)pBaseControl)->GetCount();
+				arrStringData.reserve(count);
+				for (size_t index = 0; index < count; index++) {
 					wchar_t tempBuff[Constant::Max::StringLength] = {0};
 					((CComboBox*)pBaseControl)->GetLBText(index, tempBuff);
 					arrStringData.push_back(tempBuff);
@@ -1294,9 +1294,9 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 				pCurControl->SetInteger(currenSelection);
 				// Update all item strings
 				StringArray arrStringData;
-				size_t nCount = ((CListBox*)pBaseControl)->GetCount();
-				arrStringData.reserve(nCount);
-				for (size_t index = 0; index < nCount; index++) {
+				size_t count = ((CListBox*)pBaseControl)->GetCount();
+				arrStringData.reserve(count);
+				for (size_t index = 0; index < count; index++) {
 					wchar_t tempBuff[Constant::Max::StringLength] = {0};
 					((CListBox*)pBaseControl)->GetText(index, tempBuff);
 					arrStringData.push_back(tempBuff);

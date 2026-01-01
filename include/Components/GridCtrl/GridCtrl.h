@@ -311,15 +311,15 @@ public:
     int      GetDefCellMargin() const        { return m_cellDefault.GetMargin();     }
 
     int      GetDefCellHeight() const        { return m_cellDefault.GetHeight();     }
-    void     SetDefCellHeight(int nHeight)   { m_cellDefault.SetHeight(nHeight); 
-                                               m_cellFixedRowDef.SetHeight(nHeight); 
-                                               m_cellFixedColDef.SetHeight(nHeight); 
-                                               m_cellFixedRowColDef.SetHeight(nHeight); }
+    void     SetDefCellHeight(int height)   { m_cellDefault.SetHeight(height); 
+                                               m_cellFixedRowDef.SetHeight(height); 
+                                               m_cellFixedColDef.SetHeight(height); 
+                                               m_cellFixedRowColDef.SetHeight(height); }
     int      GetDefCellWidth() const         { return m_cellDefault.GetWidth();     }
-    void     SetDefCellWidth(int nWidth)     { m_cellDefault.SetWidth(nWidth); 
-                                               m_cellFixedRowDef.SetWidth(nWidth); 
-                                               m_cellFixedColDef.SetWidth(nWidth); 
-                                               m_cellFixedRowColDef.SetWidth(nWidth); }
+    void     SetDefCellWidth(int width)     { m_cellDefault.SetWidth(width); 
+                                               m_cellFixedRowDef.SetWidth(width); 
+                                               m_cellFixedColDef.SetWidth(width); 
+                                               m_cellFixedRowColDef.SetWidth(width); }
 
     // ***************************************************************************** //
 

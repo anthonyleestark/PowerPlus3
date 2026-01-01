@@ -53,6 +53,6 @@ public:
 protected:
 	// Member functions
 	void setupLanguage(void);
-	void SetAppNameLabel(void);
-	void SetAppInfoLabel(void);
+	void setAppNameLabel(void);
+	void setAppInfoLabel(void);
 };

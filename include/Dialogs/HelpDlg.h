@@ -28,8 +28,8 @@ private:
 	};
 
 private:
-	String   m_strFileData;
-	unsigned m_nViewMode;
+	String   helpInfoString_;
+	unsigned viewMode_;
 
 public:
 	CHelpDlg(CWnd* parentWnd = NULL);   // standard constructor
@@ -63,16 +63,16 @@ public:
 protected:
 	// Member functions
 	void setupLanguage(void);
-	void SetupEditbox(CEdit& editCtrlPtr);
-	bool LoadRCFileData(String& strRCFileData);
-	void UpdateSwitchViewModeButton(void);
+	void setupEditbox(CEdit& editCtrlPtr);
+	bool loadResourceFileData(String& resourceFileDataString);
+	void updateSwitchViewModeButton(void);
 
 	// Get/set properties
-	unsigned GetViewMode() const {
-		return m_nViewMode;
-	};
-	void SetViewMode(unsigned nViewMode) {
-		m_nViewMode = nViewMode;
-	};
+	unsigned getViewMode() const {
+		return viewMode_;
+	}
+	void setViewMode(unsigned viewMode) {
+		viewMode_ = viewMode;
+	}
 };
 

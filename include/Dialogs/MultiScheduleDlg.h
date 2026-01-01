@@ -116,7 +116,7 @@ public:
 	void Update(Item& scheduleItem);
 	void Remove(int index);
 	void RemoveAll();
-	void SetAllItemState(bool bState);
+	void SetAllItemState(bool state);
 	bool Validate(Item& scheduleItem, bool bShowMsg = false, bool bAutoCorrect = false);
 
 	// Message handlers

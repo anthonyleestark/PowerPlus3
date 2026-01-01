@@ -801,8 +801,8 @@ void CPwrReminderDlg::OnMsgContentEditChange()
 	String textValue = tempBuff.data();
 
 	// Update message counter
-	int nCount = textValue.getLength();
-	UpdateMsgCounter(nCount);
+	int count = textValue.getLength();
+	UpdateMsgCounter(count);
 }
 
 /**
@@ -1999,7 +1999,7 @@ void CPwrReminderDlg::DisplayItemDetails(int index)
  */
 void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 {
-	CWnd* pBtn = NULL;
+	CWnd* buttonPtr = NULL;
 
 	// If dialog items are being locked, do nothing
 	if (getLockState() == true)
@@ -2018,34 +2018,34 @@ void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Disable [Add] button if item number has reached the limit
-	pBtn = GetDlgItem(IDC_PWRREMINDER_ADD_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(!bIsMaxNum);
-		pBtn->SetWindowText(getLanguageString(languageTablePtr, IDC_PWRREMINDER_ADD_BTN));
+	buttonPtr = GetDlgItem(IDC_PWRREMINDER_ADD_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(!bIsMaxNum);
+		buttonPtr->SetWindowText(getLanguageString(languageTablePtr, IDC_PWRREMINDER_ADD_BTN));
 	}
 
 	// Disable [Remove/Remove All] buttons if data is all empty
-	pBtn = GetDlgItem(IDC_PWRREMINDER_REMOVE_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(!bIsAllEmpty);
+	buttonPtr = GetDlgItem(IDC_PWRREMINDER_REMOVE_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(!bIsAllEmpty);
 
 		// Enable [Remove] button if any item is selected
-		pBtn->EnableWindow(bIsSelected);
+		buttonPtr->EnableWindow(bIsSelected);
 	}
-	pBtn = GetDlgItem(IDC_PWRREMINDER_REMOVEALL_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(!bIsAllEmpty);
+	buttonPtr = GetDlgItem(IDC_PWRREMINDER_REMOVEALL_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(!bIsAllEmpty);
 	}
 
 	// Enable [Edit] and [Preview] button if any item is selected
-	pBtn = GetDlgItem(IDC_PWRREMINDER_EDIT_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(bIsSelected);
-		pBtn->SetWindowText(getLanguageString(languageTablePtr, IDC_PWRREMINDER_EDIT_BTN));
+	buttonPtr = GetDlgItem(IDC_PWRREMINDER_EDIT_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(bIsSelected);
+		buttonPtr->SetWindowText(getLanguageString(languageTablePtr, IDC_PWRREMINDER_EDIT_BTN));
 	}
-	pBtn = GetDlgItem(IDC_PWRREMINDER_PREVIEW_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(bIsSelected);
+	buttonPtr = GetDlgItem(IDC_PWRREMINDER_PREVIEW_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(bIsSelected);
 	}
 
 	// Check if data is changed or not
@@ -2053,9 +2053,9 @@ void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 
 	// Enable [Apply] button if data is changed
-	pBtn = GetDlgItem(IDC_PWRREMINDER_APPLY_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(isChanged);
+	buttonPtr = GetDlgItem(IDC_PWRREMINDER_APPLY_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(isChanged);
 	}
 
 	// Update [Check/Uncheck All] button state
@@ -2223,21 +2223,21 @@ void CPwrReminderDlg::RefreshDetailView(int mode)
 
 /**
  * @brief	Update message content length counter
- * @param	nCount - Character number counter
+ * @param	count - Character number counter
  * @return	None
  */
-void CPwrReminderDlg::UpdateMsgCounter(int nCount)
+void CPwrReminderDlg::UpdateMsgCounter(int count)
 {
 	// Get dialog item
 	CWnd* pCounter = GetDlgItem(IDC_PWRREMINDER_MSGSTRING_COUNTER);
 	if (pCounter == NULL) return;
 
 	// Check counter value validity
-	if ((nCount < 0) || (nCount > Constant::Max::StringLength)) return;
+	if ((count < 0) || (count > Constant::Max::StringLength)) return;
 
 	// Display counter
 	String countFormatString;
-	countFormatString.format(_T("%d/%d"), nCount, Constant::Max::StringLength);
+	countFormatString.format(_T("%d/%d"), count, Constant::Max::StringLength);
 	pCounter->SetWindowText(countFormatString);
 }
 
@@ -2539,22 +2539,22 @@ void CPwrReminderDlg::RemoveAll()
 
 /**
  * @brief	Check/uncheck all Power Reminder items
- * @param	bState - Item state
+ * @param	state - Item state
  * @return	None
  */
-void CPwrReminderDlg::SetAllItemState(bool bState)
+void CPwrReminderDlg::SetAllItemState(bool state)
 {
 	// Check/uncheck all --> Update all items enable state
 	int itemNum = GetItemNum();
 	for (int index = 0; index < itemNum; index++) {
 		Item& pwrTemp = m_pwrReminderDataTemp.getItemAt(index);
-		if (pwrTemp.isEnabled() != bState) {
-			pwrTemp.enableItem(bState);
+		if (pwrTemp.isEnabled() != state) {
+			pwrTemp.enableItem(state);
 		}
 	}
 
 	// Update number of checked items
-	m_nCheckCount = (bState == false) ? 0 : itemNum;
+	m_nCheckCount = (state == false) ? 0 : itemNum;
 	
 	// Update data item list
 	UpdateDataItemList();

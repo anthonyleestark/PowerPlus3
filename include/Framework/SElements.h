@@ -148,7 +148,7 @@ protected:
 
 public:
 	// Initialization
-	virtual bool	Initialize(CWnd* parentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID);
+	virtual bool	Initialize(CWnd* parentWnd, CWnd* pBuddyWnd, unsigned controlId, int nTypeID);
 
 	// Base control window pointer access
 	virtual CWnd* GetBaseControl(void) {
@@ -373,12 +373,12 @@ public:
 
 	// Add/remove control
 	long long AddControl(SCtrlInfoWrap* pControl);
-	long long AddControl(unsigned nCtrlID, unsigned nTypeID);
-	long long RemoveControl(unsigned nCtrlID);
+	long long AddControl(unsigned controlId, unsigned nTypeID);
+	long long RemoveControl(unsigned controlId);
 
 	// Accessing elements
-	SCtrlInfoWrap* GetControl(unsigned nCtrlID);
+	SCtrlInfoWrap* GetControl(unsigned controlId);
 	bool SetBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID);
-	void UpdateData(unsigned nCtrlID = NULL);
+	void UpdateData(unsigned controlId = NULL);
 };
 

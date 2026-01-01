@@ -192,11 +192,11 @@ void CAboutDlg::setupLanguage(void)
 			continue;
 
 		case IDC_APPNAME_LABEL:
-			SetAppNameLabel();
+			setAppNameLabel();
 			break;
 
 		case IDC_APPINFO_LABEL:
-			SetAppInfoLabel();
+			setAppInfoLabel();
 			break;
 
 		default:
@@ -214,11 +214,11 @@ void CAboutDlg::setupLanguage(void)
  * @param	None
  * @return	None
  */
-void CAboutDlg::SetAppNameLabel(void)
+void CAboutDlg::setAppNameLabel(void)
 {
 	// Get app name label static
-	CWnd* pAppNameLabel = GetDlgItem(IDC_APPNAME_LABEL);
-	if (pAppNameLabel == NULL) return;
+	CWnd* appNameLabelPtr = GetDlgItem(IDC_APPNAME_LABEL);
+	if (appNameLabelPtr == NULL) return;
 
 	// Get product version info
 	String fullProdVersion;
@@ -232,8 +232,8 @@ void CAboutDlg::SetAppNameLabel(void)
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app name label
-	String appNameLabel = StringUtils::stringFormat(formatString, shortProdVersion.getString(), fullProdVersion.getString());
-	pAppNameLabel->SetWindowText(appNameLabel);
+	String appNameLabelString = StringUtils::stringFormat(formatString, shortProdVersion.getString(), fullProdVersion.getString());
+	appNameLabelPtr->SetWindowText(appNameLabelString);
 }
 
 /**
@@ -241,11 +241,11 @@ void CAboutDlg::SetAppNameLabel(void)
  * @param	None
  * @return	None
  */
-void CAboutDlg::SetAppInfoLabel(void)
+void CAboutDlg::setAppInfoLabel(void)
 {
 	// Get app info label static
-	CWnd* pAppInfoLabel = GetDlgItem(IDC_APPINFO_LABEL);
-	if (pAppInfoLabel == NULL) return;
+	CWnd* appInfoLabelPtr = GetDlgItem(IDC_APPINFO_LABEL);
+	if (appInfoLabelPtr == NULL) return;
 
 	// Get product version info (short number)
 	String productVersion = StringUtils::getProductVersion(false);
@@ -253,12 +253,12 @@ void CAboutDlg::SetAppInfoLabel(void)
 
 	// Get app info label format from app language package
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-	String strFormat = getLanguageString(languageTablePtr, IDC_APPINFO_LABEL);
-	if (IS_NULL_STRING(strFormat)) return;
+	String formatString = getLanguageString(languageTablePtr, IDC_APPINFO_LABEL);
+	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app info label
-	String appInfoLabel = StringUtils::stringFormat(strFormat, productVersion.getString());
-	pAppInfoLabel->SetWindowText(appInfoLabel);
+	String appInfoLabelString = StringUtils::stringFormat(formatString, productVersion.getString());
+	appInfoLabelPtr->SetWindowText(appInfoLabelString);
 }
 
 /**

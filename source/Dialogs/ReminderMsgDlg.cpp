@@ -33,7 +33,7 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* parentWnd /*= NULL*/)
 	: SDialog(IDD_REMINDERMSG_DLG, parentWnd)
 {
 	// Message string buffer
-	m_strBuffer = Constant::String::Empty;
+	bufferString_ = Constant::String::Empty;
 
 	// Message font & icon
 	m_pMsgFont = NULL;
@@ -174,7 +174,7 @@ BOOL CReminderMsgDlg::OnInitDialog()
 		}
 
 		// Display text
-		pWndMsg->SetWindowText(m_strBuffer);
+		pWndMsg->SetWindowText(bufferString_);
 	}
 
 	// Start auto-close timer if set
@@ -535,19 +535,19 @@ bool CReminderMsgDlg::CalcMsgIconPosition(Point& iconPosition) const
 	this->getMargin(currentMargin);
 
 	// Get client rectangle
-	RECT rcClient;
-	this->GetClientRect(&rcClient);
+	RECT clientRect;
+	this->GetClientRect(&clientRect);
 
 	// Calculate icon top-left point
 	int textIconSpacing = defaultTextIconSpacing;
 	byte iconPosVal = m_rmdMsgStyleSet.getIconPosition();
 	if (iconPosVal == MsgIconPosition::IconOnTheTop) {
 		iconPosition._y = currentMargin.top() - (m_szIconSize.height() + textIconSpacing);
-		iconPosition._x = ((rcClient.right - rcClient.left) - m_szIconSize.width()) / 2;
+		iconPosition._x = ((clientRect.right - clientRect.left) - m_szIconSize.width()) / 2;
 	}
 	else if (iconPosVal == MsgIconPosition::IconOnTheLeft) {
 		iconPosition._x = currentMargin.left() - (m_szIconSize.width() + textIconSpacing);
-		iconPosition._y = ((rcClient.bottom - rcClient.top) - m_szIconSize.height()) / 2;
+		iconPosition._y = ((clientRect.bottom - clientRect.top) - m_szIconSize.height()) / 2;
 	}
 
 	return true;
@@ -630,7 +630,7 @@ void CReminderMsgDlg::ClientToText(Rect& /*rect*/) const
 void CReminderMsgDlg::TextToClient(Rect& rect) const
 {
 	// If message text is not set, do nothing
-	if (m_strBuffer.isEmpty())
+	if (bufferString_.isEmpty())
 		return;
 
 	// Get font
@@ -668,7 +668,7 @@ void CReminderMsgDlg::TextToClient(Rect& rect) const
 
 	// Calculate new client rectangle
 	DWORD dwFormat = DT_CENTER | DT_WORDBREAK | DT_CALCRECT;
-	pDC->DrawText(m_strBuffer, m_strBuffer.getLength(), &rcTemp, dwFormat);
+	pDC->DrawText(bufferString_, bufferString_.getLength(), &rcTemp, dwFormat);
 	rect = Rect(rcTemp.left, rcTemp.top, rcTemp.right, rcTemp.bottom);
 
 	// Reset device context

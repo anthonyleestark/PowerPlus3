@@ -810,7 +810,7 @@ void CMultiScheduleDlg::RedrawDataTable(bool bReadOnly /* = false */)
  */
 void CMultiScheduleDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 {
-	CWnd* pBtn = NULL;
+	CWnd* buttonPtr = NULL;
 
 	// If dialog items are being locked, do nothing
 	if (getLockState() == true)
@@ -832,40 +832,40 @@ void CMultiScheduleDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Disable [Add] button if item number has reached the limit
-	pBtn = GetDlgItem(IDC_MULTISCHEDULE_ADD_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(!bIsMaxNum);
-		pBtn->SetWindowText(getLanguageString(languageTablePtr, IDC_MULTISCHEDULE_ADD_BTN));
+	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_ADD_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(!bIsMaxNum);
+		buttonPtr->SetWindowText(getLanguageString(languageTablePtr, IDC_MULTISCHEDULE_ADD_BTN));
 	}
 
 	// Disable [Remove/Remove All] buttons if data is all empty
-	pBtn = GetDlgItem(IDC_MULTISCHEDULE_REMOVE_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(!bIsAllEmpty);
+	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_REMOVE_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(!bIsAllEmpty);
 
 		// Enable [Remove] button if any item is selected
-		pBtn->EnableWindow(bIsSelected);
+		buttonPtr->EnableWindow(bIsSelected);
 	}
-	pBtn = GetDlgItem(IDC_MULTISCHEDULE_REMOVEALL_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(!bIsAllEmpty);
+	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_REMOVEALL_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(!bIsAllEmpty);
 	}
 
 	// Enable [Edit] and [View Details] button if any item is selected
-	pBtn = GetDlgItem(IDC_MULTISCHEDULE_EDIT_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(bIsSelected);
-		pBtn->SetWindowText(getLanguageString(languageTablePtr, IDC_MULTISCHEDULE_EDIT_BTN));
+	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_EDIT_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(bIsSelected);
+		buttonPtr->SetWindowText(getLanguageString(languageTablePtr, IDC_MULTISCHEDULE_EDIT_BTN));
 	}
-	pBtn = GetDlgItem(IDC_MULTISCHEDULE_VIEWDETAILS_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(bIsSelected);
+	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_VIEWDETAILS_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(bIsSelected);
 	}
 
 	// Enable [Set Default] button if any extra item is selected
-	pBtn = GetDlgItem(IDC_MULTISCHEDULE_SETDEFAULT_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(bIsExtraSelected);
+	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_SETDEFAULT_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(bIsExtraSelected);
 	}
 
 	// Check if data is changed or not
@@ -873,9 +873,9 @@ void CMultiScheduleDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 
 	// Enable [Apply] button if data is changed
-	pBtn = GetDlgItem(IDC_MULTISCHEDULE_APPLY_BTN);
-	if (pBtn != NULL) {
-		pBtn->EnableWindow(isChanged);
+	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_APPLY_BTN);
+	if (buttonPtr != NULL) {
+		buttonPtr->EnableWindow(isChanged);
 	}
 
 	// Update [Check/Uncheck All] button state
@@ -1177,27 +1177,27 @@ void CMultiScheduleDlg::RemoveAll()
 
 /**
  * @brief	Check/uncheck all Schedule data items
- * @param	bState - Item state
+ * @param	state - Item state
  * @return	None
  */
-void CMultiScheduleDlg::SetAllItemState(bool bState)
+void CMultiScheduleDlg::SetAllItemState(bool state)
 {
 	// Check/uncheck all --> Update all items enable state
 	Item& schDefTemp = m_schScheduleTemp.getDefaultItem();
-	if (schDefTemp.isEnabled() != bState) {
+	if (schDefTemp.isEnabled() != state) {
 		// Change checked state
-		schDefTemp.enableItem(bState);
+		schDefTemp.enableItem(state);
 	}
 	for (int extraIndex = 0; extraIndex < GetExtraItemNum(); extraIndex++) {
 		Item& schTemp = m_schScheduleTemp.getItemAt(extraIndex);
-		if (schTemp.isEnabled() != bState) {
+		if (schTemp.isEnabled() != state) {
 			// Change checked state
-			schTemp.enableItem(bState);
+			schTemp.enableItem(state);
 		}
 	}
 
 	// Update number of checked items
-	m_nCheckCount = (bState == false) ? 0 : GetTotalItemNum();
+	m_nCheckCount = (state == false) ? 0 : GetTotalItemNum();
 
 	// Update data item list
 	UpdateDataItemList();

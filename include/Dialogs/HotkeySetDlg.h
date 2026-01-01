@@ -124,7 +124,7 @@ protected:
 	void Add(void);
 	void Remove(int index);
 	void RemoveAll(void);
-	void SwitchAllItemState(bool bState);
+	void SwitchAllItemState(bool state);
 	bool Validate(const Item& hotkeyItem, bool bShowMsg = false);
 
 protected:

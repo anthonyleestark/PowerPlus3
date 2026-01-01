@@ -30,8 +30,8 @@ CHelpDlg::CHelpDlg(CWnd* parentWnd /*=NULL*/)
 	: SDialog(IDD_HELP_DLG, parentWnd)
 {
 	// Initialize member variables
-	m_strFileData = Constant::String::Empty;
-	m_nViewMode = ViewMode::HelpFile;
+	helpInfoString_ = Constant::String::Empty;
+	viewMode_ = ViewMode::HelpFile;
 }
 
 /**
@@ -189,21 +189,21 @@ void CHelpDlg::OnSwitchViewMode()
 	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_HELP_SWITCHVIEWMODE_BTN);
 
 	// Switch view mode
-	if (GetViewMode() == ViewMode::HelpFile) {
-		SetViewMode(ViewMode::Changelog);
+	if (getViewMode() == ViewMode::HelpFile) {
+		setViewMode(ViewMode::Changelog);
 	}
-	else if (GetViewMode() == ViewMode::Changelog) {
-		SetViewMode(ViewMode::HelpFile);
+	else if (getViewMode() == ViewMode::Changelog) {
+		setViewMode(ViewMode::HelpFile);
 	}
 
 	// Reupdate file data
-	LoadRCFileData(m_strFileData);
+	loadResourceFileData(helpInfoString_);
 	CEdit* editCtrlPtr = (CEdit*)GetDlgItem(IDC_HELPINFO_EDITBOX);
 	if (editCtrlPtr != NULL)
-		editCtrlPtr->SetWindowText(m_strFileData);
+		editCtrlPtr->SetWindowText(helpInfoString_);
 
 	// Update switch view mode button
-	UpdateSwitchViewModeButton();
+	updateSwitchViewModeButton();
 }
 
 /**
@@ -227,13 +227,13 @@ void CHelpDlg::setupLanguage()
 	}
 
 	// Set [Switch view mode] button title
-	UpdateSwitchViewModeButton();
+	updateSwitchViewModeButton();
 
 	// Load help contents by default
-	LoadRCFileData(m_strFileData);
+	loadResourceFileData(helpInfoString_);
 	windowPtr = GetDlgItem(IDC_HELPINFO_EDITBOX);
 	if (windowPtr != NULL) {
-		windowPtr->SetWindowText(m_strFileData);
+		windowPtr->SetWindowText(helpInfoString_);
 	}
 
 	// Default
@@ -245,7 +245,7 @@ void CHelpDlg::setupLanguage()
  * @param	editCtrlPtr - Pointer of edit control
  * @return	None
  */
-void CHelpDlg::SetupEditbox(CEdit& editCtrlPtr)
+void CHelpDlg::setupEditbox(CEdit& editCtrlPtr)
 {
 	// Setup editbox property: UPPERCASE
 	SetWindowLong(editCtrlPtr.m_hWnd, IDC_HELPINFO_EDITBOX, ES_UPPERCASE);
@@ -254,64 +254,64 @@ void CHelpDlg::SetupEditbox(CEdit& editCtrlPtr)
 
 /**
  * @brief	Load help content from Resource-embeded text data
- * @param	strRCFileData - File data result (ref-value)
+ * @param	resourceFileDataString - File data result (ref-value)
  * @return	bool - Result of file loading process
  */
-bool CHelpDlg::LoadRCFileData(String& strRCFileData)
+bool CHelpDlg::loadResourceFileData(String& resourceFileDataString)
 {
 	// Get currently displaying language
 	unsigned currentLanguage = ((CPowerPlusApp*)AfxGetApp())->getAppLanguageOption(true);
 
 	// Remove existing data
-	strRCFileData.empty();
+	resourceFileDataString.empty();
 
 	// View help file mode
-	if (GetViewMode() == ViewMode::HelpFile) {
+	if (getViewMode() == ViewMode::HelpFile) {
 		switch (currentLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_HELP_ENG);
+			resourceFileDataString = StringUtils::loadResourceTextData(IDR_FILE_HELP_ENG);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_HELP_VIE);
+			resourceFileDataString = StringUtils::loadResourceTextData(IDR_FILE_HELP_VIE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_HELP_CHS);
+			resourceFileDataString = StringUtils::loadResourceTextData(IDR_FILE_HELP_CHS);
 			break;
 		}
 	}
 	//View changelog mode
-	else if (GetViewMode() == ViewMode::Changelog) {
+	else if (getViewMode() == ViewMode::Changelog) {
 		switch (currentLanguage)
 		{
 		case APP_LANGUAGE_ENGLISH:
-			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_ENG);
+			resourceFileDataString = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_ENG);
 			break;
 		case APP_LANGUAGE_VIETNAMESE:
-			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_VIE);
+			resourceFileDataString = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_VIE);
 			break;
 		case APP_LANGUAGE_SIMPCHINESE:
-			strRCFileData = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_CHS);
+			resourceFileDataString = StringUtils::loadResourceTextData(IDR_FILE_CHANGELOG_CHS);
 			break;
 		}
 	}
 
 	// Load RCData failed
-	if (strRCFileData.isEmpty()) {
+	if (resourceFileDataString.isEmpty()) {
 
 		// Load app language package
 		LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-		if (GetViewMode() == ViewMode::HelpFile) {
+		if (getViewMode() == ViewMode::HelpFile) {
 			// Can not load help file
-			strRCFileData = getLanguageString(languageTablePtr, ERROR_HELPDLG_NOHELPFILE);
+			resourceFileDataString = getLanguageString(languageTablePtr, ERROR_HELPDLG_NOHELPFILE);
 
 			// Trace error
 			TRACE_ERROR("Error: [RCData] Help file not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		}
-		else if (GetViewMode() == ViewMode::Changelog) {
+		else if (getViewMode() == ViewMode::Changelog) {
 			// Can not load change log file
-			strRCFileData = getLanguageString(languageTablePtr, ERROR_HELPDLG_NOCHANGELOGFILE);
+			resourceFileDataString = getLanguageString(languageTablePtr, ERROR_HELPDLG_NOCHANGELOGFILE);
 
 			// Trace error
 			TRACE_ERROR("Error: [RCData] Changelog file not found!!!");
@@ -319,7 +319,7 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
 		}
 	}
 
-	return (!strRCFileData.isEmpty());
+	return (!resourceFileDataString.isEmpty());
 }
 
 /**
@@ -327,17 +327,17 @@ bool CHelpDlg::LoadRCFileData(String& strRCFileData)
  * @param	None
  * @return	None
  */
-void CHelpDlg::UpdateSwitchViewModeButton(void)
+void CHelpDlg::updateSwitchViewModeButton(void)
 {
 	// Language string ID
-	unsigned nStringID = INT_NULL;
-	switch (m_nViewMode)
+	unsigned stringId = INT_NULL;
+	switch (viewMode_)
 	{
 	case ViewMode::HelpFile:
-		nStringID = BTN_HELPDLG_VIEWMODE_CHANGELOG;
+		stringId = BTN_HELPDLG_VIEWMODE_CHANGELOG;
 		break;
 	case ViewMode::Changelog:
-		nStringID = BTN_HELPDLG_VIEWMODE_HELPFILE;
+		stringId = BTN_HELPDLG_VIEWMODE_HELPFILE;
 		break;
 
 	default:
@@ -346,11 +346,11 @@ void CHelpDlg::UpdateSwitchViewModeButton(void)
 
 	// Get app current language package
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
-	const wchar_t* titleString = getLanguageString(languageTablePtr, nStringID);
+	const wchar_t* titleString = getLanguageString(languageTablePtr, stringId);
 
 	// Reupdate button title
-	CButton* pBtn = (CButton*)GetDlgItem(IDC_HELP_SWITCHVIEWMODE_BTN);
-	if (pBtn != NULL)
-		pBtn->SetWindowText(titleString);
+	CButton* buttonPtr = (CButton*)GetDlgItem(IDC_HELP_SWITCHVIEWMODE_BTN);
+	if (buttonPtr != NULL)
+		buttonPtr->SetWindowText(titleString);
 }
 

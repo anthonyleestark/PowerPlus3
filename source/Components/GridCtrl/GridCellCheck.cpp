@@ -29,10 +29,10 @@ CGridCellCheck::CGridCellCheck() : CGridCell()
 CSize CGridCellCheck::GetCellExtent(CDC* pDC)
 {
     // Using SM_CXHSCROLL as a guide to the size of the checkbox
-    int nWidth = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();	
+    int width = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();	
     CSize	cellSize = CGridCell::GetCellExtent(pDC);	
-    cellSize.cx += nWidth;	
-    cellSize.cy = max(cellSize.cy, static_cast<long>(nWidth));	
+    cellSize.cx += width;	
+    cellSize.cy = max(cellSize.cy, static_cast<long>(width));	
     return  cellSize;
 }
 
@@ -42,8 +42,8 @@ BOOL CGridCellCheck::GetTextRect( LPRECT pRect)
     BOOL result = CGridCell::GetTextRect(pRect);
     if (result)
     {
-        int nWidth = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();
-        pRect->left += nWidth;
+        int width = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();
+        pRect->left += width;
         if (pRect->left > pRect->right)
             pRect->left = pRect->right;
     }
@@ -148,33 +148,33 @@ BOOL CGridCellCheck::GetCheck()
 // Returns the dimensions and placement of the checkbox in client coords.
 CRect CGridCellCheck::GetCheckPlacement()
 {
-	int nWidth = GetSystemMetrics(SM_CXHSCROLL);
+	int width = GetSystemMetrics(SM_CXHSCROLL);
 	CRect rect = m_Rect + CSize(GetMargin(), GetMargin());
 
     CRect place = rect;
-    place.right = place.left + nWidth;
-    place.bottom = place.top + nWidth;
+    place.right = place.left + width;
+    place.bottom = place.top + width;
 
 	// for centering
     if (m_bCentering) {
-        int nDiff = (rect.Width() - nWidth) / 2;
+        int nDiff = (rect.Width() - width) / 2;
         if (nDiff > 0)
         {
             place.left += nDiff;
-            place.right = place.left + nWidth;
+            place.right = place.left + width;
         }
-        nDiff = (rect.Height() - nWidth) / 2;
+        nDiff = (rect.Height() - width) / 2;
         if (nDiff > 0)
         {
             place.top += nDiff;
-            place.bottom = place.top + nWidth;
+            place.bottom = place.top + width;
         }
     }
 
-    if (m_Rect.Height() < nWidth + 2 * static_cast<int> (GetMargin())) 
+    if (m_Rect.Height() < width + 2 * static_cast<int> (GetMargin())) 
     {		
-        place.top = m_Rect.top + (m_Rect.Height() - nWidth) / 2;	    
-        place.bottom = place.top + nWidth;	
+        place.top = m_Rect.top + (m_Rect.Height() - width) / 2;	    
+        place.bottom = place.top + width;	
     }
 
 	return place;

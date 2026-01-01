@@ -107,8 +107,8 @@ public:
     virtual void  SetStyle(DWORD style)               { m_dwStyle = style;   }
     virtual int   GetWidth() const                      { return m_Size.cx;      }
     virtual int   GetHeight() const                     { return m_Size.cy;      }
-    virtual void  SetWidth(int nWidth)                  { m_Size.cx = nWidth;    }
-    virtual void  SetHeight(int nHeight)                { m_Size.cy = nHeight;   }
+    virtual void  SetWidth(int width)                  { m_Size.cx = width;    }
+    virtual void  SetHeight(int height)                { m_Size.cy = height;   }
 
     // Disable these properties
     virtual void     SetData(LPARAM /*lParam*/)             { ASSERT(FALSE);         }      

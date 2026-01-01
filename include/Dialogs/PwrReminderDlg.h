@@ -169,7 +169,7 @@ protected:
 	void refreshDialogItemState(bool bRecheckState = false);
 	void UpdateCheckAllBtnState(bool bRecheck = false);
 	void RefreshDetailView(int mode);
-	void UpdateMsgCounter(int nCount);
+	void UpdateMsgCounter(int count);
 	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);
 
 private:
@@ -183,7 +183,7 @@ private:
 	void Edit(int index);
 	void Remove(int index);
 	void RemoveAll();
-	void SetAllItemState(bool bState);
+	void SetAllItemState(bool state);
 	void PreviewItem(int index);
 	void UpdateItemData(Item& reminderItem, bool bUpdate);
 	bool Validate(Item& reminderItem, bool bShowMsg = false, bool bAutoCorrect = false);

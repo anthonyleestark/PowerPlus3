@@ -30,7 +30,7 @@ public:
 
 private:
 	// Message string buffer
-	String m_strBuffer;
+	String bufferString_;
 
 	// Message font & icon
 	CFont*	m_pMsgFont;
@@ -74,10 +74,10 @@ public:
 public:
 	// Get/set display content
 	virtual const wchar_t* GetDispMessage(void) const {
-		return m_strBuffer.getString();
+		return bufferString_.getString();
 	};
 	virtual void SetDispMessage(const wchar_t* dispMsg) {
-		m_strBuffer = dispMsg;
+		bufferString_ = dispMsg;
 	};
 
 	// Get/set message style

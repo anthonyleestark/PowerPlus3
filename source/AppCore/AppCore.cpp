@@ -3080,7 +3080,7 @@ bool AppCore::setDarkMode(CWnd* wndPtr, bool enableDarkMode)
 
 /**
  * @brief	Create button with icon
- * @param	pBtn		 - Pointer of button item
+ * @param	buttonPtr		 - Pointer of button item
  * @param	nIconID		 - ID of button icon
  * @param	lpszBtnTitle - Title of button
  * @return	None

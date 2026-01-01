@@ -2605,8 +2605,8 @@ BOOL CGridCtrl::PasteTextToGrid(CCellID cell, COleDataObject* pDataObject,
         if (index >= 0)
             strLine = strLine.Left(index);
 
-        int nLineIndex = strLine.FindOneOf(_T("\t,"));
-        CString strCellText = (nLineIndex >= 0)? strLine.Left(nLineIndex) : strLine;
+        int lineIndex = strLine.FindOneOf(_T("\t,"));
+        CString strCellText = (lineIndex >= 0)? strLine.Left(lineIndex) : strLine;
 
         // skip hidden rows
         int iRowVis = cell.row + nLine;
@@ -2646,9 +2646,9 @@ BOOL CGridCtrl::PasteTextToGrid(CCellID cell, COleDataObject* pDataObject,
 				if (iColVis > PasteRange.GetMaxCol()) PasteRange.SetMaxCol(iColVis);
             }
 
-            strLine = (nLineIndex >= 0)? strLine.Mid(nLineIndex + 1) : _T("");
-            nLineIndex = strLine.FindOneOf(_T("\t,"));
-            strCellText = (nLineIndex >= 0)? strLine.Left(nLineIndex) : strLine;
+            strLine = (lineIndex >= 0)? strLine.Mid(lineIndex + 1) : _T("");
+            lineIndex = strLine.FindOneOf(_T("\t,"));
+            strCellText = (lineIndex >= 0)? strLine.Left(lineIndex) : strLine;
 
             nColumn++;
         }
@@ -4423,10 +4423,10 @@ BOOL CGridCtrl::DeleteNonFixedRows()
 {
     ResetSelectedRange();
     int nFixed = GetFixedRowCount();
-    int nCount = GetRowCount();
+    int count = GetRowCount();
     if (GetVirtualMode())
 	{
-		if(nCount != nFixed)
+		if(count != nFixed)
 		{
 			SetRowCount(nFixed);
 			m_arRowOrder.resize(nFixed);
@@ -4439,7 +4439,7 @@ BOOL CGridCtrl::DeleteNonFixedRows()
 	else
 	{
     // Delete all data rows
-    for (int nRow = nCount; nRow >= nFixed; nRow--)
+    for (int nRow = count; nRow >= nFixed; nRow--)
         DeleteRow(nRow);
 	}
     return TRUE;
@@ -5222,35 +5222,35 @@ BOOL CGridCtrl::SetColumnWidth(int nCol, int width)
 
 int CGridCtrl::GetFixedRowHeight(BOOL bIncludeFreezedRows /*=FALSE*/) const
 {
-    int nHeight = 0;
+    int height = 0;
 	int i;
     for (i = 0; i < m_nFixedRows; i++)
-        nHeight += GetRowHeight(i);
+        height += GetRowHeight(i);
 
 	if(bIncludeFreezedRows)
 	{
 		for ( ; i < (m_nFixedRows + m_nFreezedRows); i++)
-        nHeight += GetRowHeight(i);
+        height += GetRowHeight(i);
 	}
 
-    return nHeight;
+    return height;
 }
 
 int CGridCtrl::GetFixedColumnWidth(BOOL bIncludeFreezedCols /*=FALSE*/) const
 {
-    int nWidth = 0;
+    int width = 0;
 
 	int i;
     for (i = 0; i < m_nFixedCols; i++)
-		nWidth += GetColumnWidth(i);
+		width += GetColumnWidth(i);
 
 	if(bIncludeFreezedCols)
 	{
 		for ( ; i < (m_nFixedCols + m_nFreezedCols); i++)
-        nWidth += GetColumnWidth(i);
+        width += GetColumnWidth(i);
 	}
 
-    return nWidth;
+    return width;
 }
 
 BOOL CGridCtrl::AutoSizeColumn(int nCol, UINT nAutoSizeStyle /*=GVS_DEFAULT*/, 
@@ -5269,7 +5269,7 @@ BOOL CGridCtrl::AutoSizeColumn(int nCol, UINT nAutoSizeStyle /*=GVS_DEFAULT*/,
     if (!pDC)
         return FALSE;
 
-    int nWidth = 0;
+    int width = 0;
 
     ASSERT(GVS_DEFAULT <= nAutoSizeStyle && nAutoSizeStyle <= GVS_BOTH);
     if (nAutoSizeStyle == GVS_DEFAULT)
@@ -5286,14 +5286,14 @@ BOOL CGridCtrl::AutoSizeColumn(int nCol, UINT nAutoSizeStyle /*=GVS_DEFAULT*/,
         CGridCellBase* pCell = GetCell(nRow, nCol);
         if (pCell)
             size = pCell->GetCellExtent(pDC);
-        if (size.cx > nWidth)
-            nWidth = size.cx;
+        if (size.cx > width)
+            width = size.cx;
     }
 
     if (GetVirtualMode())
         SendCacheHintToParent(CCellRange(-1,-1,-1,-1));
 
-    m_arColWidths[nCol] = nWidth;
+    m_arColWidths[nCol] = width;
 
     ReleaseDC(pDC);
     if (bResetScroll)
@@ -5317,7 +5317,7 @@ BOOL CGridCtrl::AutoSizeRow(int nRow, BOOL bResetScroll /*=TRUE*/)
     if (!pDC)
         return FALSE;
 
-    int nHeight = 0;
+    int height = 0;
     int nNumColumns = GetColumnCount();
 
     if (GetVirtualMode())
@@ -5328,10 +5328,10 @@ BOOL CGridCtrl::AutoSizeRow(int nRow, BOOL bResetScroll /*=TRUE*/)
         CGridCellBase* pCell = GetCell(nRow, nCol);
         if (pCell)
             size = pCell->GetCellExtent(pDC);
-        if (size.cy > nHeight)
-            nHeight = size.cy;
+        if (size.cy > height)
+            height = size.cy;
     }
-    m_arRowHeights[nRow] = nHeight;
+    m_arRowHeights[nRow] = height;
 
     if (GetVirtualMode())
         SendCacheHintToParent(CCellRange(-1,-1,-1,-1));
@@ -5473,8 +5473,8 @@ void CGridCtrl::ExpandColumnsToFit(BOOL bExpandFixed /*=TRUE*/)
     if (nDifference > 0)
     {
         int leftOver = nDifference % nNumColumnsAffected;
-        for (int nCount = 0, col = nFirstColumn; 
-             (col < GetColumnCount()) && (nCount < leftOver); col++, nCount++)
+        for (int count = 0, col = nFirstColumn; 
+             (col < GetColumnCount()) && (count < leftOver); col++, count++)
         {
             if (m_arColWidths[col] > 0)
                 m_arColWidths[col] += 1;
@@ -5483,8 +5483,8 @@ void CGridCtrl::ExpandColumnsToFit(BOOL bExpandFixed /*=TRUE*/)
     else 
     {
         int leftOver = (-nDifference) % nNumColumnsAffected;
-        for (int nCount = 0, col = nFirstColumn; 
-             (col < GetColumnCount()) && (nCount < leftOver); col++, nCount++)
+        for (int count = 0, col = nFirstColumn; 
+             (col < GetColumnCount()) && (count < leftOver); col++, count++)
         {
             if (m_arColWidths[col] > 0)
                 m_arColWidths[col] -= 1;
@@ -5573,8 +5573,8 @@ void CGridCtrl::ExpandRowsToFit(BOOL bExpandFixed /*=TRUE*/)
     if (nDifference > 0)
     {
         int leftOver = nDifference % nNumRowsAffected;
-        for (int nCount = 0, row = nFirstRow; 
-             (row < GetRowCount()) && (nCount < leftOver); row++, nCount++)
+        for (int count = 0, row = nFirstRow; 
+             (row < GetRowCount()) && (count < leftOver); row++, count++)
         {
             if (m_arRowHeights[row] > 0)
                 m_arRowHeights[row] += 1;
@@ -5583,8 +5583,8 @@ void CGridCtrl::ExpandRowsToFit(BOOL bExpandFixed /*=TRUE*/)
     else 
     {
         int leftOver = (-nDifference) % nNumRowsAffected;
-        for (int nCount = 0, row = nFirstRow; 
-             (row < GetRowCount()) && (nCount < leftOver); row++, nCount++)
+        for (int count = 0, row = nFirstRow; 
+             (row < GetRowCount()) && (count < leftOver); row++, count++)
         {
             if (m_arRowHeights[row] > 0)
                 m_arRowHeights[row] -= 1;

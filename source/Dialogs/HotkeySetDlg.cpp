@@ -1340,17 +1340,17 @@ void CHotkeySetDlg::RemoveAll(void)
 
 /**
  * @brief	Check/uncheck all HotkeySet items
- * @param	bState - New state
+ * @param	state - New state
  * @return	None
  */
-void CHotkeySetDlg::SwitchAllItemState(bool bState)
+void CHotkeySetDlg::SwitchAllItemState(bool state)
 {
 	// Check/uncheck all --> Update all item enable state
 	int itemNum = m_hksHotkeySetTemp.getItemNum();
 	for (int index = 0; index < itemNum; index++) {
 		Item& tempHotkeyItem = m_hksHotkeySetTemp.getItemAt(index);
-		if (tempHotkeyItem.isEnabled() != bState) {
-			tempHotkeyItem.enableItem(bState);
+		if (tempHotkeyItem.isEnabled() != state) {
+			tempHotkeyItem.enableItem(state);
 		}
 	}
 

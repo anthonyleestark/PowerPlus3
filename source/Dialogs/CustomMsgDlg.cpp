@@ -31,7 +31,7 @@ IMPLEMENT_DYNAMIC(CCustomMsgDlg, SDialog)
 CCustomMsgDlg::CCustomMsgDlg() : SDialog(IDD_CUSTOM_MESSAGE_DLG)
 {
 	// Message string buffer
-	m_strBuffer = Constant::String::Empty;
+	bufferString_ = Constant::String::Empty;
 }
 
 /**
@@ -69,8 +69,8 @@ END_MESSAGE_MAP()
  */
 BOOL CCustomMsgDlg::OnInitDialog()
 {
-	RECT rcClient;
-	this->GetClientRect(&rcClient);
+	RECT clientRect;
+	this->GetClientRect(&clientRect);
 
 	return TRUE;
 }
@@ -108,7 +108,7 @@ void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr)
  * @param	Default
  * @return	None
  */
-void CCustomMsgDlg::OnSize(UINT nType, int nWidth, int nHeight)
+void CCustomMsgDlg::OnSize(UINT nType, int width, int height)
 {
-	SDialog::OnSize(nType, nWidth, nHeight);
+	SDialog::OnSize(nType, width, height);
 }

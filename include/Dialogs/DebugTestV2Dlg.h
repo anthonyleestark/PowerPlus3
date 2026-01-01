@@ -35,25 +35,25 @@ public:
 
 private:
 	// DebugScreen
-	CEdit* m_pDebugView;
-	CEdit* m_pDebugCommandInput;
+	CEdit* debugViewPtr_;
+	CEdit* debugCommandInputPtr_;
 
 	// Font & brush
-	CFont* m_pDebugScreenFont;
-	CBrush* m_pDebugScreenBrush;
+	CFont* debugScreenFontPtr_;
+	CBrush* debugScreenBrushPtr_;
 
 	// Buffer content
-	String m_strBuffer;
-	String m_strBackupBuffer;
-	String m_strCommandBuffer;
+	String bufferString_;
+	String backupBufferString_;
+	String commandBuffer_;
 
 	// Specific flags
-	bool m_bDispCommandPrefix;
+	bool isCommandPrefixEnabled_;
 
 	// Debug command history
-	bool		 m_bCurDispHistory;
-	size_t		 m_nHistoryCurIndex;
-	StringArray  m_astrCommandHistory;
+	bool		 isCurrentlyDisplayHistory_;
+	size_t		 currentHistoryIndex_;
+	StringArray  commandHistoryList_;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -69,7 +69,7 @@ public:
 	virtual void OnDestroy();
 	virtual void OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr);
 	virtual HBRUSH OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor);
-	virtual void OnSize(UINT nType, int nWidth, int nHeight);
+	virtual void OnSize(UINT nType, int width, int height);
 	afx_msg LRESULT OnDebugOutput(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugCmdNoReply(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugViewClear(WPARAM wParam, LPARAM lParam);
@@ -81,12 +81,12 @@ public:
 private:
 	// Get access to the DebugTest view pointer
 	CEdit* GetDebugView(void) const {
-		return m_pDebugView;
+		return debugViewPtr_;
 	};
 
 	// Get access to the Debug command input pointer
 	CEdit* GetDebugCommandInput(void) const {
-		return m_pDebugCommandInput;
+		return debugCommandInputPtr_;
 	};
 
 	// DebugView and command input initialization
@@ -119,36 +119,36 @@ private:
 	int  FormatDebugCommand(String& debugCommand) const;
 	void ClearDebugCommandInput(const wchar_t* commandBuff = Constant::String::Empty);
 	void BackupDebugViewBuffer(void) {
-		m_strBackupBuffer = m_strBuffer;
+		backupBufferString_ = bufferString_;
 	};
 	void ClearDebugViewBuffer(void);
 
-	void AddLine(const wchar_t* lpszString, bool bNewLine = true);
-	void UpdateDisplay(bool bSeekToEnd = false, bool bNotifyParent = true);
+	void AddLine(const wchar_t* lpszString, bool newLine = true);
+	void UpdateDisplay(bool isSeekToEnd = false, bool notifyParent = true);
 
 	size_t AddDebugCommandHistory(const wchar_t* commandString);
-	void DispDebugCommandHistory(int nHistoryIndex);
+	void DispDebugCommandHistory(int historyIndex);
 	void ClearDebugCommandHistory(void) {
-		m_astrCommandHistory.clear();
+		commandHistoryList_.clear();
 	};
 	size_t GetDebugCommandHistoryCount(void) const {
-		return m_astrCommandHistory.size();
+		return commandHistoryList_.size();
 	};
 	bool IsDebugCommandHistoryEmpty(void) const {
-		return m_astrCommandHistory.empty();
+		return commandHistoryList_.empty();
 	};
 
 	bool IsCurrentlyDispHistory(void) const {
-		return m_bCurDispHistory;
+		return isCurrentlyDisplayHistory_;
 	};
-	void SetCurrentlyDispHistoryState(bool bState) {
-		m_bCurDispHistory = bState;
+	void SetCurrentlyDispHistoryState(bool state) {
+		isCurrentlyDisplayHistory_ = state;
 	};
 	size_t GetHistoryCurrentDispIndex(void) const {
-		return m_nHistoryCurIndex;
+		return currentHistoryIndex_;
 	};
-	void SetHistoryCurrentDispIndex(size_t nCurIndex) {
-		m_nHistoryCurIndex = nCurIndex;
+	void SetHistoryCurrentDispIndex(size_t currentIndex) {
+		currentHistoryIndex_ = currentIndex;
 	};
 };
 

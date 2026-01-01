@@ -566,26 +566,26 @@ void JSON::CopyPtrData(const JSON& other)
 		}
 
 		// Copy data
-		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
+		for (int count = 0; count < this->m_nChildObjectCount; count++) {
 
 			// Allocate memory
-			this->m_apChildObjectList[nCount] = new JSONDATA;
-			if (this->m_apChildObjectList[nCount] == NULL) {
-				TRACE_FORMAT("Error: Destination JSON child object allocation failed!!! (Index=%d)", nCount);
+			this->m_apChildObjectList[count] = new JSONDATA;
+			if (this->m_apChildObjectList[count] == NULL) {
+				TRACE_FORMAT("Error: Destination JSON child object allocation failed!!! (Index=%d)", count);
 				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
 			}
 
 			// Get source data
-			PJSONDATA pSrcData = other.m_apChildObjectList[nCount];
+			PJSONDATA pSrcData = other.m_apChildObjectList[count];
 			if (pSrcData == NULL) {
-				TRACE_FORMAT("Error: Invalid JSON child object is skipped when copying!!! (Index=%d)", nCount);
+				TRACE_FORMAT("Error: Invalid JSON child object is skipped when copying!!! (Index=%d)", count);
 				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
 			}
 
 			// Copy object data (do not use 'memcpy' in here)
-			*(this->m_apChildObjectList[nCount]) = *pSrcData;
+			*(this->m_apChildObjectList[count]) = *pSrcData;
 		}
 	}
 }
@@ -630,9 +630,9 @@ bool JSON::Compare(const JSON& other) const
 		}
 		else {
 			// Compare each child object data
-			for (int nCount = 0; nCount < nThisChildObjectCount; nCount++) {
-				PJSONDATA pThisChildObject = this->m_apChildObjectList[nCount];
-				PJSONDATA pOtherChildObject = other.m_apChildObjectList[nCount];
+			for (int count = 0; count < nThisChildObjectCount; count++) {
+				PJSONDATA pThisChildObject = this->m_apChildObjectList[count];
+				PJSONDATA pOtherChildObject = other.m_apChildObjectList[count];
 				if ((pThisChildObject != NULL) && (pOtherChildObject != NULL)) {
 					bRetCompareDetail &= pThisChildObject->Compare(*pOtherChildObject);
 				}
@@ -699,8 +699,8 @@ void JSON::RemoveAll(void)
 
 	// Remove all child objects
 	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
-		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
-			PJSONDATA pChildObj = this->m_apChildObjectList[nCount];
+		for (int count = 0; count < this->m_nChildObjectCount; count++) {
+			PJSONDATA pChildObj = this->m_apChildObjectList[count];
 			if (pChildObj != NULL) {
 				pChildObj->RemoveAll();
 				delete pChildObj;
@@ -888,8 +888,8 @@ void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMulti
 	// Print child objects
 	String subItemOutput = Constant::String::Empty;
 	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
-		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
-			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
+		for (int count = 0; count < this->m_nChildObjectCount; count++) {
+			PJSONDATA pSubItem = this->m_apChildObjectList[count];
 			if (pSubItem != NULL) {
 				pSubItem->Print(subItemOutput, nIndent + 1, false, bMultiline);
 				outputString.append(subItemOutput);
@@ -923,7 +923,7 @@ void JSON::PrintYAML(String& outputString, int nIndent) const
 
 	// Indentation
 	String indentationStr = Constant::String::Empty;
-	for (int nCount = 1; nCount < nIndent; nCount++) {
+	for (int count = 1; count < nIndent; count++) {
 		indentationStr.append(Constant::Symbol::YAML_Indent);
 	}
 
@@ -945,8 +945,8 @@ void JSON::PrintYAML(String& outputString, int nIndent) const
 
 	// Print child objects
 	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
-		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
-			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
+		for (int count = 0; count < this->m_nChildObjectCount; count++) {
+			PJSONDATA pSubItem = this->m_apChildObjectList[count];
 			if (pSubItem != NULL) {
 				String subItemOutput;
 				pSubItem->PrintYAML(subItemOutput, nIndent + 1);
@@ -2110,7 +2110,7 @@ void DebugLogging::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
  * @brief	Output debug trace information log
  * @param	lpszFuncName - Code function name
  * @param	lpszFileName - Code file name
- * @param	nLineIndex	 - Code line number
+ * @param	lineIndex	 - Code line number
  * @return	None
  */
 void DebugLogging::TraceDebugInfo(const char* funcName, const char* fileName, int lineIndex)
