@@ -43,14 +43,14 @@ CLogViewerDlg::CLogViewerDlg(CWnd* parentWnd /*=nullptr*/)
 	m_nLogCount = 0;
 
 	// Table format and properties
-	m_nColNum = 0;
-	m_apGrdColFormat = NULL;
+	columnCount_ = 0;
+	gridCtrlFormatInfoPtr_ = NULL;
 	m_pszTableFrameSize = NULL;
 
 	// Other variables
 	m_nCurMode = 0;
-	m_nCheckCount = 0;
-	m_nCurSelIndex = -1;
+	checkCount_ = 0;
+	curSelIndex_ = -1;
 }
 
 /**
@@ -65,9 +65,9 @@ CLogViewerDlg::~CLogViewerDlg()
 	}
 
 	// Other variables
-	if (m_apGrdColFormat != NULL) {
-		delete[] m_apGrdColFormat;
-		m_apGrdColFormat = NULL;
+	if (gridCtrlFormatInfoPtr_ != NULL) {
+		delete[] gridCtrlFormatInfoPtr_;
+		gridCtrlFormatInfoPtr_ = NULL;
 	}
 	if (m_pszTableFrameSize != NULL) {
 		delete m_pszTableFrameSize;
@@ -218,11 +218,11 @@ void CLogViewerDlg::OnDetailBtn()
 	if (m_ptrAppEventLog == NULL) return;
 
 	// Check selection index validity
-	if (m_nCurSelIndex < 0 || m_nCurSelIndex > m_nLogCount)
+	if (curSelIndex_ < 0 || curSelIndex_ > m_nLogCount)
 		return;
 
 	// Display log details
-	DisplayLogDetails(m_nCurSelIndex);
+	DisplayLogDetails(curSelIndex_);
 }
 
 /**
@@ -318,7 +318,7 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*languageTablePtr*/)
 
 	// Table format and properties
 	int nRowNum = (m_nLogCount + fixedRowNum);
-	int nColNum = m_nColNum;
+	int nColNum = columnCount_;
 
 	// Setup table
 	m_pLogViewerList->SetColumnCount(nColNum);
@@ -371,7 +371,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	if (cellPtr == NULL) return;
 
 	// Table properties
-	int nColNum = m_nColNum;
+	int nColNum = columnCount_;
 	int nRowNum = (m_nLogCount + fixedRowNum);
 
 	// Setup display size
@@ -402,14 +402,14 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
-		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
+		unsigned nHeaderTitleID = gridCtrlFormatInfoPtr_[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
 			headerTitle = getLanguageString(languageTablePtr, nHeaderTitleID);
 		}
 		m_pLogViewerList->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
 		// Column width
-		int nColWidth = m_apGrdColFormat[nCol].width;
+		int nColWidth = gridCtrlFormatInfoPtr_[nCol].width;
 		if (nColWidth != -1) {
 			// Set column width as defined (with offset)
 			int nColWidthPx = nColWidth - nColWidthOffset;
@@ -428,10 +428,10 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	int nColStyle = -1;
 	unsigned itemState = INT_NULL;
 	for (int row = 1; row < nRowNum; row++) {
-		for (int nCol = 0; nCol < m_nColNum; nCol++) {
+		for (int nCol = 0; nCol < columnCount_; nCol++) {
 
 			// Get column style & item state
-			nColStyle = m_apGrdColFormat[nCol].columnStyle;
+			nColStyle = gridCtrlFormatInfoPtr_[nCol].columnStyle;
 			itemState = m_pLogViewerList->GetItemState(row, nCol);
 			itemState |= GVIS_READONLY;
 
@@ -451,7 +451,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 				CGridCellCheck* cellPtr = (CGridCellCheck*)m_pLogViewerList->GetCell(row, nCol);
 
 				// Set center alignment if defined
-				if (m_apGrdColFormat[nCol].isCentered == TRUE) {
+				if (gridCtrlFormatInfoPtr_[nCol].isCentered == TRUE) {
 					if (cellPtr == NULL) continue;
 					cellPtr->SetCheckPlacement(SCP_CENTERING);
 				}
@@ -467,7 +467,7 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 				CGridCellBase* cellPtr = (CGridCellBase*)m_pLogViewerList->GetCell(row, nCol);
 
 				// Set center alignment if defined
-				if (m_apGrdColFormat[nCol].isCentered == TRUE) {
+				if (gridCtrlFormatInfoPtr_[nCol].isCentered == TRUE) {
 					if (cellPtr == NULL) continue;
 					cellPtr->SetFormat(cellPtr->GetFormat() | DT_CENTER);
 				}
@@ -569,7 +569,7 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 	int row = reminderItem->iRow;
 
 	//Get current selection index
-	m_nCurSelIndex = row - fixedRowNum;
+	curSelIndex_ = row - fixedRowNum;
 
 	// Get app event logging pointer
 	if (m_ptrAppEventLog == NULL) return;
@@ -577,7 +577,7 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 	// Check selection index validity
 	CWnd* pDetailBtn = (CWnd*)GetDlgItem(IDC_LOGVIEWER_DETAILS_BTN);
 	if (!pDetailBtn || !pDetailBtn->IsWindowVisible()) return;
-	if (m_nCurSelIndex < 0 || m_nCurSelIndex > m_nLogCount) {
+	if (curSelIndex_ < 0 || curSelIndex_ > m_nLogCount) {
 		// Disable [Details] button
 		pDetailBtn->EnableWindow(FALSE);
 	}
@@ -609,7 +609,7 @@ void CLogViewerDlg::updateLayoutInfo(void)
 	if (m_pLogViewerList == NULL) return;
 
 	// Check table column format data validity
-	if (m_apGrdColFormat == NULL) return;
+	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Get table column count
 	int nColNum = m_pLogViewerList->GetColumnCount();
@@ -617,7 +617,7 @@ void CLogViewerDlg::updateLayoutInfo(void)
 	// Update size of table columns
 	for (int index = 0; index < nColNum; index++) {
 		int nColSize = m_pLogViewerList->GetColumnWidth(index);
-		m_apGrdColFormat[index].width = nColSize;
+		gridCtrlFormatInfoPtr_[index].width = nColSize;
 	}
 }
 
@@ -638,25 +638,25 @@ void CLogViewerDlg::loadLayoutInfo(void)
 	};
 
 	// Backup format data
-	m_nColNum = (sizeof(arrGrdColFormat) / sizeof(GRIDCTRLCOLFORMAT));
+	columnCount_ = (sizeof(arrGrdColFormat) / sizeof(GRIDCTRLCOLFORMAT));
 
 	// Initialize table format info data
-	if (m_apGrdColFormat == NULL) {
-		m_apGrdColFormat = new GRIDCTRLCOLFORMAT[m_nColNum];
-		for (int index = 0; index < m_nColNum; index++) {
+	if (gridCtrlFormatInfoPtr_ == NULL) {
+		gridCtrlFormatInfoPtr_ = new GRIDCTRLCOLFORMAT[columnCount_];
+		for (int index = 0; index < columnCount_; index++) {
 			// Copy default table column format data
-			m_apGrdColFormat[index] = arrGrdColFormat[index];
+			gridCtrlFormatInfoPtr_[index] = arrGrdColFormat[index];
 		}
 	}
 
 	// Load layout info data from registry
 	int returnValue = 0;
 	String keyName;
-	for (int index = 0; index < m_nColNum; index++) {
+	for (int index = 0; index < columnCount_; index++) {
 		keyName = Key::LayoutInfo::GridColSize(index);
 		if (GetLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, returnValue)) {
-			if (m_apGrdColFormat != NULL) {
-				m_apGrdColFormat[index].width = returnValue;
+			if (gridCtrlFormatInfoPtr_ != NULL) {
+				gridCtrlFormatInfoPtr_[index].width = returnValue;
 			}
 		}
 	}
@@ -670,13 +670,13 @@ void CLogViewerDlg::loadLayoutInfo(void)
 void CLogViewerDlg::saveLayoutInfo(void)
 {
 	// Check table column format data validity
-	if (m_apGrdColFormat == NULL) return;
+	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Save layout info data to registry
 	int nRef = 0;
 	String keyName;
-	for (int index = 0; index < m_nColNum; index++) {
-		nRef = m_apGrdColFormat[index].width;
+	for (int index = 0; index < columnCount_; index++) {
+		nRef = gridCtrlFormatInfoPtr_[index].width;
 		keyName = Key::LayoutInfo::GridColSize(index);
 		WriteLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, nRef);
 	}

@@ -80,14 +80,14 @@ CPwrReminderDlg::CPwrReminderDlg(CWnd* parentWnd /*=nullptr*/)
 	m_bStyleUseCustomRad = false;
 
 	// Table format and properties
-	m_nColNum = 0;
+	columnCount_ = 0;
 	m_pszFrameWndSize = NULL;
-	m_apGrdColFormat = NULL;
+	gridCtrlFormatInfoPtr_ = NULL;
 
 	// Other variables
 	m_nCurMode = 0;
-	m_nCheckCount = 0;
-	m_nCurSelIndex = -1;
+	checkCount_ = 0;
+	curSelIndex_ = -1;
 	m_nCurDispIndex = -2;
 	m_stDispTimeBak = ClockTime();
 }
@@ -133,9 +133,9 @@ CPwrReminderDlg::~CPwrReminderDlg()
 		m_pszFrameWndSize = NULL;
 	}
 
-	if (m_apGrdColFormat != NULL) {
-		delete[] m_apGrdColFormat;
-		m_apGrdColFormat = NULL;
+	if (gridCtrlFormatInfoPtr_ != NULL) {
+		delete[] gridCtrlFormatInfoPtr_;
+		gridCtrlFormatInfoPtr_ = NULL;
 	}
 }
 
@@ -546,11 +546,11 @@ void CPwrReminderDlg::OnEdit()
 	// Mode: Edit
 	if (nCurMode & Mode::Update) {
 		// Check if any item is selected or not
-		bool isSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
+		bool isSelected = ((curSelIndex_ >= 0) && (curSelIndex_ < GetItemNum()));
 
 		if (isSelected == true) {
 			// Edit current selected item
-			Edit(m_nCurSelIndex);
+			Edit(curSelIndex_);
 		}
 
 		// Reset mode
@@ -562,9 +562,9 @@ void CPwrReminderDlg::OnEdit()
 	}
 	else {
 		// Mark current selected item as in editting
-		bool isSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
+		bool isSelected = ((curSelIndex_ >= 0) && (curSelIndex_ < GetItemNum()));
 		if (isSelected == true)
-			m_pwrItemInEdit.copy(m_pwrReminderDataTemp.getItemAt(m_nCurSelIndex));
+			m_pwrItemInEdit.copy(m_pwrReminderDataTemp.getItemAt(curSelIndex_));
 
 		// Switch mode
 		SetCurMode(Mode::Update);
@@ -587,7 +587,7 @@ void CPwrReminderDlg::OnRemove()
 		return;
 
 	// Get current select item index
-	int index = m_nCurSelIndex;
+	int index = curSelIndex_;
 
 	// If item at selected index is empy, do nothing
 	if (m_pwrReminderDataTemp.isEmpty(index) == true)
@@ -674,7 +674,7 @@ void CPwrReminderDlg::OnPreviewItem()
 		return;
 
 	// Get current selection index
-	int currenSelection = m_nCurSelIndex;
+	int currenSelection = curSelIndex_;
 	if (m_pwrReminderDataTemp.isEmpty(currenSelection) == true)
 		return;
 
@@ -697,13 +697,13 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 	int row = reminderItem->iRow;
 
 	//Get current selection index
-	m_nCurSelIndex = row - fixedRowNum;
+	curSelIndex_ = row - fixedRowNum;
 	int nItemCount = GetItemNum();
 
 	*pResult = NULL;
 
 	// Invalid selection
-	if ((m_nCurSelIndex < 0) || (m_nCurSelIndex >= nItemCount))
+	if ((curSelIndex_ < 0) || (curSelIndex_ >= nItemCount))
 		return;
 
 	// Check read-only mode
@@ -712,7 +712,7 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 		return;
 
 	// Display item details
-	DisplayItemDetails(m_nCurSelIndex);
+	DisplayItemDetails(curSelIndex_);
 	refreshDialogItemState(true);
 }
 
@@ -1273,7 +1273,7 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR languageTablePtr)
 
 	// Table format and properties
 	int nRowNum = (GetItemNum() + fixedRowNum);
-	int nColNum = m_nColNum;
+	int nColNum = columnCount_;
 
 	// Setup table
 	m_pDataItemListTable->SetColumnCount(nColNum);
@@ -1318,7 +1318,7 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 
 	// Check table format data validity
 	if (pszFrameWndSize == NULL) return;
-	if (m_apGrdColFormat == NULL) return;
+	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Check row and column number validity
 	if ((nColNum <= 0) || (nRowNum < fixedRowNum))
@@ -1373,14 +1373,14 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
-		unsigned nHeaderTitleID = m_apGrdColFormat[nCol].headerTitleId;
+		unsigned nHeaderTitleID = gridCtrlFormatInfoPtr_[nCol].headerTitleId;
 		if (nHeaderTitleID != INT_NULL) {
 			headerTitle = getLanguageString(languageTablePtr, nHeaderTitleID);
 		}
 		m_pDataItemListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
 
 		// Column width
-		int nColWidth = m_apGrdColFormat[nCol].width;
+		int nColWidth = gridCtrlFormatInfoPtr_[nCol].width;
 		if (nColWidth != -1) {
 			// Set column width as defined
 			m_pDataItemListTable->SetColumnWidth(nCol, nColWidth);
@@ -1397,9 +1397,9 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 	int nColStyle = -1;
 	unsigned itemState = INT_NULL;
 	for (int row = 1; row < nRowNum; row++) {
-		for (int nCol = 0; nCol < m_nColNum; nCol++) {
+		for (int nCol = 0; nCol < columnCount_; nCol++) {
 			// Get column style & item state
-			nColStyle = m_apGrdColFormat[nCol].columnStyle;
+			nColStyle = gridCtrlFormatInfoPtr_[nCol].columnStyle;
 			itemState = m_pDataItemListTable->GetItemState(row, nCol);
 			itemState |= GVIS_READONLY;
 
@@ -1419,7 +1419,7 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 				CGridCellCheck* cellPtr = (CGridCellCheck*)m_pDataItemListTable->GetCell(row, nCol);
 
 				// Set center alignment if defined
-				if (m_apGrdColFormat[nCol].isCentered == true) {
+				if (gridCtrlFormatInfoPtr_[nCol].isCentered == true) {
 					if (cellPtr == NULL) continue;
 					cellPtr->SetCheckPlacement(SCP_CENTERING);
 				}
@@ -1435,7 +1435,7 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 				CGridCellBase* cellPtr = (CGridCellBase*)m_pDataItemListTable->GetCell(row, nCol);
 
 				// Set center alignment if defined
-				if (m_apGrdColFormat[nCol].isCentered == true) {
+				if (gridCtrlFormatInfoPtr_[nCol].isCentered == true) {
 					if (cellPtr == NULL) continue;
 					cellPtr->SetFormat(cellPtr->GetFormat() | DT_CENTER);
 				}
@@ -1514,7 +1514,7 @@ void CPwrReminderDlg::SwitchMode(bool /* bRedraw = false */)
 
 		// Refresh detail view
 		RefreshDetailView(Mode::View);
-		DisplayItemDetails(m_nCurSelIndex);
+		DisplayItemDetails(curSelIndex_);
 
 		// Refresh dialog item states
 		refreshDialogItemState(true);
@@ -1593,7 +1593,7 @@ void CPwrReminderDlg::updateLayoutInfo(void)
 	if (m_pDataItemListTable == NULL) return;
 
 	// Check table column format data validity
-	if (m_apGrdColFormat == NULL) return;
+	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Get table column count
 	int nColNum = m_pDataItemListTable->GetColumnCount();
@@ -1601,7 +1601,7 @@ void CPwrReminderDlg::updateLayoutInfo(void)
 	// Update size of table columns
 	for (int index = 0; index < nColNum; index++) {
 		int nColSize = m_pDataItemListTable->GetColumnWidth(index);
-		m_apGrdColFormat[index].width = nColSize;
+		gridCtrlFormatInfoPtr_[index].width = nColSize;
 	}
 }
 
@@ -1626,25 +1626,25 @@ void CPwrReminderDlg::loadLayoutInfo(void)
 	};
 
 	// Backup format data
-	m_nColNum = (sizeof(arrGrdColFormat) / sizeof(GRIDCTRLCOLFORMAT));
+	columnCount_ = (sizeof(arrGrdColFormat) / sizeof(GRIDCTRLCOLFORMAT));
 
 	// Initialize table format info data
-	if (m_apGrdColFormat == NULL) {
-		m_apGrdColFormat = new GRIDCTRLCOLFORMAT[m_nColNum];
-		for (int index = 0; index < m_nColNum; index++) {
+	if (gridCtrlFormatInfoPtr_ == NULL) {
+		gridCtrlFormatInfoPtr_ = new GRIDCTRLCOLFORMAT[columnCount_];
+		for (int index = 0; index < columnCount_; index++) {
 			// Copy default table column format data
-			m_apGrdColFormat[index] = arrGrdColFormat[index];
+			gridCtrlFormatInfoPtr_[index] = arrGrdColFormat[index];
 		}
 	}
 
 	// Load layout info data from registry
 	int returnValue = 0;
 	String keyName;
-	for (int index = 0; index < m_nColNum; index++) {
+	for (int index = 0; index < columnCount_; index++) {
 		keyName = Key::LayoutInfo::GridColSize(index);
 		if (GetLayoutInfo(Section::LayoutInfo::PwrReminderTable, keyName, returnValue)) {
-			if (m_apGrdColFormat != NULL) {
-				m_apGrdColFormat[index].width = returnValue;
+			if (gridCtrlFormatInfoPtr_ != NULL) {
+				gridCtrlFormatInfoPtr_[index].width = returnValue;
 			}
 		}
 	}
@@ -1658,13 +1658,13 @@ void CPwrReminderDlg::loadLayoutInfo(void)
 void CPwrReminderDlg::saveLayoutInfo(void)
 {
 	// Check table column format data validity
-	if (m_apGrdColFormat == NULL) return;
+	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Save layout info data to registry
 	int nRef = 0;
 	String keyName;
-	for (int index = 0; index < m_nColNum; index++) {
-		nRef = m_apGrdColFormat[index].width;
+	for (int index = 0; index < columnCount_; index++) {
+		nRef = gridCtrlFormatInfoPtr_[index].width;
 		keyName = Key::LayoutInfo::GridColSize(index);
 		WriteLayoutInfo(Section::LayoutInfo::PwrReminderTable, keyName, nRef);
 	}
@@ -1925,7 +1925,7 @@ void CPwrReminderDlg::RedrawDataTable(bool isReadOnly /* = false */)
 	m_pDataItemListTable->SetRowCount(nCurRowNum);
 
 	// Draw table
-	DrawDataTable(m_pszFrameWndSize, m_nColNum, nCurRowNum, isReadOnly);
+	DrawDataTable(m_pszFrameWndSize, columnCount_, nCurRowNum, isReadOnly);
 	
 	// Update table data
 	UpdateDataItemList();
@@ -1994,10 +1994,10 @@ void CPwrReminderDlg::DisplayItemDetails(int index)
 
 /**
  * @brief	Refresh and update state for dialog items
- * @param	bRecheckState - Recheck all item's state
+ * @param	isRecheckState - Recheck all item's state
  * @return	None
  */
-void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
+void CPwrReminderDlg::refreshDialogItemState(bool isRecheckState /* = false */)
 {
 	CWnd* buttonPtr = NULL;
 
@@ -2006,7 +2006,7 @@ void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 		return;
 
 	// Check if any item is selected or not
-	bool bIsSelected = ((m_nCurSelIndex >= 0) && (m_nCurSelIndex < GetItemNum()));
+	bool bIsSelected = ((curSelIndex_ >= 0) && (curSelIndex_ < GetItemNum()));
 
 	// Check if number of item has reached the limit
 	bool bIsMaxNum = (GetItemNum() >= PwrReminderData::maxItemNum);
@@ -2059,18 +2059,18 @@ void CPwrReminderDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	}
 
 	// Update [Check/Uncheck All] button state
-	UpdateCheckAllBtnState(bRecheckState);
+	updateCheckAllBtnState(isRecheckState);
 
 	// Default
-	SDialog::refreshDialogItemState(bRecheckState);
+	SDialog::refreshDialogItemState(isRecheckState);
 }
 
 /**
  * @brief	Refresh and update state for [Check/Uncheck All] button
- * @param	bRecheck - Recheck all items enable state
+ * @param	isRecheck - Recheck all items enable state
  * @return	None
  */
-void CPwrReminderDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
+void CPwrReminderDlg::updateCheckAllBtnState(bool isRecheck /* = false */)
 {
 	// If dialog items are being locked, do nothing
 	if (getLockState() == true)
@@ -2092,24 +2092,24 @@ void CPwrReminderDlg::UpdateCheckAllBtnState(bool bRecheck /* = false */)
 	}
 
 	// Recheck all items state
-	if (bRecheck == true) {
-		m_nCheckCount = 0; // Reset counter
+	if (isRecheck == true) {
+		checkCount_ = 0; // Reset counter
 		for (int index = 0; index < itemNum; index++) {
 			const Item& pwrTemp = m_pwrReminderDataTemp.getItemAt(index);
 			if (pwrTemp.isEnabled() == true) {
-				m_nCheckCount++;
+				checkCount_++;
 			}
 		}
 	}
 
 	// Update button state
-	if (m_nCheckCount == 0) {
+	if (checkCount_ == 0) {
 		// Enable [Check All] button
 		pCheckAllBtn->EnableWindow(true);
 		// Disable [Uncheck All] button
 		pUncheckAllBtn->EnableWindow(false);
 	}
-	else if (m_nCheckCount == itemNum) {
+	else if (checkCount_ == itemNum) {
 		// Disable [Check All] button
 		pCheckAllBtn->EnableWindow(false);
 		// Enable [Uncheck All] button
@@ -2554,7 +2554,7 @@ void CPwrReminderDlg::SetAllItemState(bool state)
 	}
 
 	// Update number of checked items
-	m_nCheckCount = (state == false) ? 0 : itemNum;
+	checkCount_ = (state == false) ? 0 : itemNum;
 	
 	// Update data item list
 	UpdateDataItemList();
@@ -2928,11 +2928,11 @@ void CPwrReminderDlg::UpdateItemData(Item& reminderItem, bool updateFlag)
 /**
  * @brief	Check Power Reminder item validity
  * @param	reminderItem		 - Item to validate
- * @param	bShowMsg	 - Show validation message box or not
+ * @param	showMsg	 - Show validation message box or not
  * @param	bAutoCorrect - Invalid value auto correction (ON/OFF)
  * @return	bool - Result of validation process
  */
-bool CPwrReminderDlg::Validate(Item& reminderItem, bool bShowMsg /* = false */, bool bAutoCorrect /* = false */)
+bool CPwrReminderDlg::Validate(Item& reminderItem, bool showMsg /* = false */, bool bAutoCorrect /* = false */)
 {
 	bool result = true;
 
@@ -3040,7 +3040,7 @@ bool CPwrReminderDlg::Validate(Item& reminderItem, bool bShowMsg /* = false */, 
 	}
 	
 	// Show error message if enabled
-	if ((bShowMsg == true) && (!arrMsgString.empty())) {
+	if ((showMsg == true) && (!arrMsgString.empty())) {
 		for (int index = 0; index < arrMsgString.size(); index++) {
 			// If auto correction is ON
 			if (bAutoCorrect == true) {

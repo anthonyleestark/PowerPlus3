@@ -87,7 +87,7 @@ protected:
 	virtual void setupLanguage(void);
 	virtual void setupComboBox(unsigned comboId, LANGTABLE_PTR pLanguage);
 	virtual void setupDialogItemState(void);
-	virtual void refreshDialogItemState(bool bRecheckState = false);
+	virtual void refreshDialogItemState(bool isRecheckState = false);
 
 	// Displaying functions
 	void RedrawIconPreview(LPDRAWITEMSTRUCT lpDrawItemStruct);

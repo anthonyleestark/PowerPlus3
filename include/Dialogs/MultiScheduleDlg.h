@@ -70,14 +70,14 @@ private:
 	Data m_schScheduleTemp;
 
 	// Table format and properties
-	int	m_nColNum;
-	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
-	Size* m_pszDataTableFrameSize;
+	int	columnCount_;
+	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
+	Size* dataTableSizePtr_;
 
 	// Other variables
 	int m_nCurMode;
-	int m_nCheckCount;
-	int m_nCurSelIndex;
+	int checkCount_;
+	int curSelIndex_;
 	int m_nCurDispIndex;
 
 public:
@@ -102,8 +102,8 @@ public:
 	void UpdateDataItemList();
 	void DisableDataTable(bool isDisabled);
 	void RedrawDataTable(bool isReadOnly = false);
-	void refreshDialogItemState(bool bRecheckState = false);
-	void UpdateCheckAllBtnState(bool bRecheck = false);
+	void refreshDialogItemState(bool isRecheckState = false);
+	void updateCheckAllBtnState(bool isRecheck = false);
 
 	// Data processing functions
 	bool LoadScheduleSettings();
@@ -117,7 +117,7 @@ public:
 	void Remove(int index);
 	void RemoveAll();
 	void SetAllItemState(bool state);
-	bool Validate(Item& scheduleItem, bool bShowMsg = false, bool bAutoCorrect = false);
+	bool Validate(Item& scheduleItem, bool showMsg = false, bool bAutoCorrect = false);
 
 	// Message handlers
 	afx_msg void OnApply();

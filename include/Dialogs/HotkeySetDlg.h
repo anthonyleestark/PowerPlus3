@@ -55,27 +55,27 @@ protected:
 
 private:
 	// Dialog control variables
-	CGridCtrl* m_pHotkeySetListTable;
-	CComboBox m_cmbActionList;
-	CComboBox m_cmbFuncKeyList;
+	CGridCtrl* hotkeySetTablePtr_;
+	CComboBox actionListCombo_;
+	CComboBox virtualKeyListCombo_;
 
 	// Checkbox variables
-	BOOL m_bCtrlBtn;
-	BOOL m_bAltBtn;
-	BOOL m_bWinKeyBtn;
+	BOOL isCtrlKeyActive_;
+	BOOL isAltKeyActive_;
+	BOOL isWinKeyActive_;
 
 	// Data container variables
-	Data m_hksHotkeySet;
-	Data m_hksHotkeySetTemp;
+	Data hotkeySetData_;
+	Data tempHotkeySetData_;
 
 	// Table format and properties
-	int	m_nColNum;
-	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
-	Size* m_pszDataTableFrameSize;
+	int	columnCount_;
+	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
+	Size* dataTableSizePtr_;
 
 	// Other variables
-	int m_nCheckCount;
-	int m_nCurSelIndex;
+	int checkCount_;
+	int curSelIndex_;
 
 public:
 	// Generated message map functions
@@ -98,17 +98,17 @@ public:
 protected:
 	// Dialog setup functions
 	void setupLanguage();
-	void SetupHotkeySetList(LANGTABLE_PTR languageTablePtr);
-	void DrawHotkeySetTable(bool isReadOnly = false);
+	void setupHotkeySetList(LANGTABLE_PTR languageTablePtr);
+	void drawHotkeySetTable(bool isReadOnly = false);
 	void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
 
 	// Dialog item properties functions
-	void refreshDialogItemState(bool bRecheckState = false);
-	void UpdateCheckAllBtnState(bool bRecheck = true);
-	void UpdateHotkeySet();
-	void DisableHotkeySetTable(bool isDisabled);
-	void RedrawHotkeySetTable(bool isReadOnly = false);
-	void DisplayHotkeyDetails(int index);
+	void refreshDialogItemState(bool isRecheckState = false);
+	void updateCheckAllBtnState(bool isRecheck = true);
+	void updateHotkeySet();
+	void disableHotkeySetTable(bool isDisabled);
+	void redrawHotkeySetTable(bool isReadOnly = false);
+	void displayHotkeyDetails(int index);
 
 	// Layout functions
 	void updateLayoutInfo(void);
@@ -116,27 +116,27 @@ protected:
 	void saveLayoutInfo(void);
 
 	// Data processing functions
-	bool LoadHotkeySetData();
-	bool SaveHotkeySetData();
+	bool loadHotkeySetData();
+	bool saveHotkeySetData();
 	bool checkDataChangeState();
 
 	// Data processing handlers
-	void Add(void);
-	void Remove(int index);
-	void RemoveAll(void);
-	void SwitchAllItemState(bool state);
-	bool Validate(const Item& hotkeyItem, bool bShowMsg = false);
+	void add(void);
+	void remove(int index);
+	void removeAll(void);
+	void switchAllItemState(bool state);
+	bool validate(const Item& hotkeyItem, bool showMsg = false);
 
 protected:
 	// Get/set functions
-	int GetItemNum() const {
-		return m_hksHotkeySetTemp.getItemNum();
-	};
-	int	GetListCurSel(void) const {
-		return m_nCurSelIndex;
-	};
-	void SetListCurSel(int nSelIndex) {
-		m_nCurSelIndex = nSelIndex;
-	};
+	int getItemNum() const {
+		return tempHotkeySetData_.getItemNum();
+	}
+	int	getListCurSel(void) const {
+		return curSelIndex_;
+	}
+	void setListCurSel(int selectionIndex) {
+		curSelIndex_ = selectionIndex;
+	}
 };
 

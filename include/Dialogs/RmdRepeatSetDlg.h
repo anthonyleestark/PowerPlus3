@@ -65,7 +65,7 @@ protected:
 	// Dialog and items setup functions
 	virtual void setupLanguage();
 	virtual void setupDialogItemState();
-	virtual void refreshDialogItemState(bool bRecheckState = false);
+	virtual void refreshDialogItemState(bool isRecheckState = false);
 
 	void SetSnoozeIntervalEdit(int value);
 	

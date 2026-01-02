@@ -316,10 +316,10 @@ void CRmdRepeatSetDlg::setupDialogItemState()
 
 /**
  * @brief	Refresh and update state for dialog items
- * @param	bRecheckState - Recheck all item's state
+ * @param	isRecheckState - Recheck all item's state
  * @return	None
  */
-void CRmdRepeatSetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
+void CRmdRepeatSetDlg::refreshDialogItemState(bool isRecheckState /* = false */)
 {
 	int nRepeatState = INT_NULL;
 	int nSnoozeState = INT_NULL;
@@ -373,7 +373,7 @@ void CRmdRepeatSetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
 	}
 
 	// Default
-	SDialog::refreshDialogItemState(bRecheckState);
+	SDialog::refreshDialogItemState(isRecheckState);
 }
 
 /**

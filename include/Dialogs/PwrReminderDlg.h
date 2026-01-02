@@ -109,14 +109,14 @@ private:
 	Item m_pwrItemInEdit;
 
 	// Table format and properties
-	int m_nColNum;
+	int columnCount_;
 	Size* m_pszFrameWndSize;
-	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
+	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
 
 	// Other variables
 	int m_nCurMode;
-	int m_nCheckCount;
-	int m_nCurSelIndex;
+	int checkCount_;
+	int curSelIndex_;
 	int m_nCurDispIndex;
 	ClockTime m_stDispTimeBak;
 
@@ -166,8 +166,8 @@ protected:
 	void DisableTable(bool isDisabled);
 	void RedrawDataTable(bool isReadOnly = false);
 	void DisplayItemDetails(int index);
-	void refreshDialogItemState(bool bRecheckState = false);
-	void UpdateCheckAllBtnState(bool bRecheck = false);
+	void refreshDialogItemState(bool isRecheckState = false);
+	void updateCheckAllBtnState(bool isRecheck = false);
 	void RefreshDetailView(int mode);
 	void UpdateMsgCounter(int count);
 	void UpdateTimeSetting(ClockTime& clockTime, bool updateFlag = true);
@@ -186,7 +186,7 @@ private:
 	void SetAllItemState(bool state);
 	void PreviewItem(int index);
 	void UpdateItemData(Item& reminderItem, bool updateFlag);
-	bool Validate(Item& reminderItem, bool bShowMsg = false, bool bAutoCorrect = false);
+	bool Validate(Item& reminderItem, bool showMsg = false, bool bAutoCorrect = false);
 
 protected:
 	// Get/set functions

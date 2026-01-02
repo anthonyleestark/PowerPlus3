@@ -777,10 +777,10 @@ void CRmdMsgStyleSetDlg::setupDialogItemState(void)
 
 /**
  * @brief	Refresh and update state for dialog items
- * @param	bRecheckState - Recheck all item's state
+ * @param	isRecheckState - Recheck all item's state
  * @return	None
  */
-void CRmdMsgStyleSetDlg::refreshDialogItemState(bool bRecheckState /* = false */)
+void CRmdMsgStyleSetDlg::refreshDialogItemState(bool isRecheckState /* = false */)
 {
 	// Redraw background/text color picker
 	if (m_pBkgrdColorPickBtn != NULL)
@@ -793,7 +793,7 @@ void CRmdMsgStyleSetDlg::refreshDialogItemState(bool bRecheckState /* = false */
 		::InvalidateRect(m_pIconPreviewStatic->GetSafeHwnd(), NULL, true);
 
 	// Default
-	SDialog::refreshDialogItemState(bRecheckState);
+	SDialog::refreshDialogItemState(isRecheckState);
 }
 
 /**

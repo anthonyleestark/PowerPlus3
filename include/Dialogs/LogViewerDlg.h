@@ -47,14 +47,14 @@ private:
 	size_t m_nLogCount;
 
 	// Table format and properties
-	int	m_nColNum;
-	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
+	int	columnCount_;
+	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
 	Size* m_pszTableFrameSize;
 
 	// Other variables
 	int m_nCurMode;
-	int m_nCheckCount;
-	int m_nCurSelIndex;
+	int checkCount_;
+	int curSelIndex_;
 
 public:
 	// Generated handlers
