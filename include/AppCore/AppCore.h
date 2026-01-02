@@ -385,11 +385,11 @@ public:
 	void setSnoozeInterval(int value) noexcept {
 		repeatSetInfo_.setSnoozeInterval(value);
 	}
-	void setActiveDays(byte byActiveDays) noexcept {
-		repeatSetInfo_.setActiveDays(byActiveDays);
+	void setActiveDays(byte activeDays) noexcept {
+		repeatSetInfo_.setActiveDays(activeDays);
 	}
-	void setDayActive(DayOfWeek dayOfWeek, bool bActive) noexcept {
-		repeatSetInfo_.setDayActive(dayOfWeek, bActive);
+	void setDayActive(DayOfWeek dayOfWeek, bool isActive) noexcept {
+		repeatSetInfo_.setDayActive(dayOfWeek, isActive);
 	}
 
 	// Print item data
@@ -540,7 +540,7 @@ private:
 public:
 	// Constructor
 	HotkeySetItem();
-	HotkeySetItem(unsigned hkActionID);
+	HotkeySetItem(unsigned hotkeyActionId);
 	HotkeySetItem(const HotkeySetItem& other) {
 		this->copy(other);
 	}
@@ -583,8 +583,8 @@ public:
 	constexpr unsigned getActionId(void) const noexcept {
 		return hotkeyActionId_;
 	}
-	void setActionId(unsigned hkActionID) noexcept {
-		hotkeyActionId_ = hkActionID;
+	void setActionId(unsigned hotkeyActionId) noexcept {
+		hotkeyActionId_ = hotkeyActionId;
 	}
 	constexpr void getKeyCode(DWORD& modifiers, DWORD& virtualKey) const noexcept {
 		modifiers = modifiers_; virtualKey = virtualKey_;
@@ -686,7 +686,7 @@ public:
 	}
 
 	// Print item keystrokes by ID
-	void printKeyStrokes(unsigned hkID, String& outputString) const;
+	void printKeyStrokes(unsigned hotkeyId, String& outputString) const;
 };
 
 
@@ -798,38 +798,38 @@ public:
 	constexpr unsigned getIconId(void) const noexcept {
 		return iconId_;
 	}
-	void setIconId(unsigned uiIconID) noexcept {
-		iconId_ = uiIconID;
+	void setIconId(unsigned iconId) noexcept {
+		iconId_ = iconId;
 	}
 	constexpr int getIconSize(void) const noexcept {
 		return iconSize_;
 	}
-	void setIconSize(int nIconSize) noexcept {
-		iconSize_ = nIconSize;
+	void setIconSize(int iconSize) noexcept {
+		iconSize_ = iconSize;
 	}
 	constexpr byte getIconPosition(void) const noexcept {
 		return iconPosition_;
 	}
-	void setIconPosition(byte byIconPos) noexcept {
-		iconPosition_ = byIconPos;
+	void setIconPosition(byte iconPosition) noexcept {
+		iconPosition_ = iconPosition;
 	}
 	constexpr byte getDisplayPosition(void) const noexcept {
 		return displayPosition_;
 	}
-	void setDisplayPosition(byte byDisplayPos) noexcept {
-		displayPosition_ = byDisplayPos;
+	void setDisplayPosition(byte displayPosition) noexcept {
+		displayPosition_ = displayPosition;
 	}
 	constexpr unsigned getHorizontalMargin(void) const noexcept {
 		return marginHorizontal_;
 	}
-	void setHorizontalMargin(unsigned uiHMargin) noexcept {
-		marginHorizontal_ = uiHMargin;
+	void setHorizontalMargin(unsigned marginHorizontal) noexcept {
+		marginHorizontal_ = marginHorizontal;
 	}
 	constexpr unsigned getVerticalMargin(void) const noexcept {
 		return marginVertical_;
 	}
-	void setVerticalMargin(unsigned uiVMargin) noexcept {
-		marginVertical_ = uiVMargin;
+	void setVerticalMargin(unsigned marginVertical) noexcept {
+		marginVertical_ = marginVertical;
 	}
 };
 
@@ -943,14 +943,14 @@ public:
 	ClockTime getTime(void) const noexcept {
 		return timeValue_;
 	}
-	void setTime(const ClockTime& stTime) noexcept {
-		timeValue_ = stTime;
+	void setTime(const ClockTime& timeValue) noexcept {
+		timeValue_ = timeValue;
 	}
 	constexpr DWORD getMessageStyle(void) const noexcept {
 		return messageStyle_;
 	}
-	void setMessageStyle(DWORD nMsgStyleID) noexcept {
-		messageStyle_ = nMsgStyleID;
+	void setMessageStyle(DWORD messageStyle) noexcept {
+		messageStyle_ = messageStyle;
 	}
 	constexpr bool isCustomStyleEnabled(void) const noexcept {
 		return useCustomStyle_;
@@ -984,11 +984,11 @@ public:
 	void setSnoozeInterval(int value) noexcept {
 		repeatSetInfo_.setSnoozeInterval(value);
 	}
-	void setActiveDays(byte byActiveDays) noexcept {
-		repeatSetInfo_.setActiveDays(byActiveDays);
+	void setActiveDays(byte activeDays) noexcept {
+		repeatSetInfo_.setActiveDays(activeDays);
 	}
-	void setDayActive(DayOfWeek dayOfWeek, bool bActive) noexcept {
-		repeatSetInfo_.setDayActive(dayOfWeek, bActive);
+	void setDayActive(DayOfWeek dayOfWeek, bool isActive) noexcept {
+		repeatSetInfo_.setDayActive(dayOfWeek, isActive);
 	}
 
 	// Print item data
@@ -1041,8 +1041,8 @@ public:
 	}
 
 	// Update items
-	void add(const PwrReminderItem& pItem);
-	void update(const PwrReminderItem& pItem);
+	void add(const PwrReminderItem& reminderItem);
+	void update(const PwrReminderItem& reminderItem);
 
 	// Access data
 	const RmdMsgStyleSet& getCommonStyle(void) const noexcept {
@@ -1170,8 +1170,8 @@ public:
 	ClockTime getTime(void) const noexcept {
 		return nextSnoozeTime_;
 	}
-	void setTime(const ClockTime& stTime) noexcept {
-		nextSnoozeTime_ = stTime;
+	void setTime(const ClockTime& timeValue) noexcept {
+		nextSnoozeTime_ = timeValue;
 	}
 };
 
@@ -1212,7 +1212,7 @@ public:
 
 	// Member functions
 	void copy(const HistoryInfoData& other) noexcept;
-	void init(unsigned nCategoryID) noexcept;
+	void init(unsigned categoryId) noexcept;
 	void removeAll(void) noexcept {
 		const HistoryInfoData emptyItem;
 		this->copy(emptyItem);
@@ -1226,14 +1226,14 @@ public:
 	constexpr unsigned getCategoryId(void) const noexcept {
 		return categoryId_;
 	}
-	void setCategoryId(unsigned nCategoryID) noexcept {
-		categoryId_ = nCategoryID;
+	void setCategoryId(unsigned categoryId) noexcept {
+		categoryId_ = categoryId;
 	}
 	DateTime getTime(void) const noexcept {
 		return timestampValue_;
 	}
-	void setTime(const DateTime& stTime) noexcept {
-		timestampValue_ = stTime;
+	void setTime(const DateTime& timeValue) noexcept {
+		timestampValue_ = timeValue;
 	}
 	constexpr unsigned getItemId(void) const noexcept {
 		return itemId_;
@@ -1259,8 +1259,8 @@ public:
 	void setErrorCode(DWORD errorCode) noexcept {
 		errorCode_ = errorCode;
 	}
-	void getDescription(String& strDescription) const noexcept {
-		strDescription = description_;
+	void getDescription(String& description) const noexcept {
+		description = description_;
 	}
 	const wchar_t* getDescription(void) const noexcept {
 		return description_.getString();

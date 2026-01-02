@@ -85,7 +85,7 @@ public:
 protected:
 	// Dialog and items setup functions
 	virtual void setupLanguage(void);
-	virtual void setupComboBox(unsigned nComboID, LANGTABLE_PTR pLanguage);
+	virtual void setupComboBox(unsigned comboId, LANGTABLE_PTR pLanguage);
 	virtual void setupDialogItemState(void);
 	virtual void refreshDialogItemState(bool bRecheckState = false);
 
@@ -96,7 +96,7 @@ protected:
 
 public:
 	// Data processing functions
-	void updateDialogData(bool bUpdate);
+	void updateDialogData(bool updateFlag);
 	void GetData(RmdMsgStyleSet& msgStyleData) const {
 		msgStyleData.copy(m_rmsMsgStyleData);
 	};

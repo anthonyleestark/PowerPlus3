@@ -283,17 +283,17 @@ void CLogViewerDlg::setupLanguage(void)
 void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*languageTablePtr*/)
 {
 	// Get parent list frame rect
-	CWnd* pListFrameWnd = GetDlgItem(IDC_LOGVIEWER_LOGDATA_LISTBOX);
-	if (pListFrameWnd == NULL) return;
-	RECT rcListFrameWnd;
-	pListFrameWnd->GetWindowRect(&rcListFrameWnd);
-	ScreenToClient(&rcListFrameWnd);
+	CWnd* listFrameWndPtr = GetDlgItem(IDC_LOGVIEWER_LOGDATA_LISTBOX);
+	if (listFrameWndPtr == NULL) return;
+	RECT listFrameWndRect;
+	listFrameWndPtr->GetWindowRect(&listFrameWndRect);
+	ScreenToClient(&listFrameWndRect);
 
 	// Get frame size
 	if (m_pszTableFrameSize == NULL) {
 		m_pszTableFrameSize = new Size();
-		m_pszTableFrameSize->_width = rcListFrameWnd.right - rcListFrameWnd.left;
-		m_pszTableFrameSize->_height = rcListFrameWnd.bottom - rcListFrameWnd.top;
+		m_pszTableFrameSize->_width = listFrameWndRect.right - listFrameWndRect.left;
+		m_pszTableFrameSize->_height = listFrameWndRect.bottom - listFrameWndRect.top;
 	}
 
 	// Initialization
@@ -302,19 +302,19 @@ void CLogViewerDlg::SetupLogViewerList(LANGTABLE_PTR /*languageTablePtr*/)
 	// Create table
 	if (m_pLogViewerList == NULL) return;
 	DWORD style = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
-	m_pLogViewerList->Create(rcListFrameWnd, this, IDC_LOGVIEWER_LOGDATA_LISTBOX, style);
+	m_pLogViewerList->Create(listFrameWndRect, this, IDC_LOGVIEWER_LOGDATA_LISTBOX, style);
 
 	// Destroy frame
-	pListFrameWnd->DestroyWindow();
+	listFrameWndPtr->DestroyWindow();
 
 	// Cell format
-	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pLogViewerList->GetDefaultCell(FALSE, FALSE);
-	if (pCell == NULL) return;
-	pCell->SetFormat(pCell->GetFormat());
-	pCell->SetMargin(0);
-	pCell->SetBackClr(Color::White);
-	pCell->SetTextClr(Color::Black);
-	pCell->SetHeight(Constant::UI::GridCtrl::Height::Row_Ex);
+	CGridDefaultCell* cellPtr = (CGridDefaultCell*)m_pLogViewerList->GetDefaultCell(FALSE, FALSE);
+	if (cellPtr == NULL) return;
+	cellPtr->SetFormat(cellPtr->GetFormat());
+	cellPtr->SetMargin(0);
+	cellPtr->SetBackClr(Color::White);
+	cellPtr->SetTextClr(Color::Black);
+	cellPtr->SetHeight(Constant::UI::GridCtrl::Height::Row_Ex);
 
 	// Table format and properties
 	int nRowNum = (m_nLogCount + fixedRowNum);
@@ -367,32 +367,32 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 	LANGTABLE_PTR languageTablePtr = theAppPtr->getAppLanguage();
 
 	// Re-update default cell properties
-	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pLogViewerList->GetDefaultCell(FALSE, FALSE);
-	if (pCell == NULL) return;
+	CGridDefaultCell* cellPtr = (CGridDefaultCell*)m_pLogViewerList->GetDefaultCell(FALSE, FALSE);
+	if (cellPtr == NULL) return;
 
 	// Table properties
 	int nColNum = m_nColNum;
 	int nRowNum = (m_nLogCount + fixedRowNum);
 
 	// Setup display size
-	int nFrameHeight = m_pszTableFrameSize->height();
-	int nFrameWidth = m_pszTableFrameSize->width();
+	int frameHeight = m_pszTableFrameSize->height();
+	int frameWidth = m_pszTableFrameSize->width();
 	int nColWidthOffset = 0;
 	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
-		nFrameHeight -= Constant::UI::Offset::Height::ListCtrl_Win10;
+		frameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
+		frameHeight -= Constant::UI::Offset::Height::ListCtrl_Win10;
 		nColWidthOffset = Constant::UI::Offset::Width::ListColumn;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl;
-		nFrameHeight -= Constant::UI::Offset::Height::ListCtrl;
+		frameWidth -= Constant::UI::Offset::Width::ListCtrl;
+		frameHeight -= Constant::UI::Offset::Height::ListCtrl;
 	}
-	if ((Constant::UI::Offset::Width::ListCtrl + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row_Ex)) >= nFrameHeight) {
+	if ((Constant::UI::Offset::Width::ListCtrl + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row_Ex)) >= frameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
-		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
+		int scrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
+		frameWidth -= (scrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns
@@ -415,66 +415,66 @@ void CLogViewerDlg::DrawLogViewerTable(void)
 			int nColWidthPx = nColWidth - nColWidthOffset;
 			if (m_pLogViewerList->SetColumnWidth(nCol, nColWidthPx)) {
 				// Calculate remaining width (not using offset)
-				nFrameWidth -= nColWidth;
+				frameWidth -= nColWidth;
 			}
 		}
 		else {
 			// Set remaining width for current column
-			m_pLogViewerList->SetColumnWidth(nCol, nFrameWidth);
+			m_pLogViewerList->SetColumnWidth(nCol, frameWidth);
 		}
 	}
 
 	// Setup rows
 	int nColStyle = -1;
-	unsigned nItemState = INT_NULL;
-	for (int nRow = 1; nRow < nRowNum; nRow++) {
+	unsigned itemState = INT_NULL;
+	for (int row = 1; row < nRowNum; row++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 
 			// Get column style & item state
 			nColStyle = m_apGrdColFormat[nCol].columnStyle;
-			nItemState = m_pLogViewerList->GetItemState(nRow, nCol);
-			nItemState |= GVIS_READONLY;
+			itemState = m_pLogViewerList->GetItemState(row, nCol);
+			itemState |= GVIS_READONLY;
 
 			// Base column - header-like style
 			if (nColStyle == COLSTYLE_FIXED) {
 				// Set fixed cell style
-				AppCore::setFixedCellStyle(m_pLogViewerList, nRow, nCol);
+				AppCore::setFixedCellStyle(m_pLogViewerList, row, nCol);
 			}
 
 			// Checkbox column
 			else if (nColStyle == COLSTYLE_CHECKBOX) {
 				// Set cell type: Checkbox
-				if (!m_pLogViewerList->SetCellType(nRow, nCol, RUNTIME_CLASS(CGridCellCheck)))
+				if (!m_pLogViewerList->SetCellType(row, nCol, RUNTIME_CLASS(CGridCellCheck)))
 					continue;
 
 				// Get cell
-				CGridCellCheck* pCell = (CGridCellCheck*)m_pLogViewerList->GetCell(nRow, nCol);
+				CGridCellCheck* cellPtr = (CGridCellCheck*)m_pLogViewerList->GetCell(row, nCol);
 
 				// Set center alignment if defined
 				if (m_apGrdColFormat[nCol].isCentered == TRUE) {
-					if (pCell == NULL) continue;
-					pCell->SetCheckPlacement(SCP_CENTERING);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetCheckPlacement(SCP_CENTERING);
 				}
 			}
 
 			// Normal column
 			else if (nColStyle == COLSTYLE_NORMAL) {
 				// Set item state
-				if (!m_pLogViewerList->SetItemState(nRow, nCol, nItemState))
+				if (!m_pLogViewerList->SetItemState(row, nCol, itemState))
 					continue;
 
 				// Get cell
-				CGridCellBase* pCell = (CGridCellBase*)m_pLogViewerList->GetCell(nRow, nCol);
+				CGridCellBase* cellPtr = (CGridCellBase*)m_pLogViewerList->GetCell(row, nCol);
 
 				// Set center alignment if defined
 				if (m_apGrdColFormat[nCol].isCentered == TRUE) {
-					if (pCell == NULL) continue;
-					pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetFormat(cellPtr->GetFormat() | DT_CENTER);
 				}
 				else {
 					// Set margin (left alignment)
-					if (pCell == NULL) continue;
-					pCell->SetMargin(Constant::UI::GridCtrl::Margin::Left);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetMargin(Constant::UI::GridCtrl::Margin::Left);
 				}
 			}
 		}
@@ -528,10 +528,10 @@ void CLogViewerDlg::UpdateLogViewer(void)
 
 	// Print items
 	int itemIndex = 0;
-	for (int nRowIndex = startRowIndex; nRowIndex <= m_nLogCount; nRowIndex++) {
+	for (int rowIndex = startRowIndex; rowIndex <= m_nLogCount; rowIndex++) {
 		
 		// Get log item
-		itemIndex = nRowIndex - startRowIndex;
+		itemIndex = rowIndex - startRowIndex;
 		Item logItem = m_ptrAppEventLog->GetLogItem(itemIndex);
 
 		// If log item is empty
@@ -539,15 +539,15 @@ void CLogViewerDlg::UpdateLogViewer(void)
 
 		// Date/time
 		String tempString = logItem.FormatDateTime();
-		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::DateTime, tempString);
+		m_pLogViewerList->SetItemText(rowIndex, ColumnID::DateTime, tempString);
 
 		// Category
 		tempString = getLanguageString(languageTablePtr, logItem.GetCategory());
-		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::CategoryID, tempString);
+		m_pLogViewerList->SetItemText(rowIndex, ColumnID::CategoryID, tempString);
 
 		// Additional description
 		tempString = logItem.GetLogString();
-		m_pLogViewerList->SetItemText(nRowIndex, ColumnID::Description, tempString);
+		m_pLogViewerList->SetItemText(rowIndex, ColumnID::Description, tempString);
 	}
 }
 
@@ -564,12 +564,12 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 		return;
 
 	// Get clicked item info
-	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
-	if (pItem == NULL) return;
-	int nRow = pItem->iRow;
+	NM_GRIDVIEW* reminderItem = (NM_GRIDVIEW*)pNMHDR;
+	if (reminderItem == NULL) return;
+	int row = reminderItem->iRow;
 
 	//Get current selection index
-	m_nCurSelIndex = nRow - fixedRowNum;
+	m_nCurSelIndex = row - fixedRowNum;
 
 	// Get app event logging pointer
 	if (m_ptrAppEventLog == NULL) return;

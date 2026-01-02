@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file		GridCellCheck.h
  * @brief		CGridCellCheck class header file
  * @date		2024.07.20
@@ -42,7 +42,7 @@ protected:
 	CRect GetCheckPlacement(void);
     void  SetClickPtInBoxFlag(BOOL bValue);
 
-    virtual BOOL Draw(CDC* pDC, int nRow, int nCol, CRect rect, BOOL bEraseBkgnd = TRUE);
+    virtual BOOL Draw(CDC* pDC, int row, int nCol, CRect rect, BOOL bEraseBkgnd = TRUE);
 
 protected:
     BOOL  m_bChecked;

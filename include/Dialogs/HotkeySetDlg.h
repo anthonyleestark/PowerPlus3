@@ -99,15 +99,15 @@ protected:
 	// Dialog setup functions
 	void setupLanguage();
 	void SetupHotkeySetList(LANGTABLE_PTR languageTablePtr);
-	void DrawHotkeySetTable(bool bReadOnly = false);
-	void setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr);
+	void DrawHotkeySetTable(bool isReadOnly = false);
+	void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
 
 	// Dialog item properties functions
 	void refreshDialogItemState(bool bRecheckState = false);
 	void UpdateCheckAllBtnState(bool bRecheck = true);
 	void UpdateHotkeySet();
-	void DisableHotkeySetTable(bool bDisable);
-	void RedrawHotkeySetTable(bool bReadOnly = false);
+	void DisableHotkeySetTable(bool isDisabled);
+	void RedrawHotkeySetTable(bool isReadOnly = false);
 	void DisplayHotkeyDetails(int index);
 
 	// Layout functions

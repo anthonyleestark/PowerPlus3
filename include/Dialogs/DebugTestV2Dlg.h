@@ -80,75 +80,75 @@ public:
 
 private:
 	// Get access to the DebugTest view pointer
-	CEdit* GetDebugView(void) const {
+	CEdit* getDebugView(void) const {
 		return debugViewPtr_;
-	};
+	}
 
 	// Get access to the Debug command input pointer
-	CEdit* GetDebugCommandInput(void) const {
+	CEdit* getDebugCommandInput(void) const {
 		return debugCommandInputPtr_;
-	};
+	}
 
 	// DebugView and command input initialization
-	bool InitDebugScreen(void);
-	bool CreateDebugScreenFont(void);
-	bool CreateDebugScreenBrush(void);
+	bool initDebugScreen(void);
+	bool createDebugScreenFont(void);
+	bool createDebugScreenBrush(void);
 
 	// Check if the DebugScreen (DebugView + Debug command input) is valid
-	bool IsDebugScreenValid(void) {
-		return (IsDebugViewValid() && IsDebugCommandInputValid());
-	};
-	bool IsDebugViewValid(void) {
-		return (GetDebugView() != NULL);
-	};
-	bool IsDebugCommandInputValid(void) {
-		return (GetDebugCommandInput() != NULL);
-	};
-	bool IsDebugCommandInputFocused(void) {
+	bool isDebugScreenValid(void) {
+		return (isDebugViewValid() && isDebugCommandInputValid());
+	}
+	bool isDebugViewValid(void) {
+		return (getDebugView() != NULL);
+	}
+	bool isDebugCommandInputValid(void) {
+		return (getDebugCommandInput() != NULL);
+	}
+	bool isDebugCommandInputFocused(void) {
 		// Check DebugScreen validity
-		if (!IsDebugScreenValid() || !IsDebugCommandInputValid()) return false;
+		if (!isDebugScreenValid() || !isDebugCommandInputValid()) return false;
 
 		// Get focused control
-		HWND hCurFocusWnd = GetFocus()->GetSafeHwnd();
-		return (hCurFocusWnd == GetDebugCommandInput()->GetSafeHwnd());
-	};
+		HWND currentFocusedWndHandle = GetFocus()->GetSafeHwnd();
+		return (currentFocusedWndHandle == getDebugCommandInput()->GetSafeHwnd());
+	}
 
-	bool RefreshDebugScreen(int nFlag);
-	bool ShowDebugScreenContextMenu(void);
+	bool refreshDebugScreen(int nFlag);
+	bool showDebugScreenContextMenu(void);
 
-	int  FormatDebugCommand(String& debugCommand) const;
-	void ClearDebugCommandInput(const wchar_t* commandBuff = Constant::String::Empty);
-	void BackupDebugViewBuffer(void) {
+	int  formatDebugCommand(String& debugCommand) const;
+	void clearDebugCommandInput(const wchar_t* commandBuff = Constant::String::Empty);
+	void backupDebugViewBuffer(void) {
 		backupBufferString_ = bufferString_;
-	};
-	void ClearDebugViewBuffer(void);
+	}
+	void clearDebugViewBuffer(void);
 
-	void AddLine(const wchar_t* lpszString, bool newLine = true);
-	void UpdateDisplay(bool isSeekToEnd = false, bool notifyParent = true);
+	void addLine(const wchar_t* lineString, bool newLine = true);
+	void updateDisplay(bool isSeekToEnd = false, bool notifyParent = true);
 
-	size_t AddDebugCommandHistory(const wchar_t* commandString);
-	void DispDebugCommandHistory(int historyIndex);
-	void ClearDebugCommandHistory(void) {
+	size_t addDebugCommandHistory(const wchar_t* commandString);
+	void dispDebugCommandHistory(int historyIndex);
+	void clearDebugCommandHistory(void) {
 		commandHistoryList_.clear();
-	};
-	size_t GetDebugCommandHistoryCount(void) const {
+	}
+	size_t getDebugCommandHistoryCount(void) const {
 		return commandHistoryList_.size();
-	};
-	bool IsDebugCommandHistoryEmpty(void) const {
+	}
+	bool isDebugCommandHistoryEmpty(void) const {
 		return commandHistoryList_.empty();
-	};
+	}
 
-	bool IsCurrentlyDispHistory(void) const {
+	bool isCurrentlyDispHistory(void) const {
 		return isCurrentlyDisplayHistory_;
-	};
-	void SetCurrentlyDispHistoryState(bool state) {
+	}
+	void setCurrentlyDispHistoryState(bool state) {
 		isCurrentlyDisplayHistory_ = state;
-	};
-	size_t GetHistoryCurrentDispIndex(void) const {
+	}
+	size_t getHistoryCurrentDispIndex(void) const {
 		return currentHistoryIndex_;
-	};
-	void SetHistoryCurrentDispIndex(size_t currentIndex) {
+	}
+	void setHistoryCurrentDispIndex(size_t currentIndex) {
 		currentHistoryIndex_ = currentIndex;
-	};
+	}
 };
 

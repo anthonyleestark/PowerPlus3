@@ -189,8 +189,8 @@ public:
 	DateTime GetTime(void) const noexcept {
 		return m_stTime;
 	};
-	void SetTime(const DateTime& stTime) noexcept {
-		m_stTime = stTime;
+	void SetTime(const DateTime& timeValue) noexcept {
+		m_stTime = timeValue;
 	};
 	constexpr DWORD GetProcessID(void) const noexcept {
 		return m_dwProcessID;
@@ -402,8 +402,8 @@ public:
 	virtual void SetWriteMode(byte byWriteMode) noexcept {
 		m_byWriteMode = byWriteMode;
 	};
-	virtual void GetFilePath(String& strFilePath) noexcept {
-		strFilePath = m_strFilePath;
+	virtual void GetFilePath(String& filePath) noexcept {
+		filePath = m_strFilePath;
 	};
 	virtual void SetFilePath(const wchar_t* filePath) noexcept {
 		m_strFilePath = filePath;

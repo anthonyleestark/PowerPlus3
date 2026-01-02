@@ -384,12 +384,12 @@ void CPwrReminderDlg::OnClose()
 	if (!isForceClosingByRequest()) {
 
 		// Exit current mode
-		int nConfirm = -1;
+		int confirm = -1;
 		int nCurMode = GetCurMode();
 		if ((nCurMode == Mode::Add) || (nCurMode == Mode::Update)) {
 			// Show switch mode confirmation message
-			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
-			if (nConfirm == IDYES) {
+			confirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
+			if (confirm == IDYES) {
 				// Switch mode
 				SetCurMode(Mode::View);
 			}
@@ -401,8 +401,8 @@ void CPwrReminderDlg::OnClose()
 		setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 		if (isChanged == true) {
 			// Show save confirmation message
-			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
-			if (nConfirm == IDYES) {
+			confirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
+			if (confirm == IDYES) {
 				// Save data
 				SavePwrReminderData();
 			}
@@ -467,12 +467,12 @@ void CPwrReminderDlg::OnCancel()
 		outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_PWRREMINDER_CANCEL_BTN);
 
 		// Exit current mode
-		int nConfirm = -1;
+		int confirm = -1;
 		int nCurMode = GetCurMode();
 		if ((nCurMode & Mode::Add) || (nCurMode & Mode::Update)) {
 			// Show switch mode confirmation message
-			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
-			if (nConfirm == IDYES) {
+			confirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNO | MB_ICONQUESTION);
+			if (confirm == IDYES) {
 				// Switch mode
 				SetCurMode(Mode::View);
 			}
@@ -484,8 +484,8 @@ void CPwrReminderDlg::OnCancel()
 		setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 		if (isChanged == true) {
 			// Show save confirmation message
-			nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
-			if (nConfirm == IDYES) {
+			confirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
+			if (confirm == IDYES) {
 				// Save data
 				SavePwrReminderData();
 			}
@@ -594,8 +594,8 @@ void CPwrReminderDlg::OnRemove()
 		return;
 
 	// Ask before remove
-	int nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
-	if (nConfirm == IDYES) {
+	int confirm = displayMessageBox(MSGBOX_PWRREMINDER_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
+	if (confirm == IDYES) {
 		// Remove item
 		Remove(index);
 	}
@@ -616,8 +616,8 @@ void CPwrReminderDlg::OnRemoveAll()
 		return;
 
 	// Ask before remove
-	int nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
-	if (nConfirm == IDYES) {
+	int confirm = displayMessageBox(MSGBOX_PWRREMINDER_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
+	if (confirm == IDYES) {
 		// Remove all items
 		RemoveAll();
 	}
@@ -692,12 +692,12 @@ void CPwrReminderDlg::OnPreviewItem()
 void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
-	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
-	if (pItem == NULL) return;
-	int nRow = pItem->iRow;
+	NM_GRIDVIEW* reminderItem = (NM_GRIDVIEW*)pNMHDR;
+	if (reminderItem == NULL) return;
+	int row = reminderItem->iRow;
 
 	//Get current selection index
-	m_nCurSelIndex = nRow - fixedRowNum;
+	m_nCurSelIndex = row - fixedRowNum;
 	int nItemCount = GetItemNum();
 
 	*pResult = NULL;
@@ -726,9 +726,9 @@ void CPwrReminderDlg::OnSelectReminderItem(NMHDR* pNMHDR, LRESULT* pResult)
 void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
-	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
-	if (pItem == NULL) return;
-	int nClickedRow = pItem->iRow;
+	NM_GRIDVIEW* reminderItem = (NM_GRIDVIEW*)pNMHDR;
+	if (reminderItem == NULL) return;
+	int nClickedRow = reminderItem->iRow;
 
 	// Check value validity
 	int itemNum = GetItemNum();
@@ -758,9 +758,9 @@ void CPwrReminderDlg::OnClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 void CPwrReminderDlg::OnRightClickDataItemList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
-	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
-	if (pItem == NULL) return;
-	int nClickedRow = pItem->iRow;
+	NM_GRIDVIEW* reminderItem = (NM_GRIDVIEW*)pNMHDR;
+	if (reminderItem == NULL) return;
+	int nClickedRow = reminderItem->iRow;
 
 	// Check value validity
 	int itemNum = GetItemNum();
@@ -871,10 +871,10 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
 		UpdateTimeSetting(clockTime, false);
 
 		// Update timespin new position
-		int nSpinPos = 0;
-		ClockTimeUtils::time2SpinPos(clockTime, nSpinPos);
+		int timeSpinPos = 0;
+		ClockTimeUtils::time2SpinPos(clockTime, timeSpinPos);
 		if (m_pEvtSetTimeSpin != NULL) {
-			m_pEvtSetTimeSpin->SetPos(nSpinPos);
+			m_pEvtSetTimeSpin->SetPos(timeSpinPos);
 		}
 	}
 	else {
@@ -895,14 +895,14 @@ void CPwrReminderDlg::OnTimeEditKillFocus()
  */
 void CPwrReminderDlg::OnTimeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	LPNMUPDOWN upDownPtr = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
 	// Get timespin position
-	int nPos = pNMUpDown->iPos;
+	int position = upDownPtr->iPos;
 
 	// Convert to time value
 	ClockTime clockTime;
-	ClockTimeUtils::spinPos2Time(clockTime, nPos);
+	ClockTimeUtils::spinPos2Time(clockTime, position);
 
 	// Update time edit value
 	UpdateTimeSetting(clockTime, false);
@@ -1094,15 +1094,15 @@ LRESULT CPwrReminderDlg::requestCloseDialog(void)
 	}
 
 	// Exit current mode
-	int nConfirm = -1;
+	int confirm = -1;
 	int nCurMode = GetCurMode();
 	if ((nCurMode == Mode::Add) || (nCurMode == Mode::Update)) {
-		nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
-		if (nConfirm == IDYES) {
+		confirm = displayMessageBox(MSGBOX_PWRREMINDER_CONFIRM_EXITMODE, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
+		if (confirm == IDYES) {
 			// Switch mode
 			SetCurMode(Mode::View);
 		}
-		else if (nConfirm == IDCANCEL) {
+		else if (confirm == IDCANCEL) {
 			// Request denied
 			return LRESULT(Result::Failure);
 		}
@@ -1112,12 +1112,12 @@ LRESULT CPwrReminderDlg::requestCloseDialog(void)
 	bool isChanged = checkDataChangeState();
 	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 	if (isChanged == true) {
-		nConfirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
-		if (nConfirm == IDYES) {
+		confirm = displayMessageBox(MSGBOX_PWRREMINDER_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
+		if (confirm == IDYES) {
 			// Save data
 			SavePwrReminderData();
 		}
-		else if (nConfirm == IDCANCEL) {
+		else if (confirm == IDCANCEL) {
 			// Request denied
 			return LRESULT(Result::Failure);
 		}
@@ -1154,13 +1154,13 @@ LRESULT CPwrReminderDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			return 0;
 
 		// Get the editbox rect
-		RECT rcEditBox;
-		m_pEvtSetTimeEdit->GetWindowRect(&rcEditBox);
-		ScreenToClient(&rcEditBox);
+		RECT editBoxRect;
+		m_pEvtSetTimeEdit->GetWindowRect(&editBoxRect);
+		ScreenToClient(&editBoxRect);
 
 		// If clicked point is inside the editbox area
-		if (((pt.x > rcEditBox.left) && (pt.x < rcEditBox.right)) &&
-			((pt.y > rcEditBox.top) && (pt.y < rcEditBox.bottom))) {
+		if (((pt.x > editBoxRect.left) && (pt.x < editBoxRect.right)) &&
+			((pt.y > editBoxRect.top) && (pt.y < editBoxRect.bottom))) {
 			if (m_pEvtSetTimeEdit->IsWindowEnabled()) {
 				// Select all text
 				m_pEvtSetTimeEdit->SetSel(0, -1, true);
@@ -1169,10 +1169,10 @@ LRESULT CPwrReminderDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		else {
 			// If the edit box is focused, kill its focus
-			CWnd* pCurCtrl = GetFocus();
-			if (pCurCtrl == NULL) return 0;
-			if (pCurCtrl->GetDlgCtrlID() == IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX) {
-				pCurCtrl->PostMessage(WM_KILLFOCUS);
+			CWnd* curCtrlWndPtr = GetFocus();
+			if (curCtrlWndPtr == NULL) return 0;
+			if (curCtrlWndPtr->GetDlgCtrlID() == IDC_PWRREMINDER_EVENT_SETTIME_EDITBOX) {
+				curCtrlWndPtr->PostMessage(WM_KILLFOCUS);
 				this->SetFocus();	// Return focus to dialog
 				return 0;
 			}
@@ -1238,17 +1238,17 @@ void CPwrReminderDlg::setupLanguage()
 void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR languageTablePtr)
 {
 	// Get parent list frame rect
-	CWnd* pListFrameWnd = GetDlgItem(IDC_PWRREMINDER_ITEM_LISTBOX);
-	if (pListFrameWnd == NULL) return;
-	RECT rcListFrameWnd;
-	pListFrameWnd->GetWindowRect(&rcListFrameWnd);
-	ScreenToClient(&rcListFrameWnd);
+	CWnd* listFrameWndPtr = GetDlgItem(IDC_PWRREMINDER_ITEM_LISTBOX);
+	if (listFrameWndPtr == NULL) return;
+	RECT listFrameWndRect;
+	listFrameWndPtr->GetWindowRect(&listFrameWndRect);
+	ScreenToClient(&listFrameWndRect);
 
 	// Get frame size
 	if (m_pszFrameWndSize == NULL) {
 		m_pszFrameWndSize = new Size();
-		m_pszFrameWndSize->_width = rcListFrameWnd.right - rcListFrameWnd.left;
-		m_pszFrameWndSize->_height = rcListFrameWnd.bottom - rcListFrameWnd.top;
+		m_pszFrameWndSize->_width = listFrameWndRect.right - listFrameWndRect.left;
+		m_pszFrameWndSize->_height = listFrameWndRect.bottom - listFrameWndRect.top;
 	}
 
 	// Initialization
@@ -1257,19 +1257,19 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR languageTablePtr)
 	// Create table
 	if (m_pDataItemListTable == NULL) return;
 	DWORD style = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
-	m_pDataItemListTable->Create(rcListFrameWnd, this, IDC_PWRREMINDER_ITEM_LISTBOX, style);
+	m_pDataItemListTable->Create(listFrameWndRect, this, IDC_PWRREMINDER_ITEM_LISTBOX, style);
 
 	// Destroy frame
-	pListFrameWnd->DestroyWindow();
+	listFrameWndPtr->DestroyWindow();
 
 	// Cell format
-	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pDataItemListTable->GetDefaultCell(false, false);
-	if (pCell == NULL) return;
-	pCell->SetFormat(pCell->GetFormat());
-	pCell->SetMargin(0);
-	pCell->SetBackClr(Color::White);
-	pCell->SetTextClr(Color::Black);
-	pCell->SetHeight(Constant::UI::GridCtrl::Height::Row);
+	CGridDefaultCell* cellPtr = (CGridDefaultCell*)m_pDataItemListTable->GetDefaultCell(false, false);
+	if (cellPtr == NULL) return;
+	cellPtr->SetFormat(cellPtr->GetFormat());
+	cellPtr->SetMargin(0);
+	cellPtr->SetBackClr(Color::White);
+	cellPtr->SetTextClr(Color::Black);
+	cellPtr->SetHeight(Constant::UI::GridCtrl::Height::Row);
 
 	// Table format and properties
 	int nRowNum = (GetItemNum() + fixedRowNum);
@@ -1306,11 +1306,11 @@ void CPwrReminderDlg::SetupDataItemList(LANGTABLE_PTR languageTablePtr)
  * @param	szFrameWndSize	- Frame size
  * @param	nColNum			- Number of table columns
  * @param	nRowNum			- Number of table rows
- * @param	bReadOnly		- Read-only mode
+ * @param	isReadOnly		- Read-only mode
  * @param	languageTablePtr		- Pointer to app language
  * @return	None
  */
-void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly /* = false */, LANGTABLE_PTR languageTablePtr /* = NULL */)
+void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool isReadOnly /* = false */, LANGTABLE_PTR languageTablePtr /* = NULL */)
 {
 	// Check table validity
 	if (m_pDataItemListTable == NULL)
@@ -1334,36 +1334,36 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 	}
 
 	// Re-update default cell properties
-	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pDataItemListTable->GetDefaultCell(false, false);
-	if (pCell == NULL) return;
+	CGridDefaultCell* cellPtr = (CGridDefaultCell*)m_pDataItemListTable->GetDefaultCell(false, false);
+	if (cellPtr == NULL) return;
 
 	// Read-only mode --> Change cell color
-	if (bReadOnly == true) {
-		pCell->SetBackClr(Color::Bright_Gray);
-		pCell->SetTextClr(Color::Dark_Gray);
+	if (isReadOnly == true) {
+		cellPtr->SetBackClr(Color::Bright_Gray);
+		cellPtr->SetTextClr(Color::Dark_Gray);
 	}
 	else {
-		pCell->SetBackClr(Color::White);
-		pCell->SetTextClr(Color::Black);
+		cellPtr->SetBackClr(Color::White);
+		cellPtr->SetTextClr(Color::Black);
 	}
 
 	// Setup display size
-	int nFrameHeight = pszFrameWndSize->height();
-	int nFrameWidth = pszFrameWndSize->width();
+	int frameHeight = pszFrameWndSize->height();
+	int frameWidth = pszFrameWndSize->width();
 	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
-		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
+		frameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
+		//frameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl;
-		//nFrameHeight -= OFFSET_HEIGHT_LISTCTRL;
+		frameWidth -= Constant::UI::Offset::Width::ListCtrl;
+		//frameHeight -= OFFSET_HEIGHT_LISTCTRL;
 	}
-	if ((Constant::UI::GridCtrl::Height::Header + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row)) >= nFrameHeight) {
+	if ((Constant::UI::GridCtrl::Height::Header + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row)) >= frameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
-		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
+		int scrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
+		frameWidth -= (scrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns
@@ -1385,64 +1385,64 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 			// Set column width as defined
 			m_pDataItemListTable->SetColumnWidth(nCol, nColWidth);
 			// Calculate remaining width
-			nFrameWidth -= nColWidth;
+			frameWidth -= nColWidth;
 		}
 		else {
 			// Set remaining width for current column
-			m_pDataItemListTable->SetColumnWidth(nCol, nFrameWidth);
+			m_pDataItemListTable->SetColumnWidth(nCol, frameWidth);
 		}
 	}
 
 	// Setup rows
 	int nColStyle = -1;
-	unsigned nItemState = INT_NULL;
-	for (int nRow = 1; nRow < nRowNum; nRow++) {
+	unsigned itemState = INT_NULL;
+	for (int row = 1; row < nRowNum; row++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 			// Get column style & item state
 			nColStyle = m_apGrdColFormat[nCol].columnStyle;
-			nItemState = m_pDataItemListTable->GetItemState(nRow, nCol);
-			nItemState |= GVIS_READONLY;
+			itemState = m_pDataItemListTable->GetItemState(row, nCol);
+			itemState |= GVIS_READONLY;
 
 			// Base column - header-like style
 			if (nColStyle == COLSTYLE_FIXED) {
 				// Set fixed cell style
-				AppCore::setFixedCellStyle(m_pDataItemListTable, nRow, nCol);
+				AppCore::setFixedCellStyle(m_pDataItemListTable, row, nCol);
 			}
 
 			// Checkbox column
 			else if (nColStyle == COLSTYLE_CHECKBOX) {
 				// Set cell type: Checkbox
-				if (!m_pDataItemListTable->SetCellType(nRow, nCol, RUNTIME_CLASS(CGridCellCheck)))
+				if (!m_pDataItemListTable->SetCellType(row, nCol, RUNTIME_CLASS(CGridCellCheck)))
 					continue;
 
 				// Get cell
-				CGridCellCheck* pCell = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRow, nCol);
+				CGridCellCheck* cellPtr = (CGridCellCheck*)m_pDataItemListTable->GetCell(row, nCol);
 
 				// Set center alignment if defined
 				if (m_apGrdColFormat[nCol].isCentered == true) {
-					if (pCell == NULL) continue;
-					pCell->SetCheckPlacement(SCP_CENTERING);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetCheckPlacement(SCP_CENTERING);
 				}
 			}
 
 			// Normal column
 			else if (nColStyle == COLSTYLE_NORMAL) {
 				// Set item state
-				if (!m_pDataItemListTable->SetItemState(nRow, nCol, nItemState))
+				if (!m_pDataItemListTable->SetItemState(row, nCol, itemState))
 					continue;
 
 				// Get cell
-				CGridCellBase* pCell = (CGridCellBase*)m_pDataItemListTable->GetCell(nRow, nCol);
+				CGridCellBase* cellPtr = (CGridCellBase*)m_pDataItemListTable->GetCell(row, nCol);
 
 				// Set center alignment if defined
 				if (m_apGrdColFormat[nCol].isCentered == true) {
-					if (pCell == NULL) continue;
-					pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetFormat(cellPtr->GetFormat() | DT_CENTER);
 				}
 				else {
 					// Set margin (left alignment)
-					if (pCell == NULL) continue;
-					pCell->SetMargin(Constant::UI::GridCtrl::Margin::Left);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetMargin(Constant::UI::GridCtrl::Margin::Left);
 				}
 			}
 		}
@@ -1451,16 +1451,16 @@ void CPwrReminderDlg::DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRow
 
 /**
  * @brief	Setup data for combo-boxes
- * @param	nComboID	- ID of combo box
+ * @param	comboId	- ID of combo box
  * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CPwrReminderDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr)
+void CPwrReminderDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr)
 {
 	// Check combo validity
 	if (m_pMsgStyleCombo == NULL) return;
 
-	switch (nComboID)
+	switch (comboId)
 	{
 	case IDC_PWRREMINDER_MSGSTYLE_COMBO:
 		m_pMsgStyleCombo->ResetContent();
@@ -1473,7 +1473,7 @@ void CPwrReminderDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTab
 	}
 
 	// Default
-	SDialog::setupComboBox(nComboID, languageTablePtr);
+	SDialog::setupComboBox(comboId, languageTablePtr);
 }
 
 /**
@@ -1841,33 +1841,33 @@ void CPwrReminderDlg::UpdateDataItemList()
 	
 	// Print items
 	int nTemp = -1;
-	int nRowIndex = 0;
-	CGridCellCheck* pCellCheck = NULL;
+	int rowIndex = 0;
+	CGridCellCheck* cellCheckPtr = NULL;
 	for (int index = 0; index < itemNum; index++) {
 
 		// Get row index
-		nRowIndex = index + fixedRowNum;
+		rowIndex = index + fixedRowNum;
 
 		// Get item
 		const Item& reminderItem = m_pwrReminderDataTemp.getItemAt(index);
 
 		// Item index
-		String tempString = StringUtils::stringFormat(_T("%d"), nRowIndex);
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::Index, tempString);
+		String tempString = StringUtils::stringFormat(_T("%d"), rowIndex);
+		m_pDataItemListTable->SetItemText(rowIndex, ColumnID::Index, tempString);
 
 		// Enable state
-		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
-		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(reminderItem.isEnabled());
+		cellCheckPtr = (CGridCellCheck*)m_pDataItemListTable->GetCell(rowIndex, ColumnID::EnableState);
+		if (cellCheckPtr != NULL) {
+			cellCheckPtr->SetCheck(reminderItem.isEnabled());
 		}
 
 		// ItemID
 		tempString.format(_T("%d"), reminderItem.getItemId());
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::ItemID, tempString);
+		m_pDataItemListTable->SetItemText(rowIndex, ColumnID::ItemID, tempString);
 
 		// Message content
 		tempString = reminderItem.getMessage();
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MessageContent, tempString);
+		m_pDataItemListTable->SetItemText(rowIndex, ColumnID::MessageContent, tempString);
 
 		// EventID
 		nTemp = GetPairedID(IDTable::PwrReminderEvent, reminderItem.getEventId());
@@ -1877,45 +1877,45 @@ void CPwrReminderDlg::UpdateDataItemList()
 			String formatTime = tempString;
 			tempString = ClockTimeUtils::format(languageTablePtr, formatTime, reminderItem.getTime());
 		}
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::EventID, tempString);
+		m_pDataItemListTable->SetItemText(rowIndex, ColumnID::EventID, tempString);
 
 		// Message style
 		nTemp = GetPairedID(IDTable::PwrReminderStyle, reminderItem.getMessageStyle());
 		tempString = getLanguageString(languageTablePtr, nTemp);
-		m_pDataItemListTable->SetItemText(nRowIndex, ColumnID::MsgStyle, tempString);
+		m_pDataItemListTable->SetItemText(rowIndex, ColumnID::MsgStyle, tempString);
 
 		// Repeat
-		pCellCheck = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
-		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(reminderItem.isRepeatEnabled());
+		cellCheckPtr = (CGridCellCheck*)m_pDataItemListTable->GetCell(rowIndex, ColumnID::Repeat);
+		if (cellCheckPtr != NULL) {
+			cellCheckPtr->SetCheck(reminderItem.isRepeatEnabled());
 		}
 	}
 }
 
 /**
  * @brief	Disable mouse click events for table
- * @param	bDisable - Disable/enable
+ * @param	isDisabled - Disable/enable
  * @return	None
  */
-void CPwrReminderDlg::DisableTable(bool bDisable)
+void CPwrReminderDlg::DisableTable(bool isDisabled)
 {
 	// Redraw read-only style
-	RedrawDataTable(bDisable);
+	RedrawDataTable(isDisabled);
 
 	// Check table validity
 	if (m_pDataItemListTable == NULL) return;
 
 	// Disable/enable mouse events
-	m_pDataItemListTable->DisableMouseClick(bDisable);
-	m_pDataItemListTable->DisableMouseMove(bDisable);
+	m_pDataItemListTable->DisableMouseClick(isDisabled);
+	m_pDataItemListTable->DisableMouseMove(isDisabled);
 }
 
 /**
  * @brief	Update and redraw data table
- * @param	bool bReadOnly - Read-only mode
+ * @param	bool isReadOnly - Read-only mode
  * @return	None
  */
-void CPwrReminderDlg::RedrawDataTable(bool bReadOnly /* = false */)
+void CPwrReminderDlg::RedrawDataTable(bool isReadOnly /* = false */)
 {
 	// Check table validity
 	if (m_pDataItemListTable == NULL) return;
@@ -1925,7 +1925,7 @@ void CPwrReminderDlg::RedrawDataTable(bool bReadOnly /* = false */)
 	m_pDataItemListTable->SetRowCount(nCurRowNum);
 
 	// Draw table
-	DrawDataTable(m_pszFrameWndSize, m_nColNum, nCurRowNum, bReadOnly);
+	DrawDataTable(m_pszFrameWndSize, m_nColNum, nCurRowNum, isReadOnly);
 	
 	// Update table data
 	UpdateDataItemList();
@@ -2244,10 +2244,10 @@ void CPwrReminderDlg::UpdateMsgCounter(int count)
 /**
  * @brief	Update time value from/to time edit control
  * @param	clockTime  - Clock-time data
- * @param	bUpdate	   - Update or not (YES/true by default)
+ * @param	updateFlag	   - Update or not (YES/true by default)
  * @return	None
  */
-void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = true */)
+void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool updateFlag /* = true */)
 {
 	// Get app language package
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
@@ -2262,7 +2262,7 @@ void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = 
 		}
 	}
 
-	if (bUpdate == true) {
+	if (updateFlag == true) {
 
 		// Get value from time editbox
 		const int buffLength = m_pEvtSetTimeEdit->GetWindowTextLength();
@@ -2300,9 +2300,9 @@ void CPwrReminderDlg::UpdateTimeSetting(ClockTime& clockTime, bool bUpdate /* = 
 
 		// Update time spin position
 		if (m_pEvtSetTimeSpin != NULL) {
-			int nSpinPos = 0;
-			ClockTimeUtils::time2SpinPos(clockTime, nSpinPos);
-			m_pEvtSetTimeSpin->SetPos(nSpinPos);
+			int timeSpinPos = 0;
+			ClockTimeUtils::time2SpinPos(clockTime, timeSpinPos);
+			m_pEvtSetTimeSpin->SetPos(timeSpinPos);
 		}
 	}
 }
@@ -2382,17 +2382,17 @@ bool CPwrReminderDlg::checkDataChangeState()
 	bool changeFlag = false;
 
 	// Update enable and repeat states of each item
-	int nRowIndex = 0;
+	int rowIndex = 0;
 	CGridCellCheck* pCellCheckEnable = NULL;
 	CGridCellCheck* pCellCheckRepeat = NULL;
 	int nItemRowNum = (m_pDataItemListTable->GetRowCount() - fixedRowNum);
 	for (int index = 0; index < nItemRowNum; index++) {
 		// Get row index
-		nRowIndex = (index + fixedRowNum);
+		rowIndex = (index + fixedRowNum);
 
 		// Get checkbox cells
-		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::EnableState);
-		pCellCheckRepeat = (CGridCellCheck*)m_pDataItemListTable->GetCell(nRowIndex, ColumnID::Repeat);
+		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(rowIndex, ColumnID::EnableState);
+		pCellCheckRepeat = (CGridCellCheck*)m_pDataItemListTable->GetCell(rowIndex, ColumnID::Repeat);
 		if ((pCellCheckEnable == NULL) || (pCellCheckRepeat == NULL)) continue;
 		
 		// Get checked states
@@ -2642,12 +2642,12 @@ void CPwrReminderDlg::PreviewItem(int index)
 /**
  * @brief	Update reminder data from/to dialog controls
  * @param	reminderItem - Power Reminder item
- * @param	bUpdate - Update data flag
+ * @param	updateFlag - Update data flag
  * @return	None
  */
-void CPwrReminderDlg::UpdateItemData(Item& reminderItem, bool bUpdate)
+void CPwrReminderDlg::UpdateItemData(Item& reminderItem, bool updateFlag)
 {
-	if (bUpdate == true) {
+	if (updateFlag == true) {
 
 		/***************************************************************/
 		/*															   */
@@ -3102,8 +3102,8 @@ void CPwrReminderDlg::DrawRepeatSetButton(void)
 		// Load icon
 		int cx = Constant::UI::Button::IconWidth;
 		int cy = Constant::UI::Button::IconHeight;
-		HINSTANCE hInstance = AfxGetApp()->m_hInstance;
-		HICON hRepeatIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON_REPEAT), IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR);
+		HINSTANCE instanceHandle = AfxGetApp()->m_hInstance;
+		HICON hRepeatIcon = (HICON)LoadImage(instanceHandle, MAKEINTRESOURCE(IDI_ICON_REPEAT), IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR);
 		if (hRepeatIcon == NULL)
 			return;
 

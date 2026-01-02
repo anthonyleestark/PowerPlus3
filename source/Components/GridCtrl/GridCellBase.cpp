@@ -73,7 +73,7 @@ CGridCellBase* CGridCellBase::GetDefaultCell() const
 // color schemes.  Also removed printing references as that's now done
 // by PrintCell() and fixed the sort marker so that it doesn't draw out
 // of bounds.
-BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
+BOOL CGridCellBase::Draw(CDC* pDC, int row, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
 {
     // Note - all through this function we totally brutalise 'rect'. Do not
     // depend on it's value being that which was passed in.
@@ -87,7 +87,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
     if( rect.Width() <= 0 || rect.Height() <= 0)  // prevents imagelist item from drawing even
         return FALSE;                             //  though cell is hidden
 
-    //TRACE3("Drawing %scell %d, %d\n", IsFixed()? _T("Fixed ") : _T(""), nRow, nCol);
+    //TRACE3("Drawing %scell %d, %d\n", IsFixed()? _T("Fixed ") : _T(""), row, nCol);
 
     int nSavedDC = pDC->SaveDC();
     pDC->SetBkMode(TRANSPARENT);
@@ -111,11 +111,11 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
     }
 
     // Draw cell background and highlighting (if necessary)
-	if( GetGrid()->IsFocused(*this, nRow, nCol) || IsDropHighlighted() )
+	if( GetGrid()->IsFocused(*this, row, nCol) || IsDropHighlighted() )
     {
         // Always draw even in list mode so that we can tell where the
         // cursor is at.  Use the highlight colors though.
-        if(GetGrid()->IsSelected(*this, nRow, nCol))
+        if(GetGrid()->IsSelected(*this, row, nCol))
         {
 			TextBkClr = (GetHBackClr() == CLR_DEFAULT) ? pDefaultCell->GetHBackClr() : GetHBackClr(); //::GetSysColor(COLOR_HIGHLIGHT);
 			TextClr = (GetHTextClr() == CLR_DEFAULT) ? pDefaultCell->GetHTextClr() : GetHTextClr();//::GetSysColor(COLOR_HIGHLIGHTTEXT);
@@ -172,7 +172,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 
 		//rect.DeflateRect(0,1,1,1);  - Removed by Yogurt
     }
-	else if(GetGrid()->IsSelected(*this, nRow, nCol))
+	else if(GetGrid()->IsSelected(*this, row, nCol))
     {
 		TextBkClr = (GetHBackClr() == CLR_DEFAULT) ? pDefaultCell->GetHBackClr() : GetHBackClr(); //::GetSysColor(COLOR_HIGHLIGHT);
 		TextClr = (GetHTextClr() == CLR_DEFAULT) ? pDefaultCell->GetHTextClr() : GetHTextClr();//::GetSysColor(COLOR_HIGHLIGHTTEXT);
@@ -201,7 +201,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
         // As above, always show current location even in list mode so
         // that we know where the cursor is at.
         BOOL bHiliteFixed = pGrid->GetTrackFocusCell() && pGrid->IsValid(FocusCell) &&
-                            (FocusCell.row == nRow || FocusCell.col == nCol);
+                            (FocusCell.row == row || FocusCell.col == nCol);
 
         // If this fixed cell is on the same row/col as the focus cell,
         // highlight it.
@@ -283,7 +283,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
     }
 
     // Draw sort arrow
-    if (pGrid->GetSortColumn() == nCol && nRow == 0)
+    if (pGrid->GetSortColumn() == nCol && row == 0)
     {
         CSize size = pDC->GetTextExtent(_T("M"));
         int nOffset = 2;
@@ -499,15 +499,15 @@ CSize CGridCellBase::GetTextExtent(LPCTSTR szText, CDC* pDC /*= NULL*/)
         int nMaxWidth = 0;
         while (TRUE)
         {
-            int nPos = str.Find(_T('\n'));
-            CString TempStr = (nPos < 0)? str : str.Left(nPos);
+            int position = str.Find(_T('\n'));
+            CString TempStr = (position < 0)? str : str.Left(position);
             int nTempWidth = pDC->GetTextExtent(TempStr).cx;
             if (nTempWidth > nMaxWidth)
                 nMaxWidth = nTempWidth;
 
-            if (nPos < 0)
+            if (position < 0)
                 break;
-            str = str.Mid(nPos + 1);    // Bug fix by Thomas Steinborn
+            str = str.Mid(position + 1);    // Bug fix by Thomas Steinborn
         }
         
         CRect rect;
@@ -577,7 +577,7 @@ CSize CGridCellBase::GetCellExtent(CDC* pDC)
 
 // EFW - Added to print cells so that grids that use different colors are
 // printed correctly.
-BOOL CGridCellBase::PrintCell(CDC* /*pDC*/, int /*nRow*/, int /*nCol*/, CRect /*rect*/)
+BOOL CGridCellBase::PrintCell(CDC* /*pDC*/, int /*row*/, int /*nCol*/, CRect /*rect*/)
 {
 #if defined(_WIN32_WCE_NO_PRINTING) || defined(GRIDCONTROL_NO_PRINTING)
     return FALSE;
@@ -732,11 +732,11 @@ BOOL CGridCellBase::PrintCell(CDC* /*pDC*/, int /*nRow*/, int /*nCol*/, CRect /*
 Callable by derived classes, only
 *****************************************************************************/
 
-LRESULT CGridCellBase::SendMessageToParent(int nRow, int nCol, int message)
+LRESULT CGridCellBase::SendMessageToParent(int row, int nCol, int message)
 {
     CGridCtrl* pGrid = GetGrid();
     if( pGrid)
-        return pGrid->SendMessageToParent(nRow, nCol, message);
+        return pGrid->SendMessageToParent(row, nCol, message);
     else
         return 0;
 }

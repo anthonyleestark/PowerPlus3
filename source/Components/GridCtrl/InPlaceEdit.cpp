@@ -18,11 +18,11 @@ static char THIS_FILE[] = __FILE__;
 // CInPlaceEdit
 
 CInPlaceEdit::CInPlaceEdit(CWnd* parentWnd, CRect& rect, DWORD style, UINT id,
-                           int nRow, int nColumn, CString sInitText, 
+                           int row, int nColumn, CString sInitText, 
                            UINT nFirstChar)
 {
     m_sInitText     = sInitText;
-    m_nRow          = nRow;
+    m_nRow          = row;
     m_nColumn       = nColumn;
     m_nLastChar     = 0; 
     m_bExitOnArrows = (nFirstChar != VK_LBUTTON);    // If mouse click brought us here,

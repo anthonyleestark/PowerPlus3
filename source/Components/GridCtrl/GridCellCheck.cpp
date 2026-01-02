@@ -73,9 +73,9 @@ BOOL CGridCellCheck::IsClickPtInBox(void)
 }
 
 // Override draw so that when the cell is selected, a drop arrow is shown in the RHS.
-BOOL CGridCellCheck::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
+BOOL CGridCellCheck::Draw(CDC* pDC, int row, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
 {
-    BOOL result = CGridCell::Draw(pDC, nRow, nCol, rect,  bEraseBkgnd);
+    BOOL result = CGridCell::Draw(pDC, row, nCol, rect,  bEraseBkgnd);
 
 #ifndef _WIN32_WCE
     // Store the cell's dimensions for later

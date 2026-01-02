@@ -45,23 +45,23 @@ protected:
 
 private:
 	// Dialog control item
-	CComboBox*		 m_pActionList;
-	CEdit*			 m_pTimeEdit;
-	CSpinButtonCtrl* m_pTimeSpin;
-	CGridCtrl*		 m_pActiveDayListTable;
+	CComboBox*		 actionListPtr_;
+	CEdit*			 timeEditPtr_;
+	CSpinButtonCtrl* timeSpinCtrlPtr_;
+	CGridCtrl*		 activeDayTablePtr_;
 
 	// Data variables
-	BOOL	 m_bEnabled;
-	BOOL	 m_bRepeat;
-	unsigned m_nAction;
+	BOOL	 isEnabled_;
+	BOOL	 isRepeated_;
+	unsigned actionId_;
 
 	// Data container variables
-	ScheduleItem m_schScheduleItem;
-	ScheduleItem m_schScheduleItemTemp;
+	ScheduleItem scheduleItem_;
+	ScheduleItem tempScheduleItem_;
 
 	// Other variables
-	int	  m_nDispMode;
-	Size* m_pszActiveTableFrameSize;
+	int	  displayMode_;
+	Size* activeTableSizePtr_;
 
 public:
 	// Generated message map functions
@@ -72,31 +72,31 @@ public:
 
 	// Member functions
 	void setupLanguage();
-	void setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr);
-	void SetupActiveDayList(LANGTABLE_PTR languageTablePtr);
-	void DrawActiveDayTable(bool bReadOnly = false);
+	void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
+	void setupActiveDayList(LANGTABLE_PTR languageTablePtr);
+	void drawActiveDayTable(bool isReadOnly = false);
 
 	// Dialog item properties functions
 	void setupDialogItemState();
-	void UpdateActiveDayList();
-	void DisableActiveDayTable(bool bDisable);
-	void RedrawActiveDayTable(bool bReadOnly = false);
+	void updateActiveDayList();
+	void disableActiveDayTable(bool isDisabled);
+	void RedrawActiveDayTable(bool isReadOnly = false);
 
 	// Data processing functions
-	void GetScheduleItem(PScheduleItem scheduleItemPtr);
-	void SetScheduleItem(const ScheduleItem& scheduleItemPtr);
-	void UpdateScheduleItem(void);
-	void SaveScheduleItem(void);
+	void getScheduleItem(PScheduleItem scheduleItemPtr);
+	void setScheduleItem(const ScheduleItem& scheduleItemPtr);
+	void updateScheduleItem(void);
+	void saveScheduleItem(void);
 
 	bool checkDataChangeState(void);
-	void EnableSaveButton(bool isEnabled);
-	void EnableSubItems(bool isEnabled);
-	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);
+	void enableSaveButton(bool isEnabled);
+	void enableSubItems(bool isEnabled);
+	void updateTimeSetting(ClockTime& clockTime, bool updateFlag = true);
 
 public:
 	// Get/set functions
-	int	GetDispMode(void) const;
-	void SetDispMode(int mode);
+	int	getDispMode(void) const;
+	void setDispMode(int mode);
 
 protected:
 	// Message handlers

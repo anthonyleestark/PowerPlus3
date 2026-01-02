@@ -1561,8 +1561,8 @@ void SDialog::setButtonIcon(unsigned buttonId, unsigned iconId, bool reupdateTit
 	int cy = Constant::UI::Button::IconHeight;
 
 	// Load icon from resource
-	HINSTANCE hInstance = AfxGetApp()->m_hInstance;
-	HICON hIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(iconId), IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR);
+	HINSTANCE instanceHandle = AfxGetApp()->m_hInstance;
+	HICON hIcon = (HICON)LoadImage(instanceHandle, MAKEINTRESOURCE(iconId), IMAGE_ICON, cx, cy, LR_DEFAULTCOLOR);
 	if (hIcon == NULL)
 		return;
 

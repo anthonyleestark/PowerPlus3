@@ -50,7 +50,7 @@ public:
 
 // Operations
 public:
-    explicit CCellID(int nRow = -1, int nCol = -1) : row(nRow), col(nCol) {}
+    explicit CCellID(int row = -1, int nCol = -1) : row(row), col(nCol) {}
 
     int IsValid() const { return (row >= 0 && col >= 0); }
     int operator==(const CCellID& rhs) const { return (row == rhs.row && col == rhs.col); }

@@ -30,7 +30,7 @@ CTitleTip::CTitleTip()
 		wndcls.style			= CS_SAVEBITS;
 		wndcls.lpfnWndProc		= ::DefWindowProc;
 		wndcls.cbClsExtra		= wndcls.cbWndExtra = 0;
-		wndcls.hInstance		= hInst;
+		wndcls.instanceHandle		= hInst;
 		wndcls.hIcon			= NULL;
 		wndcls.hCursor			= LoadCursor( hInst, IDC_ARROW );
 		wndcls.hbrBackground	= (HBRUSH)(COLOR_INFOBK +1);

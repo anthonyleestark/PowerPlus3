@@ -194,8 +194,8 @@ public:
 	BOOL GetMergedCellRect(const CCellRange& mergedCell, CRect& rect);
 	BOOL GetTopLeftMergedCell(int& row, int& col, CRect& mergeRect);
 	BOOL GetBottomRightMergedCell(int& row, int& col, CRect& mergeRect);
-	virtual BOOL IsFocused(CGridCellBase& cell, int nRow, int nCol);
-	virtual BOOL IsSelected(CGridCellBase& cell, int nRow, int nCol);
+	virtual BOOL IsFocused(CGridCellBase& cell, int row, int nCol);
+	virtual BOOL IsSelected(CGridCellBase& cell, int row, int nCol);
 
 	BOOL	m_bDrawingMergedCell;
 	INT_PTR	m_nCurrentMergeID;
@@ -245,18 +245,18 @@ public:
 	BOOL SetFixedRowCount(int nFixedRows = 1);
     BOOL SetFixedColumnCount(int nFixedCols = 1);	
 
-    int  GetRowHeight(int nRow) const;
+    int  GetRowHeight(int row) const;
     BOOL SetRowHeight(int row, int height);
     int  GetColumnWidth(int nCol) const;
     BOOL SetColumnWidth(int col, int width);
 
-    BOOL GetCellOrigin(int nRow, int nCol, LPPOINT p);
+    BOOL GetCellOrigin(int row, int nCol, LPPOINT p);
     BOOL GetCellOrigin(const CCellID& cell, LPPOINT p);
-    BOOL GetCellRect(int nRow, int nCol, LPRECT pRect);
+    BOOL GetCellRect(int row, int nCol, LPRECT pRect);
     BOOL GetCellRect(const CCellID& cell, LPRECT pRect);
 
     BOOL GetTextRect(const CCellID& cell, LPRECT pRect);
-    BOOL GetTextRect(int nRow, int nCol, LPRECT pRect);
+    BOOL GetTextRect(int row, int nCol, LPRECT pRect);
 
 	// Change for MergeCell
 	CCellID GetCellFromPt(CPoint point, BOOL bAllowFixedCellCheck = TRUE, CCellID& cellOriginal = cellNull);
@@ -268,12 +268,12 @@ public:
     long GetVirtualHeight() const;
 
 	CCellID GetTopleftNonFixedCell(BOOL bForceRecalculation = FALSE);
-	void SetTopleftNonFixedCell(int nRow, int nCol);
+	void SetTopleftNonFixedCell(int row, int nCol);
 	void SetTopleftNonFixedCell(const CCellID& cell);
 
-    CSize GetTextExtent(int nRow, int nCol, LPCTSTR str);
+    CSize GetTextExtent(int row, int nCol, LPCTSTR str);
     // EFW - Get extent of current text in cell
-    inline CSize GetCellTextExtent(int nRow, int nCol)  { return GetTextExtent(nRow, nCol, GetItemText(nRow,nCol)); }
+    inline CSize GetCellTextExtent(int row, int nCol)  { return GetTextExtent(row, nCol, GetItemText(row,nCol)); }
 
     void     SetGridBkColor(COLORREF clr)         { m_crGridBkColour = clr;           }
     COLORREF GetGridBkColor() const               { return m_crGridBkColour;          }
@@ -326,7 +326,7 @@ public:
     int GetSelectedCount() const                  { return (int)m_SelectedCellMap.GetCount(); }
 
     CCellID SetFocusCell(CCellID cell);
-    CCellID SetFocusCell(int nRow, int nCol);
+    CCellID SetFocusCell(int row, int nCol);
     CCellID GetFocusCell() const                  { return m_idCurrentCell;           }
 
 
@@ -409,48 +409,48 @@ public:
 // Grid cell Attributes
 ///////////////////////////////////////////////////////////////////////////////////
 public:
-    CGridCellBase* GetCell(int nRow, int nCol) const;   // Get the actual cell!
+    CGridCellBase* GetCell(int row, int nCol) const;   // Get the actual cell!
 
-    void SetModified(BOOL bModified = TRUE, int nRow = -1, int nCol = -1);
-    BOOL GetModified(int nRow = -1, int nCol = -1);
-    BOOL IsCellFixed(int nRow, int nCol);
+    void SetModified(BOOL bModified = TRUE, int row = -1, int nCol = -1);
+    BOOL GetModified(int row = -1, int nCol = -1);
+    BOOL IsCellFixed(int row, int nCol);
 
-    BOOL   SetItem(const GV_ITEM* pItem);
-    BOOL   GetItem(GV_ITEM* pItem);
-    BOOL   SetItemText(int nRow, int nCol, LPCTSTR str);
+    BOOL   SetItem(const GV_ITEM* reminderItem);
+    BOOL   GetItem(GV_ITEM* reminderItem);
+    BOOL   SetItemText(int row, int nCol, LPCTSTR str);
     // The following was virtual. If you want to override, use 
     //  CGridCellBase-derived class's GetText() to accomplish same thing
-    CString GetItemText(int nRow, int nCol) const;
+    CString GetItemText(int row, int nCol) const;
 
     // EFW - 06/13/99 - Added to support printf-style formatting codes.
     // Also supports use with a string resource ID
 #if !defined(_WIN32_WCE) || (_WIN32_WCE >= 210)
-    BOOL   SetItemTextFmt(int nRow, int nCol, LPCTSTR szFmt, ...);
-    BOOL   SetItemTextFmtID(int nRow, int nCol, UINT id, ...);
+    BOOL   SetItemTextFmt(int row, int nCol, LPCTSTR szFmt, ...);
+    BOOL   SetItemTextFmtID(int row, int nCol, UINT id, ...);
 #endif
 
-    BOOL   SetItemData(int nRow, int nCol, LPARAM lParam);
-    LPARAM GetItemData(int nRow, int nCol) const;
-    BOOL   SetItemImage(int nRow, int nCol, int iImage);
-    int    GetItemImage(int nRow, int nCol) const;
-    BOOL   SetItemState(int nRow, int nCol, UINT state);
-    UINT   GetItemState(int nRow, int nCol) const;
-    BOOL   SetItemFormat(int nRow, int nCol, UINT nFormat);
-    UINT   GetItemFormat(int nRow, int nCol) const;
-    BOOL   SetItemBkColour(int nRow, int nCol, COLORREF cr = CLR_DEFAULT);
-    COLORREF GetItemBkColour(int nRow, int nCol) const;
-    BOOL   SetItemFgColour(int nRow, int nCol, COLORREF cr = CLR_DEFAULT);
-    COLORREF GetItemFgColour(int nRow, int nCol) const;
-	BOOL   SetItemHBkColour(int nRow, int nCol, COLORREF cr = CLR_DEFAULT);
-	COLORREF GetItemHBkColour(int nRow, int nCol) const;
-	BOOL   SetItemHFgColour(int nRow, int nCol, COLORREF cr = CLR_DEFAULT);
-	COLORREF GetItemHFgColour(int nRow, int nCol) const;
-    BOOL SetItemFont(int nRow, int nCol, const LOGFONT* lf);
-    const LOGFONT* GetItemFont(int nRow, int nCol);
+    BOOL   SetItemData(int row, int nCol, LPARAM lParam);
+    LPARAM GetItemData(int row, int nCol) const;
+    BOOL   SetItemImage(int row, int nCol, int iImage);
+    int    GetItemImage(int row, int nCol) const;
+    BOOL   SetItemState(int row, int nCol, UINT state);
+    UINT   GetItemState(int row, int nCol) const;
+    BOOL   SetItemFormat(int row, int nCol, UINT nFormat);
+    UINT   GetItemFormat(int row, int nCol) const;
+    BOOL   SetItemBkColour(int row, int nCol, COLORREF cr = CLR_DEFAULT);
+    COLORREF GetItemBkColour(int row, int nCol) const;
+    BOOL   SetItemFgColour(int row, int nCol, COLORREF cr = CLR_DEFAULT);
+    COLORREF GetItemFgColour(int row, int nCol) const;
+	BOOL   SetItemHBkColour(int row, int nCol, COLORREF cr = CLR_DEFAULT);
+	COLORREF GetItemHBkColour(int row, int nCol) const;
+	BOOL   SetItemHFgColour(int row, int nCol, COLORREF cr = CLR_DEFAULT);
+	COLORREF GetItemHFgColour(int row, int nCol) const;
+    BOOL SetItemFont(int row, int nCol, const LOGFONT* lf);
+    const LOGFONT* GetItemFont(int row, int nCol);
 
-    BOOL IsItemEditing(int nRow, int nCol);
+    BOOL IsItemEditing(int row, int nCol);
 
-    BOOL SetCellType(int nRow, int nCol, CRuntimeClass* pRuntimeClass);
+    BOOL SetCellType(int row, int nCol, CRuntimeClass* pRuntimeClass);
     BOOL SetDefaultCellType( CRuntimeClass* pRuntimeClass);
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -459,15 +459,15 @@ public:
 public:
     int  InsertColumn(LPCTSTR strHeading, UINT nFormat = DT_CENTER|DT_VCENTER|DT_SINGLELINE,
                       int nColumn = -1);
-    int  InsertRow(LPCTSTR strHeading, int nRow = -1);
+    int  InsertRow(LPCTSTR strHeading, int row = -1);
     BOOL DeleteColumn(int nColumn);
-    BOOL DeleteRow(int nRow);
+    BOOL DeleteRow(int row);
     BOOL DeleteNonFixedRows();
     BOOL DeleteAllItems();
 
 	void ClearCells(CCellRange Selection);
 
-    BOOL AutoSizeRow(int nRow, BOOL bResetScroll = TRUE);
+    BOOL AutoSizeRow(int row, BOOL bResetScroll = TRUE);
     BOOL AutoSizeColumn(int nCol, UINT nAutoSizeStyle = GVS_DEFAULT, BOOL bResetScroll = TRUE);
     void AutoSizeRows();
     void AutoSizeColumns(UINT nAutoSizeStyle = GVS_DEFAULT);
@@ -481,18 +481,18 @@ public:
     void AutoFill();   // Fill grid with blank cells
 
     void EnsureVisible(const CCellID &cell)       { EnsureVisible(cell.row, cell.col); }
-    void EnsureVisible(int nRow, int nCol);
-    BOOL IsCellVisible(int nRow, int nCol);
+    void EnsureVisible(int row, int nCol);
+    BOOL IsCellVisible(int row, int nCol);
     BOOL IsCellVisible(const CCellID& cell);
-    BOOL IsCellEditable(int nRow, int nCol) const;
+    BOOL IsCellEditable(int row, int nCol) const;
     BOOL IsCellEditable(const CCellID &cell) const;
-    BOOL IsCellSelected(int nRow, int nCol) const;
+    BOOL IsCellSelected(int row, int nCol) const;
     BOOL IsCellSelected(const CCellID &cell) const;
 
     // SetRedraw stops/starts redraws on things like changing the # rows/columns
     // and autosizing, but not for user-intervention such as resizes
     void SetRedraw(BOOL bAllowDraw, BOOL bResetScrollBars = FALSE);
-    BOOL RedrawCell(int nRow, int nCol, CDC* pDC = NULL);
+    BOOL RedrawCell(int row, int nCol, CDC* pDC = NULL);
     BOOL RedrawCell(const CCellID& cell, CDC* pDC = NULL);
     BOOL RedrawRow(int row);
     BOOL RedrawColumn(int col);
@@ -511,7 +511,7 @@ public:
     void SetSelectedRange(const CCellRange& Range, BOOL bForceRepaint = FALSE, BOOL bSelectCells = TRUE);
     void SetSelectedRange(int nMinRow, int nMinCol, int nMaxRow, int nMaxCol,
                           BOOL bForceRepaint = FALSE, BOOL bSelectCells = TRUE);
-    BOOL IsValid(int nRow, int nCol) const;
+    BOOL IsValid(int row, int nCol) const;
     BOOL IsValid(const CCellID& cell) const;
     BOOL IsValid(const CCellRange& range) const;
 
@@ -598,7 +598,7 @@ protected:
     BOOL Initialise();
     void SetupDefaultCells();
 
-    LRESULT SendMessageToParent(int nRow, int nCol, int message) const;
+    LRESULT SendMessageToParent(int row, int nCol, int message) const;
     LRESULT SendDisplayRequestToParent(GV_DISPINFO* pDisplayInfo) const;
     LRESULT SendCacheHintToParent(const CCellRange& range) const;
 
@@ -609,7 +609,7 @@ protected:
 
     BOOL GetCellRangeRect(const CCellRange& cellRange, LPRECT lpRect);
 
-    BOOL SetCell(int nRow, int nCol, CGridCellBase* pCell);
+    BOOL SetCell(int row, int nCol, CGridCellBase* cellPtr);
 
     int  SetMouseMode(int mode) { int nOldMode = m_MouseMode; m_MouseMode = mode; return nOldMode; }
     int  GetMouseMode() const    { return m_MouseMode; }
@@ -626,15 +626,15 @@ protected:
     void ResetScrollBars();
     void EnableScrollBars(int nBar, BOOL isEnabled = TRUE);
     int  GetScrollPos32(int nBar, BOOL bGetTrackPos = FALSE);
-    BOOL SetScrollPos32(int nBar, int nPos, BOOL bRedraw = TRUE);
+    BOOL SetScrollPos32(int nBar, int position, BOOL bRedraw = TRUE);
 
     BOOL SortTextItems(int nCol, BOOL bAscending, int low, int high);
     BOOL SortItems(PFNLVCOMPARE pfnCompare, int nCol, BOOL bAscending, LPARAM data,
                    int low, int high);
 
-    CPoint GetPointClicked(int nRow, int nCol, const CPoint& point);
+    CPoint GetPointClicked(int row, int nCol, const CPoint& point);
 
-	void ValidateAndModifyCellContents(int nRow, int nCol, LPCTSTR strText);
+	void ValidateAndModifyCellContents(int row, int nCol, LPCTSTR strText);
 
 // Overrrides
     // ClassWizard generated virtual function overrides
@@ -664,17 +664,17 @@ protected:
     virtual void  OnFixedRowClick(CCellID& cell);
 
     // Editing
-    virtual void  OnEditCell(int nRow, int nCol, CPoint point, UINT nChar);
-    virtual void  OnEndEditCell(int nRow, int nCol, CString str);
-	virtual BOOL  ValidateEdit(int nRow, int nCol, LPCTSTR str);
+    virtual void  OnEditCell(int row, int nCol, CPoint point, UINT nChar);
+    virtual void  OnEndEditCell(int row, int nCol, CString str);
+	virtual BOOL  ValidateEdit(int row, int nCol, LPCTSTR str);
     virtual void  EndEditing();
 
     // Drawing
     virtual void  OnDraw(CDC* pDC);
 
     // CGridCellBase Creation and Cleanup
-    virtual CGridCellBase* CreateCell(int nRow, int nCol);
-    virtual void DestroyCell(int nRow, int nCol);
+    virtual CGridCellBase* CreateCell(int row, int nCol);
+    virtual void DestroyCell(int row, int nCol);
 
 // Attributes
 protected:
@@ -797,8 +797,8 @@ protected:
     // Generated message map functions
     //{{AFX_MSG(CGridCtrl)
     afx_msg void OnPaint();
-    afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-    afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+    afx_msg void OnHScroll(UINT nSBCode, UINT position, CScrollBar* pScrollBar);
+    afx_msg void OnVScroll(UINT nSBCode, UINT position, CScrollBar* pScrollBar);
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnLButtonUp(UINT flags, CPoint point);
     afx_msg void OnLButtonDown(UINT flags, CPoint point);
@@ -864,8 +864,8 @@ public:
 	void ForceQuitFocusOnTab(bool b=true) { m_QuitFocusOnTab = b;} // use only if GetParent() is a CDialog
 	void AllowSelectRowInFixedCol(bool b=true) { m_AllowSelectRowInFixedCol = b;} // 
 	void ResetSelectedRange();
-    void DisableMouseClick(BOOL bDisable);
-    void DisableMouseMove(BOOL bDisable);
+    void DisableMouseClick(BOOL isDisabled);
+    void DisableMouseMove(BOOL isDisabled);
 //    allow access?
 	intlist m_arRowOrder, m_arColOrder;
 	static CGridCtrl* m_This;

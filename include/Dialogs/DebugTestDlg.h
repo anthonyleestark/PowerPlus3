@@ -114,15 +114,15 @@ private:
 
 	inline bool isCurrentlyDispHistory(void) const {
 		return isCurrentlyDisplayHistory_;
-	};
+	}
 	inline void setCurrentlyDispHistoryState(bool state) {
 		isCurrentlyDisplayHistory_ = state;
-	};
+	}
 	inline size_t getHistoryCurrentDispIndex(void) const {
 		return currentHistoryIndex_;
-	};
+	}
 	inline void setHistoryCurrentDispIndex(size_t currentIndex) {
 		currentHistoryIndex_ = currentIndex;
-	};
+	}
 };
 

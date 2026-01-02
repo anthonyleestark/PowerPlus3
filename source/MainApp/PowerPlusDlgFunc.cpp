@@ -192,7 +192,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		return false;
 	}
 
-	String strTemp = Constant::String::Empty;
+	String tempString = Constant::String::Empty;
 
 	// Process debug commands by tokens
 	if (!_tcscmp(tokenList.at(0).c_str(), _T("test"))) {
@@ -204,8 +204,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			int nTokenCount = (tokenCount - 1);
 			OutputDebugLogFormat(_T("Token number: %d"), nTokenCount);
 			for (int nTokenIndex = 0; nTokenIndex < nTokenCount; nTokenIndex++) {
-				strTemp = tokenList.at(nTokenIndex + 1);
-				OutputDebugLogFormat(_T("Token[%d]: %s"), nTokenIndex, strTemp.getString());
+				tempString = tokenList.at(nTokenIndex + 1);
+				OutputDebugLogFormat(_T("Token[%d]: %s"), nTokenIndex, tempString.getString());
 			}
 		}
 	}
@@ -965,8 +965,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconsize")))) {
 			// Set reminder message icon size
-			int nIconSize = _tstoi(tokenList.at(2).c_str());
-			if ((nIconSize < RmdMsgStyleSet::minIconSize) || (nIconSize > RmdMsgStyleSet::maxIconSize)) {
+			int iconSize = _tstoi(tokenList.at(2).c_str());
+			if ((iconSize < RmdMsgStyleSet::minIconSize) || (iconSize > RmdMsgStyleSet::maxIconSize)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 30 -> 100)"));
 				bNoReply = false;	// Reset flag
@@ -974,9 +974,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Set icon size
 				if (pRmdData != NULL) {
-					pRmdData->getCommonStyle().setIconSize(nIconSize);
+					pRmdData->getCommonStyle().setIconSize(iconSize);
 					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
-					OutputDebugLogFormat(_T("Message icon size set: %dx%dpx"), nIconSize, nIconSize);
+					OutputDebugLogFormat(_T("Message icon size set: %dx%dpx"), iconSize, iconSize);
 					bNoReply = false;	// Reset flag
 				}
 				else {
@@ -1290,8 +1290,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconsize")))) {
 			// Get reminder message icon size
 			if (pRmdData != NULL) {
-				int nIconSize = pRmdData->getCommonStyle().getIconSize();
-				OutputDebugLogFormat(_T("Message icon size: %dx%dpx"), nIconSize, nIconSize);
+				int iconSize = pRmdData->getCommonStyle().getIconSize();
+				OutputDebugLogFormat(_T("Message icon size: %dx%dpx"), iconSize, iconSize);
 				bNoReply = false;	// Reset flag
 			}
 			else {

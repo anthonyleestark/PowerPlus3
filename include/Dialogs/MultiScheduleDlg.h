@@ -90,7 +90,7 @@ public:
 	// Member functions
 	void setupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR languageTablePtr);
-	void DrawDataTable(bool bReadOnly = false);
+	void DrawDataTable(bool isReadOnly = false);
 
 	// Layout functions
 	void updateLayoutInfo(void);
@@ -100,8 +100,8 @@ public:
 	// Dialog item properties functions
 	void setupDialogItemState();
 	void UpdateDataItemList();
-	void DisableDataTable(bool bDisable);
-	void RedrawDataTable(bool bReadOnly = false);
+	void DisableDataTable(bool isDisabled);
+	void RedrawDataTable(bool isReadOnly = false);
 	void refreshDialogItemState(bool bRecheckState = false);
 	void UpdateCheckAllBtnState(bool bRecheck = false);
 

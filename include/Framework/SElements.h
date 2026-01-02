@@ -106,7 +106,7 @@ protected:
 	// Control attributes
 	String			m_strCaption;
 	bool			m_bVisible;
-	bool			m_bEnabled;
+	bool			isEnabled_;
 	bool			m_bFocused;
 
 protected:
@@ -205,7 +205,7 @@ public:
 		return m_bVisible;
 	};
 	virtual bool IsEnabled(void) const {
-		return m_bEnabled;
+		return isEnabled_;
 	};
 	virtual bool IsFocused(void) const {
 		return m_bFocused;
@@ -231,7 +231,7 @@ public:
 		m_bVisible = bVisible;
 	};
 	virtual void SetEnableState(_In_ bool isEnabled) {
-		m_bEnabled = isEnabled;
+		isEnabled_ = isEnabled;
 	};
 	virtual void SetFocusedState(_In_ bool bFocused) {
 		m_bFocused = bFocused;

@@ -42,7 +42,7 @@ SCtrlInfoWrap::SCtrlInfoWrap() : CObject()
 	// Control attributes
 	m_strCaption.empty();
 	m_bVisible = false;
-	m_bEnabled = false;
+	isEnabled_ = false;
 	m_bFocused = false;
 
 	// --- Control data values --- //
@@ -1460,8 +1460,8 @@ void SControlManager::UpdateData(unsigned controlId /* = NULL */)
 				NC_ADDRESS ncAddress;
 				NET_ADDRESS_INFO netAddressInfo;
 				ncAddress.pAddrInfo = &netAddressInfo;
-				HRESULT hRes = ((CNetAddressCtrl*)pBaseControl)->GetAddress(&ncAddress);
-				if (hRes == S_OK) {
+				HRESULT resourceHandle = ((CNetAddressCtrl*)pBaseControl)->GetAddress(&ncAddress);
+				if (resourceHandle == S_OK) {
 					// Save address and port info
 					String addressString = ncAddress.pAddrInfo->NamedAddress.Address;
 					String portString = ncAddress.pAddrInfo->NamedAddress.Port;

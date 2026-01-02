@@ -84,7 +84,7 @@ public:
     virtual void SetFont(const LOGFONT* /* plf */)          = 0 ;
     virtual void SetMargin( UINT /* nMargin */)             = 0 ;
     virtual void SetGrid(CGridCtrl* /* pGrid */)            = 0 ;
-    virtual void SetCoords( int /* nRow */, int /* nCol */) = 0 ;
+    virtual void SetCoords( int /* row */, int /* nCol */) = 0 ;
 
     virtual LPCTSTR    GetText()       const                = 0 ;
     virtual LPCTSTR    GetTipText()    const                { return GetText(); } // may override TitleTip return
@@ -123,23 +123,23 @@ public:
 public:
     virtual void Reset();
 
-    virtual BOOL Draw(CDC* pDC, int nRow, int nCol, CRect rect, BOOL bEraseBkgnd = TRUE);
+    virtual BOOL Draw(CDC* pDC, int row, int nCol, CRect rect, BOOL bEraseBkgnd = TRUE);
     virtual BOOL GetTextRect( LPRECT pRect);    // i/o:  i=dims of cell rect; o=dims of text rect
     virtual BOOL GetTipTextRect( LPRECT pRect) { return GetTextRect( pRect); }  // may override for btns, etc.
     virtual CSize GetTextExtent(LPCTSTR str, CDC* pDC = NULL);
     virtual CSize GetCellExtent(CDC* pDC);
 
     // Editing
-    virtual BOOL Edit( int /* nRow */, int /* nCol */, CRect /* rect */, CPoint /* point */, 
+    virtual BOOL Edit( int /* row */, int /* nCol */, CRect /* rect */, CPoint /* point */, 
                        UINT /* id */, UINT /* nChar */) { ASSERT( FALSE); return FALSE;}
 	virtual BOOL ValidateEdit(LPCTSTR str);
     virtual void EndEdit() {}
 
     // EFW - Added to print cells properly
-    virtual BOOL PrintCell(CDC* pDC, int nRow, int nCol, CRect rect);
+    virtual BOOL PrintCell(CDC* pDC, int row, int nCol, CRect rect);
 
     // add additional protected grid members required of cells
-    LRESULT SendMessageToParent(int nRow, int nCol, int message);
+    LRESULT SendMessageToParent(int row, int nCol, int message);
 
 protected:
     virtual void OnEndEdit();

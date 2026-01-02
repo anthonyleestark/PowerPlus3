@@ -79,6 +79,6 @@ protected:
 
 public:
 	// Data processing functions
-	void updateDialogData(PwrReminderItem& pwrItemData, bool bUpdate);
+	void updateDialogData(PwrReminderItem& pwrItemData, bool updateFlag);
 };
 

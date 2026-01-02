@@ -32,8 +32,8 @@ namespace Global {
 static inline const DateTime& getAppLaunchTime(void) {
 	return Global::g_stAppLaunchTime;
 };
-static inline void setAppLaunchTime(const DateTime& stTime) {
-	Global::g_stAppLaunchTime = stTime;
+static inline void setAppLaunchTime(const DateTime& timeValue) {
+	Global::g_stAppLaunchTime = timeValue;
 };
 
 // Access application launch-time counter data

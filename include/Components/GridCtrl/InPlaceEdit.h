@@ -42,7 +42,7 @@ class CInPlaceEdit : public CEdit
 // Construction
 public:
     CInPlaceEdit(CWnd* parentWnd, CRect& rect, DWORD style, UINT id,
-                 int nRow, int nColumn, CString sInitText, UINT nFirstChar);
+                 int row, int nColumn, CString sInitText, UINT nFirstChar);
 
 // Attributes
 public:

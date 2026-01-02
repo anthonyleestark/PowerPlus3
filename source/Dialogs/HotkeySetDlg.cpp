@@ -280,8 +280,8 @@ void CHotkeySetDlg::OnClose()
 		setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 		if (isChanged == true) {
 			// Show save confirmation message
-			int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
-			if (nConfirm == IDYES) {
+			int confirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
+			if (confirm == IDYES) {
 				// Save data
 				SaveHotkeySetData();
 			}
@@ -350,8 +350,8 @@ void CHotkeySetDlg::OnCancel()
 		setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 		if (isChanged == true) {
 			// Show save confirmation message
-			int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
-			if (nConfirm == IDYES) {
+			int confirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNO | MB_ICONQUESTION);
+			if (confirm == IDYES) {
 				// Save data
 				SaveHotkeySetData();
 			}
@@ -400,8 +400,8 @@ void CHotkeySetDlg::OnRemove()
 		return;
 
 	// Ask before remove
-	int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
-	if (nConfirm == IDYES) {
+	int confirm = displayMessageBox(MSGBOX_HOTKEYSET_REMOVE_ITEM, NULL, MB_YESNO | MB_ICONQUESTION);
+	if (confirm == IDYES) {
 
 		// Update data
 		Remove(index);
@@ -426,8 +426,8 @@ void CHotkeySetDlg::OnRemoveAll()
 		return;
 
 	// Ask before remove
-	int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
-	if (nConfirm == IDYES) {
+	int confirm = displayMessageBox(MSGBOX_HOTKEYSET_REMOVEALL_ITEMS, NULL, MB_YESNO | MB_ICONQUESTION);
+	if (confirm == IDYES) {
 
 		// Update data
 		RemoveAll();
@@ -493,9 +493,9 @@ void CHotkeySetDlg::OnExport()
 void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	// Get clicked item info
-	NM_GRIDVIEW* pItem = (NM_GRIDVIEW*)pNMHDR;
-	if (pItem == NULL) return;
-	int nCurSelRow = pItem->iRow;
+	NM_GRIDVIEW* reminderItem = (NM_GRIDVIEW*)pNMHDR;
+	if (reminderItem == NULL) return;
+	int nCurSelRow = reminderItem->iRow;
 
 	// Update current selection index
 	SetListCurSel(nCurSelRow - startRowIndex);
@@ -553,12 +553,12 @@ LRESULT CHotkeySetDlg::requestCloseDialog(void)
 	bool isChanged = checkDataChangeState();
 	setFlagValue(AppFlagID::dialogDataChanged, isChanged);
 	if (isChanged == true) {
-		int nConfirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
-		if (nConfirm == IDYES) {
+		int confirm = displayMessageBox(MSGBOX_HOTKEYSET_CHANGED_CONTENT, NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
+		if (confirm == IDYES) {
 			// Save data
 			SaveHotkeySetData();
 		}
-		else if (nConfirm == IDCANCEL) {
+		else if (confirm == IDCANCEL) {
 			// Request denied
 			return LRESULT(Result::Failure);
 		}
@@ -620,17 +620,17 @@ void CHotkeySetDlg::setupLanguage()
 void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*languageTablePtr*/)
 {
 	// Get parent list frame rect
-	CWnd* pListFrameWnd = GetDlgItem(IDC_HOTKEYSET_ITEM_LISTBOX);
-	if (pListFrameWnd == NULL) return;
-	RECT rcListFrameWnd;
-	pListFrameWnd->GetWindowRect(&rcListFrameWnd);
-	ScreenToClient(&rcListFrameWnd);
+	CWnd* listFrameWndPtr = GetDlgItem(IDC_HOTKEYSET_ITEM_LISTBOX);
+	if (listFrameWndPtr == NULL) return;
+	RECT listFrameWndRect;
+	listFrameWndPtr->GetWindowRect(&listFrameWndRect);
+	ScreenToClient(&listFrameWndRect);
 
 	// Get frame size
 	if (m_pszDataTableFrameSize == NULL) {
 		m_pszDataTableFrameSize = new Size();
-		m_pszDataTableFrameSize->_width = rcListFrameWnd.right - rcListFrameWnd.left;
-		m_pszDataTableFrameSize->_height = rcListFrameWnd.bottom - rcListFrameWnd.top;
+		m_pszDataTableFrameSize->_width = listFrameWndRect.right - listFrameWndRect.left;
+		m_pszDataTableFrameSize->_height = listFrameWndRect.bottom - listFrameWndRect.top;
 	}
 
 	// Initialization
@@ -639,19 +639,19 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*languageTablePtr*/)
 	// Create table
 	if (m_pHotkeySetListTable == NULL) return;
 	DWORD style = WS_CHILD | WS_VISIBLE | WS_TABSTOP;
-	m_pHotkeySetListTable->Create(rcListFrameWnd, this, IDC_HOTKEYSET_ITEM_LISTBOX, style);
+	m_pHotkeySetListTable->Create(listFrameWndRect, this, IDC_HOTKEYSET_ITEM_LISTBOX, style);
 
 	// Destroy frame
-	pListFrameWnd->DestroyWindow();
+	listFrameWndPtr->DestroyWindow();
 
 	// Cell format
-	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pHotkeySetListTable->GetDefaultCell(false, false);
-	if (pCell == NULL) return;
-	pCell->SetFormat(pCell->GetFormat());
-	pCell->SetMargin(0);
-	pCell->SetBackClr(Color::White);
-	pCell->SetTextClr(Color::Black);
-	pCell->SetHeight(Constant::UI::GridCtrl::Height::Row);
+	CGridDefaultCell* cellPtr = (CGridDefaultCell*)m_pHotkeySetListTable->GetDefaultCell(false, false);
+	if (cellPtr == NULL) return;
+	cellPtr->SetFormat(cellPtr->GetFormat());
+	cellPtr->SetMargin(0);
+	cellPtr->SetBackClr(Color::White);
+	cellPtr->SetTextClr(Color::Black);
+	cellPtr->SetHeight(Constant::UI::GridCtrl::Height::Row);
 
 	// Table format and properties
 	int nRowNum = (GetItemNum() + fixedRowNum);
@@ -685,10 +685,10 @@ void CHotkeySetDlg::SetupHotkeySetList(LANGTABLE_PTR /*languageTablePtr*/)
 
 /**
  * @brief	Draw HotkeySet data list table
- * @param	bReadOnly - Read-only mode
+ * @param	isReadOnly - Read-only mode
  * @return	None
  */
-void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
+void CHotkeySetDlg::DrawHotkeySetTable(bool isReadOnly /* = false */)
 {
 	// Check table validity
 	if (m_pHotkeySetListTable == NULL) return;
@@ -704,17 +704,17 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 	LANGTABLE_PTR languageTablePtr = theAppPtr->getAppLanguage();
 
 	// Re-update default cell properties
-	CGridDefaultCell* pCell = (CGridDefaultCell*)m_pHotkeySetListTable->GetDefaultCell(false, false);
-	if (pCell == NULL) return;
+	CGridDefaultCell* cellPtr = (CGridDefaultCell*)m_pHotkeySetListTable->GetDefaultCell(false, false);
+	if (cellPtr == NULL) return;
 
 	// Read-only mode --> Change cell color
-	if (bReadOnly == true) {
-		pCell->SetBackClr(Color::Bright_Gray);
-		pCell->SetTextClr(Color::Dark_Gray);
+	if (isReadOnly == true) {
+		cellPtr->SetBackClr(Color::Bright_Gray);
+		cellPtr->SetTextClr(Color::Dark_Gray);
 	}
 	else {
-		pCell->SetBackClr(Color::White);
-		pCell->SetTextClr(Color::Black);
+		cellPtr->SetBackClr(Color::White);
+		cellPtr->SetTextClr(Color::Black);
 	}
 
 	// Table properties
@@ -722,20 +722,20 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 	int nRowNum = (GetItemNum() + fixedRowNum);
 
 	// Setup display size
-	int nFrameHeight = m_pszDataTableFrameSize->height();
-	int nFrameWidth = m_pszDataTableFrameSize->width();
+	int frameHeight = m_pszDataTableFrameSize->height();
+	int frameWidth = m_pszDataTableFrameSize->width();
 	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
 		// Windows 10 list control offset
-		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
+		frameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 	}
 	else {
 		// Windows 11 list control offset
-		nFrameWidth -= Constant::UI::Offset::Width::ListCtrl;
+		frameWidth -= Constant::UI::Offset::Width::ListCtrl;
 	}
-	if ((Constant::UI::Offset::Width::ListCtrl + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row)) >= nFrameHeight) {
+	if ((Constant::UI::Offset::Width::ListCtrl + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row)) >= frameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
-		int nScrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
-		nFrameWidth -= (nScrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
+		int scrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
+		frameWidth -= (scrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns
@@ -757,66 +757,66 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 			// Set column width as defined
 			if (m_pHotkeySetListTable->SetColumnWidth(nCol, nColWidth)) {
 				// Calculate remaining width
-				nFrameWidth -= nColWidth;
+				frameWidth -= nColWidth;
 			}
 		}
 		else {
 			// Set remaining width for current column
-			m_pHotkeySetListTable->SetColumnWidth(nCol, nFrameWidth);
+			m_pHotkeySetListTable->SetColumnWidth(nCol, frameWidth);
 		}
 	}
 
 	// Setup rows
 	int nColStyle = -1;
-	unsigned nItemState = INT_NULL;
-	for (int nRow = 1; nRow < nRowNum; nRow++) {
+	unsigned itemState = INT_NULL;
+	for (int row = 1; row < nRowNum; row++) {
 		for (int nCol = 0; nCol < m_nColNum; nCol++) {
 
 			// Get column style & item state
 			nColStyle = m_apGrdColFormat[nCol].columnStyle;
-			nItemState = m_pHotkeySetListTable->GetItemState(nRow, nCol);
-			nItemState |= GVIS_READONLY;
+			itemState = m_pHotkeySetListTable->GetItemState(row, nCol);
+			itemState |= GVIS_READONLY;
 
 			// Base column - header-like style
 			if (nColStyle == COLSTYLE_FIXED) {
 				// Set fixed cell style
-				AppCore::setFixedCellStyle(m_pHotkeySetListTable, nRow, nCol);
+				AppCore::setFixedCellStyle(m_pHotkeySetListTable, row, nCol);
 			}
 
 			// Checkbox column
 			else if (nColStyle == COLSTYLE_CHECKBOX) {
 				// Set cell type: Checkbox
-				if (!m_pHotkeySetListTable->SetCellType(nRow, nCol, RUNTIME_CLASS(CGridCellCheck)))
+				if (!m_pHotkeySetListTable->SetCellType(row, nCol, RUNTIME_CLASS(CGridCellCheck)))
 					continue;
 
 				// Get cell
-				CGridCellCheck* pCell = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRow, nCol);
+				CGridCellCheck* cellPtr = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(row, nCol);
 
 				// Set center alignment if defined
 				if (m_apGrdColFormat[nCol].isCentered == true) {
-					if (pCell == NULL) continue;
-					pCell->SetCheckPlacement(SCP_CENTERING);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetCheckPlacement(SCP_CENTERING);
 				}
 			}
 
 			// Normal column
 			else if (nColStyle == COLSTYLE_NORMAL) {
 				// Set item state
-				if (!m_pHotkeySetListTable->SetItemState(nRow, nCol, nItemState))
+				if (!m_pHotkeySetListTable->SetItemState(row, nCol, itemState))
 					continue;
 
 				// Get cell
-				CGridCellBase* pCell = (CGridCellBase*)m_pHotkeySetListTable->GetCell(nRow, nCol);
+				CGridCellBase* cellPtr = (CGridCellBase*)m_pHotkeySetListTable->GetCell(row, nCol);
 
 				// Set center alignment if defined
 				if (m_apGrdColFormat[nCol].isCentered == true) {
-					if (pCell == NULL) continue;
-					pCell->SetFormat(pCell->GetFormat() | DT_CENTER);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetFormat(cellPtr->GetFormat() | DT_CENTER);
 				}
 				else {
 					// Set margin (left alignment)
-					if (pCell == NULL) continue;
-					pCell->SetMargin(Constant::UI::GridCtrl::Margin::Left);
+					if (cellPtr == NULL) continue;
+					cellPtr->SetMargin(Constant::UI::GridCtrl::Margin::Left);
 				}
 			}
 		}
@@ -825,13 +825,13 @@ void CHotkeySetDlg::DrawHotkeySetTable(bool bReadOnly /* = false */)
 
 /**
  * @brief	Setup data for combo-boxes
- * @param	nComboID	- ID of combo box
+ * @param	comboId	- ID of combo box
  * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CHotkeySetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr)
+void CHotkeySetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr)
 {
-	switch (nComboID)
+	switch (comboId)
 	{
 	case IDC_HOTKEYSET_ACTION_LIST:
 		m_cmbActionList.ResetContent();
@@ -854,7 +854,7 @@ void CHotkeySetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTable
 	}
 
 	// Default
-	SDialog::setupComboBox(nComboID, languageTablePtr);
+	SDialog::setupComboBox(comboId, languageTablePtr);
 }
 
 /**
@@ -964,23 +964,23 @@ void CHotkeySetDlg::UpdateHotkeySet()
 	String tempString;
 	int nTemp = -1;
 	int itemIndex = 0;
-	CGridCellCheck* pCellCheck = NULL;
-	for (int nRowIndex = startRowIndex; nRowIndex <= itemNum; nRowIndex++) {
+	CGridCellCheck* cellCheckPtr = NULL;
+	for (int rowIndex = startRowIndex; rowIndex <= itemNum; rowIndex++) {
 
 		// Get item
-		itemIndex = nRowIndex - startRowIndex;
+		itemIndex = rowIndex - startRowIndex;
 		const Item& hotkeyItem = m_hksHotkeySetTemp.getItemAt(itemIndex);
 
 		// Enable state
-		pCellCheck = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, ColumnID::EnableState);
-		if (pCellCheck != NULL) {
-			pCellCheck->SetCheck(hotkeyItem.isEnabled());
+		cellCheckPtr = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(rowIndex, ColumnID::EnableState);
+		if (cellCheckPtr != NULL) {
+			cellCheckPtr->SetCheck(hotkeyItem.isEnabled());
 		}
 
 		// Hotkey action
 		nTemp = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hotkeyItem.getActionId()));
 		tempString = getLanguageString(languageTablePtr, nTemp);
-		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::HKActionID, tempString);
+		m_pHotkeySetListTable->SetItemText(rowIndex, ColumnID::HKActionID, tempString);
 
 		// Keystrokes
 		hotkeyItem.printKeyStrokes(tempString);
@@ -988,34 +988,34 @@ void CHotkeySetDlg::UpdateHotkeySet()
 			// Undefined keystrokes
 			tempString = getLanguageString(languageTablePtr, HKEYSET_KEYSTROKES_NULL);
 		}
-		m_pHotkeySetListTable->SetItemText(nRowIndex, ColumnID::Keystrokes, tempString);
+		m_pHotkeySetListTable->SetItemText(rowIndex, ColumnID::Keystrokes, tempString);
 	}
 }
 
 /**
  * @brief	Disable mouse click events for HotkeySet data table
- * @param	bDisable - Disable/enable
+ * @param	isDisabled - Disable/enable
  * @return	None
  */
-void CHotkeySetDlg::DisableHotkeySetTable(bool bDisable)
+void CHotkeySetDlg::DisableHotkeySetTable(bool isDisabled)
 {
 	// Redraw read-only style
-	RedrawHotkeySetTable(bDisable);
+	RedrawHotkeySetTable(isDisabled);
 
 	// Check table validity
 	if (m_pHotkeySetListTable == NULL) return;
 
 	// Disable/enable mouse events
-	m_pHotkeySetListTable->DisableMouseClick(bDisable);
-	m_pHotkeySetListTable->DisableMouseMove(bDisable);
+	m_pHotkeySetListTable->DisableMouseClick(isDisabled);
+	m_pHotkeySetListTable->DisableMouseMove(isDisabled);
 }
 
 /**
  * @brief	Update and redraw HotkeySet data table
- * @param	bool bReadOnly - Read-only mode
+ * @param	bool isReadOnly - Read-only mode
  * @return	None
  */
-void CHotkeySetDlg::RedrawHotkeySetTable(bool bReadOnly /* = false */)
+void CHotkeySetDlg::RedrawHotkeySetTable(bool isReadOnly /* = false */)
 {
 	// Check table validity
 	if (m_pHotkeySetListTable == NULL) return;
@@ -1025,7 +1025,7 @@ void CHotkeySetDlg::RedrawHotkeySetTable(bool bReadOnly /* = false */)
 	m_pHotkeySetListTable->SetRowCount(nCurRowNum);
 
 	// Draw table
-	DrawHotkeySetTable(bReadOnly);
+	DrawHotkeySetTable(isReadOnly);
 
 	// Update table data
 	UpdateHotkeySet();
@@ -1229,16 +1229,16 @@ bool CHotkeySetDlg::checkDataChangeState()
 	// Update enable state of all item before checking
 	int itemIndex = 0;
 	CGridCellCheck* pCellCheckEnable = NULL;
-	for (int nRowIndex = startRowIndex; nRowIndex <= GetItemNum(); nRowIndex++) {
+	for (int rowIndex = startRowIndex; rowIndex <= GetItemNum(); rowIndex++) {
 		// Get checkbox cell
-		pCellCheckEnable = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(nRowIndex, ColumnID::EnableState);
+		pCellCheckEnable = (CGridCellCheck*)m_pHotkeySetListTable->GetCell(rowIndex, ColumnID::EnableState);
 		if (pCellCheckEnable == NULL) continue;
 
 		// Get checked states
 		bool isEnabled = pCellCheckEnable->GetCheck();
 
 		// Update item checked state
-		itemIndex = nRowIndex - startRowIndex;
+		itemIndex = rowIndex - startRowIndex;
 		Item& hksTempItem = m_hksHotkeySetTemp.getItemAt(itemIndex);
 		hksTempItem.enableItem(isEnabled);
 	}

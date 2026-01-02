@@ -284,8 +284,8 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			if (HIWORD(wParam) == EN_CHANGE && m_pIconSizeEdit != NULL)
 			{
 				// Validation
-				int nIconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
-				bool isValid = ValidateEditValue(m_pIconSizeEdit->GetSafeHwnd(), nIconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize, true);
+				int iconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
+				bool isValid = ValidateEditValue(m_pIconSizeEdit->GetSafeHwnd(), iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize, true);
 
 				// Trigger redrawing icon preview
 				if (m_pIconPreviewStatic != NULL && isValid)
@@ -296,9 +296,9 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			else if (HIWORD(wParam) == EN_KILLFOCUS && m_pIconSizeEdit != NULL)
 			{
 				// Auto-correction
-				int nIconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
-				if (!ValidateAndCorrect(nIconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize))
-					m_pIconSizeEdit->SetWindowText(String::fromNumber(nIconSize));
+				int iconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
+				if (!ValidateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize))
+					m_pIconSizeEdit->SetWindowText(String::fromNumber(iconSize));
 
 				// Trigger redrawing icon preview
 				if (m_pIconPreviewStatic != NULL)
@@ -526,13 +526,13 @@ void CRmdMsgStyleSetDlg::setupLanguage()
 
 /**
  * @brief	Setup data for combo-boxes
- * @param	nComboID	- ID of combo box
+ * @param	comboId	- ID of combo box
  * @param	languageTablePtr - Language package pointer
  * @return	None
  */
-void CRmdMsgStyleSetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr)
+void CRmdMsgStyleSetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr)
 {
-	switch (nComboID)
+	switch (comboId)
 	{
 		case IDC_MSGSTYLESET_FONTNAME_COMBO:
 		{
@@ -609,7 +609,7 @@ void CRmdMsgStyleSetDlg::setupComboBox(unsigned nComboID, LANGTABLE_PTR language
 	}
 
 	// Default
-	SDialog::setupComboBox(nComboID, languageTablePtr);
+	SDialog::setupComboBox(comboId, languageTablePtr);
 }
 	
 /**
@@ -817,13 +817,13 @@ void CRmdMsgStyleSetDlg::RedrawIconPreview(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	}
 
 	// Icon size
-	int nIconSize = RmdMsgStyleSet::defaultIconSize;
+	int iconSize = RmdMsgStyleSet::defaultIconSize;
 	if (m_pIconSizeEdit != NULL) {
-		nIconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
-		ValidateAndCorrect(nIconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+		iconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
+		ValidateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
 	}
-	int cx = nIconSize;
-	int cy = nIconSize;
+	int cx = iconSize;
+	int cy = iconSize;
 
 	// Erase the icon preview control before redrawing
 	RECT rcPreviewCtrl = lpDrawItemStruct->rcItem;
@@ -917,12 +917,12 @@ bool CRmdMsgStyleSetDlg::ValidateEditValue(HWND hEditCtrl, int& inputVal, int mi
 
 /**
  * @brief	Update message style data from/to dialog controls
- * @param	bUpdate - Update data flag
+ * @param	updateFlag - Update data flag
  * @return	None
  */
-void CRmdMsgStyleSetDlg::updateDialogData(bool bUpdate)
+void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 {
-	if (bUpdate == true) {
+	if (updateFlag == true) {
 
 		/***************************************************************/
 		/*															   */
@@ -966,12 +966,12 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool bUpdate)
 		m_rmsMsgStyleTemp.setIconId(nIconID);
 
 		// Icon size
-		int nIconSize = RmdMsgStyleSet::defaultIconSize;
+		int iconSize = RmdMsgStyleSet::defaultIconSize;
 		if (m_pIconSizeEdit != NULL) {
-			nIconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
-			ValidateAndCorrect(nIconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+			iconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
+			ValidateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
 		}
-		m_rmsMsgStyleTemp.setIconSize(nIconSize);
+		m_rmsMsgStyleTemp.setIconSize(iconSize);
 
 		// Icon position
 		int nIconPos = RmdMsgStyleSet::defaultIconPosition;
@@ -1001,7 +1001,7 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool bUpdate)
 		int nHMargin = RmdMsgStyleSet::defaultHorizontalMargin;
 		if (m_pHorizontalMarginEdit != NULL) {
 			nHMargin = GetEditValue(m_pHorizontalMarginEdit->GetSafeHwnd(), maxMarginValDigits);
-			ValidateAndCorrect(nIconSize, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+			ValidateAndCorrect(iconSize, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
 		}
 		m_rmsMsgStyleTemp.setHorizontalMargin(nHMargin);
 
@@ -1052,10 +1052,10 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool bUpdate)
 		}
 
 		// Icon size
-		int nIconSize = m_rmsMsgStyleTemp.getIconSize();
-		ValidateAndCorrect(nIconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+		int iconSize = m_rmsMsgStyleTemp.getIconSize();
+		ValidateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
 		if (m_pIconSizeEdit != NULL) {
-			String iconSizeStr = String::fromNumber(nIconSize);
+			String iconSizeStr = String::fromNumber(iconSize);
 			m_pIconSizeEdit->SetWindowText(iconSizeStr);
 		}
 

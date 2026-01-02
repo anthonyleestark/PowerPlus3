@@ -399,7 +399,7 @@ void ScheduleData::copy(const ScheduleData& other)
 
 /**
  * @brief	Add an Action Schedule item
- * @param	pItem - Pointer of input item
+ * @param	reminderItem - Pointer of input item
  * @return	DWORD - Error code
  */
 DWORD ScheduleData::add(const ScheduleItem& item)
@@ -470,7 +470,7 @@ DWORD ScheduleData::add(const ScheduleItem& item)
 
 /**
  * @brief	Update a Action Schedule item
- * @param	pItem - Pointer of input item
+ * @param	reminderItem - Pointer of input item
  * @return	DWORD - Error code
  */
 DWORD ScheduleData::update(const ScheduleItem& item)
@@ -570,18 +570,18 @@ void ScheduleData::adjust(void)
 unsigned ScheduleData::getNextId(void) const
 {
 	// Get currently max ID
-	unsigned retNextID = ScheduleData::minItemID;
+	unsigned retNextId = ScheduleData::minItemID;
 	for (int index = 0; index < getExtraItemNum(); index++) {
 		ScheduleItem item = getItemAt(index);
-		if (item.getItemId() > retNextID) {
-			retNextID = item.getItemId();
+		if (item.getItemId() > retNextId) {
+			retNextId = item.getItemId();
 		}
 	}
 
 	// Increase value
-	retNextID++;
+	retNextId++;
 
-	return retNextID;
+	return retNextId;
 }
 
 
@@ -655,11 +655,11 @@ HotkeySetItem::HotkeySetItem()
 	virtualKey_ = 0;							// Virtual key code
 }
 
-HotkeySetItem::HotkeySetItem(unsigned hkActionID)
+HotkeySetItem::HotkeySetItem(unsigned hotkeyActionId)
 {
 	// Initialize
 	isEnabled_ = false;							// Hotkey enabled/disabled
-	hotkeyActionId_ = hkActionID;				// Hotkey action ID
+	hotkeyActionId_ = hotkeyActionId;				// Hotkey action ID
 	modifiers_ = 0;								// Modifier keys
 	virtualKey_ = 0;							// Virtual key code
 }
@@ -777,7 +777,7 @@ void HotkeySetData::setDefaultData(void)
 
 /**
  * @brief	Add a hotkeyset item
- * @param	pItem - Pointer of input item
+ * @param	reminderItem - Pointer of input item
  * @return	None
  */
 void HotkeySetData::add(const Item& item)
@@ -821,7 +821,7 @@ void HotkeySetData::add(const Item& item)
 
 /**
  * @brief	Update a hotkeyset item
- * @param	pItem - Pointer of input item
+ * @param	reminderItem - Pointer of input item
  * @return	None
  */
 void HotkeySetData::update(const Item& item)
@@ -900,15 +900,15 @@ void HotkeySetData::remove(int atIndex)
  */
 void HotkeySetData::adjust(void)
 {
-	DWORD ctrlKey, funcKey;
+	DWORD modifiers, virtualKey;
 	for (int index = 0; index < getItemNum(); index++) {
 
 		// Get hotkeyset item keycode
 		Item& item = getItemAt(index);
-		item.getKeyCode(ctrlKey, funcKey);
+		item.getKeyCode(modifiers, virtualKey);
 
 		// Not enable hotkeyset item if no keystroke data
-		if ((ctrlKey == 0) || (funcKey == 0)) {
+		if ((modifiers == 0) || (virtualKey == 0)) {
 			item.enableItem(false);
 			item.setKeyCode(NULL, NULL);
 		}
@@ -979,13 +979,13 @@ void HotkeySetData::deleteItem(int atIndex)
  * @param	outputString - Output printed keystrokes string
  * @return	None
  */
-void HotkeySetData::printKeyStrokes(unsigned hkID, String& outputString) const
+void HotkeySetData::printKeyStrokes(unsigned hotkeyId, String& outputString) const
 {
 	// Search for hotkey ID and get keystrokes string
 	String keyStrokesStr = Constant::String::Empty;
 	for (int index = 0; index < this->getItemNum(); index++) {
 		Item item = this->getItemAt(index);
-		if (item.getActionId() == hkID) {
+		if (item.getActionId() == hotkeyId) {
 			item.printKeyStrokes(keyStrokesStr);
 			break;
 		}
@@ -1246,7 +1246,7 @@ void PwrReminderData::init() noexcept
 
 /**
  * @brief	Add a Power Reminder item
- * @param	pItem - Pointer of input item
+ * @param	reminderItem - Pointer of input item
  * @return	None
  */
  void PwrReminderData::add(const PwrReminderItem& item)
@@ -1293,7 +1293,7 @@ void PwrReminderData::init() noexcept
 
 /**
  * @brief	Update a Power Reminder item
- * @param	pItem - Pointer of input item
+ * @param	reminderItem - Pointer of input item
  * @return	None
  */
  void PwrReminderData::update(const PwrReminderItem& item)
@@ -1372,18 +1372,18 @@ void PwrReminderData::init() noexcept
  unsigned PwrReminderData::getNextId(void) const noexcept
 {
 	// Get max ID
-	unsigned retNextID = PwrReminderData::minItemID;
+	unsigned retNextId = PwrReminderData::minItemID;
 	for (int index = 0; index < getItemNum(); index++) {
 		PwrReminderItem item = getItemAt(index);
-		if (item.getItemId() > retNextID) {
-			retNextID = item.getItemId();
+		if (item.getItemId() > retNextId) {
+			retNextId = item.getItemId();
 		}
 	}
 
 	// Increase value
-	retNextID++;
+	retNextId++;
 
-	return retNextID;
+	return retNextId;
 }
 
 
@@ -1534,7 +1534,7 @@ void HistoryInfoData::copy(const HistoryInfoData& other) noexcept
 
 /**
  * @brief	Initialization
- * @param	nCategoryID - Category ID
+ * @param	categoryId - Category ID
  * @return	None
  */
 void HistoryInfoData::init(unsigned categoryID) noexcept
@@ -1677,8 +1677,8 @@ String StringUtils::loadResourceString(unsigned resourceStringID)
 	String resultString;
 
 	// Get resource handle
-	HINSTANCE hResInstance = AfxGetResourceHandle();
-	if (hResInstance == NULL) {
+	HINSTANCE resourceInstanceHandle = AfxGetResourceHandle();
+	if (resourceInstanceHandle == NULL) {
 		// Trace error
 		TRACE_ERROR("Error: Get resource handle failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1686,12 +1686,12 @@ String StringUtils::loadResourceString(unsigned resourceStringID)
 	}
 
 	// Load resource string
-	wchar_t _tempBuffer[Constant::Max::StringLength] = {0};
-	int _length = ::LoadStringW(hResInstance, resourceStringID, _tempBuffer, static_cast<int>(std::size(_tempBuffer)));
-	if (_length <= 0)
+	wchar_t tempBuffer[Constant::Max::StringLength] = {0};
+	int length = ::LoadStringW(resourceInstanceHandle, resourceStringID, tempBuffer, static_cast<int>(std::size(tempBuffer)));
+	if (length <= 0)
 		resultString = Constant::String::Null;
 	else
-		resultString.setString(_tempBuffer);
+		resultString.setString(tempBuffer);
 
 	return resultString;
 }
@@ -1709,8 +1709,8 @@ bool StringUtils::loadResourceString(String& resultStr, unsigned resourceStringI
 	resultStr.empty();
 
 	// Get resource handle
-	HINSTANCE hResInstance = AfxGetResourceHandle();
-	if (hResInstance == NULL) {
+	HINSTANCE resourceInstanceHandle = AfxGetResourceHandle();
+	if (resourceInstanceHandle == NULL) {
 		// Trace error
 		TRACE_ERROR("Error: Get resource handle failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1718,14 +1718,14 @@ bool StringUtils::loadResourceString(String& resultStr, unsigned resourceStringI
 	}
 
 	// Load resource string
-	wchar_t _tempBuffer[Constant::Max::StringLength] = {0};
-	int _length = ::LoadStringW(hResInstance, resourceStringID, _tempBuffer, static_cast<int>(std::size(_tempBuffer)));
-	if (_length <= 0) {
+	wchar_t tempBuffer[Constant::Max::StringLength] = {0};
+	int length = ::LoadStringW(resourceInstanceHandle, resourceStringID, tempBuffer, static_cast<int>(std::size(tempBuffer)));
+	if (length <= 0) {
 		resultStr = Constant::String::Null;
 		return false;
 	}
 	else
-		resultStr.setString(_tempBuffer);
+		resultStr.setString(tempBuffer);
 
 	return true;
 }
@@ -1739,8 +1739,8 @@ bool StringUtils::loadResourceString(String& resultStr, unsigned resourceStringI
 String StringUtils::loadResourceTextData(unsigned resourceFileID)
 {
 	// Get resource handle
-	HINSTANCE hResInstance = AfxGetResourceHandle();
-	if (hResInstance == NULL) {
+	HINSTANCE resourceInstanceHandle = AfxGetResourceHandle();
+	if (resourceInstanceHandle == NULL) {
 		// Trace error
 		TRACE_ERROR("Error: Get resource handle failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1748,16 +1748,16 @@ String StringUtils::loadResourceTextData(unsigned resourceFileID)
 	}
 
 	// Find resource file by ID
-	HRSRC hRes = FindResource(hResInstance, MAKEINTRESOURCE(resourceFileID), RT_RCDATA);
-	if (hRes != NULL) {
+	HRSRC resourceHandle = FindResource(resourceInstanceHandle, MAKEINTRESOURCE(resourceFileID), RT_RCDATA);
+	if (resourceHandle != NULL) {
 
 		// Load resource data
-		HGLOBAL hData = LoadResource(hResInstance, hRes);
-		if (hData != NULL) {
+		HGLOBAL dataHandle = LoadResource(resourceInstanceHandle, resourceHandle);
+		if (dataHandle != NULL) {
 
 			// Convert resource data to text data
-			const size_t dataSize = SizeofResource(hResInstance, hRes);
-			const wchar_t* dataBuffer = static_cast<const wchar_t*>(LockResource(hData));
+			const size_t dataSize = SizeofResource(resourceInstanceHandle, resourceHandle);
+			const wchar_t* dataBuffer = static_cast<const wchar_t*>(LockResource(dataHandle));
 			if (dataBuffer) {
 				const size_t wcharCount = dataSize / sizeof(wchar_t);
 				std::vector<wchar_t> textBuffer(dataBuffer, dataBuffer + wcharCount);
@@ -1779,11 +1779,11 @@ String StringUtils::loadResourceTextData(unsigned resourceFileID)
 String StringUtils::getApplicationPath(bool includeExeName)
 {
 	// Get the application's module handle
-	HMODULE hModule = GetModuleHandle(NULL);
+	HMODULE moduleHandle = GetModuleHandle(NULL);
 
 	// Get the full path of the executable file of the module
 	wchar_t appPathBuffer[MAX_PATH];
-	if (!GetModuleFileName(hModule, appPathBuffer, MAX_PATH)) {
+	if (!GetModuleFileName(moduleHandle, appPathBuffer, MAX_PATH)) {
 		// Trace error
 		TRACE_FORMAT("Error: Get module file name failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1796,10 +1796,10 @@ String StringUtils::getApplicationPath(bool includeExeName)
 	// If not including the executable file name
 	if (!includeExeName) {
 		// Remove the executable file name (and the last '\' as well)
-		int nPos = retAppPath.reverseFind(Constant::Char::Backslash);
-		if (nPos != INT_INVALID) {
-			String strTemp = retAppPath.left(nPos);
-			retAppPath = strTemp;
+		int position = retAppPath.reverseFind(Constant::Char::Backslash);
+		if (position != INT_INVALID) {
+			String tempString = retAppPath.left(position);
+			retAppPath = tempString;
 		}
 	}
 
@@ -1841,33 +1841,33 @@ String StringUtils::getSubFolderPath(const wchar_t* subFolderName)
 String StringUtils::makeFilePath(const wchar_t* directory, const wchar_t* fileName, const wchar_t* extension)
 {
 	// Format file path
-	String strFilePath;
+	String filePath;
 
 	// Directory path, it may or may not be specified
 	// If not specified, it means targeted file is in the same folder with executable file
 	if (directory) {
 		// Add directory path
-		strFilePath.append(directory);
-		strFilePath.append(Constant::Symbol::Backslash);
+		filePath.append(directory);
+		filePath.append(Constant::Symbol::Backslash);
 	}
 
 	// File name must be specified
 	if (fileName) {
-		strFilePath.append(fileName);
+		filePath.append(fileName);
 	}
 	else {
-		strFilePath.empty();
-		return strFilePath;
+		filePath.empty();
+		return filePath;
 	}
 
 	// File extension, it may or may not be specified
 	// If not specified, it means targeted file has no extension
 	if (extension) {
 		// Add file extension
-		strFilePath.append(extension);
+		filePath.append(extension);
 	}
 
-	return strFilePath;
+	return filePath;
 }
 
 
@@ -1889,35 +1889,35 @@ String StringUtils::getProductVersion(bool isFullVersion)
 	}
 
 	// Get file version info size
-	DWORD dwHandle;
-	DWORD dwSize = GetFileVersionInfoSize(productFileName, &dwHandle);
-	if (dwSize <= 0) {
+	DWORD handle;
+	DWORD size = GetFileVersionInfoSize(productFileName, &handle);
+	if (size <= 0) {
 		// Trace error
 		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return Constant::String::Empty;
 	}
 
-	// Get file verision info structure
-	BYTE* pVersionInfo = new BYTE[dwSize];
-	if (!GetFileVersionInfo(productFileName, dwHandle, dwSize, pVersionInfo)) {
+	// Get file version info structure
+	BYTE* versionInfoPtr = new BYTE[size];
+	if (!GetFileVersionInfo(productFileName, handle, size, versionInfoPtr)) {
 		// Trace error
 		TRACE_FORMAT("Error: Get file version info failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
-		delete[] pVersionInfo;
+		delete[] versionInfoPtr;
 		return Constant::String::Empty;
 	}
 
 	// Querry version value
-	unsigned uLen;
+	unsigned length;
 	VS_FIXEDFILEINFO* lpFfi;
-	if (!VerQueryValue(pVersionInfo, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &uLen)) {
+	if (!VerQueryValue(versionInfoPtr, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &length)) {
 		// Trace error
 		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
-		delete[] pVersionInfo;
+		delete[] versionInfoPtr;
 		return Constant::String::Empty;
 	}
 
@@ -1925,24 +1925,24 @@ String StringUtils::getProductVersion(bool isFullVersion)
 	String productVersion;
 
 	// Get product version successfully
-	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
-	DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
+	DWORD productVersionMS = lpFfi->dwProductVersionMS;
+	DWORD productVersionLS = lpFfi->dwProductVersionLS;
 	if (isFullVersion) {
 		// Get full product version number (x.x.x.x)
 		productVersion.format(_T("%d.%d.%d.%d"),
-			HIWORD(dwProductVersionMS),
-			LOWORD(dwProductVersionMS),
-			HIWORD(dwProductVersionLS),
-			LOWORD(dwProductVersionLS));
+			HIWORD(productVersionMS),
+			LOWORD(productVersionMS),
+			HIWORD(productVersionLS),
+			LOWORD(productVersionLS));
 	}
 	else {
 		// Get short product version number (x.x)
 		productVersion.format(_T("%d.%d"),
-			HIWORD(dwProductVersionMS),
-			LOWORD(dwProductVersionMS));
+			HIWORD(productVersionMS),
+			LOWORD(productVersionMS));
 	}
 
-	delete[] pVersionInfo;
+	delete[] versionInfoPtr;
 
 	return productVersion;
 }
@@ -1966,9 +1966,9 @@ bool StringUtils::getProductVersion(String& fullVersion, String& shortVersion)
 	}
 
 	// Get product version info size
-	DWORD dwHandle;
-	DWORD dwSize = GetFileVersionInfoSize(productFileName, &dwHandle);
-	if (dwSize <= 0) {
+	DWORD handle;
+	DWORD size = GetFileVersionInfoSize(productFileName, &handle);
+	if (size <= 0) {
 		// Trace error
 		TRACE_FORMAT("Error: Get file version info size failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -1976,25 +1976,25 @@ bool StringUtils::getProductVersion(String& fullVersion, String& shortVersion)
 	}
 
 	// Get product version info structure
-	BYTE* pVersionInfo = new BYTE[dwSize];
-	if (!GetFileVersionInfo(productFileName, dwHandle, dwSize, pVersionInfo)) {
+	BYTE* versionInfoPtr = new BYTE[size];
+	if (!GetFileVersionInfo(productFileName, handle, size, versionInfoPtr)) {
 		// Trace error
 		TRACE_FORMAT("Error: Get file version info structure failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
-		delete[] pVersionInfo;
+		delete[] versionInfoPtr;
 		return false;
 	}
 
 	// Querry version value
-	unsigned uLen;
+	unsigned length;
 	VS_FIXEDFILEINFO* lpFfi;
-	if (!VerQueryValue(pVersionInfo, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &uLen)) {
+	if (!VerQueryValue(versionInfoPtr, Constant::Symbol::Backslash, (LPVOID*)&lpFfi, &length)) {
 		// Trace error
 		TRACE_FORMAT("Error: Querry version value failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
-		delete[] pVersionInfo;
+		delete[] versionInfoPtr;
 		return false;
 	}
 
@@ -2003,22 +2003,22 @@ bool StringUtils::getProductVersion(String& fullVersion, String& shortVersion)
 	shortVersion.empty();
 
 	// Get product version successfully
-	DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
-	DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
+	DWORD productVersionMS = lpFfi->dwProductVersionMS;
+	DWORD productVersionLS = lpFfi->dwProductVersionLS;
 
 	// Get full product version number (x.x.x.x)
 	fullVersion.format(_T("%d.%d.%d.%d"),
-		HIWORD(dwProductVersionMS),
-		LOWORD(dwProductVersionMS),
-		HIWORD(dwProductVersionLS),
-		LOWORD(dwProductVersionLS));
+		HIWORD(productVersionMS),
+		LOWORD(productVersionMS),
+		HIWORD(productVersionLS),
+		LOWORD(productVersionLS));
 
 	// Get short product version number (x.x)
 	shortVersion.format(_T("%d.%d"),
-		HIWORD(dwProductVersionMS),
-		LOWORD(dwProductVersionMS));
+		HIWORD(productVersionMS),
+		LOWORD(productVersionMS));
 
-	delete[] pVersionInfo;
+	delete[] versionInfoPtr;
 
 	return true;
 }
@@ -2036,8 +2036,8 @@ bool StringUtils::getDeviceName(String& deviceName)
 
 	// Get the computer device name
 	wchar_t deviceNameBuffer[MAX_COMPUTERNAME_LENGTH + 1];
-	DWORD dwNameLength = sizeof(deviceNameBuffer) / sizeof(wchar_t);
-	if (!GetComputerName(deviceNameBuffer, &dwNameLength)) {
+	DWORD nameLength = sizeof(deviceNameBuffer) / sizeof(wchar_t);
+	if (!GetComputerName(deviceNameBuffer, &nameLength)) {
 		// Trace error
 		TRACE_FORMAT("Error: Get computer name failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -2062,8 +2062,8 @@ bool StringUtils::getCurrentUserName(String& userName)
 
 	// Get the current user name
 	wchar_t userNameBuffer[UNLEN + 1];
-	DWORD dwNameLength = sizeof(userNameBuffer) / sizeof(wchar_t);
-	if (!GetUserName(userNameBuffer, &dwNameLength)) {
+	DWORD nameLength = sizeof(userNameBuffer) / sizeof(wchar_t);
+	if (!GetUserName(userNameBuffer, &nameLength)) {
 		// Trace error
 		TRACE_FORMAT("Error: Get user name failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -2097,8 +2097,8 @@ int StringUtils::printCharList(const wchar_t* srcStr, String& outputStr)
 
 	// Print character list
 	String replaceStr = Constant::String::Empty;
-	int nSrcLength = wcslen(srcStr);
-	for (int index = 0; index < nSrcLength; index++) {
+	int sourceLength = wcslen(srcStr);
+	for (int index = 0; index < sourceLength; index++) {
 		wchar_t ch = _srcStr.at(index);
 		switch (ch)
 		{
@@ -2120,7 +2120,7 @@ int StringUtils::printCharList(const wchar_t* srcStr, String& outputStr)
 		}
 
 		// Add separator
-		if (index < nSrcLength - 1) {
+		if (index < sourceLength - 1) {
 			outputStr.append(_T(", "));
 		}
 	}
@@ -2128,7 +2128,7 @@ int StringUtils::printCharList(const wchar_t* srcStr, String& outputStr)
 	// End result
 	outputStr.append(_T(" }"));
 
-	return nSrcLength;
+	return sourceLength;
 }
 
 
@@ -2139,10 +2139,10 @@ int StringUtils::printCharList(const wchar_t* srcStr, String& outputStr)
  */
 ClockTime ClockTimeUtils::getCurrentClockTime(void)
 {
-	SYSTEMTIME _tempSysTime{};
-	::GetLocalTime(&_tempSysTime);
+	SYSTEMTIME tempSysTime{};
+	::GetLocalTime(&tempSysTime);
 
-	return fromSystemTime(_tempSysTime);
+	return fromSystemTime(tempSysTime);
 }
 
 
@@ -2169,19 +2169,19 @@ ClockTime ClockTimeUtils::fromSystemTime(SYSTEMTIME sysTime)
  */
 SYSTEMTIME ClockTimeUtils::toSystemTime(const ClockTime& clockTime)
 {
-	SYSTEMTIME _sysTime{};
-	_sysTime.wHour = static_cast<unsigned short>(clockTime.hour());
-	_sysTime.wMinute = static_cast<unsigned short>(clockTime.minute());
-	_sysTime.wSecond = static_cast<unsigned short>(clockTime.second());
-	_sysTime.wMilliseconds = static_cast<unsigned short>(clockTime.millisecond());
+	SYSTEMTIME sysTime{};
+	sysTime.wHour = static_cast<unsigned short>(clockTime.hour());
+	sysTime.wMinute = static_cast<unsigned short>(clockTime.minute());
+	sysTime.wSecond = static_cast<unsigned short>(clockTime.second());
+	sysTime.wMilliseconds = static_cast<unsigned short>(clockTime.millisecond());
 
-	return _sysTime;
+	return sysTime;
 }
 
 
 /**
  * @brief	Convert editbox input text into valid time value
- * @param	stTime		- Return time data (ref-value)
+ * @param	timeValue		- Return time data (ref-value)
  * @param	inputText	- Input text
  * @return	bool - Result of converting process
  */
@@ -2266,7 +2266,7 @@ bool ClockTimeUtils::inputText2Time(ClockTime& clockTime, const wchar_t* inputTe
 
 /**
  * @brief	Convert editbox input text into valid time value
- * @param	stTime		- Return time data (ref-value)
+ * @param	timeValue		- Return time data (ref-value)
  * @param	inputText	- Input text
  * @return	bool - Result of converting process
  * @note	Old/base function (no longer used)
@@ -2338,8 +2338,8 @@ bool ClockTimeUtils::inputText2TimeBase(ClockTime& clockTime, const wchar_t* inp
 
 /**
  * @brief	Convert timespin position to time value
- * @param	stTime  - Return time data (ref-value)
- * @param	nPos	- Input spin position
+ * @param	timeValue  - Return time data (ref-value)
+ * @param	position	- Input spin position
  * @return	None
  */
 void ClockTimeUtils::spinPos2Time(ClockTime& clockTime, int pos)
@@ -2364,8 +2364,8 @@ void ClockTimeUtils::spinPos2Time(ClockTime& clockTime, int pos)
 
 /**
  * @brief	Convert time value to timespin position
- * @param	stTime  - Return time data
- * @param	nPos	- Input spin position (ref-value)
+ * @param	timeValue  - Return time data
+ * @param	position	- Input spin position (ref-value)
  * @return	None
  */
 void ClockTimeUtils::time2SpinPos(const ClockTime& clockTime, int& pos)
@@ -2406,13 +2406,14 @@ void ClockTimeUtils::calculateOffset(ClockTime& clockTime, int offInSecs)
  */
 bool ClockTimeUtils::isMatching(ClockTime thisTime, ClockTime otherTime, int offInSecs /* = 0 */)
 {
-	TimeSpan _diff = thisTime - otherTime;
-	int _diffInSecs = static_cast<int>(_diff.totalSeconds());
+	TimeSpan diff = thisTime - otherTime;
+	int diffInSecs = static_cast<int>(diff.totalSeconds());
 	if (offInSecs == 0)
-		return (_diffInSecs == 0);
+		return (diffInSecs == 0);
 	else if (offInSecs > 0)
-		return (_diffInSecs >= 0 && _diffInSecs <= offInSecs);
-	else /* if (offInSecs < 0) */		return (_diffInSecs >= offInSecs && _diffInSecs <= 0);
+		return (diffInSecs >= 0 && diffInSecs <= offInSecs);
+	else /* if (offInSecs < 0) */
+		return (diffInSecs >= offInSecs && diffInSecs <= 0);
 }
 
 
@@ -2457,10 +2458,10 @@ String ClockTimeUtils::format(LANGTABLE_PTR lang, const wchar_t* formatString, c
  */
 DateTime DateTimeUtils::getCurrentDateTime(void)
 {
-	SYSTEMTIME _tempSysTime{};
-	::GetLocalTime(&_tempSysTime);
+	SYSTEMTIME tempSysTime{};
+	::GetLocalTime(&tempSysTime);
 
-	return fromSystemTime(_tempSysTime);
+	return fromSystemTime(tempSysTime);
 }
 
 
@@ -2490,17 +2491,17 @@ DateTime DateTimeUtils::fromSystemTime(SYSTEMTIME sysTime)
  */
 SYSTEMTIME DateTimeUtils::toSystemTime(const DateTime& dateTime)
 {
-	SYSTEMTIME _sysTime{};
-	_sysTime.wYear = static_cast<unsigned short>(dateTime.year());
-	_sysTime.wMonth = static_cast<unsigned short>(dateTime.month());
-	_sysTime.wDay = static_cast<unsigned short>(dateTime.day());
-	_sysTime.wDayOfWeek = static_cast<unsigned short>(dateTime.dayOfWeek());
-	_sysTime.wHour = static_cast<unsigned short>(dateTime.hour());
-	_sysTime.wMinute = static_cast<unsigned short>(dateTime.minute());
-	_sysTime.wSecond = static_cast<unsigned short>(dateTime.second());
-	_sysTime.wMilliseconds = static_cast<unsigned short>(dateTime.millisecond());
+	SYSTEMTIME sysTime{};
+	sysTime.wYear = static_cast<unsigned short>(dateTime.year());
+	sysTime.wMonth = static_cast<unsigned short>(dateTime.month());
+	sysTime.wDay = static_cast<unsigned short>(dateTime.day());
+	sysTime.wDayOfWeek = static_cast<unsigned short>(dateTime.dayOfWeek());
+	sysTime.wHour = static_cast<unsigned short>(dateTime.hour());
+	sysTime.wMinute = static_cast<unsigned short>(dateTime.minute());
+	sysTime.wSecond = static_cast<unsigned short>(dateTime.second());
+	sysTime.wMilliseconds = static_cast<unsigned short>(dateTime.millisecond());
 
-	return _sysTime;
+	return sysTime;
 }
 
 
@@ -3019,7 +3020,7 @@ HWND AppCore::findDebugTestDlg()
 /**
  * @brief	Set fixed cell style (header row, base column)
  * @param	pGridCtrl	- Grid control table pointer
- * @param	nRow & nCol - Cell position (row & column)
+ * @param	row & nCol - Cell position (row & column)
  * @return	None
  */
 void AppCore::setFixedCellStyle(CGridCtrl* gridCtrlPtr, int row, int col)
@@ -3065,10 +3066,10 @@ bool AppCore::setDarkMode(CWnd* wndPtr, bool enableDarkMode)
 	}
 
 	// Set dark mode for each dialog item
-	CWnd* wndChild = NULL;
-	for (wndChild = wndPtr->GetTopWindow(); wndChild != NULL; wndChild = wndChild->GetWindow(GW_HWNDNEXT))
+	CWnd* childWndPtr = NULL;
+	for (childWndPtr = wndPtr->GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
-		HWND childWnd = wndChild->GetSafeHwnd();
+		HWND childWnd = childWndPtr->GetSafeHwnd();
 		AllowDarkModeForWindow(childWnd, enableDarkMode);
 		SetWindowTheme(childWnd, _T("DarkMode_Explorer"), NULL);
 		SendMessage(childWnd, WM_THEMECHANGED, 0, 0);
@@ -3092,26 +3093,26 @@ void AppCore::drawButton(CButton*& buttonPtr, unsigned iconId, const wchar_t* bu
 		return;
 
 	// Load icon
-	HICON btnIcon = AfxGetApp()->LoadIcon(iconId);
-	if (btnIcon == NULL)
+	HICON buttonIconHandle = AfxGetApp()->LoadIcon(iconId);
+	if (buttonIconHandle == NULL)
 		return;
 
 	// Button rect
-	CRect btnRect;
-	buttonPtr->GetWindowRect(&btnRect);
+	CRect buttonRect;
+	buttonPtr->GetWindowRect(&buttonRect);
 
 	// Button title
 	String buttonTitleString;
 	buttonTitleString.setString(buttonTitle);
 	if (!buttonTitleString.isEmpty()) {
-		wchar_t _tempBuffer[Constant::Max::StringLength] = { 0 };
-		buttonPtr->GetWindowText(_tempBuffer, Constant::Max::StringLength);
-		buttonTitleString.setString(_tempBuffer);
+		wchar_t tempBuffer[Constant::Max::StringLength] = { 0 };
+		buttonPtr->GetWindowText(tempBuffer, Constant::Max::StringLength);
+		buttonTitleString.setString(tempBuffer);
 	}
 
 	// Update button
 	buttonPtr->SetButtonStyle(BS_ICON);
-	buttonPtr->SetIcon(btnIcon);
+	buttonPtr->SetIcon(buttonIconHandle);
 	buttonPtr->UpdateWindow();
 }
 
@@ -3234,8 +3235,8 @@ bool AppCore::fileViewStd(FILETYPE fileType, const wchar_t* filePath)
 bool AppCore::openWebURL(const wchar_t* webUrl)
 {
 	// Run a web browser instance
-	HINSTANCE hInstance = ShellExecute(0, 0, webUrl, NULL, NULL, SW_NORMAL);
-	return (hInstance != NULL);
+	HINSTANCE instanceHandle = ShellExecute(0, 0, webUrl, NULL, NULL, SW_NORMAL);
+	return (instanceHandle != NULL);
 }
 
 

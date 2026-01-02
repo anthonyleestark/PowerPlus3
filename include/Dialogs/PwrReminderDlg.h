@@ -151,8 +151,8 @@ protected:
 	// Dialog setup functions
 	void setupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR languageTablePtr);
-	void DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool bReadOnly = false, LANGTABLE_PTR languageTablePtr = NULL);
-	void setupComboBox(unsigned nComboID, LANGTABLE_PTR languageTablePtr);
+	void DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool isReadOnly = false, LANGTABLE_PTR languageTablePtr = NULL);
+	void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
 	void SwitchMode(bool bRedraw = false);
 
 	// Layout functions
@@ -163,14 +163,14 @@ protected:
 	// Dialog item properties functions
 	void setupDialogItemState();
 	void UpdateDataItemList();
-	void DisableTable(bool bDisable);
-	void RedrawDataTable(bool bReadOnly = false);
+	void DisableTable(bool isDisabled);
+	void RedrawDataTable(bool isReadOnly = false);
 	void DisplayItemDetails(int index);
 	void refreshDialogItemState(bool bRecheckState = false);
 	void UpdateCheckAllBtnState(bool bRecheck = false);
 	void RefreshDetailView(int mode);
 	void UpdateMsgCounter(int count);
-	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);
+	void UpdateTimeSetting(ClockTime& clockTime, bool updateFlag = true);
 
 private:
 	// Data processing functions
@@ -185,7 +185,7 @@ private:
 	void RemoveAll();
 	void SetAllItemState(bool state);
 	void PreviewItem(int index);
-	void UpdateItemData(Item& reminderItem, bool bUpdate);
+	void UpdateItemData(Item& reminderItem, bool updateFlag);
 	bool Validate(Item& reminderItem, bool bShowMsg = false, bool bAutoCorrect = false);
 
 protected:

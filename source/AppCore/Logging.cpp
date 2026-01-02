@@ -1289,14 +1289,14 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 	String logFormatString;
 
 	// Get log time
-	DateTime stTimeTemp = logItem.GetTime();
+	DateTime tempTimeValue = logItem.GetTime();
 
 	// Get filename according to type of logs
 	switch (m_byLogType)
 	{
 	case LOGTYPE_APP_EVENT:
 		// Format app event log filename
-		fileName.format(Constant::File::Name::AppEventLog, stTimeTemp.year(), stTimeTemp.month());
+		fileName.format(Constant::File::Name::AppEventLog, tempTimeValue.year(), tempTimeValue.month());
 		break;
 
 	case LOGTYPE_HISTORY_LOG:
@@ -1515,13 +1515,13 @@ bool DebugLogging::InitTraceErrorLogFile(void)
 	String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::TraceError, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::TraceError, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogTraceError->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogTraceError->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
+		if (!m_pFileLogTraceError->Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD errorCode = GetLastError();
 			AppCore::showErrorMessage(NULL, NULL, errorCode);
@@ -1538,7 +1538,7 @@ bool DebugLogging::InitTraceErrorLogFile(void)
 			m_pFileLogTraceError->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, Constant::File::Name::TraceError))
+			if (!BackupOldLogFile(filePath, Constant::File::Name::TraceError))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1590,13 +1590,13 @@ bool DebugLogging::InitTraceDebugLogFile(void)
 	String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogTraceDebug->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogTraceDebug->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
+		if (!m_pFileLogTraceDebug->Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD errorCode = GetLastError();
 			AppCore::showErrorMessage(NULL, NULL, errorCode);
@@ -1613,7 +1613,7 @@ bool DebugLogging::InitTraceDebugLogFile(void)
 			m_pFileLogTraceDebug->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, Constant::File::Name::TraceDebug))
+			if (!BackupOldLogFile(filePath, Constant::File::Name::TraceDebug))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1665,13 +1665,13 @@ bool DebugLogging::InitDebugInfoLogFile(void)
 	String strFolderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (m_pFileLogDebugInfo->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogDebugInfo->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
+		if (!m_pFileLogDebugInfo->Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
 			DWORD errorCode = GetLastError();
 			AppCore::showErrorMessage(NULL, NULL, errorCode);
@@ -1688,7 +1688,7 @@ bool DebugLogging::InitDebugInfoLogFile(void)
 			m_pFileLogDebugInfo->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, Constant::File::Name::DebugInfo))
+			if (!BackupOldLogFile(filePath, Constant::File::Name::DebugInfo))
 				return false;
 
 			// Step3: Create new file and reopen

@@ -134,16 +134,16 @@ void CRmdRepeatSetDlg::OnActivate(UINT state, CWnd* otherWndPtr, BOOL isMinimize
  */
 void CRmdRepeatSetDlg::OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	LPNMUPDOWN upDownPtr = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
 	// Get timespin position
-	int nPos = pNMUpDown->iPos;
+	int position = upDownPtr->iPos;
 
 	// Set snooze interval value
-	SetSnoozeInterval(nPos * 60);
+	SetSnoozeInterval(position * 60);
 
 	// Convert and set edit value
-	SetSnoozeIntervalEdit(nPos);
+	SetSnoozeIntervalEdit(position);
 
 	*pResult = NULL;
 }
@@ -412,15 +412,15 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int value)
 /**
  * @brief	Update repeat set data from/to dialog controls
  * @param	pwrItemData - Power Reminder item
- * @param	bUpdate		- Update data flag
+ * @param	updateFlag		- Update data flag
  * @return	None
  */
-void CRmdRepeatSetDlg::updateDialogData(PwrReminderItem& pwrItemData, bool bUpdate)
+void CRmdRepeatSetDlg::updateDialogData(PwrReminderItem& pwrItemData, bool updateFlag)
 {
 	// Get repeat set data
 	PwrRepeatSet& rpsRepeatData = pwrItemData.getRepeatSetData();
 
-	if (bUpdate == true) {
+	if (updateFlag == true) {
 
 		/***************************************************************/
 		/*															   */
@@ -449,58 +449,58 @@ void CRmdRepeatSetDlg::updateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 		// Repeat active status for days of week
 		// Note: Read and store data from Sunday first
 
-		BYTE byRepeatDays = 0;
+		BYTE repeatDays = 0;
 		{
 			bool bSundayEnable = false;
 			if (m_pActiveSundayChk != NULL) {
 				state = m_pActiveSundayChk->GetCheck();
 				bSundayEnable = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bSundayEnable << DayOfWeek::Sunday;
+			repeatDays |= bSundayEnable << DayOfWeek::Sunday;
 
 			bool bMondayEnable = false;
 			if (m_pActiveMondayChk != NULL) {
 				state = m_pActiveMondayChk->GetCheck();
 				bMondayEnable = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bMondayEnable << DayOfWeek::Monday;
+			repeatDays |= bMondayEnable << DayOfWeek::Monday;
 
 			bool bTuesdayEnable = false;
 			if (m_pActiveTuesdayChk != NULL) {
 				state = m_pActiveTuesdayChk->GetCheck();
 				bTuesdayEnable = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bTuesdayEnable << DayOfWeek::Tuesday;
+			repeatDays |= bTuesdayEnable << DayOfWeek::Tuesday;
 
 			bool bWednesdayEnable = false;
 			if (m_pActiveWednesdayChk != NULL) {
 				state = m_pActiveWednesdayChk->GetCheck();
 				bWednesdayEnable = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bWednesdayEnable << DayOfWeek::Wednesday;
+			repeatDays |= bWednesdayEnable << DayOfWeek::Wednesday;
 
 			bool bThursdayEnable = false;
 			if (m_pActiveThursdayChk != NULL) {
 				state = m_pActiveThursdayChk->GetCheck();
 				bThursdayEnable = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bThursdayEnable << DayOfWeek::Thursday;
+			repeatDays |= bThursdayEnable << DayOfWeek::Thursday;
 
 			bool bFridayEnable = false;
 			if (m_pActiveFridayChk != NULL) {
 				state = m_pActiveFridayChk->GetCheck();
 				bFridayEnable = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bFridayEnable << DayOfWeek::Friday;
+			repeatDays |= bFridayEnable << DayOfWeek::Friday;
 
 			bool bSaturdayEnable = false;
 			if (m_pActiveSaturdayChk != NULL) {
 				state = m_pActiveSaturdayChk->GetCheck();
 				bSaturdayEnable = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bSaturdayEnable << DayOfWeek::Saturday;
+			repeatDays |= bSaturdayEnable << DayOfWeek::Saturday;
 		}
-		rpsRepeatData.setActiveDays(byRepeatDays);
+		rpsRepeatData.setActiveDays(repeatDays);
 	}
 	else {
 
