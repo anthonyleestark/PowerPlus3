@@ -62,9 +62,9 @@ void CGridCellCheck::SetCheckPlacement(int nFormat)
 }
 
 // Get/set the flag with validate if clicked point is inside the checkbox
-void CGridCellCheck::SetClickPtInBoxFlag(BOOL bValue)
+void CGridCellCheck::SetClickPtInBoxFlag(BOOL value)
 {
-    m_bClickPtInBox = bValue;
+    m_bClickPtInBox = value;
 }
 
 BOOL CGridCellCheck::IsClickPtInBox(void)
@@ -73,9 +73,9 @@ BOOL CGridCellCheck::IsClickPtInBox(void)
 }
 
 // Override draw so that when the cell is selected, a drop arrow is shown in the RHS.
-BOOL CGridCellCheck::Draw(CDC* pDC, int row, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
+BOOL CGridCellCheck::Draw(CDC* pDC, int row, int col, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
 {
-    BOOL result = CGridCell::Draw(pDC, row, nCol, rect,  bEraseBkgnd);
+    BOOL result = CGridCell::Draw(pDC, row, col, rect,  bEraseBkgnd);
 
 #ifndef _WIN32_WCE
     // Store the cell's dimensions for later

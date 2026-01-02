@@ -590,13 +590,13 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Format and print data
 				String valueString = Constant::String::Empty;
 				// Left mouse button action
-				int actionStringId = GetPairedID(IDTable::ActionName, pcfgDataTemp->leftMouseAction);
+				int actionStringId = getPairedID(IDTable::ActionName, pcfgDataTemp->leftMouseAction);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::LMBAction, getLanguageString(languageTablePtr, actionStringId));
 				// Middle mouse button action
-				actionStringId = GetPairedID(IDTable::ActionName, pcfgDataTemp->middleMouseAction);
+				actionStringId = getPairedID(IDTable::ActionName, pcfgDataTemp->middleMouseAction);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::MMBAction, getLanguageString(languageTablePtr, actionStringId));
 				// Right mouse button action
-				actionStringId = GetPairedID(IDTable::ActionName, pcfgDataTemp->rightMouseAction);
+				actionStringId = getPairedID(IDTable::ActionName, pcfgDataTemp->rightMouseAction);
 				OutputDebugLogFormat(_T("%s=%s"), Key::ConfigData::RMBAction, getLanguageString(languageTablePtr, actionStringId));
 				// Right mouse button: Only show menu
 				valueString = ((pcfgDataTemp->rightMouseShowMenu) ? Constant::Value::True : _T("NO"));
@@ -742,7 +742,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			if (tokenCount == 3) {
 				// Set message background color by name
 				String colorName = tokenList.at(2).c_str();
-				DWORD dwRetColorID = GetStringID(StringTable::ColorName, colorName);
+				DWORD dwRetColorID = getStringID(StringTable::ColorName, colorName);
 				if (dwRetColorID != INT_INVALID) {
 					// Set background color
 					if (pRmdData != NULL) {
@@ -795,7 +795,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			if (tokenCount == 3) {
 				// Set message text color by name
 				String colorName = tokenList.at(2).c_str();
-				DWORD dwRetColorID = GetStringID(StringTable::ColorName, colorName);
+				DWORD dwRetColorID = getStringID(StringTable::ColorName, colorName);
 				if (dwRetColorID != INT_INVALID) {
 					// Set text color
 					if (pRmdData != NULL) {
@@ -873,8 +873,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {
 			// Set reminder message font size
-			int nFontSize = _tstoi(tokenList.at(2).c_str());
-			if ((nFontSize < RmdMsgStyleSet::minFontSize) || (nFontSize > RmdMsgStyleSet::maxFontSize)) {
+			int fontSize = _tstoi(tokenList.at(2).c_str());
+			if ((fontSize < RmdMsgStyleSet::minFontSize) || (fontSize > RmdMsgStyleSet::maxFontSize)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 10 -> 100)"));
 				bNoReply = false;	// Reset flag
@@ -882,9 +882,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Set font size
 				if (pRmdData != NULL) {
-					pRmdData->getCommonStyle().setFontSize(nFontSize);
+					pRmdData->getCommonStyle().setFontSize(fontSize);
 					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
-					OutputDebugLogFormat(_T("Message font size set: %dpt"), nFontSize);
+					OutputDebugLogFormat(_T("Message font size set: %dpt"), fontSize);
 					bNoReply = false;	// Reset flag
 				}
 				else {
@@ -931,7 +931,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconid")))) {
 			// Set message icon ID by name
 			String iconName = tokenList.at(2).c_str();
-			DWORD dwRetIconID = GetStringID(StringTable::MsgIconName, iconName);
+			DWORD dwRetIconID = getStringID(StringTable::MsgIconName, iconName);
 			if (dwRetIconID != INT_INVALID) {
 				// Set icon ID
 				if (pRmdData != NULL) {
@@ -1021,8 +1021,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("hmargin")))) {
 			// Set reminder message horizontal margin
-			int nHMargin = _tstoi(tokenList.at(2).c_str());
-			if ((nHMargin < RmdMsgStyleSet::minMarginVal) || (nHMargin > RmdMsgStyleSet::maxMarginVal)) {
+			int marginHorizontal = _tstoi(tokenList.at(2).c_str());
+			if ((marginHorizontal < RmdMsgStyleSet::minMarginVal) || (marginHorizontal > RmdMsgStyleSet::maxMarginVal)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 10 -> 120)"));
 				bNoReply = false;	// Reset flag
@@ -1030,9 +1030,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Set margin
 				if (pRmdData != NULL) {
-					pRmdData->getCommonStyle().setHorizontalMargin(nHMargin);
+					pRmdData->getCommonStyle().setHorizontalMargin(marginHorizontal);
 					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
-					OutputDebugLogFormat(_T("Message horizontal margin set: %dpx"), nHMargin);
+					OutputDebugLogFormat(_T("Message horizontal margin set: %dpx"), marginHorizontal);
 					bNoReply = false;	// Reset flag
 				}
 				else {
@@ -1043,8 +1043,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("vmargin")))) {
 			// Set reminder message vertical margin
-			int nVMargin = _tstoi(tokenList.at(2).c_str());
-			if ((nVMargin < RmdMsgStyleSet::minMarginVal) || (nVMargin > RmdMsgStyleSet::maxMarginVal)) {
+			int marginVertical = _tstoi(tokenList.at(2).c_str());
+			if ((marginVertical < RmdMsgStyleSet::minMarginVal) || (marginVertical > RmdMsgStyleSet::maxMarginVal)) {
 				// Invalid argument
 				OutputDebugLog(_T("Invalid value (Value range: 10 -> 120)"));
 				bNoReply = false;	// Reset flag
@@ -1052,9 +1052,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			else {
 				// Set margin
 				if (pRmdData != NULL) {
-					pRmdData->getCommonStyle().setVerticalMargin(nVMargin);
+					pRmdData->getCommonStyle().setVerticalMargin(marginVertical);
 					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
-					OutputDebugLogFormat(_T("Message vertical margin set: %dpx"), nVMargin);
+					OutputDebugLogFormat(_T("Message vertical margin set: %dpx"), marginVertical);
 					bNoReply = false;	// Reset flag
 				}
 				else {
@@ -1254,8 +1254,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {
 			// Get reminder message font size
 			if (pRmdData != NULL) {
-				int nFontSize = pRmdData->getCommonStyle().getFontSize();
-				OutputDebugLogFormat(_T("Message font size: %dpt"), nFontSize);
+				int fontSize = pRmdData->getCommonStyle().getFontSize();
+				OutputDebugLogFormat(_T("Message font size: %dpt"), fontSize);
 				bNoReply = false;	// Reset flag
 			}
 			else {
@@ -1278,8 +1278,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconid")))) {
 			// Get reminder message icon ID
 			if (pRmdData != NULL) {
-				unsigned nIconID = pRmdData->getCommonStyle().getIconId();
-				OutputDebugLogFormat(_T("Message icon ID: %d"), nIconID);
+				unsigned iconId = pRmdData->getCommonStyle().getIconId();
+				OutputDebugLogFormat(_T("Message icon ID: %d"), iconId);
 				bNoReply = false;	// Reset flag
 			}
 			else {
@@ -1324,8 +1324,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("hmargin")))) {
 			// Get reminder message horizontal margin
 			if (pRmdData != NULL) {
-				int nHMargin = pRmdData->getCommonStyle().getHorizontalMargin();
-				OutputDebugLogFormat(_T("Message horizontal margin: %dpx"), nHMargin);
+				int marginHorizontal = pRmdData->getCommonStyle().getHorizontalMargin();
+				OutputDebugLogFormat(_T("Message horizontal margin: %dpx"), marginHorizontal);
 				bNoReply = false;	// Reset flag
 			}
 			else {
@@ -1336,8 +1336,8 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("vmargin")))) {
 			// Get reminder message vertical margin
 			if (pRmdData != NULL) {
-				int nVMargin = pRmdData->getCommonStyle().getVerticalMargin();
-				OutputDebugLogFormat(_T("Message vertical margin: %dpx"), nVMargin);
+				int marginVertical = pRmdData->getCommonStyle().getVerticalMargin();
+				OutputDebugLogFormat(_T("Message vertical margin: %dpx"), marginVertical);
 				bNoReply = false;	// Reset flag
 			}
 			else {

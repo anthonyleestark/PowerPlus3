@@ -30,21 +30,21 @@ public:
 
 private:
 	// Dialog control
-	CEdit*				m_pSnoozeIntervalEdit;
-	CSpinButtonCtrl*	m_pSnoozeIntervalSpin;
+	CEdit*				snoozeIntervalEditPtr_;
+	CSpinButtonCtrl*	snoozeIntervalSpinPtr_;
 
-	CButton*			m_pRepeatEnableChk;
-	CButton*			m_pSnoozeEnableChk;
-	CButton*			m_pActiveMondayChk;
-	CButton*			m_pActiveTuesdayChk;
-	CButton*			m_pActiveWednesdayChk;
-	CButton*			m_pActiveThursdayChk;
-	CButton*			m_pActiveFridayChk;
-	CButton*			m_pActiveSaturdayChk;
-	CButton*			m_pActiveSundayChk;
+	CButton*			repeatEnableChkPtr_;
+	CButton*			snoozeEnableChkPtr_;
+	CButton*			activeMondayChkPtr_;
+	CButton*			activeTuesdayChkPtr_;
+	CButton*			activeWednesdayChkPtr_;
+	CButton*			activeThursdayChkPtr_;
+	CButton*			activeFridayChkPtr_;
+	CButton*			activeSaturdayChkPtr_;
+	CButton*			activeSundayChkPtr_;
 
 	// Member value
-	int					m_nSnoozeInterval;
+	int					snoozeInterval_;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -67,18 +67,18 @@ protected:
 	virtual void setupDialogItemState();
 	virtual void refreshDialogItemState(bool isRecheckState = false);
 
-	void SetSnoozeIntervalEdit(int value);
+	void setSnoozeIntervalEdit(int value);
 	
 	// Get/set value functions
-	int GetSnoozeInterval() const {
-		return m_nSnoozeInterval;
-	};
-	void SetSnoozeInterval(int value) {
-		m_nSnoozeInterval = value;
-	};
+	int getSnoozeInterval() const {
+		return snoozeInterval_;
+	}
+	void setSnoozeInterval(int value) {
+		snoozeInterval_ = value;
+	}
 
 public:
 	// Data processing functions
-	void updateDialogData(PwrReminderItem& pwrItemData, bool updateFlag);
+	void updateDialogData(PwrReminderItem& reminderItem, bool updateFlag);
 };
 

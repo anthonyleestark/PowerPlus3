@@ -33,23 +33,23 @@ private:
 	String bufferString_;
 
 	// Message font & icon
-	CFont*	m_pMsgFont;
-	HICON	m_hMsgIcon;
-	Size	m_szIconSize;
+	CFont*	messageFontPtr_;
+	HICON	messageIconHandle_;
+	Size	iconSize_;
 
 	// Message style set
-	RmdMsgStyleSet m_rmdMsgStyleSet;
+	RmdMsgStyleSet messageStyleData_;
 
 	// Flags
-	bool m_bTimerSet;
-	bool m_bDispIcon;
-	bool m_bLockDlgSize;
-	bool m_bLockFontSize;
-	bool m_bAllowSnooze;
-	int	 m_nSnoozeFlag;
+	bool isTimerSet_;
+	bool isDisplayIcon_;
+	bool isLockDialogSize_;
+	bool isLockFontSize_;
+	bool isSnoozingAllowed_;
+	int	 snoozeFlag_;
 
 	// Properties
-	unsigned m_nAutoCloseInterval;
+	unsigned autoCloseInterval_;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -65,75 +65,75 @@ public:
 	virtual void OnDestroy();
 	virtual void PostNcDestroy();
 	afx_msg void OnPaint();
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnTimer(UINT_PTR eventId);
+	afx_msg int OnCreate(LPCREATESTRUCT createStructPtr);
 	afx_msg void OnSysCommand(UINT id, LPARAM lParam);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 public:
 	// Get/set display content
-	virtual const wchar_t* GetDispMessage(void) const {
+	virtual const wchar_t* getDispMessage(void) const {
 		return bufferString_.getString();
-	};
-	virtual void SetDispMessage(const wchar_t* dispMsg) {
+	}
+	virtual void setDispMessage(const wchar_t* dispMsg) {
 		bufferString_ = dispMsg;
-	};
+	}
 
 	// Get/set message style
-	virtual void GetMessageStyle(RmdMsgStyleSet& rmdMsgStyle) const {
-		rmdMsgStyle.copy(m_rmdMsgStyleSet);
-	};
-	virtual void SetMessageStyle(const RmdMsgStyleSet& rmdMsgStyle) {
-		m_rmdMsgStyleSet.copy(rmdMsgStyle);
-	};
+	virtual void getMessageStyle(RmdMsgStyleSet& messageStyle) const {
+		messageStyle.copy(messageStyleData_);
+	}
+	virtual void setMessageStyle(const RmdMsgStyleSet& messageStyle) {
+		messageStyleData_.copy(messageStyle);
+	}
 	
 	// Auto-close message
-	virtual unsigned GetAutoCloseInterval(void) const {
-		return m_nAutoCloseInterval;
-	};
-	virtual void SetAutoCloseInterval(unsigned nSeconds) {
-		m_nAutoCloseInterval = nSeconds;
-	};
+	virtual unsigned getAutoCloseInterval(void) const {
+		return autoCloseInterval_;
+	}
+	virtual void setAutoCloseInterval(unsigned nSeconds) {
+		autoCloseInterval_ = nSeconds;
+	}
 
 	// Dialog size
 	virtual void setSize(Size regSize) {
 		SDialog::setSize(regSize);
-		m_bLockDlgSize = true;
-	};
-	virtual void setSize(long lWidth, long lHeight) {
-		SDialog::setSize(lWidth, lHeight);
-		m_bLockDlgSize = true;
-	};
+		isLockDialogSize_ = true;
+	}
+	virtual void setSize(long width, long height) {
+		SDialog::setSize(width, height);
+		isLockDialogSize_ = true;
+	}
 
 	// Other properties
-	virtual bool GetAllowSnoozeMode(void) const {
-		return m_bAllowSnooze;
-	};
-	virtual void SetAllowSnoozeMode(bool bValue) {
-		m_bAllowSnooze = bValue;
-	};
+	virtual bool getAllowSnoozeMode(void) const {
+		return isSnoozingAllowed_;
+	}
+	virtual void setAllowSnoozeMode(bool value) {
+		isSnoozingAllowed_ = value;
+	}
 
 	// Flags
-	virtual void GetSnoozeTriggerFlag(int& value) const {
-		value = m_nSnoozeFlag;
-	};
-	virtual void SetSnoozeTriggerFLag(int value) {
-		m_nSnoozeFlag = value;
-	};
+	virtual void getSnoozeTriggerFlag(int& value) const {
+		value = snoozeFlag_;
+	}
+	virtual void setSnoozeTriggerFLag(int value) {
+		snoozeFlag_ = value;
+	}
 
 protected:
 	// Initialize message style
-	bool InitMessageStyle(void);
+	bool initMessageStyle(void);
 
 	// Calculate icon position
-	bool CalcMsgIconPosition(Point& iconPosition) const;
+	bool calcMsgIconPosition(Point& iconPosition) const;
 
 	// Move the dialog to specific display position
-	void MoveToDisplayPosition(MsgDispPosition displayPosition);
+	void moveToDisplayPosition(MsgDispPosition displayPosition);
 
 	// Convert text and client rectangle
-	void ClientToText(Rect& rect) const;
-	void TextToClient(Rect& rect) const;
+	void clientToText(Rect& rect) const;
+	void textToClient(Rect& rect) const;
 };
 

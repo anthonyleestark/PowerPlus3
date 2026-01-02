@@ -45,7 +45,7 @@ public:
     virtual void  SetFont(const LOGFONT* plf);
     virtual void  SetMargin(UINT nMargin)        { m_nMargin = nMargin; }
     virtual CWnd* GetEditWnd() const             { return m_pEditWnd;   }
-    virtual void  SetCoords(int /*row*/, int /*nCol*/) {}  // don't need to know the row and
+    virtual void  SetCoords(int /*row*/, int /*col*/) {}  // don't need to know the row and
                                                             // column for base implementation
 
     virtual LPCTSTR     GetText() const             { return (m_strText.IsEmpty())? _T("") : LPCTSTR(m_strText); }
@@ -68,7 +68,7 @@ public:
 
 // editing cells
 public:
-    virtual BOOL Edit(int row, int nCol, CRect rect, CPoint point, UINT id, UINT nChar);
+    virtual BOOL Edit(int row, int col, CRect rect, CPoint point, UINT id, UINT nChar);
     virtual void EndEdit();
 protected:
     virtual void OnEndEdit();

@@ -75,7 +75,7 @@ private:
 	Size* dataTableSizePtr_;
 
 	// Other variables
-	int m_nCurMode;
+	int currentMode_;
 	int checkCount_;
 	int curSelIndex_;
 	int m_nCurDispIndex;

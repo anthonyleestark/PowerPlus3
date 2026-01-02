@@ -623,7 +623,7 @@ void CEditScheduleDlg::updateActiveDayList()
 		}
 
 		// Day title
-		const wchar_t* tempString = getLanguageString(languageTablePtr, GetPairedID(IDTable::DayOfWeek, dayOfWeekId));
+		const wchar_t* tempString = getLanguageString(languageTablePtr, getPairedID(IDTable::DayOfWeek, dayOfWeekId));
 		activeDayTablePtr_->SetItemText(rowIndex, daytitleColID, tempString);
 	}
 }

@@ -114,7 +114,7 @@ private:
 	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
 
 	// Other variables
-	int m_nCurMode;
+	int currentMode_;
 	int checkCount_;
 	int curSelIndex_;
 	int m_nCurDispIndex;
@@ -151,7 +151,7 @@ protected:
 	// Dialog setup functions
 	void setupLanguage();
 	void SetupDataItemList(LANGTABLE_PTR languageTablePtr);
-	void DrawDataTable(Size* pszFrameWndSize, int nColNum, int nRowNum, bool isReadOnly = false, LANGTABLE_PTR languageTablePtr = NULL);
+	void DrawDataTable(Size* pszFrameWndSize, int colCount, int rowCount, bool isReadOnly = false, LANGTABLE_PTR languageTablePtr = NULL);
 	void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
 	void SwitchMode(bool bRedraw = false);
 
@@ -194,7 +194,7 @@ protected:
 		return m_pwrReminderDataTemp.getItemNum();
 	};
 	int GetCurMode() const {
-		return m_nCurMode;
+		return currentMode_;
 	};
 	void SetCurMode(int mode);
 	void DrawRepeatSetButton(void);

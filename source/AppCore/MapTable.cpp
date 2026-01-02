@@ -21,7 +21,7 @@
  * @param	bReverse	- Reverse search
  * @return	unsigned - Second paired ID
  */
-unsigned MapTable::GetPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reverse /* = false */)
+unsigned MapTable::getPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reverse /* = false */)
 {
 	// Return INVALID if ID mapping table is invalid
 	ASSERT(idTableRef != NULL);
@@ -60,7 +60,7 @@ unsigned MapTable::GetPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reve
  * @param	input			- Given string
  * @return	unsigned - String ID
  */
-unsigned MapTable::GetStringID(STRINGTABLE_REF stringTableRef, const wchar_t* input)
+unsigned MapTable::getStringID(STRINGTABLE_REF stringTableRef, const wchar_t* input)
 {
 	// Return NULL string if language table is invalid
 	ASSERT(stringTableRef != NULL);
@@ -103,7 +103,7 @@ unsigned MapTable::GetStringID(STRINGTABLE_REF stringTableRef, const wchar_t* in
  * @param	id				 - String ID
  * @return	const wchar_t* - Paired string
  */
-const wchar_t* MapTable::GetString(STRINGTABLE_REF stringTableRef, unsigned id)
+const wchar_t* MapTable::getString(STRINGTABLE_REF stringTableRef, unsigned id)
 {
 	// Return NULL string if language table is invalid
 	ASSERT(stringTableRef != NULL);

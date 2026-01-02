@@ -75,7 +75,7 @@ struct USERMENUITEM
 // User menu
 struct USERMENU
 {
-	unsigned nItemCount;				// Number of menu items
+	unsigned itemCount;				// Number of menu items
 	USERMENUITEM* pMenuItemList;	// User menu pointer
 };
 

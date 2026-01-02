@@ -1133,19 +1133,19 @@ void CPowerPlusDlg::OnViewBackupConfig()
 
 /**
  * @brief	OnTimer function
- * @param	nIDEvent - Time event ID
+ * @param	eventId - Time event ID
  * @return	None
  */
-void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
+void CPowerPlusDlg::OnTimer(UINT_PTR eventId)
 {
 	// Timer ID: Action Schedule
-	if (nIDEvent == TIMERID_STD_ACTIONSCHEDULE) {
+	if (eventId == TIMERID_STD_ACTIONSCHEDULE) {
 		// Process Action schedule
 		processActionSchedule();
 	}
 
 	// Timer ID: Power Reminder
-	else if (nIDEvent == TIMERID_STD_POWERREMINDER) {
+	else if (eventId == TIMERID_STD_POWERREMINDER) {
 		// Process Power Reminder at set time event
 		bool isPwrReminderActive = getAppOption(AppOptionID::enablePowerReminder);
 		if (isPwrReminderActive == true) {
@@ -1155,7 +1155,7 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	// Timer ID: Event skip counter
-	else if (nIDEvent == TIMERID_STD_EVENTSKIPCOUNTER) {
+	else if (eventId == TIMERID_STD_EVENTSKIPCOUNTER) {
 		// Process Power Broadcast event skip counter
 		int count = getFlagValue(AppFlagID::pwrBroadcastSkipCount);
 		if (count > 0) {
@@ -1165,7 +1165,7 @@ void CPowerPlusDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	// Default
-	SDialog::OnTimer(nIDEvent);
+	SDialog::OnTimer(eventId);
 }
 
 
@@ -2672,9 +2672,9 @@ void CPowerPlusDlg::setNotifyTipText(PNOTIFYICONDATA notifyIconDataPtr)
 
 	// Load language strings
 	String formatString = getLanguageString(languageTablePtr, NOTIFY_TIP_TEMPLATE);
-	arrTipText.push_back(getLanguageString(languageTablePtr, GetPairedID(IDTable::NotifyTip, appConfigData_.leftMouseAction)));
-	arrTipText.push_back(getLanguageString(languageTablePtr, GetPairedID(IDTable::NotifyTip, appConfigData_.middleMouseAction)));
-	arrTipText.push_back(getLanguageString(languageTablePtr, GetPairedID(IDTable::NotifyTip, appConfigData_.rightMouseAction)));
+	arrTipText.push_back(getLanguageString(languageTablePtr, getPairedID(IDTable::NotifyTip, appConfigData_.leftMouseAction)));
+	arrTipText.push_back(getLanguageString(languageTablePtr, getPairedID(IDTable::NotifyTip, appConfigData_.middleMouseAction)));
+	arrTipText.push_back(getLanguageString(languageTablePtr, getPairedID(IDTable::NotifyTip, appConfigData_.rightMouseAction)));
 
 	// Format notify tip text
 	String notifyTipText = StringUtils::stringFormat(formatString, arrTipText.at(0).getString(), arrTipText.at(1).getString(), arrTipText.at(2).getString());
@@ -4386,13 +4386,13 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& displayItem)
 		bool isSnoozingAllowed = displayItem.isAllowSnoozing();
 
 		// Set allow snooze mode
-		messageDialogPtr->SetAllowSnoozeMode(isSnoozingAllowed);
+		messageDialogPtr->setAllowSnoozeMode(isSnoozingAllowed);
 
 		// Set properties
 		messageDialogPtr->setCaptionFromLanguage(IDD_PWRREMINDER_DLG);
-		messageDialogPtr->SetDispMessage(messageContent);
-		messageDialogPtr->SetMessageStyle(rmdMessageStyle);
-		messageDialogPtr->SetAutoCloseInterval(timeoutValue);
+		messageDialogPtr->setDispMessage(messageContent);
+		messageDialogPtr->setMessageStyle(rmdMessageStyle);
+		messageDialogPtr->setAutoCloseInterval(timeoutValue);
 
 		// Set notify state flags
 		messageDialogPtr->setTopMost(true);
@@ -4402,7 +4402,7 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& displayItem)
 		respond = messageDialogPtr->DoModal();
 
 		// Get returned flag
-		messageDialogPtr->GetSnoozeTriggerFlag(returnFlag);
+		messageDialogPtr->getSnoozeTriggerFlag(returnFlag);
 
 		delete messageDialogPtr;
 	}
@@ -4734,7 +4734,7 @@ void CPowerPlusDlg::outputScheduleEventLog(USHORT eventId, const ScheduleItem& s
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Schedule action name
-	int actionNameId = GetPairedID(IDTable::ActionName, scheduleItem.getAction());
+	int actionNameId = getPairedID(IDTable::ActionName, scheduleItem.getAction());
 	const wchar_t* actionNameString = getLanguageString(languageTablePtr, actionNameId);
 
 	// Detail info
@@ -5014,7 +5014,7 @@ int CPowerPlusDlg::confirmActionExec(unsigned actionType, unsigned actionId)
 	}
 
 	// Display confirmation message
-	unsigned messageStringId = GetPairedID(IDTable::ActionMessage, actionId);
+	unsigned messageStringId = getPairedID(IDTable::ActionMessage, actionId);
 	int result = displayMessageBox(messageStringId, (unsigned)NULL, MB_YESNO | MB_ICONQUESTION);
 
 	return result;
@@ -5036,7 +5036,7 @@ int CPowerPlusDlg::notifySchedule(PScheduleItem scheduleItemPtr, bool& update)
 	}
 
 	// Get action info
-	unsigned actionStringId = GetPairedID(IDTable::ScheduleNotifyMessage, scheduleItemPtr->getAction());
+	unsigned actionStringId = getPairedID(IDTable::ScheduleNotifyMessage, scheduleItemPtr->getAction());
 
 	// Load app language package
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();

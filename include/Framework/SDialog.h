@@ -305,8 +305,8 @@ public:
 		clientMargin_.setBottomRight(horizontalMargin, verticalMargin);
 	}
 	void getDisplayArea(Rect& displayAreaRect) const {
-		RECT rcTemp; this->GetClientRect(&rcTemp);
-		displayAreaRect = Rect(rcTemp.left, rcTemp.top, rcTemp.right, rcTemp.bottom);
+		RECT tempRect; this->GetClientRect(&tempRect);
+		displayAreaRect = Rect(tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 
 		// Calculate display area with margin
 		displayAreaRect._left += clientMargin_.left();

@@ -351,7 +351,7 @@ void ScheduleItem::print(String& outputString) const
 
 	// Format schedule data
 	const wchar_t* enableState = (isEnabled_ == true) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
-	unsigned actionStringID = GetPairedID(IDTable::ActionName, actionId_);
+	unsigned actionStringID = getPairedID(IDTable::ActionName, actionId_);
 	const wchar_t* actionName = getLanguageString(languageTablePtr, actionStringID);													// Schedule action
 	const wchar_t* timeFormat = ClockTimeUtils::format(languageTablePtr, IDS_FORMAT_SHORTTIME, timeValue_).getString();				// Schedule time
 	const wchar_t* repeatState = (repeatSetInfo_.isRepeatEnabled() == true) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
@@ -699,7 +699,7 @@ void HotkeySetItem::print(String& outputString) const
 
 	// Format item data
 	const wchar_t* enable = (isEnabled_ == true) ? _T("Enabled") : _T("Disabled");
-	unsigned actionNameID = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hotkeyActionId_));
+	unsigned actionNameID = getPairedID(IDTable::ActionName, getPairedID(IDTable::HKActionID, hotkeyActionId_));
 	const wchar_t* action = getLanguageString(languageTablePtr, actionNameID);
 	String keyStrokesStr = Constant::String::Empty;
 	printKeyStrokes(keyStrokesStr);
@@ -725,7 +725,7 @@ void HotkeySetItem::printKeyStrokes(String& outputString) const
 	if (modifiers_ & MOD_CONTROL)	keyStrokes += _T("Ctrl + ");
 	if (modifiers_ & MOD_ALT)		keyStrokes += _T("Alt + ");
 	if (modifiers_ & MOD_WIN)		keyStrokes += _T("Win + ");
-	keyStrokes += GetString(StringTable::FunctionKeys, virtualKey_);
+	keyStrokes += getString(StringTable::FunctionKeys, virtualKey_);
 
 	// Output string
 	outputString.empty();
@@ -1180,14 +1180,14 @@ void PwrReminderItem::print(String& outputString) const
 	if (messageStr.getLength() > (Constant::Max::DisplayLogStringLength + 3)) {
 		messageStr = messageContent_.left(Constant::Max::DisplayLogStringLength) + _T("...");
 	}
-	int temp = GetPairedID(IDTable::PwrReminderEvent, eventId_);
+	int temp = getPairedID(IDTable::PwrReminderEvent, eventId_);
 	String eventStr = getLanguageString(languageTablePtr, temp);
 	if (eventId_ == Event::atSetTime) {
 		// Format time string
 		String formatString = eventStr;
 		eventStr = ClockTimeUtils::format(languageTablePtr, formatString, timeValue_);
 	}
-	temp = GetPairedID(IDTable::PwrReminderStyle, messageStyle_);
+	temp = getPairedID(IDTable::PwrReminderStyle, messageStyle_);
 	const wchar_t* styleStr = getLanguageString(languageTablePtr, temp);
 
 	// Print item
@@ -2946,14 +2946,14 @@ void AppCore::showErrorMessage(HWND msgOwnerWnd, unsigned languageId, DWORD erro
 	using namespace Language;
 
 	// Get application-defined error code from system-defined error code
-	DWORD appErrCode = GetPairedID(IDTable::ErrorCode, errorCode, true);
+	DWORD appErrCode = getPairedID(IDTable::ErrorCode, errorCode, true);
 	if (appErrCode != INT_INVALID) {
 		// Replace with application-defined error code
 		errorCode = appErrCode;
 	}
 
 	// Get error message string ID
-	int errMsgID = GetPairedID(IDTable::ErrorMessage, errorCode);
+	int errMsgID = getPairedID(IDTable::ErrorMessage, errorCode);
 
 	// Invalid error message ID
 	if (errMsgID == INT_INVALID) {
@@ -3020,7 +3020,7 @@ HWND AppCore::findDebugTestDlg()
 /**
  * @brief	Set fixed cell style (header row, base column)
  * @param	pGridCtrl	- Grid control table pointer
- * @param	row & nCol - Cell position (row & column)
+ * @param	row & col - Cell position (row & column)
  * @return	None
  */
 void AppCore::setFixedCellStyle(CGridCtrl* gridCtrlPtr, int row, int col)
@@ -3082,7 +3082,7 @@ bool AppCore::setDarkMode(CWnd* wndPtr, bool enableDarkMode)
 /**
  * @brief	Create button with icon
  * @param	buttonPtr		 - Pointer of button item
- * @param	nIconID		 - ID of button icon
+ * @param	iconId		 - ID of button icon
  * @param	lpszBtnTitle - Title of button
  * @return	None
  */

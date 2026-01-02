@@ -72,16 +72,16 @@ extern inline FlagManager& getGlobalFlagManager(void) {
 static inline const bool getDummyTestMode(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::dummyTestMode);
 };
-static inline void setDummyTestMode(bool bValue) {
-	getGlobalFlagManager().setFlagValue(AppFlagID::dummyTestMode, bValue);
+static inline void setDummyTestMode(bool value) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::dummyTestMode, value);
 };
 
 // Debug mode flag
 static inline const bool getDebugMode(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::debugMode);
 };
-static inline void setDebugMode(bool bValue) {
-	getGlobalFlagManager().setFlagValue(AppFlagID::debugMode, bValue);
+static inline void setDebugMode(bool value) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::debugMode, value);
 };
 
 // Debug log output target flag
@@ -101,8 +101,8 @@ static inline void setDebugOutputTarget(int value) {
 static inline const bool getTestFeatureEnable(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::testFeatureEnabled);
 };
-static inline void setTestFeatureEnable(bool bValue) {
-	getGlobalFlagManager().setFlagValue(AppFlagID::testFeatureEnabled, bValue);
+static inline void setTestFeatureEnable(bool value) {
+	getGlobalFlagManager().setFlagValue(AppFlagID::testFeatureEnabled, value);
 };
 
 /*-----------------------------------------------------------------------------------------------------------*/

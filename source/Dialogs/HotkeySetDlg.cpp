@@ -395,7 +395,7 @@ void CHotkeySetDlg::OnRemove()
 		return;
 
 	// Get current select item index
-	int index = GetListCurSel();
+	int index = getListCurSel();
 	if (tempHotkeySetData_.isEmpty(index) == true)
 		return;
 
@@ -495,20 +495,20 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 	// Get clicked item info
 	NM_GRIDVIEW* reminderItem = (NM_GRIDVIEW*)pNMHDR;
 	if (reminderItem == NULL) return;
-	int nCurSelRow = reminderItem->iRow;
+	int curSelRow = reminderItem->iRow;
 
 	// Update current selection index
-	SetListCurSel(nCurSelRow - startRowIndex);
-	int nItemCount = GetItemNum();
+	setListCurSel(curSelRow - startRowIndex);
+	int itemCount = getItemNum();
 
 	*pResult = NULL;
 
 	// Invalid selection
-	if (GetListCurSel() < 0 || GetListCurSel() >= nItemCount)
+	if (getListCurSel() < 0 || getListCurSel() >= itemCount)
 		return;
 
 	// Display item details
-	displayHotkeyDetails(GetListCurSel());
+	displayHotkeyDetails(getListCurSel());
 	refreshDialogItemState();
 }
 
@@ -654,13 +654,13 @@ void CHotkeySetDlg::setupHotkeySetList(LANGTABLE_PTR /*languageTablePtr*/)
 	cellPtr->SetHeight(Constant::UI::GridCtrl::Height::Row);
 
 	// Table format and properties
-	int nRowNum = (GetItemNum() + fixedRowNum);
-	int nColNum = columnCount_;
+	int rowCount = (getItemNum() + fixedRowNum);
+	int colCount = columnCount_;
 
 	// Setup table
-	hotkeySetTablePtr_->SetColumnCount(nColNum);
+	hotkeySetTablePtr_->SetColumnCount(colCount);
 	hotkeySetTablePtr_->SetFixedColumnCount(fixedColumnNum);
-	hotkeySetTablePtr_->SetRowCount(nRowNum);
+	hotkeySetTablePtr_->SetRowCount(rowCount);
 	hotkeySetTablePtr_->SetFixedRowCount(fixedRowNum);
 	hotkeySetTablePtr_->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Row);
 
@@ -718,8 +718,8 @@ void CHotkeySetDlg::drawHotkeySetTable(bool isReadOnly /* = false */)
 	}
 
 	// Table properties
-	int nColNum = columnCount_;
-	int nRowNum = (GetItemNum() + fixedRowNum);
+	int colCount = columnCount_;
+	int rowCount = (getItemNum() + fixedRowNum);
 
 	// Setup display size
 	int frameHeight = dataTableSizePtr_->height();
@@ -732,84 +732,84 @@ void CHotkeySetDlg::drawHotkeySetTable(bool isReadOnly /* = false */)
 		// Windows 11 list control offset
 		frameWidth -= Constant::UI::Offset::Width::ListCtrl;
 	}
-	if ((Constant::UI::Offset::Width::ListCtrl + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row)) >= frameHeight) {
+	if ((Constant::UI::Offset::Width::ListCtrl + ((rowCount - 1) * Constant::UI::GridCtrl::Height::Row)) >= frameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int scrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
 		frameWidth -= (scrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns
-	for (int nCol = 0; nCol < nColNum; nCol++) {
+	for (int col = 0; col < colCount; col++) {
 		// Set header row style
-		AppCore::setFixedCellStyle(hotkeySetTablePtr_, Constant::UI::GridCtrl::Index::Header_Row, nCol);
+		AppCore::setFixedCellStyle(hotkeySetTablePtr_, Constant::UI::GridCtrl::Index::Header_Row, col);
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
-		unsigned nHeaderTitleID = gridCtrlFormatInfoPtr_[nCol].headerTitleId;
-		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = getLanguageString(languageTablePtr, nHeaderTitleID);
+		unsigned headerTitleId = gridCtrlFormatInfoPtr_[col].headerTitleId;
+		if (headerTitleId != INT_NULL) {
+			headerTitle = getLanguageString(languageTablePtr, headerTitleId);
 		}
-		hotkeySetTablePtr_->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
+		hotkeySetTablePtr_->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, col, headerTitle);
 
 		// Column width
-		int nColWidth = gridCtrlFormatInfoPtr_[nCol].width;
-		if (nColWidth != -1) {
+		int colWidth = gridCtrlFormatInfoPtr_[col].width;
+		if (colWidth != -1) {
 			// Set column width as defined
-			if (hotkeySetTablePtr_->SetColumnWidth(nCol, nColWidth)) {
+			if (hotkeySetTablePtr_->SetColumnWidth(col, colWidth)) {
 				// Calculate remaining width
-				frameWidth -= nColWidth;
+				frameWidth -= colWidth;
 			}
 		}
 		else {
 			// Set remaining width for current column
-			hotkeySetTablePtr_->SetColumnWidth(nCol, frameWidth);
+			hotkeySetTablePtr_->SetColumnWidth(col, frameWidth);
 		}
 	}
 
 	// Setup rows
-	int nColStyle = -1;
+	int colStyle = -1;
 	unsigned itemState = INT_NULL;
-	for (int row = 1; row < nRowNum; row++) {
-		for (int nCol = 0; nCol < columnCount_; nCol++) {
+	for (int row = 1; row < rowCount; row++) {
+		for (int col = 0; col < columnCount_; col++) {
 
 			// Get column style & item state
-			nColStyle = gridCtrlFormatInfoPtr_[nCol].columnStyle;
-			itemState = hotkeySetTablePtr_->GetItemState(row, nCol);
+			colStyle = gridCtrlFormatInfoPtr_[col].columnStyle;
+			itemState = hotkeySetTablePtr_->GetItemState(row, col);
 			itemState |= GVIS_READONLY;
 
 			// Base column - header-like style
-			if (nColStyle == COLSTYLE_FIXED) {
+			if (colStyle == COLSTYLE_FIXED) {
 				// Set fixed cell style
-				AppCore::setFixedCellStyle(hotkeySetTablePtr_, row, nCol);
+				AppCore::setFixedCellStyle(hotkeySetTablePtr_, row, col);
 			}
 
 			// Checkbox column
-			else if (nColStyle == COLSTYLE_CHECKBOX) {
+			else if (colStyle == COLSTYLE_CHECKBOX) {
 				// Set cell type: Checkbox
-				if (!hotkeySetTablePtr_->SetCellType(row, nCol, RUNTIME_CLASS(CGridCellCheck)))
+				if (!hotkeySetTablePtr_->SetCellType(row, col, RUNTIME_CLASS(CGridCellCheck)))
 					continue;
 
 				// Get cell
-				CGridCellCheck* cellPtr = (CGridCellCheck*)hotkeySetTablePtr_->GetCell(row, nCol);
+				CGridCellCheck* cellPtr = (CGridCellCheck*)hotkeySetTablePtr_->GetCell(row, col);
 
 				// Set center alignment if defined
-				if (gridCtrlFormatInfoPtr_[nCol].isCentered == true) {
+				if (gridCtrlFormatInfoPtr_[col].isCentered == true) {
 					if (cellPtr == NULL) continue;
 					cellPtr->SetCheckPlacement(SCP_CENTERING);
 				}
 			}
 
 			// Normal column
-			else if (nColStyle == COLSTYLE_NORMAL) {
+			else if (colStyle == COLSTYLE_NORMAL) {
 				// Set item state
-				if (!hotkeySetTablePtr_->SetItemState(row, nCol, itemState))
+				if (!hotkeySetTablePtr_->SetItemState(row, col, itemState))
 					continue;
 
 				// Get cell
-				CGridCellBase* cellPtr = (CGridCellBase*)hotkeySetTablePtr_->GetCell(row, nCol);
+				CGridCellBase* cellPtr = (CGridCellBase*)hotkeySetTablePtr_->GetCell(row, col);
 
 				// Set center alignment if defined
-				if (gridCtrlFormatInfoPtr_[nCol].isCentered == true) {
+				if (gridCtrlFormatInfoPtr_[col].isCentered == true) {
 					if (cellPtr == NULL) continue;
 					cellPtr->SetFormat(cellPtr->GetFormat() | DT_CENTER);
 				}
@@ -865,9 +865,9 @@ void CHotkeySetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageTableP
 void CHotkeySetDlg::refreshDialogItemState(bool isRecheckState /* = false */)
 {
 	// Enable/disable buttons if data is all empty or not
-	bool bIsAllEmpty = tempHotkeySetData_.isAllEmpty();
-	enableItem(IDC_HOTKEYSET_REMOVE_BTN, !bIsAllEmpty);
-	enableItem(IDC_HOTKEYSET_REMOVEALL_BTN, !bIsAllEmpty);
+	bool isAllEmpty = tempHotkeySetData_.isAllEmpty();
+	enableItem(IDC_HOTKEYSET_REMOVE_BTN, !isAllEmpty);
+	enableItem(IDC_HOTKEYSET_REMOVEALL_BTN, !isAllEmpty);
 
 	// Enable/disable buttons if data changed or not
 	bool isChanged = checkDataChangeState();
@@ -893,17 +893,17 @@ void CHotkeySetDlg::updateCheckAllBtnState(bool isRecheck /* = true */)
 		return;
 
 	// Get buttons
-	CWnd* pCheckAllBtn = GetDlgItem(IDC_HOTKEYSET_CHECKALL_BTN);
-	CWnd* pUncheckAllBtn = GetDlgItem(IDC_HOTKEYSET_UNCHECKALL_BTN);
-	if ((pCheckAllBtn == NULL) || (pUncheckAllBtn == NULL))
+	CWnd* checkAllButtonPtr = GetDlgItem(IDC_HOTKEYSET_CHECKALL_BTN);
+	CWnd* uncheckAllButtonPtr = GetDlgItem(IDC_HOTKEYSET_UNCHECKALL_BTN);
+	if ((checkAllButtonPtr == NULL) || (uncheckAllButtonPtr == NULL))
 		return;
 
 	// Get number of items
-	int itemNum = GetItemNum();
+	int itemNum = getItemNum();
 	if (itemNum == 0) {
 		// Disable both [Check/Uncheck All] buttons
-		pCheckAllBtn->EnableWindow(false);
-		pUncheckAllBtn->EnableWindow(false);
+		checkAllButtonPtr->EnableWindow(false);
+		uncheckAllButtonPtr->EnableWindow(false);
 		return;
 	}
 
@@ -925,20 +925,20 @@ void CHotkeySetDlg::updateCheckAllBtnState(bool isRecheck /* = true */)
 	// Update button state
 	if (checkCount_ == 0) {
 		// Enable [Check All] button
-		pCheckAllBtn->EnableWindow(true);
+		checkAllButtonPtr->EnableWindow(true);
 		// Disable [Uncheck All] button
-		pUncheckAllBtn->EnableWindow(false);
+		uncheckAllButtonPtr->EnableWindow(false);
 	}
 	else if (checkCount_ == itemNum) {
 		// Disable [Check All] button
-		pCheckAllBtn->EnableWindow(false);
+		checkAllButtonPtr->EnableWindow(false);
 		// Enable [Uncheck All] button
-		pUncheckAllBtn->EnableWindow(true);
+		uncheckAllButtonPtr->EnableWindow(true);
 	}
 	else {
 		// Enable both [Check/Uncheck All] buttons
-		pCheckAllBtn->EnableWindow(true);
-		pUncheckAllBtn->EnableWindow(true);
+		checkAllButtonPtr->EnableWindow(true);
+		uncheckAllButtonPtr->EnableWindow(true);
 	}
 }
 
@@ -953,7 +953,7 @@ void CHotkeySetDlg::updateHotkeySet()
 	if (hotkeySetTablePtr_ == NULL) return;
 
 	// If there's no item, do nothing
-	int itemNum = GetItemNum();
+	int itemNum = getItemNum();
 	if (itemNum <= 0)
 		return;
 
@@ -962,7 +962,7 @@ void CHotkeySetDlg::updateHotkeySet()
 
 	// Print items
 	String tempString;
-	int nTemp = -1;
+	int tempValue = -1;
 	int itemIndex = 0;
 	CGridCellCheck* cellCheckPtr = NULL;
 	for (int rowIndex = startRowIndex; rowIndex <= itemNum; rowIndex++) {
@@ -978,8 +978,8 @@ void CHotkeySetDlg::updateHotkeySet()
 		}
 
 		// Hotkey action
-		nTemp = GetPairedID(IDTable::ActionName, GetPairedID(IDTable::HKActionID, hotkeyItem.getActionId()));
-		tempString = getLanguageString(languageTablePtr, nTemp);
+		tempValue = getPairedID(IDTable::ActionName, getPairedID(IDTable::HKActionID, hotkeyItem.getActionId()));
+		tempString = getLanguageString(languageTablePtr, tempValue);
 		hotkeySetTablePtr_->SetItemText(rowIndex, ColumnID::HKActionID, tempString);
 
 		// Keystrokes
@@ -1021,8 +1021,8 @@ void CHotkeySetDlg::redrawHotkeySetTable(bool isReadOnly /* = false */)
 	if (hotkeySetTablePtr_ == NULL) return;
 
 	// Update new row number
-	int nCurRowNum = (GetItemNum() + fixedRowNum);
-	hotkeySetTablePtr_->SetRowCount(nCurRowNum);
+	int curRowCount = (getItemNum() + fixedRowNum);
+	hotkeySetTablePtr_->SetRowCount(curRowCount);
 
 	// Draw table
 	drawHotkeySetTable(isReadOnly);
@@ -1055,11 +1055,11 @@ void CHotkeySetDlg::displayHotkeyDetails(int index)
 	}
 
 	// Get item at index
-		const Item& hksCurItem = tempHotkeySetData_.getItemAt(index);
+	const Item& currentHotkeyItem = tempHotkeySetData_.getItemAt(index);
 
 	// Get item keycode
 	DWORD modifiers, virtualKey;
-	hksCurItem.getKeyCode(modifiers, virtualKey);
+	currentHotkeyItem.getKeyCode(modifiers, virtualKey);
 
 	// Update checkboxes
 	isCtrlKeyActive_ = false;
@@ -1070,7 +1070,7 @@ void CHotkeySetDlg::displayHotkeyDetails(int index)
 	if (modifiers & MOD_WIN)			isWinKeyActive_ = true;
 
 	// Update combo-boxes
-	unsigned actionId = GetPairedID(IDTable::HKActionID, hksCurItem.getActionId());
+	unsigned actionId = getPairedID(IDTable::HKActionID, currentHotkeyItem.getActionId());
 	actionListCombo_.SetCurSel(AppCore::opt2Sel(APP_ACTION, actionId));
 	virtualKeyListCombo_.SetWindowText(_T("---"));
 	if (virtualKey > 0)
@@ -1093,12 +1093,12 @@ void CHotkeySetDlg::updateLayoutInfo(void)
 	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Get table column count
-	int nColNum = hotkeySetTablePtr_->GetColumnCount();
+	int colCount = hotkeySetTablePtr_->GetColumnCount();
 
 	// Update size of table columns
-	for (int index = 0; index < nColNum; index++) {
-		int nColSize = hotkeySetTablePtr_->GetColumnWidth(index);
-		gridCtrlFormatInfoPtr_[index].width = nColSize;
+	for (int index = 0; index < colCount; index++) {
+		int colSize = hotkeySetTablePtr_->GetColumnWidth(index);
+		gridCtrlFormatInfoPtr_[index].width = colSize;
 	}
 }
 
@@ -1110,7 +1110,7 @@ void CHotkeySetDlg::updateLayoutInfo(void)
 void CHotkeySetDlg::loadLayoutInfo(void)
 {
 	// Define default table columns format
-	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
+	const GRIDCTRLCOLFORMAT gridColFormatInfo[] = {
 	//-----------ID------------------------Header title ID---------------Width(px)----Column style-------Align Center---
 		{	ColumnID::EnableState,		GRIDCOLUMN_HOTKEYSET_STATE,			28,		COLSTYLE_CHECKBOX,		true,	},
 		{	ColumnID::HKActionID,		GRIDCOLUMN_HOTKEYSET_HKACTIONID,	122,	COLSTYLE_NORMAL,		true,	},
@@ -1119,14 +1119,14 @@ void CHotkeySetDlg::loadLayoutInfo(void)
 	};
 
 	// Backup format data
-	columnCount_ = (sizeof(arrGrdColFormat) / sizeof(GRIDCTRLCOLFORMAT));
+	columnCount_ = (sizeof(gridColFormatInfo) / sizeof(GRIDCTRLCOLFORMAT));
 
 	// Initialize table format info data
 	if (gridCtrlFormatInfoPtr_ == NULL) {
 		gridCtrlFormatInfoPtr_ = new GRIDCTRLCOLFORMAT[columnCount_];
 		for (int index = 0; index < columnCount_; index++) {
 			// Copy default table column format data
-			gridCtrlFormatInfoPtr_[index] = arrGrdColFormat[index];
+			gridCtrlFormatInfoPtr_[index] = gridColFormatInfo[index];
 		}
 	}
 
@@ -1154,12 +1154,12 @@ void CHotkeySetDlg::saveLayoutInfo(void)
 	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Save layout info data to registry
-	int nRef = 0;
+	int referValue = 0;
 	String keyName;
 	for (int index = 0; index < columnCount_; index++) {
-		nRef = gridCtrlFormatInfoPtr_[index].width;
+		referValue = gridCtrlFormatInfoPtr_[index].width;
 		keyName = Key::LayoutInfo::GridColSize(index);
-		WriteLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, nRef);
+		WriteLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, referValue);
 	}
 }
 
@@ -1228,19 +1228,19 @@ bool CHotkeySetDlg::checkDataChangeState()
 
 	// Update enable state of all item before checking
 	int itemIndex = 0;
-	CGridCellCheck* pCellCheckEnable = NULL;
-	for (int rowIndex = startRowIndex; rowIndex <= GetItemNum(); rowIndex++) {
+	CGridCellCheck* cellCheckEnablePtr = NULL;
+	for (int rowIndex = startRowIndex; rowIndex <= getItemNum(); rowIndex++) {
 		// Get checkbox cell
-		pCellCheckEnable = (CGridCellCheck*)hotkeySetTablePtr_->GetCell(rowIndex, ColumnID::EnableState);
-		if (pCellCheckEnable == NULL) continue;
+		cellCheckEnablePtr = (CGridCellCheck*)hotkeySetTablePtr_->GetCell(rowIndex, ColumnID::EnableState);
+		if (cellCheckEnablePtr == NULL) continue;
 
 		// Get checked states
-		bool isEnabled = pCellCheckEnable->GetCheck();
+		bool isEnabled = cellCheckEnablePtr->GetCheck();
 
 		// Update item checked state
 		itemIndex = rowIndex - startRowIndex;
-		Item& hksTempItem = tempHotkeySetData_.getItemAt(itemIndex);
-		hksTempItem.enableItem(isEnabled);
+		Item& tempHotkeyItem = tempHotkeySetData_.getItemAt(itemIndex);
+		tempHotkeyItem.enableItem(isEnabled);
 	}
 
 	// Check if number of items changed
@@ -1251,12 +1251,12 @@ bool CHotkeySetDlg::checkDataChangeState()
 	// Check if each item's data changed
 	for (int index = 0; index < tempHotkeySetData_.getItemNum(); index++) {
 		// Get current item and temp item
-		const Item& hksCurItem = hotkeySetData_.getItemAt(index);
-		const Item& hksTempItem = tempHotkeySetData_.getItemAt(index);
+		const Item& currentHotkeyItem = hotkeySetData_.getItemAt(index);
+		const Item& tempHotkeyItem = tempHotkeySetData_.getItemAt(index);
  
 		// Data comparison
-		changeFlag |= (hksTempItem.isEnabled() != hksCurItem.isEnabled());
-		changeFlag |= (hksTempItem.compare(hksCurItem) != true);
+		changeFlag |= (tempHotkeyItem.isEnabled() != currentHotkeyItem.isEnabled());
+		changeFlag |= (tempHotkeyItem.compare(currentHotkeyItem) != true);
 
 		// Stop on the first different item encountered
 		if (changeFlag == true) break;
@@ -1282,8 +1282,8 @@ void CHotkeySetDlg::add(void)
 	DWORD modifiers = 0, virtualKey = 0;
 
 	// Update modifier keys
-	if (isCtrlKeyActive_ == true)		modifiers |= MOD_CONTROL;
-	if (isAltKeyActive_ == true)		modifiers |= MOD_ALT;
+	if (isCtrlKeyActive_ == true)	modifiers |= MOD_CONTROL;
+	if (isAltKeyActive_ == true)	modifiers |= MOD_ALT;
 	if (isWinKeyActive_ == true)	modifiers |= MOD_WIN;
 
 	// Update action ID
@@ -1299,8 +1299,8 @@ void CHotkeySetDlg::add(void)
 	tempHotkeyItem.setKeyCode(modifiers, virtualKey);
 
 	// Check data validity
-	bool bValid = validate(tempHotkeyItem, true);
-	if (bValid == false)
+	bool isValid = validate(tempHotkeyItem, true);
+	if (isValid == false)
 		return;
 
 	// Update item to HotkeySet data list
@@ -1371,8 +1371,8 @@ bool CHotkeySetDlg::validate(const Item& hotkeyItem, bool showMsg /* = false */)
 {
 	bool result = true;
 	int messageStringId;
-	StringArray arrMsgString;
-	arrMsgString.clear();
+	StringArray messageStringList;
+	messageStringList.clear();
 
 	// Get app language package
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
@@ -1380,7 +1380,7 @@ bool CHotkeySetDlg::validate(const Item& hotkeyItem, bool showMsg /* = false */)
 	// Check action ID
 	if ((hotkeyItem.getActionId() < HKID::displayOff) || (hotkeyItem.getActionId() > HKID::hibernate)) {
 		messageStringId = MSGBOX_HOTKEYSET_INVALIDITEM_ACTIONID;
-		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
 	}
 
@@ -1392,20 +1392,20 @@ bool CHotkeySetDlg::validate(const Item& hotkeyItem, bool showMsg /* = false */)
 	if ((modifiers <= 0) ||
 		((modifiers & MOD_CONTROL) == false) && ((modifiers & MOD_ALT) == false) && ((modifiers & MOD_WIN) == false)) {
 		messageStringId = MSGBOX_HOTKEYSET_INVALIDITEM_CTRLKEY;
-		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
 	}
 
 	// Validate virtual key code
 	if ((virtualKey < VK_F1) || (virtualKey > VK_F12)) {
 		messageStringId = MSGBOX_HOTKEYSET_INVALIDITEM_FUNCKEY;
-		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
 	}
 
 	// Check if system hotkey existed
-	int nExistedSysHotkeyNum = TABLE_SIZE(OtherTable::ExistedSysHotkeyList);
-	for (int index = 0; index < nExistedSysHotkeyNum; index++) {
+	int existedSysHotkeyNum = TABLE_SIZE(OtherTable::ExistedSysHotkeyList);
+	for (int index = 0; index < existedSysHotkeyNum; index++) {
 		if ((modifiers == OtherTable::ExistedSysHotkeyList[index].modifiers) &&
 			(virtualKey == OtherTable::ExistedSysHotkeyList[index].virtualKey)) {
 			// Hotkey info format
@@ -1413,7 +1413,7 @@ bool CHotkeySetDlg::validate(const Item& hotkeyItem, bool showMsg /* = false */)
 			if (modifiers & MOD_CONTROL)	keyStrokesString += _T("Ctrl + ");
 			if (modifiers & MOD_ALT)		keyStrokesString += _T("Alt + ");
 			if (modifiers & MOD_WIN)		keyStrokesString += _T("Win + ");
-			keyStrokesString += GetString(StringTable::FunctionKeys, virtualKey);
+			keyStrokesString += getString(StringTable::FunctionKeys, virtualKey);
 			String keyInfoString = Constant::String::Empty;
 			keyInfoString.format(_T("%s - %s"), keyStrokesString.getString(), getLanguageString(languageTablePtr, OtherTable::ExistedSysHotkeyList[index].hotkeyDescription));
 
@@ -1421,19 +1421,19 @@ bool CHotkeySetDlg::validate(const Item& hotkeyItem, bool showMsg /* = false */)
 			String messageFormat;
 			messageFormat.format(getLanguageString(languageTablePtr, MSGBOX_HOTKEYSET_EXISTED_HOTKEY), keyInfoString.getString());
 
-			arrMsgString.push_back(messageFormat);
+			messageStringList.push_back(messageFormat);
 			result = false;
 		}
 	}
 	
 	// Show error message if enabled
-	if ((showMsg == true) && (!arrMsgString.empty())) {
-		for (int index = 0; index < arrMsgString.size(); index++) {
-			displayMessageBox(arrMsgString.at(index), NULL, MB_OK | MB_ICONERROR);
+	if ((showMsg == true) && (!messageStringList.empty())) {
+		for (int index = 0; index < messageStringList.size(); index++) {
+			displayMessageBox(messageStringList.at(index), NULL, MB_OK | MB_ICONERROR);
 		}
 	}
 
 	// Remove all message after displaying
-	arrMsgString.clear();
+	messageStringList.clear();
 	return result;
 }

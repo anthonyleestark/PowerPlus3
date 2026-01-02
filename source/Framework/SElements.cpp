@@ -1308,8 +1308,8 @@ void SControlManager::UpdateData(unsigned controlId /* = NULL */)
 			case List_Control:
 			{
 				// Update number of items and columns
-				size_t nItemCount = ((CListCtrl*)pBaseControl)->GetItemCount();
-				pCurControl->SetInteger(nItemCount);
+				size_t itemCount = ((CListCtrl*)pBaseControl)->GetItemCount();
+				pCurControl->SetInteger(itemCount);
 				size_t nColumnCount = 0;
 				CHeaderCtrl* pHeaderCtrl = ((CListCtrl*)pBaseControl)->GetHeaderCtrl();
 				if (pHeaderCtrl != NULL) {
@@ -1318,8 +1318,8 @@ void SControlManager::UpdateData(unsigned controlId /* = NULL */)
 				pCurControl->SetReserveInteger(nColumnCount);
 				// Update control's data current selection index(es)
 				ULongArray arrSelection;
-				arrSelection.reserve(nItemCount);
-				for (size_t index = 0; index < nItemCount; index++) {
+				arrSelection.reserve(itemCount);
+				for (size_t index = 0; index < itemCount; index++) {
 					// Get selection index
 					if ((((CListCtrl*)pBaseControl)->GetItemState(index, LVIS_SELECTED) & LVIS_SELECTED) == LVIS_SELECTED) {
 						arrSelection.push_back(index);
@@ -1328,8 +1328,8 @@ void SControlManager::UpdateData(unsigned controlId /* = NULL */)
 				pCurControl->SetIntArray(arrSelection);
 				// Update all item strings
 				StringArray arrStringData;
-				arrStringData.reserve(nItemCount);
-				for (size_t index = 0; index < nItemCount; index++) {
+				arrStringData.reserve(itemCount);
+				for (size_t index = 0; index < itemCount; index++) {
 					for (size_t nColIndex = 0; nColIndex < nColumnCount; nColIndex++) {
 						// Get item text
 						String tempText = ((CListCtrl*)pBaseControl)->GetItemText(index, nColIndex).GetString();

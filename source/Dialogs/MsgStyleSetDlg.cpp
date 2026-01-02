@@ -48,37 +48,37 @@ IMPLEMENT_DYNAMIC(CRmdMsgStyleSetDlg, SDialog)
 CRmdMsgStyleSetDlg::CRmdMsgStyleSetDlg() : SDialog(IDD_MSGSTYLESET_DLG)
 {
 	// Background/Text color settings
-	m_pBkgrdColorPickBtn = NULL;
-	m_pTextColorPickBtn = NULL;
+	backgroundColorPickBtnPtr_ = NULL;
+	textColorPickBtnPtr_ = NULL;
 
 	// Font settings
-	m_pFontNamePickCombo = NULL;
-	m_pFontSizePickCombo = NULL;
+	fontNamePickComboPtr_ = NULL;
+	fontSizePickComboPtr_ = NULL;
 
 	// Icon settings
-	m_pIconIDPickCombo = NULL;
-	m_pIconSizeEdit = NULL;
-	m_pIconPositionOnTopRad = NULL;
-	m_pIconPositionOnLeftRad = NULL;
-	m_pIconPreviewStatic = NULL;
+	iconIdPickComboPtr_ = NULL;
+	iconSizeEditPtr_ = NULL;
+	iconPositionOnTopRadPtr_ = NULL;
+	iconPositionOnLeftRadPtr_ = NULL;
+	iconPreviewStaticPtr_ = NULL;
 
 	// Timeout settings
-	m_pTimeoutEdit = NULL;
-	m_pTimeoutSpin = NULL;
+	timeoutEditPtr_ = NULL;
+	timeoutSpinPtr_ = NULL;
 
 	// Display position setting
-	m_pDisplayPosCombo = NULL;
+	displayPosComboPtr_ = NULL;
 
 	// Margin settings
-	m_pHorizontalMarginEdit = NULL;
-	m_pVerticalMarginEdit = NULL;
+	horizontalMarginEditPtr_ = NULL;
+	verticalMarginEditPtr_ = NULL;
 
 	// Data
-	m_rmsMsgStyleData = RmdMsgStyleSet();
-	m_rmsMsgStyleTemp = RmdMsgStyleSet();
-	m_clrMsgBackground = RmdMsgStyleSet::defaultBkgrdColor;
-	m_clrMsgText = RmdMsgStyleSet::defaultTextColor;
-	m_flagDataSet = DataSetFlag::commonStyle;
+	messageStyleData_ = RmdMsgStyleSet();
+	tempMessageStyleData_ = RmdMsgStyleSet();
+	messageBackgroundColor_ = RmdMsgStyleSet::defaultBkgrdColor;
+	messageTextColor_ = RmdMsgStyleSet::defaultTextColor;
+	flagDataSet_ = DataSetFlag::commonStyle;
 }
 
 /**
@@ -138,7 +138,7 @@ void CRmdMsgStyleSetDlg::OnApply()
 {
 	// Save data
 	updateDialogData(true);
-	m_rmsMsgStyleData.copy(m_rmsMsgStyleTemp);
+	messageStyleData_.copy(tempMessageStyleData_);
 
 	// Close the dialog
 	setReturnFlag(ReturnFlag::OK);
@@ -168,21 +168,21 @@ void CRmdMsgStyleSetDlg::OnPreview()
 	updateDialogData(true);
 
 	// Default timeout for previewing
-	int nDefTimeout = PwrReminderData::previewTimeout;
+	int defaultTimeout = PwrReminderData::previewTimeout;
 
 	// Initialize preview message
-	CReminderMsgDlg m_previewMsgDlg;
-	m_previewMsgDlg.setCaptionFromLanguage(IDC_MSGSTYLESET_PREVIEW_BTN);
-	m_previewMsgDlg.SetDispMessage(L"Preview message style");
-	m_previewMsgDlg.SetMessageStyle(m_rmsMsgStyleTemp);
-	m_previewMsgDlg.SetAutoCloseInterval(nDefTimeout);
+	CReminderMsgDlg previewMsgDlg;
+	previewMsgDlg.setCaptionFromLanguage(IDC_MSGSTYLESET_PREVIEW_BTN);
+	previewMsgDlg.setDispMessage(L"Preview message style");
+	previewMsgDlg.setMessageStyle(tempMessageStyleData_);
+	previewMsgDlg.setAutoCloseInterval(defaultTimeout);
 
 	// Set notify state flags
-	m_previewMsgDlg.setTopMost(false);
-	m_previewMsgDlg.setInitSound(true);
+	previewMsgDlg.setTopMost(false);
+	previewMsgDlg.setInitSound(true);
 
 	// Display message
-	m_previewMsgDlg.DoModal();
+	previewMsgDlg.DoModal();
 }
 
 /**
@@ -193,7 +193,7 @@ void CRmdMsgStyleSetDlg::OnPreview()
 void CRmdMsgStyleSetDlg::OnReset()
 {
 	// Reset data
-	m_rmsMsgStyleTemp = RmdMsgStyleSet();
+	tempMessageStyleData_ = RmdMsgStyleSet();
 
 	// Apply state
 	updateDialogData(false);
@@ -219,23 +219,23 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			cc.lpCustColors = acrCustClr;
 
 			if (LOWORD(wParam) == IDC_MSGSTYLESET_BKGRDCLR_PICKER) {
-				cc.rgbResult = m_clrMsgBackground;
+				cc.rgbResult = messageBackgroundColor_;
 			}
 			else {
-				cc.rgbResult = m_clrMsgText;
+				cc.rgbResult = messageTextColor_;
 			}
 
 			cc.hwndOwner = this->GetSafeHwnd();
 			if (ChooseColor(&cc)) {
 				if (LOWORD(wParam) == IDC_MSGSTYLESET_BKGRDCLR_PICKER) {
-					m_clrMsgBackground = cc.rgbResult;
-					if (m_pBkgrdColorPickBtn != NULL)
-						m_pBkgrdColorPickBtn->RedrawWindow();
+					messageBackgroundColor_ = cc.rgbResult;
+					if (backgroundColorPickBtnPtr_ != NULL)
+						backgroundColorPickBtnPtr_->RedrawWindow();
 				}
 				else {
-					m_clrMsgText = cc.rgbResult;
-					if (m_pTextColorPickBtn != NULL)
-						m_pTextColorPickBtn->RedrawWindow();
+					messageTextColor_ = cc.rgbResult;
+					if (textColorPickBtnPtr_ != NULL)
+						textColorPickBtnPtr_->RedrawWindow();
 				}
 			}
 
@@ -244,22 +244,22 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 		case IDC_MSGSTYLESET_FONTSIZE_COMBO:
 		{
-			if (HIWORD(wParam) == CBN_EDITCHANGE && m_pFontSizePickCombo != NULL)
+			if (HIWORD(wParam) == CBN_EDITCHANGE && fontSizePickComboPtr_ != NULL)
 			{
 				// Validation
-				HWND hFontSizeEdit = ::GetWindow(m_pFontSizePickCombo->GetSafeHwnd(), GW_CHILD);
-				int nFontSize = GetEditValue(hFontSizeEdit, maxFontSizeDigits);
-				ValidateEditValue(hFontSizeEdit, nFontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize, true);
+				HWND fontSizeEditHandle = ::GetWindow(fontSizePickComboPtr_->GetSafeHwnd(), GW_CHILD);
+				int fontSize = getEditValue(fontSizeEditHandle, maxFontSizeDigits);
+				validateEditValue(fontSizeEditHandle, fontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize, true);
 
 				return true;
 			}
-			else if (HIWORD(wParam) == CBN_KILLFOCUS && m_pFontSizePickCombo != NULL)
+			else if (HIWORD(wParam) == CBN_KILLFOCUS && fontSizePickComboPtr_ != NULL)
 			{
 				// Auto-correction
-				HWND hFontSizeEdit = ::GetWindow(m_pFontSizePickCombo->GetSafeHwnd(), GW_CHILD);
-				int nFontSize = GetEditValue(hFontSizeEdit, maxFontSizeDigits);
-				if (!ValidateAndCorrect(nFontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize))
-					m_pFontSizePickCombo->SelectString(-1, String::fromNumber(nFontSize));
+				HWND fontSizeEditHandle = ::GetWindow(fontSizePickComboPtr_->GetSafeHwnd(), GW_CHILD);
+				int fontSize = getEditValue(fontSizeEditHandle, maxFontSizeDigits);
+				if (!validateAndCorrect(fontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize))
+					fontSizePickComboPtr_->SelectString(-1, String::fromNumber(fontSize));
 
 				return true;
 			}
@@ -269,10 +269,10 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 		case IDC_MSGSTYLESET_ICONID_COMBO:
 		{
-			if (HIWORD(wParam) == CBN_SELCHANGE && m_pIconPreviewStatic != NULL)
+			if (HIWORD(wParam) == CBN_SELCHANGE && iconPreviewStaticPtr_ != NULL)
 			{
 				// Trigger redrawing icon preview
-				::InvalidateRect(m_pIconPreviewStatic->GetSafeHwnd(), NULL, true);
+				::InvalidateRect(iconPreviewStaticPtr_->GetSafeHwnd(), NULL, true);
 				return true;
 			}
 
@@ -281,28 +281,28 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 		case IDC_MSGSTYLESET_ICONSIZE_EDIT:
 		{
-			if (HIWORD(wParam) == EN_CHANGE && m_pIconSizeEdit != NULL)
+			if (HIWORD(wParam) == EN_CHANGE && iconSizeEditPtr_ != NULL)
 			{
 				// Validation
-				int iconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
-				bool isValid = ValidateEditValue(m_pIconSizeEdit->GetSafeHwnd(), iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize, true);
+				int iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), maxIconSizeDigits);
+				bool isValid = validateEditValue(iconSizeEditPtr_->GetSafeHwnd(), iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize, true);
 
 				// Trigger redrawing icon preview
-				if (m_pIconPreviewStatic != NULL && isValid)
-					::InvalidateRect(m_pIconPreviewStatic->GetSafeHwnd(), NULL, true);
+				if (iconPreviewStaticPtr_ != NULL && isValid)
+					::InvalidateRect(iconPreviewStaticPtr_->GetSafeHwnd(), NULL, true);
 
 				return true;
 			}
-			else if (HIWORD(wParam) == EN_KILLFOCUS && m_pIconSizeEdit != NULL)
+			else if (HIWORD(wParam) == EN_KILLFOCUS && iconSizeEditPtr_ != NULL)
 			{
 				// Auto-correction
-				int iconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
-				if (!ValidateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize))
-					m_pIconSizeEdit->SetWindowText(String::fromNumber(iconSize));
+				int iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), maxIconSizeDigits);
+				if (!validateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize))
+					iconSizeEditPtr_->SetWindowText(String::fromNumber(iconSize));
 
 				// Trigger redrawing icon preview
-				if (m_pIconPreviewStatic != NULL)
-					::InvalidateRect(m_pIconPreviewStatic->GetSafeHwnd(), NULL, true);
+				if (iconPreviewStaticPtr_ != NULL)
+					::InvalidateRect(iconPreviewStaticPtr_->GetSafeHwnd(), NULL, true);
 
 				return true;
 			}
@@ -312,24 +312,24 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 		case IDC_MSGSTYLESET_TIMEOUT_EDIT:
 		{
-			if (HIWORD(wParam) == EN_CHANGE && m_pTimeoutEdit != NULL)
+			if (HIWORD(wParam) == EN_CHANGE && timeoutEditPtr_ != NULL)
 			{
 				// Validation
-				int timeoutValue = GetEditValue(m_pTimeoutEdit->GetSafeHwnd(), maxTimeoutDigits);
-				ValidateEditValue(m_pTimeoutEdit->GetSafeHwnd(), timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut, true);
+				int timeoutValue = getEditValue(timeoutEditPtr_->GetSafeHwnd(), maxTimeoutDigits);
+				validateEditValue(timeoutEditPtr_->GetSafeHwnd(), timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut, true);
 
 				return true;
 			}
-			else if (HIWORD(wParam) == EN_KILLFOCUS && m_pTimeoutEdit != NULL)
+			else if (HIWORD(wParam) == EN_KILLFOCUS && timeoutEditPtr_ != NULL)
 			{
 				// Auto-correction
-				int timeoutValue = GetEditValue(m_pTimeoutEdit->GetSafeHwnd(), maxTimeoutDigits);
-				if (!ValidateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut))
-					m_pTimeoutEdit->SetWindowText(String::fromNumber(timeoutValue));
+				int timeoutValue = getEditValue(timeoutEditPtr_->GetSafeHwnd(), maxTimeoutDigits);
+				if (!validateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut))
+					timeoutEditPtr_->SetWindowText(String::fromNumber(timeoutValue));
 
 				// Update timeout spin position
-				if (m_pTimeoutSpin != NULL)
-					m_pTimeoutSpin->SetPos(timeoutValue);
+				if (timeoutSpinPtr_ != NULL)
+					timeoutSpinPtr_->SetPos(timeoutValue);
 
 				return true;
 			}
@@ -339,20 +339,20 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 		case IDC_MSGSTYLESET_HMARGIN_EDIT:
 		{
-			if (HIWORD(wParam) == EN_CHANGE && m_pHorizontalMarginEdit != NULL)
+			if (HIWORD(wParam) == EN_CHANGE && horizontalMarginEditPtr_ != NULL)
 			{
 				// Validation
-				int nHMargin = GetEditValue(m_pHorizontalMarginEdit->GetSafeHwnd(), maxMarginValDigits);
-				ValidateEditValue(m_pHorizontalMarginEdit->GetSafeHwnd(), nHMargin, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal, true);
+				int marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
+				validateEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), marginHorizontal, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal, true);
 
 				return true;
 			}
-			else if (HIWORD(wParam) == EN_KILLFOCUS && m_pHorizontalMarginEdit != NULL)
+			else if (HIWORD(wParam) == EN_KILLFOCUS && horizontalMarginEditPtr_ != NULL)
 			{
 				// Auto-correction
-				int nHMargin = GetEditValue(m_pHorizontalMarginEdit->GetSafeHwnd(), maxMarginValDigits);
-				if (!ValidateAndCorrect(nHMargin, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal))
-					m_pHorizontalMarginEdit->SetWindowText(String::fromNumber(nHMargin));
+				int marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
+				if (!validateAndCorrect(marginHorizontal, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal))
+					horizontalMarginEditPtr_->SetWindowText(String::fromNumber(marginHorizontal));
 
 				return true;
 			}
@@ -362,20 +362,20 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 		case IDC_MSGSTYLESET_VMARGIN_EDIT:
 		{
-			if (HIWORD(wParam) == EN_CHANGE && m_pVerticalMarginEdit != NULL)
+			if (HIWORD(wParam) == EN_CHANGE && verticalMarginEditPtr_ != NULL)
 			{
 				// Validation
-				int nVMargin = GetEditValue(m_pVerticalMarginEdit->GetSafeHwnd(), maxMarginValDigits);
-				ValidateEditValue(m_pVerticalMarginEdit->GetSafeHwnd(), nVMargin, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal, true);
+				int marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
+				validateEditValue(verticalMarginEditPtr_->GetSafeHwnd(), marginVertical, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal, true);
 
 				return true;
 			}
-			else if (HIWORD(wParam) == EN_KILLFOCUS && m_pVerticalMarginEdit != NULL)
+			else if (HIWORD(wParam) == EN_KILLFOCUS && verticalMarginEditPtr_ != NULL)
 			{
 				// Auto-correction
-				int nVMargin = GetEditValue(m_pVerticalMarginEdit->GetSafeHwnd(), maxMarginValDigits);
-				if (!ValidateAndCorrect(nVMargin, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal))
-					m_pVerticalMarginEdit->SetWindowText(String::fromNumber(nVMargin));
+				int marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
+				if (!validateAndCorrect(marginVertical, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal))
+					verticalMarginEditPtr_->SetWindowText(String::fromNumber(marginVertical));
 
 				return true;
 			}
@@ -406,20 +406,20 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 
 		case WM_DRAWITEM:
 		{
-			LPDRAWITEMSTRUCT pDrawItemStruct = (LPDRAWITEMSTRUCT)lParam;
-			HBRUSH hFillBrush;
+			LPDRAWITEMSTRUCT drawItemStructPtr = (LPDRAWITEMSTRUCT)lParam;
+			HBRUSH fillBrushHandle;
 
-			switch (pDrawItemStruct->CtlID)
+			switch (drawItemStructPtr->CtlID)
 			{
 			case IDC_MSGSTYLESET_BKGRDCLR_PICKER:
-				hFillBrush = CreateSolidBrush(m_clrMsgBackground);
+				fillBrushHandle = CreateSolidBrush(messageBackgroundColor_);
 				break;
 			case IDC_MSGSTYLESET_TEXTCLR_PICKER:
-				hFillBrush = CreateSolidBrush(m_clrMsgText);
+				fillBrushHandle = CreateSolidBrush(messageTextColor_);
 				break;
 			case IDC_MSGSTYLESET_MSGICON_VIEW:
 			{
-				RedrawIconPreview(pDrawItemStruct);
+				redrawIconPreview(drawItemStructPtr);
 				return true;
 			}
 
@@ -427,33 +427,33 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 				return false;
 			}
 
-			FillRect(pDrawItemStruct->hDC, &pDrawItemStruct->rcItem, hFillBrush);
-			FrameRect(pDrawItemStruct->hDC, &pDrawItemStruct->rcItem, (HBRUSH)GetStockObject(BLACK_BRUSH));
-			DeleteObject(hFillBrush);
+			FillRect(drawItemStructPtr->hDC, &drawItemStructPtr->rcItem, fillBrushHandle);
+			FrameRect(drawItemStructPtr->hDC, &drawItemStructPtr->rcItem, (HBRUSH)GetStockObject(BLACK_BRUSH));
+			DeleteObject(fillBrushHandle);
 
 			return true;
 		}
 
 		case WM_PAINT:
 		{
-			if (m_pIconPreviewStatic != NULL)
-				m_pIconPreviewStatic->Invalidate();
+			if (iconPreviewStaticPtr_ != NULL)
+				iconPreviewStaticPtr_->Invalidate();
 
 			break;
 		}
 
 		case WM_NOTIFY:
 		{
-			LPNMHDR lpNMHDR = reinterpret_cast<LPNMHDR>(lParam);
-			if (lpNMHDR->code == UDN_DELTAPOS && lpNMHDR->idFrom == IDC_MSGSTYLESET_TIMEOUT_SPIN)
+			LPNMHDR notifyStructPtr = reinterpret_cast<LPNMHDR>(lParam);
+			if (notifyStructPtr->code == UDN_DELTAPOS && notifyStructPtr->idFrom == IDC_MSGSTYLESET_TIMEOUT_SPIN)
 			{
-				LPNMUPDOWN lpNMUpDown = reinterpret_cast<LPNMUPDOWN>(lpNMHDR);
-				int nNewPos = lpNMUpDown->iPos + lpNMUpDown->iDelta;
-				if (nNewPos >= RmdMsgStyleSet::minTimeOut && nNewPos <= RmdMsgStyleSet::maxTimeOut) {
-					if (m_pTimeoutEdit != NULL)
-						m_pTimeoutEdit->SetWindowText(String::fromNumber(nNewPos));
-					if (m_pTimeoutSpin != NULL)
-						m_pTimeoutSpin->SetPos(nNewPos);
+				LPNMUPDOWN upDownCtrlPtr = reinterpret_cast<LPNMUPDOWN>(notifyStructPtr);
+				int newPos = upDownCtrlPtr->iPos + upDownCtrlPtr->iDelta;
+				if (newPos >= RmdMsgStyleSet::minTimeOut && newPos <= RmdMsgStyleSet::maxTimeOut) {
+					if (timeoutEditPtr_ != NULL)
+						timeoutEditPtr_->SetWindowText(String::fromNumber(newPos));
+					if (timeoutSpinPtr_ != NULL)
+						timeoutSpinPtr_->SetPos(newPos);
 				}
 
 				return true;
@@ -479,9 +479,9 @@ void CRmdMsgStyleSetDlg::setupLanguage()
 
 	// Set dialog caption
 	String dialogCaption = getLanguageString(languageTablePtr, getDialogId());
-	if (m_flagDataSet == DataSetFlag::commonStyle)
+	if (flagDataSet_ == DataSetFlag::commonStyle)
 		dialogCaption += StringUtils::stringFormat(captionDetailFormat, getLanguageString(languageTablePtr, PWRRMD_STYLE_COMMONSTYLE));
-	else if (m_flagDataSet == DataSetFlag::customStyle)
+	else if (flagDataSet_ == DataSetFlag::customStyle)
 		dialogCaption += StringUtils::stringFormat(captionDetailFormat, getLanguageString(languageTablePtr, PWRRMD_STYLE_CUSTOMSTYLE));
 	this->setCaption(dialogCaption);
 
@@ -537,9 +537,9 @@ void CRmdMsgStyleSetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageT
 		case IDC_MSGSTYLESET_FONTNAME_COMBO:
 		{
 			// Initialization
-			if (m_pFontNamePickCombo == NULL) {
-				m_pFontNamePickCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTNAME_COMBO);
-				NULL_POINTER_BREAK(m_pFontNamePickCombo, return);
+			if (fontNamePickComboPtr_ == NULL) {
+				fontNamePickComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTNAME_COMBO);
+				NULL_POINTER_BREAK(fontNamePickComboPtr_, return);
 			}
 
 			// Enumerate all currently available font names
@@ -552,9 +552,9 @@ void CRmdMsgStyleSetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageT
 			}
 
 			// Parse to combo-box
-			m_pFontNamePickCombo->ResetContent();
+			fontNamePickComboPtr_->ResetContent();
 			for (String fontName : fontNames)
-				m_pFontNamePickCombo->AddString(fontName);
+				fontNamePickComboPtr_->AddString(fontName);
 
 			return;
 		}
@@ -562,15 +562,15 @@ void CRmdMsgStyleSetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageT
 		case IDC_MSGSTYLESET_FONTSIZE_COMBO:
 		{
 			// Initialization
-			if (m_pFontSizePickCombo == NULL) {
-				m_pFontSizePickCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTSIZE_COMBO);
-				NULL_POINTER_BREAK(m_pFontSizePickCombo, return);
+			if (fontSizePickComboPtr_ == NULL) {
+				fontSizePickComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTSIZE_COMBO);
+				NULL_POINTER_BREAK(fontSizePickComboPtr_, return);
 			}
 
 			// List-up available font size values
-			m_pFontSizePickCombo->ResetContent();
+			fontSizePickComboPtr_->ResetContent();
 			for (int fontSize = RmdMsgStyleSet::minFontSize; fontSize <= RmdMsgStyleSet::maxFontSize; fontSize++)
-				m_pFontSizePickCombo->AddString(String::fromNumber(fontSize));
+				fontSizePickComboPtr_->AddString(String::fromNumber(fontSize));
 
 			return;
 		}
@@ -578,15 +578,15 @@ void CRmdMsgStyleSetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageT
 		case IDC_MSGSTYLESET_ICONID_COMBO:
 		{
 			// Initialization
-			if (m_pIconIDPickCombo == NULL) {
-				m_pIconIDPickCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_ICONID_COMBO);
-				NULL_POINTER_BREAK(m_pIconIDPickCombo, return);
+			if (iconIdPickComboPtr_ == NULL) {
+				iconIdPickComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_ICONID_COMBO);
+				NULL_POINTER_BREAK(iconIdPickComboPtr_, return);
 			}
 
 			// List-up available system icon IDs
-			m_pIconIDPickCombo->ResetContent();
+			iconIdPickComboPtr_->ResetContent();
 			for (int index = 0; index < TABLE_SIZE(IDTable::SystemIcon); index++)
-				m_pIconIDPickCombo->AddString(getLanguageString(languageTablePtr, IDTable::SystemIcon[index].second));
+				iconIdPickComboPtr_->AddString(getLanguageString(languageTablePtr, IDTable::SystemIcon[index].second));
 
 			return;
 		}
@@ -594,15 +594,15 @@ void CRmdMsgStyleSetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageT
 		case IDC_MSGSTYLESET_DISPLAYPOS_COMBO:
 		{
 			// Initialization
-			if (m_pDisplayPosCombo == NULL) {
-				m_pDisplayPosCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_DISPLAYPOS_COMBO);
-				NULL_POINTER_BREAK(m_pDisplayPosCombo, return);
+			if (displayPosComboPtr_ == NULL) {
+				displayPosComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_DISPLAYPOS_COMBO);
+				NULL_POINTER_BREAK(displayPosComboPtr_, return);
 			}
 
 			// List-up available message display positions
-			m_pDisplayPosCombo->ResetContent();
+			displayPosComboPtr_->ResetContent();
 			for (int index = 0; index < TABLE_SIZE(IDTable::DisplayPosition); index++)
-				m_pDisplayPosCombo->AddString(getLanguageString(languageTablePtr, IDTable::DisplayPosition[index].second));
+				displayPosComboPtr_->AddString(getLanguageString(languageTablePtr, IDTable::DisplayPosition[index].second));
 
 			return;
 		}
@@ -620,121 +620,121 @@ void CRmdMsgStyleSetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageT
 void CRmdMsgStyleSetDlg::setupDialogItemState(void)
 {
 	// Initialize dialog items
-	if (m_pBkgrdColorPickBtn == NULL) {
-		m_pBkgrdColorPickBtn = (CButton*)GetDlgItem(IDC_MSGSTYLESET_BKGRDCLR_PICKER);
-		if (m_pBkgrdColorPickBtn == NULL) {
+	if (backgroundColorPickBtnPtr_ == NULL) {
+		backgroundColorPickBtnPtr_ = (CButton*)GetDlgItem(IDC_MSGSTYLESET_BKGRDCLR_PICKER);
+		if (backgroundColorPickBtnPtr_ == NULL) {
 			TRACE_ERROR("Error: Background color picker not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pTextColorPickBtn == NULL) {
-		m_pTextColorPickBtn = (CButton*)GetDlgItem(IDC_MSGSTYLESET_TEXTCLR_PICKER);
-		if (m_pTextColorPickBtn == NULL) {
+	if (textColorPickBtnPtr_ == NULL) {
+		textColorPickBtnPtr_ = (CButton*)GetDlgItem(IDC_MSGSTYLESET_TEXTCLR_PICKER);
+		if (textColorPickBtnPtr_ == NULL) {
 			TRACE_ERROR("Error: Text color picker not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pFontNamePickCombo == NULL) {
-		m_pFontNamePickCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTNAME_COMBO);
-		if (m_pFontNamePickCombo == NULL) {
+	if (fontNamePickComboPtr_ == NULL) {
+		fontNamePickComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTNAME_COMBO);
+		if (fontNamePickComboPtr_ == NULL) {
 			TRACE_ERROR("Error: Font name picker not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pFontSizePickCombo == NULL) {
-		m_pFontSizePickCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTSIZE_COMBO);
-		if (m_pFontSizePickCombo == NULL) {
+	if (fontSizePickComboPtr_ == NULL) {
+		fontSizePickComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTSIZE_COMBO);
+		if (fontSizePickComboPtr_ == NULL) {
 			TRACE_ERROR("Error: Font size picker not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pFontSizePickCombo == NULL) {
-		m_pFontSizePickCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTSIZE_COMBO);
-		if (m_pFontSizePickCombo == NULL) {
+	if (fontSizePickComboPtr_ == NULL) {
+		fontSizePickComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_FONTSIZE_COMBO);
+		if (fontSizePickComboPtr_ == NULL) {
 			TRACE_ERROR("Error: Font size picker not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pIconIDPickCombo == NULL) {
-		m_pIconIDPickCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_ICONID_COMBO);
-		if (m_pIconIDPickCombo == NULL) {
+	if (iconIdPickComboPtr_ == NULL) {
+		iconIdPickComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_ICONID_COMBO);
+		if (iconIdPickComboPtr_ == NULL) {
 			TRACE_ERROR("Error: IconID picker not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pIconSizeEdit == NULL) {
-		m_pIconSizeEdit = (CEdit*)GetDlgItem(IDC_MSGSTYLESET_ICONSIZE_EDIT);
-		if (m_pIconSizeEdit == NULL) {
+	if (iconSizeEditPtr_ == NULL) {
+		iconSizeEditPtr_ = (CEdit*)GetDlgItem(IDC_MSGSTYLESET_ICONSIZE_EDIT);
+		if (iconSizeEditPtr_ == NULL) {
 			TRACE_ERROR("Error: Icon size edit control not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pIconPositionOnTopRad == NULL) {
-		m_pIconPositionOnTopRad = (CButton*)GetDlgItem(IDC_MSGSTYLESET_ICONPOS_TOP_RAD);
-		if (m_pIconPositionOnTopRad == NULL) {
+	if (iconPositionOnTopRadPtr_ == NULL) {
+		iconPositionOnTopRadPtr_ = (CButton*)GetDlgItem(IDC_MSGSTYLESET_ICONPOS_TOP_RAD);
+		if (iconPositionOnTopRadPtr_ == NULL) {
 			TRACE_ERROR("Error: 'Icon on Top' radio button not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pIconPositionOnLeftRad == NULL) {
-		m_pIconPositionOnLeftRad = (CButton*)GetDlgItem(IDC_MSGSTYLESET_ICONPOS_LEFT_RAD);
-		if (m_pIconPositionOnLeftRad == NULL) {
+	if (iconPositionOnLeftRadPtr_ == NULL) {
+		iconPositionOnLeftRadPtr_ = (CButton*)GetDlgItem(IDC_MSGSTYLESET_ICONPOS_LEFT_RAD);
+		if (iconPositionOnLeftRadPtr_ == NULL) {
 			TRACE_ERROR("Error: 'Icon on Left' radio button not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pIconPreviewStatic == NULL) {
-		m_pIconPreviewStatic = (CStatic*)GetDlgItem(IDC_MSGSTYLESET_MSGICON_VIEW);
-		if (m_pIconPreviewStatic == NULL) {
+	if (iconPreviewStaticPtr_ == NULL) {
+		iconPreviewStaticPtr_ = (CStatic*)GetDlgItem(IDC_MSGSTYLESET_MSGICON_VIEW);
+		if (iconPreviewStaticPtr_ == NULL) {
 			TRACE_ERROR("Error: Icon preview control not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pTimeoutEdit == NULL) {
-		m_pTimeoutEdit = (CEdit*)GetDlgItem(IDC_MSGSTYLESET_TIMEOUT_EDIT);
-		if (m_pTimeoutEdit == NULL) {
+	if (timeoutEditPtr_ == NULL) {
+		timeoutEditPtr_ = (CEdit*)GetDlgItem(IDC_MSGSTYLESET_TIMEOUT_EDIT);
+		if (timeoutEditPtr_ == NULL) {
 			TRACE_ERROR("Error: Timeout edit control not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pTimeoutSpin == NULL) {
-		m_pTimeoutSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_MSGSTYLESET_TIMEOUT_SPIN);
-		if (m_pTimeoutSpin == NULL) {
+	if (timeoutSpinPtr_ == NULL) {
+		timeoutSpinPtr_ = (CSpinButtonCtrl*)GetDlgItem(IDC_MSGSTYLESET_TIMEOUT_SPIN);
+		if (timeoutSpinPtr_ == NULL) {
 			TRACE_ERROR("Error: Timeout spin control not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pDisplayPosCombo == NULL) {
-		m_pDisplayPosCombo = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_DISPLAYPOS_COMBO);
-		if (m_pDisplayPosCombo == NULL) {
+	if (displayPosComboPtr_ == NULL) {
+		displayPosComboPtr_ = (CComboBox*)GetDlgItem(IDC_MSGSTYLESET_DISPLAYPOS_COMBO);
+		if (displayPosComboPtr_ == NULL) {
 			TRACE_ERROR("Error: Display position picker not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pHorizontalMarginEdit == NULL) {
-		m_pHorizontalMarginEdit = (CEdit*)GetDlgItem(IDC_MSGSTYLESET_HMARGIN_EDIT);
-		if (m_pHorizontalMarginEdit == NULL) {
+	if (horizontalMarginEditPtr_ == NULL) {
+		horizontalMarginEditPtr_ = (CEdit*)GetDlgItem(IDC_MSGSTYLESET_HMARGIN_EDIT);
+		if (horizontalMarginEditPtr_ == NULL) {
 			TRACE_ERROR("Error: H-Margin edit control not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pVerticalMarginEdit == NULL) {
-		m_pVerticalMarginEdit = (CEdit*)GetDlgItem(IDC_MSGSTYLESET_VMARGIN_EDIT);
-		if (m_pVerticalMarginEdit == NULL) {
+	if (verticalMarginEditPtr_ == NULL) {
+		verticalMarginEditPtr_ = (CEdit*)GetDlgItem(IDC_MSGSTYLESET_VMARGIN_EDIT);
+		if (verticalMarginEditPtr_ == NULL) {
 			TRACE_ERROR("Error: V-Margin edit control not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
@@ -742,34 +742,34 @@ void CRmdMsgStyleSetDlg::setupDialogItemState(void)
 	}
 
 	// Setup timeout spin-edit
-	if (m_pTimeoutSpin != NULL) {
+	if (timeoutSpinPtr_ != NULL) {
 
 		// Set maximum length
-		if (m_pTimeoutEdit == NULL) return;
-		m_pTimeoutEdit->SetLimitText(maxTimeoutDigits);
+		if (timeoutEditPtr_ == NULL) return;
+		timeoutEditPtr_->SetLimitText(maxTimeoutDigits);
 
 		// Set buddy: Timeout edit control
-		m_pTimeoutSpin->SetBuddy(m_pTimeoutEdit);
+		timeoutSpinPtr_->SetBuddy(timeoutEditPtr_);
 
 		// Set spin edit value
-		m_pTimeoutSpin->SetRange(RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
-		m_pTimeoutSpin->SetPos(RmdMsgStyleSet::defaultTimeout);
+		timeoutSpinPtr_->SetRange(RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
+		timeoutSpinPtr_->SetPos(RmdMsgStyleSet::defaultTimeout);
 	}
 
 	// Setup font size picker
-	if (m_pFontSizePickCombo != NULL) {
-		HWND hFontSizeEdit = ::GetWindow(m_pFontSizePickCombo->GetSafeHwnd(), GW_CHILD);
-		SetWindowLongPtr(hFontSizeEdit, GWL_STYLE, GetWindowLongPtr(hFontSizeEdit, GWL_STYLE) | ES_CENTER);
-		m_pFontSizePickCombo->SendMessage(CB_LIMITTEXT, (WPARAM)maxFontSizeDigits, 0);
+	if (fontSizePickComboPtr_ != NULL) {
+		HWND fontSizeEditHandle = ::GetWindow(fontSizePickComboPtr_->GetSafeHwnd(), GW_CHILD);
+		SetWindowLongPtr(fontSizeEditHandle, GWL_STYLE, GetWindowLongPtr(fontSizeEditHandle, GWL_STYLE) | ES_CENTER);
+		fontSizePickComboPtr_->SendMessage(CB_LIMITTEXT, (WPARAM)maxFontSizeDigits, 0);
 	}
 
 	// Set maximum length for edit-boxes
-	if (m_pIconSizeEdit != NULL)
-		m_pIconSizeEdit->SetLimitText(maxIconSizeDigits);
-	if (m_pHorizontalMarginEdit != NULL)
-		m_pHorizontalMarginEdit->SetLimitText(maxMarginValDigits);
-	if (m_pVerticalMarginEdit != NULL)
-		m_pVerticalMarginEdit->SetLimitText(maxMarginValDigits);
+	if (iconSizeEditPtr_ != NULL)
+		iconSizeEditPtr_->SetLimitText(maxIconSizeDigits);
+	if (horizontalMarginEditPtr_ != NULL)
+		horizontalMarginEditPtr_->SetLimitText(maxMarginValDigits);
+	if (verticalMarginEditPtr_ != NULL)
+		verticalMarginEditPtr_->SetLimitText(maxMarginValDigits);
 
 	// Default
 	SDialog::setupDialogItemState();
@@ -783,14 +783,14 @@ void CRmdMsgStyleSetDlg::setupDialogItemState(void)
 void CRmdMsgStyleSetDlg::refreshDialogItemState(bool isRecheckState /* = false */)
 {
 	// Redraw background/text color picker
-	if (m_pBkgrdColorPickBtn != NULL)
-		m_pBkgrdColorPickBtn->RedrawWindow();
-	if (m_pTextColorPickBtn != NULL)
-		m_pTextColorPickBtn->RedrawWindow();
+	if (backgroundColorPickBtnPtr_ != NULL)
+		backgroundColorPickBtnPtr_->RedrawWindow();
+	if (textColorPickBtnPtr_ != NULL)
+		textColorPickBtnPtr_->RedrawWindow();
 
 	// Redraw icon preview
-	if (m_pIconPreviewStatic != NULL)
-		::InvalidateRect(m_pIconPreviewStatic->GetSafeHwnd(), NULL, true);
+	if (iconPreviewStaticPtr_ != NULL)
+		::InvalidateRect(iconPreviewStaticPtr_->GetSafeHwnd(), NULL, true);
 
 	// Default
 	SDialog::refreshDialogItemState(isRecheckState);
@@ -798,44 +798,44 @@ void CRmdMsgStyleSetDlg::refreshDialogItemState(bool isRecheckState /* = false *
 
 /**
  * @brief	Refresh and redraw the icon preview static control
- * @param	lpDrawItemStruct - Item drawing data
+ * @param	drawItemStructPtr - Item drawing data
  * @return	None
  */
-void CRmdMsgStyleSetDlg::RedrawIconPreview(LPDRAWITEMSTRUCT lpDrawItemStruct)
+void CRmdMsgStyleSetDlg::redrawIconPreview(LPDRAWITEMSTRUCT drawItemStructPtr)
 {
 	// Validation
-	if (lpDrawItemStruct == NULL) return;
+	if (drawItemStructPtr == NULL) return;
 
 	// Device context handle
-	HDC hDC = lpDrawItemStruct->hDC;
+	HDC hDC = drawItemStructPtr->hDC;
 
 	// Icon ID
-	int nIconID = RmdMsgStyleSet::defaultIconID;
-	if (m_pIconIDPickCombo != NULL) {
-		int currenSelection = m_pIconIDPickCombo->GetCurSel();
-		nIconID = IDTable::SystemIcon[currenSelection].first;
+	int iconId = RmdMsgStyleSet::defaultIconID;
+	if (iconIdPickComboPtr_ != NULL) {
+		int currenSelection = iconIdPickComboPtr_->GetCurSel();
+		iconId = IDTable::SystemIcon[currenSelection].first;
 	}
 
 	// Icon size
 	int iconSize = RmdMsgStyleSet::defaultIconSize;
-	if (m_pIconSizeEdit != NULL) {
-		iconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
-		ValidateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+	if (iconSizeEditPtr_ != NULL) {
+		iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), maxIconSizeDigits);
+		validateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
 	}
 	int cx = iconSize;
 	int cy = iconSize;
 
 	// Erase the icon preview control before redrawing
-	RECT rcPreviewCtrl = lpDrawItemStruct->rcItem;
-	HBRUSH hFillBrush = GetSysColorBrush(COLOR_3DFACE);
-	FillRect(hDC, &rcPreviewCtrl, hFillBrush);
+	RECT previewCtrlRect = drawItemStructPtr->rcItem;
+	HBRUSH fillBrushHandle = GetSysColorBrush(COLOR_3DFACE);
+	FillRect(hDC, &previewCtrlRect, fillBrushHandle);
 
 	// Draw area rect
 	Rect drawAreaRect;
-	drawAreaRect._top = rcPreviewCtrl.top;
-	drawAreaRect._left = rcPreviewCtrl.left;
-	drawAreaRect._bottom = rcPreviewCtrl.bottom;
-	drawAreaRect._right = rcPreviewCtrl.right;
+	drawAreaRect._top = previewCtrlRect.top;
+	drawAreaRect._left = previewCtrlRect.left;
+	drawAreaRect._bottom = previewCtrlRect.bottom;
+	drawAreaRect._right = previewCtrlRect.right;
 
 	// Icon position
 	Point iconDrawPosition = drawAreaRect.topLeft();
@@ -845,10 +845,10 @@ void CRmdMsgStyleSetDlg::RedrawIconPreview(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	// Load system icon by ID and scale size
 	HICON hIcon = NULL;
-	HRESULT hResult = ::LoadIconWithScaleDown(NULL, MAKEINTRESOURCE(nIconID), cx, cy, &hIcon);
+	HRESULT result = ::LoadIconWithScaleDown(NULL, MAKEINTRESOURCE(iconId), cx, cy, &hIcon);
 
 	// Load icon failed
-	if ((hResult != S_OK) || (hIcon == NULL)) {
+	if ((result != S_OK) || (hIcon == NULL)) {
 		TRACE_ERROR("Error: Load icon failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 	}
@@ -860,43 +860,43 @@ void CRmdMsgStyleSetDlg::RedrawIconPreview(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 /**
  * @brief	Return the input value of the specified edit control
- * @param	hEditCtrl	- Edit control handle
+ * @param	editCtrlHandle	- Edit control handle
  * @param	maxDigits	- Maximum number of digits
  * @return	int
  */
-int CRmdMsgStyleSetDlg::GetEditValue(HWND hEditCtrl, unsigned maxDigits)
+int CRmdMsgStyleSetDlg::getEditValue(HWND editCtrlHandle, unsigned maxDigits)
 {
 	// Argument validation
-	if (hEditCtrl == NULL || maxDigits <= 0)
+	if (editCtrlHandle == NULL || maxDigits <= 0)
 		return false;
 
 	// Get the value
 	const size_t maxBuffSize = maxDigits + 1;
 	std::vector<wchar_t> tempBuff(maxBuffSize);
-	::GetWindowText(hEditCtrl, tempBuff.data(), static_cast<int>(maxBuffSize));
+	::GetWindowText(editCtrlHandle, tempBuff.data(), static_cast<int>(maxBuffSize));
 	return _wtoi(tempBuff.data());
 }
 
 /**
  * @brief	Validate, auto-correct and display value out of bounds warning for edit controls
- * @param	hEditCtrl	- Edit control handle
+ * @param	editCtrlHandle	- Edit control handle
  * @param	maxDigits	- Maximum number of digits
  * @param	minVal		- Minimium value
  * @param	maxVal		- Maximum value
  * @param	showWarning - Whether to show warning
  * @return	true/false
  */
-bool CRmdMsgStyleSetDlg::ValidateEditValue(HWND hEditCtrl, int& inputVal, int minVal, int maxVal, bool showWarning /* = true */)
+bool CRmdMsgStyleSetDlg::validateEditValue(HWND editCtrlHandle, int& inputVal, int minVal, int maxVal, bool showWarning /* = true */)
 {
 	// Validation & auto-correction
-	if (ValidateAndCorrect(inputVal, minVal, maxVal)) {
-		if (hEditCtrl != NULL)
-			::SendMessage(hEditCtrl, EM_HIDEBALLOONTIP, 0, 0);
+	if (validateAndCorrect(inputVal, minVal, maxVal)) {
+		if (editCtrlHandle != NULL)
+			::SendMessage(editCtrlHandle, EM_HIDEBALLOONTIP, 0, 0);
 		return true;
 	}
 	else {
 		// Show warning
-		if (hEditCtrl != NULL) {
+		if (editCtrlHandle != NULL) {
 			if (showWarning)
 			{
 				EDITBALLOONTIP editBalloonTip = { sizeof(EDITBALLOONTIP) };
@@ -904,10 +904,10 @@ bool CRmdMsgStyleSetDlg::ValidateEditValue(HWND hEditCtrl, int& inputVal, int mi
 				editBalloonTip.pszText = StringUtils::stringFormat(balloonFormatInvalidValue, minVal, maxVal);
 				editBalloonTip.ttiIcon = TTI_WARNING;
 
-				::SendMessage(hEditCtrl, EM_SHOWBALLOONTIP, 0, reinterpret_cast<LPARAM>(&editBalloonTip));
+				::SendMessage(editCtrlHandle, EM_SHOWBALLOONTIP, 0, reinterpret_cast<LPARAM>(&editBalloonTip));
 			}
 			else {
-				::SendMessage(hEditCtrl, EM_HIDEBALLOONTIP, 0, 0);
+				::SendMessage(editCtrlHandle, EM_HIDEBALLOONTIP, 0, 0);
 			}
 		}
 
@@ -933,85 +933,85 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 		int currenSelection = 0;
 
 		// Background color
-		m_rmsMsgStyleTemp.setBkgrdColor(m_clrMsgBackground);
+		tempMessageStyleData_.setBkgrdColor(messageBackgroundColor_);
 
 		// Text color
-		m_rmsMsgStyleTemp.setTextColor(m_clrMsgText);
+		tempMessageStyleData_.setTextColor(messageTextColor_);
 
 		// Font name
 		String fontName = RmdMsgStyleSet::defaultFontName;
-		if (m_pFontNamePickCombo != NULL) {
+		if (fontNamePickComboPtr_ != NULL) {
 			wchar_t tempBuff[Constant::Max::StringLength];
-			currenSelection = m_pFontNamePickCombo->GetCurSel();
-			m_pFontNamePickCombo->GetLBText(currenSelection, tempBuff);
+			currenSelection = fontNamePickComboPtr_->GetCurSel();
+			fontNamePickComboPtr_->GetLBText(currenSelection, tempBuff);
 			fontName = tempBuff;
 		}
-		m_rmsMsgStyleTemp.setFontName(fontName);
+		tempMessageStyleData_.setFontName(fontName);
 
 		// Font size
-		int nFontSize = RmdMsgStyleSet::defaultFontSize;
-		if (m_pFontSizePickCombo != NULL) {
-			HWND hFontSizeEdit = ::GetWindow(m_pFontSizePickCombo->GetSafeHwnd(), GW_CHILD);
-			nFontSize = GetEditValue(hFontSizeEdit, maxFontSizeDigits);
-			ValidateAndCorrect(nFontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize);
+		int fontSize = RmdMsgStyleSet::defaultFontSize;
+		if (fontSizePickComboPtr_ != NULL) {
+			HWND fontSizeEditHandle = ::GetWindow(fontSizePickComboPtr_->GetSafeHwnd(), GW_CHILD);
+			fontSize = getEditValue(fontSizeEditHandle, maxFontSizeDigits);
+			validateAndCorrect(fontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize);
 		}
-		m_rmsMsgStyleTemp.setFontSize(nFontSize);
+		tempMessageStyleData_.setFontSize(fontSize);
 
 		// Icon ID
-		int nIconID = RmdMsgStyleSet::defaultIconID;
-		if (m_pIconIDPickCombo != NULL) {
-			currenSelection = m_pIconIDPickCombo->GetCurSel();
-			nIconID = IDTable::SystemIcon[currenSelection].first;
+		int iconId = RmdMsgStyleSet::defaultIconID;
+		if (iconIdPickComboPtr_ != NULL) {
+			currenSelection = iconIdPickComboPtr_->GetCurSel();
+			iconId = IDTable::SystemIcon[currenSelection].first;
 		}
-		m_rmsMsgStyleTemp.setIconId(nIconID);
+		tempMessageStyleData_.setIconId(iconId);
 
 		// Icon size
 		int iconSize = RmdMsgStyleSet::defaultIconSize;
-		if (m_pIconSizeEdit != NULL) {
-			iconSize = GetEditValue(m_pIconSizeEdit->GetSafeHwnd(), maxIconSizeDigits);
-			ValidateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+		if (iconSizeEditPtr_ != NULL) {
+			iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), maxIconSizeDigits);
+			validateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
 		}
-		m_rmsMsgStyleTemp.setIconSize(iconSize);
+		tempMessageStyleData_.setIconSize(iconSize);
 
 		// Icon position
-		int nIconPos = RmdMsgStyleSet::defaultIconPosition;
-		if (m_pIconPositionOnTopRad != NULL && m_pIconPositionOnTopRad->GetCheck())
-			nIconPos = RmdMsgStyleSet::IconPosition::IconOnTheTop;
-		else if (m_pIconPositionOnLeftRad != NULL && m_pIconPositionOnLeftRad->GetCheck())
-			nIconPos = RmdMsgStyleSet::IconPosition::IconOnTheLeft;
-		m_rmsMsgStyleTemp.setIconPosition(nIconPos);
+		int iconPosition = RmdMsgStyleSet::defaultIconPosition;
+		if (iconPositionOnTopRadPtr_ != NULL && iconPositionOnTopRadPtr_->GetCheck())
+			iconPosition = RmdMsgStyleSet::IconPosition::IconOnTheTop;
+		else if (iconPositionOnLeftRadPtr_ != NULL && iconPositionOnLeftRadPtr_->GetCheck())
+			iconPosition = RmdMsgStyleSet::IconPosition::IconOnTheLeft;
+		tempMessageStyleData_.setIconPosition(iconPosition);
 
 		// Timeout
 		int timeoutValue = RmdMsgStyleSet::defaultTimeout;
-		if (m_pTimeoutSpin != NULL) {
-			timeoutValue = m_pTimeoutSpin->GetPos();
-			ValidateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
+		if (timeoutSpinPtr_ != NULL) {
+			timeoutValue = timeoutSpinPtr_->GetPos();
+			validateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
 		}
-		m_rmsMsgStyleTemp.setTimeout(timeoutValue);
+		tempMessageStyleData_.setTimeout(timeoutValue);
 
 		// Display position
-		int nDisplayPos = RmdMsgStyleSet::defaultDisplayPosition;
-		if (m_pDisplayPosCombo != NULL) {
-			currenSelection = m_pDisplayPosCombo->GetCurSel();
-			nDisplayPos = IDTable::DisplayPosition[currenSelection].first;
+		int displayPosition = RmdMsgStyleSet::defaultDisplayPosition;
+		if (displayPosComboPtr_ != NULL) {
+			currenSelection = displayPosComboPtr_->GetCurSel();
+			displayPosition = IDTable::DisplayPosition[currenSelection].first;
 		}
-		m_rmsMsgStyleTemp.setDisplayPosition(nDisplayPos);
+		tempMessageStyleData_.setDisplayPosition(displayPosition);
 
 		// Horizontal margin
-		int nHMargin = RmdMsgStyleSet::defaultHorizontalMargin;
-		if (m_pHorizontalMarginEdit != NULL) {
-			nHMargin = GetEditValue(m_pHorizontalMarginEdit->GetSafeHwnd(), maxMarginValDigits);
-			ValidateAndCorrect(iconSize, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+		int marginHorizontal = RmdMsgStyleSet::defaultHorizontalMargin;
+		if (horizontalMarginEditPtr_ != NULL) {
+			marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
+			validateAndCorrect(iconSize, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
 		}
-		m_rmsMsgStyleTemp.setHorizontalMargin(nHMargin);
+		tempMessageStyleData_.setHorizontalMargin(marginHorizontal);
 
 		// Vertical margin
-		int nVMargin = RmdMsgStyleSet::defaultVerticalMargin;
-		if (m_pVerticalMarginEdit != NULL) {
-			nVMargin = GetEditValue(m_pVerticalMarginEdit->GetSafeHwnd(), maxMarginValDigits);
-			ValidateAndCorrect(nVMargin, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+		int marginVertical = RmdMsgStyleSet::defaultVerticalMargin;
+		if (verticalMarginEditPtr_ != NULL) {
+			marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
+			validateAndCorrect(marginVertical, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
 		}
-		m_rmsMsgStyleTemp.setVerticalMargin(nVMargin);
+		tempMessageStyleData_.setVerticalMargin(marginVertical);
 	}
 	else {
 
@@ -1025,79 +1025,79 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 		LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 		// Background color
-		m_clrMsgBackground = m_rmsMsgStyleTemp.getBkgrdColor();
+		messageBackgroundColor_ = tempMessageStyleData_.getBkgrdColor();
 
 		// Text color
-		m_clrMsgText = m_rmsMsgStyleTemp.getTextColor();
+		messageTextColor_ = tempMessageStyleData_.getTextColor();
 
 		// Font name
-		String fontName = m_rmsMsgStyleTemp.getFontName();
-		if (m_pFontNamePickCombo != NULL)
-			m_pFontNamePickCombo->SelectString(-1, fontName);
+		String fontName = tempMessageStyleData_.getFontName();
+		if (fontNamePickComboPtr_ != NULL)
+			fontNamePickComboPtr_->SelectString(-1, fontName);
 
 		// Font size
-		int nFontSize = m_rmsMsgStyleTemp.getFontSize();
-		ValidateAndCorrect(nFontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize);
-		if (m_pFontSizePickCombo != NULL) {
-			String fontSizeStr = String::fromNumber(nFontSize);
-			m_pFontSizePickCombo->SelectString(-1, fontSizeStr);
+		int fontSize = tempMessageStyleData_.getFontSize();
+		validateAndCorrect(fontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize);
+		if (fontSizePickComboPtr_ != NULL) {
+			String fontSizeStr = String::fromNumber(fontSize);
+			fontSizePickComboPtr_->SelectString(-1, fontSizeStr);
 		}
 
 		// Icon ID
-		int nIconID = m_rmsMsgStyleTemp.getIconId();
-		if (m_pIconIDPickCombo != NULL) {
-			String iconName = getLanguageString(languageTablePtr, GetPairedID(IDTable::SystemIcon, nIconID));
+		int iconId = tempMessageStyleData_.getIconId();
+		if (iconIdPickComboPtr_ != NULL) {
+			String iconName = getLanguageString(languageTablePtr, getPairedID(IDTable::SystemIcon, iconId));
 			if (IS_NOT_NULL_STRING(iconName))
-				m_pIconIDPickCombo->SelectString(-1, iconName);
+				iconIdPickComboPtr_->SelectString(-1, iconName);
 		}
 
 		// Icon size
-		int iconSize = m_rmsMsgStyleTemp.getIconSize();
-		ValidateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
-		if (m_pIconSizeEdit != NULL) {
+		int iconSize = tempMessageStyleData_.getIconSize();
+		validateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+		if (iconSizeEditPtr_ != NULL) {
 			String iconSizeStr = String::fromNumber(iconSize);
-			m_pIconSizeEdit->SetWindowText(iconSizeStr);
+			iconSizeEditPtr_->SetWindowText(iconSizeStr);
 		}
 
 		// Icon position
-		int nIconPos = m_rmsMsgStyleTemp.getIconPosition();
-		if (m_pIconPositionOnTopRad != NULL)
-			m_pIconPositionOnTopRad->SetCheck(nIconPos == RmdMsgStyleSet::IconPosition::IconOnTheTop);
-		if (m_pIconPositionOnLeftRad != NULL)
-			m_pIconPositionOnLeftRad->SetCheck(nIconPos == RmdMsgStyleSet::IconPosition::IconOnTheLeft);
+		int iconPosition = tempMessageStyleData_.getIconPosition();
+		if (iconPositionOnTopRadPtr_ != NULL)
+			iconPositionOnTopRadPtr_->SetCheck(iconPosition == RmdMsgStyleSet::IconPosition::IconOnTheTop);
+		if (iconPositionOnLeftRadPtr_ != NULL)
+			iconPositionOnLeftRadPtr_->SetCheck(iconPosition == RmdMsgStyleSet::IconPosition::IconOnTheLeft);
 
 		// Timeout
-		int timeoutValue = m_rmsMsgStyleTemp.getTimeout();
-		ValidateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
-		if (m_pTimeoutEdit != NULL) {
+		int timeoutValue = tempMessageStyleData_.getTimeout();
+		validateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
+		if (timeoutEditPtr_ != NULL) {
 			String timeOutValStr = String::fromNumber(timeoutValue);
-			m_pTimeoutEdit->SetWindowText(timeOutValStr);
+			timeoutEditPtr_->SetWindowText(timeOutValStr);
 		}
-		if (m_pTimeoutSpin != NULL)
-			m_pTimeoutSpin->SetPos(timeoutValue);
+		if (timeoutSpinPtr_ != NULL)
+			timeoutSpinPtr_->SetPos(timeoutValue);
 
 		// Display position
-		int nDisplayPos = m_rmsMsgStyleTemp.getDisplayPosition();
-		if (m_pDisplayPosCombo != NULL) {
-			String displayPosStr = getLanguageString(languageTablePtr, GetPairedID(IDTable::DisplayPosition, nDisplayPos));
+		int displayPosition = tempMessageStyleData_.getDisplayPosition();
+		if (displayPosComboPtr_ != NULL) {
+			String displayPosStr = getLanguageString(languageTablePtr, getPairedID(IDTable::DisplayPosition, displayPosition));
 			if (IS_NOT_NULL_STRING(displayPosStr))
-				m_pDisplayPosCombo->SelectString(-1, displayPosStr);
+				displayPosComboPtr_->SelectString(-1, displayPosStr);
 		}
 
 		// Horizontal margin
-		int nHMargin = m_rmsMsgStyleTemp.getHorizontalMargin();
-		ValidateAndCorrect(nHMargin, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
-		if (m_pHorizontalMarginEdit != NULL) {
-			String marginValStr = String::fromNumber(nHMargin);
-			m_pHorizontalMarginEdit->SetWindowText(marginValStr);
+		int marginHorizontal = tempMessageStyleData_.getHorizontalMargin();
+		validateAndCorrect(marginHorizontal, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+		if (horizontalMarginEditPtr_ != NULL) {
+			String marginValStr = String::fromNumber(marginHorizontal);
+			horizontalMarginEditPtr_->SetWindowText(marginValStr);
 		}
 
 		// Vertical margin
-		int nVMargin = m_rmsMsgStyleTemp.getVerticalMargin();
-		ValidateAndCorrect(nVMargin, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
-		if (m_pVerticalMarginEdit != NULL) {
-			String marginValStr = String::fromNumber(nVMargin);
-			m_pVerticalMarginEdit->SetWindowText(marginValStr);
+		int marginVertical = tempMessageStyleData_.getVerticalMargin();
+		validateAndCorrect(marginVertical, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+		if (verticalMarginEditPtr_ != NULL) {
+			String marginValStr = String::fromNumber(marginVertical);
+			verticalMarginEditPtr_->SetWindowText(marginValStr);
 		}
 
 		// Update data

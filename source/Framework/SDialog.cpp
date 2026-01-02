@@ -1475,9 +1475,9 @@ void SDialog::outputMenuLog(USHORT eventId, unsigned menuItemId)
 	// Prepare menu event log info
 	// Get menu item title from language table
 	String menuItemCaption;
-	LANGTABLE_PTR pLanguage = ((SWinApp*)AfxGetApp())->getAppLanguage();
-	if (pLanguage != NULL) {
-		menuItemCaption = getLanguageString(pLanguage, menuItemId);
+	LANGTABLE_PTR languageTablePtr = ((SWinApp*)AfxGetApp())->getAppLanguage();
+	if (languageTablePtr != NULL) {
+		menuItemCaption = getLanguageString(languageTablePtr, menuItemId);
 	}
 
 	// Detail info

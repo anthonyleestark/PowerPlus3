@@ -136,7 +136,7 @@ bool AppRegistry::DeleteRegistrySection(const wchar_t* sectionName, const wchar_
 /**
  * @brief	Using for reading/writing registry profile info values
  * @param	keyName	- Key name
- * @param	nRef	- Result integer value (ref-value)
+ * @param	referValue	- Result integer value (ref-value)
  * @param	value	- Value to write (integer)
  * @return	bool - Result of reading/writing process
  */
@@ -184,7 +184,7 @@ bool AppRegistry::WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueS
 /**
  * @brief	Using for reading/writing registry config values
  * @param	keyName - Key name
- * @param	nRef	- Result value (ref-value)
+ * @param	referValue	- Result value (ref-value)
  * @param	value	- Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -215,7 +215,7 @@ bool AppRegistry::DeleteConfigSection(void)
 /**
  * @brief	Using for reading/writing registry default schedule values
  * @param	keyName - Key name
- * @param	nRef	- Result value (ref-value)
+ * @param	referValue	- Result value (ref-value)
  * @param	value	- Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -236,7 +236,7 @@ bool AppRegistry::WriteDefaultSchedule(const wchar_t* keyName, int value)
 /**
  * @brief	Using for reading/writing registry schedule extra item number values
  * @param	keyName - Key name
- * @param	nRef	- Result value (ref-value)
+ * @param	referValue	- Result value (ref-value)
  * @param	value	- Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -258,7 +258,7 @@ bool AppRegistry::WriteScheduleExtraItemNum(const wchar_t* keyName, int value)
  * @brief	Using for reading/writing registry schedule extra item values
  * @param	itemIndex  - Schedule extra item index
  * @param	keyName		- Key name
- * @param	nRef	    - Result value (ref-value)
+ * @param	referValue	    - Result value (ref-value)
  * @param	value	    - Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -307,7 +307,7 @@ bool AppRegistry::DeleteScheduleSection(void)
 /**
  * @brief	Using for reading/writing registry hotkeyset item number values
  * @param	keyName - Key name
- * @param	nRef	- Result value (ref-value)
+ * @param	referValue	- Result value (ref-value)
  * @param	value	- Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -329,7 +329,7 @@ bool AppRegistry::WriteHotkeyItemNum(const wchar_t* keyName, int value)
  * @brief	Using for reading/writing registry hotkeyset item values
  * @param	itemIndex  - Hotkey item index
  * @param	keyName		- Key name
- * @param	nRef	    - Result value (ref-value)
+ * @param	referValue	    - Result value (ref-value)
  * @param	value	    - Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -375,7 +375,7 @@ bool AppRegistry::DeleteHotkeySetSection(void)
 /**
  * @brief	Using for reading/writing registry Power Reminder common style data
  * @param	keyName - Key name
- * @param	nRef	- Result value (ref-value)
+ * @param	referValue	- Result value (ref-value)
  * @param	value	- Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -417,7 +417,7 @@ bool AppRegistry::WritePwrReminderCommonStyle(const wchar_t* keyName, const wcha
 /**
  * @brief	Using for reading/writing registry Power Reminder item number values
  * @param	keyName - Key name
- * @param	nRef	- Result value (ref-value)
+ * @param	referValue	- Result value (ref-value)
  * @param	value	- Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -439,7 +439,7 @@ bool AppRegistry::WritePwrReminderItemNum(const wchar_t* keyName, int value)
  * @brief	Using for reading/writing registry Power Reminder item values
  * @param	itemIndex  - Hotkey item index
  * @param	keyName - Key name
- * @param	nRef	- Result value (integer) (ref-value)
+ * @param	referValue	- Result value (integer) (ref-value)
  * @param	value	- Value to write (integer)
  * @return	bool - Result of reading/writing process
  */
@@ -511,7 +511,7 @@ bool AppRegistry::DeletePwrReminderSection(void)
  * @brief	Using for reading/writing registry layout info values
  * @param	subSectionName  - Subsection name
  * @param	keyName			- Key name
- * @param	nRef			- Result value (ref-value)
+ * @param	referValue			- Result value (ref-value)
  * @param	value			- Value to write
  * @return	bool - Result of reading/writing process
  */
@@ -564,7 +564,7 @@ bool AppRegistry::WriteSysEventTracking(const wchar_t* keyName, const wchar_t* v
  * @brief	Using for reading/writing registry global data values
  * @param	subSectionName  - Subsection name
  * @param	keyName			- Key name
- * @param	nRef			- Result value (integer/ref-value)
+ * @param	referValue			- Result value (integer/ref-value)
  * @param	value			- Value to write (integer)
  * @param	strRef			- Result value (integer/ref-value)
  * @param	valueString		- Value to write (string)

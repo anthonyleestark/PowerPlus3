@@ -405,20 +405,20 @@ String LogItem::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log time
-	logKey = GetString(StringTable::LogKey, BaseLog::Time);
+	logKey = getString(StringTable::LogKey, BaseLog::Time);
 	jsonData.AddString(logKey, FormatDateTime());
 
 	// Process ID
-	logKey = GetString(StringTable::LogKey, BaseLog::PID);
+	logKey = getString(StringTable::LogKey, BaseLog::PID);
 	jsonData.AddInteger(logKey, m_dwProcessID);
 
 	// Log category
-	logKey = GetString(StringTable::LogKey, BaseLog::LogCategory);
+	logKey = getString(StringTable::LogKey, BaseLog::LogCategory);
 	logValue = getLanguageString(pDefLang, m_usCategory);
 	jsonData.AddString(logKey, logValue);
 
 	// Log description string
-	logKey = GetString(StringTable::LogKey, BaseLog::Description);
+	logKey = getString(StringTable::LogKey, BaseLog::Description);
 	jsonData.AddString(logKey, m_strLogString);
 
 	/*********************************************************************/
@@ -437,7 +437,7 @@ String LogItem::FormatOutput(void) const
 		String detailValue;
 
 		// Set object name: Details
-		jsonDetailData.SetObjectName(GetString(StringTable::LogKey, BaseLog::Details));
+		jsonDetailData.SetObjectName(getString(StringTable::LogKey, BaseLog::Details));
 
 		// Convert data
 		for (int index = 0; index < (m_arrDetailInfo.size()); index++) {
@@ -456,7 +456,7 @@ String LogItem::FormatOutput(void) const
 			}
 
 			// Detail info category
-			detailKey = GetString(StringTable::LogKey, logDetail.GetCategory());
+			detailKey = getString(StringTable::LogKey, logDetail.GetCategory());
 
 			// Detail info value
 			int nDetailValue = logDetail.GetDetailValue();
@@ -464,7 +464,7 @@ String LogItem::FormatOutput(void) const
 				jsonDetailData.AddInteger(detailKey, logDetail.GetDetailValue());
 			}
 			else if (nDetailFlag & LogDetailFlag::LookUp_Dict) {
-				detailValue = GetString(StringTable::LogValue, nDetailValue);
+				detailValue = getString(StringTable::LogValue, nDetailValue);
 				jsonDetailData.AddString(detailKey, detailValue);
 			}
 			else if (nDetailFlag & LogDetailFlag::Write_String) {
@@ -472,9 +472,9 @@ String LogItem::FormatOutput(void) const
 			}
 			else if (nDetailFlag & (LogDetailFlag::Write_Int & LogDetailFlag::Write_String)) {
 				JSONDATA jsonSubDetail;
-				detailKey = GetString(StringTable::LogKey, BaseLog::DetailNumeric);
+				detailKey = getString(StringTable::LogKey, BaseLog::DetailNumeric);
 				jsonSubDetail.AddInteger(detailKey, logDetail.GetDetailValue());
-				detailKey = GetString(StringTable::LogKey, BaseLog::DetailString);
+				detailKey = getString(StringTable::LogKey, BaseLog::DetailString);
 				jsonSubDetail.AddString(detailKey, logDetail.GetDetailString());
 				jsonDetailData.AddChildObject(&jsonSubDetail);
 			}

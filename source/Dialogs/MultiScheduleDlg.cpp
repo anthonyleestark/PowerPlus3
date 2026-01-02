@@ -55,7 +55,7 @@ CMultiScheduleDlg::CMultiScheduleDlg() : SDialog(IDD_MULTISCHEDULE_DLG)
 	dataTableSizePtr_ = NULL;
 
 	// Other variables
-	m_nCurMode = 0;
+	currentMode_ = 0;
 	checkCount_ = 0;
 	curSelIndex_ = -1;
 	m_nCurDispIndex = -2;
@@ -408,13 +408,13 @@ void CMultiScheduleDlg::SetupDataItemList(LANGTABLE_PTR /*languageTablePtr*/)
 	cellPtr->SetHeight(Constant::UI::GridCtrl::Height::Row_Ex);
 
 	// Table format and properties
-	int nRowNum = (GetTotalItemNum() + fixedRowNum);
-	int nColNum = columnCount_;
+	int rowCount = (GetTotalItemNum() + fixedRowNum);
+	int colCount = columnCount_;
 
 	// Setup table
-	m_pDataItemListTable->SetColumnCount(nColNum);
+	m_pDataItemListTable->SetColumnCount(colCount);
 	m_pDataItemListTable->SetFixedColumnCount(fixedColumnNum);
-	m_pDataItemListTable->SetRowCount(nRowNum);
+	m_pDataItemListTable->SetRowCount(rowCount);
 	m_pDataItemListTable->SetFixedRowCount(fixedRowNum);
 	m_pDataItemListTable->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Header);
 
@@ -472,8 +472,8 @@ void CMultiScheduleDlg::DrawDataTable(bool isReadOnly /* = false */)
 	}
 	
 	// Table properties
-	int nColNum = columnCount_;
-	int nRowNum = (GetTotalItemNum() + fixedRowNum);
+	int colCount = columnCount_;
+	int rowCount = (GetTotalItemNum() + fixedRowNum);
 
 	// Setup display size
 	int frameHeight = dataTableSizePtr_->height();
@@ -488,54 +488,54 @@ void CMultiScheduleDlg::DrawDataTable(bool isReadOnly /* = false */)
 		frameWidth -= Constant::UI::Offset::Width::ListCtrl;
 		//frameHeight -= OFFSET_HEIGHT_LISTCTRL;
 	}
-	if ((Constant::UI::GridCtrl::Height::Header + ((nRowNum - 1) * Constant::UI::GridCtrl::Height::Row_Ex)) >= frameHeight) {
+	if ((Constant::UI::GridCtrl::Height::Header + ((rowCount - 1) * Constant::UI::GridCtrl::Height::Row_Ex)) >= frameHeight) {
 		// Fix table width in case vertical scrollbar is displayed
 		int scrollBarWidth = GetSystemMetrics(SM_CXVSCROLL);
 		frameWidth -= (scrollBarWidth + Constant::UI::Offset::Width::VScrollBar);
 	}
 
 	// Setup columns
-	for (int nCol = 0; nCol < nColNum; nCol++) {
+	for (int col = 0; col < colCount; col++) {
 		// Set header row style
-		AppCore::setFixedCellStyle(m_pDataItemListTable, Constant::UI::GridCtrl::Index::Header_Row, nCol);
+		AppCore::setFixedCellStyle(m_pDataItemListTable, Constant::UI::GridCtrl::Index::Header_Row, col);
 
 		// Column header title
 		String headerTitle = Constant::String::Empty;
-		unsigned nHeaderTitleID = gridCtrlFormatInfoPtr_[nCol].headerTitleId;
-		if (nHeaderTitleID != INT_NULL) {
-			headerTitle = getLanguageString(languageTablePtr, nHeaderTitleID);
+		unsigned headerTitleId = gridCtrlFormatInfoPtr_[col].headerTitleId;
+		if (headerTitleId != INT_NULL) {
+			headerTitle = getLanguageString(languageTablePtr, headerTitleId);
 		}
-		m_pDataItemListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, nCol, headerTitle);
+		m_pDataItemListTable->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, col, headerTitle);
 
 		// Column width
-		int nColWidth = gridCtrlFormatInfoPtr_[nCol].width;
-		if (nColWidth != -1) {
+		int colWidth = gridCtrlFormatInfoPtr_[col].width;
+		if (colWidth != -1) {
 			// Set column width as defined
-			if (m_pDataItemListTable->SetColumnWidth(nCol, nColWidth)) {
+			if (m_pDataItemListTable->SetColumnWidth(col, colWidth)) {
 				// Calculate remaining width
-				frameWidth -= nColWidth;
+				frameWidth -= colWidth;
 			}
 		}
 		else {
 			// Set remaining width for current column
-			m_pDataItemListTable->SetColumnWidth(nCol, frameWidth);
+			m_pDataItemListTable->SetColumnWidth(col, frameWidth);
 		}
 	}
 
 	// Setup rows
-	int nColStyle = -1;
+	int colStyle = -1;
 	unsigned itemState = INT_NULL;
-	for (int row = 1; row < nRowNum; row++) {
-		for (int nCol = 0; nCol < columnCount_; nCol++) {
+	for (int row = 1; row < rowCount; row++) {
+		for (int col = 0; col < columnCount_; col++) {
 
 			// Get column style & item state
-			nColStyle = gridCtrlFormatInfoPtr_[nCol].columnStyle;
-			itemState = m_pDataItemListTable->GetItemState(row, nCol);
+			colStyle = gridCtrlFormatInfoPtr_[col].columnStyle;
+			itemState = m_pDataItemListTable->GetItemState(row, col);
 			itemState |= GVIS_READONLY;
 
 			// Highlight default schedule item
-			if ((row == defaultRowIndex) && (nColStyle != COLSTYLE_FIXED) && (isReadOnly != true)) {
-				CGridCellBase* pCellBase = m_pDataItemListTable->GetCell(row, nCol);
+			if ((row == defaultRowIndex) && (colStyle != COLSTYLE_FIXED) && (isReadOnly != true)) {
+				CGridCellBase* pCellBase = m_pDataItemListTable->GetCell(row, col);
 				if (pCellBase != NULL) {
 					pCellBase->SetBackClr(Color::Yellow);
 					pCellBase->SetTextClr(Color::Red);
@@ -543,38 +543,38 @@ void CMultiScheduleDlg::DrawDataTable(bool isReadOnly /* = false */)
 			}
 
 			// Base column - header-like style
-			if (nColStyle == COLSTYLE_FIXED) {
+			if (colStyle == COLSTYLE_FIXED) {
 				// Set fixed cell style
-				AppCore::setFixedCellStyle(m_pDataItemListTable, row, nCol);
+				AppCore::setFixedCellStyle(m_pDataItemListTable, row, col);
 			}
 
 			// Checkbox column
-			else if (nColStyle == COLSTYLE_CHECKBOX) {
+			else if (colStyle == COLSTYLE_CHECKBOX) {
 				// Set cell type: Checkbox
-				if (!m_pDataItemListTable->SetCellType(row, nCol, RUNTIME_CLASS(CGridCellCheck)))
+				if (!m_pDataItemListTable->SetCellType(row, col, RUNTIME_CLASS(CGridCellCheck)))
 					continue;
 
 				// Get cell
-				CGridCellCheck* cellPtr = (CGridCellCheck*)m_pDataItemListTable->GetCell(row, nCol);
+				CGridCellCheck* cellPtr = (CGridCellCheck*)m_pDataItemListTable->GetCell(row, col);
 
 				// Set center alignment if defined
-				if (gridCtrlFormatInfoPtr_[nCol].isCentered == true) {
+				if (gridCtrlFormatInfoPtr_[col].isCentered == true) {
 					if (cellPtr == NULL) continue;
 					cellPtr->SetCheckPlacement(SCP_CENTERING);
 				}
 			}
 
 			// Normal column
-			else if (nColStyle == COLSTYLE_NORMAL) {
+			else if (colStyle == COLSTYLE_NORMAL) {
 				// Set item state
-				if (!m_pDataItemListTable->SetItemState(row, nCol, itemState))
+				if (!m_pDataItemListTable->SetItemState(row, col, itemState))
 					continue;
 
 				// Get cell
-				CGridCellBase* cellPtr = (CGridCellBase*)m_pDataItemListTable->GetCell(row, nCol);
+				CGridCellBase* cellPtr = (CGridCellBase*)m_pDataItemListTable->GetCell(row, col);
 
 				// Set center alignment if defined
-				if (gridCtrlFormatInfoPtr_[nCol].isCentered == true) {
+				if (gridCtrlFormatInfoPtr_[col].isCentered == true) {
 					if (cellPtr == NULL) continue;
 					cellPtr->SetFormat(cellPtr->GetFormat() | DT_CENTER);
 				}
@@ -602,12 +602,12 @@ void CMultiScheduleDlg::updateLayoutInfo(void)
 	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Get table column count
-	int nColNum = m_pDataItemListTable->GetColumnCount();
+	int colCount = m_pDataItemListTable->GetColumnCount();
 
 	// Update size of table columns
-	for (int index = 0; index < nColNum; index++) {
-		int nColSize = m_pDataItemListTable->GetColumnWidth(index);
-		gridCtrlFormatInfoPtr_[index].width = nColSize;
+	for (int index = 0; index < colCount; index++) {
+		int colSize = m_pDataItemListTable->GetColumnWidth(index);
+		gridCtrlFormatInfoPtr_[index].width = colSize;
 	}
 }
 
@@ -619,7 +619,7 @@ void CMultiScheduleDlg::updateLayoutInfo(void)
 void CMultiScheduleDlg::loadLayoutInfo(void)
 {
 	// Define default table columns format
-	const GRIDCTRLCOLFORMAT arrGrdColFormat[] = {
+	const GRIDCTRLCOLFORMAT gridColFormatInfo[] = {
 	//-----------ID------------------------Header title ID---------------Width(px)---Column style--------Align Center---
 		{	ColumnID::Index,		GRIDCOLUMN_MULTISCHEDULE_INDEX,			26,		COLSTYLE_FIXED,			true,	},
 		{	ColumnID::EnableState,	GRIDCOLUMN_MULTISCHEDULE_STATE,			52,		COLSTYLE_CHECKBOX,		true,	},
@@ -630,14 +630,14 @@ void CMultiScheduleDlg::loadLayoutInfo(void)
 	};
 
 	// Backup format data
-	columnCount_ = (sizeof(arrGrdColFormat) / sizeof(GRIDCTRLCOLFORMAT));
+	columnCount_ = (sizeof(gridColFormatInfo) / sizeof(GRIDCTRLCOLFORMAT));
 
 	// Initialize table format info data
 	if (gridCtrlFormatInfoPtr_ == NULL) {
 		gridCtrlFormatInfoPtr_ = new GRIDCTRLCOLFORMAT[columnCount_];
 		for (int index = 0; index < columnCount_; index++) {
 			// Copy default table column format data
-			gridCtrlFormatInfoPtr_[index] = arrGrdColFormat[index];
+			gridCtrlFormatInfoPtr_[index] = gridColFormatInfo[index];
 		}
 	}
 
@@ -665,12 +665,12 @@ void CMultiScheduleDlg::saveLayoutInfo(void)
 	if (gridCtrlFormatInfoPtr_ == NULL) return;
 
 	// Save layout info data to registry
-	int nRef = 0;
+	int referValue = 0;
 	String keyName;
 	for (int index = 0; index < columnCount_; index++) {
-		nRef = gridCtrlFormatInfoPtr_[index].width;
+		referValue = gridCtrlFormatInfoPtr_[index].width;
 		keyName = Key::LayoutInfo::GridColSize(index);
-		WriteLayoutInfo(Section::LayoutInfo::MultiScheduleTable, keyName, nRef);
+		WriteLayoutInfo(Section::LayoutInfo::MultiScheduleTable, keyName, referValue);
 	}
 }
 
@@ -713,7 +713,7 @@ void CMultiScheduleDlg::UpdateDataItemList()
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Print items
-	int nTemp = -1;
+	int tempValue = -1;
 	int nExtraItemIndex = 0;
 	CGridCellCheck* cellCheckPtr = NULL;
 	for (int rowIndex = defaultRowIndex; rowIndex <= itemNum; rowIndex++) {
@@ -744,8 +744,8 @@ void CMultiScheduleDlg::UpdateDataItemList()
 		}
 
 		// Action name
-		nTemp = GetPairedID(IDTable::ActionName, scheduleItem.getAction());
-		tempString = getLanguageString(languageTablePtr, nTemp);
+		tempValue = getPairedID(IDTable::ActionName, scheduleItem.getAction());
+		tempString = getLanguageString(languageTablePtr, tempValue);
 		m_pDataItemListTable->SetItemText(rowIndex, ColumnID::ActionID, tempString);
 
 		// Time setting
@@ -790,8 +790,8 @@ void CMultiScheduleDlg::RedrawDataTable(bool isReadOnly /* = false */)
 	if (m_pDataItemListTable == NULL) return;
 
 	// Update new row number
-	int nCurRowNum = (GetTotalItemNum() + fixedRowNum);
-	m_pDataItemListTable->SetRowCount(nCurRowNum);
+	int curRowCount = (GetTotalItemNum() + fixedRowNum);
+	m_pDataItemListTable->SetRowCount(curRowCount);
 
 	// Draw table
 	DrawDataTable(isReadOnly);
@@ -826,7 +826,7 @@ void CMultiScheduleDlg::refreshDialogItemState(bool isRecheckState /* = false */
 	bool bIsMaxNum = (GetExtraItemNum() >= ScheduleData::maxItemNum);
 
 	// Check if data is all empty or not
-	bool bIsAllEmpty = m_schScheduleTemp.isAllEmpty();
+	bool isAllEmpty = m_schScheduleTemp.isAllEmpty();
 
 	// Get app language package
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
@@ -841,14 +841,14 @@ void CMultiScheduleDlg::refreshDialogItemState(bool isRecheckState /* = false */
 	// Disable [Remove/Remove All] buttons if data is all empty
 	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_REMOVE_BTN);
 	if (buttonPtr != NULL) {
-		buttonPtr->EnableWindow(!bIsAllEmpty);
+		buttonPtr->EnableWindow(!isAllEmpty);
 
 		// Enable [Remove] button if any item is selected
 		buttonPtr->EnableWindow(bIsSelected);
 	}
 	buttonPtr = GetDlgItem(IDC_MULTISCHEDULE_REMOVEALL_BTN);
 	if (buttonPtr != NULL) {
-		buttonPtr->EnableWindow(!bIsAllEmpty);
+		buttonPtr->EnableWindow(!isAllEmpty);
 	}
 
 	// Enable [Edit] and [View Details] button if any item is selected
@@ -897,17 +897,17 @@ void CMultiScheduleDlg::updateCheckAllBtnState(bool isRecheck /* = false */)
 		return;
 
 	// Get buttons
-	CWnd* pCheckAllBtn = GetDlgItem(IDC_MULTISCHEDULE_CHECKALL_BTN);
-	CWnd* pUncheckAllBtn = GetDlgItem(IDC_MULTISCHEDULE_UNCHECKALL_BTN);
-	if ((pCheckAllBtn == NULL) || (pUncheckAllBtn == NULL))
+	CWnd* checkAllButtonPtr = GetDlgItem(IDC_MULTISCHEDULE_CHECKALL_BTN);
+	CWnd* uncheckAllButtonPtr = GetDlgItem(IDC_MULTISCHEDULE_UNCHECKALL_BTN);
+	if ((checkAllButtonPtr == NULL) || (uncheckAllButtonPtr == NULL))
 		return;
 
 	// Get number of items
 	int itemNum = GetTotalItemNum();
 	if (itemNum == 0) {
 		// Disable both [Check/Uncheck All] buttons
-		pCheckAllBtn->EnableWindow(false);
-		pUncheckAllBtn->EnableWindow(false);
+		checkAllButtonPtr->EnableWindow(false);
+		uncheckAllButtonPtr->EnableWindow(false);
 		return;
 	}
 
@@ -934,20 +934,20 @@ void CMultiScheduleDlg::updateCheckAllBtnState(bool isRecheck /* = false */)
 	// Update button state
 	if (checkCount_ == 0) {
 		// Enable [Check All] button
-		pCheckAllBtn->EnableWindow(true);
+		checkAllButtonPtr->EnableWindow(true);
 		// Disable [Uncheck All] button
-		pUncheckAllBtn->EnableWindow(false);
+		uncheckAllButtonPtr->EnableWindow(false);
 	}
 	else if (checkCount_ == itemNum) {
 		// Disable [Check All] button
-		pCheckAllBtn->EnableWindow(false);
+		checkAllButtonPtr->EnableWindow(false);
 		// Enable [Uncheck All] button
-		pUncheckAllBtn->EnableWindow(true);
+		uncheckAllButtonPtr->EnableWindow(true);
 	}
 	else {
 		// Enable both [Check/Uncheck All] buttons
-		pCheckAllBtn->EnableWindow(true);
-		pUncheckAllBtn->EnableWindow(true);
+		checkAllButtonPtr->EnableWindow(true);
+		uncheckAllButtonPtr->EnableWindow(true);
 	}
 }
 
@@ -1014,7 +1014,7 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 {
 	// Update enable and repeat states of each item
 	int nExtraItemIndex = 0;
-	CGridCellCheck* pCellCheckEnable = NULL;
+	CGridCellCheck* cellCheckEnablePtr = NULL;
 	CGridCellCheck* pCellCheckRepeat = NULL;
 	int nItemRowNum = (m_pDataItemListTable->GetRowCount() - fixedRowNum);
 	for (int rowIndex = defaultRowIndex; rowIndex <= nItemRowNum; rowIndex++) {
@@ -1026,12 +1026,12 @@ void CMultiScheduleDlg::UpdateScheduleSettings()
 		}
 
 		// Get checkbox cells
-		pCellCheckEnable = (CGridCellCheck*)m_pDataItemListTable->GetCell(rowIndex, ColumnID::EnableState);
+		cellCheckEnablePtr = (CGridCellCheck*)m_pDataItemListTable->GetCell(rowIndex, ColumnID::EnableState);
 		pCellCheckRepeat = (CGridCellCheck*)m_pDataItemListTable->GetCell(rowIndex, ColumnID::Repeat);
-		if ((pCellCheckEnable == NULL) || (pCellCheckRepeat == NULL)) continue;
+		if ((cellCheckEnablePtr == NULL) || (pCellCheckRepeat == NULL)) continue;
 
 		// Get checked states
-		bool isEnabled = pCellCheckEnable->GetCheck();
+		bool isEnabled = cellCheckEnablePtr->GetCheck();
 		bool bRepeat = pCellCheckRepeat->GetCheck();
 
 		// Update item enable and repeat states
@@ -1101,8 +1101,8 @@ void CMultiScheduleDlg::Add(Item& scheduleItem)
 		return;
 
 	// Check data validity
-	bool bValid = Validate(scheduleItem, true);
-	if (bValid == false)
+	bool isValid = Validate(scheduleItem, true);
+	if (isValid == false)
 		return;
 
 	// Update item to Action Schedule data item list
@@ -1127,8 +1127,8 @@ void CMultiScheduleDlg::Update(Item& scheduleItem)
 		return;
 
 	// Check data validity
-	bool bValid = Validate(scheduleItem, true);
-	if (bValid == false)
+	bool isValid = Validate(scheduleItem, true);
+	if (isValid == false)
 		return;
 
 	// Update item to Action Schedule data item list
@@ -1218,8 +1218,8 @@ bool CMultiScheduleDlg::Validate(Item& scheduleItem, bool showMsg /* = false */,
 	bool result = true;
 
 	int messageStringId;
-	StringArray arrMsgString;
-	arrMsgString.clear();
+	StringArray messageStringList;
+	messageStringList.clear();
 
 	// Get app language package
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
@@ -1228,7 +1228,7 @@ bool CMultiScheduleDlg::Validate(Item& scheduleItem, bool showMsg /* = false */,
 	if ((scheduleItem.getItemId() != ScheduleData::defaultItemID) &&
 		((scheduleItem.getItemId() < ScheduleData::minItemID) || (scheduleItem.getItemId() > ScheduleData::maxItemID))) {
 		messageStringId = MSGBOX_MULTISCHEDULE_INVALIDITEM_ITEMID;
-		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
 
 		// Auto correction
@@ -1241,7 +1241,7 @@ bool CMultiScheduleDlg::Validate(Item& scheduleItem, bool showMsg /* = false */,
 	// Check action ID
 	if ((scheduleItem.getAction() < APP_ACTION_NOTHING) || (scheduleItem.getAction() > APP_ACTION_HIBERNATE)) {
 		messageStringId = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIONID;
-		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
 
 		// Auto correction
@@ -1254,7 +1254,7 @@ bool CMultiScheduleDlg::Validate(Item& scheduleItem, bool showMsg /* = false */,
 	// Check repeat data
 	if ((scheduleItem.isRepeatEnabled() == true) && (scheduleItem.getActiveDays() == NULL)) {
 		messageStringId = MSGBOX_MULTISCHEDULE_INVALIDITEM_ACTIVEDAYS;
-		arrMsgString.push_back(getLanguageString(languageTablePtr, messageStringId));
+		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
 
 		// Auto correction
@@ -1265,24 +1265,24 @@ bool CMultiScheduleDlg::Validate(Item& scheduleItem, bool showMsg /* = false */,
 	}
 
 	// Show error message if enabled
-	if ((showMsg == true) && (!arrMsgString.empty())) {
-		for (int index = 0; index < arrMsgString.size(); index++) {
+	if ((showMsg == true) && (!messageStringList.empty())) {
+		for (int index = 0; index < messageStringList.size(); index++) {
 			// If auto correction is ON
 			if (bAutoCorrect == true) {
 				// Add "Data will be automatically reset to default"
-				String errorMessage = arrMsgString.at(index);
+				String errorMessage = messageStringList.at(index);
 				errorMessage += getLanguageString(languageTablePtr, MSGBOX_MULTISCHEDULE_INVALIDITEM_AUTOCORRECT);
 				displayMessageBox(errorMessage, NULL, MB_OK | MB_ICONERROR);
 			}
 			else {
 				// Display error message
-				displayMessageBox(arrMsgString.at(index), NULL, MB_OK | MB_ICONERROR);
+				displayMessageBox(messageStringList.at(index), NULL, MB_OK | MB_ICONERROR);
 			}
 		}
 	}
 
 	// Remove all message after displaying
-	arrMsgString.clear();
+	messageStringList.clear();
 
 	return result;
 }
@@ -1645,13 +1645,13 @@ void CMultiScheduleDlg::OnSelectScheduleItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 	//Get current selection index
 	curSelIndex_ = row - fixedRowNum;
-	int nItemCount = GetTotalItemNum();
+	int itemCount = GetTotalItemNum();
 
 	// Success (return 0)
 	*pResult = NULL;
 
 	// Invalid selection
-	if ((curSelIndex_ < 0) || (curSelIndex_ >= nItemCount))
+	if ((curSelIndex_ < 0) || (curSelIndex_ >= itemCount))
 		return;
 
 	// Refresh display

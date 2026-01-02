@@ -42,17 +42,17 @@ public:
 
 private:
 	// Member variables
-	CGridCtrl* m_pLogViewerList;
-	Data m_ptrAppEventLog;
-	size_t m_nLogCount;
+	CGridCtrl* logViewerListPtr_;
+	Data appEventLoggerPtr_;
+	size_t logCount_;
 
 	// Table format and properties
 	int	columnCount_;
 	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
-	Size* m_pszTableFrameSize;
+	Size* logViewerTableSizePtr_;
 
 	// Other variables
-	int m_nCurMode;
+	int currentMode_;
 	int checkCount_;
 	int curSelIndex_;
 
@@ -74,11 +74,11 @@ public:
 public:
 	// Member functions
 	void setupLanguage(void);
-	void SetupLogViewerList(LANGTABLE_PTR languageTablePtr);
-	void DrawLogViewerTable(void);
-	BOOL LoadAppEventLogData(void);
-	void UpdateLogViewer(void);
-	void DisplayLogDetails(int index);
+	void setupLogViewerList(LANGTABLE_PTR languageTablePtr);
+	void drawLogViewerTable(void);
+	BOOL loadAppEventLogData(void);
+	void updateLogViewer(void);
+	void displayLogDetails(int index);
 
 	// Layout functions
 	void updateLayoutInfo(void);

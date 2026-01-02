@@ -454,7 +454,7 @@ namespace MapTable
 
 
 	//	Define methods for processing data map tables
-	unsigned GetPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reverse = false);
-	unsigned GetStringID(STRINGTABLE_REF stringTableRef, const wchar_t* input);
-	const wchar_t* GetString(STRINGTABLE_REF stringTableRef, unsigned id);
+	unsigned getPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reverse = false);
+	unsigned getStringID(STRINGTABLE_REF stringTableRef, const wchar_t* input);
+	const wchar_t* getString(STRINGTABLE_REF stringTableRef, unsigned id);
 };

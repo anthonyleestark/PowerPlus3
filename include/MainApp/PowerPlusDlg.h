@@ -138,7 +138,7 @@ protected:
 	afx_msg void OnPowerReminder();
 	afx_msg void OnViewActionLog();
 	afx_msg void OnViewBackupConfig();
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnTimer(UINT_PTR eventId);
 	afx_msg LRESULT OnChildDialogDestroy(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateScheduleData(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnUpdateHotkeySetData(WPARAM wParam, LPARAM lParam);

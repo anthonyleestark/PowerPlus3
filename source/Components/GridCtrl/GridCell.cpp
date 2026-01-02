@@ -142,7 +142,7 @@ UINT CGridCell::GetMargin() const
 /////////////////////////////////////////////////////////////////////////////
 // GridCell Operations
 
-BOOL CGridCell::Edit(int row, int nCol, CRect rect, CPoint /* point */, UINT id, UINT nChar)
+BOOL CGridCell::Edit(int row, int col, CRect rect, CPoint /* point */, UINT id, UINT nChar)
 {
     if ( m_bEditing )
 	{      
@@ -161,7 +161,7 @@ BOOL CGridCell::Edit(int row, int nCol, CRect rect, CPoint /* point */, UINT id,
 		
 		// InPlaceEdit auto-deletes itself
 		CGridCtrl* pGrid = GetGrid();
-		m_pEditWnd = new CInPlaceEdit(pGrid, rect, style, id, row, nCol, GetText(), nChar);
+		m_pEditWnd = new CInPlaceEdit(pGrid, rect, style, id, row, col, GetText(), nChar);
     }
     return TRUE;
 }
