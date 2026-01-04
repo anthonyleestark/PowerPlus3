@@ -24,31 +24,31 @@
 /*---------------------------------------------Launch-info data----------------------------------------------*/
 
 namespace Global {
-	extern DateTime g_stAppLaunchTime;
-	extern unsigned	g_uiAppLaunchTimeCounter;
-};
+	extern DateTime g_appLaunchTime;
+	extern unsigned	g_appLaunchTimeCounter;
+}
 
 // Access application launch-time data
 static inline const DateTime& getAppLaunchTime(void) {
-	return Global::g_stAppLaunchTime;
-};
+	return Global::g_appLaunchTime;
+}
 static inline void setAppLaunchTime(const DateTime& timeValue) {
-	Global::g_stAppLaunchTime = timeValue;
-};
+	Global::g_appLaunchTime = timeValue;
+}
 
 // Access application launch-time counter data
 static inline const unsigned getAppLaunchTimeCounter(void) {
-	return Global::g_uiAppLaunchTimeCounter;
-};
+	return Global::g_appLaunchTimeCounter;
+}
 static inline const bool isAppFirstLaunch(void) {
-	return (Global::g_uiAppLaunchTimeCounter <= 1);
-};
+	return (Global::g_appLaunchTimeCounter <= 1);
+}
 static inline void setAppLaunchTimeCounter(unsigned valueUnsigned) {
-	Global::g_uiAppLaunchTimeCounter = valueUnsigned;
-};
+	Global::g_appLaunchTimeCounter = valueUnsigned;
+}
 static inline void updateAppLaunchTimeCounter(void) {
-	++Global::g_uiAppLaunchTimeCounter;
-};
+	++Global::g_appLaunchTimeCounter;
+}
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -57,7 +57,7 @@ static inline void updateAppLaunchTimeCounter(void) {
 extern FlagManager g_sharedFlagManager;
 extern inline FlagManager& getGlobalFlagManager(void) {
 	return g_sharedFlagManager;
-};
+}
 
 
 /*----------------------------------------------Debug/Test flags---------------------------------------------*/
@@ -71,18 +71,18 @@ extern inline FlagManager& getGlobalFlagManager(void) {
 // Dummy test mode flag
 static inline const bool getDummyTestMode(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::dummyTestMode);
-};
+}
 static inline void setDummyTestMode(bool value) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::dummyTestMode, value);
-};
+}
 
 // Debug mode flag
 static inline const bool getDebugMode(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::debugMode);
-};
+}
 static inline void setDebugMode(bool value) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::debugMode, value);
-};
+}
 
 // Debug log output target flag
 enum DebugOutput {
@@ -92,18 +92,18 @@ enum DebugOutput {
 };
 static inline const int getDebugOutputTarget(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::debugOutputTarget);
-};
+}
 static inline void setDebugOutputTarget(int value) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::debugOutputTarget, value);
-};
+}
 
 // Test feature enable flag
 static inline const bool getTestFeatureEnable(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::testFeatureEnabled);
-};
+}
 static inline void setTestFeatureEnable(bool value) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::testFeatureEnabled, value);
-};
+}
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -113,34 +113,34 @@ static inline void setTestFeatureEnable(bool value) {
 // Power action trace flag
 static inline const byte getPwrActionFlag(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::pwrActionFlag);
-};
+}
 static inline void setPwrActionFlag(byte byValue) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::pwrActionFlag, byValue);
-};
+}
 
 // System suspended trace flag
 static inline const byte getSystemSuspendFlag(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::systemSuspendFlag);
-};
+}
 static inline void setSystemSuspendFlag(byte byValue) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::systemSuspendFlag, byValue);
-};
+}
 
 // Session ended trace flag
 static inline const byte getSessionEndFlag(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::sessionEndFlag);
-};
+}
 static inline void setSessionEndFlag(byte byValue) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::sessionEndFlag, byValue);
-};
+}
 
 // Previously safe termination trace flag
 static inline const byte getSafeTerminationFlag(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::safeTerminationFlag);
-};
+}
 static inline void setSafeTerminationFlag(byte byValue) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::safeTerminationFlag, byValue);
-};
+}
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
@@ -149,10 +149,10 @@ static inline void setSafeTerminationFlag(byte byValue) {
 // Session lock trace flag
 static inline const byte getSessionLockFlag(void) {
 	return getGlobalFlagManager().getFlagValue(AppFlagID::sessionLockFlag);
-};
+}
 static inline void setSessionLockFlag(byte byValue) {
 	getGlobalFlagManager().setFlagValue(AppFlagID::sessionLockFlag, byValue);
-};
+}
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

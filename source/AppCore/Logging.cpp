@@ -1515,7 +1515,7 @@ bool DebugLogging::initTraceErrorLogFile(void)
 	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String filePath = StringUtils::makeFilePath(folderPath, Constant::File::Name::traceError, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(folderPath, Constant::File::Name::TraceError, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
 	while (traceErrorFilePtr_->m_hFile == CFile::hFileNull) {
@@ -1538,7 +1538,7 @@ bool DebugLogging::initTraceErrorLogFile(void)
 			traceErrorFilePtr_->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!backupOldLogFile(filePath, Constant::File::Name::traceError))
+			if (!backupOldLogFile(filePath, Constant::File::Name::TraceError))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1819,8 +1819,8 @@ void DebugLogging::writeTraceErrorLogFile(const wchar_t* logStringW)
 
 			// Step2: Rename file extension to BAK
 			String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
-			String orginalFilePath = StringUtils::makeFilePath(folderPath.getString(), Constant::File::Name::traceError, Constant::File::Extension::Log);
-			if (!backupOldLogFile(orginalFilePath, Constant::File::Name::traceError))
+			String orginalFilePath = StringUtils::makeFilePath(folderPath.getString(), Constant::File::Name::TraceError, Constant::File::Extension::Log);
+			if (!backupOldLogFile(orginalFilePath, Constant::File::Name::TraceError))
 				return;
 
 			// Step3: Release log file pointer --> Quit

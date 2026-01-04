@@ -823,7 +823,7 @@ void CMultiScheduleDlg::refreshDialogItemState(bool isRecheckState /* = false */
 	bool isExtraSelected = ((isSelected == true) && ((curSelIndex_ + kFixedRowNum) >= kExtraStartRowIndex));
 
 	// Check if number of extra item has reached the limit
-	bool isMaxNum = (getExtraItemNum() >= ScheduleData::maxItemNum);
+	bool isMaxNum = (getExtraItemNum() >= ScheduleData::kMaxItemNum);
 
 	// Check if data is all empty or not
 	bool isAllEmpty = tempScheduleData_.isAllEmpty();
@@ -1225,8 +1225,8 @@ bool CMultiScheduleDlg::validate(Item& scheduleItem, bool showMsg /* = false */,
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check item ID
-	if ((scheduleItem.getItemId() != ScheduleData::defaultItemID) &&
-		((scheduleItem.getItemId() < ScheduleData::minItemID) || (scheduleItem.getItemId() > ScheduleData::maxItemID))) {
+	if ((scheduleItem.getItemId() != ScheduleData::kDefaultItemID) &&
+		((scheduleItem.getItemId() < ScheduleData::kMinItemID) || (scheduleItem.getItemId() > ScheduleData::kMaxItemID))) {
 		messageStringId = MSGBOX_MULTISCHEDULE_INVALIDITEM_ITEMID;
 		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
@@ -1247,7 +1247,7 @@ bool CMultiScheduleDlg::validate(Item& scheduleItem, bool showMsg /* = false */,
 		// Auto correction
 		if (isAutoCorrect == true) {
 			// Set default action
-			scheduleItem.setAction(ScheduleData::defaultActionID);
+			scheduleItem.setAction(ScheduleData::kDefaultActionID);
 		}
 	}
 
@@ -1260,7 +1260,7 @@ bool CMultiScheduleDlg::validate(Item& scheduleItem, bool showMsg /* = false */,
 		// Auto correction
 		if (isAutoCorrect == true) {
 			// Set default data
-			scheduleItem.setActiveDays(PwrRepeatSet::defaultActiveDays);
+			scheduleItem.setActiveDays(PwrRepeatSet::kDefaultActiveDays);
 		}
 	}
 
@@ -1356,7 +1356,7 @@ void CMultiScheduleDlg::OnAdd()
 	// Initialize new item template
 	Item tempItem;
 	tempItem.setItemId(tempScheduleData_.getNextId());
-	tempItem.setAction(ScheduleData::defaultActionID);
+	tempItem.setAction(ScheduleData::kDefaultActionID);
 
 	// Open edit schedule dialog
 	if (editScheduleDlgPtr_ == NULL) {
@@ -1616,7 +1616,7 @@ void CMultiScheduleDlg::OnSetDefault()
 			// Overwrite default item data with currently selected extra item data
 			Item& defaultScheduleItem = tempScheduleData_.getDefaultItem();
 			defaultScheduleItem.copy(curSelItem);
-			defaultScheduleItem.setItemId(ScheduleData::defaultItemID);
+			defaultScheduleItem.setItemId(ScheduleData::kDefaultItemID);
 
 			// Remove the selected extra item after changing
 			tempScheduleData_.deleteItem(extraItemIndex);

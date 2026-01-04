@@ -874,7 +874,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {
 			// Set reminder message font size
 			int fontSize = _tstoi(tokenList.at(2).c_str());
-			if ((fontSize < RmdMsgStyleSet::minFontSize) || (fontSize > RmdMsgStyleSet::maxFontSize)) {
+			if ((fontSize < RmdMsgStyleSet::kMinFontSize) || (fontSize > RmdMsgStyleSet::kMaxFontSize)) {
 				// Invalid argument
 				outputDebugLog(_T("Invalid value (Value range: 10 -> 100)"));
 				bNoReply = false;	// Reset flag
@@ -896,7 +896,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("timeout")))) {
 			// Set reminder message auto-close interval (timeout)
 			int timeoutValue = _tstoi(tokenList.at(2).c_str());
-			if ((timeoutValue < RmdMsgStyleSet::minTimeOut) || (timeoutValue > RmdMsgStyleSet::maxTimeOut)) {
+			if ((timeoutValue < RmdMsgStyleSet::kMinTimeOut) || (timeoutValue > RmdMsgStyleSet::kMaxTimeOut)) {
 				// Invalid argument
 				outputDebugLog(_T("Invalid value (Value range: 10 -> 1800)"));
 				bNoReply = false;	// Reset flag
@@ -918,7 +918,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("notimeout")))) {
 			// No reminder message timeout (default 0)
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setTimeout(RmdMsgStyleSet::defaultTimeout);
+				pRmdData->getCommonStyle().setTimeout(RmdMsgStyleSet::kDefaultTimeout);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLog(_T("Message time-out disabled"));
 				bNoReply = false;	// Reset flag
@@ -966,7 +966,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconsize")))) {
 			// Set reminder message icon size
 			int iconSize = _tstoi(tokenList.at(2).c_str());
-			if ((iconSize < RmdMsgStyleSet::minIconSize) || (iconSize > RmdMsgStyleSet::maxIconSize)) {
+			if ((iconSize < RmdMsgStyleSet::kMinIconSize) || (iconSize > RmdMsgStyleSet::kMaxIconSize)) {
 				// Invalid argument
 				outputDebugLog(_T("Invalid value (Value range: 30 -> 100)"));
 				bNoReply = false;	// Reset flag
@@ -1022,7 +1022,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("hmargin")))) {
 			// Set reminder message horizontal margin
 			int marginHorizontal = _tstoi(tokenList.at(2).c_str());
-			if ((marginHorizontal < RmdMsgStyleSet::minMarginVal) || (marginHorizontal > RmdMsgStyleSet::maxMarginVal)) {
+			if ((marginHorizontal < RmdMsgStyleSet::kMinMarginVal) || (marginHorizontal > RmdMsgStyleSet::kMaxMarginVal)) {
 				// Invalid argument
 				outputDebugLog(_T("Invalid value (Value range: 10 -> 120)"));
 				bNoReply = false;	// Reset flag
@@ -1044,7 +1044,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 3) && (!_tcscmp(tokenList.at(1).c_str(), _T("vmargin")))) {
 			// Set reminder message vertical margin
 			int marginVertical = _tstoi(tokenList.at(2).c_str());
-			if ((marginVertical < RmdMsgStyleSet::minMarginVal) || (marginVertical > RmdMsgStyleSet::maxMarginVal)) {
+			if ((marginVertical < RmdMsgStyleSet::kMinMarginVal) || (marginVertical > RmdMsgStyleSet::kMaxMarginVal)) {
 				// Invalid argument
 				outputDebugLog(_T("Invalid value (Value range: 10 -> 120)"));
 				bNoReply = false;	// Reset flag
@@ -1074,7 +1074,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("bkgclr")))) {
 			// Reset message background color
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setBkgrdColor(RmdMsgStyleSet::defaultBkgrdColor);
+				pRmdData->getCommonStyle().setBkgrdColor(RmdMsgStyleSet::kDefaultBkgrdColor);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLogFormat(_T("Message background color reset"));
 				bNoReply = false;	// Reset flag
@@ -1087,7 +1087,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("txtclr")))) {
 			// Set message text color by name
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setTextColor(RmdMsgStyleSet::defaultTextColor);
+				pRmdData->getCommonStyle().setTextColor(RmdMsgStyleSet::kDefaultTextColor);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLogFormat(_T("Message text color reset"));
 				bNoReply = false;	// Reset flag
@@ -1100,7 +1100,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontname")))) {
 			// Set reminder message font name
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setFontName(RmdMsgStyleSet::defaultFontName);
+				pRmdData->getCommonStyle().setFontName(RmdMsgStyleSet::kDefaultFontName);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLogFormat(_T("Message font name reset"));
 				bNoReply = false;	// Reset flag
@@ -1113,7 +1113,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("fontsize")))) {
 			// Set reminder message font size
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setFontSize(RmdMsgStyleSet::defaultFontSize);
+				pRmdData->getCommonStyle().setFontSize(RmdMsgStyleSet::kDefaultFontSize);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLogFormat(_T("Message font size reset"));
 				bNoReply = false;	// Reset flag
@@ -1126,7 +1126,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("timeout")))) {
 			// Reset reminder message auto-close interval (time-out)
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setTimeout(RmdMsgStyleSet::defaultTimeout);
+				pRmdData->getCommonStyle().setTimeout(RmdMsgStyleSet::kDefaultTimeout);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLog(_T("Message time-out reset"));
 				bNoReply = false;	// Reset flag
@@ -1139,7 +1139,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconid")))) {
 			// Reset reminder message icon ID
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setIconId(RmdMsgStyleSet::defaultIconID);
+				pRmdData->getCommonStyle().setIconId(RmdMsgStyleSet::kDefaultIconID);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLog(_T("Message icon ID reset"));
 				bNoReply = false;	// Reset flag
@@ -1152,7 +1152,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconsize")))) {
 			// Reset reminder message icon size
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setIconSize(RmdMsgStyleSet::defaultIconSize);
+				pRmdData->getCommonStyle().setIconSize(RmdMsgStyleSet::kDefaultIconSize);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLog(_T("Message icon size reset"));
 				bNoReply = false;	// Reset flag
@@ -1165,7 +1165,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("iconpos")))) {
 			// Reset reminder message icon position
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setIconPosition(RmdMsgStyleSet::defaultIconPosition);
+				pRmdData->getCommonStyle().setIconPosition(RmdMsgStyleSet::kDefaultIconPosition);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLog(_T("Message icon position reset"));
 				bNoReply = false;	// Reset flag
@@ -1178,7 +1178,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("hmargin")))) {
 			// Reset reminder message horizontal margin
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setHorizontalMargin(RmdMsgStyleSet::defaultHorizontalMargin);
+				pRmdData->getCommonStyle().setHorizontalMargin(RmdMsgStyleSet::kDefaultHorizontalMargin);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLogFormat(_T("Message horizontal margin reset)"));
 				bNoReply = false;	// Reset flag
@@ -1191,7 +1191,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("vmargin")))) {
 			// Reset reminder message vertical margin
 			if (pRmdData != NULL) {
-				pRmdData->getCommonStyle().setVerticalMargin(RmdMsgStyleSet::defaultVerticalMargin);
+				pRmdData->getCommonStyle().setVerticalMargin(RmdMsgStyleSet::kDefaultVerticalMargin);
 				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
 				outputDebugLogFormat(_T("Message vertical margin reset"));
 				bNoReply = false;	// Reset flag

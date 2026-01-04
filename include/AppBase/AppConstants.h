@@ -282,7 +282,7 @@ struct Constant {
 			static constexpr const wchar_t* Backup_Config		= L"BakConfig";
 			static constexpr const wchar_t* AppEventLog			= L"AppEventLog_%04d_%02d";
 			static constexpr const wchar_t* AppHistory			= L"AppHistory";
-			static constexpr const wchar_t* traceError			= L"traceError";
+			static constexpr const wchar_t* TraceError			= L"TraceError";
 			static constexpr const wchar_t* TraceDebug			= L"TraceDebug";
 			static constexpr const wchar_t* DebugInfo			= L"DebugInfo";
 		};

@@ -17,9 +17,9 @@ using namespace AppCore;
 
 
 // Dialog constant
-constexpr const int defaultTextIconSpacing = 10;
-constexpr const int screenCornerHMargin = 20;
-constexpr const int screenCornerVMargin = 20;
+constexpr const int kDefaultTextIconSpacing = 10;
+constexpr const int kScreenCornerHMargin = 20;
+constexpr const int kScreenCornerVMargin = 20;
 
 
 // Implement methods for CReminderMsgDlg
@@ -127,13 +127,13 @@ BOOL CReminderMsgDlg::OnInitDialog()
 		if (iconPosVal == MsgIconPosition::IconOnTheTop) {
 
 			// Shift top margin
-			dialogMargin._top += iconSize_.height() + defaultTextIconSpacing;
+			dialogMargin._top += iconSize_.height() + kDefaultTextIconSpacing;
 			this->setTopMargin(dialogMargin.top());
 		}
 		else if (iconPosVal == MsgIconPosition::IconOnTheLeft) {
 
 			// Shift left margin
-			dialogMargin._left += iconSize_.width() + defaultTextIconSpacing;
+			dialogMargin._left += iconSize_.width() + kDefaultTextIconSpacing;
 			this->setLeftMargin(dialogMargin.left());
 		}
 	}
@@ -539,7 +539,7 @@ bool CReminderMsgDlg::calcMsgIconPosition(Point& iconPosition) const
 	this->GetClientRect(&clientRect);
 
 	// Calculate icon top-left point
-	int textIconSpacing = defaultTextIconSpacing;
+	int textIconSpacing = kDefaultTextIconSpacing;
 	byte iconPosVal = messageStyleData_.getIconPosition();
 	if (iconPosVal == MsgIconPosition::IconOnTheTop) {
 		iconPosition._y = currentMargin.top() - (iconSize_.height() + textIconSpacing);
@@ -586,23 +586,23 @@ void CReminderMsgDlg::moveToDisplayPosition(MsgDispPosition displayPosition)
 		break;
 
 	case MsgDispPosition::OnTopLeft:
-		topLeft._x = screenCornerHMargin;
-		topLeft._y = screenCornerVMargin;
+		topLeft._x = kScreenCornerHMargin;
+		topLeft._y = kScreenCornerVMargin;
 		break;
 
 	case MsgDispPosition::OnTopRight:
-		topLeft._y = screenCornerVMargin;
-		topLeft._x = screenSize.width() - dialogSize.width() - screenCornerHMargin;
+		topLeft._y = kScreenCornerVMargin;
+		topLeft._x = screenSize.width() - dialogSize.width() - kScreenCornerHMargin;
 		break;
 
 	case MsgDispPosition::OnBottomLeft:
-		topLeft._x = screenCornerHMargin;
-		topLeft._y = screenSize.height() - dialogSize.height() - screenCornerVMargin;
+		topLeft._x = kScreenCornerHMargin;
+		topLeft._y = screenSize.height() - dialogSize.height() - kScreenCornerVMargin;
 		break;
 
 	case MsgDispPosition::OnBottomRight:
-		topLeft._x = screenSize.width() - dialogSize.width() - screenCornerHMargin;
-		topLeft._y = screenSize.height() - dialogSize.height() - screenCornerVMargin;
+		topLeft._x = screenSize.width() - dialogSize.width() - kScreenCornerHMargin;
+		topLeft._y = screenSize.height() - dialogSize.height() - kScreenCornerVMargin;
 		break;
 
 	default:

@@ -139,7 +139,7 @@ public:
 protected:
 	// Get/set functions
 	inline int getTotalItemNum() const {
-		return getExtraItemNum() + ScheduleData::defaultItemNum;
+		return getExtraItemNum() + ScheduleData::kDefaultItemNum;
 	}
 	inline int getExtraItemNum() const {
 		return tempScheduleData_.getExtraItemNum();

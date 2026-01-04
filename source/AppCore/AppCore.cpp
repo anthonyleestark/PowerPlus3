@@ -229,8 +229,8 @@ constexpr bool ConfigData::compare(const ConfigData& other) const noexcept
 	// Init data
 	isRepeated_ = false;									// Repeat daily
 	isSnoozingAllowed_ = true;								// Allow snoozing mode
-	snoozeInterval_ = defaultSnoozeInterval;				// Snooze interval
-	repeatDays_ = defaultActiveDays;						// Default repeat: All days of week
+	snoozeInterval_ = kDefaultSnoozeInterval;				// Snooze interval
+	repeatDays_ = kDefaultActiveDays;						// Default repeat: All days of week
 }
 
 
@@ -277,7 +277,7 @@ constexpr bool PwrRepeatSet::compare(const PwrRepeatSet& other) const noexcept
 ScheduleItem::ScheduleItem()
 {
 	// Initialize
-	itemId_ = ScheduleData::minItemID;				// Item ID
+	itemId_ = ScheduleData::kMinItemID;				// Item ID
 	isEnabled_ = false;								// Enable/disable status
 	actionId_ = APP_ACTION_NOTHING;					// Schedule action ID
 	timeValue_ = ClockTime();						// Schedule time
@@ -368,7 +368,7 @@ void ScheduleItem::print(String& outputString) const
 ScheduleData::ScheduleData()
 {
 	// Initialize
-	defaultItem_ = ScheduleItem(ScheduleData::defaultItemID);
+	defaultItem_ = ScheduleItem(ScheduleData::kDefaultItemID);
 	extraItemList_.clear();
 }
 
@@ -412,7 +412,7 @@ DWORD ScheduleData::add(const ScheduleItem& item)
 	if (defaultItem_.isEmpty()) {
 		// Make item as default
 		ScheduleItem defaultTemp(item);
-		defaultTemp.setItemId(ScheduleData::defaultItemID);
+		defaultTemp.setItemId(ScheduleData::kDefaultItemID);
 		defaultItem_.copy(defaultTemp);
 		return Error::Success;
 	}
@@ -425,7 +425,7 @@ DWORD ScheduleData::add(const ScheduleItem& item)
 	}
 
 	// If number of items exceeded limit
-	if (getExtraItemNum() >= ScheduleData::maxItemNum)
+	if (getExtraItemNum() >= ScheduleData::kMaxItemNum)
 		return Error::MaxItemReached;
 
 	// Check if item is duplicated, if yes, do not add
@@ -486,7 +486,7 @@ DWORD ScheduleData::update(const ScheduleItem& item)
 		return Error::ItemIsEmpty;
 
 	// If item ID is matching with default item
-	if (item.getItemId() == ScheduleData::defaultItemID) {
+	if (item.getItemId() == ScheduleData::kDefaultItemID) {
 		// Update default item
 		getDefaultItem().copy(item);
 		return Error::Success;
@@ -545,7 +545,7 @@ void ScheduleData::adjust(void)
 	if (isDefaultEmpty() && isExtraEmpty() == false) {
 		// Make first extra item default
 		defaultItem_.copy(getItemAt(0));
-		defaultItem_.setItemId(ScheduleData::defaultItemID);
+		defaultItem_.setItemId(ScheduleData::kDefaultItemID);
 
 		// Remove that extra item
 		deleteItem(0);
@@ -570,7 +570,7 @@ void ScheduleData::adjust(void)
 unsigned ScheduleData::getNextId(void) const
 {
 	// Get currently max ID
-	unsigned retNextId = ScheduleData::minItemID;
+	unsigned retNextId = ScheduleData::kMinItemID;
 	for (int index = 0; index < getExtraItemNum(); index++) {
 		ScheduleItem item = getItemAt(index);
 		if (item.getItemId() > retNextId) {
@@ -1003,17 +1003,17 @@ void HotkeySetData::printKeyStrokes(unsigned hotkeyId, String& outputString) con
 RmdMsgStyleSet::RmdMsgStyleSet()
 {
 	// Init data
-	colorBackground_ = defaultBkgrdColor;						// Background color
-	colorText_ = defaultTextColor;								// Text color
-	fontName_ = defaultFontName;								// Font name
-	fontSize_ = defaultFontSize;								// Font size
-	timeoutValue_ = defaultTimeout;								// Timeout (auto-close) interval
-	iconId_ = defaultIconID;									// Message icon ID
-	iconSize_ = defaultIconSize;								// Message icon size
-	iconPosition_ = defaultIconPosition;						// Message icon position
-	displayPosition_ = defaultDisplayPosition;					// Message display position
-	marginHorizontal_ = defaultHorizontalMargin;				// Display area horizontal margin
-	marginVertical_ = defaultVerticalMargin;					// Display area vertical margin
+	colorBackground_ = kDefaultBkgrdColor;						// Background color
+	colorText_ = kDefaultTextColor;								// Text color
+	fontName_ = kDefaultFontName;								// Font name
+	fontSize_ = kDefaultFontSize;								// Font size
+	timeoutValue_ = kDefaultTimeout;								// Timeout (auto-close) interval
+	iconId_ = kDefaultIconID;									// Message icon ID
+	iconSize_ = kDefaultIconSize;								// Message icon size
+	iconPosition_ = kDefaultIconPosition;						// Message icon position
+	displayPosition_ = kDefaultDisplayPosition;					// Message display position
+	marginHorizontal_ = kDefaultHorizontalMargin;				// Display area horizontal margin
+	marginVertical_ = kDefaultVerticalMargin;					// Display area vertical margin
 }
 
 
@@ -1075,7 +1075,7 @@ PwrReminderItem::PwrReminderItem()
 {
 	// Init data
 	isEnabled_ = false;										// Enable state
-	itemId_ = PwrReminderData::minItemID;					// Item ID
+	itemId_ = PwrReminderData::kMinItemID;					// Item ID
 	messageContent_ = Constant::String::Empty;				// Message content
 	eventId_ = Event::atSetTime;							// Event ID
 	timeValue_ = ClockTime();								// Event time
@@ -1372,7 +1372,7 @@ void PwrReminderData::init() noexcept
  unsigned PwrReminderData::getNextId(void) const noexcept
 {
 	// Get max ID
-	unsigned retNextId = PwrReminderData::minItemID;
+	unsigned retNextId = PwrReminderData::kMinItemID;
 	for (int index = 0; index < getItemNum(); index++) {
 		PwrReminderItem item = getItemAt(index);
 		if (item.getItemId() > retNextId) {

@@ -21,17 +21,17 @@ using namespace AppCore;
 
 
 // Dialog default size
-constexpr const int defaultWidth = 320;
-constexpr const int defaultHeight = 240;
+constexpr const int kDefaultWidth = 320;
+constexpr const int kDefaultHeight = 240;
 
 // Maximum input text length
-constexpr const unsigned maxFontSizeDigits = 3;
-constexpr const unsigned maxIconSizeDigits = 3;
-constexpr const unsigned maxTimeoutDigits = 4;
-constexpr const unsigned maxMarginValDigits = 3;
+constexpr const unsigned kMaxFontSizeDigits = 3;
+constexpr const unsigned kMaxIconSizeDigits = 3;
+constexpr const unsigned kMaxTimeoutDigits = 4;
+constexpr const unsigned kMaxMarginValDigits = 3;
 
 // Caption format
-constexpr const wchar_t* captionDetailFormat = _T(" - [%s]");
+constexpr const wchar_t* kCaptionDetailFormat = _T(" - [%s]");
 
 // Local string variables
 String balloonTitleInvalidValue;
@@ -76,8 +76,8 @@ CRmdMsgStyleSetDlg::CRmdMsgStyleSetDlg() : SDialog(IDD_MSGSTYLESET_DLG)
 	// Data
 	messageStyleData_ = RmdMsgStyleSet();
 	tempMessageStyleData_ = RmdMsgStyleSet();
-	messageBackgroundColor_ = RmdMsgStyleSet::defaultBkgrdColor;
-	messageTextColor_ = RmdMsgStyleSet::defaultTextColor;
+	messageBackgroundColor_ = RmdMsgStyleSet::kDefaultBkgrdColor;
+	messageTextColor_ = RmdMsgStyleSet::kDefaultTextColor;
 	flagDataSet_ = DataSetFlag::commonStyle;
 }
 
@@ -168,7 +168,7 @@ void CRmdMsgStyleSetDlg::OnPreview()
 	updateDialogData(true);
 
 	// Default timeout for previewing
-	int defaultTimeout = PwrReminderData::previewTimeout;
+	int defaultTimeout = PwrReminderData::kPreviewTimeout;
 
 	// Initialize preview message
 	CReminderMsgDlg previewMsgDlg;
@@ -248,8 +248,8 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			{
 				// Validation
 				HWND fontSizeEditHandle = ::GetWindow(fontSizePickComboPtr_->GetSafeHwnd(), GW_CHILD);
-				int fontSize = getEditValue(fontSizeEditHandle, maxFontSizeDigits);
-				validateEditValue(fontSizeEditHandle, fontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize, true);
+				int fontSize = getEditValue(fontSizeEditHandle, kMaxFontSizeDigits);
+				validateEditValue(fontSizeEditHandle, fontSize, RmdMsgStyleSet::kMinFontSize, RmdMsgStyleSet::kMaxFontSize, true);
 
 				return true;
 			}
@@ -257,8 +257,8 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			{
 				// Auto-correction
 				HWND fontSizeEditHandle = ::GetWindow(fontSizePickComboPtr_->GetSafeHwnd(), GW_CHILD);
-				int fontSize = getEditValue(fontSizeEditHandle, maxFontSizeDigits);
-				if (!validateAndCorrect(fontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize))
+				int fontSize = getEditValue(fontSizeEditHandle, kMaxFontSizeDigits);
+				if (!validateAndCorrect(fontSize, RmdMsgStyleSet::kMinFontSize, RmdMsgStyleSet::kMaxFontSize))
 					fontSizePickComboPtr_->SelectString(-1, String::fromNumber(fontSize));
 
 				return true;
@@ -284,8 +284,8 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			if (HIWORD(wParam) == EN_CHANGE && iconSizeEditPtr_ != NULL)
 			{
 				// Validation
-				int iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), maxIconSizeDigits);
-				bool isValid = validateEditValue(iconSizeEditPtr_->GetSafeHwnd(), iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize, true);
+				int iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), kMaxIconSizeDigits);
+				bool isValid = validateEditValue(iconSizeEditPtr_->GetSafeHwnd(), iconSize, RmdMsgStyleSet::kMinIconSize, RmdMsgStyleSet::kMaxIconSize, true);
 
 				// Trigger redrawing icon preview
 				if (iconPreviewStaticPtr_ != NULL && isValid)
@@ -296,8 +296,8 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			else if (HIWORD(wParam) == EN_KILLFOCUS && iconSizeEditPtr_ != NULL)
 			{
 				// Auto-correction
-				int iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), maxIconSizeDigits);
-				if (!validateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize))
+				int iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), kMaxIconSizeDigits);
+				if (!validateAndCorrect(iconSize, RmdMsgStyleSet::kMinIconSize, RmdMsgStyleSet::kMaxIconSize))
 					iconSizeEditPtr_->SetWindowText(String::fromNumber(iconSize));
 
 				// Trigger redrawing icon preview
@@ -315,16 +315,16 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			if (HIWORD(wParam) == EN_CHANGE && timeoutEditPtr_ != NULL)
 			{
 				// Validation
-				int timeoutValue = getEditValue(timeoutEditPtr_->GetSafeHwnd(), maxTimeoutDigits);
-				validateEditValue(timeoutEditPtr_->GetSafeHwnd(), timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut, true);
+				int timeoutValue = getEditValue(timeoutEditPtr_->GetSafeHwnd(), kMaxTimeoutDigits);
+				validateEditValue(timeoutEditPtr_->GetSafeHwnd(), timeoutValue, RmdMsgStyleSet::kMinTimeOut, RmdMsgStyleSet::kMaxTimeOut, true);
 
 				return true;
 			}
 			else if (HIWORD(wParam) == EN_KILLFOCUS && timeoutEditPtr_ != NULL)
 			{
 				// Auto-correction
-				int timeoutValue = getEditValue(timeoutEditPtr_->GetSafeHwnd(), maxTimeoutDigits);
-				if (!validateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut))
+				int timeoutValue = getEditValue(timeoutEditPtr_->GetSafeHwnd(), kMaxTimeoutDigits);
+				if (!validateAndCorrect(timeoutValue, RmdMsgStyleSet::kMinTimeOut, RmdMsgStyleSet::kMaxTimeOut))
 					timeoutEditPtr_->SetWindowText(String::fromNumber(timeoutValue));
 
 				// Update timeout spin position
@@ -342,16 +342,16 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			if (HIWORD(wParam) == EN_CHANGE && horizontalMarginEditPtr_ != NULL)
 			{
 				// Validation
-				int marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
-				validateEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), marginHorizontal, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal, true);
+				int marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), kMaxMarginValDigits);
+				validateEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), marginHorizontal, RmdMsgStyleSet::kMinMarginVal, RmdMsgStyleSet::kMaxMarginVal, true);
 
 				return true;
 			}
 			else if (HIWORD(wParam) == EN_KILLFOCUS && horizontalMarginEditPtr_ != NULL)
 			{
 				// Auto-correction
-				int marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
-				if (!validateAndCorrect(marginHorizontal, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal))
+				int marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), kMaxMarginValDigits);
+				if (!validateAndCorrect(marginHorizontal, RmdMsgStyleSet::kMinMarginVal, RmdMsgStyleSet::kMaxMarginVal))
 					horizontalMarginEditPtr_->SetWindowText(String::fromNumber(marginHorizontal));
 
 				return true;
@@ -365,16 +365,16 @@ BOOL CRmdMsgStyleSetDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			if (HIWORD(wParam) == EN_CHANGE && verticalMarginEditPtr_ != NULL)
 			{
 				// Validation
-				int marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
-				validateEditValue(verticalMarginEditPtr_->GetSafeHwnd(), marginVertical, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal, true);
+				int marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), kMaxMarginValDigits);
+				validateEditValue(verticalMarginEditPtr_->GetSafeHwnd(), marginVertical, RmdMsgStyleSet::kMinMarginVal, RmdMsgStyleSet::kMaxMarginVal, true);
 
 				return true;
 			}
 			else if (HIWORD(wParam) == EN_KILLFOCUS && verticalMarginEditPtr_ != NULL)
 			{
 				// Auto-correction
-				int marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
-				if (!validateAndCorrect(marginVertical, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal))
+				int marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), kMaxMarginValDigits);
+				if (!validateAndCorrect(marginVertical, RmdMsgStyleSet::kMinMarginVal, RmdMsgStyleSet::kMaxMarginVal))
 					verticalMarginEditPtr_->SetWindowText(String::fromNumber(marginVertical));
 
 				return true;
@@ -449,7 +449,7 @@ LRESULT CRmdMsgStyleSetDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPara
 			{
 				LPNMUPDOWN upDownCtrlPtr = reinterpret_cast<LPNMUPDOWN>(notifyStructPtr);
 				int newPos = upDownCtrlPtr->iPos + upDownCtrlPtr->iDelta;
-				if (newPos >= RmdMsgStyleSet::minTimeOut && newPos <= RmdMsgStyleSet::maxTimeOut) {
+				if (newPos >= RmdMsgStyleSet::kMinTimeOut && newPos <= RmdMsgStyleSet::kMaxTimeOut) {
 					if (timeoutEditPtr_ != NULL)
 						timeoutEditPtr_->SetWindowText(String::fromNumber(newPos));
 					if (timeoutSpinPtr_ != NULL)
@@ -480,9 +480,9 @@ void CRmdMsgStyleSetDlg::setupLanguage()
 	// Set dialog caption
 	String dialogCaption = getLanguageString(languageTablePtr, getDialogId());
 	if (flagDataSet_ == DataSetFlag::commonStyle)
-		dialogCaption += StringUtils::stringFormat(captionDetailFormat, getLanguageString(languageTablePtr, PWRRMD_STYLE_COMMONSTYLE));
+		dialogCaption += StringUtils::stringFormat(kCaptionDetailFormat, getLanguageString(languageTablePtr, PWRRMD_STYLE_COMMONSTYLE));
 	else if (flagDataSet_ == DataSetFlag::customStyle)
-		dialogCaption += StringUtils::stringFormat(captionDetailFormat, getLanguageString(languageTablePtr, PWRRMD_STYLE_CUSTOMSTYLE));
+		dialogCaption += StringUtils::stringFormat(kCaptionDetailFormat, getLanguageString(languageTablePtr, PWRRMD_STYLE_CUSTOMSTYLE));
 	this->setCaption(dialogCaption);
 
 	// Loop through all dialog items and setup languages for each one of them
@@ -569,7 +569,7 @@ void CRmdMsgStyleSetDlg::setupComboBox(unsigned comboId, LANGTABLE_PTR languageT
 
 			// List-up available font size values
 			fontSizePickComboPtr_->ResetContent();
-			for (int fontSize = RmdMsgStyleSet::minFontSize; fontSize <= RmdMsgStyleSet::maxFontSize; fontSize++)
+			for (int fontSize = RmdMsgStyleSet::kMinFontSize; fontSize <= RmdMsgStyleSet::kMaxFontSize; fontSize++)
 				fontSizePickComboPtr_->AddString(String::fromNumber(fontSize));
 
 			return;
@@ -746,30 +746,30 @@ void CRmdMsgStyleSetDlg::setupDialogItemState(void)
 
 		// Set maximum length
 		if (timeoutEditPtr_ == NULL) return;
-		timeoutEditPtr_->SetLimitText(maxTimeoutDigits);
+		timeoutEditPtr_->SetLimitText(kMaxTimeoutDigits);
 
 		// Set buddy: Timeout edit control
 		timeoutSpinPtr_->SetBuddy(timeoutEditPtr_);
 
 		// Set spin edit value
-		timeoutSpinPtr_->SetRange(RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
-		timeoutSpinPtr_->SetPos(RmdMsgStyleSet::defaultTimeout);
+		timeoutSpinPtr_->SetRange(RmdMsgStyleSet::kMinTimeOut, RmdMsgStyleSet::kMaxTimeOut);
+		timeoutSpinPtr_->SetPos(RmdMsgStyleSet::kDefaultTimeout);
 	}
 
 	// Setup font size picker
 	if (fontSizePickComboPtr_ != NULL) {
 		HWND fontSizeEditHandle = ::GetWindow(fontSizePickComboPtr_->GetSafeHwnd(), GW_CHILD);
 		SetWindowLongPtr(fontSizeEditHandle, GWL_STYLE, GetWindowLongPtr(fontSizeEditHandle, GWL_STYLE) | ES_CENTER);
-		fontSizePickComboPtr_->SendMessage(CB_LIMITTEXT, (WPARAM)maxFontSizeDigits, 0);
+		fontSizePickComboPtr_->SendMessage(CB_LIMITTEXT, (WPARAM)kMaxFontSizeDigits, 0);
 	}
 
 	// Set maximum length for edit-boxes
 	if (iconSizeEditPtr_ != NULL)
-		iconSizeEditPtr_->SetLimitText(maxIconSizeDigits);
+		iconSizeEditPtr_->SetLimitText(kMaxIconSizeDigits);
 	if (horizontalMarginEditPtr_ != NULL)
-		horizontalMarginEditPtr_->SetLimitText(maxMarginValDigits);
+		horizontalMarginEditPtr_->SetLimitText(kMaxMarginValDigits);
 	if (verticalMarginEditPtr_ != NULL)
-		verticalMarginEditPtr_->SetLimitText(maxMarginValDigits);
+		verticalMarginEditPtr_->SetLimitText(kMaxMarginValDigits);
 
 	// Default
 	SDialog::setupDialogItemState();
@@ -810,17 +810,17 @@ void CRmdMsgStyleSetDlg::redrawIconPreview(LPDRAWITEMSTRUCT drawItemStructPtr)
 	HDC hDC = drawItemStructPtr->hDC;
 
 	// Icon ID
-	int iconId = RmdMsgStyleSet::defaultIconID;
+	int iconId = RmdMsgStyleSet::kDefaultIconID;
 	if (iconIdPickComboPtr_ != NULL) {
 		int currenSelection = iconIdPickComboPtr_->GetCurSel();
 		iconId = IDTable::SystemIcon[currenSelection].first;
 	}
 
 	// Icon size
-	int iconSize = RmdMsgStyleSet::defaultIconSize;
+	int iconSize = RmdMsgStyleSet::kDefaultIconSize;
 	if (iconSizeEditPtr_ != NULL) {
-		iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), maxIconSizeDigits);
-		validateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+		iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), kMaxIconSizeDigits);
+		validateAndCorrect(iconSize, RmdMsgStyleSet::kMinIconSize, RmdMsgStyleSet::kMaxIconSize);
 	}
 	int cx = iconSize;
 	int cy = iconSize;
@@ -939,7 +939,7 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 		tempMessageStyleData_.setTextColor(messageTextColor_);
 
 		// Font name
-		String fontName = RmdMsgStyleSet::defaultFontName;
+		String fontName = RmdMsgStyleSet::kDefaultFontName;
 		if (fontNamePickComboPtr_ != NULL) {
 			wchar_t tempBuff[Constant::Max::StringLength];
 			currenSelection = fontNamePickComboPtr_->GetCurSel();
@@ -949,16 +949,16 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 		tempMessageStyleData_.setFontName(fontName);
 
 		// Font size
-		int fontSize = RmdMsgStyleSet::defaultFontSize;
+		int fontSize = RmdMsgStyleSet::kDefaultFontSize;
 		if (fontSizePickComboPtr_ != NULL) {
 			HWND fontSizeEditHandle = ::GetWindow(fontSizePickComboPtr_->GetSafeHwnd(), GW_CHILD);
-			fontSize = getEditValue(fontSizeEditHandle, maxFontSizeDigits);
-			validateAndCorrect(fontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize);
+			fontSize = getEditValue(fontSizeEditHandle, kMaxFontSizeDigits);
+			validateAndCorrect(fontSize, RmdMsgStyleSet::kMinFontSize, RmdMsgStyleSet::kMaxFontSize);
 		}
 		tempMessageStyleData_.setFontSize(fontSize);
 
 		// Icon ID
-		int iconId = RmdMsgStyleSet::defaultIconID;
+		int iconId = RmdMsgStyleSet::kDefaultIconID;
 		if (iconIdPickComboPtr_ != NULL) {
 			currenSelection = iconIdPickComboPtr_->GetCurSel();
 			iconId = IDTable::SystemIcon[currenSelection].first;
@@ -966,15 +966,15 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 		tempMessageStyleData_.setIconId(iconId);
 
 		// Icon size
-		int iconSize = RmdMsgStyleSet::defaultIconSize;
+		int iconSize = RmdMsgStyleSet::kDefaultIconSize;
 		if (iconSizeEditPtr_ != NULL) {
-			iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), maxIconSizeDigits);
-			validateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+			iconSize = getEditValue(iconSizeEditPtr_->GetSafeHwnd(), kMaxIconSizeDigits);
+			validateAndCorrect(iconSize, RmdMsgStyleSet::kMinIconSize, RmdMsgStyleSet::kMaxIconSize);
 		}
 		tempMessageStyleData_.setIconSize(iconSize);
 
 		// Icon position
-		int iconPosition = RmdMsgStyleSet::defaultIconPosition;
+		int iconPosition = RmdMsgStyleSet::kDefaultIconPosition;
 		if (iconPositionOnTopRadPtr_ != NULL && iconPositionOnTopRadPtr_->GetCheck())
 			iconPosition = RmdMsgStyleSet::IconPosition::IconOnTheTop;
 		else if (iconPositionOnLeftRadPtr_ != NULL && iconPositionOnLeftRadPtr_->GetCheck())
@@ -982,15 +982,15 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 		tempMessageStyleData_.setIconPosition(iconPosition);
 
 		// Timeout
-		int timeoutValue = RmdMsgStyleSet::defaultTimeout;
+		int timeoutValue = RmdMsgStyleSet::kDefaultTimeout;
 		if (timeoutSpinPtr_ != NULL) {
 			timeoutValue = timeoutSpinPtr_->GetPos();
-			validateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
+			validateAndCorrect(timeoutValue, RmdMsgStyleSet::kMinTimeOut, RmdMsgStyleSet::kMaxTimeOut);
 		}
 		tempMessageStyleData_.setTimeout(timeoutValue);
 
 		// Display position
-		int displayPosition = RmdMsgStyleSet::defaultDisplayPosition;
+		int displayPosition = RmdMsgStyleSet::kDefaultDisplayPosition;
 		if (displayPosComboPtr_ != NULL) {
 			currenSelection = displayPosComboPtr_->GetCurSel();
 			displayPosition = IDTable::DisplayPosition[currenSelection].first;
@@ -998,18 +998,18 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 		tempMessageStyleData_.setDisplayPosition(displayPosition);
 
 		// Horizontal margin
-		int marginHorizontal = RmdMsgStyleSet::defaultHorizontalMargin;
+		int marginHorizontal = RmdMsgStyleSet::kDefaultHorizontalMargin;
 		if (horizontalMarginEditPtr_ != NULL) {
-			marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
-			validateAndCorrect(iconSize, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+			marginHorizontal = getEditValue(horizontalMarginEditPtr_->GetSafeHwnd(), kMaxMarginValDigits);
+			validateAndCorrect(iconSize, RmdMsgStyleSet::kMinMarginVal, RmdMsgStyleSet::kMaxMarginVal);
 		}
 		tempMessageStyleData_.setHorizontalMargin(marginHorizontal);
 
 		// Vertical margin
-		int marginVertical = RmdMsgStyleSet::defaultVerticalMargin;
+		int marginVertical = RmdMsgStyleSet::kDefaultVerticalMargin;
 		if (verticalMarginEditPtr_ != NULL) {
-			marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), maxMarginValDigits);
-			validateAndCorrect(marginVertical, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+			marginVertical = getEditValue(verticalMarginEditPtr_->GetSafeHwnd(), kMaxMarginValDigits);
+			validateAndCorrect(marginVertical, RmdMsgStyleSet::kMinMarginVal, RmdMsgStyleSet::kMaxMarginVal);
 		}
 		tempMessageStyleData_.setVerticalMargin(marginVertical);
 	}
@@ -1037,7 +1037,7 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 
 		// Font size
 		int fontSize = tempMessageStyleData_.getFontSize();
-		validateAndCorrect(fontSize, RmdMsgStyleSet::minFontSize, RmdMsgStyleSet::maxFontSize);
+		validateAndCorrect(fontSize, RmdMsgStyleSet::kMinFontSize, RmdMsgStyleSet::kMaxFontSize);
 		if (fontSizePickComboPtr_ != NULL) {
 			String fontSizeStr = String::fromNumber(fontSize);
 			fontSizePickComboPtr_->SelectString(-1, fontSizeStr);
@@ -1053,7 +1053,7 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 
 		// Icon size
 		int iconSize = tempMessageStyleData_.getIconSize();
-		validateAndCorrect(iconSize, RmdMsgStyleSet::minIconSize, RmdMsgStyleSet::maxIconSize);
+		validateAndCorrect(iconSize, RmdMsgStyleSet::kMinIconSize, RmdMsgStyleSet::kMaxIconSize);
 		if (iconSizeEditPtr_ != NULL) {
 			String iconSizeStr = String::fromNumber(iconSize);
 			iconSizeEditPtr_->SetWindowText(iconSizeStr);
@@ -1068,7 +1068,7 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 
 		// Timeout
 		int timeoutValue = tempMessageStyleData_.getTimeout();
-		validateAndCorrect(timeoutValue, RmdMsgStyleSet::minTimeOut, RmdMsgStyleSet::maxTimeOut);
+		validateAndCorrect(timeoutValue, RmdMsgStyleSet::kMinTimeOut, RmdMsgStyleSet::kMaxTimeOut);
 		if (timeoutEditPtr_ != NULL) {
 			String timeOutValStr = String::fromNumber(timeoutValue);
 			timeoutEditPtr_->SetWindowText(timeOutValStr);
@@ -1086,7 +1086,7 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 
 		// Horizontal margin
 		int marginHorizontal = tempMessageStyleData_.getHorizontalMargin();
-		validateAndCorrect(marginHorizontal, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+		validateAndCorrect(marginHorizontal, RmdMsgStyleSet::kMinMarginVal, RmdMsgStyleSet::kMaxMarginVal);
 		if (horizontalMarginEditPtr_ != NULL) {
 			String marginValStr = String::fromNumber(marginHorizontal);
 			horizontalMarginEditPtr_->SetWindowText(marginValStr);
@@ -1094,7 +1094,7 @@ void CRmdMsgStyleSetDlg::updateDialogData(bool updateFlag)
 
 		// Vertical margin
 		int marginVertical = tempMessageStyleData_.getVerticalMargin();
-		validateAndCorrect(marginVertical, RmdMsgStyleSet::minMarginVal, RmdMsgStyleSet::maxMarginVal);
+		validateAndCorrect(marginVertical, RmdMsgStyleSet::kMinMarginVal, RmdMsgStyleSet::kMaxMarginVal);
 		if (verticalMarginEditPtr_ != NULL) {
 			String marginValStr = String::fromNumber(marginVertical);
 			verticalMarginEditPtr_->SetWindowText(marginValStr);

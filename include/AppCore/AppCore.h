@@ -225,10 +225,10 @@ class PwrRepeatSet
 {
 public:
 	// Define constant values
-	static constexpr int minSnoozeInterval = 60;					// Min snooze interval: 1 minutes
-	static constexpr int defaultSnoozeInterval = 600;				// Default snooze interval: 10 minutes
-	static constexpr int maxSnoozeInterval = 1800;					// Max snooze interval: 30 minutes
-	static constexpr int defaultActiveDays = 0b01111111;			// Default repeat: All days of weekss
+	static constexpr int kMinSnoozeInterval = 60;					// Min snooze interval: 1 minutes
+	static constexpr int kDefaultSnoozeInterval = 600;				// Default snooze interval: 10 minutes
+	static constexpr int kMaxSnoozeInterval = 1800;					// Max snooze interval: 30 minutes
+	static constexpr int kDefaultActiveDays = 0b01111111;			// Default repeat: All days of weekss
 
 private:
 	// Attributes
@@ -406,12 +406,12 @@ class ScheduleData
 {
 public:
 	// Define constant values
-	static constexpr int defaultItemNum = 1;						// Default item number: 1
-	static constexpr int maxItemNum = 100;							// Max item number: 100
-	static constexpr int defaultItemID = 0x00;						// Default item ID: 0
-	static constexpr int minItemID = 10000;							// Min item ID: 10000
-	static constexpr int maxItemID = 19999;							// Max item ID: 19999
-	static constexpr int defaultActionID = APP_ACTION_DISPLAYOFF;	// Default action (for new item): Turn off display
+	static constexpr int kDefaultItemNum = 1;						// Default item number: 1
+	static constexpr int kMaxItemNum = 100;							// Max item number: 100
+	static constexpr int kDefaultItemID = 0x00;						// Default item ID: 0
+	static constexpr int kMinItemID = 10000;						// Min item ID: 10000
+	static constexpr int kMaxItemID = 19999;						// Max item ID: 19999
+	static constexpr int kDefaultActionID = APP_ACTION_DISPLAYOFF;	// Default action (for new item): Turn off display
 
 	enum Error {
 		Success = 0,												// Success (no error)
@@ -443,7 +443,7 @@ public:
 public:
 	// Data processing
 	void init(void) {
-		defaultItem_ = ScheduleItem(ScheduleData::defaultItemID);
+		defaultItem_ = ScheduleItem(ScheduleData::kDefaultItemID);
 		extraItemList_.clear();
 	}
 	void copy(const ScheduleData& other);
@@ -511,7 +511,7 @@ public:
 		extraItemList_.clear();
 	}
 	void deleteAll(void) noexcept {
-		defaultItem_ = ScheduleItem(ScheduleData::defaultItemID);
+		defaultItem_ = ScheduleItem(ScheduleData::kDefaultItemID);
 		extraItemList_.clear();
 	}
 };
@@ -708,28 +708,28 @@ public:
 
 public:
 	// Define default style values
-	static constexpr COLORREF defaultBkgrdColor = Color::Pink;
-	static constexpr COLORREF defaultTextColor = Color::Red;
-	static constexpr const wchar_t* defaultFontName = _T("Arial");
-	static constexpr int defaultFontSize = 20;
-	static constexpr int defaultTimeout = 0;
-	static constexpr int defaultIconID = SystemIcon::Information;
-	static constexpr int defaultIconSize = 50;
-	static constexpr int defaultIconPosition = IconOnTheTop;
-	static constexpr int defaultDisplayPosition = AtCenter;
-	static constexpr int defaultHorizontalMargin = 50;
-	static constexpr int defaultVerticalMargin = 50;
+	static constexpr COLORREF kDefaultBkgrdColor = Color::Pink;
+	static constexpr COLORREF kDefaultTextColor = Color::Red;
+	static constexpr const wchar_t* kDefaultFontName = _T("Arial");
+	static constexpr int kDefaultFontSize = 20;
+	static constexpr int kDefaultTimeout = 0;
+	static constexpr int kDefaultIconID = SystemIcon::Information;
+	static constexpr int kDefaultIconSize = 50;
+	static constexpr int kDefaultIconPosition = IconOnTheTop;
+	static constexpr int kDefaultDisplayPosition = AtCenter;
+	static constexpr int kDefaultHorizontalMargin = 50;
+	static constexpr int kDefaultVerticalMargin = 50;
 
 public:
 	// Define constant values
-	static constexpr int minFontSize = 10;
-	static constexpr int maxFontSize = 100;
-	static constexpr int minTimeOut = 10;
-	static constexpr int maxTimeOut = 1800;
-	static constexpr int minIconSize = 30;
-	static constexpr int maxIconSize = 100;
-	static constexpr int minMarginVal = 10;
-	static constexpr int maxMarginVal = 120;
+	static constexpr int kMinFontSize = 10;
+	static constexpr int kMaxFontSize = 100;
+	static constexpr int kMinTimeOut = 10;
+	static constexpr int kMaxTimeOut = 1800;
+	static constexpr int kMinIconSize = 30;
+	static constexpr int kMaxIconSize = 100;
+	static constexpr int kMinMarginVal = 10;
+	static constexpr int kMaxMarginVal = 120;
 
 private:
 	// Attributes
@@ -1009,10 +1009,10 @@ class PwrReminderData
 {
 public:
 	// Define constant values
-	static constexpr int maxItemNum = 100;							// Max item number: 100
-	static constexpr int minItemID = 10000;							// Min item ID: 10000
-	static constexpr int maxItemID = 19999;							// Max item ID: 19999
-	static constexpr int previewTimeout = 10;						// Default time-out for preview: 10s
+	static constexpr int kMaxItemNum = 100;							// Max item number: 100
+	static constexpr int kMinItemID = 10000;						// Min item ID: 10000
+	static constexpr int kMaxItemID = 19999;						// Max item ID: 19999
+	static constexpr int kPreviewTimeout = 10;						// Default time-out for preview: 10s
 
 private:
 	// Attributes
@@ -1524,14 +1524,14 @@ namespace AppCore
 		VERIFY(optionMacro > 0x00 && optionMacro < UINT_MAX);
 		VERIFY(selection >= 0 && selection < UINT_MAX);
 		return ((optionMacro << 8) + (selection + 1));
-	};
+	}
 
 	// Convert option ID into combo-box selection
 	inline unsigned opt2Sel(unsigned optionMacro, unsigned currentOption) {
 		VERIFY(optionMacro > 0x00 && optionMacro < UINT_MAX);
 		VERIFY(currentOption >= 0 && currentOption < UINT_MAX);
 		return (currentOption - (optionMacro << 8) - 1);
-	};
+	}
 
 	// Data/control/window functions
 	HWND findDebugTestDlg(void);

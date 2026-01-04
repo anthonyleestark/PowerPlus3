@@ -720,7 +720,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 		tempScheduleDataPtr->init();
 
 		// Initialize default item
-		ScheduleItem tempDefaultItem(ScheduleData::defaultItemID);
+		ScheduleItem tempDefaultItem(ScheduleData::kDefaultItemID);
 		{
 			// Read default schedule item
 			int defaultScheduleResult = INT_NULL;

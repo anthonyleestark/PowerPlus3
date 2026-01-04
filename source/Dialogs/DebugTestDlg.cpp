@@ -23,7 +23,7 @@ constexpr const int kDefaultMaxWidth = 1600;
 constexpr const int kDefaultMaxHeight = 900;
 
 // Output format
-constexpr const wchar_t* debugOutputFormat = L">> %s";
+constexpr const wchar_t* kDebugOutputFormat = L">> %s";
 
 
 // Implement methods for CDebugTestDlg
@@ -281,7 +281,7 @@ LRESULT CDebugTestDlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 
 	// Format debug output log string
 	String debugOutputLogStr;
-	debugOutputLogStr.format(debugOutputFormat, LPARAM_TO_STRING(lParam));
+	debugOutputLogStr.format(kDebugOutputFormat, LPARAM_TO_STRING(lParam));
 
 	// Add debug output string
 	addLine(debugOutputLogStr);

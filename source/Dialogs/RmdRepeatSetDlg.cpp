@@ -19,8 +19,8 @@ using namespace AppCore;
 
 
 // Dialog default size
-constexpr const int defaultWidth = 320;
-constexpr const int defaultHeight = 240;
+constexpr const int kDefaultWidth = 320;
+constexpr const int kDefaultHeight = 240;
 
 
 // Implement methods for CRmdRepeatSetDlg
@@ -291,7 +291,7 @@ void CRmdRepeatSetDlg::setupDialogItemState()
 	}
 
 	// Setup properties
-	int defaultSnoozeMin = PwrRepeatSet::defaultSnoozeInterval / 60;
+	int defaultSnoozeMin = PwrRepeatSet::kDefaultSnoozeInterval / 60;
 	if (snoozeIntervalEditPtr_ != NULL) {
 		snoozeIntervalEditPtr_->SetReadOnly(true);
 	}
@@ -307,7 +307,7 @@ void CRmdRepeatSetDlg::setupDialogItemState()
 		setSnoozeIntervalEdit(defaultSnoozeMin);
 
 		// Set snooze interval value
-		setSnoozeInterval(PwrRepeatSet::defaultSnoozeInterval);
+		setSnoozeInterval(PwrRepeatSet::kDefaultSnoozeInterval);
 	}
 
 	// Default
@@ -391,8 +391,8 @@ void CRmdRepeatSetDlg::setSnoozeIntervalEdit(int value)
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Check validity
-	if (((value * 60) < PwrRepeatSet::minSnoozeInterval) ||
-		((value * 60) > PwrRepeatSet::maxSnoozeInterval))
+	if (((value * 60) < PwrRepeatSet::kMinSnoozeInterval) ||
+		((value * 60) > PwrRepeatSet::kMaxSnoozeInterval))
 		return;
 
 	// Show snooze interval value

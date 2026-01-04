@@ -16,10 +16,10 @@
 
 /*---------------------------------------------Launch-info data----------------------------------------------*/
 // Application launch-time
-DateTime Global::g_stAppLaunchTime;
+DateTime Global::g_appLaunchTime;
 
 // Application launch-time counter
-unsigned Global::g_uiAppLaunchTimeCounter = 0;
+unsigned Global::g_appLaunchTimeCounter = 0;
 
 /*-----------------------------------------------------------------------------------------------------------*/
 

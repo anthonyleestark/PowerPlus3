@@ -2009,7 +2009,7 @@ void CPwrReminderDlg::refreshDialogItemState(bool isRecheckState /* = false */)
 	bool isSelected = ((curSelIndex_ >= 0) && (curSelIndex_ < getItemNum()));
 
 	// Check if number of item has reached the limit
-	bool isMaxNum = (getItemNum() >= PwrReminderData::maxItemNum);
+	bool isMaxNum = (getItemNum() >= PwrReminderData::kMaxItemNum);
 
 	// Check if data is all empty or not
 	bool isAllEmpty = tempReminderData_.isAllEmpty();
@@ -2618,7 +2618,7 @@ void CPwrReminderDlg::previewItem(int index)
 				msgStyleSet = displayItem.getMessageStyleData();
 
 			// Default timeout for previewing
-			int defaultTimeout = PwrReminderData::previewTimeout;
+			int defaultTimeout = PwrReminderData::kPreviewTimeout;
 
 			// Set properties
 			previewMsgDlgPtr_->setCaptionFromLanguage(IDC_PWRREMINDER_PREVIEW_BTN);
@@ -2944,7 +2944,7 @@ bool CPwrReminderDlg::validate(Item& reminderItem, bool showMsg /* = false */, b
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Check item ID
-	if ((reminderItem.getItemId() < PwrReminderData::minItemID) || (reminderItem.getItemId() > PwrReminderData::maxItemID)) {
+	if ((reminderItem.getItemId() < PwrReminderData::kMinItemID) || (reminderItem.getItemId() > PwrReminderData::kMaxItemID)) {
 		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_ITEMID;
 		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
@@ -3001,7 +3001,7 @@ bool CPwrReminderDlg::validate(Item& reminderItem, bool showMsg /* = false */, b
 	}
 
 	// Check snooze interval data
-	if ((reminderItem.getSnoozeInterval() < PwrRepeatSet::minSnoozeInterval) || (reminderItem.getSnoozeInterval() > PwrRepeatSet::maxSnoozeInterval)) {
+	if ((reminderItem.getSnoozeInterval() < PwrRepeatSet::kMinSnoozeInterval) || (reminderItem.getSnoozeInterval() > PwrRepeatSet::kMaxSnoozeInterval)) {
 		messageStringId = MSGBOX_PWRREMINDER_INVALIDITEM_SNOOZEINTERVAL;
 		messageStringList.push_back(getLanguageString(languageTablePtr, messageStringId));
 		result = false;
@@ -3009,7 +3009,7 @@ bool CPwrReminderDlg::validate(Item& reminderItem, bool showMsg /* = false */, b
 		// Auto correction
 		if (isAutoCorrect == true) {
 			// Set default snooze interval
-			reminderItem.setSnoozeInterval(PwrRepeatSet::defaultSnoozeInterval);
+			reminderItem.setSnoozeInterval(PwrRepeatSet::kDefaultSnoozeInterval);
 		}
 	}
 
@@ -3022,7 +3022,7 @@ bool CPwrReminderDlg::validate(Item& reminderItem, bool showMsg /* = false */, b
 		// Auto correction
 		if (isAutoCorrect == true) {
 			// Set default data
-			reminderItem.setActiveDays(PwrRepeatSet::defaultActiveDays);
+			reminderItem.setActiveDays(PwrRepeatSet::kDefaultActiveDays);
 		}
 	}
 
