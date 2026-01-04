@@ -22,9 +22,9 @@ using namespace AppRegistry;
 
 
 // Data list table constants
-constexpr const int fixedColumnNum = 0;
-constexpr const int fixedRowNum = 1;
-constexpr const int startRowIndex = 1;
+constexpr const int kFixedColumnNum = 0;
+constexpr const int kFixedRowNum = 1;
+constexpr const int kStartRowIndex = 1;
 
 
 // Implement methods for CHotkeySetDlg
@@ -498,7 +498,7 @@ void CHotkeySetDlg::OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult)
 	int curSelRow = reminderItem->iRow;
 
 	// Update current selection index
-	setListCurSel(curSelRow - startRowIndex);
+	setListCurSel(curSelRow - kStartRowIndex);
 	int itemCount = getItemNum();
 
 	*pResult = NULL;
@@ -654,14 +654,14 @@ void CHotkeySetDlg::setupHotkeySetList(LANGTABLE_PTR /*languageTablePtr*/)
 	cellPtr->SetHeight(Constant::UI::GridCtrl::Height::Row);
 
 	// Table format and properties
-	int rowCount = (getItemNum() + fixedRowNum);
+	int rowCount = (getItemNum() + kFixedRowNum);
 	int colCount = columnCount_;
 
 	// Setup table
 	hotkeySetTablePtr_->SetColumnCount(colCount);
-	hotkeySetTablePtr_->SetFixedColumnCount(fixedColumnNum);
+	hotkeySetTablePtr_->SetFixedColumnCount(kFixedColumnNum);
 	hotkeySetTablePtr_->SetRowCount(rowCount);
-	hotkeySetTablePtr_->SetFixedRowCount(fixedRowNum);
+	hotkeySetTablePtr_->SetFixedRowCount(kFixedRowNum);
 	hotkeySetTablePtr_->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Row);
 
 	// Draw table
@@ -719,7 +719,7 @@ void CHotkeySetDlg::drawHotkeySetTable(bool isReadOnly /* = false */)
 
 	// Table properties
 	int colCount = columnCount_;
-	int rowCount = (getItemNum() + fixedRowNum);
+	int rowCount = (getItemNum() + kFixedRowNum);
 
 	// Setup display size
 	int frameHeight = dataTableSizePtr_->height();
@@ -965,10 +965,10 @@ void CHotkeySetDlg::updateHotkeySet()
 	int tempValue = -1;
 	int itemIndex = 0;
 	CGridCellCheck* cellCheckPtr = NULL;
-	for (int rowIndex = startRowIndex; rowIndex <= itemNum; rowIndex++) {
+	for (int rowIndex = kStartRowIndex; rowIndex <= itemNum; rowIndex++) {
 
 		// Get item
-		itemIndex = rowIndex - startRowIndex;
+		itemIndex = rowIndex - kStartRowIndex;
 		const Item& hotkeyItem = tempHotkeySetData_.getItemAt(itemIndex);
 
 		// Enable state
@@ -1021,7 +1021,7 @@ void CHotkeySetDlg::redrawHotkeySetTable(bool isReadOnly /* = false */)
 	if (hotkeySetTablePtr_ == NULL) return;
 
 	// Update new row number
-	int curRowCount = (getItemNum() + fixedRowNum);
+	int curRowCount = (getItemNum() + kFixedRowNum);
 	hotkeySetTablePtr_->SetRowCount(curRowCount);
 
 	// Draw table
@@ -1135,7 +1135,7 @@ void CHotkeySetDlg::loadLayoutInfo(void)
 	String keyName;
 	for (int index = 0; index < columnCount_; index++) {
 		keyName = Key::LayoutInfo::GridColSize(index);
-		if (GetLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, returnValue)) {
+		if (getLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, returnValue)) {
 			if (gridCtrlFormatInfoPtr_ != NULL) {
 				gridCtrlFormatInfoPtr_[index].width = returnValue;
 			}
@@ -1159,7 +1159,7 @@ void CHotkeySetDlg::saveLayoutInfo(void)
 	for (int index = 0; index < columnCount_; index++) {
 		referValue = gridCtrlFormatInfoPtr_[index].width;
 		keyName = Key::LayoutInfo::GridColSize(index);
-		WriteLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, referValue);
+		writeLayoutInfo(Section::LayoutInfo::HKeySetTable, keyName, referValue);
 	}
 }
 
@@ -1229,7 +1229,7 @@ bool CHotkeySetDlg::checkDataChangeState()
 	// Update enable state of all item before checking
 	int itemIndex = 0;
 	CGridCellCheck* cellCheckEnablePtr = NULL;
-	for (int rowIndex = startRowIndex; rowIndex <= getItemNum(); rowIndex++) {
+	for (int rowIndex = kStartRowIndex; rowIndex <= getItemNum(); rowIndex++) {
 		// Get checkbox cell
 		cellCheckEnablePtr = (CGridCellCheck*)hotkeySetTablePtr_->GetCell(rowIndex, ColumnID::EnableState);
 		if (cellCheckEnablePtr == NULL) continue;
@@ -1238,7 +1238,7 @@ bool CHotkeySetDlg::checkDataChangeState()
 		bool isEnabled = cellCheckEnablePtr->GetCheck();
 
 		// Update item checked state
-		itemIndex = rowIndex - startRowIndex;
+		itemIndex = rowIndex - kStartRowIndex;
 		Item& tempHotkeyItem = tempHotkeySetData_.getItemAt(itemIndex);
 		tempHotkeyItem.enableItem(isEnabled);
 	}

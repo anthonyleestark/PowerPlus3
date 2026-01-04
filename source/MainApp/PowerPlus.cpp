@@ -140,7 +140,7 @@ BOOL CPowerPlusApp::InitInstance()
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles. Otherwise, any window creation will fail.
 	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.size = sizeof(InitCtrls);
+	InitCtrls.dwSize = sizeof(InitCtrls);
 
 	// Set this to include all the common control classes you want to use
 	// in your application.
@@ -342,12 +342,12 @@ int CPowerPlusApp::ExitInstance()
 
 	// Write application event logging data to file if enabled
 	if (getAppOption(AppOptionID::saveAppEventLog) == true) {
-		getAppEventLog()->Write();
+		getAppEventLog()->write();
 	}
 
 	// Write action history logging data to file if enabled
 	if (getAppOption(AppOptionID::saveActionHistory) == true) {
-		getAppHistoryLog()->Write();
+		getAppHistoryLog()->write();
 	}
 
 	// Close DebugTest dialog
@@ -444,7 +444,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
 						hotkeyParam = MAKELONG(modifiers, virtualKey);
 
 						// Output debug log
-						OutputDebugLogFormat(_T("Lockstate Hotkey pressed: Modifiers=0x%04X, VirtualKey=0x%04X"), modifiers, virtualKey);
+						outputDebugLogFormat(_T("Lockstate Hotkey pressed: Modifiers=0x%04X, VirtualKey=0x%04X"), modifiers, virtualKey);
 					}
 
 					// Post message to main dialog window
@@ -664,23 +664,23 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 		// Read configuration data
 		int configResult = INT_NULL;
-		configResult += GetConfig(Key::ConfigData::LMBAction,				(int&)tempConfigDataPtr->leftMouseAction);
-		configResult += GetConfig(Key::ConfigData::MMBAction,				(int&)tempConfigDataPtr->middleMouseAction);
-		configResult += GetConfig(Key::ConfigData::RMBAction,				(int&)tempConfigDataPtr->rightMouseAction);
-		configResult += GetConfig(Key::ConfigData::RMBShowMenu,				tempConfigDataPtr->rightMouseShowMenu);
-		configResult += GetConfig(Key::ConfigData::LanguageID,				(int&)tempConfigDataPtr->languageID);
-		configResult += GetConfig(Key::ConfigData::ShowDlgAtStartup,		tempConfigDataPtr->showDialogAtStartup);
-		configResult += GetConfig(Key::ConfigData::StartupEnabled,			tempConfigDataPtr->enableAutoStart);
-		configResult += GetConfig(Key::ConfigData::ConfirmAction,			tempConfigDataPtr->actionConfirmation);
-		configResult += GetConfig(Key::ConfigData::SaveHistoryLog,			tempConfigDataPtr->saveActionHistory);
-		configResult += GetConfig(Key::ConfigData::SaveAppEventLog,			tempConfigDataPtr->saveAppEventLog);
-		configResult += GetConfig(Key::ConfigData::RunAsAdmin,				tempConfigDataPtr->runAsAdmin);
-		configResult += GetConfig(Key::ConfigData::ShowErrorMsg,			tempConfigDataPtr->showErrorMessage);
-		configResult += GetConfig(Key::ConfigData::NotifySchedule,			tempConfigDataPtr->scheduleNotification);
-		configResult += GetConfig(Key::ConfigData::AllowCancelSchedule,		tempConfigDataPtr->allowScheduleCancellation);
-		configResult += GetConfig(Key::ConfigData::EnableBackgroundHotkey,	tempConfigDataPtr->enableBackgroundHotkey);
-		configResult += GetConfig(Key::ConfigData::LockStateHotkey,			tempConfigDataPtr->allowLockscreenHotkey);
-		configResult += GetConfig(Key::ConfigData::EnablePowerReminder,		tempConfigDataPtr->enablePowerReminder);
+		configResult += getConfig(Key::ConfigData::LMBAction,				(int&)tempConfigDataPtr->leftMouseAction);
+		configResult += getConfig(Key::ConfigData::MMBAction,				(int&)tempConfigDataPtr->middleMouseAction);
+		configResult += getConfig(Key::ConfigData::RMBAction,				(int&)tempConfigDataPtr->rightMouseAction);
+		configResult += getConfig(Key::ConfigData::RMBShowMenu,				tempConfigDataPtr->rightMouseShowMenu);
+		configResult += getConfig(Key::ConfigData::LanguageID,				(int&)tempConfigDataPtr->languageID);
+		configResult += getConfig(Key::ConfigData::ShowDlgAtStartup,		tempConfigDataPtr->showDialogAtStartup);
+		configResult += getConfig(Key::ConfigData::StartupEnabled,			tempConfigDataPtr->enableAutoStart);
+		configResult += getConfig(Key::ConfigData::ConfirmAction,			tempConfigDataPtr->actionConfirmation);
+		configResult += getConfig(Key::ConfigData::SaveHistoryLog,			tempConfigDataPtr->saveActionHistory);
+		configResult += getConfig(Key::ConfigData::SaveAppEventLog,			tempConfigDataPtr->saveAppEventLog);
+		configResult += getConfig(Key::ConfigData::RunAsAdmin,				tempConfigDataPtr->runAsAdmin);
+		configResult += getConfig(Key::ConfigData::ShowErrorMsg,			tempConfigDataPtr->showErrorMessage);
+		configResult += getConfig(Key::ConfigData::NotifySchedule,			tempConfigDataPtr->scheduleNotification);
+		configResult += getConfig(Key::ConfigData::AllowCancelSchedule,		tempConfigDataPtr->allowScheduleCancellation);
+		configResult += getConfig(Key::ConfigData::EnableBackgroundHotkey,	tempConfigDataPtr->enableBackgroundHotkey);
+		configResult += getConfig(Key::ConfigData::LockStateHotkey,			tempConfigDataPtr->allowLockscreenHotkey);
+		configResult += getConfig(Key::ConfigData::EnablePowerReminder,		tempConfigDataPtr->enablePowerReminder);
 
 		// Mark data as reading failed
 		// only if all values were read unsuccessfully
@@ -726,23 +726,23 @@ bool CPowerPlusApp::loadRegistryAppData()
 			int defaultScheduleResult = INT_NULL;
 
 			// Enable state
-			defaultScheduleResult += GetDefaultSchedule(Key::ScheduleItem::IsEnabled, tempDate);
+			defaultScheduleResult += getDefaultSchedule(Key::ScheduleItem::IsEnabled, tempDate);
 			tempDefaultItem.enableItem(tempDate);
 
 			// Action ID
-			defaultScheduleResult += GetDefaultSchedule(Key::ScheduleItem::ActionID, tempDate);
+			defaultScheduleResult += getDefaultSchedule(Key::ScheduleItem::ActionID, tempDate);
 			tempDefaultItem.setAction(tempDate);
 
 			// Repeat enable state
-			defaultScheduleResult += GetDefaultSchedule(Key::PwrRepeatSet::IsRepeated, tempDate);
+			defaultScheduleResult += getDefaultSchedule(Key::PwrRepeatSet::IsRepeated, tempDate);
 			tempDefaultItem.enableRepeat(tempDate);
 
 			// Repeat days
-			defaultScheduleResult += GetDefaultSchedule(Key::PwrRepeatSet::RepeatDays, tempDate);
+			defaultScheduleResult += getDefaultSchedule(Key::PwrRepeatSet::RepeatDays, tempDate);
 			tempDefaultItem.setActiveDays(BYTE(tempDate));
 
 			// Time value
-			defaultScheduleResult += GetDefaultSchedule(Key::ScheduleItem::Time, tempTime);
+			defaultScheduleResult += getDefaultSchedule(Key::ScheduleItem::Time, tempTime);
 			if (tempTime != INT_INVALID) {
 
 				// Convert time value and set time
@@ -775,7 +775,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 		// Load number of extra items
 		int extraItemNum = 0;
-		result &= GetScheduleExtraItemNum(Key::ScheduleData::ExtraItemNum, extraItemNum);
+		result &= getScheduleExtraItemNum(Key::ScheduleData::ExtraItemNum, extraItemNum);
 		if (result != false) {
 
 			// Read each extra item data
@@ -788,27 +788,27 @@ bool CPowerPlusApp::loadRegistryAppData()
 				int scheduleItemResult = INT_NULL;
 
 				// Enable state
-				scheduleItemResult += GetScheduleExtra(extraIndex, Key::ScheduleItem::IsEnabled, tempDate);
+				scheduleItemResult += getScheduleExtra(extraIndex, Key::ScheduleItem::IsEnabled, tempDate);
 				tempExtraItem.enableItem(tempDate);
 
 				// Item ID
-				scheduleItemResult += GetScheduleExtra(extraIndex, Key::ScheduleItem::ItemID, tempDate);
+				scheduleItemResult += getScheduleExtra(extraIndex, Key::ScheduleItem::ItemID, tempDate);
 				tempExtraItem.setItemId(tempDate);
 
 				// Action ID
-				scheduleItemResult += GetScheduleExtra(extraIndex, Key::ScheduleItem::ActionID, tempDate);
+				scheduleItemResult += getScheduleExtra(extraIndex, Key::ScheduleItem::ActionID, tempDate);
 				tempExtraItem.setAction(tempDate);
 
 				// Repeat enable state
-				scheduleItemResult += GetScheduleExtra(extraIndex, Key::PwrRepeatSet::IsRepeated, tempDate);
+				scheduleItemResult += getScheduleExtra(extraIndex, Key::PwrRepeatSet::IsRepeated, tempDate);
 				tempExtraItem.enableRepeat(tempDate);
 
 				// Repeat days
-				scheduleItemResult += GetScheduleExtra(extraIndex, Key::PwrRepeatSet::RepeatDays, tempDate);
+				scheduleItemResult += getScheduleExtra(extraIndex, Key::PwrRepeatSet::RepeatDays, tempDate);
 				tempExtraItem.setActiveDays(BYTE(tempDate));
 
 				// Time value
-				scheduleItemResult += GetScheduleExtra(extraIndex, Key::ScheduleItem::Time, tempTime);
+				scheduleItemResult += getScheduleExtra(extraIndex, Key::ScheduleItem::Time, tempTime);
 				if (tempTime != INT_INVALID) {
 
 					// Convert time value and set time
@@ -874,7 +874,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 		tempHotkeyDataPtr->copy(*hotkeySetDataPtr_);
 
 		// Load number of items
-		result &= GetHotkeyItemNum(Key::HotkeySetData::ItemNum, itemNum);
+		result &= getHotkeyItemNum(Key::HotkeySetData::ItemNum, itemNum);
 		if (itemNum > tempHotkeyDataPtr->getItemNum()) {
 			// Limit the hotkeyset data item number
 			itemNum = tempHotkeyDataPtr->getItemNum();
@@ -890,17 +890,17 @@ bool CPowerPlusApp::loadRegistryAppData()
 			int itemResult = INT_NULL;
 
 			// Enable state
-			itemResult += GetHotkeySet(index, Key::HotkeySetItem::IsEnabled, tempDate);
+			itemResult += getHotkeySet(index, Key::HotkeySetItem::IsEnabled, tempDate);
 			tempHotkeyItem.enableItem(tempDate);
 
 			// Action ID
-			itemResult += GetHotkeySet(index, Key::HotkeySetItem::HKActionID, tempDate);
+			itemResult += getHotkeySet(index, Key::HotkeySetItem::HKActionID, tempDate);
 			tempHotkeyItem.setActionId(tempDate);
 
 			// Keycode
 			int nModifiersTemp, nVirtKeyTemp;
-			itemResult += GetHotkeySet(index, Key::HotkeySetItem::Modifiers, nModifiersTemp);
-			itemResult += GetHotkeySet(index, Key::HotkeySetItem::VirtualKey, nVirtKeyTemp);
+			itemResult += getHotkeySet(index, Key::HotkeySetItem::Modifiers, nModifiersTemp);
+			itemResult += getHotkeySet(index, Key::HotkeySetItem::VirtualKey, nVirtKeyTemp);
 			tempHotkeyItem.setKeyCode(nModifiersTemp, nVirtKeyTemp);
 
 			// Mark the item as reading failed
@@ -952,7 +952,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 	// Load Power Reminder data
 	itemNum = 0;
 	if (tempReminderDataPtr != NULL) {
-		result &= GetPwrReminderItemNum(Key::PwrReminderData::ItemNum, itemNum);
+		result &= getPwrReminderItemNum(Key::PwrReminderData::ItemNum, itemNum);
 		if (result != false) {
 
 			// Initialize temp data
@@ -965,47 +965,47 @@ bool CPowerPlusApp::loadRegistryAppData()
 				int nPwrRmdCommonStyleRet = INT_NULL;
 
 				// Background color
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor, tempDate);
 				rmdCommonStyleTemp.setBkgrdColor((COLORREF)tempDate);
 
 				// Text color
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor, tempDate);
 				rmdCommonStyleTemp.setTextColor((COLORREF)tempDate);
 
 				// Font name
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName, tempString);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName, tempString);
 				rmdCommonStyleTemp.setFontName(tempString);
 
 				// Font size
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize, tempDate);
 				rmdCommonStyleTemp.setFontSize(tempDate);
 
 				// Timeout (auto-close) interval
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout, tempDate);
 				rmdCommonStyleTemp.setTimeout(tempDate);
 
 				// Message icon ID
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID, tempDate);
 				rmdCommonStyleTemp.setIconId(tempDate);
 
 				// Message icon size
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize, tempDate);
 				rmdCommonStyleTemp.setIconSize(tempDate);
 
 				// Message icon position
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition, tempDate);
 				rmdCommonStyleTemp.setIconPosition(tempDate);
 
 				// Message display position
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition, tempDate);
 				rmdCommonStyleTemp.setDisplayPosition(tempDate);
 
 				// Display area horizontal margin
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin, tempDate);
 				rmdCommonStyleTemp.setHorizontalMargin(tempDate);
 
 				// Display area vertical margin
-				nPwrRmdCommonStyleRet += GetPwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin, tempDate);
+				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin, tempDate);
 				rmdCommonStyleTemp.setVerticalMargin(tempDate);
 
 				// Mark data as reading failed
@@ -1030,55 +1030,55 @@ bool CPowerPlusApp::loadRegistryAppData()
 			for (int index = 0; index < itemNum; index++) {
 
 				// Initialize temp item
-				PwrReminderItem pwrTemp;
+				PwrReminderItem tempItem;
 
 				// Read item data
 				int itemResult = INT_NULL;
 
 				// Item ID
-				itemResult += GetPwrReminder(index, Key::PwrReminderItem::ItemID, tempDate);
-				pwrTemp.setItemId(tempDate);
+				itemResult += getPwrReminder(index, Key::PwrReminderItem::ItemID, tempDate);
+				tempItem.setItemId(tempDate);
 
 				// Enable state
-				itemResult += GetPwrReminder(index, Key::PwrReminderItem::IsEnabled, tempDate);
-				pwrTemp.enableItem(tempDate);
+				itemResult += getPwrReminder(index, Key::PwrReminderItem::IsEnabled, tempDate);
+				tempItem.enableItem(tempDate);
 
 				// Message content
-				itemResult += GetPwrReminder(index, Key::PwrReminderItem::Message, tempString);
-				pwrTemp.setMessage(tempString);
+				itemResult += getPwrReminder(index, Key::PwrReminderItem::Message, tempString);
+				tempItem.setMessage(tempString);
 
 				// Event ID
-				itemResult += GetPwrReminder(index, Key::PwrReminderItem::EventID, tempDate);
-				pwrTemp.setEventId(tempDate);
+				itemResult += getPwrReminder(index, Key::PwrReminderItem::EventID, tempDate);
+				tempItem.setEventId(tempDate);
 
 				// Message style
-				itemResult += GetPwrReminder(index, Key::PwrReminderItem::MsgStyle, tempDate);
-				pwrTemp.setMessageStyle(tempDate);
+				itemResult += getPwrReminder(index, Key::PwrReminderItem::MsgStyle, tempDate);
+				tempItem.setMessageStyle(tempDate);
 
 				// Repeat enable state
-				itemResult += GetPwrReminder(index, Key::PwrRepeatSet::IsRepeated, tempDate);
-				pwrTemp.enableRepeat(tempDate);
+				itemResult += getPwrReminder(index, Key::PwrRepeatSet::IsRepeated, tempDate);
+				tempItem.enableRepeat(tempDate);
 
 				// Allow snoozing
-				itemResult += GetPwrReminder(index, Key::PwrRepeatSet::AllowSnooze, tempDate);
-				pwrTemp.enableSnoozing(tempDate);
+				itemResult += getPwrReminder(index, Key::PwrRepeatSet::AllowSnooze, tempDate);
+				tempItem.enableSnoozing(tempDate);
 
 				// Snooze interval
-				itemResult += GetPwrReminder(index, Key::PwrRepeatSet::SnoozeInterval, tempDate);
-				pwrTemp.setSnoozeInterval(tempDate);
+				itemResult += getPwrReminder(index, Key::PwrRepeatSet::SnoozeInterval, tempDate);
+				tempItem.setSnoozeInterval(tempDate);
 
 				// Repeat days
-				itemResult += GetPwrReminder(index, Key::PwrRepeatSet::RepeatDays, tempDate);
-				pwrTemp.setActiveDays(tempDate);
+				itemResult += getPwrReminder(index, Key::PwrRepeatSet::RepeatDays, tempDate);
+				tempItem.setActiveDays(tempDate);
 
 				// Time value
-				itemResult += GetPwrReminder(index, Key::PwrReminderItem::Time, tempTime);
+				itemResult += getPwrReminder(index, Key::PwrReminderItem::Time, tempTime);
 				if (tempTime != INT_INVALID) {
 
 					// Convert time value and set time
 					clockTimeTemp.setHour(GET_REGTIME_HOUR(tempTime));
 					clockTimeTemp.setMinute(GET_REGTIME_MINUTE(tempTime));
-					pwrTemp.setTime(clockTimeTemp);
+					tempItem.setTime(clockTimeTemp);
 
 					// Reset temp data
 					clockTimeTemp = ClockTime();
@@ -1099,7 +1099,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 				}
 
 				// Update item data
-				tempReminderDataPtr->update(pwrTemp);
+				tempReminderDataPtr->update(tempItem);
 			}
 		}
 	}
@@ -1165,7 +1165,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	if ((dataType & APPDATA_CONFIG) != 0) {
 
 		// Delete old data before writing
-		DeleteConfigSection();
+		deleteConfigSection();
 
 		// Get a copy of config data
 		ConfigData tempConfigData{};
@@ -1174,23 +1174,23 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 		}
 
 		// Save registry data
-		result &= WriteConfig(Key::ConfigData::LMBAction,				tempConfigData.leftMouseAction);
-		result &= WriteConfig(Key::ConfigData::MMBAction,				tempConfigData.middleMouseAction);
-		result &= WriteConfig(Key::ConfigData::RMBAction,				tempConfigData.rightMouseAction);
-		result &= WriteConfig(Key::ConfigData::RMBShowMenu,				tempConfigData.rightMouseShowMenu);
-		result &= WriteConfig(Key::ConfigData::LanguageID,				tempConfigData.languageID);
-		result &= WriteConfig(Key::ConfigData::ShowDlgAtStartup,		tempConfigData.showDialogAtStartup);
-		result &= WriteConfig(Key::ConfigData::StartupEnabled,			tempConfigData.enableAutoStart);
-		result &= WriteConfig(Key::ConfigData::ConfirmAction,			tempConfigData.actionConfirmation);
-		result &= WriteConfig(Key::ConfigData::SaveHistoryLog,			tempConfigData.saveActionHistory);
-		result &= WriteConfig(Key::ConfigData::SaveAppEventLog,			tempConfigData.saveAppEventLog);
-		result &= WriteConfig(Key::ConfigData::RunAsAdmin,				tempConfigData.runAsAdmin);
-		result &= WriteConfig(Key::ConfigData::ShowErrorMsg,			tempConfigData.showErrorMessage);
-		result &= WriteConfig(Key::ConfigData::NotifySchedule,			tempConfigData.scheduleNotification);
-		result &= WriteConfig(Key::ConfigData::AllowCancelSchedule,		tempConfigData.allowScheduleCancellation);
-		result &= WriteConfig(Key::ConfigData::EnableBackgroundHotkey,	tempConfigData.enableBackgroundHotkey);
-		result &= WriteConfig(Key::ConfigData::LockStateHotkey,			tempConfigData.allowLockscreenHotkey);
-		result &= WriteConfig(Key::ConfigData::EnablePowerReminder,		tempConfigData.enablePowerReminder);
+		result &= writeConfig(Key::ConfigData::LMBAction,				tempConfigData.leftMouseAction);
+		result &= writeConfig(Key::ConfigData::MMBAction,				tempConfigData.middleMouseAction);
+		result &= writeConfig(Key::ConfigData::RMBAction,				tempConfigData.rightMouseAction);
+		result &= writeConfig(Key::ConfigData::RMBShowMenu,				tempConfigData.rightMouseShowMenu);
+		result &= writeConfig(Key::ConfigData::LanguageID,				tempConfigData.languageID);
+		result &= writeConfig(Key::ConfigData::ShowDlgAtStartup,		tempConfigData.showDialogAtStartup);
+		result &= writeConfig(Key::ConfigData::StartupEnabled,			tempConfigData.enableAutoStart);
+		result &= writeConfig(Key::ConfigData::ConfirmAction,			tempConfigData.actionConfirmation);
+		result &= writeConfig(Key::ConfigData::SaveHistoryLog,			tempConfigData.saveActionHistory);
+		result &= writeConfig(Key::ConfigData::SaveAppEventLog,			tempConfigData.saveAppEventLog);
+		result &= writeConfig(Key::ConfigData::RunAsAdmin,				tempConfigData.runAsAdmin);
+		result &= writeConfig(Key::ConfigData::ShowErrorMsg,			tempConfigData.showErrorMessage);
+		result &= writeConfig(Key::ConfigData::NotifySchedule,			tempConfigData.scheduleNotification);
+		result &= writeConfig(Key::ConfigData::AllowCancelSchedule,		tempConfigData.allowScheduleCancellation);
+		result &= writeConfig(Key::ConfigData::EnableBackgroundHotkey,	tempConfigData.enableBackgroundHotkey);
+		result &= writeConfig(Key::ConfigData::LockStateHotkey,			tempConfigData.allowLockscreenHotkey);
+		result &= writeConfig(Key::ConfigData::EnablePowerReminder,		tempConfigData.enablePowerReminder);
 
 		// Trace error
 		if (result == false) {
@@ -1211,7 +1211,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	if ((dataType & APPDATA_SCHEDULE) != 0) {
 
 		// Delete old data before writing
-		DeleteScheduleSection();
+		deleteScheduleSection();
 
 		// Save default schedule item
 		ScheduleItem tempDefaultItem = scheduleDataPtr_->getDefaultItem();
@@ -1220,11 +1220,11 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 			tempTime = FORMAT_REG_TIME(tempDefaultItem.getTime());
 
 			// Save registry data
-			result &= WriteDefaultSchedule(Key::ScheduleItem::IsEnabled,	tempDefaultItem.isEnabled());
-			result &= WriteDefaultSchedule(Key::ScheduleItem::ActionID,		tempDefaultItem.getAction());
-			result &= WriteDefaultSchedule(Key::PwrRepeatSet::IsRepeated,	tempDefaultItem.isRepeatEnabled());
-			result &= WriteDefaultSchedule(Key::PwrRepeatSet::RepeatDays,	tempDefaultItem.getActiveDays());
-			result &= WriteDefaultSchedule(Key::ScheduleItem::Time,			tempTime);
+			result &= writeDefaultSchedule(Key::ScheduleItem::IsEnabled,	tempDefaultItem.isEnabled());
+			result &= writeDefaultSchedule(Key::ScheduleItem::ActionID,		tempDefaultItem.getAction());
+			result &= writeDefaultSchedule(Key::PwrRepeatSet::IsRepeated,	tempDefaultItem.isRepeatEnabled());
+			result &= writeDefaultSchedule(Key::PwrRepeatSet::RepeatDays,	tempDefaultItem.getActiveDays());
+			result &= writeDefaultSchedule(Key::ScheduleItem::Time,			tempTime);
 
 			// Trace error
 			if (result == false) {
@@ -1237,7 +1237,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 
 		// Save schedule extra data
 		int extraItemNum = scheduleDataPtr_->getExtraItemNum();
-		result &= WriteScheduleExtraItemNum(Key::ScheduleData::ExtraItemNum, extraItemNum);
+		result &= writeScheduleExtraItemNum(Key::ScheduleData::ExtraItemNum, extraItemNum);
 		for (int extraIndex = 0; extraIndex < extraItemNum; extraIndex++) {
 
 			// Get schedule extra item
@@ -1247,12 +1247,12 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 			tempTime = FORMAT_REG_TIME(tempExtraItem.getTime());
 
 			// Save registry data
-			result &= WriteScheduleExtra(extraIndex, Key::ScheduleItem::IsEnabled,	tempExtraItem.isEnabled());
-			result &= WriteScheduleExtra(extraIndex, Key::ScheduleItem::ItemID,		tempExtraItem.getItemId());
-			result &= WriteScheduleExtra(extraIndex, Key::ScheduleItem::ActionID,	tempExtraItem.getAction());
-			result &= WriteScheduleExtra(extraIndex, Key::PwrRepeatSet::IsRepeated,	tempExtraItem.isRepeatEnabled());
-			result &= WriteScheduleExtra(extraIndex, Key::PwrRepeatSet::RepeatDays,	tempExtraItem.getActiveDays());
-			result &= WriteScheduleExtra(extraIndex, Key::ScheduleItem::Time,		tempTime);
+			result &= writeScheduleExtra(extraIndex, Key::ScheduleItem::IsEnabled,	tempExtraItem.isEnabled());
+			result &= writeScheduleExtra(extraIndex, Key::ScheduleItem::ItemID,		tempExtraItem.getItemId());
+			result &= writeScheduleExtra(extraIndex, Key::ScheduleItem::ActionID,	tempExtraItem.getAction());
+			result &= writeScheduleExtra(extraIndex, Key::PwrRepeatSet::IsRepeated,	tempExtraItem.isRepeatEnabled());
+			result &= writeScheduleExtra(extraIndex, Key::PwrRepeatSet::RepeatDays,	tempExtraItem.getActiveDays());
+			result &= writeScheduleExtra(extraIndex, Key::ScheduleItem::Time,		tempTime);
 
 			// Trace error
 			if (result == false) {
@@ -1297,11 +1297,11 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	if ((dataType & APPDATA_HOTKEYSET) != 0) {
 
 		// Delete old data before writing
-		DeleteHotkeySetSection();
+		deleteHotkeySetSection();
 
 		// Save registry data
 		int itemNum = hotkeySetDataPtr_->getItemNum();
-		result &= WriteHotkeyItemNum(Key::HotkeySetData::ItemNum, itemNum);
+		result &= writeHotkeyItemNum(Key::HotkeySetData::ItemNum, itemNum);
 		for (int index = 0; index < itemNum; index++) {
 
 			// Get HotkeySet item
@@ -1312,10 +1312,10 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 			tempHotkeyItem.getKeyCode(tempModifiers, tempVirtualKey);
 
 			// Write item data
-			result &= WriteHotkeySet(index, Key::HotkeySetItem::IsEnabled,	tempHotkeyItem.isEnabled());
-			result &= WriteHotkeySet(index, Key::HotkeySetItem::HKActionID,	tempHotkeyItem.getActionId());
-			result &= WriteHotkeySet(index, Key::HotkeySetItem::Modifiers,	tempModifiers);
-			result &= WriteHotkeySet(index, Key::HotkeySetItem::VirtualKey,	tempVirtualKey);
+			result &= writeHotkeySet(index, Key::HotkeySetItem::IsEnabled,	tempHotkeyItem.isEnabled());
+			result &= writeHotkeySet(index, Key::HotkeySetItem::HKActionID,	tempHotkeyItem.getActionId());
+			result &= writeHotkeySet(index, Key::HotkeySetItem::Modifiers,	tempModifiers);
+			result &= writeHotkeySet(index, Key::HotkeySetItem::VirtualKey,	tempVirtualKey);
 		}
 
 		// Trace error
@@ -1337,23 +1337,23 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	if ((dataType & APPDATA_PWRREMINDER) != 0) {
 
 		// Delete old data before writing
-		DeletePwrReminderSection();
+		deletePwrReminderSection();
 
 		// Save Power Reminder common style data
-		RmdMsgStyleSet& rmdTempCommonStyle = reminderDataPtr_->getCommonStyle();
+		RmdMsgStyleSet& tempCommonStyle = reminderDataPtr_->getCommonStyle();
 		{
 			// Save registry data
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor,		rmdTempCommonStyle.getBkgrdColor());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor,			rmdTempCommonStyle.getTextColor());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName,			rmdTempCommonStyle.getFontName());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize,			rmdTempCommonStyle.getFontSize());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout,			rmdTempCommonStyle.getTimeout());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID,			rmdTempCommonStyle.getIconId());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize,	 		rmdTempCommonStyle.getIconSize());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition,		rmdTempCommonStyle.getIconPosition());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition,	rmdTempCommonStyle.getDisplayPosition());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin,	rmdTempCommonStyle.getHorizontalMargin());
-			result &= WritePwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin,	rmdTempCommonStyle.getVerticalMargin());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor,		tempCommonStyle.getBkgrdColor());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::TextColor,			tempCommonStyle.getTextColor());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontName,			tempCommonStyle.getFontName());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::FontSize,			tempCommonStyle.getFontSize());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::Timeout,			tempCommonStyle.getTimeout());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconID,			tempCommonStyle.getIconId());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconSize,	 		tempCommonStyle.getIconSize());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::IconPosition,		tempCommonStyle.getIconPosition());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::DisplayPosition,	tempCommonStyle.getDisplayPosition());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::HorizontalMargin,	tempCommonStyle.getHorizontalMargin());
+			result &= writePwrReminderCommonStyle(Key::PwrReminderMsgStyle::VerticalMargin,	tempCommonStyle.getVerticalMargin());
 
 			// Trace error
 			if (result == false) {
@@ -1366,26 +1366,26 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 
 		// Save registry data
 		int itemNum = reminderDataPtr_->getItemNum();
-		result &= WritePwrReminderItemNum(Key::PwrReminderData::ItemNum, itemNum);
+		result &= writePwrReminderItemNum(Key::PwrReminderData::ItemNum, itemNum);
 		for (int index = 0; index < itemNum; index++) {
 
 			// Get Power Reminder item
-			PwrReminderItem pwrTemp = reminderDataPtr_->getItemAt(index);
+			PwrReminderItem tempItem = reminderDataPtr_->getItemAt(index);
 
 			// Convert time data
-			tempTime = FORMAT_REG_TIME(pwrTemp.getTime());
+			tempTime = FORMAT_REG_TIME(tempItem.getTime());
 
 			// Write item data
-			result &= WritePwrReminder(index, Key::PwrReminderItem::ItemID,		pwrTemp.getItemId());
-			result &= WritePwrReminder(index, Key::PwrReminderItem::IsEnabled,	pwrTemp.isEnabled());
-			result &= WritePwrReminder(index, Key::PwrReminderItem::Message,		pwrTemp.getMessage());
-			result &= WritePwrReminder(index, Key::PwrReminderItem::EventID,		pwrTemp.getEventId());
-			result &= WritePwrReminder(index, Key::PwrReminderItem::Time,			tempTime);
-			result &= WritePwrReminder(index, Key::PwrReminderItem::MsgStyle,		pwrTemp.getMessageStyle());
-			result &= WritePwrReminder(index, Key::PwrRepeatSet::IsRepeated,		pwrTemp.isRepeatEnabled());
-			result &= WritePwrReminder(index, Key::PwrRepeatSet::AllowSnooze,		pwrTemp.isAllowSnoozing());
-			result &= WritePwrReminder(index, Key::PwrRepeatSet::SnoozeInterval,	pwrTemp.getSnoozeInterval());
-			result &= WritePwrReminder(index, Key::PwrRepeatSet::RepeatDays,		pwrTemp.getActiveDays());
+			result &= writePwrReminder(index, Key::PwrReminderItem::ItemID,		tempItem.getItemId());
+			result &= writePwrReminder(index, Key::PwrReminderItem::IsEnabled,	tempItem.isEnabled());
+			result &= writePwrReminder(index, Key::PwrReminderItem::Message,		tempItem.getMessage());
+			result &= writePwrReminder(index, Key::PwrReminderItem::EventID,		tempItem.getEventId());
+			result &= writePwrReminder(index, Key::PwrReminderItem::Time,			tempTime);
+			result &= writePwrReminder(index, Key::PwrReminderItem::MsgStyle,		tempItem.getMessageStyle());
+			result &= writePwrReminder(index, Key::PwrRepeatSet::IsRepeated,		tempItem.isRepeatEnabled());
+			result &= writePwrReminder(index, Key::PwrRepeatSet::AllowSnooze,		tempItem.isAllowSnoozing());
+			result &= writePwrReminder(index, Key::PwrRepeatSet::SnoozeInterval,	tempItem.getSnoozeInterval());
+			result &= writePwrReminder(index, Key::PwrRepeatSet::RepeatDays,		tempItem.getActiveDays());
 		}
 
 		// Trace error
@@ -1427,7 +1427,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	/*------------------------<Application launch-time counter>--------------------------*/
 
 	// Load info from registry
-	if (GetProfileInfo(AppProfile::LaunchInfo::LaunchCounter, value)) {
+	if (getProfileInfo(AppProfile::LaunchInfo::LaunchCounter, value)) {
 		setAppLaunchTimeCounter(value);
 		returnFlag = true;
 	}
@@ -1435,7 +1435,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	// Update and overwrite data
 	updateAppLaunchTimeCounter();
 	valueUnsigned = getAppLaunchTimeCounter();
-	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchCounter, valueUnsigned)) {
+	if (!writeProfileInfo(AppProfile::LaunchInfo::LaunchCounter, valueUnsigned)) {
 		returnFlag = false;
 	}
 
@@ -1452,7 +1452,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 		dateTimeAppLaunch.hour(), dateTimeAppLaunch.minute(), dateTimeAppLaunch.second(), dateTimeAppLaunch.millisecond(), timePeriodFormat);
 
 	// Store launch-time info data
-	if (!WriteProfileInfo(AppProfile::LaunchInfo::LaunchTime, valueString)) {
+	if (!writeProfileInfo(AppProfile::LaunchInfo::LaunchTime, valueString)) {
 		returnFlag = false;
 	}
 
@@ -1463,7 +1463,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	// Directory path (not including the executable file name)
 	valueString = StringUtils::getApplicationPath(false);
 	if (!valueString.isEmpty()) {
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::Directory, valueString)) {
+		if (!writeProfileInfo(AppProfile::LaunchInfo::Directory, valueString)) {
 			returnFlag = false;
 		}
 	}
@@ -1472,7 +1472,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	valueString = StringUtils::getApplicationPath(true);
 	if (!valueString.isEmpty()) {
 		String execFileName = PathFindFileName(valueString);
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::FileName, execFileName)) {
+		if (!writeProfileInfo(AppProfile::LaunchInfo::FileName, execFileName)) {
 			returnFlag = false;
 		}
 	}
@@ -1480,7 +1480,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	// Product version (full version)
 	valueString = StringUtils::getProductVersion(true);
 	if (!valueString.isEmpty()) {
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::ProductVersion, valueString)) {
+		if (!writeProfileInfo(AppProfile::LaunchInfo::ProductVersion, valueString)) {
 			returnFlag = false;
 		}
 	}
@@ -1492,7 +1492,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	// Device name
 	bool resultGetInfo = StringUtils::getDeviceName(valueString);
 	if ((resultGetInfo != false) && (!valueString.isEmpty())) {
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::DeviceName, valueString)) {
+		if (!writeProfileInfo(AppProfile::LaunchInfo::DeviceName, valueString)) {
 			returnFlag = false;
 		}
 	}
@@ -1500,7 +1500,7 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	// User name
 	resultGetInfo = StringUtils::getCurrentUserName(valueString);
 	if ((resultGetInfo != false) && (!valueString.isEmpty())) {
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::UserName, valueString)) {
+		if (!writeProfileInfo(AppProfile::LaunchInfo::UserName, valueString)) {
 			returnFlag = false;
 		}
 	}
@@ -1511,15 +1511,15 @@ bool CPowerPlusApp::updateAppLaunchTimeProfileInfo(void)
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 	if (GetVersionEx((OSVERSIONINFO*)&osvi)) {
 		// Operating system version
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::OSVersion, osvi.dwMajorVersion)) {
+		if (!writeProfileInfo(AppProfile::LaunchInfo::OSVersion, osvi.dwMajorVersion)) {
 			returnFlag = false;
 		}
 		// Build number
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::OSBuildNumber, osvi.dwBuildNumber)) {
+		if (!writeProfileInfo(AppProfile::LaunchInfo::OSBuildNumber, osvi.dwBuildNumber)) {
 			returnFlag = false;
 		}
 		// Platform ID
-		if (!WriteProfileInfo(AppProfile::LaunchInfo::OSPlatformID, osvi.dwPlatformId)) {
+		if (!writeProfileInfo(AppProfile::LaunchInfo::OSPlatformID, osvi.dwPlatformId)) {
 			returnFlag = false;
 		}
 	}
@@ -1549,22 +1549,22 @@ bool CPowerPlusApp::loadGlobalData(void)
 	subSectionName = Section::GlobalData::DebugTest;
 
 	// DummyTest mode
-	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, globalValue)) {
+	if (getGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, globalValue)) {
 		setDummyTestMode(globalValue);
 		returnFlag |= true;
 	}
 	// Debug mode
-	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, globalValue)) {
+	if (getGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, globalValue)) {
 		setDebugMode(globalValue);
 		returnFlag |= true;
 	}
 	// Debug log output target
-	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, globalValue)) {
+	if (getGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, globalValue)) {
 		setDebugOutputTarget(globalValue);
 		returnFlag |= true;
 	}
 	// Test feature enable
-	if (GetGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, globalValue)) {
+	if (getGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, globalValue)) {
 		setTestFeatureEnable(globalValue);
 		returnFlag |= true;
 	}
@@ -1577,25 +1577,25 @@ bool CPowerPlusApp::loadGlobalData(void)
 	subSectionName = Section::GlobalData::AppFlag;
 
 	// Power action trace flag
-	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, globalValue)) {
+	if (getGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, globalValue)) {
 		setPwrActionFlag((BYTE)globalValue);
 		returnFlag |= true;
 	}
 
 	// System suspended trace flag
-	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, globalValue)) {
+	if (getGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, globalValue)) {
 		setSystemSuspendFlag((BYTE)globalValue);
 		returnFlag |= true;
 	}
 
 	// Session ending trace flag
-	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, globalValue)) {
+	if (getGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, globalValue)) {
 		setSessionEndFlag((BYTE)globalValue);
 		returnFlag |= true;
 	}
 
 	// Previously safe termination trace flag
-	if (GetGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, globalValue)) {
+	if (getGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, globalValue)) {
 		setSafeTerminationFlag((BYTE)globalValue);
 		returnFlag |= true;
 	}
@@ -1629,22 +1629,22 @@ bool CPowerPlusApp::saveGlobalData(BYTE categoryId /* = 0xFF */)
 
 		// DummyTest mode
 		globalValue = getDummyTestMode();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, globalValue)) {
+		if (!writeGlobalData(subSectionName, Key::GlobalData::DebugTest::DummyTest, globalValue)) {
 			returnFlag = false;
 		}
 		// Debug mode
 		globalValue = getDebugMode();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, globalValue)) {
+		if (!writeGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugMode, globalValue)) {
 			returnFlag = false;
 		}
 		// Debug log output target
 		globalValue = getDebugOutputTarget();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, globalValue)) {
+		if (!writeGlobalData(subSectionName, Key::GlobalData::DebugTest::DebugOutput, globalValue)) {
 			returnFlag = false;
 		}
 		// Test feature enable
 		globalValue = getTestFeatureEnable();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, globalValue)) {
+		if (!writeGlobalData(subSectionName, Key::GlobalData::DebugTest::TestFeature, globalValue)) {
 			returnFlag = false;
 		}
 	}
@@ -1659,25 +1659,25 @@ bool CPowerPlusApp::saveGlobalData(BYTE categoryId /* = 0xFF */)
 
 		// Power action trace flag
 		globalValueByte = getPwrActionFlag();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, globalValueByte)) {
+		if (!writeGlobalData(subSectionName, Key::GlobalData::AppFlag::PwrActionFlag, globalValueByte)) {
 			returnFlag = false;
 		}
 
 		// System suspended trace flag
 		globalValueByte = getSystemSuspendFlag();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, globalValueByte)) {
+		if (!writeGlobalData(subSectionName, Key::GlobalData::AppFlag::SystemSuspendFlag, globalValueByte)) {
 			returnFlag = false;
 		}
 
 		// Session ending trace flag
 		globalValueByte = getSessionEndFlag();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, globalValueByte)) {
+		if (!writeGlobalData(subSectionName, Key::GlobalData::AppFlag::SessionEndFlag, globalValueByte)) {
 			returnFlag = false;
 		}
 
 		// Previously safe termination trace flag
 		globalValueByte = getSafeTerminationFlag();
-		if (!WriteGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, globalValueByte)) {
+		if (!writeGlobalData(subSectionName, Key::GlobalData::AppFlag::SafeTermination, globalValueByte)) {
 			returnFlag = false;
 		}
 	}
@@ -1869,8 +1869,8 @@ void CPowerPlusApp::initAppHistoryLog()
 	}
 
 	// Set properties
-	appHistoryLogPtr_->Init();
-	appHistoryLogPtr_->SetWriteMode(WriteInstantly);
+	appHistoryLogPtr_->init();
+	appHistoryLogPtr_->setWriteMode(WriteInstantly);
 }
 
 /**
@@ -1897,7 +1897,7 @@ void CPowerPlusApp::outputAppHistoryLog(LOGITEM logItem)
 	
 	// Only output log if option is ON
 	if ((appHistoryLoggerPtr != NULL) && (getAppOption(AppOptionID::saveActionHistory) != false)) {
-		appHistoryLoggerPtr->OutputItem(logItem);
+		appHistoryLoggerPtr->outputItem(logItem);
 	}
 }
 
@@ -2318,7 +2318,7 @@ bool CPowerPlusApp::getLastSysEventTime(BYTE eventType, DateTime& timeSysEvent)
 
 	// Get registry data
 	String sysEventTrackingInfo;
-	if (!GetSysEventTracking(keyName, sysEventTrackingInfo)) {
+	if (!getSysEventTracking(keyName, sysEventTrackingInfo)) {
 
 		// Get system event tracking data failed
 		TRACE_ERROR("Error: Get system event tracking data failed!!!");
@@ -2384,7 +2384,7 @@ bool CPowerPlusApp::saveLastSysEventTime(BYTE eventType, const DateTime& timeSys
 		timeSysEvent.hour(), timeSysEvent.minute(), timeSysEvent.second(), timeSysEvent.millisecond(), timePeriodFormat);
 
 	// Save registry data
-	if (!WriteSysEventTracking(keyName, dateTimeFormat)) {
+	if (!writeSysEventTracking(keyName, dateTimeFormat)) {
 
 		// Save system event tracking data failed
 		TRACE_ERROR("Error: Save system event tracking data failed!!!");
@@ -2431,10 +2431,10 @@ void CPowerPlusApp::OnShowErrorMessage(WPARAM wParam, LPARAM lParam)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Error code ID
-		logDetailInfo.AddDetail(EventDetail::EventError, errorCode);
+		logDetailInfo.addDetail(EventDetail::EventError, errorCode);
 
 		// Message content detail info
-		logDetailInfo.AddDetail(EventDetail::MessageText, LPARAM_TO_STRING(lParam));
+		logDetailInfo.addDetail(EventDetail::MessageText, LPARAM_TO_STRING(lParam));
 	}
 
 	// Output event log

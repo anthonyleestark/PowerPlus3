@@ -22,9 +22,9 @@ using namespace AppRegistry;
 
 
 // Data list table constants
-constexpr const int fixedColumnNum = 0;
-constexpr const int fixedRowNum = 1;
-constexpr const int startRowIndex = 1;
+constexpr const int kFixedColumnNum = 0;
+constexpr const int kFixedRowNum = 1;
+constexpr const int kStartRowIndex = 1;
 
 
 // Implement methods for CLogViewerDlg
@@ -201,7 +201,7 @@ void CLogViewerDlg::OnRemoveAllBtn()
 	if (returnValue == IDNO) return;
 
 	// Remove all app event log records
-	appEventLoggerPtr_->DeleteAll();
+	appEventLoggerPtr_->deleteAll();
 
 	// Close dialog
 	PostMessage(WM_CLOSE);
@@ -317,13 +317,13 @@ void CLogViewerDlg::setupLogViewerList(LANGTABLE_PTR /*languageTablePtr*/)
 	cellPtr->SetHeight(Constant::UI::GridCtrl::Height::Row_Ex);
 
 	// Table format and properties
-	int rowCount = (logCount_ + fixedRowNum);
+	int rowCount = (logCount_ + kFixedRowNum);
 	int colCount = columnCount_;
 
 	// Setup table
 	logViewerListPtr_->SetColumnCount(colCount);
 	logViewerListPtr_->SetRowCount(rowCount);
-	logViewerListPtr_->SetFixedRowCount(fixedRowNum);
+	logViewerListPtr_->SetFixedRowCount(kFixedRowNum);
 	logViewerListPtr_->SetRowHeight(Constant::UI::GridCtrl::Index::Header_Row, Constant::UI::GridCtrl::Height::Row);
 
 	// Draw table
@@ -372,7 +372,7 @@ void CLogViewerDlg::drawLogViewerTable(void)
 
 	// Table properties
 	int colCount = columnCount_;
-	int rowCount = (logCount_ + fixedRowNum);
+	int rowCount = (logCount_ + kFixedRowNum);
 
 	// Setup display size
 	int frameHeight = logViewerTableSizePtr_->height();
@@ -495,7 +495,7 @@ BOOL CLogViewerDlg::loadAppEventLogData(void)
 	if (appEventLoggerPtr_ == NULL) return FALSE;
 
 	// Get log data item count
-	logCount_ = appEventLoggerPtr_->GetLogCount();
+	logCount_ = appEventLoggerPtr_->getLogCount();
 
 	return TRUE;
 }
@@ -528,25 +528,25 @@ void CLogViewerDlg::updateLogViewer(void)
 
 	// Print items
 	int itemIndex = 0;
-	for (int rowIndex = startRowIndex; rowIndex <= logCount_; rowIndex++) {
+	for (int rowIndex = kStartRowIndex; rowIndex <= logCount_; rowIndex++) {
 		
 		// Get log item
-		itemIndex = rowIndex - startRowIndex;
-		Item logItem = appEventLoggerPtr_->GetLogItem(itemIndex);
+		itemIndex = rowIndex - kStartRowIndex;
+		Item logItem = appEventLoggerPtr_->getLogItem(itemIndex);
 
 		// If log item is empty
-		if (logItem.IsEmpty()) continue;
+		if (logItem.isEmpty()) continue;
 
 		// Date/time
-		String tempString = logItem.FormatDateTime();
+		String tempString = logItem.formatDateTime();
 		logViewerListPtr_->SetItemText(rowIndex, ColumnID::DateTime, tempString);
 
 		// Category
-		tempString = getLanguageString(languageTablePtr, logItem.GetCategory());
+		tempString = getLanguageString(languageTablePtr, logItem.getCategory());
 		logViewerListPtr_->SetItemText(rowIndex, ColumnID::CategoryID, tempString);
 
 		// Additional description
-		tempString = logItem.GetLogString();
+		tempString = logItem.getLogString();
 		logViewerListPtr_->SetItemText(rowIndex, ColumnID::Description, tempString);
 	}
 }
@@ -569,7 +569,7 @@ void CLogViewerDlg::OnSelectLogItem(NMHDR* pNMHDR, LRESULT* /*pResult*/)
 	int row = reminderItem->iRow;
 
 	//Get current selection index
-	curSelIndex_ = row - fixedRowNum;
+	curSelIndex_ = row - kFixedRowNum;
 
 	// Get app event logging pointer
 	if (appEventLoggerPtr_ == NULL) return;
@@ -654,7 +654,7 @@ void CLogViewerDlg::loadLayoutInfo(void)
 	String keyName;
 	for (int index = 0; index < columnCount_; index++) {
 		keyName = Key::LayoutInfo::GridColSize(index);
-		if (GetLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, returnValue)) {
+		if (getLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, returnValue)) {
 			if (gridCtrlFormatInfoPtr_ != NULL) {
 				gridCtrlFormatInfoPtr_[index].width = returnValue;
 			}
@@ -678,6 +678,6 @@ void CLogViewerDlg::saveLayoutInfo(void)
 	for (int index = 0; index < columnCount_; index++) {
 		referValue = gridCtrlFormatInfoPtr_[index].width;
 		keyName = Key::LayoutInfo::GridColSize(index);
-		WriteLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, referValue);
+		writeLayoutInfo(Section::LayoutInfo::LogViewerTable, keyName, referValue);
 	}
 }

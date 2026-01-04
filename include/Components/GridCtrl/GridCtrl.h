@@ -626,7 +626,7 @@ protected:
     void ResetScrollBars();
     void EnableScrollBars(int nBar, BOOL isEnabled = TRUE);
     int  GetScrollPos32(int nBar, BOOL bGetTrackPos = FALSE);
-    BOOL SetScrollPos32(int nBar, int position, BOOL bRedraw = TRUE);
+    BOOL SetScrollPos32(int nBar, int position, BOOL redrawFlag = TRUE);
 
     BOOL SortTextItems(int col, BOOL bAscending, int low, int high);
     BOOL SortItems(PFNLVCOMPARE pfnCompare, int col, BOOL bAscending, LPARAM data,

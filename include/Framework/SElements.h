@@ -299,9 +299,9 @@ public:
 public:
 	// Get/set custom data pointer
 	template<typename DATA_TYPE>
-	bool GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const;
+	bool GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& dataSize) const;
 	template<typename DATA_TYPE>
-	bool SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize);
+	bool SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& dataSize);
 
 	// Custom data size retrieving and validating
 	virtual bool	IsDataEmpty(void) const;

@@ -20,9 +20,9 @@
  
  
  // Active days list table constants
- constexpr const int checkboxColID = 0;
- constexpr const int daytitleColID = 1;
- constexpr const int checkboxColSize = 30;
+ constexpr const int kCheckboxColID = 0;
+ constexpr const int kDayTitleColID = 1;
+ constexpr const int kCheckboxColSize = 30;
 
 
  //	Implement methods for CEditScheduleDlg
@@ -488,8 +488,8 @@ void CEditScheduleDlg::drawActiveDayTable(bool isReadOnly /* = false */)
 	}
 
 	// Setup columns
-	activeDayTablePtr_->SetColumnWidth(checkboxColID, checkboxColSize);
-	activeDayTablePtr_->SetColumnWidth(daytitleColID, frameWidth - checkboxColSize);
+	activeDayTablePtr_->SetColumnWidth(kCheckboxColID, kCheckboxColSize);
+	activeDayTablePtr_->SetColumnWidth(kDayTitleColID, frameWidth - kCheckboxColSize);
 
 	// Setup rows
 	unsigned itemState = INT_NULL;
@@ -498,23 +498,23 @@ void CEditScheduleDlg::drawActiveDayTable(bool isReadOnly /* = false */)
 		/*------------------------------------- Checkbox column -------------------------------------*/
 
 		// Set cell type: Checkbox
-		if (!activeDayTablePtr_->SetCellType(row, checkboxColID, RUNTIME_CLASS(CGridCellCheck)))
+		if (!activeDayTablePtr_->SetCellType(row, kCheckboxColID, RUNTIME_CLASS(CGridCellCheck)))
 			continue;
 
 		// Set cell checkbox placement: Centering
-		CGridCellCheck* cellCheckPtr = (CGridCellCheck*)activeDayTablePtr_->GetCell(row, checkboxColID);
+		CGridCellCheck* cellCheckPtr = (CGridCellCheck*)activeDayTablePtr_->GetCell(row, kCheckboxColID);
 		if (cellCheckPtr == NULL) continue;
 		cellCheckPtr->SetCheckPlacement(SCP_CENTERING);
 
 		/*------------------------------------ Day title column -------------------------------------*/
 
 		// Update cell state
-		itemState = activeDayTablePtr_->GetItemState(row, daytitleColID);
-		if (!activeDayTablePtr_->SetItemState(row, daytitleColID, itemState | GVIS_READONLY))
+		itemState = activeDayTablePtr_->GetItemState(row, kDayTitleColID);
+		if (!activeDayTablePtr_->SetItemState(row, kDayTitleColID, itemState | GVIS_READONLY))
 			continue;
 
 		// Set cell alignment: Center
-		CGridCellBase* cellPtr = (CGridCellBase*)activeDayTablePtr_->GetCell(row, daytitleColID);
+		CGridCellBase* cellPtr = (CGridCellBase*)activeDayTablePtr_->GetCell(row, kDayTitleColID);
 		if (cellPtr == NULL) continue;
 		cellPtr->SetFormat(cellPtr->GetFormat() | DT_CENTER);
 
@@ -617,14 +617,14 @@ void CEditScheduleDlg::updateActiveDayList()
 
 		// Active state
 		bool isActive = (tempScheduleItem_.isDayActive((DayOfWeek)dayOfWeekId)) ? true : false;
-		cellCheckPtr = (CGridCellCheck*)activeDayTablePtr_->GetCell(rowIndex, checkboxColID);
+		cellCheckPtr = (CGridCellCheck*)activeDayTablePtr_->GetCell(rowIndex, kCheckboxColID);
 		if (cellCheckPtr != NULL) {
 			cellCheckPtr->SetCheck(isActive);
 		}
 
 		// Day title
 		const wchar_t* tempString = getLanguageString(languageTablePtr, getPairedID(IDTable::DayOfWeek, dayOfWeekId));
-		activeDayTablePtr_->SetItemText(rowIndex, daytitleColID, tempString);
+		activeDayTablePtr_->SetItemText(rowIndex, kDayTitleColID, tempString);
 	}
 }
 
@@ -727,7 +727,7 @@ void CEditScheduleDlg::updateScheduleItem()
 	if (activeDayTablePtr_ == NULL) return;
 	for (int rowIndex = 0; rowIndex < Constant::Max::DaysOfWeek; rowIndex++) {
 		// Get checkbox cell
-		cellCheckActivePtr = (CGridCellCheck*)activeDayTablePtr_->GetCell(rowIndex, checkboxColID);
+		cellCheckActivePtr = (CGridCellCheck*)activeDayTablePtr_->GetCell(rowIndex, kCheckboxColID);
 		if (cellCheckActivePtr == NULL) continue;
 
 		// Get checked states

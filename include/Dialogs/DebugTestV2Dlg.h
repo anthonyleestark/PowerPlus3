@@ -113,7 +113,7 @@ private:
 		return (currentFocusedWndHandle == getDebugCommandInput()->GetSafeHwnd());
 	}
 
-	bool refreshDebugScreen(int nFlag);
+	bool refreshDebugScreen(int flag);
 	bool showDebugScreenContextMenu(void);
 
 	int  formatDebugCommand(String& debugCommand) const;

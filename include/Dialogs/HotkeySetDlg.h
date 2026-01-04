@@ -129,13 +129,13 @@ protected:
 
 protected:
 	// Get/set functions
-	int getItemNum() const {
+	inline int getItemNum() const {
 		return tempHotkeySetData_.getItemNum();
 	}
-	int	getListCurSel(void) const {
+	inline int	getListCurSel(void) const {
 		return curSelIndex_;
 	}
-	void setListCurSel(int selectionIndex) {
+	inline void setListCurSel(int selectionIndex) {
 		curSelIndex_ = selectionIndex;
 	}
 };

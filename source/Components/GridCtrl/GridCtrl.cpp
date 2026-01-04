@@ -210,7 +210,7 @@ BOOL CGridCtrl::RegisterWindowClass()
         wndcls.style            = CS_DBLCLKS;
         wndcls.lpfnWndProc      = ::DefWindowProc;
         wndcls.cbClsExtra       = wndcls.cbWndExtra = 0;
-        wndcls.instanceHandle        = hInst;
+        wndcls.hInstance        = hInst;
         wndcls.hIcon            = NULL;
 #ifndef _WIN32_WCE_NO_CURSOR
         wndcls.hCursor          = AfxGetApp()->LoadStandardCursor(IDC_ARROW);
@@ -3409,21 +3409,21 @@ int CGridCtrl::GetScrollPos32(int nBar, BOOL bGetTrackPos /* = FALSE */)
     else
     {
         if (GetScrollInfo(nBar, &si, SIF_POS))
-            return si.position;
+            return si.nPos;
     }
 
     return 0;
 }
 
-BOOL CGridCtrl::SetScrollPos32(int nBar, int position, BOOL bRedraw /* = TRUE */)
+BOOL CGridCtrl::SetScrollPos32(int nBar, int position, BOOL redrawFlag /* = TRUE */)
 {
     m_idTopLeftCell.row = -1;
 
     SCROLLINFO si;
     si.cbSize = sizeof(SCROLLINFO);
     si.fMask  = SIF_POS;
-    si.position   = position;
-    return SetScrollInfo(nBar, &si, bRedraw);
+    si.nPos   = position;
+    return SetScrollInfo(nBar, &si, redrawFlag);
 }
 
 void CGridCtrl::EnableScrollBars(int nBar, BOOL isEnabled /*=TRUE*/)
@@ -5920,9 +5920,9 @@ BOOL CGridCtrl::InvalidateCellRect(const int row, const int col)
     if (!GetCellRect(row, col, rect))
         return FALSE;
 
-	int row = row;
-	int col = col;
-	GetTopLeftMergedCell(row, col, rect);
+	int rowVal = row;
+	int colVal = col;
+	GetTopLeftMergedCell(rowVal, colVal, rect);
 
     rect.right++;
     rect.bottom++;

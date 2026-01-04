@@ -1318,7 +1318,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 {
 	// Check argument validity
 	if ((lParam == NULL) || ((wParam == NULL) && (lParam == NULL))) {
-		OutputDebugLog(Constant::String::Null);
+		outputDebugLog(Constant::String::Null);
 		return LRESULT(Result::Failure);
 	}
 
@@ -1333,7 +1333,7 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 		if (errorCode == APP_ERROR_DBG_INVALID_COMMAND) {
 
 			// Error: Invalid command
-			OutputDebugLog(_T("Invalid command!!!"));
+			outputDebugLog(_T("Invalid command!!!"));
 		}
 		else if (errorCode == APP_ERROR_DBG_TOKENIZATION_FAILED) {
 
@@ -1346,11 +1346,11 @@ LRESULT CPowerPlusDlg::OnProcessDebugCommand(WPARAM wParam, LPARAM lParam)
 
 			// Output debug info (to file)
 			String debugLog = StringUtils::stringFormat(_T("Failed debug command: %s"), commandCharList.getString());
-			OutputDebugLog(debugLog, DebugInfoFile);
+			outputDebugLog(debugLog, DebugInfoFile);
 		}
 		else {
 			// Reply corresponding error code
-			OutputDebugLogFormat(_T("Failed! (Error code: 0x%X)"), errorCode);
+			outputDebugLogFormat(_T("Failed! (Error code: 0x%X)"), errorCode);
 		}
 
 		// Result: Failed
@@ -1539,18 +1539,18 @@ LRESULT CPowerPlusDlg::OnWTSSessionChange(WPARAM wParam, LPARAM /*lParam*/)
 	case WTS_SESSION_LOCK:
 		// Screen locked
 		setSessionLockFlag(FLAG_ON);
-		OutputDebugLog(_T("The screen is LOCKED!!!"));
+		outputDebugLog(_T("The screen is LOCKED!!!"));
 		break;
 
 	case WTS_SESSION_UNLOCK:
 		// Screen unlocked
 		setSessionLockFlag(FLAG_OFF);
-		OutputDebugLog(_T("The screen is UNLOCKED!!!"));
+		outputDebugLog(_T("The screen is UNLOCKED!!!"));
 		break;
 
 	default:
 		// Trace other notification codes
-		OutputDebugLogFormat(_T("WTS session notification: Code=0x%02X"), wParam);
+		outputDebugLogFormat(_T("WTS session notification: Code=0x%02X"), wParam);
 		break;
 	}
 
@@ -2734,7 +2734,7 @@ bool CPowerPlusDlg::executeAction(unsigned actionMacro, WPARAM wParam /* = NULL 
 	unsigned message = 0;
 
 	// Output debug log
-	OutputDebugLogFormat(_T("Execute action: Type=0x%04X, Param=0x%04X"), actionMacro, (unsigned)wParam);
+	outputDebugLogFormat(_T("Execute action: Type=0x%04X, Param=0x%04X"), actionMacro, (unsigned)wParam);
 
 	// Get action ID
 	switch (actionMacro)
@@ -3858,7 +3858,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int mode)
 				bool returnFlag = UnregisterHotKey(windowHandle, hotkeyId);
 				if (returnFlag == true) {
 					// Unregister successfully
-					OutputDebugLogFormat(_T("Unregistered hotkey: %d"), hotkeyId);
+					outputDebugLogFormat(_T("Unregistered hotkey: %d"), hotkeyId);
 					currentRegHotkeyList_.erase(currentRegHotkeyList_.begin() + index);
 					if (index == 0) {										// Last item unregistered
 						setFlagValue(AppFlagID::hotkeyRegistered, false);	// Reset hotkey registered flag
@@ -3870,7 +3870,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int mode)
 					errorCode = GetLastError();
 
 					// Output debug log
-					OutputDebugLogFormat(_T("Unregister hotkey failed: %d"), hotkeyId);
+					outputDebugLogFormat(_T("Unregister hotkey failed: %d"), hotkeyId);
 
 					// Trace error
 					TRACE_FORMAT("Error: Hotkey unregister failed!!! (Code=0x%X)", errorCode);
@@ -3945,7 +3945,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int mode)
 
 			// Skip registering item if disabled
 			if (isEnabled == false) {
-				OutputDebugLogFormat(_T("Skip registering hotkey (disabled): %s"), tempLogString.getString());
+				outputDebugLogFormat(_T("Skip registering hotkey (disabled): %s"), tempLogString.getString());
 				continue;
 			}
 
@@ -3958,7 +3958,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int mode)
 
 			if (returnFlag == true) {
 				// Register successfully
-				OutputDebugLogFormat(_T("Registered hotkey: %s"), tempLogString.getString());
+				outputDebugLogFormat(_T("Registered hotkey: %s"), tempLogString.getString());
 				currentRegHotkeyList_.push_back(hotkeyActionId);						// Update registered hotkey list
 			}
 			else {
@@ -3966,7 +3966,7 @@ void CPowerPlusDlg::setupBackgroundHotkey(int mode)
 				errorCode = GetLastError();
 
 				// Output debug log
-				OutputDebugLogFormat(_T("Register hotkey failed: %s"), tempLogString.getString());
+				outputDebugLogFormat(_T("Register hotkey failed: %s"), tempLogString.getString());
 
 				// Trace error
 				TRACE_FORMAT("Error: Hotkey register failed!!! (Code=0x%X)", errorCode);
@@ -3995,7 +3995,7 @@ bool CPowerPlusDlg::processHotkey(int hotkeyId)
 	}
 
 	// Output debug log
-	OutputDebugLogFormat(_T("Process Hotkey: HKeyID=%d"), hotkeyId);
+	outputDebugLogFormat(_T("Process Hotkey: HKeyID=%d"), hotkeyId);
 
 	// Get HotkeySet item by ID
 	HotkeySetItem hotkeyItem;
@@ -4174,7 +4174,7 @@ bool CPowerPlusDlg::processLockStateHotkey(DWORD hotkeyParam)
 	}
 
 	// Output debug log
-	OutputDebugLogFormat(_T("[LockState Hotkey] HotkeyID found: HKeyID=0x%04X (%d)"), hotkeyActionId, hotkeyActionId);
+	outputDebugLogFormat(_T("[LockState Hotkey] HotkeyID found: HKeyID=0x%04X (%d)"), hotkeyActionId, hotkeyActionId);
 		
 	// Check if HotkeyID is registered
 	if (getFlagValue(AppFlagID::hotkeyRegistered) != true) {
@@ -4234,18 +4234,18 @@ bool CPowerPlusDlg::executePowerReminder(unsigned eventId)
 
 	// Search all items and process reminder
 	for (int index = 0; index < itemNum; index++) {
-		PwrReminderItem& pwrCurItem = reminderData_.getItemAt(index);
+		PwrReminderItem& currentItem = reminderData_.getItemAt(index);
 
 		// If item is empty, skip this item
-		if (pwrCurItem.isEmpty())
+		if (currentItem.isEmpty())
 			continue;
 
 		// If event ID is not matching, skip this item
-		if (pwrCurItem.getEventId() != eventId)
+		if (currentItem.getEventId() != eventId)
 			continue;
 
 		// If item is not enabled, skip this item
-		if (pwrCurItem.isEnabled() == false)
+		if (currentItem.isEnabled() == false)
 			continue;
 
 		// Process item
@@ -4254,15 +4254,15 @@ bool CPowerPlusDlg::executePowerReminder(unsigned eventId)
 		{
 		case PwrReminderEvent::atSetTime:
 			// If item is set to repeat but not set active in current day of week
-			if ((pwrCurItem.isRepeatEnabled() == true) && (!pwrCurItem.isDayActive((DayOfWeek)currentDateTime.dayOfWeek())))
+			if ((currentItem.isRepeatEnabled() == true) && (!currentItem.isDayActive((DayOfWeek)currentDateTime.dayOfWeek())))
 				continue;
 
 			// If set time matching or snooze time is triggered
-			if ((ClockTimeUtils::isMatching(currentClockTime, pwrCurItem.getTime())) ||
-				(getPwrReminderSnoozeStatus(pwrCurItem.getItemId(), currentClockTime))) {
+			if ((ClockTimeUtils::isMatching(currentClockTime, currentItem.getTime())) ||
+				(getPwrReminderSnoozeStatus(currentItem.getItemId(), currentClockTime))) {
 				// Prepare to display
-				displayItem.copy(pwrCurItem);
-				setPwrReminderSnooze(pwrCurItem, FLAG_OFF);
+				displayItem.copy(currentItem);
+				setPwrReminderSnooze(currentItem, FLAG_OFF);
 			}
 			else continue;
 			break;
@@ -4271,21 +4271,21 @@ bool CPowerPlusDlg::executePowerReminder(unsigned eventId)
 			// If System suspend flag and Session ending flag are both OFF, do not display
 			if ((getSystemSuspendFlag() == FLAG_OFF) && (getSessionEndFlag() == FLAG_OFF)) continue;
 			// Otherwise, just prepare to display
-			displayItem.copy(pwrCurItem);
+			displayItem.copy(currentItem);
 			break;
 
 		case PwrReminderEvent::wakeAfterAction:
 			// If Power Action flag is OFF, do not display
 			if (getPwrActionFlag() == FLAG_OFF) continue;
 			// Otherwise, prepare to display
-			displayItem.copy(pwrCurItem);
+			displayItem.copy(currentItem);
 			break;
 
 		case PwrReminderEvent::atAppStartup:
 		case PwrReminderEvent::beforePwrAction:
 		case PwrReminderEvent::atAppExit:
 			// Just prepare to display
-			displayItem.copy(pwrCurItem);
+			displayItem.copy(currentItem);
 			break;
 
 		default:
@@ -4302,7 +4302,7 @@ bool CPowerPlusDlg::executePowerReminder(unsigned eventId)
 			// --> Disable reminder item after displaying
 			if (displayItem.isRepeatEnabled() == false) {
 				isReupdateTriggered |= true;
-				pwrCurItem.enableItem(false);
+				currentItem.enableItem(false);
 			}
 		}
 	}
@@ -4333,7 +4333,7 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& displayItem)
 	}
 
 	// Output debug log
-	OutputDebugLogFormat(_T("Display reminder: ItemID=%d"), displayItem.getItemId());
+	outputDebugLogFormat(_T("Display reminder: ItemID=%d"), displayItem.getItemId());
 
 	// Get app language package
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
@@ -4375,12 +4375,12 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& displayItem)
 		}
 
 		// Message style
-		RmdMsgStyleSet rmdMessageStyle = reminderData_.getCommonStyle();
+		RmdMsgStyleSet msgStyleSet = reminderData_.getCommonStyle();
 		if (displayItem.isCustomStyleEnabled())
-			rmdMessageStyle = displayItem.getMessageStyleData();
+			msgStyleSet = displayItem.getMessageStyleData();
 
 		// Message auto-close interval
-		int timeoutValue = rmdMessageStyle.getTimeout();
+		int timeoutValue = msgStyleSet.getTimeout();
 
 		// Allow snooze mode
 		bool isSnoozingAllowed = displayItem.isAllowSnoozing();
@@ -4391,7 +4391,7 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& displayItem)
 		// Set properties
 		messageDialogPtr->setCaptionFromLanguage(IDD_PWRREMINDER_DLG);
 		messageDialogPtr->setDispMessage(messageContent);
-		messageDialogPtr->setMessageStyle(rmdMessageStyle);
+		messageDialogPtr->setMessageStyle(msgStyleSet);
 		messageDialogPtr->setAutoCloseInterval(timeoutValue);
 
 		// Set notify state flags
@@ -4739,7 +4739,7 @@ void CPowerPlusDlg::outputScheduleEventLog(USHORT eventId, const ScheduleItem& s
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
-	logDetailInfo.AddDetail(EventDetail::ContentID, scheduleItem.getItemId());
+	logDetailInfo.addDetail(EventDetail::ContentID, scheduleItem.getItemId());
 
 	// Output event log
 	outputEventLog(eventId, actionNameString, &logDetailInfo);
@@ -4759,7 +4759,7 @@ void CPowerPlusDlg::outputPwrReminderEventLog(USHORT eventId, const PwrReminderI
 
 	// Detail info
 	LOGDETAILINFO logDetailInfo;
-	logDetailInfo.AddDetail(EventDetail::ContentID, reminderItem.getItemId());
+	logDetailInfo.addDetail(EventDetail::ContentID, reminderItem.getItemId());
 
 	// Output event log
 	outputEventLog(eventId, messageContent, &logDetailInfo);
@@ -4916,35 +4916,35 @@ void CPowerPlusDlg::saveHistoryInfoData(void)
 
 	// Prepare common history log info
 	LOGITEM actionLogItem;
-	actionLogItem.SetTime(historyInfoData_.getTime());
+	actionLogItem.setTime(historyInfoData_.getTime());
 
 	// Get current process ID
-	actionLogItem.SetProcessID();
+	actionLogItem.setProcessId();
 
 	// Attach history detail info by category ID
 	switch (historyInfoData_.getCategoryId())
 	{
 	case HistoryCategory::PowerAction:
-		actionLogItem.SetCategory(LOG_HISTORY_EXEC_PWRACTION);
-		actionLogItem.AddDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.setCategory(LOG_HISTORY_EXEC_PWRACTION);
+		actionLogItem.addDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
 		break;
 
 	case HistoryCategory::ScheduleAction:
-		actionLogItem.SetCategory(LOG_HISTORY_EXEC_SCHEDULE);
-		actionLogItem.AddDetail(HistoryDetail::ItemID, historyInfoData_.getItemId());
-		actionLogItem.AddDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.setCategory(LOG_HISTORY_EXEC_SCHEDULE);
+		actionLogItem.addDetail(HistoryDetail::ItemID, historyInfoData_.getItemId());
+		actionLogItem.addDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
 		break;
 
 	case HistoryCategory::HotkeySet:
-		actionLogItem.SetCategory(LOG_HISTORY_EXEC_HOTKEY);
-		actionLogItem.AddDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
-		actionLogItem.AddDetail(HistoryDetail::Keystrokes, historyInfoData_.getDescription());
+		actionLogItem.setCategory(LOG_HISTORY_EXEC_HOTKEY);
+		actionLogItem.addDetail(HistoryDetail::Action, historyInfoData_.getActionId(), LogDetailFlag::LookUp_Dict);
+		actionLogItem.addDetail(HistoryDetail::Keystrokes, historyInfoData_.getDescription());
 		break;
 
 	case HistoryCategory::PowerReminder:
-		actionLogItem.SetCategory(LOG_HISTORY_DISP_PWRREMINDER);
-		actionLogItem.AddDetail(HistoryDetail::ItemID, historyInfoData_.getItemId());
-		actionLogItem.AddDetail(HistoryDetail::Message, historyInfoData_.getDescription());
+		actionLogItem.setCategory(LOG_HISTORY_DISP_PWRREMINDER);
+		actionLogItem.addDetail(HistoryDetail::ItemID, historyInfoData_.getItemId());
+		actionLogItem.addDetail(HistoryDetail::Message, historyInfoData_.getDescription());
 		break;
 
 	default:
@@ -4953,20 +4953,20 @@ void CPowerPlusDlg::saveHistoryInfoData(void)
 
 	// Attach history action result detail info
 	if (historyInfoData_.isSuccess() || historyInfoData_.getErrorCode() == APP_ERROR_SUCCESS) {
-		actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::SuccessNoError, LogDetailFlag::LookUp_Dict);
+		actionLogItem.addDetail(HistoryDetail::Result, HistoryResult::SuccessNoError, LogDetailFlag::LookUp_Dict);
 	}
 	else {
 		if (historyInfoData_.getErrorCode() == APP_ERROR_UNKNOWN) {
 
 			// If error code is NULL or unknown, set as failed with unknown reason
-			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedUnknown, LogDetailFlag::LookUp_Dict);
+			actionLogItem.addDetail(HistoryDetail::Result, HistoryResult::FailedUnknown, LogDetailFlag::LookUp_Dict);
 		}
 		else {
 			// If error code is available, set as failed with error code
-			actionLogItem.AddDetail(HistoryDetail::Result, HistoryResult::FailedWithErrorCode, LogDetailFlag::LookUp_Dict);
+			actionLogItem.addDetail(HistoryDetail::Result, HistoryResult::FailedWithErrorCode, LogDetailFlag::LookUp_Dict);
 
 			// Attach error code detail info
-			actionLogItem.AddDetail(HistoryDetail::ActionError, historyInfoData_.getErrorCode());
+			actionLogItem.addDetail(HistoryDetail::ActionError, historyInfoData_.getErrorCode());
 		}
 	}
 

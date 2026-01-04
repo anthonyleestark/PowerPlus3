@@ -60,14 +60,14 @@ protected:
 
 private:
 	// Dialog control item
-	CGridCtrl*		 m_pDataItemListTable;
+	CGridCtrl* scheduleDataTablePtr_;
 
 	// Child dialog
-	CEditScheduleDlg* m_pEditScheduleDlg;
+	CEditScheduleDlg* editScheduleDlgPtr_;
 
 	// Data container variables
-	Data m_schSchedule;
-	Data m_schScheduleTemp;
+	Data scheduleData_;
+	Data tempScheduleData_;
 
 	// Table format and properties
 	int	columnCount_;
@@ -89,8 +89,8 @@ public:
 
 	// Member functions
 	void setupLanguage();
-	void SetupDataItemList(LANGTABLE_PTR languageTablePtr);
-	void DrawDataTable(bool isReadOnly = false);
+	void setupDataItemList(LANGTABLE_PTR languageTablePtr);
+	void drawDataTable(bool isReadOnly = false);
 
 	// Layout functions
 	void updateLayoutInfo(void);
@@ -99,25 +99,25 @@ public:
 
 	// Dialog item properties functions
 	void setupDialogItemState();
-	void UpdateDataItemList();
-	void DisableDataTable(bool isDisabled);
-	void RedrawDataTable(bool isReadOnly = false);
+	void updateDataItemList();
+	void disableDataTable(bool isDisabled);
+	void redrawDataTable(bool isReadOnly = false);
 	void refreshDialogItemState(bool isRecheckState = false);
 	void updateCheckAllBtnState(bool isRecheck = false);
 
 	// Data processing functions
-	bool LoadScheduleSettings();
-	bool SaveScheduleSettings();
-	void UpdateScheduleSettings();
+	bool loadScheduleSettings();
+	bool saveScheduleSettings();
+	void updateScheduleSettings();
 	bool checkDataChangeState();
 
 	// Data processing handlers
-	void Add(Item& scheduleItem);
-	void Update(Item& scheduleItem);
-	void Remove(int index);
-	void RemoveAll();
-	void SetAllItemState(bool state);
-	bool Validate(Item& scheduleItem, bool showMsg = false, bool bAutoCorrect = false);
+	void add(Item& scheduleItem);
+	void update(Item& scheduleItem);
+	void remove(int index);
+	void removeAll();
+	void setAllItemState(bool state);
+	bool validate(Item& scheduleItem, bool showMsg = false, bool isAutoCorrect = false);
 
 	// Message handlers
 	afx_msg void OnApply();
@@ -138,11 +138,11 @@ public:
 
 protected:
 	// Get/set functions
-	int GetTotalItemNum() const {
-		return GetExtraItemNum() + ScheduleData::defaultItemNum;
-	};
-	int GetExtraItemNum() const {
-		return m_schScheduleTemp.getExtraItemNum();
-	};
+	inline int getTotalItemNum() const {
+		return getExtraItemNum() + ScheduleData::defaultItemNum;
+	}
+	inline int getExtraItemNum() const {
+		return tempScheduleData_.getExtraItemNum();
+	}
 };
 

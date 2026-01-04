@@ -17,16 +17,16 @@ using namespace AppCore;
 
 
 // Default min/max size
-constexpr const int defaultMinWidth = 840;
-constexpr const int defaultMinHeight = 500;
-constexpr const int defaultMaxWidth = 1600;
-constexpr const int defaultMaxHeight = 900;
+constexpr const int kDefaultMinWidth = 840;
+constexpr const int kDefaultMinHeight = 500;
+constexpr const int kDefaultMaxWidth = 1600;
+constexpr const int kDefaultMaxHeight = 900;
 
 // Default Debug command input height
-constexpr const int debugCmdInputHeight = 50;
+constexpr const int kDebugCmdInputHeight = 50;
 
 // Define constants
-const wchar_t* debugCommandPrefix = _T(">>> ");
+const wchar_t* kDebugCommandPrefix = _T(">>> ");
 
 
 // Implement methods for CDebugTestV2Dlg
@@ -185,12 +185,12 @@ void CDebugTestV2Dlg::OnDestroy()
 void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr)
 {
 	// Fix min size
-	minMaxInfoPtr->ptMinTrackSize.x = defaultMinWidth;
-	minMaxInfoPtr->ptMinTrackSize.y = defaultMinHeight;
+	minMaxInfoPtr->ptMinTrackSize.x = kDefaultMinWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = kDefaultMinHeight;
 
 	// Fix max size
-	minMaxInfoPtr->ptMaxTrackSize.x = defaultMaxWidth;
-	minMaxInfoPtr->ptMinTrackSize.y = defaultMaxHeight;
+	minMaxInfoPtr->ptMaxTrackSize.x = kDefaultMaxWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = kDefaultMaxHeight;
 
 	// Default
 	SDialog::OnGetMinMaxInfo(minMaxInfoPtr);
@@ -663,16 +663,16 @@ bool CDebugTestV2Dlg::createDebugScreenBrush(void)
 
 /**
  * @brief	Refresh and update DebugScreen
- * @param	nFlag - Refresh flag
+ * @param	flag - Refresh flag
  * @param	Return value:	true/false
  */
-bool CDebugTestV2Dlg::refreshDebugScreen(int nFlag)
+bool CDebugTestV2Dlg::refreshDebugScreen(int flag)
 {
 	// Check DebugScreen validity
 	if (!isDebugScreenValid())
 		return false;
 
-	if (nFlag & Refresh::ScreenSize) {
+	if (flag & Refresh::ScreenSize) {
 
 		RECT clientRect;
 		this->GetClientRect(&clientRect);
@@ -680,12 +680,12 @@ bool CDebugTestV2Dlg::refreshDebugScreen(int nFlag)
 		// DebugScreen position
 		int xPos = clientRect.left;
 		int debugViewYPos = clientRect.top;
-		int debugCmdInputYPos = clientRect.bottom - debugCmdInputHeight;
+		int debugCmdInputYPos = clientRect.bottom - kDebugCmdInputHeight;
 
 		// DebugScreen size
 		int width = clientRect.right - clientRect.left;
 		int debugViewHeight = debugCmdInputYPos - debugViewYPos;
-		int debugCmdInputHeight = debugCmdInputHeight;
+		int debugCmdInputHeight = kDebugCmdInputHeight;
 
 		// Set DebugScreen position
 		getDebugView()->SetWindowPos(NULL, xPos, debugViewYPos, width, debugViewHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
@@ -791,7 +791,7 @@ int CDebugTestV2Dlg::formatDebugCommand(String& debugCommand) const
 	// Remove prefix
 	int sourceLength = debugCommand.getLength();
 	if (isCommandPrefixEnabled_ == true) {
-		sourceLength -= wcslen(debugCommandPrefix);
+		sourceLength -= wcslen(kDebugCommandPrefix);
 		String tempString = debugCommand.right(sourceLength);
 		debugCommand = tempString;
 	}
@@ -847,7 +847,7 @@ void CDebugTestV2Dlg::clearDebugCommandInput(const wchar_t* commandBuff /* = Con
 	// Re-initialize Debug command buffer
 	String commandTempStr = Constant::String::Empty;
 	if (isCommandPrefixEnabled_ == true) {
-		commandTempStr = debugCommandPrefix;
+		commandTempStr = kDebugCommandPrefix;
 	}
 	if (IS_NOT_EMPTY_STRING(commandBuff)) {
 		commandTempStr += commandBuff;

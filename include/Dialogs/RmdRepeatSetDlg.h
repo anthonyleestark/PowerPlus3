@@ -70,10 +70,10 @@ protected:
 	void setSnoozeIntervalEdit(int value);
 	
 	// Get/set value functions
-	int getSnoozeInterval() const {
+	inline int getSnoozeInterval() const {
 		return snoozeInterval_;
 	}
-	void setSnoozeInterval(int value) {
+	inline void setSnoozeInterval(int value) {
 		snoozeInterval_ = value;
 	}
 

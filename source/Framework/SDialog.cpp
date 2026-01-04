@@ -1181,17 +1181,17 @@ void SDialog::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 {
 	// Prepare event log info
 	LOGITEM logItemDialogEvent;
-	logItemDialogEvent.SetCategory(eventId);
-	logItemDialogEvent.SetTime(DateTimeUtils::getCurrentDateTime());
-	logItemDialogEvent.SetProcessID();
+	logItemDialogEvent.setCategory(eventId);
+	logItemDialogEvent.setTime(DateTimeUtils::getCurrentDateTime());
+	logItemDialogEvent.setProcessId();
 	if (description) {
 		// Include event description
-		logItemDialogEvent.SetLogString(description);
+		logItemDialogEvent.setLogString(description);
 	}
 	if (detailInfoPtr != NULL) {
 		// Include event detail info data
 		for (int index = 0; index < detailInfoPtr->size(); index++) {
-			logItemDialogEvent.AddDetail(detailInfoPtr->at(index));
+			logItemDialogEvent.addDetail(detailInfoPtr->at(index));
 		}
 	}
 
@@ -1200,7 +1200,7 @@ void SDialog::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 	ASSERT(theAppPtr);
 	if (theAppPtr == NULL) return;
 	if (SLogging* appEventLoggerPtr = theAppPtr->getAppEventLog()) {
-		appEventLoggerPtr->OutputItem(logItemDialogEvent);
+		appEventLoggerPtr->outputItem(logItemDialogEvent);
 	}
 }
 
@@ -1226,10 +1226,10 @@ void SDialog::outputButtonLog(USHORT eventId, unsigned buttonId)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Button ID
-		logDetailInfo.AddDetail(EventDetail::ResourceID, buttonId);
+		logDetailInfo.addDetail(EventDetail::ResourceID, buttonId);
 
 		// Mapped ID
-		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(buttonId)));
+		logDetailInfo.addDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(buttonId)));
 	}
 
 	// Output button event log
@@ -1258,13 +1258,13 @@ void SDialog::outputCheckBoxLog(USHORT eventId, unsigned checkboxId)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Checkbox ID
-		logDetailInfo.AddDetail(EventDetail::ResourceID, checkboxId);
+		logDetailInfo.addDetail(EventDetail::ResourceID, checkboxId);
 
 		// Mapped ID
-		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(checkboxId)));
+		logDetailInfo.addDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(checkboxId)));
 
 		// Checkbox checked state
-		logDetailInfo.AddDetail(EventDetail::CheckState, checkboxPtr->GetCheck());
+		logDetailInfo.addDetail(EventDetail::CheckState, checkboxPtr->GetCheck());
 	}
 
 	// Output checkbox event log
@@ -1293,13 +1293,13 @@ void SDialog::outputRadButtonLog(USHORT eventId, unsigned radButtonId)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Radio button ID
-		logDetailInfo.AddDetail(EventDetail::ResourceID, radButtonId);
+		logDetailInfo.addDetail(EventDetail::ResourceID, radButtonId);
 
 		// Mapped ID
-		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(radButtonId)));
+		logDetailInfo.addDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(radButtonId)));
 
 		// Radio button checked state
-		logDetailInfo.AddDetail(EventDetail::CheckState, radioButtonPtr->GetCheck());
+		logDetailInfo.addDetail(EventDetail::CheckState, radioButtonPtr->GetCheck());
 	}
 
 	// Output radio button event log
@@ -1323,10 +1323,10 @@ void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Combo-box ID
-		logDetailInfo.AddDetail(EventDetail::ResourceID, comboId);
+		logDetailInfo.addDetail(EventDetail::ResourceID, comboId);
 
 		// Mapped ID
-		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(comboId)));
+		logDetailInfo.addDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(comboId)));
 
 		// Combo-box control info
 		SControlManager* pCtrlMan = getControlManager();
@@ -1341,7 +1341,7 @@ void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
 				StringArray dataList;
 				comboInfoWrapPtr->GetStringArray(dataList);
 				if ((!dataList.empty()) && (dataList.size() > currenSelection)) {
-					logDetailInfo.AddDetail(EventDetail::Selection, dataList.at(currenSelection));
+					logDetailInfo.addDetail(EventDetail::Selection, dataList.at(currenSelection));
 				}
 			}
 		}
@@ -1368,10 +1368,10 @@ void SDialog::outputEditBoxLog(USHORT eventId, unsigned editId)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Edit box ID
-		logDetailInfo.AddDetail(EventDetail::ResourceID, editId);
+		logDetailInfo.addDetail(EventDetail::ResourceID, editId);
 
 		// Mapped ID
-		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(editId)));
+		logDetailInfo.addDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(editId)));
 
 		// Edit box control info
 		SControlManager* pCtrlMan = getControlManager();
@@ -1384,7 +1384,7 @@ void SDialog::outputEditBoxLog(USHORT eventId, unsigned editId)
 				// Edit box content
 				String editBoxContent;
 				pEditBoxWrap->GetString(editBoxContent);
-				logDetailInfo.AddDetail(EventDetail::DataValue, editBoxContent);
+				logDetailInfo.addDetail(EventDetail::DataValue, editBoxContent);
 			}
 		}
 	}
@@ -1410,10 +1410,10 @@ void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// List box ID
-		logDetailInfo.AddDetail(EventDetail::ResourceID, listBoxId);
+		logDetailInfo.addDetail(EventDetail::ResourceID, listBoxId);
 
 		// Mapped ID
-		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(listBoxId)));
+		logDetailInfo.addDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(listBoxId)));
 
 		// List box control info
 		SControlManager* pCtrlMan = getControlManager();
@@ -1428,7 +1428,7 @@ void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
 				StringArray dataList;
 				listBoxInfoWrapPtr->GetStringArray(dataList);
 				if ((!dataList.empty()) && (dataList.size() > currenSelection)) {
-					logDetailInfo.AddDetail(EventDetail::Selection, dataList.at(currenSelection));
+					logDetailInfo.addDetail(EventDetail::Selection, dataList.at(currenSelection));
 				}
 			}
 		}
@@ -1454,10 +1454,10 @@ void SDialog::outputSpinCtrlLog(USHORT eventId, unsigned spinCtrlId)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Spin control ID
-		logDetailInfo.AddDetail(EventDetail::ResourceID, spinCtrlId);
+		logDetailInfo.addDetail(EventDetail::ResourceID, spinCtrlId);
 
 		// Mapped ID
-		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(spinCtrlId)));
+		logDetailInfo.addDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(spinCtrlId)));
 	}
 
 	// Output spin control event log
@@ -1484,10 +1484,10 @@ void SDialog::outputMenuLog(USHORT eventId, unsigned menuItemId)
 	LOGDETAILINFO logDetailInfo;
 	{
 		// Menu item ID
-		logDetailInfo.AddDetail(EventDetail::ResourceID, menuItemId);
+		logDetailInfo.addDetail(EventDetail::ResourceID, menuItemId);
 
 		// Mapped ID
-		logDetailInfo.AddDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(menuItemId)));
+		logDetailInfo.addDetail(EventDetail::NameID, MAKEUNICODE(GET_NAME_ID(menuItemId)));
 	}
 
 	// Output menu event log

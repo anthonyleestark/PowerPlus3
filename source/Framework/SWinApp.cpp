@@ -399,8 +399,8 @@ void SWinApp::initAppEventLog(void)
 	}
 
 	// Set properties
-	appEventLogPtr_->Init();
-	appEventLogPtr_->SetWriteMode(WriteOnCall);
+	appEventLogPtr_->init();
+	appEventLogPtr_->setWriteMode(WriteOnCall);
 }
 
 /**
@@ -414,23 +414,23 @@ void SWinApp::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 {
 	// Prepare event log info
 	LOGITEM logItemAppEvent;
-	logItemAppEvent.SetCategory(eventId);
-	logItemAppEvent.SetTime(DateTimeUtils::getCurrentDateTime());
-	logItemAppEvent.SetProcessID();
+	logItemAppEvent.setCategory(eventId);
+	logItemAppEvent.setTime(DateTimeUtils::getCurrentDateTime());
+	logItemAppEvent.setProcessId();
 	if (description) {
 		// Include event description
-		logItemAppEvent.SetLogString(description);
+		logItemAppEvent.setLogString(description);
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data
 		for (int index = 0; index < pDetailInfo->size(); index++) {
-			logItemAppEvent.AddDetail(pDetailInfo->at(index));
+			logItemAppEvent.addDetail(pDetailInfo->at(index));
 		}
 	}
 
 	// Output app event log
 	if (SLogging* appEventLoggerPtr = getAppEventLog()) {
-		appEventLoggerPtr->OutputItem(logItemAppEvent);
+		appEventLoggerPtr->outputItem(logItemAppEvent);
 	}
 }
 

@@ -814,11 +814,11 @@ void SCtrlInfoWrap::SetTime(_In_ const SYSTEMTIME& timeValue)
 /**
  * @brief	Get current control's custom data pointer
  * @param	lpOutput   - Output data pointer
- * @param	szDataSize - Data's total size in bytes (in/out)
+ * @param	dataSize - Data's total size in bytes (in/out)
  * @return	true/false
  */
 template<typename DATA_TYPE>
-bool SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const
+bool SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& dataSize) const
 {
 	// If pointers are invalid
 	if ((lpOutput == NULL) ||
@@ -828,11 +828,11 @@ bool SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& 
 
 	// If size value is invalid
 	SIZE_T szCurDataSize = *(this->m_pszDataSize);
-	if ((szDataSize <= 0) || (szCurDataSize <= 0))
+	if ((dataSize <= 0) || (szCurDataSize <= 0))
 		return false;	// Fail to retrieve data
 
 	// If the output buffer size is insufficient
-	if (szDataSize < szCurDataSize) {
+	if (dataSize < szCurDataSize) {
 		// Re-allocate output data pointer
 		// we can 
 		delete[] lpOutput;
@@ -846,7 +846,7 @@ bool SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& 
 
 	// Copy data and update the output data size
 	memcpy(lpOutput, this->m_ptrCustomData, szCurDataSize);
-	szDataSize = szCurDataSize;
+	dataSize = szCurDataSize;
 
 	return true;	// Get data successfully
 }
@@ -854,20 +854,20 @@ bool SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& 
 /**
  * @brief	Set current control's custom data pointer
  * @param	lpInput	   - Input data pointer
- * @param	szDataSize - Data's total size in bytes (in)
+ * @param	dataSize - Data's total size in bytes (in)
  * @return	None
  */
 template<typename DATA_TYPE>
-bool SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize)
+bool SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& dataSize)
 {
 	// If input data or size are invalid
-	if ((lpInput == NULL) || (szDataSize <= 0))
+	if ((lpInput == NULL) || (dataSize <= 0))
 		return false;	// Fail to set data
 
 	// If the current data pointer is not empty
 	// or its current total size in bytes is not large enough
 	if ((this->m_ptrCustomData != NULL) ||
-		((this->m_pszDataSize != NULL) && (*(this->m_pszDataSize) < szDataSize))) {
+		((this->m_pszDataSize != NULL) && (*(this->m_pszDataSize) < dataSize))) {
 		if (this->m_ptrCustomData != NULL) {
 			// Free the data pointer's existing memory
 			free(this->m_ptrCustomData);
@@ -876,7 +876,7 @@ bool SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& sz
 
 	// Allocate the data pointer if not available
 	if (this->m_ptrCustomData == NULL) {
-		this->m_ptrCustomData = malloc(szDataSize);
+		this->m_ptrCustomData = malloc(dataSize);
 		ASSERT(this->m_ptrCustomData != NULL);
 		if (this->m_ptrCustomData == NULL) {
 			throw std::bad_alloc();
@@ -895,10 +895,10 @@ bool SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& sz
 	}
 
 	// Copy data
-	memcpy(this->m_ptrCustomData, lpInput, szDataSize);
+	memcpy(this->m_ptrCustomData, lpInput, dataSize);
 
 	// Update the data's new total size in bytes
-	*(this->m_pszDataSize) = szDataSize;
+	*(this->m_pszDataSize) = dataSize;
 
 	return true;	// Set data successfully
 }
@@ -1343,15 +1343,15 @@ void SControlManager::UpdateData(unsigned controlId /* = NULL */)
 			case Tab_Control:
 			{
 				// Update the number of tabs
-				size_t nTabCount = ((CTabCtrl*)pBaseControl)->GetItemCount();
+				size_t tabCount = ((CTabCtrl*)pBaseControl)->GetItemCount();
 				// Update the currently selected tab index
 				size_t nCurSelTab = ((CTabCtrl*)pBaseControl)->GetCurSel();
 				pCurControl->SetInteger(nCurSelTab);
 				// Update all tab's title
 				TCITEM tabInfo;
 				StringArray arrTabTitles;
-				arrTabTitles.reserve(nTabCount);
-				for (size_t index = 0; index < nTabCount; index++) {
+				arrTabTitles.reserve(tabCount);
+				for (size_t index = 0; index < tabCount; index++) {
 					String tempText = Constant::String::Empty;
 					bool returnFlag = ((CTabCtrl*)pBaseControl)->GetItem(index, &tabInfo);
 					if (returnFlag == true && ((tabInfo.mask & TCIF_TEXT) != 0)) {

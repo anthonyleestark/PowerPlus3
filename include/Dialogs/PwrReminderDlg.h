@@ -68,57 +68,57 @@ protected:
 
 private:
 	// Dialog control variables
-	CGridCtrl*		 m_pDataItemListTable;
-	CEdit*			 m_pMsgStringEdit;
-	CButton*		 m_pEvtSetTimeRad;
-	CEdit*			 m_pEvtSetTimeEdit;
-	CSpinButtonCtrl* m_pEvtSetTimeSpin;
-	CButton*		 m_pEvtRepeatSetBtn;
-	CButton*		 m_pEvtAppStartupRad;
-	CButton*		 m_pEvtSysWakeupRad;
-	CButton*		 m_pEvtBfrPwrActionRad;
-	CButton*		 m_pEvtPwrActionWakeRad;
-	CButton*		 m_pEvtAtAppExitRad;
-	CButton*		 m_pStyleMsgBoxRad;
-	CButton*		 m_pStyleDialogBoxRad;
-	CComboBox*		 m_pMsgStyleCombo;
-	CButton*		 m_pStyleUseCommonRad;
-	CButton*		 m_pStyleUseCustomRad;
-	CButton*		 m_pStyleCustomizeBtn;
+	CGridCtrl*		 dataListTablePtr_;
+	CEdit*			 msgStringEditPtr_;
+	CButton*		 evtSetTimeRadPtr_;
+	CEdit*			 evtSetTimeEditPtr_;
+	CSpinButtonCtrl* evtSetTimeSpinPtr_;
+	CButton*		 evtRepeatSetBtnPtr_;
+	CButton*		 evtAppStartupRadPtr_;
+	CButton*		 evtSysWakeupRadPtr_;
+	CButton*		 evtBfrPwrActionRadPtr_;
+	CButton*		 evtPwrActionWakeRadPtr_;
+	CButton*		 evtAtAppExitRadPtr_;
+	CButton*		 styleMsgBoxRadPtr_;
+	CButton*		 styleDialogBoxRadPtr_;
+	CComboBox*		 msgStyleComboPtr_;
+	CButton*		 styleUseCommonRadPtr_;
+	CButton*		 styleUseCustomRadPtr_;
+	CButton*		 styleCustomizeBtnPtr_;
 
 	// Properties child dialogs
-	CReminderMsgDlg*	m_pRmdPreviewMsgDlg;
-	CRmdRepeatSetDlg*	m_pRepeatSetDlg;
-	CRmdMsgStyleSetDlg* m_pMsgStyleSetDlg;
+	CReminderMsgDlg*	previewMsgDlgPtr_;
+	CRmdRepeatSetDlg*	repeatSetDlgPtr_;
+	CRmdMsgStyleSetDlg* msgStyleSetDlgPtr_;
 
 	// Checkbox/radio button variables
-	BOOL m_bEvtSetTimeRad;
-	BOOL m_bEvtAppStartupRad;
-	BOOL m_bEvtSysWakeupRad;
-	BOOL m_bEvtBfrPwrActionRad;
-	BOOL m_bEvtPwrActionWakeRad;
-	BOOL m_bEvtAppExitRad;
-	BOOL m_bStyleMsgBoxRad;
-	BOOL m_bStyleDialogRad;
-	BOOL m_bStyleUseCommonRad;
-	BOOL m_bStyleUseCustomRad;
+	BOOL isEventtSetTimeEnabled_;
+	BOOL isEventAppStartupEnabled_;
+	BOOL isEventSysWakeupEnabled_;
+	BOOL isEventBfrPwrActionEnabled_;
+	BOOL isEventPwrActionWakeEnabled_;
+	BOOL isEventAppExitEnabled_;
+	BOOL isStyleMsgBoxEnabled_;
+	BOOL isStyleDialogEnabled_;
+	BOOL isStyleUseCommonEnabled_;
+	BOOL isStyleUseCustomEnabled_;
 
 	// Data container variables
-	Data m_pwrReminderData;
-	Data m_pwrReminderDataTemp;
-	Item m_pwrItemInEdit;
+	Data reminderData_;
+	Data tempReminderData_;
+	Item itemInEdit_;
 
 	// Table format and properties
 	int columnCount_;
-	Size* m_pszFrameWndSize;
+	Size* tableFrameSizePtr_;
 	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
 
 	// Other variables
 	int currentMode_;
 	int checkCount_;
 	int curSelIndex_;
-	int m_nCurDispIndex;
-	ClockTime m_stDispTimeBak;
+	int curDispIndex_;
+	ClockTime displayedTimeBackup_;
 
 public:
 	// Generated message map functions
@@ -150,10 +150,10 @@ public:
 protected:
 	// Dialog setup functions
 	void setupLanguage();
-	void SetupDataItemList(LANGTABLE_PTR languageTablePtr);
-	void DrawDataTable(Size* pszFrameWndSize, int colCount, int rowCount, bool isReadOnly = false, LANGTABLE_PTR languageTablePtr = NULL);
+	void setupDataItemList(LANGTABLE_PTR languageTablePtr);
+	void drawDataTable(Size* tableFrameSizePtr, int colCount, int rowCount, bool isReadOnly = false, LANGTABLE_PTR languageTablePtr = NULL);
 	void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
-	void SwitchMode(bool bRedraw = false);
+	void switchMode(bool redrawFlag = false);
 
 	// Layout functions
 	void updateLayoutInfo(void);
@@ -162,41 +162,41 @@ protected:
 
 	// Dialog item properties functions
 	void setupDialogItemState();
-	void UpdateDataItemList();
-	void DisableTable(bool isDisabled);
-	void RedrawDataTable(bool isReadOnly = false);
-	void DisplayItemDetails(int index);
+	void updateDataItemList();
+	void disableTable(bool isDisabled);
+	void redrawDataTable(bool isReadOnly = false);
+	void displayItemDetails(int index);
 	void refreshDialogItemState(bool isRecheckState = false);
 	void updateCheckAllBtnState(bool isRecheck = false);
-	void RefreshDetailView(int mode);
-	void UpdateMsgCounter(int count);
-	void UpdateTimeSetting(ClockTime& clockTime, bool updateFlag = true);
+	void refreshDetailView(int mode);
+	void updateMsgCounter(int count);
+	void updateTimeSetting(ClockTime& clockTime, bool updateFlag = true);
 
 private:
 	// Data processing functions
-	bool LoadPwrReminderData();
-	bool SavePwrReminderData();
+	bool loadPwrReminderData();
+	bool savePwrReminderData();
 	bool checkDataChangeState();
 
 	// Data processing handlers
-	void Add();
-	void Edit(int index);
-	void Remove(int index);
-	void RemoveAll();
-	void SetAllItemState(bool state);
-	void PreviewItem(int index);
-	void UpdateItemData(Item& reminderItem, bool updateFlag);
-	bool Validate(Item& reminderItem, bool showMsg = false, bool bAutoCorrect = false);
+	void add();
+	void edit(int index);
+	void remove(int index);
+	void removeAll();
+	void setAllItemState(bool state);
+	void previewItem(int index);
+	void updateItemData(Item& reminderItem, bool updateFlag);
+	bool validate(Item& reminderItem, bool showMsg = false, bool isAutoCorrect = false);
 
 protected:
 	// Get/set functions
-	int GetItemNum() const {
-		return m_pwrReminderDataTemp.getItemNum();
-	};
-	int GetCurMode() const {
+	inline int getItemNum() const {
+		return tempReminderData_.getItemNum();
+	}
+	inline int getCurMode() const {
 		return currentMode_;
-	};
-	void SetCurMode(int mode);
-	void DrawRepeatSetButton(void);
+	}
+	void setCurMode(int mode);
+	void drawRepeatSetButton(void);
 };
 

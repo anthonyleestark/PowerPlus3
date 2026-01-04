@@ -73,52 +73,52 @@ public:
 
 public:
 	// Get/set display content
-	virtual const wchar_t* getDispMessage(void) const {
+	inline const wchar_t* getDispMessage(void) const {
 		return bufferString_.getString();
 	}
-	virtual void setDispMessage(const wchar_t* dispMsg) {
+	inline void setDispMessage(const wchar_t* dispMsg) {
 		bufferString_ = dispMsg;
 	}
 
 	// Get/set message style
-	virtual void getMessageStyle(RmdMsgStyleSet& messageStyle) const {
+	inline void getMessageStyle(RmdMsgStyleSet& messageStyle) const {
 		messageStyle.copy(messageStyleData_);
 	}
-	virtual void setMessageStyle(const RmdMsgStyleSet& messageStyle) {
+	inline void setMessageStyle(const RmdMsgStyleSet& messageStyle) {
 		messageStyleData_.copy(messageStyle);
 	}
 	
 	// Auto-close message
-	virtual unsigned getAutoCloseInterval(void) const {
+	inline unsigned getAutoCloseInterval(void) const {
 		return autoCloseInterval_;
 	}
-	virtual void setAutoCloseInterval(unsigned nSeconds) {
+	inline void setAutoCloseInterval(unsigned nSeconds) {
 		autoCloseInterval_ = nSeconds;
 	}
 
 	// Dialog size
-	virtual void setSize(Size regSize) {
+	void setSize(Size regSize) {
 		SDialog::setSize(regSize);
 		isLockDialogSize_ = true;
 	}
-	virtual void setSize(long width, long height) {
+	void setSize(long width, long height) {
 		SDialog::setSize(width, height);
 		isLockDialogSize_ = true;
 	}
 
 	// Other properties
-	virtual bool getAllowSnoozeMode(void) const {
+	inline bool getAllowSnoozeMode(void) const {
 		return isSnoozingAllowed_;
 	}
-	virtual void setAllowSnoozeMode(bool value) {
+	inline void setAllowSnoozeMode(bool value) {
 		isSnoozingAllowed_ = value;
 	}
 
 	// Flags
-	virtual void getSnoozeTriggerFlag(int& value) const {
+	inline void getSnoozeTriggerFlag(int& value) const {
 		value = snoozeFlag_;
 	}
-	virtual void setSnoozeTriggerFLag(int value) {
+	inline void setSnoozeTriggerFLag(int value) {
 		snoozeFlag_ = value;
 	}
 

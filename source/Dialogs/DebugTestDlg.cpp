@@ -17,10 +17,10 @@ using namespace AppCore;
 
 
 // Default min/max size
-constexpr const int defaultMinWidth = 840;
-constexpr const int defaultMinHeight = 500;
-constexpr const int defaultMaxWidth = 1600;
-constexpr const int defaultMaxHeight = 900;
+constexpr const int kDefaultMinWidth = 840;
+constexpr const int kDefaultMinHeight = 500;
+constexpr const int kDefaultMaxWidth = 1600;
+constexpr const int kDefaultMaxHeight = 900;
 
 // Output format
 constexpr const wchar_t* debugOutputFormat = L">> %s";
@@ -178,12 +178,12 @@ void CDebugTestDlg::OnDestroy()
 void CDebugTestDlg::OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr)
 {
 	// Fix min size
-	minMaxInfoPtr->ptMinTrackSize.x = defaultMinWidth;
-	minMaxInfoPtr->ptMinTrackSize.y = defaultMinHeight;
+	minMaxInfoPtr->ptMinTrackSize.x = kDefaultMinWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = kDefaultMinHeight;
 
 	// Fix max size
-	minMaxInfoPtr->ptMaxTrackSize.x = defaultMaxWidth;
-	minMaxInfoPtr->ptMinTrackSize.y = defaultMaxHeight;
+	minMaxInfoPtr->ptMaxTrackSize.x = kDefaultMaxWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = kDefaultMaxHeight;
 
 	// Default
 	SDialog::OnGetMinMaxInfo(minMaxInfoPtr);
