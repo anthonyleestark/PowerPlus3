@@ -119,23 +119,23 @@ int CHotkeySetDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ITEM_LISTBOX, List_Box);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ADD_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVE_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_REMOVEALL_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_CHECKALL_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_UNCHECKALL_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_EXPORT_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_APPLY_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_CANCEL_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_TITLE, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ACTION_LIST, Combo_Box);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_CONTROLKEY_STATIC, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_CTRLKEY_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_ALTKEY_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_WINKEY_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_TITLE, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_FUNCKEY_LIST, Combo_Box);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_ITEM_LISTBOX, List_Box);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_ADD_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_REMOVE_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_REMOVEALL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_CHECKALL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_UNCHECKALL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_EXPORT_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_APPLY_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_CANCEL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_ACTION_TITLE, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_ACTION_LIST, Combo_Box);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_CONTROLKEY_STATIC, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_CTRLKEY_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_ALTKEY_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_WINKEY_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_FUNCKEY_TITLE, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_FUNCKEY_LIST, Combo_Box);
 	}
 
 	return returnValue;
@@ -153,23 +153,23 @@ bool CHotkeySetDlg::unregisterDialogManagement(void)
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ITEM_LISTBOX);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ADD_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_REMOVE_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_REMOVEALL_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_CHECKALL_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_UNCHECKALL_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_EXPORT_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_APPLY_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_CANCEL_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ACTION_TITLE);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ACTION_LIST);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_CONTROLKEY_STATIC);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_CTRLKEY_CHK);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_ALTKEY_CHK);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_WINKEY_CHK);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_FUNCKEY_TITLE);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_FUNCKEY_LIST);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_ITEM_LISTBOX);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_ADD_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_REMOVE_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_REMOVEALL_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_CHECKALL_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_UNCHECKALL_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_EXPORT_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_APPLY_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_CANCEL_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_ACTION_TITLE);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_ACTION_LIST);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_CONTROLKEY_STATIC);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_CTRLKEY_CHK);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_ALTKEY_CHK);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_WINKEY_CHK);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_FUNCKEY_TITLE);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_FUNCKEY_LIST);
 	}
 
 	return SDialog::unregisterDialogManagement();

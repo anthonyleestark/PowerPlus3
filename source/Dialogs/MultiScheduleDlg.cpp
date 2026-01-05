@@ -122,17 +122,17 @@ int CMultiScheduleDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_ITEM_LISTBOX, List_Control);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_ADD_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_EDIT_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_REMOVE_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_REMOVEALL_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_CHECKALL_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_UNCHECKALL_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_VIEWDETAILS_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_SETDEFAULT_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_APPLY_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_MULTISCHEDULE_CANCEL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_ITEM_LISTBOX, List_Control);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_ADD_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_EDIT_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_REMOVE_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_REMOVEALL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_CHECKALL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_UNCHECKALL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_VIEWDETAILS_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_SETDEFAULT_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_APPLY_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MULTISCHEDULE_CANCEL_BTN, Button);
 	}
 
 	return returnValue;
@@ -150,17 +150,17 @@ bool CMultiScheduleDlg::unregisterDialogManagement(void)
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_ITEM_LISTBOX);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_ADD_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_EDIT_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_REMOVE_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_REMOVEALL_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_CHECKALL_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_UNCHECKALL_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_VIEWDETAILS_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_SETDEFAULT_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_APPLY_BTN);
-		pCtrlMan->RemoveControl(IDC_MULTISCHEDULE_CANCEL_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_ITEM_LISTBOX);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_ADD_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_EDIT_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_REMOVE_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_REMOVEALL_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_CHECKALL_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_UNCHECKALL_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_VIEWDETAILS_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_SETDEFAULT_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_APPLY_BTN);
+		pCtrlMan->removeControl(IDC_MULTISCHEDULE_CANCEL_BTN);
 	}
 
 	return SDialog::unregisterDialogManagement();

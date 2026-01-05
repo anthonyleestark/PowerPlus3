@@ -64,12 +64,12 @@ int CAboutDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		returnValue = pCtrlMan->AddControl(IDC_APPNAME_LABEL, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_COPYRIGHT_LABEL, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_VIEW_FACEBOOK_PROFILE_LINK, SysLink_Control);
-		returnValue = pCtrlMan->AddControl(IDC_AUTH_LABEL, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_APPINFO_LABEL, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_ABOUT_CLOSE_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_APPNAME_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_COPYRIGHT_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_VIEW_FACEBOOK_PROFILE_LINK, SysLink_Control);
+		returnValue = pCtrlMan->addControl(IDC_AUTH_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_APPINFO_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_ABOUT_CLOSE_BTN, Button);
 	}
 
 	return returnValue;
@@ -87,12 +87,12 @@ bool CAboutDlg::unregisterDialogManagement(void)
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
-		pCtrlMan->RemoveControl(IDC_APPNAME_LABEL);
-		pCtrlMan->RemoveControl(IDC_COPYRIGHT_LABEL);
-		pCtrlMan->RemoveControl(IDC_VIEW_FACEBOOK_PROFILE_LINK);
-		pCtrlMan->RemoveControl(IDC_AUTH_LABEL);
-		pCtrlMan->RemoveControl(IDC_APPINFO_LABEL);
-		pCtrlMan->RemoveControl(IDC_ABOUT_CLOSE_BTN);
+		pCtrlMan->removeControl(IDC_APPNAME_LABEL);
+		pCtrlMan->removeControl(IDC_COPYRIGHT_LABEL);
+		pCtrlMan->removeControl(IDC_VIEW_FACEBOOK_PROFILE_LINK);
+		pCtrlMan->removeControl(IDC_AUTH_LABEL);
+		pCtrlMan->removeControl(IDC_APPINFO_LABEL);
+		pCtrlMan->removeControl(IDC_ABOUT_CLOSE_BTN);
 	}
 
 	return SDialog::unregisterDialogManagement();

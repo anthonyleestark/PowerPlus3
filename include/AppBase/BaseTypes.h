@@ -382,7 +382,7 @@ public:
 	};
 
 	// Delete one or many characters from the string
-	int Delete(int index, int count = 1) {
+	int deleteAt(int index, int count = 1) {
 		if (index < 0 || count <= 0 || static_cast<size_t>(index) >= _buffer.length()) return static_cast<int>(_buffer.length());
 		size_t _count = std::min(static_cast<size_t>(count), _buffer.length() - static_cast<size_t>(index));
 		return static_cast<int>(_buffer.erase(static_cast<size_t>(index), _count).length());
