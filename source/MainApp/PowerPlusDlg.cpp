@@ -205,42 +205,42 @@ int CPowerPlusDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		returnValue = pCtrlMan->AddControl(IDC_MAIN_TITLE, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_LEFTMOUSE_TITLE, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_LMBACTION_LIST, Combo_Box);
-		returnValue = pCtrlMan->AddControl(IDC_MIDMOUSE_TITLE, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_MMBACTION_LIST, Combo_Box);
-		returnValue = pCtrlMan->AddControl(IDC_RIGHTMOUSE_TITLE, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_RMBACTION_LIST, Combo_Box);
-		returnValue = pCtrlMan->AddControl(IDC_ENABLERMBMENU_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_APPLY_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_RELOAD_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_EXIT_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_EXPAND_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_COLLAPSE_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_SYSTEM_TITLE, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_SHOWATSTARTUP_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_ENABLEAUTOSTART_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_CONFIRMACTION_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_SAVEHISTORYLOG_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_SAVEAPPEVENTLOG_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_RUNASADMIN_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_SHOWERROR_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_SCHEDNOTIFY_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_SCHEDALLOWCANCEL_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_ENBBKGRDHOTKEYS_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_ENBPWRREMINDER_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_LANGUAGE_TITLE, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_LANGUAGE_LIST, Combo_Box);
-		returnValue = pCtrlMan->AddControl(IDC_VIEWACTIONLOG_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_BACKUPCFG_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_SCHEDULE_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_LOGVIEWER_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HOTKEYSET_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_PWRREMINDER_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HELP_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_ABOUT_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_DEFAULT_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_MAIN_TITLE, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_LEFTMOUSE_TITLE, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_LMBACTION_LIST, Combo_Box);
+		returnValue = pCtrlMan->addControl(IDC_MIDMOUSE_TITLE, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_MMBACTION_LIST, Combo_Box);
+		returnValue = pCtrlMan->addControl(IDC_RIGHTMOUSE_TITLE, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_RMBACTION_LIST, Combo_Box);
+		returnValue = pCtrlMan->addControl(IDC_ENABLERMBMENU_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_APPLY_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_RELOAD_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_EXIT_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_EXPAND_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_COLLAPSE_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_SYSTEM_TITLE, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_SHOWATSTARTUP_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_ENABLEAUTOSTART_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_CONFIRMACTION_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_SAVEHISTORYLOG_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_SAVEAPPEVENTLOG_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_RUNASADMIN_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_SHOWERROR_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_SCHEDNOTIFY_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_SCHEDALLOWCANCEL_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_ENBBKGRDHOTKEYS_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_ENBPWRREMINDER_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_LANGUAGE_TITLE, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_LANGUAGE_LIST, Combo_Box);
+		returnValue = pCtrlMan->addControl(IDC_VIEWACTIONLOG_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_BACKUPCFG_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_SCHEDULE_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_LOGVIEWER_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HOTKEYSET_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_PWRREMINDER_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HELP_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_ABOUT_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_DEFAULT_BTN, Button);
 	}
 
 	return returnValue;
@@ -259,13 +259,13 @@ void CPowerPlusDlg::updateDialogManagement(void)
 	if (pCtrlMan == NULL) return;
 
 	// Update control info
-	pCtrlMan->SetBuddy(IDC_LMBACTION_LIST, IDC_LEFTMOUSE_TITLE);
-	pCtrlMan->SetBuddy(IDC_MMBACTION_LIST, IDC_MIDMOUSE_TITLE);
-	pCtrlMan->SetBuddy(IDC_RMBACTION_LIST, IDC_RIGHTMOUSE_TITLE);
-	pCtrlMan->SetBuddy(IDC_LANGUAGE_LIST, IDC_LANGUAGE_TITLE);
+	pCtrlMan->setBuddy(IDC_LMBACTION_LIST, IDC_LEFTMOUSE_TITLE);
+	pCtrlMan->setBuddy(IDC_MMBACTION_LIST, IDC_MIDMOUSE_TITLE);
+	pCtrlMan->setBuddy(IDC_RMBACTION_LIST, IDC_RIGHTMOUSE_TITLE);
+	pCtrlMan->setBuddy(IDC_LANGUAGE_LIST, IDC_LANGUAGE_TITLE);
 
 	// Update control data
-	pCtrlMan->UpdateData(NULL);
+	pCtrlMan->updateData(NULL);
 
 	// Default
 	SDialog::updateDialogManagement();
@@ -284,42 +284,42 @@ bool CPowerPlusDlg::unregisterDialogManagement(void)
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
-		pCtrlMan->RemoveControl(IDC_MAIN_TITLE);
-		pCtrlMan->RemoveControl(IDC_LEFTMOUSE_TITLE);
-		pCtrlMan->RemoveControl(IDC_LMBACTION_LIST);
-		pCtrlMan->RemoveControl(IDC_MIDMOUSE_TITLE);
-		pCtrlMan->RemoveControl(IDC_MMBACTION_LIST);
-		pCtrlMan->RemoveControl(IDC_RIGHTMOUSE_TITLE);
-		pCtrlMan->RemoveControl(IDC_RMBACTION_LIST);
-		pCtrlMan->RemoveControl(IDC_ENABLERMBMENU_CHK);
-		pCtrlMan->RemoveControl(IDC_APPLY_BTN);
-		pCtrlMan->RemoveControl(IDC_RELOAD_BTN);
-		pCtrlMan->RemoveControl(IDC_EXIT_BTN);
-		pCtrlMan->RemoveControl(IDC_EXPAND_BTN);
-		pCtrlMan->RemoveControl(IDC_COLLAPSE_BTN);
-		pCtrlMan->RemoveControl(IDC_SYSTEM_TITLE);
-		pCtrlMan->RemoveControl(IDC_SHOWATSTARTUP_CHK);
-		pCtrlMan->RemoveControl(IDC_ENABLEAUTOSTART_CHK);
-		pCtrlMan->RemoveControl(IDC_CONFIRMACTION_CHK);
-		pCtrlMan->RemoveControl(IDC_SAVEHISTORYLOG_CHK);
-		pCtrlMan->RemoveControl(IDC_SAVEAPPEVENTLOG_CHK);
-		pCtrlMan->RemoveControl(IDC_RUNASADMIN_CHK);
-		pCtrlMan->RemoveControl(IDC_SHOWERROR_CHK);
-		pCtrlMan->RemoveControl(IDC_SCHEDNOTIFY_CHK);
-		pCtrlMan->RemoveControl(IDC_SCHEDALLOWCANCEL_CHK);
-		pCtrlMan->RemoveControl(IDC_ENBBKGRDHOTKEYS_CHK);
-		pCtrlMan->RemoveControl(IDC_ENBPWRREMINDER_CHK);
-		pCtrlMan->RemoveControl(IDC_LANGUAGE_TITLE);
-		pCtrlMan->RemoveControl(IDC_LANGUAGE_LIST);
-		pCtrlMan->RemoveControl(IDC_VIEWACTIONLOG_BTN);
-		pCtrlMan->RemoveControl(IDC_BACKUPCFG_BTN);
-		pCtrlMan->RemoveControl(IDC_SCHEDULE_BTN);
-		pCtrlMan->RemoveControl(IDC_LOGVIEWER_BTN);
-		pCtrlMan->RemoveControl(IDC_HOTKEYSET_BTN);
-		pCtrlMan->RemoveControl(IDC_PWRREMINDER_BTN);
-		pCtrlMan->RemoveControl(IDC_HELP_BTN);
-		pCtrlMan->RemoveControl(IDC_ABOUT_BTN);
-		pCtrlMan->RemoveControl(IDC_DEFAULT_BTN);
+		pCtrlMan->removeControl(IDC_MAIN_TITLE);
+		pCtrlMan->removeControl(IDC_LEFTMOUSE_TITLE);
+		pCtrlMan->removeControl(IDC_LMBACTION_LIST);
+		pCtrlMan->removeControl(IDC_MIDMOUSE_TITLE);
+		pCtrlMan->removeControl(IDC_MMBACTION_LIST);
+		pCtrlMan->removeControl(IDC_RIGHTMOUSE_TITLE);
+		pCtrlMan->removeControl(IDC_RMBACTION_LIST);
+		pCtrlMan->removeControl(IDC_ENABLERMBMENU_CHK);
+		pCtrlMan->removeControl(IDC_APPLY_BTN);
+		pCtrlMan->removeControl(IDC_RELOAD_BTN);
+		pCtrlMan->removeControl(IDC_EXIT_BTN);
+		pCtrlMan->removeControl(IDC_EXPAND_BTN);
+		pCtrlMan->removeControl(IDC_COLLAPSE_BTN);
+		pCtrlMan->removeControl(IDC_SYSTEM_TITLE);
+		pCtrlMan->removeControl(IDC_SHOWATSTARTUP_CHK);
+		pCtrlMan->removeControl(IDC_ENABLEAUTOSTART_CHK);
+		pCtrlMan->removeControl(IDC_CONFIRMACTION_CHK);
+		pCtrlMan->removeControl(IDC_SAVEHISTORYLOG_CHK);
+		pCtrlMan->removeControl(IDC_SAVEAPPEVENTLOG_CHK);
+		pCtrlMan->removeControl(IDC_RUNASADMIN_CHK);
+		pCtrlMan->removeControl(IDC_SHOWERROR_CHK);
+		pCtrlMan->removeControl(IDC_SCHEDNOTIFY_CHK);
+		pCtrlMan->removeControl(IDC_SCHEDALLOWCANCEL_CHK);
+		pCtrlMan->removeControl(IDC_ENBBKGRDHOTKEYS_CHK);
+		pCtrlMan->removeControl(IDC_ENBPWRREMINDER_CHK);
+		pCtrlMan->removeControl(IDC_LANGUAGE_TITLE);
+		pCtrlMan->removeControl(IDC_LANGUAGE_LIST);
+		pCtrlMan->removeControl(IDC_VIEWACTIONLOG_BTN);
+		pCtrlMan->removeControl(IDC_BACKUPCFG_BTN);
+		pCtrlMan->removeControl(IDC_SCHEDULE_BTN);
+		pCtrlMan->removeControl(IDC_LOGVIEWER_BTN);
+		pCtrlMan->removeControl(IDC_HOTKEYSET_BTN);
+		pCtrlMan->removeControl(IDC_PWRREMINDER_BTN);
+		pCtrlMan->removeControl(IDC_HELP_BTN);
+		pCtrlMan->removeControl(IDC_ABOUT_BTN);
+		pCtrlMan->removeControl(IDC_DEFAULT_BTN);
 	}
 
 	return SDialog::unregisterDialogManagement();
@@ -3561,28 +3561,28 @@ void CPowerPlusDlg::setActionScheduleSkip(const ScheduleItem& scheduleItem, int 
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not an Action Schedule item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.getItemId() == scheduleItem.getItemId()) {
+		if (runtimeItem.getItemId() == scheduleItem.getItemId()) {
 
 			// Update item skip mode data
-			pwrRuntimeItem.setSkipFlag(skipFlag);
+			runtimeItem.setSkipFlag(skipFlag);
 			return;
 		}
 	}
 
 	// Prepare runtime item info to add
-	PwrRuntimeItem pwrRuntimeItem;
-	pwrRuntimeItem.setCategory(PwrFeatureID::schedule);
-	pwrRuntimeItem.setItemId(scheduleItem.getItemId());
-	pwrRuntimeItem.setSkipFlag(skipFlag);
+	PwrRuntimeItem runtimeItem;
+	runtimeItem.setCategory(PwrFeatureID::schedule);
+	runtimeItem.setItemId(scheduleItem.getItemId());
+	runtimeItem.setSkipFlag(skipFlag);
 
 	// Add item to runtime queue
-	runtimeQueue_.push_back(pwrRuntimeItem);
+	runtimeQueue_.push_back(runtimeItem);
 }
 
 
@@ -3610,39 +3610,39 @@ void CPowerPlusDlg::setActionScheduleSnooze(const ScheduleItem& scheduleItem, in
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not an Action Schedule item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.getItemId() == scheduleItem.getItemId()) {
+		if (runtimeItem.getItemId() == scheduleItem.getItemId()) {
 
 			// Update item skip mode data
-			pwrRuntimeItem.setSnoozeFlag(snoozeFlag);
+			runtimeItem.setSnoozeFlag(snoozeFlag);
 
-			if (pwrRuntimeItem.getSnoozeFlag() == FLAG_ON) {
+			if (runtimeItem.getSnoozeFlag() == FLAG_ON) {
 				// Calculate next snooze trigger time
-				pwrRuntimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
-				pwrRuntimeItem.calcNextSnoozeTime(interval);
+				runtimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
+				runtimeItem.calcNextSnoozeTime(interval);
 			}
 			return;
 		}
 	}
 
 	// Prepare runtime item info to add
-	PwrRuntimeItem pwrRuntimeItem;
-	pwrRuntimeItem.setCategory(PwrFeatureID::schedule);
-	pwrRuntimeItem.setItemId(scheduleItem.getItemId());
-	pwrRuntimeItem.setSnoozeFlag(snoozeFlag);
-	if (pwrRuntimeItem.getSnoozeFlag() == FLAG_ON) {
+	PwrRuntimeItem runtimeItem;
+	runtimeItem.setCategory(PwrFeatureID::schedule);
+	runtimeItem.setItemId(scheduleItem.getItemId());
+	runtimeItem.setSnoozeFlag(snoozeFlag);
+	if (runtimeItem.getSnoozeFlag() == FLAG_ON) {
 		// Calculate next snooze trigger time
-		pwrRuntimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
-		pwrRuntimeItem.calcNextSnoozeTime(interval);
+		runtimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
+		runtimeItem.calcNextSnoozeTime(interval);
 	}
 
 	// Add item to runtime queue
-	runtimeQueue_.push_back(pwrRuntimeItem);
+	runtimeQueue_.push_back(runtimeItem);
 }
 
 
@@ -3668,22 +3668,22 @@ void CPowerPlusDlg::updateActionScheduleQueue(int mode)
 		for (int queueIndex = (runtimeQueue_.size() - 1); queueIndex >= 0; queueIndex--) {
 
 			// Get runtime item from queue
-			PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(queueIndex);
+			PwrRuntimeItem& runtimeItem = runtimeQueue_.at(queueIndex);
 
 			// Skip if it's not an Action Schedule item
-			if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
+			if (runtimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 			// Item found flag
 			bool isItemFound = false;
 
 			// Check if item ID is default schedule item
 			const ScheduleItem& defaultScheduleItem = scheduleData_.getDefaultItem();
-			if (defaultScheduleItem.getItemId() == pwrRuntimeItem.getItemId()) {
+			if (defaultScheduleItem.getItemId() == runtimeItem.getItemId()) {
 
 				// If item's snoozing mode is no longer available
 				if (!defaultScheduleItem.isAllowSnoozing()) {
 					// Disable snooze mode
-					pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
+					runtimeItem.setSnoozeFlag(FLAG_OFF);
 				}
 				
 				// Mark as found
@@ -3694,12 +3694,12 @@ void CPowerPlusDlg::updateActionScheduleQueue(int mode)
 			// Search for item ID in Action Schedule extra item data
 			for (int itemIndex = 0; itemIndex < scheduleData_.getExtraItemNum(); itemIndex++) {
 				const ScheduleItem& scheduleItem = scheduleData_.getItemAt(itemIndex);
-				if (scheduleItem.getItemId() == pwrRuntimeItem.getItemId()) {
+				if (scheduleItem.getItemId() == runtimeItem.getItemId()) {
 
 					// If item's snoozing mode is no longer available
 					if (!scheduleItem.isAllowSnoozing()) {
 						// Disable snooze mode
-						pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
+						runtimeItem.setSnoozeFlag(FLAG_OFF);
 					}
 
 					// Mark as found
@@ -3722,16 +3722,16 @@ void CPowerPlusDlg::updateActionScheduleQueue(int mode)
 		for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 			// Get runtime item from queue
-			PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+			PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 			// Skip if it's not an Action Schedule item
-			if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
+			if (runtimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 			// Update item skip mode data
-			pwrRuntimeItem.setSkipFlag(FLAG_OFF);
+			runtimeItem.setSkipFlag(FLAG_OFF);
 
 			// Update item snooze mode data
-			pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
+			runtimeItem.setSnoozeFlag(FLAG_OFF);
 		}
 	}
 }
@@ -3752,16 +3752,16 @@ bool CPowerPlusDlg::getActionScheduleSkipStatus(unsigned itemId)
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		const PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		const PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not an Action Schedule item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.getItemId() == itemId) {
+		if (runtimeItem.getItemId() == itemId) {
 
 			// Get skip enable flag
-			if (pwrRuntimeItem.getSkipFlag() == FLAG_ON)
+			if (runtimeItem.getSkipFlag() == FLAG_ON)
 				return true;
 
 			return false;
@@ -3788,20 +3788,20 @@ bool CPowerPlusDlg::getActionScheduleSnoozeStatus(unsigned itemId, const ClockTi
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		const PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		const PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not an Action Schedule item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::schedule) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::schedule) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.getItemId() == itemId) {
+		if (runtimeItem.getItemId() == itemId) {
 
 			// Get snooze enable flag
-			if (pwrRuntimeItem.getSnoozeFlag() == FLAG_OFF)
+			if (runtimeItem.getSnoozeFlag() == FLAG_OFF)
 				return false;
 
 			// Check for next snooze time matching
-			if (ClockTimeUtils::isMatching(currentTime, pwrRuntimeItem.getTime()))
+			if (ClockTimeUtils::isMatching(currentTime, runtimeItem.getTime()))
 				return true;
 
 			return false;
@@ -4463,39 +4463,39 @@ void CPowerPlusDlg::setPwrReminderSnooze(const PwrReminderItem& reminderItem, in
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.getItemId() == reminderItem.getItemId()) {
+		if (runtimeItem.getItemId() == reminderItem.getItemId()) {
 
 			// Update item snooze mode data
-			pwrRuntimeItem.setSnoozeFlag(snoozeFlag);
+			runtimeItem.setSnoozeFlag(snoozeFlag);
 
-			if (pwrRuntimeItem.getSnoozeFlag() == FLAG_ON) {
+			if (runtimeItem.getSnoozeFlag() == FLAG_ON) {
 				// Calculate next snooze trigger time
-				pwrRuntimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
-				pwrRuntimeItem.calcNextSnoozeTime(interval);
+				runtimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
+				runtimeItem.calcNextSnoozeTime(interval);
 			}
 			return;
 		}
 	}
 
 	// Prepare runtime item info to add
-	PwrRuntimeItem pwrRuntimeItem;
-	pwrRuntimeItem.setCategory(PwrFeatureID::pwrReminder);
-	pwrRuntimeItem.setItemId(reminderItem.getItemId());
-	pwrRuntimeItem.setSnoozeFlag(snoozeFlag);
-	if (pwrRuntimeItem.getSnoozeFlag() == FLAG_ON) {
+	PwrRuntimeItem runtimeItem;
+	runtimeItem.setCategory(PwrFeatureID::pwrReminder);
+	runtimeItem.setItemId(reminderItem.getItemId());
+	runtimeItem.setSnoozeFlag(snoozeFlag);
+	if (runtimeItem.getSnoozeFlag() == FLAG_ON) {
 		// Calculate next snooze trigger time
-		pwrRuntimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
-		pwrRuntimeItem.calcNextSnoozeTime(interval);
+		runtimeItem.setTime(ClockTimeUtils::getCurrentClockTime());
+		runtimeItem.calcNextSnoozeTime(interval);
 	}
 
 	// Add item to runtime queue
-	runtimeQueue_.push_back(pwrRuntimeItem);
+	runtimeQueue_.push_back(runtimeItem);
 }
 
 
@@ -4520,21 +4520,21 @@ void CPowerPlusDlg::updatePwrReminderSnooze(int mode)
 		for (int queueIndex = (runtimeQueue_.size() - 1); queueIndex >= 0; queueIndex--) {
 			
 			// Get runtime item from queue
-			PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(queueIndex);
+			PwrRuntimeItem& runtimeItem = runtimeQueue_.at(queueIndex);
 
 			// Skip if it's not Power Reminder item
-			if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
+			if (runtimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 			// Search for item ID in Power Reminder data
 			bool isItemFound = false;
 			for (int itemIndex = 0; itemIndex < reminderData_.getItemNum(); itemIndex++) {
 				const PwrReminderItem& reminderItem = reminderData_.getItemAt(itemIndex);
-				if (reminderItem.getItemId() == pwrRuntimeItem.getItemId()) {
+				if (reminderItem.getItemId() == runtimeItem.getItemId()) {
 
 					// If item's snoozing mode is no longer available
 					if (!reminderItem.isAllowSnoozing()) {
 						// Disable snooze mode
-						pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
+						runtimeItem.setSnoozeFlag(FLAG_OFF);
 					}
 
 					// Mark as found
@@ -4557,13 +4557,13 @@ void CPowerPlusDlg::updatePwrReminderSnooze(int mode)
 		for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 			// Get runtime item from queue
-			PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+			PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 			// Skip if it's not Power Reminder item
-			if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
+			if (runtimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 			// Update item snooze mode data
-			pwrRuntimeItem.setSnoozeFlag(FLAG_OFF);
+			runtimeItem.setSnoozeFlag(FLAG_OFF);
 		}
 	}
 }
@@ -4585,20 +4585,20 @@ bool CPowerPlusDlg::getPwrReminderSnoozeStatus(unsigned itemId, const ClockTime&
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		const PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		const PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.getItemId() == itemId) {
+		if (runtimeItem.getItemId() == itemId) {
 
 			// Get snooze enable flag
-			if (pwrRuntimeItem.getSnoozeFlag() == FLAG_OFF)
+			if (runtimeItem.getSnoozeFlag() == FLAG_OFF)
 				return false;
 			
 			// Check for next snooze time matching
-			if (ClockTimeUtils::isMatching(currentTime, pwrRuntimeItem.getTime()))
+			if (ClockTimeUtils::isMatching(currentTime, runtimeItem.getTime()))
 				return true;
 
 			return false;
@@ -4623,16 +4623,16 @@ bool CPowerPlusDlg::getPwrReminderDispFlag(const PwrReminderItem& reminderItem)
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.getItemId() == reminderItem.getItemId()) {
+		if (runtimeItem.getItemId() == reminderItem.getItemId()) {
 
 			// Get snooze enable flag
-			if (pwrRuntimeItem.getDisplayFlag() == FLAG_ON)
+			if (runtimeItem.getDisplayFlag() == FLAG_ON)
 				return true;
 
 			return false;
@@ -4658,27 +4658,27 @@ void CPowerPlusDlg::setPwrReminderDispFlag(const PwrReminderItem& reminderItem, 
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item ID is found
-		if (pwrRuntimeItem.getItemId() == reminderItem.getItemId()) {
+		if (runtimeItem.getItemId() == reminderItem.getItemId()) {
 			// Update item displaying flag
-			pwrRuntimeItem.setDisplayFlag(displayFlag);
+			runtimeItem.setDisplayFlag(displayFlag);
 			return;
 		}
 	}
 
 	// Prepare item info to add
-	PwrRuntimeItem pwrRuntimeItem;
-	pwrRuntimeItem.setCategory(PwrFeatureID::pwrReminder);
-	pwrRuntimeItem.setItemId(reminderItem.getItemId());
-	pwrRuntimeItem.setDisplayFlag(displayFlag);
+	PwrRuntimeItem runtimeItem;
+	runtimeItem.setCategory(PwrFeatureID::pwrReminder);
+	runtimeItem.setItemId(reminderItem.getItemId());
+	runtimeItem.setDisplayFlag(displayFlag);
 
 	// Add item to runtime queue
-	runtimeQueue_.push_back(pwrRuntimeItem);
+	runtimeQueue_.push_back(runtimeItem);
 }
 
 
@@ -4701,15 +4701,15 @@ size_t CPowerPlusDlg::getPwrReminderDispList(UIntArray& displayItemList)
 	for (int index = 0; index < runtimeQueue_.size(); index++) {
 
 		// Get runtime item from queue
-		const PwrRuntimeItem& pwrRuntimeItem = runtimeQueue_.at(index);
+		const PwrRuntimeItem& runtimeItem = runtimeQueue_.at(index);
 
 		// Skip if it's not Power Reminder item
-		if (pwrRuntimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
+		if (runtimeItem.getCategory() != PwrFeatureID::pwrReminder) continue;
 
 		// If item displaying flag is marked as ON
-		if (pwrRuntimeItem.getDisplayFlag() == FLAG_ON) {
+		if (runtimeItem.getDisplayFlag() == FLAG_ON) {
 			// Add item ID into output data list
-			displayItemList.push_back(pwrRuntimeItem.getItemId());
+			displayItemList.push_back(runtimeItem.getItemId());
 		}
 	}
 

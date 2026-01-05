@@ -103,16 +103,16 @@ int CEditScheduleDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ENABLE_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTION_LABEL, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTION_LIST, Combo_Box);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_LABEL, Static_Text);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_EDITBOX, Edit_Control);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_TIME_SPIN, Spin_Control);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_REPEATDAILY_CHK, Check_Box);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX, List_Box);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_APPLY_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_EDITSCHEDULE_CANCEL_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_ENABLE_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_ACTION_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_ACTION_LIST, Combo_Box);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_TIME_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_TIME_EDITBOX, Edit_Control);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_TIME_SPIN, Spin_Control);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_REPEATDAILY_CHK, Check_Box);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX, List_Box);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_APPLY_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_EDITSCHEDULE_CANCEL_BTN, Button);
 	}
 
 	return returnValue;
@@ -130,16 +130,16 @@ bool CEditScheduleDlg::unregisterDialogManagement(void)
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_ENABLE_CHK);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_ACTION_LABEL);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_ACTION_LIST);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_TIME_LABEL);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_TIME_EDITBOX);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_TIME_SPIN);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_REPEATDAILY_CHK);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_APPLY_BTN);
-		pCtrlMan->RemoveControl(IDC_EDITSCHEDULE_CANCEL_BTN);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_ENABLE_CHK);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_ACTION_LABEL);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_ACTION_LIST);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_TIME_LABEL);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_TIME_EDITBOX);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_TIME_SPIN);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_REPEATDAILY_CHK);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_ACTIVEDAYS_LISTBOX);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_APPLY_BTN);
+		pCtrlMan->removeControl(IDC_EDITSCHEDULE_CANCEL_BTN);
 	}
 
 	return SDialog::unregisterDialogManagement();

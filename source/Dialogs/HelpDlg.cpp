@@ -68,9 +68,9 @@ int CHelpDlg::registerDialogManagement(void)
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		returnValue = pCtrlMan->AddControl(IDC_HELPINFO_EDITBOX, Edit_Control);
-		returnValue = pCtrlMan->AddControl(IDC_HELP_CLOSE_BTN, Button);
-		returnValue = pCtrlMan->AddControl(IDC_HELP_SWITCHVIEWMODE_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HELPINFO_EDITBOX, Edit_Control);
+		returnValue = pCtrlMan->addControl(IDC_HELP_CLOSE_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_HELP_SWITCHVIEWMODE_BTN, Button);
 	}
 
 	return returnValue;
@@ -88,9 +88,9 @@ bool CHelpDlg::unregisterDialogManagement(void)
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
-		pCtrlMan->RemoveControl(IDC_HELPINFO_EDITBOX);
-		pCtrlMan->RemoveControl(IDC_HELP_CLOSE_BTN);
-		pCtrlMan->RemoveControl(IDC_HELP_SWITCHVIEWMODE_BTN);
+		pCtrlMan->removeControl(IDC_HELPINFO_EDITBOX);
+		pCtrlMan->removeControl(IDC_HELP_CLOSE_BTN);
+		pCtrlMan->removeControl(IDC_HELP_SWITCHVIEWMODE_BTN);
 	}
 
 	return SDialog::unregisterDialogManagement();

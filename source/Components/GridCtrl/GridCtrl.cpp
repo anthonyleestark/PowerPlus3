@@ -6990,10 +6990,10 @@ void CGridCtrl::OnBeginPrinting(CDC *pDC, CPrintInfo *pInfo)
 
     // Create the printer font
     int fontSize = -10;
-    CString strFontName = _T("Arial");
+    CString fontName = _T("Arial");
     m_PrinterFont.CreateFont(fontSize, 0,0,0, FW_NORMAL, 0,0,0, DEFAULT_CHARSET,
                              OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DEFAULT_QUALITY,
-                             DEFAULT_PITCH | FF_DONTCARE, strFontName);
+                             DEFAULT_PITCH | FF_DONTCARE, fontName);
 
     CFont *pOldFont = pDC->SelectObject(&m_PrinterFont);
 

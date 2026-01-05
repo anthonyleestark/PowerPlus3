@@ -92,220 +92,220 @@ public:
 
 protected:
 	// Base control window pointer
-	CWnd*			m_pBaseControl;
+	CWnd*			baseControlWndPtr_;
 
 	// Relative windows
-	CWnd*			m_pParentWnd;
-	CWnd*			m_pBuddyWnd;
+	CWnd*			parentWndPtr_;
+	CWnd*			buddyWndPtr_;
 
 	// Control ID info
-	int				m_nTypeID;
-	unsigned		m_nTemplateID;
-	String			m_strTemplateID;
+	int				typeId_;
+	unsigned		templateId_;
+	String			templateStringId_;
 
 	// Control attributes
-	String			m_strCaption;
-	bool			m_bVisible;
+	String			caption_;
+	bool			isVisible_;
 	bool			isEnabled_;
-	bool			m_bFocused;
+	bool			isFocused_;
 
 protected:
 	// --- Control data values --- //
 
 	// Boolean data
-	bool*			m_pbCheck;
+	bool*			isCheckedPtr_;
 
 	// Integer data
-	PLONG_PTR		m_plValue;
-	PLONG_PTR		m_plReserveValue;
-	PLONG_PTR		m_plMinValue;
-	PLONG_PTR		m_plMaxValue;
+	PLONG_PTR		valueIntPtr_;
+	PLONG_PTR		reservedValueIntPtr_;
+	PLONG_PTR		minValueIntPtr_;
+	PLONG_PTR		maxValueIntPtr_;
 
 	// Float data
-	double*			m_pdbValue;
-	double*			m_pdbReserveValue;
-	double*			m_pdbMinValue;
-	double*			m_pdbMaxValue;
+	double*			valueDoublePtr_;
+	double*			reservedValueDoublePtr_;
+	double*			minValueDoublePtr_;
+	double*			maxValueDoublePtr_;
 
 	// String data
-	String*			m_pstrValue;
-	String*			m_pstrReserveValue;
+	String*			valueStringPtr_;
+	String*			reservedValueStringPtr_;
 
 	// Integer array data
-	ULongArray*		m_paulValueList;
-	ULongArray*		m_paulReserveValueList;
+	ULongArray*		valueIntListPtr_;
+	ULongArray*		reservedValueIntListPtr_;
 
 	// String array data
-	StringArray*	m_pastrValueList;
-	StringArray*	m_pastrReserveValueList;
+	StringArray*	valueStringListPtr_;
+	StringArray*	reservedValueStringListPtr_;
 
 	// Time data
-	LPSYSTEMTIME	m_pstTimeValue;
+	LPSYSTEMTIME	valueTimePtr_;
 
 	// Custom data
-	LPVOID			m_ptrCustomData;		// Data pointer
-	PSIZE_T			m_pszDataSize;			// Total size in bytes
+	LPVOID			customDataPtr_;			// Data pointer
+	PSIZE_T			dataSizePtr_;			// Total size in bytes
 
 public:
 	// Initialization
-	virtual bool	Initialize(CWnd* parentWnd, CWnd* pBuddyWnd, unsigned controlId, int nTypeID);
+	virtual bool initialize(CWnd* parentWndPtr, CWnd* buddyWndPtr, unsigned controlId, int typeId);
 
 	// Base control window pointer access
-	virtual CWnd* GetBaseControl(void) {
-		return m_pBaseControl;
-	};
-	virtual bool IsBaseControlAvailable(void) const {
-		return ((m_pBaseControl != NULL) && (m_pBaseControl->GetSafeHwnd() != NULL));
-	};
+	virtual CWnd* getBaseControl(void) {
+		return baseControlWndPtr_;
+	}
+	virtual bool isBaseControlAvailable(void) const {
+		return ((baseControlWndPtr_ != NULL) && (baseControlWndPtr_->GetSafeHwnd() != NULL));
+	}
 
 	// Parent window functions
-	virtual CWnd* GetParent(void) {
-		return m_pParentWnd;
-	};
-	virtual void SetParent(CWnd* parentWnd) {
-		m_pParentWnd = parentWnd;
-	};
-	virtual bool IsParentAvailable(void) const {
-		return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
-	};
+	virtual CWnd* getParent(void) {
+		return parentWndPtr_;
+	}
+	virtual void setParent(CWnd* parentWndPtr) {
+		parentWndPtr_ = parentWndPtr;
+	}
+	virtual bool isParentAvailable(void) const {
+		return ((parentWndPtr_ != NULL) && (parentWndPtr_->GetSafeHwnd() != NULL));
+	}
 
 	// Buddy window functions
-	virtual CWnd* GetBuddy(void) {
-		return m_pBuddyWnd;
-	};
-	virtual void SetBuddy(CWnd* pBuddyWnd) {
-		m_pBuddyWnd = pBuddyWnd;
-	};
-	virtual bool IsBuddyAvailable(void) const {
-		return (m_pBuddyWnd != NULL);
-	};
+	virtual CWnd* getBuddy(void) {
+		return buddyWndPtr_;
+	}
+	virtual void setBuddy(CWnd* buddyWndPtr) {
+		buddyWndPtr_ = buddyWndPtr;
+	}
+	virtual bool isBuddyAvailable(void) const {
+		return (buddyWndPtr_ != NULL);
+	}
 
 	// Get control ID info
-	virtual int GetType(void) const {
-		return m_nTypeID;
-	};
-	virtual unsigned GetTemplateID(void) const {
-		return m_nTemplateID;
-	};
-	virtual const wchar_t* GetTemplateStringID(void) const {
-		return m_strTemplateID;
-	};
-	virtual void GetTemplateStringID(_Out_ String& templateID) const {
-		templateID = m_strTemplateID;
-	};
+	virtual int getType(void) const {
+		return typeId_;
+	}
+	virtual unsigned getTemplateID(void) const {
+		return templateId_;
+	}
+	virtual const wchar_t* getTemplateStringId(void) const {
+		return templateStringId_;
+	}
+	virtual void getTemplateStringId(_Out_ String& templateID) const {
+		templateID = templateStringId_;
+	}
 
 	// Get attributes
-	virtual const wchar_t* GetCaption(void) const {
-		return m_strTemplateID;
-	};
-	virtual void GetCaption(_Out_ String& caption) const {
-		caption = m_strCaption;
-	};
-	virtual bool IsVisible(void) const {
-		return m_bVisible;
-	};
-	virtual bool IsEnabled(void) const {
+	virtual const wchar_t* getCaption(void) const {
+		return templateStringId_;
+	}
+	virtual void getCaption(_Out_ String& caption) const {
+		caption = caption_;
+	}
+	virtual bool isVisible(void) const {
+		return isVisible_;
+	}
+	virtual bool isEnabled(void) const {
 		return isEnabled_;
-	};
-	virtual bool IsFocused(void) const {
-		return m_bFocused;
-	};
+	}
+	virtual bool isFocused(void) const {
+		return isFocused_;
+	}
 
 	// Set control ID info
-	virtual void SetType(_In_ int nTypeID) {
-		m_nTypeID = nTypeID;
-	};
-	virtual void SetTemplateID(_In_ unsigned nTemplateID) {
-		m_nTemplateID = nTemplateID;
-	};
-	virtual void SetTemplateStringID(_In_z_ const wchar_t* templateID) {
-		m_strTemplateID = templateID;
-	};
+	virtual void setType(_In_ int typeId) {
+		typeId_ = typeId;
+	}
+	virtual void setTemplateID(_In_ unsigned templateId) {
+		templateId_ = templateId;
+	}
+	virtual void setTemplateStringId(_In_z_ const wchar_t* templateID) {
+		templateStringId_ = templateID;
+	}
 
 	// Set attributes
-	virtual void UpdateAttributes(void);
-	virtual void SetCaption(_In_z_ const wchar_t* caption) {
-		m_strCaption = caption;
-	};
-	virtual void SetVisibleState(_In_ bool bVisible) {
-		m_bVisible = bVisible;
-	};
-	virtual void SetEnableState(_In_ bool isEnabled) {
+	virtual void updateAttributes(void);
+	virtual void setCaption(_In_z_ const wchar_t* caption) {
+		caption_ = caption;
+	}
+	virtual void setVisibleState(_In_ bool isVisible) {
+		isVisible_ = isVisible;
+	}
+	virtual void setEnableState(_In_ bool isEnabled) {
 		isEnabled_ = isEnabled;
-	};
-	virtual void SetFocusedState(_In_ bool bFocused) {
-		m_bFocused = bFocused;
-	};
+	}
+	virtual void setFocusedState(_In_ bool isFocused) {
+		isFocused_ = isFocused;
+	}
 
 	// Get boolean data values
-	virtual bool	 GetCheck(void) const;
+	virtual bool	 getCheck(void) const;
 
 	// Get integer data values
-	virtual LONG_PTR GetInteger(void) const;
-	virtual void	 GetInteger(_Out_ LONG_PTR& lValue) const;
-	virtual LONG_PTR GetReserveInteger(void) const;
-	virtual void	 GetReserveInteger(_Out_ LONG_PTR& lValue) const;
-	virtual void	 GetMinMaxInt(_Out_ LONG_PTR& lMin, _Out_ LONG_PTR& lMax) const;
+	virtual LONG_PTR getInteger(void) const;
+	virtual void	 getInteger(_Out_ LONG_PTR& value) const;
+	virtual LONG_PTR getReserveInteger(void) const;
+	virtual void	 getReserveInteger(_Out_ LONG_PTR& value) const;
+	virtual void	 getMinMaxInt(_Out_ LONG_PTR& minVal, _Out_ LONG_PTR& maxVal) const;
 
 	// Get float data values
-	virtual DOUBLE	 GetFloat(void) const;
-	virtual void	 GetFloat(_Out_ DOUBLE& dbValue) const;
-	virtual DOUBLE	 GetReserveFloat(void) const;
-	virtual void	 GetReserveFloat(_Out_ DOUBLE& dbValue) const;
-	virtual void	 GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) const;
+	virtual DOUBLE	 getFloat(void) const;
+	virtual void	 getFloat(_Out_ DOUBLE& valueDouble) const;
+	virtual DOUBLE	 getReserveFloat(void) const;
+	virtual void	 getReserveFloat(_Out_ DOUBLE& valueDouble) const;
+	virtual void	 getMinMaxFloat(_Out_ DOUBLE& minVal, _Out_ DOUBLE& maxVal) const;
 
 	// Get string data values
-	virtual const wchar_t* GetString(void) const;
-	virtual void	 GetString(_Out_ String& value) const;
-	virtual const wchar_t* GetReserveString(void) const;
-	virtual void	 GetReserveString(_Out_ String& value) const;
+	virtual const wchar_t* getString(void) const;
+	virtual void	 getString(_Out_ String& value) const;
+	virtual const wchar_t* getReserveString(void) const;
+	virtual void	 getReserveString(_Out_ String& value) const;
 
 	// Get array data values
-	virtual void	 GetIntArray(_Out_ ULongArray& aulValue) const;
-	virtual void	 GetReserveIntArray(_Out_ ULongArray& aulValue) const;
-	virtual void	 GetStringArray(_Out_ StringArray& astrValue) const;
-	virtual void	 GetReserveStringArray(_Out_ StringArray& astrValue) const;
+	virtual void	 getIntArray(_Out_ ULongArray& valueList) const;
+	virtual void	 getReserveIntArray(_Out_ ULongArray& valueList) const;
+	virtual void	 getStringArray(_Out_ StringArray& valueList) const;
+	virtual void	 getReserveStringArray(_Out_ StringArray& valueList) const;
 
 	// Get time data value
-	virtual SYSTEMTIME	GetTime(void) const;
-	virtual void		GetTime(_Out_ SYSTEMTIME& timeValue) const;
+	virtual SYSTEMTIME	getTime(void) const;
+	virtual void		getTime(_Out_ SYSTEMTIME& timeValue) const;
 
 	// Set boolean data values
-	virtual void	SetCheck(_In_ const bool& isChecked);
+	virtual void	setCheck(_In_ const bool& isChecked);
 
 	// Set integer data values
-	virtual void	SetInteger(_In_ const LONG_PTR& lValue);
-	virtual void	SetReserveInteger(_In_ const LONG_PTR& lValue);
-	virtual void	SetMinMaxInt(_In_ const LONG_PTR& lMin, _In_ const LONG_PTR& lMax);
+	virtual void	setInteger(_In_ const LONG_PTR& value);
+	virtual void	setReserveInteger(_In_ const LONG_PTR& value);
+	virtual void	setMinMaxInt(_In_ const LONG_PTR& minVal, _In_ const LONG_PTR& maxVal);
 
 	// Set float data values
-	virtual void	SetFloat(_In_ const DOUBLE& dbValue);
-	virtual void	SetReserveFloat(_In_ const DOUBLE& dbValue);
-	virtual void	SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& dbMax);
+	virtual void	setFloat(_In_ const DOUBLE& valueDouble);
+	virtual void	setReserveFloat(_In_ const DOUBLE& valueDouble);
+	virtual void	setMinMaxFloat(_In_ const DOUBLE& minVal, _In_ const DOUBLE& maxVal);
 
 	// Set string data values
-	virtual void	SetString(_In_ const wchar_t* value);
-	virtual void	SetReserveString(_In_ const wchar_t* value);
+	virtual void	setString(_In_ const wchar_t* value);
+	virtual void	setReserveString(_In_ const wchar_t* value);
 
 	// Set array data values
-	virtual void	SetIntArray(_In_ const ULongArray& auiValue);
-	virtual void	SetReserveIntArray(_In_ const ULongArray& auiValue);
-	virtual void	SetStringArray(_In_ const StringArray& astrValue);
-	virtual void	SetReserveStringArray(_In_ const StringArray& astrValue);
+	virtual void	setIntArray(_In_ const ULongArray& valueList);
+	virtual void	setReserveIntArray(_In_ const ULongArray& valueList);
+	virtual void	setStringArray(_In_ const StringArray& valueList);
+	virtual void	setReserveStringArray(_In_ const StringArray& valueList);
 
 	// Set time data values
-	virtual void	SetTime(_In_ const SYSTEMTIME& timeValue);
+	virtual void	setTime(_In_ const SYSTEMTIME& timeValue);
 
 public:
 	// Get/set custom data pointer
 	template<typename DATA_TYPE>
-	bool GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& dataSize) const;
+	bool getData(_Outptr_ DATA_TYPE* outputPtr, _Inout_opt_z_ SIZE_T& dataSize) const;
 	template<typename DATA_TYPE>
-	bool SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& dataSize);
+	bool setData(_In_ const DATA_TYPE* inputPtr, _In_ const SIZE_T& dataSize);
 
 	// Custom data size retrieving and validating
-	virtual bool	IsDataEmpty(void) const;
-	virtual SIZE_T	GetDataSize(void) const;
+	virtual bool	isDataEmpty(void) const;
+	virtual SIZE_T	getDataSize(void) const;
 };
 
 // Define new typename
@@ -324,7 +324,7 @@ public:
 
 protected:
 	// User menu layout
-	USERMENU* m_pMenuLayout;
+	USERMENU* menuLayoutPtr_;
 };
 
 
@@ -340,45 +340,45 @@ public:
 
 private:
 	// List of control info wrappers
-	SCtrlInfoList* m_pCtrlInfoArray;
+	SCtrlInfoList* controlInfoListPtr_;
 
 	// Parent window
-	CWnd* m_pParentWnd;
+	CWnd* parentWndPtr_;
 
 public:
 	// Initialization and cleanup
-	bool Initialize(void);
-	bool DeleteAll(void);
+	bool initialize(void);
+	bool deleteAll(void);
 
 	// Attributes
-	size_t GetCount(void) const {
-		if (m_pCtrlInfoArray == NULL) return 0;
-		return m_pCtrlInfoArray->size();
-	};
-	bool IsEmpty(void) const {
-		if (m_pCtrlInfoArray == NULL) return TRUE;
-		return m_pCtrlInfoArray->empty();
-	};
+	size_t getCount(void) const {
+		if (controlInfoListPtr_ == NULL) return 0;
+		return controlInfoListPtr_->size();
+	}
+	bool isEmpty(void) const {
+		if (controlInfoListPtr_ == NULL) return TRUE;
+		return controlInfoListPtr_->empty();
+	}
 
 	// Parent window functions
-	CWnd* GetParent(void) {
-		return m_pParentWnd;
-	};
-	void SetParent(CWnd* parentWnd) {
-		m_pParentWnd = parentWnd;
-	};
-	bool IsParentAvailable(void) const {
-		return ((m_pParentWnd != NULL) && (m_pParentWnd->GetSafeHwnd() != NULL));
-	};
+	CWnd* getParent(void) {
+		return parentWndPtr_;
+	}
+	void setParent(CWnd* parentWndPtr) {
+		parentWndPtr_ = parentWndPtr;
+	}
+	bool isParentAvailable(void) const {
+		return ((parentWndPtr_ != NULL) && (parentWndPtr_->GetSafeHwnd() != NULL));
+	}
 
 	// Add/remove control
-	long long AddControl(SCtrlInfoWrap* pControl);
-	long long AddControl(unsigned controlId, unsigned nTypeID);
-	long long RemoveControl(unsigned controlId);
+	long long addControl(SCtrlInfoWrap* pControl);
+	long long addControl(unsigned controlId, unsigned typeId);
+	long long removeControl(unsigned controlId);
 
 	// Accessing elements
-	SCtrlInfoWrap* GetControl(unsigned controlId);
-	bool SetBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID);
-	void UpdateData(unsigned controlId = NULL);
+	SCtrlInfoWrap* getControl(unsigned controlId);
+	bool setBuddy(unsigned nBaseCtrlID, unsigned buddyCtrlId);
+	void updateData(unsigned controlId = NULL);
 };
 

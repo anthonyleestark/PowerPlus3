@@ -179,7 +179,7 @@ SDialog::~SDialog()
 
 	// Clear dialog control manager
 	if (controlManagerPtr_ != NULL) {
-		controlManagerPtr_->DeleteAll();
+		controlManagerPtr_->deleteAll();
 		delete controlManagerPtr_;
 		controlManagerPtr_ = NULL;
 	}
@@ -626,7 +626,7 @@ int SDialog::registerDialogManagement(void)
 	}
 
 	if (controlManagerPtr_ != NULL) {
-		controlManagerPtr_->Initialize();
+		controlManagerPtr_->initialize();
 	}
 
 	return 0;
@@ -643,7 +643,7 @@ void SDialog::updateDialogManagement(void)
 	if (controlManagerPtr_ == NULL) return;
 
 	// Update control data
-	controlManagerPtr_->UpdateData(NULL);
+	controlManagerPtr_->updateData(NULL);
 }
 
 /**
@@ -658,7 +658,7 @@ bool SDialog::unregisterDialogManagement(void)
 		return false;
 
 	if (controlManagerPtr_ != NULL) {
-		if (!controlManagerPtr_->DeleteAll())
+		if (!controlManagerPtr_->deleteAll())
 			return false;
 
 		delete controlManagerPtr_;
@@ -1331,7 +1331,7 @@ void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
 		// Combo-box control info
 		SControlManager* pCtrlMan = getControlManager();
 		if (pCtrlMan != NULL) {
-			SCtrlInfoWrap* comboInfoWrapPtr = pCtrlMan->GetControl(comboId);
+			SCtrlInfoWrap* comboInfoWrapPtr = pCtrlMan->getControl(comboId);
 			if (comboInfoWrapPtr != NULL) {
 				// Combo-box caption
 				comboInfoWrapPtr->GetCaption(comboBoxCaption);
@@ -1376,7 +1376,7 @@ void SDialog::outputEditBoxLog(USHORT eventId, unsigned editId)
 		// Edit box control info
 		SControlManager* pCtrlMan = getControlManager();
 		if (pCtrlMan != NULL) {
-			SCtrlInfoWrap* pEditBoxWrap = pCtrlMan->GetControl(editId);
+			SCtrlInfoWrap* pEditBoxWrap = pCtrlMan->getControl(editId);
 			if (pEditBoxWrap != NULL) {
 				// Edit box caption
 				pEditBoxWrap->GetCaption(editBoxCaption);
@@ -1418,7 +1418,7 @@ void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
 		// List box control info
 		SControlManager* pCtrlMan = getControlManager();
 		if (pCtrlMan != NULL) {
-			SCtrlInfoWrap* listBoxInfoWrapPtr = pCtrlMan->GetControl(listBoxId);
+			SCtrlInfoWrap* listBoxInfoWrapPtr = pCtrlMan->getControl(listBoxId);
 			if (listBoxInfoWrapPtr != NULL) {
 				// List box caption
 				listBoxInfoWrapPtr->GetCaption(listBoxCaption);
