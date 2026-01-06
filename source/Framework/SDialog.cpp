@@ -264,19 +264,19 @@ BOOL SDialog::OnInitDialog()
 
 		// Set top-most active window as its parent
 		if (CWnd* pActiveWnd = CWnd::GetActiveWindow()) {
-			this->setParent(pActiveWnd);
+			setParent(pActiveWnd);
 		}
 		else {
 			// There is currently no active window
 			// Set desktop window as its parent instead
-			this->setParent(CWnd::GetDesktopWindow());
+			setParent(CWnd::GetDesktopWindow());
 		}
 	}
 
 	// Create and initialize tooltip control
 	if (getToolTipCtrl() == NULL) {
-		this->tooltipCtrlPtr_ = new CToolTipCtrl();
-		this->tooltipCtrlPtr_->Create(this);
+		tooltipCtrlPtr_ = new CToolTipCtrl();
+		tooltipCtrlPtr_->Create(this);
 	}
 
 	// Activate tooltip control
@@ -288,20 +288,20 @@ BOOL SDialog::OnInitDialog()
 	if (!caption_.isEmpty()) {
 
 		// Update dialog caption
-		this->SetWindowText(caption_);
+		SetWindowText(caption_);
 	}
 	else {
 		// Use defined caption in resource
-		const int captionLength = this->GetWindowTextLength();
+		const int captionLength = GetWindowTextLength();
 		std::vector<wchar_t> tempBuff(captionLength + 1);
-		this->GetWindowText(tempBuff.data(), captionLength + 1);
+		GetWindowText(tempBuff.data(), captionLength + 1);
 		String resourceCaption = tempBuff.data();
-		this->setCaption(resourceCaption);
+		setCaption(resourceCaption);
 	}
 
 	// Get dialog rectangle
 	RECT dialogRect;
-	this->GetWindowRect(&dialogRect);
+	GetWindowRect(&dialogRect);
 
 	// Backup default size
 	defaultSize_._width = (dialogRect.right - dialogRect.left);
@@ -325,11 +325,11 @@ BOOL SDialog::OnInitDialog()
 	}
 	
 	// Center dialog
-	this->MoveWindow(&dialogRect);
-	this->CenterWindow(getParent());
+	MoveWindow(&dialogRect);
+	CenterWindow(getParent());
 
 	// Background color
-	this->createBrush();
+	createBrush();
 
 	// If dialog is set as top-most 
 	if (getFlagValue(AppFlagID::dialogSetTopMost) == true) {
@@ -349,7 +349,7 @@ BOOL SDialog::OnInitDialog()
 	WPARAM wParam = static_cast<WPARAM>(getDialogId());
 
 	// Notify parent window about dialog initialization
-	this->notifyParent(SCM_NOTIFY_DIALOG_INIT, wParam, NULL);
+	notifyParent(SCM_NOTIFY_DIALOG_INIT, wParam, NULL);
 
 	return true;
 }
@@ -365,7 +365,7 @@ void SDialog::OnClose()
 	WPARAM wParam = static_cast<WPARAM>(getDialogId());
 
 	// Notify parent window about dialog closing
-	this->notifyParent(SCM_NOTIFY_DIALOG_CLOSE, wParam, NULL);
+	notifyParent(SCM_NOTIFY_DIALOG_CLOSE, wParam, NULL);
 
 	// Close dialog
 	CDialogEx::OnClose();
@@ -385,7 +385,7 @@ void SDialog::OnDestroy()
 	WPARAM wParam = static_cast<WPARAM>(getDialogId());
 
 	// Notify parent window about dialog destroying
-	this->notifyParent(SCM_NOTIFY_DIALOG_DESTROY, wParam, NULL);
+	notifyParent(SCM_NOTIFY_DIALOG_DESTROY, wParam, NULL);
 
 	// Destroy dialog
 	CDialogEx::OnDestroy();
@@ -406,10 +406,10 @@ void SDialog::OnActivate(UINT state, CWnd* otherWndPtr, BOOL isMinimized)
 
 	// Notify parent window about dialog active/inactive state
 	if (state == WA_ACTIVE) {
-		this->notifyParent(SCM_NOTIFY_DIALOG_ACTIVE, wParam, NULL);
+		notifyParent(SCM_NOTIFY_DIALOG_ACTIVE, wParam, NULL);
 	}
 	else if (state == WA_INACTIVE) {
-		this->notifyParent(SCM_NOTIFY_DIALOG_INACTIVE, wParam, NULL);
+		notifyParent(SCM_NOTIFY_DIALOG_INACTIVE, wParam, NULL);
 	}
 }
 
@@ -507,7 +507,7 @@ BOOL SDialog::PreTranslateMessage(MSG* messagePtr)
 
 	// Allow the tooltip to receive mouse messages
 	if (isTooltipAvailable()) {
-		this->tooltipCtrlPtr_->RelayEvent(messagePtr);
+		tooltipCtrlPtr_->RelayEvent(messagePtr);
 	}
 
 	// Default
@@ -675,9 +675,9 @@ bool SDialog::unregisterDialogManagement(void)
  */
 bool SDialog::addStyle(DWORD style)
 {
-	DWORD currentStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
+	DWORD currentStyle = GetWindowLong(GetSafeHwnd(), GWL_STYLE);
 	currentStyle |= style;
-	LONG result = SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, currentStyle);
+	LONG result = SetWindowLong(GetSafeHwnd(), GWL_STYLE, currentStyle);
 	return (result != 0);
 }
 
@@ -688,9 +688,9 @@ bool SDialog::addStyle(DWORD style)
  */
 bool SDialog::removeStyle(DWORD style)
 {
-	DWORD currentStyle = GetWindowLong(this->GetSafeHwnd(), GWL_STYLE);
+	DWORD currentStyle = GetWindowLong(GetSafeHwnd(), GWL_STYLE);
 	currentStyle &= ~style;
-	LONG result = SetWindowLong(this->GetSafeHwnd(), GWL_STYLE, currentStyle);
+	LONG result = SetWindowLong(GetSafeHwnd(), GWL_STYLE, currentStyle);
 	return (result != 0);
 }
 
@@ -762,7 +762,7 @@ void SDialog::move(const Point& position, Rect* newRect /* = nullptr */)
 {
 	// Get current dialog rectangle
 	RECT currentPositionRect;
-	this->GetWindowRect(&currentPositionRect);
+	GetWindowRect(&currentPositionRect);
 
 	// Get dialog alignment
 	unsigned alignment = getAlignment();
@@ -815,7 +815,7 @@ void SDialog::move(long dx, long dy, Rect* newRect /* = nullptr */)
 {
 	// Get current dialog rectangle
 	RECT dialogRect;
-	this->GetWindowRect(&dialogRect);
+	GetWindowRect(&dialogRect);
 
 	// Shift rectangle
 	if (dx != 0) {
@@ -835,7 +835,7 @@ void SDialog::move(long dx, long dy, Rect* newRect /* = nullptr */)
 		LONG x = dialogRect.left;
 		LONG y = dialogRect.top;
 		// Set dialog position
-		bool returnFlag = this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		bool returnFlag = SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		// If moving successfully, update new rectangle 
 		if ((returnFlag == true) && (newRect != nullptr)) {
 			newRect->_left = dialogRect.left;
@@ -855,7 +855,7 @@ void SDialog::resize(bool isCentered)
 {
 	// Get current dialog rectangle
 	RECT dialogRect;
-	this->GetWindowRect(&dialogRect);
+	GetWindowRect(&dialogRect);
 
 	// Set new rectangle
 	if (!registeredSize_.isEmpty()) {
@@ -871,7 +871,7 @@ void SDialog::resize(bool isCentered)
 
 	// Center dialog
 	if (isCentered == true) {
-		this->CenterWindow(getParent());
+		CenterWindow(getParent());
 	}
 }
 
@@ -888,7 +888,7 @@ void SDialog::resetSize(void)
 
 	// Get current size
 	RECT currentRect;
-	this->GetWindowRect(&currentRect);
+	GetWindowRect(&currentRect);
 
 	// If current size is default size, do nothing
 	LONG currentWidth = (currentRect.right - currentRect.left);
@@ -914,7 +914,7 @@ void SDialog::setDisplayArea(const Rect& newDispArea, bool isResized, bool isCen
 {
 	// Get current margin
 	Rect currentMargin;
-	this->getMargin(currentMargin);
+	getMargin(currentMargin);
 
 	// Is center margin???
 	bool isHorizontalCenter = (currentMargin.left() == currentMargin.right());
@@ -925,13 +925,13 @@ void SDialog::setDisplayArea(const Rect& newDispArea, bool isResized, bool isCen
 
 	// Get current client and dialog rectangle
 	RECT currentClientRect, currentDialogRect;
-	this->GetClientRect(&currentClientRect);
-	this->ClientToScreen(&currentClientRect);
-	this->GetWindowRect(&currentDialogRect);
+	GetClientRect(&currentClientRect);
+	ClientToScreen(&currentClientRect);
+	GetWindowRect(&currentDialogRect);
 
 	// Get dialog size
 	Size dialogSize;
-	this->getSize(dialogSize);
+	getSize(dialogSize);
 
 	// Dialog and client rectangle offset
 	Rect dialogClientOffset;
@@ -942,7 +942,7 @@ void SDialog::setDisplayArea(const Rect& newDispArea, bool isResized, bool isCen
 
 	// Get current display area
 	Rect currentDispArea;
-	this->getDisplayArea(currentDispArea);
+	getDisplayArea(currentDispArea);
 
 	// Calculate display area size
 	Size curDispAreaSize = currentDispArea.getSize();
@@ -977,8 +977,8 @@ void SDialog::setDisplayArea(const Rect& newDispArea, bool isResized, bool isCen
 		newDialogRect._bottom = (newDispArea.bottom() + newMargin.bottom()) + dialogClientOffset.bottom();
 
 		// Resize dialog
-		this->setSize(newDialogRect.width(), newDialogRect.height());
-		this->resize(isCentered);
+		setSize(newDialogRect.width(), newDialogRect.height());
+		resize(isCentered);
 	}
 	else {
 		// Reposition following new margin offset
@@ -993,12 +993,12 @@ void SDialog::setDisplayArea(const Rect& newDispArea, bool isResized, bool isCen
 
 		// Center dialog
 		if (isCentered == true) {
-			this->CenterWindow(getParent());
+			CenterWindow(getParent());
 		}
 
 		// Get new rect after repositioning
 		RECT newRect;
-		this->GetWindowRect(&newRect);
+		GetWindowRect(&newRect);
 
 		// Recalculate bottom-right margin
 		newMargin._right = (newRect.right - dialogClientOffset.right()) - newDispArea.right();
@@ -1006,10 +1006,10 @@ void SDialog::setDisplayArea(const Rect& newDispArea, bool isResized, bool isCen
 	}
 
 	// Save margin update
-	this->setLeftMargin(newMargin.left());
-	this->setTopMargin(newMargin.top());
-	this->setRightMargin(newMargin.right());
-	this->setBottomMargin(newMargin.bottom());
+	setLeftMargin(newMargin.left());
+	setTopMargin(newMargin.top());
+	setRightMargin(newMargin.right());
+	setBottomMargin(newMargin.bottom());
 }
 
 /**
@@ -1022,7 +1022,7 @@ void SDialog::setCaptionFromResource(unsigned resourceStringId)
 	String captionString = StringUtils::loadResourceString(resourceStringId);
 	ASSERT(!captionString.isEmpty());
 	if (!captionString.isEmpty()) {
-		this->setCaption(captionString);
+		setCaption(captionString);
 	}
 }
 
@@ -1037,7 +1037,7 @@ void SDialog::setCaptionFromLanguage(unsigned langStringId)
 	LANGTABLE_PTR languageTablePtr = ((SWinApp*)AfxGetApp())->getAppLanguage();
 
 	String captionString = getLanguageString(languageTablePtr, langStringId);
-	this->setCaption(captionString);
+	setCaption(captionString);
 }
 
 /**
@@ -1584,7 +1584,7 @@ void SDialog::setButtonIcon(unsigned buttonId, unsigned iconId, bool reupdateTit
 void SDialog::updateItemText(unsigned controlId, const wchar_t* newCaption)
 {
 	// Get item by ID
-	CWnd* controlPtr = this->GetDlgItem(controlId);
+	CWnd* controlPtr = GetDlgItem(controlId);
 	if (controlPtr == NULL)
 		return;
 
@@ -1634,7 +1634,7 @@ void SDialog::setControlText(CWnd* controlPtr, unsigned controlId, LANGTABLE_PTR
 {
 	// Check control pointer validity
 	if (controlPtr == NULL) {
-		controlPtr = this->GetDlgItem(controlId);
+		controlPtr = GetDlgItem(controlId);
 		if (controlPtr == NULL) 
 			return;
 	}
@@ -1953,7 +1953,7 @@ LRESULT SDialog::requestCloseDialog(void)
 	setFlagValue(AppFlagID::dialogForceClosing, true);
 
 	// Default: Close the dialog
-	this->PostMessage(WM_CLOSE);
+	PostMessage(WM_CLOSE);
 
 	// Request accepted
 	return LRESULT(Result::Success);	// ERROR_SUCCESS

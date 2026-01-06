@@ -23,27 +23,27 @@
 ConfigData::ConfigData()
 {
 	// Main settings
-	this->leftMouseAction = APP_ACTION_DISPLAYOFF;						// left mouse button action
-	this->middleMouseAction = APP_ACTION_SLEEP;							// Middle mouse button action
-	this->rightMouseAction = APP_ACTION_SHOWMENU;						// Right mouse button action
-	this->rightMouseShowMenu = true;									// Right mouse button: Only show menu
+	leftMouseAction = APP_ACTION_DISPLAYOFF;					// left mouse button action
+	middleMouseAction = APP_ACTION_SLEEP;						// Middle mouse button action
+	rightMouseAction = APP_ACTION_SHOWMENU;						// Right mouse button action
+	rightMouseShowMenu = true;									// Right mouse button: Only show menu
 
 	// Display setting
-	this->languageID = APP_LANGUAGE_ENGLISH;							// Language setting
+	languageID = APP_LANGUAGE_ENGLISH;							// Language setting
 
 	// System settings
-	this->showDialogAtStartup = true;									// Show dialog at startup
-	this->enableAutoStart = true;										// Startup with Windows
-	this->actionConfirmation = true;									// Show confirm message before doing action
-	this->saveActionHistory = false;									// Save app history log
-	this->saveAppEventLog = true;										// Save app event log
-	this->runAsAdmin = false;											// Run with admin privileges
-	this->showErrorMessage = true;										// Show action error message
-	this->scheduleNotification = true;									// Show notify tip for schedule action
-	this->allowScheduleCancellation = false;							// Allow canceling schedule when notify
-	this->enableBackgroundHotkey = false;								// Enable background action hotkeys
-	this->allowLockscreenHotkey = true;									// Allow background hotkeys on lockscreen
-	this->enablePowerReminder = true;									// Enable Power Peminder feature
+	showDialogAtStartup = true;									// Show dialog at startup
+	enableAutoStart = true;										// Startup with Windows
+	actionConfirmation = true;									// Show confirm message before doing action
+	saveActionHistory = false;									// Save app history log
+	saveAppEventLog = true;										// Save app event log
+	runAsAdmin = false;											// Run with admin privileges
+	showErrorMessage = true;									// Show action error message
+	scheduleNotification = true;								// Show notify tip for schedule action
+	allowScheduleCancellation = false;							// Allow canceling schedule when notify
+	enableBackgroundHotkey = false;								// Enable background action hotkeys
+	allowLockscreenHotkey = true;								// Allow background hotkeys on lockscreen
+	enablePowerReminder = true;									// Enable Power Peminder feature
 }
 
 
@@ -58,27 +58,27 @@ void ConfigData::copy(const ConfigData& other) noexcept
 	if (this == &other) return;
 
 	// Main settings
-	this->leftMouseAction = other.leftMouseAction;							// left mouse button action
-	this->middleMouseAction = other.middleMouseAction;						// Middle mouse button action
-	this->rightMouseAction = other.rightMouseAction;						// Right mouse button action
-	this->rightMouseShowMenu = other.rightMouseShowMenu;					// Right mouse button: Only show menu
+	leftMouseAction = other.leftMouseAction;						// left mouse button action
+	middleMouseAction = other.middleMouseAction;					// Middle mouse button action
+	rightMouseAction = other.rightMouseAction;						// Right mouse button action
+	rightMouseShowMenu = other.rightMouseShowMenu;					// Right mouse button: Only show menu
 
 	// Display setting
-	this->languageID = other.languageID;									// Language setting
+	languageID = other.languageID;									// Language setting
 
 	// System advanced settings
-	this->showDialogAtStartup = other.showDialogAtStartup;					// Show dialog at startup
-	this->enableAutoStart = other.enableAutoStart;							// Startup with Windows
-	this->actionConfirmation = other.actionConfirmation;					// Show confirm message before doing action
-	this->saveActionHistory = other.saveActionHistory;						// Save app history log
-	this->saveAppEventLog = other.saveAppEventLog;							// Save app event log
-	this->runAsAdmin = other.runAsAdmin;									// Run with admin privileges
-	this->showErrorMessage = other.showErrorMessage;						// Show action error message
-	this->scheduleNotification = other.scheduleNotification;				// Show notify tip for schedule action
-	this->allowScheduleCancellation = other.allowScheduleCancellation;		// Allow canceling schedule when notify
-	this->enableBackgroundHotkey = other.enableBackgroundHotkey;			// Enable background action hotkeys
-	this->allowLockscreenHotkey = other.allowLockscreenHotkey;				// Allow background hotkeys on lockscreen
-	this->enablePowerReminder = other.enablePowerReminder;					// Enable Power Peminder feature
+	showDialogAtStartup = other.showDialogAtStartup;				// Show dialog at startup
+	enableAutoStart = other.enableAutoStart;						// Startup with Windows
+	actionConfirmation = other.actionConfirmation;					// Show confirm message before doing action
+	saveActionHistory = other.saveActionHistory;					// Save app history log
+	saveAppEventLog = other.saveAppEventLog;						// Save app event log
+	runAsAdmin = other.runAsAdmin;									// Run with admin privileges
+	showErrorMessage = other.showErrorMessage;						// Show action error message
+	scheduleNotification = other.scheduleNotification;				// Show notify tip for schedule action
+	allowScheduleCancellation = other.allowScheduleCancellation;	// Allow canceling schedule when notify
+	enableBackgroundHotkey = other.enableBackgroundHotkey;			// Enable background action hotkeys
+	allowLockscreenHotkey = other.allowLockscreenHotkey;			// Allow background hotkeys on lockscreen
+	enablePowerReminder = other.enablePowerReminder;				// Enable Power Peminder feature
 }
 
 
@@ -92,27 +92,27 @@ constexpr bool ConfigData::compare(const ConfigData& other) const noexcept
 	bool ret = true;
 
 	// Compare Main settings
-	ret &= (this->leftMouseAction == other.leftMouseAction);						// left mouse button action
-	ret &= (this->middleMouseAction == other.middleMouseAction);					// Middle mouse button action
-	ret &= (this->rightMouseAction == other.rightMouseAction);						// Right mouse button action
-	ret &= (this->rightMouseShowMenu == other.rightMouseShowMenu);					// Right mouse button: Only show menu
+	ret &= (leftMouseAction == other.leftMouseAction);						// left mouse button action
+	ret &= (middleMouseAction == other.middleMouseAction);					// Middle mouse button action
+	ret &= (rightMouseAction == other.rightMouseAction);					// Right mouse button action
+	ret &= (rightMouseShowMenu == other.rightMouseShowMenu);				// Right mouse button: Only show menu
 
 	// Compare Display setting
-	ret &= (this->languageID == other.languageID);									// Language setting
+	ret &= (languageID == other.languageID);								// Language setting
 
 	// Compare System advanced settings
-	ret &= (this->showDialogAtStartup == other.showDialogAtStartup);				// Show dialog at startup
-	ret &= (this->enableAutoStart == other.enableAutoStart);						// Startup with Windows
-	ret &= (this->actionConfirmation == other.actionConfirmation);					// Show confirm message before doing action
-	ret &= (this->saveActionHistory == other.saveActionHistory);					// Save app history log
-	ret &= (this->saveAppEventLog == other.saveAppEventLog);						// Save app event log
-	ret &= (this->runAsAdmin == other.runAsAdmin);									// Run with admin privileges
-	ret &= (this->showErrorMessage == other.showErrorMessage);						// Show action error message
-	ret &= (this->scheduleNotification == other.scheduleNotification);				// Show notify tip for schedule action
-	ret &= (this->allowScheduleCancellation == other.allowScheduleCancellation);	// Allow canceling schedule when notify
-	ret &= (this->enableBackgroundHotkey == other.enableBackgroundHotkey);			// Enable background action hotkeys
-	ret &= (this->allowLockscreenHotkey == other.allowLockscreenHotkey);			// Allow background hotkeys on lockscreen
-	ret &= (this->enablePowerReminder == other.enablePowerReminder);				// Enable Power Peminder feature
+	ret &= (showDialogAtStartup == other.showDialogAtStartup);				// Show dialog at startup
+	ret &= (enableAutoStart == other.enableAutoStart);						// Startup with Windows
+	ret &= (actionConfirmation == other.actionConfirmation);				// Show confirm message before doing action
+	ret &= (saveActionHistory == other.saveActionHistory);					// Save app history log
+	ret &= (saveAppEventLog == other.saveAppEventLog);						// Save app event log
+	ret &= (runAsAdmin == other.runAsAdmin);								// Run with admin privileges
+	ret &= (showErrorMessage == other.showErrorMessage);					// Show action error message
+	ret &= (scheduleNotification == other.scheduleNotification);			// Show notify tip for schedule action
+	ret &= (allowScheduleCancellation == other.allowScheduleCancellation);	// Allow canceling schedule when notify
+	ret &= (enableBackgroundHotkey == other.enableBackgroundHotkey);		// Enable background action hotkeys
+	ret &= (allowLockscreenHotkey == other.allowLockscreenHotkey);			// Allow background hotkeys on lockscreen
+	ret &= (enablePowerReminder == other.enablePowerReminder);				// Enable Power Peminder feature
 
 	return ret;
 }
@@ -126,27 +126,27 @@ constexpr bool ConfigData::compare(const ConfigData& other) const noexcept
  void ConfigData::getData(CONFIGDATAINFO& data) const noexcept
 {
 	// Main settings
-	data.leftMouseAction = this->leftMouseAction;								// left mouse button action
-	data.middleMouseAction = this->middleMouseAction;							// Middle mouse button action
-	data.rightMouseAction = this->rightMouseAction;								// Right mouse button action
-	data.rightMouseShowMenu = this->rightMouseShowMenu;							// Right mouse button: Only show menu
+	data.leftMouseAction = leftMouseAction;								// left mouse button action
+	data.middleMouseAction = middleMouseAction;							// Middle mouse button action
+	data.rightMouseAction = rightMouseAction;							// Right mouse button action
+	data.rightMouseShowMenu = rightMouseShowMenu;						// Right mouse button: Only show menu
 
 	// Display setting
-	data.languageID = this->languageID;											// Language setting
+	data.languageID = languageID;										// Language setting
 
 	// System advanced settings
-	data.showDialogAtStartup = this->showDialogAtStartup;						// Show dialog at startup
-	data.enableAutoStart = this->enableAutoStart;								// Startup with Windows
-	data.actionConfirmation = this->actionConfirmation;							// Show confirm message before doing action
-	data.saveActionHistory = this->saveActionHistory;							// Save app history log
-	data.saveAppEventLog = this->saveAppEventLog;								// Save app event log
-	data.runAsAdmin = this->runAsAdmin;											// Run with admin privileges
-	data.showErrorMessage = this->showErrorMessage;								// Show action error message
-	data.scheduleNotification = this->scheduleNotification;						// Show notify tip for schedule action
-	data.allowScheduleCancellation = this->allowScheduleCancellation;			// Allow canceling schedule when notify
-	data.enableBackgroundHotkey = this->enableBackgroundHotkey;					// Enable background action hotkeys
-	data.allowLockscreenHotkey = this->allowLockscreenHotkey;					// Allow background hotkeys on lockscreen
-	data.enablePowerReminder = this->enablePowerReminder;						// Enable Power Peminder feature
+	data.showDialogAtStartup = showDialogAtStartup;						// Show dialog at startup
+	data.enableAutoStart = enableAutoStart;								// Startup with Windows
+	data.actionConfirmation = actionConfirmation;						// Show confirm message before doing action
+	data.saveActionHistory = saveActionHistory;							// Save app history log
+	data.saveAppEventLog = saveAppEventLog;								// Save app event log
+	data.runAsAdmin = runAsAdmin;										// Run with admin privileges
+	data.showErrorMessage = showErrorMessage;							// Show action error message
+	data.scheduleNotification = scheduleNotification;					// Show notify tip for schedule action
+	data.allowScheduleCancellation = allowScheduleCancellation;			// Allow canceling schedule when notify
+	data.enableBackgroundHotkey = enableBackgroundHotkey;				// Enable background action hotkeys
+	data.allowLockscreenHotkey = allowLockscreenHotkey;					// Allow background hotkeys on lockscreen
+	data.enablePowerReminder = enablePowerReminder;						// Enable Power Peminder feature
 }
 
 
@@ -165,55 +165,55 @@ constexpr bool ConfigData::compare(const ConfigData& other) const noexcept
 		result = INT_INVALID;
 		break;
 	case AppOptionID::leftMouseAction:
-		result = this->leftMouseAction;
+		result = leftMouseAction;
 		break;
 	case AppOptionID::middleMouseAction:
-		result = this->middleMouseAction;
+		result = middleMouseAction;
 		break;
 	case AppOptionID::rightMouseAction:
-		result = this->rightMouseAction;
+		result = rightMouseAction;
 		break;
 	case AppOptionID::rightMouseShowMenu:
-		result = this->rightMouseShowMenu;
+		result = rightMouseShowMenu;
 		break;
 	case AppOptionID::languageID:
-		result = this->languageID;
+		result = languageID;
 		break;
 	case AppOptionID::showDialogAtStartup:
-		result = this->showDialogAtStartup;
+		result = showDialogAtStartup;
 		break;
 	case AppOptionID::enableAutoStart:
-		result = this->enableAutoStart;
+		result = enableAutoStart;
 		break;
 	case AppOptionID::actionConfirmation:
-		result = this->actionConfirmation;
+		result = actionConfirmation;
 		break;
 	case AppOptionID::saveAppEventLog:
-		result = this->saveAppEventLog;
+		result = saveAppEventLog;
 		break;
 	case AppOptionID::saveActionHistory:
-		result = this->saveActionHistory;
+		result = saveActionHistory;
 		break;
 	case AppOptionID::runAsAdmin:
-		result = this->runAsAdmin;
+		result = runAsAdmin;
 		break;
 	case AppOptionID::showErrorMessage:
-		result = this->showErrorMessage;
+		result = showErrorMessage;
 		break;
 	case AppOptionID::scheduleNotification:
-		result = this->scheduleNotification;
+		result = scheduleNotification;
 		break;
 	case AppOptionID::allowScheduleCancellation:
-		result = this->allowScheduleCancellation;
+		result = allowScheduleCancellation;
 		break;
 	case AppOptionID::enableBackgroundHotkey:
-		result = this->enableBackgroundHotkey;
+		result = enableBackgroundHotkey;
 		break;
 	case AppOptionID::allowLockscreenHotkey:
-		result = this->allowLockscreenHotkey;
+		result = allowLockscreenHotkey;
 		break;
 	case AppOptionID::enablePowerReminder:
-		result = this->enablePowerReminder;
+		result = enablePowerReminder;
 		break;
 	}
 
@@ -262,10 +262,10 @@ constexpr bool PwrRepeatSet::compare(const PwrRepeatSet& other) const noexcept
 	bool retCompare = true;
 
 	// Compare data
-	retCompare &= (this->isRepeated_ == other.isRepeated_);						// Repeat daily
-	retCompare &= (this->isSnoozingAllowed_ == other.isSnoozingAllowed_);		// Allow snoozing mode
-	retCompare &= (this->snoozeInterval_ == other.snoozeInterval_);				// Snooze interval
-	retCompare &= (this->repeatDays_ == other.repeatDays_);						// Days of week (for repeating)
+	retCompare &= (isRepeated_ == other.isRepeated_);					// Repeat daily
+	retCompare &= (isSnoozingAllowed_ == other.isSnoozingAllowed_);		// Allow snoozing mode
+	retCompare &= (snoozeInterval_ == other.snoozeInterval_);			// Snooze interval
+	retCompare &= (repeatDays_ == other.repeatDays_);					// Days of week (for repeating)
 
 	return retCompare;
 }
@@ -324,11 +324,11 @@ constexpr bool ScheduleItem::compare(const ScheduleItem& other) const noexcept
 	bool ret = true;
 
 	// Compare item (do not compare item ID)
-	ret &= (this->isEnabled_ == other.isEnabled_);
-	ret &= (this->actionId_ == other.actionId_);
-	ret &= (this->timeValue_.hour() == other.timeValue_.hour());
-	ret &= (this->timeValue_.minute() == other.timeValue_.minute());
-	ret &= (this->repeatSetInfo_.compare(other.repeatSetInfo_));
+	ret &= (isEnabled_ == other.isEnabled_);
+	ret &= (actionId_ == other.actionId_);
+	ret &= (timeValue_.hour() == other.timeValue_.hour());
+	ret &= (timeValue_.minute() == other.timeValue_.minute());
+	ret &= (repeatSetInfo_.compare(other.repeatSetInfo_));
 
 	return ret;
 }
@@ -352,8 +352,8 @@ void ScheduleItem::print(String& outputString) const
 	// Format schedule data
 	const wchar_t* enableState = (isEnabled_ == true) ? Constant::Value::True : Constant::Value::False;							// Enable/disable state
 	unsigned actionStringID = getPairedID(IDTable::ActionName, actionId_);
-	const wchar_t* actionName = getLanguageString(languageTablePtr, actionStringID);													// Schedule action
-	const wchar_t* timeFormat = ClockTimeUtils::format(languageTablePtr, IDS_FORMAT_SHORTTIME, timeValue_).getString();				// Schedule time
+	const wchar_t* actionName = getLanguageString(languageTablePtr, actionStringID);											// Schedule action
+	const wchar_t* timeFormat = ClockTimeUtils::format(languageTablePtr, IDS_FORMAT_SHORTTIME, timeValue_).getString();			// Schedule time
 	const wchar_t* repeatState = (repeatSetInfo_.isRepeatEnabled() == true) ? Constant::Value::True : Constant::Value::False;	// Repeat daily
 
 	// Print item
@@ -384,15 +384,15 @@ void ScheduleData::copy(const ScheduleData& other)
 	if (this == &other) return;
 
 	// Remove existing data
-	this->deleteAll();
+	deleteAll();
 
 	// Copy default item
-	this->defaultItem_.copy(other.defaultItem_);
+	defaultItem_.copy(other.defaultItem_);
 
 	// Copy extra data
 	for (int index = 0; index < other.getExtraItemNum(); index++) {
 		ScheduleItem item = other.extraItemList_.at(index);
-		this->extraItemList_.push_back(item);
+		extraItemList_.push_back(item);
 	}
 }
 
@@ -447,15 +447,15 @@ DWORD ScheduleData::add(const ScheduleItem& item)
 	newData->extraItemList_.clear();
 
 	// Copy old data to new one
-	newData->defaultItem_.copy(this->defaultItem_);
-	for (int index = 0; index < this->getExtraItemNum(); index++) {
-		ScheduleItem scheduleItem = this->getItemAt(index);
+	newData->defaultItem_.copy(defaultItem_);
+	for (int index = 0; index < getExtraItemNum(); index++) {
+		ScheduleItem scheduleItem = getItemAt(index);
 		newData->extraItemList_.push_back(scheduleItem);
 	}
 
 	// Add new item and copy back to old data
 	newData->extraItemList_.push_back(item);
-	this->copy(*newData);
+	copy(*newData);
 
 	// Delete data
 	newData->deleteAll();
@@ -625,14 +625,14 @@ void ScheduleData::deleteItem(int atIndex)
 	newData->extraItemList_.clear();
 
 	// Copy old data to new one (except the AtIndex item)
-	newData->defaultItem_.copy(this->defaultItem_);
-	for (int index = 0; index < this->getExtraItemNum(); index++) {
+	newData->defaultItem_.copy(defaultItem_);
+	for (int index = 0; index < getExtraItemNum(); index++) {
 		if (index == atIndex) continue;
-		newData->extraItemList_.push_back(this->extraItemList_.at(index));
+		newData->extraItemList_.push_back(extraItemList_.at(index));
 	}
 
 	// Copy back to old data
-	this->copy(*newData);
+	copy(*newData);
 
 	// Delete temporary data
 	newData->deleteAll();
@@ -659,7 +659,7 @@ HotkeySetItem::HotkeySetItem(unsigned hotkeyActionId)
 {
 	// Initialize
 	isEnabled_ = false;							// Hotkey enabled/disabled
-	hotkeyActionId_ = hotkeyActionId;				// Hotkey action ID
+	hotkeyActionId_ = hotkeyActionId;			// Hotkey action ID
 	modifiers_ = 0;								// Modifier keys
 	virtualKey_ = 0;							// Virtual key code
 }
@@ -744,12 +744,12 @@ void HotkeySetData::copy(const HotkeySetData& other) noexcept
 	if (this == &other) return;
 
 	// Remove existing data
-	this->deleteAll();
+	deleteAll();
 
 	// Copy data
 	for (int index = 0; index < other.getItemNum(); index++) {
 		const Item& item = other.hotkeySetList_.at(index);
-		this->hotkeySetList_.push_back(item);
+		hotkeySetList_.push_back(item);
 	}
 }
 
@@ -762,7 +762,7 @@ void HotkeySetData::copy(const HotkeySetData& other) noexcept
 void HotkeySetData::setDefaultData(void)
 {
 	// Re-initialize data
-	this->init();
+	init();
 
 	// Create default data
 	hotkeySetList_.reserve(6);
@@ -801,14 +801,14 @@ void HotkeySetData::add(const Item& item)
 	newData->hotkeySetList_.clear();
 	
 	// Copy old data to new one
-	for (int index = 0; index < this->getItemNum(); index++) {
-		const Item& hotkeyItem = this->getItemAt(index);
+	for (int index = 0; index < getItemNum(); index++) {
+		const Item& hotkeyItem = getItemAt(index);
 		newData->hotkeySetList_.push_back(hotkeyItem);
 	}
 
 	// Add new item and copy back to old data
 	newData->hotkeySetList_.push_back(item);
-	this->copy(*newData);
+	copy(*newData);
 	
 	// Delete temporary data
 	newData->deleteAll();
@@ -956,13 +956,13 @@ void HotkeySetData::deleteItem(int atIndex)
 	newData->hotkeySetList_.clear();
 
 	// Copy old data to new one (except the AtIndex item)
-	for (int index = 0; index < this->getItemNum(); index++) {
+	for (int index = 0; index < getItemNum(); index++) {
 		if (index == atIndex) continue;
-		newData->hotkeySetList_.push_back(this->getItemAt(index));
+		newData->hotkeySetList_.push_back(getItemAt(index));
 	}
 
 	// Copy back to old data
-	this->copy(*newData);
+	copy(*newData);
 
 	// Delete temporary data
 	newData->deleteAll();
@@ -983,8 +983,8 @@ void HotkeySetData::printKeyStrokes(unsigned hotkeyId, String& outputString) con
 {
 	// Search for hotkey ID and get keystrokes string
 	String keyStrokesStr = Constant::String::Empty;
-	for (int index = 0; index < this->getItemNum(); index++) {
-		Item item = this->getItemAt(index);
+	for (int index = 0; index < getItemNum(); index++) {
+		Item item = getItemAt(index);
 		if (item.getActionId() == hotkeyId) {
 			item.printKeyStrokes(keyStrokesStr);
 			break;
@@ -1007,7 +1007,7 @@ RmdMsgStyleSet::RmdMsgStyleSet()
 	colorText_ = kDefaultTextColor;								// Text color
 	fontName_ = kDefaultFontName;								// Font name
 	fontSize_ = kDefaultFontSize;								// Font size
-	timeoutValue_ = kDefaultTimeout;								// Timeout (auto-close) interval
+	timeoutValue_ = kDefaultTimeout;							// Timeout (auto-close) interval
 	iconId_ = kDefaultIconID;									// Message icon ID
 	iconSize_ = kDefaultIconSize;								// Message icon size
 	iconPosition_ = kDefaultIconPosition;						// Message icon position
@@ -1052,17 +1052,17 @@ bool RmdMsgStyleSet::compare(const RmdMsgStyleSet& other) const noexcept
 	bool retCompare = true;
 
 	// Compare data
-	retCompare &= (this->colorBackground_ == other.colorBackground_);		// Background color
-	retCompare &= (this->colorText_ == other.colorText_);					// Text color
-	retCompare &= (this->fontName_ == other.fontName_);						// Font name
-	retCompare &= (this->fontSize_ == other.fontSize_);						// Font size
-	retCompare &= (this->timeoutValue_ == other.timeoutValue_);				// Timeout (auto-close) interval
-	retCompare &= (this->iconId_ == other.iconId_);							// Message icon ID
-	retCompare &= (this->iconSize_ == other.iconSize_);						// Message icon size
-	retCompare &= (this->iconPosition_ == other.iconPosition_);				// Message icon position
-	retCompare &= (this->displayPosition_ == other.displayPosition_);		// Message display position
-	retCompare &= (this->marginHorizontal_ == other.marginHorizontal_);		// Display area horizontal margin
-	retCompare &= (this->marginVertical_ == other.marginVertical_);			// Display area vertical margin
+	retCompare &= (colorBackground_ == other.colorBackground_);		// Background color
+	retCompare &= (colorText_ == other.colorText_);					// Text color
+	retCompare &= (fontName_ == other.fontName_);					// Font name
+	retCompare &= (fontSize_ == other.fontSize_);					// Font size
+	retCompare &= (timeoutValue_ == other.timeoutValue_);			// Timeout (auto-close) interval
+	retCompare &= (iconId_ == other.iconId_);						// Message icon ID
+	retCompare &= (iconSize_ == other.iconSize_);					// Message icon size
+	retCompare &= (iconPosition_ == other.iconPosition_);			// Message icon position
+	retCompare &= (displayPosition_ == other.displayPosition_);		// Message display position
+	retCompare &= (marginHorizontal_ == other.marginHorizontal_);	// Display area horizontal margin
+	retCompare &= (marginVertical_ == other.marginVertical_);		// Display area vertical margin
 
 	return retCompare;
 }
@@ -1119,14 +1119,14 @@ bool PwrReminderItem::compare(const PwrReminderItem& other) const noexcept
 	bool returnFlag = true;
 
 	// Compare item (do not compare item ID)
-	returnFlag &= (this->messageContent_ == other.messageContent_);
-	returnFlag &= (this->eventId_ == other.eventId_);
-	returnFlag &= (this->timeValue_.hour() == other.timeValue_.hour());
-	returnFlag &= (this->timeValue_.minute() == other.timeValue_.minute());
-	returnFlag &= (this->messageStyle_ == other.messageStyle_);
-	returnFlag &= (this->repeatSetInfo_.compare(other.repeatSetInfo_));
-	returnFlag &= (this->useCustomStyle_ == other.useCustomStyle_);
-	returnFlag &= (this->msgStyleSetInfo_.compare(other.msgStyleSetInfo_));
+	returnFlag &= (messageContent_ == other.messageContent_);
+	returnFlag &= (eventId_ == other.eventId_);
+	returnFlag &= (timeValue_.hour() == other.timeValue_.hour());
+	returnFlag &= (timeValue_.minute() == other.timeValue_.minute());
+	returnFlag &= (messageStyle_ == other.messageStyle_);
+	returnFlag &= (repeatSetInfo_.compare(other.repeatSetInfo_));
+	returnFlag &= (useCustomStyle_ == other.useCustomStyle_);
+	returnFlag &= (msgStyleSetInfo_.compare(other.msgStyleSetInfo_));
 
 	return returnFlag;
 }
@@ -1231,16 +1231,16 @@ void PwrReminderData::init() noexcept
 	if (this == &other) return;
 
 	// Remove existing data
-	this->deleteAll();
+	deleteAll();
 
 	// Copy reminder data
 	for (int index = 0; index < other.getItemNum(); index++) {
 		PwrReminderItem item = other.reminderItemList_.at(index);
-		this->reminderItemList_.push_back(item);
+		reminderItemList_.push_back(item);
 	}
 
 	// Copy common message style data
-	this->commonStyleSet_.copy(other.commonStyleSet_);
+	commonStyleSet_.copy(other.commonStyleSet_);
 }
 
 
@@ -1270,17 +1270,17 @@ void PwrReminderData::init() noexcept
 	newData->reminderItemList_.clear();
 
 	// Copy common message style data
-	newData->commonStyleSet_.copy(this->commonStyleSet_);
+	newData->commonStyleSet_.copy(commonStyleSet_);
 
 	// Copy old data to new one
-	for (int index = 0; index < this->getItemNum(); index++) {
-		PwrReminderItem reminderItem = this->getItemAt(index);
+	for (int index = 0; index < getItemNum(); index++) {
+		PwrReminderItem reminderItem = getItemAt(index);
 		newData->reminderItemList_.push_back(reminderItem);
 	}
 
 	// Add new item and copy back to old data
 	newData->reminderItemList_.push_back(item);
-	this->copy(*newData);
+	copy(*newData);
 
 	// Delete data
 	newData->deleteAll();
@@ -1427,16 +1427,16 @@ void PwrReminderData::init() noexcept
 	newData->reminderItemList_.clear();
 
 	// Copy common message style data
-	newData->commonStyleSet_.copy(this->commonStyleSet_);
+	newData->commonStyleSet_.copy(commonStyleSet_);
 
 	// Copy old data to new one (except the AtIndex item)
-	for (int index = 0; index < this->getItemNum(); index++) {
+	for (int index = 0; index < getItemNum(); index++) {
 		if (index == atIndex) continue;
-		newData->reminderItemList_.push_back(this->reminderItemList_.at(index));
+		newData->reminderItemList_.push_back(reminderItemList_.at(index));
 	}
 
 	// Copy back to old data
-	this->copy(*newData);
+	copy(*newData);
 
 	// Delete temporary data
 	newData->deleteAll();
@@ -2545,7 +2545,7 @@ String DateTimeUtils::format(LANGTABLE_PTR lang, const wchar_t* formatString, co
 PerformanceCounter::PerformanceCounter()
 {
 	// Initialization
-	this->isRunning_ = false;
+	isRunning_ = false;
 	QueryPerformanceFrequency(&frequency_);
 }
 
@@ -2556,7 +2556,7 @@ PerformanceCounter::PerformanceCounter()
 PerformanceCounter::~PerformanceCounter()
 {
 	// Stop counting
-		this->stop();
+		stop();
 }
 
 
@@ -2570,7 +2570,7 @@ void PerformanceCounter::start(void)
 	// Start performance counter
 	if (!isRunning_) {
 		QueryPerformanceCounter(&startTime_);
-		this->isRunning_ = true;
+		isRunning_ = true;
 	}
 }
 
@@ -2585,7 +2585,7 @@ void PerformanceCounter::stop(void)
 	// Stop performance counter
 	if (isRunning_) {
 		QueryPerformanceCounter(&endTime_);
-		this->isRunning_ = false;
+		isRunning_ = false;
 	}
 }
 

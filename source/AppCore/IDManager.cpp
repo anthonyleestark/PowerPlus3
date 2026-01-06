@@ -331,9 +331,9 @@ const char* SResourceIDMap::getNameId(DWORD resID) const
  * @brief	Return index of the first item with specific resource ID
 					and return -1 if resource ID is not found
  * @param	dwResID - Resource ID
- * @return	long long
+ * @return	int64
  */
-long long SResourceIDMap::findResourceId(DWORD resID) const
+int64 SResourceIDMap::findResourceId(DWORD resID) const
 {
 	// Check data validity
 	ASSERT(idMapData_ != NULL);
@@ -341,7 +341,7 @@ long long SResourceIDMap::findResourceId(DWORD resID) const
 		return INT_INVALID;
 
 	// Find ID
-	long long resIndex = INT_INVALID;
+	int64 resIndex = INT_INVALID;
 	for (size_t index = 0; index < mapSize_; index++) {
 		if (idMapData_[index].resourceID == resID) {
 			resIndex = index;	// Index found
@@ -355,9 +355,9 @@ long long SResourceIDMap::findResourceId(DWORD resID) const
  * @brief	Return index of the first item with specific name ID
 					and return -1 if name ID is not found
 					lpszNameID - Name string ID
- * @return	long long
+ * @return	int64
  */
-long long SResourceIDMap::findNameID(const char* nameID) const
+int64 SResourceIDMap::findNameID(const char* nameID) const
 {
 	// Check data validity
 	ASSERT(idMapData_ != NULL);
@@ -365,7 +365,7 @@ long long SResourceIDMap::findNameID(const char* nameID) const
 		return INT_INVALID;
 
 	// Find ID
-	long long resIndex = INT_INVALID;
+	int64 resIndex = INT_INVALID;
 	for (size_t index = 0; index < mapSize_; index++) {
 		if (strcmp(idMapData_[index].nameID, nameID) == 0) {
 			resIndex = index;	// Index found

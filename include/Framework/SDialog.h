@@ -266,7 +266,7 @@ public:
 	}
 	void setSize(long width, long height)	{
 		Size dialogSize(width, height);
-		this->setSize(dialogSize);
+		setSize(dialogSize);
 	}
 	void setMinSize(long minWidth, long minHeight) {
 		minSize_ = Size(minWidth, minHeight);
@@ -305,7 +305,7 @@ public:
 		clientMargin_.setBottomRight(horizontalMargin, verticalMargin);
 	}
 	void getDisplayArea(Rect& displayAreaRect) const {
-		RECT tempRect; this->GetClientRect(&tempRect);
+		RECT tempRect; GetClientRect(&tempRect);
 		displayAreaRect = Rect(tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 
 		// Calculate display area with margin
@@ -332,8 +332,8 @@ public:
 		caption_ = caption;
 
 		// If dialog is already initialized, trigger updating title
-		if (IsWindow(this->m_hWnd)) {
-			this->SetWindowText(caption_);
+		if (IsWindow(m_hWnd)) {
+			SetWindowText(caption_);
 		}
 	}
 

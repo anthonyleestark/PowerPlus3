@@ -94,7 +94,7 @@ public:
 	// Construction
 	ConfigData();
 	ConfigData(const ConfigData& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 public:
@@ -103,7 +103,7 @@ public:
 	constexpr bool compare(const ConfigData& other) const noexcept;
 	void setDefaultData(void) noexcept {
 		static const ConfigData defaultConfig;
-		this->copy(defaultConfig);
+		copy(defaultConfig);
 	}
 
 	// Access data
@@ -241,12 +241,12 @@ public:
 	// Constructor
 	PwrRepeatSet();
 	PwrRepeatSet(const PwrRepeatSet& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 	// Operator
 	PwrRepeatSet& operator=(const PwrRepeatSet& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -313,12 +313,12 @@ public:
 	ScheduleItem();
 	ScheduleItem(unsigned itemID);
 	ScheduleItem(const ScheduleItem& other)	{
-		this->copy(other);
+		copy(other);
 	}
 
 	// Copy assignment operator
 	ScheduleItem& operator=(const ScheduleItem& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -328,7 +328,7 @@ public:
 	constexpr bool compare(const ScheduleItem& other) const noexcept;
 	bool isEmpty(void) const noexcept {
 		static const ScheduleItem schDummyItem;
-		return this->compare(schDummyItem);
+		return compare(schDummyItem);
 	}
 
 public:
@@ -431,12 +431,12 @@ public:
 	// Constructor
 	ScheduleData();
 	ScheduleData(const ScheduleData& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 	// Copy assignment operator
 	ScheduleData& operator=(const ScheduleData& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -448,7 +448,7 @@ public:
 	}
 	void copy(const ScheduleData& other);
 	void setDefaultData(void) {
-		this->init();
+		init();
 	}
 
 	// Update items
@@ -542,12 +542,12 @@ public:
 	HotkeySetItem();
 	HotkeySetItem(unsigned hotkeyActionId);
 	HotkeySetItem(const HotkeySetItem& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 	// Copy assignment operator
 	HotkeySetItem& operator=(const HotkeySetItem& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -560,8 +560,8 @@ public:
 		return isEmpty;
 	}
 	constexpr bool compare(const HotkeySetItem& other) const noexcept {
-		bool ret = (this->hotkeyActionId_ == other.hotkeyActionId_);
-		ret &= this->compareKeycode(other);
+		bool ret = (hotkeyActionId_ == other.hotkeyActionId_);
+		ret &= compareKeycode(other);
 		return ret;
 	}
 	constexpr bool compareKeycode(const HotkeySetItem& other) const noexcept {
@@ -623,12 +623,12 @@ public:
 	// Constructor
 	HotkeySetData() = default;
 	HotkeySetData(const HotkeySetData& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 	// Operator
 	HotkeySetData& operator=(const HotkeySetData& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -749,12 +749,12 @@ public:
 	// Constructor
 	RmdMsgStyleSet();
 	RmdMsgStyleSet(const RmdMsgStyleSet& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 	// Copy assignment operator
 	RmdMsgStyleSet& operator=(const RmdMsgStyleSet& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -874,12 +874,12 @@ public:
 	// Constructor
 	PwrReminderItem();
 	PwrReminderItem(const PwrReminderItem& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 	// Copy assignment operator
 	PwrReminderItem& operator=(const PwrReminderItem& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -889,29 +889,29 @@ public:
 	bool compare(const PwrReminderItem& other) const noexcept;
 	bool isEmpty(void) const noexcept {
 		static const PwrReminderItem pwrDummyItem;
-		return this->compare(pwrDummyItem);
+		return compare(pwrDummyItem);
 	}
 
 	// Access data
 	const PwrRepeatSet& getRepeatSetData(void) const noexcept {
-		return this->repeatSetInfo_;
+		return repeatSetInfo_;
 	}
 	PwrRepeatSet& getRepeatSetData(void) noexcept {
-		return this->repeatSetInfo_;
+		return repeatSetInfo_;
 	}
 	void resetRepeatInfo(void) noexcept {
 		const PwrRepeatSet emptyData = PwrRepeatSet();
-		this->repeatSetInfo_.copy(emptyData);
+		repeatSetInfo_.copy(emptyData);
 	}
 	const RmdMsgStyleSet& getMessageStyleData(void) const noexcept {
-		return this->msgStyleSetInfo_;
+		return msgStyleSetInfo_;
 	}
 	RmdMsgStyleSet& getMessageStyleData(void) noexcept {
-		return this->msgStyleSetInfo_;
+		return msgStyleSetInfo_;
 	}
 	void resetMessageStyleInfo(void) noexcept {
 		const RmdMsgStyleSet emptyData = RmdMsgStyleSet();
-		this->msgStyleSetInfo_.copy(emptyData);
+		msgStyleSetInfo_.copy(emptyData);
 	}
 
 public:
@@ -1023,12 +1023,12 @@ public:
 	// Constructor
 	PwrReminderData();
 	PwrReminderData(const PwrReminderData& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 	// Copy assignment operator
 	PwrReminderData& operator=(const PwrReminderData& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -1037,7 +1037,7 @@ public:
 	void init(void) noexcept;
 	void copy(const PwrReminderData& other) noexcept;
 	void setDefaultData(void) noexcept {
-		this->init();
+		init();
 	}
 
 	// Update items
@@ -1122,12 +1122,12 @@ public:
 	// Constructor
 	PwrRuntimeItem();
 	PwrRuntimeItem(const PwrRuntimeItem& other)	{
-		this->copy(other);
+		copy(other);
 	}
 
 	// Copy assignment operator
 	PwrRuntimeItem& operator=(const PwrRuntimeItem& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -1201,12 +1201,12 @@ public:
 	// Constructor
 	HistoryInfoData();
 	HistoryInfoData(const HistoryInfoData& other) {
-		this->copy(other);
+		copy(other);
 	}
 
 	// Copy assignment operator
 	HistoryInfoData& operator=(const HistoryInfoData& other) {
-		this->copy(other);
+		copy(other);
 		return *this;
 	}
 
@@ -1215,7 +1215,7 @@ public:
 	void init(unsigned categoryId) noexcept;
 	void removeAll(void) noexcept {
 		const HistoryInfoData emptyItem;
-		this->copy(emptyItem);
+		copy(emptyItem);
 	}
 
 public:

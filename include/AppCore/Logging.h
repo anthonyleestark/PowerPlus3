@@ -25,7 +25,7 @@ private:
 	// Data
 	int		detailValue_;									// Detail value (integer)
 	String	detailInfoString_;								// Detail info (string)
-	PVOID	detailDataPtr_;									// Detail data (pointer)
+	void*	detailDataPtr_;									// Detail data (pointer)
 	byte	pointerType_;									// Detail info pointer data type
 	size_t	pointerSize_;									// Detail info pointer data size
 
@@ -77,10 +77,10 @@ public:
 	void setDetailString(const wchar_t* detailInfo) noexcept {
 		detailInfoString_ = detailInfo;
 	}
-	PVOID getPointerData(void) const noexcept {
+	void* getPointerData(void) const noexcept {
 		return detailDataPtr_;
 	}
-	bool setPointerData(PVOID dataBuff, byte dataType = -1, size_t dataSize = 0);
+	bool setPointerData(void* dataBuff, byte dataType = -1, size_t dataSize = 0);
 	constexpr byte getPointerType(void) const noexcept {
 		return pointerType_;
 	}
@@ -333,7 +333,7 @@ public:
 	}
 	void addString(const wchar_t* keyName, const wchar_t* value);
 	void addInteger(const wchar_t* keyName, int value);
-	void addFloat(const wchar_t* keyName, DOUBLE value);
+	void addFloat(const wchar_t* keyName, double value);
 	void addChildObject(JSON* objPtr);
 
 	// Printing functions

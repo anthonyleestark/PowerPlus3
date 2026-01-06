@@ -463,7 +463,7 @@ LRESULT WINAPI CPowerPlusApp::KeyboardProc(int nCode, WPARAM wParam, LPARAM lPar
  * @param	Default (see MSDN "DEVICE_NOTIFY_CALLBACK_ROUTINE")
  * @return	ULONG - Default
  */
-ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(PVOID /*pContext*/, ULONG ulType, PVOID /*pSetting*/)
+ULONG CPowerPlusApp::DeviceNotifyCallbackRoutine(void* /*pContext*/, ULONG ulType, void* /*pSetting*/)
 {
 	// Get app pointer
 	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();

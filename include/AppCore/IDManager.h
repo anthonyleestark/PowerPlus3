@@ -168,8 +168,8 @@ public:
 	// Data acquirement functions
 	unsigned	getResourceId(const char* nameID) const;
 	const char*	getNameId(DWORD resID) const;
-	long long	findResourceId(DWORD resID) const;
-	long long	findNameID(const char* nameID) const;
+	int64		findResourceId(DWORD resID) const;
+	int64		findNameID(const char* nameID) const;
 
 	// Attributes get/set functions
 	const RESOURCE_ID_MAP_ENTRY& getAt(size_t index) const;

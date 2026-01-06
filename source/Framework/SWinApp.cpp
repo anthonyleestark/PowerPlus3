@@ -251,7 +251,7 @@ bool SWinApp::setAppWindowCaption(unsigned resourceStringId, bool showProdVersio
 void SWinApp::registerMessageBoxCaption(unsigned captionId)
 {
 	// Load app language package
-	LANGTABLE_PTR languageTablePtr = this->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = getAppLanguage();
 	String messageCaption = Constant::String::Empty;
 	if (captionId != NULL) {
 
@@ -266,7 +266,7 @@ void SWinApp::registerMessageBoxCaption(unsigned captionId)
 	// If caption is empty
 	if (messageCaption.isEmpty()) {
 		// Use default app window caption
-		messageCaption = this->getAppWindowCaption();
+		messageCaption = getAppWindowCaption();
 	}
 
 	// Register message box caption
@@ -294,7 +294,7 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned type, unsigned nIDProm
 	// Otherwise,
 	else {
 		// Use app window caption
-		messageCaption = this->getAppWindowCaption();
+		messageCaption = getAppWindowCaption();
 	}
 
 	// If message caption is empty (not registered)
@@ -321,10 +321,10 @@ int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned type, unsigned nIDProm
 int SWinApp::displayMessageBox(unsigned promptId, unsigned captionId /* = NULL */, unsigned style /* = NULL */)
 {
 	// Load app language package
-	LANGTABLE_PTR languageTablePtr = this->getAppLanguage();
+	LANGTABLE_PTR languageTablePtr = getAppLanguage();
 
 	String messagePrompt = getLanguageString(languageTablePtr, promptId);
-	String messageCaption = this->getAppWindowCaption();
+	String messageCaption = getAppWindowCaption();
 	if (captionId != NULL) {
 		// Get language string caption
 		String langCaption = getLanguageString(languageTablePtr, captionId);
@@ -370,13 +370,13 @@ int SWinApp::displayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
 		// Otherwise,
 		else {
 			// Use application window caption
-			messageCaption = this->getAppWindowCaption();
+			messageCaption = getAppWindowCaption();
 		}
 	}
 	
 	// Display message box
 	style |= MB_SYSTEMMODAL;
-	return ::MessageBox(this->GetMainWnd()->GetSafeHwnd(), prompt, messageCaption, style);
+	return ::MessageBox(GetMainWnd()->GetSafeHwnd(), prompt, messageCaption, style);
 }
 
 /**

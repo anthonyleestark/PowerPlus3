@@ -51,7 +51,7 @@ public:
 
 	// Hook and callback functions
 	static LRESULT WINAPI KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-	static ULONG CALLBACK DeviceNotifyCallbackRoutine(PVOID pContext, ULONG ulType, PVOID pSetting);
+	static ULONG CALLBACK DeviceNotifyCallbackRoutine(void* pContext, ULONG ulType, void* pSetting);
 
 	// Message processing functions
 	virtual BOOL ProcessMessageFilter(int nCode, LPMSG lpMsg);

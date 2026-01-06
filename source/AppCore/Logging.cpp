@@ -192,7 +192,7 @@ bool LogDetail::isEmpty(void) const noexcept
 	static const LOGDETAIL logDummyDetail;
 
 	// Compare with that data and return result
-	return this->compare(logDummyDetail);
+	return compare(logDummyDetail);
 }
 
 /**
@@ -202,7 +202,7 @@ bool LogDetail::isEmpty(void) const noexcept
  * @param	dataSize	- Data size
  * @return	true/false
  */
-bool LogDetail::setPointerData(PVOID dataBuff, byte dataType /* = DATA_TYPE_UNSPECIFIED */, size_t dataSize /* = 0 */)
+bool LogDetail::setPointerData(void* dataBuff, byte dataType /* = DATA_TYPE_UNSPECIFIED */, size_t dataSize /* = 0 */)
 {
 	// If data type is void (unusable), do nothing
 	if (dataType == LogDataType::Void)
@@ -247,7 +247,7 @@ void LogDetailInfo::addDetail(uint16 categoryId, int detailValue, int flag /* = 
 	logDetail.setFlag(flag);
 
 	// Add detail info item
-	this->addDetail(logDetail);
+	addDetail(logDetail);
 }
 
 void LogDetailInfo::addDetail(uint16 categoryId, const wchar_t* detailInfo, int flag /* = LogDetailFlag::Flag_Null */)
@@ -259,7 +259,7 @@ void LogDetailInfo::addDetail(uint16 categoryId, const wchar_t* detailInfo, int 
 	logDetail.setFlag(flag);
 
 	// Add detail info item
-	this->addDetail(logDetail);
+	addDetail(logDetail);
 }
 
 void LogDetailInfo::addDetail(uint16 categoryId, int detailValue, const wchar_t* detailInfo, int flag /* = LogDetailFlag::Flag_Null */)
@@ -272,7 +272,7 @@ void LogDetailInfo::addDetail(uint16 categoryId, int detailValue, const wchar_t*
 	logDetail.setFlag(flag);
 
 	// Add detail info item
-	this->addDetail(logDetail);
+	addDetail(logDetail);
 }
 
 /**
@@ -320,12 +320,12 @@ bool LogItem::compare(const LogItem& other) const noexcept
 
 	// Compare log detail info
 	bool detailCompareResult = true;
-	if (this->detailInfo_.size() != other.detailInfo_.size()) {
+	if (detailInfo_.size() != other.detailInfo_.size()) {
 		detailCompareResult = false;
 	}
 	else {
-		for (int index = 0; index < this->detailInfo_.size(); index++) {
-			if (this->detailInfo_.at(index).compare(other.detailInfo_.at(index)) != true) {
+		for (int index = 0; index < detailInfo_.size(); index++) {
+			if (detailInfo_.at(index).compare(other.detailInfo_.at(index)) != true) {
 				detailCompareResult = false;
 				break;
 			}
@@ -347,7 +347,7 @@ bool LogItem::isEmpty(void) const noexcept
 	static const LOGITEM logDummyItem;
 
 	// Compare with this item and return result
-	return this->compare(logDummyItem);
+	return compare(logDummyItem);
 }
 
 /**
@@ -364,7 +364,7 @@ void LogItem::removeAll(void) noexcept
 	logString_ = Constant::String::Empty;					// Log string
 
 	// Clean up log detail info data
-	this->removeDetailInfo();								// Log detail info
+	removeDetailInfo();								// Log detail info
 }
 
 /**
@@ -503,10 +503,10 @@ String LogItem::formatOutput(void) const
 JSON::JSON()
 {
 	// Initialization
-	this->objectName_ = Constant::String::Empty;		// JSON object name
-	this->keyValuePairs_.clear();						// Key-value pairs
-	this->childObjCount_ = 0;							// Number of child objects
-	this->childObjList_ = NULL;							// List of child objects
+	objectName_ = Constant::String::Empty;		// JSON object name
+	keyValuePairs_.clear();						// Key-value pairs
+	childObjCount_ = 0;							// Number of child objects
+	childObjList_ = NULL;							// List of child objects
 }
 
 /**
@@ -520,9 +520,9 @@ void JSON::copy(const JSON& other) noexcept
 	if (this == &other) return;
 
 	// Copy data
-	this->objectName_ = other.objectName_;			// JSON object name
-	this->copyArrayData(other);						// Property (array) data
-	this->copyPtrData(other);						// Child object (pointer) data
+	objectName_ = other.objectName_;			// JSON object name
+	copyArrayData(other);						// Property (array) data
+	copyPtrData(other);						// Child object (pointer) data
 }
 
 /**
@@ -533,14 +533,14 @@ void JSON::copy(const JSON& other) noexcept
 void JSON::copyArrayData(const JSON& other)
 {
 	// Remove all existing array data
-	this->keyValuePairs_.clear();
+	keyValuePairs_.clear();
 
 	// Set destination array data size
-	this->keyValuePairs_.reserve(other.keyValuePairs_.size());
+	keyValuePairs_.reserve(other.keyValuePairs_.size());
 
 	// Copy list of key-value pairs
 	for (int index = 0; index < other.keyValuePairs_.size(); index++) {
-		this->keyValuePairs_.push_back(other.keyValuePairs_.at(index));
+		keyValuePairs_.push_back(other.keyValuePairs_.at(index));
 	}
 }
 
@@ -552,25 +552,25 @@ void JSON::copyArrayData(const JSON& other)
 void JSON::copyPtrData(const JSON& other)
 {
 	// Number of child objects
-	this->childObjCount_ = other.childObjCount_;
+	childObjCount_ = other.childObjCount_;
 
 	// List of child objects (pointer copy)
 	if ((other.childObjCount_ > 0) && (other.childObjList_ != NULL)) {
 
 		// Allocation and initialization
-		this->childObjList_ = new PJSONDATA[this->childObjCount_];
-		if (this->childObjList_ == NULL) {
+		childObjList_ = new PJSONDATA[childObjCount_];
+		if (childObjList_ == NULL) {
 			TRACE_ERROR("Error: Destination JSON child object array allocation failed!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 
 		// Copy data
-		for (int count = 0; count < this->childObjCount_; count++) {
+		for (int count = 0; count < childObjCount_; count++) {
 
 			// Allocate memory
-			this->childObjList_[count] = new JSONDATA;
-			if (this->childObjList_[count] == NULL) {
+			childObjList_[count] = new JSONDATA;
+			if (childObjList_[count] == NULL) {
 				TRACE_FORMAT("Error: Destination JSON child object allocation failed!!! (Index=%d)", count);
 				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
@@ -585,7 +585,7 @@ void JSON::copyPtrData(const JSON& other)
 			}
 
 			// Copy object data (do not use 'memcpy' in here)
-			*(this->childObjList_[count]) = *srcObjectPtr;
+			*(childObjList_[count]) = *srcObjectPtr;
 		}
 	}
 }
@@ -600,16 +600,16 @@ bool JSON::compare(const JSON& other) const
 	bool returnFlag = false;
 
 	// Compare object name
-	returnFlag &= (this->objectName_ == other.objectName_);
+	returnFlag &= (objectName_ == other.objectName_);
 
 	// Compare detail item info
 	bool detailCompareResult = true;
-	if (this->keyValuePairs_.size() != other.keyValuePairs_.size()) {
+	if (keyValuePairs_.size() != other.keyValuePairs_.size()) {
 		detailCompareResult = false;
 	}
 	if (detailCompareResult != false) {
-		for (int index = 0; index < (this->keyValuePairs_.size()); index++) {
-			if (this->keyValuePairs_.at(index) != other.keyValuePairs_.at(index)) {
+		for (int index = 0; index < (keyValuePairs_.size()); index++) {
+			if (keyValuePairs_.at(index) != other.keyValuePairs_.at(index)) {
 				detailCompareResult = false;
 				break;
 			}
@@ -618,12 +618,12 @@ bool JSON::compare(const JSON& other) const
 	returnFlag &= detailCompareResult;
 
 	// Compare child objects
-	if (this->childObjList_ != NULL && other.childObjList_ != NULL) {
+	if (childObjList_ != NULL && other.childObjList_ != NULL) {
 
 		detailCompareResult = true;
 
 		// Compare child object numbers
-		int thisChildObjCount = this->childObjCount_;
+		int thisChildObjCount = childObjCount_;
 		int otherChildObjCount = other.childObjCount_;
 		if (thisChildObjCount != otherChildObjCount) {
 			detailCompareResult = false;
@@ -631,7 +631,7 @@ bool JSON::compare(const JSON& other) const
 		else {
 			// Compare each child object data
 			for (int count = 0; count < thisChildObjCount; count++) {
-				PJSONDATA thisChildObjPtr = this->childObjList_[count];
+				PJSONDATA thisChildObjPtr = childObjList_[count];
 				PJSONDATA otherChildObjPtr = other.childObjList_[count];
 				if ((thisChildObjPtr != NULL) && (otherChildObjPtr != NULL)) {
 					detailCompareResult &= thisChildObjPtr->compare(*otherChildObjPtr);
@@ -659,7 +659,7 @@ bool JSON::isEmpty(void) const noexcept
 	static const JSONDATA jsonDummyItem;
 
 	// Compare with this item and return result
-	return this->compare(jsonDummyItem);
+	return compare(jsonDummyItem);
 }
 
 /**
@@ -670,20 +670,20 @@ bool JSON::isEmpty(void) const noexcept
 void JSON::removeProperty(const wchar_t* keyName)
 {
 	// If property data is empty, do nothing
-	if (this->keyValuePairs_.empty())
+	if (keyValuePairs_.empty())
 		return;
 
 	// Search for key name
 	int foundIndex = INT_INVALID;
-	for (int index = 0; index < (this->keyValuePairs_.size()); index++) {
-		if (this->keyValuePairs_.at(index).key == keyName) {
+	for (int index = 0; index < (keyValuePairs_.size()); index++) {
+		if (keyValuePairs_.at(index).key == keyName) {
 			foundIndex = index;
 			break;
 		}
 	}
 
 	// Remove property by index
-	this->removeProperty(foundIndex);
+	removeProperty(foundIndex);
 }
 
 /**
@@ -694,23 +694,23 @@ void JSON::removeProperty(const wchar_t* keyName)
 void JSON::removeAll(void)
 {
 	// Reset data
-	this->objectName_.empty();					// JSON object name
-	this->keyValuePairs_.clear();				// Key-value pairs
+	objectName_.empty();					// JSON object name
+	keyValuePairs_.clear();				// Key-value pairs
 
 	// Remove all child objects
-	if ((this->childObjCount_ > 0) && (this->childObjList_ != NULL)) {
-		for (int count = 0; count < this->childObjCount_; count++) {
-			PJSONDATA childObjPtr = this->childObjList_[count];
+	if ((childObjCount_ > 0) && (childObjList_ != NULL)) {
+		for (int count = 0; count < childObjCount_; count++) {
+			PJSONDATA childObjPtr = childObjList_[count];
 			if (childObjPtr != NULL) {
 				childObjPtr->removeAll();
 				delete childObjPtr;
 			}
 		}
-		delete[] (this->childObjList_);
-		this->childObjList_ = NULL;
+		delete[] (childObjList_);
+		childObjList_ = NULL;
 		
 		// Reset child object counter
-		this->childObjCount_ = 0;
+		childObjCount_ = 0;
 	}
 }
 
@@ -724,8 +724,8 @@ void JSON::removeAll(void)
 void JSON::addString(const wchar_t* keyName, const wchar_t* value)
 {
 	// Search if key name already existed
-	for (int index = 0; index < (this->keyValuePairs_.size()); index++) {
-		JSON_ENTRY& jsonEntry = this->keyValuePairs_.at(index);
+	for (int index = 0; index < (keyValuePairs_.size()); index++) {
+		JSON_ENTRY& jsonEntry = keyValuePairs_.at(index);
 		if (jsonEntry.key == keyName) {
 			// Replace existed value with new value
 			jsonEntry.value = value;
@@ -734,7 +734,7 @@ void JSON::addString(const wchar_t* keyName, const wchar_t* value)
 	}
 
 	// Add property
-	this->keyValuePairs_.push_back({ keyName, value });
+	keyValuePairs_.push_back({ keyName, value });
 }
 
 /**
@@ -760,7 +760,7 @@ void JSON::addInteger(const wchar_t* keyName, int value)
  * @param	value	- Float value
  * @return	None
  */
-void JSON::addFloat(const wchar_t* keyName, DOUBLE value)
+void JSON::addFloat(const wchar_t* keyName, double value)
 {
 	// Convert float number to string
 	String valueStr = StringUtils::stringFormat(_T("%f"), value);
@@ -784,31 +784,31 @@ void JSON::addChildObject(JSON* objPtr)
 	size_t index = 0;
 
 	// Allocate child object array data memory if not yet allocated
-	if (this->childObjList_ == NULL) {
-		this->childObjList_ = new PJSONDATA;
-		if (this->childObjList_ == NULL) {
+	if (childObjList_ == NULL) {
+		childObjList_ = new PJSONDATA;
+		if (childObjList_ == NULL) {
 			TRACE_ERROR("Error: JSON child object array data allocation failed!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	else {
-		index = this->childObjCount_;
+		index = childObjCount_;
 	}
 	
 	// Allocated destination child object memory
-	this->childObjList_[index] = new JSONDATA;
-	if (this->childObjList_[index] == NULL) {
+	childObjList_[index] = new JSONDATA;
+	if (childObjList_[index] == NULL) {
 		TRACE_FORMAT("Error: JSON new child object data allocation failed!!! (Index=%d)", index);
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Copy child object data (do not use 'memcpy' in here)
-	*(this->childObjList_[index]) = *objPtr;
+	*(childObjList_[index]) = *objPtr;
 
 	// Increase child object counter
-	this->childObjCount_++;
+	childObjCount_++;
 }
 
 /**
@@ -843,8 +843,8 @@ void JSON::print(String& outputString, int indent, bool hasSeparator, bool isMul
 	String formatStr = Constant::String::Empty;
 
 	// Print object name (if set)
-	if (!this->objectName_.isEmpty()) {
-		formatStr.format(_T("\"%s\": "), this->objectName_.getString());
+	if (!objectName_.isEmpty()) {
+		formatStr.format(_T("\"%s\": "), objectName_.getString());
 		outputString.append(formatStr);
 	}
 
@@ -855,18 +855,18 @@ void JSON::print(String& outputString, int indent, bool hasSeparator, bool isMul
 	}
 
 	// Print list of properties
-	size_t itemNum = this->keyValuePairs_.size();
+	size_t itemNum = keyValuePairs_.size();
 	for (int index = 0; index < itemNum; index++) {
 
 		// Add indentation
 		outputString.append(indentationStr);
 
 		// Get key and value
-		const JSON_ENTRY& jsonEntry = this->keyValuePairs_.at(index);
+		const JSON_ENTRY& jsonEntry = keyValuePairs_.at(index);
 
 		// Format properties
 		if ((index == (itemNum - 1)) &&
-			((this->childObjCount_ <= 0) || (this->childObjList_ == NULL))) {
+			((childObjCount_ <= 0) || (childObjList_ == NULL))) {
 
 			// Last property (no other child object following) has no comma in the end
 			formatStr.format(_T("\t\"%s\": \"%s\" "), jsonEntry.key.getString(), jsonEntry.value.getString());
@@ -887,9 +887,9 @@ void JSON::print(String& outputString, int indent, bool hasSeparator, bool isMul
 
 	// Print child objects
 	String subItemOutput = Constant::String::Empty;
-	if ((this->childObjCount_ > 0) && (this->childObjList_ != NULL)) {
-		for (int count = 0; count < this->childObjCount_; count++) {
-			PJSONDATA subItemPtr = this->childObjList_[count];
+	if ((childObjCount_ > 0) && (childObjList_ != NULL)) {
+		for (int count = 0; count < childObjCount_; count++) {
+			PJSONDATA subItemPtr = childObjList_[count];
 			if (subItemPtr != NULL) {
 				subItemPtr->print(subItemOutput, indent + 1, false, isMultiline);
 				outputString.append(subItemOutput);
@@ -930,23 +930,23 @@ void JSON::printYAML(String& outputString, int indent) const
 	String formatStr = Constant::String::Empty;
 
 	// Print object name (if set)
-	if (!this->objectName_.isEmpty()) {
-		formatStr = StringUtils::stringFormat(_T("%s%s:\n"), indentationStr.getString(), this->objectName_.getString());
+	if (!objectName_.isEmpty()) {
+		formatStr = StringUtils::stringFormat(_T("%s%s:\n"), indentationStr.getString(), objectName_.getString());
 		outputString.append(formatStr);
 		indentationStr.append(Constant::Symbol::YAML_Indent); // Add one more indent for properties
 	}
 
 	// Print key-value pairs
-	for (int index = 0; index < this->keyValuePairs_.size(); index++) {
-		const JSON_ENTRY& jsonEntry = this->keyValuePairs_.at(index);
+	for (int index = 0; index < keyValuePairs_.size(); index++) {
+		const JSON_ENTRY& jsonEntry = keyValuePairs_.at(index);
 		formatStr = StringUtils::stringFormat(_T("%s%s: \"%s\"\n"), indentationStr.getString(), jsonEntry.key.getString(), jsonEntry.value.getString());
 		outputString.append(formatStr);
 	}
 
 	// Print child objects
-	if ((this->childObjCount_ > 0) && (this->childObjList_ != NULL)) {
-		for (int count = 0; count < this->childObjCount_; count++) {
-			PJSONDATA subItemPtr = this->childObjList_[count];
+	if ((childObjCount_ > 0) && (childObjList_ != NULL)) {
+		for (int count = 0; count < childObjCount_; count++) {
+			PJSONDATA subItemPtr = childObjList_[count];
 			if (subItemPtr != NULL) {
 				String subItemOutput;
 				subItemPtr->printYAML(subItemOutput, indent + 1);
@@ -995,7 +995,7 @@ Logger::~Logger()
 LOGITEM& Logger::getLogItem(int index)
 {
 	// If current log data is empty
-	if (this->isEmpty()) {
+	if (isEmpty()) {
 		// Return an empty dummy item
 		static LOGITEM logDummyItem;
 		return logDummyItem;
@@ -1017,7 +1017,7 @@ LOGITEM& Logger::getLogItem(int index)
 const LOGITEM& Logger::getLogItem(int index) const
 {
 	// If current log data is empty
-	if (this->isEmpty()) {
+	if (isEmpty()) {
 		// Return an empty dummy item
 		static const LOGITEM logDummyItem;
 		return logDummyItem;
@@ -1105,26 +1105,26 @@ void Logger::outputString(const wchar_t* logString, bool useLastTemplate /* = tr
 		LOGITEM logItem;
 		if (useLastTemplate == true) {
 			// Use last log item as template
-			if (this->isEmpty()) {
+			if (isEmpty()) {
 				// Can not output log string --> Trace info
 				TRACE_ERROR("Output log string failed: No item to use as template!!!");
 				return;
 			}
 			else {
 				// Copy template
-				logItem.copy(this->getLogItem(getLogCount() - 1));
+				logItem.copy(getLogItem(getLogCount() - 1));
 			}
 		}
 		else {
 			// Use default template
-			if (this->getDefaultTemplate() == NULL) {
+			if (getDefaultTemplate() == NULL) {
 				// Can not output log string --> Trace info
 				TRACE_ERROR("Output log string failed: Default template not set!!!");
 				return;
 			}
 			else {
 				// Copy template
-				logItem.copy(*(this->getDefaultTemplate()));
+				logItem.copy(*(getDefaultTemplate()));
 			}
 		}
 
@@ -1148,8 +1148,8 @@ bool Logger::write(void)
 
 	// Quit if current log is set as Read-only
 	// or current log mode is write instantly mode
-	if ((this->getWriteMode() == LogWriteMode::ReadOnly) ||
-		(this->getWriteMode() == LogWriteMode::WriteInstantly))
+	if ((getWriteMode() == LogWriteMode::ReadOnly) ||
+		(getWriteMode() == LogWriteMode::WriteInstantly))
 		return false;
 
 	CFile logFile;
@@ -1280,7 +1280,7 @@ bool Logger::write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
 	HWND mainWndHandle = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
-	if (this->getWriteMode() != LogWriteMode::WriteInstantly)
+	if (getWriteMode() != LogWriteMode::WriteInstantly)
 		return false;
 
 	String fileName;
@@ -1371,7 +1371,7 @@ bool Logger::write(const wchar_t* logString, const wchar_t* /* filePath  = NULL 
 	HWND mainWndHandle = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
-	if (this->getWriteMode() != LogWriteMode::WriteInstantly)
+	if (getWriteMode() != LogWriteMode::WriteInstantly)
 		return false;
 
 	String fileName;

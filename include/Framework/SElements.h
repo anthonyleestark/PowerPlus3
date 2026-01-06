@@ -64,11 +64,11 @@ enum ControlType {
 // Menu item info
 struct USERMENUITEM
 {
-	unsigned	itemId;				// Menu item ID
-	unsigned	nItemType;				// Menu item type
-	LPTSTR	lpszItemCaption;		// Menu item text
-	unsigned	nParentID;				// Item parent ID
-	LPTSTR	lpszParentCaption;		// Item parent caption
+	unsigned itemId;				// Menu item ID
+	unsigned itemType;				// Menu item type
+	wchar_t* itemCaption;			// Menu item text
+	unsigned parentId;				// Item parent ID
+	wchar_t* parentCaption;			// Item parent caption
 };
 
 
@@ -116,10 +116,10 @@ protected:
 	bool*			isCheckedPtr_;
 
 	// Integer data
-	PLONG_PTR		valueIntPtr_;
-	PLONG_PTR		reservedValueIntPtr_;
-	PLONG_PTR		minValueIntPtr_;
-	PLONG_PTR		maxValueIntPtr_;
+	int64*			valueIntPtr_;
+	int64*			reservedValueIntPtr_;
+	int64*			minValueIntPtr_;
+	int64*			maxValueIntPtr_;
 
 	// Float data
 	double*			valueDoublePtr_;
@@ -132,8 +132,8 @@ protected:
 	String*			reservedValueStringPtr_;
 
 	// Integer array data
-	uint64_array*		valueIntListPtr_;
-	uint64_array*		reservedValueIntListPtr_;
+	uint64_array*	valueIntListPtr_;
+	uint64_array*	reservedValueIntListPtr_;
 
 	// String array data
 	StringArray*	valueStringListPtr_;
@@ -143,8 +143,8 @@ protected:
 	LPSYSTEMTIME	valueTimePtr_;
 
 	// Custom data
-	LPVOID			customDataPtr_;			// Data pointer
-	PSIZE_T			dataSizePtr_;			// Total size in bytes
+	void*			customDataPtr_;			// Data pointer
+	size_t*			dataSizePtr_;			// Total size in bytes
 
 public:
 	// Initialization
@@ -241,18 +241,18 @@ public:
 	virtual bool	 getCheck(void) const;
 
 	// Get integer data values
-	virtual LONG_PTR getInteger(void) const;
-	virtual void	 getInteger(_Out_ LONG_PTR& value) const;
-	virtual LONG_PTR getReserveInteger(void) const;
-	virtual void	 getReserveInteger(_Out_ LONG_PTR& value) const;
-	virtual void	 getMinMaxInt(_Out_ LONG_PTR& minVal, _Out_ LONG_PTR& maxVal) const;
+	virtual int64	 getInteger(void) const;
+	virtual void	 getInteger(_Out_ int64& value) const;
+	virtual int64	 getReserveInteger(void) const;
+	virtual void	 getReserveInteger(_Out_ int64& value) const;
+	virtual void	 getMinMaxInt(_Out_ int64& minVal, _Out_ int64& maxVal) const;
 
 	// Get float data values
-	virtual DOUBLE	 getFloat(void) const;
-	virtual void	 getFloat(_Out_ DOUBLE& valueDouble) const;
-	virtual DOUBLE	 getReserveFloat(void) const;
-	virtual void	 getReserveFloat(_Out_ DOUBLE& valueDouble) const;
-	virtual void	 getMinMaxFloat(_Out_ DOUBLE& minVal, _Out_ DOUBLE& maxVal) const;
+	virtual double	 getFloat(void) const;
+	virtual void	 getFloat(_Out_ double& valueDouble) const;
+	virtual double	 getReserveFloat(void) const;
+	virtual void	 getReserveFloat(_Out_ double& valueDouble) const;
+	virtual void	 getMinMaxFloat(_Out_ double& minVal, _Out_ double& maxVal) const;
 
 	// Get string data values
 	virtual const wchar_t* getString(void) const;
@@ -274,14 +274,14 @@ public:
 	virtual void	setCheck(_In_ const bool& isChecked);
 
 	// Set integer data values
-	virtual void	setInteger(_In_ const LONG_PTR& value);
-	virtual void	setReserveInteger(_In_ const LONG_PTR& value);
-	virtual void	setMinMaxInt(_In_ const LONG_PTR& minVal, _In_ const LONG_PTR& maxVal);
+	virtual void	setInteger(_In_ const int64& value);
+	virtual void	setReserveInteger(_In_ const int64& value);
+	virtual void	setMinMaxInt(_In_ const int64& minVal, _In_ const int64& maxVal);
 
 	// Set float data values
-	virtual void	setFloat(_In_ const DOUBLE& valueDouble);
-	virtual void	setReserveFloat(_In_ const DOUBLE& valueDouble);
-	virtual void	setMinMaxFloat(_In_ const DOUBLE& minVal, _In_ const DOUBLE& maxVal);
+	virtual void	setFloat(_In_ const double& valueDouble);
+	virtual void	setReserveFloat(_In_ const double& valueDouble);
+	virtual void	setMinMaxFloat(_In_ const double& minVal, _In_ const double& maxVal);
 
 	// Set string data values
 	virtual void	setString(_In_ const wchar_t* value);
@@ -298,14 +298,14 @@ public:
 
 public:
 	// Get/set custom data pointer
-	template<typename DATA_TYPE>
-	bool getData(_Outptr_ DATA_TYPE* outputPtr, _Inout_opt_z_ SIZE_T& dataSize) const;
-	template<typename DATA_TYPE>
-	bool setData(_In_ const DATA_TYPE* inputPtr, _In_ const SIZE_T& dataSize);
+	template<typename DataType>
+	bool getData(_Outptr_ DataType*& outputPtr, _Inout_opt_z_ size_t& dataSize) const;
+	template<typename DataType>
+	bool setData(_In_ const DataType* inputPtr, _In_ const size_t& dataSize);
 
 	// Custom data size retrieving and validating
 	virtual bool	isDataEmpty(void) const;
-	virtual SIZE_T	getDataSize(void) const;
+	virtual size_t	getDataSize(void) const;
 };
 
 // Define new typename
@@ -372,9 +372,9 @@ public:
 	}
 
 	// Add/remove control
-	long long addControl(SCtrlInfoWrap* pControl);
-	long long addControl(unsigned controlId, unsigned typeId);
-	long long removeControl(unsigned controlId);
+	int64 addControl(SCtrlInfoWrap* pControl);
+	int64 addControl(unsigned controlId, unsigned typeId);
+	int64 removeControl(unsigned controlId);
 
 	// Accessing elements
 	SCtrlInfoWrap* getControl(unsigned controlId);
