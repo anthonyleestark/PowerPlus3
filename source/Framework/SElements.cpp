@@ -307,8 +307,8 @@ void SCtrlInfoWrap::updateAttributes(void)
 
 		// Update focus state
 		if (isParentAvailable()) {
-			CWnd* pFocusCtrl = getParent()->GetFocus();
-			if ((pFocusCtrl != NULL) && (pFocusCtrl == getBaseControl())) {
+			CWnd* focusedCtrlPtr = getParent()->GetFocus();
+			if ((focusedCtrlPtr != NULL) && (focusedCtrlPtr == getBaseControl())) {
 				this->setFocusedState(true);
 			}
 		}
@@ -827,16 +827,16 @@ bool SCtrlInfoWrap::getData(_Outptr_ DATA_TYPE* outputPtr, _Inout_opt_z_ SIZE_T&
 		return false;	// Fail to retrieve data
 
 	// If size value is invalid
-	SIZE_T szCurDataSize = *(this->dataSizePtr_);
-	if ((dataSize <= 0) || (szCurDataSize <= 0))
+	SIZE_T curDataSize = *(this->dataSizePtr_);
+	if ((dataSize <= 0) || (curDataSize <= 0))
 		return false;	// Fail to retrieve data
 
 	// If the output buffer size is insufficient
-	if (dataSize < szCurDataSize) {
+	if (dataSize < curDataSize) {
 		// Re-allocate output data pointer
 		// we can 
 		delete[] outputPtr;
-		outputPtr = new DATA_TYPE[szCurDataSize / sizeof(DATA_TYPE)];
+		outputPtr = new DATA_TYPE[curDataSize / sizeof(DATA_TYPE)];
 		ASSERT(outputPtr != NULL);
 		if (outputPtr == NULL) {
 			throw std::bad_alloc();
@@ -845,8 +845,8 @@ bool SCtrlInfoWrap::getData(_Outptr_ DATA_TYPE* outputPtr, _Inout_opt_z_ SIZE_T&
 	}
 
 	// Copy data and update the output data size
-	memcpy(outputPtr, this->customDataPtr_, szCurDataSize);
-	dataSize = szCurDataSize;
+	memcpy(outputPtr, this->customDataPtr_, curDataSize);
+	dataSize = curDataSize;
 
 	return true;	// Get data successfully
 }
@@ -1040,10 +1040,10 @@ bool SControlManager::deleteAll(void)
 
 	// Delete all control info wrapper pointers
 	for (int index = 0; index < (this->controlInfoListPtr_->size()); index++) {
-		SCtrlInfoWrap* pExControl = controlInfoListPtr_->at(index);
-		if (pExControl != NULL) {
-			delete pExControl;
-			pExControl = NULL;
+		SCtrlInfoWrap* controlWrapPtr = controlInfoListPtr_->at(index);
+		if (controlWrapPtr != NULL) {
+			delete controlWrapPtr;
+			controlWrapPtr = NULL;
 		}
 	}
 
@@ -1070,9 +1070,9 @@ long long SControlManager::addControl(SCtrlInfoWrap* pControl)
 
 	// Search if control ID had already existed
 	for (int index = 0; index < (this->controlInfoListPtr_->size()); index++) {
-		SCtrlInfoWrap* pExControl = controlInfoListPtr_->at(index);
-		if (pExControl == NULL) continue;
-		if (pExControl->getTemplateID() == pControl->getTemplateID()) {
+		SCtrlInfoWrap* controlWrapPtr = controlInfoListPtr_->at(index);
+		if (controlWrapPtr == NULL) continue;
+		if (controlWrapPtr->getTemplateID() == pControl->getTemplateID()) {
 			// Return control index
 			return index;
 		}
@@ -1096,21 +1096,21 @@ long long SControlManager::addControl(unsigned controlId, unsigned typeId)
 		return INT_INVALID;
 
 	// Get base control window pointer
-	CWnd* pCtrlWnd = parentWndPtr_->GetDlgItem(controlId);
-	if (pCtrlWnd == NULL)
+	CWnd* controlWndPtr = parentWndPtr_->GetDlgItem(controlId);
+	if (controlWndPtr == NULL)
 		return INT_INVALID;
 
 	// Initialize control info
-	SCtrlInfoWrap* pControl = new SCtrlInfoWrap();
-	pControl->initialize(parentWndPtr_, NULL, controlId, typeId);
+	SCtrlInfoWrap* controlWrapPtr = new SCtrlInfoWrap();
+	controlWrapPtr->initialize(parentWndPtr_, NULL, controlId, typeId);
 
 	// Add control to management list
-	size_t nRetIndex = this->addControl(pControl);
-	if (nRetIndex != -1)
-		return nRetIndex;
+	size_t retIndex = this->addControl(controlWrapPtr);
+	if (retIndex != -1)
+		return retIndex;
 
 	// Failed to add
-	delete pControl;
+	delete controlWrapPtr;
 	return INT_INVALID;
 }
 
@@ -1127,10 +1127,10 @@ long long SControlManager::removeControl(unsigned controlId)
 
 	// Search for control ID
 	for (int index = 0; index < (controlInfoListPtr_->size()); index++) {
-		SCtrlInfoWrap* pExControl = controlInfoListPtr_->at(index);
-		if (pExControl == NULL) continue;
-		if (pExControl->getTemplateID() == controlId) {
-			delete pExControl;
+		SCtrlInfoWrap* controlWrapPtr = controlInfoListPtr_->at(index);
+		if (controlWrapPtr == NULL) continue;
+		if (controlWrapPtr->getTemplateID() == controlId) {
+			delete controlWrapPtr;
 
 			// Remove control from list
 			controlInfoListPtr_->erase(controlInfoListPtr_->begin() + index);
@@ -1155,10 +1155,10 @@ SCtrlInfoWrap* SControlManager::getControl(unsigned controlId)
 
 	// Search for control ID
 	for (int index = 0; index < (this->controlInfoListPtr_->size()); index++) {
-		SCtrlInfoWrap* pControl = controlInfoListPtr_->at(index);
-		if (pControl == NULL) continue;
-		if (pControl->getTemplateID() == controlId)
-			return pControl;
+		SCtrlInfoWrap* controlWrapPtr = controlInfoListPtr_->at(index);
+		if (controlWrapPtr == NULL) continue;
+		if (controlWrapPtr->getTemplateID() == controlId)
+			return controlWrapPtr;
 	}
 
 	return NULL;
@@ -1173,8 +1173,8 @@ SCtrlInfoWrap* SControlManager::getControl(unsigned controlId)
 bool SControlManager::setBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID)
 {
 	// Get base control from management list
-	SCtrlInfoWrap* pBaseControl = getControl(nBaseCtrlID);
-	if (pBaseControl == NULL)
+	SCtrlInfoWrap* baseControlPtr = getControl(nBaseCtrlID);
+	if (baseControlPtr == NULL)
 		return false;
 
 	// Get buddy control (natively)
@@ -1185,11 +1185,11 @@ bool SControlManager::setBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID)
 		return false;
 
 	// Set buddy relationship
-	pBaseControl->setBuddy(buddyWndPtr);
+	baseControlPtr->setBuddy(buddyWndPtr);
 
 	// Trigger updating control attributes
 	// This will set buddy control caption as base control caption if available
-	pBaseControl->updateAttributes();
+	baseControlPtr->updateAttributes();
 
 	return true;
 }
@@ -1210,42 +1210,42 @@ void SControlManager::updateData(unsigned controlId /* = NULL */)
 		return;
 
 	// Loop through control management list
-	int nTriggerForceRetFlag = FLAG_OFF;
+	int triggerForceReturnFlag = FLAG_OFF;
 	for (int index = 0; index < (this->controlInfoListPtr_->size()); index++) {
 
 		// If force return flag is ON, break the loop
-		if (nTriggerForceRetFlag == FLAG_ON)
+		if (triggerForceReturnFlag == FLAG_ON)
 			break;
 
 		// Get control wrapper pointer
-		SCtrlInfoWrap* pCurControl = controlInfoListPtr_->at(index);
-		if (pCurControl == NULL) continue;
+		SCtrlInfoWrap* currentControlPtr = controlInfoListPtr_->at(index);
+		if (currentControlPtr == NULL) continue;
 
 		// Only update data for specified control
 		if (controlId != NULL) {
-			if (pCurControl->getTemplateID() != controlId) {
+			if (currentControlPtr->getTemplateID() != controlId) {
 				// Skip this control
 				continue;
 			}
 			else {
 				// Trigger force return flag 
 				// It will stop after updating for current control
-				nTriggerForceRetFlag = FLAG_ON;
+				triggerForceReturnFlag = FLAG_ON;
 			}
 		}
 
 		// If base control is not available, skip updating
-		if (!pCurControl->isBaseControlAvailable())
+		if (!currentControlPtr->isBaseControlAvailable())
 			continue;
 
 		// Get base control pointer
-		CWnd* pBaseControl = pCurControl->getBaseControl();
+		CWnd* baseControlPtr = currentControlPtr->getBaseControl();
 
 		// Update control attributes
-		pCurControl->updateAttributes();
+		currentControlPtr->updateAttributes();
 
 		// Update data for control by type
-		switch (pCurControl->getType())
+		switch (currentControlPtr->getType())
 		{
 			// Clickable and checkable controls
 			case Button:
@@ -1253,113 +1253,113 @@ void SControlManager::updateData(unsigned controlId /* = NULL */)
 			case Radio_Button:
 			{
 				// Update control's checked state
-				bool isChecked = ((CButton*)pBaseControl)->GetCheck();
-				pCurControl->setCheck(isChecked);
+				bool isChecked = ((CButton*)baseControlPtr)->GetCheck();
+				currentControlPtr->setCheck(isChecked);
 			} break;
 
 			// Edit box
 			case Edit_Control:
 			{
 				// Update control's text value
-				const int textLength = ((CEdit*)pBaseControl)->GetWindowTextLength();
+				const int textLength = ((CEdit*)baseControlPtr)->GetWindowTextLength();
 				std::vector<wchar_t> tempBuff(textLength + 1);
-				((CEdit*)pBaseControl)->GetWindowText(tempBuff.data(), textLength + 1);
+				((CEdit*)baseControlPtr)->GetWindowText(tempBuff.data(), textLength + 1);
 				String tempText = tempBuff.data();
-				pCurControl->setString(tempText);
+				currentControlPtr->setString(tempText);
 			} break;
 
 			// Combo-box
 			case Combo_Box:
 			{
 				// Update control's current selection index
-				size_t currenSelection = ((CComboBox*)pBaseControl)->GetCurSel();
-				pCurControl->setInteger(currenSelection);
+				size_t currenSelection = ((CComboBox*)baseControlPtr)->GetCurSel();
+				currentControlPtr->setInteger(currenSelection);
 				// Update all item strings
-				StringArray arrStringData;
-				size_t count = ((CComboBox*)pBaseControl)->GetCount();
-				arrStringData.reserve(count);
+				StringArray stringData;
+				size_t count = ((CComboBox*)baseControlPtr)->GetCount();
+				stringData.reserve(count);
 				for (size_t index = 0; index < count; index++) {
 					wchar_t tempBuff[Constant::Max::StringLength] = {0};
-					((CComboBox*)pBaseControl)->GetLBText(index, tempBuff);
-					arrStringData.push_back(tempBuff);
+					((CComboBox*)baseControlPtr)->GetLBText(index, tempBuff);
+					stringData.push_back(tempBuff);
 				}
-				pCurControl->setStringArray(arrStringData);
+				currentControlPtr->setStringArray(stringData);
 			} break;
 
 			// List box
 			case List_Box:
 			{
 				// Update control's current selection index
-				size_t currenSelection = ((CListBox*)pBaseControl)->GetCurSel();
-				pCurControl->setInteger(currenSelection);
+				size_t currenSelection = ((CListBox*)baseControlPtr)->GetCurSel();
+				currentControlPtr->setInteger(currenSelection);
 				// Update all item strings
-				StringArray arrStringData;
-				size_t count = ((CListBox*)pBaseControl)->GetCount();
-				arrStringData.reserve(count);
+				StringArray stringData;
+				size_t count = ((CListBox*)baseControlPtr)->GetCount();
+				stringData.reserve(count);
 				for (size_t index = 0; index < count; index++) {
 					wchar_t tempBuff[Constant::Max::StringLength] = {0};
-					((CListBox*)pBaseControl)->GetText(index, tempBuff);
-					arrStringData.push_back(tempBuff);
+					((CListBox*)baseControlPtr)->GetText(index, tempBuff);
+					stringData.push_back(tempBuff);
 				}
-				pCurControl->setStringArray(arrStringData);
+				currentControlPtr->setStringArray(stringData);
 			} break;
 
 			// List control
 			case List_Control:
 			{
 				// Update number of items and columns
-				size_t itemCount = ((CListCtrl*)pBaseControl)->GetItemCount();
-				pCurControl->setInteger(itemCount);
-				size_t nColumnCount = 0;
-				CHeaderCtrl* pHeaderCtrl = ((CListCtrl*)pBaseControl)->GetHeaderCtrl();
-				if (pHeaderCtrl != NULL) {
-					nColumnCount = pHeaderCtrl->GetItemCount();
+				size_t itemCount = ((CListCtrl*)baseControlPtr)->GetItemCount();
+				currentControlPtr->setInteger(itemCount);
+				size_t columnCount = 0;
+				CHeaderCtrl* headerCtrlPtr = ((CListCtrl*)baseControlPtr)->GetHeaderCtrl();
+				if (headerCtrlPtr != NULL) {
+					columnCount = headerCtrlPtr->GetItemCount();
 				}
-				pCurControl->setReserveInteger(nColumnCount);
+				currentControlPtr->setReserveInteger(columnCount);
 				// Update control's data current selection index(es)
-				ULongArray arrSelection;
-				arrSelection.reserve(itemCount);
+				ULongArray selectionList;
+				selectionList.reserve(itemCount);
 				for (size_t index = 0; index < itemCount; index++) {
 					// Get selection index
-					if ((((CListCtrl*)pBaseControl)->GetItemState(index, LVIS_SELECTED) & LVIS_SELECTED) == LVIS_SELECTED) {
-						arrSelection.push_back(index);
+					if ((((CListCtrl*)baseControlPtr)->GetItemState(index, LVIS_SELECTED) & LVIS_SELECTED) == LVIS_SELECTED) {
+						selectionList.push_back(index);
 					}
 				}
-				pCurControl->setIntArray(arrSelection);
+				currentControlPtr->setIntArray(selectionList);
 				// Update all item strings
-				StringArray arrStringData;
-				arrStringData.reserve(itemCount);
+				StringArray stringData;
+				stringData.reserve(itemCount);
 				for (size_t index = 0; index < itemCount; index++) {
-					for (size_t nColIndex = 0; nColIndex < nColumnCount; nColIndex++) {
+					for (size_t colIndex = 0; colIndex < columnCount; colIndex++) {
 						// Get item text
-						String tempText = ((CListCtrl*)pBaseControl)->GetItemText(index, nColIndex).GetString();
-						arrStringData.push_back(tempText);
+						String tempText = ((CListCtrl*)baseControlPtr)->GetItemText(index, colIndex).GetString();
+						stringData.push_back(tempText);
 					}
 				}
-				pCurControl->setStringArray(arrStringData);
+				currentControlPtr->setStringArray(stringData);
 			} break;
 
 			// Tab control
 			case Tab_Control:
 			{
 				// Update the number of tabs
-				size_t tabCount = ((CTabCtrl*)pBaseControl)->GetItemCount();
+				size_t tabCount = ((CTabCtrl*)baseControlPtr)->GetItemCount();
 				// Update the currently selected tab index
-				size_t nCurSelTab = ((CTabCtrl*)pBaseControl)->GetCurSel();
-				pCurControl->setInteger(nCurSelTab);
+				size_t curSelTab = ((CTabCtrl*)baseControlPtr)->GetCurSel();
+				currentControlPtr->setInteger(curSelTab);
 				// Update all tab's title
 				TCITEM tabInfo;
-				StringArray arrTabTitles;
-				arrTabTitles.reserve(tabCount);
+				StringArray tabTitleList;
+				tabTitleList.reserve(tabCount);
 				for (size_t index = 0; index < tabCount; index++) {
 					String tempText = Constant::String::Empty;
-					bool returnFlag = ((CTabCtrl*)pBaseControl)->GetItem(index, &tabInfo);
+					bool returnFlag = ((CTabCtrl*)baseControlPtr)->GetItem(index, &tabInfo);
 					if (returnFlag == true && ((tabInfo.mask & TCIF_TEXT) != 0)) {
 						tempText = tabInfo.pszText;
 					}
-					arrTabTitles.push_back(tempText);
+					tabTitleList.push_back(tempText);
 				}
-				pCurControl->setStringArray(arrTabTitles);
+				currentControlPtr->setStringArray(tabTitleList);
 			} break;
 
 			// Static text and decorating items
@@ -1368,11 +1368,11 @@ void SControlManager::updateData(unsigned controlId /* = NULL */)
 			case SysLink_Control:
 			{
 				// Update control's text label
-				const int textLength = pBaseControl->GetWindowTextLength();
+				const int textLength = baseControlPtr->GetWindowTextLength();
 				std::vector<wchar_t> tempBuff(textLength + 1);
-				pBaseControl->GetWindowText(tempBuff.data(), textLength + 1);
+				baseControlPtr->GetWindowText(tempBuff.data(), textLength + 1);
 				String captionString = tempBuff.data();
-				pCurControl->setCaption(captionString);
+				currentControlPtr->setCaption(captionString);
 			} break;
 
 			// Scroll bars
@@ -1380,96 +1380,96 @@ void SControlManager::updateData(unsigned controlId /* = NULL */)
 			case Vertical_Scroll_Bar:
 			{
 				// Update control's current position
-				size_t nCurPos = ((CScrollBar*)pBaseControl)->GetScrollPos();
-				pCurControl->setInteger(nCurPos);
+				size_t currentPosition = ((CScrollBar*)baseControlPtr)->GetScrollPos();
+				currentControlPtr->setInteger(currentPosition);
 				// Update control's min/max range
-				int nMin = NULL, nMax = NULL;
-				((CScrollBar*)pBaseControl)->GetScrollRange(&nMin, &nMax);
-				pCurControl->setMinMaxInt(nMin, nMax);
+				int minVal = NULL, maxVal = NULL;
+				((CScrollBar*)baseControlPtr)->GetScrollRange(&minVal, &maxVal);
+				currentControlPtr->setMinMaxInt(minVal, maxVal);
 			} break;
 
 			// Slider control
 			case Slider_Control:
 			{
 				// Update control's current position
-				size_t nCurPos = ((CSliderCtrl*)pBaseControl)->GetPos();
-				pCurControl->setInteger(nCurPos);
+				size_t currentPosition = ((CSliderCtrl*)baseControlPtr)->GetPos();
+				currentControlPtr->setInteger(currentPosition);
 				// Update control's min/max range
-				size_t nMin = ((CSliderCtrl*)pBaseControl)->GetRangeMin();
-				size_t nMax = ((CSliderCtrl*)pBaseControl)->GetRangeMax();
-				pCurControl->setMinMaxInt(nMin, nMax);
+				size_t minVal = ((CSliderCtrl*)baseControlPtr)->GetRangeMin();
+				size_t maxVal = ((CSliderCtrl*)baseControlPtr)->GetRangeMax();
+				currentControlPtr->setMinMaxInt(minVal, maxVal);
 			} break;
 
 			// Progress bar
 			case Progress_Control:
 			{
 				// Update control's current position
-				size_t nCurPos = ((CProgressCtrl*)pBaseControl)->GetPos();
-				pCurControl->setInteger(nCurPos);
+				size_t currentPosition = ((CProgressCtrl*)baseControlPtr)->GetPos();
+				currentControlPtr->setInteger(currentPosition);
 				// Update control's min/max range
-				int nMin = NULL, nMax = NULL;
-				((CProgressCtrl*)pBaseControl)->GetRange(nMin, nMax);
-				pCurControl->setMinMaxInt(nMin, nMax);
+				int minVal = NULL, maxVal = NULL;
+				((CProgressCtrl*)baseControlPtr)->GetRange(minVal, maxVal);
+				currentControlPtr->setMinMaxInt(minVal, maxVal);
 			} break;
 
 			// Spin button control
 			case Spin_Control:
 			{
 				// Update control's current position
-				size_t nCurPos = ((CSpinButtonCtrl*)pBaseControl)->GetPos();
-				pCurControl->setInteger(nCurPos);
+				size_t currentPosition = ((CSpinButtonCtrl*)baseControlPtr)->GetPos();
+				currentControlPtr->setInteger(currentPosition);
 				// Update control's min/max range
-				int nMin = NULL, nMax = NULL;
-				((CSpinButtonCtrl*)pBaseControl)->GetRange(nMin, nMax);
-				pCurControl->setMinMaxInt(nMin, nMax);
+				int minVal = NULL, maxVal = NULL;
+				((CSpinButtonCtrl*)baseControlPtr)->GetRange(minVal, maxVal);
+				currentControlPtr->setMinMaxInt(minVal, maxVal);
 			} break;
 
 			// Hot key control
 			case Hot_Key:
 			{
 				// Update control's current hotkey
-				DWORD dwHotkey = ((CHotKeyCtrl*)pBaseControl)->GetHotKey();
-				pCurControl->setInteger(LOWORD(dwHotkey));			// Virtual keycode
-				pCurControl->setReserveInteger(HIWORD(dwHotkey));	// Modifier flags
+				DWORD hotkey = ((CHotKeyCtrl*)baseControlPtr)->GetHotKey();
+				currentControlPtr->setInteger(LOWORD(hotkey));			// Virtual keycode
+				currentControlPtr->setReserveInteger(HIWORD(hotkey));	// Modifier flags
 			} break;
 
 			// IP address control
 			case IP_Address_Control:
 			{
 				// Update control's current IP address
-				DWORD dwAddress = 0;
-				byte byField0 = 0, byField1 = 0, byField2 = 0, byField3 = 0;
-				int nNonBlankFieldNum = ((CIPAddressCtrl*)pBaseControl)->GetAddress(dwAddress);
-				((CIPAddressCtrl*)pBaseControl)->GetAddress(byField0, byField1, byField2, byField3);
-				pCurControl->setInteger(dwAddress);
-				pCurControl->setReserveInteger(nNonBlankFieldNum);
+				DWORD address = 0;
+				byte field0 = 0, field1 = 0, field2 = 0, field3 = 0;
+				int nonBlankFieldCount = ((CIPAddressCtrl*)baseControlPtr)->GetAddress(address);
+				((CIPAddressCtrl*)baseControlPtr)->GetAddress(field0, field1, field2, field3);
+				currentControlPtr->setInteger(address);
+				currentControlPtr->setReserveInteger(nonBlankFieldCount);
 				// Store each field value separately into an integer array
-				ULongArray arrAddressFields;
-				arrAddressFields.resize(4);
-				arrAddressFields[0] = byField0;		// Field 0
-				arrAddressFields[1] = byField1;		// Field 1
-				arrAddressFields[2] = byField2;		// Field 2
-				arrAddressFields[3] = byField3;		// Field 3
-				pCurControl->setIntArray(arrAddressFields);
+				ULongArray addressFieldArray;
+				addressFieldArray.resize(4);
+				addressFieldArray[0] = field0;		// Field 0
+				addressFieldArray[1] = field1;		// Field 1
+				addressFieldArray[2] = field2;		// Field 2
+				addressFieldArray[3] = field3;		// Field 3
+				currentControlPtr->setIntArray(addressFieldArray);
 			} break;
 
 			// Network address control
 			case Network_Address_Control:
 			{
 				// Update control's current network address
-				NC_ADDRESS ncAddress;
+				NC_ADDRESS address;
 				NET_ADDRESS_INFO netAddressInfo;
-				ncAddress.pAddrInfo = &netAddressInfo;
-				HRESULT resourceHandle = ((CNetAddressCtrl*)pBaseControl)->GetAddress(&ncAddress);
+				address.pAddrInfo = &netAddressInfo;
+				HRESULT resourceHandle = ((CNetAddressCtrl*)baseControlPtr)->GetAddress(&address);
 				if (resourceHandle == S_OK) {
 					// Save address and port info
-					String addressString = ncAddress.pAddrInfo->NamedAddress.Address;
-					String portString = ncAddress.pAddrInfo->NamedAddress.Port;
-					pCurControl->setString(addressString);
-					pCurControl->setReserveString(portString);
+					String addressString = address.pAddrInfo->NamedAddress.Address;
+					String portString = address.pAddrInfo->NamedAddress.Port;
+					currentControlPtr->setString(addressString);
+					currentControlPtr->setReserveString(portString);
 					// Numeric data
-					pCurControl->setInteger(ncAddress.PortNumber);
-					pCurControl->setReserveInteger(ncAddress.PrefixLength);
+					currentControlPtr->setInteger(address.PortNumber);
+					currentControlPtr->setReserveInteger(address.PrefixLength);
 				}
 			} break;
 
@@ -1478,8 +1478,8 @@ void SControlManager::updateData(unsigned controlId /* = NULL */)
 			{
 				// Update control's date/time value
 				SYSTEMTIME timeTemp{};
-				((CDateTimeCtrl*)pBaseControl)->GetTime(&timeTemp);
-				pCurControl->setTime(timeTemp);
+				((CDateTimeCtrl*)baseControlPtr)->GetTime(&timeTemp);
+				currentControlPtr->setTime(timeTemp);
 			} break;
 
 			// Month calendar control
@@ -1487,8 +1487,8 @@ void SControlManager::updateData(unsigned controlId /* = NULL */)
 			{
 				// Update control's current selected date
 				SYSTEMTIME dateTemp{};
-				((CMonthCalCtrl*)pBaseControl)->GetCurSel(&dateTemp);
-				pCurControl->setTime(dateTemp);
+				((CMonthCalCtrl*)baseControlPtr)->GetCurSel(&dateTemp);
+				currentControlPtr->setTime(dateTemp);
 			} break;
 		}
 	}

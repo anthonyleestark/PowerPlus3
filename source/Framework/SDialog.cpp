@@ -1334,12 +1334,12 @@ void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
 			SCtrlInfoWrap* comboInfoWrapPtr = pCtrlMan->getControl(comboId);
 			if (comboInfoWrapPtr != NULL) {
 				// Combo-box caption
-				comboInfoWrapPtr->GetCaption(comboBoxCaption);
+				comboInfoWrapPtr->getCaption(comboBoxCaption);
 
 				// Combo-box current selection string
-				size_t currenSelection = comboInfoWrapPtr->GetInteger();
+				size_t currenSelection = comboInfoWrapPtr->getInteger();
 				StringArray dataList;
-				comboInfoWrapPtr->GetStringArray(dataList);
+				comboInfoWrapPtr->getStringArray(dataList);
 				if ((!dataList.empty()) && (dataList.size() > currenSelection)) {
 					logDetailInfo.addDetail(EventDetail::Selection, dataList.at(currenSelection));
 				}
@@ -1379,11 +1379,11 @@ void SDialog::outputEditBoxLog(USHORT eventId, unsigned editId)
 			SCtrlInfoWrap* pEditBoxWrap = pCtrlMan->getControl(editId);
 			if (pEditBoxWrap != NULL) {
 				// Edit box caption
-				pEditBoxWrap->GetCaption(editBoxCaption);
+				pEditBoxWrap->getCaption(editBoxCaption);
 
 				// Edit box content
 				String editBoxContent;
-				pEditBoxWrap->GetString(editBoxContent);
+				pEditBoxWrap->getString(editBoxContent);
 				logDetailInfo.addDetail(EventDetail::DataValue, editBoxContent);
 			}
 		}
@@ -1421,12 +1421,12 @@ void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
 			SCtrlInfoWrap* listBoxInfoWrapPtr = pCtrlMan->getControl(listBoxId);
 			if (listBoxInfoWrapPtr != NULL) {
 				// List box caption
-				listBoxInfoWrapPtr->GetCaption(listBoxCaption);
+				listBoxInfoWrapPtr->getCaption(listBoxCaption);
 
 				// List box current selection string
-				size_t currenSelection = listBoxInfoWrapPtr->GetInteger();
+				size_t currenSelection = listBoxInfoWrapPtr->getInteger();
 				StringArray dataList;
-				listBoxInfoWrapPtr->GetStringArray(dataList);
+				listBoxInfoWrapPtr->getStringArray(dataList);
 				if ((!dataList.empty()) && (dataList.size() > currenSelection)) {
 					logDetailInfo.addDetail(EventDetail::Selection, dataList.at(currenSelection));
 				}
