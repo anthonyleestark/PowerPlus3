@@ -746,7 +746,7 @@ int CDebugTestDlg::getCaretPosition(void)
 {
 	// Check DebugTest edit view validity
 	if (!isDebugEditViewValid())
-		return INT_INVALID;
+		return kInvalidInteger;
 
 	// Get caret position
 	int selStart, selEnd;

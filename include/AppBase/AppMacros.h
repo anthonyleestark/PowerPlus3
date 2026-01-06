@@ -283,16 +283,6 @@
 #define TIMERID_RMDMSG_AUTOCLOSE					(TIMERID_DEFAULT + 4)			// Timer ID for Reminder message auto close feature
 
 
-// Define special numbers and numeric values
-//
-
-#define INT_INVALID									-1								// Invalid integer number (equals -1)
-#define INT_NULL									0								// Null integer number (equals 0)
-#define INT_INFINITE								INFINITE						// Infinite (no limitation)
-#define FLOAT_INVALID								-1.0F							// Invalid float number (equals -1.0)
-#define FLOAT_NULL									0.0F							// Null float number (equals 0)
-
-
 // Define windows system OS info macros
 //
 

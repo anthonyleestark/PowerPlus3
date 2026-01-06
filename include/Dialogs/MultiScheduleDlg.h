@@ -78,7 +78,7 @@ private:
 	int currentMode_;
 	int checkCount_;
 	int curSelIndex_;
-	int m_nCurDispIndex;
+	int curDispIndex_;
 
 public:
 	// Generated message map functions

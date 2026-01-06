@@ -330,7 +330,7 @@ bool CHelpDlg::loadResourceFileData(String& resourceFileDataString)
 void CHelpDlg::updateSwitchViewModeButton(void)
 {
 	// Language string ID
-	unsigned stringId = INT_NULL;
+	unsigned stringId = kNullInteger;
 	switch (viewMode_)
 	{
 	case ViewMode::HelpFile:

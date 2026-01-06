@@ -58,7 +58,7 @@ CMultiScheduleDlg::CMultiScheduleDlg() : SDialog(IDD_MULTISCHEDULE_DLG)
 	currentMode_ = 0;
 	checkCount_ = 0;
 	curSelIndex_ = -1;
-	m_nCurDispIndex = -2;
+	curDispIndex_ = -2;
 }
 
 /**
@@ -502,7 +502,7 @@ void CMultiScheduleDlg::drawDataTable(bool isReadOnly /* = false */)
 		// Column header title
 		String headerTitle = Constant::String::Empty;
 		unsigned headerTitleId = gridCtrlFormatInfoPtr_[col].headerTitleId;
-		if (headerTitleId != INT_NULL) {
+		if (headerTitleId != kNullInteger) {
 			headerTitle = getLanguageString(languageTablePtr, headerTitleId);
 		}
 		scheduleDataTablePtr_->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, col, headerTitle);
@@ -524,7 +524,7 @@ void CMultiScheduleDlg::drawDataTable(bool isReadOnly /* = false */)
 
 	// Setup rows
 	int colStyle = -1;
-	unsigned itemState = INT_NULL;
+	unsigned itemState = kNullInteger;
 	for (int row = 1; row < rowCount; row++) {
 		for (int col = 0; col < columnCount_; col++) {
 

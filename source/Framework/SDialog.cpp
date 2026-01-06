@@ -38,7 +38,7 @@ SDialog::SDialog() : CDialogEx()
 	controlManagerPtr_ = NULL;
 
 	// Dialog special flags
-	descendantCount_ = INT_NULL;
+	descendantCount_ = kNullInteger;
 	setFlagValue(AppFlagID::dialogUseEnterKey, true);
 	setFlagValue(AppFlagID::dialogUseEscapeKey, true);
 	setReturnFlag(ReturnFlag::Invalid);
@@ -85,7 +85,7 @@ SDialog::SDialog(unsigned templateId , CWnd* parentWnd /* = NULL */) : CDialogEx
 	controlManagerPtr_ = NULL;
 
 	// Dialog special flags
-	descendantCount_ = INT_NULL;
+	descendantCount_ = kNullInteger;
 	setFlagValue(AppFlagID::dialogUseEnterKey, true);
 	setFlagValue(AppFlagID::dialogUseEscapeKey, true);
 	setReturnFlag(ReturnFlag::Invalid);
@@ -132,7 +132,7 @@ SDialog::SDialog(const wchar_t* templateName, CWnd* parentWnd /* = NULL */) : CD
 	controlManagerPtr_ = NULL;
 
 	// Dialog special flags
-	descendantCount_ = INT_NULL;
+	descendantCount_ = kNullInteger;
 	setFlagValue(AppFlagID::dialogUseEnterKey, true);
 	setFlagValue(AppFlagID::dialogUseEscapeKey, true);
 	setReturnFlag(ReturnFlag::Invalid);
@@ -622,7 +622,7 @@ int SDialog::registerDialogManagement(void)
 	if (controlManagerPtr_ == NULL) {
 		controlManagerPtr_ = new SControlManager(this);
 		if (controlManagerPtr_ == NULL)
-			return INT_INVALID;
+			return kInvalidInteger;
 	}
 
 	if (controlManagerPtr_ != NULL) {
@@ -1667,7 +1667,7 @@ void SDialog::moveItemGroup(const uint32_array& controlIdGroup, const Point& new
 
 	RECT controlRect;
 	CWnd* controlPtr = NULL;
-	LONG originX = INT_INVALID, originY = INT_INVALID;
+	LONG originX = kInvalidInteger, originY = kInvalidInteger;
 
 	// Find the original point
 	for (int index = 0; index < controlIdGroup.size(); index++)
@@ -1681,12 +1681,12 @@ void SDialog::moveItemGroup(const uint32_array& controlIdGroup, const Point& new
 		controlPtr->GetWindowRect(&controlRect);
 
 		// Find smallest X
-		if ((originX == INT_INVALID) || (controlRect.left <= originX)) {
+		if ((originX == kInvalidInteger) || (controlRect.left <= originX)) {
 			originX = controlRect.left;
 		}
 
 		// Find smallest Y
-		if ((originY == INT_INVALID) || (controlRect.top <= originY)) {
+		if ((originY == kInvalidInteger) || (controlRect.top <= originY)) {
 			originY = controlRect.top;
 		}
 	}
@@ -1839,8 +1839,8 @@ void SDialog::updateDialogData(bool /* saveAndValidate = true */)
  */
 int SDialog::getAppOption(AppOptionID optionId, bool isTemp /* = false */) const
 {
-	int result = INT_INVALID;
-	int tempResult = INT_INVALID;
+	int result = kInvalidInteger;
+	int tempResult = kInvalidInteger;
 
 	// Acquire option value from application main window
 	SDialog* mainDialogPtr = (SDialog*)AfxGetMainWnd();
@@ -1850,7 +1850,7 @@ int SDialog::getAppOption(AppOptionID optionId, bool isTemp /* = false */) const
 	}
 
 	// Return temp data if required and the result is valid
-	if ((isTemp == true) && (tempResult != INT_INVALID))
+	if ((isTemp == true) && (tempResult != kInvalidInteger))
 		return tempResult;
 
 	return result;
@@ -1909,7 +1909,7 @@ int SDialog::getFlagValue(AppFlagID flagId) const
 void SDialog::setFlagValue(AppFlagID flagId, int value)
 {
 	// Check value validity
-	if (value == INT_INVALID)
+	if (value == kInvalidInteger)
 		return;
 
 	switch (flagId)

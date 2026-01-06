@@ -638,8 +638,8 @@ bool CPowerPlusApp::loadRegistryAppData()
 	bool finalResult = true;
 	WORD loadingResult = APP_ERROR_SUCCESS;
 
-	int tempDate = INT_INVALID;
-	int tempTime = INT_INVALID;
+	int tempDate = kInvalidInteger;
+	int tempTime = kInvalidInteger;
 	String tempString = Constant::String::Empty;
 	ClockTime clockTimeTemp;
 
@@ -663,7 +663,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 	if (tempConfigDataPtr != NULL) {
 
 		// Read configuration data
-		int configResult = INT_NULL;
+		int configResult = kNullInteger;
 		configResult += getConfig(Key::ConfigData::LMBAction,				(int&)tempConfigDataPtr->leftMouseAction);
 		configResult += getConfig(Key::ConfigData::MMBAction,				(int&)tempConfigDataPtr->middleMouseAction);
 		configResult += getConfig(Key::ConfigData::RMBAction,				(int&)tempConfigDataPtr->rightMouseAction);
@@ -684,7 +684,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 		// Mark data as reading failed
 		// only if all values were read unsuccessfully
-		result = (configResult != INT_NULL);
+		result = (configResult != kNullInteger);
 	}
 
 	// Trace error
@@ -723,7 +723,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 		ScheduleItem tempDefaultItem(ScheduleData::kDefaultItemID);
 		{
 			// Read default schedule item
-			int defaultScheduleResult = INT_NULL;
+			int defaultScheduleResult = kNullInteger;
 
 			// Enable state
 			defaultScheduleResult += getDefaultSchedule(Key::ScheduleItem::IsEnabled, tempDate);
@@ -743,7 +743,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 			// Time value
 			defaultScheduleResult += getDefaultSchedule(Key::ScheduleItem::Time, tempTime);
-			if (tempTime != INT_INVALID) {
+			if (tempTime != kInvalidInteger) {
 
 				// Convert time value and set time
 				clockTimeTemp.setHour(GET_REGTIME_HOUR(tempTime));
@@ -752,12 +752,12 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 				// Reset temp data
 				clockTimeTemp = ClockTime();
-				tempTime = INT_INVALID;
+				tempTime = kInvalidInteger;
 			}
 
 			// Mark data as reading failed
 			// only if all values were read unsuccessfully
-			result = (defaultScheduleResult != INT_NULL);
+			result = (defaultScheduleResult != kNullInteger);
 
 			// Trace error
 			if (result == false) {
@@ -785,7 +785,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 				ScheduleItem tempExtraItem;
 
 				// Read extra item
-				int scheduleItemResult = INT_NULL;
+				int scheduleItemResult = kNullInteger;
 
 				// Enable state
 				scheduleItemResult += getScheduleExtra(extraIndex, Key::ScheduleItem::IsEnabled, tempDate);
@@ -809,7 +809,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 				// Time value
 				scheduleItemResult += getScheduleExtra(extraIndex, Key::ScheduleItem::Time, tempTime);
-				if (tempTime != INT_INVALID) {
+				if (tempTime != kInvalidInteger) {
 
 					// Convert time value and set time
 					clockTimeTemp.setHour(GET_REGTIME_HOUR(tempTime));
@@ -818,12 +818,12 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 					// Reset temp data
 					clockTimeTemp = ClockTime();
-					tempTime = INT_INVALID;
+					tempTime = kInvalidInteger;
 				}
 
 				// Mark data as reading failed
 				// only if all values were read unsuccessfully
-				result = (scheduleItemResult != INT_NULL);
+				result = (scheduleItemResult != kNullInteger);
 
 				// Trace error
 				if (result == false) {
@@ -887,7 +887,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 			ZeroMemory(&tempHotkeyItem, sizeof(HotkeySetItem));
 
 			// Read item data
-			int itemResult = INT_NULL;
+			int itemResult = kNullInteger;
 
 			// Enable state
 			itemResult += getHotkeySet(index, Key::HotkeySetItem::IsEnabled, tempDate);
@@ -905,7 +905,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 			// Mark the item as reading failed
 			// only if all values were read unsuccessfully
-			result = (itemResult != INT_NULL);
+			result = (itemResult != kNullInteger);
 
 			// Trace error
 			if (result == false) {
@@ -962,7 +962,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 			RmdMsgStyleSet rmdCommonStyleTemp;
 			{
 				// Read Power Reminder common style data
-				int nPwrRmdCommonStyleRet = INT_NULL;
+				int nPwrRmdCommonStyleRet = kNullInteger;
 
 				// Background color
 				nPwrRmdCommonStyleRet += getPwrReminderCommonStyle(Key::PwrReminderMsgStyle::BkgrdColor, tempDate);
@@ -1010,7 +1010,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 				// Mark data as reading failed
 				// only if all values were read unsuccessfully
-				result = (nPwrRmdCommonStyleRet != INT_NULL);
+				result = (nPwrRmdCommonStyleRet != kNullInteger);
 
 				// Trace error
 				if (result == false) {
@@ -1033,7 +1033,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 				PwrReminderItem tempItem;
 
 				// Read item data
-				int itemResult = INT_NULL;
+				int itemResult = kNullInteger;
 
 				// Item ID
 				itemResult += getPwrReminder(index, Key::PwrReminderItem::ItemID, tempDate);
@@ -1073,7 +1073,7 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 				// Time value
 				itemResult += getPwrReminder(index, Key::PwrReminderItem::Time, tempTime);
-				if (tempTime != INT_INVALID) {
+				if (tempTime != kInvalidInteger) {
 
 					// Convert time value and set time
 					clockTimeTemp.setHour(GET_REGTIME_HOUR(tempTime));
@@ -1082,12 +1082,12 @@ bool CPowerPlusApp::loadRegistryAppData()
 
 					// Reset temp data
 					clockTimeTemp = ClockTime();
-					tempTime = INT_INVALID;
+					tempTime = kInvalidInteger;
 				}
 
 				// Mark the item as reading failed
 				// only if all values were read unsuccessfully
-				result = (itemResult != INT_NULL);
+				result = (itemResult != kNullInteger);
 
 				// Trace error
 				if (result == false) {
@@ -1149,7 +1149,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	bool result = true;
 	bool finalResult = true;
 	WORD savingResult = APP_ERROR_SUCCESS;
-	int tempTime = INT_INVALID;
+	int tempTime = kInvalidInteger;
 
 	// Check data validity first
 	if (!dataSerializeCheck(Mode::Save, dataType))
@@ -1825,7 +1825,7 @@ void CPowerPlusApp::setAppPwrReminderData(PwrReminderData* data)
  */
 int CPowerPlusApp::getAppOption(AppOptionID optionId) const
 {
-	int result = INT_INVALID;
+	int result = kInvalidInteger;
 
 	switch (optionId)
 	{

@@ -157,12 +157,12 @@ constexpr bool ConfigData::compare(const ConfigData& other) const noexcept
  */
  int ConfigData::getAppOption(AppOptionID appOptionID) const noexcept
 {
-	int result = INT_INVALID;
+	int result = kInvalidInteger;
 
 	switch (appOptionID)
 	{
 	case AppOptionID::invalid:
-		result = INT_INVALID;
+		result = kInvalidInteger;
 		break;
 	case AppOptionID::leftMouseAction:
 		result = leftMouseAction;
@@ -493,7 +493,7 @@ DWORD ScheduleData::update(const ScheduleItem& item)
 	}
 
 	// Find extra item with matching ID
-	int retItemIndex = INT_INVALID;
+	int retItemIndex = kInvalidInteger;
 	for (int index = 0; index < getExtraItemNum(); index++) {
 		if (getItemAt(index).getItemId() == item.getItemId()) {
 			retItemIndex = index;
@@ -502,7 +502,7 @@ DWORD ScheduleData::update(const ScheduleItem& item)
 	}
 
 	// Update item if found
-	if (retItemIndex != INT_INVALID) {
+	if (retItemIndex != kInvalidInteger) {
 		ScheduleItem& temp = getItemAt(retItemIndex);
 		temp.copy(item);
 		return Error::Success;
@@ -834,8 +834,8 @@ void HotkeySetData::update(const Item& item)
 	}
 
 	// Check if item with same action ID or keystrokes exists
-	int dupActionIndex = INT_INVALID;
-	int dupKeyIndex = INT_INVALID;
+	int dupActionIndex = kInvalidInteger;
+	int dupKeyIndex = kInvalidInteger;
 
 	for (int index = 0; index < getItemNum(); index++) {
 		const Item& temp = getItemAt(index);
@@ -857,12 +857,12 @@ void HotkeySetData::update(const Item& item)
 	}
 
 	// Delete existed duplicate keystrokes
-	if (dupKeyIndex != INT_INVALID) {
+	if (dupKeyIndex != kInvalidInteger) {
 		remove(dupKeyIndex);
 	}
 
 	// If item with same action ID existed, update its data
-	if (dupActionIndex != INT_INVALID) {
+	if (dupActionIndex != kInvalidInteger) {
 		Item& temp = getItemAt(dupActionIndex);
 		temp.copy(item);
 	}
@@ -1306,7 +1306,7 @@ void PwrReminderData::init() noexcept
 	}
 
 	// Find item index
-	int retItemIndex = INT_INVALID;
+	int retItemIndex = kInvalidInteger;
 	for (int index = 0; index < getItemNum(); index++) {
 		if (getItemAt(index).getItemId() == item.getItemId()) {
 			retItemIndex = index;
@@ -1315,7 +1315,7 @@ void PwrReminderData::init() noexcept
 	}
 
 	// Update item if found
-	if (retItemIndex != INT_INVALID) {
+	if (retItemIndex != kInvalidInteger) {
 		PwrReminderItem& temp = getItemAt(retItemIndex);
 		temp.copy(item);
 	}
@@ -1453,8 +1453,8 @@ void PwrReminderData::init() noexcept
  PwrRuntimeItem::PwrRuntimeItem()
 {
 	// Init data
-	categoryId_ = INT_INVALID;						// Item category
-	itemId_ = INT_NULL;								// Power Reminder item ID
+	categoryId_ = kInvalidInteger;						// Item category
+	itemId_ = kNullInteger;								// Power Reminder item ID
 	displayFlag_ = FLAG_OFF;						// Item displaying flag
 	skipFlag_ = FLAG_OFF;							// Item skip flag
 	snoozeFlag_ = FLAG_OFF;							// Item snooze trigger flag
@@ -1500,10 +1500,10 @@ void PwrRuntimeItem::calcNextSnoozeTime(int interval) noexcept
 {
 	// Init data
 	isInitiated_ = false;							// Init state
-	categoryId_ = INT_NULL;							// Category ID
+	categoryId_ = kNullInteger;							// Category ID
 	timestampValue_ = DateTime();					// Timestamp of history
-	itemId_ = INT_NULL;								// Item ID
-	actionId_ = INT_NULL;							// History action ID
+	itemId_ = kNullInteger;								// Item ID
+	actionId_ = kNullInteger;							// History action ID
 	actionResult_ = true;							// Action result
 	errorCode_ = APP_ERROR_SUCCESS;					// Returned error code
 	description_ = Constant::String::Empty;			// History description (attached info)
@@ -1797,7 +1797,7 @@ String StringUtils::getApplicationPath(bool includeExeName)
 	if (!includeExeName) {
 		// Remove the executable file name (and the last '\' as well)
 		int position = retAppPath.reverseFind(Constant::Char::Backslash);
-		if (position != INT_INVALID) {
+		if (position != kInvalidInteger) {
 			String tempString = retAppPath.left(position);
 			retAppPath = tempString;
 		}
@@ -2086,7 +2086,7 @@ int StringUtils::printCharList(const wchar_t* srcStr, String& outputStr)
 {
 	// Invalid source string
 	if (!srcStr)
-		return INT_INVALID;
+		return kInvalidInteger;
 
 	// Get source string
 	String _srcStr(srcStr);
@@ -2194,8 +2194,8 @@ bool ClockTimeUtils::inputText2Time(ClockTime& clockTime, const wchar_t* inputTe
 
 	String timeString(inputText);
 
-	int hour = INT_INVALID;
-	int minute = INT_INVALID;
+	int hour = kInvalidInteger;
+	int minute = kInvalidInteger;
 
 	// Break the time value into combinations of digits
 	int left1Digit = _tstoi(timeString.left(1));
@@ -2255,7 +2255,7 @@ bool ClockTimeUtils::inputText2Time(ClockTime& clockTime, const wchar_t* inputTe
 		return false;
 
 	// Only return if both the hour and minute values are valid
-	if ((hour > INT_INVALID) && (minute > INT_INVALID)) {
+	if ((hour > kInvalidInteger) && (minute > kInvalidInteger)) {
 		clockTime.setHour(hour);
 		clockTime.setMinute(minute);
 	}
@@ -2355,7 +2355,7 @@ void ClockTimeUtils::spinPos2Time(ClockTime& clockTime, int pos)
 	int minute = pos - (hour * 60);
 
 	// Validate
-	if ((hour != INT_INVALID) && (minute != INT_INVALID)) {
+	if ((hour != kInvalidInteger) && (minute != kInvalidInteger)) {
 		clockTime.setHour(hour);
 		clockTime.setMinute(minute);
 	}
@@ -2947,7 +2947,7 @@ void AppCore::showErrorMessage(HWND msgOwnerWnd, unsigned languageId, DWORD erro
 
 	// Get application-defined error code from system-defined error code
 	DWORD appErrCode = getPairedID(IDTable::ErrorCode, errorCode, true);
-	if (appErrCode != INT_INVALID) {
+	if (appErrCode != kInvalidInteger) {
 		// Replace with application-defined error code
 		errorCode = appErrCode;
 	}
@@ -2956,13 +2956,13 @@ void AppCore::showErrorMessage(HWND msgOwnerWnd, unsigned languageId, DWORD erro
 	int errMsgID = getPairedID(IDTable::ErrorMessage, errorCode);
 
 	// Invalid error message ID
-	if (errMsgID == INT_INVALID) {
+	if (errMsgID == kInvalidInteger) {
 		// Show unknown error message
 		errMsgID = MSGBOX_ERROR_UNKNOWN;
 	}
 
 	// If error message ID is NULL, do nothing
-	if (errMsgID == INT_NULL)
+	if (errMsgID == kNullInteger)
 		return;
 
 	// Load language package
@@ -3139,7 +3139,7 @@ unsigned AppCore::getWindowsOSVersion(void)
 		// Trace error
 		TRACE_FORMAT("Error: Get RtlGetVersion function address failed!!! (Code: 0x%08X)", GetLastError());
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return INT_NULL;
+		return kNullInteger;
 	}
 
 	// Get Window OS version
