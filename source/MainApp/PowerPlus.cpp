@@ -1858,7 +1858,7 @@ void CPowerPlusApp::initAppHistoryLog()
 {
 	// Initialization
 	if (appHistoryLogPtr_ == NULL) {
-		appHistoryLogPtr_ = new SLogging(LOGTYPE_HISTORY_LOG);
+		appHistoryLogPtr_ = new Logger(LOGTYPE_HISTORY_LOG);
 	}
 	
 	// Check validity after allocating
@@ -1876,9 +1876,9 @@ void CPowerPlusApp::initAppHistoryLog()
 /**
  * @brief	Get app action history log pointer
  * @param	None
- * @return	SLogging - Action history log pointer
+ * @return	Logger - Action history log pointer
  */
-SLogging* CPowerPlusApp::getAppHistoryLog()
+Logger* CPowerPlusApp::getAppHistoryLog()
 {
 	// Check validity
 	VERIFY(appHistoryLogPtr_ != NULL);
@@ -1893,7 +1893,7 @@ SLogging* CPowerPlusApp::getAppHistoryLog()
 void CPowerPlusApp::outputAppHistoryLog(LOGITEM logItem)
 {
 	// Get app history logging pointer
-	SLogging* appHistoryLoggerPtr = getAppHistoryLog();
+	Logger* appHistoryLoggerPtr = getAppHistoryLog();
 	
 	// Only output log if option is ON
 	if ((appHistoryLoggerPtr != NULL) && (getAppOption(AppOptionID::saveActionHistory) != false)) {
@@ -2380,8 +2380,15 @@ bool CPowerPlusApp::saveLastSysEventTime(BYTE eventType, const DateTime& timeSys
 	unsigned timePeriod = (timeSysEvent.hour() < 12) ? FORMAT_TIMEPERIOD_ANTE_MERIDIEM : FORMAT_TIMEPERIOD_POST_MERIDIEM;
 	const wchar_t* timePeriodFormat = getLanguageString(getAppLanguage(), timePeriod);
 	const wchar_t* timeFormatString = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
-	String dateTimeFormat = StringUtils::stringFormat(timeFormatString, timeSysEvent.year(), timeSysEvent.month(), timeSysEvent.day(),
-		timeSysEvent.hour(), timeSysEvent.minute(), timeSysEvent.second(), timeSysEvent.millisecond(), timePeriodFormat);
+	String dateTimeFormat = StringUtils::stringFormat(timeFormatString,
+													timeSysEvent.year(),
+													timeSysEvent.month(),
+													timeSysEvent.day(),
+													timeSysEvent.hour(),
+													timeSysEvent.minute(),
+													timeSysEvent.second(),
+													timeSysEvent.millisecond(),
+													timePeriodFormat);
 
 	// Save registry data
 	if (!writeSysEventTracking(keyName, dateTimeFormat)) {

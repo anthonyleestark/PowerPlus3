@@ -617,7 +617,7 @@ int CPowerPlusDlg::PreDestroyDialog()
 	}
 
 	// Can not destroy if Power Reminder messages are currently displaying
-	UIntArray arrPwrDispItemList;
+	uint32_array arrPwrDispItemList;
 	if (getPwrReminderDispList(arrPwrDispItemList) > 0) {
 		// Display notify message
 		displayMessageBox(MSGBOX_OTHER_PREDESTROY_REMINDERDISP, MSGBOX_PWRREMINDER_CAPTION);
@@ -4687,7 +4687,7 @@ void CPowerPlusDlg::setPwrReminderDispFlag(const PwrReminderItem& reminderItem, 
  * @param	displayItemList - Power Reminder displaying item list
  * @return	size_t - Number of displaying items
  */
-size_t CPowerPlusDlg::getPwrReminderDispList(UIntArray& displayItemList)
+size_t CPowerPlusDlg::getPwrReminderDispList(uint32_array& displayItemList)
 {
 	// Reset output data list
 	displayItemList.clear();
@@ -4729,7 +4729,7 @@ size_t CPowerPlusDlg::getPwrReminderDispList(UIntArray& displayItemList)
  * @param	scheduleItem - Schedule item
  * @return	None
  */
-void CPowerPlusDlg::outputScheduleEventLog(USHORT eventId, const ScheduleItem& scheduleItem)
+void CPowerPlusDlg::outputScheduleEventLog(uint16 eventId, const ScheduleItem& scheduleItem)
 {
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
@@ -4752,7 +4752,7 @@ void CPowerPlusDlg::outputScheduleEventLog(USHORT eventId, const ScheduleItem& s
  * @param	reminderItem - Power Reminder item
  * @return	None
  */
-void CPowerPlusDlg::outputPwrReminderEventLog(USHORT eventId, const PwrReminderItem& reminderItem)
+void CPowerPlusDlg::outputPwrReminderEventLog(uint16 eventId, const PwrReminderItem& reminderItem)
 {
 	// Message content
 	const wchar_t* messageContent = reminderItem.getMessage();

@@ -501,7 +501,7 @@ void SCtrlInfoWrap::getReserveString(_Out_ String& value) const
  * @param	valueList - Integer array value (out)
  * @return	None
  */
-void SCtrlInfoWrap::getIntArray(_Out_ ULongArray& valueList) const
+void SCtrlInfoWrap::getIntArray(_Out_ uint64_array& valueList) const
 {
 	if (this->valueIntListPtr_ == NULL) {
 		valueList.clear();
@@ -516,7 +516,7 @@ void SCtrlInfoWrap::getIntArray(_Out_ ULongArray& valueList) const
  * @param	valueList - Integer array value (out)
  * @return	None
  */
-void SCtrlInfoWrap::getReserveIntArray(_Out_ ULongArray& valueList) const
+void SCtrlInfoWrap::getReserveIntArray(_Out_ uint64_array& valueList) const
 {
 	if (this->reservedValueIntListPtr_ == NULL) {
 		valueList.clear();
@@ -737,10 +737,10 @@ void SCtrlInfoWrap::setReserveString(_In_ const wchar_t* value)
  * @param	valueList - Integer array value (in)
  * @return	None
  */
-void SCtrlInfoWrap::setIntArray(_In_ const ULongArray& valueList)
+void SCtrlInfoWrap::setIntArray(_In_ const uint64_array& valueList)
 {
 	if (this->valueIntListPtr_ == NULL)
-		this->valueIntListPtr_ = new ULongArray();
+		this->valueIntListPtr_ = new uint64_array();
 	
 	if (this->valueIntListPtr_ != NULL) {
 		this->valueIntListPtr_->clear();
@@ -753,10 +753,10 @@ void SCtrlInfoWrap::setIntArray(_In_ const ULongArray& valueList)
  * @param	valueList - Integer array value (in)
  * @return	None
  */
-void SCtrlInfoWrap::setReserveIntArray(_In_ const ULongArray& valueList)
+void SCtrlInfoWrap::setReserveIntArray(_In_ const uint64_array& valueList)
 {
 	if (this->reservedValueIntListPtr_ == NULL)
-		this->reservedValueIntListPtr_ = new ULongArray();
+		this->reservedValueIntListPtr_ = new uint64_array();
 
 	if (this->reservedValueIntListPtr_ != NULL) {
 		this->reservedValueIntListPtr_->clear();
@@ -1317,7 +1317,7 @@ void SControlManager::updateData(unsigned controlId /* = NULL */)
 				}
 				currentControlPtr->setReserveInteger(columnCount);
 				// Update control's data current selection index(es)
-				ULongArray selectionList;
+				uint64_array selectionList;
 				selectionList.reserve(itemCount);
 				for (size_t index = 0; index < itemCount; index++) {
 					// Get selection index
@@ -1444,7 +1444,7 @@ void SControlManager::updateData(unsigned controlId /* = NULL */)
 				currentControlPtr->setInteger(address);
 				currentControlPtr->setReserveInteger(nonBlankFieldCount);
 				// Store each field value separately into an integer array
-				ULongArray addressFieldArray;
+				uint64_array addressFieldArray;
 				addressFieldArray.resize(4);
 				addressFieldArray[0] = field0;		// Field 0
 				addressFieldArray[1] = field1;		// Field 1

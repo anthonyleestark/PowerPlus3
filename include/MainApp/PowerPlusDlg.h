@@ -94,7 +94,7 @@ private:
 	Size* dialogSize_;
 
 	// Hotkey register data
-	UIntArray currentRegHotkeyList_;
+	uint32_array currentRegHotkeyList_;
 
 	// Power++ runtime queue data
 	PwrRuntimeQueue runtimeQueue_;
@@ -227,14 +227,14 @@ private:
 	bool getPwrReminderSnoozeStatus(unsigned itemId, const ClockTime& currentTime);
 	bool getPwrReminderDispFlag(const PwrReminderItem& reminderItem);
 	void setPwrReminderDispFlag(const PwrReminderItem& reminderItem, int displayFlag);
-	size_t getPwrReminderDispList(UIntArray& displayItemList);
+	size_t getPwrReminderDispList(uint32_array& displayItemList);
 
 	// Debugging functions
 	bool processDebugCommand(const wchar_t* commandString, DWORD& errorCode);
 
 	// History and logging functions
-	void outputScheduleEventLog(USHORT eventId, const ScheduleItem& scheduleItem);
-	void outputPwrReminderEventLog(USHORT eventId, const PwrReminderItem& reminderItem);
+	void outputScheduleEventLog(uint16 eventId, const ScheduleItem& scheduleItem);
+	void outputPwrReminderEventLog(uint16 eventId, const PwrReminderItem& reminderItem);
 	void initPwrActionHistoryInfo(unsigned actionId, bool result, DWORD errorCode);
 	void initScheduleHistoryInfo(const ScheduleItem& scheduleItem);
 	void initHotkeyHistoryInfo(unsigned hotkeyId);

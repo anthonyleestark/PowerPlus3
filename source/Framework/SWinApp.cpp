@@ -388,7 +388,7 @@ void SWinApp::initAppEventLog(void)
 {
 	// Initialization
 	if (appEventLogPtr_ == NULL) {
-		appEventLogPtr_ = new SLogging(LOGTYPE_APP_EVENT);
+		appEventLogPtr_ = new Logger(LOGTYPE_APP_EVENT);
 	}
 
 	// Check validity after allocating
@@ -410,7 +410,7 @@ void SWinApp::initAppEventLog(void)
  * @param	pDetailInfo	- Log detail info (array pointer)
  * @return	None
  */
-void SWinApp::outputEventLog(USHORT eventId, const wchar_t* description /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
+void SWinApp::outputEventLog(uint16 eventId, const wchar_t* description /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
 {
 	// Prepare event log info
 	LOGITEM logItemAppEvent;
@@ -429,7 +429,7 @@ void SWinApp::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 	}
 
 	// Output app event log
-	if (SLogging* appEventLoggerPtr = getAppEventLog()) {
+	if (Logger* appEventLoggerPtr = getAppEventLog()) {
 		appEventLoggerPtr->outputItem(logItemAppEvent);
 	}
 }

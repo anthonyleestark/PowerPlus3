@@ -114,7 +114,7 @@ protected:
 	unsigned descendantCount_;
 
 	// Lock state exception ID list
-	UIntArray* lockExceptionIdList_;
+	uint32_array* lockExceptionIdList_;
 
 	// Dialog anchor point
 	Point anchorPoint_;
@@ -375,17 +375,17 @@ public:
 	}
 
 	// Dialog event logging function
-	void outputEventLog(USHORT eventId, const wchar_t* description = NULL, LOGDETAILINFO* detailInfoPtr = NULL);
+	void outputEventLog(uint16 eventId, const wchar_t* description = NULL, LOGDETAILINFO* detailInfoPtr = NULL);
 
 	// Dialog control event logging functions
-	void outputButtonLog(USHORT eventId, unsigned buttonId);
-	void outputCheckBoxLog(USHORT eventId, unsigned checkboxId);
-	void outputRadButtonLog(USHORT eventId, unsigned radButtonId);
-	void outputComboBoxLog(USHORT eventId, unsigned comboId);
-	void outputEditBoxLog(USHORT eventId, unsigned editId);
-	void outputListBoxLog(USHORT eventId, unsigned listBoxId);
-	void outputSpinCtrlLog(USHORT eventId, unsigned spinCtrlId);
-	void outputMenuLog(USHORT eventId, unsigned menuItemId);
+	void outputButtonLog(uint16 eventId, unsigned buttonId);
+	void outputCheckBoxLog(uint16 eventId, unsigned checkboxId);
+	void outputRadButtonLog(uint16 eventId, unsigned radButtonId);
+	void outputComboBoxLog(uint16 eventId, unsigned comboId);
+	void outputEditBoxLog(uint16 eventId, unsigned editId);
+	void outputListBoxLog(uint16 eventId, unsigned listBoxId);
+	void outputSpinCtrlLog(uint16 eventId, unsigned spinCtrlId);
+	void outputMenuLog(uint16 eventId, unsigned menuItemId);
 
 	// Dialog and items setup functions
 	virtual void setupLanguage(void);
@@ -395,8 +395,8 @@ public:
 	void updateItemText(unsigned controlId, unsigned newCaptionId = NULL, LANGTABLE_PTR langTablePtr = NULL);
 	void setControlText(CWnd* controlPtr, unsigned controlId, LANGTABLE_PTR langTablePtr = NULL);
 
-	void moveItemGroup(const UIntArray& controlIdGroup, const Point& newPosition);
-	void moveItemGroup(const UIntArray& controlIdGroup, int direction, int distance);
+	void moveItemGroup(const uint32_array& controlIdGroup, const Point& newPosition);
+	void moveItemGroup(const uint32_array& controlIdGroup, int direction, int distance);
 
 	virtual void setupDialogItemState(void);
 	virtual void refreshDialogItemState(bool recheckState = false);

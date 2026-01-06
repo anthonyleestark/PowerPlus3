@@ -36,7 +36,7 @@ private:
 	PwrReminderData* reminderDataPtr_;
 
 	// Logging pointers
-	SLogging* appHistoryLogPtr_;
+	Logger* appHistoryLogPtr_;
 
 	// Hook procedure handle
 	HHOOK appKeyboardHookHandler_;
@@ -81,7 +81,7 @@ public:
 
 	// App history logging functions
 	void initAppHistoryLog();
-	SLogging* getAppHistoryLog();
+	Logger* getAppHistoryLog();
 	void outputAppHistoryLog(LOGITEM logItem);
 
 	// Data validity checking functions

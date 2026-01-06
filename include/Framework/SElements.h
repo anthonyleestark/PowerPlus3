@@ -132,8 +132,8 @@ protected:
 	String*			reservedValueStringPtr_;
 
 	// Integer array data
-	ULongArray*		valueIntListPtr_;
-	ULongArray*		reservedValueIntListPtr_;
+	uint64_array*		valueIntListPtr_;
+	uint64_array*		reservedValueIntListPtr_;
 
 	// String array data
 	StringArray*	valueStringListPtr_;
@@ -261,8 +261,8 @@ public:
 	virtual void	 getReserveString(_Out_ String& value) const;
 
 	// Get array data values
-	virtual void	 getIntArray(_Out_ ULongArray& valueList) const;
-	virtual void	 getReserveIntArray(_Out_ ULongArray& valueList) const;
+	virtual void	 getIntArray(_Out_ uint64_array& valueList) const;
+	virtual void	 getReserveIntArray(_Out_ uint64_array& valueList) const;
 	virtual void	 getStringArray(_Out_ StringArray& valueList) const;
 	virtual void	 getReserveStringArray(_Out_ StringArray& valueList) const;
 
@@ -288,8 +288,8 @@ public:
 	virtual void	setReserveString(_In_ const wchar_t* value);
 
 	// Set array data values
-	virtual void	setIntArray(_In_ const ULongArray& valueList);
-	virtual void	setReserveIntArray(_In_ const ULongArray& valueList);
+	virtual void	setIntArray(_In_ const uint64_array& valueList);
+	virtual void	setReserveIntArray(_In_ const uint64_array& valueList);
 	virtual void	setStringArray(_In_ const StringArray& valueList);
 	virtual void	setReserveStringArray(_In_ const StringArray& valueList);
 

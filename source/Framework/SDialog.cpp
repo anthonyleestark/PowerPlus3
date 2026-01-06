@@ -703,7 +703,7 @@ void SDialog::addLockStateException(unsigned id)
 {
 	// Initialize the list if not yet allocated
 	if (lockExceptionIdList_ == NULL) {
-		lockExceptionIdList_ = new UIntArray;
+		lockExceptionIdList_ = new uint32_array;
 		lockExceptionIdList_->clear();
 	}
 
@@ -1177,7 +1177,7 @@ int SDialog::displayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
  * @param	detailInfoPtr	- Log detail info (array pointer)
  * @return	None
  */
-void SDialog::outputEventLog(USHORT eventId, const wchar_t* description /* = NULL */, LOGDETAILINFO* detailInfoPtr /* = NULL */)
+void SDialog::outputEventLog(uint16 eventId, const wchar_t* description /* = NULL */, LOGDETAILINFO* detailInfoPtr /* = NULL */)
 {
 	// Prepare event log info
 	LOGITEM logItemDialogEvent;
@@ -1199,7 +1199,7 @@ void SDialog::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
 	SWinApp* theAppPtr = (SWinApp*)AfxGetApp();
 	ASSERT(theAppPtr);
 	if (theAppPtr == NULL) return;
-	if (SLogging* appEventLoggerPtr = theAppPtr->getAppEventLog()) {
+	if (Logger* appEventLoggerPtr = theAppPtr->getAppEventLog()) {
 		appEventLoggerPtr->outputItem(logItemDialogEvent);
 	}
 }
@@ -1210,7 +1210,7 @@ void SDialog::outputEventLog(USHORT eventId, const wchar_t* description /* = NUL
  * @param	buttonId - Button ID
  * @return	None
  */
-void SDialog::outputButtonLog(USHORT eventId, unsigned buttonId)
+void SDialog::outputButtonLog(uint16 eventId, unsigned buttonId)
 {
 	// Prepare button event log info
 	CButton* buttonPtr = (CButton*)GetDlgItem(buttonId);
@@ -1242,7 +1242,7 @@ void SDialog::outputButtonLog(USHORT eventId, unsigned buttonId)
  * @param	checkboxId - Checkbox ID
  * @return	None
  */
-void SDialog::outputCheckBoxLog(USHORT eventId, unsigned checkboxId)
+void SDialog::outputCheckBoxLog(uint16 eventId, unsigned checkboxId)
 {
 	// Prepare checkbox event log info
 	CButton* checkboxPtr = (CButton*)GetDlgItem(checkboxId);
@@ -1277,7 +1277,7 @@ void SDialog::outputCheckBoxLog(USHORT eventId, unsigned checkboxId)
  * @param	checkboxId - Checkbox ID
  * @return	None
  */
-void SDialog::outputRadButtonLog(USHORT eventId, unsigned radButtonId)
+void SDialog::outputRadButtonLog(uint16 eventId, unsigned radButtonId)
 {
 	// Prepare radio button event log info
 	CButton* radioButtonPtr = (CButton*)GetDlgItem(radButtonId);
@@ -1312,7 +1312,7 @@ void SDialog::outputRadButtonLog(USHORT eventId, unsigned radButtonId)
  * @param	comboId - Combo-box ID
  * @return	None
  */
-void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
+void SDialog::outputComboBoxLog(uint16 eventId, unsigned comboId)
 {
 	// Prepare combo-box event log info
 	CComboBox* comboBoxPtr = (CComboBox*)GetDlgItem(comboId);
@@ -1357,7 +1357,7 @@ void SDialog::outputComboBoxLog(USHORT eventId, unsigned comboId)
  * @param	editId - Edit box ID
  * @return	None
  */
-void SDialog::outputEditBoxLog(USHORT eventId, unsigned editId)
+void SDialog::outputEditBoxLog(uint16 eventId, unsigned editId)
 {
 	// Prepare edit box event log info
 	CEdit* editCtrlPtr = (CEdit*)GetDlgItem(editId);
@@ -1399,7 +1399,7 @@ void SDialog::outputEditBoxLog(USHORT eventId, unsigned editId)
  * @param	listBoxId - List box ID
  * @return	None
  */
-void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
+void SDialog::outputListBoxLog(uint16 eventId, unsigned listBoxId)
 {
 	// Prepare list box event log info
 	CListBox* listBoxPtr = (CListBox*)GetDlgItem(listBoxId);
@@ -1444,7 +1444,7 @@ void SDialog::outputListBoxLog(USHORT eventId, unsigned listBoxId)
  * @param	spinCtrlId - Spin control ID
  * @return	None
  */
-void SDialog::outputSpinCtrlLog(USHORT eventId, unsigned spinCtrlId)
+void SDialog::outputSpinCtrlLog(uint16 eventId, unsigned spinCtrlId)
 {
 	// Prepare spin control event log info
 	CSpinButtonCtrl* spinCtrlPtr = (CSpinButtonCtrl*)GetDlgItem(spinCtrlId);
@@ -1470,7 +1470,7 @@ void SDialog::outputSpinCtrlLog(USHORT eventId, unsigned spinCtrlId)
  * @param	menuItemId - Menu item ID
  * @return	None
  */
-void SDialog::outputMenuLog(USHORT eventId, unsigned menuItemId)
+void SDialog::outputMenuLog(uint16 eventId, unsigned menuItemId)
 {
 	// Prepare menu event log info
 	// Get menu item title from language table
@@ -1659,7 +1659,7 @@ void SDialog::setControlText(CWnd* controlPtr, unsigned controlId, LANGTABLE_PTR
  * @param	newPosition	- New position
  * @return	None
  */
-void SDialog::moveItemGroup(const UIntArray& controlIdGroup, const Point& newPosition)
+void SDialog::moveItemGroup(const uint32_array& controlIdGroup, const Point& newPosition)
 {
 	// Check data validity
 	if (controlIdGroup.empty())
@@ -1721,7 +1721,7 @@ void SDialog::moveItemGroup(const UIntArray& controlIdGroup, const Point& newPos
  * @param	distance		- Moving distance
  * @return	None
  */
-void SDialog::moveItemGroup(const UIntArray& controlIdGroup, int direction, int distance)
+void SDialog::moveItemGroup(const uint32_array& controlIdGroup, int direction, int distance)
 {
 	// Check data validity
 	if (controlIdGroup.empty())

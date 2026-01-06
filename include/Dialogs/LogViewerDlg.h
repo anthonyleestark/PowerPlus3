@@ -24,7 +24,7 @@ class CLogViewerDlg : public SDialog
 
 public:
 	using Item = const LogItem&;
-	using Data = SLogging*;
+	using Data = Logger*;
 	enum ColumnID {
 		DateTime = 0,								// Date/Time
 		CategoryID,									// Event ID (category ID)

@@ -41,7 +41,7 @@ size_t getSizeByType(byte dataType)
 	case LogDataType::Num_U2:			// Unsigned integer (2-byte)
 	case LogDataType::Num_I2:			// Signed integer (2-byte)
 	case LogDataType::Num_F2:			// Float number (2-byte)
-		retSize = sizeof(USHORT);
+		retSize = sizeof(uint16);
 		break;
 
 	case LogDataType::Num_U4:			// Unsigned integer (4-byte)
@@ -238,7 +238,7 @@ bool LogDetail::setPointerData(PVOID dataBuff, byte dataType /* = DATA_TYPE_UNSP
  * @param	flag		  - Detail flag
  * @return	None
  */
-void LogDetailInfo::addDetail(USHORT categoryId, int detailValue, int flag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::addDetail(uint16 categoryId, int detailValue, int flag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
@@ -250,7 +250,7 @@ void LogDetailInfo::addDetail(USHORT categoryId, int detailValue, int flag /* = 
 	this->addDetail(logDetail);
 }
 
-void LogDetailInfo::addDetail(USHORT categoryId, const wchar_t* detailInfo, int flag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::addDetail(uint16 categoryId, const wchar_t* detailInfo, int flag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
@@ -262,7 +262,7 @@ void LogDetailInfo::addDetail(USHORT categoryId, const wchar_t* detailInfo, int 
 	this->addDetail(logDetail);
 }
 
-void LogDetailInfo::addDetail(USHORT categoryId, int detailValue, const wchar_t* detailInfo, int flag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::addDetail(uint16 categoryId, int detailValue, const wchar_t* detailInfo, int flag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
@@ -959,7 +959,7 @@ void JSON::printYAML(String& outputString, int indent) const
 /**
  * @brief	Constructor
  */
-SLogging::SLogging(byte byLogType)
+Logger::Logger(byte byLogType)
 {
 	// Log data array
 	logData_.clear();
@@ -975,7 +975,7 @@ SLogging::SLogging(byte byLogType)
 /**
  * @brief	Destructor
  */
-SLogging::~SLogging()
+Logger::~Logger()
 {
 	// Clean up log data
 	logData_.clear();
@@ -992,7 +992,7 @@ SLogging::~SLogging()
  * @param	index - Item index
  * @return	LOGITEM - Return log item
  */
-LOGITEM& SLogging::getLogItem(int index)
+LOGITEM& Logger::getLogItem(int index)
 {
 	// If current log data is empty
 	if (this->isEmpty()) {
@@ -1014,7 +1014,7 @@ LOGITEM& SLogging::getLogItem(int index)
 	return logData_.at(index);
 }
 
-const LOGITEM& SLogging::getLogItem(int index) const
+const LOGITEM& Logger::getLogItem(int index) const
 {
 	// If current log data is empty
 	if (this->isEmpty()) {
@@ -1041,7 +1041,7 @@ const LOGITEM& SLogging::getLogItem(int index) const
  * @param	logItemTemplate - Log item template
  * @return	byte
  */
-void SLogging::setDefaultTemplate(const LOGITEM& logItemTemplate) noexcept
+void Logger::setDefaultTemplate(const LOGITEM& logItemTemplate) noexcept
 {
 	// Initialize default template
 	if (defaultTemplate_ == NULL) {
@@ -1065,7 +1065,7 @@ void SLogging::setDefaultTemplate(const LOGITEM& logItemTemplate) noexcept
  * @param	logItem	- Log item to write
  * @return	None
  */
-void SLogging::outputItem(const LOGITEM& logItem)
+void Logger::outputItem(const LOGITEM& logItem)
 {
 	if (getWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
@@ -1091,7 +1091,7 @@ void SLogging::outputItem(const LOGITEM& logItem)
  * @param	byType	  - Log type
  * @return	None
  */
-void SLogging::outputString(const wchar_t* logString, bool useLastTemplate /* = true */)
+void Logger::outputString(const wchar_t* logString, bool useLastTemplate /* = true */)
 {
 	if (getWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
@@ -1140,7 +1140,7 @@ void SLogging::outputString(const wchar_t* logString, bool useLastTemplate /* = 
  * @param	None
  * @return	bool - Result of log writing process
  */
-bool SLogging::write(void)
+bool Logger::write(void)
 {
 	bool result = true;
 	DWORD errorCode;
@@ -1273,7 +1273,7 @@ bool SLogging::write(void)
  * @param	filePath - Output log file path
  * @return	bool - Result of log writing process
  */
-bool SLogging::write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
+bool Logger::write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
 {
 	bool result = true;
 	DWORD errorCode;
@@ -1364,7 +1364,7 @@ bool SLogging::write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
  * @param	logString - Log string
  * @return	bool - Result of log writing process
  */
-bool SLogging::write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
+bool Logger::write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
 {
 	bool result = true;
 	DWORD errorCode;
@@ -1458,7 +1458,7 @@ bool SLogging::write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 /**
  * @brief	Constructor
  */
-DebugLogging::DebugLogging()
+DebugLogger::DebugLogger()
 {
 	// Log file pointers
 	traceErrorFilePtr_ = NULL;
@@ -1474,7 +1474,7 @@ DebugLogging::DebugLogging()
 /**
  * @brief	Destructor
  */
-DebugLogging::~DebugLogging()
+DebugLogger::~DebugLogger()
 {
 	// Release and clean-up file pointers
 	releaseTraceErrorLogFile();
@@ -1503,7 +1503,7 @@ DebugLogging::~DebugLogging()
  * @note	Destination file: traceError.log
  * @note	To output trace error detail log strings
  */
-bool DebugLogging::initTraceErrorLogFile(void)
+bool DebugLogger::initTraceErrorLogFile(void)
 {
 	// Verify global trace error log file pointer initialization
 	VERIFY_INITIALIZATION(traceErrorFilePtr_, CFile);
@@ -1556,7 +1556,7 @@ bool DebugLogging::initTraceErrorLogFile(void)
  * @note	Destination file: traceError.log
  * @note	To output trace error detail log strings
  */
-void DebugLogging::releaseTraceErrorLogFile(void)
+void DebugLogger::releaseTraceErrorLogFile(void)
 {
 	// Clean up trace error log file pointer
 	if (traceErrorFilePtr_ != NULL) {
@@ -1578,7 +1578,7 @@ void DebugLogging::releaseTraceErrorLogFile(void)
  * @note	Destination file: TraceDebug.log
  * @note	To output trace debug log strings (including the function name, code file and line where it failed)
  */
-bool DebugLogging::initTraceDebugLogFile(void)
+bool DebugLogger::initTraceDebugLogFile(void)
 {
 	// Verify global trace debug log file pointer initialization
 	VERIFY_INITIALIZATION(traceDebugFilePtr_, CFile);
@@ -1631,7 +1631,7 @@ bool DebugLogging::initTraceDebugLogFile(void)
  * @note	Destination file: TraceDebug.log
  * @note	To output trace debug log strings (including the function name, code file and line where it failed)
  */
-void DebugLogging::releaseTraceDebugLogFile(void)
+void DebugLogger::releaseTraceDebugLogFile(void)
 {
 	// Clean up trace debug info log file pointer
 	if (traceDebugFilePtr_ != NULL) {
@@ -1653,7 +1653,7 @@ void DebugLogging::releaseTraceDebugLogFile(void)
  * @note	Destination file: DebugInfo.log
  * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
  */
-bool DebugLogging::initDebugInfoLogFile(void)
+bool DebugLogger::initDebugInfoLogFile(void)
 {
 	// Verify global debug info log file pointer initialization
 	VERIFY_INITIALIZATION(debugInfoFilePtr_, CFile);
@@ -1706,7 +1706,7 @@ bool DebugLogging::initDebugInfoLogFile(void)
  * @note	Destination file: DebugInfo.log
  * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
  */
-void DebugLogging::releaseDebugInfoLogFile(void)
+void DebugLogger::releaseDebugInfoLogFile(void)
 {
 	// Clean up debug info log file pointer
 	if (debugInfoFilePtr_ != NULL) {
@@ -1727,7 +1727,7 @@ void DebugLogging::releaseDebugInfoLogFile(void)
  * @param	logFileName	- Log file name
  * @return	true/false
  */
-bool DebugLogging::backupOldLogFile(const String& filePath, const wchar_t* logFileName)
+bool DebugLogger::backupOldLogFile(const String& filePath, const wchar_t* logFileName)
 {
 	CFileFind Finder;
 
@@ -1772,7 +1772,7 @@ bool DebugLogging::backupOldLogFile(const String& filePath, const wchar_t* logFi
  * @note	Destination file: traceError.log
  * @note	To output trace error detail log strings
  */
-void DebugLogging::writeTraceErrorLogFile(const wchar_t* logStringW)
+void DebugLogger::writeTraceErrorLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
 	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
@@ -1838,7 +1838,7 @@ void DebugLogging::writeTraceErrorLogFile(const wchar_t* logStringW)
  * @note	Destination file: TraceDebug.log
  * @note	To output trace debug log strings (including the function name, code file and line where it failed)
  */
-void DebugLogging::writeTraceDebugLogFile(const wchar_t* logStringW)
+void DebugLogger::writeTraceDebugLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
 	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
@@ -1903,7 +1903,7 @@ void DebugLogging::writeTraceDebugLogFile(const wchar_t* logStringW)
  * @note	Destination file: DebugInfo.log
  * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
  */
-void DebugLogging::writeDebugInfoLogFile(const wchar_t* logStringW)
+void DebugLogger::writeDebugInfoLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
 	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
@@ -1968,7 +1968,7 @@ void DebugLogging::writeDebugInfoLogFile(const wchar_t* logStringW)
  * @return	None
  * @note	Base function - No longer used
  */
-void DebugLogging::writeTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
+void DebugLogger::writeTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
 {
 	// Log file path
 	String filePath = StringUtils::makeFilePath(Constant::Folder::Log, fileName, Constant::File::Extension::Log);
@@ -2044,7 +2044,7 @@ void DebugLogging::writeTraceNDebugLogFileBase(const wchar_t* fileName, const wc
  * @param	traceLogA - Output trace log string (ANSI)
  * @return	None
  */
-void DebugLogging::traceError(const char* traceLogA)
+void DebugLogger::traceError(const char* traceLogA)
 {
 	// Convert ANSI string to UNICODE
 	const wchar_t* traceLogW = MAKEUNICODE(traceLogA);
@@ -2056,7 +2056,7 @@ void DebugLogging::traceError(const char* traceLogA)
  * @param	traceLogW - Output trace log string (Unicode)
  * @return	None
  */
-void DebugLogging::traceError(const wchar_t* traceLogW)
+void DebugLogger::traceError(const wchar_t* traceLogW)
 {
 	// Write trace log file: traceError.log
 	writeTraceErrorLogFile(traceLogW);
@@ -2068,7 +2068,7 @@ void DebugLogging::traceError(const wchar_t* traceLogW)
  * @param	...				    - Same as default MFC Format function
  * @return	None
  */
-void DebugLogging::traceErrorFormat(const char* traceLogFormatA, ...)
+void DebugLogger::traceErrorFormat(const char* traceLogFormatA, ...)
 {
 	ATLASSERT(AtlIsValidString(traceLogFormatA));
 
@@ -2090,7 +2090,7 @@ void DebugLogging::traceErrorFormat(const char* traceLogFormatA, ...)
  * @param	...				    - Same as default MFC Format function
  * @return	None
  */
-void DebugLogging::traceErrorFormat(const wchar_t* traceLogFormatW, ...)
+void DebugLogger::traceErrorFormat(const wchar_t* traceLogFormatW, ...)
 {
 	ATLASSERT(AtlIsValidString(traceLogFormatW));
 
@@ -2113,7 +2113,7 @@ void DebugLogging::traceErrorFormat(const wchar_t* traceLogFormatW, ...)
  * @param	lineIndex	 - Code line number
  * @return	None
  */
-void DebugLogging::traceDebugInfo(const char* funcName, const char* fileName, int lineIndex)
+void DebugLogger::traceDebugInfo(const char* funcName, const char* fileName, int lineIndex)
 {
 	// Debug trace info
 	const wchar_t* _funcName = MAKEUNICODE(funcName);
@@ -2132,7 +2132,7 @@ void DebugLogging::traceDebugInfo(const char* funcName, const char* fileName, in
  * @param	forceOutput - Force output target
  * @return	None
  */
-void DebugLogging::outputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_INVALID */)
+void DebugLogger::outputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_INVALID */)
 {
 	// Get debug mode enable state
 	bool isDebugModeEnabled = getDebugMode();
@@ -2185,7 +2185,7 @@ void DebugLogging::outputDebugLog(const wchar_t* debugLog, int forceOutput /* = 
  * @param	args		   - Argument list
  * @return	None
  */
-void DebugLogging::outputDebugLogFormat(const wchar_t* debugLogFormat, va_list args)
+void DebugLogger::outputDebugLogFormat(const wchar_t* debugLogFormat, va_list args)
 {
 	// Format source string
 	String logFormatString;
@@ -2201,7 +2201,7 @@ void DebugLogging::outputDebugLogFormat(const wchar_t* debugLogFormat, va_list a
  * @param	args			  - Argument list
  * @return	None
  */
-void DebugLogging::outputDebugStringFormat(const wchar_t* debugStringFormat, va_list args)
+void DebugLogger::outputDebugStringFormat(const wchar_t* debugStringFormat, va_list args)
 {
 	// Format source string
 	String logDebugStringFormat;

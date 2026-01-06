@@ -61,7 +61,7 @@ protected:
 	UINT_PTR	  currentDisplayLanguage_;
 
 	// Logging pointer
-	SLogging* appEventLogPtr_;
+	Logger* appEventLogPtr_;
 
 	// App special flags
 	bool changeFlag_;
@@ -130,8 +130,8 @@ public:
 
 	// Logging functions
 	virtual void initAppEventLog(void);
-	void outputEventLog(USHORT eventId, const wchar_t* description = NULL, LOGDETAILINFO* detailInfoPtr = NULL);
-	SLogging* getAppEventLog(void) {
+	void outputEventLog(uint16 eventId, const wchar_t* description = NULL, LOGDETAILINFO* detailInfoPtr = NULL);
+	Logger* getAppEventLog(void) {
 		VERIFY(appEventLogPtr_ != NULL);
 		return appEventLogPtr_;
 	}

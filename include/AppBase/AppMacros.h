@@ -319,9 +319,9 @@
 // Trace log functions
 //
 
-#define TRACE_FORMAT									DebugLogging::getDebugLogger().traceErrorFormat
-#define TRACE_ERROR(logString)							DebugLogging::getDebugLogger().traceError(logString)
-#define TRACE_DEBUG(func, file, line)					DebugLogging::getDebugLogger().traceDebugInfo(func, file, line)
+#define TRACE_FORMAT									DebugLogger::getDebugLogger().traceErrorFormat
+#define TRACE_ERROR(logString)							DebugLogger::getDebugLogger().traceError(logString)
+#define TRACE_DEBUG(func, file, line)					DebugLogger::getDebugLogger().traceDebugInfo(func, file, line)
 
 
 // Type-cast macros

@@ -19,7 +19,7 @@ class LogDetail
 {
 private:
 	// Attributes
-	USHORT	categoryId_;									// Detail category
+	uint16	categoryId_;									// Detail category
 	int		flag_;											// Detail flag
 
 	// Data
@@ -53,10 +53,10 @@ public:
 
 public:
 	// Get/set functions
-	constexpr USHORT getCategory(void) const noexcept {
+	constexpr uint16 getCategory(void) const noexcept {
 		return categoryId_;
 	}
-	void setCategory(USHORT categoryId) noexcept {
+	void setCategory(uint16 categoryId) noexcept {
 		categoryId_ = categoryId;
 	}
 	constexpr int getFlag(void) const noexcept {
@@ -136,9 +136,9 @@ public:
 	}
 
 	// Add detail item
-	void addDetail(USHORT categoryId, int detailValue, int flag = 0);								// Add detail item (integer data only)
-	void addDetail(USHORT categoryId, const wchar_t* detailInfo, int flag = 0);						// Add detail item (string data only)
-	void addDetail(USHORT categoryId, int detailValue, const wchar_t* detailInfo, int flag = 0);	// Add detail item (both integer and string data)
+	void addDetail(uint16 categoryId, int detailValue, int flag = 0);								// Add detail item (integer data only)
+	void addDetail(uint16 categoryId, const wchar_t* detailInfo, int flag = 0);						// Add detail item (string data only)
+	void addDetail(uint16 categoryId, int detailValue, const wchar_t* detailInfo, int flag = 0);	// Add detail item (both integer and string data)
 };
 
 // Define new typenames for LogDetailInfo
@@ -153,7 +153,7 @@ private:
 	// Member variables
 	DateTime		timeValue_;								// Log time
 	DWORD			processId_;								// Process ID
-	USHORT			categoryId_;							// Log category
+	uint16			categoryId_;							// Log category
 	String			logString_;								// Log description string
 	LOGDETAILINFO	detailInfo_;							// Log detail info
 
@@ -198,10 +198,10 @@ public:
 	void setProcessId(void) noexcept {
 		processId_ = GetCurrentProcessId();
 	}
-	constexpr USHORT getCategory(void) const noexcept {
+	constexpr uint16 getCategory(void) const noexcept {
 		return categoryId_;
 	}
-	void setCategory(USHORT categoryId) noexcept {
+	void setCategory(uint16 categoryId) noexcept {
 		categoryId_ = categoryId;
 	}
 	String getLogString(void) const noexcept {
@@ -215,13 +215,13 @@ public:
 	void addDetail(const LOGDETAIL& logDetail) {
 		detailInfo_.addDetail(logDetail);
 	}
-	void addDetail(USHORT categoryId, int detailValue, int flag = LogDetailFlag::Flag_Null) {
+	void addDetail(uint16 categoryId, int detailValue, int flag = LogDetailFlag::Flag_Null) {
 		detailInfo_.addDetail(categoryId, detailValue, flag);
 	}
-	void addDetail(USHORT categoryId, const wchar_t* detailInfo, int flag = LogDetailFlag::Flag_Null) {
+	void addDetail(uint16 categoryId, const wchar_t* detailInfo, int flag = LogDetailFlag::Flag_Null) {
 		detailInfo_.addDetail(categoryId, detailInfo, flag);
 	}
-	void addDetail(USHORT categoryId, int detailValue, const wchar_t* detailInfo, int flag = LogDetailFlag::Flag_Null) {
+	void addDetail(uint16 categoryId, int detailValue, const wchar_t* detailInfo, int flag = LogDetailFlag::Flag_Null) {
 		detailInfo_.addDetail(categoryId, detailValue, detailInfo, flag);
 	}
 
@@ -347,7 +347,7 @@ using PJSONDATA = JSONDATA*;
 
 
 // Using for saving application log data
-class SLogging
+class Logger
 {
 private:
 	// Log data array
@@ -362,8 +362,8 @@ private:
 
 public:
 	// Construction
-	SLogging(byte byLogType);
-	~SLogging(void);
+	Logger(byte byLogType);
+	~Logger(void);
 
 public:
 	// Initialization
@@ -425,7 +425,7 @@ public:
 
 
 // Class for debugging/error trace logging
-class DebugLogging final
+class DebugLogger final
 {
 private:
 	// Log file pointers
@@ -440,27 +440,27 @@ private:
 
 private:
 	// Singleton
-	DebugLogging();
+	DebugLogger();
 
 	// No copyable
-	DebugLogging(const DebugLogging&) = delete;
-	DebugLogging& operator=(const DebugLogging&) = delete;
+	DebugLogger(const DebugLogger&) = delete;
+	DebugLogger& operator=(const DebugLogger&) = delete;
 
 	// No movable
-	DebugLogging(const DebugLogging&&) = delete;
-	DebugLogging& operator=(const DebugLogging&&) = delete;
+	DebugLogger(const DebugLogger&&) = delete;
+	DebugLogger& operator=(const DebugLogger&&) = delete;
 
 public:
 	// Get the single debug logging instance:
 	// Because the debug logging will be applied for the entire application,
 	// there must be one and only instance of it
-	static DebugLogging& getDebugLogger(void) {
-		static std::unique_ptr<DebugLogging> loggerInstance(new DebugLogging());
+	static DebugLogger& getDebugLogger(void) {
+		static std::unique_ptr<DebugLogger> loggerInstance(new DebugLogger());
 		return *loggerInstance;
 	}
 
 	// Make destructor public for self-destructing
-	~DebugLogging();
+	~DebugLogger();
 
 public:
 	// Initialization
@@ -516,14 +516,14 @@ public:
 
 // Define wrapper for static debug logging functions for global usage
 inline void outputDebugLog(const wchar_t* debugLog, int forceStyle = -1) {
-	DebugLogging::outputDebugLog(debugLog, forceStyle);
+	DebugLogger::outputDebugLog(debugLog, forceStyle);
 }
 inline void outputDebugLogFormat(const wchar_t* debugLogFormat, ...) {
 	ATLASSERT(AtlIsValidString(debugLogFormat));
 
 	va_list argList;
 	va_start(argList, debugLogFormat);
-	DebugLogging::outputDebugLogFormat(debugLogFormat, argList);
+	DebugLogger::outputDebugLogFormat(debugLogFormat, argList);
 	va_end(argList);
 }
 inline void outputDebugStringFormat(const wchar_t* debugStringFormat, ...) {
@@ -531,7 +531,7 @@ inline void outputDebugStringFormat(const wchar_t* debugStringFormat, ...) {
 
 	va_list argList;
 	va_start(argList, debugStringFormat);
-	DebugLogging::outputDebugStringFormat(debugStringFormat, argList);
+	DebugLogger::outputDebugStringFormat(debugStringFormat, argList);
 	va_end(argList);
 }
 

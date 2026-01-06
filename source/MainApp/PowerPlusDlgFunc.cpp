@@ -374,7 +374,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				for (int i = 0; i < value; i++) {
 					// Write test trace debug log
 					formatString.format(_T("[TraceDebugLog Test] Loop time: %d"), i);
-					DebugLogging::getDebugLogger().writeTraceDebugLogFile(formatString);
+					DebugLogger::getDebugLogger().writeTraceDebugLogFile(formatString);
 					Sleep(50); // wait for a blink
 				}
 				// Output notification when done
@@ -446,7 +446,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 	else if (!_tcscmp(tokenList.at(0).c_str(), _T("appeventlog"))) {
 		if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("clear")))) {
 			// Clear all app event log data in memory
-			SLogging* appEventLoggerPtr = ((CPowerPlusApp*)AfxGetApp())->getAppEventLog();
+			Logger* appEventLoggerPtr = ((CPowerPlusApp*)AfxGetApp())->getAppEventLog();
 			if (appEventLoggerPtr != NULL) {
 				appEventLoggerPtr->init();
 				outputDebugLog(_T("App event log data cleared"));
@@ -455,7 +455,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 		}
 		else if ((tokenCount == 2) && (!_tcscmp(tokenList.at(1).c_str(), _T("write")))) {
 			// Force writing app event log data from memory to file
-			SLogging* appEventLoggerPtr = ((CPowerPlusApp*)AfxGetApp())->getAppEventLog();
+			Logger* appEventLoggerPtr = ((CPowerPlusApp*)AfxGetApp())->getAppEventLog();
 			if (appEventLoggerPtr != NULL) {
 				bool returnFlag = appEventLoggerPtr->write();
 				if (returnFlag == true) {
