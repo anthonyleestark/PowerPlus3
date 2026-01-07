@@ -338,7 +338,7 @@ bool SCtrlInfoWrap::getCheck(void) const
 int64 SCtrlInfoWrap::getInteger(void) const
 {
 	if (valueIntPtr_ == NULL)
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 	else
 		return *(valueIntPtr_);
 }
@@ -346,7 +346,7 @@ int64 SCtrlInfoWrap::getInteger(void) const
 void SCtrlInfoWrap::getInteger(_Out_ int64& value) const
 {
 	if (valueIntPtr_ == NULL)
-		value = Constant::kInvalidInteger;
+		value = Constant::InvalidInteger;
 	else
 		value = *(valueIntPtr_);
 }
@@ -359,7 +359,7 @@ void SCtrlInfoWrap::getInteger(_Out_ int64& value) const
 int64 SCtrlInfoWrap::getReserveInteger(void) const
 {
 	if (reservedValueIntPtr_ == NULL)
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 	else
 		return *(reservedValueIntPtr_);
 }
@@ -367,7 +367,7 @@ int64 SCtrlInfoWrap::getReserveInteger(void) const
 void SCtrlInfoWrap::getReserveInteger(_Out_ int64& value) const
 {
 	if (reservedValueIntPtr_ == NULL)
-		value = Constant::kInvalidInteger;
+		value = Constant::InvalidInteger;
 	else
 		value = *(reservedValueIntPtr_);
 }
@@ -382,13 +382,13 @@ void SCtrlInfoWrap::getMinMaxInt(_Out_ int64& minVal, _Out_ int64& maxVal) const
 {
 	// Min value
 	if (minValueIntPtr_ == NULL)
-		minVal = Constant::kInvalidInteger;
+		minVal = Constant::InvalidInteger;
 	else
 		minVal = *(minValueIntPtr_);
 
 	// Max value
 	if (maxValueIntPtr_ == NULL)
-		maxVal = Constant::kInvalidInteger;
+		maxVal = Constant::InvalidInteger;
 	else
 		maxVal = *(maxValueIntPtr_);
 }
@@ -401,7 +401,7 @@ void SCtrlInfoWrap::getMinMaxInt(_Out_ int64& minVal, _Out_ int64& maxVal) const
 double SCtrlInfoWrap::getFloat(void) const
 {
 	if (valueDoublePtr_ == NULL)
-		return Constant::kInvalidFloat;
+		return Constant::InvalidFloat;
 	else
 		return *(valueDoublePtr_);
 }
@@ -409,7 +409,7 @@ double SCtrlInfoWrap::getFloat(void) const
 void SCtrlInfoWrap::getFloat(_Out_ double& valueDouble) const
 {
 	if (valueDoublePtr_ == NULL)
-		valueDouble = Constant::kInvalidFloat;
+		valueDouble = Constant::InvalidFloat;
 	else
 		valueDouble = *(valueDoublePtr_);
 }
@@ -422,7 +422,7 @@ void SCtrlInfoWrap::getFloat(_Out_ double& valueDouble) const
 double SCtrlInfoWrap::getReserveFloat(void) const
 {
 	if (reservedValueDoublePtr_ == NULL)
-		return Constant::kInvalidFloat;
+		return Constant::InvalidFloat;
 	else
 		return *(reservedValueDoublePtr_);
 }
@@ -430,7 +430,7 @@ double SCtrlInfoWrap::getReserveFloat(void) const
 void SCtrlInfoWrap::getReserveFloat(_Out_ double& valueDouble) const
 {
 	if (reservedValueDoublePtr_ == NULL)
-		valueDouble = Constant::kInvalidFloat;
+		valueDouble = Constant::InvalidFloat;
 	else
 		valueDouble = *(reservedValueDoublePtr_);
 }
@@ -445,13 +445,13 @@ void SCtrlInfoWrap::getMinMaxFloat(_Out_ double& minVal, _Out_ double& maxVal) c
 {
 	// Min value
 	if (minValueDoublePtr_ == NULL)
-		minVal = Constant::kInvalidFloat;
+		minVal = Constant::InvalidFloat;
 	else
 		minVal = *(minValueDoublePtr_);
 
 	// Max value
 	if (maxValueDoublePtr_ == NULL)
-		maxVal = Constant::kInvalidFloat;
+		maxVal = Constant::InvalidFloat;
 	else
 		maxVal = *(maxValueDoublePtr_);
 }
@@ -934,13 +934,13 @@ size_t SCtrlInfoWrap::getDataSize(void) const
 {
 	// If the data is empty, return 0
 	if (isDataEmpty())
-		return Constant::kNullInteger;
+		return Constant::NullInteger;
 
 	// Otherwise, return the size
 	if (dataSizePtr_ != NULL)
 		return *(dataSizePtr_);
 
-	return Constant::kNullInteger;	// Default, return 0
+	return Constant::NullInteger;	// Default, return 0
 }
 
 
@@ -1064,11 +1064,11 @@ int64 SControlManager::addControl(SCtrlInfoWrap* pControl)
 {
 	// Check for control pointer validity
 	if (pControl == NULL) 
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 
 	// If data is not initialized
 	if (controlInfoListPtr_ == NULL)
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 
 	// Search if control ID had already existed
 	for (int index = 0; index < (controlInfoListPtr_->size()); index++) {
@@ -1095,12 +1095,12 @@ int64 SControlManager::addControl(unsigned controlId, unsigned typeId)
 {
 	// If parent window is not set, do nothing
 	if (parentWndPtr_ == NULL)
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 
 	// Get base control window pointer
 	CWnd* controlWndPtr = parentWndPtr_->GetDlgItem(controlId);
 	if (controlWndPtr == NULL)
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 
 	// Initialize control info
 	SCtrlInfoWrap* controlWrapPtr = new SCtrlInfoWrap();
@@ -1113,7 +1113,7 @@ int64 SControlManager::addControl(unsigned controlId, unsigned typeId)
 
 	// Failed to add
 	delete controlWrapPtr;
-	return Constant::kInvalidInteger;
+	return Constant::InvalidInteger;
 }
 
 /**
@@ -1125,7 +1125,7 @@ int64 SControlManager::removeControl(unsigned controlId)
 {
 	// If data is not initialized or is empty
 	if ((controlInfoListPtr_ == NULL) || (isEmpty()))
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 
 	// Search for control ID
 	for (int index = 0; index < (controlInfoListPtr_->size()); index++) {
@@ -1141,7 +1141,7 @@ int64 SControlManager::removeControl(unsigned controlId)
 	}
 
 	// Control ID not found, return -1
-	return Constant::kInvalidInteger;
+	return Constant::InvalidInteger;
 }
 
 /**

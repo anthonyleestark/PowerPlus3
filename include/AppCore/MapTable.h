@@ -168,7 +168,7 @@ namespace MapTable
 		// Using for pairing application-defined error codes and error message string IDs
 		INITIALIZE_IDMAPTABLE(ErrorMessage)
 		/*------Action ID-----------------------------Error message string ID---------*/
-			APP_ERROR_SUCCESS,					Constant::kNullInteger,
+			APP_ERROR_SUCCESS,					Constant::NullInteger,
 			APP_ERROR_FAILED,					MSGBOX_ERROR_FAILED,
 			APP_ERROR_WRONG_ARGUMENT,			MSGBOX_ERROR_WRONG_ARGUMENT,
 			APP_ERROR_INVALID_FUNCTION,			MSGBOX_ERROR_INVALID_FUNCTION,
@@ -380,7 +380,7 @@ namespace MapTable
 			MOD_CONTROL,					VK_F4,		HKEYSET_EXISTED_CTRL_F4,
 			MOD_CONTROL,					VK_F5,		HKEYSET_EXISTED_CTRL_F5,
 			MOD_CONTROL | MOD_WIN,			VK_F4,		HKEYSET_EXISTED_CTRL_WIN_F4,
-			Constant::kNullInteger,						Constant::kNullInteger,	Constant::kNullInteger,
+			Constant::NullInteger,						Constant::NullInteger,	Constant::NullInteger,
 		/*-----------------------------------------------------------------------------*/
 		END_TABLE()
 	};

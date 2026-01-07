@@ -289,8 +289,8 @@ void CReminderMsgDlg::OnTimer(UINT_PTR eventId)
 int CReminderMsgDlg::OnCreate(LPCREATESTRUCT createStructPtr)
 {
 	// Default creation
-	if (SDialog::OnCreate(createStructPtr) == Constant::kInvalidInteger)
-		return Constant::kInvalidInteger;
+	if (SDialog::OnCreate(createStructPtr) == Constant::InvalidInteger)
+		return Constant::InvalidInteger;
 
 	// Set allow snoozing mode
 	if (getAllowSnoozeMode() == true) {

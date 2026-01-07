@@ -148,7 +148,7 @@ void SResourceIDMap::append(const RESOURCE_ID_MAP_ENTRY* src, size_t size)
 	RESOURCE_ID_MAP filterSrc = new RESOURCE_ID_MAP_ENTRY[size];
 	ASSERT(filterSrc != NULL);
 	for (size_t index = 0; index < size; index++) {
-		if (findResourceId(src[index].resourceID) == Constant::kInvalidInteger) {
+		if (findResourceId(src[index].resourceID) == Constant::InvalidInteger) {
 			// Copy item into filter map
 			filterSrc[filterCount] = src[index];
 			// Increase filter map count
@@ -224,7 +224,7 @@ void SResourceIDMap::modify(DWORD resID, const char* newNameID)
 
 	// Find item index
 	int index = findResourceId(resID);
-	if (index == Constant::kInvalidInteger)
+	if (index == Constant::InvalidInteger)
 		return;
 	
 	// Modify item at index
@@ -246,7 +246,7 @@ void SResourceIDMap::remove(DWORD resID)
 
 	// Find item index
 	int itemIndex = findResourceId(resID);
-	if (itemIndex == Constant::kInvalidInteger)
+	if (itemIndex == Constant::InvalidInteger)
 		return;
 
 	// Create a new clone map data
@@ -295,12 +295,12 @@ unsigned SResourceIDMap::getResourceId(const char* nameID) const
 	// Check data validity
 	ASSERT(idMapData_ != NULL);
 	if (idMapData_ == NULL)
-		return Constant::kNullInteger;
+		return Constant::NullInteger;
 
 	// Find index
 	int index = findNameID(nameID);
-	if (index == Constant::kInvalidInteger)
-		return Constant::kNullInteger;
+	if (index == Constant::InvalidInteger)
+		return Constant::NullInteger;
 
 	// Return control resource ID
 	return idMapData_[index].resourceID;
@@ -320,7 +320,7 @@ const char* SResourceIDMap::getNameId(DWORD resID) const
 
 	// Find index
 	int index = findResourceId(resID);
-	if (index == Constant::kInvalidInteger)
+	if (index == Constant::InvalidInteger)
 		return "#NULL";
 
 	// Return string ID
@@ -338,10 +338,10 @@ int64 SResourceIDMap::findResourceId(DWORD resID) const
 	// Check data validity
 	ASSERT(idMapData_ != NULL);
 	if (idMapData_ == NULL)
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 
 	// Find ID
-	int64 resIndex = Constant::kInvalidInteger;
+	int64 resIndex = Constant::InvalidInteger;
 	for (size_t index = 0; index < mapSize_; index++) {
 		if (idMapData_[index].resourceID == resID) {
 			resIndex = index;	// Index found
@@ -362,10 +362,10 @@ int64 SResourceIDMap::findNameID(const char* nameID) const
 	// Check data validity
 	ASSERT(idMapData_ != NULL);
 	if (idMapData_ == NULL)
-		return Constant::kInvalidInteger;
+		return Constant::InvalidInteger;
 
 	// Find ID
-	int64 resIndex = Constant::kInvalidInteger;
+	int64 resIndex = Constant::InvalidInteger;
 	for (size_t index = 0; index < mapSize_; index++) {
 		if (strcmp(idMapData_[index].nameID, nameID) == 0) {
 			resIndex = index;	// Index found

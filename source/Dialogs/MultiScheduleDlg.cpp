@@ -502,7 +502,7 @@ void CMultiScheduleDlg::drawDataTable(bool isReadOnly /* = false */)
 		// Column header title
 		String headerTitle = Constant::String::Empty;
 		unsigned headerTitleId = gridCtrlFormatInfoPtr_[col].headerTitleId;
-		if (headerTitleId != Constant::kNullInteger) {
+		if (headerTitleId != Constant::NullInteger) {
 			headerTitle = getLanguageString(languageTablePtr, headerTitleId);
 		}
 		scheduleDataTablePtr_->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, col, headerTitle);
@@ -524,7 +524,7 @@ void CMultiScheduleDlg::drawDataTable(bool isReadOnly /* = false */)
 
 	// Setup rows
 	int colStyle = -1;
-	unsigned itemState = Constant::kNullInteger;
+	unsigned itemState = Constant::NullInteger;
 	for (int row = 1; row < rowCount; row++) {
 		for (int col = 0; col < columnCount_; col++) {
 

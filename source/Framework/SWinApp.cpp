@@ -33,8 +33,8 @@ SWinApp::SWinApp() : CWinAppEx()
 
 	// App language function
 	appLanguagePtr_ = NULL;
-	currentSetLanguage_ = Constant::kNullInteger;
-	currentDisplayLanguage_ = Constant::kNullInteger;
+	currentSetLanguage_ = Constant::NullInteger;
+	currentDisplayLanguage_ = Constant::NullInteger;
 
 	// Logging pointer
 	appEventLogPtr_ = NULL;
@@ -54,8 +54,8 @@ SWinApp::SWinApp(const wchar_t* templateName) : CWinAppEx()
 
 	// App language function
 	appLanguagePtr_ = NULL;
-	currentSetLanguage_ = Constant::kNullInteger;
-	currentDisplayLanguage_ = Constant::kNullInteger;
+	currentSetLanguage_ = Constant::NullInteger;
+	currentDisplayLanguage_ = Constant::NullInteger;
 
 	// Logging pointer
 	appEventLogPtr_ = NULL;
@@ -471,7 +471,7 @@ int SWinApp::getFlagValue(AppFlagID flagId) const
 void SWinApp::setFlagValue(AppFlagID flagId, int value)
 {
 	// Check value validity
-	if (value == Constant::kInvalidInteger)
+	if (value == Constant::InvalidInteger)
 		return;
 
 	switch (flagId)

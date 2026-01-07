@@ -355,7 +355,7 @@ BOOL CPwrReminderDlg::OnInitDialog()
 
 	// Update data
 	updateDataItemList();
-	displayItemDetails(Constant::kInvalidInteger);
+	displayItemDetails(Constant::InvalidInteger);
 	refreshDialogItemState(true);
 
 	// Save dialog event log if enabled
@@ -1374,7 +1374,7 @@ void CPwrReminderDlg::drawDataTable(Size* tableFrameSizePtr, int colCount, int r
 		// Column header title
 		String headerTitle = Constant::String::Empty;
 		unsigned headerTitleId = gridCtrlFormatInfoPtr_[col].headerTitleId;
-		if (headerTitleId != Constant::kNullInteger) {
+		if (headerTitleId != Constant::NullInteger) {
 			headerTitle = getLanguageString(languageTablePtr, headerTitleId);
 		}
 		dataListTablePtr_->SetItemText(Constant::UI::GridCtrl::Index::Header_Row, col, headerTitle);
@@ -1395,7 +1395,7 @@ void CPwrReminderDlg::drawDataTable(Size* tableFrameSizePtr, int colCount, int r
 
 	// Setup rows
 	int colStyle = -1;
-	unsigned itemState = Constant::kNullInteger;
+	unsigned itemState = Constant::NullInteger;
 	for (int row = 1; row < rowCount; row++) {
 		for (int col = 0; col < columnCount_; col++) {
 			// Get column style & item state
@@ -1541,7 +1541,7 @@ void CPwrReminderDlg::switchMode(bool /* redrawFlag = false */)
 
 		// Refresh detail view
 		refreshDetailView(Mode::Add);
-		displayItemDetails(Constant::kInvalidInteger);
+		displayItemDetails(Constant::InvalidInteger);
 	}
 	else if (currentMode == Mode::Update) {
 		// Lock dialog items
@@ -1942,12 +1942,12 @@ void CPwrReminderDlg::redrawDataTable(bool isReadOnly /* = false */)
 void CPwrReminderDlg::displayItemDetails(int index)
 {
 	// Check index validity
-	if ((index < Constant::kInvalidInteger) || (index > getItemNum()))
+	if ((index < Constant::InvalidInteger) || (index > getItemNum()))
 		return;
 
 	// Get item at index
 	Item reminderItem;
-	if (index != Constant::kInvalidInteger) {
+	if (index != Constant::InvalidInteger) {
 		reminderItem = tempReminderData_.getItemAt(index);
 	}
 
