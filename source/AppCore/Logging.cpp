@@ -1175,9 +1175,9 @@ bool Logger::write(void)
 		tempTime = logItem.getTime();
 
 		// Get filename according to type of logs
-		switch (logType_)
+		switch (static_cast<AppLogType>(logType_))
 		{
-		case LOGTYPE_APP_EVENT:
+		case AppLogType::AppEvent:
 			// Format app event log filename
 			fileName.format(Constant::File::Name::AppEventLog, tempTime.year(), tempTime.month());
 			filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
@@ -1207,7 +1207,7 @@ bool Logger::write(void)
 			}
 			break;
 
-		case LOGTYPE_HISTORY_LOG:
+		case AppLogType::AppHistory:
 			// App history log
 			fileName = Constant::File::Name::AppHistory;
 			filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
@@ -1292,14 +1292,14 @@ bool Logger::write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
 	DateTime tempTimeValue = logItem.getTime();
 
 	// Get filename according to type of logs
-	switch (logType_)
+	switch (static_cast<AppLogType>(logType_))
 	{
-	case LOGTYPE_APP_EVENT:
+	case AppLogType::AppEvent:
 		// Format app event log filename
 		fileName.format(Constant::File::Name::AppEventLog, tempTimeValue.year(), tempTimeValue.month());
 		break;
 
-	case LOGTYPE_HISTORY_LOG:
+	case AppLogType::AppHistory:
 		// App history log
 		fileName = Constant::File::Name::AppHistory;
 		break;
@@ -1383,14 +1383,14 @@ bool Logger::write(const wchar_t* logString, const wchar_t* /* filePath  = NULL 
 	DateTime currentTime = DateTimeUtils::getCurrentDateTime();
 
 	// Get filename according to type of logs
-	switch (logType_)
+	switch (static_cast<AppLogType>(logType_))
 	{
-	case LOGTYPE_APP_EVENT:
+	case AppLogType::AppEvent:
 		// Format app event log filename
 		fileName.format(Constant::File::Name::AppEventLog, currentTime.year(), currentTime.month());
 		break;
 
-	case LOGTYPE_HISTORY_LOG:
+	case AppLogType::AppHistory:
 		// App history log
 		fileName = Constant::File::Name::AppHistory;
 		break;

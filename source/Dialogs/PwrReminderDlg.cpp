@@ -1350,7 +1350,7 @@ void CPwrReminderDlg::drawDataTable(Size* tableFrameSizePtr, int colCount, int r
 	// Setup display size
 	int frameHeight = tableFrameSizePtr->height();
 	int frameWidth = tableFrameSizePtr->width();
-	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (AppCore::getWindowsOSVersion() == WindowsOS::Version::Win10) {
 		// Windows 10 list control offset
 		frameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 		//frameHeight -= OFFSET_HEIGHT_LISTCTRL_WIN10;

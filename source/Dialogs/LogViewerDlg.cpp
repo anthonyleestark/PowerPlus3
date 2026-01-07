@@ -378,7 +378,7 @@ void CLogViewerDlg::drawLogViewerTable(void)
 	int frameHeight = logViewerTableSizePtr_->height();
 	int frameWidth = logViewerTableSizePtr_->width();
 	int colWidthOffset = 0;
-	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (AppCore::getWindowsOSVersion() == WindowsOS::Version::Win10) {
 		// Windows 10 list control offset
 		frameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 		frameHeight -= Constant::UI::Offset::Height::ListCtrl_Win10;
