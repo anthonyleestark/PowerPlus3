@@ -26,7 +26,7 @@ unsigned MapTable::getPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reve
 	// Return INVALID if ID mapping table is invalid
 	ASSERT(idTableRef != NULL);
 	if (idTableRef == NULL) {
-		return (unsigned)kInvalidInteger;
+		return (unsigned)Constant::kInvalidInteger;
 	}
 
 	// Find and return corresponding ID paired with specified macro ID
@@ -51,7 +51,7 @@ unsigned MapTable::getPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reve
 	} while (index < MAX_TABLESIZE);
 
 	// Return INVALID if not found
-	return (unsigned)kInvalidInteger;
+	return (unsigned)Constant::kInvalidInteger;
 }
 
 /**
@@ -65,7 +65,7 @@ unsigned MapTable::getStringID(STRINGTABLE_REF stringTableRef, const wchar_t* in
 	// Return NULL string if language table is invalid
 	ASSERT(stringTableRef != NULL);
 	if (stringTableRef == NULL) {
-		return (unsigned)kInvalidInteger;
+		return (unsigned)Constant::kInvalidInteger;
 	}
 
 	// Convert input string to lowercase
@@ -94,7 +94,7 @@ unsigned MapTable::getStringID(STRINGTABLE_REF stringTableRef, const wchar_t* in
 	} while (index < MAX_TABLESIZE);
 
 	// Return INVALID if not found
-	return (unsigned)kInvalidInteger;
+	return (unsigned)Constant::kInvalidInteger;
 }
 
 /**

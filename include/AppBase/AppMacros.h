@@ -298,8 +298,8 @@
 #define WINDOWS_VERSION_10							(WINDOWS_VERSION_NONE+8)		// Windows 10
 #define WINDOWS_VERSION_11							(WINDOWS_VERSION_NONE+9)		// Windows 11
 
-#define OS_BUILDNUMBER_W7_EARLIEST					6469							// Windows 7 earliest build number: 7700
-#define OS_BUILDNUMBER_W7_LATEST					7601							// Windows 7 earliest build number: 9600
+#define OS_BUILDNUMBER_W7_EARLIEST					6469							// Windows 7 earliest build number: 6469
+#define OS_BUILDNUMBER_W7_LATEST					7601							// Windows 7 earliest build number: 7601
 #define OS_BUILDNUMBER_W8_EARLIEST					7700							// Windows 8/8.1 earliest build number: 7700
 #define OS_BUILDNUMBER_W8_LATEST					9600							// Windows 8/8.1 latest build number: 9600
 #define OS_BUILDNUMBER_W10_ORIGINAL					10240							// Windows 10 original release build number: 10240

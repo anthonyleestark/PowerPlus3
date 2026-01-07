@@ -492,7 +492,7 @@ void CEditScheduleDlg::drawActiveDayTable(bool isReadOnly /* = false */)
 	activeDayTablePtr_->SetColumnWidth(kDayTitleColID, frameWidth - kCheckboxColSize);
 
 	// Setup rows
-	unsigned itemState = kNullInteger;
+	unsigned itemState = Constant::kNullInteger;
 	for (int row = 0; row < Constant::Max::DaysOfWeek; row++) {
 
 		/*------------------------------------- Checkbox column -------------------------------------*/
@@ -608,7 +608,7 @@ void CEditScheduleDlg::updateActiveDayList()
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Print items
-	int dayOfWeekId = kInvalidInteger;
+	int dayOfWeekId = Constant::kInvalidInteger;
 	CGridCellCheck* cellCheckPtr = NULL;
 	for (int rowIndex = 0; rowIndex < Constant::Max::DaysOfWeek; rowIndex++) {
 

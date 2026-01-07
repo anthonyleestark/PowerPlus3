@@ -321,8 +321,8 @@ void CRmdRepeatSetDlg::setupDialogItemState()
  */
 void CRmdRepeatSetDlg::refreshDialogItemState(bool isRecheckState /* = false */)
 {
-	int repeatState = kNullInteger;
-	int snoozeState = kNullInteger;
+	int repeatState = Constant::kNullInteger;
+	int snoozeState = Constant::kNullInteger;
 
 	// Update checkbox checked state
 	if (repeatEnableChkPtr_ != NULL) {

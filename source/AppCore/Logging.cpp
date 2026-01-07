@@ -29,7 +29,7 @@ size_t getSizeByType(byte dataType)
 	switch (dataType)
 	{
 	case LogDataType::Void:				// No type (unusable)
-		retSize = kNullInteger;
+		retSize = Constant::kNullInteger;
 		break;
 
 	case LogDataType::Num_U1:			// Unsigned integer (1-byte)
@@ -69,7 +69,7 @@ size_t getSizeByType(byte dataType)
 		break;
 
 	default:
-		retSize = kNullInteger;
+		retSize = Constant::kNullInteger;
 		break;
 	}
 
@@ -82,13 +82,13 @@ size_t getSizeByType(byte dataType)
 LogDetail::LogDetail()
 {
 	// Initialization
-	categoryId_ = kNullInteger;									// Detail category
+	categoryId_ = Constant::kNullInteger;									// Detail category
 	flag_ = LogDetailFlag::Flag_Null;						// Detail info flag
-	detailValue_ = kNullInteger;								// Detail value (integer)
+	detailValue_ = Constant::kNullInteger;								// Detail value (integer)
 	detailInfoString_.empty();								// Detail info (string)
 	detailDataPtr_ = NULL;									// Detail data (pointer)
 	pointerType_ = LogDataType::Void;						// Detail info pointer data type
-	pointerSize_ = kNullInteger;								// Detail info pointer data size
+	pointerSize_ = Constant::kNullInteger;								// Detail info pointer data size
 }
 
 /**
@@ -99,13 +99,13 @@ LogDetail::LogDetail()
 void LogDetail::init(void) noexcept
 {
 	// Initialization
-	categoryId_ = kNullInteger;									// Detail category
+	categoryId_ = Constant::kNullInteger;									// Detail category
 	flag_ = LogDetailFlag::Flag_Null;						// Detail info flag
-	detailValue_ = kNullInteger;								// Detail value (integer)
+	detailValue_ = Constant::kNullInteger;								// Detail value (integer)
 	detailInfoString_.empty();								// Detail info (string)
 	detailDataPtr_ = NULL;									// Detail data (pointer)
 	pointerType_ = LogDataType::Void;						// Detail info pointer data type
-	pointerSize_ = kNullInteger;								// Detail info pointer data sizesize
+	pointerSize_ = Constant::kNullInteger;								// Detail info pointer data sizesize
 }
 
 /**
@@ -282,7 +282,7 @@ LogItem::LogItem()
 {
 	// Initialization
 	timeValue_ = DateTime();							// Log time
-	processId_ = kNullInteger;								// Process ID
+	processId_ = Constant::kNullInteger;								// Process ID
 	categoryId_ = LOG_MACRO_NONE;						// Log category
 	logString_ = Constant::String::Empty;				// Log string
 	detailInfo_.clear();								// Log detail info
@@ -359,7 +359,7 @@ void LogItem::removeAll(void) noexcept
 {
 	// Reset data
 	timeValue_ = DateTime();								// Log time
-	processId_ = kNullInteger;									// Process ID
+	processId_ = Constant::kNullInteger;									// Process ID
 	categoryId_ = LOG_MACRO_NONE;							// Log category
 	logString_ = Constant::String::Empty;					// Log string
 
@@ -674,7 +674,7 @@ void JSON::removeProperty(const wchar_t* keyName)
 		return;
 
 	// Search for key name
-	int foundIndex = kInvalidInteger;
+	int foundIndex = Constant::kInvalidInteger;
 	for (int index = 0; index < (keyValuePairs_.size()); index++) {
 		if (keyValuePairs_.at(index).key == keyName) {
 			foundIndex = index;
@@ -967,7 +967,7 @@ Logger::Logger(byte byLogType)
 	// Properties
 	logType_ = byLogType;
 	writeMode_ = LogWriteMode::ReadOnly;
-	maxSize_ = kInfinite;
+	maxSize_ = Constant::kInfinite;
 	filePath_ = Constant::String::Empty;
 	defaultTemplate_ = NULL;
 }
@@ -1074,7 +1074,7 @@ void Logger::outputItem(const LOGITEM& logItem)
 	else {
 		// If already reached max data size
 		size_t maxSize = getMaxSize();
-		if ((maxSize != kInfinite) && (getLogCount() >= maxSize)) {
+		if ((maxSize != Constant::kInfinite) && (getLogCount() >= maxSize)) {
 			// Can not output log item --> Trace info
 			TRACE_ERROR("Output log item failed: Log data exceeded max size!!!");
 			return;
@@ -2132,7 +2132,7 @@ void DebugLogger::traceDebugInfo(const char* funcName, const char* fileName, int
  * @param	forceOutput - Force output target
  * @return	None
  */
-void DebugLogger::outputDebugLog(const wchar_t* debugLog, int forceOutput /* = kInvalidInteger */)
+void DebugLogger::outputDebugLog(const wchar_t* debugLog, int forceOutput /* = Constant::kInvalidInteger */)
 {
 	// Get debug mode enable state
 	bool isDebugModeEnabled = getDebugMode();
@@ -2145,7 +2145,7 @@ void DebugLogger::outputDebugLog(const wchar_t* debugLog, int forceOutput /* = k
 
 	// Debug log output target
 	int debugOutputTarget = forceOutput;
-	if (debugOutputTarget == kInvalidInteger) {
+	if (debugOutputTarget == Constant::kInvalidInteger) {
 		debugOutputTarget = getDebugOutputTarget();
 	}
 	if ((debugTestDlgHandle != NULL) &&

@@ -484,7 +484,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				while (finderRetFlag == true) {
 					finderRetFlag = Finder.FindNextFile();
 					fileName = Finder.GetFileName().GetString();
-					if (fileName.find(keyName) != kInvalidInteger) {
+					if (fileName.find(keyName) != Constant::kInvalidInteger) {
 						// Delete file
 						CFile::Remove(Finder.GetFilePath());
 						delFileCount++;	// Increase counter
@@ -743,7 +743,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set message background color by name
 				String colorName = tokenList.at(2).c_str();
 				DWORD retColorId = getStringID(StringTable::ColorName, colorName);
-				if (retColorId != kInvalidInteger) {
+				if (retColorId != Constant::kInvalidInteger) {
 					// Set background color
 					if (reminderDataPtr != NULL) {
 						reminderDataPtr->getCommonStyle().setBkgrdColor(retColorId);
@@ -763,9 +763,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			else if (((tokenCount > 3) && (tokenCount <= 6)) && (!_tcscmp(tokenList.at(2).c_str(), _T("rgb")))) {
 				// Set message background color by RGB value
-				int colorRValue = (tokenCount >= 4) ? _tstoi(tokenList.at(3).c_str()) : kInvalidInteger;		// Red
-				int colorGValue = (tokenCount >= 5) ? _tstoi(tokenList.at(4).c_str()) : kInvalidInteger;		// Green
-				int colorBValue = (tokenCount >= 6) ? _tstoi(tokenList.at(5).c_str()) : kInvalidInteger;		// Blue
+				int colorRValue = (tokenCount >= 4) ? _tstoi(tokenList.at(3).c_str()) : Constant::kInvalidInteger;		// Red
+				int colorGValue = (tokenCount >= 5) ? _tstoi(tokenList.at(4).c_str()) : Constant::kInvalidInteger;		// Green
+				int colorBValue = (tokenCount >= 6) ? _tstoi(tokenList.at(5).c_str()) : Constant::kInvalidInteger;		// Blue
 				if (((colorRValue < 0) || (colorRValue > 255)) || ((colorGValue < 0) || (colorGValue > 255)) || ((colorBValue < 0) || (colorBValue > 255))) {
 					// Invalid argument
 					outputDebugLog(_T("Invalid value (Value range: 0 -> 255)"));
@@ -796,7 +796,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set message text color by name
 				String colorName = tokenList.at(2).c_str();
 				DWORD retColorId = getStringID(StringTable::ColorName, colorName);
-				if (retColorId != kInvalidInteger) {
+				if (retColorId != Constant::kInvalidInteger) {
 					// Set text color
 					if (reminderDataPtr != NULL) {
 						reminderDataPtr->getCommonStyle().setTextColor(retColorId);
@@ -816,9 +816,9 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			}
 			else if (((tokenCount > 3) && (tokenCount <= 6)) && (!_tcscmp(tokenList.at(2).c_str(), _T("rgb")))) {
 				// Set message background color by RGB value
-				int colorRValue = (tokenCount >= 4) ? _tstoi(tokenList.at(3).c_str()) : kInvalidInteger;		// Red
-				int colorGValue = (tokenCount >= 5) ? _tstoi(tokenList.at(4).c_str()) : kInvalidInteger;		// Green
-				int colorBValue = (tokenCount >= 6) ? _tstoi(tokenList.at(5).c_str()) : kInvalidInteger;		// Blue
+				int colorRValue = (tokenCount >= 4) ? _tstoi(tokenList.at(3).c_str()) : Constant::kInvalidInteger;		// Red
+				int colorGValue = (tokenCount >= 5) ? _tstoi(tokenList.at(4).c_str()) : Constant::kInvalidInteger;		// Green
+				int colorBValue = (tokenCount >= 6) ? _tstoi(tokenList.at(5).c_str()) : Constant::kInvalidInteger;		// Blue
 				if (((colorRValue < 0) || (colorRValue > 255)) || ((colorGValue < 0) || (colorGValue > 255)) || ((colorBValue < 0) || (colorBValue > 255))) {
 					// Invalid argument
 					outputDebugLog(_T("Invalid value (Value range: 0 -> 255)"));
@@ -932,7 +932,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Set message icon ID by name
 			String iconName = tokenList.at(2).c_str();
 			DWORD retIconId = getStringID(StringTable::MsgIconName, iconName);
-			if (retIconId != kInvalidInteger) {
+			if (retIconId != Constant::kInvalidInteger) {
 				// Set icon ID
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setIconId(retIconId);

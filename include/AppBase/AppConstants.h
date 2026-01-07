@@ -20,14 +20,6 @@
 #endif
 
 
-// Define special numbers and numeric values
-static constexpr int kInvalidInteger			= -1;			// Invalid integer number (equals -1)
-static constexpr int kNullInteger				= 0;			// Null integer number (equals 0)
-static constexpr unsigned long kInfinite		= 0xFFFFFFFF;	// Infinite (no limitation)
-static constexpr float kInvalidFloat			= -1.0F;		// Invalid float number (equals -1.0)
-static constexpr float kNullFloat				= 0.0F;			// Null float number (equals 0)
-
-
 // Flag values
 enum Flag {
 	FLAG_OFF = (int)0x00,
@@ -105,6 +97,13 @@ struct SystemIcon {
 
 // Constant definitions
 struct Constant {
+
+	// Define special numbers and numeric values
+	static constexpr int kInvalidInteger = -1;					// Invalid integer number (equals -1)
+	static constexpr int kNullInteger = 0;						// Null integer number (equals 0)
+	static constexpr unsigned long kInfinite = 0xFFFFFFFF;		// Infinite (no limitation)
+	static constexpr float kInvalidFloat = -1.0F;				// Invalid float number (equals -1.0)
+	static constexpr float kNullFloat = 0.0F;					// Null float number (equals 0)
 
 	// Minimum values
 	struct Min {

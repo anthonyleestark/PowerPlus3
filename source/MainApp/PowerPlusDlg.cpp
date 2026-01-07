@@ -2098,8 +2098,8 @@ void CPowerPlusDlg::getAppData(unsigned dataType /* = APPDATA_ALL */)
  */
 int CPowerPlusDlg::getAppOption(AppOptionID optionId, bool isTemp /* = false */) const
 {
-	int result = kInvalidInteger;
-	int tempResult = kInvalidInteger;
+	int result = Constant::kInvalidInteger;
+	int tempResult = Constant::kInvalidInteger;
 
 	switch (optionId)
 	{
@@ -2126,7 +2126,7 @@ int CPowerPlusDlg::getAppOption(AppOptionID optionId, bool isTemp /* = false */)
 	}
 
 	// Return temp data if required and the result is valid
-	if ((isTemp == true) && (tempResult != kInvalidInteger))
+	if ((isTemp == true) && (tempResult != Constant::kInvalidInteger))
 		return tempResult;
 
 	return result;
@@ -2306,7 +2306,7 @@ int CPowerPlusDlg::getFlagValue(AppFlagID flagId) const
 void CPowerPlusDlg::setFlagValue(AppFlagID flagId, int value)
 {
 	// Check value validity
-	if (value == kInvalidInteger)
+	if (value == Constant::kInvalidInteger)
 		return;
 
 	switch (flagId)
@@ -3249,7 +3249,7 @@ void CPowerPlusDlg::openDialogBase(unsigned dialogId, bool readOnlyMode /* = fal
 	SDialog* dialogPtr = NULL;
 	bool isReadOnlySet = false;
 	CWnd* parentWnd = NULL;
-	unsigned entryMessageId = kNullInteger;
+	unsigned entryMessageId = Constant::kNullInteger;
 	{
 		switch (dialogId)
 		{
@@ -3308,7 +3308,7 @@ void CPowerPlusDlg::openDialogBase(unsigned dialogId, bool readOnlyMode /* = fal
 		}
 
 		// Show entry message before displaying dialog
-		if (entryMessageId != kNullInteger) {
+		if (entryMessageId != Constant::kNullInteger) {
 			displayMessageBox(entryMessageId);
 		}
 
@@ -4157,7 +4157,7 @@ bool CPowerPlusDlg::processLockStateHotkey(DWORD hotkeyParam)
 	WORD virtualKey = HIWORD(hotkeyParam);
 
 	// Look for corresponding HotkeyID in HotkeySet data
-	unsigned hotkeyActionId = kNullInteger;
+	unsigned hotkeyActionId = Constant::kNullInteger;
 	for (size_t index = 0; index < hotkeySetData_.getItemNum(); index++) {
 		const HotkeySetItem& hotkeyItem = hotkeySetData_.getItemAt(index);
 		if ((hotkeyItem.isEnabled() == true) &&						// HotkeySet item is enabled
@@ -4168,7 +4168,7 @@ bool CPowerPlusDlg::processLockStateHotkey(DWORD hotkeyParam)
 	}
 
 	// Do not process if HotkeyID is NOT available
-	if (hotkeyActionId == kNullInteger) {
+	if (hotkeyActionId == Constant::kNullInteger) {
 		TRACE("[LockState Hotkey] Hotkey not found!!!");
 		return false;
 	}
@@ -4329,7 +4329,7 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& displayItem)
 	if ((messageContent.isEmpty()) || (IS_NULL_STRING(messageContent))) {
 		// Invalid message content
 		TRACE("Invalid message content!!!");
-		return kInvalidInteger;
+		return Constant::kInvalidInteger;
 	}
 
 	// Output debug log
@@ -4339,7 +4339,7 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& displayItem)
 	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	int returnFlag = FLAG_OFF;
-	int respond = kNullInteger;
+	int respond = Constant::kNullInteger;
 
 	// Update item runtime displaying flag
 	setPwrReminderDispFlag(displayItem, FLAG_ON);
@@ -4371,7 +4371,7 @@ int CPowerPlusDlg::displayPwrReminder(const PwrReminderItem& displayItem)
 
 			// Update item runtime displaying flag
 			setPwrReminderDispFlag(displayItem, FLAG_OFF);
-			return kInvalidInteger;
+			return Constant::kInvalidInteger;
 		}
 
 		// Message style
@@ -4694,7 +4694,7 @@ size_t CPowerPlusDlg::getPwrReminderDispList(uint32_array& displayItemList)
 
 	// If runtime queue data is empty, return no item
 	if (runtimeQueue_.empty())
-		return kNullInteger;
+		return Constant::kNullInteger;
 
 	// Get runtime displaying item ID list
 	displayItemList.reserve(runtimeQueue_.size());
@@ -5032,7 +5032,7 @@ int CPowerPlusDlg::notifySchedule(PScheduleItem scheduleItemPtr, bool& update)
 	// Do not notify if schedule action is "Do nothing"
 	if (scheduleItemPtr->getAction() == APP_ACTION_NOTHING) {
 		TRACE("Do not notify when schedule action is DO NOTHING");
-		return kInvalidInteger;
+		return Constant::kInvalidInteger;
 	}
 
 	// Get action info
