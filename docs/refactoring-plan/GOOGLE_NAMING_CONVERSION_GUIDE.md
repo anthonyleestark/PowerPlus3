@@ -1,38 +1,38 @@
 # Google Naming Convention Conversion Guide - Phase 1
 
-Tài liệu này mô tả quy tắc chuyển đổi từ naming convention hiện tại của project PowerPlus3 sang **Google C++ Style Guide** naming conventions.
+This document describes the rules for converting from the current naming conventions of the PowerPlus3 project to the **Google C++ Style Guide** naming conventions.
 
-**Mục đích**: Tài liệu tham chiếu cho Phase 1 của quá trình refactoring project.
-
----
-
-## Tổng Quan Chuyển Đổi
-
-| Loại | Hiện Tại | Google Style | Ghi Chú |
-|------|----------|--------------|---------|
-| **Classes** | `PascalCase` | `PascalCase` | ✅ Giữ nguyên |
-| **Functions** | `PascalCase` | `camelCase` | ⚠️ Thay đổi |
-| **Member Variables** | `m_` + `camelCase` | `camelCase_` (trailing underscore) | ⚠️ Thay đổi lớn |
-| **Local Variables** | `camelCase` | `camelCase` | ✅ Giữ nguyên |
-| **Function Parameters** | `camelCase` | `camelCase` | ✅ Giữ nguyên |
-| **Constants** | `UPPER_CASE` | `kConstantName` | ⚠️ Thay đổi |
-| **Namespaces** | `PascalCase` | `snake_case` | ⚠️ Thay đổi |
-| **Enums** | `PascalCase` (class) / `UPPER_CASE` (values) | `PascalCase` (class) / `kEnumValue` (values) | ⚠️ Thay đổi một phần |
-| **Macros** | `UPPER_CASE` | `UPPER_CASE` | ✅ Giữ nguyên |
-| **Global Variables** | `g_` + Hungarian | `g_` + `camelCase_` | ⚠️ Thay đổi một phần |
+**Purpose**: Reference document for Phase 1 of the project refactoring process.
 
 ---
 
-## 1. Classes (Lớp)
+## Conversion Overview
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `PascalCase`
+| Type                  | Current                | Google Style                  | Notes                  |
+|-----------------------|------------------------|-------------------------------|------------------------|
+| **Classes**           | `PascalCase`           | `PascalCase`                  | ✅ No change           |
+| **Functions**         | `PascalCase`           | `camelCase`                   | ⚠️ Change             |
+| **Member Variables**  | `m_` + `camelCase`     | `camelCase_` (trailing underscore) | ⚠️ Major change       |
+| **Local Variables**   | `camelCase`            | `camelCase`                   | ✅ No change           |
+| **Function Parameters**| `camelCase`            | `camelCase`                   | ✅ No change           |
+| **Constants**         | `UPPER_CASE`           | `kConstantName`               | ⚠️ Change             |
+| **Namespaces**        | `PascalCase`           | `snake_case`                  | ⚠️ Change             |
+| **Enums**             | `PascalCase` (class) / `UPPER_CASE` (values) | `PascalCase` (class) / `kEnumValue` (values) | ⚠️ Partial change     |
+| **Macros**            | `UPPER_CASE`           | `UPPER_CASE`                  | ✅ No change           |
+| **Global Variables**  | `g_` + Hungarian       | `g_` + `camelCase_`           | ⚠️ Partial change     |
+
+---
+
+## 1. Classes
+
+### Conversion Rules
+- **Current**: `PascalCase`
 - **Google Style**: `PascalCase`
-- **Hành động**: ✅ **Giữ nguyên** - Không cần thay đổi
+- **Action**: ✅ **No change** - Keep as is
 
-### Ví Dụ
+### Examples
 ```cpp
-// Trước và sau (giữ nguyên)
+// Before and after (unchanged)
 class ConfigData { };
 class ScheduleItem { };
 class HotkeySetItem { };
@@ -45,29 +45,29 @@ class FlagManager { };
 
 ---
 
-## 2. Functions (Hàm)
+## 2. Functions
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `PascalCase`
+### Conversion Rules
+- **Current**: `PascalCase`
 - **Google Style**: `camelCase`
-- **Hành động**: ⚠️ **Thay đổi** - Chuyển từ PascalCase sang camelCase
+- **Action**: ⚠️ **Change** - Convert from PascalCase to camelCase
 
-### Bảng Chuyển Đổi
+### Conversion Table
 
-| Hiện Tại | Google Style | Ghi Chú |
-|----------|--------------|---------|
-| `GetData` | `getData` | Getter functions |
-| `GetAppOption` | `getAppOption` | Getter functions |
-| `SetItemID` | `setItemId` | Setter functions |
-| `IsEnabled` | `isEnabled` | Boolean check functions |
-| `EnableItem` | `enableItem` | Action functions |
-| `Copy` | `copy` | Action functions |
-| `Compare` | `compare` | Action functions |
-| `ExecutePowerAction` | `executePowerAction` | Action functions |
+| Current              | Google Style             | Notes                  |
+|----------------------|--------------------------|------------------------|
+| `GetData`            | `getData`                | Getter functions       |
+| `GetAppOption`       | `getAppOption`           | Getter functions       |
+| `SetItemID`          | `setItemId`              | Setter functions       |
+| `IsEnabled`          | `isEnabled`              | Boolean check functions|
+| `EnableItem`         | `enableItem`             | Action functions       |
+| `Copy`               | `copy`                   | Action functions       |
+| `Compare`            | `compare`                | Action functions       |
+| `ExecutePowerAction` | `executePowerAction`     | Action functions       |
 
-### Ví Dụ Hoàn Chỉnh
+### Complete Examples
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 void GetData(CONFIGDATAINFO& data) const noexcept;
 int GetAppOption(AppOptionID appOptionID) const noexcept;
@@ -78,7 +78,7 @@ void Copy(const ScheduleItem& other) noexcept;
 bool Compare(const ScheduleItem& other) const noexcept;
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 void getData(CONFIGDATAINFO& data) const noexcept;
 int getAppOption(AppOptionID appOptionId) const noexcept;
@@ -89,52 +89,52 @@ void copy(const ScheduleItem& other) noexcept;
 bool compare(const ScheduleItem& other) const noexcept;
 ```
 
-### Quy Tắc Chi Tiết
-1. **Chuyển PascalCase → camelCase**: 
+### Detailed Rules
+1. **PascalCase → camelCase**:
    - `GetData` → `getData`
    - `SetItemID` → `setItemId`
    - `IsEnabled` → `isEnabled`
-2. **Giữ nguyên quy ước đặt tên**: 
-   - Getter: `get` + tên
-   - Setter: `set` + tên
-   - Boolean check: `is`/`has` + tên
-   - Action verbs: động từ ở dạng camelCase
+2. **Preserve naming conventions**:
+   - Getter: `get` + name
+   - Setter: `set` + name
+   - Boolean check: `is`/`has` + name
+   - Action verbs: verb in camelCase
 
-**Lưu ý**: Tên hàm thay đổi, nhưng **parameters** giữ nguyên camelCase (xem mục 5).
+**Note**: Function names change, but **parameters** remain camelCase (see section 5).
 
 ---
 
-## 3. Member Variables (Biến Thành Viên)
+## 3. Member Variables
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `m_` + `camelCase`
+### Conversion Rules
+- **Current**: `m_` + `camelCase`
 - **Google Style**: `camelCase_` (trailing underscore)
-- **Hành động**: ⚠️ **Thay đổi lớn** - Bỏ prefix `m_`, giữ nguyên camelCase và thêm trailing underscore
+- **Action**: ⚠️ **Major change** - Remove `m_` prefix, keep camelCase, add trailing underscore
 
-### Bảng Chuyển Đổi
+### Conversion Table
 
-| Hiện Tại | Google Style | Ghi Chú |
-|----------|--------------|---------|
-| `m_isEnabled` | `isEnabled_` | Boolean flags |
-| `m_isRepeated` | `isRepeated_` | Boolean flags |
-| `m_allowSnoozing` | `allowSnoozing_` | Boolean flags |
-| `m_useCustomStyle` | `useCustomStyle_` | Boolean flags |
-| `m_itemID` | `itemId_` | Numeric values (ID → Id) |
-| `m_actionID` | `actionId_` | Numeric values (ID → Id) |
-| `m_snoozeInterval` | `snoozeInterval_` | Numeric values |
-| `m_fontSize` | `fontSize_` | Numeric values |
-| `m_timeout` | `timeout_` | Numeric values |
-| `m_messageContent` | `messageContent_` | String values |
-| `m_fontName` | `fontName_` | String values |
-| `m_timeValue` | `timeValue_` | Object references |
-| `m_repeatSetInfo` | `repeatSetInfo_` | Object references |
-| `m_msgStyleSetInfo` | `msgStyleSetInfo_` | Object references |
-| `m_extraScheduleItemList` | `extraScheduleItemList_` | Collections |
-| `m_hotkeySetList` | `hotkeySetList_` | Collections |
+| Current                      | Google Style                  | Notes                  |
+|------------------------------|-------------------------------|------------------------|
+| `m_isEnabled`                | `isEnabled_`                  | Boolean flags          |
+| `m_isRepeated`               | `isRepeated_`                 | Boolean flags          |
+| `m_allowSnoozing`            | `allowSnoozing_`              | Boolean flags          |
+| `m_useCustomStyle`           | `useCustomStyle_`             | Boolean flags          |
+| `m_itemID`                   | `itemId_`                     | Numeric values (ID → Id)|
+| `m_actionID`                 | `actionId_`                   | Numeric values         |
+| `m_snoozeInterval`           | `snoozeInterval_`             | Numeric values         |
+| `m_fontSize`                 | `fontSize_`                   | Numeric values         |
+| `m_timeout`                  | `timeout_`                    | Numeric values         |
+| `m_messageContent`           | `messageContent_`             | String values          |
+| `m_fontName`                 | `fontName_`                   | String values          |
+| `m_timeValue`                | `timeValue_`                  | Object references      |
+| `m_repeatSetInfo`            | `repeatSetInfo_`              | Object references      |
+| `m_msgStyleSetInfo`          | `msgStyleSetInfo_`            | Object references      |
+| `m_extraScheduleItemList`    | `extraScheduleItemList_`      | Collections            |
+| `m_hotkeySetList`            | `hotkeySetList_`              | Collections            |
 
-### Ví Dụ Hoàn Chỉnh
+### Complete Examples
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 class ScheduleItem {
 private:
@@ -147,7 +147,7 @@ private:
 };
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 class ScheduleItem {
 private:
@@ -160,25 +160,25 @@ private:
 };
 ```
 
-### Quy Tắc Chi Tiết
-1. **Bỏ prefix `m_`**: Loại bỏ hoàn toàn prefix `m_`
-2. **Giữ nguyên camelCase**: Không chuyển sang snake_case
-3. **Thêm trailing underscore**: Thêm `_` ở cuối tên biến
-4. **Chuẩn hóa ID → Id**: Có thể chuyển `ID` thành `Id` để nhất quán (tùy chọn)
-5. **Giữ nguyên ý nghĩa**: Không thay đổi ý nghĩa của tên biến
+### Detailed Rules
+1. **Remove `m_` prefix**: Completely drop the `m_` prefix
+2. **Keep camelCase**: Do not switch to snake_case
+3. **Add trailing underscore**: Append `_` at the end
+4. **Standardize ID → Id**: Optionally convert `ID` to `Id` for consistency
+5. **Preserve meaning**: Do not alter the meaning of the name
 
 ---
 
-## 4. Local Variables (Biến Cục Bộ)
+## 4. Local Variables
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `camelCase`
+### Conversion Rules
+- **Current**: `camelCase`
 - **Google Style**: `camelCase`
-- **Hành động**: ✅ **Giữ nguyên** - Không cần thay đổi
+- **Action**: ✅ **No change** - Keep as is
 
-### Ví Dụ
+### Examples
 ```cpp
-// Trước và sau (giữ nguyên)
+// Before and after (unchanged)
 int index = 0;
 bool ret = true;
 unsigned itemID = 100;
@@ -190,20 +190,20 @@ bool result = ExecutePowerAction(actionType, message, errCode);
 unsigned retNextID = ScheduleData::minItemID;
 ```
 
-**Lưu ý**: Local variables giữ nguyên camelCase, không cần thay đổi.
+**Note**: Local variables remain camelCase, no changes required.
 
 ---
 
-## 5. Function Parameters (Tham Số Hàm)
+## 5. Function Parameters
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `camelCase`
+### Conversion Rules
+- **Current**: `camelCase`
 - **Google Style**: `camelCase`
-- **Hành động**: ✅ **Giữ nguyên** - Không cần thay đổi
+- **Action**: ✅ **No change** - Keep as is
 
-### Ví Dụ
+### Examples
 ```cpp
-// Trước và sau (giữ nguyên)
+// Before and after (unchanged)
 void setItemId(unsigned itemId) noexcept;
 void enableItem(bool enabled) noexcept;
 void setTime(const ClockTime& time) noexcept;
@@ -213,87 +213,87 @@ bool executePowerAction(unsigned actionType, unsigned message, DWORD& errCode);
 int getAppOption(AppOptionID appOptionId) const noexcept;
 ```
 
-**Lưu ý**: Function parameters giữ nguyên camelCase, không cần thay đổi.
+**Note**: Function parameters remain camelCase, no changes required.
 
 ---
 
-## 6. Constants (Hằng Số)
+## 6. Constants
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `UPPER_CASE` với underscore
+### Conversion Rules
+- **Current**: `UPPER_CASE` with underscores
 - **Google Style**: `kConstantName` (k prefix + PascalCase)
-- **Hành động**: ⚠️ **Thay đổi** - Chuyển từ UPPER_CASE sang kConstantName
+- **Action**: ⚠️ **Change** - Convert from UPPER_CASE to kConstantName
 
-### Bảng Chuyển Đổi
+### Conversion Table
 
-| Hiện Tại | Google Style | Ghi Chú |
-|----------|--------------|---------|
-| `DEF_GLBDATA_CATE_NONE` | `kDefGlbdataCateNone` | Preprocessor defines → constexpr |
-| `DEFAULT_DUMMYTEST` | `kDefaultDummyTest` | Preprocessor defines → constexpr |
-| `DEFAULT_DEBUGMODE` | `kDefaultDebugMode` | Preprocessor defines → constexpr |
-| `minItemID` | `kMinItemId` | Static constexpr |
-| `maxItemID` | `kMaxItemId` | Static constexpr |
-| `defaultItemID` | `kDefaultItemId` | Static constexpr |
-| `defaultBkgrdColor` | `kDefaultBkgrdColor` | Static constexpr |
+| Current                     | Google Style                 | Notes                          |
+|-----------------------------|------------------------------|--------------------------------|
+| `DEF_GLBDATA_CATE_NONE`     | `kDefGlbdataCateNone`        | Preprocessor → constexpr       |
+| `DEFAULT_DUMMYTEST`         | `kDefaultDummyTest`          | Preprocessor → constexpr       |
+| `DEFAULT_DEBUGMODE`         | `kDefaultDebugMode`          | Preprocessor → constexpr       |
+| `minItemID`                 | `kMinItemId`                 | Static constexpr               |
+| `maxItemID`                 | `kMaxItemId`                 | Static constexpr               |
+| `defaultItemID`             | `kDefaultItemId`             | Static constexpr               |
+| `defaultBkgrdColor`         | `kDefaultBkgrdColor`          | Static constexpr               |
 
-### Ví Dụ Hoàn Chỉnh
+### Complete Examples
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 // Preprocessor defines
 #define DEF_GLBDATA_CATE_NONE        0x00
 #define DEFAULT_DUMMYTEST            FALSE
 #define DEFAULT_DEBUGMODE            FALSE
 
-// Static constexpr trong class
+// Static constexpr in class
 static constexpr int minItemID = 10000;
 static constexpr int maxItemID = 19999;
 static constexpr int defaultItemID = 0x00;
 static constexpr COLORREF defaultBkgrdColor = Color::Pink;
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
-// constexpr constants (thay thế preprocessor defines)
+// constexpr constants (replace preprocessor defines)
 constexpr int kDefGlbdataCateNone = 0x00;
 constexpr bool kDefaultDummyTest = false;
 constexpr bool kDefaultDebugMode = false;
 
-// Static constexpr trong class
+// Static constexpr in class
 static constexpr int kMinItemId = 10000;
 static constexpr int kMaxItemId = 19999;
 static constexpr int kDefaultItemId = 0x00;
 static constexpr COLORREF kDefaultBkgrdColor = Color::Pink;
 ```
 
-### Quy Tắc Chi Tiết
-1. **Thêm prefix `k`**: Tất cả constants bắt đầu bằng `k`
-2. **Chuyển UPPER_CASE → PascalCase**: 
+### Detailed Rules
+1. **Add `k` prefix**: All constants start with `k`
+2. **UPPER_CASE → PascalCase**:
    - `DEF_GLBDATA_CATE_NONE` → `kDefGlbdataCateNone`
    - `minItemID` → `kMinItemId`
-3. **Ưu tiên constexpr**: Thay thế `#define` bằng `constexpr` khi có thể
-4. **Giữ nguyên ý nghĩa**: Không thay đổi ý nghĩa của constant
+3. **Prefer constexpr**: Replace `#define` with `constexpr` where possible
+4. **Preserve meaning**: Do not change the meaning of the constant
 
-**Lưu ý Đặc Biệt**: 
-- Các macro guards (`#ifndef`, `#define`) vẫn giữ nguyên `UPPER_CASE`
-- Các enum values có thể giữ nguyên hoặc chuyển sang `kEnumValue` format (xem mục 7)
+**Special Note**:
+- Macro guards (`#ifndef`, `#define`) remain `UPPER_CASE`
+- Enum values may stay as is or switch to `kEnumValue` format (see section 7)
 
 ---
 
-## 7. Enums (Liệt Kê)
+## 7. Enums
 
-### Quy Tắc Chuyển Đổi
-- **Enum Class**: `PascalCase` (giữ nguyên)
-- **Enum Values**: 
-  - **Hiện tại**: `PascalCase` (enum class) hoặc `UPPER_CASE` (enum thông thường)
-  - **Google Style**: `kEnumValue` (k prefix + PascalCase) hoặc giữ nguyên `PascalCase` cho enum class
-- **Hành động**: ⚠️ **Thay đổi một phần**
+### Conversion Rules
+- **Enum Class**: `PascalCase` (keep unchanged)
+- **Enum Values**:
+  - **Current**: `PascalCase` (enum class) or `UPPER_CASE` (regular enum)
+  - **Google Style**: `kEnumValue` (k prefix + PascalCase) or keep `PascalCase` for enum class
+- **Action**: ⚠️ **Partial change**
 
-### Ví Dụ Hoàn Chỉnh
+### Complete Examples
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
-// Enum class với PascalCase
+// Enum class with PascalCase
 enum class AppOptionID : int {
     invalid = -1,
     leftMouseAction = 0,
@@ -301,7 +301,7 @@ enum class AppOptionID : int {
     // ...
 };
 
-// Enum thông thường với UPPER_CASE
+// Regular enum with UPPER_CASE
 enum Flag {
     FLAG_OFF = 0x00,
     FLAG_ON  = 0x01,
@@ -313,9 +313,9 @@ enum Result {
 };
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
-// Enum class với k prefix (hoặc giữ nguyên PascalCase)
+// Enum class with k prefix (or keep PascalCase)
 enum class AppOptionID : int {
     kInvalid = -1,
     kLeftMouseAction = 0,
@@ -323,7 +323,7 @@ enum class AppOptionID : int {
     // ...
 };
 
-// Enum thông thường - chuyển sang enum class nếu có thể
+// Regular enum - prefer converting to enum class
 enum class Flag {
     kOff = 0x00,
     kOn  = 0x01,
@@ -335,38 +335,38 @@ enum class Result {
 };
 ```
 
-### Quy Tắc Chi Tiết
-1. **Enum Class**: Giữ nguyên `PascalCase` hoặc thêm `k` prefix cho values
-2. **Enum thông thường**: Ưu tiên chuyển sang `enum class` và thêm `k` prefix
-3. **Tùy chọn**: Có thể giữ nguyên `PascalCase` cho enum class values nếu team quyết định
+### Detailed Rules
+1. **Enum Class**: Keep `PascalCase` or add `k` prefix to values
+2. **Regular Enum**: Prefer converting to `enum class` and add `k` prefix
+3. **Option**: Team may choose to keep `PascalCase` for enum class values without `k`
 
-**Lưu ý**: Google Style Guide cho phép cả hai cách cho enum values trong enum class:
-- `PascalCase` (không có k prefix): `Invalid`, `LeftMouseAction`
-- `kPascalCase` (có k prefix): `kInvalid`, `kLeftMouseAction`
+**Note**: Google Style Guide allows both approaches for enum values in enum class:
+- `PascalCase` (no k prefix): `Invalid`, `LeftMouseAction`
+- `kPascalCase` (with k prefix): `kInvalid`, `kLeftMouseAction`
 
-Team có thể quyết định chọn một trong hai cách và áp dụng nhất quán.
+The team can decide on one approach and apply it consistently.
 
 ---
 
-## 8. Namespaces (Không Gian Tên)
+## 8. Namespaces
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `PascalCase`
+### Conversion Rules
+- **Current**: `PascalCase`
 - **Google Style**: `snake_case`
-- **Hành động**: ⚠️ **Thay đổi** - Chuyển từ PascalCase sang snake_case
+- **Action**: ⚠️ **Change** - Convert from PascalCase to snake_case
 
-### Bảng Chuyển Đổi
+### Conversion Table
 
-| Hiện Tại | Google Style | Ghi Chú |
-|----------|--------------|---------|
-| `Global` | `global` | snake_case |
-| `MapTable` | `map_table` | snake_case |
-| `Language` | `language` | snake_case |
-| `AppCore` | `app_core` | snake_case |
+| Current     | Google Style   | Notes       |
+|-------------|----------------|-------------|
+| `Global`    | `global`       | snake_case  |
+| `MapTable`  | `map_table`    | snake_case  |
+| `Language`  | `language`     | snake_case  |
+| `AppCore`   | `app_core`     | snake_case  |
 
-### Ví Dụ Hoàn Chỉnh
+### Complete Examples
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 namespace Global {
     extern DateTime g_stAppLaunchTime;
@@ -386,7 +386,7 @@ namespace AppCore {
 }
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 namespace global {
     extern DateTime g_appLaunchTime_;
@@ -406,31 +406,31 @@ namespace app_core {
 }
 ```
 
-### Quy Tắc Chi Tiết
-1. **Chuyển PascalCase → snake_case**: Tất cả namespaces chuyển sang snake_case
-2. **Dùng underscore**: Namespaces dùng underscore để phân tách các từ
-3. **Global variables trong namespace**: Cũng cần chuyển sang camelCase_ (xem mục 9)
+### Detailed Rules
+1. **PascalCase → snake_case**: All namespaces converted to snake_case
+2. **Use underscores**: Separate words with underscores
+3. **Global variables inside namespaces**: Also convert to camelCase_ (see section 9)
 
 ---
 
-## 9. Global Variables (Biến Toàn Cục)
+## 9. Global Variables
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `g_` + Hungarian Notation
+### Conversion Rules
+- **Current**: `g_` + Hungarian Notation
 - **Google Style**: `g_` + `camelCase_` (trailing underscore)
-- **Hành động**: ⚠️ **Thay đổi một phần** - Giữ prefix `g_`, bỏ Hungarian Notation, chuyển sang camelCase và thêm trailing underscore
+- **Action**: ⚠️ **Partial change** - Keep `g_` prefix, remove Hungarian Notation, convert to camelCase and add trailing underscore
 
-### Bảng Chuyển Đổi
+### Conversion Table
 
-| Hiện Tại | Google Style | Ghi Chú |
-|----------|--------------|---------|
-| `g_stAppLaunchTime` | `g_appLaunchTime_` | DateTime object |
-| `g_uiAppLaunchTimeCounter` | `g_appLaunchTimeCounter_` | Unsigned counter |
-| `g_sharedFlagManager` | `g_sharedFlagManager_` | Manager object |
+| Current                       | Google Style                    | Notes                |
+|-------------------------------|---------------------------------|----------------------|
+| `g_stAppLaunchTime`           | `g_appLaunchTime_`              | DateTime object      |
+| `g_uiAppLaunchTimeCounter`    | `g_appLaunchTimeCounter_`       | Unsigned counter     |
+| `g_sharedFlagManager`         | `g_sharedFlagManager_`          | Manager object       |
 
-### Ví Dụ Hoàn Chỉnh
+### Complete Examples
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 namespace Global {
     extern DateTime g_stAppLaunchTime;
@@ -440,7 +440,7 @@ namespace Global {
 extern FlagManager g_sharedFlagManager;
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 namespace global {
     extern DateTime g_appLaunchTime_;
@@ -450,34 +450,34 @@ namespace global {
 extern FlagManager g_sharedFlagManager_;
 ```
 
-### Quy Tắc Chi Tiết
-1. **Giữ prefix `g_`**: Giữ nguyên prefix `g_` để phân biệt global variables
-2. **Bỏ Hungarian Notation**: Loại bỏ các prefix như `st_`, `ui_`, `n_`, `b_`, etc.
-3. **Chuyển sang camelCase**: Chuyển tên biến sang camelCase (không phải snake_case)
-4. **Thêm trailing underscore**: Thêm `_` ở cuối để nhất quán với member variables
+### Detailed Rules
+1. **Keep `g_` prefix**: Retain `g_` to identify global variables
+2. **Remove Hungarian Notation**: Drop prefixes like `st_`, `ui_`, etc.
+3. **Convert to camelCase**: Use camelCase (not snake_case)
+4. **Add trailing underscore**: Append `_` for consistency with member variables
 
 ---
 
-## 10. Structs (Cấu Trúc)
+## 10. Structs
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `PascalCase` hoặc `UPPER_CASE`
-- **Google Style**: `PascalCase` (giống classes)
-- **Hành động**: ⚠️ **Thay đổi một phần** - Chuyển UPPER_CASE sang PascalCase
+### Conversion Rules
+- **Current**: `PascalCase` or `UPPER_CASE`
+- **Google Style**: `PascalCase` (same as classes)
+- **Action**: ⚠️ **Partial change** - Convert UPPER_CASE to PascalCase
 
-### Bảng Chuyển Đổi
+### Conversion Table
 
-| Hiện Tại | Google Style | Ghi Chú |
-|----------|--------------|---------|
-| `CONFIGDATAINFO` | `ConfigDataInfo` | PascalCase |
-| `RESOURCE_ID_MAP_ENTRY` | `ResourceIdMapEntry` | PascalCase |
-| `SystemEvent` | `SystemEvent` | Giữ nguyên |
-| `AppProfile` | `AppProfile` | Giữ nguyên |
-| `JSON_ENTRY` | `JsonEntry` | PascalCase |
+| Current                   | Google Style              | Notes       |
+|---------------------------|---------------------------|-------------|
+| `CONFIGDATAINFO`          | `ConfigDataInfo`          | PascalCase  |
+| `RESOURCE_ID_MAP_ENTRY`   | `ResourceIdMapEntry`      | PascalCase  |
+| `SystemEvent`             | `SystemEvent`             | Unchanged   |
+| `AppProfile`              | `AppProfile`              | Unchanged   |
+| `JSON_ENTRY`              | `JsonEntry`               | PascalCase  |
 
-### Ví Dụ Hoàn Chỉnh
+### Complete Examples
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 struct CONFIGDATAINFO {
     // ...
@@ -492,7 +492,7 @@ struct SystemEvent {
 };
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 struct ConfigDataInfo {
     // ...
@@ -507,22 +507,22 @@ struct SystemEvent {
 };
 ```
 
-### Quy Tắc Chi Tiết
-1. **Chuyển UPPER_CASE → PascalCase**: Tất cả structs dùng PascalCase
-2. **Member variables**: Cũng cần chuyển sang camelCase_ (xem mục 3)
+### Detailed Rules
+1. **UPPER_CASE → PascalCase**: All structs use PascalCase
+2. **Member variables**: Also convert to camelCase_ (see section 3)
 
 ---
 
-## 11. Typedefs và Type Aliases
+## 11. Typedefs and Type Aliases
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `PascalCase` hoặc `UPPER_CASE`
-- **Google Style**: `PascalCase` (giống classes)
-- **Hành động**: ⚠️ **Thay đổi một phần** - Chuyển UPPER_CASE sang PascalCase
+### Conversion Rules
+- **Current**: `PascalCase` or `UPPER_CASE`
+- **Google Style**: `PascalCase` (same as classes)
+- **Action**: ⚠️ **Partial change** - Convert UPPER_CASE to PascalCase
 
-### Ví Dụ Hoàn Chỉnh
+### Complete Examples
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 // Type aliases (modern C++)
 using AppOptionID = ConfigData::AppOptionID;
@@ -539,7 +539,7 @@ typedef enum eGRIDCOLSTYLE {
 } GRIDCOLSTYLE;
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 // Type aliases (modern C++)
 using AppOptionID = ConfigData::AppOptionID;
@@ -548,7 +548,7 @@ using ScheduleItemList = typename std::vector<ScheduleItem>;
 using HotkeySetItemList = typename std::vector<HotkeySetItem>;
 using TokenList = typename std::vector<std::wstring>;
 
-// Typedefs (legacy) - chuyển sang enum class nếu có thể
+// Legacy typedefs - prefer converting to enum class
 enum class GridColStyle {
     kFixed = 0,
     kCheckbox,
@@ -556,57 +556,57 @@ enum class GridColStyle {
 };
 ```
 
-### Quy Tắc Chi Tiết
-1. **Type aliases**: Giữ nguyên PascalCase
-2. **Legacy typedefs**: Ưu tiên chuyển sang enum class hoặc type alias
+### Detailed Rules
+1. **Type aliases**: Keep PascalCase
+2. **Legacy typedefs**: Prefer converting to enum class or type alias
 
 ---
 
-## 12. Macros (Macro)
+## 12. Macros
 
-### Quy Tắc Chuyển Đổi
-- **Hiện tại**: `UPPER_CASE` với underscore
-- **Google Style**: `UPPER_CASE` với underscore
-- **Hành động**: ✅ **Giữ nguyên** - Không cần thay đổi
+### Conversion Rules
+- **Current**: `UPPER_CASE` with underscores
+- **Google Style**: `UPPER_CASE` with underscores
+- **Action**: ✅ **No change** - Keep as is
 
-### Ví Dụ
+### Examples
 ```cpp
-// Trước và sau (giữ nguyên)
+// Before and after (unchanged)
 #define DEF_GLBDATA_CATE_NONE        0x00
 #define DEFAULT_DUMMYTEST            FALSE
 #define DEFAULT_DEBUGMODE            FALSE
 #define _APP_CONSTANTS_INCLUDED
 ```
 
-**Lưu ý**: Mặc dù giữ nguyên, nhưng nên ưu tiên thay thế bằng `constexpr` khi có thể (xem mục 6).
+**Note**: Although unchanged, prefer replacing with `constexpr` where possible (see section 6).
 
 ---
 
-## 13. Tóm Tắt Quy Tắc Chuyển Đổi
+## 13. Summary of Conversion Rules
 
-### Bảng Tóm Tắt Nhanh
+### Quick Summary Table
 
-| Loại | Hiện Tại | Google Style | Hành Động |
-|------|----------|--------------|-----------|
-| Classes | `PascalCase` | `PascalCase` | ✅ Giữ nguyên |
-| Functions | `PascalCase` | `camelCase` | ⚠️ Thay đổi |
-| Member Variables | `m_camelCase` | `camelCase_` | ⚠️ Thay đổi lớn |
-| Local Variables | `camelCase` | `camelCase` | ✅ Giữ nguyên |
-| Parameters | `camelCase` | `camelCase` | ✅ Giữ nguyên |
-| Constants | `UPPER_CASE` | `kConstantName` | ⚠️ Thay đổi |
-| Namespaces | `PascalCase` | `snake_case` | ⚠️ Thay đổi |
-| Enums | `PascalCase`/`UPPER_CASE` | `PascalCase`/`kEnumValue` | ⚠️ Thay đổi một phần |
-| Global Variables | `g_` + Hungarian | `g_` + `camelCase_` | ⚠️ Thay đổi một phần |
-| Structs | `PascalCase`/`UPPER_CASE` | `PascalCase` | ⚠️ Thay đổi một phần |
-| Macros | `UPPER_CASE` | `UPPER_CASE` | ✅ Giữ nguyên |
+| Type                  | Current                  | Google Style                  | Action                |
+|-----------------------|--------------------------|-------------------------------|-----------------------|
+| Classes               | `PascalCase`             | `PascalCase`                  | ✅ No change           |
+| Functions             | `PascalCase`             | `camelCase`                   | ⚠️ Change             |
+| Member Variables      | `m_camelCase`            | `camelCase_`                  | ⚠️ Major change       |
+| Local Variables       | `camelCase`              | `camelCase`                   | ✅ No change           |
+| Parameters            | `camelCase`              | `camelCase`                   | ✅ No change           |
+| Constants             | `UPPER_CASE`             | `kConstantName`               | ⚠️ Change             |
+| Namespaces            | `PascalCase`             | `snake_case`                  | ⚠️ Change             |
+| Enums                 | `PascalCase`/`UPPER_CASE`| `PascalCase`/`kEnumValue`     | ⚠️ Partial change     |
+| Global Variables      | `g_` + Hungarian         | `g_` + `camelCase_`           | ⚠️ Partial change     |
+| Structs               | `PascalCase`/`UPPER_CASE`| `PascalCase`                  | ⚠️ Partial change     |
+| Macros                | `UPPER_CASE`             | `UPPER_CASE`                  | ✅ No change           |
 
 ---
 
-## 14. Ví Dụ Hoàn Chỉnh Trước và Sau
+## 14. Complete Before-and-After Examples
 
-### Ví Dụ 1: Class với Member Variables và Functions
+### Example 1: Class with Member Variables and Functions
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 class ScheduleItem {
 private:
@@ -630,7 +630,7 @@ public:
 };
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 class ScheduleItem {
 private:
@@ -654,9 +654,9 @@ public:
 };
 ```
 
-### Ví Dụ 2: Function với Parameters và Local Variables
+### Example 2: Function with Parameters and Local Variables
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 bool ExecutePowerAction(unsigned actionType, unsigned message, DWORD& errCode) {
     bool result = false;
@@ -670,7 +670,7 @@ bool ExecutePowerAction(unsigned actionType, unsigned message, DWORD& errCode) {
 }
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 bool executePowerAction(unsigned actionType, unsigned message, DWORD& errCode) {
     bool result = false;
@@ -684,9 +684,9 @@ bool executePowerAction(unsigned actionType, unsigned message, DWORD& errCode) {
 }
 ```
 
-### Ví Dụ 3: Global Variables và Namespaces
+### Example 3: Global Variables and Namespaces
 
-#### Trước (Hiện Tại)
+#### Before (Current)
 ```cpp
 namespace Global {
     extern DateTime g_stAppLaunchTime;
@@ -698,7 +698,7 @@ static inline const DateTime& GetAppLaunchTime(void) {
 }
 ```
 
-#### Sau (Google Style)
+#### After (Google Style)
 ```cpp
 namespace global {
     extern DateTime g_appLaunchTime_;
@@ -712,111 +712,111 @@ static inline const DateTime& getAppLaunchTime(void) {
 
 ---
 
-## 15. Quy Tắc Ưu Tiên và Lưu Ý
+## 15. Priorities and Important Notes
 
-### 15.1. Thứ Tự Ưu Tiên Chuyển Đổi
+### 15.1. Conversion Priority Order
 
 1. **Phase 1.1**: Functions (`PascalCase` → `camelCase`)
 2. **Phase 1.2**: Member variables (`m_camelCase` → `camelCase_`)
 3. **Phase 1.3**: Constants (`UPPER_CASE` → `kConstantName`)
 4. **Phase 1.4**: Namespaces (`PascalCase` → `snake_case`)
 5. **Phase 1.5**: Global variables (`g_` + Hungarian → `g_` + `camelCase_`)
-6. **Phase 1.6**: Structs và Enums (nếu cần)
+6. **Phase 1.6**: Structs and Enums (if needed)
 
-### 15.2. Lưu Ý Quan Trọng
+### 15.2. Important Notes
 
-1. **Không thay đổi tên class**: Chỉ thay đổi tên hàm, biến, parameters, constants
-2. **Consistency**: Đảm bảo tính nhất quán trong toàn bộ project
-3. **Readability**: Tên biến phải dễ đọc và mô tả rõ ràng mục đích
-4. **Avoid abbreviations**: Tránh viết tắt không rõ ràng
-5. **Incremental refactoring**: Chuyển đổi từng file một, test kỹ trước khi tiếp tục
-6. **Version control**: Commit từng phase riêng biệt để dễ rollback nếu cần
-7. **Cải thiện tên**: Không bắt buộc phải giữ nguyên tên gốc - có thể tự do cải thiện tên để rõ ràng hơn (xem mục 15.4)
+1. **Do not change class names**: Only change function, variable, parameter, and constant names
+2. **Consistency**: Ensure consistency across the entire project
+3. **Readability**: Names must be readable and clearly describe their purpose
+4. **Avoid abbreviations**: Avoid unclear abbreviations
+5. **Incremental refactoring**: Convert one file at a time, test thoroughly before continuing
+6. **Version control**: Commit each phase separately for easy rollback if needed
+7. **Name improvement**: You are not required to keep original names — feel free to improve names for clarity (see section 15.4)
 
-### 15.3. Cải Thiện Tên Trong Quá Trình Chuyển Đổi
+### 15.3. Improving Names During Conversion
 
-**Nguyên tắc quan trọng**: Trong quá trình chuyển đổi naming convention, **không bắt buộc phải giữ nguyên tên gốc**. Bạn có thể tự do cải thiện tên functions, variables, và constants để làm cho code rõ ràng và dễ hiểu hơn, miễn là tuân thủ naming convention mới.
+**Important principle**: During the naming convention conversion, **you are not required to keep the original names**. You may freely improve function, variable, and constant names to make the code clearer and more understandable, as long as you follow the new naming convention.
 
-#### Ví Dụ Cải Thiện Tên
+#### Name Improvement Examples
 
 **Functions**:
-- `GetData()` → `getData()` (chỉ chuyển case) 
-- `GetData()` → `getConfigData()` (cải thiện để rõ ràng hơn - **khuyến khích**)
-- `SetItemID()` → `setItemId()` (chỉ chuyển case)
-- `SetItemID()` → `setScheduleItemId()` (cải thiện để rõ ràng hơn - **khuyến khích**)
+- `GetData()` → `getData()` (only case change)
+- `GetData()` → `getConfigData()` (improved for clarity — **encouraged**)
+- `SetItemID()` → `setItemId()` (only case change)
+- `SetItemID()` → `setScheduleItemId()` (improved for clarity — **encouraged**)
 
 **Member Variables**:
-- `m_itemID` → `itemId_` (chỉ chuyển format)
-- `m_itemID` → `scheduleItemId_` (cải thiện để rõ ràng hơn - **khuyến khích**)
-- `m_timeValue` → `timeValue_` (chỉ chuyển format)
-- `m_timeValue` → `scheduledTime_` (cải thiện để rõ ràng hơn - **khuyến khích**)
+- `m_itemID` → `itemId_` (only format change)
+- `m_itemID` → `scheduleItemId_` (improved for clarity — **encouraged**)
+- `m_timeValue` → `timeValue_` (only format change)
+- `m_timeValue` → `scheduledTime_` (improved for clarity — **encouraged**)
 
 **Constants**:
-- `DEF_GLBDATA_CATE_NONE` → `kDefGlbdataCateNone` (chỉ chuyển format)
-- `DEF_GLBDATA_CATE_NONE` → `kGlobalDataCategoryNone` (cải thiện để rõ ràng hơn - **khuyến khích**)
-- `minItemID` → `kMinItemId` (chỉ chuyển format)
-- `minItemID` → `kMinScheduleItemId` (cải thiện để rõ ràng hơn - **khuyến khích**)
+- `DEF_GLBDATA_CATE_NONE` → `kDefGlbdataCateNone` (only format change)
+- `DEF_GLBDATA_CATE_NONE` → `kGlobalDataCategoryNone` (improved for clarity — **encouraged**)
+- `minItemID` → `kMinItemId` (only format change)
+- `minItemID` → `kMinScheduleItemId` (improved for clarity — **encouraged**)
 
-#### Nguyên Tắc Cải Thiện Tên
+#### Name Improvement Principles
 
-1. **Ưu tiên tính rõ ràng**: Tên mới nên mô tả rõ ràng hơn tên cũ
-2. **Tránh viết tắt không rõ ràng**: Loại bỏ các viết tắt khó hiểu
-3. **Nhất quán**: Đảm bảo tên mới nhất quán với phần còn lại của codebase
-4. **Mô tả đúng mục đích**: Tên phải phản ánh chính xác chức năng hoặc ý nghĩa
-5. **Document changes**: Ghi chú lại các thay đổi tên quan trọng trong commit messages
+1. **Prioritize clarity**: New name should be clearer than the old one
+2. **Avoid unclear abbreviations**: Remove ambiguous abbreviations
+3. **Consistency**: Ensure new names are consistent with the rest of the codebase
+4. **Accurate description**: Name must accurately reflect purpose or meaning
+5. **Document changes**: Note significant name changes in commit messages
 
-#### Khi Nào Nên Cải Thiện Tên
+#### When to Improve Names
 
-- ✅ **Nên cải thiện** khi:
-  - Tên hiện tại không rõ ràng hoặc dễ gây nhầm lẫn
-  - Tên có viết tắt không rõ ràng
-  - Tên không mô tả đúng mục đích
-  - Có thể làm cho code dễ đọc và dễ hiểu hơn
+- ✅ **Should improve** when:
+  - Current name is unclear or confusing
+  - Name contains unclear abbreviations
+  - Name does not accurately describe purpose
+  - Improvement makes code easier to read and understand
 
-- ⚠️ **Cân nhắc** khi:
-  - Tên đã được sử dụng ở nhiều nơi (cần update nhiều references)
-  - Tên đã quen thuộc với team (có thể gây confusion)
-  - Thay đổi tên không mang lại lợi ích rõ ràng
+- ⚠️ **Consider carefully** when:
+  - Name is used in many places (requires updating many references)
+  - Name is already familiar to the team (may cause confusion)
+  - Change provides no clear benefit
 
-- ❌ **Không nên** khi:
-  - Tên đã rất rõ ràng và phù hợp
-  - Thay đổi sẽ gây breaking changes lớn mà không có lợi ích tương ứng
+- ❌ **Should not** when:
+  - Name is already very clear and appropriate
+  - Change would cause large breaking changes with no corresponding benefit
 
-### 15.4. Các Trường Hợp Đặc Biệt
+### 15.4. Special Cases
 
-1. **Windows API**: Giữ nguyên naming của Windows API (HWND, DWORD, etc.)
-2. **Third-party libraries**: Giữ nguyên naming của thư viện bên thứ ba
-3. **Legacy code**: Có thể giữ nguyên một số phần legacy code nếu refactor quá tốn kém
-4. **Macro guards**: Giữ nguyên `UPPER_CASE` cho include guards
-
----
-
-## 16. Checklist Chuyển Đổi
-
-### Checklist cho Mỗi File
-
-- [ ] Functions: `PascalCase` → `camelCase` (có thể cải thiện tên để rõ ràng hơn)
-- [ ] Member variables: `m_camelCase` → `camelCase_` (có thể cải thiện tên để rõ ràng hơn)
-- [ ] Local variables: Giữ nguyên `camelCase` hoặc cải thiện nếu cần
-- [ ] Function parameters: Giữ nguyên `camelCase` hoặc cải thiện nếu cần
-- [ ] Constants: `UPPER_CASE` → `kConstantName` (có thể cải thiện tên để rõ ràng hơn)
-- [ ] Namespaces: `PascalCase` → `snake_case` (nếu có)
-- [ ] Global variables: `g_` + Hungarian → `g_` + `camelCase_` (có thể cải thiện tên để rõ ràng hơn)
-- [ ] Structs: `UPPER_CASE` → `PascalCase` (nếu có)
-- [ ] Enums: Chuyển đổi values nếu cần
-- [ ] Compile và test: Đảm bảo code vẫn hoạt động đúng
-- [ ] Review: Code review trước khi commit
-- [ ] Document: Ghi chú các thay đổi tên quan trọng trong commit message
+1. **Windows API**: Keep Windows API naming (HWND, DWORD, etc.)
+2. **Third-party libraries**: Keep naming of external libraries
+3. **Legacy code**: May retain some legacy code if refactoring is too costly
+4. **Macro guards**: Keep `UPPER_CASE` for include guards
 
 ---
 
-## 17. Tài Liệu Tham Khảo
+## 16. Conversion Checklist
+
+### Checklist for Each File
+
+- [ ] Functions: `PascalCase` → `camelCase` (may improve names for clarity)
+- [ ] Member variables: `m_camelCase` → `camelCase_` (may improve names for clarity)
+- [ ] Local variables: Keep `camelCase` or improve if needed
+- [ ] Function parameters: Keep `camelCase` or improve if needed
+- [ ] Constants: `UPPER_CASE` → `kConstantName` (may improve names for clarity)
+- [ ] Namespaces: `PascalCase` → `snake_case` (if present)
+- [ ] Global variables: `g_` + Hungarian → `g_` + `camelCase_` (may improve names for clarity)
+- [ ] Structs: `UPPER_CASE` → `PascalCase` (if present)
+- [ ] Enums: Convert values if needed
+- [ ] Compile and test: Ensure code still works correctly
+- [ ] Review: Code review before commit
+- [ ] Document: Note significant name changes in commit message
+
+---
+
+## 17. Reference Documents
 
 - [Google C++ Style Guide - Naming](https://google.github.io/styleguide/cppguide.html#Naming)
-- [NAMING_CONVENTIONS.md](./NAMING_CONVENTIONS.md) - Tài liệu naming convention hiện tại của project
+- [NAMING_CONVENTIONS.md](./NAMING_CONVENTIONS.md) - Current project naming conventions document
 
 ---
 
-**Tài liệu này được tạo cho Phase 1 của quá trình refactoring PowerPlus3 project.**
-**Ngày tạo**: 2025-01-XX
-**Phiên bản**: 1.0
+**This document was created for Phase 1 of the PowerPlus3 project refactoring.**
+**Created**: 2025-01-XX
+**Version**: 1.0

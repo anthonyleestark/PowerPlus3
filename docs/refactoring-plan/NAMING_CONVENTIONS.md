@@ -1,17 +1,17 @@
 # Naming Conventions - PowerPlus3 Project
 
-Tài liệu này mô tả các quy tắc naming convention được sử dụng trong project PowerPlus3 (trừ phần Components).
+This document describes the naming conventions used in the PowerPlus3 project (excluding the Components section).
 
 ---
 
-## 1. Classes (Lớp)
+## 1. Classes
 
-### Quy tắc
+### Rules
 - **Format**: `PascalCase`
-- Bắt đầu bằng chữ cái in hoa, mỗi từ tiếp theo cũng bắt đầu bằng chữ cái in hoa
-- Không sử dụng prefix hoặc suffix đặc biệt
+- Starts with an uppercase letter, each subsequent word also starts with an uppercase letter
+- No special prefixes or suffixes
 
-### Ví dụ
+### Examples
 ```cpp
 class ConfigData
 class ScheduleItem
@@ -23,20 +23,20 @@ class PerformanceCounter
 class FlagManager
 ```
 
-### Lưu ý
-- Các class utility thường kết thúc bằng `Utils` (StringUtils, ClockTimeUtils, DateTimeUtils)
-- Các class quản lý dữ liệu thường kết thúc bằng `Data` (ScheduleData, HotkeySetData, PwrReminderData)
-- Các class quản lý item thường kết thúc bằng `Item` (ScheduleItem, HotkeySetItem, PwrReminderItem)
+### Notes
+- Utility classes often end with `Utils` (StringUtils, ClockTimeUtils, DateTimeUtils)
+- Data management classes often end with `Data` (ScheduleData, HotkeySetData, PwrReminderData)
+- Item management classes often end with `Item` (ScheduleItem, HotkeySetItem, PwrReminderItem)
 
 ---
 
-## 2. Structs (Cấu trúc)
+## 2. Structs
 
-### Quy tắc
-- **Format**: `PascalCase` hoặc `UPPER_CASE`
-- Có thể sử dụng cả hai format tùy theo context
+### Rules
+- **Format**: `PascalCase` or `UPPER_CASE`
+- Both formats can be used depending on context
 
-### Ví dụ
+### Examples
 ```cpp
 // PascalCase
 struct CONFIGDATAINFO
@@ -44,26 +44,26 @@ struct RESOURCE_ID_MAP_ENTRY
 struct SystemEvent
 struct AppProfile
 
-// UPPER_CASE (thường dùng cho các struct định nghĩa dữ liệu)
+// UPPER_CASE (commonly used for data-defining structs)
 struct JSON_ENTRY
 ```
 
-### Lưu ý
-- Các struct định nghĩa thông tin cấu hình thường dùng `UPPER_CASE` (CONFIGDATAINFO)
-- Các struct định nghĩa entry/map thường dùng `UPPER_CASE` với underscore (RESOURCE_ID_MAP_ENTRY)
-- Các struct class-like thường dùng `PascalCase` (SystemEvent)
+### Notes
+- Configuration information structs often use `UPPER_CASE` (CONFIGDATAINFO)
+- Entry/map-defining structs often use `UPPER_CASE` with underscores (RESOURCE_ID_MAP_ENTRY)
+- Class-like structs often use `PascalCase` (SystemEvent)
 
 ---
 
-## 3. Enums (Liệt kê)
+## 3. Enums
 
-### Quy tắc
-- **Format**: `PascalCase` hoặc `UPPER_CASE`
-- Enum values thường dùng `PascalCase` hoặc `UPPER_CASE` tùy theo enum type
+### Rules
+- **Format**: `PascalCase` or `UPPER_CASE`
+- Enum values typically use `PascalCase` or `UPPER_CASE` depending on the enum type
 
-### Ví dụ
+### Examples
 ```cpp
-// Enum class với PascalCase
+// Enum class with PascalCase
 enum class AppOptionID : int {
     invalid = -1,
     leftMouseAction = 0,
@@ -71,7 +71,7 @@ enum class AppOptionID : int {
     // ...
 };
 
-// Enum thông thường với UPPER_CASE
+// Regular enum with UPPER_CASE
 enum Flag {
     FLAG_OFF = 0x00,
     FLAG_ON  = 0x01,
@@ -83,20 +83,20 @@ enum Result {
 };
 ```
 
-### Lưu ý
-- Enum class thường dùng `PascalCase` cho cả tên enum và values
-- Enum thông thường thường dùng `UPPER_CASE` cho values
+### Notes
+- Enum classes typically use `PascalCase` for both the enum name and values
+- Regular enums typically use `UPPER_CASE` for values
 
 ---
 
-## 4. Functions (Hàm)
+## 4. Functions
 
-### Quy tắc
+### Rules
 - **Format**: `PascalCase`
-- Bắt đầu bằng chữ cái in hoa
-- Tên hàm nên mô tả rõ ràng chức năng
+- Starts with an uppercase letter
+- Function names should clearly describe their purpose
 
-### Ví dụ
+### Examples
 ```cpp
 void GetData(CONFIGDATAINFO& data) const noexcept;
 int GetAppOption(AppOptionID appOptionID) const noexcept;
@@ -107,78 +107,78 @@ void Copy(const ScheduleItem& other) noexcept;
 bool Compare(const ScheduleItem& other) const noexcept;
 ```
 
-### Quy ước đặt tên
-- **Getter**: Bắt đầu bằng `Get` (GetItemID, GetTime, GetAction)
-- **Setter**: Bắt đầu bằng `Set` (SetItemID, SetTime, SetAction)
-- **Boolean check**: Bắt đầu bằng `Is` hoặc `Has` (IsEnabled, IsEmpty, HasValue)
-- **Enable/Disable**: Bắt đầu bằng `Enable` hoặc `Disable` (EnableItem, EnableRepeat)
-- **Action verbs**: Sử dụng động từ rõ ràng (Copy, Compare, Add, Update, Remove, Delete)
+### Naming Conventions
+- **Getter**: Starts with `Get` (GetItemID, GetTime, GetAction)
+- **Setter**: Starts with `Set` (SetItemID, SetTime, SetAction)
+- **Boolean check**: Starts with `Is` or `Has` (IsEnabled, IsEmpty, HasValue)
+- **Enable/Disable**: Starts with `Enable` or `Disable` (EnableItem, EnableRepeat)
+- **Action verbs**: Use clear verbs (Copy, Compare, Add, Update, Remove, Delete)
 
 ---
 
-## 5. Variables (Biến)
+## 5. Variables
 
-### 5.1. Member Variables (Biến thành viên)
+### 5.1. Member Variables
 
-#### Quy tắc
+#### Rules
 - **Format**: `m_` + `camelCase`
-- Prefix `m_` để phân biệt member variable
-- Sau prefix là tên biến theo camelCase
+- Prefix `m_` to distinguish member variables
+- After the prefix, use camelCase for the variable name
 
-#### Ví dụ
+#### Examples
 ```cpp
 // Boolean flags
-bool m_isEnabled;          // Trạng thái enable/disable
-bool m_isRepeated;         // Trạng thái lặp lại
-bool m_allowSnoozing;      // Cho phép snooze
-bool m_useCustomStyle;     // Sử dụng style tùy chỉnh
+bool m_isEnabled;          // Enable/disable state
+bool m_isRepeated;         // Repeat state
+bool m_allowSnoozing;      // Allow snoozing
+bool m_useCustomStyle;     // Use custom style
 
 // Numeric values
-unsigned m_itemID;         // ID của item
-int m_actionID;            // ID của action
-int m_snoozeInterval;      // Khoảng thời gian snooze
-unsigned m_fontSize;       // Kích thước font
-unsigned m_timeout;        // Thời gian timeout
+unsigned m_itemID;         // Item ID
+int m_actionID;            // Action ID
+int m_snoozeInterval;      // Snooze interval
+unsigned m_fontSize;       // Font size
+unsigned m_timeout;        // Timeout
 
 // String values
-String m_messageContent;   // Nội dung message
-String m_fontName;         // Tên font
+String m_messageContent;   // Message content
+String m_fontName;         // Font name
 
 // Object references
-ClockTime m_timeValue;     // Giá trị thời gian
-PwrRepeatSet m_repeatSetInfo;  // Thông tin repeat set
-RmdMsgStyleSet m_msgStyleSetInfo;  // Thông tin style set
+ClockTime m_timeValue;     // Time value
+PwrRepeatSet m_repeatSetInfo;  // Repeat set information
+RmdMsgStyleSet m_msgStyleSetInfo;  // Style set information
 
 // Collections
-ScheduleItemList m_extraScheduleItemList;  // Danh sách item bổ sung
-HotkeySetItemList m_hotkeySetList;         // Danh sách hotkey set
+ScheduleItemList m_extraScheduleItemList;  // Extra item list
+HotkeySetItemList m_hotkeySetList;         // Hotkey set list
 ```
 
-### 5.2. Global Variables (Biến toàn cục)
+### 5.2. Global Variables
 
-#### Quy tắc
-- **Format**: `g_` + Hungarian Notation (đang được giữ nguyên)
-- Prefix `g_` để phân biệt global variable
-- Vẫn sử dụng Hungarian Notation cho global variables
+#### Rules
+- **Format**: `g_` + Hungarian Notation (currently retained)
+- Prefix `g_` to distinguish global variables
+- Hungarian Notation is still used for global variables
 
-#### Ví dụ
+#### Examples
 ```cpp
 namespace Global {
-    extern DateTime g_stAppLaunchTime;           // Thời gian khởi động app
-    extern unsigned g_uiAppLaunchTimeCounter;    // Bộ đếm thời gian khởi động
+    extern DateTime g_stAppLaunchTime;           // Application launch time
+    extern unsigned g_uiAppLaunchTimeCounter;    // Launch time counter
 };
 
-extern FlagManager g_sharedFlagManager;         // Flag manager dùng chung
+extern FlagManager g_sharedFlagManager;         // Shared flag manager
 ```
 
-### 5.3. Local Variables (Biến cục bộ)
+### 5.3. Local Variables
 
-#### Quy tắc
+#### Rules
 - **Format**: `camelCase`
-- Không sử dụng prefix
-- Tên biến nên mô tả rõ ràng mục đích sử dụng
+- No prefix
+- Variable names should clearly describe their purpose
 
-#### Ví dụ
+#### Examples
 ```cpp
 // Simple variables
 int index = 0;
@@ -202,14 +202,14 @@ bool result = ExecutePowerAction(actionType, message, errCode);
 unsigned retNextID = ScheduleData::minItemID;
 ```
 
-### 5.4. Function Parameters (Tham số hàm)
+### 5.4. Function Parameters
 
-#### Quy tắc
+#### Rules
 - **Format**: `camelCase`
-- Không sử dụng prefix (trừ khi cần thiết để tránh conflict)
-- Tên tham số nên mô tả rõ ràng ý nghĩa
+- No prefix (unless needed to avoid conflicts)
+- Parameter names should clearly describe their meaning
 
-#### Ví dụ
+#### Examples
 ```cpp
 void SetItemID(unsigned itemID) noexcept;
 void EnableItem(bool enabled) noexcept;
@@ -221,20 +221,20 @@ bool ExecutePowerAction(unsigned actionType, unsigned message, DWORD& errCode);
 
 ---
 
-## 6. Constants (Hằng số)
+## 6. Constants
 
-### Quy tắc
-- **Format**: `UPPER_CASE` với underscore
-- Tất cả chữ cái in hoa, các từ cách nhau bởi underscore
+### Rules
+- **Format**: `UPPER_CASE` with underscores
+- All uppercase letters, words separated by underscores
 
-### Ví dụ
+### Examples
 ```cpp
 // Preprocessor defines
 #define DEF_GLBDATA_CATE_NONE        0x00
 #define DEFAULT_DUMMYTEST            FALSE
 #define DEFAULT_DEBUGMODE            FALSE
 
-// Static constexpr trong class
+// Static constexpr in class
 static constexpr int minItemID = 10000;
 static constexpr int maxItemID = 19999;
 static constexpr int defaultItemID = 0x00;
@@ -243,13 +243,13 @@ static constexpr COLORREF defaultBkgrdColor = Color::Pink;
 
 ---
 
-## 7. Namespaces (Không gian tên)
+## 7. Namespaces
 
-### Quy tắc
+### Rules
 - **Format**: `PascalCase`
-- Bắt đầu bằng chữ cái in hoa
+- Starts with an uppercase letter
 
-### Ví dụ
+### Examples
 ```cpp
 namespace Global {
     // ...
@@ -270,14 +270,14 @@ namespace AppCore {
 
 ---
 
-## 8. Typedefs và Type Aliases
+## 8. Typedefs and Type Aliases
 
-### Quy tắc
-- **Format**: `PascalCase` hoặc `UPPER_CASE` tùy theo context
-- Thường sử dụng `PascalCase` cho type aliases
-- Sử dụng `UPPER_CASE` cho typedefs cũ (để tương thích)
+### Rules
+- **Format**: `PascalCase` or `UPPER_CASE` depending on context
+- Typically `PascalCase` for type aliases
+- `UPPER_CASE` for legacy typedefs (for compatibility)
 
-### Ví dụ
+### Examples
 ```cpp
 // Type aliases (modern C++)
 using AppOptionID = ConfigData::AppOptionID;
@@ -296,13 +296,13 @@ typedef enum eGRIDCOLSTYLE {
 
 ---
 
-## 9. Macros (Macro)
+## 9. Macros
 
-### Quy tắc
-- **Format**: `UPPER_CASE` với underscore
-- Tất cả chữ cái in hoa, các từ cách nhau bởi underscore
+### Rules
+- **Format**: `UPPER_CASE` with underscores
+- All uppercase letters, words separated by underscores
 
-### Ví dụ
+### Examples
 ```cpp
 #define DEF_GLBDATA_CATE_NONE        0x00
 #define DEFAULT_DUMMYTEST            FALSE
@@ -312,18 +312,18 @@ typedef enum eGRIDCOLSTYLE {
 
 ---
 
-## 10. Prefix và Suffix Đặc Biệt
+## 10. Special Prefixes and Suffixes
 
-### 10.1. Prefix cho Member Variables
-- `m_` - Member variable (biến thành viên)
+### 10.1. Prefix for Member Variables
+- `m_` - Member variable
 
-### 10.2. Prefix cho Global Variables
-- `g_` - Global variable (biến toàn cục)
+### 10.2. Prefix for Global Variables
+- `g_` - Global variable
 
-### 10.3. Prefix cho Static Variables
-- Không có prefix đặc biệt, nhưng thường được đặt trong namespace hoặc class
+### 10.3. Prefix for Static Variables
+- No special prefix, but usually placed in a namespace or class
 
-### 10.4. Suffix cho Classes
+### 10.4. Suffix for Classes
 - `Utils` - Utility classes (StringUtils, ClockTimeUtils)
 - `Data` - Data management classes (ScheduleData, HotkeySetData)
 - `Item` - Item classes (ScheduleItem, HotkeySetItem)
@@ -331,183 +331,183 @@ typedef enum eGRIDCOLSTYLE {
 
 ---
 
-## 11. Hungarian Notation Prefixes (Cũ) - Phân Tích và Ý Nghĩa
+## 11. Legacy Hungarian Notation Prefixes - Analysis and Meaning
 
-**Lưu ý**: Các prefix này đã được chuyển đổi sang LLVM naming conventions trong quá trình refactoring, nhưng vẫn có thể xuất hiện trong một số phần của code (đặc biệt là global variables).
+**Note**: These prefixes have been converted to LLVM naming conventions during refactoring, but may still appear in some parts of the code (especially global variables).
 
-### 11.1. Prefix theo Kiểu Dữ Liệu
+### 11.1. Prefixes by Data Type
 
-| Prefix | Ý nghĩa | Ví dụ cũ | Ví dụ mới |
-|--------|---------|----------|-----------|
-| `n` | Number/Integer (số nguyên) | `nItemID`, `nActionID` | `itemID`, `actionID` |
-| `b` | Boolean (true/false) | `bEnabled`, `bIsEmpty` | `isEnabled`, `isEmpty` |
-| `p` | Pointer (con trỏ) | `pItem`, `pData` | `item`, `data` |
+| Prefix | Meaning | Old Example | New Example |
+|--------|---------|-------------|-------------|
+| `n` | Number/Integer | `nItemID`, `nActionID` | `itemID`, `actionID` |
+| `b` | Boolean | `bEnabled`, `bIsEmpty` | `isEnabled`, `isEmpty` |
+| `p` | Pointer | `pItem`, `pData` | `item`, `data` |
 | `dw` | DWORD (unsigned long) | `dwErrorCode`, `dwModifiers` | `errorCode`, `modifiers` |
-| `lpsz` | Long Pointer to String (con trỏ chuỗi) | `lpszName`, `lpszMessage` | `name`, `message` |
-| `str` | String (chuỗi) | `strMessage`, `strFontName` | `messageContent`, `fontName` |
-| `h` | Handle (handle Windows) | `hWnd`, `hInstance` | `wnd`, `instance` |
+| `lpsz` | Long Pointer to String | `lpszName`, `lpszMessage` | `name`, `message` |
+| `str` | String | `strMessage`, `strFontName` | `messageContent`, `fontName` |
+| `h` | Handle (Windows) | `hWnd`, `hInstance` | `wnd`, `instance` |
 | `u` / `ui` | Unsigned/Unsigned Int | `uiFontSize`, `uValue` | `fontSize`, `value` |
 | `by` | Byte | `byRepeatDays`, `byIconPos` | `repeatDays`, `iconPosition` |
 | `st` | Struct | `stTime`, `stTimestamp` | `timeValue`, `timestamp` |
 
-### 11.2. Prefix theo Mục Đích Sử Dụng
+### 11.2. Prefixes by Purpose
 
-| Prefix | Ý nghĩa | Ví dụ cũ | Ví dụ mới |
-|--------|---------|----------|-----------|
-| `arr` | Array (mảng) | `arrSchedExtraItemList` | `extraScheduleItemList` |
-| `sch` | Schedule (lịch trình) | `schDefaultItem`, `schItem` | `defaultItem`, `item` |
-| `rps` | Repeat Set (bộ lặp) | `rpsRepeatSet` | `repeatSetInfo` |
-| `rmd` | Reminder (nhắc nhở) | `rmdCommonStyle`, `rmdItemList` | `commonStyleSet`, `reminderItemList` |
-| `hks` | Hotkey Set (bộ phím tắt) | `hksItem`, `hksTemp` | `item`, `temp` |
-| `pwr` | Power (năng lượng) | `pwrItem`, `pwrTemp` | `item`, `temp` |
+| Prefix | Meaning | Old Example | New Example |
+|--------|---------|-------------|-------------|
+| `arr` | Array | `arrSchedExtraItemList` | `extraScheduleItemList` |
+| `sch` | Schedule | `schDefaultItem`, `schItem` | `defaultItem`, `item` |
+| `rps` | Repeat Set | `rpsRepeatSet` | `repeatSetInfo` |
+| `rmd` | Reminder | `rmdCommonStyle`, `rmdItemList` | `commonStyleSet`, `reminderItemList` |
+| `hks` | Hotkey Set | `hksItem`, `hksTemp` | `item`, `temp` |
+| `pwr` | Power | `pwrItem`, `pwrTemp` | `item`, `temp` |
 
-### 11.3. Prefix theo Phạm Vi
+### 11.3. Prefixes by Scope
 
-| Prefix | Ý nghĩa | Ví dụ |
-|--------|---------|-------|
+| Prefix | Meaning | Example |
+|--------|---------|---------|
 | `m_` | Member variable | `m_itemID`, `m_isEnabled` |
 | `g_` | Global variable | `g_stAppLaunchTime`, `g_sharedFlagManager` |
-| `s_` | Static variable | (ít sử dụng trong project này) |
+| `s_` | Static variable | (rarely used in this project) |
 
-### 11.4. Prefix Đặc Biệt Khác
+### 11.4. Other Special Prefixes
 
-| Prefix | Ý nghĩa | Ví dụ cũ | Ví dụ mới |
-|--------|---------|----------|-----------|
+| Prefix | Meaning | Old Example | New Example |
+|--------|---------|-------------|-------------|
 | `ull` | Unsigned Long Long | `ullBeginTimestamp` | `beginTimestamp` |
 | `li` | LARGE_INTEGER | `liStartTime`, `liFrequency` | `startTime`, `frequency` |
 | `ovi` | OSVERSIONINFOEX | `oviOSVersion` | `osVersion` |
 | `rc` | RECT | `rcBtnRect` | `btnRect` |
 
-### 11.5. Phân Tích Chi Tiết Các Prefix
+### 11.5. Detailed Analysis of Prefixes
 
 #### `n` - Number/Integer
-- **Ý nghĩa**: Chỉ số nguyên (int, unsigned int, long, etc.)
-- **Sử dụng**: Cho các biến số như ID, index, count, size
-- **Ví dụ**: `nItemID`, `nIndex`, `nCount`, `nSize`
-- **Chuyển đổi**: Bỏ prefix `n`, giữ lại tên mô tả: `itemID`, `index`, `count`, `size`
+- **Meaning**: Integer (int, unsigned int, long, etc.)
+- **Usage**: For numeric variables like ID, index, count, size
+- **Examples**: `nItemID`, `nIndex`, `nCount`, `nSize`
+- **Conversion**: Remove `n` prefix, keep descriptive name: `itemID`, `index`, `count`, `size`
 
 #### `b` - Boolean
-- **Ý nghĩa**: Giá trị boolean (true/false)
-- **Sử dụng**: Cho các flag, trạng thái on/off, enable/disable
-- **Ví dụ**: `bEnabled`, `bIsEmpty`, `bRet`, `bResult`
-- **Chuyển đổi**: Thay bằng `is`/`has`/`allow`/`enable` prefix: `isEnabled`, `isEmpty`, `ret`, `result`
+- **Meaning**: Boolean value (true/false)
+- **Usage**: For flags, on/off states, enable/disable
+- **Examples**: `bEnabled`, `bIsEmpty`, `bRet`, `bResult`
+- **Conversion**: Replace with `is`/`has`/`allow`/`enable` prefix: `isEnabled`, `isEmpty`, `ret`, `result`
 
 #### `p` - Pointer
-- **Ý nghĩa**: Con trỏ (pointer)
-- **Sử dụng**: Cho các biến con trỏ
-- **Ví dụ**: `pItem`, `pData`, `pNew`, `pLang`
-- **Chuyển đổi**: Bỏ prefix `p`, giữ lại tên mô tả: `item`, `data`, `newData`, `lang`
+- **Meaning**: Pointer
+- **Usage**: For pointer variables
+- **Examples**: `pItem`, `pData`, `pNew`, `pLang`
+- **Conversion**: Remove `p` prefix, keep descriptive name: `item`, `data`, `newData`, `lang`
 
 #### `dw` - DWORD
-- **Ý nghĩa**: DWORD (unsigned long, 32-bit)
-- **Sử dụng**: Cho các giá trị DWORD trong Windows API
-- **Ví dụ**: `dwErrorCode`, `dwModifiers`, `dwVirtualKey`
-- **Chuyển đổi**: Bỏ prefix `dw`, giữ lại tên mô tả: `errorCode`, `modifiers`, `virtualKey`
+- **Meaning**: DWORD (unsigned long, 32-bit)
+- **Usage**: For DWORD values in Windows API
+- **Examples**: `dwErrorCode`, `dwModifiers`, `dwVirtualKey`
+- **Conversion**: Remove `dw` prefix, keep descriptive name: `errorCode`, `modifiers`, `virtualKey`
 
 #### `lpsz` - Long Pointer to String
-- **Ý nghĩa**: Con trỏ đến chuỗi null-terminated (Windows API style)
-- **Sử dụng**: Cho các con trỏ chuỗi C-style
-- **Ví dụ**: `lpszName`, `lpszMessage`, `lpszAction`
-- **Chuyển đổi**: Bỏ prefix `lpsz`, giữ lại tên mô tả: `name`, `message`, `action`
+- **Meaning**: Pointer to null-terminated string (Windows API style)
+- **Usage**: For C-style string pointers
+- **Examples**: `lpszName`, `lpszMessage`, `lpszAction`
+- **Conversion**: Remove `lpsz` prefix, keep descriptive name: `name`, `message`, `action`
 
 #### `str` - String
-- **Ý nghĩa**: Chuỗi (string object)
-- **Sử dụng**: Cho các biến string object (CString, String, std::string)
-- **Ví dụ**: `strMessage`, `strFontName`, `strKeyStrokes`
-- **Chuyển đổi**: Bỏ prefix `str`, giữ lại tên mô tả: `messageContent`, `fontName`, `keyStrokes`
+- **Meaning**: String object
+- **Usage**: For string objects (CString, String, std::string)
+- **Examples**: `strMessage`, `strFontName`, `strKeyStrokes`
+- **Conversion**: Remove `str` prefix, keep descriptive name: `messageContent`, `fontName`, `keyStrokes`
 
 #### `h` - Handle
-- **Ý nghĩa**: Handle Windows (HWND, HINSTANCE, HANDLE, etc.)
-- **Sử dụng**: Cho các handle Windows API
-- **Ví dụ**: `hWnd`, `hInstance`, `hToken`, `hUxTheme`
-- **Chuyển đổi**: Bỏ prefix `h`, giữ lại tên mô tả: `wnd`, `instance`, `token`, `uxTheme`
+- **Meaning**: Windows handle (HWND, HINSTANCE, HANDLE, etc.)
+- **Usage**: For Windows API handles
+- **Examples**: `hWnd`, `hInstance`, `hToken`, `hUxTheme`
+- **Conversion**: Remove `h` prefix, keep descriptive name: `wnd`, `instance`, `token`, `uxTheme`
 
 #### `u` / `ui` - Unsigned
-- **Ý nghĩa**: Unsigned integer
-- **Sử dụng**: Cho các số nguyên không dấu
-- **Ví dụ**: `uiFontSize`, `uiTimeout`, `uiIconID`, `uExitWinExFlags`
-- **Chuyển đổi**: Bỏ prefix `ui`/`u`, giữ lại tên mô tả: `fontSize`, `timeout`, `iconID`, `exitWinExFlags`
+- **Meaning**: Unsigned integer
+- **Usage**: For unsigned integers
+- **Examples**: `uiFontSize`, `uiTimeout`, `uiIconID`, `uExitWinExFlags`
+- **Conversion**: Remove `ui`/`u` prefix, keep descriptive name: `fontSize`, `timeout`, `iconID`, `exitWinExFlags`
 
 #### `by` - Byte
-- **Ý nghĩa**: Byte (8-bit)
-- **Sử dụng**: Cho các giá trị byte
-- **Ví dụ**: `byRepeatDays`, `byIconPos`, `byDisplayPos`
-- **Chuyển đổi**: Bỏ prefix `by`, giữ lại tên mô tả: `repeatDays`, `iconPosition`, `displayPosition`
+- **Meaning**: Byte (8-bit)
+- **Usage**: For byte values
+- **Examples**: `byRepeatDays`, `byIconPos`, `byDisplayPos`
+- **Conversion**: Remove `by` prefix, keep descriptive name: `repeatDays`, `iconPosition`, `displayPosition`
 
 #### `st` - Struct
-- **Ý nghĩa**: Struct object
-- **Sử dụng**: Cho các biến struct
-- **Ví dụ**: `stTime`, `stTimestamp`, `stNextSnoozeTime`
-- **Chuyển đổi**: Bỏ prefix `st`, thêm suffix mô tả: `timeValue`, `timestamp`, `nextSnoozeTime`
+- **Meaning**: Struct object
+- **Usage**: For struct variables
+- **Examples**: `stTime`, `stTimestamp`, `stNextSnoozeTime`
+- **Conversion**: Remove `st` prefix, add descriptive suffix: `timeValue`, `timestamp`, `nextSnoozeTime`
 
 #### `arr` - Array
-- **Ý nghĩa**: Mảng (array)
-- **Sử dụng**: Cho các biến mảng hoặc vector
-- **Ví dụ**: `arrSchedExtraItemList`, `arrHotkeySetList`, `arrRmdItemList`
-- **Chuyển đổi**: Bỏ prefix `arr`, giữ lại tên mô tả: `extraScheduleItemList`, `hotkeySetList`, `reminderItemList`
+- **Meaning**: Array
+- **Usage**: For array or vector variables
+- **Examples**: `arrSchedExtraItemList`, `arrHotkeySetList`, `arrRmdItemList`
+- **Conversion**: Remove `arr` prefix, keep descriptive name: `extraScheduleItemList`, `hotkeySetList`, `reminderItemList`
 
 #### `sch` - Schedule
-- **Ý nghĩa**: Schedule (lịch trình)
-- **Sử dụng**: Cho các biến liên quan đến schedule
-- **Ví dụ**: `schDefaultItem`, `schItem`, `schTemp`
-- **Chuyển đổi**: Bỏ prefix `sch`, giữ lại tên mô tả: `defaultItem`, `item`, `temp`
+- **Meaning**: Schedule-related
+- **Usage**: For schedule-related variables
+- **Examples**: `schDefaultItem`, `schItem`, `schTemp`
+- **Conversion**: Remove `sch` prefix, keep descriptive name: `defaultItem`, `item`, `temp`
 
 #### `rps` - Repeat Set
-- **Ý nghĩa**: Repeat Set (bộ lặp)
-- **Sử dụng**: Cho các biến liên quan đến repeat set
-- **Ví dụ**: `rpsRepeatSet`
-- **Chuyển đổi**: Bỏ prefix `rps`, thêm suffix mô tả: `repeatSetInfo`
+- **Meaning**: Repeat set
+- **Usage**: For repeat set-related variables
+- **Examples**: `rpsRepeatSet`
+- **Conversion**: Remove `rps` prefix, add descriptive suffix: `repeatSetInfo`
 
 #### `rmd` - Reminder
-- **Ý nghĩa**: Reminder (nhắc nhở)
-- **Sử dụng**: Cho các biến liên quan đến reminder
-- **Ví dụ**: `rmdCommonStyle`, `rmdItemList`
-- **Chuyển đổi**: Bỏ prefix `rmd`, giữ lại tên mô tả: `commonStyleSet`, `reminderItemList`
+- **Meaning**: Reminder-related
+- **Usage**: For reminder-related variables
+- **Examples**: `rmdCommonStyle`, `rmdItemList`
+- **Conversion**: Remove `rmd` prefix, keep descriptive name: `commonStyleSet`, `reminderItemList`
 
 #### `hks` - Hotkey Set
-- **Ý nghĩa**: Hotkey Set (bộ phím tắt)
-- **Sử dụng**: Cho các biến liên quan đến hotkey set
-- **Ví dụ**: `hksItem`, `hksTemp`
-- **Chuyển đổi**: Bỏ prefix `hks`, giữ lại tên mô tả: `item`, `temp`
+- **Meaning**: Hotkey set-related
+- **Usage**: For hotkey set-related variables
+- **Examples**: `hksItem`, `hksTemp`
+- **Conversion**: Remove `hks` prefix, keep descriptive name: `item`, `temp`
 
 #### `pwr` - Power
-- **Ý nghĩa**: Power (năng lượng)
-- **Sử dụng**: Cho các biến liên quan đến power management
-- **Ví dụ**: `pwrItem`, `pwrTemp`
-- **Chuyển đổi**: Bỏ prefix `pwr`, giữ lại tên mô tả: `item`, `temp`
+- **Meaning**: Power management-related
+- **Usage**: For power management-related variables
+- **Examples**: `pwrItem`, `pwrTemp`
+- **Conversion**: Remove `pwr` prefix, keep descriptive name: `item`, `temp`
 
 ---
 
-## 12. Quy Tắc Đặt Tên Đặc Biệt
+## 12. Special Naming Rules
 
 ### 12.1. Boolean Variables
-- Sử dụng prefix `is`, `has`, `allow`, `enable` để làm rõ ý nghĩa
-- Ví dụ: `isEnabled`, `isEmpty`, `hasValue`, `allowSnoozing`, `enableDarkMode`
+- Use prefixes `is`, `has`, `allow`, `enable` to clarify meaning
+- Examples: `isEnabled`, `isEmpty`, `hasValue`, `allowSnoozing`, `enableDarkMode`
 
 ### 12.2. Collections
-- Sử dụng suffix `List` cho các collection
-- Ví dụ: `extraScheduleItemList`, `hotkeySetList`, `reminderItemList`
+- Use suffix `List` for collections
+- Examples: `extraScheduleItemList`, `hotkeySetList`, `reminderItemList`
 
 ### 12.3. Temporary Variables
-- Sử dụng tên ngắn gọn như `temp`, `item`, `data`, `ret`, `result`
-- Ví dụ: `ScheduleItem temp`, `bool ret`, `HotkeySetData* newData`
+- Use short names like `temp`, `item`, `data`, `ret`, `result`
+- Examples: `ScheduleItem temp`, `bool ret`, `HotkeySetData* newData`
 
 ### 12.4. Return Values
-- Sử dụng `result`, `ret`, `retValue` cho giá trị trả về
-- Ví dụ: `bool result`, `int ret`, `unsigned retNextID`
+- Use `result`, `ret`, `retValue` for return values
+- Examples: `bool result`, `int ret`, `unsigned retNextID`
 
 ### 12.5. Error Codes
-- Sử dụng `errorCode`, `errCode` cho mã lỗi
-- Ví dụ: `DWORD errorCode`, `DWORD& errCode`
+- Use `errorCode`, `errCode` for error codes
+- Examples: `DWORD errorCode`, `DWORD& errCode`
 
 ---
 
-## 13. Tóm Tắt Quy Tắc Chuyển Đổi
+## 13. Summary of Conversion Rules
 
-### Từ Hungarian Notation sang LLVM Naming Conventions
+### From Hungarian Notation to LLVM Naming Conventions
 
-| Loại | Hungarian Notation | LLVM Convention |
-|------|-------------------|-----------------|
+| Type | Hungarian Notation | LLVM Convention |
+|------|--------------------|-----------------|
 | Member variable | `m_nItemID` | `m_itemID` |
 | Local variable | `nIndex` | `index` |
 | Boolean | `bEnabled` | `isEnabled` |
@@ -519,19 +519,19 @@ typedef enum eGRIDCOLSTYLE {
 
 ---
 
-## 14. Lưu Ý Quan Trọng
+## 14. Important Notes
 
-1. **Không thay đổi tên hàm và class**: Chỉ thay đổi tên biến
-2. **Giữ nguyên global variables**: Global variables vẫn sử dụng Hungarian Notation với prefix `g_`
-3. **Consistency**: Đảm bảo tính nhất quán trong toàn bộ project
-4. **Readability**: Tên biến phải dễ đọc và mô tả rõ ràng mục đích
-5. **Avoid abbreviations**: Tránh viết tắt không rõ ràng
+1. **Do not change function or class names**: Only change variable names
+2. **Retain global variables**: Global variables still use Hungarian Notation with `g_` prefix
+3. **Consistency**: Ensure consistency throughout the project
+4. **Readability**: Variable names must be readable and clearly describe their purpose
+5. **Avoid abbreviations**: Avoid unclear abbreviations
 
 ---
 
-## 15. Ví Dụ Hoàn Chỉnh
+## 15. Complete Examples
 
-### Trước khi refactor (Hungarian Notation):
+### Before refactoring (Hungarian Notation):
 ```cpp
 class ScheduleItem {
 private:
@@ -554,7 +554,7 @@ public:
 };
 ```
 
-### Sau khi refactor (LLVM Naming Conventions):
+### After refactoring (LLVM Naming Conventions):
 ```cpp
 class ScheduleItem {
 private:
@@ -579,9 +579,5 @@ public:
 
 ---
 
-**Tài liệu này được tạo tự động dựa trên phân tích codebase PowerPlus3.**
-**Ngày cập nhật**: 2025-01-XX
-
-
-
-
+**This document was automatically generated based on analysis of the PowerPlus3 codebase.**
+**Last updated**: 2025-01-XX
