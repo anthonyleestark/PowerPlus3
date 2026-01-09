@@ -3146,28 +3146,28 @@ unsigned AppCore::getWindowsOSVersion(void)
 	RtlGetVersion(&osVersion);
 
 	// Return Windows OS version macro
-	unsigned retWinVer = WINDOWS_VERSION_NONE;
-	if (osVersion.dwBuildNumber >= OS_BUILDNUMBER_W11_EARLIEST) {
+	unsigned retWinVer = WindowsOS::Version::Unknown;
+	if (osVersion.dwBuildNumber >= WindowsOS::BuildNumber::Win11_Earliest) {
 		// Is Windows 11
-		retWinVer = WINDOWS_VERSION_11;
+		retWinVer = WindowsOS::Version::Win11;
 	}
-	else if (osVersion.dwBuildNumber >= OS_BUILDNUMBER_W10_ORIGINAL) {
+	else if (osVersion.dwBuildNumber >= WindowsOS::BuildNumber::Win10_Original) {
 		// Is Windows 10
-		retWinVer = WINDOWS_VERSION_10;
+		retWinVer = WindowsOS::Version::Win10;
 	}
-	else if ((osVersion.dwBuildNumber >= OS_BUILDNUMBER_W8_EARLIEST) &&
-		(osVersion.dwBuildNumber <= OS_BUILDNUMBER_W8_LATEST)) {
+	else if ((osVersion.dwBuildNumber >= WindowsOS::BuildNumber::Win8_Earliest) &&
+		(osVersion.dwBuildNumber <= WindowsOS::BuildNumber::Win8_Latest)) {
 		// Is Windows 8/8.1
-		retWinVer = WINDOWS_VERSION_8;
+		retWinVer = WindowsOS::Version::Win8;
 	}
-	else if ((osVersion.dwBuildNumber >= OS_BUILDNUMBER_W7_EARLIEST) &&
-		(osVersion.dwBuildNumber <= OS_BUILDNUMBER_W7_LATEST)) {
+	else if ((osVersion.dwBuildNumber >= WindowsOS::BuildNumber::Win7_Earliest) &&
+		(osVersion.dwBuildNumber <= WindowsOS::BuildNumber::Win7_Latest)) {
 		// Is Windows 7
-		retWinVer = WINDOWS_VERSION_7;
+		retWinVer = WindowsOS::Version::Win7;
 	}
 	else {
 		// Unknown version
-		retWinVer = WINDOWS_VERSION_UNKNOWN;
+		retWinVer = WindowsOS::Version::Unknown;
 	}
 
 	return retWinVer;

@@ -388,7 +388,7 @@ void SWinApp::initAppEventLog(void)
 {
 	// Initialization
 	if (appEventLogPtr_ == NULL) {
-		appEventLogPtr_ = new Logger(LOGTYPE_APP_EVENT);
+		appEventLogPtr_ = new Logger(static_cast<byte>(AppLogType::AppEvent));
 	}
 
 	// Check validity after allocating

@@ -245,67 +245,6 @@
 #define SM_WND_DEBUGOUTPUT_DISP						(SM_WND_MESSAGE + 4)
 
 
-// Define app data types
-//
-
-#define APPDATA_CONFIG								0x00001001L
-#define APPDATA_SCHEDULE							0x00001002L
-#define APPDATA_HOTKEYSET							0x00001004L
-#define APPDATA_PWRREMINDER							0x00001008L
-#define APPDATA_ALL									(APPDATA_CONFIG|APPDATA_SCHEDULE|APPDATA_HOTKEYSET|APPDATA_PWRREMINDER)
-
-
-// Define modes
-//
-
-#define MODE_OPENDLG_MODAL							0x0a5							// Modal dialog
-#define MODE_OPENDLG_MODELESS						0x0a6							// Modeless dialog
-
-
-// Define log types
-//
-
-#define LOGTYPE_NONE								0x00							// Not defined
-#define LOGTYPE_APP_EVENT							(LOGTYPE_NONE + 0x01)			// App event log
-#define LOGTYPE_HISTORY_LOG							(LOGTYPE_NONE + 0x02)			// Action log/history
-#define LOGTYPE_TRACE_ERROR							(LOGTYPE_NONE + 0x03)			// Trace error log
-#define LOGTYPE_TRACE_DEBUG							(LOGTYPE_NONE + 0x04)			// Trace debug log
-#define LOGTYPE_DEBUG_INFO							(LOGTYPE_NONE + 0x05)			// Debug info output log
-
-
-// Define timer IDs
-//
-
-#define TIMERID_DEFAULT								0x0100
-#define TIMERID_STD_ACTIONSCHEDULE					(TIMERID_DEFAULT + 1)			// Timer ID for Action Schedule feature
-#define TIMERID_STD_POWERREMINDER					(TIMERID_DEFAULT + 2)			// Timer ID for Power Reminder feature
-#define TIMERID_STD_EVENTSKIPCOUNTER				(TIMERID_DEFAULT + 3)			// Timer ID for Event skip counter
-#define TIMERID_RMDMSG_AUTOCLOSE					(TIMERID_DEFAULT + 4)			// Timer ID for Reminder message auto close feature
-
-
-// Define windows system OS info macros
-//
-
-#define WINDOWS_VERSION_NONE						0x00
-#define WINDOWS_VERSION_UNKNOWN						WINDOWS_VERSION_NONE			// Unknown version
-#define WINDOWS_VERSION_95							(WINDOWS_VERSION_NONE+1)		// Windows 95
-#define WINDOWS_VERSION_NT							(WINDOWS_VERSION_NONE+2)		// Windows NT
-#define WINDOWS_VERSION_98							(WINDOWS_VERSION_NONE+3)		// Windows 98
-#define WINDOWS_VERSION_XP							(WINDOWS_VERSION_NONE+4)		// Windows XP
-#define WINDOWS_VERSION_VISTA						(WINDOWS_VERSION_NONE+5)		// Windows Vista
-#define WINDOWS_VERSION_7							(WINDOWS_VERSION_NONE+6)		// Windows 7
-#define WINDOWS_VERSION_8							(WINDOWS_VERSION_NONE+7)		// Windows 8
-#define WINDOWS_VERSION_10							(WINDOWS_VERSION_NONE+8)		// Windows 10
-#define WINDOWS_VERSION_11							(WINDOWS_VERSION_NONE+9)		// Windows 11
-
-#define OS_BUILDNUMBER_W7_EARLIEST					6469							// Windows 7 earliest build number: 6469
-#define OS_BUILDNUMBER_W7_LATEST					7601							// Windows 7 earliest build number: 7601
-#define OS_BUILDNUMBER_W8_EARLIEST					7700							// Windows 8/8.1 earliest build number: 7700
-#define OS_BUILDNUMBER_W8_LATEST					9600							// Windows 8/8.1 latest build number: 9600
-#define OS_BUILDNUMBER_W10_ORIGINAL					10240							// Windows 10 original release build number: 10240
-#define OS_BUILDNUMBER_W11_EARLIEST					21996							// Windows 11 earliest build number: 21996
-
-
 // Trace log functions
 //
 

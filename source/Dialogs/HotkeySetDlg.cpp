@@ -724,7 +724,7 @@ void CHotkeySetDlg::drawHotkeySetTable(bool isReadOnly /* = false */)
 	// Setup display size
 	int frameHeight = dataTableSizePtr_->height();
 	int frameWidth = dataTableSizePtr_->width();
-	if (AppCore::getWindowsOSVersion() == WINDOWS_VERSION_10) {
+	if (AppCore::getWindowsOSVersion() == WindowsOS::Version::Win10) {
 		// Windows 10 list control offset
 		frameWidth -= Constant::UI::Offset::Width::ListCtrl_Win10;
 	}

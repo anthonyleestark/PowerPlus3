@@ -20,6 +20,37 @@
 #endif
 
 
+// Define app data types
+enum class AppData : unsigned {
+	Config			= (unsigned)0x01,	// 0001
+	Schedule		= (unsigned)0x02,	// 0010
+	HotkeySet		= (unsigned)0x04,	// 0100
+	PowerReminder	= (unsigned)0x08,	// 1000
+	All				= (unsigned)0x0F	// 1111
+};
+
+
+// Define application log types
+enum class AppLogType : unsigned {
+	None = 0x00,		// Not defined
+	AppEvent,			// App event log
+	AppHistory,			// Action log/history
+	TraceError,			// Trace error log
+	TraceDebug,			// Trace debug log
+	DebugInfo			// Debug info output log
+};
+
+
+// Define timer IDs
+//
+
+#define TIMERID_DEFAULT								0x0100
+#define TIMERID_STD_ACTIONSCHEDULE					(TIMERID_DEFAULT + 1)			// Timer ID for Action Schedule feature
+#define TIMERID_STD_POWERREMINDER					(TIMERID_DEFAULT + 2)			// Timer ID for Power Reminder feature
+#define TIMERID_STD_EVENTSKIPCOUNTER				(TIMERID_DEFAULT + 3)			// Timer ID for Event skip counter
+#define TIMERID_RMDMSG_AUTOCLOSE					(TIMERID_DEFAULT + 4)			// Timer ID for Reminder message auto close feature
+
+
 // Flag values
 enum Flag {
 	FLAG_OFF = (int)0x00,
@@ -36,13 +67,17 @@ enum Result {
 
 // Function and application modes
 enum Mode {
-	Init	= (int)0x000,
-	View	= (int)0x001,
-	Add		= (int)0x002,
-	Update	= (int)0x004,
-	Load	= (int)0x008,
-	Save	= (int)0x010,
-	Disable = (int)0x020,
+	Init			= (int)0x000,
+	View			= (int)0x001,
+	Add				= (int)0x002,
+	Update			= (int)0x004,
+	Load			= (int)0x008,
+	Save			= (int)0x010,
+	Disable			= (int)0x020,
+
+	// Dialog modes
+	ModalDialog		= (int)0x0a5,		// Modal dialog
+	ModelessDialog	= (int)0x0a6,		// Modeless dialog
 };
 
 
@@ -92,6 +127,31 @@ struct SystemIcon {
 	static constexpr int Warning			= Exclamation;		// Warning icon
 	static constexpr int Error				= Hand;				// Error icon
 	static constexpr int Information		= Asterisk;			// Information icon
+};
+
+// Windows system OS version info
+struct WindowsOS {
+	enum Version {
+		Unknown			= (unsigned)0x00,		// Unknown version
+		Win95			= (unsigned)0x01,		// Windows 95
+		WinNT			= (unsigned)0x02,		// Windows NT
+		Win98			= (unsigned)0x03,		// Windows 98
+		WinXP			= (unsigned)0x04,		// Windows XP
+		WinVista		= (unsigned)0x05,		// Windows Vista
+		Win7			= (unsigned)0x06,		// Windows 7
+		Win8			= (unsigned)0x07,		// Windows 8
+		Win10			= (unsigned)0x08,		// Windows 10
+		Win11			= (unsigned)0x09		// Windows 11
+	};
+
+	struct BuildNumber {
+		static constexpr int Win7_Earliest	= 6469;		// Windows 7 earliest build number: 6469
+		static constexpr int Win7_Latest	= 7601;		// Windows 7 earliest build number: 7601
+		static constexpr int Win8_Earliest	= 7700;		// Windows 8/8.1 earliest build number: 7700
+		static constexpr int Win8_Latest	= 9600;		// Windows 8/8.1 latest build number: 9600
+		static constexpr int Win10_Original = 10240;	// Windows 10 original release build number: 10240
+		static constexpr int Win11_Earliest = 21996;	// Windows 11 earliest build number: 21996
+	};
 };
 
 
