@@ -20,6 +20,24 @@
 #endif
 
 
+//// Template helper function that works with any enum type
+
+// Convert enum to underlying value
+template <typename T>
+typename std::enable_if<std::is_enum<T>::value, typename std::underlying_type<T>::type>::type
+enumToValue(T enumVal) {
+	return static_cast<typename std::underlying_type<T>::type>(enumVal);
+}
+
+// Enum flag validation
+template <typename T>
+typename std::enable_if<std::is_enum<T>::value, typename std::underlying_type<T>::type>::type
+enumFlagContains(T flag, T val) {
+	return (static_cast<typename std::underlying_type<T>::type>(flag)
+			& static_cast<typename std::underlying_type<T>::type>(val)) != 0;
+}
+
+
 // Define app data types
 enum class AppData : unsigned {
 	Config			= (unsigned)0x01,	// 0001
@@ -31,7 +49,7 @@ enum class AppData : unsigned {
 
 
 // Define application log types
-enum class AppLogType : unsigned {
+enum class AppLogType : unsigned char {
 	None = 0x00,		// Not defined
 	AppEvent,			// App event log
 	AppHistory,			// Action log/history
@@ -42,13 +60,13 @@ enum class AppLogType : unsigned {
 
 
 // Define timer IDs
-//
-
-#define TIMERID_DEFAULT								0x0100
-#define TIMERID_STD_ACTIONSCHEDULE					(TIMERID_DEFAULT + 1)			// Timer ID for Action Schedule feature
-#define TIMERID_STD_POWERREMINDER					(TIMERID_DEFAULT + 2)			// Timer ID for Power Reminder feature
-#define TIMERID_STD_EVENTSKIPCOUNTER				(TIMERID_DEFAULT + 3)			// Timer ID for Event skip counter
-#define TIMERID_RMDMSG_AUTOCLOSE					(TIMERID_DEFAULT + 4)			// Timer ID for Reminder message auto close feature
+enum class TimerId : unsigned {
+	Default = 0x0100,
+	ActionSchedule,				// Timer ID for Action Schedule feature
+	PowerReminder,				// Timer ID for Power Reminder feature
+	EventSkipCounter,			// Timer ID for Event skip counter
+	ReminderMsgAutoClose		// Timer ID for Reminder message auto close feature
+};
 
 
 // Flag values

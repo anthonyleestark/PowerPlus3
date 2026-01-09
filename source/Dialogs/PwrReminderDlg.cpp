@@ -2358,7 +2358,7 @@ bool CPwrReminderDlg::savePwrReminderData()
 	VERIFY(theAppPtr != NULL);
 	if (theAppPtr == NULL) return false;
 	theAppPtr->setAppPwrReminderData(&reminderData_);
-	theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+	theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 
 	// Notify main dialog to re-update Power Reminder data
 	CPowerPlusDlg* mainDialogPtr = (CPowerPlusDlg*)(theAppPtr->GetMainWnd());

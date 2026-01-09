@@ -29,3 +29,4 @@
 #include <algorithm>
 #include <memory>
 #include <mutex>
+#include <type_traits>

@@ -60,7 +60,7 @@ public:
 	// App data serialization functions
 	bool initAppData();
 	bool loadRegistryAppData();
-	bool saveRegistryAppData(DWORD type = APPDATA_ALL);
+	bool saveRegistryAppData(AppData type = AppData::All);
 	bool backupRegistryAppData();
 	bool updateAppLaunchTimeProfileInfo(void);
 	bool loadGlobalData(void);
@@ -86,7 +86,7 @@ public:
 
 	// Data validity checking functions
 	void traceSerializeData(WORD errorCode);
-	bool dataSerializeCheck(BYTE serializeMode, int saveFlag = APPDATA_ALL);
+	bool dataSerializeCheck(BYTE serializeMode, AppData saveFlag = AppData::All);
 
 	// DebugTest dialog function
 	bool initDebugTestDlg(void);

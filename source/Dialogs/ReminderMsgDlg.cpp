@@ -179,7 +179,7 @@ BOOL CReminderMsgDlg::OnInitDialog()
 
 	// Start auto-close timer if set
 	if (getAutoCloseInterval() != 0) {
-		unsigned returnValue = SetTimer(TIMERID_RMDMSG_AUTOCLOSE, 1000, NULL);
+		unsigned returnValue = SetTimer(enumToValue(TimerId::ReminderMsgAutoClose), 1000, NULL);
 		isTimerSet_ = (returnValue != 0);
 	}
 
@@ -200,7 +200,7 @@ BOOL CReminderMsgDlg::OnInitDialog()
 void CReminderMsgDlg::OnClose()
 {
 	// Kill timer if set
-	if (isTimerSet_ == true && KillTimer(TIMERID_RMDMSG_AUTOCLOSE))
+	if (isTimerSet_ == true && KillTimer(enumToValue(TimerId::ReminderMsgAutoClose)))
 		isTimerSet_ = false;	// Reset flag
 
 	// Close dialog
@@ -263,7 +263,7 @@ void CReminderMsgDlg::OnPaint()
 void CReminderMsgDlg::OnTimer(UINT_PTR eventId)
 {
 	// Handle auto-close timer if set
-	if (eventId == TIMERID_RMDMSG_AUTOCLOSE) {
+	if (eventId == enumToValue(TimerId::ReminderMsgAutoClose)) {
 		if (isTimerSet_ == true) {
 			unsigned count = getAutoCloseInterval();
 			if (count > 0) {

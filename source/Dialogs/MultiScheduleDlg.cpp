@@ -991,7 +991,7 @@ bool CMultiScheduleDlg::saveScheduleSettings()
 	VERIFY(theAppPtr != NULL);
 	if (theAppPtr == NULL) return false;
 	theAppPtr->setAppScheduleData(&scheduleData_);
-	theAppPtr->saveRegistryAppData(APPDATA_SCHEDULE);
+	theAppPtr->saveRegistryAppData(AppData::Schedule);
 
 	// Notify main dialog to re-update schedule data
 	CPowerPlusDlg* mainDialogPtr = (CPowerPlusDlg*)(theAppPtr->GetMainWnd());

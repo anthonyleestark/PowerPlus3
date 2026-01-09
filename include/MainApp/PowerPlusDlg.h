@@ -163,7 +163,7 @@ protected:
 	bool showNotifyMenu(void);
 
 	// Data processing functions
-	void getAppData(unsigned dataType = APPDATA_ALL);
+	void getAppData(AppData dataType = AppData::All);
 	int  getAppOption(AppOptionID optionId, bool isTemp = false) const;
 	void updateDialogData(bool saveAndValidate = true);
 	bool checkSettingChangeState(void);
@@ -200,7 +200,7 @@ private:
 	// Dialog and window functions
 	void showDialog(CWnd* windowPtr, bool showFlag = true);
 	void openChildDialogEx(unsigned dialogId);
-	void openDialogBase(unsigned dialogId, bool readOnlyMode = false, int openMode = MODE_OPENDLG_MODAL);
+	void openDialogBase(unsigned dialogId, bool readOnlyMode = false, int openMode = Mode::ModalDialog);
 	bool openTextFileToView(const wchar_t* fileName, const wchar_t* extension, const wchar_t* subDir = Constant::String::Empty);
 
 	// Action Schedule feature functions

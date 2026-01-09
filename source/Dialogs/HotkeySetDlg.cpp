@@ -1206,7 +1206,7 @@ bool CHotkeySetDlg::saveHotkeySetData()
 	VERIFY(theAppPtr != NULL);
 	if (theAppPtr == NULL) return false;
 	theAppPtr->setAppHotkeySetData(&hotkeySetData_);
-	theAppPtr->saveRegistryAppData(APPDATA_HOTKEYSET);
+	theAppPtr->saveRegistryAppData(AppData::HotkeySet);
 
 	// Notify main dialog to re-update HotkeySet data
 	CPowerPlusDlg* mainDialogPtr = (CPowerPlusDlg*)(theAppPtr->GetMainWnd());

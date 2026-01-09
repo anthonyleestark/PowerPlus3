@@ -152,9 +152,9 @@ CPowerPlusDlg::~CPowerPlusDlg()
 	runtimeQueue_.clear();
 
 	// Kill timers
-	KillTimer(TIMERID_STD_ACTIONSCHEDULE);
-	KillTimer(TIMERID_STD_POWERREMINDER);
-	KillTimer(TIMERID_STD_EVENTSKIPCOUNTER);
+	KillTimer(enumToValue(TimerId::ActionSchedule));
+	KillTimer(enumToValue(TimerId::PowerReminder));
+	KillTimer(enumToValue(TimerId::EventSkipCounter));
 
 	// Unregister for session state change notifications
 	registerSessionNotification(Mode::Disable);
@@ -486,9 +486,9 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	setUseEnter(false);
 
 	// Set app features standard timers
-	SetTimer(TIMERID_STD_ACTIONSCHEDULE, 1000, NULL);
-	SetTimer(TIMERID_STD_POWERREMINDER, 1000, NULL);
-	SetTimer(TIMERID_STD_EVENTSKIPCOUNTER, 1000, NULL);
+	SetTimer(enumToValue(TimerId::ActionSchedule), 1000, NULL);
+	SetTimer(enumToValue(TimerId::PowerReminder), 1000, NULL);
+	SetTimer(enumToValue(TimerId::EventSkipCounter), 1000, NULL);
 
 	// Save dialog event log if enabled
 	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
@@ -501,7 +501,7 @@ BOOL CPowerPlusDlg::OnInitDialog()
 	reminderData_.setDefaultData();
 
 	// Load data
-	getAppData(APPDATA_ALL);
+	getAppData(AppData::All);
 
 	// Setup main dialog
 	setupLanguage();
@@ -626,9 +626,9 @@ int CPowerPlusDlg::PreDestroyDialog()
 
 	// Destroy components
 	removeNotifyIcon();
-	KillTimer(TIMERID_STD_ACTIONSCHEDULE);
-	KillTimer(TIMERID_STD_POWERREMINDER);
-	KillTimer(TIMERID_STD_EVENTSKIPCOUNTER);
+	KillTimer(enumToValue(TimerId::ActionSchedule));
+	KillTimer(enumToValue(TimerId::PowerReminder));
+	KillTimer(enumToValue(TimerId::EventSkipCounter));
 
 	// Execute Power Reminder before exitting
 	executePowerReminder(PwrReminderEvent::atAppExit);
@@ -1138,14 +1138,17 @@ void CPowerPlusDlg::OnViewBackupConfig()
  */
 void CPowerPlusDlg::OnTimer(UINT_PTR eventId)
 {
+	// Convert to timer ID
+	TimerId timerId = static_cast<TimerId>(eventId);
+
 	// Timer ID: Action Schedule
-	if (eventId == TIMERID_STD_ACTIONSCHEDULE) {
+	if (timerId == TimerId::ActionSchedule) {
 		// Process Action schedule
 		processActionSchedule();
 	}
 
 	// Timer ID: Power Reminder
-	else if (eventId == TIMERID_STD_POWERREMINDER) {
+	else if (timerId == TimerId::PowerReminder) {
 		// Process Power Reminder at set time event
 		bool isPwrReminderActive = getAppOption(AppOptionID::enablePowerReminder);
 		if (isPwrReminderActive == true) {
@@ -1155,7 +1158,7 @@ void CPowerPlusDlg::OnTimer(UINT_PTR eventId)
 	}
 
 	// Timer ID: Event skip counter
-	else if (eventId == TIMERID_STD_EVENTSKIPCOUNTER) {
+	else if (timerId == TimerId::EventSkipCounter) {
 		// Process Power Broadcast event skip counter
 		int count = getFlagValue(AppFlagID::pwrBroadcastSkipCount);
 		if (count > 0) {
@@ -2045,7 +2048,7 @@ void CPowerPlusDlg::removeNotifyIcon(void)
  * @param	dataType - App data type to get
  * @return	None
  */
-void CPowerPlusDlg::getAppData(unsigned dataType /* = APPDATA_ALL */)
+void CPowerPlusDlg::getAppData(AppData dataType /* = AppData::All */)
 {
 	CPowerPlusApp* theAppPtr = (CPowerPlusApp*)AfxGetApp();
 	if (theAppPtr == NULL) {
@@ -2056,7 +2059,7 @@ void CPowerPlusDlg::getAppData(unsigned dataType /* = APPDATA_ALL */)
 	}
 
 	// Get config data
-	if ((dataType & APPDATA_CONFIG) != 0) {
+	if (enumFlagContains(dataType, AppData::Config)) {
 		ConfigData* pcfgData = theAppPtr->getAppConfigData();
 		if (pcfgData != NULL) {
 			appConfigData_.copy(*pcfgData);
@@ -2065,7 +2068,7 @@ void CPowerPlusDlg::getAppData(unsigned dataType /* = APPDATA_ALL */)
 	}
 
 	// Get schedule data
-	if ((dataType & APPDATA_SCHEDULE) != 0) {
+	if (enumFlagContains(dataType, AppData::Schedule)) {
 		ScheduleData* pschData = theAppPtr->getAppScheduleData();
 		if (pschData != NULL) {
 			scheduleData_.copy(*pschData);
@@ -2073,7 +2076,7 @@ void CPowerPlusDlg::getAppData(unsigned dataType /* = APPDATA_ALL */)
 	}
 
 	// Get HotkeySet data
-	if ((dataType & APPDATA_HOTKEYSET) != 0) {
+	if (enumFlagContains(dataType, AppData::HotkeySet)) {
 		HotkeySetData* hotkeySetDataPtr = theAppPtr->getAppHotkeySetData();
 		if (hotkeySetDataPtr != NULL) {
 			hotkeySetData_.copy(*hotkeySetDataPtr);
@@ -2081,7 +2084,7 @@ void CPowerPlusDlg::getAppData(unsigned dataType /* = APPDATA_ALL */)
 	}
 
 	// Get Power Reminder data
-	if ((dataType & APPDATA_PWRREMINDER) != 0) {
+	if (enumFlagContains(dataType, AppData::PowerReminder)) {
 		PwrReminderData* reminderDataPtr = theAppPtr->getAppPwrReminderData();
 		if (reminderDataPtr != NULL) {
 			reminderData_.copy(*reminderDataPtr);
@@ -3223,7 +3226,7 @@ void CPowerPlusDlg::openChildDialogEx(unsigned dialogId)
  * @return	None
  * @note:	Base function (no longer used)
  */
-void CPowerPlusDlg::openDialogBase(unsigned dialogId, bool readOnlyMode /* = false */, int openMode /* = DEF_MODE_OPENDLG_MODAL */)
+void CPowerPlusDlg::openDialogBase(unsigned dialogId, bool readOnlyMode /* = false */, int openMode /* = Mode::ModalDialog */)
 {
 	// Check if there is any other instance of dialog currently running,
 	HWND dialogWndHandle = NULL;
@@ -3300,7 +3303,7 @@ void CPowerPlusDlg::openDialogBase(unsigned dialogId, bool readOnlyMode /* = fal
 			dialogPtr = new CDebugTestDlg;
 			isReadOnlySet = false;
 			parentWnd = this;
-			openMode = MODE_OPENDLG_MODELESS;
+			openMode = Mode::ModelessDialog;
 			break;
 
 		default:
@@ -3322,12 +3325,12 @@ void CPowerPlusDlg::openDialogBase(unsigned dialogId, bool readOnlyMode /* = fal
 		}
 
 		// Open dialog
-		if (openMode == MODE_OPENDLG_MODAL) {
+		if (openMode == Mode::ModalDialog) {
 			// Modal dialog
 			dialogPtr->setParent(parentWnd);
 			dialogPtr->DoModal();
 		}
-		else if (openMode == MODE_OPENDLG_MODELESS) {
+		else if (openMode == Mode::ModelessDialog) {
 			// Modeless dialog
 			dialogPtr->Create(dialogId, parentWnd);
 			dialogPtr->ShowWindow(SW_SHOW);
@@ -3538,7 +3541,7 @@ void CPowerPlusDlg::reupdateActionScheduleData(void)
 	if (theAppPtr != NULL) {
 		// Update schedule data
 		theAppPtr->setAppScheduleData(&scheduleData_);
-		theAppPtr->saveRegistryAppData(APPDATA_SCHEDULE);
+		theAppPtr->saveRegistryAppData(AppData::Schedule);
 	}
 
 	// Trigger reupdate schedule data
@@ -4427,7 +4430,7 @@ void CPowerPlusDlg::reupdatePwrReminderData(void)
 	if (theAppPtr != NULL) {
 		// Update Power Reminder data
 		theAppPtr->setAppPwrReminderData(&reminderData_);
-		theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+		theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 	}
 
 	// Trigger reupdate Power Reminder data

@@ -1144,7 +1144,7 @@ bool CPowerPlusApp::loadRegistryAppData()
  * @param	dataType - App data type to save
  * @return	bool - Result of saving process
  */
-bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
+bool CPowerPlusApp::saveRegistryAppData(AppData dataType /* = AppData::All */)
 {
 	bool result = true;
 	bool finalResult = true;
@@ -1162,7 +1162,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	/***********************************************************************************************/
 
 	// Save configuration data
-	if ((dataType & APPDATA_CONFIG) != 0) {
+	if (enumFlagContains(dataType, AppData::Config)) {
 
 		// Delete old data before writing
 		deleteConfigSection();
@@ -1208,7 +1208,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	/***********************************************************************************************/
 
 	// Save schedule data
-	if ((dataType & APPDATA_SCHEDULE) != 0) {
+	if (enumFlagContains(dataType, AppData::Schedule)) {
 
 		// Delete old data before writing
 		deleteScheduleSection();
@@ -1271,7 +1271,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	/***********************************************************************************************/
 
 	// Save auto-start status info
-	if ((dataType & APPDATA_CONFIG) != 0) {
+	if (enumFlagContains(dataType, AppData::Config)) {
 
 		bool isAutoStartEnabled = appConfigDataPtr_->enableAutoStart;
 		bool isRunAsAdmin = appConfigDataPtr_->runAsAdmin;
@@ -1294,7 +1294,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	/***********************************************************************************************/
 
 	// Save HotkeySet data
-	if ((dataType & APPDATA_HOTKEYSET) != 0) {
+	if (enumFlagContains(dataType, AppData::HotkeySet)) {
 
 		// Delete old data before writing
 		deleteHotkeySetSection();
@@ -1334,7 +1334,7 @@ bool CPowerPlusApp::saveRegistryAppData(DWORD dataType /* = APPDATA_ALL */)
 	/***********************************************************************************************/
 
 	// Save Power Reminder data
-	if ((dataType & APPDATA_PWRREMINDER) != 0) {
+	if (enumFlagContains(dataType, AppData::PowerReminder)) {
 
 		// Delete old data before writing
 		deletePwrReminderSection();
@@ -1858,7 +1858,8 @@ void CPowerPlusApp::initAppHistoryLog()
 {
 	// Initialization
 	if (appHistoryLogPtr_ == NULL) {
-		appHistoryLogPtr_ = new Logger(LOGTYPE_HISTORY_LOG);
+		auto type = enumToValue(AppLogType::AppHistory);
+		appHistoryLogPtr_ = new Logger(type);
 	}
 	
 	// Check validity after allocating
@@ -2049,7 +2050,7 @@ void CPowerPlusApp::traceSerializeData(WORD errorCode)
  * @param	saveFlag - Data saving type flag
  * @return	true/false
  */
-bool CPowerPlusApp::dataSerializeCheck(BYTE serializeMode, int saveFlag /* = APPDATA_ALL */)
+bool CPowerPlusApp::dataSerializeCheck(BYTE serializeMode, AppData saveFlag /* = AppData::All */)
 {
 	bool result = true;
 	WORD loadingResult = APP_ERROR_SUCCESS;
@@ -2061,7 +2062,7 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE serializeMode, int saveFlag /* = APP
 			loadingResult = APP_ERROR_LOAD_CFG_INVALID;
 			traceSerializeData(loadingResult);
 		}
-		else if ((serializeMode == Mode::Save) && ((saveFlag & APPDATA_CONFIG) != 0)) {
+		else if ((serializeMode == Mode::Save) && (enumFlagContains(saveFlag, AppData::Config))) {
 			savingResult = APP_ERROR_SAVE_CFG_INVALID;
 			traceSerializeData(savingResult);
 		}
@@ -2073,7 +2074,7 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE serializeMode, int saveFlag /* = APP
 			loadingResult = APP_ERROR_LOAD_SCHED_INVALID;
 			traceSerializeData(loadingResult);
 		}
-		else if ((serializeMode == Mode::Save) && ((saveFlag & APPDATA_SCHEDULE) != 0)) {
+		else if ((serializeMode == Mode::Save) && (enumFlagContains(saveFlag, AppData::Schedule))) {
 			savingResult = APP_ERROR_SAVE_SCHED_INVALID;
 			traceSerializeData(savingResult);
 		}
@@ -2085,7 +2086,7 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE serializeMode, int saveFlag /* = APP
 			loadingResult = APP_ERROR_LOAD_HKEYSET_INVALID;
 			traceSerializeData(loadingResult);
 		}
-		else if ((serializeMode == Mode::Save) && ((saveFlag & APPDATA_HOTKEYSET) != 0)) {
+		else if ((serializeMode == Mode::Save) && (enumFlagContains(saveFlag, AppData::HotkeySet))) {
 			savingResult = APP_ERROR_SAVE_HKEYSET_INVALID;
 			traceSerializeData(savingResult);
 		}
@@ -2097,7 +2098,7 @@ bool CPowerPlusApp::dataSerializeCheck(BYTE serializeMode, int saveFlag /* = APP
 			loadingResult = APP_ERROR_LOAD_PWRRMD_INVALID;
 			traceSerializeData(loadingResult);
 		}
-		else if ((serializeMode == Mode::Save) && ((saveFlag & APPDATA_PWRREMINDER) != 0)) {
+		else if ((serializeMode == Mode::Save) && (enumFlagContains(saveFlag, AppData::PowerReminder))) {
 			savingResult = APP_ERROR_SAVE_PWRRMD_INVALID;
 			traceSerializeData(savingResult);
 		}

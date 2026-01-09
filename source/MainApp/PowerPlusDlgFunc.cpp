@@ -747,7 +747,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 					// Set background color
 					if (reminderDataPtr != NULL) {
 						reminderDataPtr->getCommonStyle().setBkgrdColor(retColorId);
-						theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+						theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 						outputDebugLogFormat(_T("Message background color set: %s"), colorName.toUpper().getString());
 						isNoReply = false;	// Reset flag
 					}
@@ -776,7 +776,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 					COLORREF colorRgb = RGB(colorRValue, colorGValue, colorBValue);
 					if (reminderDataPtr != NULL) {
 						reminderDataPtr->getCommonStyle().setBkgrdColor(colorRgb);
-						theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+						theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 						outputDebugLogFormat(_T("Message background color set: RGB(%d,%d,%d)"), colorRValue, colorGValue, colorBValue);
 						isNoReply = false;	// Reset flag
 					}
@@ -800,7 +800,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 					// Set text color
 					if (reminderDataPtr != NULL) {
 						reminderDataPtr->getCommonStyle().setTextColor(retColorId);
-						theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+						theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 						outputDebugLogFormat(_T("Message text color set: %s"), colorName.toUpper().getString());
 						isNoReply = false;	// Reset flag
 					}
@@ -829,7 +829,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 					COLORREF colorRgb = RGB(colorRValue, colorGValue, colorBValue);
 					if (reminderDataPtr != NULL) {
 						reminderDataPtr->getCommonStyle().setTextColor(colorRgb);
-						theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+						theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 						outputDebugLogFormat(_T("Message text color set: RGB(%d,%d,%d)"), colorRValue, colorGValue, colorBValue);
 						isNoReply = false;	// Reset flag
 					}
@@ -861,7 +861,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set message font
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setFontName(fontName);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLogFormat(_T("Message font name set: %s"), fontName.getString());
 					isNoReply = false;	// Reset flag
 				}
@@ -883,7 +883,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set font size
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setFontSize(fontSize);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLogFormat(_T("Message font size set: %dpt"), fontSize);
 					isNoReply = false;	// Reset flag
 				}
@@ -905,7 +905,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set timeout
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setTimeout(timeoutValue);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLogFormat(_T("Message time-out set: %ds"), timeoutValue);
 					isNoReply = false;	// Reset flag
 				}
@@ -919,7 +919,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// No reminder message timeout (default 0)
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setTimeout(RmdMsgStyleSet::kDefaultTimeout);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLog(_T("Message time-out disabled"));
 				isNoReply = false;	// Reset flag
 			}
@@ -936,7 +936,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set icon ID
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setIconId(retIconId);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLogFormat(_T("Message icon ID set: %s (%d)"), iconName.toUpper().getString(), retIconId);
 					isNoReply = false;	// Reset flag
 				}
@@ -954,7 +954,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// No reminder message icon (default 0)
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setIconId(0);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLog(_T("Message icon disabled"));
 				isNoReply = false;	// Reset flag
 			}
@@ -975,7 +975,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set icon size
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setIconSize(iconSize);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLogFormat(_T("Message icon size set: %dx%dpx"), iconSize, iconSize);
 					isNoReply = false;	// Reset flag
 				}
@@ -992,7 +992,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set icon position: Icon on the Left
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setIconPosition(RmdMsgStyleSet::IconOnTheLeft);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLog(_T("Message icon position set: Left"));
 					isNoReply = false;	// Reset flag
 				}
@@ -1005,7 +1005,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set icon position: Icon on the Top
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setIconPosition(RmdMsgStyleSet::IconOnTheTop);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLog(_T("Message icon position set: Top"));
 					isNoReply = false;	// Reset flag
 				}
@@ -1031,7 +1031,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set margin
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setHorizontalMargin(marginHorizontal);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLogFormat(_T("Message horizontal margin set: %dpx"), marginHorizontal);
 					isNoReply = false;	// Reset flag
 				}
@@ -1053,7 +1053,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 				// Set margin
 				if (reminderDataPtr != NULL) {
 					reminderDataPtr->getCommonStyle().setVerticalMargin(marginVertical);
-					theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+					theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 					outputDebugLogFormat(_T("Message vertical margin set: %dpx"), marginVertical);
 					isNoReply = false;	// Reset flag
 				}
@@ -1075,7 +1075,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset message background color
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setBkgrdColor(RmdMsgStyleSet::kDefaultBkgrdColor);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLogFormat(_T("Message background color reset"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1088,7 +1088,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Set message text color by name
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setTextColor(RmdMsgStyleSet::kDefaultTextColor);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLogFormat(_T("Message text color reset"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1101,7 +1101,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Set reminder message font name
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setFontName(RmdMsgStyleSet::kDefaultFontName);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLogFormat(_T("Message font name reset"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1114,7 +1114,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Set reminder message font size
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setFontSize(RmdMsgStyleSet::kDefaultFontSize);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLogFormat(_T("Message font size reset"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1127,7 +1127,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message auto-close interval (time-out)
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setTimeout(RmdMsgStyleSet::kDefaultTimeout);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLog(_T("Message time-out reset"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1140,7 +1140,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message icon ID
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setIconId(RmdMsgStyleSet::kDefaultIconID);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLog(_T("Message icon ID reset"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1153,7 +1153,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message icon size
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setIconSize(RmdMsgStyleSet::kDefaultIconSize);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLog(_T("Message icon size reset"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1166,7 +1166,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message icon position
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setIconPosition(RmdMsgStyleSet::kDefaultIconPosition);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLog(_T("Message icon position reset"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1179,7 +1179,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message horizontal margin
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setHorizontalMargin(RmdMsgStyleSet::kDefaultHorizontalMargin);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLogFormat(_T("Message horizontal margin reset)"));
 				isNoReply = false;	// Reset flag
 			}
@@ -1192,7 +1192,7 @@ bool CPowerPlusDlg::processDebugCommand(const wchar_t* commandString, DWORD& err
 			// Reset reminder message vertical margin
 			if (reminderDataPtr != NULL) {
 				reminderDataPtr->getCommonStyle().setVerticalMargin(RmdMsgStyleSet::kDefaultVerticalMargin);
-				theAppPtr->saveRegistryAppData(APPDATA_PWRREMINDER);
+				theAppPtr->saveRegistryAppData(AppData::PowerReminder);
 				outputDebugLogFormat(_T("Message vertical margin reset"));
 				isNoReply = false;	// Reset flag
 			}
