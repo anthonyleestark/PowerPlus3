@@ -47,42 +47,44 @@ PowerPlus3 (Power++) is a Windows-only, offline utility application written in C
 
 The application follows a layered architecture with clear separation of concerns:
 
-```
+```markdown
 ┌─────────────────────────────────────────┐
 │           Application Layer             │
-│  (CPowerPlusApp, CPowerPlusDlg)         │
+│     (CPowerPlusApp, CPowerPlusDlg)      │
 └─────────────────────────────────────────┘
                     │
 ┌─────────────────────────────────────────┐
-│           Framework Layer               │
-│  (SWinApp, SDialog, SElements)          │
+│            Framework Layer              │
+│      (SWinApp, SDialog, SElements)      │
 └─────────────────────────────────────────┘
                     │
 ┌─────────────────────────────────────────┐
-│           Core Layer                    │
-│  (AppCore, Data Models, Utilities)      │
+│              Core Layer                 │
+│    (AppCore, Data Models, Utilities)    │
 └─────────────────────────────────────────┘
                     │
 ┌─────────────────────────────────────────┐
-│           Component Layer               │
-│  (GridCtrl, Custom Controls)            │
+│            Component Layer              │
+│      (GridCtrl, Custom Controls)        │
 └─────────────────────────────────────────┘
                     │
 ┌─────────────────────────────────────────┐
-│           Platform Layer                │
-│  (Win32 API, Registry, System Calls)    │
+│            Platform Layer               │
+│   (Win32 API, Registry, System Calls)   │
 └─────────────────────────────────────────┘
 ```
 
 ### Module Organization
 
 #### 1. **AppBase** (`include/AppBase/`, `source/AppBase/`)
+
 - Base types and constants
 - Application macros and definitions
 - Resource definitions
 - Windows application base classes
 
 #### 2. **AppCore** (`include/AppCore/`, `source/AppCore/`)
+
 - Core data structures and models
 - Business logic for power actions
 - Data serialization interfaces
@@ -91,18 +93,21 @@ The application follows a layered architecture with clear separation of concerns
 - ID management system
 
 #### 3. **Framework** (`include/Framework/`, `source/Framework/`)
+
 - Custom base classes for dialogs (`SDialog`)
 - Custom base classes for applications (`SWinApp`)
 - UI element management (`SElements`)
 - Dialog control management
 
 #### 4. **Components** (`include/Components/`, `source/Components/`)
+
 - Grid control implementation (`GridCtrl`)
 - Custom cell types (checkbox cells, etc.)
 - In-place editing support
 - Title tips and tooltips
 
 #### 5. **Dialogs** (`include/Dialogs/`, `source/Dialogs/`)
+
 - Feature-specific dialog implementations:
   - `AboutDlg`: About dialog
   - `HelpDlg`: Help and documentation viewer
@@ -115,6 +120,7 @@ The application follows a layered architecture with clear separation of concerns
   - `MsgStyleSetDlg`: Message style customization
 
 #### 6. **MainApp** (`include/MainApp/`, `source/MainApp/`)
+
 - Main application class (`CPowerPlusApp`)
 - Main dialog class (`CPowerPlusDlg`)
 - Application entry point and initialization
@@ -135,6 +141,7 @@ The main application class inherits from `SWinApp` and manages:
 - **Auto-start Management**: Windows startup integration
 
 **Key Responsibilities:**
+
 - Initialize application data structures
 - Load/save configuration from/to Windows Registry
 - Manage global keyboard hooks for background hotkeys
@@ -153,6 +160,7 @@ The main window dialog inherits from `SDialog` and provides:
 - **Settings Management**: Apply, reload, and backup configuration
 
 **Key Responsibilities:**
+
 - Display and manage main application UI
 - Execute power actions based on user input (mouse, hotkey, schedule)
 - Process scheduled actions and reminders
@@ -212,6 +220,7 @@ Manages scheduled power actions:
   - Repeat settings (`PwrRepeatSet`)
 
 **Repeat Settings** (`PwrRepeatSet`):
+
 - Daily repeat enabled/disabled
 - Snoozing allowed/disabled
 - Snooze interval (60-1800 seconds)
@@ -228,6 +237,7 @@ Manages keyboard shortcuts for power actions:
   - Virtual key code
 
 **Supported Actions:**
+
 - Display Off (0x1a01)
 - Sleep (0x1a02)
 - Shutdown (0x1a03)
@@ -240,6 +250,7 @@ Manages keyboard shortcuts for power actions:
 Manages reminder messages:
 
 - **Reminder Items** (`PwrReminderItem`):
+
   - Item ID (10000-19999)
   - Enabled/disabled state
   - Message content
@@ -250,6 +261,7 @@ Manages reminder messages:
   - Custom style settings (`RmdMsgStyleSet`)
 
 **Message Style Settings** (`RmdMsgStyleSet`):
+
 - Background color
 - Text color
 - Font name and size
@@ -276,6 +288,7 @@ Tracks action execution history:
 In-memory queue for managing active features:
 
 - **Runtime Items** (`PwrRuntimeItem`):
+
   - Category ID
   - Item ID
   - Display flag
@@ -292,6 +305,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 ### 1. Power Actions
 
 **Supported Actions:**
+
 - **Display Off**: Turn off monitor display
 - **Sleep**: Put system into sleep mode
 - **Shutdown**: Shutdown the system
@@ -300,6 +314,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 - **Hibernate**: Put system into hibernate mode
 
 **Execution Methods:**
+
 - Mouse button clicks (left, middle, right)
 - Keyboard hotkeys (global shortcuts)
 - Scheduled execution
@@ -307,12 +322,14 @@ Used for tracking active schedules and reminders that need periodic processing.
 - Programmatic execution
 
 **Confirmation:**
+
 - Optional confirmation dialog before execution
 - Can be bypassed for background hotkeys
 
 ### 2. Action Scheduling
 
 **Capabilities:**
+
 - Multiple scheduled actions (up to 100 items)
 - Time-based scheduling (hour:minute)
 - Daily repeat options
@@ -322,6 +339,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 - Cancellation support
 
 **Schedule Processing:**
+
 - Timer-based checking (1-second interval)
 - Queue management for active schedules
 - Skip and snooze flag handling
@@ -330,6 +348,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 ### 3. Hotkey Management
 
 **Features:**
+
 - Global keyboard shortcuts (work system-wide)
 - Background hotkey support (work when screen is locked)
 - Modifier key combinations (Ctrl, Alt, Shift, Win)
@@ -337,6 +356,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 - Per-action hotkey assignment
 
 **Registration:**
+
 - Windows `RegisterHotKey` API
 - Keyboard hook for background hotkeys
 - Session lock state detection
@@ -344,6 +364,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 ### 4. Power Reminders
 
 **Trigger Events:**
+
 - At set time
 - At application startup
 - At system wake up
@@ -352,10 +373,12 @@ Used for tracking active schedules and reminders that need periodic processing.
 - At application exit
 
 **Display Styles:**
+
 - Message Box (standard Windows message box)
 - Dialog Box (custom styled dialog)
 
 **Customization:**
+
 - Background and text colors
 - Font name and size
 - Icon selection and size
@@ -365,6 +388,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 - Margins
 
 **Repeat Options:**
+
 - Daily repeat
 - Day-of-week selection
 - Snooze functionality with configurable interval
@@ -372,6 +396,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 ### 5. System Tray Integration
 
 **Features:**
+
 - Minimize to system tray
 - Notify icon with tooltip
 - Context menu with quick actions
@@ -379,6 +404,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 - Taskbar recreation handling
 
 **Menu Options:**
+
 - Quick power actions
 - Open main window
 - Open feature dialogs (Schedule, HotkeySet, Power Reminder)
@@ -390,11 +416,13 @@ Used for tracking active schedules and reminders that need periodic processing.
 ### 6. Multi-language Support
 
 **Supported Languages:**
+
 - English
 - Vietnamese
 - Simplified Chinese
 
 **Implementation:**
+
 - Language table system (`Language.h`)
 - Resource string management
 - Runtime language switching
@@ -403,24 +431,28 @@ Used for tracking active schedules and reminders that need periodic processing.
 ### 7. Logging System
 
 **Log Types:**
+
 - **Application Event Log**: Application lifecycle events, dialog events, control interactions
 - **Action History Log**: Power action execution history with timestamps and results
 - **Trace Log**: Detailed execution traces (debug builds)
 - **Debug Log**: Debug information and diagnostics
 
 **Log Formats:**
+
 - YAML format for event and history logs
 - Text format for trace and debug logs
 - Monthly rotation for event logs
 - Daily rotation for history logs
 
 **Log Locations:**
+
 - Application data directory
 - Subdirectories: `Log/Event/`, `Log/History/`, `Log/Trace/`, `Log/Debug/`
 
 ### 8. Configuration Management
 
 **Storage:**
+
 - Windows Registry (HKEY_CURRENT_USER)
 - Structured registry sections:
   - Config: Application settings
@@ -431,6 +463,7 @@ Used for tracking active schedules and reminders that need periodic processing.
   - Global: Global application data
 
 **Operations:**
+
 - Load configuration on startup
 - Save configuration on apply
 - Backup/restore functionality
@@ -446,6 +479,7 @@ Used for tracking active schedules and reminders that need periodic processing.
 Custom base class extending MFC's `CDialogEx` with enhanced features:
 
 **Key Features:**
+
 - **Control Management**: Automatic control registration and state management
 - **Flag Management**: Dialog-level flag system for state tracking
 - **Layout Management**: Size, position, alignment, and margin control
@@ -457,6 +491,7 @@ Custom base class extending MFC's `CDialogEx` with enhanced features:
 - **Child Dialog Tracking**: Manage descendant dialogs
 
 **Dialog Properties:**
+
 - Minimum/maximum size constraints
 - Alignment options (left, right, top, bottom, center)
 - Anchor point positioning
@@ -469,6 +504,7 @@ Custom base class extending MFC's `CDialogEx` with enhanced features:
 Custom base class extending MFC's `CWinAppEx`:
 
 **Key Features:**
+
 - **Language Management**: Application-wide language support
 - **Flag Management**: Application-level flag system
 - **Logging**: Application event logging
@@ -480,6 +516,7 @@ Custom base class extending MFC's `CWinAppEx`:
 Custom grid control for data display and editing:
 
 **Features:**
+
 - Multiple cell types (fixed, checkbox, normal, editable)
 - In-place editing
 - Column formatting and styling
@@ -488,6 +525,7 @@ Custom grid control for data display and editing:
 - Custom cell rendering
 
 **Used In:**
+
 - Schedule dialog (schedule item list)
 - HotkeySet dialog (hotkey list)
 - Power Reminder dialog (reminder item list)
@@ -499,7 +537,7 @@ Custom grid control for data display and editing:
 
 ### Registry Structure
 
-```
+```markdown
 HKEY_CURRENT_USER
 └── Software
     └── [Application Name]
@@ -565,6 +603,7 @@ Provides functions for reading/writing registry values:
 - **Global Data Functions**: Application-wide data
 
 **Data Types:**
+
 - Integer values
 - String values
 - Structured data (serialized as integers or strings)
@@ -572,6 +611,7 @@ Provides functions for reading/writing registry values:
 ### Backup System (`BackupSystem`)
 
 **Capabilities:**
+
 - Export registry configuration to file
 - Import configuration from file
 - Backup before major changes
@@ -586,6 +626,7 @@ Provides functions for reading/writing registry values:
 Manages log file creation and writing:
 
 **Features:**
+
 - Automatic file rotation (daily/monthly)
 - Thread-safe logging
 - Multiple log levels
@@ -595,6 +636,7 @@ Manages log file creation and writing:
 ### Log Categories
 
 #### 1. Application Event Log
+
 - **Purpose**: Track application lifecycle and user interactions
 - **Format**: YAML
 - **Rotation**: Monthly
@@ -602,6 +644,7 @@ Manages log file creation and writing:
 - **Events**: Dialog init/show/hide, button clicks, checkbox changes, menu selections, etc.
 
 #### 2. Action History Log
+
 - **Purpose**: Record power action executions
 - **Format**: YAML
 - **Rotation**: Daily
@@ -609,6 +652,7 @@ Manages log file creation and writing:
 - **Content**: Action type, timestamp, result, error code, description
 
 #### 3. Trace Log
+
 - **Purpose**: Detailed execution traces
 - **Format**: Text
 - **Rotation**: Daily
@@ -616,6 +660,7 @@ Manages log file creation and writing:
 - **Usage**: Debug builds, development
 
 #### 4. Debug Log
+
 - **Purpose**: Debug information and diagnostics
 - **Format**: Text
 - **Rotation**: Daily
@@ -625,6 +670,7 @@ Manages log file creation and writing:
 ### Log Event IDs
 
 Structured event ID system for categorizing log entries:
+
 - Dialog events
 - Control events (button, checkbox, combo, etc.)
 - Menu events
@@ -641,26 +687,31 @@ Structured event ID system for categorizing log entries:
 ### Windows API Integration
 
 #### Power Management
+
 - `ExitWindowsEx`: Shutdown, restart, sign out
 - `SetSuspendState`: Sleep and hibernate
 - `SendMessage(WM_SYSCOMMAND, SC_MONITORPOWER)`: Display off
 
 #### System Events
+
 - `WM_POWERBROADCAST`: Power state changes (suspend, resume)
 - `WM_QUERYENDSESSION`: System shutdown notification
 - `WM_ENDSESSION`: Session end notification
 - `WM_WTSSESSION_CHANGE`: Session lock/unlock events
 
 #### Hotkey Management
+
 - `RegisterHotKey`: Register global hotkeys
 - `UnregisterHotKey`: Unregister hotkeys
 - `SetWindowsHookEx(WH_KEYBOARD_LL)`: Low-level keyboard hook for background hotkeys
 
 #### System Tray
+
 - `Shell_NotifyIcon`: Notify icon operations (add, modify, delete)
 - `RegisterWindowMessage("TaskbarCreated")`: Handle taskbar recreation
 
 #### Registry
+
 - `RegCreateKeyEx`: Create registry keys
 - `RegSetValueEx`: Write registry values
 - `RegQueryValueEx`: Read registry values
@@ -669,9 +720,11 @@ Structured event ID system for categorizing log entries:
 ### Auto-start Integration
 
 **Registry Location:**
+
 - `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run`
 
 **Features:**
+
 - Enable/disable auto-start
 - Run as administrator option
 - Status checking
@@ -679,6 +732,7 @@ Structured event ID system for categorizing log entries:
 ### Session Management
 
 **WTS Session Notifications:**
+
 - Register for session change notifications
 - Handle session lock/unlock events
 - Support background hotkeys on lockscreen
@@ -762,6 +816,7 @@ Structured event ID system for categorizing log entries:
 ## Version History
 
 ### Version 3.2 (v3.2.1.0) - June 2025
+
 - Power Reminder enhancements (snoozing, repeat, style customization)
 - Multiple schedule actions support
 - Background hotkeys on lockscreen
@@ -770,6 +825,7 @@ Structured event ID system for categorizing log entries:
 - Embedded help files
 
 ### Version 3.1 (v3.1.1.0) - September 2024
+
 - Power Reminder feature
 - Chinese language support
 - Debug command functions
@@ -777,6 +833,7 @@ Structured event ID system for categorizing log entries:
 - Enhanced logging
 
 ### Version 3.0 (v3.0.1.0) - June 2024
+
 - Middle mouse button support
 - App event logging
 - Log viewer function
@@ -796,4 +853,3 @@ Structured event ID system for categorizing log entries:
 ---
 
 *This documentation reflects the current state of PowerPlus3 as of version 3.2.1.0. For the most up-to-date information, refer to the source code and inline documentation.*
-

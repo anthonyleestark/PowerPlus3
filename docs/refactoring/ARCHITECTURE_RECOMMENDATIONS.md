@@ -22,6 +22,7 @@
 **Recommendation**: Target **C++20** (minimum C++17)
 
 **Rationale:**
+
 - Better type safety (concepts, ranges)
 - Improved error handling (std::expected in C++23, custom Result type for C++20)
 - Modern concurrency features
@@ -59,6 +60,7 @@ public:
 ```
 
 **Guidelines:**
+
 - Use `std::unique_ptr` for exclusive ownership
 - Use `std::shared_ptr` only when shared ownership is necessary
 - Use `std::weak_ptr` to break circular dependencies
@@ -548,6 +550,7 @@ private:
 ### Thread Safety Strategy
 
 **Guidelines:**
+
 1. **Single-threaded UI**: All UI operations on main thread
 2. **Background workers**: Use std::thread or std::async for background tasks
 3. **Thread-safe logging**: Logger must be thread-safe
@@ -764,6 +767,7 @@ target_link_libraries(powerplus
 ### Package Management
 
 **Options:**
+
 1. **vcpkg**: Microsoft's C++ package manager
 2. **Conan**: Cross-platform package manager
 3. **CMake FetchContent**: For header-only libraries
@@ -884,6 +888,456 @@ schedules.reserve(100);  // Avoid reallocations
 
 ---
 
+## Cross-Platform Architecture
+
+### Platform Abstraction Strategy
+
+For cross-platform migration, implement a **Platform Abstraction Layer (PAL)** that isolates all platform-specific code behind interfaces.
+
+#### **Core Principle: Dependency Inversion**
+
+- **Domain and Application layers** depend on abstractions (interfaces)
+- **Infrastructure layer** implements these abstractions
+- **Platform-specific code** lives only in infrastructure/platform/
+
+### Platform Abstraction Interfaces
+
+#### **1. Power Management Interface**
+
+```cpp
+namespace infrastructure::platform {
+    class IPowerManager {
+    public:
+        virtual ~IPowerManager() = default;
+        
+        enum class Action {
+            DisplayOff,
+            Sleep,
+            Hibernate,
+            Shutdown,
+            Restart,
+            SignOut
+        };
+        
+        virtual Result<void, ErrorCode> executeAction(Action action) = 0;
+        virtual bool isActionSupported(Action action) const = 0;
+        virtual bool requiresPrivileges(Action action) const = 0;
+        virtual std::string getActionName(Action action) const = 0;
+    };
+}
+```
+
+**Implementation Guidelines:**
+
+- Windows: Use `ExitWindowsEx()`, `SetSuspendState()`, `PostMessage()`
+- Linux: Use systemd/logind D-Bus or `systemctl` commands
+- macOS: Use Cocoa APIs or `pmset` commands
+
+#### **2. Configuration Storage Interface**
+
+```cpp
+namespace infrastructure::platform {
+    class IConfigurationStorage {
+    public:
+        virtual ~IConfigurationStorage() = default;
+        
+        virtual Result<ConfigData, ErrorCode> loadConfig() = 0;
+        virtual Result<void, ErrorCode> saveConfig(const ConfigData& config) = 0;
+        virtual Result<ScheduleData, ErrorCode> loadSchedule() = 0;
+        virtual Result<void, ErrorCode> saveSchedule(const ScheduleData& schedule) = 0;
+        virtual Result<HotkeySetData, ErrorCode> loadHotkeys() = 0;
+        virtual Result<void, ErrorCode> saveHotkeys(const HotkeySetData& hotkeys) = 0;
+        virtual Result<PwrReminderData, ErrorCode> loadReminders() = 0;
+        virtual Result<void, ErrorCode> saveReminders(const PwrReminderData& reminders) = 0;
+        
+        virtual bool supportsBackup() const = 0;
+        virtual Result<void, ErrorCode> backup(const std::string& backupPath) = 0;
+        virtual Result<void, ErrorCode> restore(const std::string& backupPath) = 0;
+    };
+}
+```
+
+**Storage Backend Options:**
+
+- **RegistryStorage** (Windows only): Uses Windows Registry
+- **JsonFileStorage** (Cross-platform): Uses JSON files
+- **SqliteStorage** (Optional): Uses SQLite database
+
+#### **3. Hotkey Management Interface**
+
+```cpp
+namespace infrastructure::platform {
+    class IHotkeyManager {
+    public:
+        virtual ~IHotkeyManager() = default;
+        
+        enum class ModifierKey {
+            Ctrl,
+            Alt,
+            Shift,
+            Win,     // Windows key / Super key
+            Meta     // Meta key (Linux/macOS)
+        };
+        
+        struct KeyCombination {
+            std::vector<ModifierKey> modifiers;
+            unsigned keyCode;  // Platform-agnostic key code
+        };
+        
+        virtual Result<void, ErrorCode> registerHotkey(
+            unsigned id,
+            const KeyCombination& combo
+        ) = 0;
+        virtual Result<void, ErrorCode> unregisterHotkey(unsigned id) = 0;
+        virtual Result<void, ErrorCode> unregisterAll() = 0;
+        virtual bool isHotkeySupported() const = 0;
+        virtual bool supportsBackgroundHotkeys() const = 0;
+    };
+}
+```
+
+**Platform-Specific Notes:**
+
+- **Windows**: `RegisterHotKey()` + keyboard hook for background
+- **Linux**: X11 `XGrabKey()` or Wayland protocols (limited)
+- **macOS**: Carbon/Cocoa hotkey APIs
+
+#### **4. System Tray Interface**
+
+```cpp
+namespace infrastructure::platform {
+    class ISystemTray {
+    public:
+        virtual ~ISystemTray() = default;
+        
+        virtual Result<void, ErrorCode> createIcon(
+            const std::string& iconPath,
+            const std::string& tooltip
+        ) = 0;
+        virtual Result<void, ErrorCode> updateIcon(const std::string& iconPath) = 0;
+        virtual Result<void, ErrorCode> updateTooltip(const std::string& tooltip) = 0;
+        virtual Result<void, ErrorCode> showNotification(
+            const std::string& title,
+            const std::string& message,
+            int timeoutMs = 5000
+        ) = 0;
+        virtual void setMenu(std::unique_ptr<IMenu> menu) = 0;
+        virtual void removeIcon() = 0;
+        virtual bool isSupported() const = 0;
+    };
+}
+```
+
+**Platform-Specific Notes:**
+
+- **Windows**: `Shell_NotifyIcon()` API
+- **Linux**: StatusNotifier protocol or libappindicator
+- **macOS**: `NSStatusItem` API
+
+#### **5. File System Interface**
+
+```cpp
+namespace infrastructure::platform {
+    class IFileSystem {
+    public:
+        virtual ~IFileSystem() = default;
+        
+        virtual std::filesystem::path getApplicationDataPath() const = 0;
+        virtual std::filesystem::path getConfigPath() const = 0;
+        virtual std::filesystem::path getLogPath() const = 0;
+        virtual std::filesystem::path getTempPath() const = 0;
+        
+        virtual Result<void, ErrorCode> createDirectory(
+            const std::filesystem::path& path
+        ) = 0;
+        virtual bool fileExists(const std::filesystem::path& path) const = 0;
+        virtual Result<std::string, ErrorCode> readFile(
+            const std::filesystem::path& path
+        ) = 0;
+        virtual Result<void, ErrorCode> writeFile(
+            const std::filesystem::path& path,
+            const std::string& content
+        ) = 0;
+    };
+}
+```
+
+**Platform-Specific Paths:**
+
+- **Windows**: `%APPDATA%\PowerPlus3\`
+- **Linux**: `~/.config/PowerPlus3/` (XDG Base Directory)
+- **macOS**: `~/Library/Application Support/PowerPlus3/`
+
+#### **6. Timer Management Interface**
+
+```cpp
+namespace infrastructure::platform {
+    class ITimerManager {
+    public:
+        virtual ~ITimerManager() = default;
+        
+        using TimerCallback = std::function<void()>;
+        
+        virtual unsigned createTimer(
+            int intervalMs,
+            TimerCallback callback,
+            bool repeat = true
+        ) = 0;
+        virtual Result<void, ErrorCode> destroyTimer(unsigned timerId) = 0;
+        virtual Result<void, ErrorCode> startTimer(unsigned timerId) = 0;
+        virtual Result<void, ErrorCode> stopTimer(unsigned timerId) = 0;
+    };
+}
+```
+
+**Platform-Specific Notes:**
+
+- **Windows**: `SetTimer()` / `KillTimer()` or `std::thread` + `std::chrono`
+- **Linux/macOS**: `std::thread` + `std::chrono` or Qt's `QTimer`
+
+### Platform Factory Pattern
+
+```cpp
+namespace infrastructure::platform {
+    class PlatformFactory {
+    public:
+        // Power management
+        static std::unique_ptr<IPowerManager> createPowerManager();
+        
+        // Configuration storage
+        static std::unique_ptr<IConfigurationStorage> createStorage(
+            StorageType type = StorageType::Auto
+        );
+        
+        // Hotkey management
+        static std::unique_ptr<IHotkeyManager> createHotkeyManager();
+        
+        // System tray
+        static std::unique_ptr<ISystemTray> createSystemTray();
+        
+        // File system
+        static std::unique_ptr<IFileSystem> createFileSystem();
+        
+        // Timer management
+        static std::unique_ptr<ITimerManager> createTimerManager();
+        
+        // Platform detection
+        static Platform getCurrentPlatform();
+        static bool isWindows();
+        static bool isLinux();
+        static bool isMacOS();
+        
+    private:
+        enum class Platform {
+            Windows,
+            Linux,
+            MacOS,
+            Unknown
+        };
+        
+        static Platform currentPlatform_;
+    };
+}
+```
+
+### Cross-Platform Code Organization
+
+#### **Directory Structure**
+
+```markdown
+src/infrastructure/platform/
+├── abstractions/                       # Interface definitions
+│   ├── power_manager_interface.h
+│   ├── config_storage_interface.h
+│   ├── hotkey_manager_interface.h
+│   ├── system_tray_interface.h
+│   ├── file_system_interface.h
+│   └── timer_manager_interface.h
+├── windows/                            # Windows implementations
+│   ├── windows_power_manager.h/cpp
+│   ├── registry_storage.h/cpp
+│   ├── windows_hotkey_manager.h/cpp
+│   ├── windows_system_tray.h/cpp
+│   └── windows_file_system.h/cpp
+├── linux/                              # Linux implementations
+│   ├── linux_power_manager.h/cpp
+│   ├── json_file_storage.h/cpp
+│   ├── linux_hotkey_manager.h/cpp
+│   ├── linux_system_tray.h/cpp
+│   └── linux_file_system.h/cpp
+├── macos/                              # macOS implementations (future)
+│   └── [macOS-specific files]
+└── factory/
+    ├── platform_factory.h
+    └── platform_factory.cpp
+```
+
+### Platform-Specific Considerations
+
+#### **Windows-Specific**
+
+1. **Registry Access**
+   - Use `RegOpenKeyEx`, `RegQueryValueEx`, `RegSetValueEx`
+   - Handle registry errors gracefully
+   - Support both 32-bit and 64-bit registry views
+
+2. **Privilege Management**
+   - Adjust token privileges for shutdown/restart
+   - Handle privilege elevation requests
+   - Support run-as-admin mode
+
+3. **Windows Messages**
+   - Use `PostMessage` for display off
+   - Handle `WM_POWERBROADCAST` for power events
+   - Handle `WM_WTSSESSION_CHANGE` for session events
+
+#### **Linux-Specific**
+
+1. **Power Management**
+   - Prefer D-Bus interface (systemd/logind)
+   - Fallback to `systemctl` commands
+   - Handle polkit authorization
+   - Support different init systems (systemd, upstart, etc.)
+
+2. **Display Server**
+   - Support both X11 and Wayland
+   - Detect display server at runtime
+   - X11: Use `xset`, `xrandr` for display control
+   - Wayland: Limited hotkey support
+
+3. **Desktop Environment**
+   - Detect desktop environment (GNOME, KDE, XFCE, etc.)
+   - Adapt system tray implementation
+   - Use appropriate notification system
+
+#### **macOS-Specific** (Future)
+
+1. **Power Management**
+   - Use Cocoa APIs (`NSWorkspace`)
+   - Support `pmset` commands
+   - Handle macOS-specific sleep modes
+
+2. **System Integration**
+   - Use `NSStatusItem` for system tray
+   - Integrate with System Preferences
+   - Support macOS notification center
+
+### Build System for Cross-Platform
+
+#### **CMake Platform Detection**
+
+```cmake
+# Platform detection
+if(WIN32)
+    set(PLATFORM_WINDOWS ON)
+    add_definitions(-DPLATFORM_WINDOWS)
+    set(PLATFORM_NAME "Windows")
+elseif(UNIX AND NOT APPLE)
+    set(PLATFORM_LINUX ON)
+    add_definitions(-DPLATFORM_LINUX)
+    set(PLATFORM_NAME "Linux")
+    
+    # Detect desktop environment
+    find_program(XDG_CURRENT_DESKTOP xdg-current-desktop)
+    if(XDG_CURRENT_DESKTOP)
+        execute_process(
+            COMMAND ${XDG_CURRENT_DESKTOP}
+            OUTPUT_VARIABLE DESKTOP_ENV
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        message(STATUS "Desktop environment: ${DESKTOP_ENV}")
+    endif()
+    
+    # Detect display server
+    if(DEFINED ENV{WAYLAND_DISPLAY})
+        set(DISPLAY_SERVER "Wayland")
+    else()
+        set(DISPLAY_SERVER "X11")
+    endif()
+    
+elseif(APPLE)
+    set(PLATFORM_MACOS ON)
+    add_definitions(-DPLATFORM_MACOS)
+    set(PLATFORM_NAME "macOS")
+endif()
+
+message(STATUS "Building for platform: ${PLATFORM_NAME}")
+```
+
+#### **Conditional Compilation**
+
+```cpp
+// Platform-specific includes
+#ifdef PLATFORM_WINDOWS
+    #include <windows.h>
+    #include <winuser.h>
+#elif defined(PLATFORM_LINUX)
+    #include <X11/Xlib.h>
+    #include <systemd/sd-bus.h>
+#elif defined(PLATFORM_MACOS)
+    #include <Cocoa/Cocoa.h>
+#endif
+
+// Platform-specific code
+Result<void, ErrorCode> executeShutdown() {
+    #ifdef PLATFORM_WINDOWS
+        // Windows implementation
+        return executeWindowsShutdown();
+    #elif defined(PLATFORM_LINUX)
+        // Linux implementation
+        return executeLinuxShutdown();
+    #elif defined(PLATFORM_MACOS)
+        // macOS implementation
+        return executeMacOSShutdown();
+    #else
+        return Result<void, ErrorCode>::error(ERR_UNSUPPORTED_PLATFORM);
+    #endif
+}
+```
+
+### Testing Cross-Platform Code
+
+#### **Unit Testing Strategy**
+
+1. **Mock Platform Interfaces**
+   - Create mock implementations of PAL interfaces
+   - Test domain/application logic independently
+   - Verify interface contracts
+
+2. **Platform-Specific Tests**
+   - Test each platform implementation separately
+   - Use platform-specific test frameworks if needed
+   - Integration tests for platform features
+
+3. **Cross-Platform Test Suite**
+   - Common test cases for all platforms
+   - Platform-specific test cases
+   - Feature parity validation
+
+### Migration Best Practices
+
+1. **Start with Windows Implementation**
+   - Wrap existing Windows code in PAL interfaces
+   - Maintain backward compatibility
+   - Test thoroughly before adding other platforms
+
+2. **Incremental Platform Addition**
+   - Add one platform at a time
+   - Maintain feature parity
+   - Document platform-specific limitations
+
+3. **Feature Detection**
+   - Detect platform capabilities at runtime
+   - Graceful degradation for unsupported features
+   - Clear error messages for users
+
+4. **Code Reuse**
+   - Maximize platform-independent code
+   - Share common utilities
+   - Use standard library where possible
+
+---
+
 ## Conclusion
 
 These recommendations provide a foundation for modernizing PowerPlus3's architecture. Key principles:
@@ -896,8 +1350,9 @@ These recommendations provide a foundation for modernizing PowerPlus3's architec
 6. **Build System**: Modern CMake configuration
 7. **Dependencies**: Use established libraries
 8. **Performance**: Profile-driven optimization
+9. **Cross-Platform**: Platform abstraction layer for multi-platform support
+10. **Separation of Concerns**: Clear boundaries between platform-independent and platform-specific code
 
 ---
 
 *This document should be updated as new best practices emerge and the project evolves.*
-

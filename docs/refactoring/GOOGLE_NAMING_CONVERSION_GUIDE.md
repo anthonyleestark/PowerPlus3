@@ -8,29 +8,31 @@ This document describes the rules for converting from the current naming convent
 
 ## Conversion Overview
 
-| Type                  | Current                | Google Style                  | Notes                  |
-|-----------------------|------------------------|-------------------------------|------------------------|
-| **Classes**           | `PascalCase`           | `PascalCase`                  | ✅ No change           |
-| **Functions**         | `PascalCase`           | `camelCase`                   | ⚠️ Change             |
-| **Member Variables**  | `m_` + `camelCase`     | `camelCase_` (trailing underscore) | ⚠️ Major change       |
-| **Local Variables**   | `camelCase`            | `camelCase`                   | ✅ No change           |
-| **Function Parameters**| `camelCase`            | `camelCase`                   | ✅ No change           |
-| **Constants**         | `UPPER_CASE`           | `kConstantName`               | ⚠️ Change             |
-| **Namespaces**        | `PascalCase`           | `snake_case`                  | ⚠️ Change             |
-| **Enums**             | `PascalCase` (class) / `UPPER_CASE` (values) | `PascalCase` (class) / `kEnumValue` (values) | ⚠️ Partial change     |
-| **Macros**            | `UPPER_CASE`           | `UPPER_CASE`                  | ✅ No change           |
-| **Global Variables**  | `g_` + Hungarian       | `g_` + `camelCase_`           | ⚠️ Partial change     |
+| Type                    | Current                  | Google Style                       | Notes                    |
+| ----------------------- | ------------------------ | ---------------------------------- | ------------------------ |
+| **Classes**             | `PascalCase`             | `PascalCase`                       | ✅ No change             |
+| **Functions**           | `PascalCase`             | `camelCase`                        | ⚠️ Change                |
+| **Member Variables**    | `m_` + `camelCase`       | `camelCase_` (trailing underscore) | ⚠️ Major change          |
+| **Local Variables**     | `camelCase`              | `camelCase`                        | ✅ No change             |
+| **Function Parameters** | `camelCase`              | `camelCase`                        | ✅ No change             |
+| **Constants**           | `UPPER_CASE`             | `kConstantName`                    | ⚠️ Change                |
+| **Namespaces**          | `PascalCase`             | `snake_case`                       | ⚠️ Change                |
+| **Enums**               | `PascalCase` (class) / `UPPER_CASE` (values) | `PascalCase` (class) / `kEnumValue` (values) | ⚠️ Partial change     |
+| **Macros**              | `UPPER_CASE`             | `UPPER_CASE`                       | ✅ No change             |
+| **Global Variables**    | `g_` + Hungarian         | `g_` + `camelCase_`                | ⚠️ Partial change        |
 
 ---
 
 ## 1. Classes
 
 ### Conversion Rules
+
 - **Current**: `PascalCase`
 - **Google Style**: `PascalCase`
 - **Action**: ✅ **No change** - Keep as is
 
 ### Examples
+
 ```cpp
 // Before and after (unchanged)
 class ConfigData { };
@@ -48,6 +50,7 @@ class FlagManager { };
 ## 2. Functions
 
 ### Conversion Rules
+
 - **Current**: `PascalCase`
 - **Google Style**: `camelCase`
 - **Action**: ⚠️ **Change** - Convert from PascalCase to camelCase
@@ -68,6 +71,7 @@ class FlagManager { };
 ### Complete Examples
 
 #### Before (Current)
+
 ```cpp
 void GetData(CONFIGDATAINFO& data) const noexcept;
 int GetAppOption(AppOptionID appOptionID) const noexcept;
@@ -79,6 +83,7 @@ bool Compare(const ScheduleItem& other) const noexcept;
 ```
 
 #### After (Google Style)
+
 ```cpp
 void getData(CONFIGDATAINFO& data) const noexcept;
 int getAppOption(AppOptionID appOptionId) const noexcept;
@@ -90,6 +95,7 @@ bool compare(const ScheduleItem& other) const noexcept;
 ```
 
 ### Detailed Rules
+
 1. **PascalCase → camelCase**:
    - `GetData` → `getData`
    - `SetItemID` → `setItemId`
@@ -107,34 +113,36 @@ bool compare(const ScheduleItem& other) const noexcept;
 ## 3. Member Variables
 
 ### Conversion Rules
+
 - **Current**: `m_` + `camelCase`
 - **Google Style**: `camelCase_` (trailing underscore)
 - **Action**: ⚠️ **Major change** - Remove `m_` prefix, keep camelCase, add trailing underscore
 
 ### Conversion Table
 
-| Current                      | Google Style                  | Notes                  |
-|------------------------------|-------------------------------|------------------------|
-| `m_isEnabled`                | `isEnabled_`                  | Boolean flags          |
-| `m_isRepeated`               | `isRepeated_`                 | Boolean flags          |
-| `m_allowSnoozing`            | `allowSnoozing_`              | Boolean flags          |
-| `m_useCustomStyle`           | `useCustomStyle_`             | Boolean flags          |
+| Current                      | Google Style                  | Notes                   |
+|------------------------------|-------------------------------|-------------------------|
+| `m_isEnabled`                | `isEnabled_`                  | Boolean flags           |
+| `m_isRepeated`               | `isRepeated_`                 | Boolean flags           |
+| `m_allowSnoozing`            | `allowSnoozing_`              | Boolean flags           |
+| `m_useCustomStyle`           | `useCustomStyle_`             | Boolean flags           |
 | `m_itemID`                   | `itemId_`                     | Numeric values (ID → Id)|
-| `m_actionID`                 | `actionId_`                   | Numeric values         |
-| `m_snoozeInterval`           | `snoozeInterval_`             | Numeric values         |
-| `m_fontSize`                 | `fontSize_`                   | Numeric values         |
-| `m_timeout`                  | `timeout_`                    | Numeric values         |
-| `m_messageContent`           | `messageContent_`             | String values          |
-| `m_fontName`                 | `fontName_`                   | String values          |
-| `m_timeValue`                | `timeValue_`                  | Object references      |
-| `m_repeatSetInfo`            | `repeatSetInfo_`              | Object references      |
-| `m_msgStyleSetInfo`          | `msgStyleSetInfo_`            | Object references      |
-| `m_extraScheduleItemList`    | `extraScheduleItemList_`      | Collections            |
-| `m_hotkeySetList`            | `hotkeySetList_`              | Collections            |
+| `m_actionID`                 | `actionId_`                   | Numeric values          |
+| `m_snoozeInterval`           | `snoozeInterval_`             | Numeric values          |
+| `m_fontSize`                 | `fontSize_`                   | Numeric values          |
+| `m_timeout`                  | `timeout_`                    | Numeric values          |
+| `m_messageContent`           | `messageContent_`             | String values           |
+| `m_fontName`                 | `fontName_`                   | String values           |
+| `m_timeValue`                | `timeValue_`                  | Object references       |
+| `m_repeatSetInfo`            | `repeatSetInfo_`              | Object references       |
+| `m_msgStyleSetInfo`          | `msgStyleSetInfo_`            | Object references       |
+| `m_extraScheduleItemList`    | `extraScheduleItemList_`      | Collections             |
+| `m_hotkeySetList`            | `hotkeySetList_`              | Collections             |
 
 ### Complete Examples
 
 #### Before (Current)
+
 ```cpp
 class ScheduleItem {
 private:
@@ -148,6 +156,7 @@ private:
 ```
 
 #### After (Google Style)
+
 ```cpp
 class ScheduleItem {
 private:
@@ -161,6 +170,7 @@ private:
 ```
 
 ### Detailed Rules
+
 1. **Remove `m_` prefix**: Completely drop the `m_` prefix
 2. **Keep camelCase**: Do not switch to snake_case
 3. **Add trailing underscore**: Append `_` at the end
@@ -172,11 +182,13 @@ private:
 ## 4. Local Variables
 
 ### Conversion Rules
+
 - **Current**: `camelCase`
 - **Google Style**: `camelCase`
 - **Action**: ✅ **No change** - Keep as is
 
 ### Examples
+
 ```cpp
 // Before and after (unchanged)
 int index = 0;
@@ -197,11 +209,13 @@ unsigned retNextID = ScheduleData::minItemID;
 ## 5. Function Parameters
 
 ### Conversion Rules
+
 - **Current**: `camelCase`
 - **Google Style**: `camelCase`
 - **Action**: ✅ **No change** - Keep as is
 
 ### Examples
+
 ```cpp
 // Before and after (unchanged)
 void setItemId(unsigned itemId) noexcept;
@@ -220,6 +234,7 @@ int getAppOption(AppOptionID appOptionId) const noexcept;
 ## 6. Constants
 
 ### Conversion Rules
+
 - **Current**: `UPPER_CASE` with underscores
 - **Google Style**: `kConstantName` (k prefix + PascalCase)
 - **Action**: ⚠️ **Change** - Convert from UPPER_CASE to kConstantName
@@ -234,11 +249,12 @@ int getAppOption(AppOptionID appOptionId) const noexcept;
 | `minItemID`                 | `kMinItemId`                 | Static constexpr               |
 | `maxItemID`                 | `kMaxItemId`                 | Static constexpr               |
 | `defaultItemID`             | `kDefaultItemId`             | Static constexpr               |
-| `defaultBkgrdColor`         | `kDefaultBkgrdColor`          | Static constexpr               |
+| `defaultBkgrdColor`         | `kDefaultBkgrdColor`         | Static constexpr               |
 
 ### Complete Examples
 
 #### Before (Current)
+
 ```cpp
 // Preprocessor defines
 #define DEF_GLBDATA_CATE_NONE        0x00
@@ -253,6 +269,7 @@ static constexpr COLORREF defaultBkgrdColor = Color::Pink;
 ```
 
 #### After (Google Style)
+
 ```cpp
 // constexpr constants (replace preprocessor defines)
 constexpr int kDefGlbdataCateNone = 0x00;
@@ -267,6 +284,7 @@ static constexpr COLORREF kDefaultBkgrdColor = Color::Pink;
 ```
 
 ### Detailed Rules
+
 1. **Add `k` prefix**: All constants start with `k`
 2. **UPPER_CASE → PascalCase**:
    - `DEF_GLBDATA_CATE_NONE` → `kDefGlbdataCateNone`
@@ -275,6 +293,7 @@ static constexpr COLORREF kDefaultBkgrdColor = Color::Pink;
 4. **Preserve meaning**: Do not change the meaning of the constant
 
 **Special Note**:
+
 - Macro guards (`#ifndef`, `#define`) remain `UPPER_CASE`
 - Enum values may stay as is or switch to `kEnumValue` format (see section 7)
 
@@ -283,6 +302,7 @@ static constexpr COLORREF kDefaultBkgrdColor = Color::Pink;
 ## 7. Enums
 
 ### Conversion Rules
+
 - **Enum Class**: `PascalCase` (keep unchanged)
 - **Enum Values**:
   - **Current**: `PascalCase` (enum class) or `UPPER_CASE` (regular enum)
@@ -292,6 +312,7 @@ static constexpr COLORREF kDefaultBkgrdColor = Color::Pink;
 ### Complete Examples
 
 #### Before (Current)
+
 ```cpp
 // Enum class with PascalCase
 enum class AppOptionID : int {
@@ -314,6 +335,7 @@ enum Result {
 ```
 
 #### After (Google Style)
+
 ```cpp
 // Enum class with k prefix (or keep PascalCase)
 enum class AppOptionID : int {
@@ -336,11 +358,13 @@ enum class Result {
 ```
 
 ### Detailed Rules
+
 1. **Enum Class**: Keep `PascalCase` or add `k` prefix to values
 2. **Regular Enum**: Prefer converting to `enum class` and add `k` prefix
 3. **Option**: Team may choose to keep `PascalCase` for enum class values without `k`
 
 **Note**: Google Style Guide allows both approaches for enum values in enum class:
+
 - `PascalCase` (no k prefix): `Invalid`, `LeftMouseAction`
 - `kPascalCase` (with k prefix): `kInvalid`, `kLeftMouseAction`
 
@@ -351,6 +375,7 @@ The team can decide on one approach and apply it consistently.
 ## 8. Namespaces
 
 ### Conversion Rules
+
 - **Current**: `PascalCase`
 - **Google Style**: `snake_case`
 - **Action**: ⚠️ **Change** - Convert from PascalCase to snake_case
@@ -367,6 +392,7 @@ The team can decide on one approach and apply it consistently.
 ### Complete Examples
 
 #### Before (Current)
+
 ```cpp
 namespace Global {
     extern DateTime g_stAppLaunchTime;
@@ -387,6 +413,7 @@ namespace AppCore {
 ```
 
 #### After (Google Style)
+
 ```cpp
 namespace global {
     extern DateTime g_appLaunchTime_;
@@ -407,6 +434,7 @@ namespace app_core {
 ```
 
 ### Detailed Rules
+
 1. **PascalCase → snake_case**: All namespaces converted to snake_case
 2. **Use underscores**: Separate words with underscores
 3. **Global variables inside namespaces**: Also convert to camelCase_ (see section 9)
@@ -416,6 +444,7 @@ namespace app_core {
 ## 9. Global Variables
 
 ### Conversion Rules
+
 - **Current**: `g_` + Hungarian Notation
 - **Google Style**: `g_` + `camelCase_` (trailing underscore)
 - **Action**: ⚠️ **Partial change** - Keep `g_` prefix, remove Hungarian Notation, convert to camelCase and add trailing underscore
@@ -431,6 +460,7 @@ namespace app_core {
 ### Complete Examples
 
 #### Before (Current)
+
 ```cpp
 namespace Global {
     extern DateTime g_stAppLaunchTime;
@@ -441,6 +471,7 @@ extern FlagManager g_sharedFlagManager;
 ```
 
 #### After (Google Style)
+
 ```cpp
 namespace global {
     extern DateTime g_appLaunchTime_;
@@ -451,6 +482,7 @@ extern FlagManager g_sharedFlagManager_;
 ```
 
 ### Detailed Rules
+
 1. **Keep `g_` prefix**: Retain `g_` to identify global variables
 2. **Remove Hungarian Notation**: Drop prefixes like `st_`, `ui_`, etc.
 3. **Convert to camelCase**: Use camelCase (not snake_case)
@@ -461,6 +493,7 @@ extern FlagManager g_sharedFlagManager_;
 ## 10. Structs
 
 ### Conversion Rules
+
 - **Current**: `PascalCase` or `UPPER_CASE`
 - **Google Style**: `PascalCase` (same as classes)
 - **Action**: ⚠️ **Partial change** - Convert UPPER_CASE to PascalCase
@@ -478,6 +511,7 @@ extern FlagManager g_sharedFlagManager_;
 ### Complete Examples
 
 #### Before (Current)
+
 ```cpp
 struct CONFIGDATAINFO {
     // ...
@@ -493,6 +527,7 @@ struct SystemEvent {
 ```
 
 #### After (Google Style)
+
 ```cpp
 struct ConfigDataInfo {
     // ...
@@ -508,6 +543,7 @@ struct SystemEvent {
 ```
 
 ### Detailed Rules
+
 1. **UPPER_CASE → PascalCase**: All structs use PascalCase
 2. **Member variables**: Also convert to camelCase_ (see section 3)
 
@@ -516,6 +552,7 @@ struct SystemEvent {
 ## 11. Typedefs and Type Aliases
 
 ### Conversion Rules
+
 - **Current**: `PascalCase` or `UPPER_CASE`
 - **Google Style**: `PascalCase` (same as classes)
 - **Action**: ⚠️ **Partial change** - Convert UPPER_CASE to PascalCase
@@ -523,6 +560,7 @@ struct SystemEvent {
 ### Complete Examples
 
 #### Before (Current)
+
 ```cpp
 // Type aliases (modern C++)
 using AppOptionID = ConfigData::AppOptionID;
@@ -540,6 +578,7 @@ typedef enum eGRIDCOLSTYLE {
 ```
 
 #### After (Google Style)
+
 ```cpp
 // Type aliases (modern C++)
 using AppOptionID = ConfigData::AppOptionID;
@@ -557,6 +596,7 @@ enum class GridColStyle {
 ```
 
 ### Detailed Rules
+
 1. **Type aliases**: Keep PascalCase
 2. **Legacy typedefs**: Prefer converting to enum class or type alias
 
@@ -565,11 +605,13 @@ enum class GridColStyle {
 ## 12. Macros
 
 ### Conversion Rules
+
 - **Current**: `UPPER_CASE` with underscores
 - **Google Style**: `UPPER_CASE` with underscores
 - **Action**: ✅ **No change** - Keep as is
 
 ### Examples
+
 ```cpp
 // Before and after (unchanged)
 #define DEF_GLBDATA_CATE_NONE        0x00
@@ -588,17 +630,17 @@ enum class GridColStyle {
 
 | Type                  | Current                  | Google Style                  | Action                |
 |-----------------------|--------------------------|-------------------------------|-----------------------|
-| Classes               | `PascalCase`             | `PascalCase`                  | ✅ No change           |
+| Classes               | `PascalCase`             | `PascalCase`                  | ✅ No change          |
 | Functions             | `PascalCase`             | `camelCase`                   | ⚠️ Change             |
 | Member Variables      | `m_camelCase`            | `camelCase_`                  | ⚠️ Major change       |
-| Local Variables       | `camelCase`              | `camelCase`                   | ✅ No change           |
-| Parameters            | `camelCase`              | `camelCase`                   | ✅ No change           |
+| Local Variables       | `camelCase`              | `camelCase`                   | ✅ No change          |
+| Parameters            | `camelCase`              | `camelCase`                   | ✅ No change          |
 | Constants             | `UPPER_CASE`             | `kConstantName`               | ⚠️ Change             |
 | Namespaces            | `PascalCase`             | `snake_case`                  | ⚠️ Change             |
 | Enums                 | `PascalCase`/`UPPER_CASE`| `PascalCase`/`kEnumValue`     | ⚠️ Partial change     |
 | Global Variables      | `g_` + Hungarian         | `g_` + `camelCase_`           | ⚠️ Partial change     |
 | Structs               | `PascalCase`/`UPPER_CASE`| `PascalCase`                  | ⚠️ Partial change     |
-| Macros                | `UPPER_CASE`             | `UPPER_CASE`                  | ✅ No change           |
+| Macros                | `UPPER_CASE`             | `UPPER_CASE`                  | ✅ No change          |
 
 ---
 
@@ -607,6 +649,7 @@ enum class GridColStyle {
 ### Example 1: Class with Member Variables and Functions
 
 #### Before (Current)
+
 ```cpp
 class ScheduleItem {
 private:
@@ -631,6 +674,7 @@ public:
 ```
 
 #### After (Google Style)
+
 ```cpp
 class ScheduleItem {
 private:
@@ -657,6 +701,7 @@ public:
 ### Example 2: Function with Parameters and Local Variables
 
 #### Before (Current)
+
 ```cpp
 bool ExecutePowerAction(unsigned actionType, unsigned message, DWORD& errCode) {
     bool result = false;
@@ -671,6 +716,7 @@ bool ExecutePowerAction(unsigned actionType, unsigned message, DWORD& errCode) {
 ```
 
 #### After (Google Style)
+
 ```cpp
 bool executePowerAction(unsigned actionType, unsigned message, DWORD& errCode) {
     bool result = false;
@@ -687,6 +733,7 @@ bool executePowerAction(unsigned actionType, unsigned message, DWORD& errCode) {
 ### Example 3: Global Variables and Namespaces
 
 #### Before (Current)
+
 ```cpp
 namespace Global {
     extern DateTime g_stAppLaunchTime;
@@ -699,6 +746,7 @@ static inline const DateTime& GetAppLaunchTime(void) {
 ```
 
 #### After (Google Style)
+
 ```cpp
 namespace global {
     extern DateTime g_appLaunchTime_;
@@ -740,18 +788,21 @@ static inline const DateTime& getAppLaunchTime(void) {
 #### Name Improvement Examples
 
 **Functions**:
+
 - `GetData()` → `getData()` (only case change)
 - `GetData()` → `getConfigData()` (improved for clarity — **encouraged**)
 - `SetItemID()` → `setItemId()` (only case change)
 - `SetItemID()` → `setScheduleItemId()` (improved for clarity — **encouraged**)
 
 **Member Variables**:
+
 - `m_itemID` → `itemId_` (only format change)
 - `m_itemID` → `scheduleItemId_` (improved for clarity — **encouraged**)
 - `m_timeValue` → `timeValue_` (only format change)
 - `m_timeValue` → `scheduledTime_` (improved for clarity — **encouraged**)
 
 **Constants**:
+
 - `DEF_GLBDATA_CATE_NONE` → `kDefGlbdataCateNone` (only format change)
 - `DEF_GLBDATA_CATE_NONE` → `kGlobalDataCategoryNone` (improved for clarity — **encouraged**)
 - `minItemID` → `kMinItemId` (only format change)
