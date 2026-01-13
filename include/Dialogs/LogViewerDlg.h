@@ -24,7 +24,7 @@ class CLogViewerDlg : public SDialog
 
 public:
 	using Item = const LogItem&;
-	using Data = SLogging*;
+	using Data = Logger*;
 	enum ColumnID {
 		DateTime = 0,								// Date/Time
 		CategoryID,									// Event ID (category ID)
@@ -32,7 +32,7 @@ public:
 	};
 
 public:
-	CLogViewerDlg(CWnd* pParent = nullptr);			// standard constructor
+	CLogViewerDlg(CWnd* parentWnd = nullptr);			// standard constructor
 	virtual ~CLogViewerDlg();						// destructor
 
 // Dialog Data
@@ -42,26 +42,26 @@ public:
 
 private:
 	// Member variables
-	CGridCtrl* m_pLogViewerList;
-	Data m_ptrAppEventLog;
-	size_t m_nLogCount;
+	CGridCtrl* logViewerListPtr_;
+	Data appEventLoggerPtr_;
+	size_t logCount_;
 
 	// Table format and properties
-	int	m_nColNum;
-	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
-	Size* m_pszTableFrameSize;
+	int	columnCount_;
+	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
+	Size* logViewerTableSizePtr_;
 
 	// Other variables
-	int m_nCurMode;
-	int m_nCheckCount;
-	int m_nCurSelIndex;
+	int currentMode_;
+	int checkCount_;
+	int curSelIndex_;
 
 public:
 	// Generated handlers
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	afx_msg void OnDestroy();
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 	afx_msg void OnRemoveAllBtn();
 	afx_msg void OnDetailBtn();
 	afx_msg void OnCloseBtn();
@@ -73,15 +73,15 @@ public:
 
 public:
 	// Member functions
-	void SetupLanguage(void);
-	void SetupLogViewerList(LANGTABLE_PTR ptrLanguage);
-	void DrawLogViewerTable(void);
-	BOOL LoadAppEventLogData(void);
-	void UpdateLogViewer(void);
-	void DisplayLogDetails(int nIndex);
+	void setupLanguage(void);
+	void setupLogViewerList(LANGTABLE_PTR languageTablePtr);
+	void drawLogViewerTable(void);
+	BOOL loadAppEventLogData(void);
+	void updateLogViewer(void);
+	void displayLogDetails(int index);
 
 	// Layout functions
-	void UpdateLayoutInfo(void);
-	void LoadLayoutInfo(void);
-	void SaveLayoutInfo(void);
+	void updateLayoutInfo(void);
+	void loadLayoutInfo(void);
+	void saveLayoutInfo(void);
 };

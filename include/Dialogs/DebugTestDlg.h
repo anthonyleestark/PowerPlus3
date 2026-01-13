@@ -30,18 +30,18 @@ public:
 
 private:
 	// Edit view
-	CEdit* m_pDebugEditView;
-	CFont* m_pDebugViewFont;
-	CBrush* m_pDebugViewBrush;
+	CEdit* debugEditViewPtr_;
+	CFont* debugViewFontPtr_;
+	CBrush* debugViewBrushPtr_;
 
 	// Buffer content
-	String m_strBuffer;
-	String m_strBufferBak;
+	String bufferString_;
+	String backupBufferString_;
 
 	// Debug command history
-	bool		 m_bCurDispHistory;
-	size_t		 m_nHistoryCurIndex;
-	StringArray  m_astrCommandHistory;
+	bool		 isCurrentlyDisplayHistory_;
+	size_t		 currentHistoryIndex_;
+	StringArray  commandHistoryList_;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -55,74 +55,74 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	virtual void OnDestroy();
-	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
-	virtual HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	virtual void OnSize(UINT nType, int nWidth, int nHeight);
+	virtual void OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr);
+	virtual HBRUSH OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor);
+	virtual void OnSize(UINT nType, int width, int height);
 	afx_msg void OnDebugViewEditChange(void);
 	afx_msg LRESULT OnDebugOutput(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugCmdNoReply(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnDebugViewClear(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnShowDialog(WPARAM wParam, LPARAM lParam);
 	afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-	virtual BOOL PreTranslateMessage(MSG *pMsg);
+	virtual BOOL PreTranslateMessage(MSG *messagePtr);
 	virtual bool SendDebugCommand(void);
 
 private:
 	// Member functions
-	CEdit* GetDebugEditView(void) const {
-		return m_pDebugEditView;
-	};
-	bool InitDebugEditView(unsigned nCtrlID);
-	bool CreateDebugViewFont(void);
-	bool CreateDebugViewBrush(void);
+	CEdit* getDebugEditView(void) const {
+		return debugEditViewPtr_;
+	}
+	bool initDebugEditView(unsigned controlId);
+	bool createDebugViewFont(void);
+	bool createDebugViewBrush(void);
 
-	inline bool IsDebugEditViewValid(void) {
-		return (GetDebugEditView() != NULL);
-	};
-	inline bool IsDebugEditViewFocus(void) {
+	inline bool isDebugEditViewValid(void) {
+		return (getDebugEditView() != NULL);
+	}
+	inline bool isDebugEditViewFocus(void) {
 		// Check DebugTest edit view validity
-		if (!IsDebugEditViewValid()) return FALSE;
+		if (!isDebugEditViewValid()) return FALSE;
 
 		// Check if it is focused
-		HWND hCurFocusWnd = GetFocus()->GetSafeHwnd();
-		return (hCurFocusWnd == GetDebugEditView()->GetSafeHwnd());
-	};
+		HWND currentFocusedWndHandle = GetFocus()->GetSafeHwnd();
+		return (currentFocusedWndHandle == getDebugEditView()->GetSafeHwnd());
+	}
 
-	int GetCaretPosition(void);
-	bool ShowDebugTestEditViewMenu(void);
+	int getCaretPosition(void);
+	bool showDebugTestEditViewMenu(void);
 
-	inline void BackupDebugViewBuffer(void) {
-		m_strBufferBak = m_strBuffer;
-	};
-	int  FormatDebugCommand(String &debugCommand);
-	void ClearViewBuffer(void);
+	inline void backupDebugViewBuffer(void) {
+		backupBufferString_ = bufferString_;
+	}
+	int  formatDebugCommand(String &debugCommand);
+	void clearViewBuffer(void);
 
-	void AddLine(const wchar_t* lineString, bool bNewLine = TRUE);
-	void UpdateDisplay(bool bSeekToEnd = FALSE, bool bNotifyParent = TRUE);
+	void addLine(const wchar_t* lineString, bool newLine = TRUE);
+	void updateDisplay(bool isSeekToEnd = FALSE, bool notifyParent = TRUE);
 
-	size_t AddDebugCommandHistory(const wchar_t* commandString);
-	void DispDebugCommandHistory(int nHistoryIndex);
-	void ClearDebugCommandHistory(void) {
-		m_astrCommandHistory.clear();
-	};
-	size_t GetDebugCommandHistoryCount(void) const {
-		return m_astrCommandHistory.size();
-	};
-	bool IsDebugCommandHistoryEmpty(void) const {
-		return m_astrCommandHistory.empty();
-	};
+	size_t addDebugCommandHistory(const wchar_t* commandString);
+	void dispDebugCommandHistory(int historyIndex);
+	void clearDebugCommandHistory(void) {
+		commandHistoryList_.clear();
+	}
+	size_t getDebugCommandHistoryCount(void) const {
+		return commandHistoryList_.size();
+	}
+	bool isDebugCommandHistoryEmpty(void) const {
+		return commandHistoryList_.empty();
+	}
 
-	inline bool IsCurrentlyDispHistory(void) const {
-		return m_bCurDispHistory;
-	};
-	inline void SetCurrentlyDispHistoryState(bool bState) {
-		m_bCurDispHistory = bState;
-	};
-	inline size_t GetHistoryCurrentDispIndex(void) const {
-		return m_nHistoryCurIndex;
-	};
-	inline void SetHistoryCurrentDispIndex(size_t nCurIndex) {
-		m_nHistoryCurIndex = nCurIndex;
-	};
+	inline bool isCurrentlyDispHistory(void) const {
+		return isCurrentlyDisplayHistory_;
+	}
+	inline void setCurrentlyDispHistoryState(bool state) {
+		isCurrentlyDisplayHistory_ = state;
+	}
+	inline size_t getHistoryCurrentDispIndex(void) const {
+		return currentHistoryIndex_;
+	}
+	inline void setHistoryCurrentDispIndex(size_t currentIndex) {
+		currentHistoryIndex_ = currentIndex;
+	}
 };
 

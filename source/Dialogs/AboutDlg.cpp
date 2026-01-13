@@ -50,29 +50,29 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
  * @param	None
  * @return	int
  */
-int CAboutDlg::RegisterDialogManagement(void)
+int CAboutDlg::registerDialogManagement(void)
 {
-	size_t nRet = SDialog::RegisterDialogManagement();
-	if (nRet != 0) {
+	size_t returnValue = SDialog::registerDialogManagement();
+	if (returnValue != 0) {
 		TRACE_ERROR("Error: Register dialog management failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return nRet;
+		return returnValue;
 	}
 
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Add dialog controls to management
 	if (pCtrlMan != NULL) {
-		nRet = pCtrlMan->AddControl(IDC_APPNAME_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_COPYRIGHT_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_VIEW_FACEBOOK_PROFILE_LINK, SysLink_Control);
-		nRet = pCtrlMan->AddControl(IDC_AUTH_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_APPINFO_LABEL, Static_Text);
-		nRet = pCtrlMan->AddControl(IDC_ABOUT_CLOSE_BTN, Button);
+		returnValue = pCtrlMan->addControl(IDC_APPNAME_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_COPYRIGHT_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_VIEW_FACEBOOK_PROFILE_LINK, SysLink_Control);
+		returnValue = pCtrlMan->addControl(IDC_AUTH_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_APPINFO_LABEL, Static_Text);
+		returnValue = pCtrlMan->addControl(IDC_ABOUT_CLOSE_BTN, Button);
 	}
 
-	return nRet;
+	return returnValue;
 }
 
 /**
@@ -80,22 +80,22 @@ int CAboutDlg::RegisterDialogManagement(void)
  * @param	None
  * @return	true/false
  */
-bool CAboutDlg::UnregisterDialogManagement(void)
+bool CAboutDlg::unregisterDialogManagement(void)
 {
 	// Get control manager
-	SControlManager* pCtrlMan = this->GetControlManager();
+	SControlManager* pCtrlMan = this->getControlManager();
 
 	// Remove dialog controls from managements
 	if (pCtrlMan != NULL) {
-		pCtrlMan->RemoveControl(IDC_APPNAME_LABEL);
-		pCtrlMan->RemoveControl(IDC_COPYRIGHT_LABEL);
-		pCtrlMan->RemoveControl(IDC_VIEW_FACEBOOK_PROFILE_LINK);
-		pCtrlMan->RemoveControl(IDC_AUTH_LABEL);
-		pCtrlMan->RemoveControl(IDC_APPINFO_LABEL);
-		pCtrlMan->RemoveControl(IDC_ABOUT_CLOSE_BTN);
+		pCtrlMan->removeControl(IDC_APPNAME_LABEL);
+		pCtrlMan->removeControl(IDC_COPYRIGHT_LABEL);
+		pCtrlMan->removeControl(IDC_VIEW_FACEBOOK_PROFILE_LINK);
+		pCtrlMan->removeControl(IDC_AUTH_LABEL);
+		pCtrlMan->removeControl(IDC_APPINFO_LABEL);
+		pCtrlMan->removeControl(IDC_ABOUT_CLOSE_BTN);
 	}
 
-	return SDialog::UnregisterDialogManagement();
+	return SDialog::unregisterDialogManagement();
 }
 
 
@@ -134,10 +134,10 @@ BOOL CAboutDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Setup dialog interface
-	SetupLanguage();
+	setupLanguage();
 
 	// Save dialog event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_INIT, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_INIT, this->getCaption());
 
 	return true;
 }
@@ -161,7 +161,7 @@ void CAboutDlg::OnClose()
 void CAboutDlg::OnDestroy()
 {
 	// Save app event log if enabled
-	OutputEventLog(LOG_EVENT_DLG_DESTROYED, this->GetCaption());
+	outputEventLog(LOG_EVENT_DLG_DESTROYED, this->getCaption());
 
 	// Destroy dialog
 	SDialog::OnDestroy();
@@ -172,19 +172,19 @@ void CAboutDlg::OnDestroy()
  * @param	None
  * @return	None
  */
-void CAboutDlg::SetupLanguage(void)
+void CAboutDlg::setupLanguage(void)
 {
 	// Load app language packages
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Setup dialog title
-	this->SetCaptionFromLanguage(GetDialogID());
+	this->setCaptionFromLanguage(getDialogId());
 
 	// Loop through all dialog items and setup languages for each one of them
-	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	for (CWnd* childWndPtr = GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
-		unsigned nID = pWndChild->GetDlgCtrlID();
-		switch (nID)
+		unsigned id = childWndPtr->GetDlgCtrlID();
+		switch (id)
 		{
 		case IDI_ICON_APP:
 		case IDC_STATIC:
@@ -192,21 +192,21 @@ void CAboutDlg::SetupLanguage(void)
 			continue;
 
 		case IDC_APPNAME_LABEL:
-			SetAppNameLabel();
+			setAppNameLabel();
 			break;
 
 		case IDC_APPINFO_LABEL:
-			SetAppInfoLabel();
+			setAppInfoLabel();
 			break;
 
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(childWndPtr, id, languageTablePtr);
 			break;
 		}
 	}
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -214,26 +214,26 @@ void CAboutDlg::SetupLanguage(void)
  * @param	None
  * @return	None
  */
-void CAboutDlg::SetAppNameLabel(void)
+void CAboutDlg::setAppNameLabel(void)
 {
 	// Get app name label static
-	CWnd* pAppNameLabel = GetDlgItem(IDC_APPNAME_LABEL);
-	if (pAppNameLabel == NULL) return;
+	CWnd* appNameLabelPtr = GetDlgItem(IDC_APPNAME_LABEL);
+	if (appNameLabelPtr == NULL) return;
 
 	// Get product version info
 	String fullProdVersion;
 	String shortProdVersion;
-	if (!StringUtils::GetProductVersion(fullProdVersion, shortProdVersion))
+	if (!StringUtils::getProductVersion(fullProdVersion, shortProdVersion))
 		return;
 
 	// Get app name label format from app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	const wchar_t* formatString = GetLanguageString(pAppLang, IDC_APPNAME_LABEL);
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	const wchar_t* formatString = getLanguageString(languageTablePtr, IDC_APPNAME_LABEL);
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app name label
-	String appNameLabel = StringUtils::StringFormat(formatString, shortProdVersion.GetString(), fullProdVersion.GetString());
-	pAppNameLabel->SetWindowText(appNameLabel);
+	String appNameLabelString = StringUtils::stringFormat(formatString, shortProdVersion.getString(), fullProdVersion.getString());
+	appNameLabelPtr->SetWindowText(appNameLabelString);
 }
 
 /**
@@ -241,24 +241,24 @@ void CAboutDlg::SetAppNameLabel(void)
  * @param	None
  * @return	None
  */
-void CAboutDlg::SetAppInfoLabel(void)
+void CAboutDlg::setAppInfoLabel(void)
 {
 	// Get app info label static
-	CWnd* pAppInfoLabel = GetDlgItem(IDC_APPINFO_LABEL);
-	if (pAppInfoLabel == NULL) return;
+	CWnd* appInfoLabelPtr = GetDlgItem(IDC_APPINFO_LABEL);
+	if (appInfoLabelPtr == NULL) return;
 
 	// Get product version info (short number)
-	String productVersion = StringUtils::GetProductVersion(false);
-	if (productVersion.IsEmpty()) return;
+	String productVersion = StringUtils::getProductVersion(false);
+	if (productVersion.isEmpty()) return;
 
 	// Get app info label format from app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
-	String strFormat = GetLanguageString(pAppLang, IDC_APPINFO_LABEL);
-	if (IS_NULL_STRING(strFormat)) return;
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
+	String formatString = getLanguageString(languageTablePtr, IDC_APPINFO_LABEL);
+	if (IS_NULL_STRING(formatString)) return;
 
 	// Set app info label
-	String appInfoLabel = StringUtils::StringFormat(strFormat, productVersion.GetString());
-	pAppInfoLabel->SetWindowText(appInfoLabel);
+	String appInfoLabelString = StringUtils::stringFormat(formatString, productVersion.getString());
+	appInfoLabelPtr->SetWindowText(appInfoLabelString);
 }
 
 /**
@@ -269,7 +269,7 @@ void CAboutDlg::SetAppInfoLabel(void)
 void CAboutDlg::OnCloseButton()
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_ABOUT_CLOSE_BTN);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_ABOUT_CLOSE_BTN);
 
 	// Close dialog
 	EndDialog(IDOK);
@@ -284,10 +284,10 @@ void CAboutDlg::OnCloseButton()
 void CAboutDlg::OnViewFacebookProfileLink(NMHDR* /*pNMHDR*/, LRESULT* pResult)
 {
 	// Save app event log if enabled
-	OutputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEW_FACEBOOK_PROFILE_LINK);
+	outputButtonLog(LOG_EVENT_BTN_CLICKED, IDC_VIEW_FACEBOOK_PROFILE_LINK);
 
 	// Open profile link
-	OpenWebURL(_T("https://facebook.com/anthonyleestark"));
+	AppCore::openWebURL(_T("https://facebook.com/anthonyleestark"));
 
 	// Return result
 	*pResult = 0;

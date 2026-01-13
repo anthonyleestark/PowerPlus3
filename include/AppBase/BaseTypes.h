@@ -106,8 +106,8 @@ public:
 public:
 	// Create string
 	template <typename _Type>
-	static String FromNumber(_Type number) {
-		static_assert(std::is_arithmetic<_Type>::value, "FromNumber requires a numeric type.");
+	static String fromNumber(_Type number) {
+		static_assert(std::is_arithmetic<_Type>::value, "fromNumber requires a numeric type.");
 		static thread_local wchar_t _tempBuff[100];
 		if constexpr (std::is_integral<_Type>::value)
 			swprintf(_tempBuff, 100, L"%lld", static_cast<long long>(number));
@@ -257,50 +257,50 @@ public:
 
 public:
 	// Validation and access attributes
-	constexpr bool IsEmpty(void) const noexcept {
+	constexpr bool isEmpty(void) const noexcept {
 		return _buffer.empty();
 	};
-	constexpr size_t GetLength(void) const noexcept {
+	constexpr size_t getLength(void) const noexcept {
 		return _buffer.length();
 	};
 
 public:
 	// Get/set functions
-	constexpr const wchar_t* GetString(void) const noexcept {
+	constexpr const wchar_t* getString(void) const noexcept {
 		return _buffer.c_str();
 	};
-	void SetString(const std::wstring& srcString) {
+	void setString(const std::wstring& srcString) {
 		this->_buffer.assign(srcString);
 	};
-	void SetString(const wchar_t* srcBuff) {
+	void setString(const wchar_t* srcBuff) {
 		this->_buffer = srcBuff;
 	};
 
 	// Access characters
-	constexpr wchar_t& At(const size_t index) {
+	constexpr wchar_t& at(const size_t index) {
 		return _buffer.at(index);
 	};
-	constexpr const wchar_t& At(const size_t index) const {
+	constexpr const wchar_t& at(const size_t index) const {
 		return _buffer.at(index);
 	};
-	constexpr wchar_t& GetAt(const size_t index) {
+	constexpr wchar_t& getAt(const size_t index) {
 		return _buffer.at(index);
 	};
-	constexpr const wchar_t& GetAt(const size_t index) const {
+	constexpr const wchar_t& getAt(const size_t index) const {
 		return _buffer.at(index);
 	};
-	void SetAt(const size_t index, const wchar_t& ch) noexcept {
+	void setAt(const size_t index, const wchar_t& ch) noexcept {
 		if (_buffer.size() <= index) return;
 		_buffer[index] = ch;
 	};
 
 	// Extract a part of the string
-	String Left(int count) const {
+	String left(int count) const {
 		if (count <= 0) return String(Constant::String::Empty);
 		else if (static_cast<size_t>(count) >= _buffer.length()) return String(_buffer);
 		else return String(_buffer.substr(0, static_cast<size_t>(count)));
 	};
-	String Right(int count) const {
+	String right(int count) const {
 		if (count <= 0) return String(Constant::String::Empty);
 		else if (static_cast<size_t>(count) >= _buffer.length()) return String(_buffer);
 		else {
@@ -308,7 +308,7 @@ public:
 			return String(_buffer.substr(_start));
 		}
 	};
-	String Mid(int start, int count = -1) const {
+	String mid(int start, int count = -1) const {
 		if (start < 0 || static_cast<size_t>(start) >= _buffer.length()) return String(Constant::String::Empty);
 		size_t _startPos = static_cast<size_t>(start); size_t _maxCount = _buffer.length() - _startPos;
 		if (count < 0 || static_cast<size_t>(count) > _maxCount) count = static_cast<int>(_maxCount);
@@ -317,43 +317,43 @@ public:
 
 public:
 	// Append another string
-	String& Append(const String& other) {
+	String& append(const String& other) {
 		if (this != &other) _buffer += other._buffer;
 		return *this;
 	};
-	String& Append(const std::wstring& other) {
+	String& append(const std::wstring& other) {
 		_buffer += other;
 		return *this;
 	};
-	String& Append(const wchar_t* other) {
+	String& append(const wchar_t* other) {
 		_buffer += other;
 		return *this;
 	};
 
 	// Append a character
-	String& AppendChar(const wchar_t& ch) {
+	String& appendChar(const wchar_t& ch) {
 		_buffer.push_back(ch);
 		return *this;
 	};
-	String& PushBack(const wchar_t& ch) {
+	String& pushBack(const wchar_t& ch) {
 		_buffer.push_back(ch);
 		return *this;
 	};
 
 	// Remove all occurences of a character
-	String& Remove(const wchar_t& ch) {
+	String& remove(const wchar_t& ch) {
 		_buffer.erase(std::remove(_buffer.begin(), _buffer.end(), ch), _buffer.end());
 		return *this;
 	};
 
 	// Remove all occurences of a substring
-	String& Remove(const String& subStr) {
-		return Remove(static_cast<const wchar_t*>(subStr));
+	String& remove(const String& subStr) {
+		return remove(static_cast<const wchar_t*>(subStr));
 	};
-	String& Remove(const std::wstring& subStr) {
-		return Remove(subStr.c_str());
+	String& remove(const std::wstring& subStr) {
+		return remove(subStr.c_str());
 	};
-	String& Remove(const wchar_t* subStr) {
+	String& remove(const wchar_t* subStr) {
 		size_t _pos = 0;
 		while ((_pos = _buffer.find(subStr, _pos)) != std::wstring::npos)
 			_buffer.replace(_pos, wcslen(subStr), Constant::String::Empty);
@@ -361,18 +361,18 @@ public:
 	};
 
 	// Remove all characters
-	void Empty(void) noexcept {
+	void empty(void) noexcept {
 		_buffer.clear();
 	};
 
 	// Replace all occurrences of a substring
-	String& Replace(const String& substrOld, const String& substrNew) {
-		return Replace(static_cast<const wchar_t*>(substrOld), static_cast<const wchar_t*>(substrNew));
+	String& replace(const String& substrOld, const String& substrNew) {
+		return replace(static_cast<const wchar_t*>(substrOld), static_cast<const wchar_t*>(substrNew));
 	};
-	String& Replace(const std::wstring& substrOld, const std::wstring& substrNew) {
-		return Replace(substrOld.c_str(), substrNew.c_str());
+	String& replace(const std::wstring& substrOld, const std::wstring& substrNew) {
+		return replace(substrOld.c_str(), substrNew.c_str());
 	};
-	String& Replace(const wchar_t* substrOld, const wchar_t* substrNew) {
+	String& replace(const wchar_t* substrOld, const wchar_t* substrNew) {
 		size_t pos = 0;
 		while ((pos = _buffer.find(substrOld, pos)) != std::wstring::npos) {
 			_buffer.replace(pos, wcslen(substrOld), substrNew);
@@ -382,51 +382,51 @@ public:
 	};
 
 	// Delete one or many characters from the string
-	int Delete(int index, int count = 1) {
+	int deleteAt(int index, int count = 1) {
 		if (index < 0 || count <= 0 || static_cast<size_t>(index) >= _buffer.length()) return static_cast<int>(_buffer.length());
 		size_t _count = std::min(static_cast<size_t>(count), _buffer.length() - static_cast<size_t>(index));
 		return static_cast<int>(_buffer.erase(static_cast<size_t>(index), _count).length());
 	};
 
 	// Lowercase conversion
-	String& ToLower(void) {
+	String& toLower(void) {
 		std::transform(_buffer.begin(), _buffer.end(), _buffer.begin(), ::towlower);
 		return *this;
 	};
 
 	// Uppercase conversion
-	String& ToUpper(void) {
+	String& toUpper(void) {
 		std::transform(_buffer.begin(), _buffer.end(), _buffer.begin(), ::towupper);
 		return *this;
 	};
 
 	// Remove all leading/trailing whitespaces
-	String& Trim(void) noexcept {
-		TrimLeft(); TrimRight(); return *this;
+	String& trim(void) noexcept {
+		trimLeft(); trimRight(); return *this;
 	};
 
 	// Remove leading whitespaces
-	String& TrimLeft(void) {
+	String& trimLeft(void) {
 		_buffer.erase(_buffer.begin(), std::find_if(_buffer.begin(), _buffer.end(),
 			[](wchar_t ch) { return !std::iswspace(ch); }));
 		return *this;
 	};
 
 	// Remove trailing whitespaces
-	String& TrimRight(void) {
+	String& trimRight(void) {
 		_buffer.erase(std::find_if(_buffer.rbegin(), _buffer.rend(),
 			[](wchar_t ch) { return !std::iswspace(ch); }).base(), _buffer.end());
 		return *this;
 	};
 
 	// Compare two string (case-sensitive)
-	int Compare(const String& other) const noexcept {
-		return Compare(static_cast<const wchar_t*>(other));
+	int compare(const String& other) const noexcept {
+		return compare(static_cast<const wchar_t*>(other));
 	};
-	int Compare(const std::wstring& other) const noexcept {
-		return Compare(other.c_str());
+	int compare(const std::wstring& other) const noexcept {
+		return compare(other.c_str());
 	};
-	int Compare(const wchar_t* other) const noexcept {
+	int compare(const wchar_t* other) const noexcept {
 		std::wstring _other(other);
 		if (_buffer > _other) return static_cast<int>(_buffer.size() - _other.size());
 		else if (_buffer < _other) return static_cast<int>(_other.size() - _buffer.size());
@@ -434,34 +434,34 @@ public:
 	};
 
 	// Compare two string (case-insensitive)
-	int CompareNoCase(const wchar_t* other) const {
-		String _temp = _buffer; _temp.ToLower(); std::wstring _other(other);
+	int compareNoCase(const wchar_t* other) const {
+		String _temp = _buffer; _temp.toLower(); std::wstring _other(other);
 		std::transform(_other.begin(), _other.end(), _other.begin(), ::towlower);
-		return _temp.Compare(_other);
+		return _temp.compare(_other);
 	};
 
 	// Find the first occurence of a character
-	int Find(const wchar_t& ch, int start = 0) const {
+	int find(const wchar_t& ch, int start = 0) const {
 		if (start < 0 || static_cast<size_t>(start) >= _buffer.length()) return -1;
 		size_t _pos = _buffer.find(ch, static_cast<size_t>(start));
 		return (_pos != std::wstring::npos) ? static_cast<int>(_pos) : -1;
 	};
 
 	// Find the first occurence of a substring
-	int Find(const String& subStr, int start = 0) const {
-		return Find(static_cast<const wchar_t*>(subStr), start);
+	int find(const String& subStr, int start = 0) const {
+		return find(static_cast<const wchar_t*>(subStr), start);
 	};
-	int Find(const std::wstring& subStr, int start = 0) const {
-		return Find(subStr.c_str(), start);
+	int find(const std::wstring& subStr, int start = 0) const {
+		return find(subStr.c_str(), start);
 	};
-	int Find(const wchar_t* subStr, int start = 0) const {
+	int find(const wchar_t* subStr, int start = 0) const {
 		if (!subStr || start < 0 || static_cast<size_t>(start) >= _buffer.length()) return -1;
 		size_t _pos = _buffer.find(subStr, static_cast<size_t>(start));
 		return (_pos != std::wstring::npos) ? static_cast<int>(_pos) : -1;
 	};
 
 	// Truncate the string to the new length
-	String& Truncate(int newLength) {
+	String& truncate(int newLength) {
 		if (newLength <= 0) _buffer.clear();
 		else if (static_cast<size_t>(newLength) < _buffer.length())
 			_buffer.resize(static_cast<size_t>(newLength));
@@ -469,30 +469,30 @@ public:
 	};
 
 	// Reverse the string
-	String& Reverse() {
+	String& reverse() {
 		std::reverse(_buffer.begin(), _buffer.end());
 		return *this;
 	};
 
 	// Find the last match of a character
-	int ReverseFind(const wchar_t& ch) const {
-		String _temp = _buffer; _temp.Reverse(); int _pos = _temp.Find(ch, 0);
+	int reverseFind(const wchar_t& ch) const {
+		String _temp = _buffer; _temp.reverse(); int _pos = _temp.find(ch, 0);
 		return (_pos != -1) ? static_cast<int>(_buffer.length() - _pos) : -1;
 	};
 
 	// Format string
-	String& Format(const wchar_t* formatStr, ...) {
+	String& format(const wchar_t* formatStr, ...) {
 		va_list args; va_start(args, formatStr);
-		FormatV(formatStr, args); va_end(args);
+		formatV(formatStr, args); va_end(args);
 		return *this;
 	};
-	String& FormatV(const wchar_t* formatStr, va_list vargs);
+	String& formatV(const wchar_t* formatStr, va_list vargs);
 
 	// Upper first character of each word
-	String& UpperEachWord(void);
+	String& upperEachWord(void);
 
 	// Tokenization
-	TokenList Tokenize(const wchar_t* delimiters) const;
+	TokenList tokenize(const wchar_t* delimiters) const;
 };
 
 
@@ -534,7 +534,7 @@ protected:
 
 public:
 	virtual ~__TimeBase() = default;
-	virtual __TimePoint GetTimePoint(void) const noexcept = 0;
+	virtual __TimePoint getTimePoint(void) const noexcept = 0;
 
 protected:
 	// Internal validations
@@ -553,7 +553,7 @@ protected:
 
 public:
 	// Special validation
-	constexpr bool IsEmpty() const noexcept {
+	constexpr bool isEmpty() const noexcept {
 		return _timePoint == __TimePoint{};
 	};
 };
@@ -598,7 +598,7 @@ public:
 
 public:
 	// Get time point (conversion to std::chrono::system_clock::time_point)
-	__TimePoint GetTimePoint(void) const noexcept override {
+	__TimePoint getTimePoint(void) const noexcept override {
 		return _timePoint;
 	};
 
@@ -640,7 +640,7 @@ public:
 		return _timePoint == other._timePoint;
 	};
 	constexpr bool operator==(int64_t seconds) const noexcept {
-		return TotalSeconds() == seconds;
+		return totalSeconds() == seconds;
 	};
 
 	// Inequality operator
@@ -648,7 +648,7 @@ public:
 		return _timePoint != other._timePoint;
 	};
 	constexpr bool operator!=(int64_t seconds) const noexcept {
-		return TotalSeconds() != seconds;
+		return totalSeconds() != seconds;
 	};
 
 	// Comparison operator
@@ -656,25 +656,25 @@ public:
 		return _timePoint < other._timePoint;
 	};
 	constexpr bool operator<(int64_t seconds) const noexcept {
-		return TotalSeconds() < seconds;
+		return totalSeconds() < seconds;
 	};
 	constexpr bool operator>(const TimeSpan& other) const noexcept {
 		return _timePoint > other._timePoint;
 	};
 	constexpr bool operator>(int64_t seconds) const noexcept {
-		return TotalSeconds() > seconds;
+		return totalSeconds() > seconds;
 	};
 	constexpr bool operator<=(const TimeSpan& other) const noexcept {
 		return _timePoint <= other._timePoint;
 	};
 	constexpr bool operator<=(int64_t seconds) const noexcept {
-		return TotalSeconds() <= seconds;
+		return totalSeconds() <= seconds;
 	};
 	constexpr bool operator>=(const TimeSpan& other) const noexcept {
 		return _timePoint >= other._timePoint;
 	};
 	constexpr bool operator>=(int64_t seconds) const noexcept {
-		return TotalSeconds() >= seconds;
+		return totalSeconds() >= seconds;
 	};
 
 	// Prefix increment operator (increase by 1 second)
@@ -705,76 +705,76 @@ public:
 
 public:
 	// Total durations
-	constexpr int64_t TotalHours() const noexcept {
+	constexpr int64_t totalHours() const noexcept {
 		return std::chrono::duration_cast<__Hours>(_timePoint.time_since_epoch()).count();
 	};
-	constexpr int64_t TotalMinutes() const noexcept {
+	constexpr int64_t totalMinutes() const noexcept {
 		return std::chrono::duration_cast<__Minutes>(_timePoint.time_since_epoch()).count();
 	};
-	constexpr int64_t TotalSeconds() const noexcept {
+	constexpr int64_t totalSeconds() const noexcept {
 		return std::chrono::duration_cast<__Seconds>(_timePoint.time_since_epoch()).count();
 	};
-	constexpr int64_t TotalMilliseconds() const noexcept {
+	constexpr int64_t totalMilliseconds() const noexcept {
 		return std::chrono::duration_cast<__Milliseconds>(_timePoint.time_since_epoch()).count();
 	};
 
 public:
 	// Access data
-	constexpr int Days() const noexcept {
+	constexpr int days() const noexcept {
 		return std::chrono::duration_cast<__Days>(_timePoint.time_since_epoch()).count();
 	};
-	constexpr int Hours() const noexcept {
-		return static_cast<int>(TotalHours() % 24);
+	constexpr int hours() const noexcept {
+		return static_cast<int>(totalHours() % 24);
 	};
-	constexpr int Minutes() const noexcept {
-		return static_cast<int>(TotalMinutes() % 60);
+	constexpr int minutes() const noexcept {
+		return static_cast<int>(totalMinutes() % 60);
 	};
-	constexpr int Seconds() const noexcept {
-		return static_cast<int>(TotalSeconds() % 60);
+	constexpr int seconds() const noexcept {
+		return static_cast<int>(totalSeconds() % 60);
 	};
-	constexpr int Milliseconds() const noexcept {
-		return static_cast<int>(TotalMilliseconds() % 1000);
+	constexpr int milliseconds() const noexcept {
+		return static_cast<int>(totalMilliseconds() % 1000);
 	};
 
 public:
 	// Arithmetic
-	TimeSpan& IncreaseDays(int days) noexcept {
+	TimeSpan& increaseDays(int days) noexcept {
 		_timePoint += __Days{ days };
 		return *this;
 	};
-	TimeSpan& DecreaseDays(int days) noexcept {
+	TimeSpan& decreaseDays(int days) noexcept {
 		_timePoint -= __Days{ days };
 		return *this;
 	};
-	TimeSpan& IncreaseHours(int hours) noexcept {
+	TimeSpan& increaseHours(int hours) noexcept {
 		_timePoint += __Hours{ hours };
 		return *this;
 	};
-	TimeSpan& DecreaseHours(int hours) noexcept {
+	TimeSpan& decreaseHours(int hours) noexcept {
 		_timePoint -= __Hours{ hours };
 		return *this;
 	};
-	TimeSpan& IncreaseMinutes(int mins) noexcept {
+	TimeSpan& increaseMinutes(int mins) noexcept {
 		_timePoint += __Minutes{ mins };
 		return *this;
 	};
-	TimeSpan& DecreaseMinutes(int mins) noexcept {
+	TimeSpan& decreaseMinutes(int mins) noexcept {
 		_timePoint -= __Minutes{ mins };
 		return *this;
 	};
-	TimeSpan& IncreaseSeconds(int secs) noexcept {
+	TimeSpan& increaseSeconds(int secs) noexcept {
 		_timePoint += __Seconds{ secs };
 		return *this;
 	};
-	TimeSpan& DecreaseSeconds(int secs) noexcept {
+	TimeSpan& decreaseSeconds(int secs) noexcept {
 		_timePoint -= __Seconds{ secs };
 		return *this;
 	};
-	TimeSpan& IncreaseMillisecs(int millisecs) noexcept {
+	TimeSpan& increaseMillisecs(int millisecs) noexcept {
 		_timePoint += __Milliseconds{ millisecs };
 		return *this;
 	};
-	TimeSpan& DecreaseMillisecs(int millisecs) noexcept {
+	TimeSpan& decreaseMillisecs(int millisecs) noexcept {
 		_timePoint -= __Milliseconds{ millisecs };
 		return *this;
 	};
@@ -822,7 +822,7 @@ public:
 
 public:
 	// Get time point (conversion to std::chrono::system_clock::time_point)
-	__TimePoint GetTimePoint(void) const noexcept override {
+	__TimePoint getTimePoint(void) const noexcept override {
 		return _timePoint;
 	};
 
@@ -863,10 +863,10 @@ public:
 		return *this;
 	};
 	TimeSpan operator+(const TimeSpan& timeSpan) const noexcept {
-		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + timeSpan.GetTimePoint().time_since_epoch()));
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + timeSpan.getTimePoint().time_since_epoch()));
 	};
 	ClockTime& operator+=(const TimeSpan& timeSpan) {
-		_timePoint += timeSpan.GetTimePoint().time_since_epoch();
+		_timePoint += timeSpan.getTimePoint().time_since_epoch();
 		return *this;
 	};
 	TimeSpan operator+(int seconds) const noexcept {
@@ -886,10 +886,10 @@ public:
 		return *this;
 	};
 	TimeSpan operator-(const TimeSpan& timeSpan) const noexcept {
-		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - timeSpan.GetTimePoint().time_since_epoch()));
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - timeSpan.getTimePoint().time_since_epoch()));
 	};
 	ClockTime& operator-=(const TimeSpan& timeSpan) {
-		_timePoint -= timeSpan.GetTimePoint().time_since_epoch();
+		_timePoint -= timeSpan.getTimePoint().time_since_epoch();
 		return *this;
 	};
 	TimeSpan operator-(int seconds) const noexcept {
@@ -952,89 +952,89 @@ public:
 
 public:
 	// Access data
-	constexpr int Hour(void) const noexcept {
+	constexpr int hour(void) const noexcept {
 		return _getHours().count();
 	};
-	constexpr int Minute(void) const noexcept {
+	constexpr int minute(void) const noexcept {
 		return _getMinutes().count();
 	};
-	constexpr int Second(void) const noexcept {
+	constexpr int second(void) const noexcept {
 		return static_cast<int>(_getSeconds().count());
 	};
-	constexpr int Millisecond(void) const noexcept {
+	constexpr int millisecond(void) const noexcept {
 		return static_cast<int>(_getMillisecs().count());
 	};
 
 	// Modify data
-	void SetHour(int hour) noexcept {
+	void setHour(int hour) noexcept {
 		ClockTime _original = *this;
 		_timePoint = std::chrono::sys_time{ __Hours(hour) + _original._getMinutes() + _original._getSeconds() + _original._getMillisecs() };
 	};
-	void SetMinute(int minute) noexcept {
+	void setMinute(int minute) noexcept {
 		ClockTime _original = *this;
 		_timePoint = std::chrono::sys_time{ _original._getHours() + __Minutes(minute) + _original._getSeconds() + _original._getMillisecs() };
 	};
-	void SetSecond(int second) noexcept {
+	void setSecond(int second) noexcept {
 		ClockTime _original = *this;
 		_timePoint = std::chrono::sys_time{ _original._getHours() + _original._getMinutes() + __Seconds(second) + _original._getMillisecs() };
 	};
-	void SetMillisecs(int millisecs) noexcept {
+	void setMillisecs(int millisecs) noexcept {
 		ClockTime _original = *this;
 		_timePoint = std::chrono::sys_time{ _original._getHours() + _original._getMinutes() + _original._getSeconds() + __Milliseconds(millisecs) };
 	};
 
 public:
 	// Special validations
-	constexpr bool IsValidTime(int hour, int minute, int second, int millisecs = 0) const noexcept {
+	constexpr bool isValidTime(int hour, int minute, int second, int millisecs = 0) const noexcept {
 		return (_isValidHour(hour) && _isValidMinute(minute) && _isValidSecond(second) && _isValidMillisecs(millisecs));
 	};
 
 public:
 	// Arithmetic
-	ClockTime& IncreaseHours(int hours) noexcept {
+	ClockTime& increaseHours(int hours) noexcept {
 		_timePoint += __Hours{ hours };
 		return *this;
 	};
-	ClockTime& DecreaseHours(int hours) noexcept {
+	ClockTime& decreaseHours(int hours) noexcept {
 		_timePoint -= __Hours{ hours };
 		return *this;
 	};
-	ClockTime& IncreaseMinutes(int mins) noexcept {
+	ClockTime& increaseMinutes(int mins) noexcept {
 		_timePoint += __Minutes{ mins };
 		return *this;
 	};
-	ClockTime& DecreaseMinutes(int mins) noexcept {
+	ClockTime& decreaseMinutes(int mins) noexcept {
 		_timePoint -= __Minutes{ mins };
 		return *this;
 	};
-	ClockTime& IncreaseSeconds(int secs) noexcept {
+	ClockTime& increaseSeconds(int secs) noexcept {
 		_timePoint += __Seconds{ secs };
 		return *this;
 	};
-	ClockTime& DecreaseSeconds(int secs) noexcept {
+	ClockTime& decreaseSeconds(int secs) noexcept {
 		_timePoint -= __Seconds{ secs };
 		return *this;
 	};
-	ClockTime& IncreaseMillisecs(int millisecs) noexcept {
+	ClockTime& increaseMillisecs(int millisecs) noexcept {
 		_timePoint += __Milliseconds{ millisecs };
 		return *this;
 	};
-	ClockTime& DecreaseMillisecs(int millisecs) noexcept {
+	ClockTime& decreaseMillisecs(int millisecs) noexcept {
 		_timePoint -= __Milliseconds{ millisecs };
 		return *this;
 	};
 
 	// Comparison
-	int CompareToHours(const ClockTime& other) const noexcept {
+	int compareToHours(const ClockTime& other) const noexcept {
 		return static_cast<int>((_toHours() - other._toHours()).count());
 	};
-	int CompareToMinutes(const ClockTime& other) const noexcept {
+	int compareToMinutes(const ClockTime& other) const noexcept {
 		return static_cast<int>((_toMinutes() - other._toMinutes()).count());
 	};
-	int CompareToSeconds(const ClockTime& other) const noexcept {
+	int compareToSeconds(const ClockTime& other) const noexcept {
 		return static_cast<int>((_toSeconds() - other._toSeconds()).count());
 	};
-	int CompareToMillisecs(const ClockTime& other) const noexcept {
+	int compareToMillisecs(const ClockTime& other) const noexcept {
 		return static_cast<int>((_toMillisecs() - other._toMillisecs()).count());
 	};
 };
@@ -1083,13 +1083,13 @@ public:
 
 public:
 	// Get time point (conversion to std::chrono::system_clock::time_point)
-	__TimePoint GetTimePoint(void) const noexcept override {
+	__TimePoint getTimePoint(void) const noexcept override {
 		return _timePoint;
 	};
 
 	// Get clock-time data
-	ClockTime GetClockTime(void) const noexcept {
-		return ClockTime(Hour(), Minute(), Second(), Millisecond());
+	ClockTime getClockTime(void) const noexcept {
+		return ClockTime(hour(), minute(), second(), millisecond());
 	};
 
 public:
@@ -1102,10 +1102,10 @@ public:
 		return *this;
 	};
 	TimeSpan operator+(const TimeSpan& timeSpan) const noexcept {
-		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + timeSpan.GetTimePoint().time_since_epoch()));
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() + timeSpan.getTimePoint().time_since_epoch()));
 	};
 	DateTime& operator+=(const TimeSpan& timeSpan) {
-		_timePoint += timeSpan.GetTimePoint().time_since_epoch();
+		_timePoint += timeSpan.getTimePoint().time_since_epoch();
 		return *this;
 	};
 	TimeSpan operator+(int seconds) const noexcept {
@@ -1125,10 +1125,10 @@ public:
 		return *this;
 	};
 	TimeSpan operator-(const TimeSpan& timeSpan) const noexcept {
-		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - timeSpan.GetTimePoint().time_since_epoch()));
+		return TimeSpan(__TimePoint(_timePoint.time_since_epoch() - timeSpan.getTimePoint().time_since_epoch()));
 	};
 	DateTime& operator-=(const TimeSpan& timeSpan) {
-		_timePoint -= timeSpan.GetTimePoint().time_since_epoch();
+		_timePoint -= timeSpan.getTimePoint().time_since_epoch();
 		return *this;
 	};
 	TimeSpan operator-(int seconds) const noexcept {
@@ -1221,78 +1221,78 @@ private:
 
 public:
 	// Access data
-	constexpr int Year(void) const noexcept {
+	constexpr int year(void) const noexcept {
 		return static_cast<int>(_yearVal());
 	};
-	constexpr unsigned Month(void) const noexcept {
+	constexpr unsigned month(void) const noexcept {
 		return static_cast<unsigned>(_monthVal());
 	};
-	constexpr unsigned Day(void) const noexcept {
+	constexpr unsigned day(void) const noexcept {
 		return static_cast<unsigned>(_dayVal());
 	};
-	constexpr int Hour(void) const noexcept {
+	constexpr int hour(void) const noexcept {
 		return _getHours().count();
 	};
-	constexpr int Minute(void) const noexcept {
+	constexpr int minute(void) const noexcept {
 		return _getMinutes().count();
 	};
-	constexpr int Second(void) const noexcept {
+	constexpr int second(void) const noexcept {
 		return static_cast<int>(_getSeconds().count());
 	};
-	constexpr int Millisecond(void) const noexcept {
+	constexpr int millisecond(void) const noexcept {
 		return static_cast<int>(_getMillisecs().count());
 	};
-	constexpr int DayOfWeek(void) const noexcept {
+	constexpr int dayOfWeek(void) const noexcept {
 		return static_cast<unsigned>(_weekdayVal().c_encoding());
 	};
 
 	// Modify data
-	void SetDate(int year, unsigned int month, unsigned int day) noexcept {
+	void setDate(int year, unsigned int month, unsigned int day) noexcept {
 		DateTime _original = *this;
 		auto _newDateVal = __Date{ __Year(year), __Month(month), __Day(day) };
 		_timePoint = std::chrono::sys_days{ _newDateVal } + (_original._timePoint - std::chrono::sys_days{ _original._dateVal() });
 	};
-	void SetClockTime(int hour, int minute, int second, int millisecs = 0) noexcept {
+	void setClockTime(int hour, int minute, int second, int millisecs = 0) noexcept {
 		DateTime _original = *this;
 		auto _newTimeVal = __Hours(hour) + __Minutes(minute) + __Seconds(second) + __Milliseconds(millisecs);
 		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
 	};
-	void SetClockTime(const ClockTime& clockTime) noexcept {
+	void setClockTime(const ClockTime& clockTime) noexcept {
 		DateTime _original = *this;
-		auto _newTimeVal = clockTime.GetTimePoint() - std::chrono::floor<__Days>(clockTime.GetTimePoint());
+		auto _newTimeVal = clockTime.getTimePoint() - std::chrono::floor<__Days>(clockTime.getTimePoint());
 		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
 	};
-	void SetYear(int year) noexcept {
+	void setYear(int year) noexcept {
 		DateTime _original = *this;
 		auto _newDateVal = __Date{ __Year(year), _original._monthVal(), _original._dayVal() };
 		_timePoint = std::chrono::sys_days{ _newDateVal } + (_original._timePoint - std::chrono::sys_days{ _original._dateVal() });
 	};
-	void SetMonth(int month) noexcept {
+	void setMonth(int month) noexcept {
 		DateTime _original = *this;
 		auto _newDateVal = __Date{ _original._yearVal(), __Month(month), _original._dayVal() };
 		_timePoint = std::chrono::sys_days{ _newDateVal } + (_original._timePoint - std::chrono::sys_days{ _original._dateVal() });
 	};
-	void SetDay(int day) noexcept {
+	void setDay(int day) noexcept {
 		DateTime _original = *this;
 		auto _newDateVal = __Date{ _original._yearVal(), _original._monthVal(), __Day(day) };
 		_timePoint = std::chrono::sys_days{ _newDateVal } + (_original._timePoint - std::chrono::sys_days{ _original._dateVal() });
 	};
-	void SetHour(int hour) noexcept {
+	void setHour(int hour) noexcept {
 		DateTime _original = *this;
 		auto _newTimeVal = __Hours(hour) + _original._getMinutes() + _original._getSeconds() + _original._getMillisecs();
 		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
 	};
-	void SetMinute(int minute) noexcept {
+	void setMinute(int minute) noexcept {
 		DateTime _original = *this;
 		auto _newTimeVal = _original._getHours() + __Minutes(minute) + _original._getSeconds() + _original._getMillisecs();
 		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
 	};
-	void SetSecond(int second) noexcept {
+	void setSecond(int second) noexcept {
 		DateTime _original = *this;
 		auto _newTimeVal = _original._getHours() + _original._getMinutes() + __Seconds(second) + _original._getMillisecs();
 		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
 	};
-	void SetMillisecs(int millisecs) noexcept {
+	void setMillisecs(int millisecs) noexcept {
 		DateTime _original = *this;
 		auto _newTimeVal = _original._getHours() + _original._getMinutes() + _original._getSeconds() + __Milliseconds(millisecs);
 		_timePoint = std::chrono::sys_days{ _original._dateVal() } + _newTimeVal;
@@ -1300,64 +1300,64 @@ public:
 
 public:
 	// Special validations
-	constexpr bool IsLeapYear(void) const noexcept {
+	constexpr bool isLeapYear(void) const noexcept {
 		return _yearVal().is_leap();
 	};
-	constexpr bool IsValidDate(int year, unsigned int month, unsigned int day) const noexcept {
+	constexpr bool isValidDate(int year, unsigned int month, unsigned int day) const noexcept {
 		return __Date{ __Year(year), __Month(month), __Day(day) }.ok();
 	};
-	constexpr bool IsValidTime(int hour, int minute, int second, int millisecs = 0) const noexcept {
+	constexpr bool isValidTime(int hour, int minute, int second, int millisecs = 0) const noexcept {
 		return (_isValidHour(hour) && _isValidMinute(minute) && _isValidSecond(second) && _isValidMillisecs(millisecs));
 	};
-	constexpr bool IsToday(void) const noexcept {
+	constexpr bool isToday(void) const noexcept {
 		return _dateVal() == DateTime(std::chrono::system_clock::now())._dateVal();
 	};
-	constexpr bool IsInTheFuture(void) const noexcept {
+	constexpr bool isInTheFuture(void) const noexcept {
 		return _timePoint > std::chrono::system_clock::now();
 	};
-	constexpr bool IsInThePast(void) const noexcept {
+	constexpr bool isInThePast(void) const noexcept {
 		return _timePoint < std::chrono::system_clock::now();
 	};
 
 public:
 	// Arithmetic
-	DateTime& IncreaseDays(int days) noexcept {
+	DateTime& increaseDays(int days) noexcept {
 		_timePoint += __Days{ days };
 		return *this;
 	};
-	DateTime& DecreaseDays(int days) noexcept {
+	DateTime& decreaseDays(int days) noexcept {
 		_timePoint -= __Days{ days };
 		return *this;
 	};
-	DateTime& IncreaseHours(int hours) noexcept {
+	DateTime& increaseHours(int hours) noexcept {
 		_timePoint += __Hours{ hours };
 		return *this;
 	};
-	DateTime& DecreaseHours(int hours) noexcept {
+	DateTime& decreaseHours(int hours) noexcept {
 		_timePoint -= __Hours{ hours };
 		return *this;
 	};
-	DateTime& IncreaseMinutes(int mins) noexcept {
+	DateTime& increaseMinutes(int mins) noexcept {
 		_timePoint += __Minutes{ mins };
 		return *this;
 	};
-	DateTime& DecreaseMinutes(int mins) noexcept {
+	DateTime& decreaseMinutes(int mins) noexcept {
 		_timePoint -= __Minutes{ mins };
 		return *this;
 	};
-	DateTime& IncreaseSeconds(int secs) noexcept {
+	DateTime& increaseSeconds(int secs) noexcept {
 		_timePoint += __Seconds{ secs };
 		return *this;
 	};
-	DateTime& DecreaseSeconds(int secs) noexcept {
+	DateTime& decreaseSeconds(int secs) noexcept {
 		_timePoint -= __Seconds{ secs };
 		return *this;
 	};
-	DateTime& IncreaseMillisecs(int millisecs) noexcept {
+	DateTime& increaseMillisecs(int millisecs) noexcept {
 		_timePoint += __Milliseconds{ millisecs };
 		return *this;
 	};
-	DateTime& DecreaseMillisecs(int millisecs) noexcept {
+	DateTime& decreaseMillisecs(int millisecs) noexcept {
 		_timePoint -= __Milliseconds{ millisecs };
 		return *this;
 	};
@@ -1393,15 +1393,15 @@ public:
 
 public:
 	// Access data
-	constexpr double GetX(void) const noexcept { return _x; };
-	void SetX(double x) noexcept { _x = x; };
-	constexpr double GetY(void) const noexcept { return _y; };
-	void SetY(double y) noexcept { _y = y; };
+	constexpr double getX(void) const noexcept { return _x; };
+	void setX(double x) noexcept { _x = x; };
+	constexpr double getY(void) const noexcept { return _y; };
+	void setY(double y) noexcept { _y = y; };
 
 public:
 	// For floating-point precision comparisons
 	static constexpr double EPSILON = 1e-9;
-	static bool NearlyEqual(double a, double b, double epsilon = EPSILON) {
+	static bool nearlyEqual(double a, double b, double epsilon = EPSILON) {
 		return std::abs(a - b) < epsilon;
 	};
 
@@ -1416,7 +1416,7 @@ public:
 		return Point(_x * scalar, _y * scalar);
 	};
 	Point operator/(double scalar) const {
-		if (!NearlyEqual(scalar, 0)) return Point(_x / scalar, _y / scalar);
+		if (!nearlyEqual(scalar, 0)) return Point(_x / scalar, _y / scalar);
 		throw std::invalid_argument("Division by zero in Point::operator/");
 	};
 
@@ -1434,25 +1434,25 @@ public:
 		return *this;
 	};
 	Point& operator/=(double scalar) {
-		if (!NearlyEqual(scalar, 0)) { _x /= scalar; _y /= scalar; return *this; }
+		if (!nearlyEqual(scalar, 0)) { _x /= scalar; _y /= scalar; return *this; }
 		throw std::invalid_argument("Division by zero in Point::operator/=");
 	};
 
 	// Comparison Operators
 	bool operator==(const Point& other) const noexcept {
-		return NearlyEqual(_x, other._x) && NearlyEqual(_y, other._y);
+		return nearlyEqual(_x, other._x) && nearlyEqual(_y, other._y);
 	};
 	bool operator!=(const Point& other) const noexcept {
 		return !(*this == other);
 	};
 	bool operator<(const Point& other) const noexcept {
-		return (_x < other._x) || (NearlyEqual(_x, other._x) && _y < other._y);
+		return (_x < other._x) || (nearlyEqual(_x, other._x) && _y < other._y);
 	};
 	bool operator<=(const Point& other) const noexcept {
 		return (*this < other) || (*this == other);
 	};
 	bool operator>(const Point& other) const noexcept {
-		return (_x > other._x) || (NearlyEqual(_x, other._x) && _y > other._y);
+		return (_x > other._x) || (nearlyEqual(_x, other._x) && _y > other._y);
 	};
 	bool operator>=(const Point& other) const noexcept {
 		return !(*this < other);
@@ -1469,49 +1469,49 @@ public:
 // Geometric/Vector Math Operations
 public:
 	// Distance between points
-	double DistanceTo(const Point& other) const noexcept {
+	double distanceTo(const Point& other) const noexcept {
 		double dx = _x - other._x; double dy = _y - other._y;
 		return std::sqrt(dx * dx + dy * dy);
 	};
 
 	// Length / magnitude (treats the point as a vector from the origin (0, 0))
-	double Magnitude(void) const noexcept {
+	double magnitude(void) const noexcept {
 		return std::sqrt(_x * _x + _y * _y);
 	};
 
 	// Dot products
-	constexpr double Dot(const Point& other) const noexcept {
+	constexpr double dot(const Point& other) const noexcept {
 		return _x * other._x + _y * other._y;
 	};
 
 	// Cross product (2D)
 	// Used for determining orientation, area of parallelogram, etc.
-	constexpr double Cross(const Point& other) const noexcept {
+	constexpr double cross(const Point& other) const noexcept {
 		return _x * other._y - _y * other._x;
 	};
 
 	// Angle between two vectors
-	double AngleWith(const Point& other) const noexcept {
-		double _dotProd = this->Dot(other);
-		double _magnitudes = this->Magnitude() * other.Magnitude();
+	double angleWith(const Point& other) const noexcept {
+		double _dotProd = this->dot(other);
+		double _magnitudes = this->magnitude() * other.magnitude();
 		return std::acos(_dotProd / _magnitudes); // in radians
 	}
 
 // Utility Operations
 public:
 	// Normalization (unit vector)
-	Point Normalized() const noexcept {
-		double _magitude = this->Magnitude();
+	Point normalized() const noexcept {
+		double _magitude = this->magnitude();
 		return (_magitude == 0) ? Point(0, 0) : Point(_x / _magitude, _y / _magitude);
 	};
 
 	// Midpoint between two points
-	Point Midpoint(const Point& other) const noexcept {
+	Point midpoint(const Point& other) const noexcept {
 		return Point((_x + other._x) / 2, (_y + other._y) / 2);
 	};
 
 	// Manhattan distance
-	double ManhattanDistanceTo(const Point& other) const noexcept {
+	double manhattanDistanceTo(const Point& other) const noexcept {
 		return std::abs(_x - other._x) + std::abs(_y - other._y);
 	};
 };
@@ -1543,21 +1543,21 @@ public:
 
 public:
 	// Access data
-	constexpr double GetX(void) const noexcept { return _x; };
-	void SetX(double x) noexcept { _x = x; };
-	constexpr double GetY(void) const noexcept { return _y; };
-	void SetY(double y) noexcept { _y = y; };
+	constexpr double getX(void) const noexcept { return _x; };
+	void setX(double x) noexcept { _x = x; };
+	constexpr double getY(void) const noexcept { return _y; };
+	void setY(double y) noexcept { _y = y; };
 	Point GetPoint(void) const noexcept {
 		return Point(_x, _y);
 	};
-	void SetPoint(const Point& point) noexcept {
+	void setPoint(const Point& point) noexcept {
 		_x = point._x; _y = point._y;
 	};
 
 public:
 	// For floating-point precision comparisons
 	static constexpr double EPSILON = 1e-9;
-	static bool NearlyEqual(double a, double b, double epsilon = EPSILON) {
+	static bool nearlyEqual(double a, double b, double epsilon = EPSILON) {
 		return std::abs(a - b) < epsilon;
 	};
 
@@ -1572,7 +1572,7 @@ public:
 		return Vector2D(_x * scalar, _y * scalar);
 	};
 	Vector2D operator/(double scalar) const {
-		if (!NearlyEqual(scalar, 0)) return Vector2D(_x / scalar, _y / scalar);
+		if (!nearlyEqual(scalar, 0)) return Vector2D(_x / scalar, _y / scalar);
 		throw std::invalid_argument("Division by zero in Vector2D::operator/");
 	};
 
@@ -1590,25 +1590,25 @@ public:
 		return *this;
 	};
 	Vector2D& operator/=(double scalar) {
-		if (!NearlyEqual(scalar, 0)) { _x /= scalar; _y /= scalar; return *this; }
+		if (!nearlyEqual(scalar, 0)) { _x /= scalar; _y /= scalar; return *this; }
 		throw std::invalid_argument("Division by zero in Vector2D::operator/=");
 	};
 
 	// Comparison operators
 	bool operator==(const Vector2D& other) const noexcept {
-		return NearlyEqual(_x, other._x) && NearlyEqual(_y, other._y);
+		return nearlyEqual(_x, other._x) && nearlyEqual(_y, other._y);
 	};
 	bool operator!=(const Vector2D& other) const noexcept {
 		return !(*this == other);
 	};
 	bool operator<(const Vector2D& other) const noexcept {
-		return (_x < other._x) || (NearlyEqual(_x, other._x) && _y < other._y);
+		return (_x < other._x) || (nearlyEqual(_x, other._x) && _y < other._y);
 	};
 	bool operator<=(const Vector2D& other) const noexcept {
 		return (*this < other) || (*this == other);
 	};
 	bool operator>(const Vector2D& other) const noexcept {
-		return (_x > other._x) || (NearlyEqual(_x, other._x) && _y > other._y);
+		return (_x > other._x) || (nearlyEqual(_x, other._x) && _y > other._y);
 	};
 	bool operator>=(const Vector2D& other) const noexcept {
 		return !(*this < other);
@@ -1624,45 +1624,45 @@ public:
 
 public:
 	// Magnitude (Length)
-	double Length() const noexcept {
+	double length() const noexcept {
 		return std::sqrt(_x * _x + _y * _y);
 	};
 
 	// Squared length (no sqrt)
-	constexpr double LengthSquared() const noexcept {
+	constexpr double lengthSquared() const noexcept {
 		return _x * _x + _y * _y;
 	};
 
 	// Normalized vector (unit length)
-	Vector2D Normalized() const {
-		double _length = Length();
-		if (!NearlyEqual(_length, 0.0)) return Vector2D(_x / _length, _y / _length);
+	Vector2D normalized() const {
+		double _length = length();
+		if (!nearlyEqual(_length, 0.0)) return Vector2D(_x / _length, _y / _length);
 		throw std::runtime_error("Cannot normalize a zero-length vector");
 	};
 
 	// Dot product
-	constexpr double Dot(const Vector2D& other) const noexcept {
+	constexpr double dot(const Vector2D& other) const noexcept {
 		return _x * other._x + _y * other._y;
 	};
 
 	// Cross product (2D scalar cross)
-	constexpr double Cross(const Vector2D& other) const noexcept {
+	constexpr double cross(const Vector2D& other) const noexcept {
 		return _x * other._y - _y * other._x;
 	};
 
 	// Angle between vectors (in radians)
-	double AngleTo(const Vector2D& other) const {
-		double _dot = Dot(other);
-		double _length1 = Length(); double _length2 = other.Length();
-		if (NearlyEqual(_length1, 0.0) || NearlyEqual(_length2, 0.0))
+	double angleTo(const Vector2D& other) const {
+		double _dot = dot(other);
+		double _length1 = length(); double _length2 = other.length();
+		if (nearlyEqual(_length1, 0.0) || nearlyEqual(_length2, 0.0))
 			throw std::runtime_error("Cannot compute angle with zero-length vector");
 		double _cosTheta = _dot / (_length1 * _length2);
 		return std::acos(std::clamp(_cosTheta, -1.0, 1.0));
 	};
 
 	// Is zero
-	bool IsZero() const noexcept {
-		return NearlyEqual(_x, 0.0) && NearlyEqual(_y, 0.0);
+	bool isZero() const noexcept {
+		return nearlyEqual(_x, 0.0) && nearlyEqual(_y, 0.0);
 	};
 };
 
@@ -1693,15 +1693,15 @@ public:
 
 public:
 	// Access data
-	constexpr double Width(void) const noexcept { return _width; };
-	void SetWidth(double width) noexcept { _width = width; };
-	constexpr double Height(void) const noexcept { return _height; };
-	void SetHeight(double height) noexcept { _height = height; };
+	constexpr double width(void) const noexcept { return _width; };
+	void setWidth(double width) noexcept { _width = width; };
+	constexpr double height(void) const noexcept { return _height; };
+	void setHeight(double height) noexcept { _height = height; };
 
 public:
 	// For floating-point precision comparisons
 	static constexpr double EPSILON = 1e-9;
-	static bool NearlyEqual(double a, double b, double epsilon = EPSILON) noexcept {
+	static bool nearlyEqual(double a, double b, double epsilon = EPSILON) noexcept {
 		return std::abs(a - b) < epsilon;
 	};
 
@@ -1730,30 +1730,30 @@ public:
 		return *this;
 	};
 	Size operator/(double scalar) const {
-		if (!NearlyEqual(scalar, 0.0)) return Size(_width / scalar, _height / scalar);
+		if (!nearlyEqual(scalar, 0.0)) return Size(_width / scalar, _height / scalar);
 		throw std::runtime_error("Division by zero in Size::operator/");
 	};
 	Size& operator/=(double scalar) {
-		if (NearlyEqual(scalar, 0.0)) {	_width /= scalar; _height /= scalar; return *this; }
+		if (nearlyEqual(scalar, 0.0)) {	_width /= scalar; _height /= scalar; return *this; }
 		throw std::runtime_error("Division by zero in Size::operator/=");
 	};
 
 	// Comparison operators
 	bool operator==(const Size& other) const noexcept {
-		return NearlyEqual(_width, other._width) && NearlyEqual(_height, other._height);
+		return nearlyEqual(_width, other._width) && nearlyEqual(_height, other._height);
 	};
 	bool operator!=(const Size& other) const noexcept {
 		return !(*this == other);
 	};
 	bool operator<(const Size& other) const noexcept {
-		if (!NearlyEqual(_width, other._width)) return _width < other._width;
+		if (!nearlyEqual(_width, other._width)) return _width < other._width;
 		return _height < other._height;
 	};
 	bool operator<=(const Size& other) const noexcept {
 		return (*this < other) || (*this == other);
 	};
 	bool operator>(const Size& other) const noexcept {
-		return (_width > other._width) || (NearlyEqual(_width, other._width) && _height > other._height);
+		return (_width > other._width) || (nearlyEqual(_width, other._width) && _height > other._height);
 	};
 	bool operator>=(const Size& other) const noexcept {
 		return !(*this < other);
@@ -1769,25 +1769,25 @@ public:
 
 public:
 	// Area
-	double Area(void) const noexcept {
+	double area(void) const noexcept {
 		return std::abs(_width * _height);
 	};
 
 	// Is zero/empty
-	bool IsZero(void) const noexcept {
-		return NearlyEqual(_width, 0.0) && NearlyEqual(_height, 0.0);
+	bool isZero(void) const noexcept {
+		return nearlyEqual(_width, 0.0) && nearlyEqual(_height, 0.0);
 	};
-	constexpr bool IsEmpty(void) const noexcept {
+	constexpr bool isEmpty(void) const noexcept {
 		return _width <= 0.0 || _height <= 0.0;
 	};
 
 	// Normalized size (positive width and height)
-	Size Normalized(void) const noexcept {
+	Size normalized(void) const noexcept {
 		return Size(std::abs(_width), std::abs(_height));
 	};
 
 	// Conversion to Vector2D
-	constexpr Vector2D ToVector() const noexcept {
+	constexpr Vector2D toVector() const noexcept {
 		return Vector2D(_width, _height);
 	};
 };
@@ -1831,38 +1831,38 @@ public:
 
 public:
 	// Create rectangle
-	static constexpr Rect FromPositionSize(const Vector2D& position, const Size& size) {
+	static constexpr Rect fromPositionSize(const Vector2D& position, const Size& size) {
 		return Rect(position, size);
 	};
-	static constexpr Rect FromEdges(double left, double top, double right, double bottom) {
+	static constexpr Rect fromEdges(double left, double top, double right, double bottom) {
 		return Rect(left, top, right, bottom);
 	};
-	static constexpr Rect FromEdges(const Point& topLeft, const Point& bottomRight) {
+	static constexpr Rect fromEdges(const Point& topLeft, const Point& bottomRight) {
 		return Rect(topLeft, bottomRight);
 	};
 
 public:
 	// Access data
-	constexpr double Left(void) const noexcept { return _left; };
-	constexpr double Top(void) const noexcept { return _top; };
-	constexpr double Right(void) const noexcept { return _right; };
-	constexpr double Bottom(void) const noexcept { return _bottom; };
+	constexpr double left(void) const noexcept { return _left; };
+	constexpr double top(void) const noexcept { return _top; };
+	constexpr double right(void) const noexcept { return _right; };
+	constexpr double bottom(void) const noexcept { return _bottom; };
 
-	Point TopLeft(void) const noexcept { return Point(_left, _top); };
-	Point TopRight(void) const noexcept { return Point(_right, _top); };
-	Point BottomLeft(void) const noexcept { return Point(_left, _bottom); };
-	Point BottomRight(void) const noexcept { return Point(_right, _bottom); };
+	Point topLeft(void) const noexcept { return Point(_left, _top); };
+	Point topRight(void) const noexcept { return Point(_right, _top); };
+	Point bottomLeft(void) const noexcept { return Point(_left, _bottom); };
+	Point bottomRight(void) const noexcept { return Point(_right, _bottom); };
 
 	// Modify data
-	void SetLeft(double left) noexcept { _left = left; };
-	void SetTop(double top) noexcept { _top = top; };
-	void SetRight(double right) noexcept { _right = right; };
-	void SetBottom(double bottom) noexcept { _bottom = bottom; };
+	void setLeft(double left) noexcept { _left = left; };
+	void setTop(double top) noexcept { _top = top; };
+	void setRight(double right) noexcept { _right = right; };
+	void setBottom(double bottom) noexcept { _bottom = bottom; };
 
-	void SetTopLeft(const Point& topLeft) noexcept { _left = topLeft._x; _top = topLeft._y; };
-	void SetTopLeft(double x, double y) noexcept { _left = x; _top = y; };
-	void SetBottomRight(const Point& bottomRight) noexcept { _right = bottomRight._x; _bottom = bottomRight._y; };
-	void SetBottomRight(double x, double y) noexcept { _right = x; _bottom = y; };
+	void setTopLeft(const Point& topLeft) noexcept { _left = topLeft._x; _top = topLeft._y; };
+	void setTopLeft(double x, double y) noexcept { _left = x; _top = y; };
+	void setBottomRight(const Point& bottomRight) noexcept { _right = bottomRight._x; _bottom = bottomRight._y; };
+	void setBottomRight(double x, double y) noexcept { _right = x; _bottom = y; };
 
 private:
 	// Internal getters
@@ -1882,20 +1882,20 @@ private:
 public:
 	// Comparison operators
 	static constexpr double EPSILON = 1e-9;
-	static bool NearlyEqual(double a, double b, double epsilon = EPSILON) {
+	static bool nearlyEqual(double a, double b, double epsilon = EPSILON) {
 		return std::abs(a - b) < epsilon;
 	};
 	bool operator==(const Rect& other) const noexcept {
-		return NearlyEqual(_leftVal(), other._leftVal()) && NearlyEqual(_topVal(), other._topVal()) &&
-			NearlyEqual(_rightVal(), other._rightVal()) && NearlyEqual(_bottomVal(), other._bottomVal());
+		return nearlyEqual(_leftVal(), other._leftVal()) && nearlyEqual(_topVal(), other._topVal()) &&
+			nearlyEqual(_rightVal(), other._rightVal()) && nearlyEqual(_bottomVal(), other._bottomVal());
 	};
 	bool operator!=(const Rect& other) const noexcept {
 		return !(*this == other);
 	};
 	bool operator<(const Rect& other) const noexcept {
-		if (!NearlyEqual(_leftVal(), other._leftVal())) return _leftVal() < other._leftVal();
-		if (!NearlyEqual(_topVal(), other._topVal())) return _topVal() < other._topVal();
-		if (!NearlyEqual(_rightVal(), other._rightVal())) return _rightVal() < other._rightVal();
+		if (!nearlyEqual(_leftVal(), other._leftVal())) return _leftVal() < other._leftVal();
+		if (!nearlyEqual(_topVal(), other._topVal())) return _topVal() < other._topVal();
+		if (!nearlyEqual(_rightVal(), other._rightVal())) return _rightVal() < other._rightVal();
 		return _bottomVal() < other._bottomVal();
 	};
 	bool operator<=(const Rect& other) const noexcept {
@@ -1934,103 +1934,103 @@ public:
 
 public:
 	// Width and Height of the rectangle
-	double Width(void) const noexcept {
+	double width(void) const noexcept {
 		return std::abs(_right - _left);
 	};
-	double Height(void) const noexcept {
+	double height(void) const noexcept {
 		return std::abs(_bottom - _top);
 	};
 
 	// Size of rectangle
-	Size GetSize(void) const noexcept {
-		return Size(Width(), Height());
+	Size getSize(void) const noexcept {
+		return Size(width(), height());
 	};
 
 	// Position of rectangle
-	constexpr Vector2D GetPosition() const noexcept {
+	constexpr Vector2D getPosition() const noexcept {
 		return Vector2D(_leftVal(), _topVal());
 	};
 
 	// Is a square
-	bool IsSquare(void) const noexcept {
-		return NearlyEqual(Width(), Height());
+	bool isSquare(void) const noexcept {
+		return nearlyEqual(width(), height());
 	};
 
 	// Area of the rectangle
-	double Area(void) const noexcept {
-		return Width() * Height();
+	double area(void) const noexcept {
+		return width() * height();
 	}
 
 	// Perimeter of the rectangle
-	double Perimeter(void) const noexcept {
-		return (Width() * 2.0 + Height() * 2.0);
+	double perimeter(void) const noexcept {
+		return (width() * 2.0 + height() * 2.0);
 	};
 
 	// Center position of the rectangle
-	constexpr Vector2D Center(void) const noexcept {
+	constexpr Vector2D center(void) const noexcept {
 		return Vector2D((_leftVal() + _rightVal()) / 2.0, (_topVal() + _bottomVal()) / 2.0);
 	};
 
 	// Diagonal of the rectangle
-	double Diagonal(void) const noexcept {
-		return std::sqrt(Width() * Width() + Height() * Height());
+	double diagonal(void) const noexcept {
+		return std::sqrt(width() * width() + height() * height());
 	};
 
 	// For inverted rectangles
-	constexpr bool IsInverted(void) const noexcept {
+	constexpr bool isInverted(void) const noexcept {
 		return (_right < _left || _bottom < _top);
 	};
-	Rect& Normalize(void) noexcept {
+	Rect& normalize(void) noexcept {
 		if (_right < _left) std::swap(_right, _left);
 		if (_bottom < _top) std::swap(_bottom, _top);
 		return *this;
 	};
 
 	// Contains a point
-	constexpr bool Contains(double x, double y) const noexcept {
+	constexpr bool contains(double x, double y) const noexcept {
 		return x >= _leftVal() && x <= _rightVal() && y >= _topVal() && y <= _bottomVal();
 	};
-	constexpr bool Contains(const Point& point) const noexcept {
-		return Contains(point._x, point._y);
+	constexpr bool contains(const Point& point) const noexcept {
+		return contains(point._x, point._y);
 	};
 
 	// Intersects with another rectangle
-	constexpr bool Intersects(const Rect& other) const noexcept {
+	constexpr bool intersects(const Rect& other) const noexcept {
 		return !(_rightVal() < other._leftVal() || _leftVal() > other._rightVal() || _bottomVal() < other._topVal() || _topVal() > other._bottomVal());
 	};
 
 	// Intersection rectangle (returns empty Rect if no intersection)
-	Rect Intersection(const Rect& other) const noexcept {
-		if (!Intersects(other)) return Rect();
+	Rect intersection(const Rect& other) const noexcept {
+		if (!intersects(other)) return Rect();
 		return Rect(std::max(_leftVal(), other._leftVal()), std::max(_topVal(), other._topVal()),
 			std::min(_rightVal(), other._rightVal()), std::min(_bottomVal(), other._bottomVal()));
 	};
 
 	// Union rectangle
-	Rect Unite(const Rect& other) const noexcept {
+	Rect unite(const Rect& other) const noexcept {
 		return Rect(std::min(_leftVal(), other._leftVal()), std::min(_topVal(), other._topVal()),
 			std::max(_rightVal(), other._rightVal()), std::max(_bottomVal(), other._bottomVal()));
 	};
 
 	// Move/Offset the rectangle
-	Rect& Offset(double deltaX, double deltaY = 0) noexcept {
+	Rect& offset(double deltaX, double deltaY = 0) noexcept {
 		_left += deltaX; _right += deltaX; _top += deltaY; _bottom += deltaY;
 		return *this;
 	};
-	Rect& Offset(const Point& point) noexcept {
-		return Offset(point._x, point._y);
+	Rect& offset(const Point& point) noexcept {
+		return offset(point._x, point._y);
 	};
-	Rect& Offset(const Vector2D& vector) noexcept {
-		return Offset(vector._x, vector._y);
+	Rect& offset(const Vector2D& vector) noexcept {
+		return offset(vector._x, vector._y);
 	};
 
 	// Empty the rectangle
-	void Empty(void) noexcept {
+	void empty(void) noexcept {
 		_left = _top = _right = _bottom = 0.0;
 	};
 
 	// Set new size (preserves whether it's inverted or not)
-	void SetSize(const Size& newSize) noexcept {
+	void setSize(const Size& newSize) noexcept {
 		if (_right >= _left) { _right = _left + newSize._width; }
 		else { _right = _left - newSize._width; }
 		if (_bottom >= _top) { _bottom = _top + newSize._height; }
@@ -2038,30 +2038,30 @@ public:
 	};
 
 	// Flip horizontally: mirror across vertical axis
-	Rect& FlipHorizontally() noexcept {
+	Rect& flipHorizontally() noexcept {
 		std::swap(_left, _right);
 		return *this;
 	};
 
 	// Flip vertically: mirror across horizontal axis
-	Rect& FlipVertically() noexcept {
+	Rect& flipVertically() noexcept {
 		std::swap(_top, _bottom);
 		return *this;
 	};
 
 	// Rotation around center
 	// This method only works like width/height swapping
-	Rect Rotate(Rotation rotation) const noexcept;
+	Rect rotate(Rotation rotation) const noexcept;
 
 	// Rotatition around center with an arbitary angle
 	// This returns a new axis-aligned bounding rectangle,
 	// which often has different width and height compared to the original rectangle
-	Rect Rotate(double angleRadians) const noexcept {
-		return RotateAround(Center(), angleRadians);
+	Rect rotate(double angleRadians) const noexcept {
+		return rotateAround(center(), angleRadians);
 	};
 
 	// Rotation around a pivot (any point)
 	// This returns a new axis-aligned bounding rectangle,
 	// which often has different width and height compared to the original rectangle
-	Rect RotateAround(const Vector2D& pivot, double angleRadians) const noexcept;
+	Rect rotateAround(const Vector2D& pivot, double angleRadians) const noexcept;
 };

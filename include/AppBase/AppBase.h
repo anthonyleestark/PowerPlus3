@@ -133,8 +133,22 @@ __pragma(warning(disable:28159))
 
 
 // Define global typenames for basic data types
-using IntArray = typename std::vector<int>;
-using UIntArray = typename std::vector<unsigned int>;
-using LongArray = typename std::vector<long long>;
-using ULongArray = typename std::vector<unsigned long long>;
-using StringArray = typename std::vector<String>;
+using int8			= char;
+using uint8			= unsigned char;
+using int16			= short;
+using uint16		= unsigned short;
+using int32			= int;
+using uint32		= unsigned int;
+using int64			= long long;
+using uint64		= unsigned long long;
+
+using int8_array	= typename std::vector<int8>;
+using uint8_array	= typename std::vector<uint8>;
+using int16_array	= typename std::vector<int16>;
+using uint16_array	= typename std::vector<uint16>;
+using int32_array	= typename std::vector<int32>;
+using uint32_array	= typename std::vector<uint32>;
+using int64_array	= typename std::vector<int64>;
+using uint64_array	= typename std::vector<uint64>;
+
+using StringArray	= typename std::vector<String>;

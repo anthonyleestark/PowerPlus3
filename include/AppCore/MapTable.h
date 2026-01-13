@@ -58,20 +58,20 @@ namespace MapTable
 	// Hotkey info description
 	struct HOTKEYINFO
 	{
-		DWORD		dwModifiers;							// Modifier keys
-		DWORD		dwVirtualKey;							// Virtual key code
-		unsigned	nHotkeyDescription;						// Hotkey description (string ID)
+		DWORD		modifiers;							// Modifier keys
+		DWORD		virtualKey;							// Virtual key code
+		unsigned	hotkeyDescription;					// Hotkey description (string ID)
 	};
 
 	// Action definition/combination table
 	struct ACTIONDEF
 	{
-		unsigned nActionDefID;								// Action ID
-		unsigned nActionNameID;								// Action Name ID
-		unsigned nActionMsgID;								// Action message ID
-		unsigned nSchedNotifyID;							// Schedule notify message ID
-		unsigned nNotifyTipID;								// Notify file tip ID
-		unsigned nBalloonTipID;								// Balloon tip ID
+		unsigned actionDefID;							// Action ID
+		unsigned actionNameID;							// Action Name ID
+		unsigned actionMsgID;							// Action message ID
+		unsigned schedNotifyID;							// Schedule notify message ID
+		unsigned notifyTipID;							// Notify file tip ID
+		unsigned balloonTipID;							// Balloon tip ID
 	};
 
 	
@@ -168,7 +168,7 @@ namespace MapTable
 		// Using for pairing application-defined error codes and error message string IDs
 		INITIALIZE_IDMAPTABLE(ErrorMessage)
 		/*------Action ID-----------------------------Error message string ID---------*/
-			APP_ERROR_SUCCESS,					INT_NULL,
+			APP_ERROR_SUCCESS,					Constant::NullInteger,
 			APP_ERROR_FAILED,					MSGBOX_ERROR_FAILED,
 			APP_ERROR_WRONG_ARGUMENT,			MSGBOX_ERROR_WRONG_ARGUMENT,
 			APP_ERROR_INVALID_FUNCTION,			MSGBOX_ERROR_INVALID_FUNCTION,
@@ -380,7 +380,7 @@ namespace MapTable
 			MOD_CONTROL,					VK_F4,		HKEYSET_EXISTED_CTRL_F4,
 			MOD_CONTROL,					VK_F5,		HKEYSET_EXISTED_CTRL_F5,
 			MOD_CONTROL | MOD_WIN,			VK_F4,		HKEYSET_EXISTED_CTRL_WIN_F4,
-			INT_NULL,						INT_NULL,	INT_NULL,
+			Constant::NullInteger,						Constant::NullInteger,	Constant::NullInteger,
 		/*-----------------------------------------------------------------------------*/
 		END_TABLE()
 	};
@@ -454,7 +454,7 @@ namespace MapTable
 
 
 	//	Define methods for processing data map tables
-	unsigned GetPairedID(IDMAPTABLE_REF pIDTableRef, unsigned nID, bool bReverse = false);
-	unsigned GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input);
-	const wchar_t* GetString(STRINGTABLE_REF pStringTableRef, unsigned nID);
+	unsigned getPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reverse = false);
+	unsigned getStringID(STRINGTABLE_REF stringTableRef, const wchar_t* input);
+	const wchar_t* getString(STRINGTABLE_REF stringTableRef, unsigned id);
 };

@@ -30,21 +30,21 @@ public:
 
 private:
 	// Dialog control
-	CEdit*				m_pSnoozeIntervalEdit;
-	CSpinButtonCtrl*	m_pSnoozeIntervalSpin;
+	CEdit*				snoozeIntervalEditPtr_;
+	CSpinButtonCtrl*	snoozeIntervalSpinPtr_;
 
-	CButton*			m_pRepeatEnableChk;
-	CButton*			m_pSnoozeEnableChk;
-	CButton*			m_pActiveMondayChk;
-	CButton*			m_pActiveTuesdayChk;
-	CButton*			m_pActiveWednesdayChk;
-	CButton*			m_pActiveThursdayChk;
-	CButton*			m_pActiveFridayChk;
-	CButton*			m_pActiveSaturdayChk;
-	CButton*			m_pActiveSundayChk;
+	CButton*			repeatEnableChkPtr_;
+	CButton*			snoozeEnableChkPtr_;
+	CButton*			activeMondayChkPtr_;
+	CButton*			activeTuesdayChkPtr_;
+	CButton*			activeWednesdayChkPtr_;
+	CButton*			activeThursdayChkPtr_;
+	CButton*			activeFridayChkPtr_;
+	CButton*			activeSaturdayChkPtr_;
+	CButton*			activeSundayChkPtr_;
 
 	// Member value
-	int					m_nSnoozeInterval;
+	int					snoozeInterval_;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -57,28 +57,28 @@ public:
 	// Generated message handle functions
 	virtual BOOL OnInitDialog();
 	virtual void OnDestroy();
-	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	afx_msg void OnActivate(UINT state, CWnd* otherWndPtr, BOOL isMinimized);
 	afx_msg void OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnCheckboxClicked(UINT nID);
+	afx_msg void OnCheckboxClicked(UINT id);
 
 protected:
 	// Dialog and items setup functions
-	virtual void SetupLanguage();
-	virtual void SetupDialogItemState();
-	virtual void RefreshDialogItemState(bool bRecheckState = false);
+	virtual void setupLanguage();
+	virtual void setupDialogItemState();
+	virtual void refreshDialogItemState(bool isRecheckState = false);
 
-	void SetSnoozeIntervalEdit(int nValue);
+	void setSnoozeIntervalEdit(int value);
 	
 	// Get/set value functions
-	int GetSnoozeInterval() const {
-		return m_nSnoozeInterval;
-	};
-	void SetSnoozeInterval(int nValue) {
-		m_nSnoozeInterval = nValue;
-	};
+	inline int getSnoozeInterval() const {
+		return snoozeInterval_;
+	}
+	inline void setSnoozeInterval(int value) {
+		snoozeInterval_ = value;
+	}
 
 public:
 	// Data processing functions
-	void UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpdate);
+	void updateDialogData(PwrReminderItem& reminderItem, bool updateFlag);
 };
 

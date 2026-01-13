@@ -37,27 +37,27 @@ typedef enum eFILETYPE {
 struct CONFIGDATAINFO
 {
 	// Main settings
-	int		nLMBAction;												// Left mouse button action
-	int		nMMBAction;												// Middle mouse button action
-	int		nRMBAction;												// Right mouse button action
-	BOOL	bRMBShowMenu;											// Right mouse button: Only show menu
+	int		leftMouseAction;										// Left mouse button action
+	int		middleMouseAction;										// Middle mouse button action
+	int		rightMouseAction;										// Right mouse button action
+	BOOL	rightMouseShowMenu;										// Right mouse button: Only show menu
 
 	// Display setting
-	int		nLanguageID;											// Language setting
+	int		languageID;												// Language setting
 
 	// System settings
-	BOOL	bShowDlgAtStartup;										// Show dialog at startup
-	BOOL	bStartupEnabled;										// Startup with Windows
-	BOOL	bConfirmAction;											// Show confirm message before executing action
-	BOOL	bSaveHistoryLog;										// Save app history log
-	BOOL	bSaveAppEventLog;										// Save app event log
-	BOOL	bRunAsAdmin;											// Run with admin privileges
-	BOOL	bShowErrorMsg;											// Show action error message
-	BOOL	bNotifySchedule;										// Show notify tip for schedule action
-	BOOL	bAllowCancelSchedule;									// Allow canceling schedule when notify
-	BOOL	bEnableBackgroundHotkey;								// Enable background action hotkeys
-	BOOL	bLockStateHotkey;										// Allow background hotkeys on lockscreen
-	BOOL	bEnablePowerReminder;									// Enable Power Peminder feature
+	BOOL	showDialogAtStartup;									// Show dialog at startup
+	BOOL	enableAutoStart;										// Startup with Windows
+	BOOL	actionConfirmation;										// Show confirm message before executing action
+	BOOL	saveActionHistory;										// Save app history log
+	BOOL	saveAppEventLog;										// Save app event log
+	BOOL	runAsAdmin;												// Run with admin privileges
+	BOOL	showErrorMessage;										// Show action error message
+	BOOL	scheduleNotification;									// Show notify tip for schedule action
+	BOOL	allowScheduleCancellation;								// Allow canceling schedule when notify
+	BOOL	enableBackgroundHotkey;									// Enable background action hotkeys
+	BOOL	allowLockscreenHotkey;									// Allow background hotkeys on lockscreen
+	BOOL	enablePowerReminder;									// Enable Power Peminder feature
 };
 
 
@@ -65,7 +65,7 @@ struct CONFIGDATAINFO
 class ConfigData : public CONFIGDATAINFO
 {
 public:
-	enum AppOptionID {
+	enum class AppOptionID : int {
 		invalid = -1,												// *** Invalid option ***
 		leftMouseAction = 0,										// Left mouse button action
 		middleMouseAction,											// Middle mouse button action
@@ -73,18 +73,18 @@ public:
 		rightMouseShowMenu,											// Right mouse button: Only show menu
 		languageID,													// Language setting
 		curDispLanguage,											// Currently displaying language
-		showDlgAtStartup,											// Show dialog at startup
-		startupEnabled,												// Startup with Windows
-		confirmBeforeExecuting,										// Show confirm message before doing action
+		showDialogAtStartup,										// Show dialog at startup
+		enableAutoStart,											// Startup with Windows
+		actionConfirmation,											// Show confirm message before doing action
 		saveAppEventLog,											// Save app event log
-		saveAppHistoryLog,											// Save action history log
+		saveActionHistory,											// Save action history log
 		runAsAdmin,													// Run with admin privileges
 		showErrorMessage,											// Show action error message
-		notifySchedule,												// Show notify tip for schedule action
-		allowCancelingSchedule,										// Allow canceling schedule when notify
-		backgroundHotkeyEnabled,									// Enable background action hotkeys
-		lockStateHotkeyEnabled,										// Allow background hotkeys on lockscreen
-		pwrReminderEnabled,											// Enable Power Peminder feature
+		scheduleNotification,										// Show notify tip for schedule action
+		allowScheduleCancellation,									// Allow canceling schedule when notify
+		enableBackgroundHotkey,										// Enable background action hotkeys
+		allowLockscreenHotkey,										// Allow background hotkeys on lockscreen
+		enablePowerReminder,										// Enable Power Peminder feature
 		defaultScheduleActiveState,									// Default schedule active state
 		defaultScheduleActionID,									// Default schedule action ID
 		defaultScheduleRepeat										// Default schedule repeat option
@@ -94,21 +94,21 @@ public:
 	// Construction
 	ConfigData();
 	ConfigData(const ConfigData& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 public:
 	// Data processing
-	void Copy(const ConfigData& other) noexcept;
-	constexpr bool Compare(const ConfigData& other) const noexcept;
-	void SetDefaultData(void) noexcept {
+	void copy(const ConfigData& other) noexcept;
+	constexpr bool compare(const ConfigData& other) const noexcept;
+	void setDefaultData(void) noexcept {
 		static const ConfigData defaultConfig;
-		this->Copy(defaultConfig);
+		copy(defaultConfig);
 	}
 
 	// Access data
-	void GetData(CONFIGDATAINFO& pData) const noexcept;
-	int GetAppOption(AppOptionID eAppOptionID) const noexcept;
+	void getData(CONFIGDATAINFO& data) const noexcept;
+	int getAppOption(AppOptionID appOptionID) const noexcept;
 };
 
 // Define new global typenames for the enum attributes of Application config data
@@ -179,7 +179,7 @@ private:
 
 private:
 	// Attributes
-	UniqueFlagMap m_mapUniqueFlags;
+	UniqueFlagMap uniqueFlagMap_;
 
 public:
 	// Constructor
@@ -196,22 +196,22 @@ private:
 
 public:
 	// Check if a flag value exists
-	bool IsFlagPresent(AppFlagID eFlagID) const {
-		auto it = m_mapUniqueFlags.find(eFlagID);
-		return (it != m_mapUniqueFlags.end());
-	};
+	bool isFlagPresent(AppFlagID flagID) const {
+		auto it = uniqueFlagMap_.find(flagID);
+		return (it != uniqueFlagMap_.end());
+	}
 
 	// Get application flag value by ID
-	int GetFlagValue(AppFlagID eFlagID) const {
-		auto it = m_mapUniqueFlags.find(eFlagID);
-		if (it != m_mapUniqueFlags.end()) return it->second;
+	int getFlagValue(AppFlagID flagID) const {
+		auto it = uniqueFlagMap_.find(flagID);
+		if (it != uniqueFlagMap_.end()) return it->second;
 		else return FLAG_OFF;
-	};
+	}
 
 	// Set application flag value by ID
-	void SetFlagValue(AppFlagID eFlagID, int nValue) {
-		m_mapUniqueFlags[eFlagID] = nValue;
-	};
+	void setFlagValue(AppFlagID flagID, int value) {
+		uniqueFlagMap_[flagID] = value;
+	}
 };
 
 // Define new global typenames for the enum attributes of Application flag data
@@ -225,72 +225,72 @@ class PwrRepeatSet
 {
 public:
 	// Define constant values
-	static constexpr int minSnoozeInterval = 60;					// Min snooze interval: 1 minutes
-	static constexpr int defaultSnoozeInterval = 600;				// Default snooze interval: 10 minutes
-	static constexpr int maxSnoozeInterval = 1800;					// Max snooze interval: 30 minutes
-	static constexpr int defaultActiveDays = 0b01111111;			// Default repeat: All days of weekss
+	static constexpr int kMinSnoozeInterval = 60;					// Min snooze interval: 1 minutes
+	static constexpr int kDefaultSnoozeInterval = 600;				// Default snooze interval: 10 minutes
+	static constexpr int kMaxSnoozeInterval = 1800;					// Max snooze interval: 30 minutes
+	static constexpr int kDefaultActiveDays = 0b01111111;			// Default repeat: All days of weekss
 
 private:
 	// Attributes
-	BOOL m_bRepeat;													// Repeat daily
-	BOOL m_bAllowSnooze;											// Allow snoozing mode
-	int	 m_nSnoozeInterval;											// Snooze interval
-	byte m_byRepeatDays;											// Days of week (for repeating)
+	BOOL isRepeated_;												// Repeat daily
+	BOOL isSnoozingAllowed_;										// Allow snoozing mode
+	int	 snoozeInterval_;											// Snooze interval
+	byte repeatDays_;												// Days of week (for repeating)
 
 public:
 	// Constructor
 	PwrRepeatSet();
 	PwrRepeatSet(const PwrRepeatSet& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Operator
 	PwrRepeatSet& operator=(const PwrRepeatSet& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
 	}
 
 public:
 	// Data processing
-	void Copy(const PwrRepeatSet& other) noexcept;
-	constexpr bool Compare(const PwrRepeatSet& other) const noexcept;
+	void copy(const PwrRepeatSet& other) noexcept;
+	constexpr bool compare(const PwrRepeatSet& other) const noexcept;
 
 public:
 	// Get attributes
-	constexpr bool IsRepeatEnabled(void) const noexcept {
-		return m_bRepeat;
-	};
-	constexpr bool IsAllowSnoozing(void) const noexcept {
-		return m_bAllowSnooze;
-	};
-	constexpr int GetSnoozeInterval(void) const noexcept {
-		return m_nSnoozeInterval;
-	};
-	constexpr byte GetActiveDays(void) const noexcept {
-		return m_byRepeatDays;
-	};
-	constexpr bool IsDayActive(DayOfWeek dayOfWeek) const noexcept {
+	constexpr bool isRepeatEnabled(void) const noexcept {
+		return isRepeated_;
+	}
+	constexpr bool isAllowSnoozing(void) const noexcept {
+		return isSnoozingAllowed_;
+	}
+	constexpr int getSnoozeInterval(void) const noexcept {
+		return snoozeInterval_;
+	}
+	constexpr byte getActiveDays(void) const noexcept {
+		return repeatDays_;
+	}
+	constexpr bool isDayActive(DayOfWeek dayOfWeek) const noexcept {
 		if ((dayOfWeek < DayOfWeek::Sunday) || (dayOfWeek > DayOfWeek::Saturday)) return false;
-		return ((m_byRepeatDays & (1 << dayOfWeek)) >> dayOfWeek);
-	};
+		return ((repeatDays_ & (1 << dayOfWeek)) >> dayOfWeek);
+	}
 
 	// Set attributes
-	void EnableRepeat(bool bEnabled) noexcept {
-		m_bRepeat = bEnabled;
-	};
-	void EnableSnoozing(bool bEnabled) noexcept {
-		m_bAllowSnooze = bEnabled;
-	};
-	void SetSnoozeInterval(int nValue) noexcept {
-		m_nSnoozeInterval = nValue;
-	};
-	void SetActiveDays(byte byActiveDays) noexcept {
-		m_byRepeatDays = byActiveDays;
-	};
-	void SetDayActive(DayOfWeek dayOfWeek, bool bActive) noexcept {
+	void enableRepeat(bool enabled) noexcept {
+		isRepeated_ = enabled;
+	}
+	void enableSnoozing(bool enabled) noexcept {
+		isSnoozingAllowed_ = enabled;
+	}
+	void setSnoozeInterval(int value) noexcept {
+		snoozeInterval_ = value;
+	}
+	void setActiveDays(byte activeDays) noexcept {
+		repeatDays_ = activeDays;
+	}
+	void setDayActive(DayOfWeek dayOfWeek, bool active) noexcept {
 		if ((dayOfWeek < DayOfWeek::Sunday) || (dayOfWeek > DayOfWeek::Saturday)) return;
-		m_byRepeatDays |= bActive << dayOfWeek;
-	};
+		repeatDays_ |= active << dayOfWeek;
+	}
 };
 
 // Define new typenames for RepeatSet data
@@ -302,98 +302,98 @@ class ScheduleItem
 {
 private:
 	// Attributes
-	unsigned	 m_nItemID;											// Item ID
-	BOOL		 m_bEnabled;										// Enable/disable state
-	unsigned	 m_nActionID;										// Schedule action ID
-	ClockTime	 m_stTime;											// Schedule time
-	PwrRepeatSet m_rpsRepeatSet;									// Repeat set data
+	unsigned	 itemId_;											// Item ID
+	BOOL		 isEnabled_;										// Enable/disable state
+	unsigned	 actionId_;											// Schedule action ID
+	ClockTime	 timeValue_;										// Schedule time
+	PwrRepeatSet repeatSetInfo_;									// Repeat set data
 
 public:
 	// Constructor
 	ScheduleItem();
-	ScheduleItem(unsigned nItemID);
+	ScheduleItem(unsigned itemID);
 	ScheduleItem(const ScheduleItem& other)	{
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Copy assignment operator
 	ScheduleItem& operator=(const ScheduleItem& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 public:
 	// Data processing
-	void Copy(const ScheduleItem& other) noexcept;
-	constexpr bool Compare(const ScheduleItem& other) const noexcept;
-	bool IsEmpty(void) const noexcept {
+	void copy(const ScheduleItem& other) noexcept;
+	constexpr bool compare(const ScheduleItem& other) const noexcept;
+	bool isEmpty(void) const noexcept {
 		static const ScheduleItem schDummyItem;
-		return this->Compare(schDummyItem);
-	};
+		return compare(schDummyItem);
+	}
 
 public:
 	// Get/set attributes
-	constexpr unsigned GetItemID(void) const noexcept {
-		return m_nItemID;
-	};
-	void SetItemID(unsigned nItemID) noexcept {
-		m_nItemID = nItemID;
-	};
-	constexpr bool IsEnabled(void) const noexcept {
-		return m_bEnabled;
-	};
-	void EnableItem(bool bEnabled) noexcept {
-		m_bEnabled = bEnabled;
-	};
-	constexpr unsigned GetAction(void) const noexcept {
-		return m_nActionID;
-	};
-	void SetAction(unsigned nActionID) noexcept {
-		m_nActionID = nActionID;
-	};
-	ClockTime GetTime(void) const noexcept {
-		return m_stTime;
-	};
-	void SetTime(const ClockTime& stTime) noexcept {
-		m_stTime = stTime;
-	};
+	constexpr unsigned getItemId(void) const noexcept {
+		return itemId_;
+	}
+	void setItemId(unsigned itemID) noexcept {
+		itemId_ = itemID;
+	}
+	constexpr bool isEnabled(void) const noexcept {
+		return isEnabled_;
+	}
+	void enableItem(bool enabled) noexcept {
+		isEnabled_ = enabled;
+	}
+	constexpr unsigned getAction(void) const noexcept {
+		return actionId_;
+	}
+	void setAction(unsigned actionID) noexcept {
+		actionId_ = actionID;
+	}
+	ClockTime getTime(void) const noexcept {
+		return timeValue_;
+	}
+	void setTime(const ClockTime& time) noexcept {
+		timeValue_ = time;
+	}
 
 	// Get RepeatSet data
-	constexpr bool IsRepeatEnabled(void) const noexcept {
-		return (m_rpsRepeatSet.IsRepeatEnabled());
-	};
+	constexpr bool isRepeatEnabled(void) const noexcept {
+		return (repeatSetInfo_.isRepeatEnabled());
+	}
 
-	constexpr bool IsAllowSnoozing(void) const noexcept {
-		if (IsRepeatEnabled() != true) return false;
-		if (m_rpsRepeatSet.IsAllowSnoozing() != true) return false;
+	constexpr bool isAllowSnoozing(void) const noexcept {
+		if (isRepeatEnabled() != true) return false;
+		if (repeatSetInfo_.isAllowSnoozing() != true) return false;
 		return true;
-	};
-	constexpr bool IsDayActive(DayOfWeek dayOfWeek) const noexcept {
-		return (m_rpsRepeatSet.IsDayActive(dayOfWeek));
-	};
-	constexpr byte GetActiveDays(void) const noexcept {
-		return (m_rpsRepeatSet.GetActiveDays());
-	};
+	}
+	constexpr bool isDayActive(DayOfWeek dayOfWeek) const noexcept {
+		return (repeatSetInfo_.isDayActive(dayOfWeek));
+	}
+	constexpr byte getActiveDays(void) const noexcept {
+		return (repeatSetInfo_.getActiveDays());
+	}
 
 	// Set RepeatSet data
-	void EnableRepeat(bool bEnabled) noexcept {
-		m_rpsRepeatSet.EnableRepeat(bEnabled);
-	};
-	void EnableSnoozing(bool bEnabled) noexcept {
-		m_rpsRepeatSet.EnableSnoozing(bEnabled);
-	};
-	void SetSnoozeInterval(int nValue) noexcept {
-		m_rpsRepeatSet.SetSnoozeInterval(nValue);
-	};
-	void SetActiveDays(byte byActiveDays) noexcept {
-		m_rpsRepeatSet.SetActiveDays(byActiveDays);
-	};
-	void SetDayActive(DayOfWeek dayOfWeek, bool bActive) noexcept {
-		m_rpsRepeatSet.SetDayActive(dayOfWeek, bActive);
-	};
+	void enableRepeat(bool isEnabled) noexcept {
+		repeatSetInfo_.enableRepeat(isEnabled);
+	}
+	void enableSnoozing(bool isEnabled) noexcept {
+		repeatSetInfo_.enableSnoozing(isEnabled);
+	}
+	void setSnoozeInterval(int value) noexcept {
+		repeatSetInfo_.setSnoozeInterval(value);
+	}
+	void setActiveDays(byte activeDays) noexcept {
+		repeatSetInfo_.setActiveDays(activeDays);
+	}
+	void setDayActive(DayOfWeek dayOfWeek, bool isActive) noexcept {
+		repeatSetInfo_.setDayActive(dayOfWeek, isActive);
+	}
 
 	// Print item data
-	void Print(String& outputString) const;
+	void print(String& outputString) const;
 };
 
 // Define new typenames for Schedule item data
@@ -406,12 +406,12 @@ class ScheduleData
 {
 public:
 	// Define constant values
-	static constexpr int defaultItemNum = 1;						// Default item number: 1
-	static constexpr int maxItemNum = 100;							// Max item number: 100
-	static constexpr int defaultItemID = 0x00;						// Default item ID: 0
-	static constexpr int minItemID = 10000;							// Min item ID: 10000
-	static constexpr int maxItemID = 19999;							// Max item ID: 19999
-	static constexpr int defaultActionID = APP_ACTION_DISPLAYOFF;	// Default action (for new item): Turn off display
+	static constexpr int kDefaultItemNum = 1;						// Default item number: 1
+	static constexpr int kMaxItemNum = 100;							// Max item number: 100
+	static constexpr int kDefaultItemID = 0x00;						// Default item ID: 0
+	static constexpr int kMinItemID = 10000;						// Min item ID: 10000
+	static constexpr int kMaxItemID = 19999;						// Max item ID: 19999
+	static constexpr int kDefaultActionID = APP_ACTION_DISPLAYOFF;	// Default action (for new item): Turn off display
 
 	enum Error {
 		Success = 0,												// Success (no error)
@@ -424,96 +424,96 @@ public:
 
 private:
 	// Attributes
-	ScheduleItem	 m_schDefaultItem;
-	ScheduleItemList m_arrSchedExtraItemList;
+	ScheduleItem	 defaultItem_;
+	ScheduleItemList extraItemList_;
 
 public:
 	// Constructor
 	ScheduleData();
 	ScheduleData(const ScheduleData& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Copy assignment operator
 	ScheduleData& operator=(const ScheduleData& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 public:
 	// Data processing
-	void Init(void) {
-		m_schDefaultItem = ScheduleItem(ScheduleData::defaultItemID);
-		m_arrSchedExtraItemList.clear();
-	};
-	void Copy(const ScheduleData& other);
-	void SetDefaultData(void) {
-		this->Init();
-	};
+	void init(void) {
+		defaultItem_ = ScheduleItem(ScheduleData::kDefaultItemID);
+		extraItemList_.clear();
+	}
+	void copy(const ScheduleData& other);
+	void setDefaultData(void) {
+		init();
+	}
 
 	// Update items
-	DWORD Add(const ScheduleItem& pItem);
-	DWORD Update(const ScheduleItem& pItem);
+	DWORD add(const ScheduleItem& item);
+	DWORD update(const ScheduleItem& item);
 
 	// Access items
-	const ScheduleItem& GetDefaultItem(void) const noexcept {
-		return m_schDefaultItem;
-	};
-	ScheduleItem& GetDefaultItem(void) noexcept {
-		return m_schDefaultItem;
-	};
-	const ScheduleItem& GetItemAt(int nIndex) const {
-		ASSERT((nIndex >= 0) && (nIndex < GetExtraItemNum()));
-		if ((nIndex >= 0) && (nIndex < GetExtraItemNum()))
-			return m_arrSchedExtraItemList.at(nIndex);
+	const ScheduleItem& getDefaultItem(void) const noexcept {
+		return defaultItem_;
+	}
+	ScheduleItem& getDefaultItem(void) noexcept {
+		return defaultItem_;
+	}
+	const ScheduleItem& getItemAt(int index) const {
+		ASSERT((index >= 0) && (index < getExtraItemNum()));
+		if ((index >= 0) && (index < getExtraItemNum()))
+			return extraItemList_.at(index);
 
 		AfxThrowInvalidArgException();
-	};
-	ScheduleItem& GetItemAt(int nIndex) {
-		ASSERT((nIndex >= 0) && (nIndex < GetExtraItemNum()));
-		if ((nIndex >= 0) && (nIndex < GetExtraItemNum()))
-			return m_arrSchedExtraItemList.at(nIndex);
+	}
+	ScheduleItem& getItemAt(int index) {
+		ASSERT((index >= 0) && (index < getExtraItemNum()));
+		if ((index >= 0) && (index < getExtraItemNum()))
+			return extraItemList_.at(index);
 
 		AfxThrowInvalidArgException();
-	};
+	}
 
 	// Item processing
-	void Adjust(void);
-	unsigned GetNextID(void) const;
-	void Remove(int nIndex);
-	void RemoveAll(void) {
-		for (int nIndex = 0; nIndex < GetExtraItemNum(); nIndex++)
-			Remove(nIndex);
-	};
+	void adjust(void);
+	unsigned getNextId(void) const;
+	void remove(int index);
+	void removeAll(void) {
+		for (int index = 0; index < getExtraItemNum(); index++)
+			remove(index);
+	}
 
 	// Get attributes
-	constexpr size_t GetExtraItemNum(void) const noexcept {
-		return m_arrSchedExtraItemList.size();
-	};
-	bool IsDefaultEmpty(void) const noexcept {
-		return m_schDefaultItem.IsEmpty();
-	};
-	constexpr bool IsEmpty(int nIndex) const noexcept {
-		if ((nIndex < 0) || (nIndex >= GetExtraItemNum())) return true;
-		const ScheduleItem& schItem = GetItemAt(nIndex);
-		return schItem.IsEmpty();
-	};
+	constexpr size_t getExtraItemNum(void) const noexcept {
+		return extraItemList_.size();
+	}
+	bool isDefaultEmpty(void) const noexcept {
+		return defaultItem_.isEmpty();
+	}
+	constexpr bool isEmpty(int index) const noexcept {
+		if ((index < 0) || (index >= getExtraItemNum())) return true;
+		const ScheduleItem& item = getItemAt(index);
+		return item.isEmpty();
+	}
 
 	// Check if extra data is empty
-	constexpr bool IsExtraEmpty(void) const noexcept;
-	bool IsAllEmpty(void) const noexcept {
-		return (IsDefaultEmpty() && IsExtraEmpty());
-	};
+	constexpr bool isExtraEmpty(void) const noexcept;
+	bool isAllEmpty(void) const noexcept {
+		return (isDefaultEmpty() && isExtraEmpty());
+	}
 
 	// Clean-up
-	void Delete(int nIndex);
-	void DeleteExtra(void) noexcept {
-		m_arrSchedExtraItemList.clear();
-	};
-	void DeleteAll(void) noexcept {
-		m_schDefaultItem = ScheduleItem(ScheduleData::defaultItemID);
-		m_arrSchedExtraItemList.clear();
-	};
+	void deleteItem(int index);
+	void deleteExtra(void) noexcept {
+		extraItemList_.clear();
+	}
+	void deleteAll(void) noexcept {
+		defaultItem_ = ScheduleItem(ScheduleData::kDefaultItemID);
+		extraItemList_.clear();
+	}
 };
 
 
@@ -532,71 +532,71 @@ public:
 
 private:
 	// Attributes
-	bool		m_bEnabled;											// Hotkey enabled/disabled
-	unsigned	m_nHKActionID;										// Hotkey action ID
-	DWORD		m_dwModifiers;										// Modifier keys
-	DWORD		m_dwVirtualKey;										// Virtual key code
+	bool		isEnabled_;											// Hotkey enabled/disabled
+	unsigned	hotkeyActionId_;									// Hotkey action ID
+	DWORD		modifiers_;											// Modifier keys
+	DWORD		virtualKey_;										// Virtual key code
 
 public:
 	// Constructor
 	HotkeySetItem();
-	HotkeySetItem(unsigned nHKActionID);
+	HotkeySetItem(unsigned hotkeyActionId);
 	HotkeySetItem(const HotkeySetItem& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Copy assignment operator
 	HotkeySetItem& operator=(const HotkeySetItem& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 public:
 	// Data processing
-	void Copy(const HotkeySetItem& other) noexcept;
-	constexpr bool IsEmpty(void) const noexcept {
-		bool bIsEmpty = (m_dwModifiers == 0);
-		bIsEmpty &= (m_dwVirtualKey == 0);
-		return bIsEmpty;
-	};
-	constexpr bool Compare(const HotkeySetItem& other) const noexcept {
-		bool bRet = (this->m_nHKActionID == other.m_nHKActionID);
-		bRet &= this->CompareKeycode(other);
-		return bRet;
-	};
-	constexpr bool CompareKeycode(const HotkeySetItem& other) const noexcept {
-		return CompareKeycode(other.m_dwModifiers, other.m_dwVirtualKey);
-	};
+	void copy(const HotkeySetItem& other) noexcept;
+	constexpr bool isEmpty(void) const noexcept {
+		bool isEmpty = (modifiers_ == 0);
+		isEmpty &= (virtualKey_ == 0);
+		return isEmpty;
+	}
+	constexpr bool compare(const HotkeySetItem& other) const noexcept {
+		bool ret = (hotkeyActionId_ == other.hotkeyActionId_);
+		ret &= compareKeycode(other);
+		return ret;
+	}
+	constexpr bool compareKeycode(const HotkeySetItem& other) const noexcept {
+		return compareKeycode(other.modifiers_, other.virtualKey_);
+	}
 
 	// Print item data
-	void Print(String& outputString) const;
-	void PrintKeyStrokes(String& outputString) const;
+	void print(String& outputString) const;
+	void printKeyStrokes(String& outputString) const;
 
 public:
 	// Get/set attributes
-	constexpr bool IsEnabled(void) const noexcept {
-		return m_bEnabled;
-	};
-	void EnableItem(bool bEnabled) noexcept {
-		m_bEnabled = bEnabled;
-	};
-	constexpr unsigned GetActionID(void) const noexcept {
-		return m_nHKActionID;
-	};
-	void SetActionID(unsigned nHKActionID) noexcept {
-		m_nHKActionID = nHKActionID;
-	};
-	constexpr void GetKeyCode(DWORD& dwModifiers, DWORD& dwVirtualKey) const noexcept {
-		dwModifiers = m_dwModifiers; dwVirtualKey = m_dwVirtualKey;
-	};
-	void SetKeyCode(DWORD dwModifiers, DWORD dwVirtualKey) noexcept {
-		m_dwModifiers = dwModifiers; m_dwVirtualKey = dwVirtualKey;
+	constexpr bool isEnabled(void) const noexcept {
+		return isEnabled_;
+	}
+	void enableItem(bool enabled) noexcept {
+		isEnabled_ = enabled;
+	}
+	constexpr unsigned getActionId(void) const noexcept {
+		return hotkeyActionId_;
+	}
+	void setActionId(unsigned hotkeyActionId) noexcept {
+		hotkeyActionId_ = hotkeyActionId;
+	}
+	constexpr void getKeyCode(DWORD& modifiers, DWORD& virtualKey) const noexcept {
+		modifiers = modifiers_; virtualKey = virtualKey_;
+	}
+	void setKeyCode(DWORD modifiers, DWORD virtualKey) noexcept {
+		modifiers_ = modifiers; virtualKey_ = virtualKey;
 	}
 
 	// Compare given keycode with item keystroke
-	constexpr bool CompareKeycode(DWORD dwModifiers, DWORD dwVirtualKey) const noexcept {
-		return ((m_dwModifiers == dwModifiers) && (m_dwVirtualKey == dwVirtualKey));
-	};
+	constexpr bool compareKeycode(DWORD modifiers, DWORD virtualKey) const noexcept {
+		return ((modifiers_ == modifiers) && (virtualKey_ == virtualKey));
+	}
 };
 
 // Define new typenames for HotkeySet item data
@@ -617,76 +617,76 @@ public:
 
 private:
 	// Attributes
-	DataList m_arrHotkeySetList;
+	DataList hotkeySetList_;
 
 public:
 	// Constructor
 	HotkeySetData() = default;
 	HotkeySetData(const HotkeySetData& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Operator
 	HotkeySetData& operator=(const HotkeySetData& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 public:
 	// Data processing
-	void Init(void) noexcept {
-		m_arrHotkeySetList.clear();
-	};
-	void Copy(const HotkeySetData& other) noexcept;
-	void SetDefaultData(void);
+	void init(void) noexcept {
+		hotkeySetList_.clear();
+	}
+	void copy(const HotkeySetData& other) noexcept;
+	void setDefaultData(void);
 
 	// Update items
-	void Add(const Item& pItem);
-	void Update(const Item& pItem);
+	void add(const Item& item);
+	void update(const Item& item);
 
 	// Access items
-	const Item& GetItemAt(int nIndex) const {
-		ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
-		if ((nIndex >= 0) && (nIndex < GetItemNum()))
-			return m_arrHotkeySetList.at(nIndex);
+	const Item& getItemAt(int index) const {
+		ASSERT((index >= 0) && (index < getItemNum()));
+		if ((index >= 0) && (index < getItemNum()))
+			return hotkeySetList_.at(index);
 
 		AfxThrowInvalidArgException();
-	};
-	Item& GetItemAt(int nIndex)	{
-		ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
-		if ((nIndex >= 0) && (nIndex < GetItemNum()))
-			return m_arrHotkeySetList.at(nIndex);
+	}
+	Item& getItemAt(int index)	{
+		ASSERT((index >= 0) && (index < getItemNum()));
+		if ((index >= 0) && (index < getItemNum()))
+			return hotkeySetList_.at(index);
 
 		AfxThrowInvalidArgException();
-	};
+	}
 
 	// Item processing
-	void Adjust(void);
-	void Remove(int nIndex);
-	void RemoveAll(void) {
-		for (int nIndex = 0; nIndex < GetItemNum(); nIndex++)
-			Remove(nIndex);
-	};
+	void adjust(void);
+	void remove(int index);
+	void removeAll(void) {
+		for (int index = 0; index < getItemNum(); index++)
+			remove(index);
+	}
 
 	// Get attributes
-	constexpr size_t GetItemNum(void) const noexcept {
-		return m_arrHotkeySetList.size();
-	};
-	constexpr bool IsEmpty(int nIndex) const noexcept {
-		if ((nIndex < 0) || (nIndex >= GetItemNum())) return true;
-		const Item& hksItem = GetItemAt(nIndex);
-		return hksItem.IsEmpty();
-	};
-	bool IsAllEmpty(void) const noexcept;
+	constexpr size_t getItemNum(void) const noexcept {
+		return hotkeySetList_.size();
+	}
+	constexpr bool isEmpty(int index) const noexcept {
+		if ((index < 0) || (index >= getItemNum())) return true;
+		const Item& item = getItemAt(index);
+		return item.isEmpty();
+	}
+	bool isAllEmpty(void) const noexcept;
 
 	// Clean-up
-	void Delete(int nIndex);
-	void DeleteAll(void) noexcept {
-		m_arrHotkeySetList.clear();
-	};
+	void deleteItem(int index);
+	void deleteAll(void) noexcept {
+		hotkeySetList_.clear();
+	}
 
 	// Print item keystrokes by ID
-	void PrintKeyStrokes(unsigned nHKID, String& outputString) const;
+	void printKeyStrokes(unsigned hotkeyId, String& outputString) const;
 };
 
 
@@ -708,129 +708,129 @@ public:
 
 public:
 	// Define default style values
-	static constexpr COLORREF defaultBkgrdColor = Color::Pink;
-	static constexpr COLORREF defaultTextColor = Color::Red;
-	static constexpr const wchar_t* defaultFontName = _T("Arial");
-	static constexpr int defaultFontSize = 20;
-	static constexpr int defaultTimeout = 0;
-	static constexpr int defaultIconID = SystemIcon::Information;
-	static constexpr int defaultIconSize = 50;
-	static constexpr int defaultIconPosition = IconOnTheTop;
-	static constexpr int defaultDisplayPosition = AtCenter;
-	static constexpr int defaultHorizontalMargin = 50;
-	static constexpr int defaultVerticalMargin = 50;
+	static constexpr COLORREF kDefaultBkgrdColor = Color::Pink;
+	static constexpr COLORREF kDefaultTextColor = Color::Red;
+	static constexpr const wchar_t* kDefaultFontName = _T("Arial");
+	static constexpr int kDefaultFontSize = 20;
+	static constexpr int kDefaultTimeout = 0;
+	static constexpr int kDefaultIconID = SystemIcon::Information;
+	static constexpr int kDefaultIconSize = 50;
+	static constexpr int kDefaultIconPosition = IconOnTheTop;
+	static constexpr int kDefaultDisplayPosition = AtCenter;
+	static constexpr int kDefaultHorizontalMargin = 50;
+	static constexpr int kDefaultVerticalMargin = 50;
 
 public:
 	// Define constant values
-	static constexpr int minFontSize = 10;
-	static constexpr int maxFontSize = 100;
-	static constexpr int minTimeOut = 10;
-	static constexpr int maxTimeOut = 1800;
-	static constexpr int minIconSize = 30;
-	static constexpr int maxIconSize = 100;
-	static constexpr int minMarginVal = 10;
-	static constexpr int maxMarginVal = 120;
+	static constexpr int kMinFontSize = 10;
+	static constexpr int kMaxFontSize = 100;
+	static constexpr int kMinTimeOut = 10;
+	static constexpr int kMaxTimeOut = 1800;
+	static constexpr int kMinIconSize = 30;
+	static constexpr int kMaxIconSize = 100;
+	static constexpr int kMinMarginVal = 10;
+	static constexpr int kMaxMarginVal = 120;
 
 private:
 	// Attributes
-	COLORREF	m_colorBkgrd;									// Background color
-	COLORREF	m_colorText;									// Text color
-	String		m_strFontName;									// Font name
-	unsigned	m_uiFontSize;									// Font size
-	unsigned	m_uiTimeout;									// Timeout (auto-close) interval
-	unsigned	m_uiIconID;										// Message icon ID
-	int			m_nIconSize;									// Message icon size
-	byte		m_byIconPos;									// Message icon position
-	byte		m_byDisplayPos;									// Message display position
-	unsigned	m_uiHMargin;									// Display area horizontal margin
-	unsigned	m_uiVMargin;									// Display area vertical margin
+	COLORREF	colorBackground_;							// Background color
+	COLORREF	colorText_;									// Text color
+	String		fontName_;									// Font name
+	unsigned	fontSize_;									// Font size
+	unsigned	timeoutValue_;								// Timeout (auto-close) interval
+	unsigned	iconId_;									// Message icon ID
+	int			iconSize_;									// Message icon size
+	byte		iconPosition_;								// Message icon position
+	byte		displayPosition_;							// Message display position
+	unsigned	marginHorizontal_;							// Display area horizontal margin
+	unsigned	marginVertical_;							// Display area vertical margin
 
 public:
 	// Constructor
 	RmdMsgStyleSet();
 	RmdMsgStyleSet(const RmdMsgStyleSet& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Copy assignment operator
 	RmdMsgStyleSet& operator=(const RmdMsgStyleSet& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 public:
 	// Member functions
-	void Copy(const RmdMsgStyleSet& other) noexcept;
-	bool Compare(const RmdMsgStyleSet& other) const noexcept;
+	void copy(const RmdMsgStyleSet& other) noexcept;
+	bool compare(const RmdMsgStyleSet& other) const noexcept;
 
 public:
 	// Get/set functions
-	constexpr COLORREF GetBkgrdColor(void) const noexcept {
-		return m_colorBkgrd;
-	};
-	void SetBkgrdColor(COLORREF color) noexcept {
-		m_colorBkgrd = color;
-	};
-	constexpr COLORREF GetTextColor(void) const noexcept {
-		return m_colorText;
-	};
-	void SetTextColor(COLORREF color) noexcept {
-		m_colorText = color;
-	};
-	String GetFontName(void) const noexcept {
-		return m_strFontName;
-	};
-	void SetFontName(const wchar_t* fontName) noexcept {
-		m_strFontName = fontName;
-	};
-	constexpr unsigned GetFontSize(void) const noexcept {
-		return m_uiFontSize;
-	};
-	void SetFontSize(unsigned uiFontSize) noexcept {
-		m_uiFontSize = uiFontSize;
-	};
-	constexpr unsigned GetTimeout(void) const noexcept {
-		return m_uiTimeout;
-	};
-	void SetTimeout(unsigned uiTimeout) noexcept {
-		m_uiTimeout = uiTimeout;
-	};
-	constexpr unsigned GetIconID(void) const noexcept {
-		return m_uiIconID;
-	};
-	void SetIconID(unsigned uiIconID) noexcept {
-		m_uiIconID = uiIconID;
-	};
-	constexpr int GetIconSize(void) const noexcept {
-		return m_nIconSize;
-	};
-	void SetIconSize(int nIconSize) noexcept {
-		m_nIconSize = nIconSize;
-	};
-	constexpr byte GetIconPosition(void) const noexcept {
-		return m_byIconPos;
-	};
-	void SetIconPosition(byte byIconPos) noexcept {
-		m_byIconPos = byIconPos;
-	};
-	constexpr byte GetDisplayPosition(void) const noexcept {
-		return m_byDisplayPos;
-	};
-	void SetDisplayPosition(byte byDisplayPos) noexcept {
-		m_byDisplayPos = byDisplayPos;
-	};
-	constexpr unsigned GetHorizontalMargin(void) const noexcept {
-		return m_uiHMargin;
-	};
-	void SetHorizontalMargin(unsigned uiHMargin) noexcept {
-		m_uiHMargin = uiHMargin;
-	};
-	constexpr unsigned GetVerticalMargin(void) const noexcept {
-		return m_uiVMargin;
-	};
-	void SetVerticalMargin(unsigned uiVMargin) noexcept {
-		m_uiVMargin = uiVMargin;
-	};
+	constexpr COLORREF getBkgrdColor(void) const noexcept {
+		return colorBackground_;
+	}
+	void setBkgrdColor(COLORREF color) noexcept {
+		colorBackground_ = color;
+	}
+	constexpr COLORREF getTextColor(void) const noexcept {
+		return colorText_;
+	}
+	void setTextColor(COLORREF color) noexcept {
+		colorText_ = color;
+	}
+	String getFontName(void) const noexcept {
+		return fontName_;
+	}
+	void setFontName(const wchar_t* fontName) noexcept {
+		fontName_ = fontName;
+	}
+	constexpr unsigned getFontSize(void) const noexcept {
+		return fontSize_;
+	}
+	void setFontSize(unsigned fontSize) noexcept {
+		fontSize_ = fontSize;
+	}
+	constexpr unsigned getTimeout(void) const noexcept {
+		return timeoutValue_;
+	}
+	void setTimeout(unsigned timeout) noexcept {
+		timeoutValue_ = timeout;
+	}
+	constexpr unsigned getIconId(void) const noexcept {
+		return iconId_;
+	}
+	void setIconId(unsigned iconId) noexcept {
+		iconId_ = iconId;
+	}
+	constexpr int getIconSize(void) const noexcept {
+		return iconSize_;
+	}
+	void setIconSize(int iconSize) noexcept {
+		iconSize_ = iconSize;
+	}
+	constexpr byte getIconPosition(void) const noexcept {
+		return iconPosition_;
+	}
+	void setIconPosition(byte iconPosition) noexcept {
+		iconPosition_ = iconPosition;
+	}
+	constexpr byte getDisplayPosition(void) const noexcept {
+		return displayPosition_;
+	}
+	void setDisplayPosition(byte displayPosition) noexcept {
+		displayPosition_ = displayPosition;
+	}
+	constexpr unsigned getHorizontalMargin(void) const noexcept {
+		return marginHorizontal_;
+	}
+	void setHorizontalMargin(unsigned marginHorizontal) noexcept {
+		marginHorizontal_ = marginHorizontal;
+	}
+	constexpr unsigned getVerticalMargin(void) const noexcept {
+		return marginVertical_;
+	}
+	void setVerticalMargin(unsigned marginVertical) noexcept {
+		marginVertical_ = marginVertical;
+	}
 };
 
 // Define new typenames for Reminder message style data
@@ -860,139 +860,139 @@ public:
 
 private:
 	// Attributes
-	BOOL			m_bEnabled;										// Enable state
-	unsigned		m_nItemID;										// Item ID
-	String			m_strMessage;									// Message content
-	unsigned		m_nEventID;										// Event ID
-	ClockTime		m_stTime;										// Event time
-	DWORD			m_dwMsgStyle;									// Reminder style
-	PwrRepeatSet	m_rpsRepeatSet;									// Repeat set data
-	BOOL			m_bUseCustomStyle;								// Use message custom style
-	RmdMsgStyleSet	m_rmsMsgStyleSet;								// Reminder message style set
+	BOOL			isEnabled_;										// Enable state
+	unsigned		itemId_;										// Item ID
+	String			messageContent_;								// Message content
+	unsigned		eventId_;										// Event ID
+	ClockTime		timeValue_;										// Event time
+	DWORD			messageStyle_;									// Reminder style
+	PwrRepeatSet	repeatSetInfo_;									// Repeat set data
+	BOOL			useCustomStyle_;								// Use message custom style
+	RmdMsgStyleSet	msgStyleSetInfo_;								// Reminder message style set
 
 public:
 	// Constructor
 	PwrReminderItem();
 	PwrReminderItem(const PwrReminderItem& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Copy assignment operator
 	PwrReminderItem& operator=(const PwrReminderItem& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 public:
 	// Data processing
-	void Copy(const PwrReminderItem& other) noexcept;
-	bool Compare(const PwrReminderItem& other) const noexcept;
-	bool IsEmpty(void) const noexcept {
+	void copy(const PwrReminderItem& other) noexcept;
+	bool compare(const PwrReminderItem& other) const noexcept;
+	bool isEmpty(void) const noexcept {
 		static const PwrReminderItem pwrDummyItem;
-		return this->Compare(pwrDummyItem);
-	};
+		return compare(pwrDummyItem);
+	}
 
 	// Access data
-	const PwrRepeatSet& GetRepeatSetData(void) const noexcept {
-		return this->m_rpsRepeatSet;
-	};
-	PwrRepeatSet& GetRepeatSetData(void) noexcept {
-		return this->m_rpsRepeatSet;
-	};
-	void ResetRepeatInfo(void) noexcept {
+	const PwrRepeatSet& getRepeatSetData(void) const noexcept {
+		return repeatSetInfo_;
+	}
+	PwrRepeatSet& getRepeatSetData(void) noexcept {
+		return repeatSetInfo_;
+	}
+	void resetRepeatInfo(void) noexcept {
 		const PwrRepeatSet emptyData = PwrRepeatSet();
-		this->m_rpsRepeatSet.Copy(emptyData);
-	};
-	const RmdMsgStyleSet& GetMessageStyleData(void) const noexcept {
-		return this->m_rmsMsgStyleSet;
-	};
-	RmdMsgStyleSet& GetMessageStyleData(void) noexcept {
-		return this->m_rmsMsgStyleSet;
-	};
-	void ResetMessageStyleInfo(void) noexcept {
+		repeatSetInfo_.copy(emptyData);
+	}
+	const RmdMsgStyleSet& getMessageStyleData(void) const noexcept {
+		return msgStyleSetInfo_;
+	}
+	RmdMsgStyleSet& getMessageStyleData(void) noexcept {
+		return msgStyleSetInfo_;
+	}
+	void resetMessageStyleInfo(void) noexcept {
 		const RmdMsgStyleSet emptyData = RmdMsgStyleSet();
-		this->m_rmsMsgStyleSet.Copy(emptyData);
-	};
+		msgStyleSetInfo_.copy(emptyData);
+	}
 
 public:
 	// Get/set attributes
-	constexpr bool IsEnabled(void) const noexcept {
-		return m_bEnabled;
-	};
-	void EnableItem(bool bEnabled) noexcept {
-		m_bEnabled = bEnabled;
-	};
-	constexpr unsigned GetItemID(void) const noexcept {
-		return m_nItemID;
-	};
-	void SetItemID(unsigned nItemID) noexcept {
-		m_nItemID = nItemID;
-	};
-	constexpr const wchar_t* GetMessage(void) const noexcept {
-		return m_strMessage.GetString();
-	};
-	void SetMessage(const wchar_t* message) noexcept {
-		m_strMessage = message;
-	};
-	constexpr unsigned GetEventID(void) const noexcept {
-		return m_nEventID;
-	};
-	void SetEventID(unsigned nEventID) noexcept {
-		m_nEventID = nEventID;
-	};
-	ClockTime GetTime(void) const noexcept {
-		return m_stTime;
-	};
-	void SetTime(const ClockTime& stTime) noexcept {
-		m_stTime = stTime;
-	};
-	constexpr DWORD GetMessageStyle(void) const noexcept {
-		return m_dwMsgStyle;
-	};
-	void SetMessageStyle(DWORD nMsgStyleID) noexcept {
-		m_dwMsgStyle = nMsgStyleID;
-	};
-	constexpr bool IsCustomStyleEnabled(void) const noexcept {
-		return m_bUseCustomStyle;
-	};
-	void EnableCustomStyle(bool bEnabled) noexcept {
-		m_bUseCustomStyle = bEnabled;
-	};
+	constexpr bool isEnabled(void) const noexcept {
+		return isEnabled_;
+	}
+	void enableItem(bool isEnabled) noexcept {
+		isEnabled_ = isEnabled;
+	}
+	constexpr unsigned getItemId(void) const noexcept {
+		return itemId_;
+	}
+	void setItemId(unsigned itemId) noexcept {
+		itemId_ = itemId;
+	}
+	constexpr const wchar_t* getMessage(void) const noexcept {
+		return messageContent_.getString();
+	}
+	void setMessage(const wchar_t* message) noexcept {
+		messageContent_ = message;
+	}
+	constexpr unsigned getEventId(void) const noexcept {
+		return eventId_;
+	}
+	void setEventId(unsigned eventId) noexcept {
+		eventId_ = eventId;
+	}
+	ClockTime getTime(void) const noexcept {
+		return timeValue_;
+	}
+	void setTime(const ClockTime& timeValue) noexcept {
+		timeValue_ = timeValue;
+	}
+	constexpr DWORD getMessageStyle(void) const noexcept {
+		return messageStyle_;
+	}
+	void setMessageStyle(DWORD messageStyle) noexcept {
+		messageStyle_ = messageStyle;
+	}
+	constexpr bool isCustomStyleEnabled(void) const noexcept {
+		return useCustomStyle_;
+	}
+	void enableCustomStyle(bool isEnabled) noexcept {
+		useCustomStyle_ = isEnabled;
+	}
 
 	// Get RepeatSet data
-	constexpr bool IsRepeatEnabled(void) const noexcept {
-		return m_rpsRepeatSet.IsRepeatEnabled();
-	};
-	constexpr bool IsDayActive(DayOfWeek dayOfWeek) const noexcept {
-		return m_rpsRepeatSet.IsDayActive(dayOfWeek);
-	};
-	bool IsAllowSnoozing(void) const noexcept;
-	constexpr int GetSnoozeInterval(void) const noexcept {
-		return m_rpsRepeatSet.GetSnoozeInterval();
-	};
-	constexpr byte GetActiveDays(void) const noexcept {
-		return m_rpsRepeatSet.GetActiveDays();
-	};
+	constexpr bool isRepeatEnabled(void) const noexcept {
+		return repeatSetInfo_.isRepeatEnabled();
+	}
+	constexpr bool isDayActive(DayOfWeek dayOfWeek) const noexcept {
+		return repeatSetInfo_.isDayActive(dayOfWeek);
+	}
+	bool isAllowSnoozing(void) const noexcept;
+	constexpr int getSnoozeInterval(void) const noexcept {
+		return repeatSetInfo_.getSnoozeInterval();
+	}
+	constexpr byte getActiveDays(void) const noexcept {
+		return repeatSetInfo_.getActiveDays();
+	}
 
 	// Set RepeatSet data
-	void EnableRepeat(bool bEnabled) noexcept {
-		m_rpsRepeatSet.EnableRepeat(bEnabled);
-	};
-	void EnableSnoozing(bool bEnabled) noexcept {
-		m_rpsRepeatSet.EnableSnoozing(bEnabled);
-	};
-	void SetSnoozeInterval(int nValue) noexcept {
-		m_rpsRepeatSet.SetSnoozeInterval(nValue);
-	};
-	void SetActiveDays(byte byActiveDays) noexcept {
-		m_rpsRepeatSet.SetActiveDays(byActiveDays);
-	};
-	void SetDayActive(DayOfWeek dayOfWeek, bool bActive) noexcept {
-		m_rpsRepeatSet.SetDayActive(dayOfWeek, bActive);
-	};
+	void enableRepeat(bool isEnabled) noexcept {
+		repeatSetInfo_.enableRepeat(isEnabled);
+	}
+	void enableSnoozing(bool isEnabled) noexcept {
+		repeatSetInfo_.enableSnoozing(isEnabled);
+	}
+	void setSnoozeInterval(int value) noexcept {
+		repeatSetInfo_.setSnoozeInterval(value);
+	}
+	void setActiveDays(byte activeDays) noexcept {
+		repeatSetInfo_.setActiveDays(activeDays);
+	}
+	void setDayActive(DayOfWeek dayOfWeek, bool isActive) noexcept {
+		repeatSetInfo_.setDayActive(dayOfWeek, isActive);
+	}
 
 	// Print item data
-	void Print(String& outputString) const;
+	void print(String& outputString) const;
 };
 
 // Define new typenames for Power Reminder Item data
@@ -1009,92 +1009,92 @@ class PwrReminderData
 {
 public:
 	// Define constant values
-	static constexpr int maxItemNum = 100;							// Max item number: 100
-	static constexpr int minItemID = 10000;							// Min item ID: 10000
-	static constexpr int maxItemID = 19999;							// Max item ID: 19999
-	static constexpr int previewTimeout = 10;						// Default time-out for preview: 10s
+	static constexpr int kMaxItemNum = 100;							// Max item number: 100
+	static constexpr int kMinItemID = 10000;						// Min item ID: 10000
+	static constexpr int kMaxItemID = 19999;						// Max item ID: 19999
+	static constexpr int kPreviewTimeout = 10;						// Default time-out for preview: 10s
 
 private:
 	// Attributes
-	PwrReminderItemList	m_arrRmdItemList;							// List of reminder items
-	RmdMsgStyleSet		m_rmdCommonStyle;							// Common message style set
+	PwrReminderItemList	reminderItemList_;							// List of reminder items
+	RmdMsgStyleSet		commonStyleSet_;							// Common message style set
 
 public:
 	// Constructor
 	PwrReminderData();
 	PwrReminderData(const PwrReminderData& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Copy assignment operator
 	PwrReminderData& operator=(const PwrReminderData& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 public:
 	// Member functions
-	void Init(void) noexcept;
-	void Copy(const PwrReminderData& other) noexcept;
-	void SetDefaultData(void) noexcept {
-		this->Init();
-	};
+	void init(void) noexcept;
+	void copy(const PwrReminderData& other) noexcept;
+	void setDefaultData(void) noexcept {
+		init();
+	}
 
 	// Update items
-	void Add(const PwrReminderItem& pItem);
-	void Update(const PwrReminderItem& pItem);
+	void add(const PwrReminderItem& reminderItem);
+	void update(const PwrReminderItem& reminderItem);
 
 	// Access data
-	const RmdMsgStyleSet& GetCommonStyle(void) const noexcept {
-		return m_rmdCommonStyle;
-	};
-	RmdMsgStyleSet& GetCommonStyle(void) noexcept {
-		return m_rmdCommonStyle;
-	};
+	const RmdMsgStyleSet& getCommonStyle(void) const noexcept {
+		return commonStyleSet_;
+	}
+	RmdMsgStyleSet& getCommonStyle(void) noexcept {
+		return commonStyleSet_;
+	}
 
 	// Access items
-	const PwrReminderItem& GetItemAt(int nIndex) const {
-		ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
-		if ((nIndex >= 0) && (nIndex < GetItemNum()))
-			return m_arrRmdItemList.at(nIndex);
+	const PwrReminderItem& getItemAt(int index) const {
+		ASSERT((index >= 0) && (index < getItemNum()));
+		if ((index >= 0) && (index < getItemNum()))
+			return reminderItemList_.at(index);
 
 		AfxThrowInvalidArgException();
-	};
-	PwrReminderItem& GetItemAt(int nIndex) {
-		ASSERT((nIndex >= 0) && (nIndex < GetItemNum()));
-		if ((nIndex >= 0) && (nIndex < GetItemNum()))
-			return m_arrRmdItemList.at(nIndex);
+	}
+	PwrReminderItem& getItemAt(int index) {
+		ASSERT((index >= 0) && (index < getItemNum()));
+		if ((index >= 0) && (index < getItemNum()))
+			return reminderItemList_.at(index);
 
 		AfxThrowInvalidArgException();
-	};
+	}
 
 	// Item processing
-	void Adjust(void);
-	unsigned GetNextID(void) const noexcept;
-	void Remove(int nIndex);
-	void RemoveAll(void) {
-		for (int nIndex = 0; nIndex < GetItemNum(); nIndex++)
-			Remove(nIndex);
-	};
+	void adjust(void);
+	unsigned getNextId(void) const noexcept;
+	void remove(int index);
+	void removeAll(void) {
+		for (int index = 0; index < getItemNum(); index++)
+			remove(index);
+	}
 
 	// Get attributes
-	size_t GetItemNum(void) const noexcept {
-		return m_arrRmdItemList.size();
-	};
-	bool IsEmpty(int nIndex) const noexcept {
-		if ((nIndex < 0) || (nIndex >= GetItemNum())) return true;
-		const PwrReminderItem& pwrItem = GetItemAt(nIndex);
-		return pwrItem.IsEmpty();
-	};
-	bool IsAllEmpty(void) const noexcept;
+	size_t getItemNum(void) const noexcept {
+		return reminderItemList_.size();
+	}
+	bool isEmpty(int index) const noexcept {
+		if ((index < 0) || (index >= getItemNum())) return true;
+		const PwrReminderItem& reminderItem = getItemAt(index);
+		return reminderItem.isEmpty();
+	}
+	bool isAllEmpty(void) const noexcept;
 
 	// Clean-up
-	void Delete(int nIndex);
-	void DeleteAll(void) noexcept {
+	void deleteItem(int index);
+	void deleteAll(void) noexcept {
 		// Reset data
-		m_arrRmdItemList.clear();
-		m_rmdCommonStyle = RmdMsgStyleSet();
-	};
+		reminderItemList_.clear();
+		commonStyleSet_ = RmdMsgStyleSet();
+	}
 };
 
 
@@ -1111,68 +1111,68 @@ public:
 
 private:
 	// Attributes
-	int			m_nCategory;										// Item category
-	unsigned	m_nItemID;											// Power Reminder item ID
-	int			m_nDisplayFlag;										// Item displaying flag
-	int			m_nSkipFlag;										// Item skip flag
-	int			m_nSnoozeFlag;										// Item snooze trigger flag
-	ClockTime	m_stNextSnoozeTime;									// Next snooze trigger time
+	int			categoryId_;										// Item category
+	unsigned	itemId_;											// Power Reminder item ID
+	int			displayFlag_;										// Item displaying flag
+	int			skipFlag_;											// Item skip flag
+	int			snoozeFlag_;										// Item snooze trigger flag
+	ClockTime	nextSnoozeTime_;									// Next snooze trigger time
 
 public:
 	// Constructor
 	PwrRuntimeItem();
 	PwrRuntimeItem(const PwrRuntimeItem& other)	{
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Copy assignment operator
 	PwrRuntimeItem& operator=(const PwrRuntimeItem& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 	// Data processing
-	void Copy(const PwrRuntimeItem& other) noexcept;
-	void CalcNextSnoozeTime(int nInterval) noexcept;
+	void copy(const PwrRuntimeItem& other) noexcept;
+	void calcNextSnoozeTime(int interval) noexcept;
 
 public:
 	// Get/set attributes
-	constexpr int GetCategory(void) const noexcept {
-		return m_nCategory;
-	};
-	void SetCategory(int nValue) noexcept {
-		m_nCategory = nValue;
-	};
-	constexpr unsigned GetItemID(void) const noexcept {
-		return m_nItemID;
-	};
-	void SetItemID(unsigned nValue) noexcept {
-		m_nItemID = nValue;
-	};
-	constexpr int GetDisplayFlag(void) const noexcept {
-		return m_nDisplayFlag;
-	};
-	void SetDisplayFlag(int nValue) noexcept {
-		m_nDisplayFlag = nValue;
-	};
-	constexpr int GetSkipFlag(void) const noexcept {
-		return m_nSkipFlag;
-	};
-	void SetSkipFlag(int nValue) noexcept {
-		m_nSkipFlag = nValue;
-	};
-	constexpr int GetSnoozeFlag(void) const noexcept {
-		return m_nSnoozeFlag;
-	};
-	void SetSnoozeFlag(int nValue) noexcept {
-		m_nSnoozeFlag = nValue;
-	};
-	ClockTime GetTime(void) const noexcept {
-		return m_stNextSnoozeTime;
-	};
-	void SetTime(const ClockTime& stTime) noexcept {
-		m_stNextSnoozeTime = stTime;
-	};
+	constexpr int getCategory(void) const noexcept {
+		return categoryId_;
+	}
+	void setCategory(int value) noexcept {
+		categoryId_ = value;
+	}
+	constexpr unsigned getItemId(void) const noexcept {
+		return itemId_;
+	}
+	void setItemId(unsigned value) noexcept {
+		itemId_ = value;
+	}
+	constexpr int getDisplayFlag(void) const noexcept {
+		return displayFlag_;
+	}
+	void setDisplayFlag(int value) noexcept {
+		displayFlag_ = value;
+	}
+	constexpr int getSkipFlag(void) const noexcept {
+		return skipFlag_;
+	}
+	void setSkipFlag(int value) noexcept {
+		skipFlag_ = value;
+	}
+	constexpr int getSnoozeFlag(void) const noexcept {
+		return snoozeFlag_;
+	}
+	void setSnoozeFlag(int value) noexcept {
+		snoozeFlag_ = value;
+	}
+	ClockTime getTime(void) const noexcept {
+		return nextSnoozeTime_;
+	}
+	void setTime(const ClockTime& timeValue) noexcept {
+		nextSnoozeTime_ = timeValue;
+	}
 };
 
 // Define new typenames for runtime info item data
@@ -1188,86 +1188,86 @@ class HistoryInfoData
 {
 private:
 	// Attributes
-	bool		m_bInitState;										// Init state flag
-	unsigned	m_nCategoryID;										// Category ID
-	DateTime	m_stTimestamp;										// Timestamp of history
-	unsigned	m_nItemID;											// Item ID
-	unsigned	m_nActionID;										// Action ID
-	bool		m_bActionResult;									// Action result
-	DWORD		m_dwErrorCode;										// Returned error code
-	String		m_strDescription;									// History description (attached info)
+	bool		isInitiated_;										// Init state flag
+	unsigned	categoryId_;										// Category ID
+	DateTime	timestampValue_;									// Timestamp of history
+	unsigned	itemId_;											// Item ID
+	unsigned	actionId_;											// Action ID
+	bool		actionResult_;										// Action result
+	DWORD		errorCode_;											// Returned error code
+	String		description_;										// History description (attached info)
 
 public:
 	// Constructor
 	HistoryInfoData();
 	HistoryInfoData(const HistoryInfoData& other) {
-		this->Copy(other);
-	};
+		copy(other);
+	}
 
 	// Copy assignment operator
 	HistoryInfoData& operator=(const HistoryInfoData& other) {
-		this->Copy(other);
+		copy(other);
 		return *this;
-	};
+	}
 
 	// Member functions
-	void Copy(const HistoryInfoData& other) noexcept;
-	void Init(unsigned nCategoryID) noexcept;
-	void RemoveAll(void) noexcept {
+	void copy(const HistoryInfoData& other) noexcept;
+	void init(unsigned categoryId) noexcept;
+	void removeAll(void) noexcept {
 		const HistoryInfoData emptyItem;
-		this->Copy(emptyItem);
-	};
+		copy(emptyItem);
+	}
 
 public:
 	// Get/set properties
-	constexpr bool IsInit(void) const noexcept {
-		return m_bInitState;
+	constexpr bool isInit(void) const noexcept {
+		return isInitiated_;
+	}
+	constexpr unsigned getCategoryId(void) const noexcept {
+		return categoryId_;
+	}
+	void setCategoryId(unsigned categoryId) noexcept {
+		categoryId_ = categoryId;
+	}
+	DateTime getTime(void) const noexcept {
+		return timestampValue_;
+	}
+	void setTime(const DateTime& timeValue) noexcept {
+		timestampValue_ = timeValue;
+	}
+	constexpr unsigned getItemId(void) const noexcept {
+		return itemId_;
+	}
+	void setItemId(unsigned itemId) noexcept {
+		itemId_ = itemId;
+	}
+	constexpr unsigned getActionId(void) const noexcept {
+		return actionId_;
+	}
+	void setActionId(unsigned actionId) noexcept {
+		actionId_ = actionId;
+	}
+	constexpr bool isSuccess(void) const noexcept {
+		return actionResult_;
+	}
+	void setResult(bool result) noexcept {
+		actionResult_ = result;
 	};
-	constexpr unsigned GetCategoryID(void) const noexcept {
-		return m_nCategoryID;
-	};
-	void SetCategoryID(unsigned nCategoryID) noexcept {
-		m_nCategoryID = nCategoryID;
-	};
-	DateTime GetTime(void) const noexcept {
-		return m_stTimestamp;
-	};
-	void SetTime(const DateTime& stTime) noexcept {
-		m_stTimestamp = stTime;
-	};
-	constexpr unsigned GetItemID(void) const noexcept {
-		return m_nItemID;
-	};
-	void SetItemID(unsigned nItemID) noexcept {
-		m_nItemID = nItemID;
-	};
-	constexpr unsigned GetActionID(void) const noexcept {
-		return m_nActionID;
-	};
-	void SetActionID(unsigned nActionID) noexcept {
-		m_nActionID = nActionID;
-	};
-	constexpr bool IsSuccess(void) const noexcept {
-		return m_bActionResult;
-	};
-	void SetResult(bool bResult) noexcept {
-		m_bActionResult = bResult;
-	};
-	constexpr DWORD GetErrorCode(void) const noexcept {
-		return m_dwErrorCode;
-	};
-	void SetErrorCode(DWORD dwErrorCode) noexcept {
-		m_dwErrorCode = dwErrorCode;
-	};
-	void GetDescription(String& strDescription) const noexcept {
-		strDescription = m_strDescription;
-	};
-	const wchar_t* GetDescription(void) const noexcept {
-		return m_strDescription.GetString();
-	};
-	void SetDescription(const wchar_t* description) noexcept {
-		m_strDescription = description;
-	};
+	constexpr DWORD getErrorCode(void) const noexcept {
+		return errorCode_;
+	}
+	void setErrorCode(DWORD errorCode) noexcept {
+		errorCode_ = errorCode;
+	}
+	void getDescription(String& description) const noexcept {
+		description = description_;
+	}
+	const wchar_t* getDescription(void) const noexcept {
+		return description_.getString();
+	}
+	void setDescription(const wchar_t* description) noexcept {
+		description_ = description;
+	}
 };
 
 // Define new typenames for History info data
@@ -1288,8 +1288,8 @@ public:
 
 private:
 	// Attributes
-	EventID	 m_sysEventID;											// System event ID
-	DateTime m_timeStamp;											// Event timestamp
+	EventID	 eventId_;												// System event ID
+	DateTime timestampValue_;										// Event timestamp
 
 public:
 	// Construction
@@ -1301,15 +1301,15 @@ public:
 
 public:
 	// Get/set functions
-	EventID GetEventID(void) const noexcept {
-		return m_sysEventID;
-	};
-	DateTime GetTimestamp(void) const noexcept {
-		return m_timeStamp;
-	};
-	void SetTimestamp(DateTime eventTimestamp) noexcept {
-		m_timeStamp = eventTimestamp;
-	};
+	EventID getEventId(void) const noexcept {
+		return eventId_;
+	}
+	DateTime getTimestamp(void) const noexcept {
+		return timestampValue_;
+	}
+	void setTimestamp(DateTime eventTimestamp) noexcept {
+		timestampValue_ = eventTimestamp;
+	}
 };
 
 // Define new typenames for Power System Event info data
@@ -1324,7 +1324,7 @@ class SystemEventTracker
 {
 private:
 	// Attributes
-	SystemEventData m_arrTrackingData;								// System event tracking data
+	SystemEventData trackingData_;								// System event tracking data
 
 public:
 	// Construction
@@ -1336,33 +1336,33 @@ public:
 
 public:
 	// Validation
-	constexpr bool IsEmpty(void) const noexcept {
-		return (m_arrTrackingData.empty());
-	};
-	constexpr size_t GetTrackedCount(void) const noexcept {
-		return (m_arrTrackingData.size());
-	};
+	constexpr bool isEmpty(void) const noexcept {
+		return (trackingData_.empty());
+	}
+	constexpr size_t getTrackedCount(void) const noexcept {
+		return (trackingData_.size());
+	}
 
 	// Add system event info
-	void AddEvent(const SystemEvent& eventInfo) {
-		m_arrTrackingData.push_back(eventInfo);
-	};
+	void addEvent(const SystemEvent& eventInfo) {
+		trackingData_.push_back(eventInfo);
+	}
 
 	// Remove all tracking data of specific event ID
-	void RemoveAll(SystemEventID eventID) {
-		m_arrTrackingData.erase(std::remove_if(m_arrTrackingData.begin(), m_arrTrackingData.end(),
-			[eventID](const SystemEvent& eventInfo) { return (eventInfo.GetEventID() == eventID); }), m_arrTrackingData.end());
-	};
+	void removeAll(SystemEventID eventID) {
+		trackingData_.erase(std::remove_if(trackingData_.begin(), trackingData_.end(),
+			[eventID](const SystemEvent& eventInfo) { return (eventInfo.getEventId() == eventID); }), trackingData_.end());
+	}
 
 	// Remove all event tracking data
-	void RemoveAll(void) noexcept {
-		m_arrTrackingData.clear();
-	};
+	void removeAll(void) noexcept {
+		trackingData_.clear();
+	}
 
 	// Access items
-	const SystemEvent& GetAt(int nIndex) const {
-		return (m_arrTrackingData.at(nIndex));
-	};
+	const SystemEvent& getAt(int index) const {
+		return (trackingData_.at(index));
+	}
 };
 
 
@@ -1370,11 +1370,11 @@ public:
 typedef struct tagGRIDCTRLCOLFMT 
 {
 	// Member variables
-	int			nColID;										// Column ID
-	unsigned	nHeaderTitleID;								// Header title string ID
-	int			nWidth;										// Column width
-	unsigned	nColStyle;									// Column style
-	bool		bCenter;									// Align center
+	int			columnId;									// Column ID
+	unsigned	headerTitleId;								// Header title string ID
+	int			width;										// Column width
+	unsigned	columnStyle;								// Column style
+	bool		isCentered;									// Align center
 } GRIDCTRLCOLFORMAT, *PGRIDCTRLCOLFORMAT;
 
 
@@ -1382,12 +1382,12 @@ typedef struct tagGRIDCTRLCOLFMT
 typedef struct tagRESTARTREQ 
 {
 	// Member variables
-	bool bRequest;											// Request to restart
-	bool bAdminCheck;										// Check if already running as admin
-	bool bNotAdminShowMsg;									// If not admin, not show check message
-	bool bIsAdminDoNothing;									// If already running as admin, do nothing
-	bool bShowMsgWhenDeny;									// Show message when denied
-	bool bResetFlag;										// Reset flag when denied
+	bool request;											// Request to restart
+	bool adminCheck;										// Check if already running as admin
+	bool showMsgIfNotAdmin;									// If not admin, not show check message
+	bool doNothingIfAdmin;									// If already running as admin, do nothing
+	bool showMsgWhenDeny;									// Show message when denied
+	bool resetFlag;											// Reset flag when denied
 } RESTARTREQ, *PRESTARTREQ;
 
 
@@ -1412,29 +1412,29 @@ public:
 
 public:
 	// Format string
-	static String StringFormat(unsigned formatTemplateID, ...);
-	static String StringFormat(const wchar_t* formatTemplate, ...);
+	static String stringFormat(unsigned formatTemplateID, ...);
+	static String stringFormat(const wchar_t* formatTemplate, ...);
 
 	// Load resource string/text data
-	static String LoadResourceString(unsigned resourceStringID);
-	static bool	LoadResourceString(String& resultStr, unsigned resourceStringID);
-	static String LoadResourceTextData(unsigned resourceFileID);
+	static String loadResourceString(unsigned resourceStringID);
+	static bool	loadResourceString(String& resultStr, unsigned resourceStringID);
+	static String loadResourceTextData(unsigned resourceFileID);
 
 	// Make/acquire paths
-	static String GetApplicationPath(bool includeExeName);
-	static String GetSubFolderPath(const wchar_t* subFolderName);
-	static String MakeFilePath(const wchar_t* directory, const wchar_t* fileName, const wchar_t* extension);
+	static String getApplicationPath(bool includeExeName);
+	static String getSubFolderPath(const wchar_t* subFolderName);
+	static String makeFilePath(const wchar_t* directory, const wchar_t* fileName, const wchar_t* extension);
 
 	// Get product version
-	static String GetProductVersion(bool isFullVersion);
-	static bool GetProductVersion(String& fullVersion, String& shortVersion);
+	static String getProductVersion(bool isFullVersion);
+	static bool getProductVersion(String& fullVersion, String& shortVersion);
 
 	// Get system and user info
-	static bool GetDeviceName(String& deviceName);
-	static bool GetCurrentUserName(String& userName);
+	static bool getDeviceName(String& deviceName);
+	static bool getCurrentUserName(String& userName);
 
 	// Print character list
-	static int PrintCharList(const wchar_t* srcStr, String& outputStr);
+	static int printCharList(const wchar_t* srcStr, String& outputStr);
 };
 
 
@@ -1443,26 +1443,26 @@ class ClockTimeUtils
 {
 public:
 	// Get current clock-time from system
-	static ClockTime GetCurrentClockTime(void);
+	static ClockTime getCurrentClockTime(void);
 
 	// Conversion
-	static ClockTime FromSystemTime(SYSTEMTIME sysTime);
-	static SYSTEMTIME ToSystemTime(const ClockTime& clockTime);
+	static ClockTime fromSystemTime(SYSTEMTIME sysTime);
+	static SYSTEMTIME toSystemTime(const ClockTime& clockTime);
 
-	static bool InputText2Time(ClockTime& clockTime, const wchar_t* inputText);
-	static bool InputText2TimeBase(ClockTime& clockTime, const wchar_t* inputText);
-	static void SpinPos2Time(ClockTime& clockTime, int spinPos);
-	static void Time2SpinPos(const ClockTime& clockTime, int& spinPos);
+	static bool inputText2Time(ClockTime& clockTime, const wchar_t* inputText);
+	static bool inputText2TimeBase(ClockTime& clockTime, const wchar_t* inputText);
+	static void spinPos2Time(ClockTime& clockTime, int spinPos);
+	static void time2SpinPos(const ClockTime& clockTime, int& spinPos);
 
 	// Calculate time offset (increasing/descreasing) in seconds
-	static void CalculateOffset(ClockTime& clockTime, int offInSecs);
+	static void calculateOffset(ClockTime& clockTime, int offInSecs);
 
 	// Check time matching (in seconds)
-	static bool IsMatching(ClockTime thisTime, ClockTime otherTime, int offInSecs = 0);
+	static bool isMatching(ClockTime thisTime, ClockTime otherTime, int offInSecs = 0);
 
 	// Format for displaying/printing
-	static String Format(LANGTABLE_PTR pLang, unsigned nFormatID, const ClockTime& clockTime);
-	static String Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const ClockTime& clockTime);
+	static String format(LANGTABLE_PTR languageTablePtr, unsigned formatId, const ClockTime& clockTime);
+	static String format(LANGTABLE_PTR languageTablePtr, const wchar_t* formatString, const ClockTime& clockTime);
 };
 
 
@@ -1471,15 +1471,15 @@ class DateTimeUtils
 {
 public:
 	// Get current date/time from system
-	static DateTime GetCurrentDateTime(void);
+	static DateTime getCurrentDateTime(void);
 
 	// Conversion
-	static DateTime FromSystemTime(SYSTEMTIME sysTime);
-	static SYSTEMTIME ToSystemTime(const DateTime& dateTime);
+	static DateTime fromSystemTime(SYSTEMTIME sysTime);
+	static SYSTEMTIME toSystemTime(const DateTime& dateTime);
 
 	// Format for displaying/printing
-	static String Format(LANGTABLE_PTR pLang, unsigned nFormatID, const DateTime& dateTime);
-	static String Format(LANGTABLE_PTR pLang, const wchar_t* formatString, const DateTime& dateTime);
+	static String format(LANGTABLE_PTR languageTablePtr, unsigned formatId, const DateTime& dateTime);
+	static String format(LANGTABLE_PTR languageTablePtr, const wchar_t* formatString, const DateTime& dateTime);
 };
 
 
@@ -1488,12 +1488,12 @@ class PerformanceCounter
 {
 private:
 	// Attributes
-	LARGE_INTEGER m_liStartTime;
-	LARGE_INTEGER m_liEndTime;
-	LARGE_INTEGER m_liFrequency;
+	LARGE_INTEGER startTime_;
+	LARGE_INTEGER endTime_;
+	LARGE_INTEGER frequency_;
 
 	// Counting flag
-	bool m_bIsRunning;
+	bool isRunning_;
 
 public:
 	// Construction
@@ -1501,9 +1501,9 @@ public:
 	~PerformanceCounter();
 
 	// Member functions
-	void Start(void);
-	void Stop(void);
-	double GetElapsedTime(bool) const noexcept;
+	void start(void);
+	void stop(void);
+	double getElapsedTime(bool) const noexcept;
 };
 
 
@@ -1512,48 +1512,48 @@ public:
 namespace AppCore
 {
 	// Power action execution functions (main core)
-	bool ExecutePowerAction(unsigned nActionType, unsigned nMessage, DWORD& dwErrCode);
-	bool ExecutePowerActionDummy(unsigned nActionType, unsigned nMessage, DWORD& dwErrCode);
+	bool executePowerAction(unsigned actionType, unsigned message, DWORD& errorCode);
+	bool executePowerActionDummy(unsigned actionType, unsigned message, DWORD& errorCode);
 
 	// Message and notification functions
-	LRESULT	WaitMessage(unsigned nMsg, int nTimeout = Constant::Max::Timeout::WaitMessage);
-	void	ShowErrorMessage(HWND hMsgOwnerWnd, unsigned nLanguageID, DWORD dwErrorCode, LPARAM lParam = NULL);
+	LRESULT	waitMessage(unsigned message, int timeout = Constant::Max::Timeout::WaitMessage);
+	void	showErrorMessage(HWND msgOwnerWnd, unsigned languageId, DWORD errorCode, LPARAM lParam = NULL);
 
 	// Convert combo-box selection into option ID
-	inline unsigned Sel2Opt(unsigned nOptionMacro, unsigned nSelection) {
-		VERIFY(nOptionMacro > 0x00 && nOptionMacro < UINT_MAX);
-		VERIFY(nSelection >= 0 && nSelection < UINT_MAX);
-		return ((nOptionMacro << 8) + (nSelection + 1));
-	};
+	inline unsigned sel2Opt(unsigned optionMacro, unsigned selection) {
+		VERIFY(optionMacro > 0x00 && optionMacro < UINT_MAX);
+		VERIFY(selection >= 0 && selection < UINT_MAX);
+		return ((optionMacro << 8) + (selection + 1));
+	}
 
 	// Convert option ID into combo-box selection
-	inline unsigned Opt2Sel(unsigned nOptionMacro, unsigned nCurOption) {
-		VERIFY(nOptionMacro > 0x00 && nOptionMacro < UINT_MAX);
-		VERIFY(nCurOption >= 0 && nCurOption < UINT_MAX);
-		return (nCurOption - (nOptionMacro << 8) - 1);
-	};
+	inline unsigned opt2Sel(unsigned optionMacro, unsigned currentOption) {
+		VERIFY(optionMacro > 0x00 && optionMacro < UINT_MAX);
+		VERIFY(currentOption >= 0 && currentOption < UINT_MAX);
+		return (currentOption - (optionMacro << 8) - 1);
+	}
 
 	// Data/control/window functions
-	HWND FindDebugTestDlg(void);
-	void SetFixedCellStyle(CGridCtrl* pGridCtrl, int nRow, int nCol);
-	bool SetDarkMode(CWnd* pWnd, bool bEnableDarkMode);
-	void DrawButton(CButton*& pButton, unsigned nIconID, const wchar_t* buttonTitle = Constant::String::Empty);
+	HWND findDebugTestDlg(void);
+	void setFixedCellStyle(CGridCtrl* gridCtrlPtr, int row, int col);
+	bool setDarkMode(CWnd* wndPtr, bool enableDarkMode);
+	void drawButton(CButton*& buttonPtr, unsigned iconID, const wchar_t* buttonTitle = Constant::String::Empty);
 
 	// Get Windows OS version
-	unsigned GetWindowsOSVersion(void);
+	unsigned getWindowsOSVersion(void);
 
 	// File and media
-	void PlaySound(bool bSoundEnable, unsigned nTypeOfSound);
-	bool FileViewStd(FILETYPE eFileType, const wchar_t* filePath);
-	bool OpenWebURL(const wchar_t* webUrl);
+	void playSound(bool isSoundEnabled, unsigned typeOfSound);
+	bool fileViewStd(FILETYPE fileType, const wchar_t* filePath);
+	bool openWebURL(const wchar_t* webUrl);
 
 	// Applications and instances
-	LRESULT RunApp(const wchar_t* appPath, bool bRunAsAdmin = false, bool bShowFlag = true);
-	LRESULT ExecuteCommand(const wchar_t* commandString, bool bRunAsAdmin = true, bool bShowFlag = true);
-	bool	CreateAppProcess(const wchar_t* appPath, wchar_t* commandLine, unsigned nStyle, DWORD& dwErrorCode);
+	LRESULT runApp(const wchar_t* appPath, bool runAsAdmin = false, bool showFlag = true);
+	LRESULT executeCommand(const wchar_t* commandString, bool runAsAdmin = true, bool showFlag = true);
+	bool	createAppProcess(const wchar_t* appPath, wchar_t* commandLine, unsigned style, DWORD& errorCode);
 
 	// Font name validation
-	bool EnumFontNames(std::vector<std::wstring>& fontNames);
-	bool ValidateFontName(const wchar_t* fontName);
+	bool enumFontNames(std::vector<std::wstring>& fontNameList);
+	bool validateFontName(const wchar_t* fontName);
 };
 

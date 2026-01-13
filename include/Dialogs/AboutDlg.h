@@ -34,8 +34,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -52,7 +52,7 @@ public:
 
 protected:
 	// Member functions
-	void SetupLanguage(void);
-	void SetAppNameLabel(void);
-	void SetAppInfoLabel(void);
+	void setupLanguage(void);
+	void setAppNameLabel(void);
+	void setAppInfoLabel(void);
 };

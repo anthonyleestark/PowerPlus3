@@ -70,6 +70,9 @@ Based on Power++ v2.0 STL, upgraded since Apr-2024.
  - Power Reminder: Message snoozing, RepeatSet and message style customization
  - Schedule: Supports Multiple schedule actions
  - HotkeySet: Allows using background Hotkeys when the screen is locked
+ 
+### Version: 3.2 (v3.2.1.1) - Release Date: Jan 2026
+This version does not contain any new feature, improvement or any correction.
 
 ## Screenshots
 <p align="center">
@@ -103,7 +106,7 @@ Based on Power++ v2.0 STL, upgraded since Apr-2024.
 - After compiling and building, run the program by opening the **power++.exe** executable file
 
 ## Releases
-Click [here](https://github.com/anthonyleestark/PowerPlus3/releases/download/v3.2.1.0/PowerPlus3.zip) to download the latest version.
+Click [here](https://github.com/anthonyleestark/PowerPlus3/releases/download/v3.2.1.1/PowerPlus3.zip) to download the latest version.
 
 ## License
 This repository is open-source and available under the [BSD-3-Clause license](https://opensource.org/license/bsd-3-clause).

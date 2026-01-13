@@ -19,98 +19,98 @@ namespace AppRegistry
 	/*----------------- Base functions for reading/writing registry values ----------------*/
 	
 	// Read/write registry values (integer) with nested subsection
-	unsigned GetRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName);
-	bool WriteRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, int nValue);
+	unsigned getRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName);
+	bool writeRegistryValueInt(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, int value);
 
 	// Read/write registry values (string) with nested subsection
-	String GetRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName);
-	bool WriteRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value);
+	String getRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName);
+	bool writeRegistryValueString(const wchar_t* sectionName, const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value);
 
 	// Delete registry section or subsection by name
-	bool DeleteRegistrySection(const wchar_t* sectionName, const wchar_t* subSectionName = NULL);
+	bool deleteRegistrySection(const wchar_t* sectionName, const wchar_t* subSectionName = NULL);
 
 
 	/*--------------- Functions for reading/writing application profile info ---------------*/
 
 
 	// Read/write registry profile info values
-	bool GetProfileInfo(const wchar_t* keyName, int& nRef);
-	bool WriteProfileInfo(const wchar_t* keyName, int nValue);
-	bool GetProfileInfo(const wchar_t* keyName, String& strRef);
-	bool WriteProfileInfo(const wchar_t* keyName, const wchar_t* valueString);
+	bool getProfileInfo(const wchar_t* keyName, int& referValue);
+	bool writeProfileInfo(const wchar_t* keyName, int value);
+	bool getProfileInfo(const wchar_t* keyName, String& referString);
+	bool writeProfileInfo(const wchar_t* keyName, const wchar_t* valueString);
 
 
 	/*--------------- Derivered functions for reading/writing each data type ---------------*/
 
 
 	// Read/write registry config values
-	bool GetConfig(const wchar_t* keyName, int& nRef);
-	bool WriteConfig(const wchar_t* keyName, int nValue);
+	bool getConfig(const wchar_t* keyName, int& referValue);
+	bool writeConfig(const wchar_t* keyName, int value);
 
 	// Delete section
-	bool DeleteConfigSection(void);
+	bool deleteConfigSection(void);
 
 	// Read/write registry default schedule values
-	bool GetDefaultSchedule(const wchar_t* keyName, int& nRef);
-	bool WriteDefaultSchedule(const wchar_t* kyName, int nValue);
+	bool getDefaultSchedule(const wchar_t* keyName, int& referValue);
+	bool writeDefaultSchedule(const wchar_t* keyName, int value);
 
 	// Read/write registry schedule extra item number value
-	bool GetScheduleExtraItemNum(const wchar_t* keyName, int& nRef);
-	bool WriteScheduleExtraItemNum(const wchar_t* keyName, int nValue);
+	bool getScheduleExtraItemNum(const wchar_t* keyName, int& referValue);
+	bool writeScheduleExtraItemNum(const wchar_t* keyName, int value);
 
 	// Read/write registry schedule extra item values
-	bool GetScheduleExtra(int nItemIndex, const wchar_t* keyName, int& nRef);
-	bool WriteScheduleExtra(int nItemIndex, const wchar_t* keyName, int nValue);
+	bool getScheduleExtra(int itemIndex, const wchar_t* keyName, int& referValue);
+	bool writeScheduleExtra(int itemIndex, const wchar_t* keyName, int value);
 
 	// Delete section
-	bool DeleteScheduleSection(void);
+	bool deleteScheduleSection(void);
 
 	// Read/write registry hotkeyset item number value
-	bool GetHotkeyItemNum(const wchar_t* keyName, int& nRef);
-	bool WriteHotkeyItemNum(const wchar_t* keyName, int nValue);
+	bool getHotkeyItemNum(const wchar_t* keyName, int& referValue);
+	bool writeHotkeyItemNum(const wchar_t* keyName, int value);
 
 	// Read/write registry hotkeyset item values
-	bool GetHotkeySet(int nItemIndex, const wchar_t* keyName, int& nRef);
-	bool WriteHotkeySet(int nItemIndex, const wchar_t* keyName, int nValue);
+	bool getHotkeySet(int itemIndex, const wchar_t* keyName, int& referValue);
+	bool writeHotkeySet(int itemIndex, const wchar_t* keyName, int value);
 
 	// Delete section
-	bool DeleteHotkeySetSection(void);
+	bool deleteHotkeySetSection(void);
 
 	// Read/write registry Power Reminder common style data
-	bool GetPwrReminderCommonStyle(const wchar_t* keyName, int& nRef);
-	bool WritePwrReminderCommonStyle(const wchar_t* kyName, int nValue);
-	bool GetPwrReminderCommonStyle(const wchar_t* keyName, String& strRef);
-	bool WritePwrReminderCommonStyle(const wchar_t* keyName, const wchar_t* value);
+	bool getPwrReminderCommonStyle(const wchar_t* keyName, int& referValue);
+	bool writePwrReminderCommonStyle(const wchar_t* kyName, int value);
+	bool getPwrReminderCommonStyle(const wchar_t* keyName, String& referString);
+	bool writePwrReminderCommonStyle(const wchar_t* keyName, const wchar_t* value);
 
 	// Read/write registry Power Reminder item number value
-	bool GetPwrReminderItemNum(const wchar_t* keyName, int& nRef);
-	bool WritePwrReminderItemNum(const wchar_t* keyName, int nValue);
+	bool getPwrReminderItemNum(const wchar_t* keyName, int& referValue);
+	bool writePwrReminderItemNum(const wchar_t* keyName, int value);
 
 	// Read/write registry Power Reminder item values
-	bool GetPwrReminder(int nItemIndex, const wchar_t* keyName, int& nRef);
-	bool WritePwrReminder(int nItemIndex, const wchar_t* keyName, int nValue);
-	bool GetPwrReminder(int nItemIndex, const wchar_t* keyName, String& strRef);
-	bool WritePwrReminder(int nItemIndex, const wchar_t* keyName, const wchar_t* value);
+	bool getPwrReminder(int itemIndex, const wchar_t* keyName, int& referValue);
+	bool writePwrReminder(int itemIndex, const wchar_t* keyName, int value);
+	bool getPwrReminder(int itemIndex, const wchar_t* keyName, String& referString);
+	bool writePwrReminder(int itemIndex, const wchar_t* keyName, const wchar_t* value);
 
 	// Delete section
-	bool DeletePwrReminderSection(void);
+	bool deletePwrReminderSection(void);
 
 	// Read/write registry layout info values
-	bool GetLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef);
-	bool WriteLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int nValue);
+	bool getLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int& referValue);
+	bool writeLayoutInfo(const wchar_t* subSectionName, const wchar_t* keyName, int value);
 
 	// Delete section
-	bool DeleteLayoutInfoSection(void);
+	bool deleteLayoutInfoSection(void);
 
 	// Read/write system event tracking data
-	bool GetSysEventTracking(const wchar_t* keyName, String& strRef);
-	bool WriteSysEventTracking(const wchar_t* keyName, const wchar_t* value);
+	bool getSysEventTracking(const wchar_t* keyName, String& referString);
+	bool writeSysEventTracking(const wchar_t* keyName, const wchar_t* value);
 
 	// Read/write other global data variables
-	bool GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int& nRef);
-	bool WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int nValue);
-	bool GetGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, String& strRef);
-	bool WriteGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value);
+	bool getGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int& referValue);
+	bool writeGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, int value);
+	bool getGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, String& referString);
+	bool writeGlobalData(const wchar_t* subSectionName, const wchar_t* keyName, const wchar_t* value);
 };
 
 

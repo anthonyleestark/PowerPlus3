@@ -19,8 +19,8 @@ IMPLEMENT_DYNAMIC(SResourceIDMap, CObject)
 
 
 //	Initialize static members for SResourceIDMap
-SResourceIDMap* SResourceIDMap::m_thisInstance = NULL;
-std::mutex		SResourceIDMap::m_mutexLockGuard;
+SResourceIDMap* SResourceIDMap::resourceIdMapInstance_ = NULL;
+std::mutex		SResourceIDMap::mutexLockGuard_;
 
 
 /**
@@ -29,8 +29,8 @@ std::mutex		SResourceIDMap::m_mutexLockGuard;
 SResourceIDMap::SResourceIDMap() : CObject()
 {
 	// Initialization
-	m_pIDMapData = NULL;
-	m_nSize = 0;
+	idMapData_ = NULL;
+	mapSize_ = 0;
 }
 
 /**
@@ -39,17 +39,17 @@ SResourceIDMap::SResourceIDMap() : CObject()
 SResourceIDMap::~SResourceIDMap()
 {
 	// Clean-up data
-	RemoveAll();
+	removeAll();
 }
 
 /**
  * @brief	Return the resource ID map entry at specific given index
- * @param	nIndex - Index of resource ID map entry to get
+ * @param	index - Index of resource ID map entry to get
  * @return	const RESOURCE_ID_MAP_ENTRY&
  */
-const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::operator[](size_t nIndex)
+const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::operator[](size_t index)
 {
-	return this->GetAt(nIndex);
+	return this->getAt(index);
 }
 
 /**
@@ -57,17 +57,17 @@ const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::operator[](size_t nIndex)
  * @param	None
  * @return	SResourceIDMap*
  */
-SResourceIDMap* SResourceIDMap::GetResourceIDMap(void)
+SResourceIDMap* SResourceIDMap::getResourceIdMap(void)
 {
 	// Ensure thread safety
-	std::lock_guard<std::mutex> lock(m_mutexLockGuard);
+	std::lock_guard<std::mutex> lock(mutexLockGuard_);
 
 	// Get this single instance
-	if (m_thisInstance == NULL) {
-		m_thisInstance = new SResourceIDMap();
-		ASSERT(m_thisInstance != NULL);
+	if (resourceIdMapInstance_ == NULL) {
+		resourceIdMapInstance_ = new SResourceIDMap();
+		ASSERT(resourceIdMapInstance_ != NULL);
 	}
-	return m_thisInstance;
+	return resourceIdMapInstance_;
 }
 
 /**
@@ -75,160 +75,160 @@ SResourceIDMap* SResourceIDMap::GetResourceIDMap(void)
  * @param	None
  * @return	None
  */
-void SResourceIDMap::DestroyResourceIDMap(void)
+void SResourceIDMap::destroyResourceIdMap(void)
 {
 	// Ensure instance validity
-	ASSERT(m_thisInstance != NULL);
-	if (m_thisInstance != NULL) {
+	ASSERT(resourceIdMapInstance_ != NULL);
+	if (resourceIdMapInstance_ != NULL) {
 
 		// Remove all map data
-		m_thisInstance->RemoveAll();
+		resourceIdMapInstance_->removeAll();
 
 		// Destroy instance
-		delete m_thisInstance;
-		m_thisInstance = NULL;
+		delete resourceIdMapInstance_;
+		resourceIdMapInstance_ = NULL;
 	}
 }
 
 /**
  * @brief	Copy another resource ID map data to current map data
- * @param	pSrc  - Source data pointer
- * @param	nSize - Source data size
+ * @param	src  - Source data pointer
+ * @param	size - Source data size
  * @return	None
  */
-void SResourceIDMap::Copy(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
+void SResourceIDMap::copy(const RESOURCE_ID_MAP_ENTRY* src, size_t size)
 {
 	// Check source data validity
-	ASSERT((pSrc != NULL) && (nSize > 0));
-	if ((pSrc == NULL) || (nSize <= 0))
+	ASSERT((src != NULL) && (size > 0));
+	if ((src == NULL) || (size <= 0))
 		return;
 
 	// If the destination data is not empty
-	if (m_pIDMapData != NULL) {
+	if (idMapData_ != NULL) {
 
 		// Do not copy itself
-		if (m_pIDMapData == pSrc)
+		if (idMapData_ == src)
 			return;
 
 		// Clean it up to prepare for copying
-		delete[] m_pIDMapData;
-		m_pIDMapData = NULL;
+		delete[] idMapData_;
+		idMapData_ = NULL;
 	}
 
 	// Allocated and initialize destination data
-	m_pIDMapData = new RESOURCE_ID_MAP_ENTRY[nSize];
-	ASSERT(m_pIDMapData != NULL);
+	idMapData_ = new RESOURCE_ID_MAP_ENTRY[size];
+	ASSERT(idMapData_ != NULL);
 
 	// Copy data
-	CopyElements(m_pIDMapData, pSrc, nSize);
-	m_nSize = nSize;
+	CopyElements(idMapData_, src, size);
+	mapSize_ = size;
 }
 
 /**
  * @brief	Append another resource ID map data into current map data
- * @param	pSrc - Source data pointer
- * @param	nSize - Source data size
+ * @param	src - Source data pointer
+ * @param	size - Source data size
  * @return	None
  */
-void SResourceIDMap::Append(const RESOURCE_ID_MAP_ENTRY* pSrc, size_t nSize)
+void SResourceIDMap::append(const RESOURCE_ID_MAP_ENTRY* src, size_t size)
 {
 	// Check source data validity
-	ASSERT((pSrc != NULL) && (nSize > 0));
-	if ((pSrc == NULL) || (nSize <= 0))
+	ASSERT((src != NULL) && (size > 0));
+	if ((src == NULL) || (size <= 0))
 		return;
 
 	// If the destination data is not allocated, copy data
-	if (m_pIDMapData == NULL) {
-		Copy(pSrc, nSize);
+	if (idMapData_ == NULL) {
+		copy(src, size);
 		return;
 	}
 
 	// Filter items in source map which doesn't exist in destination map
-	size_t nFilterCount = 0;
-	RESOURCE_ID_MAP pFilterSrc = new RESOURCE_ID_MAP_ENTRY[nSize];
-	ASSERT(pFilterSrc != NULL);
-	for (size_t nIndex = 0; nIndex < nSize; nIndex++) {
-		if (FindResourceID(pSrc[nIndex].dwResourceID) == INT_INVALID) {
+	size_t filterCount = 0;
+	RESOURCE_ID_MAP filterSrc = new RESOURCE_ID_MAP_ENTRY[size];
+	ASSERT(filterSrc != NULL);
+	for (size_t index = 0; index < size; index++) {
+		if (findResourceId(src[index].resourceID) == Constant::InvalidInteger) {
 			// Copy item into filter map
-			pFilterSrc[nFilterCount] = pSrc[nIndex];
+			filterSrc[filterCount] = src[index];
 			// Increase filter map count
-			nFilterCount++;
+			filterCount++;
 		}
 	}
 
 	// If filter map is empty (which means all items already existed), do not append
-	if ((pFilterSrc == NULL) || (nFilterCount <= 0))
+	if ((filterSrc == NULL) || (filterCount <= 0))
 		return;
 
 	// Create new map data
-	size_t nNewSize = m_nSize + nFilterCount;
-	RESOURCE_ID_MAP pNewMapData = new RESOURCE_ID_MAP_ENTRY[nNewSize];
-	ASSERT(pNewMapData != NULL);
+	size_t newSize = mapSize_ + filterCount;
+	RESOURCE_ID_MAP newMapData = new RESOURCE_ID_MAP_ENTRY[newSize];
+	ASSERT(newMapData != NULL);
 
 	// Copy current map data to new map data
-	CopyElements(pNewMapData, m_pIDMapData, m_nSize);
+	CopyElements(newMapData, idMapData_, mapSize_);
 
 	// Append filtered source map data to new map data
-	CopyElements(pNewMapData + m_nSize, pFilterSrc, nFilterCount);
-	delete[] pFilterSrc;
+	CopyElements(newMapData + mapSize_, filterSrc, filterCount);
+	delete[] filterSrc;
 
 	// Copy data back
-	delete[] m_pIDMapData;
-	m_pIDMapData = pNewMapData;
-	m_nSize = nNewSize;
+	delete[] idMapData_;
+	idMapData_ = newMapData;
+	mapSize_ = newSize;
 }
 
 /**
  * @brief	Add a resource ID map entry to resource ID map data
- * @param	byTypeID   - Resource type ID
- * @param	dwResID	   - Resource ID
- * @param	lpszNameID - Resource name string ID
+ * @param	typeID   - Resource type ID
+ * @param	resID	   - Resource ID
+ * @param	nameID - Resource name string ID
  * @return	None
  */
-void SResourceIDMap::Add(byte byTypeID, DWORD dwResID, const char* lpszNameID)
+void SResourceIDMap::add(byte typeID, DWORD resID, const char* nameID)
 {
 	// Check data validity
-	ASSERT(m_pIDMapData != NULL);
-	if (m_pIDMapData == NULL)
+	ASSERT(idMapData_ != NULL);
+	if (idMapData_ == NULL)
 		return;
 
 	// Create a new clone map data
-	int nNewSize = m_nSize + 1;
-	RESOURCE_ID_MAP pNewMapData = new RESOURCE_ID_MAP_ENTRY[nNewSize];
-	ASSERT(pNewMapData != NULL);
-	CopyElements(pNewMapData, m_pIDMapData, m_nSize);
+	int newSize = mapSize_ + 1;
+	RESOURCE_ID_MAP newMapData = new RESOURCE_ID_MAP_ENTRY[newSize];
+	ASSERT(newMapData != NULL);
+	CopyElements(newMapData, idMapData_, mapSize_);
 
 	// Add new control ID map entry
-	pNewMapData[m_nSize].byTypeID = byTypeID;
-	pNewMapData[m_nSize].dwResourceID = dwResID;
-	pNewMapData[m_nSize].strNameID = lpszNameID;
+	newMapData[mapSize_].typeID = typeID;
+	newMapData[mapSize_].resourceID = resID;
+	newMapData[mapSize_].nameID = nameID;
 
 	// Copy data back
-	delete[] m_pIDMapData;
-	m_pIDMapData = pNewMapData;
-	m_nSize = nNewSize;
+	delete[] idMapData_;
+	idMapData_ = newMapData;
+	mapSize_ = newSize;
 }
 
 /**
  * @brief	Modify name ID of specific resource ID item in resource ID map
- * @param	dwResID		  - Resource ID
- * @param	lpszNewNameID - New resource name string ID
+ * @param	resID		  - Resource ID
+ * @param	newNameID - New resource name string ID
  * @return	None
  */
-void SResourceIDMap::Modify(DWORD dwResID, const char* lpszNewNameID)
+void SResourceIDMap::modify(DWORD resID, const char* newNameID)
 {
 	// Check data validity
-	ASSERT(m_pIDMapData != NULL);
-	if (m_pIDMapData == NULL)
+	ASSERT(idMapData_ != NULL);
+	if (idMapData_ == NULL)
 		return;
 
 	// Find item index
-	int nIndex = FindResourceID(dwResID);
-	if (nIndex == INT_INVALID)
+	int index = findResourceId(resID);
+	if (index == Constant::InvalidInteger)
 		return;
 	
 	// Modify item at index
-	m_pIDMapData[nIndex].strNameID = lpszNewNameID;
+	idMapData_[index].nameID = newNameID;
 }
 
 /**
@@ -237,36 +237,36 @@ void SResourceIDMap::Modify(DWORD dwResID, const char* lpszNewNameID)
  * @param	dwResID	- Resource ID
  * @return	None
  */
-void SResourceIDMap::Remove(DWORD dwResID)
+void SResourceIDMap::remove(DWORD resID)
 {
 	// Check data validity
-	ASSERT(m_pIDMapData != NULL);
-	if (m_pIDMapData == NULL)
+	ASSERT(idMapData_ != NULL);
+	if (idMapData_ == NULL)
 		return;
 
 	// Find item index
-	int nItemIndex = FindResourceID(dwResID);
-	if (nItemIndex == INT_INVALID)
+	int itemIndex = findResourceId(resID);
+	if (itemIndex == Constant::InvalidInteger)
 		return;
 
 	// Create a new clone map data
-	size_t nNewSize = (m_nSize - 1);
-	RESOURCE_ID_MAP pNewMapData = new RESOURCE_ID_MAP_ENTRY[m_nSize];
-	ASSERT(pNewMapData != NULL);
+	size_t newSize = (mapSize_ - 1);
+	RESOURCE_ID_MAP newMapData = new RESOURCE_ID_MAP_ENTRY[mapSize_];
+	ASSERT(newMapData != NULL);
 
 	// Copy old data to new data
 	// except for the item at the index we need to remove
-	size_t nDestIdx = 0;
-	for (size_t nSrcIdx = 0; nSrcIdx < m_nSize; nSrcIdx++) {
-		if (nSrcIdx == nItemIndex) continue;
-		pNewMapData[nDestIdx] = m_pIDMapData[nSrcIdx];
-		nDestIdx++;
+	size_t destIdx = 0;
+	for (size_t srcIdx = 0; srcIdx < mapSize_; srcIdx++) {
+		if (srcIdx == itemIndex) continue;
+		newMapData[destIdx] = idMapData_[srcIdx];
+		destIdx++;
 	}
 
 	// Copy data back
-	delete[] m_pIDMapData;
-	m_pIDMapData = pNewMapData;
-	m_nSize = nNewSize;
+	delete[] idMapData_;
+	idMapData_ = newMapData;
+	mapSize_ = newSize;
 }
 
 /**
@@ -274,76 +274,76 @@ void SResourceIDMap::Remove(DWORD dwResID)
  * @param	None
  * @return	None
  */
-void SResourceIDMap::RemoveAll(void)
+void SResourceIDMap::removeAll(void)
 {
 	// Check data validity
-	if (m_pIDMapData == NULL)
+	if (idMapData_ == NULL)
 		return;
 
 	// Clean-up data
-	delete[] m_pIDMapData;
-	m_pIDMapData = NULL;
+	delete[] idMapData_;
+	idMapData_ = NULL;
 }
 
 /**
  * @brief	Get resource ID from given name string ID
- * @param	lpszNameID - Resource name string ID
+ * @param	nameID - Resource name string ID
  * @return	None
  */
-unsigned SResourceIDMap::GetResourceID(const char* lpszNameID) const
+unsigned SResourceIDMap::getResourceId(const char* nameID) const
 {
 	// Check data validity
-	ASSERT(m_pIDMapData != NULL);
-	if (m_pIDMapData == NULL)
-		return INT_NULL;
+	ASSERT(idMapData_ != NULL);
+	if (idMapData_ == NULL)
+		return Constant::NullInteger;
 
 	// Find index
-	int nIndex = FindNameID(lpszNameID);
-	if (nIndex == INT_INVALID)
-		return INT_NULL;
+	int index = findNameID(nameID);
+	if (index == Constant::InvalidInteger)
+		return Constant::NullInteger;
 
 	// Return control resource ID
-	return m_pIDMapData[nIndex].dwResourceID;
+	return idMapData_[index].resourceID;
 }
 
 /**
  * @brief	Get name string ID from given resource ID
- * @param	dwResID	- Resource ID
+ * @param	resID	- Resource ID
  * @return	None
  */
-const char* SResourceIDMap::GetNameID(DWORD dwResID) const
+const char* SResourceIDMap::getNameId(DWORD resID) const
 {
 	// Check data validity
-	ASSERT(m_pIDMapData != NULL);
-	if (m_pIDMapData == NULL)
+	ASSERT(idMapData_ != NULL);
+	if (idMapData_ == NULL)
 		return "#NULL";
 
 	// Find index
-	int nIndex = FindResourceID(dwResID);
-	if (nIndex == INT_INVALID)
+	int index = findResourceId(resID);
+	if (index == Constant::InvalidInteger)
 		return "#NULL";
 
 	// Return string ID
-	return m_pIDMapData[nIndex].strNameID;
+	return idMapData_[index].nameID;
 }
 
 /**
  * @brief	Return index of the first item with specific resource ID
 					and return -1 if resource ID is not found
  * @param	dwResID - Resource ID
- * @return	long long
+ * @return	int64
  */
-long long SResourceIDMap::FindResourceID(DWORD dwResID) const
+int64 SResourceIDMap::findResourceId(DWORD resID) const
 {
 	// Check data validity
-	ASSERT(m_pIDMapData != NULL);
-	if (m_pIDMapData == NULL)
-		return INT_INVALID;
+	ASSERT(idMapData_ != NULL);
+	if (idMapData_ == NULL)
+		return Constant::InvalidInteger;
 
 	// Find ID
-	long long resIndex = INT_INVALID;
-	for (size_t index = 0; index < m_nSize; index++) {
-		if (m_pIDMapData[index].dwResourceID == dwResID) {
+	int64 resIndex = Constant::InvalidInteger;
+	for (size_t index = 0; index < mapSize_; index++) {
+		if (idMapData_[index].resourceID == resID) {
 			resIndex = index;	// Index found
 			break;
 		}
@@ -355,19 +355,19 @@ long long SResourceIDMap::FindResourceID(DWORD dwResID) const
  * @brief	Return index of the first item with specific name ID
 					and return -1 if name ID is not found
 					lpszNameID - Name string ID
- * @return	long long
+ * @return	int64
  */
-long long SResourceIDMap::FindNameID(const char* lpszNameID) const
+int64 SResourceIDMap::findNameID(const char* nameID) const
 {
 	// Check data validity
-	ASSERT(m_pIDMapData != NULL);
-	if (m_pIDMapData == NULL)
-		return INT_INVALID;
+	ASSERT(idMapData_ != NULL);
+	if (idMapData_ == NULL)
+		return Constant::InvalidInteger;
 
 	// Find ID
-	long long resIndex = INT_INVALID;
-	for (size_t index = 0; index < m_nSize; index++) {
-		if (strcmp(m_pIDMapData[index].strNameID, lpszNameID) == 0) {
+	int64 resIndex = Constant::InvalidInteger;
+	for (size_t index = 0; index < mapSize_; index++) {
+		if (strcmp(idMapData_[index].nameID, nameID) == 0) {
 			resIndex = index;	// Index found
 			break;
 		}
@@ -377,14 +377,14 @@ long long SResourceIDMap::FindNameID(const char* lpszNameID) const
 
 /**
  * @brief	Return the resource ID map entry at specific given index
- * @param	nIndex - Index of resource ID map entry to get
+ * @param	index - Index of resource ID map entry to get
  * @return	const RESOURCE_ID_MAP_ENTRY&
  */
-const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::GetAt(size_t nIndex) const
+const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::getAt(size_t index) const
 {
-	ASSERT((nIndex >= 0) && (nIndex < m_nSize));
-	if ((nIndex >= 0) && (nIndex < m_nSize)) {
-		return m_pIDMapData[nIndex];
+	ASSERT((index >= 0) && (index < mapSize_));
+	if ((index >= 0) && (index < mapSize_)) {
+		return idMapData_[index];
 	}
 
 	// Invalid argument
@@ -396,7 +396,7 @@ const RESOURCE_ID_MAP_ENTRY& SResourceIDMap::GetAt(size_t nIndex) const
  * @param	None
  * @return	size_t - Number of resource ID map entries
  */
-size_t SResourceIDMap::GetMapCount(void) const
+size_t SResourceIDMap::getMapCount(void) const
 {
-	return m_nSize;
+	return mapSize_;
 }

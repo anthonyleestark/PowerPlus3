@@ -33,7 +33,7 @@ public:
 	};
 
 public:
-	CHotkeySetDlg(CWnd* pParent = nullptr);				// standard constructor
+	CHotkeySetDlg(CWnd* parentWnd = nullptr);				// standard constructor
 	virtual ~CHotkeySetDlg();							// destructor
 
 	// Dialog Data
@@ -45,8 +45,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -55,27 +55,27 @@ protected:
 
 private:
 	// Dialog control variables
-	CGridCtrl* m_pHotkeySetListTable;
-	CComboBox m_cmbActionList;
-	CComboBox m_cmbFuncKeyList;
+	CGridCtrl* hotkeySetTablePtr_;
+	CComboBox actionListCombo_;
+	CComboBox virtualKeyListCombo_;
 
 	// Checkbox variables
-	BOOL m_bCtrlBtn;
-	BOOL m_bAltBtn;
-	BOOL m_bWinKeyBtn;
+	BOOL isCtrlKeyActive_;
+	BOOL isAltKeyActive_;
+	BOOL isWinKeyActive_;
 
 	// Data container variables
-	Data m_hksHotkeySet;
-	Data m_hksHotkeySetTemp;
+	Data hotkeySetData_;
+	Data tempHotkeySetData_;
 
 	// Table format and properties
-	int	m_nColNum;
-	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
-	Size* m_pszDataTableFrameSize;
+	int	columnCount_;
+	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
+	Size* dataTableSizePtr_;
 
 	// Other variables
-	int m_nCheckCount;
-	int m_nCurSelIndex;
+	int checkCount_;
+	int curSelIndex_;
 
 public:
 	// Generated message map functions
@@ -93,50 +93,50 @@ public:
 	afx_msg void OnSelectHotkeyItem(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnRightClickHotkeyList(NMHDR* pNMHDR, LRESULT* pResult);
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 
 protected:
 	// Dialog setup functions
-	void SetupLanguage();
-	void SetupHotkeySetList(LANGTABLE_PTR ptrLanguage);
-	void DrawHotkeySetTable(bool bReadOnly = false);
-	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
+	void setupLanguage();
+	void setupHotkeySetList(LANGTABLE_PTR languageTablePtr);
+	void drawHotkeySetTable(bool isReadOnly = false);
+	void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
 
 	// Dialog item properties functions
-	void RefreshDialogItemState(bool bRecheckState = false);
-	void UpdateCheckAllBtnState(bool bRecheck = true);
-	void UpdateHotkeySet();
-	void DisableHotkeySetTable(bool bDisable);
-	void RedrawHotkeySetTable(bool bReadOnly = false);
-	void DisplayHotkeyDetails(int nIndex);
+	void refreshDialogItemState(bool isRecheckState = false);
+	void updateCheckAllBtnState(bool isRecheck = true);
+	void updateHotkeySet();
+	void disableHotkeySetTable(bool isDisabled);
+	void redrawHotkeySetTable(bool isReadOnly = false);
+	void displayHotkeyDetails(int index);
 
 	// Layout functions
-	void UpdateLayoutInfo(void);
-	void LoadLayoutInfo(void);
-	void SaveLayoutInfo(void);
+	void updateLayoutInfo(void);
+	void loadLayoutInfo(void);
+	void saveLayoutInfo(void);
 
 	// Data processing functions
-	bool LoadHotkeySetData();
-	bool SaveHotkeySetData();
-	bool CheckDataChangeState();
+	bool loadHotkeySetData();
+	bool saveHotkeySetData();
+	bool checkDataChangeState();
 
 	// Data processing handlers
-	void Add(void);
-	void Remove(int nIndex);
-	void RemoveAll(void);
-	void SwitchAllItemState(bool bState);
-	bool Validate(const Item& hksItem, bool bShowMsg = false);
+	void add(void);
+	void remove(int index);
+	void removeAll(void);
+	void switchAllItemState(bool state);
+	bool validate(const Item& hotkeyItem, bool showMsg = false);
 
 protected:
 	// Get/set functions
-	int GetItemNum() const {
-		return m_hksHotkeySetTemp.GetItemNum();
-	};
-	int	GetListCurSel(void) const {
-		return m_nCurSelIndex;
-	};
-	void SetListCurSel(int nSelIndex) {
-		m_nCurSelIndex = nSelIndex;
-	};
+	inline int getItemNum() const {
+		return tempHotkeySetData_.getItemNum();
+	}
+	inline int	getListCurSel(void) const {
+		return curSelIndex_;
+	}
+	inline void setListCurSel(int selectionIndex) {
+		curSelIndex_ = selectionIndex;
+	}
 };
 

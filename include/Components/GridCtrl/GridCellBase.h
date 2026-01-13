@@ -44,7 +44,7 @@ class CGridCtrl;
 typedef struct _GV_ITEM {
     int      row,col;     // Row and Column of item
     UINT     mask;        // Mask for use in getting/setting cell data
-    UINT     nState;      // cell state (focus/hilighted etc)
+    UINT     state;      // cell state (focus/hilighted etc)
     DWORD    nFormat;     // Format of cell
     int      iImage;      // index of the list view item痴 icon
     COLORREF crBkClr;     // Background colour (or CLR_DEFAULT)
@@ -75,7 +75,7 @@ public:
     virtual void SetText(LPCTSTR /* szText */)              = 0 ;
     virtual void SetImage(int /* nImage */)                 = 0 ;
     virtual void SetData(LPARAM /* lParam */)               = 0 ;
-    virtual void SetState(DWORD nState)                     { m_nState = nState; }
+    virtual void SetState(DWORD state)                     { m_nState = state; }
     virtual void SetFormat(DWORD /* nFormat */)             = 0 ;
     virtual void SetTextClr(COLORREF /* clr */)             = 0 ;
     virtual void SetBackClr(COLORREF /* clr */)             = 0 ;
@@ -84,7 +84,7 @@ public:
     virtual void SetFont(const LOGFONT* /* plf */)          = 0 ;
     virtual void SetMargin( UINT /* nMargin */)             = 0 ;
     virtual void SetGrid(CGridCtrl* /* pGrid */)            = 0 ;
-    virtual void SetCoords( int /* nRow */, int /* nCol */) = 0 ;
+    virtual void SetCoords( int /* row */, int /* col */) = 0 ;
 
     virtual LPCTSTR    GetText()       const                = 0 ;
     virtual LPCTSTR    GetTipText()    const                { return GetText(); } // may override TitleTip return
@@ -123,23 +123,23 @@ public:
 public:
     virtual void Reset();
 
-    virtual BOOL Draw(CDC* pDC, int nRow, int nCol, CRect rect, BOOL bEraseBkgnd = TRUE);
+    virtual BOOL Draw(CDC* pDC, int row, int col, CRect rect, BOOL bEraseBkgnd = TRUE);
     virtual BOOL GetTextRect( LPRECT pRect);    // i/o:  i=dims of cell rect; o=dims of text rect
     virtual BOOL GetTipTextRect( LPRECT pRect) { return GetTextRect( pRect); }  // may override for btns, etc.
     virtual CSize GetTextExtent(LPCTSTR str, CDC* pDC = NULL);
     virtual CSize GetCellExtent(CDC* pDC);
 
     // Editing
-    virtual BOOL Edit( int /* nRow */, int /* nCol */, CRect /* rect */, CPoint /* point */, 
-                       UINT /* nID */, UINT /* nChar */) { ASSERT( FALSE); return FALSE;}
+    virtual BOOL Edit( int /* row */, int /* col */, CRect /* rect */, CPoint /* point */, 
+                       UINT /* id */, UINT /* nChar */) { ASSERT( FALSE); return FALSE;}
 	virtual BOOL ValidateEdit(LPCTSTR str);
     virtual void EndEdit() {}
 
     // EFW - Added to print cells properly
-    virtual BOOL PrintCell(CDC* pDC, int nRow, int nCol, CRect rect);
+    virtual BOOL PrintCell(CDC* pDC, int row, int col, CRect rect);
 
     // add additional protected grid members required of cells
-    LRESULT SendMessageToParent(int nRow, int nCol, int nMessage);
+    LRESULT SendMessageToParent(int row, int col, int message);
 
 protected:
     virtual void OnEndEdit();

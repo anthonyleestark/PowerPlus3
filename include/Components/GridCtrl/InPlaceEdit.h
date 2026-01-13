@@ -41,8 +41,8 @@ class CInPlaceEdit : public CEdit
 {
 // Construction
 public:
-    CInPlaceEdit(CWnd* pParent, CRect& rect, DWORD dwStyle, UINT nID,
-                 int nRow, int nColumn, CString sInitText, UINT nFirstChar);
+    CInPlaceEdit(CWnd* parentWnd, CRect& rect, DWORD style, UINT id,
+                 int row, int nColumn, CString sInitText, UINT nFirstChar);
 
 // Attributes
 public:
@@ -55,7 +55,7 @@ public:
      // ClassWizard generated virtual function overrides
      //{{AFX_VIRTUAL(CInPlaceEdit)
 	public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* messagePtr);
 	protected:
 	virtual void PostNcDestroy();
 	//}}AFX_VIRTUAL
@@ -68,8 +68,8 @@ public:
 protected:
     //{{AFX_MSG(CInPlaceEdit)
     afx_msg void OnKillFocus(CWnd* pNewWnd);
-    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-    afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT flags);
+    afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT flags);
 	afx_msg UINT OnGetDlgCode();
 	//}}AFX_MSG
     DECLARE_MESSAGE_MAP()

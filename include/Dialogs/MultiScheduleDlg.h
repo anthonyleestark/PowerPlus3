@@ -50,8 +50,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -60,64 +60,64 @@ protected:
 
 private:
 	// Dialog control item
-	CGridCtrl*		 m_pDataItemListTable;
+	CGridCtrl* scheduleDataTablePtr_;
 
 	// Child dialog
-	CEditScheduleDlg* m_pEditScheduleDlg;
+	CEditScheduleDlg* editScheduleDlgPtr_;
 
 	// Data container variables
-	Data m_schSchedule;
-	Data m_schScheduleTemp;
+	Data scheduleData_;
+	Data tempScheduleData_;
 
 	// Table format and properties
-	int	m_nColNum;
-	GRIDCTRLCOLFORMAT* m_apGrdColFormat;
-	Size* m_pszDataTableFrameSize;
+	int	columnCount_;
+	GRIDCTRLCOLFORMAT* gridCtrlFormatInfoPtr_;
+	Size* dataTableSizePtr_;
 
 	// Other variables
-	int m_nCurMode;
-	int m_nCheckCount;
-	int m_nCurSelIndex;
-	int m_nCurDispIndex;
+	int currentMode_;
+	int checkCount_;
+	int curSelIndex_;
+	int curDispIndex_;
 
 public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	afx_msg void OnDestroy();
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 
 	// Member functions
-	void SetupLanguage();
-	void SetupDataItemList(LANGTABLE_PTR ptrLanguage);
-	void DrawDataTable(bool bReadOnly = false);
+	void setupLanguage();
+	void setupDataItemList(LANGTABLE_PTR languageTablePtr);
+	void drawDataTable(bool isReadOnly = false);
 
 	// Layout functions
-	void UpdateLayoutInfo(void);
-	void LoadLayoutInfo(void);
-	void SaveLayoutInfo(void);
+	void updateLayoutInfo(void);
+	void loadLayoutInfo(void);
+	void saveLayoutInfo(void);
 
 	// Dialog item properties functions
-	void SetupDialogItemState();
-	void UpdateDataItemList();
-	void DisableDataTable(bool bDisable);
-	void RedrawDataTable(bool bReadOnly = false);
-	void RefreshDialogItemState(bool bRecheckState = false);
-	void UpdateCheckAllBtnState(bool bRecheck = false);
+	void setupDialogItemState();
+	void updateDataItemList();
+	void disableDataTable(bool isDisabled);
+	void redrawDataTable(bool isReadOnly = false);
+	void refreshDialogItemState(bool isRecheckState = false);
+	void updateCheckAllBtnState(bool isRecheck = false);
 
 	// Data processing functions
-	bool LoadScheduleSettings();
-	bool SaveScheduleSettings();
-	void UpdateScheduleSettings();
-	bool CheckDataChangeState();
+	bool loadScheduleSettings();
+	bool saveScheduleSettings();
+	void updateScheduleSettings();
+	bool checkDataChangeState();
 
 	// Data processing handlers
-	void Add(Item& schItem);
-	void Update(Item& schItem);
-	void Remove(int nIndex);
-	void RemoveAll();
-	void SetAllItemState(bool bState);
-	bool Validate(Item& schItem, bool bShowMsg = false, bool bAutoCorrect = false);
+	void add(Item& scheduleItem);
+	void update(Item& scheduleItem);
+	void remove(int index);
+	void removeAll();
+	void setAllItemState(bool state);
+	bool validate(Item& scheduleItem, bool showMsg = false, bool isAutoCorrect = false);
 
 	// Message handlers
 	afx_msg void OnApply();
@@ -138,11 +138,11 @@ public:
 
 protected:
 	// Get/set functions
-	int GetTotalItemNum() const {
-		return GetExtraItemNum() + ScheduleData::defaultItemNum;
-	};
-	int GetExtraItemNum() const {
-		return m_schScheduleTemp.GetExtraItemNum();
-	};
+	inline int getTotalItemNum() const {
+		return getExtraItemNum() + ScheduleData::kDefaultItemNum;
+	}
+	inline int getExtraItemNum() const {
+		return tempScheduleData_.getExtraItemNum();
+	}
 };
 

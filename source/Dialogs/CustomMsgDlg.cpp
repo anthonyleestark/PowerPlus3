@@ -17,8 +17,8 @@ using namespace AppCore;
 
 
 // Dialog default size
-constexpr const int defaultWidth = 320;
-constexpr const int defaultHeight = 240;
+constexpr const int kDefaultWidth = 320;
+constexpr const int kDefaultHeight = 240;
 
 
 // Implement methods for CCustomMsgDlg
@@ -31,7 +31,7 @@ IMPLEMENT_DYNAMIC(CCustomMsgDlg, SDialog)
 CCustomMsgDlg::CCustomMsgDlg() : SDialog(IDD_CUSTOM_MESSAGE_DLG)
 {
 	// Message string buffer
-	m_strBuffer = Constant::String::Empty;
+	bufferString_ = Constant::String::Empty;
 }
 
 /**
@@ -69,8 +69,8 @@ END_MESSAGE_MAP()
  */
 BOOL CCustomMsgDlg::OnInitDialog()
 {
-	RECT rcClient;
-	this->GetClientRect(&rcClient);
+	RECT clientRect;
+	this->GetClientRect(&clientRect);
 
 	return TRUE;
 }
@@ -90,17 +90,17 @@ void CCustomMsgDlg::OnDestroy()
  * @param	Default
  * @return	None
  */
-void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
+void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr)
 {
 	// Fix min size
-	pMinMaxInfo->ptMinTrackSize.x = defaultWidth;
-	pMinMaxInfo->ptMinTrackSize.y = defaultHeight;
+	minMaxInfoPtr->ptMinTrackSize.x = kDefaultWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = kDefaultHeight;
 
 	// Fix max size
-	pMinMaxInfo->ptMaxTrackSize.x = defaultWidth * 3;
-	pMinMaxInfo->ptMinTrackSize.y = defaultHeight * 3;
+	minMaxInfoPtr->ptMaxTrackSize.x = kDefaultWidth * 3;
+	minMaxInfoPtr->ptMinTrackSize.y = kDefaultHeight * 3;
 
-	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
+	SDialog::OnGetMinMaxInfo(minMaxInfoPtr);
 }
 
 /**
@@ -108,7 +108,7 @@ void CCustomMsgDlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
  * @param	Default
  * @return	None
  */
-void CCustomMsgDlg::OnSize(UINT nType, int nWidth, int nHeight)
+void CCustomMsgDlg::OnSize(UINT nType, int width, int height)
 {
-	SDialog::OnSize(nType, nWidth, nHeight);
+	SDialog::OnSize(nType, width, height);
 }

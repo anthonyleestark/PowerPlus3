@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file		Titletip.h
  * @brief		CTitleTip header file
  * @date		2024.07.20
@@ -46,11 +46,11 @@ class CTitleTip : public CWnd
 public:
 	CTitleTip();
 	virtual ~CTitleTip();
-	virtual BOOL Create( CWnd *pParentWnd);
+	virtual BOOL Create( CWnd *parentWnd);
 
 // Attributes
 public:
-    void SetParentWnd(CWnd* pParentWnd)  { m_pParentWnd = pParentWnd; }
+    void SetParentWnd(CWnd* parentWnd)  { m_pParentWnd = parentWnd; }
     CWnd* GetParentWnd()                 { return m_pParentWnd;       }
 
 // Operations
@@ -65,7 +65,7 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CTitleTip)
 	public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* messagePtr);
 	virtual BOOL DestroyWindow();
 	//}}AFX_VIRTUAL
 
@@ -81,7 +81,7 @@ protected:
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CTitleTip)
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT flags, CPoint point);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

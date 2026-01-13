@@ -17,12 +17,12 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CInPlaceEdit
 
-CInPlaceEdit::CInPlaceEdit(CWnd* pParent, CRect& rect, DWORD dwStyle, UINT nID,
-                           int nRow, int nColumn, CString sInitText, 
+CInPlaceEdit::CInPlaceEdit(CWnd* parentWnd, CRect& rect, DWORD style, UINT id,
+                           int row, int nColumn, CString sInitText, 
                            UINT nFirstChar)
 {
     m_sInitText     = sInitText;
-    m_nRow          = nRow;
+    m_nRow          = row;
     m_nColumn       = nColumn;
     m_nLastChar     = 0; 
     m_bExitOnArrows = (nFirstChar != VK_LBUTTON);    // If mouse click brought us here,
@@ -31,10 +31,10 @@ CInPlaceEdit::CInPlaceEdit(CWnd* pParent, CRect& rect, DWORD dwStyle, UINT nID,
     m_Rect = rect;  // For bizarre CE bug.
     
     DWORD dwEditStyle = WS_BORDER|WS_CHILD|WS_VISIBLE| ES_AUTOHSCROLL //|ES_MULTILINE
-        | dwStyle;
-    if (!Create(dwEditStyle, rect, pParent, nID)) return;
+        | style;
+    if (!Create(dwEditStyle, rect, parentWnd, id)) return;
     
-    SetFont(pParent->GetFont());
+    SetFont(parentWnd->GetFont());
     
     SetWindowText(sInitText);
     SetFocus();
@@ -84,7 +84,7 @@ END_MESSAGE_MAP()
 // If an arrow key (or associated) is pressed, then exit if
 //  a) The Ctrl key was down, or
 //  b) m_bExitOnArrows == TRUE
-void CInPlaceEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
+void CInPlaceEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT flags) 
 {
     if ((nChar == VK_PRIOR || nChar == VK_NEXT ||
         nChar == VK_DOWN  || nChar == VK_UP   ||
@@ -96,7 +96,7 @@ void CInPlaceEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         return;
     }
     
-    CEdit::OnKeyDown(nChar, nRepCnt, nFlags);
+    CEdit::OnKeyDown(nChar, nRepCnt, flags);
 }
 
 // As soon as this edit loses focus, kill it.
@@ -106,7 +106,7 @@ void CInPlaceEdit::OnKillFocus(CWnd* pNewWnd)
     EndEdit();
 }
 
-void CInPlaceEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+void CInPlaceEdit::OnChar(UINT nChar, UINT nRepCnt, UINT flags)
 {
     if (nChar == VK_TAB || nChar == VK_RETURN)
     {
@@ -122,7 +122,7 @@ void CInPlaceEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
         return;
     }
     
-    CEdit::OnChar(nChar, nRepCnt, nFlags);
+    CEdit::OnChar(nChar, nRepCnt, flags);
     
     // Resize edit control if needed
     
@@ -163,13 +163,13 @@ UINT CInPlaceEdit::OnGetDlgCode()
 // CInPlaceEdit overrides
 
 // Stoopid win95 accelerator key problem workaround - Matt Weagle.
-BOOL CInPlaceEdit::PreTranslateMessage(MSG* pMsg) 
+BOOL CInPlaceEdit::PreTranslateMessage(MSG* messagePtr) 
 {
     // Catch the Alt key so we don't choke if focus is going to an owner drawn button
-    if (pMsg->message == WM_SYSCHAR)
+    if (messagePtr->message == WM_SYSCHAR)
         return TRUE;
     
-    return CWnd::PreTranslateMessage(pMsg);
+    return CWnd::PreTranslateMessage(messagePtr);
 }
 
 // Auto delete

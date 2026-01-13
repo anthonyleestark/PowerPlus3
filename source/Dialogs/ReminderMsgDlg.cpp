@@ -17,9 +17,9 @@ using namespace AppCore;
 
 
 // Dialog constant
-constexpr const int defaultTextIconSpacing = 10;
-constexpr const int screenCornerHMargin = 20;
-constexpr const int screenCornerVMargin = 20;
+constexpr const int kDefaultTextIconSpacing = 10;
+constexpr const int kScreenCornerHMargin = 20;
+constexpr const int kScreenCornerVMargin = 20;
 
 
 // Implement methods for CReminderMsgDlg
@@ -29,29 +29,29 @@ IMPLEMENT_DYNAMIC(CReminderMsgDlg, SDialog)
 /**
  * @brief	Constructor
  */
-CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
-	: SDialog(IDD_REMINDERMSG_DLG, pParentWnd)
+CReminderMsgDlg::CReminderMsgDlg(CWnd* parentWnd /*= NULL*/)
+	: SDialog(IDD_REMINDERMSG_DLG, parentWnd)
 {
 	// Message string buffer
-	m_strBuffer = Constant::String::Empty;
+	bufferString_ = Constant::String::Empty;
 
 	// Message font & icon
-	m_pMsgFont = NULL;
-	m_hMsgIcon = NULL;
-	m_szIconSize = SIZE_NULL;
+	messageFontPtr_ = NULL;
+	messageIconHandle_ = NULL;
+	iconSize_ = SIZE_NULL;
 
 	// Flags
-	m_bTimerSet = false;
-	m_bDispIcon = false;
-	m_bLockDlgSize = false;
-	m_bLockFontSize = false;
-	m_bAllowSnooze = false;
-	m_nSnoozeFlag = FLAG_OFF;
+	isTimerSet_ = false;
+	isDisplayIcon_ = false;
+	isLockDialogSize_ = false;
+	isLockFontSize_ = false;
+	isSnoozingAllowed_ = false;
+	snoozeFlag_ = FLAG_OFF;
 
 	// Properties
-	m_clBkgrdColor = Color::White;
-	m_clTextColor = Color::Black;
-	m_nAutoCloseInterval = 0;
+	backgroundColor_ = Color::White;
+	textColor_ = Color::Black;
+	autoCloseInterval_ = 0;
 }
 
 /**
@@ -60,13 +60,13 @@ CReminderMsgDlg::CReminderMsgDlg(CWnd* pParentWnd /*= NULL*/)
 CReminderMsgDlg::~CReminderMsgDlg()
 {
 	// Delete font info
-	if (m_pMsgFont != NULL) {
-		delete m_pMsgFont;
-		m_pMsgFont = NULL;
+	if (messageFontPtr_ != NULL) {
+		delete messageFontPtr_;
+		messageFontPtr_ = NULL;
 	}
 
 	// Destroy message icon
-	::DestroyIcon(m_hMsgIcon);
+	::DestroyIcon(messageIconHandle_);
 }
 
 /**
@@ -108,83 +108,83 @@ BOOL CReminderMsgDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// If message style initialization failed
-	if (!InitMessageStyle())
+	if (!initMessageStyle())
 		return false;
 
 	// Set margin
-	int nHMargin = m_rmdMsgStyleSet.GetHorizontalMargin();
-	int nVMargin = m_rmdMsgStyleSet.GetVerticalMargin();
-	SetCenterMargin(nHMargin, nVMargin);
+	int marginHorizontal = messageStyleData_.getHorizontalMargin();
+	int marginVertical = messageStyleData_.getVerticalMargin();
+	setCenterMargin(marginHorizontal, marginVertical);
 
 	// Shift margin if icon is displaying
-	if ((m_bDispIcon == true) && (m_hMsgIcon != NULL)) {
+	if ((isDisplayIcon_ == true) && (messageIconHandle_ != NULL)) {
 
 		// Get current margin
 		Rect dialogMargin;
-		this->GetMargin(dialogMargin);
+		this->getMargin(dialogMargin);
 
-		byte iconPosVal = m_rmdMsgStyleSet.GetIconPosition();
+		byte iconPosVal = messageStyleData_.getIconPosition();
 		if (iconPosVal == MsgIconPosition::IconOnTheTop) {
 
 			// Shift top margin
-			dialogMargin._top += m_szIconSize.Height() + defaultTextIconSpacing;
-			this->SetTopMargin(dialogMargin.Top());
+			dialogMargin._top += iconSize_.height() + kDefaultTextIconSpacing;
+			this->setTopMargin(dialogMargin.top());
 		}
 		else if (iconPosVal == MsgIconPosition::IconOnTheLeft) {
 
 			// Shift left margin
-			dialogMargin._left += m_szIconSize.Width() + defaultTextIconSpacing;
-			this->SetLeftMargin(dialogMargin.Left());
+			dialogMargin._left += iconSize_.width() + kDefaultTextIconSpacing;
+			this->setLeftMargin(dialogMargin.left());
 		}
 	}
 
 	// Get display area
 	Rect displayArea;
-	GetDisplayArea(displayArea);
+	getDisplayArea(displayArea);
 
 	// Get dialog size
 	Size dialogSize;
-	this->GetSize(dialogSize);
+	this->getSize(dialogSize);
 
 	// If set lock font size
-	if (m_bLockFontSize == true) {
+	if (isLockFontSize_ == true) {
 
 		// Calculate text rectangle
-		TextToClient(displayArea);
+		textToClient(displayArea);
 
 		// Set display area and resize dialog
-		SetDisplayArea(displayArea, true, true);
+		setDisplayArea(displayArea, true, true);
 	}
 
 	// Display message content
-	CWnd* pWndMsg = this->GetDlgItem(IDC_REMINDERMSG_MSGTEXT_STATIC);
-	if (pWndMsg != NULL) {
+	CWnd* messageCtrlPtr = this->GetDlgItem(IDC_REMINDERMSG_MSGTEXT_STATIC);
+	if (messageCtrlPtr != NULL) {
 
 		// Fix text display area size and position
-		RECT rcNewArea;
-		rcNewArea.left = displayArea.Left();
-		rcNewArea.top = displayArea.Top();
-		rcNewArea.right = displayArea.Right();
-		rcNewArea.bottom = displayArea.Bottom();
-		pWndMsg->MoveWindow(&rcNewArea);
+		RECT newAreaRect;
+		newAreaRect.left = displayArea.left();
+		newAreaRect.top = displayArea.top();
+		newAreaRect.right = displayArea.right();
+		newAreaRect.bottom = displayArea.bottom();
+		messageCtrlPtr->MoveWindow(&newAreaRect);
 
 		// Set text font
-		if (m_pMsgFont != NULL) {
-			pWndMsg->SetFont(m_pMsgFont);
+		if (messageFontPtr_ != NULL) {
+			messageCtrlPtr->SetFont(messageFontPtr_);
 		}
 
 		// Display text
-		pWndMsg->SetWindowText(m_strBuffer);
+		messageCtrlPtr->SetWindowText(bufferString_);
 	}
 
 	// Start auto-close timer if set
-	if (GetAutoCloseInterval() != 0) {
-		unsigned nRet = SetTimer(TIMERID_RMDMSG_AUTOCLOSE, 1000, NULL);
-		m_bTimerSet = (nRet != 0);
+	if (getAutoCloseInterval() != 0) {
+		unsigned returnValue = SetTimer(enumToValue(TimerId::ReminderMsgAutoClose), 1000, NULL);
+		isTimerSet_ = (returnValue != 0);
 	}
 
 	// Move to specific display position
-	MoveToDisplayPosition((MsgDispPosition)m_rmdMsgStyleSet.GetDisplayPosition());
+	moveToDisplayPosition((MsgDispPosition)messageStyleData_.getDisplayPosition());
 
 	// Bring to top (by default)
 	this->PostMessage(SM_WND_SHOWDIALOG, true);
@@ -200,8 +200,8 @@ BOOL CReminderMsgDlg::OnInitDialog()
 void CReminderMsgDlg::OnClose()
 {
 	// Kill timer if set
-	if (m_bTimerSet == true && KillTimer(TIMERID_RMDMSG_AUTOCLOSE))
-		m_bTimerSet = false;	// Reset flag
+	if (isTimerSet_ == true && KillTimer(enumToValue(TimerId::ReminderMsgAutoClose)))
+		isTimerSet_ = false;	// Reset flag
 
 	// Close dialog
 	SDialog::OnClose();
@@ -239,15 +239,15 @@ void CReminderMsgDlg::OnPaint()
 	CPaintDC dc(this);
 
 	// Draw message icon
-	if ((m_bDispIcon == true) && (m_hMsgIcon != NULL)) {
+	if ((isDisplayIcon_ == true) && (messageIconHandle_ != NULL)) {
 		// Calculate icon postion
 		Point iconPosition;
-		CalcMsgIconPosition(iconPosition);
+		calcMsgIconPosition(iconPosition);
 		// Get icon size
-		int cx = m_szIconSize.Width();
-		int cy = m_szIconSize.Height();
+		int cx = iconSize_.width();
+		int cy = iconSize_.height();
 		// Draw icon (with scale up/down);
-		DrawIconEx(dc, iconPosition._x, iconPosition._y, m_hMsgIcon, cx, cy, NULL, NULL, DI_NORMAL);
+		DrawIconEx(dc, iconPosition._x, iconPosition._y, messageIconHandle_, cx, cy, NULL, NULL, DI_NORMAL);
 		return;
 	}
 
@@ -257,20 +257,20 @@ void CReminderMsgDlg::OnPaint()
 
 /**
  * @brief	OnTimer function
- * @param	nIDEvent - Time event ID
+ * @param	eventId - Time event ID
  * @return	None
  */
-void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
+void CReminderMsgDlg::OnTimer(UINT_PTR eventId)
 {
 	// Handle auto-close timer if set
-	if (nIDEvent == TIMERID_RMDMSG_AUTOCLOSE) {
-		if (m_bTimerSet == true) {
-			unsigned nCounter = GetAutoCloseInterval();
-			if (nCounter > 0) {
+	if (eventId == enumToValue(TimerId::ReminderMsgAutoClose)) {
+		if (isTimerSet_ == true) {
+			unsigned count = getAutoCloseInterval();
+			if (count > 0) {
 				// Countdown
-				SetAutoCloseInterval(--nCounter);
+				setAutoCloseInterval(--count);
 			}
-			if (nCounter == 0) {
+			if (count == 0) {
 				// Close message
 				EndDialog(IDCANCEL);
 			}
@@ -278,7 +278,7 @@ void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	// Default
-	SDialog::OnTimer(nIDEvent);
+	SDialog::OnTimer(eventId);
 }
 
 /**
@@ -286,17 +286,17 @@ void CReminderMsgDlg::OnTimer(UINT_PTR nIDEvent)
  * @param	Default
  * @return	int - Default
  */
-int CReminderMsgDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int CReminderMsgDlg::OnCreate(LPCREATESTRUCT createStructPtr)
 {
 	// Default creation
-	if (SDialog::OnCreate(lpCreateStruct) == INT_INVALID)
-		return INT_INVALID;
+	if (SDialog::OnCreate(createStructPtr) == Constant::InvalidInteger)
+		return Constant::InvalidInteger;
 
 	// Set allow snoozing mode
-	if (GetAllowSnoozeMode() == true) {
+	if (getAllowSnoozeMode() == true) {
 		// Display minimize button
-		LONG lCurStyle = GetWindowLong(this->m_hWnd, GWL_STYLE);
-		SetWindowLong(this->m_hWnd, GWL_STYLE, lCurStyle | WS_MINIMIZEBOX);
+		LONG currentStyle = GetWindowLong(this->m_hWnd, GWL_STYLE);
+		SetWindowLong(this->m_hWnd, GWL_STYLE, currentStyle | WS_MINIMIZEBOX);
 	}
 
 	return 0;
@@ -307,19 +307,19 @@ int CReminderMsgDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
  * @param	Default
  * @return	None
  */
-void CReminderMsgDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CReminderMsgDlg::OnSysCommand(UINT id, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == SC_MINIMIZE) {
+	if ((id & 0xFFF0) == SC_MINIMIZE) {
 		// Handle minimize button event
-		if (GetAllowSnoozeMode() == true) {
+		if (getAllowSnoozeMode() == true) {
 			// Trigger snooze mode
-			SetSnoozeTriggerFLag(FLAG_ON);
+			setSnoozeTriggerFLag(FLAG_ON);
 		}
 		EndDialog(IDOK);
 	}
 	else {
 		// Execute default syscommand
-		SDialog::OnSysCommand(nID, lParam);
+		SDialog::OnSysCommand(id, lParam);
 	}
 }
 
@@ -328,27 +328,27 @@ void CReminderMsgDlg::OnSysCommand(UINT nID, LPARAM lParam)
  * @param	Default
  * @return	HBRUSH
  */
-HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CReminderMsgDlg::OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor)
 {
 	// Default initialization
-	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hBrush = SDialog::OnCtlColor(pDC, windowPtr, nCtlColor);
 
-	if (pWnd == this) {
-		if ((GetFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (m_pBkgrdBrush != NULL)) {
+	if (windowPtr == this) {
+		if ((getFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (backgroudBrush_ != NULL)) {
 			// Get brush
-			hBrush = (HBRUSH)(*m_pBkgrdBrush);
+			hBrush = (HBRUSH)(*backgroudBrush_);
 		}
 	}
 
 	if (nCtlColor == CTLCOLOR_STATIC) {
 		// Set background color
-		if ((GetFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (m_pBkgrdBrush != NULL)) {
-			hBrush = (HBRUSH)(*m_pBkgrdBrush);
-			pDC->SetBkColor(m_clBkgrdColor);
+		if ((getFlagValue(AppFlagID::dialogSetBackgroundColor) == true) && (backgroudBrush_ != NULL)) {
+			hBrush = (HBRUSH)(*backgroudBrush_);
+			pDC->SetBkColor(backgroundColor_);
 		}
 		// Set text color
-		if (GetFlagValue(AppFlagID::dialogSetTextColor) == true) {
-			pDC->SetTextColor(m_clTextColor);
+		if (getFlagValue(AppFlagID::dialogSetTextColor) == true) {
+			pDC->SetTextColor(textColor_);
 		}
 	}
 
@@ -369,10 +369,10 @@ LRESULT CReminderMsgDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		case SM_WND_SHOWDIALOG:
 		{
 			// Get flag value
-			bool bShowFlag = static_cast<bool>(wParam);
+			bool showFlag = static_cast<bool>(wParam);
 
 			// Show/hide dialog
-			if (bShowFlag == true) {
+			if (showFlag == true) {
 
 				// Show dialog
 				this->ShowWindow(SW_SHOW);
@@ -394,10 +394,10 @@ LRESULT CReminderMsgDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					::FlashWindowEx(&fwInfo);
 
 					// Show tray icon balloon tip
-					if (HWND hMainWnd = GET_HANDLE_MAINWND()) {
-						WPARAM wParam = MAKE_WPARAM_STRING(this->GetDispMessage());
-						LPARAM lParam = MAKE_LPARAM_STRING(this->GetDispMessage());
-						::PostMessage(hMainWnd, SM_APP_SHOW_REMINDER_BALLOON_TIP, wParam, lParam);
+					if (HWND mainWndHandle = GET_HANDLE_MAINWND()) {
+						WPARAM wParam = MAKE_WPARAM_STRING(this->getDispMessage());
+						LPARAM lParam = MAKE_LPARAM_STRING(this->getDispMessage());
+						::PostMessage(mainWndHandle, SM_APP_SHOW_REMINDER_BALLOON_TIP, wParam, lParam);
 					}
 				}
 			}
@@ -419,12 +419,12 @@ LRESULT CReminderMsgDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
  * @param	None
  * @return	true/false
  */
-bool CReminderMsgDlg::InitMessageStyle(void)
+bool CReminderMsgDlg::initMessageStyle(void)
 {
 	// Background & text color
-	SetBkgrdColor(m_rmdMsgStyleSet.GetBkgrdColor());
-	SetTextColor(m_rmdMsgStyleSet.GetTextColor());
-	if (!CreateBrush()) {
+	setBackgroundColor(messageStyleData_.getBkgrdColor());
+	setTextColor(messageStyleData_.getTextColor());
+	if (!createBrush()) {
 
 		// Error: Apply color failed
 		TRACE_ERROR("Error: Apply color failed!!!");
@@ -436,21 +436,21 @@ bool CReminderMsgDlg::InitMessageStyle(void)
 	this->Invalidate();
 
 	// Reset font
-	if (m_pMsgFont != NULL)
-		delete m_pMsgFont;
+	if (messageFontPtr_ != NULL)
+		delete messageFontPtr_;
 
 	// Reset flag
-	m_bLockFontSize = false;
+	isLockFontSize_ = false;
 
 	// Initialize message font
-	m_pMsgFont = new CFont;
-	ASSERT(m_pMsgFont != NULL);
-	if (m_pMsgFont != NULL) {
+	messageFontPtr_ = new CFont;
+	ASSERT(messageFontPtr_ != NULL);
+	if (messageFontPtr_ != NULL) {
 
 		// Create font
-		int nFontPointSize = int(m_rmdMsgStyleSet.GetFontSize() * 10);
-		String fontName = m_rmdMsgStyleSet.GetFontName();
-		if (!m_pMsgFont->CreatePointFont(nFontPointSize, fontName, NULL)) {
+		int fontPointSize = int(messageStyleData_.getFontSize() * 10);
+		String fontName = messageStyleData_.getFontName();
+		if (!messageFontPtr_->CreatePointFont(fontPointSize, fontName, NULL)) {
 
 			// Error: Create font failed
 			TRACE_ERROR("Error: Create font failed!!!");
@@ -460,14 +460,14 @@ bool CReminderMsgDlg::InitMessageStyle(void)
 	}
 
 	// Set lock font size flag
-	m_bLockFontSize = true;
+	isLockFontSize_ = true;
 
 	// Icon size
-	m_szIconSize._width = m_rmdMsgStyleSet.GetIconSize();
-	m_szIconSize._height = m_rmdMsgStyleSet.GetIconSize();
+	iconSize_._width = messageStyleData_.getIconSize();
+	iconSize_._height = messageStyleData_.getIconSize();
 
-	int cx = m_szIconSize.Width();
-	int cy = m_szIconSize.Height();
+	int cx = iconSize_.width();
+	int cy = iconSize_.height();
 
 	// Invalid input size, reset to system default
 	if ((cx < 30) || (cx > 100)) {
@@ -476,17 +476,17 @@ bool CReminderMsgDlg::InitMessageStyle(void)
 	}
 
 	// If icon ID is not set
-	int nIconID = m_rmdMsgStyleSet.GetIconID();
-	if (nIconID == NULL) {
-		m_bDispIcon = false;
+	int iconId = messageStyleData_.getIconId();
+	if (iconId == NULL) {
+		isDisplayIcon_ = false;
 		return true;
 	}
 
 	// Load system icon by ID and scale size
-	HRESULT hResult = ::LoadIconWithScaleDown(NULL, MAKEINTRESOURCE(nIconID), cx, cy, &m_hMsgIcon);
+	HRESULT result = ::LoadIconWithScaleDown(NULL, MAKEINTRESOURCE(iconId), cx, cy, &messageIconHandle_);
 
 	// Load icon failed
-	if ((hResult != S_OK) || (m_hMsgIcon == NULL)) {
+	if ((result != S_OK) || (messageIconHandle_ == NULL)) {
 		TRACE_ERROR("Error: Load icon failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return false;
@@ -494,8 +494,8 @@ bool CReminderMsgDlg::InitMessageStyle(void)
 
 	// Get icon info
 	ICONINFO iiIconInfo;
-	bool bRet = ::GetIconInfo(m_hMsgIcon, &iiIconInfo);
-	if (bRet == false) {
+	bool returnFlag = ::GetIconInfo(messageIconHandle_, &iiIconInfo);
+	if (returnFlag == false) {
 		TRACE_ERROR("Error: Get icon info failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return false;
@@ -506,11 +506,11 @@ bool CReminderMsgDlg::InitMessageStyle(void)
 	ZeroMemory(&bmp, sizeof(BITMAP));
 	if (iiIconInfo.hbmColor) {
 		if (::GetObject(iiIconInfo.hbmColor, sizeof(bmp), &bmp) > 0)
-			m_szIconSize = Size(bmp.bmWidth, bmp.bmHeight);
+			iconSize_ = Size(bmp.bmWidth, bmp.bmHeight);
 	}
 	else if (iiIconInfo.hbmMask) {
 		if (::GetObject(iiIconInfo.hbmMask, sizeof(bmp), &bmp) > 0)
-			m_szIconSize = Size(bmp.bmWidth, bmp.bmHeight);
+			iconSize_ = Size(bmp.bmWidth, bmp.bmHeight);
 	}
 
 	// Delete icon info temp objects
@@ -518,7 +518,7 @@ bool CReminderMsgDlg::InitMessageStyle(void)
 	if (iiIconInfo.hbmMask)		DeleteObject(iiIconInfo.hbmMask);
 
 	// Update flag
-	m_bDispIcon = true;
+	isDisplayIcon_ = true;
 
 	return true;
 }
@@ -528,26 +528,26 @@ bool CReminderMsgDlg::InitMessageStyle(void)
  * @param	iconPosition - Icon position (point)
  * @return	true/false
  */
-bool CReminderMsgDlg::CalcMsgIconPosition(Point& iconPosition) const
+bool CReminderMsgDlg::calcMsgIconPosition(Point& iconPosition) const
 {
 	// Get display margin
 	Rect currentMargin;
-	this->GetMargin(currentMargin);
+	this->getMargin(currentMargin);
 
 	// Get client rectangle
-	RECT rcClient;
-	this->GetClientRect(&rcClient);
+	RECT clientRect;
+	this->GetClientRect(&clientRect);
 
 	// Calculate icon top-left point
-	int textIconSpacing = defaultTextIconSpacing;
-	byte iconPosVal = m_rmdMsgStyleSet.GetIconPosition();
+	int textIconSpacing = kDefaultTextIconSpacing;
+	byte iconPosVal = messageStyleData_.getIconPosition();
 	if (iconPosVal == MsgIconPosition::IconOnTheTop) {
-		iconPosition._y = currentMargin.Top() - (m_szIconSize.Height() + textIconSpacing);
-		iconPosition._x = ((rcClient.right - rcClient.left) - m_szIconSize.Width()) / 2;
+		iconPosition._y = currentMargin.top() - (iconSize_.height() + textIconSpacing);
+		iconPosition._x = ((clientRect.right - clientRect.left) - iconSize_.width()) / 2;
 	}
 	else if (iconPosVal == MsgIconPosition::IconOnTheLeft) {
-		iconPosition._x = currentMargin.Left() - (m_szIconSize.Width() + textIconSpacing);
-		iconPosition._y = ((rcClient.bottom - rcClient.top) - m_szIconSize.Height()) / 2;
+		iconPosition._x = currentMargin.left() - (iconSize_.width() + textIconSpacing);
+		iconPosition._y = ((clientRect.bottom - clientRect.top) - iconSize_.height()) / 2;
 	}
 
 	return true;
@@ -558,7 +558,7 @@ bool CReminderMsgDlg::CalcMsgIconPosition(Point& iconPosition) const
  * @param	displayPosition - Display position
  * @return	void
  */
-void CReminderMsgDlg::MoveToDisplayPosition(MsgDispPosition displayPosition)
+void CReminderMsgDlg::moveToDisplayPosition(MsgDispPosition displayPosition)
 {
 	// Get desktop screen size
 	Size screenSize;
@@ -581,28 +581,28 @@ void CReminderMsgDlg::MoveToDisplayPosition(MsgDispPosition displayPosition)
 	switch (displayPosition)
 	{
 	case MsgDispPosition::AtCenter:
-		topLeft._x = (screenSize.Width() - dialogSize.Width()) / 2;
-		topLeft._y = (screenSize.Height() - dialogSize.Height()) / 2;
+		topLeft._x = (screenSize.width() - dialogSize.width()) / 2;
+		topLeft._y = (screenSize.height() - dialogSize.height()) / 2;
 		break;
 
 	case MsgDispPosition::OnTopLeft:
-		topLeft._x = screenCornerHMargin;
-		topLeft._y = screenCornerVMargin;
+		topLeft._x = kScreenCornerHMargin;
+		topLeft._y = kScreenCornerVMargin;
 		break;
 
 	case MsgDispPosition::OnTopRight:
-		topLeft._y = screenCornerVMargin;
-		topLeft._x = screenSize.Width() - dialogSize.Width() - screenCornerHMargin;
+		topLeft._y = kScreenCornerVMargin;
+		topLeft._x = screenSize.width() - dialogSize.width() - kScreenCornerHMargin;
 		break;
 
 	case MsgDispPosition::OnBottomLeft:
-		topLeft._x = screenCornerHMargin;
-		topLeft._y = screenSize.Height() - dialogSize.Height() - screenCornerVMargin;
+		topLeft._x = kScreenCornerHMargin;
+		topLeft._y = screenSize.height() - dialogSize.height() - kScreenCornerVMargin;
 		break;
 
 	case MsgDispPosition::OnBottomRight:
-		topLeft._x = screenSize.Width() - dialogSize.Width() - screenCornerHMargin;
-		topLeft._y = screenSize.Height() - dialogSize.Height() - screenCornerVMargin;
+		topLeft._x = screenSize.width() - dialogSize.width() - kScreenCornerHMargin;
+		topLeft._y = screenSize.height() - dialogSize.height() - kScreenCornerVMargin;
 		break;
 
 	default:
@@ -610,7 +610,7 @@ void CReminderMsgDlg::MoveToDisplayPosition(MsgDispPosition displayPosition)
 	}
 
 	// Move to new position
-	this->SetWindowPos(NULL, topLeft.GetX(), topLeft.GetY(), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+	this->SetWindowPos(NULL, topLeft.getX(), topLeft.getY(), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
 
 /**
@@ -618,7 +618,7 @@ void CReminderMsgDlg::MoveToDisplayPosition(MsgDispPosition displayPosition)
  * @param	rect - Returned rect
  * @return	void
  */
-void CReminderMsgDlg::ClientToText(Rect& /*rect*/) const
+void CReminderMsgDlg::clientToText(Rect& /*rect*/) const
 {
 }
 
@@ -627,51 +627,51 @@ void CReminderMsgDlg::ClientToText(Rect& /*rect*/) const
  * @param	lpRect - Returned rect
  * @return	void
  */
-void CReminderMsgDlg::TextToClient(Rect& rect) const
+void CReminderMsgDlg::textToClient(Rect& rect) const
 {
 	// If message text is not set, do nothing
-	if (m_strBuffer.IsEmpty())
+	if (bufferString_.isEmpty())
 		return;
 
 	// Get font
-	CFont* pMsgFont = this->GetFont();
-	if (m_pMsgFont != NULL) {
-		pMsgFont = m_pMsgFont;
+	CFont* messageFontPtr = this->GetFont();
+	if (messageFontPtr_ != NULL) {
+		messageFontPtr = messageFontPtr_;
 	}
 
 	// Invalid font
-	if (pMsgFont == NULL) {
+	if (messageFontPtr == NULL) {
 		TRACE_ERROR("Error: Invalid font!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Set draw area
-	CWnd* pWnd = this->GetDlgItem(IDC_REMINDERMSG_MSGTEXT_STATIC);
-	if (pWnd == NULL) {
+	CWnd* windowPtr = this->GetDlgItem(IDC_REMINDERMSG_MSGTEXT_STATIC);
+	if (windowPtr == NULL) {
 		TRACE_ERROR("Error: Message text draw area not found!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Set font
-	CDC* pDC = pWnd->GetDC();
-	CFont* pDefFont = NULL;
-	pDefFont = pDC->SelectObject(pMsgFont);
+	CDC* pDC = windowPtr->GetDC();
+	CFont* defaultFontPtr = NULL;
+	defaultFontPtr = pDC->SelectObject(messageFontPtr);
 
 	// Backup rectangle
-	RECT rcTemp;
-	rcTemp.left = rect.Left();
-	rcTemp.top = rect.Top();
-	rcTemp.right = rect.Right();
-	rcTemp.bottom = rect.Bottom();
+	RECT tempRect;
+	tempRect.left = rect.left();
+	tempRect.top = rect.top();
+	tempRect.right = rect.right();
+	tempRect.bottom = rect.bottom();
 
 	// Calculate new client rectangle
-	DWORD dwFormat = DT_CENTER | DT_WORDBREAK | DT_CALCRECT;
-	pDC->DrawText(m_strBuffer, m_strBuffer.GetLength(), &rcTemp, dwFormat);
-	rect = Rect(rcTemp.left, rcTemp.top, rcTemp.right, rcTemp.bottom);
+	DWORD format = DT_CENTER | DT_WORDBREAK | DT_CALCRECT;
+	pDC->DrawText(bufferString_, bufferString_.getLength(), &tempRect, format);
+	rect = Rect(tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 
 	// Reset device context
-	pDC->SelectObject(pDefFont);
-	pWnd->ReleaseDC(pDC);
+	pDC->SelectObject(defaultFontPtr);
+	windowPtr->ReleaseDC(pDC);
 }

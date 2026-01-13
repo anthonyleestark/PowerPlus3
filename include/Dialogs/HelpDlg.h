@@ -28,11 +28,11 @@ private:
 	};
 
 private:
-	String   m_strFileData;
-	unsigned m_nViewMode;
+	String   helpInfoString_;
+	unsigned viewMode_;
 
 public:
-	CHelpDlg(CWnd* pParent = NULL);   // standard constructor
+	CHelpDlg(CWnd* parentWnd = NULL);   // standard constructor
 	virtual ~CHelpDlg();
 
 	// Dialog Data
@@ -44,8 +44,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -62,17 +62,17 @@ public:
 
 protected:
 	// Member functions
-	void SetupLanguage(void);
-	void SetupEditbox(CEdit& pEdit);
-	bool LoadRCFileData(String& strRCFileData);
-	void UpdateSwitchViewModeButton(void);
+	void setupLanguage(void);
+	void setupEditbox(CEdit& editCtrlPtr);
+	bool loadResourceFileData(String& resourceFileDataString);
+	void updateSwitchViewModeButton(void);
 
 	// Get/set properties
-	unsigned GetViewMode() const {
-		return m_nViewMode;
-	};
-	void SetViewMode(unsigned nViewMode) {
-		m_nViewMode = nViewMode;
-	};
+	unsigned getViewMode() const {
+		return viewMode_;
+	}
+	void setViewMode(unsigned viewMode) {
+		viewMode_ = viewMode;
+	}
 };
 

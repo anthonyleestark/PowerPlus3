@@ -29,25 +29,25 @@ CGridCellCheck::CGridCellCheck() : CGridCell()
 CSize CGridCellCheck::GetCellExtent(CDC* pDC)
 {
     // Using SM_CXHSCROLL as a guide to the size of the checkbox
-    int nWidth = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();	
+    int width = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();	
     CSize	cellSize = CGridCell::GetCellExtent(pDC);	
-    cellSize.cx += nWidth;	
-    cellSize.cy = max(cellSize.cy, static_cast<long>(nWidth));	
+    cellSize.cx += width;	
+    cellSize.cy = max(cellSize.cy, static_cast<long>(width));	
     return  cellSize;
 }
 
 // i/o:  i=dims of cell rect; o=dims of text rect
 BOOL CGridCellCheck::GetTextRect( LPRECT pRect)
 {
-    BOOL bResult = CGridCell::GetTextRect(pRect);
-    if (bResult)
+    BOOL result = CGridCell::GetTextRect(pRect);
+    if (result)
     {
-        int nWidth = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();
-        pRect->left += nWidth;
+        int width = GetSystemMetrics(SM_CXHSCROLL) + 2*GetMargin();
+        pRect->left += width;
         if (pRect->left > pRect->right)
             pRect->left = pRect->right;
     }
-    return bResult;
+    return result;
 }
 
 // Set the dimensions and placement of the checkbox in client coords.
@@ -62,9 +62,9 @@ void CGridCellCheck::SetCheckPlacement(int nFormat)
 }
 
 // Get/set the flag with validate if clicked point is inside the checkbox
-void CGridCellCheck::SetClickPtInBoxFlag(BOOL bValue)
+void CGridCellCheck::SetClickPtInBoxFlag(BOOL value)
 {
-    m_bClickPtInBox = bValue;
+    m_bClickPtInBox = value;
 }
 
 BOOL CGridCellCheck::IsClickPtInBox(void)
@@ -73,9 +73,9 @@ BOOL CGridCellCheck::IsClickPtInBox(void)
 }
 
 // Override draw so that when the cell is selected, a drop arrow is shown in the RHS.
-BOOL CGridCellCheck::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
+BOOL CGridCellCheck::Draw(CDC* pDC, int row, int col, CRect rect,  BOOL bEraseBkgnd /*=TRUE*/)
 {
-    BOOL bResult = CGridCell::Draw(pDC, nRow, nCol, rect,  bEraseBkgnd);
+    BOOL result = CGridCell::Draw(pDC, row, col, rect,  bEraseBkgnd);
 
 #ifndef _WIN32_WCE
     // Store the cell's dimensions for later
@@ -93,7 +93,7 @@ BOOL CGridCellCheck::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bErase
 
     // }
 #endif
-    return bResult;
+    return result;
 }
 
 void CGridCellCheck::OnClick(CPoint PointCellRelative)
@@ -128,12 +128,12 @@ void CGridCellCheck::OnClick(CPoint PointCellRelative)
 
 BOOL CGridCellCheck::SetCheck(BOOL bChecked /*=TRUE*/)
 {
-	BOOL bTemp = m_bChecked;
+	BOOL isTemp = m_bChecked;
 	m_bChecked = bChecked;
 	if (!m_Rect.IsRectEmpty())
 		GetGrid()->InvalidateRect(m_Rect);
 
-	return bTemp;
+	return isTemp;
 }
 
 BOOL CGridCellCheck::GetCheck()
@@ -148,33 +148,33 @@ BOOL CGridCellCheck::GetCheck()
 // Returns the dimensions and placement of the checkbox in client coords.
 CRect CGridCellCheck::GetCheckPlacement()
 {
-	int nWidth = GetSystemMetrics(SM_CXHSCROLL);
+	int width = GetSystemMetrics(SM_CXHSCROLL);
 	CRect rect = m_Rect + CSize(GetMargin(), GetMargin());
 
     CRect place = rect;
-    place.right = place.left + nWidth;
-    place.bottom = place.top + nWidth;
+    place.right = place.left + width;
+    place.bottom = place.top + width;
 
 	// for centering
     if (m_bCentering) {
-        int nDiff = (rect.Width() - nWidth) / 2;
+        int nDiff = (rect.Width() - width) / 2;
         if (nDiff > 0)
         {
             place.left += nDiff;
-            place.right = place.left + nWidth;
+            place.right = place.left + width;
         }
-        nDiff = (rect.Height() - nWidth) / 2;
+        nDiff = (rect.Height() - width) / 2;
         if (nDiff > 0)
         {
             place.top += nDiff;
-            place.bottom = place.top + nWidth;
+            place.bottom = place.top + width;
         }
     }
 
-    if (m_Rect.Height() < nWidth + 2 * static_cast<int> (GetMargin())) 
+    if (m_Rect.Height() < width + 2 * static_cast<int> (GetMargin())) 
     {		
-        place.top = m_Rect.top + (m_Rect.Height() - nWidth) / 2;	    
-        place.bottom = place.top + nWidth;	
+        place.top = m_Rect.top + (m_Rect.Height() - width) / 2;	    
+        place.bottom = place.top + width;	
     }
 
 	return place;

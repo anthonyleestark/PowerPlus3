@@ -30,7 +30,7 @@ public:
 
 private:
 	// Message string buffer
-	String m_strBuffer;
+	String bufferString_;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -43,6 +43,6 @@ public:
 	// Generated message handle functions
 	virtual BOOL OnInitDialog();
 	virtual void OnDestroy();
-	virtual void OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo);
-	virtual void OnSize(UINT nType, int nWidth, int nHeight);
+	virtual void OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr);
+	virtual void OnSize(UINT nType, int width, int height);
 };

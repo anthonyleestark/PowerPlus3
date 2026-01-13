@@ -17,41 +17,41 @@
 /**
  * @brief	Find and return ID paired with specified macro ID
  * @param	pIDTableRef - Reference ID mapping table
- * @param	nID			- First ID
+ * @param	id			- First ID
  * @param	bReverse	- Reverse search
  * @return	unsigned - Second paired ID
  */
-unsigned MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, unsigned nID, bool bReverse /* = false */)
+unsigned MapTable::getPairedID(IDMAPTABLE_REF idTableRef, unsigned id, bool reverse /* = false */)
 {
 	// Return INVALID if ID mapping table is invalid
-	ASSERT(pIDTableRef != NULL);
-	if (pIDTableRef == NULL) {
-		return (unsigned)INT_INVALID;
+	ASSERT(idTableRef != NULL);
+	if (idTableRef == NULL) {
+		return (unsigned)Constant::InvalidInteger;
 	}
 
 	// Find and return corresponding ID paired with specified macro ID
-	int nIndex = 0;
+	int index = 0;
 	do {
 		// Get ID pair entry
-		IDPAIR idPair = pIDTableRef[nIndex++];
+		IDPAIR idPair = idTableRef[index++];
 
 		// End of table
 		if (idPair.first == INFINITE)
 			break;
 
 		// Reverse search
-		if (bReverse == true) {
-			if (idPair.second == nID)
+		if (reverse == true) {
+			if (idPair.second == id)
 				return idPair.first;
 		}
 		else {
-			if (idPair.first == nID)
+			if (idPair.first == id)
 				return idPair.second;
 		}
-	} while (nIndex < MAX_TABLESIZE);
+	} while (index < MAX_TABLESIZE);
 
 	// Return INVALID if not found
-	return (unsigned)INT_INVALID;
+	return (unsigned)Constant::InvalidInteger;
 }
 
 /**
@@ -60,24 +60,24 @@ unsigned MapTable::GetPairedID(IDMAPTABLE_REF pIDTableRef, unsigned nID, bool bR
  * @param	input			- Given string
  * @return	unsigned - String ID
  */
-unsigned MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* input)
+unsigned MapTable::getStringID(STRINGTABLE_REF stringTableRef, const wchar_t* input)
 {
 	// Return NULL string if language table is invalid
-	ASSERT(pStringTableRef != NULL);
-	if (pStringTableRef == NULL) {
-		return (unsigned)INT_INVALID;
+	ASSERT(stringTableRef != NULL);
+	if (stringTableRef == NULL) {
+		return (unsigned)Constant::InvalidInteger;
 	}
 
 	// Convert input string to lowercase
 	String inputString(input);
-	inputString.ToLower();
+	inputString.toLower();
 
 	// Find and return corresponding ID paired with specified string
-	int nIndex = 0;
+	int index = 0;
 	String pairedString;
 	do {
 		// Get string pair entry
-		LANGTEXT stringPair = pStringTableRef[nIndex++];
+		LANGTEXT stringPair = stringTableRef[index++];
 
 		// End of table
 		if (stringPair.id == INFINITE)
@@ -85,46 +85,46 @@ unsigned MapTable::GetStringID(STRINGTABLE_REF pStringTableRef, const wchar_t* i
 
 		// Also convert language string to lower for easier comparison
 		pairedString = stringPair.langString;
-		pairedString.ToLower();
+		pairedString.toLower();
 
 		// Compare string ID
 		if (!_tcscmp(pairedString, inputString)) {
 			return stringPair.id;
 		}
-	} while (nIndex < MAX_TABLESIZE);
+	} while (index < MAX_TABLESIZE);
 
 	// Return INVALID if not found
-	return (unsigned)INT_INVALID;
+	return (unsigned)Constant::InvalidInteger;
 }
 
 /**
  * @brief	Find and return string paired with specified ID
  * @param	pStringTableRef  - Reference string table
- * @param	nID				 - String ID
+ * @param	id				 - String ID
  * @return	const wchar_t* - Paired string
  */
-const wchar_t* MapTable::GetString(STRINGTABLE_REF pStringTableRef, unsigned nID)
+const wchar_t* MapTable::getString(STRINGTABLE_REF stringTableRef, unsigned id)
 {
 	// Return NULL string if language table is invalid
-	ASSERT(pStringTableRef != NULL);
-	if (pStringTableRef == NULL)
+	ASSERT(stringTableRef != NULL);
+	if (stringTableRef == NULL)
 		return Constant::String::Null;
 
 	// Find and return corresponding string paired with specified ID
-	int nIndex = 0;
+	int index = 0;
 	do {
 		// Get string pair entry
-		LANGTEXT stringPair = pStringTableRef[nIndex++];
+		LANGTEXT stringPair = stringTableRef[index++];
 
 		// End of table
 		if (stringPair.id == INFINITE)
 			break;
 
 		// Compare string
-		if (stringPair.id == nID)
+		if (stringPair.id == id)
 			return stringPair.langString;
 
-	} while (nIndex < MAX_TABLESIZE);
+	} while (index < MAX_TABLESIZE);
 
 	return Constant::String::Null;
 }

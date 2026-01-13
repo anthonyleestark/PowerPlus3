@@ -35,8 +35,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Dialog control management
-	virtual int RegisterDialogManagement(void);
-	virtual bool UnregisterDialogManagement(void);
+	virtual int registerDialogManagement(void);
+	virtual bool unregisterDialogManagement(void);
 
 	// Implementation
 protected:
@@ -45,58 +45,58 @@ protected:
 
 private:
 	// Dialog control item
-	CComboBox*		 m_pActionList;
-	CEdit*			 m_pTimeEdit;
-	CSpinButtonCtrl* m_pTimeSpin;
-	CGridCtrl*		 m_pActiveDayListTable;
+	CComboBox*		 actionListPtr_;
+	CEdit*			 timeEditPtr_;
+	CSpinButtonCtrl* timeSpinCtrlPtr_;
+	CGridCtrl*		 activeDayTablePtr_;
 
 	// Data variables
-	BOOL	 m_bEnabled;
-	BOOL	 m_bRepeat;
-	unsigned m_nAction;
+	BOOL	 isEnabled_;
+	BOOL	 isRepeated_;
+	unsigned actionId_;
 
 	// Data container variables
-	ScheduleItem m_schScheduleItem;
-	ScheduleItem m_schScheduleItemTemp;
+	ScheduleItem scheduleItem_;
+	ScheduleItem tempScheduleItem_;
 
 	// Other variables
-	int	  m_nDispMode;
-	Size* m_pszActiveTableFrameSize;
+	int	  displayMode_;
+	Size* activeTableSizePtr_;
 
 public:
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	virtual void OnClose();
 	afx_msg void OnDestroy();
-	virtual LRESULT RequestCloseDialog(void);
+	virtual LRESULT requestCloseDialog(void);
 
 	// Member functions
-	void SetupLanguage();
-	void SetupComboBox(unsigned nComboID, LANGTABLE_PTR ptrLanguage);
-	void SetupActiveDayList(LANGTABLE_PTR ptrLanguage);
-	void DrawActiveDayTable(bool bReadOnly = false);
+	void setupLanguage();
+	void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
+	void setupActiveDayList(LANGTABLE_PTR languageTablePtr);
+	void drawActiveDayTable(bool isReadOnly = false);
 
 	// Dialog item properties functions
-	void SetupDialogItemState();
-	void UpdateActiveDayList();
-	void DisableActiveDayTable(bool bDisable);
-	void RedrawActiveDayTable(bool bReadOnly = false);
+	void setupDialogItemState();
+	void updateActiveDayList();
+	void disableActiveDayTable(bool isDisabled);
+	void RedrawActiveDayTable(bool isReadOnly = false);
 
 	// Data processing functions
-	void GetScheduleItem(PScheduleItem pschItem);
-	void SetScheduleItem(const ScheduleItem& pschItem);
-	void UpdateScheduleItem(void);
-	void SaveScheduleItem(void);
+	void getScheduleItem(PScheduleItem scheduleItemPtr);
+	void setScheduleItem(const ScheduleItem& scheduleItemPtr);
+	void updateScheduleItem(void);
+	void saveScheduleItem(void);
 
-	bool CheckDataChangeState(void);
-	void EnableSaveButton(bool bEnable);
-	void EnableSubItems(bool bEnable);
-	void UpdateTimeSetting(ClockTime& clockTime, bool bUpdate = true);
+	bool checkDataChangeState(void);
+	void enableSaveButton(bool isEnabled);
+	void enableSubItems(bool isEnabled);
+	void updateTimeSetting(ClockTime& clockTime, bool updateFlag = true);
 
 public:
 	// Get/set functions
-	int	GetDispMode(void) const;
-	void SetDispMode(int nMode);
+	int	getDispMode(void) const;
+	void setDispMode(int mode);
 
 protected:
 	// Message handlers

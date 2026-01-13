@@ -28,58 +28,58 @@ IMPLEMENT_DYNAMIC(SCtrlInfoWrap, CObject)
 SCtrlInfoWrap::SCtrlInfoWrap() : CObject()
 {
 	// Base control window pointer
-	m_pBaseControl = NULL;
+	baseControlWndPtr_ = NULL;
 
 	// Relative windows
-	m_pParentWnd = NULL;
-	m_pBuddyWnd = NULL;
+	parentWndPtr_ = NULL;
+	buddyWndPtr_ = NULL;
 
 	// Control ID info
-	m_nTypeID = Control_Base;
-	m_nTemplateID = 0;
-	m_strTemplateID.Empty();
+	typeId_ = Control_Base;
+	templateId_ = 0;
+	templateStringId_.empty();
 
 	// Control attributes
-	m_strCaption.Empty();
-	m_bVisible = false;
-	m_bEnabled = false;
-	m_bFocused = false;
+	caption_.empty();
+	isVisible_ = false;
+	isEnabled_ = false;
+	isFocused_ = false;
 
 	// --- Control data values --- //
 
 	// Boolean data
-	m_pbCheck = NULL;
+	isCheckedPtr_ = NULL;
 
 	// Integer data
-	m_plValue = NULL;
-	m_plReserveValue = NULL;
-	m_plMinValue = NULL;
-	m_plMaxValue = NULL;
+	valueIntPtr_ = NULL;
+	reservedValueIntPtr_ = NULL;
+	minValueIntPtr_ = NULL;
+	maxValueIntPtr_ = NULL;
 
 	// Float data
-	m_pdbValue = NULL;
-	m_pdbReserveValue = NULL;
-	m_pdbMinValue = NULL;
-	m_pdbMaxValue = NULL;
+	valueDoublePtr_ = NULL;
+	reservedValueDoublePtr_ = NULL;
+	minValueDoublePtr_ = NULL;
+	maxValueDoublePtr_ = NULL;
 
 	// String data
-	m_pstrValue = NULL;
-	m_pstrReserveValue = NULL;
+	valueStringPtr_ = NULL;
+	reservedValueStringPtr_ = NULL;
 
 	// Integer array data
-	m_paulValueList = NULL;
-	m_paulReserveValueList = NULL;
+	valueIntListPtr_ = NULL;
+	reservedValueIntListPtr_ = NULL;
 
 	// String array data
-	m_pastrValueList = NULL;
-	m_pastrReserveValueList = NULL;
+	valueStringListPtr_ = NULL;
+	reservedValueStringListPtr_ = NULL;
 
 	// Time data
-	m_pstTimeValue = NULL;
+	valueTimePtr_ = NULL;
 
 	// Custom data
-	m_ptrCustomData = NULL;
-	m_pszDataSize = NULL;
+	customDataPtr_ = NULL;
+	dataSizePtr_ = NULL;
 }
 
 /**
@@ -91,141 +91,141 @@ SCtrlInfoWrap::~SCtrlInfoWrap()
 	//
 
 	// Boolean data
-	if (m_pbCheck != NULL) {
-		delete m_pbCheck;
-		m_pbCheck = NULL;
+	if (isCheckedPtr_ != NULL) {
+		delete isCheckedPtr_;
+		isCheckedPtr_ = NULL;
 	}
 
 	// Integer data
-	if (m_plValue != NULL) {
-		delete m_plValue;
-		m_plValue = NULL;
+	if (valueIntPtr_ != NULL) {
+		delete valueIntPtr_;
+		valueIntPtr_ = NULL;
 	}
-	if (m_plReserveValue != NULL) {
-		delete m_plReserveValue;
-		m_plReserveValue = NULL;
+	if (reservedValueIntPtr_ != NULL) {
+		delete reservedValueIntPtr_;
+		reservedValueIntPtr_ = NULL;
 	}
-	if (m_plMinValue != NULL) {
-		delete m_plMinValue;
-		m_plMinValue = NULL;
+	if (minValueIntPtr_ != NULL) {
+		delete minValueIntPtr_;
+		minValueIntPtr_ = NULL;
 	}
-	if (m_plMaxValue != NULL) {
-		delete m_plMaxValue;
-		m_plMaxValue = NULL;
+	if (maxValueIntPtr_ != NULL) {
+		delete maxValueIntPtr_;
+		maxValueIntPtr_ = NULL;
 	}
 
 	// Float data
-	if (m_pdbValue != NULL) {
-		delete m_pdbValue;
-		m_pdbValue = NULL;
+	if (valueDoublePtr_ != NULL) {
+		delete valueDoublePtr_;
+		valueDoublePtr_ = NULL;
 	}
-	if (m_pdbReserveValue != NULL) {
-		delete m_pdbReserveValue;
-		m_pdbReserveValue = NULL;
+	if (reservedValueDoublePtr_ != NULL) {
+		delete reservedValueDoublePtr_;
+		reservedValueDoublePtr_ = NULL;
 	}
-	if (m_pdbMinValue != NULL) {
-		delete m_pdbMinValue;
-		m_pdbMinValue = NULL;
+	if (minValueDoublePtr_ != NULL) {
+		delete minValueDoublePtr_;
+		minValueDoublePtr_ = NULL;
 	}
-	if (m_pdbMaxValue != NULL) {
-		delete m_pdbMaxValue;
-		m_pdbMaxValue = NULL;
+	if (maxValueDoublePtr_ != NULL) {
+		delete maxValueDoublePtr_;
+		maxValueDoublePtr_ = NULL;
 	}
 
 	// String data
-	if (m_pstrValue != NULL) {
-		delete m_pstrValue;
-		m_pstrValue = NULL;
+	if (valueStringPtr_ != NULL) {
+		delete valueStringPtr_;
+		valueStringPtr_ = NULL;
 	}
-	if (m_pstrReserveValue != NULL) {
-		delete m_pstrReserveValue;
-		m_pstrReserveValue = NULL;
+	if (reservedValueStringPtr_ != NULL) {
+		delete reservedValueStringPtr_;
+		reservedValueStringPtr_ = NULL;
 	}
 
 	// Integer array data
-	if (m_paulValueList != NULL) {
+	if (valueIntListPtr_ != NULL) {
 		// Cleanup array data
-		if (!m_paulValueList->empty()) {
-			m_paulValueList->clear();
+		if (!valueIntListPtr_->empty()) {
+			valueIntListPtr_->clear();
 		}
-		delete m_paulValueList;
-		m_paulValueList = NULL;
+		delete valueIntListPtr_;
+		valueIntListPtr_ = NULL;
 	}
-	if (m_paulReserveValueList != NULL) {
+	if (reservedValueIntListPtr_ != NULL) {
 		// Cleanup reserved array data
-		if (!m_paulReserveValueList->empty()) {
-			m_paulReserveValueList->clear();
+		if (!reservedValueIntListPtr_->empty()) {
+			reservedValueIntListPtr_->clear();
 		}
-		delete m_paulReserveValueList;
-		m_paulReserveValueList = NULL;
+		delete reservedValueIntListPtr_;
+		reservedValueIntListPtr_ = NULL;
 	}
 
 	// String array data
-	if (m_pastrValueList != NULL) {
+	if (valueStringListPtr_ != NULL) {
 		// Cleanup array data
-		if (!m_pastrValueList->empty()) {
-			m_pastrValueList->clear();
+		if (!valueStringListPtr_->empty()) {
+			valueStringListPtr_->clear();
 		}
-		delete m_pastrValueList;
-		m_pastrValueList = NULL;
+		delete valueStringListPtr_;
+		valueStringListPtr_ = NULL;
 	}
-	if (m_pastrReserveValueList != NULL) {
+	if (reservedValueStringListPtr_ != NULL) {
 		// Cleanup reserved array data
-		if (!m_pastrReserveValueList->empty()) {
-			m_pastrReserveValueList->clear();
+		if (!reservedValueStringListPtr_->empty()) {
+			reservedValueStringListPtr_->clear();
 		}
-		delete m_pastrReserveValueList;
-		m_pastrReserveValueList = NULL;
+		delete reservedValueStringListPtr_;
+		reservedValueStringListPtr_ = NULL;
 	}
 
 	// Time data
-	if (m_pstTimeValue != NULL) {
-		delete m_pstTimeValue;
-		m_pstTimeValue = NULL;
+	if (valueTimePtr_ != NULL) {
+		delete valueTimePtr_;
+		valueTimePtr_ = NULL;
 	}
 
 	// Custom data
-	if (m_ptrCustomData != NULL) {
+	if (customDataPtr_ != NULL) {
 		// Note: Because this pointer is allocated using 'malloc', 
 		// we need to use 'free' for de-allocation to free its memory block; 
 		// we also cannot use 'delete' to free it, because it's a void pointer 
-		free(m_ptrCustomData);
-		m_ptrCustomData = NULL;
+		free(customDataPtr_);
+		customDataPtr_ = NULL;
 	}
-	if (m_pszDataSize != NULL) {
-		delete m_pszDataSize;
-		m_pszDataSize = NULL;
+	if (dataSizePtr_ != NULL) {
+		delete dataSizePtr_;
+		dataSizePtr_ = NULL;
 	}
 }
 
 /**
  * @brief	Initialize control info wrap object
- * @param	pParentWnd - Parent window
- * @param	pBuddyWnd  - Buddy window
- * @param	nCtrlID	   - Control ID
- * @param	nTypeID	   - Control type ID
+ * @param	parentWndPtr - Parent window
+ * @param	buddyWndPtr  - Buddy window
+ * @param	controlId	 - Control ID
+ * @param	controlId	 - Control type ID
  * @return	true/false
  */
-bool SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, unsigned nCtrlID, int nTypeID)
+bool SCtrlInfoWrap::initialize(CWnd* parentWndPtr, CWnd* buddyWndPtr, unsigned controlId, int typeId)
 {
-	ASSERT(pParentWnd->GetSafeHwnd());
-	if (pParentWnd == NULL)
+	ASSERT(parentWndPtr->GetSafeHwnd());
+	if (parentWndPtr == NULL)
 		return false;
 
 	// Set base control pointer (maybe NULL)
-	this->m_pBaseControl = pParentWnd->GetDlgItem(nCtrlID);
+	baseControlWndPtr_ = parentWndPtr->GetDlgItem(controlId);
 
 	// Set relative windows
-	this->m_pParentWnd = pParentWnd;
-	this->m_pBuddyWnd = pBuddyWnd;
+	parentWndPtr_ = parentWndPtr;
+	buddyWndPtr_ = buddyWndPtr;
 
 	// Set control ID info
-	this->m_nTemplateID = nCtrlID;
-	this->m_nTypeID = nTypeID;
-	this->m_strTemplateID = MAKEUNICODE(GET_NAME_ID(this->m_nTemplateID));
+	templateId_ = controlId;
+	typeId_ = typeId;
+	templateStringId_ = MAKEUNICODE(GET_NAME_ID(templateId_));
 
 	// Set control attributes
-	this->UpdateAttributes();
+	updateAttributes();
 
 	return true;
 }
@@ -235,10 +235,10 @@ bool SCtrlInfoWrap::Initialize(CWnd* pParentWnd, CWnd* pBuddyWnd, unsigned nCtrl
  * @param	None
  * @return	None
  */
-void SCtrlInfoWrap::UpdateAttributes(void)
+void SCtrlInfoWrap::updateAttributes(void)
 {
 	// Update control caption by type
-	switch (this->m_nTypeID)
+	switch (typeId_)
 	{
 		// These types of control have its own caption implemented:
 		case Button:
@@ -250,12 +250,12 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 		case SysLink_Control:
 		{
 			// Get base control window text itself;
-			if (IsBaseControlAvailable()) {
-				const int captionLength = this->GetBaseControl()->GetWindowTextLength();
+			if (isBaseControlAvailable()) {
+				const int captionLength = getBaseControl()->GetWindowTextLength();
 				std::vector<wchar_t> tempBuff(captionLength + 1);
-				this->GetBaseControl()->GetWindowText(tempBuff.data(), captionLength + 1);
+				getBaseControl()->GetWindowText(tempBuff.data(), captionLength + 1);
 				String captionString = tempBuff.data();
-				this->SetCaption(captionString);
+				setCaption(captionString);
 			}
 		} break;
 
@@ -277,12 +277,12 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 		case Month_Calendar_Control:
 		{
 			// Get buddy control's caption
-			if (IsBuddyAvailable()) {
-				const int captionLength = this->GetBuddy()->GetWindowTextLength();
+			if (isBuddyAvailable()) {
+				const int captionLength = getBuddy()->GetWindowTextLength();
 				std::vector<wchar_t> tempBuff(captionLength + 1);
-				this->GetBuddy()->GetWindowText(tempBuff.data(), captionLength + 1);
+				getBuddy()->GetWindowText(tempBuff.data(), captionLength + 1);
 				String captionString = tempBuff.data();
-				this->SetCaption(captionString);
+				setCaption(captionString);
 			}
 		} break;
 
@@ -293,23 +293,25 @@ void SCtrlInfoWrap::UpdateAttributes(void)
 	}
 
 	// Update control displaying state
-	this->SetVisibleState(false);		// Reset state
-	this->SetEnableState(false);		// Reset state
-	this->SetFocusedState(false);		// Reset state
+	setVisibleState(false);		// Reset state
+	setEnableState(false);		// Reset state
+	setFocusedState(false);		// Reset state
 
-	if (IsBaseControlAvailable()) {
+	if (isBaseControlAvailable()) {
 
 		// Update visible state
-		this->SetVisibleState(GetBaseControl()->IsWindowVisible());
+		setVisibleState(getBaseControl()->IsWindowVisible());
 
 		// Update enable state
-		this->SetEnableState(GetBaseControl()->IsWindowEnabled());
+		setEnableState(getBaseControl()->IsWindowEnabled());
 
 		// Update focus state
-		if (IsParentAvailable()) {
-			CWnd* pFocusCtrl = GetParent()->GetFocus();
-			if ((pFocusCtrl != NULL) && (pFocusCtrl == GetBaseControl())) {
-				this->SetFocusedState(true);
+		if (isParentAvailable()) {
+			CWnd* focusedCtrlPtr = CWnd::GetFocus();
+			if (focusedCtrlPtr
+				&& (focusedCtrlPtr->GetParent() == parentWndPtr_)
+				&& (focusedCtrlPtr == getBaseControl())) {
+				setFocusedState(true);
 			}
 		}
 	}
@@ -320,138 +322,138 @@ void SCtrlInfoWrap::UpdateAttributes(void)
  * @param	None
  * @return	true/false
  */
-bool SCtrlInfoWrap::GetCheck(void) const
+bool SCtrlInfoWrap::getCheck(void) const
 {
-	if (this->m_pbCheck == NULL)
+	if (isCheckedPtr_ == NULL)
 		return false;
 	else
-		return *(this->m_pbCheck);
+		return *(isCheckedPtr_);
 }
 
 /**
  * @brief	Get current control's integer data value
- * @param	lValue - Integer value (out)
- * @return	LONG_PTR
+ * @param	value - Integer value (out)
+ * @return	int64
  */
-LONG_PTR SCtrlInfoWrap::GetInteger(void) const
+int64 SCtrlInfoWrap::getInteger(void) const
 {
-	if (this->m_plValue == NULL)
-		return INT_INVALID;
+	if (valueIntPtr_ == NULL)
+		return Constant::InvalidInteger;
 	else
-		return *(this->m_plValue);
+		return *(valueIntPtr_);
 }
 
-void SCtrlInfoWrap::GetInteger(_Out_ LONG_PTR& lValue) const
+void SCtrlInfoWrap::getInteger(_Out_ int64& value) const
 {
-	if (this->m_plValue == NULL)
-		lValue = INT_INVALID;
+	if (valueIntPtr_ == NULL)
+		value = Constant::InvalidInteger;
 	else
-		lValue = *(this->m_plValue);
+		value = *(valueIntPtr_);
 }
 
 /**
  * @brief	Get current control's reserve integer data value
- * @param	lValue - Integer reserve value (out)
- * @return	LONG_PTR
+ * @param	value - Integer reserve value (out)
+ * @return	int64
  */
-LONG_PTR SCtrlInfoWrap::GetReserveInteger(void) const
+int64 SCtrlInfoWrap::getReserveInteger(void) const
 {
-	if (this->m_plReserveValue == NULL)
-		return INT_INVALID;
+	if (reservedValueIntPtr_ == NULL)
+		return Constant::InvalidInteger;
 	else
-		return *(this->m_plReserveValue);
+		return *(reservedValueIntPtr_);
 }
 
-void SCtrlInfoWrap::GetReserveInteger(_Out_ LONG_PTR& lValue) const
+void SCtrlInfoWrap::getReserveInteger(_Out_ int64& value) const
 {
-	if (this->m_plReserveValue == NULL)
-		lValue = INT_INVALID;
+	if (reservedValueIntPtr_ == NULL)
+		value = Constant::InvalidInteger;
 	else
-		lValue = *(this->m_plReserveValue);
+		value = *(reservedValueIntPtr_);
 }
 
 /**
  * @brief	Get current control's min/max range integer data value
- * @param	lMin - Min range integer value (out)
- * @param	lMax - Max range integer value (out)
+ * @param	minVal - Min range integer value (out)
+ * @param	maxVal - Max range integer value (out)
  * @return	None
  */
-void SCtrlInfoWrap::GetMinMaxInt(_Out_ LONG_PTR& lMin, _Out_ LONG_PTR& lMax) const
+void SCtrlInfoWrap::getMinMaxInt(_Out_ int64& minVal, _Out_ int64& maxVal) const
 {
 	// Min value
-	if (this->m_plMinValue == NULL)
-		lMin = INT_INVALID;
+	if (minValueIntPtr_ == NULL)
+		minVal = Constant::InvalidInteger;
 	else
-		lMin = *(this->m_plMinValue);
+		minVal = *(minValueIntPtr_);
 
 	// Max value
-	if (this->m_plMaxValue == NULL)
-		lMax = INT_INVALID;
+	if (maxValueIntPtr_ == NULL)
+		maxVal = Constant::InvalidInteger;
 	else
-		lMax = *(this->m_plMaxValue);
+		maxVal = *(maxValueIntPtr_);
 }
 
 /**
  * @brief	Get current control's float data value
- * @param	dbValue - Float value (out)
- * @return	DOUBLE
+ * @param	valueDouble - Float value (out)
+ * @return	double
  */
-DOUBLE SCtrlInfoWrap::GetFloat(void) const
+double SCtrlInfoWrap::getFloat(void) const
 {
-	if (this->m_pdbValue == NULL)
-		return FLOAT_INVALID;
+	if (valueDoublePtr_ == NULL)
+		return Constant::InvalidFloat;
 	else
-		return *(this->m_pdbValue);
+		return *(valueDoublePtr_);
 }
 
-void SCtrlInfoWrap::GetFloat(_Out_ DOUBLE& dbValue) const
+void SCtrlInfoWrap::getFloat(_Out_ double& valueDouble) const
 {
-	if (this->m_pdbValue == NULL)
-		dbValue = FLOAT_INVALID;
+	if (valueDoublePtr_ == NULL)
+		valueDouble = Constant::InvalidFloat;
 	else
-		dbValue = *(this->m_pdbValue);
+		valueDouble = *(valueDoublePtr_);
 }
 
 /**
  * @brief	Get current control's reserve float data value
- * @param	dbValue - Float reserve value (out)
- * @return	DOUBLE
+ * @param	valueDouble - Float reserve value (out)
+ * @return	double
  */
-DOUBLE SCtrlInfoWrap::GetReserveFloat(void) const
+double SCtrlInfoWrap::getReserveFloat(void) const
 {
-	if (this->m_pdbReserveValue == NULL)
-		return FLOAT_INVALID;
+	if (reservedValueDoublePtr_ == NULL)
+		return Constant::InvalidFloat;
 	else
-		return *(this->m_pdbReserveValue);
+		return *(reservedValueDoublePtr_);
 }
 
-void SCtrlInfoWrap::GetReserveFloat(_Out_ DOUBLE& dbValue) const
+void SCtrlInfoWrap::getReserveFloat(_Out_ double& valueDouble) const
 {
-	if (this->m_pdbReserveValue == NULL)
-		dbValue = FLOAT_INVALID;
+	if (reservedValueDoublePtr_ == NULL)
+		valueDouble = Constant::InvalidFloat;
 	else
-		dbValue = *(this->m_pdbReserveValue);
+		valueDouble = *(reservedValueDoublePtr_);
 }
 
 /**
  * @brief	Get current control's min/max range integer data value
- * @param	lMin - Min range integer value (out)
- * @param	lMax - Max range integer value (out)
+ * @param	minVal - Min range integer value (out)
+ * @param	maxVal - Max range integer value (out)
  * @return	None
  */
-void SCtrlInfoWrap::GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) const
+void SCtrlInfoWrap::getMinMaxFloat(_Out_ double& minVal, _Out_ double& maxVal) const
 {
 	// Min value
-	if (this->m_pdbMinValue == NULL)
-		dbMin = FLOAT_INVALID;
+	if (minValueDoublePtr_ == NULL)
+		minVal = Constant::InvalidFloat;
 	else
-		dbMin = *(this->m_pdbMinValue);
+		minVal = *(minValueDoublePtr_);
 
 	// Max value
-	if (this->m_pdbMaxValue == NULL)
-		dbMax = FLOAT_INVALID;
+	if (maxValueDoublePtr_ == NULL)
+		maxVal = Constant::InvalidFloat;
 	else
-		dbMax = *(this->m_pdbMaxValue);
+		maxVal = *(maxValueDoublePtr_);
 }
 
 /**
@@ -459,20 +461,20 @@ void SCtrlInfoWrap::GetMinMaxFloat(_Out_ DOUBLE& dbMin, _Out_ DOUBLE& dbMax) con
  * @param	value - String value (out)
  * @return	const wchar_t*
  */
-const wchar_t* SCtrlInfoWrap::GetString(void) const
+const wchar_t* SCtrlInfoWrap::getString(void) const
 {
-	if (this->m_pstrValue == NULL)
+	if (valueStringPtr_ == NULL)
 		return Constant::String::Empty;
 	else
-		return *(this->m_pstrValue);
+		return *(valueStringPtr_);
 }
 
-void SCtrlInfoWrap::GetString(_Out_ String& value) const
+void SCtrlInfoWrap::getString(_Out_ String& value) const
 {
-	if (this->m_pstrValue == NULL)
+	if (valueStringPtr_ == NULL)
 		value = Constant::String::Empty;
 	else
-		value = *(this->m_pstrValue);
+		value = *(valueStringPtr_);
 }
 
 /**
@@ -480,79 +482,79 @@ void SCtrlInfoWrap::GetString(_Out_ String& value) const
  * @param	value - String reserve value (out)
  * @return	const wchar_t*
  */
-const wchar_t* SCtrlInfoWrap::GetReserveString(void) const
+const wchar_t* SCtrlInfoWrap::getReserveString(void) const
 {
-	if (this->m_pstrReserveValue == NULL)
+	if (reservedValueStringPtr_ == NULL)
 		return Constant::String::Empty;
 	else
-		return *(this->m_pstrReserveValue);
+		return *(reservedValueStringPtr_);
 }
 
-void SCtrlInfoWrap::GetReserveString(_Out_ String& value) const
+void SCtrlInfoWrap::getReserveString(_Out_ String& value) const
 {
-	if (this->m_pstrReserveValue == NULL)
+	if (reservedValueStringPtr_ == NULL)
 		value = Constant::String::Empty;
 	else
-		value = *(this->m_pstrReserveValue);
+		value = *(reservedValueStringPtr_);
 }
 
 /**
  * @brief	Get current control's integer array data value
- * @param	aulValue - Integer array value (out)
+ * @param	valueList - Integer array value (out)
  * @return	None
  */
-void SCtrlInfoWrap::GetIntArray(_Out_ ULongArray& aulValue) const
+void SCtrlInfoWrap::getIntArray(_Out_ uint64_array& valueList) const
 {
-	if (this->m_paulValueList == NULL) {
-		aulValue.clear();
+	if (valueIntListPtr_ == NULL) {
+		valueList.clear();
 	}
 	else {
-		aulValue = *(this->m_paulValueList);
+		valueList = *(valueIntListPtr_);
 	}
 }
 
 /**
  * @brief	Get current control's reserve integer array data value
- * @param	aulValue - Integer array value (out)
+ * @param	valueList - Integer array value (out)
  * @return	None
  */
-void SCtrlInfoWrap::GetReserveIntArray(_Out_ ULongArray& aulValue) const
+void SCtrlInfoWrap::getReserveIntArray(_Out_ uint64_array& valueList) const
 {
-	if (this->m_paulReserveValueList == NULL) {
-		aulValue.clear();
+	if (reservedValueIntListPtr_ == NULL) {
+		valueList.clear();
 	}
 	else {
-		aulValue = *(this->m_paulReserveValueList);
+		valueList = *(reservedValueIntListPtr_);
 	}
 }
 
 /**
  * @brief	Get current control's string array data value
- * @param	astrValue - String array value (out)
+ * @param	valueList - String array value (out)
  * @return	None
  */
-void SCtrlInfoWrap::GetStringArray(_Out_ StringArray& astrValue) const
+void SCtrlInfoWrap::getStringArray(_Out_ StringArray& valueList) const
 {
-	if (this->m_pastrValueList == NULL) {
-		astrValue.clear();
+	if (valueStringListPtr_ == NULL) {
+		valueList.clear();
 	}
 	else {
-		astrValue = *(this->m_pastrValueList);
+		valueList = *(valueStringListPtr_);
 	}
 }
 
 /**
  * @brief	Get current control's reserve string array data value
- * @param	astrValue - String array value (out)
+ * @param	valueList - String array value (out)
  * @return	None
  */
-void SCtrlInfoWrap::GetReserveStringArray(_Out_ StringArray& astrValue) const
+void SCtrlInfoWrap::getReserveStringArray(_Out_ StringArray& valueList) const
 {
-	if (this->m_pastrReserveValueList == NULL) {
-		astrValue.clear();
+	if (reservedValueStringListPtr_ == NULL) {
+		valueList.clear();
 	}
 	else {
-		astrValue = *(this->m_pastrReserveValueList);
+		valueList = *(reservedValueStringListPtr_);
 	}
 }
 
@@ -561,144 +563,144 @@ void SCtrlInfoWrap::GetReserveStringArray(_Out_ StringArray& astrValue) const
  * @param	timeValue - Time value (out)
  * @return	SYSTEMTIME
  */
-SYSTEMTIME SCtrlInfoWrap::GetTime(void) const
+SYSTEMTIME SCtrlInfoWrap::getTime(void) const
 {
-	if (this->m_pstTimeValue == NULL)
+	if (valueTimePtr_ == NULL)
 		return {0};
 	else
-		return *(this->m_pstTimeValue);
+		return *(valueTimePtr_);
 }
 
-void SCtrlInfoWrap::GetTime(_Out_ SYSTEMTIME& timeValue) const
+void SCtrlInfoWrap::getTime(_Out_ SYSTEMTIME& timeValue) const
 {
-	if (this->m_pstTimeValue == NULL)
+	if (valueTimePtr_ == NULL)
 		timeValue = {0};
 	else
-		timeValue = *(this->m_pstTimeValue);
+		timeValue = *(valueTimePtr_);
 }
 
 /**
  * @brief	Set current control's check state
- * @param	bCheck - Checked state (BOOLEAN)
+ * @param	isChecked - Checked state (BOOLEAN)
  * @return	None
  */
-void SCtrlInfoWrap::SetCheck(_In_ const bool& bCheck)
+void SCtrlInfoWrap::setCheck(_In_ const bool& isChecked)
 {
-	if (this->m_pbCheck == NULL)
-		this->m_pbCheck = new bool(bCheck);
+	if (isCheckedPtr_ == NULL)
+		isCheckedPtr_ = new bool(isChecked);
 	else {
-		delete (this->m_pbCheck);
-		this->m_pbCheck = new bool(bCheck);
+		delete (isCheckedPtr_);
+		isCheckedPtr_ = new bool(isChecked);
 	}
 }
 
 /**
  * @brief	Set current control's integer data value
- * @param	lValue - Integer value (in)
+ * @param	value - Integer value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetInteger(_In_ const LONG_PTR& lValue)
+void SCtrlInfoWrap::setInteger(_In_ const int64& value)
 {
-	if (this->m_plValue == NULL)
-		this->m_plValue = new LONG_PTR(lValue);
+	if (valueIntPtr_ == NULL)
+		valueIntPtr_ = new int64(value);
 	else {
-		delete (this->m_plValue);
-		this->m_plValue = new LONG_PTR(lValue);
+		delete (valueIntPtr_);
+		valueIntPtr_ = new int64(value);
 	}
 }
 
 /**
  * @brief	Set current control's reserve integer data value
- * @param	lValue - Integer reserve value (in)
+ * @param	value - Integer reserve value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetReserveInteger(_In_ const LONG_PTR& lValue)
+void SCtrlInfoWrap::setReserveInteger(_In_ const int64& value)
 {
-	if (this->m_plReserveValue == NULL)
-		this->m_plReserveValue = new LONG_PTR(lValue);
+	if (reservedValueIntPtr_ == NULL)
+		reservedValueIntPtr_ = new int64(value);
 	else {
-		delete (this->m_plReserveValue);
-		this->m_plReserveValue = new LONG_PTR(lValue);
+		delete (reservedValueIntPtr_);
+		reservedValueIntPtr_ = new int64(value);
 	}
 }
 
 /**
  * @brief	Set current control's min/max range integer data value
- * @param	lMin - Min range integer value (in)
- * @param	lMax - Max range integer value (in)
+ * @param	minVal - Min range integer value (in)
+ * @param	maxVal - Max range integer value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetMinMaxInt(_In_ const LONG_PTR& lMin, _In_ const LONG_PTR& lMax)
+void SCtrlInfoWrap::setMinMaxInt(_In_ const int64& minVal, _In_ const int64& maxVal)
 {
 	// Min value
-	if (this->m_plMinValue == NULL)
-		this->m_plMinValue = new LONG_PTR(lMin);
+	if (minValueIntPtr_ == NULL)
+		minValueIntPtr_ = new int64(minVal);
 	else {
-		delete (this->m_plMinValue);
-		this->m_plMinValue = new LONG_PTR(lMin);
+		delete (minValueIntPtr_);
+		minValueIntPtr_ = new int64(minVal);
 	}
 
 	// Max value
-	if (this->m_plMaxValue == NULL)
-		this->m_plMaxValue = new LONG_PTR(lMax);
+	if (maxValueIntPtr_ == NULL)
+		maxValueIntPtr_ = new int64(maxVal);
 	else {
-		delete (this->m_plMaxValue);
-		this->m_plMaxValue = new LONG_PTR(lMax);
+		delete (maxValueIntPtr_);
+		maxValueIntPtr_ = new int64(maxVal);
 	}
 }
 
 /**
  * @brief	Set current control's float data value
- * @param	dbValue - Float value (in)
+ * @param	valueDouble - Float value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetFloat(_In_ const DOUBLE& dbValue)
+void SCtrlInfoWrap::setFloat(_In_ const double& valueDouble)
 {
-	if (this->m_pdbValue == NULL)
-		this->m_pdbValue = new DOUBLE(dbValue);
+	if (valueDoublePtr_ == NULL)
+		valueDoublePtr_ = new double(valueDouble);
 	else {
-		delete (this->m_pdbValue);
-		this->m_pdbValue = new DOUBLE(dbValue);
+		delete (valueDoublePtr_);
+		valueDoublePtr_ = new double(valueDouble);
 	}
 }
 
 /**
  * @brief	Set current control's reserve float data value
- * @param	dbValue - Float reserve value (in)
+ * @param	valueDouble - Float reserve value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetReserveFloat(_In_ const DOUBLE& dbValue)
+void SCtrlInfoWrap::setReserveFloat(_In_ const double& valueDouble)
 {
-	if (this->m_pdbReserveValue == NULL)
-		this->m_pdbReserveValue = new DOUBLE(dbValue);
+	if (reservedValueDoublePtr_ == NULL)
+		reservedValueDoublePtr_ = new double(valueDouble);
 	else {
-		delete (this->m_pdbReserveValue);
-		this->m_pdbReserveValue = new DOUBLE(dbValue);
+		delete (reservedValueDoublePtr_);
+		reservedValueDoublePtr_ = new double(valueDouble);
 	}
 }
 
 /**
  * @brief	Set current control's min/max range float data value
- * @param	lMin - Min range integer value (in)
- * @param	lMax - Max range integer value (in)
+ * @param	minVal - Min range integer value (in)
+ * @param	maxVal - Max range integer value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& dbMax)
+void SCtrlInfoWrap::setMinMaxFloat(_In_ const double& minVal, _In_ const double& maxVal)
 {
 	// Min value
-	if (this->m_pdbMinValue == NULL)
-		this->m_pdbMinValue = new DOUBLE(dbMin);
+	if (minValueDoublePtr_ == NULL)
+		minValueDoublePtr_ = new double(minVal);
 	else {
-		delete (this->m_pdbMinValue);
-		this->m_pdbMinValue = new DOUBLE(dbMin);
+		delete (minValueDoublePtr_);
+		minValueDoublePtr_ = new double(minVal);
 	}
 
 	// Max value
-	if (this->m_pdbMaxValue == NULL)
-		this->m_pdbMaxValue = new DOUBLE(dbMax);
+	if (maxValueDoublePtr_ == NULL)
+		maxValueDoublePtr_ = new double(maxVal);
 	else {
-		delete (this->m_pdbMaxValue);
-		this->m_pdbMaxValue = new DOUBLE(dbMax);
+		delete (maxValueDoublePtr_);
+		maxValueDoublePtr_ = new double(maxVal);
 	}
 }
 
@@ -707,13 +709,13 @@ void SCtrlInfoWrap::SetMinMaxFloat(_In_ const DOUBLE& dbMin, _In_ const DOUBLE& 
  * @param	value - String value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetString(_In_ const wchar_t* value)
+void SCtrlInfoWrap::setString(_In_ const wchar_t* value)
 {
-	if (this->m_pstrValue == NULL)
-		this->m_pstrValue = new String(value);
+	if (valueStringPtr_ == NULL)
+		valueStringPtr_ = new String(value);
 	else {
-		delete (this->m_pstrValue);
-		this->m_pstrValue = new String(value);
+		delete (valueStringPtr_);
+		valueStringPtr_ = new String(value);
 	}
 }
 
@@ -722,77 +724,77 @@ void SCtrlInfoWrap::SetString(_In_ const wchar_t* value)
  * @param	value - String reserve value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetReserveString(_In_ const wchar_t* value)
+void SCtrlInfoWrap::setReserveString(_In_ const wchar_t* value)
 {
-	if (this->m_pstrReserveValue == NULL)
-		this->m_pstrReserveValue = new String(value);
+	if (reservedValueStringPtr_ == NULL)
+		reservedValueStringPtr_ = new String(value);
 	else {
-		delete (this->m_pstrReserveValue);
-		this->m_pstrReserveValue = new String(value);
+		delete (reservedValueStringPtr_);
+		reservedValueStringPtr_ = new String(value);
 	}
 }
 
 /**
  * @brief	Set current control's integer array data value
- * @param	aulValue - Integer array value (in)
+ * @param	valueList - Integer array value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetIntArray(_In_ const ULongArray& aulValue)
+void SCtrlInfoWrap::setIntArray(_In_ const uint64_array& valueList)
 {
-	if (this->m_paulValueList == NULL)
-		this->m_paulValueList = new ULongArray();
+	if (valueIntListPtr_ == NULL)
+		valueIntListPtr_ = new uint64_array();
 	
-	if (this->m_paulValueList != NULL) {
-		this->m_paulValueList->clear();
-		this->m_paulValueList->assign(aulValue.begin(), aulValue.end());
+	if (valueIntListPtr_ != NULL) {
+		valueIntListPtr_->clear();
+		valueIntListPtr_->assign(valueList.begin(), valueList.end());
 	}
 }
 
 /**
  * @brief	Set current control's reserve integer array data value
- * @param	aulValue - Integer array value (in)
+ * @param	valueList - Integer array value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetReserveIntArray(_In_ const ULongArray& aulValue)
+void SCtrlInfoWrap::setReserveIntArray(_In_ const uint64_array& valueList)
 {
-	if (this->m_paulReserveValueList == NULL)
-		this->m_paulReserveValueList = new ULongArray();
+	if (reservedValueIntListPtr_ == NULL)
+		reservedValueIntListPtr_ = new uint64_array();
 
-	if (this->m_paulReserveValueList != NULL) {
-		this->m_paulReserveValueList->clear();
-		this->m_paulReserveValueList->assign(aulValue.begin(), aulValue.end());
+	if (reservedValueIntListPtr_ != NULL) {
+		reservedValueIntListPtr_->clear();
+		reservedValueIntListPtr_->assign(valueList.begin(), valueList.end());
 	}
 }
 
 /**
  * @brief	Set current control's string array data value
- * @param	astrValue - String array value (in)
+ * @param	valueList - String array value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetStringArray(_In_ const StringArray& astrValue)
+void SCtrlInfoWrap::setStringArray(_In_ const StringArray& valueList)
 {
-	if (this->m_pastrValueList == NULL)
-		this->m_pastrValueList = new StringArray();
+	if (valueStringListPtr_ == NULL)
+		valueStringListPtr_ = new StringArray();
 
-	if (this->m_pastrValueList != NULL) {
-		this->m_pastrValueList->clear();
-		this->m_pastrValueList->assign(astrValue.begin(), astrValue.end());
+	if (valueStringListPtr_ != NULL) {
+		valueStringListPtr_->clear();
+		valueStringListPtr_->assign(valueList.begin(), valueList.end());
 	}
 }
 
 /**
  * @brief	Set current control's reserve string array data value
- * @param	astrValue - String array value (in)
+ * @param	valueList - String array value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetReserveStringArray(_In_ const StringArray& astrValue)
+void SCtrlInfoWrap::setReserveStringArray(_In_ const StringArray& valueList)
 {
-	if (this->m_pastrReserveValueList == NULL)
-		this->m_pastrReserveValueList = new StringArray();
+	if (reservedValueStringListPtr_ == NULL)
+		reservedValueStringListPtr_ = new StringArray();
 
-	if (this->m_pastrReserveValueList != NULL) {
-		this->m_pastrReserveValueList->clear();
-		this->m_pastrReserveValueList->assign(astrValue.begin(), astrValue.end());
+	if (reservedValueStringListPtr_ != NULL) {
+		reservedValueStringListPtr_->clear();
+		reservedValueStringListPtr_->assign(valueList.begin(), valueList.end());
 	}
 }
 
@@ -801,104 +803,104 @@ void SCtrlInfoWrap::SetReserveStringArray(_In_ const StringArray& astrValue)
  * @param	timeValue - Time value (in)
  * @return	None
  */
-void SCtrlInfoWrap::SetTime(_In_ const SYSTEMTIME& timeValue)
+void SCtrlInfoWrap::setTime(_In_ const SYSTEMTIME& timeValue)
 {
-	if (this->m_pstTimeValue == NULL)
-		this->m_pstTimeValue = new SYSTEMTIME(timeValue);
+	if (valueTimePtr_ == NULL)
+		valueTimePtr_ = new SYSTEMTIME(timeValue);
 	else {
-		delete (this->m_pstTimeValue);
-		this->m_pstTimeValue = new SYSTEMTIME(timeValue);
+		delete (valueTimePtr_);
+		valueTimePtr_ = new SYSTEMTIME(timeValue);
 	}
 }
 
 /**
  * @brief	Get current control's custom data pointer
- * @param	lpOutput   - Output data pointer
- * @param	szDataSize - Data's total size in bytes (in/out)
+ * @param	outputPtr   - Output data pointer
+ * @param	dataSize - Data's total size in bytes (in/out)
  * @return	true/false
  */
-template<typename DATA_TYPE>
-bool SCtrlInfoWrap::GetData(_Outptr_ DATA_TYPE* lpOutput, _Inout_opt_z_ SIZE_T& szDataSize) const
+template<typename DataType>
+bool SCtrlInfoWrap::getData(_Outptr_ DataType*& outputPtr, _Inout_opt_z_ size_t& dataSize) const
 {
 	// If pointers are invalid
-	if ((lpOutput == NULL) ||
-		(this->m_ptrCustomData == NULL) ||
-		(this->m_pszDataSize == NULL))
+	if ((outputPtr == NULL) ||
+		(customDataPtr_ == NULL) ||
+		(dataSizePtr_ == NULL))
 		return false;	// Fail to retrieve data
 
 	// If size value is invalid
-	SIZE_T szCurDataSize = *(this->m_pszDataSize);
-	if ((szDataSize <= 0) || (szCurDataSize <= 0))
+	size_t curDataSize = *(dataSizePtr_);
+	if ((dataSize <= 0) || (curDataSize <= 0))
 		return false;	// Fail to retrieve data
 
 	// If the output buffer size is insufficient
-	if (szDataSize < szCurDataSize) {
+	if (dataSize < curDataSize) {
 		// Re-allocate output data pointer
 		// we can 
-		delete[] lpOutput;
-		lpOutput = new DATA_TYPE[szCurDataSize / sizeof(DATA_TYPE)];
-		ASSERT(lpOutput != NULL);
-		if (lpOutput == NULL) {
+		delete[] outputPtr;
+		outputPtr = new DataType[curDataSize / sizeof(DataType)];
+		ASSERT(outputPtr != NULL);
+		if (outputPtr == NULL) {
 			throw std::bad_alloc();
 			return false;	// Allocation failed
 		}
 	}
 
 	// Copy data and update the output data size
-	memcpy(lpOutput, this->m_ptrCustomData, szCurDataSize);
-	szDataSize = szCurDataSize;
+	memcpy(outputPtr, customDataPtr_, curDataSize);
+	dataSize = curDataSize;
 
 	return true;	// Get data successfully
 }
 
 /**
  * @brief	Set current control's custom data pointer
- * @param	lpInput	   - Input data pointer
- * @param	szDataSize - Data's total size in bytes (in)
+ * @param	inputPtr - Input data pointer
+ * @param	dataSize - Data's total size in bytes (in)
  * @return	None
  */
-template<typename DATA_TYPE>
-bool SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& szDataSize)
+template<typename DataType>
+bool SCtrlInfoWrap::setData(_In_ const DataType* inputPtr, _In_ const size_t& dataSize)
 {
 	// If input data or size are invalid
-	if ((lpInput == NULL) || (szDataSize <= 0))
+	if ((inputPtr == NULL) || (dataSize <= 0))
 		return false;	// Fail to set data
 
 	// If the current data pointer is not empty
 	// or its current total size in bytes is not large enough
-	if ((this->m_ptrCustomData != NULL) ||
-		((this->m_pszDataSize != NULL) && (*(this->m_pszDataSize) < szDataSize))) {
-		if (this->m_ptrCustomData != NULL) {
+	if ((customDataPtr_ != NULL) ||
+		((dataSizePtr_ != NULL) && (*(dataSizePtr_) < dataSize))) {
+		if (customDataPtr_ != NULL) {
 			// Free the data pointer's existing memory
-			free(this->m_ptrCustomData);
+			free(customDataPtr_);
 		}
 	}
 
 	// Allocate the data pointer if not available
-	if (this->m_ptrCustomData == NULL) {
-		this->m_ptrCustomData = malloc(szDataSize);
-		ASSERT(this->m_ptrCustomData != NULL);
-		if (this->m_ptrCustomData == NULL) {
+	if (customDataPtr_ == NULL) {
+		customDataPtr_ = malloc(dataSize);
+		ASSERT(customDataPtr_ != NULL);
+		if (customDataPtr_ == NULL) {
 			throw std::bad_alloc();
 			return false;	// Allocation failed
 		}
 	}
 
 	// Allocate the data size pointer if not available
-	if (this->m_pszDataSize == NULL) {
-		this->m_pszDataSize = new SIZE_T;
-		ASSERT(this->m_pszDataSize != NULL);
-		if (this->m_pszDataSize == NULL) {
+	if (dataSizePtr_ == NULL) {
+		dataSizePtr_ = new size_t;
+		ASSERT(dataSizePtr_ != NULL);
+		if (dataSizePtr_ == NULL) {
 			throw std::bad_alloc();
 			return false;	// Allocation failed
 		}
 	}
 
 	// Copy data
-	memcpy(this->m_ptrCustomData, lpInput, szDataSize);
+	memcpy(customDataPtr_, inputPtr, dataSize);
 
 	// Update the data's new total size in bytes
-	*(this->m_pszDataSize) = szDataSize;
+	*(dataSizePtr_) = dataSize;
 
 	return true;	// Set data successfully
 }
@@ -908,16 +910,16 @@ bool SCtrlInfoWrap::SetData(_In_ const DATA_TYPE* lpInput, _In_ const SIZE_T& sz
  * @param	None
  * @return	true/false
  */
-bool SCtrlInfoWrap::IsDataEmpty(void) const
+bool SCtrlInfoWrap::isDataEmpty(void) const
 {
 	// If the data pointer is not available, then it's indeed empty
-	if (this->m_ptrCustomData == NULL)
+	if (customDataPtr_ == NULL)
 		return true;
 
 	// If the data size is not available or invalid,
 	// the data can be considered empty
-	if ((this->m_pszDataSize == NULL) ||
-		(this->m_pszDataSize != NULL) && *(this->m_pszDataSize) <= 0)
+	if ((dataSizePtr_ == NULL) ||
+		(dataSizePtr_ != NULL) && *(dataSizePtr_) <= 0)
 		return true;
 
 	return false;	// Not empty
@@ -926,19 +928,19 @@ bool SCtrlInfoWrap::IsDataEmpty(void) const
 /**
  * @brief	Get total size in bytes of the current control's custom data
  * @param	None
- * @return	SIZE_T
+ * @return	size_t
  */
-SIZE_T SCtrlInfoWrap::GetDataSize(void) const
+size_t SCtrlInfoWrap::getDataSize(void) const
 {
 	// If the data is empty, return 0
-	if (IsDataEmpty())
-		return INT_NULL;
+	if (isDataEmpty())
+		return Constant::NullInteger;
 
 	// Otherwise, return the size
-	if (this->m_pszDataSize != NULL)
-		return *(this->m_pszDataSize);
+	if (dataSizePtr_ != NULL)
+		return *(dataSizePtr_);
 
-	return INT_NULL;	// Default, return 0
+	return Constant::NullInteger;	// Default, return 0
 }
 
 
@@ -953,10 +955,10 @@ IMPLEMENT_DYNAMIC(SMenu, CMenu)
 /**
  * @brief	Constructor
  */
-SMenu::SMenu(CWnd* /* pParentWnd = NULL */) : CMenu()
+SMenu::SMenu(CWnd* /* parentWnd = NULL */) : CMenu()
 {
 	// User menu layout
-	m_pMenuLayout = NULL;
+	menuLayoutPtr_ = NULL;
 }
 
 /**
@@ -965,9 +967,9 @@ SMenu::SMenu(CWnd* /* pParentWnd = NULL */) : CMenu()
 SMenu::~SMenu()
 {
 	// List of controls
-	if (m_pMenuLayout != NULL) {
-		delete m_pMenuLayout;
-		m_pMenuLayout = NULL;
+	if (menuLayoutPtr_ != NULL) {
+		delete menuLayoutPtr_;
+		menuLayoutPtr_ = NULL;
 	}
 }
 
@@ -983,13 +985,13 @@ IMPLEMENT_DYNAMIC(SControlManager, CObject)
 /**
  * @brief	Constructor
  */
-SControlManager::SControlManager(CWnd* pParentWnd /* = NULL */) : CObject()
+SControlManager::SControlManager(CWnd* parentWnd /* = NULL */) : CObject()
 {
 	// List of control info wrappers
-	m_pCtrlInfoArray = NULL;
+	controlInfoListPtr_ = NULL;
 
 	// Parent window
-	m_pParentWnd = pParentWnd;
+	parentWndPtr_ = parentWnd;
 }
 
 /**
@@ -998,10 +1000,10 @@ SControlManager::SControlManager(CWnd* pParentWnd /* = NULL */) : CObject()
 SControlManager::~SControlManager()
 {
 	// List of control info wrappers
-	if (m_pCtrlInfoArray != NULL) {
-		this->DeleteAll();
-		delete m_pCtrlInfoArray;
-		m_pCtrlInfoArray = NULL;
+	if (controlInfoListPtr_ != NULL) {
+		deleteAll();
+		delete controlInfoListPtr_;
+		controlInfoListPtr_ = NULL;
 	}
 }
 
@@ -1010,19 +1012,19 @@ SControlManager::~SControlManager()
  * @param	None
  * @return	None
  */
-bool SControlManager::Initialize(void)
+bool SControlManager::initialize(void)
 {
 	// Initialize control info list pointer
-	if (this->m_pCtrlInfoArray == NULL) {
-		this->m_pCtrlInfoArray = new SCtrlInfoList();
+	if (controlInfoListPtr_ == NULL) {
+		controlInfoListPtr_ = new SCtrlInfoList();
 
 		// Allocation failed
-		if (this->m_pCtrlInfoArray == NULL)
+		if (controlInfoListPtr_ == NULL)
 			return false;
 	}
 
 	// Empty array data
-	m_pCtrlInfoArray->clear();
+	controlInfoListPtr_->clear();
 
 	return true;
 }
@@ -1032,23 +1034,23 @@ bool SControlManager::Initialize(void)
  * @param	None
  * @return	None
  */
-bool SControlManager::DeleteAll(void)
+bool SControlManager::deleteAll(void)
 {
 	// If data is not initialized
-	if (this->m_pCtrlInfoArray == NULL)
+	if (controlInfoListPtr_ == NULL)
 		return false;
 
 	// Delete all control info wrapper pointers
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
-		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
-		if (pExControl != NULL) {
-			delete pExControl;
-			pExControl = NULL;
+	for (int index = 0; index < (controlInfoListPtr_->size()); index++) {
+		SCtrlInfoWrap* controlWrapPtr = controlInfoListPtr_->at(index);
+		if (controlWrapPtr != NULL) {
+			delete controlWrapPtr;
+			controlWrapPtr = NULL;
 		}
 	}
 
 	// Empty array data
-	m_pCtrlInfoArray->clear();
+	controlInfoListPtr_->clear();
 
 	return true;
 }
@@ -1056,109 +1058,109 @@ bool SControlManager::DeleteAll(void)
 /**
  * @brief	Add dialog/window control to management
  * @param	pControl - Dialog control item
- * @return	long long
+ * @return	int64
  */
-long long SControlManager::AddControl(SCtrlInfoWrap* pControl)
+int64 SControlManager::addControl(SCtrlInfoWrap* pControl)
 {
 	// Check for control pointer validity
 	if (pControl == NULL) 
-		return INT_INVALID;
+		return Constant::InvalidInteger;
 
 	// If data is not initialized
-	if (this->m_pCtrlInfoArray == NULL)
-		return INT_INVALID;
+	if (controlInfoListPtr_ == NULL)
+		return Constant::InvalidInteger;
 
 	// Search if control ID had already existed
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
-		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
-		if (pExControl == NULL) continue;
-		if (pExControl->GetTemplateID() == pControl->GetTemplateID()) {
+	for (int index = 0; index < (controlInfoListPtr_->size()); index++) {
+		SCtrlInfoWrap* controlWrapPtr = controlInfoListPtr_->at(index);
+		if (controlWrapPtr == NULL) continue;
+		if (controlWrapPtr->getTemplateID() == pControl->getTemplateID()) {
 			// Return control index
-			return nIndex;
+			return index;
 		}
 	}
 
 	// Add control to list and return list size
-	this->m_pCtrlInfoArray->push_back(pControl);
-	return (this->m_pCtrlInfoArray->size());
+	controlInfoListPtr_->push_back(pControl);
+	return (controlInfoListPtr_->size());
 }
 
 /**
  * @brief	Add dialog/window control to management
- * @param	nCtrlID - Dialog control ID
- * @param	nTypeID - Control type ID
- * @return	long long
+ * @param	controlId - Dialog control ID
+ * @param	typeId - Control type ID
+ * @return	int64
  */
-long long SControlManager::AddControl(unsigned nCtrlID, unsigned nTypeID)
+int64 SControlManager::addControl(unsigned controlId, unsigned typeId)
 {
 	// If parent window is not set, do nothing
-	if (this->m_pParentWnd == NULL)
-		return INT_INVALID;
+	if (parentWndPtr_ == NULL)
+		return Constant::InvalidInteger;
 
 	// Get base control window pointer
-	CWnd* pCtrlWnd = m_pParentWnd->GetDlgItem(nCtrlID);
-	if (pCtrlWnd == NULL)
-		return INT_INVALID;
+	CWnd* controlWndPtr = parentWndPtr_->GetDlgItem(controlId);
+	if (controlWndPtr == NULL)
+		return Constant::InvalidInteger;
 
 	// Initialize control info
-	SCtrlInfoWrap* pControl = new SCtrlInfoWrap();
-	pControl->Initialize(m_pParentWnd, NULL, nCtrlID, nTypeID);
+	SCtrlInfoWrap* controlWrapPtr = new SCtrlInfoWrap();
+	controlWrapPtr->initialize(parentWndPtr_, NULL, controlId, typeId);
 
 	// Add control to management list
-	size_t nRetIndex = this->AddControl(pControl);
-	if (nRetIndex != -1)
-		return nRetIndex;
+	size_t retIndex = addControl(controlWrapPtr);
+	if (retIndex != -1)
+		return retIndex;
 
 	// Failed to add
-	delete pControl;
-	return INT_INVALID;
+	delete controlWrapPtr;
+	return Constant::InvalidInteger;
 }
 
 /**
  * @brief	Remove dialog/window control from management
- * @param	nCtrlID - Dialog control ID
- * @return	size_t
+ * @param	controlId - Dialog control ID
+ * @return	int64
  */
-long long SControlManager::RemoveControl(unsigned nCtrlID)
+int64 SControlManager::removeControl(unsigned controlId)
 {
 	// If data is not initialized or is empty
-	if ((m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
-		return INT_INVALID;
+	if ((controlInfoListPtr_ == NULL) || (isEmpty()))
+		return Constant::InvalidInteger;
 
 	// Search for control ID
-	for (int nIndex = 0; nIndex < (m_pCtrlInfoArray->size()); nIndex++) {
-		SCtrlInfoWrap* pExControl = m_pCtrlInfoArray->at(nIndex);
-		if (pExControl == NULL) continue;
-		if (pExControl->GetTemplateID() == nCtrlID) {
-			delete pExControl;
+	for (int index = 0; index < (controlInfoListPtr_->size()); index++) {
+		SCtrlInfoWrap* controlWrapPtr = controlInfoListPtr_->at(index);
+		if (controlWrapPtr == NULL) continue;
+		if (controlWrapPtr->getTemplateID() == controlId) {
+			delete controlWrapPtr;
 
 			// Remove control from list
-			m_pCtrlInfoArray->erase(m_pCtrlInfoArray->begin() + nIndex);
-			return (m_pCtrlInfoArray->size());
+			controlInfoListPtr_->erase(controlInfoListPtr_->begin() + index);
+			return (controlInfoListPtr_->size());
 		}
 	}
 
 	// Control ID not found, return -1
-	return INT_INVALID;
+	return Constant::InvalidInteger;
 }
 
 /**
  * @brief	Remove dialog/window control from management
- * @param	nCtrlID - Dialog control ID
+ * @param	controlId - Dialog control ID
  * @return	None
  */
-SCtrlInfoWrap* SControlManager::GetControl(unsigned nCtrlID)
+SCtrlInfoWrap* SControlManager::getControl(unsigned controlId)
 {
 	// If data is not initialized or is empty
-	if ((this->m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
+	if ((controlInfoListPtr_ == NULL) || (isEmpty()))
 		return NULL;
 
 	// Search for control ID
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
-		SCtrlInfoWrap* pControl = m_pCtrlInfoArray->at(nIndex);
-		if (pControl == NULL) continue;
-		if (pControl->GetTemplateID() == nCtrlID)
-			return pControl;
+	for (int index = 0; index < (controlInfoListPtr_->size()); index++) {
+		SCtrlInfoWrap* controlWrapPtr = controlInfoListPtr_->at(index);
+		if (controlWrapPtr == NULL) continue;
+		if (controlWrapPtr->getTemplateID() == controlId)
+			return controlWrapPtr;
 	}
 
 	return NULL;
@@ -1170,82 +1172,82 @@ SCtrlInfoWrap* SControlManager::GetControl(unsigned nCtrlID)
  * @param	nBuddyCtrlID - Buddy control ID
  * @return	true/false
  */
-bool SControlManager::SetBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID)
+bool SControlManager::setBuddy(unsigned nBaseCtrlID, unsigned nBuddyCtrlID)
 {
 	// Get base control from management list
-	SCtrlInfoWrap* pBaseControl = GetControl(nBaseCtrlID);
-	if (pBaseControl == NULL)
+	SCtrlInfoWrap* baseControlPtr = getControl(nBaseCtrlID);
+	if (baseControlPtr == NULL)
 		return false;
 
 	// Get buddy control (natively)
 	// No need to check NULL for parent window because if base control is found 
 	// in management list, it means parent window had already been set
-	CWnd* pBuddyWnd = m_pParentWnd->GetDlgItem(nBuddyCtrlID);
-	if (pBuddyWnd == NULL)
+	CWnd* buddyWndPtr = parentWndPtr_->GetDlgItem(nBuddyCtrlID);
+	if (buddyWndPtr == NULL)
 		return false;
 
 	// Set buddy relationship
-	pBaseControl->SetBuddy(pBuddyWnd);
+	baseControlPtr->setBuddy(buddyWndPtr);
 
 	// Trigger updating control attributes
 	// This will set buddy control caption as base control caption if available
-	pBaseControl->UpdateAttributes();
+	baseControlPtr->updateAttributes();
 
 	return true;
 }
 
 /**
  * @brief	Update data for specified control or all controls
- * @param	nCtrlID - Control ID (NULL means all controls)
+ * @param	controlId - Control ID (NULL means all controls)
  * @return	None
  */
-void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
+void SControlManager::updateData(unsigned controlId /* = NULL */)
 {
 	// If data is not initialized or is empty
-	if ((this->m_pCtrlInfoArray == NULL) || (this->IsEmpty()))
+	if ((controlInfoListPtr_ == NULL) || (isEmpty()))
 		return;
 
 	// If parent window is not available
-	if (this->m_pParentWnd == NULL)
+	if (parentWndPtr_ == NULL)
 		return;
 
 	// Loop through control management list
-	int nTriggerForceRetFlag = FLAG_OFF;
-	for (int nIndex = 0; nIndex < (this->m_pCtrlInfoArray->size()); nIndex++) {
+	int triggerForceReturnFlag = FLAG_OFF;
+	for (int index = 0; index < (controlInfoListPtr_->size()); index++) {
 
 		// If force return flag is ON, break the loop
-		if (nTriggerForceRetFlag == FLAG_ON)
+		if (triggerForceReturnFlag == FLAG_ON)
 			break;
 
 		// Get control wrapper pointer
-		SCtrlInfoWrap* pCurControl = m_pCtrlInfoArray->at(nIndex);
-		if (pCurControl == NULL) continue;
+		SCtrlInfoWrap* currentControlPtr = controlInfoListPtr_->at(index);
+		if (currentControlPtr == NULL) continue;
 
 		// Only update data for specified control
-		if (nCtrlID != NULL) {
-			if (pCurControl->GetTemplateID() != nCtrlID) {
+		if (controlId != NULL) {
+			if (currentControlPtr->getTemplateID() != controlId) {
 				// Skip this control
 				continue;
 			}
 			else {
 				// Trigger force return flag 
 				// It will stop after updating for current control
-				nTriggerForceRetFlag = FLAG_ON;
+				triggerForceReturnFlag = FLAG_ON;
 			}
 		}
 
 		// If base control is not available, skip updating
-		if (!pCurControl->IsBaseControlAvailable())
+		if (!currentControlPtr->isBaseControlAvailable())
 			continue;
 
 		// Get base control pointer
-		CWnd* pBaseControl = pCurControl->GetBaseControl();
+		CWnd* baseControlPtr = currentControlPtr->getBaseControl();
 
 		// Update control attributes
-		pCurControl->UpdateAttributes();
+		currentControlPtr->updateAttributes();
 
 		// Update data for control by type
-		switch (pCurControl->GetType())
+		switch (currentControlPtr->getType())
 		{
 			// Clickable and checkable controls
 			case Button:
@@ -1253,113 +1255,113 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			case Radio_Button:
 			{
 				// Update control's checked state
-				bool bCheck = ((CButton*)pBaseControl)->GetCheck();
-				pCurControl->SetCheck(bCheck);
+				bool isChecked = ((CButton*)baseControlPtr)->GetCheck();
+				currentControlPtr->setCheck(isChecked);
 			} break;
 
 			// Edit box
 			case Edit_Control:
 			{
 				// Update control's text value
-				const int textLength = ((CEdit*)pBaseControl)->GetWindowTextLength();
+				const int textLength = ((CEdit*)baseControlPtr)->GetWindowTextLength();
 				std::vector<wchar_t> tempBuff(textLength + 1);
-				((CEdit*)pBaseControl)->GetWindowText(tempBuff.data(), textLength + 1);
+				((CEdit*)baseControlPtr)->GetWindowText(tempBuff.data(), textLength + 1);
 				String tempText = tempBuff.data();
-				pCurControl->SetString(tempText);
+				currentControlPtr->setString(tempText);
 			} break;
 
 			// Combo-box
 			case Combo_Box:
 			{
 				// Update control's current selection index
-				size_t nCurSel = ((CComboBox*)pBaseControl)->GetCurSel();
-				pCurControl->SetInteger(nCurSel);
+				size_t currenSelection = ((CComboBox*)baseControlPtr)->GetCurSel();
+				currentControlPtr->setInteger(currenSelection);
 				// Update all item strings
-				StringArray arrStringData;
-				size_t nCount = ((CComboBox*)pBaseControl)->GetCount();
-				arrStringData.reserve(nCount);
-				for (size_t nIndex = 0; nIndex < nCount; nIndex++) {
+				StringArray stringData;
+				size_t count = ((CComboBox*)baseControlPtr)->GetCount();
+				stringData.reserve(count);
+				for (size_t index = 0; index < count; index++) {
 					wchar_t tempBuff[Constant::Max::StringLength] = {0};
-					((CComboBox*)pBaseControl)->GetLBText(nIndex, tempBuff);
-					arrStringData.push_back(tempBuff);
+					((CComboBox*)baseControlPtr)->GetLBText(index, tempBuff);
+					stringData.push_back(tempBuff);
 				}
-				pCurControl->SetStringArray(arrStringData);
+				currentControlPtr->setStringArray(stringData);
 			} break;
 
 			// List box
 			case List_Box:
 			{
 				// Update control's current selection index
-				size_t nCurSel = ((CListBox*)pBaseControl)->GetCurSel();
-				pCurControl->SetInteger(nCurSel);
+				size_t currenSelection = ((CListBox*)baseControlPtr)->GetCurSel();
+				currentControlPtr->setInteger(currenSelection);
 				// Update all item strings
-				StringArray arrStringData;
-				size_t nCount = ((CListBox*)pBaseControl)->GetCount();
-				arrStringData.reserve(nCount);
-				for (size_t nIndex = 0; nIndex < nCount; nIndex++) {
+				StringArray stringData;
+				size_t count = ((CListBox*)baseControlPtr)->GetCount();
+				stringData.reserve(count);
+				for (size_t index = 0; index < count; index++) {
 					wchar_t tempBuff[Constant::Max::StringLength] = {0};
-					((CListBox*)pBaseControl)->GetText(nIndex, tempBuff);
-					arrStringData.push_back(tempBuff);
+					((CListBox*)baseControlPtr)->GetText(index, tempBuff);
+					stringData.push_back(tempBuff);
 				}
-				pCurControl->SetStringArray(arrStringData);
+				currentControlPtr->setStringArray(stringData);
 			} break;
 
 			// List control
 			case List_Control:
 			{
 				// Update number of items and columns
-				size_t nItemCount = ((CListCtrl*)pBaseControl)->GetItemCount();
-				pCurControl->SetInteger(nItemCount);
-				size_t nColumnCount = 0;
-				CHeaderCtrl* pHeaderCtrl = ((CListCtrl*)pBaseControl)->GetHeaderCtrl();
-				if (pHeaderCtrl != NULL) {
-					nColumnCount = pHeaderCtrl->GetItemCount();
+				size_t itemCount = ((CListCtrl*)baseControlPtr)->GetItemCount();
+				currentControlPtr->setInteger(itemCount);
+				size_t columnCount = 0;
+				CHeaderCtrl* headerCtrlPtr = ((CListCtrl*)baseControlPtr)->GetHeaderCtrl();
+				if (headerCtrlPtr != NULL) {
+					columnCount = headerCtrlPtr->GetItemCount();
 				}
-				pCurControl->SetReserveInteger(nColumnCount);
+				currentControlPtr->setReserveInteger(columnCount);
 				// Update control's data current selection index(es)
-				ULongArray arrSelection;
-				arrSelection.reserve(nItemCount);
-				for (size_t nIndex = 0; nIndex < nItemCount; nIndex++) {
+				uint64_array selectionList;
+				selectionList.reserve(itemCount);
+				for (size_t index = 0; index < itemCount; index++) {
 					// Get selection index
-					if ((((CListCtrl*)pBaseControl)->GetItemState(nIndex, LVIS_SELECTED) & LVIS_SELECTED) == LVIS_SELECTED) {
-						arrSelection.push_back(nIndex);
+					if ((((CListCtrl*)baseControlPtr)->GetItemState(index, LVIS_SELECTED) & LVIS_SELECTED) == LVIS_SELECTED) {
+						selectionList.push_back(index);
 					}
 				}
-				pCurControl->SetIntArray(arrSelection);
+				currentControlPtr->setIntArray(selectionList);
 				// Update all item strings
-				StringArray arrStringData;
-				arrStringData.reserve(nItemCount);
-				for (size_t nIndex = 0; nIndex < nItemCount; nIndex++) {
-					for (size_t nColIndex = 0; nColIndex < nColumnCount; nColIndex++) {
+				StringArray stringData;
+				stringData.reserve(itemCount);
+				for (size_t index = 0; index < itemCount; index++) {
+					for (size_t colIndex = 0; colIndex < columnCount; colIndex++) {
 						// Get item text
-						String tempText = ((CListCtrl*)pBaseControl)->GetItemText(nIndex, nColIndex).GetString();
-						arrStringData.push_back(tempText);
+						String tempText = ((CListCtrl*)baseControlPtr)->GetItemText(index, colIndex).GetString();
+						stringData.push_back(tempText);
 					}
 				}
-				pCurControl->SetStringArray(arrStringData);
+				currentControlPtr->setStringArray(stringData);
 			} break;
 
 			// Tab control
 			case Tab_Control:
 			{
 				// Update the number of tabs
-				size_t nTabCount = ((CTabCtrl*)pBaseControl)->GetItemCount();
+				size_t tabCount = ((CTabCtrl*)baseControlPtr)->GetItemCount();
 				// Update the currently selected tab index
-				size_t nCurSelTab = ((CTabCtrl*)pBaseControl)->GetCurSel();
-				pCurControl->SetInteger(nCurSelTab);
+				size_t curSelTab = ((CTabCtrl*)baseControlPtr)->GetCurSel();
+				currentControlPtr->setInteger(curSelTab);
 				// Update all tab's title
 				TCITEM tabInfo;
-				StringArray arrTabTitles;
-				arrTabTitles.reserve(nTabCount);
-				for (size_t nIndex = 0; nIndex < nTabCount; nIndex++) {
+				StringArray tabTitleList;
+				tabTitleList.reserve(tabCount);
+				for (size_t index = 0; index < tabCount; index++) {
 					String tempText = Constant::String::Empty;
-					bool bRet = ((CTabCtrl*)pBaseControl)->GetItem(nIndex, &tabInfo);
-					if (bRet == true && ((tabInfo.mask & TCIF_TEXT) != 0)) {
+					bool returnFlag = ((CTabCtrl*)baseControlPtr)->GetItem(index, &tabInfo);
+					if (returnFlag == true && ((tabInfo.mask & TCIF_TEXT) != 0)) {
 						tempText = tabInfo.pszText;
 					}
-					arrTabTitles.push_back(tempText);
+					tabTitleList.push_back(tempText);
 				}
-				pCurControl->SetStringArray(arrTabTitles);
+				currentControlPtr->setStringArray(tabTitleList);
 			} break;
 
 			// Static text and decorating items
@@ -1368,11 +1370,11 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			case SysLink_Control:
 			{
 				// Update control's text label
-				const int textLength = pBaseControl->GetWindowTextLength();
+				const int textLength = baseControlPtr->GetWindowTextLength();
 				std::vector<wchar_t> tempBuff(textLength + 1);
-				pBaseControl->GetWindowText(tempBuff.data(), textLength + 1);
+				baseControlPtr->GetWindowText(tempBuff.data(), textLength + 1);
 				String captionString = tempBuff.data();
-				pCurControl->SetCaption(captionString);
+				currentControlPtr->setCaption(captionString);
 			} break;
 
 			// Scroll bars
@@ -1380,96 +1382,96 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			case Vertical_Scroll_Bar:
 			{
 				// Update control's current position
-				size_t nCurPos = ((CScrollBar*)pBaseControl)->GetScrollPos();
-				pCurControl->SetInteger(nCurPos);
+				size_t currentPosition = ((CScrollBar*)baseControlPtr)->GetScrollPos();
+				currentControlPtr->setInteger(currentPosition);
 				// Update control's min/max range
-				int nMin = NULL, nMax = NULL;
-				((CScrollBar*)pBaseControl)->GetScrollRange(&nMin, &nMax);
-				pCurControl->SetMinMaxInt(nMin, nMax);
+				int minVal = NULL, maxVal = NULL;
+				((CScrollBar*)baseControlPtr)->GetScrollRange(&minVal, &maxVal);
+				currentControlPtr->setMinMaxInt(minVal, maxVal);
 			} break;
 
 			// Slider control
 			case Slider_Control:
 			{
 				// Update control's current position
-				size_t nCurPos = ((CSliderCtrl*)pBaseControl)->GetPos();
-				pCurControl->SetInteger(nCurPos);
+				size_t currentPosition = ((CSliderCtrl*)baseControlPtr)->GetPos();
+				currentControlPtr->setInteger(currentPosition);
 				// Update control's min/max range
-				size_t nMin = ((CSliderCtrl*)pBaseControl)->GetRangeMin();
-				size_t nMax = ((CSliderCtrl*)pBaseControl)->GetRangeMax();
-				pCurControl->SetMinMaxInt(nMin, nMax);
+				size_t minVal = ((CSliderCtrl*)baseControlPtr)->GetRangeMin();
+				size_t maxVal = ((CSliderCtrl*)baseControlPtr)->GetRangeMax();
+				currentControlPtr->setMinMaxInt(minVal, maxVal);
 			} break;
 
 			// Progress bar
 			case Progress_Control:
 			{
 				// Update control's current position
-				size_t nCurPos = ((CProgressCtrl*)pBaseControl)->GetPos();
-				pCurControl->SetInteger(nCurPos);
+				size_t currentPosition = ((CProgressCtrl*)baseControlPtr)->GetPos();
+				currentControlPtr->setInteger(currentPosition);
 				// Update control's min/max range
-				int nMin = NULL, nMax = NULL;
-				((CProgressCtrl*)pBaseControl)->GetRange(nMin, nMax);
-				pCurControl->SetMinMaxInt(nMin, nMax);
+				int minVal = NULL, maxVal = NULL;
+				((CProgressCtrl*)baseControlPtr)->GetRange(minVal, maxVal);
+				currentControlPtr->setMinMaxInt(minVal, maxVal);
 			} break;
 
 			// Spin button control
 			case Spin_Control:
 			{
 				// Update control's current position
-				size_t nCurPos = ((CSpinButtonCtrl*)pBaseControl)->GetPos();
-				pCurControl->SetInteger(nCurPos);
+				size_t currentPosition = ((CSpinButtonCtrl*)baseControlPtr)->GetPos();
+				currentControlPtr->setInteger(currentPosition);
 				// Update control's min/max range
-				int nMin = NULL, nMax = NULL;
-				((CSpinButtonCtrl*)pBaseControl)->GetRange(nMin, nMax);
-				pCurControl->SetMinMaxInt(nMin, nMax);
+				int minVal = NULL, maxVal = NULL;
+				((CSpinButtonCtrl*)baseControlPtr)->GetRange(minVal, maxVal);
+				currentControlPtr->setMinMaxInt(minVal, maxVal);
 			} break;
 
 			// Hot key control
 			case Hot_Key:
 			{
 				// Update control's current hotkey
-				DWORD dwHotkey = ((CHotKeyCtrl*)pBaseControl)->GetHotKey();
-				pCurControl->SetInteger(LOWORD(dwHotkey));			// Virtual keycode
-				pCurControl->SetReserveInteger(HIWORD(dwHotkey));	// Modifier flags
+				DWORD hotkey = ((CHotKeyCtrl*)baseControlPtr)->GetHotKey();
+				currentControlPtr->setInteger(LOWORD(hotkey));			// Virtual keycode
+				currentControlPtr->setReserveInteger(HIWORD(hotkey));	// Modifier flags
 			} break;
 
 			// IP address control
 			case IP_Address_Control:
 			{
 				// Update control's current IP address
-				DWORD dwAddress = 0;
-				byte byField0 = 0, byField1 = 0, byField2 = 0, byField3 = 0;
-				int nNonBlankFieldNum = ((CIPAddressCtrl*)pBaseControl)->GetAddress(dwAddress);
-				((CIPAddressCtrl*)pBaseControl)->GetAddress(byField0, byField1, byField2, byField3);
-				pCurControl->SetInteger(dwAddress);
-				pCurControl->SetReserveInteger(nNonBlankFieldNum);
+				DWORD address = 0;
+				byte field0 = 0, field1 = 0, field2 = 0, field3 = 0;
+				int nonBlankFieldCount = ((CIPAddressCtrl*)baseControlPtr)->GetAddress(address);
+				((CIPAddressCtrl*)baseControlPtr)->GetAddress(field0, field1, field2, field3);
+				currentControlPtr->setInteger(address);
+				currentControlPtr->setReserveInteger(nonBlankFieldCount);
 				// Store each field value separately into an integer array
-				ULongArray arrAddressFields;
-				arrAddressFields.resize(4);
-				arrAddressFields[0] = byField0;		// Field 0
-				arrAddressFields[1] = byField1;		// Field 1
-				arrAddressFields[2] = byField2;		// Field 2
-				arrAddressFields[3] = byField3;		// Field 3
-				pCurControl->SetIntArray(arrAddressFields);
+				uint64_array addressFieldArray;
+				addressFieldArray.resize(4);
+				addressFieldArray[0] = field0;		// Field 0
+				addressFieldArray[1] = field1;		// Field 1
+				addressFieldArray[2] = field2;		// Field 2
+				addressFieldArray[3] = field3;		// Field 3
+				currentControlPtr->setIntArray(addressFieldArray);
 			} break;
 
 			// Network address control
 			case Network_Address_Control:
 			{
 				// Update control's current network address
-				NC_ADDRESS ncAddress;
+				NC_ADDRESS address;
 				NET_ADDRESS_INFO netAddressInfo;
-				ncAddress.pAddrInfo = &netAddressInfo;
-				HRESULT hRes = ((CNetAddressCtrl*)pBaseControl)->GetAddress(&ncAddress);
-				if (hRes == S_OK) {
+				address.pAddrInfo = &netAddressInfo;
+				HRESULT resourceHandle = ((CNetAddressCtrl*)baseControlPtr)->GetAddress(&address);
+				if (resourceHandle == S_OK) {
 					// Save address and port info
-					String addressString = ncAddress.pAddrInfo->NamedAddress.Address;
-					String portString = ncAddress.pAddrInfo->NamedAddress.Port;
-					pCurControl->SetString(addressString);
-					pCurControl->SetReserveString(portString);
+					String addressString = address.pAddrInfo->NamedAddress.Address;
+					String portString = address.pAddrInfo->NamedAddress.Port;
+					currentControlPtr->setString(addressString);
+					currentControlPtr->setReserveString(portString);
 					// Numeric data
-					pCurControl->SetInteger(ncAddress.PortNumber);
-					pCurControl->SetReserveInteger(ncAddress.PrefixLength);
+					currentControlPtr->setInteger(address.PortNumber);
+					currentControlPtr->setReserveInteger(address.PrefixLength);
 				}
 			} break;
 
@@ -1478,8 +1480,8 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			{
 				// Update control's date/time value
 				SYSTEMTIME timeTemp{};
-				((CDateTimeCtrl*)pBaseControl)->GetTime(&timeTemp);
-				pCurControl->SetTime(timeTemp);
+				((CDateTimeCtrl*)baseControlPtr)->GetTime(&timeTemp);
+				currentControlPtr->setTime(timeTemp);
 			} break;
 
 			// Month calendar control
@@ -1487,8 +1489,8 @@ void SControlManager::UpdateData(unsigned nCtrlID /* = NULL */)
 			{
 				// Update control's current selected date
 				SYSTEMTIME dateTemp{};
-				((CMonthCalCtrl*)pBaseControl)->GetCurSel(&dateTemp);
-				pCurControl->SetTime(dateTemp);
+				((CMonthCalCtrl*)baseControlPtr)->GetCurSel(&dateTemp);
+				currentControlPtr->setTime(dateTemp);
 			} break;
 		}
 	}

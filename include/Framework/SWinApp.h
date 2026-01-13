@@ -48,25 +48,25 @@ protected:
 
 protected:
 	// Application flag manager
-	FlagManager m_flagManager;
+	FlagManager flagManager_;
 
 	// Title and caption
-	String  m_strTemplateName;
-	String	m_strWindowCaption;
-	String	m_strMessageCaption;
+	String  templateName_;
+	String	windowCaption_;
+	String	messageCaption_;
 
 	// App language function
-	LANGTABLE_PTR m_pAppLangPtr;
-	UINT_PTR	  m_nCurSetLang;
-	UINT_PTR	  m_nCurDispLang;
+	LANGTABLE_PTR appLanguagePtr_;
+	UINT_PTR	  currentSetLanguage_;
+	UINT_PTR	  currentDisplayLanguage_;
 
 	// Logging pointer
-	SLogging* m_pAppEventLog;
+	Logger* appEventLogPtr_;
 
 	// App special flags
-	bool m_bChangeFlag;
-	bool m_bReadOnlyMode;
-	bool m_bForceClose;
+	bool changeFlag_;
+	bool isReadOnlyMode_;
+	bool isForceClose_;
 
 public:
 	// Instance functions
@@ -74,112 +74,112 @@ public:
 	virtual int  ExitInstance();
 	virtual int	 PreExitInstance();
 
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* messagePtr);
 
 	// App language management
-	virtual bool InitAppLanguage(void);
-	virtual bool ReloadAppLanguage(unsigned nCurLanguage = NULL);
-	virtual LANGTABLE_PTR GetAppLanguage(void) {
-		VERIFY(m_pAppLangPtr != NULL);
-		if (m_pAppLangPtr == NULL) return NULL;
-		return m_pAppLangPtr;
-	};
-	virtual UINT_PTR GetAppLanguageOption(bool bCurDispLang = false) const {
-		if (bCurDispLang == true) return m_nCurDispLang;
-		return m_nCurSetLang;
-	};
-	virtual void SetAppLanguageOption(unsigned nSetLanguage) {
-		m_nCurSetLang = nSetLanguage;
-	};
+	virtual bool initAppLanguage(void);
+	virtual bool reloadAppLanguage(unsigned currentLanguage = NULL);
+	LANGTABLE_PTR getAppLanguage(void) {
+		VERIFY(appLanguagePtr_ != NULL);
+		if (appLanguagePtr_ == NULL) return NULL;
+		return appLanguagePtr_;
+	}
+	UINT_PTR getAppLanguageOption(bool currentDisplayLang = false) const {
+		if (currentDisplayLang == true) return currentDisplayLanguage_;
+		return currentSetLanguage_;
+	}
+	void setAppLanguageOption(unsigned language) {
+		currentSetLanguage_ = language;
+	}
 
 	// Application name get/set functions
-	virtual bool SetAppName(unsigned nResourceStringID);
-	virtual const wchar_t* GetAppName(void) const {
+	bool setAppName(unsigned resourceStringId);
+	const wchar_t* getAppName(void) const {
 		return m_pszAppName;
-	};
-	virtual void GetAppName(String& appName) const {
+	}
+	void getAppName(String& appName) const {
 		appName = m_pszAppName;
-	};
-	virtual void SetAppName(const wchar_t* appName)	{
+	}
+	void setAppName(const wchar_t* appName)	{
 		free((void*)m_pszAppName);
 		m_pszAppName = _tcsdup(appName);
-	};
+	}
 
 	// Application window caption get/set functions
-	virtual void SetAppWindowCaption(const wchar_t* windowCaption, bool bShowProdVersion = false, bool bFullVersion = false);
-	virtual bool SetAppWindowCaption(unsigned nResourceStringID, bool bShowProdVersion = false, bool bFullVersion = false);
+	void setAppWindowCaption(const wchar_t* windowCaption, bool showProdVersion = false, bool fullVersion = false);
+	bool setAppWindowCaption(unsigned resourceStringId, bool showProdVersion = false, bool fullVersion = false);
 
-	virtual const wchar_t* GetAppWindowCaption(void) const {
-		return m_strWindowCaption.GetString();
-	};
-	virtual void GetAppWindowCaption(String& windowCaption) const {
-		windowCaption = m_strWindowCaption;
-	};
-	virtual void RegisterMessageBoxCaption(const wchar_t* caption) {
-		m_strMessageCaption = caption;
-	};
+	const wchar_t* getAppWindowCaption(void) const {
+		return windowCaption_.getString();
+	}
+	void getAppWindowCaption(String& windowCaption) const {
+		windowCaption = windowCaption_;
+	}
+	void registerMessageBoxCaption(const wchar_t* caption) {
+		messageCaption_ = caption;
+	}
 
 	// MessageBox functions
-	virtual void RegisterMessageBoxCaption(unsigned nCaptionID);
-	virtual int DoMessageBox(const wchar_t* prompt, unsigned nType, unsigned nIDPrompt);
-	virtual int DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID = NULL, unsigned nStyle = NULL);
-	virtual int DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, unsigned nStyle = NULL);
-	virtual void GetRegisterdMsgBoxCaption(String& regMsgBoxCaption) const {
-		regMsgBoxCaption = m_strMessageCaption;
-	};
+	void registerMessageBoxCaption(unsigned captionId);
+	virtual int DoMessageBox(const wchar_t* prompt, unsigned type, unsigned nIDPrompt);
+	int displayMessageBox(unsigned promptId, unsigned captionId = NULL, unsigned style = NULL);
+	int displayMessageBox(const wchar_t* prompt, const wchar_t* caption = NULL, unsigned style = NULL);
+	void getRegisterdMsgBoxCaption(String& regMsgBoxCaption) const {
+		regMsgBoxCaption = messageCaption_;
+	}
 
 	// Logging functions
-	virtual void InitAppEventLog(void);
-	virtual void OutputEventLog(USHORT usEvent, const wchar_t* description = NULL, LOGDETAILINFO* pDetailInfo = NULL);
-	virtual SLogging* GetAppEventLog(void) {
-		VERIFY(m_pAppEventLog != NULL);
-		return m_pAppEventLog;
-	};
+	virtual void initAppEventLog(void);
+	void outputEventLog(uint16 eventId, const wchar_t* description = NULL, LOGDETAILINFO* detailInfoPtr = NULL);
+	Logger* getAppEventLog(void) {
+		VERIFY(appEventLogPtr_ != NULL);
+		return appEventLogPtr_;
+	}
 
 	// Flag management functions
-	virtual int  GetFlagValue(AppFlagID eFlagID) const;
-	virtual void SetFlagValue(AppFlagID eFlagID, int nValue);
-	virtual FlagManager& GetAppFlagManager(void) {
-		return m_flagManager;
-	};
-	virtual const FlagManager& GetAppFlagManager(void) const {
-		return m_flagManager;
-	};
+	virtual int  getFlagValue(AppFlagID flagId) const;
+	virtual void setFlagValue(AppFlagID flagId, int value);
+	FlagManager& getAppFlagManager(void) {
+		return flagManager_;
+	}
+	const FlagManager& getAppFlagManager(void) const {
+		return flagManager_;
+	}
 
 	// Directly access flag values
-	virtual bool GetChangeFlagValue(void) const {
-		return m_bChangeFlag;
-	};
-	virtual void SetChangeFlagValue(bool bChangeFlag) {
-		m_bChangeFlag = bChangeFlag;
-	};
-	virtual bool CheckDataChangeState(void) {
+	bool getChangeFlagValue(void) const {
+		return changeFlag_;
+	}
+	void setChangeFlagValue(bool value) {
+		changeFlag_ = value;
+	}
+	virtual bool checkDataChangeState(void) {
 		return true;
-	};
-	virtual bool CheckSettingChangeState(void) {
+	}
+	virtual bool checkSettingChangeState(void) {
 		return true;
-	};
-	virtual bool GetReadOnlyMode(void) const {
-		return m_bReadOnlyMode;
-	};
-	virtual void SetReadOnlyMode(bool bReadOnly) {
-		m_bReadOnlyMode = bReadOnly;
-	};
-	virtual bool IsForceClosingByRequest(void) const {
-		return m_bForceClose;
-	};
+	}
+	bool getReadOnlyMode(void) const {
+		return isReadOnlyMode_;
+	}
+	void setReadOnlyMode(bool value) {
+		isReadOnlyMode_ = value;
+	}
+	bool isForceClosingByRequest(void) const {
+		return isForceClose_;
+	}
 
 	// Request processing functions
-	virtual LRESULT RequestCloseDialog(unsigned nDialogID);
-	virtual LRESULT RequestCloseDialog(HWND hDialogWnd);
-	virtual void PostErrorMessage(DWORD dwErrorCode, LPARAM lParam = NULL) {
-		PostMessage(NULL, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
+	virtual LRESULT requestCloseDialog(unsigned dialogId);
+	virtual LRESULT requestCloseDialog(HWND dialogWndHandle);
+	virtual void postErrorMessage(DWORD errorCode, LPARAM lParam = NULL) {
+		PostMessage(NULL, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, lParam);
 	};
-	virtual void PostErrorMessage(HWND hRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL) {
-		PostMessage(hRcvWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
+	virtual void postErrorMessage(HWND receivedWndHandle, DWORD errorCode, LPARAM lParam = NULL) {
+		PostMessage(receivedWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, lParam);
 	};
-	virtual void PostErrorMessage(CWnd* pRcvWnd, DWORD dwErrorCode, LPARAM lParam = NULL) {
-		pRcvWnd->PostMessage(SM_APP_ERROR_MESSAGE, (WPARAM)dwErrorCode, lParam);
+	virtual void postErrorMessage(CWnd* receivedWndPtr, DWORD errorCode, LPARAM lParam = NULL) {
+		receivedWndPtr->PostMessage(SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, lParam);
 	};
 };
 

@@ -19,8 +19,8 @@ using namespace AppCore;
 
 
 // Dialog default size
-constexpr const int defaultWidth = 320;
-constexpr const int defaultHeight = 240;
+constexpr const int kDefaultWidth = 320;
+constexpr const int kDefaultHeight = 240;
 
 
 // Implement methods for CRmdRepeatSetDlg
@@ -33,21 +33,21 @@ IMPLEMENT_DYNAMIC(CRmdRepeatSetDlg, SDialog)
 CRmdRepeatSetDlg::CRmdRepeatSetDlg() : SDialog(IDD_RMDREPEATSET_DLG)
 {
 	// Dialog control
-	m_pSnoozeIntervalEdit = NULL;
-	m_pSnoozeIntervalSpin = NULL;
+	snoozeIntervalEditPtr_ = NULL;
+	snoozeIntervalSpinPtr_ = NULL;
 
-	m_pRepeatEnableChk = NULL;
-	m_pSnoozeEnableChk = NULL;
-	m_pActiveMondayChk = NULL;
-	m_pActiveTuesdayChk = NULL;
-	m_pActiveWednesdayChk = NULL;
-	m_pActiveThursdayChk = NULL;
-	m_pActiveFridayChk = NULL;
-	m_pActiveSaturdayChk = NULL;
-	m_pActiveSundayChk = NULL;
+	repeatEnableChkPtr_ = NULL;
+	snoozeEnableChkPtr_ = NULL;
+	activeMondayChkPtr_ = NULL;
+	activeTuesdayChkPtr_ = NULL;
+	activeWednesdayChkPtr_ = NULL;
+	activeThursdayChkPtr_ = NULL;
+	activeFridayChkPtr_ = NULL;
+	activeSaturdayChkPtr_ = NULL;
+	activeSundayChkPtr_ = NULL;
 
 	// Member value
-	m_nSnoozeInterval = 0;
+	snoozeInterval_ = 0;
 }
 
 /**
@@ -91,9 +91,9 @@ BOOL CRmdRepeatSetDlg::OnInitDialog()
 	SDialog::OnInitDialog();
 
 	// Setup display
-	SetupLanguage();
-	SetupDialogItemState();
-	RefreshDialogItemState();
+	setupLanguage();
+	setupDialogItemState();
+	refreshDialogItemState();
 
 	return true;
 }
@@ -114,13 +114,13 @@ void CRmdRepeatSetDlg::OnDestroy()
  * @param	Default
  * @return	None
  */
-void CRmdRepeatSetDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+void CRmdRepeatSetDlg::OnActivate(UINT state, CWnd* otherWndPtr, BOOL isMinimized)
 {
 	// Default
-	SDialog::OnActivate(nState, pWndOther, bMinimized);
+	SDialog::OnActivate(state, otherWndPtr, isMinimized);
 
 	// If dialog is inactivated
-	if (nState == WA_INACTIVE) {
+	if (state == WA_INACTIVE) {
 		// Hide the dialog itself
 		this->ShowWindow(SW_HIDE);
 	}
@@ -134,28 +134,28 @@ void CRmdRepeatSetDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
  */
 void CRmdRepeatSetDlg::OnSnoozeSpinChange(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	LPNMUPDOWN upDownPtr = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
 	// Get timespin position
-	int nPos = pNMUpDown->iPos;
+	int position = upDownPtr->iPos;
 
 	// Set snooze interval value
-	SetSnoozeInterval(nPos * 60);
+	setSnoozeInterval(position * 60);
 
 	// Convert and set edit value
-	SetSnoozeIntervalEdit(nPos);
+	setSnoozeIntervalEdit(position);
 
 	*pResult = NULL;
 }
 
 /**
  * @brief	Handle clicked event for checkbox-es
- * @param	nID - ID of checkbox
+ * @param	id - ID of checkbox
  * @return	None
  */
-void CRmdRepeatSetDlg::OnCheckboxClicked(UINT /*nID*/)
+void CRmdRepeatSetDlg::OnCheckboxClicked(UINT /*id*/)
 {
-	RefreshDialogItemState();
+	refreshDialogItemState();
 }
 
 /**
@@ -163,17 +163,17 @@ void CRmdRepeatSetDlg::OnCheckboxClicked(UINT /*nID*/)
  * @param	None
  * @return	None
  */
-void CRmdRepeatSetDlg::SetupLanguage()
+void CRmdRepeatSetDlg::setupLanguage()
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Loop through all dialog items and setup languages for each one of them
-	for (CWnd* pWndChild = GetTopWindow(); pWndChild != NULL; pWndChild = pWndChild->GetWindow(GW_HWNDNEXT))
+	for (CWnd* childWndPtr = GetTopWindow(); childWndPtr != NULL; childWndPtr = childWndPtr->GetWindow(GW_HWNDNEXT))
 	{
-		unsigned nID = pWndChild->GetDlgCtrlID();
+		unsigned id = childWndPtr->GetDlgCtrlID();
 
-		switch (nID)
+		switch (id)
 		{
 		case IDC_RMDREPEATSET_DUMMY_BORDER:
 		case IDC_RMDREPEATSET_DETAILS_STATIC:
@@ -184,13 +184,13 @@ void CRmdRepeatSetDlg::SetupLanguage()
 			break;
 
 		default:
-			SetControlText(pWndChild, nID, pAppLang);
+			setControlText(childWndPtr, id, languageTablePtr);
 			break;
 		}
 	}
 
 	// Default
-	SDialog::SetupLanguage();
+	SDialog::setupLanguage();
 }
 
 /**
@@ -198,92 +198,92 @@ void CRmdRepeatSetDlg::SetupLanguage()
  * @param	None
  * @return	None
  */
-void CRmdRepeatSetDlg::SetupDialogItemState()
+void CRmdRepeatSetDlg::setupDialogItemState()
 {
 	// Initialize dialog items
-	if (m_pSnoozeIntervalEdit == NULL) {
-		m_pSnoozeIntervalEdit = (CEdit*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_INTERVAL_EDIT);
-		if (m_pSnoozeIntervalEdit == NULL) {
+	if (snoozeIntervalEditPtr_ == NULL) {
+		snoozeIntervalEditPtr_ = (CEdit*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_INTERVAL_EDIT);
+		if (snoozeIntervalEditPtr_ == NULL) {
 			TRACE_ERROR("Error: Snooze interval edit control not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pSnoozeIntervalSpin == NULL) {
-		m_pSnoozeIntervalSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_INTERVAL_SPIN);
-		if (m_pSnoozeIntervalSpin == NULL) {
+	if (snoozeIntervalSpinPtr_ == NULL) {
+		snoozeIntervalSpinPtr_ = (CSpinButtonCtrl*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_INTERVAL_SPIN);
+		if (snoozeIntervalSpinPtr_ == NULL) {
 			TRACE_ERROR("Error: Snooze interval spin control not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pRepeatEnableChk == NULL) {
-		m_pRepeatEnableChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_REPEAT_CHK);
-		if (m_pRepeatEnableChk == NULL) {
+	if (repeatEnableChkPtr_ == NULL) {
+		repeatEnableChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_REPEAT_CHK);
+		if (repeatEnableChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Repeat enable checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pSnoozeEnableChk == NULL) {
-		m_pSnoozeEnableChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_CHK);
-		if (m_pSnoozeEnableChk == NULL) {
+	if (snoozeEnableChkPtr_ == NULL) {
+		snoozeEnableChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_SNOOZE_CHK);
+		if (snoozeEnableChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Snooze enable checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pActiveMondayChk == NULL) {
-		m_pActiveMondayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_MONDAY_CHK);
-		if (m_pActiveMondayChk == NULL) {
+	if (activeMondayChkPtr_ == NULL) {
+		activeMondayChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_MONDAY_CHK);
+		if (activeMondayChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Monday active checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pActiveTuesdayChk == NULL) {
-		m_pActiveTuesdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_TUESDAY_CHK);
-		if (m_pActiveTuesdayChk == NULL) {
+	if (activeTuesdayChkPtr_ == NULL) {
+		activeTuesdayChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_TUESDAY_CHK);
+		if (activeTuesdayChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Tuesday active checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pActiveWednesdayChk == NULL) {
-		m_pActiveWednesdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_WEDNESDAY_CHK);
-		if (m_pActiveWednesdayChk == NULL) {
+	if (activeWednesdayChkPtr_ == NULL) {
+		activeWednesdayChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_WEDNESDAY_CHK);
+		if (activeWednesdayChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Wednesday active checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pActiveThursdayChk == NULL) {
-		m_pActiveThursdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_THURSDAY_CHK);
-		if (m_pActiveThursdayChk == NULL) {
+	if (activeThursdayChkPtr_ == NULL) {
+		activeThursdayChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_THURSDAY_CHK);
+		if (activeThursdayChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Thursday active checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pActiveFridayChk == NULL) {
-		m_pActiveFridayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_FRIDAY_CHK);
-		if (m_pActiveFridayChk == NULL) {
+	if (activeFridayChkPtr_ == NULL) {
+		activeFridayChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_FRIDAY_CHK);
+		if (activeFridayChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Friday active checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pActiveSaturdayChk == NULL) {
-		m_pActiveSaturdayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_SATURDAY_CHK);
-		if (m_pActiveSaturdayChk == NULL) {
+	if (activeSaturdayChkPtr_ == NULL) {
+		activeSaturdayChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_SATURDAY_CHK);
+		if (activeSaturdayChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Saturday active checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
-	if (m_pActiveSundayChk == NULL) {
-		m_pActiveSundayChk = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK);
-		if (m_pActiveSundayChk == NULL) {
+	if (activeSundayChkPtr_ == NULL) {
+		activeSundayChkPtr_ = (CButton*)GetDlgItem(IDC_RMDREPEATSET_ACTIVE_SUNDAY_CHK);
+		if (activeSundayChkPtr_ == NULL) {
 			TRACE_ERROR("Error: Sunday active checkbox not found!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
@@ -291,119 +291,119 @@ void CRmdRepeatSetDlg::SetupDialogItemState()
 	}
 
 	// Setup properties
-	int nDefaultSnoozeMin = PwrRepeatSet::defaultSnoozeInterval / 60;
-	if (m_pSnoozeIntervalEdit != NULL) {
-		m_pSnoozeIntervalEdit->SetReadOnly(true);
+	int defaultSnoozeMin = PwrRepeatSet::kDefaultSnoozeInterval / 60;
+	if (snoozeIntervalEditPtr_ != NULL) {
+		snoozeIntervalEditPtr_->SetReadOnly(true);
 	}
-	if (m_pSnoozeIntervalSpin != NULL) {
-		if (m_pSnoozeIntervalEdit == NULL) return;
+	if (snoozeIntervalSpinPtr_ != NULL) {
+		if (snoozeIntervalEditPtr_ == NULL) return;
 
 		// Set buddy: Snooze interval edit control
-		m_pSnoozeIntervalSpin->SetBuddy(m_pSnoozeIntervalEdit);
+		snoozeIntervalSpinPtr_->SetBuddy(snoozeIntervalEditPtr_);
 
 		// Set spin edit value
-		m_pSnoozeIntervalSpin->SetRange(Constant::Min::SnoozeTime, Constant::Max::SnoozeTime);
-		m_pSnoozeIntervalSpin->SetPos(nDefaultSnoozeMin);
-		SetSnoozeIntervalEdit(nDefaultSnoozeMin);
+		snoozeIntervalSpinPtr_->SetRange(Constant::Min::SnoozeTime, Constant::Max::SnoozeTime);
+		snoozeIntervalSpinPtr_->SetPos(defaultSnoozeMin);
+		setSnoozeIntervalEdit(defaultSnoozeMin);
 
 		// Set snooze interval value
-		SetSnoozeInterval(PwrRepeatSet::defaultSnoozeInterval);
+		setSnoozeInterval(PwrRepeatSet::kDefaultSnoozeInterval);
 	}
 
 	// Default
-	SDialog::SetupDialogItemState();
+	SDialog::setupDialogItemState();
 }
 
 /**
  * @brief	Refresh and update state for dialog items
- * @param	bRecheckState - Recheck all item's state
+ * @param	isRecheckState - Recheck all item's state
  * @return	None
  */
-void CRmdRepeatSetDlg::RefreshDialogItemState(bool bRecheckState /* = false */)
+void CRmdRepeatSetDlg::refreshDialogItemState(bool isRecheckState /* = false */)
 {
-	int nRepeatState = INT_NULL;
-	int nSnoozeState = INT_NULL;
+	int repeatState = Constant::NullInteger;
+	int snoozeState = Constant::NullInteger;
 
 	// Update checkbox checked state
-	if (m_pRepeatEnableChk != NULL) {
-		nRepeatState = m_pRepeatEnableChk->GetCheck();
+	if (repeatEnableChkPtr_ != NULL) {
+		repeatState = repeatEnableChkPtr_->GetCheck();
 
 		// Enable/disable all other sub-controls
-		bool bEnable = (nRepeatState == 1) ? true : false;
-		if (m_pSnoozeEnableChk != NULL) {
-			m_pSnoozeEnableChk->EnableWindow(bEnable);
+		bool isEnabled = (repeatState == 1) ? true : false;
+		if (snoozeEnableChkPtr_ != NULL) {
+			snoozeEnableChkPtr_->EnableWindow(isEnabled);
 		}
-		if (m_pActiveMondayChk != NULL) {
-			m_pActiveMondayChk->EnableWindow(bEnable);
+		if (activeMondayChkPtr_ != NULL) {
+			activeMondayChkPtr_->EnableWindow(isEnabled);
 		}
-		if (m_pActiveTuesdayChk != NULL) {
-			m_pActiveTuesdayChk->EnableWindow(bEnable);
+		if (activeTuesdayChkPtr_ != NULL) {
+			activeTuesdayChkPtr_->EnableWindow(isEnabled);
 		}
-		if (m_pActiveWednesdayChk != NULL) {
-			m_pActiveWednesdayChk->EnableWindow(bEnable);
+		if (activeWednesdayChkPtr_ != NULL) {
+			activeWednesdayChkPtr_->EnableWindow(isEnabled);
 		}
-		if (m_pActiveThursdayChk != NULL) {
-			m_pActiveThursdayChk->EnableWindow(bEnable);
+		if (activeThursdayChkPtr_ != NULL) {
+			activeThursdayChkPtr_->EnableWindow(isEnabled);
 		}
-		if (m_pActiveFridayChk != NULL) {
-			m_pActiveFridayChk->EnableWindow(bEnable);
+		if (activeFridayChkPtr_ != NULL) {
+			activeFridayChkPtr_->EnableWindow(isEnabled);
 		}
-		if (m_pActiveSaturdayChk != NULL) {
-			m_pActiveSaturdayChk->EnableWindow(bEnable);
+		if (activeSaturdayChkPtr_ != NULL) {
+			activeSaturdayChkPtr_->EnableWindow(isEnabled);
 		}
-		if (m_pActiveSundayChk != NULL) {
-			m_pActiveSundayChk->EnableWindow(bEnable);
+		if (activeSundayChkPtr_ != NULL) {
+			activeSundayChkPtr_->EnableWindow(isEnabled);
 		}
 
 	}
-	if (m_pSnoozeEnableChk != NULL) {
-		nSnoozeState = m_pSnoozeEnableChk->GetCheck();
+	if (snoozeEnableChkPtr_ != NULL) {
+		snoozeState = snoozeEnableChkPtr_->GetCheck();
 
 		// Enable/disable snooze controls
-		if ((m_pSnoozeIntervalEdit != NULL) && (m_pSnoozeIntervalSpin != NULL)) {
-			if ((nRepeatState == 1) && (nSnoozeState == 1)) {
-				m_pSnoozeIntervalEdit->EnableWindow(true);
-				m_pSnoozeIntervalSpin->EnableWindow(true);
+		if ((snoozeIntervalEditPtr_ != NULL) && (snoozeIntervalSpinPtr_ != NULL)) {
+			if ((repeatState == 1) && (snoozeState == 1)) {
+				snoozeIntervalEditPtr_->EnableWindow(true);
+				snoozeIntervalSpinPtr_->EnableWindow(true);
 			}
 			else {
-				m_pSnoozeIntervalEdit->EnableWindow(false);
-				m_pSnoozeIntervalSpin->EnableWindow(false);
+				snoozeIntervalEditPtr_->EnableWindow(false);
+				snoozeIntervalSpinPtr_->EnableWindow(false);
 			}
 		}
 	}
 
 	// Default
-	SDialog::RefreshDialogItemState(bRecheckState);
+	SDialog::refreshDialogItemState(isRecheckState);
 }
 
 /**
  * @brief	Set value to snooze interval edit control
- * @param	nValue - Value to set (in minutes)
+ * @param	value - Value to set (in minutes)
  * @return	None
  */
-void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
+void CRmdRepeatSetDlg::setSnoozeIntervalEdit(int value)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = ((CPowerPlusApp*)AfxGetApp())->GetAppLanguage();
+	LANGTABLE_PTR languageTablePtr = ((CPowerPlusApp*)AfxGetApp())->getAppLanguage();
 
 	// Get format string
-	const wchar_t* formatString = GetLanguageString(pAppLang, PWRRMD_REPEATSET_SNOOZEINTERVAL);
+	const wchar_t* formatString = getLanguageString(languageTablePtr, PWRRMD_REPEATSET_SNOOZEINTERVAL);
 	if (IS_NULL_STRING(formatString)) return;
 
 	// Check validity
-	if (((nValue * 60) < PwrRepeatSet::minSnoozeInterval) ||
-		((nValue * 60) > PwrRepeatSet::maxSnoozeInterval))
+	if (((value * 60) < PwrRepeatSet::kMinSnoozeInterval) ||
+		((value * 60) > PwrRepeatSet::kMaxSnoozeInterval))
 		return;
 
 	// Show snooze interval value
-	String snoozeIntervalString = StringUtils::StringFormat(formatString, nValue);
-	if (m_pSnoozeIntervalEdit != NULL) {
+	String snoozeIntervalString = StringUtils::stringFormat(formatString, value);
+	if (snoozeIntervalEditPtr_ != NULL) {
 		// Display
-		m_pSnoozeIntervalEdit->SetWindowText(snoozeIntervalString);
-		if (m_pSnoozeIntervalSpin != NULL) {
+		snoozeIntervalEditPtr_->SetWindowText(snoozeIntervalString);
+		if (snoozeIntervalSpinPtr_ != NULL) {
 			// Update spin position
-			if (m_pSnoozeIntervalSpin->GetPos() != nValue) {
-				m_pSnoozeIntervalSpin->SetPos(nValue);
+			if (snoozeIntervalSpinPtr_->GetPos() != value) {
+				snoozeIntervalSpinPtr_->SetPos(value);
 			}
 		}
 	}
@@ -411,16 +411,16 @@ void CRmdRepeatSetDlg::SetSnoozeIntervalEdit(int nValue)
 
 /**
  * @brief	Update repeat set data from/to dialog controls
- * @param	pwrItemData - Power Reminder item
- * @param	bUpdate		- Update data flag
+ * @param	reminderItem - Power Reminder item
+ * @param	updateFlag		- Update data flag
  * @return	None
  */
-void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpdate)
+void CRmdRepeatSetDlg::updateDialogData(PwrReminderItem& reminderItem, bool updateFlag)
 {
 	// Get repeat set data
-	PwrRepeatSet& rpsRepeatData = pwrItemData.GetRepeatSetData();
+	PwrRepeatSet& repeatData = reminderItem.getRepeatSetData();
 
-	if (bUpdate == true) {
+	if (updateFlag == true) {
 
 		/***************************************************************/
 		/*															   */
@@ -429,78 +429,78 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 		/***************************************************************/
 
 		// Repeat enable
-		int nState = 0;
-		if (m_pRepeatEnableChk != NULL) {
-			nState = m_pRepeatEnableChk->GetCheck();
-			rpsRepeatData.EnableRepeat((nState == 1) ? true : false);
+		int state = 0;
+		if (repeatEnableChkPtr_ != NULL) {
+			state = repeatEnableChkPtr_->GetCheck();
+			repeatData.enableRepeat((state == 1) ? true : false);
 		}
 
 		// Snooze enable
-		if (m_pSnoozeEnableChk != NULL) {
-			nState = m_pSnoozeEnableChk->GetCheck();
-			rpsRepeatData.EnableSnoozing((nState == 1) ? true : false);
+		if (snoozeEnableChkPtr_ != NULL) {
+			state = snoozeEnableChkPtr_->GetCheck();
+			repeatData.enableSnoozing((state == 1) ? true : false);
 
-			if (m_pSnoozeIntervalSpin != NULL) {
+			if (snoozeIntervalSpinPtr_ != NULL) {
 				// Get snooze interval value (in seconds)
-				rpsRepeatData.SetSnoozeInterval(this->GetSnoozeInterval());
+				repeatData.setSnoozeInterval(this->getSnoozeInterval());
 			}
 		}
 
 		// Repeat active status for days of week
 		// Note: Read and store data from Sunday first
 
-		BYTE byRepeatDays = 0;
+		BYTE repeatDays = 0;
 		{
-			bool bSundayEnable = false;
-			if (m_pActiveSundayChk != NULL) {
-				nState = m_pActiveSundayChk->GetCheck();
-				bSundayEnable = (nState == 1) ? true : false;
+			bool isSundayEnabled = false;
+			if (activeSundayChkPtr_ != NULL) {
+				state = activeSundayChkPtr_->GetCheck();
+				isSundayEnabled = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bSundayEnable << DayOfWeek::Sunday;
+			repeatDays |= isSundayEnabled << DayOfWeek::Sunday;
 
-			bool bMondayEnable = false;
-			if (m_pActiveMondayChk != NULL) {
-				nState = m_pActiveMondayChk->GetCheck();
-				bMondayEnable = (nState == 1) ? true : false;
+			bool isMondayEnabled = false;
+			if (activeMondayChkPtr_ != NULL) {
+				state = activeMondayChkPtr_->GetCheck();
+				isMondayEnabled = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bMondayEnable << DayOfWeek::Monday;
+			repeatDays |= isMondayEnabled << DayOfWeek::Monday;
 
-			bool bTuesdayEnable = false;
-			if (m_pActiveTuesdayChk != NULL) {
-				nState = m_pActiveTuesdayChk->GetCheck();
-				bTuesdayEnable = (nState == 1) ? true : false;
+			bool isTuesdayEnabled = false;
+			if (activeTuesdayChkPtr_ != NULL) {
+				state = activeTuesdayChkPtr_->GetCheck();
+				isTuesdayEnabled = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bTuesdayEnable << DayOfWeek::Tuesday;
+			repeatDays |= isTuesdayEnabled << DayOfWeek::Tuesday;
 
-			bool bWednesdayEnable = false;
-			if (m_pActiveWednesdayChk != NULL) {
-				nState = m_pActiveWednesdayChk->GetCheck();
-				bWednesdayEnable = (nState == 1) ? true : false;
+			bool isWednesdayEnabled = false;
+			if (activeWednesdayChkPtr_ != NULL) {
+				state = activeWednesdayChkPtr_->GetCheck();
+				isWednesdayEnabled = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bWednesdayEnable << DayOfWeek::Wednesday;
+			repeatDays |= isWednesdayEnabled << DayOfWeek::Wednesday;
 
-			bool bThursdayEnable = false;
-			if (m_pActiveThursdayChk != NULL) {
-				nState = m_pActiveThursdayChk->GetCheck();
-				bThursdayEnable = (nState == 1) ? true : false;
+			bool isThursdayEnabled = false;
+			if (activeThursdayChkPtr_ != NULL) {
+				state = activeThursdayChkPtr_->GetCheck();
+				isThursdayEnabled = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bThursdayEnable << DayOfWeek::Thursday;
+			repeatDays |= isThursdayEnabled << DayOfWeek::Thursday;
 
-			bool bFridayEnable = false;
-			if (m_pActiveFridayChk != NULL) {
-				nState = m_pActiveFridayChk->GetCheck();
-				bFridayEnable = (nState == 1) ? true : false;
+			bool isFridayEnabled = false;
+			if (activeFridayChkPtr_ != NULL) {
+				state = activeFridayChkPtr_->GetCheck();
+				isFridayEnabled = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bFridayEnable << DayOfWeek::Friday;
+			repeatDays |= isFridayEnabled << DayOfWeek::Friday;
 
-			bool bSaturdayEnable = false;
-			if (m_pActiveSaturdayChk != NULL) {
-				nState = m_pActiveSaturdayChk->GetCheck();
-				bSaturdayEnable = (nState == 1) ? true : false;
+			bool isSaturdayEnabled = false;
+			if (activeSaturdayChkPtr_ != NULL) {
+				state = activeSaturdayChkPtr_->GetCheck();
+				isSaturdayEnabled = (state == 1) ? true : false;
 			}
-			byRepeatDays |= bSaturdayEnable << DayOfWeek::Saturday;
+			repeatDays |= isSaturdayEnabled << DayOfWeek::Saturday;
 		}
-		rpsRepeatData.SetActiveDays(byRepeatDays);
+		repeatData.setActiveDays(repeatDays);
 	}
 	else {
 
@@ -510,64 +510,64 @@ void CRmdRepeatSetDlg::UpdateDialogData(PwrReminderItem& pwrItemData, bool bUpda
 		/*															   */
 		/***************************************************************/
 
-		int nState = 0;
+		int state = 0;
 
 		// Repeat enable
-		if (m_pRepeatEnableChk != NULL) {
-			nState = (rpsRepeatData.IsRepeatEnabled()) ? FLAG_ON : FLAG_OFF;
-			m_pRepeatEnableChk->SetCheck(nState);
+		if (repeatEnableChkPtr_ != NULL) {
+			state = (repeatData.isRepeatEnabled()) ? FLAG_ON : FLAG_OFF;
+			repeatEnableChkPtr_->SetCheck(state);
 		}
 
 		// Snooze enable
-		if (m_pSnoozeEnableChk != NULL) {
-			nState = (rpsRepeatData.IsAllowSnoozing()) ? FLAG_ON : FLAG_OFF;
-			m_pSnoozeEnableChk->SetCheck(nState);
+		if (snoozeEnableChkPtr_ != NULL) {
+			state = (repeatData.isAllowSnoozing()) ? FLAG_ON : FLAG_OFF;
+			snoozeEnableChkPtr_->SetCheck(state);
 			
-			if (m_pSnoozeIntervalSpin != NULL) {
+			if (snoozeIntervalSpinPtr_ != NULL) {
 				// Set spin edit value (in minutes)
-				int nSnoozeMinute = rpsRepeatData.GetSnoozeInterval() / 60;
-				m_pSnoozeIntervalSpin->SetPos(nSnoozeMinute);
-				SetSnoozeIntervalEdit(nSnoozeMinute);
+				int nSnoozeMinute = repeatData.getSnoozeInterval() / 60;
+				snoozeIntervalSpinPtr_->SetPos(nSnoozeMinute);
+				setSnoozeIntervalEdit(nSnoozeMinute);
 				// Set snooze interval value (in seconds)
-				SetSnoozeInterval(rpsRepeatData.GetSnoozeInterval());
+				setSnoozeInterval(repeatData.getSnoozeInterval());
 			}
 		}
 
 		// Repeat active status for days of week
 		// Note: Bind data from Monday first
 
-		if (m_pActiveMondayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Monday)) ? FLAG_ON : FLAG_OFF;
-			m_pActiveMondayChk->SetCheck(nState);
+		if (activeMondayChkPtr_ != NULL) {
+			state = (repeatData.isDayActive(DayOfWeek::Monday)) ? FLAG_ON : FLAG_OFF;
+			activeMondayChkPtr_->SetCheck(state);
 		}
-		if (m_pActiveTuesdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Tuesday)) ? FLAG_ON : FLAG_OFF;
-			m_pActiveTuesdayChk->SetCheck(nState);
+		if (activeTuesdayChkPtr_ != NULL) {
+			state = (repeatData.isDayActive(DayOfWeek::Tuesday)) ? FLAG_ON : FLAG_OFF;
+			activeTuesdayChkPtr_->SetCheck(state);
 		}
-		if (m_pActiveWednesdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Wednesday)) ? FLAG_ON : FLAG_OFF;
-			m_pActiveWednesdayChk->SetCheck(nState);
+		if (activeWednesdayChkPtr_ != NULL) {
+			state = (repeatData.isDayActive(DayOfWeek::Wednesday)) ? FLAG_ON : FLAG_OFF;
+			activeWednesdayChkPtr_->SetCheck(state);
 		}
-		if (m_pActiveThursdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Thursday)) ? FLAG_ON : FLAG_OFF;
-			m_pActiveThursdayChk->SetCheck(nState);
+		if (activeThursdayChkPtr_ != NULL) {
+			state = (repeatData.isDayActive(DayOfWeek::Thursday)) ? FLAG_ON : FLAG_OFF;
+			activeThursdayChkPtr_->SetCheck(state);
 		}
-		if (m_pActiveFridayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Friday)) ? FLAG_ON : FLAG_OFF;
-			m_pActiveFridayChk->SetCheck(nState);
+		if (activeFridayChkPtr_ != NULL) {
+			state = (repeatData.isDayActive(DayOfWeek::Friday)) ? FLAG_ON : FLAG_OFF;
+			activeFridayChkPtr_->SetCheck(state);
 		}
-		if (m_pActiveSaturdayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Saturday)) ? FLAG_ON : FLAG_OFF;
-			m_pActiveSaturdayChk->SetCheck(nState);
+		if (activeSaturdayChkPtr_ != NULL) {
+			state = (repeatData.isDayActive(DayOfWeek::Saturday)) ? FLAG_ON : FLAG_OFF;
+			activeSaturdayChkPtr_->SetCheck(state);
 		}
-		if (m_pActiveSundayChk != NULL) {
-			nState = (rpsRepeatData.IsDayActive(DayOfWeek::Sunday)) ? FLAG_ON : FLAG_OFF;
-			m_pActiveSundayChk->SetCheck(nState);
+		if (activeSundayChkPtr_ != NULL) {
+			state = (repeatData.isDayActive(DayOfWeek::Sunday)) ? FLAG_ON : FLAG_OFF;
+			activeSundayChkPtr_->SetCheck(state);
 		}
 
 		// Update data
 		UpdateData(false);
-		RefreshDialogItemState();
+		refreshDialogItemState();
 	}
 }
 

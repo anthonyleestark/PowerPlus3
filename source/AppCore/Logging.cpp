@@ -20,16 +20,16 @@ using namespace AppCore;
 
 /**
  * @brief	Get size of data by data type
- * @param	byDataType - Data type
+ * @param	dataType - Data type
  * @return	size_t
  */
-size_t GetSizeByType(byte byDataType)
+size_t getSizeByType(byte dataType)
 {
 	size_t retSize = 0;
-	switch (byDataType)
+	switch (dataType)
 	{
 	case LogDataType::Void:				// No type (unusable)
-		retSize = INT_NULL;
+		retSize = Constant::NullInteger;
 		break;
 
 	case LogDataType::Num_U1:			// Unsigned integer (1-byte)
@@ -41,7 +41,7 @@ size_t GetSizeByType(byte byDataType)
 	case LogDataType::Num_U2:			// Unsigned integer (2-byte)
 	case LogDataType::Num_I2:			// Signed integer (2-byte)
 	case LogDataType::Num_F2:			// Float number (2-byte)
-		retSize = sizeof(USHORT);
+		retSize = sizeof(uint16);
 		break;
 
 	case LogDataType::Num_U4:			// Unsigned integer (4-byte)
@@ -69,7 +69,7 @@ size_t GetSizeByType(byte byDataType)
 		break;
 
 	default:
-		retSize = INT_NULL;
+		retSize = Constant::NullInteger;
 		break;
 	}
 
@@ -82,13 +82,13 @@ size_t GetSizeByType(byte byDataType)
 LogDetail::LogDetail()
 {
 	// Initialization
-	m_usCategory = INT_NULL;								// Detail category
-	m_nFlag = LogDetailFlag::Flag_Null;						// Detail info flag
-	m_nDetailValue = INT_NULL;								// Detail value (integer)
-	m_strDetailInfo.Empty();								// Detail info (string)
-	m_ptrDetailData = NULL;									// Detail data (pointer)
-	m_byPointerType = LogDataType::Void;					// Detail info pointer data type
-	m_szPointerSize = INT_NULL;								// Detail info pointer data size
+	categoryId_ = Constant::NullInteger;									// Detail category
+	flag_ = LogDetailFlag::Flag_Null;						// Detail info flag
+	detailValue_ = Constant::NullInteger;								// Detail value (integer)
+	detailInfoString_.empty();								// Detail info (string)
+	detailDataPtr_ = NULL;									// Detail data (pointer)
+	pointerType_ = LogDataType::Void;						// Detail info pointer data type
+	pointerSize_ = Constant::NullInteger;								// Detail info pointer data size
 }
 
 /**
@@ -96,16 +96,16 @@ LogDetail::LogDetail()
  * @param	None
  * @return	Nones
  */
-void LogDetail::Init(void) noexcept
+void LogDetail::init(void) noexcept
 {
 	// Initialization
-	m_usCategory = INT_NULL;								// Detail category
-	m_nFlag = LogDetailFlag::Flag_Null;						// Detail info flag
-	m_nDetailValue = INT_NULL;								// Detail value (integer)
-	m_strDetailInfo.Empty();								// Detail info (string)
-	m_ptrDetailData = NULL;									// Detail data (pointer)
-	m_byPointerType = LogDataType::Void;					// Detail info pointer data type
-	m_szPointerSize = INT_NULL;								// Detail info pointer data sizesize
+	categoryId_ = Constant::NullInteger;									// Detail category
+	flag_ = LogDetailFlag::Flag_Null;						// Detail info flag
+	detailValue_ = Constant::NullInteger;								// Detail value (integer)
+	detailInfoString_.empty();								// Detail info (string)
+	detailDataPtr_ = NULL;									// Detail data (pointer)
+	pointerType_ = LogDataType::Void;						// Detail info pointer data type
+	pointerSize_ = Constant::NullInteger;								// Detail info pointer data sizesize
 }
 
 /**
@@ -113,17 +113,17 @@ void LogDetail::Init(void) noexcept
  * @param	other - Pointer of input item
  * @return	None
  */
-void LogDetail::Copy(const LogDetail& other) noexcept
+void LogDetail::copy(const LogDetail& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
 
 	// Copy data
-	m_usCategory = other.m_usCategory;						// Detail category
-	m_nFlag = other.m_nFlag;								// Detail flag
-	m_nDetailValue = other.m_nDetailValue;					// Detail value (integer)
-	m_strDetailInfo = other.m_strDetailInfo;				// Detail info (string)
-	PointerCopy(other);										// Detail data (pointer)
+	categoryId_ = other.categoryId_;						// Detail category
+	flag_ = other.flag_;									// Detail flag
+	detailValue_ = other.detailValue_;						// Detail value (integer)
+	detailInfoString_ = other.detailInfoString_;			// Detail info (string)
+	copyPointer(other);										// Detail data (pointer)
 }
 
 /**
@@ -131,14 +131,14 @@ void LogDetail::Copy(const LogDetail& other) noexcept
  * @param	other - Pointer of input item
  * @return	None
  */
-void LogDetail::PointerCopy(const LogDetail& other)
+void LogDetail::copyPointer(const LogDetail& other)
 {
 	// Copy pointer properties
-	m_byPointerType = other.m_byPointerType;					// Detail info pointer data type
-	m_szPointerSize = other.m_szPointerSize;					// Detail info pointer data size
+	pointerType_ = other.pointerType_;					// Detail info pointer data type
+	pointerSize_ = other.pointerSize_;					// Detail info pointer data size
 
 	// Copy pointer data
-	memcpy(m_ptrDetailData, other.m_ptrDetailData, other.m_szPointerSize);
+	memcpy(detailDataPtr_, other.detailDataPtr_, other.pointerSize_);
 }
 
 /**
@@ -146,18 +146,18 @@ void LogDetail::PointerCopy(const LogDetail& other)
  * @param	other - Pointer of given item
  * @return	true/false
  */
-bool LogDetail::Compare(const LogDetail& other) const
+bool LogDetail::compare(const LogDetail& other) const
 {
-	bool bRet = false;
+	bool returnFlag = false;
 
 	// Compare items
-	bRet &= (m_usCategory == other.m_usCategory);				// Detail category
-	bRet &= (m_nFlag == other.m_nFlag);							// Detail flag
-	bRet &= (m_nDetailValue == other.m_nDetailValue);			// Detail value (integer)
-	bRet &= (m_strDetailInfo == other.m_strDetailInfo);			// Detail info (string)
-	bRet &= PointerCompare(other);								// Detail data (pointer)
+	returnFlag &= (categoryId_ == other.categoryId_);				// Detail category
+	returnFlag &= (flag_ == other.flag_);							// Detail flag
+	returnFlag &= (detailValue_ == other.detailValue_);				// Detail value (integer)
+	returnFlag &= (detailInfoString_ == other.detailInfoString_);	// Detail info (string)
+	returnFlag &= comparePointer(other);							// Detail data (pointer)
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -165,20 +165,20 @@ bool LogDetail::Compare(const LogDetail& other) const
  * @param	other - Pointer of given item
  * @return	true/false
  */
-bool LogDetail::PointerCompare(const LogDetail& other) const
+bool LogDetail::comparePointer(const LogDetail& other) const
 {
-	bool bRet = false;
+	bool returnFlag = false;
 
 	// Compare properties
-	bRet &= (m_byPointerType == other.m_byPointerType);			// Detail info pointer data type
-	bRet &= (m_szPointerSize == other.m_szPointerSize);			// Detail info pointer data size
+	returnFlag &= (pointerType_ == other.pointerType_);			// Detail info pointer data type
+	returnFlag &= (pointerSize_ == other.pointerSize_);			// Detail info pointer data size
 
 	// Only compare pointer values if properties are matching
-	if (bRet != false) {
-		bRet &= memcmp(m_ptrDetailData, other.m_ptrDetailData, m_szPointerSize);
+	if (returnFlag != false) {
+		returnFlag &= memcmp(detailDataPtr_, other.detailDataPtr_, pointerSize_);
 	}
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -186,93 +186,93 @@ bool LogDetail::PointerCompare(const LogDetail& other) const
  * @param	None
  * @return	true/false
  */
-bool LogDetail::IsEmpty(void) const noexcept
+bool LogDetail::isEmpty(void) const noexcept
 {
 	// Initialize empty detail info
 	static const LOGDETAIL logDummyDetail;
 
 	// Compare with that data and return result
-	return this->Compare(logDummyDetail);
+	return compare(logDummyDetail);
 }
 
 /**
  * @brief	Set detail info pointer data
- * @param	pDataBuff	- Data buffer (pointer)
- * @param	byDataType	- Data type
- * @param	szDataSize	- Data size
+ * @param	dataBuff	- Data buffer (pointer)
+ * @param	dataType	- Data type
+ * @param	dataSize	- Data size
  * @return	true/false
  */
-bool LogDetail::SetPointerData(PVOID pDataBuff, byte byDataType /* = DATA_TYPE_UNSPECIFIED */, size_t szDataSize /* = 0 */)
+bool LogDetail::setPointerData(void* dataBuff, byte dataType /* = DATA_TYPE_UNSPECIFIED */, size_t dataSize /* = 0 */)
 {
 	// If data type is void (unusable), do nothing
-	if (byDataType == LogDataType::Void)
+	if (dataType == LogDataType::Void)
 		return false;
 
 	// If both data type and size are not specified, do nothing
-	if ((byDataType == LogDataType::Unspecified) && (szDataSize == 0))
+	if ((dataType == LogDataType::Unspecified) && (dataSize == 0))
 		return false;
 
 	// If size is not specified,
-	if (szDataSize == 0) {
+	if (dataSize == 0) {
 		// Get size by data type
-		szDataSize = GetSizeByType(byDataType);
+		dataSize = getSizeByType(dataType);
 
 		// Get size failed, do nothing
-		if (szDataSize == 0)
+		if (dataSize == 0)
 			return false;
 	}
 
 	// Otherwise, set normally
-	m_byPointerType = byDataType;
-	m_szPointerSize = szDataSize;
-	memcpy(m_ptrDetailData, pDataBuff, szDataSize);
+	pointerType_ = dataType;
+	pointerSize_ = dataSize;
+	memcpy(detailDataPtr_, dataBuff, dataSize);
 	return true;
 }
 
 /**
  * @brief	Add log detail info item
  * @param	logDetail	  - Log detail item
- * @param	usCategory	  - Detail category
- * @param	nDetailInfo	  - Detail info (integer)
+ * @param	categoryId	  - Detail category
+ * @param	detailValue	  - Detail info (integer)
  * @param	detailInfo	  - Detail info (string)
- * @param	nFlag		  - Detail flag
+ * @param	flag		  - Detail flag
  * @return	None
  */
-void LogDetailInfo::AddDetail(USHORT usCategory, int nDetailInfo, int nFlag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::addDetail(uint16 categoryId, int detailValue, int flag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
-	logDetail.SetCategory(usCategory);
-	logDetail.SetDetailValue(nDetailInfo);
-	logDetail.SetFlag(nFlag);
+	logDetail.setCategory(categoryId);
+	logDetail.setDetailValue(detailValue);
+	logDetail.setFlag(flag);
 
 	// Add detail info item
-	this->AddDetail(logDetail);
+	addDetail(logDetail);
 }
 
-void LogDetailInfo::AddDetail(USHORT usCategory, const wchar_t* detailInfo, int nFlag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::addDetail(uint16 categoryId, const wchar_t* detailInfo, int flag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
-	logDetail.SetCategory(usCategory);
-	logDetail.SetDetailString(detailInfo);
-	logDetail.SetFlag(nFlag);
+	logDetail.setCategory(categoryId);
+	logDetail.setDetailString(detailInfo);
+	logDetail.setFlag(flag);
 
 	// Add detail info item
-	this->AddDetail(logDetail);
+	addDetail(logDetail);
 }
 
-void LogDetailInfo::AddDetail(USHORT usCategory, int nDetailInfo, const wchar_t* detailInfo, int nFlag /* = LogDetailFlag::Flag_Null */)
+void LogDetailInfo::addDetail(uint16 categoryId, int detailValue, const wchar_t* detailInfo, int flag /* = LogDetailFlag::Flag_Null */)
 {
 	// Prepare detail info item
 	LOGDETAIL logDetail;
-	logDetail.SetCategory(usCategory);
-	logDetail.SetDetailValue(nDetailInfo);
-	logDetail.SetDetailString(detailInfo);
-	logDetail.SetFlag(nFlag);
+	logDetail.setCategory(categoryId);
+	logDetail.setDetailValue(detailValue);
+	logDetail.setDetailString(detailInfo);
+	logDetail.setFlag(flag);
 
 	// Add detail info item
-	this->AddDetail(logDetail);
+	addDetail(logDetail);
 }
 
 /**
@@ -281,11 +281,11 @@ void LogDetailInfo::AddDetail(USHORT usCategory, int nDetailInfo, const wchar_t*
 LogItem::LogItem()
 {
 	// Initialization
-	m_stTime = DateTime();									// Log time
-	m_dwProcessID = INT_NULL;								// Process ID
-	m_usCategory = LOG_MACRO_NONE;							// Log category
-	m_strLogString = Constant::String::Empty;							// Log string
-	m_arrDetailInfo.clear();								// Log detail info
+	timeValue_ = DateTime();							// Log time
+	processId_ = Constant::NullInteger;								// Process ID
+	categoryId_ = LOG_MACRO_NONE;						// Log category
+	logString_ = Constant::String::Empty;				// Log string
+	detailInfo_.clear();								// Log detail info
 }
 
 /**
@@ -293,14 +293,14 @@ LogItem::LogItem()
  * @param	other - Pointer of input item
  * @return	None
  */
-void LogItem::Copy(const LogItem& other) noexcept
+void LogItem::copy(const LogItem& other) noexcept
 {
 	// Copy data
-	m_stTime = other.m_stTime;								// Log time
-	m_dwProcessID = other.m_dwProcessID;					// Process ID
-	m_usCategory = other.m_usCategory;						// Log category
-	m_strLogString = other.m_strLogString;					// Log string
-	m_arrDetailInfo = other.m_arrDetailInfo;				// Log detail info
+	timeValue_ = other.timeValue_;						// Log time
+	processId_ = other.processId_;						// Process ID
+	categoryId_ = other.categoryId_;					// Log category
+	logString_ = other.logString_;						// Log string
+	detailInfo_ = other.detailInfo_;					// Log detail info
 }
 
 /**
@@ -308,32 +308,32 @@ void LogItem::Copy(const LogItem& other) noexcept
  * @param	other - Pointer of given item
  * @return	true/false
  */
-bool LogItem::Compare(const LogItem& other) const noexcept
+bool LogItem::compare(const LogItem& other) const noexcept
 {
-	bool bRet = false;
+	bool returnFlag = false;
 
 	// Compare item
-	bRet &= (m_stTime == other.m_stTime);
-	bRet &= (m_dwProcessID == other.m_dwProcessID);
-	bRet &= (m_usCategory == other.m_usCategory);
-	bRet &= (m_strLogString == other.m_strLogString);
+	returnFlag &= (timeValue_ == other.timeValue_);
+	returnFlag &= (processId_ == other.processId_);
+	returnFlag &= (categoryId_ == other.categoryId_);
+	returnFlag &= (logString_ == other.logString_);
 
 	// Compare log detail info
-	bool bDetailInfoCompare = true;
-	if (this->m_arrDetailInfo.size() != other.m_arrDetailInfo.size()) {
-		bDetailInfoCompare = false;
+	bool detailCompareResult = true;
+	if (detailInfo_.size() != other.detailInfo_.size()) {
+		detailCompareResult = false;
 	}
 	else {
-		for (int nIndex = 0; nIndex < this->m_arrDetailInfo.size(); nIndex++) {
-			if (this->m_arrDetailInfo.at(nIndex).Compare(other.m_arrDetailInfo.at(nIndex)) != true) {
-				bDetailInfoCompare = false;
+		for (int index = 0; index < detailInfo_.size(); index++) {
+			if (detailInfo_.at(index).compare(other.detailInfo_.at(index)) != true) {
+				detailCompareResult = false;
 				break;
 			}
 		}
 	}
-	bRet &= bDetailInfoCompare;
+	returnFlag &= detailCompareResult;
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -341,13 +341,13 @@ bool LogItem::Compare(const LogItem& other) const noexcept
  * @param	None
  * @return	true/false
  */
-bool LogItem::IsEmpty(void) const noexcept
+bool LogItem::isEmpty(void) const noexcept
 {
 	// Initialize an empty item
 	static const LOGITEM logDummyItem;
 
 	// Compare with this item and return result
-	return this->Compare(logDummyItem);
+	return compare(logDummyItem);
 }
 
 /**
@@ -355,16 +355,16 @@ bool LogItem::IsEmpty(void) const noexcept
  * @param	None
  * @return	None
  */
-void LogItem::RemoveAll(void) noexcept
+void LogItem::removeAll(void) noexcept
 {
 	// Reset data
-	m_stTime = DateTime();										// Log time
-	m_dwProcessID = INT_NULL;									// Process ID
-	m_usCategory = LOG_MACRO_NONE;								// Log category
-	m_strLogString = Constant::String::Empty;					// Log string
+	timeValue_ = DateTime();								// Log time
+	processId_ = Constant::NullInteger;									// Process ID
+	categoryId_ = LOG_MACRO_NONE;							// Log category
+	logString_ = Constant::String::Empty;					// Log string
 
 	// Clean up log detail info data
-	this->RemoveDetailInfo();									// Log detail info
+	removeDetailInfo();								// Log detail info
 }
 
 /**
@@ -372,12 +372,12 @@ void LogItem::RemoveAll(void) noexcept
  * @param	None
  * @return	String - Formatted result
  */
-String LogItem::FormatDateTime(void) const
+String LogItem::formatDateTime(void) const
 {
-	const wchar_t* middayFlag = (m_stTime.Hour() >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
-	String templateFormatStr = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormatStr, m_stTime.Year(), m_stTime.Month(), m_stTime.Day(),
-		m_stTime.Hour(), m_stTime.Minute(), m_stTime.Second(), m_stTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (timeValue_.hour() >= 12) ? Constant::Symbol::PostMeridiem : Constant::Symbol::AnteMeridiem;
+	String templateFormatStr = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormatStr, timeValue_.year(), timeValue_.month(), timeValue_.day(),
+		timeValue_.hour(), timeValue_.minute(), timeValue_.second(), timeValue_.millisecond(), middayFlag);
 
 	return timeFormatString;
 }
@@ -387,7 +387,7 @@ String LogItem::FormatDateTime(void) const
  * @param	None
  * @return	String - Formatted result
  */
-String LogItem::FormatOutput(void) const
+String LogItem::formatOutput(void) const
 {
 	// Create JSON data object
 	JSONDATA jsonData;
@@ -396,7 +396,7 @@ String LogItem::FormatOutput(void) const
 	String logValue;
 
 	// Load default language table package
-	LANGTABLE_PTR pDefLang = LoadLanguageTable(NULL);
+	LANGTABLE_PTR defaultLanguagePtr = loadLanguageTable(NULL);
 
 	/*********************************************************************/
 	/*																	 */
@@ -405,21 +405,21 @@ String LogItem::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log time
-	logKey = GetString(StringTable::LogKey, BaseLog::Time);
-	jsonData.AddString(logKey, FormatDateTime());
+	logKey = getString(StringTable::LogKey, BaseLog::Time);
+	jsonData.addString(logKey, formatDateTime());
 
 	// Process ID
-	logKey = GetString(StringTable::LogKey, BaseLog::PID);
-	jsonData.AddInteger(logKey, m_dwProcessID);
+	logKey = getString(StringTable::LogKey, BaseLog::PID);
+	jsonData.addInteger(logKey, processId_);
 
 	// Log category
-	logKey = GetString(StringTable::LogKey, BaseLog::LogCategory);
-	logValue = GetLanguageString(pDefLang, m_usCategory);
-	jsonData.AddString(logKey, logValue);
+	logKey = getString(StringTable::LogKey, BaseLog::LogCategory);
+	logValue = getLanguageString(defaultLanguagePtr, categoryId_);
+	jsonData.addString(logKey, logValue);
 
 	// Log description string
-	logKey = GetString(StringTable::LogKey, BaseLog::Description);
-	jsonData.AddString(logKey, m_strLogString);
+	logKey = getString(StringTable::LogKey, BaseLog::Description);
+	jsonData.addString(logKey, logString_);
 
 	/*********************************************************************/
 	/*																	 */
@@ -428,7 +428,7 @@ String LogItem::FormatOutput(void) const
 	/*********************************************************************/
 
 	// Log detail info
-	if (!m_arrDetailInfo.empty()) {
+	if (!detailInfo_.empty()) {
 
 		// Create JSON detail data object
 		JSONDATA jsonDetailData;
@@ -437,51 +437,51 @@ String LogItem::FormatOutput(void) const
 		String detailValue;
 
 		// Set object name: Details
-		jsonDetailData.SetObjectName(GetString(StringTable::LogKey, BaseLog::Details));
+		jsonDetailData.setObjectName(getString(StringTable::LogKey, BaseLog::Details));
 
 		// Convert data
-		for (int nIndex = 0; nIndex < (m_arrDetailInfo.size()); nIndex++) {
+		for (int index = 0; index < (detailInfo_.size()); index++) {
 
 			// Get detail info item
-			LOGDETAIL logDetail = m_arrDetailInfo.at(nIndex);
+			LOGDETAIL logDetail = detailInfo_.at(index);
 
 			// Skip if detail item is read-only
-			int nDetailFlag = logDetail.GetFlag();
-			if (nDetailFlag & LogDetailFlag::ReadOnly_Data)
+			int detailFlag = logDetail.getFlag();
+			if (detailFlag & LogDetailFlag::ReadOnly_Data)
 				continue;
 
 			// NULL flag --> apply default flags
-			if (nDetailFlag == LogDetailFlag::Flag_Null) {
-				nDetailFlag = LogDetailFlag::Write_Int;
+			if (detailFlag == LogDetailFlag::Flag_Null) {
+				detailFlag = LogDetailFlag::Write_Int;
 			}
 
 			// Detail info category
-			detailKey = GetString(StringTable::LogKey, logDetail.GetCategory());
+			detailKey = getString(StringTable::LogKey, logDetail.getCategory());
 
 			// Detail info value
-			int nDetailValue = logDetail.GetDetailValue();
-			if (nDetailFlag & LogDetailFlag::Write_Int) {
-				jsonDetailData.AddInteger(detailKey, logDetail.GetDetailValue());
+			int detailValueInt = logDetail.getDetailValue();
+			if (detailFlag & LogDetailFlag::Write_Int) {
+				jsonDetailData.addInteger(detailKey, logDetail.getDetailValue());
 			}
-			else if (nDetailFlag & LogDetailFlag::LookUp_Dict) {
-				detailValue = GetString(StringTable::LogValue, nDetailValue);
-				jsonDetailData.AddString(detailKey, detailValue);
+			else if (detailFlag & LogDetailFlag::LookUp_Dict) {
+				detailValue = getString(StringTable::LogValue, detailValueInt);
+				jsonDetailData.addString(detailKey, detailValue);
 			}
-			else if (nDetailFlag & LogDetailFlag::Write_String) {
-				jsonDetailData.AddString(detailKey, logDetail.GetDetailString());
+			else if (detailFlag & LogDetailFlag::Write_String) {
+				jsonDetailData.addString(detailKey, logDetail.getDetailString());
 			}
-			else if (nDetailFlag & (LogDetailFlag::Write_Int & LogDetailFlag::Write_String)) {
+			else if (detailFlag & (LogDetailFlag::Write_Int & LogDetailFlag::Write_String)) {
 				JSONDATA jsonSubDetail;
-				detailKey = GetString(StringTable::LogKey, BaseLog::DetailNumeric);
-				jsonSubDetail.AddInteger(detailKey, logDetail.GetDetailValue());
-				detailKey = GetString(StringTable::LogKey, BaseLog::DetailString);
-				jsonSubDetail.AddString(detailKey, logDetail.GetDetailString());
-				jsonDetailData.AddChildObject(&jsonSubDetail);
+				detailKey = getString(StringTable::LogKey, BaseLog::DetailNumeric);
+				jsonSubDetail.addInteger(detailKey, logDetail.getDetailValue());
+				detailKey = getString(StringTable::LogKey, BaseLog::DetailString);
+				jsonSubDetail.addString(detailKey, logDetail.getDetailString());
+				jsonDetailData.addChildObject(&jsonSubDetail);
 			}
 		}
 
 		// Output detail JSON data
-		jsonData.AddChildObject(&jsonDetailData);
+		jsonData.addChildObject(&jsonDetailData);
 	}
 
 	/*********************************************************************/
@@ -491,8 +491,8 @@ String LogItem::FormatOutput(void) const
 	/*********************************************************************/
 
 	String logYAMLFormat;
-	jsonData.PrintYAML(logYAMLFormat, 0);
-	logYAMLFormat.Append(Constant::String::NewLine);
+	jsonData.printYAML(logYAMLFormat, 0);
+	logYAMLFormat.append(Constant::String::NewLine);
 
 	return logYAMLFormat;
 }
@@ -503,10 +503,10 @@ String LogItem::FormatOutput(void) const
 JSON::JSON()
 {
 	// Initialization
-	this->m_strObjectName = Constant::String::Empty;			// JSON object name
-	this->m_arrKeyValuePairs.clear();				// Key-value pairs
-	this->m_nChildObjectCount = 0;					// Number of child objects
-	this->m_apChildObjectList = NULL;				// List of child objects
+	objectName_ = Constant::String::Empty;		// JSON object name
+	keyValuePairs_.clear();						// Key-value pairs
+	childObjCount_ = 0;							// Number of child objects
+	childObjList_ = NULL;							// List of child objects
 }
 
 /**
@@ -514,15 +514,15 @@ JSON::JSON()
  * @param	other - Pointer of input object
  * @return	None
  */
-void JSON::Copy(const JSON& other) noexcept
+void JSON::copy(const JSON& other) noexcept
 {
 	// Do not copy itself
 	if (this == &other) return;
 
 	// Copy data
-	this->m_strObjectName = other.m_strObjectName;	// JSON object name
-	this->CopyArrayData(other);						// Property (array) data
-	this->CopyPtrData(other);						// Child object (pointer) data
+	objectName_ = other.objectName_;			// JSON object name
+	copyArrayData(other);						// Property (array) data
+	copyPtrData(other);						// Child object (pointer) data
 }
 
 /**
@@ -530,17 +530,17 @@ void JSON::Copy(const JSON& other) noexcept
  * @param	other - Pointer of input object
  * @return	None
  */
-void JSON::CopyArrayData(const JSON& other)
+void JSON::copyArrayData(const JSON& other)
 {
 	// Remove all existing array data
-	this->m_arrKeyValuePairs.clear();
+	keyValuePairs_.clear();
 
 	// Set destination array data size
-	this->m_arrKeyValuePairs.reserve(other.m_arrKeyValuePairs.size());
+	keyValuePairs_.reserve(other.keyValuePairs_.size());
 
 	// Copy list of key-value pairs
-	for (int nIndex = 0; nIndex < other.m_arrKeyValuePairs.size(); nIndex++) {
-		this->m_arrKeyValuePairs.push_back(other.m_arrKeyValuePairs.at(nIndex));
+	for (int index = 0; index < other.keyValuePairs_.size(); index++) {
+		keyValuePairs_.push_back(other.keyValuePairs_.at(index));
 	}
 }
 
@@ -549,43 +549,43 @@ void JSON::CopyArrayData(const JSON& other)
  * @param	other - Pointer of input object
  * @return	None
  */
-void JSON::CopyPtrData(const JSON& other)
+void JSON::copyPtrData(const JSON& other)
 {
 	// Number of child objects
-	this->m_nChildObjectCount = other.m_nChildObjectCount;
+	childObjCount_ = other.childObjCount_;
 
 	// List of child objects (pointer copy)
-	if ((other.m_nChildObjectCount > 0) && (other.m_apChildObjectList != NULL)) {
+	if ((other.childObjCount_ > 0) && (other.childObjList_ != NULL)) {
 
 		// Allocation and initialization
-		this->m_apChildObjectList = new PJSONDATA[this->m_nChildObjectCount];
-		if (this->m_apChildObjectList == NULL) {
+		childObjList_ = new PJSONDATA[childObjCount_];
+		if (childObjList_ == NULL) {
 			TRACE_ERROR("Error: Destination JSON child object array allocation failed!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 
 		// Copy data
-		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
+		for (int count = 0; count < childObjCount_; count++) {
 
 			// Allocate memory
-			this->m_apChildObjectList[nCount] = new JSONDATA;
-			if (this->m_apChildObjectList[nCount] == NULL) {
-				TRACE_FORMAT("Error: Destination JSON child object allocation failed!!! (Index=%d)", nCount);
+			childObjList_[count] = new JSONDATA;
+			if (childObjList_[count] == NULL) {
+				TRACE_FORMAT("Error: Destination JSON child object allocation failed!!! (Index=%d)", count);
 				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
 			}
 
 			// Get source data
-			PJSONDATA pSrcData = other.m_apChildObjectList[nCount];
-			if (pSrcData == NULL) {
-				TRACE_FORMAT("Error: Invalid JSON child object is skipped when copying!!! (Index=%d)", nCount);
+			PJSONDATA srcObjectPtr = other.childObjList_[count];
+			if (srcObjectPtr == NULL) {
+				TRACE_FORMAT("Error: Invalid JSON child object is skipped when copying!!! (Index=%d)", count);
 				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 				continue;
 			}
 
 			// Copy object data (do not use 'memcpy' in here)
-			*(this->m_apChildObjectList[nCount]) = *pSrcData;
+			*(childObjList_[count]) = *srcObjectPtr;
 		}
 	}
 }
@@ -595,57 +595,57 @@ void JSON::CopyPtrData(const JSON& other)
  * @param	other - Pointer of given object
  * @return	true/false
  */
-bool JSON::Compare(const JSON& other) const
+bool JSON::compare(const JSON& other) const
 {
-	bool bRet = false;
+	bool returnFlag = false;
 
 	// Compare object name
-	bRet &= (this->m_strObjectName == other.m_strObjectName);
+	returnFlag &= (objectName_ == other.objectName_);
 
 	// Compare detail item info
-	bool bRetCompareDetail = true;
-	if (this->m_arrKeyValuePairs.size() != other.m_arrKeyValuePairs.size()) {
-		bRetCompareDetail = false;
+	bool detailCompareResult = true;
+	if (keyValuePairs_.size() != other.keyValuePairs_.size()) {
+		detailCompareResult = false;
 	}
-	if (bRetCompareDetail != false) {
-		for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
-			if (this->m_arrKeyValuePairs.at(nIndex) != other.m_arrKeyValuePairs.at(nIndex)) {
-				bRetCompareDetail = false;
+	if (detailCompareResult != false) {
+		for (int index = 0; index < (keyValuePairs_.size()); index++) {
+			if (keyValuePairs_.at(index) != other.keyValuePairs_.at(index)) {
+				detailCompareResult = false;
 				break;
 			}
 		}
 	}
-	bRet &= bRetCompareDetail;
+	returnFlag &= detailCompareResult;
 
 	// Compare child objects
-	if (this->m_apChildObjectList != NULL && other.m_apChildObjectList != NULL) {
+	if (childObjList_ != NULL && other.childObjList_ != NULL) {
 
-		bRetCompareDetail = true;
+		detailCompareResult = true;
 
 		// Compare child object numbers
-		int nThisChildObjectCount = this->m_nChildObjectCount;
-		int nOtherChildObjectCount = other.m_nChildObjectCount;
-		if (nThisChildObjectCount != nOtherChildObjectCount) {
-			bRetCompareDetail = false;
+		int thisChildObjCount = childObjCount_;
+		int otherChildObjCount = other.childObjCount_;
+		if (thisChildObjCount != otherChildObjCount) {
+			detailCompareResult = false;
 		}
 		else {
 			// Compare each child object data
-			for (int nCount = 0; nCount < nThisChildObjectCount; nCount++) {
-				PJSONDATA pThisChildObject = this->m_apChildObjectList[nCount];
-				PJSONDATA pOtherChildObject = other.m_apChildObjectList[nCount];
-				if ((pThisChildObject != NULL) && (pOtherChildObject != NULL)) {
-					bRetCompareDetail &= pThisChildObject->Compare(*pOtherChildObject);
+			for (int count = 0; count < thisChildObjCount; count++) {
+				PJSONDATA thisChildObjPtr = childObjList_[count];
+				PJSONDATA otherChildObjPtr = other.childObjList_[count];
+				if ((thisChildObjPtr != NULL) && (otherChildObjPtr != NULL)) {
+					detailCompareResult &= thisChildObjPtr->compare(*otherChildObjPtr);
 				}
 				else {
-					bRetCompareDetail = false;
+					detailCompareResult = false;
 					break;
 				}
 			}
 		}
-		bRet &= bRetCompareDetail;
+		returnFlag &= detailCompareResult;
 	}
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -653,13 +653,13 @@ bool JSON::Compare(const JSON& other) const
  * @param	None
  * @return	true/false
  */
-bool JSON::IsEmpty(void) const noexcept
+bool JSON::isEmpty(void) const noexcept
 {
 	// Initialize an empty item
 	static const JSONDATA jsonDummyItem;
 
 	// Compare with this item and return result
-	return this->Compare(jsonDummyItem);
+	return compare(jsonDummyItem);
 }
 
 /**
@@ -667,23 +667,23 @@ bool JSON::IsEmpty(void) const noexcept
  * @param	keyName - Key name
  * @return	None
  */
-void JSON::RemoveProperty(const wchar_t* keyName)
+void JSON::removeProperty(const wchar_t* keyName)
 {
 	// If property data is empty, do nothing
-	if (this->m_arrKeyValuePairs.empty())
+	if (keyValuePairs_.empty())
 		return;
 
 	// Search for key name
-	int nFoundIndex = INT_INVALID;
-	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
-		if (this->m_arrKeyValuePairs.at(nIndex).strKey == keyName) {
-			nFoundIndex = nIndex;
+	int foundIndex = Constant::InvalidInteger;
+	for (int index = 0; index < (keyValuePairs_.size()); index++) {
+		if (keyValuePairs_.at(index).key == keyName) {
+			foundIndex = index;
 			break;
 		}
 	}
 
 	// Remove property by index
-	this->RemoveProperty(nFoundIndex);
+	removeProperty(foundIndex);
 }
 
 /**
@@ -691,26 +691,26 @@ void JSON::RemoveProperty(const wchar_t* keyName)
  * @param	None
  * @return	None
  */
-void JSON::RemoveAll(void)
+void JSON::removeAll(void)
 {
 	// Reset data
-	this->m_strObjectName.Empty();					// JSON object name
-	this->m_arrKeyValuePairs.clear();				// Key-value pairs
+	objectName_.empty();					// JSON object name
+	keyValuePairs_.clear();				// Key-value pairs
 
 	// Remove all child objects
-	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
-		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
-			PJSONDATA pChildObj = this->m_apChildObjectList[nCount];
-			if (pChildObj != NULL) {
-				pChildObj->RemoveAll();
-				delete pChildObj;
+	if ((childObjCount_ > 0) && (childObjList_ != NULL)) {
+		for (int count = 0; count < childObjCount_; count++) {
+			PJSONDATA childObjPtr = childObjList_[count];
+			if (childObjPtr != NULL) {
+				childObjPtr->removeAll();
+				delete childObjPtr;
 			}
 		}
-		delete[] (this->m_apChildObjectList);
-		this->m_apChildObjectList = NULL;
+		delete[] (childObjList_);
+		childObjList_ = NULL;
 		
 		// Reset child object counter
-		this->m_nChildObjectCount = 0;
+		childObjCount_ = 0;
 	}
 }
 
@@ -721,236 +721,236 @@ void JSON::RemoveAll(void)
  * @param	value	- String value
  * @return	None
  */
-void JSON::AddString(const wchar_t* keyName, const wchar_t* value)
+void JSON::addString(const wchar_t* keyName, const wchar_t* value)
 {
 	// Search if key name already existed
-	for (int nIndex = 0; nIndex < (this->m_arrKeyValuePairs.size()); nIndex++) {
-		JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
-		if (jsonEntry.strKey == keyName) {
+	for (int index = 0; index < (keyValuePairs_.size()); index++) {
+		JSON_ENTRY& jsonEntry = keyValuePairs_.at(index);
+		if (jsonEntry.key == keyName) {
 			// Replace existed value with new value
-			jsonEntry.strValue = value;
+			jsonEntry.value = value;
 			return;
 		}
 	}
 
 	// Add property
-	this->m_arrKeyValuePairs.push_back({ keyName, value });
+	keyValuePairs_.push_back({ keyName, value });
 }
 
 /**
  * @brief	Add an integer-typed key-value pair, update value if
 					the given key name already existed
  * @param	keyName - Item name
- * @param	nValue	- Signed integer value
+ * @param	value	- Signed integer value
  * @return	None
  */
-void JSON::AddInteger(const wchar_t* keyName, int nValue)
+void JSON::addInteger(const wchar_t* keyName, int value)
 {
 	// Convert integer to string
-	String valueStr = StringUtils::StringFormat(_T("%d"), nValue);
+	String valueStr = StringUtils::stringFormat(_T("%d"), value);
 
 	// Add property
-	AddString(keyName, valueStr);
+	addString(keyName, valueStr);
 }
 
 /**
  * @brief	Add a float-typed key-value pair, update value if
 					the given key name already existed
  * @param	keyName - Key name
- * @param	dbValue	- Float value
+ * @param	value	- Float value
  * @return	None
  */
-void JSON::AddFloat(const wchar_t* keyName, DOUBLE dbValue)
+void JSON::addFloat(const wchar_t* keyName, double value)
 {
 	// Convert float number to string
-	String valueStr = StringUtils::StringFormat(_T("%f"), dbValue);
+	String valueStr = StringUtils::stringFormat(_T("%f"), value);
 
 	// Add property
-	AddString(keyName, valueStr);
+	addString(keyName, valueStr);
 }
 
 /**
  * @brief	Add a child object
- * @param	pSrc - Source item data (pointer)
+ * @param	objPtr - Source item data (pointer)
  * @return	None
  */
-void JSON::AddChildObject(JSON* pSrc)
+void JSON::addChildObject(JSON* objPtr)
 {
 	// Check for data validity
-	if (pSrc == NULL)
+	if (objPtr == NULL)
 		return;
 
 	// Index to copy
-	size_t nIndex = 0;
+	size_t index = 0;
 
 	// Allocate child object array data memory if not yet allocated
-	if (this->m_apChildObjectList == NULL) {
-		this->m_apChildObjectList = new PJSONDATA;
-		if (this->m_apChildObjectList == NULL) {
+	if (childObjList_ == NULL) {
+		childObjList_ = new PJSONDATA;
+		if (childObjList_ == NULL) {
 			TRACE_ERROR("Error: JSON child object array data allocation failed!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
 		}
 	}
 	else {
-		nIndex = this->m_nChildObjectCount;
+		index = childObjCount_;
 	}
 	
 	// Allocated destination child object memory
-	this->m_apChildObjectList[nIndex] = new JSONDATA;
-	if (this->m_apChildObjectList[nIndex] == NULL) {
-		TRACE_FORMAT("Error: JSON new child object data allocation failed!!! (Index=%d)", nIndex);
+	childObjList_[index] = new JSONDATA;
+	if (childObjList_[index] == NULL) {
+		TRACE_FORMAT("Error: JSON new child object data allocation failed!!! (Index=%d)", index);
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Copy child object data (do not use 'memcpy' in here)
-	*(this->m_apChildObjectList[nIndex]) = *pSrc;
+	*(childObjList_[index]) = *objPtr;
 
 	// Increase child object counter
-	this->m_nChildObjectCount++;
+	childObjCount_++;
 }
 
 /**
  * @brief	Print JSON object data with indentation
  * @param	outputString  - Output printed result string
- * @param	nIndent		  - Indentation
- * @param	bSeparator    - Whether to add a blank line as separator
- * @param	bMultiline    - Whether to print the data in multiple lines
+ * @param	indent		  - Indentation
+ * @param	hasSeparator    - Whether to add a blank line as separator
+ * @param	isMultiline    - Whether to print the data in multiple lines
  * @return	None
  */
-void JSON::Print(String& outputString, int nIndent, bool bSeparator, bool bMultiline /* = true */) const
+void JSON::print(String& outputString, int indent, bool hasSeparator, bool isMultiline /* = true */) const
 {
 	// Empty output result string
-	outputString.Empty();
+	outputString.empty();
 
 	// Make indentation
 	String indentationStr = Constant::String::Empty;
-	for (int nTabCount = 1; nTabCount <= nIndent; nTabCount++) {
+	for (int tabCount = 1; tabCount <= indent; tabCount++) {
 		// Add indent (tab character)
-		indentationStr.Append(Constant::Symbol::JSON_Indent);
+		indentationStr.append(Constant::Symbol::JSON_Indent);
 	}
 
 	// Do not use indentation if printing in single line
 	// This will make better visualization
-	if (bMultiline != true) {
-		indentationStr.Empty();
+	if (isMultiline != true) {
+		indentationStr.empty();
 	}
 
 	// Add indentation
-	outputString.Append(indentationStr);
+	outputString.append(indentationStr);
 
 	String formatStr = Constant::String::Empty;
 
 	// Print object name (if set)
-	if (!this->m_strObjectName.IsEmpty()) {
-		formatStr.Format(_T("\"%s\": "), this->m_strObjectName.GetString());
-		outputString.Append(formatStr);
+	if (!objectName_.isEmpty()) {
+		formatStr.format(_T("\"%s\": "), objectName_.getString());
+		outputString.append(formatStr);
 	}
 
 	// Opening bracket
-	outputString.Append(_T("{ "));
-	if (bMultiline == true) {
-		outputString.Append(Constant::String::EndLine);
+	outputString.append(_T("{ "));
+	if (isMultiline == true) {
+		outputString.append(Constant::String::EndLine);
 	}
 
 	// Print list of properties
-	size_t nItemNum = this->m_arrKeyValuePairs.size();
-	for (int nIndex = 0; nIndex < nItemNum; nIndex++) {
+	size_t itemNum = keyValuePairs_.size();
+	for (int index = 0; index < itemNum; index++) {
 
 		// Add indentation
-		outputString.Append(indentationStr);
+		outputString.append(indentationStr);
 
 		// Get key and value
-		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
+		const JSON_ENTRY& jsonEntry = keyValuePairs_.at(index);
 
 		// Format properties
-		if ((nIndex == (nItemNum - 1)) &&
-			((this->m_nChildObjectCount <= 0) || (this->m_apChildObjectList == NULL))) {
+		if ((index == (itemNum - 1)) &&
+			((childObjCount_ <= 0) || (childObjList_ == NULL))) {
 
 			// Last property (no other child object following) has no comma in the end
-			formatStr.Format(_T("\t\"%s\": \"%s\" "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
-			outputString.Append(formatStr);
-			if (bMultiline == true) {
-				outputString.Append(Constant::String::EndLine);
+			formatStr.format(_T("\t\"%s\": \"%s\" "), jsonEntry.key.getString(), jsonEntry.value.getString());
+			outputString.append(formatStr);
+			if (isMultiline == true) {
+				outputString.append(Constant::String::EndLine);
 			}
 		}
 		else {
 			// Add comma character at the end of each property
-			formatStr.Format(_T("\t\"%s\": \"%s\", "), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
-			outputString.Append(formatStr);
-			if (bMultiline == true) {
-				outputString.Append(Constant::String::EndLine);
+			formatStr.format(_T("\t\"%s\": \"%s\", "), jsonEntry.key.getString(), jsonEntry.value.getString());
+			outputString.append(formatStr);
+			if (isMultiline == true) {
+				outputString.append(Constant::String::EndLine);
 			}
 		}
 	}
 
 	// Print child objects
 	String subItemOutput = Constant::String::Empty;
-	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
-		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
-			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
-			if (pSubItem != NULL) {
-				pSubItem->Print(subItemOutput, nIndent + 1, false, bMultiline);
-				outputString.Append(subItemOutput);
+	if ((childObjCount_ > 0) && (childObjList_ != NULL)) {
+		for (int count = 0; count < childObjCount_; count++) {
+			PJSONDATA subItemPtr = childObjList_[count];
+			if (subItemPtr != NULL) {
+				subItemPtr->print(subItemOutput, indent + 1, false, isMultiline);
+				outputString.append(subItemOutput);
 			}
 		}
 	}
 
 	// Add indentation and closing bracket
-	outputString.Append(indentationStr);
-	outputString.Append(_T("} "));
-	if (bMultiline == true) {
-		outputString.Append(Constant::String::EndLine);
+	outputString.append(indentationStr);
+	outputString.append(_T("} "));
+	if (isMultiline == true) {
+		outputString.append(Constant::String::EndLine);
 	}
 
 	// Add a blank line as separator
-	if (bSeparator == true) {
-		outputString.Append(Constant::String::EndLine);
+	if (hasSeparator == true) {
+		outputString.append(Constant::String::EndLine);
 	}
 }
 
 /**
  * @brief	Print JSON object data in YAML format
  * @param	outputString  - Output printed result string
- * @param	nIndent		  - Indentation
+ * @param	indent		  - Indentation
  * @return	None
  */
-void JSON::PrintYAML(String& outputString, int nIndent) const
+void JSON::printYAML(String& outputString, int indent) const
 {
 	// Empty output result string
-	outputString.Empty();
+	outputString.empty();
 
 	// Indentation
 	String indentationStr = Constant::String::Empty;
-	for (int nCount = 1; nCount < nIndent; nCount++) {
-		indentationStr.Append(Constant::Symbol::YAML_Indent);
+	for (int count = 1; count < indent; count++) {
+		indentationStr.append(Constant::Symbol::YAML_Indent);
 	}
 
 	String formatStr = Constant::String::Empty;
 
 	// Print object name (if set)
-	if (!this->m_strObjectName.IsEmpty()) {
-		formatStr = StringUtils::StringFormat(_T("%s%s:\n"), indentationStr.GetString(), this->m_strObjectName.GetString());
-		outputString.Append(formatStr);
-		indentationStr.Append(Constant::Symbol::YAML_Indent); // Add one more indent for properties
+	if (!objectName_.isEmpty()) {
+		formatStr = StringUtils::stringFormat(_T("%s%s:\n"), indentationStr.getString(), objectName_.getString());
+		outputString.append(formatStr);
+		indentationStr.append(Constant::Symbol::YAML_Indent); // Add one more indent for properties
 	}
 
 	// Print key-value pairs
-	for (int nIndex = 0; nIndex < this->m_arrKeyValuePairs.size(); nIndex++) {
-		const JSON_ENTRY& jsonEntry = this->m_arrKeyValuePairs.at(nIndex);
-		formatStr = StringUtils::StringFormat(_T("%s%s: \"%s\"\n"), indentationStr.GetString(), jsonEntry.strKey.GetString(), jsonEntry.strValue.GetString());
-		outputString.Append(formatStr);
+	for (int index = 0; index < keyValuePairs_.size(); index++) {
+		const JSON_ENTRY& jsonEntry = keyValuePairs_.at(index);
+		formatStr = StringUtils::stringFormat(_T("%s%s: \"%s\"\n"), indentationStr.getString(), jsonEntry.key.getString(), jsonEntry.value.getString());
+		outputString.append(formatStr);
 	}
 
 	// Print child objects
-	if ((this->m_nChildObjectCount > 0) && (this->m_apChildObjectList != NULL)) {
-		for (int nCount = 0; nCount < this->m_nChildObjectCount; nCount++) {
-			PJSONDATA pSubItem = this->m_apChildObjectList[nCount];
-			if (pSubItem != NULL) {
+	if ((childObjCount_ > 0) && (childObjList_ != NULL)) {
+		for (int count = 0; count < childObjCount_; count++) {
+			PJSONDATA subItemPtr = childObjList_[count];
+			if (subItemPtr != NULL) {
 				String subItemOutput;
-				pSubItem->PrintYAML(subItemOutput, nIndent + 1);
-				outputString.Append(subItemOutput);
+				subItemPtr->printYAML(subItemOutput, indent + 1);
+				outputString.append(subItemOutput);
 			}
 		}
 	}
@@ -959,81 +959,81 @@ void JSON::PrintYAML(String& outputString, int nIndent) const
 /**
  * @brief	Constructor
  */
-SLogging::SLogging(byte byLogType)
+Logger::Logger(byte byLogType)
 {
 	// Log data array
-	m_arrLogData.clear();
+	logData_.clear();
 
 	// Properties
-	m_byLogType = byLogType;
-	m_byWriteMode = LogWriteMode::ReadOnly;
-	m_nMaxSize = INT_INFINITE;
-	m_strFilePath = Constant::String::Empty;
-	m_pItemDefTemplate = NULL;
+	logType_ = byLogType;
+	writeMode_ = LogWriteMode::ReadOnly;
+	maxSize_ = Constant::Infinite;
+	filePath_ = Constant::String::Empty;
+	defaultTemplate_ = NULL;
 }
 
 /**
  * @brief	Destructor
  */
-SLogging::~SLogging()
+Logger::~Logger()
 {
 	// Clean up log data
-	m_arrLogData.clear();
+	logData_.clear();
 
 	// Clean up default item template
-	if (m_pItemDefTemplate != NULL) {
-		delete m_pItemDefTemplate;
-		m_pItemDefTemplate = NULL;
+	if (defaultTemplate_ != NULL) {
+		delete defaultTemplate_;
+		defaultTemplate_ = NULL;
 	}
 }
 
 /**
  * @brief	Return a specific log item of log list
- * @param	nIndex - Item index
+ * @param	index - Item index
  * @return	LOGITEM - Return log item
  */
-LOGITEM& SLogging::GetLogItem(int nIndex)
+LOGITEM& Logger::getLogItem(int index)
 {
 	// If current log data is empty
-	if (this->IsEmpty()) {
+	if (isEmpty()) {
 		// Return an empty dummy item
 		static LOGITEM logDummyItem;
 		return logDummyItem;
 	}
 
 	// Invalid index
-	if (nIndex < 0) {
+	if (index < 0) {
 		// Return 1st item
-		nIndex = 0;
+		index = 0;
 	}
-	else if (nIndex >= GetLogCount()) {
+	else if (index >= getLogCount()) {
 		// Return last item
-		nIndex = (GetLogCount() - 1);
+		index = (getLogCount() - 1);
 	}
 
-	return m_arrLogData.at(nIndex);
+	return logData_.at(index);
 }
 
-const LOGITEM& SLogging::GetLogItem(int nIndex) const
+const LOGITEM& Logger::getLogItem(int index) const
 {
 	// If current log data is empty
-	if (this->IsEmpty()) {
+	if (isEmpty()) {
 		// Return an empty dummy item
 		static const LOGITEM logDummyItem;
 		return logDummyItem;
 	}
 
 	// Invalid index
-	if (nIndex < 0) {
+	if (index < 0) {
 		// Return 1st item
-		nIndex = 0;
+		index = 0;
 	}
-	else if (nIndex >= GetLogCount()) {
+	else if (index >= getLogCount()) {
 		// Return last item
-		nIndex = (GetLogCount() - 1);
+		index = (getLogCount() - 1);
 	}
 
-	return m_arrLogData.at(nIndex);
+	return logData_.at(index);
 }
 
 /**
@@ -1041,12 +1041,12 @@ const LOGITEM& SLogging::GetLogItem(int nIndex) const
  * @param	logItemTemplate - Log item template
  * @return	byte
  */
-void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate) noexcept
+void Logger::setDefaultTemplate(const LOGITEM& logItemTemplate) noexcept
 {
 	// Initialize default template
-	if (m_pItemDefTemplate == NULL) {
-		m_pItemDefTemplate = new LOGITEM;
-		if (m_pItemDefTemplate == NULL) {
+	if (defaultTemplate_ == NULL) {
+		defaultTemplate_ = new LOGITEM;
+		if (defaultTemplate_ == NULL) {
 			TRACE_ERROR("Default item initialization failed!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			return;
@@ -1054,9 +1054,9 @@ void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate) noexcept
 	}
 
 	// Update template
-	if (m_pItemDefTemplate != NULL) {
-		if (logItemTemplate.IsEmpty()) return;
-		m_pItemDefTemplate->Copy(logItemTemplate);
+	if (defaultTemplate_ != NULL) {
+		if (logItemTemplate.isEmpty()) return;
+		defaultTemplate_->copy(logItemTemplate);
 	}
 }
 
@@ -1065,23 +1065,23 @@ void SLogging::SetDefaultTemplate(const LOGITEM& logItemTemplate) noexcept
  * @param	logItem	- Log item to write
  * @return	None
  */
-void SLogging::OutputItem(const LOGITEM& logItem)
+void Logger::outputItem(const LOGITEM& logItem)
 {
-	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
+	if (getWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
-		Write(logItem);
+		write(logItem);
 	}
 	else {
 		// If already reached max data size
-		size_t nMaxSize = GetMaxSize();
-		if ((nMaxSize != INT_INFINITE) && (GetLogCount() >= nMaxSize)) {
+		size_t maxSize = getMaxSize();
+		if ((maxSize != Constant::Infinite) && (getLogCount() >= maxSize)) {
 			// Can not output log item --> Trace info
 			TRACE_ERROR("Output log item failed: Log data exceeded max size!!!");
 			return;
 		}
 
 		// Store log data
-		m_arrLogData.push_back(logItem);
+		logData_.push_back(logItem);
 	}
 }
 
@@ -1091,47 +1091,47 @@ void SLogging::OutputItem(const LOGITEM& logItem)
  * @param	byType	  - Log type
  * @return	None
  */
-void SLogging::OutputString(const wchar_t* logString, bool bUseLastTemplate /* = true */)
+void Logger::outputString(const wchar_t* logString, bool useLastTemplate /* = true */)
 {
-	if (GetWriteMode() == LogWriteMode::WriteInstantly) {
+	if (getWriteMode() == LogWriteMode::WriteInstantly) {
 		// Write instantly
-		Write(logString);
+		write(logString);
 	}
 	else {
 		// Get log time
-		DateTime stLogTime = DateTimeUtils::GetCurrentDateTime();
+		DateTime logTime = DateTimeUtils::getCurrentDateTime();
 
 		// Prepare log item
 		LOGITEM logItem;
-		if (bUseLastTemplate == true) {
+		if (useLastTemplate == true) {
 			// Use last log item as template
-			if (this->IsEmpty()) {
+			if (isEmpty()) {
 				// Can not output log string --> Trace info
 				TRACE_ERROR("Output log string failed: No item to use as template!!!");
 				return;
 			}
 			else {
 				// Copy template
-				logItem.Copy(this->GetLogItem(GetLogCount() - 1));
+				logItem.copy(getLogItem(getLogCount() - 1));
 			}
 		}
 		else {
 			// Use default template
-			if (this->GetDefaultTemplate() == NULL) {
+			if (getDefaultTemplate() == NULL) {
 				// Can not output log string --> Trace info
 				TRACE_ERROR("Output log string failed: Default template not set!!!");
 				return;
 			}
 			else {
 				// Copy template
-				logItem.Copy(*(this->GetDefaultTemplate()));
+				logItem.copy(*(getDefaultTemplate()));
 			}
 		}
 
 		// Update log item data
-		logItem.SetTime(stLogTime);
-		logItem.SetLogString(logString);
-		OutputItem(logItem);
+		logItem.setTime(logTime);
+		logItem.setLogString(logString);
+		outputItem(logItem);
 	}
 }
 
@@ -1140,77 +1140,77 @@ void SLogging::OutputString(const wchar_t* logString, bool bUseLastTemplate /* =
  * @param	None
  * @return	bool - Result of log writing process
  */
-bool SLogging::Write(void)
+bool Logger::write(void)
 {
-	bool bResult = true;
-	DWORD dwErrCode;
-	HWND hMainWnd = GET_HANDLE_MAINWND();
+	bool result = true;
+	DWORD errorCode;
+	HWND mainWndHandle = GET_HANDLE_MAINWND();
 
 	// Quit if current log is set as Read-only
 	// or current log mode is write instantly mode
-	if ((this->GetWriteMode() == LogWriteMode::ReadOnly) ||
-		(this->GetWriteMode() == LogWriteMode::WriteInstantly))
+	if ((getWriteMode() == LogWriteMode::ReadOnly) ||
+		(getWriteMode() == LogWriteMode::WriteInstantly))
 		return false;
 
-	CFile fLogFile;
+	CFile logFile;
 	String fileName;
 	String currentFileName;
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	LOGITEM logItem;
-	DateTime stTemp;
+	DateTime tempTime;
 	String logFormatString;
 	String filePath;
 
 	// Setup performance counter for tracking
 	PerformanceCounter counter;
-	counter.Start();
+	counter.start();
 
-	for (int nIndex = 0; nIndex < GetLogCount(); nIndex++)
+	for (int index = 0; index < getLogCount(); index++)
 	{
 		// Get log item
-		logItem = GetLogItem(nIndex);
-		stTemp = logItem.GetTime();
+		logItem = getLogItem(index);
+		tempTime = logItem.getTime();
 
 		// Get filename according to type of logs
-		switch (m_byLogType)
+		switch (static_cast<AppLogType>(logType_))
 		{
-		case LOGTYPE_APP_EVENT:
+		case AppLogType::AppEvent:
 			// Format app event log filename
-			fileName.Format(Constant::File::Name::AppEventLog, stTemp.Year(), stTemp.Month());
-			filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
-			if (currentFileName.IsEmpty()) {
+			fileName.format(Constant::File::Name::AppEventLog, tempTime.year(), tempTime.month());
+			filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
+			if (currentFileName.isEmpty()) {
 				// Set current file name
 				currentFileName = fileName;
 			}
 
 			// If a file with another name (previous day's log file) is opening,
 			// write down all current log strings and close the file
-			if ((fLogFile.m_hFile != CFile::hFileNull) && (fileName != currentFileName))
+			if ((logFile.m_hFile != CFile::hFileNull) && (fileName != currentFileName))
 			{
-				if (!logFormatString.IsEmpty()) {
+				if (!logFormatString.isEmpty()) {
 
 					// Write log strings to file
-					fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
-					fLogFile.Flush();
+					logFile.Write(logFormatString, logFormatString.getLength() * sizeof(wchar_t));
+					logFile.Flush();
 
-					logFormatString.Empty();
+					logFormatString.empty();
 				}
 
 				// Close current file
-				fLogFile.Close();
+				logFile.Close();
 
 				// Set new current file name
 				currentFileName = fileName;
 			}
 			break;
 
-		case LOGTYPE_HISTORY_LOG:
+		case AppLogType::AppHistory:
 			// App history log
 			fileName = Constant::File::Name::AppHistory;
-			filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
+			filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 			break;
 
 		default:
@@ -1218,51 +1218,51 @@ bool SLogging::Write(void)
 			TRACE_ERROR("Write log failed: Invalid log type!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 			// Show error message
-			dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+			errorCode = APP_ERROR_WRONG_ARGUMENT;
+			PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
 			break;
 		}
 
 		// Check if file is opening, if not, open it
-		if (fLogFile.m_hFile == CFile::hFileNull)
+		if (logFile.m_hFile == CFile::hFileNull)
 		{
-			bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
-			if (bResult == false) {
+			result = logFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+			if (result == false) {
 
 				// Open file failed
-				dwErrCode = GetLastError();
+				errorCode = GetLastError();
 
 				// Trace error
-				TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+				TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", errorCode);
 				TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 				// Show error message
-				PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
-				return bResult;
+				PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
+				return result;
 			}
 
 			// Go to end of file
-			fLogFile.SeekToEnd();
+			logFile.SeekToEnd();
 		}
 
 		// Format output log strings
-		logFormatString += logItem.FormatOutput();
+		logFormatString += logItem.formatOutput();
 	}
 
-	if (!logFormatString.IsEmpty()) {
+	if (!logFormatString.isEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
-		fLogFile.Flush();
+		logFile.Write(logFormatString, logFormatString.getLength() * sizeof(wchar_t));
+		logFile.Flush();
 	}
 
 	// Close file after done writing
-	if (fLogFile.m_hFile != CFile::hFileNull) {
-		fLogFile.Close();
+	if (logFile.m_hFile != CFile::hFileNull) {
+		logFile.Close();
 	}
 
 	// Display performance counter
-	counter.Stop();
-	OutputDebugLogFormat(_T("Total write log time: %.4f (ms)"), counter.GetElapsedTime(true));
+	counter.stop();
+	outputDebugLogFormat(_T("Total write log time: %.4f (ms)"), counter.getElapsedTime(true));
 
 	return true;
 }
@@ -1273,33 +1273,33 @@ bool SLogging::Write(void)
  * @param	filePath - Output log file path
  * @return	bool - Result of log writing process
  */
-bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
+bool Logger::write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL */)
 {
-	bool bResult = true;
-	DWORD dwErrCode;
-	HWND hMainWnd = GET_HANDLE_MAINWND();
+	bool result = true;
+	DWORD errorCode;
+	HWND mainWndHandle = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
-	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
+	if (getWriteMode() != LogWriteMode::WriteInstantly)
 		return false;
 
 	String fileName;
-	CFile fLogFile;
+	CFile logFile;
 
 	String logFormatString;
 
 	// Get log time
-	DateTime stTimeTemp = logItem.GetTime();
+	DateTime tempTimeValue = logItem.getTime();
 
 	// Get filename according to type of logs
-	switch (m_byLogType)
+	switch (static_cast<AppLogType>(logType_))
 	{
-	case LOGTYPE_APP_EVENT:
+	case AppLogType::AppEvent:
 		// Format app event log filename
-		fileName.Format(Constant::File::Name::AppEventLog, stTimeTemp.Year(), stTimeTemp.Month());
+		fileName.format(Constant::File::Name::AppEventLog, tempTimeValue.year(), tempTimeValue.month());
 		break;
 
-	case LOGTYPE_HISTORY_LOG:
+	case AppLogType::AppHistory:
 		// App history log
 		fileName = Constant::File::Name::AppHistory;
 		break;
@@ -1308,52 +1308,52 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
 		// Wrong argument
 		TRACE_ERROR("Error: Invalid log type!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+		errorCode = APP_ERROR_WRONG_ARGUMENT;
+		PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
 		return false;
 	}
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Get file path
-	String filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 
 	// Check if file is opening, if not, open it
-	if (fLogFile.m_hFile == CFile::hFileNull)
+	if (logFile.m_hFile == CFile::hFileNull)
 	{
-		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
-		if (bResult == false) {
+		result = logFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+		if (result == false) {
 
 			// Open file failed
-			dwErrCode = GetLastError();
+			errorCode = GetLastError();
 
 			// Trace error
-			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", errorCode);
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
-			dwErrCode = GetLastError();
-			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
-			return bResult;
+			errorCode = GetLastError();
+			PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
+			return result;
 		}
 
 		// Go to end of file
-		fLogFile.SeekToEnd();
+		logFile.SeekToEnd();
 	}
 
 	// Format output log strings
-	logFormatString = logItem.FormatOutput();
+	logFormatString = logItem.formatOutput();
 
-	if (!logFormatString.IsEmpty()) {
+	if (!logFormatString.isEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
-		fLogFile.Flush();
+		logFile.Write(logFormatString, logFormatString.getLength() * sizeof(wchar_t));
+		logFile.Flush();
 	}
 
 	// Close file after done writing
-	if (fLogFile.m_hFile != CFile::hFileNull) {
-		fLogFile.Close();
+	if (logFile.m_hFile != CFile::hFileNull) {
+		logFile.Close();
 	}
 
 	return true;
@@ -1364,33 +1364,33 @@ bool SLogging::Write(const LOGITEM& logItem, const wchar_t* /* filePath = NULL *
  * @param	logString - Log string
  * @return	bool - Result of log writing process
  */
-bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
+bool Logger::write(const wchar_t* logString, const wchar_t* /* filePath  = NULL */)
 {
-	bool bResult = true;
-	DWORD dwErrCode;
-	HWND hMainWnd = GET_HANDLE_MAINWND();
+	bool result = true;
+	DWORD errorCode;
+	HWND mainWndHandle = GET_HANDLE_MAINWND();
 
 	// Quit if current log mode is not write instantly mode
-	if (this->GetWriteMode() != LogWriteMode::WriteInstantly)
+	if (getWriteMode() != LogWriteMode::WriteInstantly)
 		return false;
 
 	String fileName;
-	CFile fLogFile;
+	CFile logFile;
 
 	String logFormatString;
 
 	// Get log time
-	DateTime stCurTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentTime = DateTimeUtils::getCurrentDateTime();
 
 	// Get filename according to type of logs
-	switch (m_byLogType)
+	switch (static_cast<AppLogType>(logType_))
 	{
-	case LOGTYPE_APP_EVENT:
+	case AppLogType::AppEvent:
 		// Format app event log filename
-		fileName.Format(Constant::File::Name::AppEventLog, stCurTime.Year(), stCurTime.Month());
+		fileName.format(Constant::File::Name::AppEventLog, currentTime.year(), currentTime.month());
 		break;
 
-	case LOGTYPE_HISTORY_LOG:
+	case AppLogType::AppHistory:
 		// App history log
 		fileName = Constant::File::Name::AppHistory;
 		break;
@@ -1400,55 +1400,55 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 		TRACE_ERROR("Error: Invalid log type!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		// Show error message
-		dwErrCode = APP_ERROR_WRONG_ARGUMENT;
-		PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
+		errorCode = APP_ERROR_WRONG_ARGUMENT;
+		PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
 		return false;
 	}
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Get file path
-	String filePath = StringUtils::MakeFilePath(folderPath, fileName, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(folderPath, fileName, Constant::File::Extension::Log);
 
 	// Check if file is opening, if not, open it
-	if (fLogFile.m_hFile == CFile::hFileNull)
+	if (logFile.m_hFile == CFile::hFileNull)
 	{
-		bResult = fLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
-		if (bResult == false) {
+		result = logFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+		if (result == false) {
 
 			// Open file failed
-			dwErrCode = GetLastError();
+			errorCode = GetLastError();
 
 			// Trace error
-			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", dwErrCode);
+			TRACE_FORMAT("Write log failed: Can not open/create log file!!! (Code: 0x%08X)", errorCode);
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 
 			// Show error message
-			dwErrCode = GetLastError();
-			PostMessage(hMainWnd, SM_APP_ERROR_MESSAGE, (WPARAM)dwErrCode, NULL);
-			return bResult;
+			errorCode = GetLastError();
+			PostMessage(mainWndHandle, SM_APP_ERROR_MESSAGE, (WPARAM)errorCode, NULL);
+			return result;
 		}
 
 		// Go to end of file
-		fLogFile.SeekToEnd();
+		logFile.SeekToEnd();
 	}
 
 	// Format output log strings
 	LOGITEM logItem;
-	logItem.SetTime(stCurTime);
-	logItem.SetLogString(logString);
-	logFormatString = logItem.FormatOutput();
+	logItem.setTime(currentTime);
+	logItem.setLogString(logString);
+	logFormatString = logItem.formatOutput();
 
-	if (!logFormatString.IsEmpty()) {
+	if (!logFormatString.isEmpty()) {
 		// Write log strings to file
-		fLogFile.Write(logFormatString, logFormatString.GetLength() * sizeof(wchar_t));
-		fLogFile.Flush();
+		logFile.Write(logFormatString, logFormatString.getLength() * sizeof(wchar_t));
+		logFile.Flush();
 	}
 
 	// Close file after done writing
-	if (fLogFile.m_hFile != CFile::hFileNull) {
-		fLogFile.Close();
+	if (logFile.m_hFile != CFile::hFileNull) {
+		logFile.Close();
 	}
 
 	return true;
@@ -1458,41 +1458,41 @@ bool SLogging::Write(const wchar_t* logString, const wchar_t* /* filePath  = NUL
 /**
  * @brief	Constructor
  */
-DebugLogging::DebugLogging()
+DebugLogger::DebugLogger()
 {
 	// Log file pointers
-	m_pFileLogTraceError = NULL;
-	m_pFileLogTraceDebug = NULL;
-	m_pFileLogDebugInfo = NULL;
+	traceErrorFilePtr_ = NULL;
+	traceDebugFilePtr_ = NULL;
+	debugInfoFilePtr_ = NULL;
 
 	// File exception pointers
-	m_pExcLogTraceError = NULL;
-	m_pExcLogTraceDebug = NULL;
-	m_pExcLogDebugInfo = NULL;
+	traceErrorExceptionPtr_ = NULL;
+	traceDebugExceptionPtr_ = NULL;
+	debugInfoExceptionPtr = NULL;
 }
 
 /**
  * @brief	Destructor
  */
-DebugLogging::~DebugLogging()
+DebugLogger::~DebugLogger()
 {
 	// Release and clean-up file pointers
-	ReleaseTraceErrorLogFile();
-	ReleaseTraceDebugLogFile();
-	ReleaseDebugInfoLogFile();
+	releaseTraceErrorLogFile();
+	releaseTraceDebugLogFile();
+	releaseDebugInfoLogFile();
 
 	// Clean-up file exception pointers
-	if (m_pExcLogTraceError != NULL) {
-		delete m_pExcLogTraceError;
-		m_pExcLogTraceError = NULL;
+	if (traceErrorExceptionPtr_ != NULL) {
+		delete traceErrorExceptionPtr_;
+		traceErrorExceptionPtr_ = NULL;
 	}
-	if (m_pExcLogTraceDebug != NULL) {
-		delete m_pExcLogTraceDebug;
-		m_pExcLogTraceDebug = NULL;
+	if (traceDebugExceptionPtr_ != NULL) {
+		delete traceDebugExceptionPtr_;
+		traceDebugExceptionPtr_ = NULL;
 	}
-	if (m_pExcLogDebugInfo != NULL) {
-		delete m_pExcLogDebugInfo;
-		m_pExcLogDebugInfo = NULL;
+	if (debugInfoExceptionPtr != NULL) {
+		delete debugInfoExceptionPtr;
+		debugInfoExceptionPtr = NULL;
 	}
 }
 
@@ -1500,45 +1500,45 @@ DebugLogging::~DebugLogging()
  * @brief	Initialize trace error log file
  * @param	None
  * @return	true/false
- * @note	Destination file: TraceError.log
+ * @note	Destination file: traceError.log
  * @note	To output trace error detail log strings
  */
-bool DebugLogging::InitTraceErrorLogFile(void)
+bool DebugLogger::initTraceErrorLogFile(void)
 {
 	// Verify global trace error log file pointer initialization
-	VERIFY_INITIALIZATION(m_pFileLogTraceError, CFile);
+	VERIFY_INITIALIZATION(traceErrorFilePtr_, CFile);
 
 	// Get trace error log file pointer
-	NULL_POINTER_BREAK(m_pFileLogTraceError, return false);
+	NULL_POINTER_BREAK(traceErrorFilePtr_, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceError, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(folderPath, Constant::File::Name::TraceError, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
-	while (m_pFileLogTraceError->m_hFile == CFile::hFileNull) {
+	while (traceErrorFilePtr_->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogTraceError->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
+		if (!traceErrorFilePtr_->Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			DWORD errorCode = GetLastError();
+			AppCore::showErrorMessage(NULL, NULL, errorCode);
 			return false;
 		}
 
 		// Go to end of file
-		ULONGLONG ullFileSize = m_pFileLogTraceError->SeekToEnd();
+		ULONGLONG fileSize = traceErrorFilePtr_->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
+		if (fileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
-			m_pFileLogTraceError->Close();
+			traceErrorFilePtr_->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, Constant::File::Name::TraceError))
+			if (!backupOldLogFile(filePath, Constant::File::Name::TraceError))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1553,21 +1553,21 @@ bool DebugLogging::InitTraceErrorLogFile(void)
  * @brief	Release trace error log file
  * @param	None
  * @return	None
- * @note	Destination file: TraceError.log
+ * @note	Destination file: traceError.log
  * @note	To output trace error detail log strings
  */
-void DebugLogging::ReleaseTraceErrorLogFile(void)
+void DebugLogger::releaseTraceErrorLogFile(void)
 {
 	// Clean up trace error log file pointer
-	if (m_pFileLogTraceError != NULL) {
+	if (traceErrorFilePtr_ != NULL) {
 
 		// Close file if is opening
-		if (m_pFileLogTraceError->m_hFile != CFile::hFileNull) {
-			m_pFileLogTraceError->Flush();
-			m_pFileLogTraceError->Close();
+		if (traceErrorFilePtr_->m_hFile != CFile::hFileNull) {
+			traceErrorFilePtr_->Flush();
+			traceErrorFilePtr_->Close();
 		}
-		delete m_pFileLogTraceError;
-		m_pFileLogTraceError = NULL;
+		delete traceErrorFilePtr_;
+		traceErrorFilePtr_ = NULL;
 	}
 }
 
@@ -1578,42 +1578,42 @@ void DebugLogging::ReleaseTraceErrorLogFile(void)
  * @note	Destination file: TraceDebug.log
  * @note	To output trace debug log strings (including the function name, code file and line where it failed)
  */
-bool DebugLogging::InitTraceDebugLogFile(void)
+bool DebugLogger::initTraceDebugLogFile(void)
 {
 	// Verify global trace debug log file pointer initialization
-	VERIFY_INITIALIZATION(m_pFileLogTraceDebug, CFile);
+	VERIFY_INITIALIZATION(traceDebugFilePtr_, CFile);
 
 	// Get trace debug log file pointer
-	NULL_POINTER_BREAK(m_pFileLogTraceDebug, return false);
+	NULL_POINTER_BREAK(traceDebugFilePtr_, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(folderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
-	while (m_pFileLogTraceDebug->m_hFile == CFile::hFileNull) {
+	while (traceDebugFilePtr_->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogTraceDebug->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
+		if (!traceDebugFilePtr_->Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			DWORD errorCode = GetLastError();
+			AppCore::showErrorMessage(NULL, NULL, errorCode);
 			return false;
 		}
 
 		// Go to end of file
-		ULONGLONG ullFileSize = m_pFileLogTraceDebug->SeekToEnd();
+		ULONGLONG fileSize = traceDebugFilePtr_->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
+		if (fileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
-			m_pFileLogTraceDebug->Close();
+			traceDebugFilePtr_->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, Constant::File::Name::TraceDebug))
+			if (!backupOldLogFile(filePath, Constant::File::Name::TraceDebug))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1631,18 +1631,18 @@ bool DebugLogging::InitTraceDebugLogFile(void)
  * @note	Destination file: TraceDebug.log
  * @note	To output trace debug log strings (including the function name, code file and line where it failed)
  */
-void DebugLogging::ReleaseTraceDebugLogFile(void)
+void DebugLogger::releaseTraceDebugLogFile(void)
 {
 	// Clean up trace debug info log file pointer
-	if (m_pFileLogTraceDebug != NULL) {
+	if (traceDebugFilePtr_ != NULL) {
 
 		// Close file if is opening
-		if (m_pFileLogTraceDebug->m_hFile != CFile::hFileNull) {
-			m_pFileLogTraceDebug->Flush();
-			m_pFileLogTraceDebug->Close();
+		if (traceDebugFilePtr_->m_hFile != CFile::hFileNull) {
+			traceDebugFilePtr_->Flush();
+			traceDebugFilePtr_->Close();
 		}
-		delete m_pFileLogTraceDebug;
-		m_pFileLogTraceDebug = NULL;
+		delete traceDebugFilePtr_;
+		traceDebugFilePtr_ = NULL;
 	}
 }
 
@@ -1653,42 +1653,42 @@ void DebugLogging::ReleaseTraceDebugLogFile(void)
  * @note	Destination file: DebugInfo.log
  * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
  */
-bool DebugLogging::InitDebugInfoLogFile(void)
+bool DebugLogger::initDebugInfoLogFile(void)
 {
 	// Verify global debug info log file pointer initialization
-	VERIFY_INITIALIZATION(m_pFileLogDebugInfo, CFile);
+	VERIFY_INITIALIZATION(debugInfoFilePtr_, CFile);
 
 	// Get debug info log file pointer
-	NULL_POINTER_BREAK(m_pFileLogDebugInfo, return false);
+	NULL_POINTER_BREAK(debugInfoFilePtr_, return false);
 
 	// Log folder path
-	String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Log file path
-	String strFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(folderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
 
 	// If the log file is not being opened
-	while (m_pFileLogDebugInfo->m_hFile == CFile::hFileNull) {
+	while (debugInfoFilePtr_->m_hFile == CFile::hFileNull) {
 
 		// Open the log file
-		if (!m_pFileLogDebugInfo->Open(strFilePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
+		if (!debugInfoFilePtr_->Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::shareDenyWrite)) {
 			// Show error message
-			DWORD dwErrorCode = GetLastError();
-			AppCore::ShowErrorMessage(NULL, NULL, dwErrorCode);
+			DWORD errorCode = GetLastError();
+			AppCore::showErrorMessage(NULL, NULL, errorCode);
 			return false;
 		}
 
 		// Go to end of file
-		ULONGLONG ullFileSize = m_pFileLogDebugInfo->SeekToEnd();
+		ULONGLONG fileSize = debugInfoFilePtr_->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
+		if (fileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
-			m_pFileLogDebugInfo->Close();
+			debugInfoFilePtr_->Close();
 
 			// Step2: Rename file extension to BAK
-			if (!BackupOldLogFile(strFilePath, Constant::File::Name::DebugInfo))
+			if (!backupOldLogFile(filePath, Constant::File::Name::DebugInfo))
 				return false;
 
 			// Step3: Create new file and reopen
@@ -1706,18 +1706,18 @@ bool DebugLogging::InitDebugInfoLogFile(void)
  * @note	Destination file: DebugInfo.log
  * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
  */
-void DebugLogging::ReleaseDebugInfoLogFile(void)
+void DebugLogger::releaseDebugInfoLogFile(void)
 {
 	// Clean up debug info log file pointer
-	if (m_pFileLogDebugInfo != NULL) {
+	if (debugInfoFilePtr_ != NULL) {
 
 		// Close file if is opening
-		if (m_pFileLogDebugInfo->m_hFile != CFile::hFileNull) {
-			m_pFileLogDebugInfo->Flush();
-			m_pFileLogDebugInfo->Close();
+		if (debugInfoFilePtr_->m_hFile != CFile::hFileNull) {
+			debugInfoFilePtr_->Flush();
+			debugInfoFilePtr_->Close();
 		}
-		delete m_pFileLogDebugInfo;
-		m_pFileLogDebugInfo = NULL;
+		delete debugInfoFilePtr_;
+		debugInfoFilePtr_ = NULL;
 	}
 }
 
@@ -1727,33 +1727,33 @@ void DebugLogging::ReleaseDebugInfoLogFile(void)
  * @param	logFileName	- Log file name
  * @return	true/false
  */
-bool DebugLogging::BackupOldLogFile(const String& filePath, const wchar_t* logFileName)
+bool DebugLogger::backupOldLogFile(const String& filePath, const wchar_t* logFileName)
 {
 	CFileFind Finder;
 
 	// If file path is not specified, do nothing
-	if (filePath.IsEmpty()) return false;
+	if (filePath.isEmpty()) return false;
 
 	// Log folder path
-	String folderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
+	String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
 
 	// Search for backup file list
-	for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
+	for (int count = 0; count < Constant::Max::BackupFileNumber; count++) {
 
 		// Make backup file path template
-		String filePathTemp = StringUtils::MakeFilePath(folderPath, logFileName, Constant::File::Extension::Backup_Log);
-		if (filePathTemp.IsEmpty())
+		String filePathTemp = StringUtils::makeFilePath(folderPath, logFileName, Constant::File::Extension::Backup_Log);
+		if (filePathTemp.isEmpty())
 			return false;
 
 		// Format backup file path
 		String bakFilePath;
-		bakFilePath.Format(filePathTemp, nNum);
+		bakFilePath.format(filePathTemp, count);
 
 		// Check if file has already existed
 		if (Finder.FindFile(bakFilePath) == true) {
 
 			// If backup file number exceeded the limit, can not backup more
-			if (nNum == (Constant::Max::BackupFileNumber - 1)) return false;
+			if (count == (Constant::Max::BackupFileNumber - 1)) return false;
 			else continue;
 		}
 
@@ -1769,63 +1769,63 @@ bool DebugLogging::BackupOldLogFile(const String& filePath, const wchar_t* logFi
  * @brief	Write trace error log string to file
  * @param	logStringW	- Log string
  * @return	None
- * @note	Destination file: TraceError.log
+ * @note	Destination file: traceError.log
  * @note	To output trace error detail log strings
  */
-void DebugLogging::WriteTraceErrorLogFile(const wchar_t* logStringW)
+void DebugLogger::writeTraceErrorLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (currentDateTime.hour() >= 12) ? _T("PM") : _T("AM");
+	String templateFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormat, currentDateTime.year(), currentDateTime.month(), currentDateTime.day(),
+		currentDateTime.hour(), currentDateTime.minute(), currentDateTime.second(), currentDateTime.millisecond(), middayFlag);
 
 	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::loadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::stringFormat(templateFormat, timeFormatString.getString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty())
+	if (logOutputFormatString.isEmpty())
 		return;
 
 	// If the file is not initialized or had been released
-	if (GetTraceErrorLogFile() == NULL) {
-		if (!InitTraceErrorLogFile())
+	if (getTraceErrorLogFile() == NULL) {
+		if (!initTraceErrorLogFile())
 			return;
 	}
 
 	// Re-acquire trace log file pointer
-	CFile* pTraceErrorLogFile = GetTraceErrorLogFile();
-	NULL_POINTER_BREAK(pTraceErrorLogFile, return NOTHING);
+	CFile* traceErrorFilePtr = getTraceErrorLogFile();
+	NULL_POINTER_BREAK(traceErrorFilePtr, return NOTHING);
 	{
 		// Write log string to file
-		pTraceErrorLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
-		pTraceErrorLogFile->Flush();
+		traceErrorFilePtr->Write(logOutputFormatString, logOutputFormatString.getLength() * sizeof(wchar_t));
+		traceErrorFilePtr->Flush();
 	}
 
 	// Re-check file size after writing
 	{
 		// Go to end of file
-		ULONGLONG ullFileSize = pTraceErrorLogFile->SeekToEnd();
+		ULONGLONG fileSize = traceErrorFilePtr->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
+		if (fileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
-			pTraceErrorLogFile->Close();
+			traceErrorFilePtr->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath.GetString(), Constant::File::Name::TraceError, Constant::File::Extension::Log);
-			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::TraceError))
+			String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
+			String orginalFilePath = StringUtils::makeFilePath(folderPath.getString(), Constant::File::Name::TraceError, Constant::File::Extension::Log);
+			if (!backupOldLogFile(orginalFilePath, Constant::File::Name::TraceError))
 				return;
 
 			// Step3: Release log file pointer --> Quit
 			// New file will be re-initialized in the next function call
-			ReleaseTraceErrorLogFile();
+			releaseTraceErrorLogFile();
 			return;
 		}
 	}
@@ -1838,59 +1838,59 @@ void DebugLogging::WriteTraceErrorLogFile(const wchar_t* logStringW)
  * @note	Destination file: TraceDebug.log
  * @note	To output trace debug log strings (including the function name, code file and line where it failed)
  */
-void DebugLogging::WriteTraceDebugLogFile(const wchar_t* logStringW)
+void DebugLogger::writeTraceDebugLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (currentDateTime.hour() >= 12) ? _T("PM") : _T("AM");
+	String templateFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormat, currentDateTime.year(), currentDateTime.month(), currentDateTime.day(),
+		currentDateTime.hour(), currentDateTime.minute(), currentDateTime.second(), currentDateTime.millisecond(), middayFlag);
 
 	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::loadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::stringFormat(templateFormat, timeFormatString.getString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty()) return;
+	if (logOutputFormatString.isEmpty()) return;
 
 	// If the file is not initialized or had been released
-	if (GetTraceDebugLogFile() == NULL) {
-		if (!InitTraceDebugLogFile())
+	if (getTraceDebugLogFile() == NULL) {
+		if (!initTraceDebugLogFile())
 			return;
 	}
 
 	// Re-acquire trace debug log file pointer
-	CFile* pTraceDebugLogFile = GetTraceDebugLogFile();
-	NULL_POINTER_BREAK(pTraceDebugLogFile, return NOTHING);
+	CFile* traceDebugFilePtr = getTraceDebugLogFile();
+	NULL_POINTER_BREAK(traceDebugFilePtr, return NOTHING);
 	{
 		// Write log string to file
-		pTraceDebugLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
-		pTraceDebugLogFile->Flush();
+		traceDebugFilePtr->Write(logOutputFormatString, logOutputFormatString.getLength() * sizeof(wchar_t));
+		traceDebugFilePtr->Flush();
 	}
 
 	// Re-check file size after writing
 	{
 		// Go to end of file
-		ULONGLONG ullFileSize = pTraceDebugLogFile->SeekToEnd();
+		ULONGLONG fileSize = traceDebugFilePtr->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
+		if (fileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
-			pTraceDebugLogFile->Close();
+			traceDebugFilePtr->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
-			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::TraceDebug))
+			String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
+			String orginalFilePath = StringUtils::makeFilePath(folderPath, Constant::File::Name::TraceDebug, Constant::File::Extension::Log);
+			if (!backupOldLogFile(orginalFilePath, Constant::File::Name::TraceDebug))
 				return;
 
 			// Step3: Release log file pointer --> Quit
 			// New file will be re-initialized in the next function call
-			ReleaseTraceDebugLogFile();
+			releaseTraceDebugLogFile();
 			return;
 		}
 	}
@@ -1903,59 +1903,59 @@ void DebugLogging::WriteTraceDebugLogFile(const wchar_t* logStringW)
  * @note	Destination file: DebugInfo.log
  * @note	To output debug info log strings (similar to OutputDebugString, but output to file instead)
  */
-void DebugLogging::WriteDebugInfoLogFile(const wchar_t* logStringW)
+void DebugLogger::writeDebugInfoLogFile(const wchar_t* logStringW)
 {
 	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (currentDateTime.hour() >= 12) ? _T("PM") : _T("AM");
+	String templateFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormat, currentDateTime.year(), currentDateTime.month(), currentDateTime.day(),
+		currentDateTime.hour(), currentDateTime.minute(), currentDateTime.second(), currentDateTime.millisecond(), middayFlag);
 
 	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::loadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::stringFormat(templateFormat, timeFormatString.getString(), logStringW, Constant::String::Empty);
 
 	// If output log string is empty, do nothing
-	if (logOutputFormatString.IsEmpty()) return;
+	if (logOutputFormatString.isEmpty()) return;
 
 	// If the file is not initialized or had been released
-	if (GetDebugInfoLogFile() == NULL) {
-		if (!InitDebugInfoLogFile())
+	if (getDebugInfoLogFile() == NULL) {
+		if (!initDebugInfoLogFile())
 			return;
 	}
 
 	// Re-acquire debug info log file pointer
-	CFile* pDebugInfoLogFile = GetDebugInfoLogFile();
-	NULL_POINTER_BREAK(pDebugInfoLogFile, return NOTHING);
+	CFile* debugInfoFilePtr = getDebugInfoLogFile();
+	NULL_POINTER_BREAK(debugInfoFilePtr, return NOTHING);
 	{
 		// Write log string to file
-		pDebugInfoLogFile->Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
-		pDebugInfoLogFile->Flush();
+		debugInfoFilePtr->Write(logOutputFormatString, logOutputFormatString.getLength() * sizeof(wchar_t));
+		debugInfoFilePtr->Flush();
 	}
 
 	// Recheck file size after writing
 	{
 		// Go to end of file
-		ULONGLONG ullFileSize = pDebugInfoLogFile->SeekToEnd();
+		ULONGLONG fileSize = debugInfoFilePtr->SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
+		if (fileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
-			pDebugInfoLogFile->Close();
+			debugInfoFilePtr->Close();
 
 			// Step2: Rename file extension to BAK
-			String strFolderPath = StringUtils::GetSubFolderPath(Constant::Folder::Log);
-			String strOrgFilePath = StringUtils::MakeFilePath(strFolderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
-			if (!BackupOldLogFile(strOrgFilePath, Constant::File::Name::DebugInfo))
+			String folderPath = StringUtils::getSubFolderPath(Constant::Folder::Log);
+			String orginalFilePath = StringUtils::makeFilePath(folderPath, Constant::File::Name::DebugInfo, Constant::File::Extension::Log);
+			if (!backupOldLogFile(orginalFilePath, Constant::File::Name::DebugInfo))
 				return;
 
 			// Step3: Release log file pointer --> Quit
 			// New file will be re-initialized in the next function call
-			ReleaseDebugInfoLogFile();
+			releaseDebugInfoLogFile();
 			return;
 		}
 	}
@@ -1968,41 +1968,41 @@ void DebugLogging::WriteDebugInfoLogFile(const wchar_t* logStringW)
  * @return	None
  * @note	Base function - No longer used
  */
-void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
+void DebugLogger::writeTraceNDebugLogFileBase(const wchar_t* fileName, const wchar_t* logStringW)
 {
 	// Log file path
-	String filePath = StringUtils::MakeFilePath(Constant::Folder::Log, fileName, Constant::File::Extension::Log);
+	String filePath = StringUtils::makeFilePath(Constant::Folder::Log, fileName, Constant::File::Extension::Log);
 
-	CFile fTrcDbgLogFile;
+	CFile traceDebugFile;
 
 	// Check if file is opening, if not, open it
-	while (fTrcDbgLogFile.m_hFile == CFile::hFileNull) {
+	while (traceDebugFile.m_hFile == CFile::hFileNull) {
 
-		bool bResult = fTrcDbgLogFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
-		if (bResult == false) {
+		bool result = traceDebugFile.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+		if (result == false) {
 			// Show error message
-			DWORD dwErrorCode = GetLastError();
+			DWORD errorCode = GetLastError();
 			LPARAM lParam = reinterpret_cast<LPARAM>(fileName);
-			ShowErrorMessage(NULL, NULL, dwErrorCode, lParam);
+			AppCore::showErrorMessage(NULL, NULL, errorCode, lParam);
 			return;
 		}
 
 		// Go to end of file
-		ULONGLONG ullFileSize = fTrcDbgLogFile.SeekToEnd();
+		ULONGLONG fileSize = traceDebugFile.SeekToEnd();
 
 		// If the file line number is already out of limit
-		if (ullFileSize >= Constant::Max::LogFileSize) {
+		if (fileSize >= Constant::Max::LogFileSize) {
 
 			// Step1: Close file
-			fTrcDbgLogFile.Close();
+			traceDebugFile.Close();
 
 			// Step2: Rename file extension to BAK
 			CFileFind Finder;
 			String backupFilePath;
-			for (int nNum = 0; nNum < Constant::Max::BackupFileNumber; nNum++) {
-				backupFilePath.Format((filePath + Constant::File::Extension::Backup_Log), nNum);
+			for (int count = 0; count < Constant::Max::BackupFileNumber; count++) {
+				backupFilePath.format((filePath + Constant::File::Extension::Backup_Log), count);
 				if (Finder.FindFile(backupFilePath) == true) {
-					if (nNum == (Constant::Max::BackupFileNumber - 1)) return;
+					if (count == (Constant::Max::BackupFileNumber - 1)) return;
 					else continue;
 				}
 				CFile::Rename(filePath, backupFilePath);
@@ -2015,27 +2015,27 @@ void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wc
 	}
 
 	// Get current time up to milisecs
-	DateTime currentDateTime = DateTimeUtils::GetCurrentDateTime();
+	DateTime currentDateTime = DateTimeUtils::getCurrentDateTime();
 
 	// Format log date/time
-	const wchar_t* middayFlag = (currentDateTime.Hour() >= 12) ? _T("PM") : _T("AM");
-	String templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_FULLDATETIME);
-	String timeFormatString = StringUtils::StringFormat(templateFormat, currentDateTime.Year(), currentDateTime.Month(), currentDateTime.Day(),
-		currentDateTime.Hour(), currentDateTime.Minute(), currentDateTime.Second(), currentDateTime.Millisecond(), middayFlag);
+	const wchar_t* middayFlag = (currentDateTime.hour() >= 12) ? _T("PM") : _T("AM");
+	String templateFormat = StringUtils::loadResourceString(IDS_FORMAT_FULLDATETIME);
+	String timeFormatString = StringUtils::stringFormat(templateFormat, currentDateTime.year(), currentDateTime.month(), currentDateTime.day(),
+		currentDateTime.hour(), currentDateTime.minute(), currentDateTime.second(), currentDateTime.millisecond(), middayFlag);
 
 	// Format output log string
-	templateFormat = StringUtils::LoadResourceString(IDS_FORMAT_LOGSTRING);
-	String logOutputFormatString = StringUtils::StringFormat(templateFormat, timeFormatString.GetString(), logStringW, Constant::String::Empty);
+	templateFormat = StringUtils::loadResourceString(IDS_FORMAT_LOGSTRING);
+	String logOutputFormatString = StringUtils::stringFormat(templateFormat, timeFormatString.getString(), logStringW, Constant::String::Empty);
 
-	if (!logOutputFormatString.IsEmpty()) {
+	if (!logOutputFormatString.isEmpty()) {
 		// Write log string to file
-		fTrcDbgLogFile.Write(logOutputFormatString, logOutputFormatString.GetLength() * sizeof(wchar_t));
-		fTrcDbgLogFile.Flush();
+		traceDebugFile.Write(logOutputFormatString, logOutputFormatString.getLength() * sizeof(wchar_t));
+		traceDebugFile.Flush();
 	}
 
 	// Close file after done writing
-	if (fTrcDbgLogFile.m_hFile != CFile::hFileNull) {
-		fTrcDbgLogFile.Close();
+	if (traceDebugFile.m_hFile != CFile::hFileNull) {
+		traceDebugFile.Close();
 	}
 }
 
@@ -2044,11 +2044,11 @@ void DebugLogging::WriteTraceNDebugLogFileBase(const wchar_t* fileName, const wc
  * @param	traceLogA - Output trace log string (ANSI)
  * @return	None
  */
-void DebugLogging::TraceError(const char* traceLogA)
+void DebugLogger::traceError(const char* traceLogA)
 {
 	// Convert ANSI string to UNICODE
 	const wchar_t* traceLogW = MAKEUNICODE(traceLogA);
-	TraceError(traceLogW);
+	traceError(traceLogW);
 }
 
 /**
@@ -2056,10 +2056,10 @@ void DebugLogging::TraceError(const char* traceLogA)
  * @param	traceLogW - Output trace log string (Unicode)
  * @return	None
  */
-void DebugLogging::TraceError(const wchar_t* traceLogW)
+void DebugLogger::traceError(const wchar_t* traceLogW)
 {
-	// Write trace log file: TraceError.log
-	WriteTraceErrorLogFile(traceLogW);
+	// Write trace log file: traceError.log
+	writeTraceErrorLogFile(traceLogW);
 }
 
 /**
@@ -2068,20 +2068,20 @@ void DebugLogging::TraceError(const wchar_t* traceLogW)
  * @param	...				    - Same as default MFC Format function
  * @return	None
  */
-void DebugLogging::TraceErrorFormat(const char* traceLogFormatA, ...)
+void DebugLogger::traceErrorFormat(const char* traceLogFormatA, ...)
 {
 	ATLASSERT(AtlIsValidString(traceLogFormatA));
 
 	// Format source string (ANSI)
-	CStringA strLogFormatA;
+	CStringA logFormatStringA;
 
 	va_list argList;
 	va_start(argList, traceLogFormatA);
-	strLogFormatA.FormatV(traceLogFormatA, argList);
+	logFormatStringA.FormatV(traceLogFormatA, argList);
 	va_end(argList);
 
 	// Output trace log
-	TraceError(strLogFormatA);
+	traceError(logFormatStringA);
 }
 
 /**
@@ -2090,7 +2090,7 @@ void DebugLogging::TraceErrorFormat(const char* traceLogFormatA, ...)
  * @param	...				    - Same as default MFC Format function
  * @return	None
  */
-void DebugLogging::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
+void DebugLogger::traceErrorFormat(const wchar_t* traceLogFormatW, ...)
 {
 	ATLASSERT(AtlIsValidString(traceLogFormatW));
 
@@ -2099,31 +2099,31 @@ void DebugLogging::TraceErrorFormat(const wchar_t* traceLogFormatW, ...)
 
 	va_list argList;
 	va_start(argList, traceLogFormatW);
-	logFormatStringW.FormatV(traceLogFormatW, argList);
+	logFormatStringW.formatV(traceLogFormatW, argList);
 	va_end(argList);
 
 	// Output trace log
-	TraceError(logFormatStringW);
+	traceError(logFormatStringW);
 }
 
 /**
  * @brief	Output debug trace information log
  * @param	lpszFuncName - Code function name
  * @param	lpszFileName - Code file name
- * @param	nLineIndex	 - Code line number
+ * @param	lineIndex	 - Code line number
  * @return	None
  */
-void DebugLogging::TraceDebugInfo(const char* funcName, const char* fileName, int lineIndex)
+void DebugLogger::traceDebugInfo(const char* funcName, const char* fileName, int lineIndex)
 {
 	// Debug trace info
 	const wchar_t* _funcName = MAKEUNICODE(funcName);
 	const wchar_t* _fileName = MAKEUNICODE(fileName);
 
 	// Format debug trace log
-	String debugTraceFormat = StringUtils::StringFormat(_T("Function: %s, File: %s(%d)"), _funcName, _fileName, lineIndex);
+	String debugTraceFormat = StringUtils::stringFormat(_T("Function: %s, File: %s(%d)"), _funcName, _fileName, lineIndex);
 
 	// Write debug trace log: TraceDebug.log
-	WriteTraceDebugLogFile(debugTraceFormat.GetString());
+	writeTraceDebugLogFile(debugTraceFormat.getString());
 }
 
 /**
@@ -2132,50 +2132,50 @@ void DebugLogging::TraceDebugInfo(const char* funcName, const char* fileName, in
  * @param	forceOutput - Force output target
  * @return	None
  */
-void DebugLogging::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = INT_INVALID */)
+void DebugLogger::outputDebugLog(const wchar_t* debugLog, int forceOutput /* = Constant::InvalidInteger */)
 {
 	// Get debug mode enable state
-	bool bDebugModeEnable = GetDebugMode();
+	bool isDebugModeEnabled = getDebugMode();
 
 	// Get debug log string
 	String debugLogStr = debugLog;
 
 	// Get DebugTest tool dialog handle
-	HWND hDebugTestWnd = FindDebugTestDlg();
+	HWND debugTestDlgHandle = AppCore::findDebugTestDlg();
 
 	// Debug log output target
-	int nDebugOutputTarget = forceOutput;
-	if (nDebugOutputTarget == INT_INVALID) {
-		nDebugOutputTarget = GetDebugOutputTarget();
+	int debugOutputTarget = forceOutput;
+	if (debugOutputTarget == Constant::InvalidInteger) {
+		debugOutputTarget = getDebugOutputTarget();
 	}
-	if ((hDebugTestWnd != NULL) &&
-		(IsWindowVisible(hDebugTestWnd))) {
+	if ((debugTestDlgHandle != NULL) &&
+		(IsWindowVisible(debugTestDlgHandle))) {
 		// Force enable debug mode and
 		// prefer output target to DebugTest tool if it's displaying
-		bDebugModeEnable = true;
-		nDebugOutputTarget = DebugTestTool;
+		isDebugModeEnabled = true;
+		debugOutputTarget = DebugTestTool;
 	}
 
 	// If debug mode not enabled, do nothing
-	if (bDebugModeEnable == false)
+	if (isDebugModeEnabled == false)
 		return;
 
 	// Output debug string
-	if (nDebugOutputTarget == DefaultOutput) {
+	if (debugOutputTarget == DefaultOutput) {
 		// Default output target: OutputDebugString
 		// Debug strings can be watched by using VS Output screen or DebugView tool
 		OutputDebugString(debugLogStr);
 	}
-	else if (nDebugOutputTarget == DebugInfoFile) {
+	else if (debugOutputTarget == DebugInfoFile) {
 		// Ouput debug log to file: DebugInfo.log
-		GetDebugLogger().WriteDebugInfoLogFile(debugLogStr);
+		getDebugLogger().writeDebugInfoLogFile(debugLogStr);
 	}
-	else if (nDebugOutputTarget == DebugTestTool) {
+	else if (debugOutputTarget == DebugTestTool) {
 		// Output debug log to DebugTest tool
-		if (hDebugTestWnd == NULL) return;
+		if (debugTestDlgHandle == NULL) return;
 		WPARAM wParam = MAKE_WPARAM_STRING(debugLogStr);
 		LPARAM lParam = MAKE_LPARAM_STRING(debugLogStr);
-		SendMessage(hDebugTestWnd, SM_APP_DEBUG_OUTPUT, wParam, lParam);
+		SendMessage(debugTestDlgHandle, SM_APP_DEBUG_OUTPUT, wParam, lParam);
 	}
 }
 
@@ -2185,14 +2185,14 @@ void DebugLogging::OutputDebugLog(const wchar_t* debugLog, int forceOutput /* = 
  * @param	args		   - Argument list
  * @return	None
  */
-void DebugLogging::OutputDebugLogFormat(const wchar_t* debugLogFormat, va_list args)
+void DebugLogger::outputDebugLogFormat(const wchar_t* debugLogFormat, va_list args)
 {
 	// Format source string
 	String logFormatString;
-	logFormatString.FormatV(debugLogFormat, args);
+	logFormatString.formatV(debugLogFormat, args);
 
 	// Output debug string
-	OutputDebugLog(logFormatString);
+	outputDebugLog(logFormatString);
 }
 
 /**
@@ -2201,11 +2201,11 @@ void DebugLogging::OutputDebugLogFormat(const wchar_t* debugLogFormat, va_list a
  * @param	args			  - Argument list
  * @return	None
  */
-void DebugLogging::OutputDebugStringFormat(const wchar_t* debugStringFormat, va_list args)
+void DebugLogger::outputDebugStringFormat(const wchar_t* debugStringFormat, va_list args)
 {
 	// Format source string
 	String logDebugStringFormat;
-	logDebugStringFormat.FormatV(debugStringFormat, args);
+	logDebugStringFormat.formatV(debugStringFormat, args);
 
 	// Output debug string
 	OutputDebugString(logDebugStringFormat);

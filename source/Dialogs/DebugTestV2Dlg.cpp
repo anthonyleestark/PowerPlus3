@@ -17,16 +17,16 @@ using namespace AppCore;
 
 
 // Default min/max size
-constexpr const int defaultMinWidth = 840;
-constexpr const int defaultMinHeight = 500;
-constexpr const int defaultMaxWidth = 1600;
-constexpr const int defaultMaxHeight = 900;
+constexpr const int kDefaultMinWidth = 840;
+constexpr const int kDefaultMinHeight = 500;
+constexpr const int kDefaultMaxWidth = 1600;
+constexpr const int kDefaultMaxHeight = 900;
 
 // Default Debug command input height
-constexpr const int debugCmdInputHeight = 50;
+constexpr const int kDebugCmdInputHeight = 50;
 
 // Define constants
-const wchar_t* debugCommandPrefix = _T(">>> ");
+const wchar_t* kDebugCommandPrefix = _T(">>> ");
 
 
 // Implement methods for CDebugTestV2Dlg
@@ -39,25 +39,25 @@ IMPLEMENT_DYNAMIC(CDebugTestV2Dlg, SDialog)
 CDebugTestV2Dlg::CDebugTestV2Dlg() : SDialog(IDD_DEBUGTEST_DLG)
 {
 	// DebugScreen
-	m_pDebugView = NULL;
-	m_pDebugCommandInput = NULL;
+	debugViewPtr_ = NULL;
+	debugCommandInputPtr_ = NULL;
 
 	// Font & brush
-	m_pDebugScreenFont = NULL;
-	m_pDebugScreenBrush = NULL;
+	debugScreenFontPtr_ = NULL;
+	debugScreenBrushPtr_ = NULL;
 
 	// Buffer content
-	m_strBuffer = Constant::String::Empty;
-	m_strBackupBuffer = Constant::String::Empty;
-	m_strCommandBuffer = Constant::String::Empty;
+	bufferString_ = Constant::String::Empty;
+	backupBufferString_ = Constant::String::Empty;
+	commandBuffer_ = Constant::String::Empty;
 
 	// Specific flags
-	m_bDispCommandPrefix = true;
+	isCommandPrefixEnabled_ = true;
 
 	// Debug command history
-	m_bCurDispHistory = false;
-	m_nHistoryCurIndex = 0;
-	m_astrCommandHistory.clear();
+	isCurrentlyDisplayHistory_ = false;
+	currentHistoryIndex_ = 0;
+	commandHistoryList_.clear();
 }
 
 /**
@@ -66,20 +66,20 @@ CDebugTestV2Dlg::CDebugTestV2Dlg() : SDialog(IDD_DEBUGTEST_DLG)
 CDebugTestV2Dlg::~CDebugTestV2Dlg()
 {
 	// Clean-up debug command history
-	ClearDebugCommandHistory();
+	clearDebugCommandHistory();
 
 	// Delete font
-	if (m_pDebugScreenFont != NULL) {
-		m_pDebugScreenFont->DeleteObject();
-		delete m_pDebugScreenFont;
-		m_pDebugScreenFont = NULL;
+	if (debugScreenFontPtr_ != NULL) {
+		debugScreenFontPtr_->DeleteObject();
+		delete debugScreenFontPtr_;
+		debugScreenFontPtr_ = NULL;
 	}
 
 	// Delete brush
-	if (m_pDebugScreenBrush != NULL) {
-		m_pDebugScreenBrush->DeleteObject();
-		delete m_pDebugScreenBrush;
-		m_pDebugScreenBrush = NULL;
+	if (debugScreenBrushPtr_ != NULL) {
+		debugScreenBrushPtr_->DeleteObject();
+		delete debugScreenBrushPtr_;
+		debugScreenBrushPtr_ = NULL;
 	}
 }
 
@@ -125,32 +125,32 @@ BOOL CDebugTestV2Dlg::OnInitDialog()
 	this->ShowWindow(SW_HIDE);
 
 	// Set dialog title
-	this->SetCaptionFromResource(IDS_APP_DEBUGTESTDLG_TITLE);
+	this->setCaptionFromResource(IDS_APP_DEBUGTESTDLG_TITLE);
 
 	// Get DebugScreen (DebugView & Debug command input)
-	bool bRet = InitDebugScreen();
-	if (bRet == false) {
+	bool returnFlag = initDebugScreen();
+	if (returnFlag == false) {
 		TRACE_ERROR("Error: DebugScreen initialization failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
-		return bRet;
+		return returnFlag;
 	}
 
 	// Refresh DebugScreen
-	RefreshDebugScreen(Refresh::ScreenSize);
+	refreshDebugScreen(Refresh::ScreenSize);
 
 	// Bring window to top
 	this->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
 	this->SetForegroundWindow();
 
 	// Clear buffer
-	ClearDebugViewBuffer();
-	ClearDebugCommandInput();
+	clearDebugViewBuffer();
+	clearDebugCommandInput();
 
 	// Init debug command history
-	ClearDebugCommandHistory();
+	clearDebugCommandHistory();
 
 	// Set focus to Debug command input
-	GetDebugCommandInput()->SetFocus();
+	getDebugCommandInput()->SetFocus();
 
 	return false;
 }
@@ -182,18 +182,18 @@ void CDebugTestV2Dlg::OnDestroy()
  * @param	Default
  * @return	None
  */
-void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
+void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* minMaxInfoPtr)
 {
 	// Fix min size
-	pMinMaxInfo->ptMinTrackSize.x = defaultMinWidth;
-	pMinMaxInfo->ptMinTrackSize.y = defaultMinHeight;
+	minMaxInfoPtr->ptMinTrackSize.x = kDefaultMinWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = kDefaultMinHeight;
 
 	// Fix max size
-	pMinMaxInfo->ptMaxTrackSize.x = defaultMaxWidth;
-	pMinMaxInfo->ptMinTrackSize.y = defaultMaxHeight;
+	minMaxInfoPtr->ptMaxTrackSize.x = kDefaultMaxWidth;
+	minMaxInfoPtr->ptMinTrackSize.y = kDefaultMaxHeight;
 
 	// Default
-	SDialog::OnGetMinMaxInfo(pMinMaxInfo);
+	SDialog::OnGetMinMaxInfo(minMaxInfoPtr);
 }
 
 /**
@@ -201,9 +201,9 @@ void CDebugTestV2Dlg::OnGetMinMaxInfo(MINMAXINFO* pMinMaxInfo)
  * @param	Default
  * @return	None
  */
-HBRUSH CDebugTestV2Dlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CDebugTestV2Dlg::OnCtlColor(CDC* pDC, CWnd* windowPtr, UINT nCtlColor)
 {
-	HBRUSH hBrush = SDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hBrush = SDialog::OnCtlColor(pDC, windowPtr, nCtlColor);
 
 	if (nCtlColor == CTLCOLOR_EDIT || nCtlColor == CTLCOLOR_STATIC)
 	{
@@ -214,8 +214,8 @@ HBRUSH CDebugTestV2Dlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		pDC->SetBkColor(Color::Black);
 
 		// Use our custom background brush
-		if (m_pDebugScreenBrush != NULL)
-			return *m_pDebugScreenBrush;
+		if (debugScreenBrushPtr_ != NULL)
+			return *debugScreenBrushPtr_;
 	}
 
 	return hBrush;
@@ -226,20 +226,20 @@ HBRUSH CDebugTestV2Dlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
  * @param	Default
  * @return	None
  */
-void CDebugTestV2Dlg::OnSize(UINT nType, int nWidth, int nHeight)
+void CDebugTestV2Dlg::OnSize(UINT nType, int width, int height)
 {
 	// Implement base class method
-	SDialog::OnSize(nType, nWidth, nHeight);
+	SDialog::OnSize(nType, width, height);
 
 	// Get DebugScreen
-	if (!IsDebugScreenValid()) {
-		bool bRet = InitDebugScreen();
-		if (bRet == false)
+	if (!isDebugScreenValid()) {
+		bool returnFlag = initDebugScreen();
+		if (returnFlag == false)
 			return;
 	}
 
 	// Refresh DebugScreen
-	RefreshDebugScreen(Refresh::ScreenSize);
+	refreshDebugScreen(Refresh::ScreenSize);
 }
 
 /**
@@ -258,16 +258,16 @@ LRESULT CDebugTestV2Dlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 	String debugOutputLogString = LPARAM_TO_STRING(lParam);
 
 	// Add debug output string
-	AddLine(debugOutputLogString);
+	addLine(debugOutputLogString);
 
 	// Display log and move cursor to end
-	UpdateDisplay(true);
+	updateDisplay(true);
 
 	// Backup buffer
-	BackupDebugViewBuffer();
+	backupDebugViewBuffer();
 
 	// Reset currently displaying history flag
-	SetCurrentlyDispHistoryState(false);
+	setCurrentlyDispHistoryState(false);
 
 	return LRESULT(Result::Success);
 }
@@ -281,16 +281,16 @@ LRESULT CDebugTestV2Dlg::OnDebugOutput(WPARAM wParam, LPARAM lParam)
 LRESULT CDebugTestV2Dlg::OnDebugCmdNoReply(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Add an empty new line
-	AddLine(Constant::String::Empty, false);
+	addLine(Constant::String::Empty, false);
 
 	// Display log and move cursor to end
-	UpdateDisplay(true, false);
+	updateDisplay(true, false);
 
 	// Backup buffer
-	BackupDebugViewBuffer();
+	backupDebugViewBuffer();
 
 	// Reset currently displaying history flag
-	SetCurrentlyDispHistoryState(false);
+	setCurrentlyDispHistoryState(false);
 
 	return LRESULT(Result::Success);
 }
@@ -304,7 +304,7 @@ LRESULT CDebugTestV2Dlg::OnDebugCmdNoReply(WPARAM /*wParam*/, LPARAM /*lParam*/)
 LRESULT CDebugTestV2Dlg::OnDebugViewClear(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	// Clear buffer
-	ClearDebugViewBuffer();
+	clearDebugViewBuffer();
 
 	return LRESULT(Result::Success);
 }
@@ -319,13 +319,13 @@ LRESULT CDebugTestV2Dlg::OnDebugViewClear(WPARAM /*wParam*/, LPARAM /*lParam*/)
 LRESULT CDebugTestV2Dlg::OnShowDialog(WPARAM wParam, LPARAM /*lParam*/)
 {
 	// Get flag value
-	bool bShowFlag = true;
+	bool showFlag = true;
 	if (wParam != NULL) {
-		bShowFlag = static_cast<bool>(wParam);
+		showFlag = static_cast<bool>(wParam);
 	}
 
 	// Show/hide dialog
-	if (bShowFlag == true) {
+	if (showFlag == true) {
 
 		// Show dialog
 		this->ShowWindow(SW_SHOW);
@@ -357,29 +357,29 @@ BOOL CDebugTestV2Dlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	{
 	case IDM_DEBUGTEST_COPY:
 		// Copy selection text to clipboard
-		GetDebugView()->Copy();
+		getDebugView()->Copy();
 		break;
 
 	case IDM_DEBUGTEST_PASTE:
 		// Check if the Debug command input has the focus
-		if (IsDebugCommandInputFocused() == true) {
+		if (isDebugCommandInputFocused() == true) {
 			// Paste clipboard text to DebugTest edit view
-			GetDebugCommandInput()->Paste();
+			getDebugCommandInput()->Paste();
 		} break;
 
 	case IDM_DEBUGTEST_DISP_PREVCOMMAND:
 		// Display previous command
-		DispDebugCommandHistory(GetHistoryCurrentDispIndex() - 1);
+		dispDebugCommandHistory(getHistoryCurrentDispIndex() - 1);
 		break;
 
 	case IDM_DEBUGTEST_DISP_NEXTCOMMAND:
 		// Display next command
-		DispDebugCommandHistory(GetHistoryCurrentDispIndex() + 1);
+		dispDebugCommandHistory(getHistoryCurrentDispIndex() + 1);
 		break;
 
 	case IDM_DEBUGTEST_CLEAR_BUFFER:
 		// Clear view buffer
-		ClearDebugViewBuffer();
+		clearDebugViewBuffer();
 		break;
 
 	case IDM_DEBUGTEST_CLOSE:
@@ -397,34 +397,34 @@ BOOL CDebugTestV2Dlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 /**
  * @brief	Pre-translate message
- * @param	pMsg - Default
+ * @param	messagePtr - Default
  * @return	BOOL
  */
-BOOL CDebugTestV2Dlg::PreTranslateMessage(MSG* pMsg)
+BOOL CDebugTestV2Dlg::PreTranslateMessage(MSG* messagePtr)
 {
 	// Handle key pressed event for DebugTest edit view
-	if (pMsg->message == WM_KEYDOWN) {
+	if (messagePtr->message == WM_KEYDOWN) {
 
 		// Get pressed key
-		DWORD dwKey = pMsg->wParam;
+		DWORD keyCode = messagePtr->wParam;
 
 		// Process "Ctrl + Key" shortcuts
 		if (IS_PRESSED(VK_CONTROL)) {
 
 			// Select All (Ctrl + A)
-			if (dwKey == 0x41) {
+			if (keyCode == 0x41) {
 				PostMessage(WM_COMMAND, IDM_DEBUGTEST_SELECT_ALL, NULL);
 				return true;
 			}
 
 			// Copy (Ctrl + C)
-			else if (dwKey == 0x43) {
+			else if (keyCode == 0x43) {
 				PostMessage(WM_COMMAND, IDM_DEBUGTEST_COPY, NULL);
 				return true;
 			}
 
 			// Paste (Ctrl + V)
-			else if (dwKey == 0x56) {
+			else if (keyCode == 0x56) {
 				PostMessage(WM_COMMAND, IDM_DEBUGTEST_PASTE, NULL);
 				return true;
 			}
@@ -433,10 +433,10 @@ BOOL CDebugTestV2Dlg::PreTranslateMessage(MSG* pMsg)
 		}
 
 		// If the Debug command input has the focus
-		else if (IsDebugCommandInputFocused()) {
+		else if (isDebugCommandInputFocused()) {
 
 			// If [Enter] key is pressed
-			if (dwKey == VK_RETURN) {
+			if (keyCode == VK_RETURN) {
 
 				// Send debug command
 				SendDebugCommand();
@@ -444,118 +444,118 @@ BOOL CDebugTestV2Dlg::PreTranslateMessage(MSG* pMsg)
 			}
 
 			// If the [Up/Down] arrow keys are pressed
-			else if ((dwKey == VK_UP) || (dwKey == VK_DOWN)) {
+			else if ((keyCode == VK_UP) || (keyCode == VK_DOWN)) {
 
 				// If debug command history is empty
-				if (IsDebugCommandHistoryEmpty())
+				if (isDebugCommandHistoryEmpty())
 					return true;
 
 				// Get command history display index
-				int nHistoryDispIndex = 0;
+				int historyDispIndex = 0;
 
 				// [Up] arrow key --> Display previous command
-				if (dwKey == VK_UP) {
+				if (keyCode == VK_UP) {
 
 					// Get index
-					nHistoryDispIndex = GetHistoryCurrentDispIndex() - 1;
+					historyDispIndex = getHistoryCurrentDispIndex() - 1;
 
 					// If current index is 0
-					if (nHistoryDispIndex < 0)
+					if (historyDispIndex < 0)
 						return true;
 				}
 				// [Down] arrow key --> Display next command
-				else if (dwKey == VK_DOWN) {
+				else if (keyCode == VK_DOWN) {
 
 					// Get index
-					nHistoryDispIndex = GetHistoryCurrentDispIndex() + 1;
+					historyDispIndex = getHistoryCurrentDispIndex() + 1;
 
 					// If current index exceeded limit
-					if (nHistoryDispIndex >= GetDebugCommandHistoryCount())
+					if (historyDispIndex >= getDebugCommandHistoryCount())
 						return true;
 				}
 
 				// Display debug command
-				DispDebugCommandHistory(nHistoryDispIndex);
+				dispDebugCommandHistory(historyDispIndex);
 				return true;
 			}
 		}
 	}
 
 	// Handle right mouse click for DebugTest edit view
-	else if (pMsg->message == WM_RBUTTONDOWN ||
-		pMsg->message == WM_RBUTTONUP ||
-		pMsg->message == WM_RBUTTONDBLCLK) {
+	else if (messagePtr->message == WM_RBUTTONDOWN ||
+		messagePtr->message == WM_RBUTTONUP ||
+		messagePtr->message == WM_RBUTTONDBLCLK) {
 
 		// Get clicked point
 		POINT pt;
-		pt.x = GET_X_LPARAM(pMsg->lParam);
-		pt.y = GET_Y_LPARAM(pMsg->lParam);
+		pt.x = GET_X_LPARAM(messagePtr->lParam);
+		pt.y = GET_Y_LPARAM(messagePtr->lParam);
 
 		// Check DebugScreen validity
-		if (!IsDebugScreenValid())
+		if (!isDebugScreenValid())
 			return false;
 
 		// Get the DebugView rect
-		RECT rcDebugView;
-		GetDebugView()->GetWindowRect(&rcDebugView);
-		ScreenToClient(&rcDebugView);
+		RECT debugViewRect;
+		getDebugView()->GetWindowRect(&debugViewRect);
+		ScreenToClient(&debugViewRect);
 
 		// Get the Debug command input rect
-		RECT rcDebugCommandInput;
-		GetDebugCommandInput()->GetWindowRect(&rcDebugCommandInput);
-		ScreenToClient(&rcDebugCommandInput);
+		RECT debugCommandInputRect;
+		getDebugCommandInput()->GetWindowRect(&debugCommandInputRect);
+		ScreenToClient(&debugCommandInputRect);
 
 		// If clicked point is inside the DebugView area
-		if (PtInRect(&rcDebugView, pt)) {
+		if (PtInRect(&debugViewRect, pt)) {
 			// Show DebugView context menu
-			ShowDebugScreenContextMenu();
+			showDebugScreenContextMenu();
 			return true;
 		}
 	}
 
 	// Default
-	return SDialog::PreTranslateMessage(pMsg);
+	return SDialog::PreTranslateMessage(messagePtr);
 }
 
 /**
  * @brief	Send debug command to main parts of program
- * @param	hRcvWnd - Receive window handle
+ * @param	receivedWndHandle - Receive window handle
  * @return	None
  */
 bool CDebugTestV2Dlg::SendDebugCommand(void)
 {
 	// Check Debug command input validity
-	if (!IsDebugCommandInputValid())
+	if (!isDebugCommandInputValid())
 		return false;
 
 	// Backup buffer
-	BackupDebugViewBuffer();
+	backupDebugViewBuffer();
 
 	// Get the debug command line
-	const int buffLength = GetDebugCommandInput()->GetWindowTextLength();
+	const int buffLength = getDebugCommandInput()->GetWindowTextLength();
 	std::vector<wchar_t> tempBuff(buffLength + 1);
-	GetDebugCommandInput()->GetWindowText(tempBuff.data(), buffLength + 1);
+	getDebugCommandInput()->GetWindowText(tempBuff.data(), buffLength + 1);
 	String debugCommand = tempBuff.data();
 
 	// Clear Debug command input
-	ClearDebugCommandInput();
+	clearDebugCommandInput();
 
 	// Re-format the debug command
-	int nCommandLength = FormatDebugCommand(debugCommand);
+	int commandLength = formatDebugCommand(debugCommand);
 
 	// If debug command is empty, do not send
-	if (nCommandLength <= 0)
+	if (commandLength <= 0)
 		return false;
 
 	// Prepare params
 	WPARAM wParam = MAKE_WPARAM_STRING(debugCommand);
-	LPARAM lParam = MAKE_LPARAM_STRING(debugCommand.GetString());
+	LPARAM lParam = MAKE_LPARAM_STRING(debugCommand.getString());
 
 	// Send debug command message to parent window
-	this->NotifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);
+	this->notifyParent(SM_APP_DEBUG_COMMAND, wParam, lParam);
 
 	// Update debug command history
-	AddDebugCommandHistory(debugCommand);
+	addDebugCommandHistory(debugCommand);
 
 	return true;
 }
@@ -569,32 +569,32 @@ bool CDebugTestV2Dlg::SendDebugCommand(void)
  * @param	None
  * @return	true/false
  */
-bool CDebugTestV2Dlg::InitDebugScreen(void)
+bool CDebugTestV2Dlg::initDebugScreen(void)
 {
 	// If it has already been initialized, do nothing
-	if (IsDebugScreenValid())
+	if (isDebugScreenValid())
 		return true;
 
 	// Initialize
-	m_pDebugView = (CEdit*)GetDlgItem(IDC_DEBUGTESTV2_VIEW);
-	m_pDebugCommandInput = (CEdit*)GetDlgItem(IDC_DEBUGTESTV2_INPUT);
+	debugViewPtr_ = (CEdit*)GetDlgItem(IDC_DEBUGTESTV2_VIEW);
+	debugCommandInputPtr_ = (CEdit*)GetDlgItem(IDC_DEBUGTESTV2_INPUT);
 
 	// Set DebugScreen font & background color
-	if (IsDebugScreenValid()) {
+	if (isDebugScreenValid()) {
 
-		if (!CreateDebugScreenFont() || !CreateDebugScreenBrush())
+		if (!createDebugScreenFont() || !createDebugScreenBrush())
 			return false;
 
 		// Set font
-		m_pDebugView->SetFont(m_pDebugScreenFont);
-		m_pDebugCommandInput->SetFont(m_pDebugScreenFont);
+		debugViewPtr_->SetFont(debugScreenFontPtr_);
+		debugCommandInputPtr_->SetFont(debugScreenFontPtr_);
 
 		// Force redraw
-		m_pDebugView->Invalidate();
-		m_pDebugCommandInput->Invalidate();
+		debugViewPtr_->Invalidate();
+		debugCommandInputPtr_->Invalidate();
 	}
 
-	return IsDebugScreenValid();
+	return isDebugScreenValid();
 }
 
 /**
@@ -602,12 +602,12 @@ bool CDebugTestV2Dlg::InitDebugScreen(void)
  * @param	None
  * @return	true/false
  */
-bool CDebugTestV2Dlg::CreateDebugScreenFont(void)
+bool CDebugTestV2Dlg::createDebugScreenFont(void)
 {
 	// Initialization
-	if (m_pDebugScreenFont == NULL) {
-		m_pDebugScreenFont = new CFont();
-		if (m_pDebugScreenFont == NULL) {
+	if (debugScreenFontPtr_ == NULL) {
+		debugScreenFontPtr_ = new CFont();
+		if (debugScreenFontPtr_ == NULL) {
 			// Trace error
 			TRACE_ERROR("Error: Failed to create DebugScreen font!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -626,12 +626,12 @@ bool CDebugTestV2Dlg::CreateDebugScreenFont(void)
 	lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 
 	// Create font
-	bool bRet = false;
-	if (m_pDebugScreenFont != NULL) {
-		bRet = m_pDebugScreenFont->CreateFontIndirect(&lf);
+	bool returnFlag = false;
+	if (debugScreenFontPtr_ != NULL) {
+		returnFlag = debugScreenFontPtr_->CreateFontIndirect(&lf);
 	}
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
@@ -639,12 +639,12 @@ bool CDebugTestV2Dlg::CreateDebugScreenFont(void)
  * @param	None
  * @return	true/false
  */
-bool CDebugTestV2Dlg::CreateDebugScreenBrush(void)
+bool CDebugTestV2Dlg::createDebugScreenBrush(void)
 {
 	// Initialization
-	if (m_pDebugScreenBrush == NULL) {
-		m_pDebugScreenBrush = new CBrush();
-		if (m_pDebugScreenBrush == NULL) {
+	if (debugScreenBrushPtr_ == NULL) {
+		debugScreenBrushPtr_ = new CBrush();
+		if (debugScreenBrushPtr_ == NULL) {
 			// Trace error
 			TRACE_ERROR("Error: Failed to create DebugScreen brush!!!");
 			TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
@@ -653,43 +653,43 @@ bool CDebugTestV2Dlg::CreateDebugScreenBrush(void)
 	}
 
 	// Create brush
-	bool bRet = false;
-	if (m_pDebugScreenBrush != NULL) {
-		bRet = m_pDebugScreenBrush->CreateSolidBrush(Color::Black);
+	bool returnFlag = false;
+	if (debugScreenBrushPtr_ != NULL) {
+		returnFlag = debugScreenBrushPtr_->CreateSolidBrush(Color::Black);
 	}
 
-	return bRet;
+	return returnFlag;
 }
 
 /**
  * @brief	Refresh and update DebugScreen
- * @param	nFlag - Refresh flag
+ * @param	flag - Refresh flag
  * @param	Return value:	true/false
  */
-bool CDebugTestV2Dlg::RefreshDebugScreen(int nFlag)
+bool CDebugTestV2Dlg::refreshDebugScreen(int flag)
 {
 	// Check DebugScreen validity
-	if (!IsDebugScreenValid())
+	if (!isDebugScreenValid())
 		return false;
 
-	if (nFlag & Refresh::ScreenSize) {
+	if (flag & Refresh::ScreenSize) {
 
-		RECT rcClient;
-		this->GetClientRect(&rcClient);
+		RECT clientRect;
+		this->GetClientRect(&clientRect);
 
 		// DebugScreen position
-		int nXPos = rcClient.left;
-		int nDBViewYPos = rcClient.top;
-		int nDBCmdInputYPos = rcClient.bottom - debugCmdInputHeight;
+		int xPos = clientRect.left;
+		int debugViewYPos = clientRect.top;
+		int debugCmdInputYPos = clientRect.bottom - kDebugCmdInputHeight;
 
 		// DebugScreen size
-		int nWidth = rcClient.right - rcClient.left;
-		int nDBViewHeight = nDBCmdInputYPos - nDBViewYPos;
-		int nDBCmdInputHeight = debugCmdInputHeight;
+		int width = clientRect.right - clientRect.left;
+		int debugViewHeight = debugCmdInputYPos - debugViewYPos;
+		int debugCmdInputHeight = kDebugCmdInputHeight;
 
 		// Set DebugScreen position
-		GetDebugView()->SetWindowPos(NULL, nXPos, nDBViewYPos, nWidth, nDBViewHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
-		GetDebugCommandInput()->SetWindowPos(NULL, nXPos, nDBCmdInputYPos, nWidth, nDBCmdInputHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
+		getDebugView()->SetWindowPos(NULL, xPos, debugViewYPos, width, debugViewHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
+		getDebugCommandInput()->SetWindowPos(NULL, xPos, debugCmdInputYPos, width, debugCmdInputHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
 	}
 
 	return true;
@@ -700,81 +700,81 @@ bool CDebugTestV2Dlg::RefreshDebugScreen(int nFlag)
  * @param	None
  * @param	Return value:	bool - Show menu successfully or failed
  */
-bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
+bool CDebugTestV2Dlg::showDebugScreenContextMenu(void)
 {
 	// Prepare menu
-	CMenu menuDebugTest, * pContextMenu;
+	CMenu menuDebugTest, *contextMenuPtr;
 	menuDebugTest.LoadMenu(IDR_MENU_DEBUGTEST_CONTEXT);
-	pContextMenu = menuDebugTest.GetSubMenu(0);
-	if (pContextMenu == NULL)
+	contextMenuPtr = menuDebugTest.GetSubMenu(0);
+	if (contextMenuPtr == NULL)
 		return false;
 
 	// Check DebugTest edit view validity
-	if (!IsDebugScreenValid())
+	if (!isDebugScreenValid())
 		return false;
 
 	// Modify menu items
-	for (int nMenuItem = 0; nMenuItem < pContextMenu->GetMenuItemCount(); nMenuItem++) {
+	for (int menuItem = 0; menuItem < contextMenuPtr->GetMenuItemCount(); menuItem++) {
 		// Get menu item ID
-		unsigned nItemID = pContextMenu->GetMenuItemID(nMenuItem);
+		unsigned itemId = contextMenuPtr->GetMenuItemID(menuItem);
 		// Menu "Copy" item
-		if (nItemID == IDM_DEBUGTEST_COPY) {
+		if (itemId == IDM_DEBUGTEST_COPY) {
 			// If currently not selecting any text
-			int nStartSel, nEndSel;
-			GetDebugView()->GetSel(nStartSel, nEndSel);
+			int selStart, selEnd;
+			getDebugView()->GetSel(selStart, selEnd);
 			// Start and end selection index are equal
 			// means not selecting anything 
-			if (nStartSel == nEndSel) {
+			if (selStart == selEnd) {
 				// Disable menu item
-				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+				contextMenuPtr->EnableMenuItem(menuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
 		}
 		// Menu "Paste" item
-		else if (nItemID == IDM_DEBUGTEST_PASTE) {
+		else if (itemId == IDM_DEBUGTEST_PASTE) {
 			// Check if clipboard content available in text format
-			bool bClipboardTextAvailable = IsClipboardFormatAvailable(CF_TEXT);
+			bool isClipboardTextAvailable = IsClipboardFormatAvailable(CF_TEXT);
 			// If not available
-			if (bClipboardTextAvailable != true) {
+			if (isClipboardTextAvailable != true) {
 				// Disable menu item
-				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+				contextMenuPtr->EnableMenuItem(menuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
 		}
 		// Menu "Previous command" item
-		else if (nItemID == IDM_DEBUGTEST_DISP_PREVCOMMAND) {
+		else if (itemId == IDM_DEBUGTEST_DISP_PREVCOMMAND) {
 			// If debug command history is empty
 			// or it is currently displaying first command
-			if ((IsDebugCommandHistoryEmpty()) || (GetHistoryCurrentDispIndex() == 0)) {
+			if ((isDebugCommandHistoryEmpty()) || (getHistoryCurrentDispIndex() == 0)) {
 				// Disable menu item
-				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+				contextMenuPtr->EnableMenuItem(menuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
 		}
 		// Menu "Next command" item
-		else if (nItemID == IDM_DEBUGTEST_DISP_NEXTCOMMAND) {
+		else if (itemId == IDM_DEBUGTEST_DISP_NEXTCOMMAND) {
 			// If debug command history is empty
 			// or it is currently displaying last command
-			if ((IsDebugCommandHistoryEmpty()) ||
-				(GetHistoryCurrentDispIndex() >= (GetDebugCommandHistoryCount() - 1))) {
+			if ((isDebugCommandHistoryEmpty()) ||
+				(getHistoryCurrentDispIndex() >= (getDebugCommandHistoryCount() - 1))) {
 				// Disable menu item
-				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+				contextMenuPtr->EnableMenuItem(menuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
 		}
 		// Menu "Clear buffer" item
-		else if (nItemID == IDM_DEBUGTEST_CLEAR_BUFFER) {
+		else if (itemId == IDM_DEBUGTEST_CLEAR_BUFFER) {
 			// If DebugTest buffer screen is empty
-			if (m_strBuffer.IsEmpty()) {
+			if (bufferString_.isEmpty()) {
 				// Disable menu item
-				pContextMenu->EnableMenuItem(nMenuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
+				contextMenuPtr->EnableMenuItem(menuItem, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
 			}
 		}
 	}
 
 	// Show menu
-	POINT ptCursor;
-	GetCursorPos(&ptCursor);
-	unsigned nFlags = TPM_LEFTALIGN | TPM_TOPALIGN;
-	bool bResult = pContextMenu->TrackPopupMenu(nFlags, ptCursor.x, ptCursor.y, (CWnd*)this, NULL);
+	POINT cursorPoint;
+	GetCursorPos(&cursorPoint);
+	unsigned flags = TPM_LEFTALIGN | TPM_TOPALIGN;
+	bool result = contextMenuPtr->TrackPopupMenu(flags, cursorPoint.x, cursorPoint.y, (CWnd*)this, NULL);
 
-	return bResult;
+	return result;
 }
 
 /**
@@ -782,31 +782,31 @@ bool CDebugTestV2Dlg::ShowDebugScreenContextMenu(void)
  * @param	debugCommand - Debug command (IN & OUT)
  * @return	int - Length of debug command
  */
-int CDebugTestV2Dlg::FormatDebugCommand(String& debugCommand) const
+int CDebugTestV2Dlg::formatDebugCommand(String& debugCommand) const
 {
 	// If debug command is empty, do nothing
-	if (debugCommand.IsEmpty())
+	if (debugCommand.isEmpty())
 		return 0;
 
 	// Remove prefix
-	int nSrcLength = debugCommand.GetLength();
-	if (m_bDispCommandPrefix == true) {
-		nSrcLength -= wcslen(debugCommandPrefix);
-		String tempString = debugCommand.Right(nSrcLength);
+	int sourceLength = debugCommand.getLength();
+	if (isCommandPrefixEnabled_ == true) {
+		sourceLength -= wcslen(kDebugCommandPrefix);
+		String tempString = debugCommand.right(sourceLength);
 		debugCommand = tempString;
 	}
 
 	// Remove leading/trailing spaces
-	debugCommand.Trim();
+	debugCommand.trim();
 
 	// Initialize a temporary string buffer
-	nSrcLength = debugCommand.GetLength();
-	std::vector<wchar_t> tempBuff(nSrcLength + 1);
+	sourceLength = debugCommand.getLength();
+	std::vector<wchar_t> tempBuff(sourceLength + 1);
 
 	// Remove invalid characters
-	for (int nIndex = 0; nIndex < nSrcLength; nIndex++) {
+	for (int index = 0; index < sourceLength; index++) {
 
-		wchar_t ch = debugCommand.GetAt(nIndex);
+		wchar_t ch = debugCommand.getAt(index);
 		switch (ch)
 		{
 		case Constant::Char::Return:
@@ -824,14 +824,14 @@ int CDebugTestV2Dlg::FormatDebugCommand(String& debugCommand) const
 	}
 
 	// Copy back formatted string
-	debugCommand.Empty();
-	debugCommand.SetString(tempBuff.data());
+	debugCommand.empty();
+	debugCommand.setString(tempBuff.data());
 
 	// Remove leading/trailing spaces again
-	debugCommand.Trim();
+	debugCommand.trim();
 
 	// Return the debug command's new length
-	return debugCommand.GetLength();
+	return debugCommand.getLength();
 }
 
 /**
@@ -839,25 +839,25 @@ int CDebugTestV2Dlg::FormatDebugCommand(String& debugCommand) const
  * @param	None
  * @return	None
  */
-void CDebugTestV2Dlg::ClearDebugCommandInput(const wchar_t* commandBuff /* = Constant::String::Empty */)
+void CDebugTestV2Dlg::clearDebugCommandInput(const wchar_t* commandBuff /* = Constant::String::Empty */)
 {
-	if (!IsDebugCommandInputValid())
+	if (!isDebugCommandInputValid())
 		return;
 
 	// Re-initialize Debug command buffer
 	String commandTempStr = Constant::String::Empty;
-	if (m_bDispCommandPrefix == true) {
-		commandTempStr = debugCommandPrefix;
+	if (isCommandPrefixEnabled_ == true) {
+		commandTempStr = kDebugCommandPrefix;
 	}
 	if (IS_NOT_EMPTY_STRING(commandBuff)) {
 		commandTempStr += commandBuff;
 	}
 
 	// Update display
-	GetDebugCommandInput()->SetWindowText(commandTempStr);
+	getDebugCommandInput()->SetWindowText(commandTempStr);
 
 	// Move to end
-	GetDebugCommandInput()->SetSel(static_cast<DWORD>(-1));
+	getDebugCommandInput()->SetSel(static_cast<DWORD>(-1));
 }
 
 /**
@@ -865,83 +865,83 @@ void CDebugTestV2Dlg::ClearDebugCommandInput(const wchar_t* commandBuff /* = Con
  * @param	None
  * @return	None
  */
-void CDebugTestV2Dlg::ClearDebugViewBuffer(void)
+void CDebugTestV2Dlg::clearDebugViewBuffer(void)
 {
-	if (!IsDebugViewValid())
+	if (!isDebugViewValid())
 		return;
 
 	// Clear buffer
-	m_strBuffer = Constant::String::Empty;
-	GetDebugView()->SetWindowText(m_strBuffer);
+	bufferString_ = Constant::String::Empty;
+	getDebugView()->SetWindowText(bufferString_);
 
 	// Backup buffer
-	BackupDebugViewBuffer();
+	backupDebugViewBuffer();
 }
 
 /**
  * @brief	Add a string line to debug screen
  * @param	lineString - String line
- * @param	bNewLine   - Whether to add a new empty line
+ * @param	newLine   - Whether to add a new empty line
  * @return	None
  */
-void CDebugTestV2Dlg::AddLine(const wchar_t* lineString, bool bNewLine /* = true */)
+void CDebugTestV2Dlg::addLine(const wchar_t* lineString, bool newLine /* = true */)
 {
 	// If buffer not empty
-	if (!m_strBuffer.IsEmpty()) {
+	if (!bufferString_.isEmpty()) {
 		// Get end of buffer character
-		int nBuffLength = m_strBuffer.GetLength();
-		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
+		int bufferLength = bufferString_.getLength();
+		TCHAR lastCharacter = bufferString_.getAt(bufferLength - 1);
 
 		// If end of buffer is not an endline
-		if (tcEndChar != Constant::Char::Return && tcEndChar != Constant::Char::EndLine) {
+		if (lastCharacter != Constant::Char::Return && lastCharacter != Constant::Char::EndLine) {
 			// Add an endline first
-			m_strBuffer.Append(Constant::String::NewLine);
+			bufferString_.append(Constant::String::NewLine);
 		}
 	}
 
 	// Add string line
 	if (IS_NOT_EMPTY_STRING(lineString)) {
-		m_strBuffer.Append(lineString);
+		bufferString_.append(lineString);
 	}
 
 	// Re-check the end of buffer character
-	if (bNewLine == true) {
-		int nBuffLength = m_strBuffer.GetLength();
-		TCHAR tcEndChar = m_strBuffer.GetAt(nBuffLength - 1);
+	if (newLine == true) {
+		int bufferLength = bufferString_.getLength();
+		TCHAR lastCharacter = bufferString_.getAt(bufferLength - 1);
 
 		// If end of buffer is not an endline
-		if (tcEndChar != Constant::Char::Return && tcEndChar != Constant::Char::EndLine) {
+		if (lastCharacter != Constant::Char::Return && lastCharacter != Constant::Char::EndLine) {
 			// Add a new empty line
-			m_strBuffer.Append(Constant::String::NewLine);
+			bufferString_.append(Constant::String::NewLine);
 		}
 	}
 }
 
 /**
  * @brief	Update debug screen display
- * @param	bSeekToEnd	  - Move cursor to end of view
- * @param	bNotifyParent - Notify to parent window about display update
+ * @param	isSeekToEnd	  - Move cursor to end of view
+ * @param	notifyParent - Notify to parent window about display update
  * @return	None
  */
-void CDebugTestV2Dlg::UpdateDisplay(bool bSeekToEnd /* = false */, bool bNotifyParent /* = true */)
+void CDebugTestV2Dlg::updateDisplay(bool isSeekToEnd /* = false */, bool notifyParent /* = true */)
 {
 	// Get debug edit view
-	CEdit* pDebugView = GetDebugView();
-	if (!IsDebugViewValid())
+	CEdit* debugViewPtr = getDebugView();
+	if (!isDebugViewValid())
 		return;
 
 	// Update display text
-	pDebugView->SetWindowText(m_strBuffer);
-	pDebugView->Invalidate();
+	debugViewPtr->SetWindowText(bufferString_);
+	debugViewPtr->Invalidate();
 
 	// Move to end
-	if (bSeekToEnd == true) {
-		pDebugView->SetSel(static_cast<DWORD>(-1));
+	if (isSeekToEnd == true) {
+		debugViewPtr->SetSel(static_cast<DWORD>(-1));
 	}
 
 	// Notify to parent window about display update
-	if (bNotifyParent == true) {
-		this->NotifyParent(SM_WND_DEBUGOUTPUT_DISP, NULL, NULL);
+	if (notifyParent == true) {
+		this->notifyParent(SM_WND_DEBUGOUTPUT_DISP, NULL, NULL);
 	}
 }
 
@@ -950,53 +950,53 @@ void CDebugTestV2Dlg::UpdateDisplay(bool bSeekToEnd /* = false */, bool bNotifyP
  * @param	commandString - Input command
  * @return	size_t - New item count
  */
-size_t CDebugTestV2Dlg::AddDebugCommandHistory(const wchar_t* commandString)
+size_t CDebugTestV2Dlg::addDebugCommandHistory(const wchar_t* commandString)
 {
 	// Only add if input command is not empty
 	if (IS_NOT_EMPTY_STRING(commandString)) {
-		m_astrCommandHistory.push_back(commandString);
+		commandHistoryList_.push_back(commandString);
 
 		// Not currently displaying history
-		if (!IsCurrentlyDispHistory()) {
-			int nCount = GetDebugCommandHistoryCount();
-			SetHistoryCurrentDispIndex(nCount);
+		if (!isCurrentlyDispHistory()) {
+			int count = getDebugCommandHistoryCount();
+			setHistoryCurrentDispIndex(count);
 		}
 	}
 
 	// Return new history item count
-	return GetDebugCommandHistoryCount();
+	return getDebugCommandHistoryCount();
 }
 
 /**
  * @brief	Display history command by index
- * @param	nHistoryIndex - History index
+ * @param	historyIndex - History index
  * @return	None
  */
-void CDebugTestV2Dlg::DispDebugCommandHistory(int nHistoryIndex)
+void CDebugTestV2Dlg::dispDebugCommandHistory(int historyIndex)
 {
 	// If debug command history is empty, do nothing
-	if (IsDebugCommandHistoryEmpty())
+	if (isDebugCommandHistoryEmpty())
 		return;
 
 	// Check index validity
-	if ((nHistoryIndex < 0) && (nHistoryIndex >= GetDebugCommandHistoryCount()))
+	if ((historyIndex < 0) && (historyIndex >= getDebugCommandHistoryCount()))
 		return;
 
 	// Get command at index
-	String commandString = m_astrCommandHistory.at(nHistoryIndex);
-	if (commandString.IsEmpty())
+	String commandString = commandHistoryList_.at(historyIndex);
+	if (commandString.isEmpty())
 		return;
 
 	// Check if DebugTest edit view is available and focused
-	if (IsDebugCommandInputFocused()) {
+	if (isDebugCommandInputFocused()) {
 
 		// Display command
-		ClearDebugCommandInput(commandString);
+		clearDebugCommandInput(commandString);
 
 		// Update current displaying history index
-		SetHistoryCurrentDispIndex(nHistoryIndex);
+		setHistoryCurrentDispIndex(historyIndex);
 
 		// Set currently displaying history flag
-		SetCurrentlyDispHistoryState(true);
+		setCurrentlyDispHistoryState(true);
 	}
 }

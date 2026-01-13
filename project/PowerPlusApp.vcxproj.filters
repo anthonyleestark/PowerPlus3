@@ -1,248 +1,342 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    <Filter Include="AppBase">
+      <UniqueIdentifier>{ED47A347-68E9-4C57-9DA9-57FC6C106B2F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AppBase\Header Files">
+      <UniqueIdentifier>{3F21BE0E-29D1-4AFB-8E96-7FE73217DFAB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="AppBase\Source Files">
+      <UniqueIdentifier>{3758B022-AD86-40F4-8BB9-0B5F26EFAE9B}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+    <Filter Include="AppCore">
+      <UniqueIdentifier>{E64F10EC-C424-47EA-A2D7-B3C16FF378F7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AppCore\Header Files">
+      <UniqueIdentifier>{882D2C2C-BE3F-4A97-A463-DCAE41818F3B}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="AppCore\Source Files">
+      <UniqueIdentifier>{F8EBFB65-6BBC-4866-80E4-53E954D6D055}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{3206164A-6382-49CC-9707-1F2DE916FC0E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Header Files">
+      <UniqueIdentifier>{738EF3D5-70E8-4D19-AF42-60AFD9E48D43}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Components\Source Files">
+      <UniqueIdentifier>{E51D3CD4-73D4-44FC-B1C3-3CA6F6D0256F}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Dialogs">
+      <UniqueIdentifier>{A7C6B024-FC3D-4898-8216-7751F17FC2EE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dialogs\Header Files">
+      <UniqueIdentifier>{F881CDBF-E912-4041-B688-BEA48C90E4AC}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Dialogs\Source Files">
+      <UniqueIdentifier>{36718E04-B78A-4121-807E-FBCCE12C09CB}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{C957734A-C9E7-4109-BD6B-DFDD52A225FC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Header Files">
+      <UniqueIdentifier>{3A47960A-E1B1-4DA7-B82A-C3B950E07A9E}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Framework\Source Files">
+      <UniqueIdentifier>{F6D4A322-E23B-4E01-A81C-78A8D81AE000}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="MainApp">
+      <UniqueIdentifier>{114B6087-2843-4F2C-B387-11B88D90C526}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainApp\Header Files">
+      <UniqueIdentifier>{F5F27186-FA09-4175-A29F-7A9BC3BFF31B}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="MainApp\Source Files">
+      <UniqueIdentifier>{DF30F818-1B2A-46C6-BB13-247F7E929F6D}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;txt;hlps;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\icons">
+      <UniqueIdentifier>{1FEB49B5-7136-48CF-8938-14E0B4658C6A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\icons\default">
+      <UniqueIdentifier>{677D6652-BA29-4604-AE7F-38D1B80CBFF8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\texts">
+      <UniqueIdentifier>{6A7D18CA-C6AD-4AC3-9D19-12CC6A582698}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\texts\help">
+      <UniqueIdentifier>{1E5BCFB5-D95A-4620-B38F-3E20624A52FE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\texts\changelog">
+      <UniqueIdentifier>{95BB61C1-C437-4F89-A8EE-99BEDFD7E9D2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\texts\manifests">
+      <UniqueIdentifier>{4E58B835-9703-469B-842C-6EAFBA7F0162}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="../include/AppBase/AppBase.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppBase\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppBase/AppCommon.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppBase\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppBase/AppConstants.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppBase\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppBase/AppMacros.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppBase\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppBase/BaseTypes.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppBase\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppBase/Resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppBase\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppBase/Resource2.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppBase\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppBase/WinApp.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppBase\Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="../include/AppCore/AppCore.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppCore/Global.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppCore/IDManager.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppCore/Language.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppCore/Logging.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppCore/Logging_defs.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppCore/MapTable.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppCore/Serialization.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/AppCore/Serialization_defs.h">
-      <Filter>Header Files</Filter>
+      <Filter>AppCore\Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="../include/Components/GridCtrl/CellRange.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Components/GridCtrl/GridCell.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Components/GridCtrl/GridCellBase.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Components/GridCtrl/GridCellCheck.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Components/GridCtrl/GridCtrl.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Components/GridCtrl/InPlaceEdit.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Components/GridCtrl/MemDC.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Components/GridCtrl/TitleTip.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="../include/Dialogs/AboutDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/CustomMsgDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/DebugTestDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/DebugTestV2Dlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/EditScheduleDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/HelpDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/HotkeySetDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/LogViewerDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/MultiScheduleDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/MsgStyleSetDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/PwrReminderDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/ReminderMsgDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Dialogs/RmdRepeatSetDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="../include/Framework/SDialog.h">
-      <Filter>Header Files</Filter>
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Framework/SElements.h">
-      <Filter>Header Files</Filter>
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/Framework/SWinApp.h">
-      <Filter>Header Files</Filter>
+      <Filter>Framework\Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="../include/MainApp/PowerPlus.h">
-      <Filter>Header Files</Filter>
+      <Filter>MainApp\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../include/MainApp/PowerPlusDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>MainApp\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../source/AppBase/BaseTypes.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>AppBase\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="../source/AppCore/AppCore.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>AppCore\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/AppCore/Global.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>AppCore\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/AppCore/IDManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>AppCore\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/AppCore/Logging.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>AppCore\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/AppCore/MapTable.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>AppCore\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/AppCore/Serialization.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>AppCore\Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="../source/Components/GridCtrl/GridCell.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Components/GridCtrl/GridCellBase.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Components/GridCtrl/GridCellCheck.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Components/GridCtrl/GridCtrl.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Components/GridCtrl/InPlaceEdit.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Components/GridCtrl/TitleTip.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="../source/Dialogs/AboutDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/CustomMsgDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/DebugTestDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/DebugTestV2Dlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/EditScheduleDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/HelpDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/HotkeySetDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/LogViewerDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/MultiScheduleDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/MsgStyleSetDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/PwrReminderDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/ReminderMsgDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Dialogs/RmdRepeatSetDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="../source/Framework/SDialog.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Framework/SElements.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/Framework/SWinApp.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Framework\Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="../source/MainApp/PowerPlus.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>MainApp\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/MainApp/PowerPlusDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>MainApp\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="../source/MainApp/PowerPlusDlgFunc.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>MainApp\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -255,98 +349,98 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="../res/icons/default/power-plus-app.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/about-big.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/about-small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/help-big.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/help-small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/ok-big.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/ok-small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/cancel-small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/collapse.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/repeat.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/power-bold.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/power-slim.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/draft.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/default-big.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/default-small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/cancel-big.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/reload-big.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/reload-small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/arrow-up-big.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/arrow-up-small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/arrow-down-big.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
     <Image Include="../res/icons/default/arrow-down-small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\icons\default</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="../res/texts/help/chinese.hlps">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texts\help</Filter>
     </Text>
     <Text Include="../res/texts/help/english.hlps">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texts\help</Filter>
     </Text>
     <Text Include="../res/texts/help/vietnamese.hlps">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texts\help</Filter>
     </Text>
     <Text Include="../res/texts/changelog/chinese.hlps">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texts\changelog</Filter>
     </Text>
     <Text Include="../res/texts/changelog/english.hlps">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texts\changelog</Filter>
     </Text>
     <Text Include="../res/texts/changelog/vietnamese.hlps">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texts\changelog</Filter>
     </Text>
     <Text Include="../res/texts/debug-cmd-list.hlps">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texts</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="../res/texts/manifests/power++.exe.manifest">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texts\manifests</Filter>
 	</Manifest>
   </ItemGroup>
 </Project>

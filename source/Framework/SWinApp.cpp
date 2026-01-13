@@ -27,43 +27,43 @@ IMPLEMENT_DYNAMIC(SWinApp, CWinAppEx)
 SWinApp::SWinApp() : CWinAppEx()
 {
 	// Title and caption
-	m_strTemplateName = Constant::String::Empty;
-	m_strWindowCaption = Constant::String::Empty;
-	m_strMessageCaption = Constant::String::Empty;
+	templateName_ = Constant::String::Empty;
+	windowCaption_ = Constant::String::Empty;
+	messageCaption_ = Constant::String::Empty;
 
 	// App language function
-	m_pAppLangPtr = NULL;
-	m_nCurSetLang = INT_NULL;
-	m_nCurDispLang = INT_NULL;
+	appLanguagePtr_ = NULL;
+	currentSetLanguage_ = Constant::NullInteger;
+	currentDisplayLanguage_ = Constant::NullInteger;
 
 	// Logging pointer
-	m_pAppEventLog = NULL;
+	appEventLogPtr_ = NULL;
 
 	// App special flags
-	m_bReadOnlyMode = false;
-	m_bChangeFlag = false;
-	m_bForceClose = false;
+	isReadOnlyMode_ = false;
+	changeFlag_ = false;
+	isForceClose_ = false;
 }
 
 SWinApp::SWinApp(const wchar_t* templateName) : CWinAppEx()
 {
 	// Title and caption
-	m_strTemplateName = templateName;
-	m_strWindowCaption = Constant::String::Empty;
-	m_strMessageCaption = Constant::String::Empty;
+	templateName_ = templateName;
+	windowCaption_ = Constant::String::Empty;
+	messageCaption_ = Constant::String::Empty;
 
 	// App language function
-	m_pAppLangPtr = NULL;
-	m_nCurSetLang = INT_NULL;
-	m_nCurDispLang = INT_NULL;
+	appLanguagePtr_ = NULL;
+	currentSetLanguage_ = Constant::NullInteger;
+	currentDisplayLanguage_ = Constant::NullInteger;
 
 	// Logging pointer
-	m_pAppEventLog = NULL;
+	appEventLogPtr_ = NULL;
 
 	// App special flags
-	m_bReadOnlyMode = false;
-	m_bChangeFlag = false;
-	m_bForceClose = false;
+	isReadOnlyMode_ = false;
+	changeFlag_ = false;
+	isForceClose_ = false;
 }
 
 /**
@@ -72,9 +72,9 @@ SWinApp::SWinApp(const wchar_t* templateName) : CWinAppEx()
 SWinApp::~SWinApp()
 {
 	// Delete logging pointer
-	if (m_pAppEventLog != NULL) {
-		delete m_pAppEventLog;
-		m_pAppEventLog = NULL;
+	if (appEventLogPtr_ != NULL) {
+		delete appEventLogPtr_;
+		appEventLogPtr_ = NULL;
 	}
 
 	// Destroy resource ID map
@@ -121,13 +121,13 @@ int SWinApp::PreExitInstance()
 
 /**
  * @brief	Default method for pre-translate message
- * @param	pMsg - Default
+ * @param	messagePtr - Default
  * @return	None
  */
-BOOL SWinApp::PreTranslateMessage(MSG* pMsg)
+BOOL SWinApp::PreTranslateMessage(MSG* messagePtr)
 {
 	// Default
-	return CWinAppEx::PreTranslateMessage(pMsg);
+	return CWinAppEx::PreTranslateMessage(messagePtr);
 }
 
 /**
@@ -135,17 +135,17 @@ BOOL SWinApp::PreTranslateMessage(MSG* pMsg)
  * @param	None
  * @return	bool - Result of initialization
  */
-bool SWinApp::InitAppLanguage(void)
+bool SWinApp::initAppLanguage(void)
 {
 	// Update current language setting
-	unsigned nCurLanguage = GetAppLanguageOption();
-	m_nCurDispLang = nCurLanguage;
+	unsigned currentLanguage = getAppLanguageOption();
+	currentDisplayLanguage_ = currentLanguage;
 
 	// Load language package
-	m_pAppLangPtr = LoadLanguageTable(nCurLanguage);
+	appLanguagePtr_ = loadLanguageTable(currentLanguage);
 
 	// Check validity after loading
-	if (m_pAppLangPtr == NULL) {
+	if (appLanguagePtr_ == NULL) {
 		TRACE_ERROR("Error: Language pointer acquiring failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return false;
@@ -156,34 +156,34 @@ bool SWinApp::InitAppLanguage(void)
 
 /**
  * @brief	Reload application language package pointer
- * @param	nCurLanguage - Current language ID
+ * @param	currentLanguage - Current language ID
  * @return	bool - Result of reloading process
  */
-bool SWinApp::ReloadAppLanguage(unsigned nCurLanguage /* = NULL */)
+bool SWinApp::reloadAppLanguage(unsigned currentLanguage /* = NULL */)
 {
 	// If language is not specified
-	if (nCurLanguage == NULL) {
+	if (currentLanguage == NULL) {
 		// Load current language option
-		nCurLanguage = GetAppLanguageOption();
+		currentLanguage = getAppLanguageOption();
 	}
 
 	// If language changed
-	if (m_nCurDispLang != nCurLanguage) {
+	if (currentDisplayLanguage_ != currentLanguage) {
 		// Output event log
-		const wchar_t* oldLangName = GetLanguageName(m_nCurDispLang);
-		const wchar_t* newLangName = GetLanguageName(nCurLanguage);
-		String eventDescription = StringUtils::StringFormat(L"%s -> %s", oldLangName, newLangName);
-		OutputEventLog(LOG_EVENT_CHANGE_LANGUAGE, eventDescription);
+		const wchar_t* oldLangName = getLanguageName(currentDisplayLanguage_);
+		const wchar_t* newLangName = getLanguageName(currentLanguage);
+		String eventDescription = StringUtils::stringFormat(L"%s -> %s", oldLangName, newLangName);
+		outputEventLog(LOG_EVENT_CHANGE_LANGUAGE, eventDescription);
 	}
 
 	// Update current displaying language
-	m_nCurDispLang = nCurLanguage;
+	currentDisplayLanguage_ = currentLanguage;
 
 	// Reload language package
-	m_pAppLangPtr = LoadLanguageTable(nCurLanguage);
+	appLanguagePtr_ = loadLanguageTable(currentLanguage);
 
 	// Check validity
-	if (m_pAppLangPtr == NULL)
+	if (appLanguagePtr_ == NULL)
 		return false;
 
 	return true;
@@ -191,20 +191,20 @@ bool SWinApp::ReloadAppLanguage(unsigned nCurLanguage /* = NULL */)
 
 /**
  * @brief	Set application name by resource string ID
- * @param	nResourceStringID - Resource string ID
+ * @param	resourceStringId - Resource string ID
  * @return	true/false
  */
-bool SWinApp::SetAppName(unsigned nResourceStringID)
+bool SWinApp::setAppName(unsigned resourceStringId)
 {
 	// Load resource string
-	String tempString = StringUtils::LoadResourceString(nResourceStringID);
-	ASSERT(!tempString.IsEmpty());
-	if (!tempString.IsEmpty()) {
+	String tempString = StringUtils::loadResourceString(resourceStringId);
+	ASSERT(!tempString.isEmpty());
+	if (!tempString.isEmpty()) {
 		// Set app name
-		SetAppName(tempString);
+		setAppName(tempString);
 	}
 
-	return (!tempString.IsEmpty());
+	return (!tempString.isEmpty());
 }
 
 /**
@@ -212,51 +212,51 @@ bool SWinApp::SetAppName(unsigned nResourceStringID)
  * @param	windowCaption - Application window caption
  * @return	None
  */
-void SWinApp::SetAppWindowCaption(const wchar_t* windowCaption, bool bShowProdVersion /* = false */, bool bFullVersion /* = false */)
+void SWinApp::setAppWindowCaption(const wchar_t* windowCaption, bool showProdVersion /* = false */, bool fullVersion /* = false */)
 {
 	// Set caption
-	m_strWindowCaption = windowCaption;
+	windowCaption_ = windowCaption;
 
 	// Show product version
-	if (bShowProdVersion == true) {
-		String tempString = StringUtils::StringFormat(_T(" %s"), StringUtils::GetProductVersion(bFullVersion).GetString());
-		m_strWindowCaption.Append(tempString);
+	if (showProdVersion == true) {
+		String tempString = StringUtils::stringFormat(_T(" %s"), StringUtils::getProductVersion(fullVersion).getString());
+		windowCaption_.append(tempString);
 	}
 }
 
 /**
  * @brief	Set application window common caption by resource string ID
- * @param	nResourceStringID - Resource string ID
+ * @param	resourceStringId - Resource string ID
  * @return	true/false
  */
-bool SWinApp::SetAppWindowCaption(unsigned nResourceStringID, bool bShowProdVersion /* = false */, bool bFullVersion /* = false */)
+bool SWinApp::setAppWindowCaption(unsigned resourceStringId, bool showProdVersion /* = false */, bool fullVersion /* = false */)
 {
 	// Load resource string
-	String tempWindowCaption = StringUtils::LoadResourceString(nResourceStringID);
-	ASSERT(!tempWindowCaption.IsEmpty());
-	if (!tempWindowCaption.IsEmpty()) {
+	String tempWindowCaption = StringUtils::loadResourceString(resourceStringId);
+	ASSERT(!tempWindowCaption.isEmpty());
+	if (!tempWindowCaption.isEmpty()) {
 		// Set app window caption 
-		SetAppWindowCaption(tempWindowCaption, bShowProdVersion, bFullVersion);
+		setAppWindowCaption(tempWindowCaption, showProdVersion, fullVersion);
 	}
 
-	return (!tempWindowCaption.IsEmpty());
+	return (!tempWindowCaption.isEmpty());
 }
 
 /**
  * @brief	Register default caption for message box-es
- * @param	nCaptionID  - ID of message caption string
+ * @param	captionId  - ID of message caption string
  * @param	lpszCaption	- Message caption string
  * @return	None
  */
-void SWinApp::RegisterMessageBoxCaption(unsigned nCaptionID)
+void SWinApp::registerMessageBoxCaption(unsigned captionId)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
+	LANGTABLE_PTR languageTablePtr = getAppLanguage();
 	String messageCaption = Constant::String::Empty;
-	if (nCaptionID != NULL) {
+	if (captionId != NULL) {
 
 		// Get language string caption
-		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		String langCaption = getLanguageString(languageTablePtr, captionId);
 		if (IS_NOT_NULL_STRING(langCaption)) {
 			// Set caption string
 			messageCaption = langCaption;
@@ -264,119 +264,119 @@ void SWinApp::RegisterMessageBoxCaption(unsigned nCaptionID)
 	}
 
 	// If caption is empty
-	if (messageCaption.IsEmpty()) {
+	if (messageCaption.isEmpty()) {
 		// Use default app window caption
-		messageCaption = this->GetAppWindowCaption();
+		messageCaption = getAppWindowCaption();
 	}
 
 	// Register message box caption
-	RegisterMessageBoxCaption(messageCaption);
+	registerMessageBoxCaption(messageCaption);
 }
 
 /**
  * @brief	Override this function to customize application-wide
-					processing of AfxMessageBox calls
+			processing of AfxMessageBox calls
  * @param	prompt		- Message box text
- * @param	nType		- Message box style
+ * @param	type		- Message box style
  * @param	nIDPrompt	- An index to a Help context string.
  * @return	int	- Result of message box
  */
-int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned nType, unsigned nIDPrompt)
+int SWinApp::DoMessageBox(const wchar_t* prompt, unsigned type, unsigned nIDPrompt)
 {
 	// Message caption
 	String messageCaption;
 
 	// If application message box caption is registered
-	if (!m_strMessageCaption.IsEmpty()) {
+	if (!messageCaption_.isEmpty()) {
 		// Use registered message box caption
-		messageCaption = m_strMessageCaption;
+		messageCaption = messageCaption_;
 	}
 	// Otherwise,
 	else {
 		// Use app window caption
-		messageCaption = this->GetAppWindowCaption();
+		messageCaption = getAppWindowCaption();
 	}
 
 	// If message caption is empty (not registered)
 	// or the global application window title is not set
-	if (messageCaption.IsEmpty()) {
+	if (messageCaption.isEmpty()) {
 		// Use the default AfxMessageBox
-		return CWinApp::DoMessageBox(prompt, nType, nIDPrompt);
+		return CWinApp::DoMessageBox(prompt, type, nIDPrompt);
 	}
 	else {
 		// Use the MessageBox function, which we can specify the caption with
-		nType |= MB_SYSTEMMODAL;							// Show message box as Top-most
-		HWND hMainWnd = GET_HANDLE_MAINWND();				// Get main window handle
-		return MessageBox(hMainWnd, prompt, messageCaption, nType);
+		type |= MB_SYSTEMMODAL;							// Show message box as Top-most
+		HWND mainWndHandle = GET_HANDLE_MAINWND();			// Get main window handle
+		return MessageBox(mainWndHandle, prompt, messageCaption, type);
 	}
 }
 
 /**
  * @brief	Display message box using language string ID
- * @param	nPromptID  - ID of prompt message string
- * @param	nCaptionID - ID of message caption string
- * @param	nStyle	   - Message box style
+ * @param	promptId  - ID of prompt message string
+ * @param	captionId - ID of message caption string
+ * @param	style	   - Message box style
  * @return	int	- Result of message box
  */
-int SWinApp::DisplayMessageBox(unsigned nPromptID, unsigned nCaptionID /* = NULL */, unsigned nStyle /* = NULL */)
+int SWinApp::displayMessageBox(unsigned promptId, unsigned captionId /* = NULL */, unsigned style /* = NULL */)
 {
 	// Load app language package
-	LANGTABLE_PTR pAppLang = this->GetAppLanguage();
+	LANGTABLE_PTR languageTablePtr = getAppLanguage();
 
-	String messagePrompt = GetLanguageString(pAppLang, nPromptID);
-	String messageCaption = this->GetAppWindowCaption();
-	if (nCaptionID != NULL) {
+	String messagePrompt = getLanguageString(languageTablePtr, promptId);
+	String messageCaption = getAppWindowCaption();
+	if (captionId != NULL) {
 		// Get language string caption
-		String langCaption = GetLanguageString(pAppLang, nCaptionID);
+		String langCaption = getLanguageString(languageTablePtr, captionId);
 		if (IS_NOT_NULL_STRING(langCaption))
 			messageCaption = langCaption;
 	}
 	else {
 		// Using registered message box caption
-		if (!m_strMessageCaption.IsEmpty()) {
-			messageCaption = m_strMessageCaption;
+		if (!messageCaption_.isEmpty()) {
+			messageCaption = messageCaption_;
 		}
 	}
 
 	// Display message box
-	int nResult = DisplayMessageBox(messagePrompt, messageCaption, nStyle);
+	int result = displayMessageBox(messagePrompt, messageCaption, style);
 
-	return nResult;
+	return result;
 }
 
 /**
  * @brief	Display message box using language string
  * @param	prompt  - Message string
  * @param	caption - Message caption string
- * @param	nStyle	- Message box style
+ * @param	style	- Message box style
  * @return	int	- Result of message box
  */
-int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* = NULL */, unsigned nStyle /* = NULL */)
+int SWinApp::displayMessageBox(const wchar_t* prompt, const wchar_t* caption /* = NULL */, unsigned style /* = NULL */)
 {
 	// Set default style
-	if (nStyle == NULL) {
+	if (style == NULL) {
 		// Information message with [OK] button
-		nStyle = MB_OK | MB_ICONINFORMATION;
+		style = MB_OK | MB_ICONINFORMATION;
 	}
 
 	// If caption is not set
 	String messageCaption(caption);
-	if (messageCaption.IsEmpty()) {
+	if (messageCaption.isEmpty()) {
 		// If application message box caption is registered
-		if (!m_strMessageCaption.IsEmpty()) {
+		if (!messageCaption_.isEmpty()) {
 			// Use registered message box caption
-			messageCaption = m_strMessageCaption;
+			messageCaption = messageCaption_;
 		}
 		// Otherwise,
 		else {
 			// Use application window caption
-			messageCaption = this->GetAppWindowCaption();
+			messageCaption = getAppWindowCaption();
 		}
 	}
 	
 	// Display message box
-	nStyle |= MB_SYSTEMMODAL;
-	return ::MessageBox(this->GetMainWnd()->GetSafeHwnd(), prompt, messageCaption, nStyle);
+	style |= MB_SYSTEMMODAL;
+	return ::MessageBox(GetMainWnd()->GetSafeHwnd(), prompt, messageCaption, style);
 }
 
 /**
@@ -384,126 +384,126 @@ int SWinApp::DisplayMessageBox(const wchar_t* prompt, const wchar_t* caption /* 
  * @param	None
  * @return	None
  */
-void SWinApp::InitAppEventLog(void)
+void SWinApp::initAppEventLog(void)
 {
 	// Initialization
-	if (m_pAppEventLog == NULL) {
-		m_pAppEventLog = new SLogging(LOGTYPE_APP_EVENT);
+	if (appEventLogPtr_ == NULL) {
+		appEventLogPtr_ = new Logger(static_cast<byte>(AppLogType::AppEvent));
 	}
 
 	// Check validity after allocating
-	if (m_pAppEventLog == NULL) {
+	if (appEventLogPtr_ == NULL) {
 		TRACE_ERROR("Error: AppEventLog initialization failed!!!");
 		TRACE_DEBUG(__FUNCTION__, __FILENAME__, __LINE__);
 		return;
 	}
 
 	// Set properties
-	m_pAppEventLog->Init();
-	m_pAppEventLog->SetWriteMode(WriteOnCall);
+	appEventLogPtr_->init();
+	appEventLogPtr_->setWriteMode(WriteOnCall);
 }
 
 /**
  * @brief	Output application event log
- * @param	usEvent		- Event ID
+ * @param	eventId		- Event ID
  * @param	description - Additional description
  * @param	pDetailInfo	- Log detail info (array pointer)
  * @return	None
  */
-void SWinApp::OutputEventLog(USHORT usEvent, const wchar_t* description /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
+void SWinApp::outputEventLog(uint16 eventId, const wchar_t* description /* = NULL */, LOGDETAILINFO* pDetailInfo /* = NULL */)
 {
 	// Prepare event log info
 	LOGITEM logItemAppEvent;
-	logItemAppEvent.SetCategory(usEvent);
-	logItemAppEvent.SetTime(DateTimeUtils::GetCurrentDateTime());
-	logItemAppEvent.SetProcessID();
+	logItemAppEvent.setCategory(eventId);
+	logItemAppEvent.setTime(DateTimeUtils::getCurrentDateTime());
+	logItemAppEvent.setProcessId();
 	if (description) {
 		// Include event description
-		logItemAppEvent.SetLogString(description);
+		logItemAppEvent.setLogString(description);
 	}
 	if (pDetailInfo != NULL) {
 		// Include event detail info data
-		for (int nIndex = 0; nIndex < pDetailInfo->size(); nIndex++) {
-			logItemAppEvent.AddDetail(pDetailInfo->at(nIndex));
+		for (int index = 0; index < pDetailInfo->size(); index++) {
+			logItemAppEvent.addDetail(pDetailInfo->at(index));
 		}
 	}
 
 	// Output app event log
-	if (SLogging* ptrAppEventLog = GetAppEventLog()) {
-		ptrAppEventLog->OutputItem(logItemAppEvent);
+	if (Logger* appEventLoggerPtr = getAppEventLog()) {
+		appEventLoggerPtr->outputItem(logItemAppEvent);
 	}
 }
 
 /**
  * @brief	Return flag value by ID
- * @param	eFlagID - ID of specific flag
+ * @param	flagId - ID of specific flag
  * @return	int - Flag value
  */
-int SWinApp::GetFlagValue(AppFlagID eFlagID) const
+int SWinApp::getFlagValue(AppFlagID flagId) const
 {
-	int nValue = FLAG_OFF;
+	int value = FLAG_OFF;
 
-	switch (eFlagID)
+	switch (flagId)
 	{
 	// Application-base flags
 	case AppFlagID::appDataChanged:
 	case AppFlagID::appReadOnlyMode:
 	case AppFlagID::appForceClosing:
 	case AppFlagID::appExitCode:
-		nValue = m_flagManager.GetFlagValue(eFlagID);
+		value = flagManager_.getFlagValue(flagId);
 		break;
 
 	default:
 		// Request the flag value from global flag manager
-		nValue = GetGlobalFlagManager().GetFlagValue(eFlagID);
+		value = getGlobalFlagManager().getFlagValue(flagId);
 		break;
 	}
 
-	return nValue;
+	return value;
 }
 
 /**
  * @brief	Update flag value by ID
- * @param	eFlagID - ID of specific flag
- * @param	nValue  - Value to set
+ * @param	flagId - ID of specific flag
+ * @param	value  - Value to set
  * @return	None
  */
-void SWinApp::SetFlagValue(AppFlagID eFlagID, int nValue)
+void SWinApp::setFlagValue(AppFlagID flagId, int value)
 {
 	// Check value validity
-	if (nValue == INT_INVALID)
+	if (value == Constant::InvalidInteger)
 		return;
 
-	switch (eFlagID)
+	switch (flagId)
 	{
 	// Application-base flags
 	case AppFlagID::appDataChanged:
 	case AppFlagID::appReadOnlyMode:
 	case AppFlagID::appForceClosing:
 	case AppFlagID::appExitCode:
-		m_flagManager.SetFlagValue(eFlagID, nValue);
+		flagManager_.setFlagValue(flagId, value);
 		break;
 
 	default:
 		// Let the global flag manager do its job
-		GetGlobalFlagManager().SetFlagValue(eFlagID, nValue);
+		getGlobalFlagManager().setFlagValue(flagId, value);
 		break;
 	}
 }
 
 /**
  * @brief	Request current dialog to close
- * @param	nDialogID  - Dialog ID
- * @param	hDialogWnd - Dialog window handle
+ * @param	dialogId  - Dialog ID
+ * @param	dialogWndHandle - Dialog window handle
  * @return	LRESULT (0:Success, else:Failed)
  */
-LRESULT SWinApp::RequestCloseDialog(unsigned /*nDialogID*/)
+LRESULT SWinApp::requestCloseDialog(unsigned /*dialogId*/)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED
 }
 
-LRESULT SWinApp::RequestCloseDialog(HWND /*hDialogWnd*/)
+LRESULT SWinApp::requestCloseDialog(HWND /*dialogWndHandle*/)
 {
 	// Request denied
 	return LRESULT(1);	// ERROR_FAILED

@@ -30,19 +30,19 @@ public:
 
 private:
 	// Application data
-	ConfigData*			m_pcfgAppConfig;
-	ScheduleData*		m_pschScheduleData;
-	HotkeySetData*		m_phksHotkeySetData;
-	PwrReminderData*	m_ppwrReminderData;
+	ConfigData*		 appConfigDataPtr_;
+	ScheduleData*	 scheduleDataPtr_;
+	HotkeySetData*	 hotkeySetDataPtr_;
+	PwrReminderData* reminderDataPtr_;
 
 	// Logging pointers
-	SLogging* m_pAppHistoryLog;
+	Logger* appHistoryLogPtr_;
 
 	// Hook procedure handle
-	HHOOK m_hAppKeyboardHook;
+	HHOOK appKeyboardHookHandler_;
 
 	// DebugTest dialog
-	SDialog* m_pDebugTestDlg;
+	SDialog* debugTestDlgPtr_;
 
 public:
 	// Instance functions
@@ -51,55 +51,55 @@ public:
 
 	// Hook and callback functions
 	static LRESULT WINAPI KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-	static ULONG CALLBACK DeviceNotifyCallbackRoutine(PVOID pContext, ULONG ulType, PVOID pSetting);
+	static ULONG CALLBACK DeviceNotifyCallbackRoutine(void* pContext, ULONG ulType, void* pSetting);
 
 	// Message processing functions
 	virtual BOOL ProcessMessageFilter(int nCode, LPMSG lpMsg);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* messagePtr);
 
 	// App data serialization functions
-	bool InitAppData();
-	bool LoadRegistryAppData();
-	bool SaveRegistryAppData(DWORD dwDataType = APPDATA_ALL);
-	bool BackupRegistryAppData();
-	bool UpdateAppLaunchTimeProfileInfo(void);
-	bool LoadGlobalData(void);
-	bool SaveGlobalData(BYTE byCateID = 0xFF);
+	bool initAppData();
+	bool loadRegistryAppData();
+	bool saveRegistryAppData(AppData type = AppData::All);
+	bool backupRegistryAppData();
+	bool updateAppLaunchTimeProfileInfo(void);
+	bool loadGlobalData(void);
+	bool saveGlobalData(BYTE categoryId = 0xFF);
 
 	// App data processing functions
-	ConfigData* GetAppConfigData();
-	void SetAppConfigData(ConfigData* pcfgData);
-	ScheduleData* GetAppScheduleData();
-	void SetAppScheduleData(ScheduleData* pschData);
-	HotkeySetData* GetAppHotkeySetData();
-	void SetAppHotkeySetData(HotkeySetData* phksData);
-	PwrReminderData* GetAppPwrReminderData();
-	void SetAppPwrReminderData(PwrReminderData* ppwrData);
+	ConfigData* getAppConfigData();
+	void setAppConfigData(ConfigData* data);
+	ScheduleData* getAppScheduleData();
+	void setAppScheduleData(ScheduleData* data);
+	HotkeySetData* getAppHotkeySetData();
+	void setAppHotkeySetData(HotkeySetData* data);
+	PwrReminderData* getAppPwrReminderData();
+	void setAppPwrReminderData(PwrReminderData* data);
 
 	// Data options and flags get/set functions
-	int GetAppOption(AppOptionID eAppOptionID) const;
+	int getAppOption(AppOptionID optionId) const;
 
 	// App history logging functions
-	void InitAppHistoryLog();
-	SLogging* GetAppHistoryLog();
-	void OutputAppHistoryLog(LOGITEM logItem);
+	void initAppHistoryLog();
+	Logger* getAppHistoryLog();
+	void outputAppHistoryLog(LOGITEM logItem);
 
 	// Data validity checking functions
-	void TraceSerializeData(WORD wErrCode);
-	bool DataSerializeCheck(BYTE bySerializeMode, int nSaveFlag = APPDATA_ALL);
+	void traceSerializeData(WORD errorCode);
+	bool dataSerializeCheck(BYTE serializeMode, AppData saveFlag = AppData::All);
 
 	// DebugTest dialog function
-	bool InitDebugTestDlg(void);
-	SDialog* GetDebugTestDlg(void);
-	void DestroyDebugTestDlg(void);
+	bool initDebugTestDlg(void);
+	SDialog* getDebugTestDlg(void);
+	void destroyDebugTestDlg(void);
 
 	// Registry functions
-	void GetAutoStartRegistryRootKey(HKEY& hAutoStartRootKey);
-	int EnableAutoStart(bool bEnable, bool bRunAsAdmin);
-	int GetAutoStartRegisterStatus(void);
+	void getAutoStartRegistryRootKey(HKEY& hAutoStartRootKey);
+	int enableAutoStart(bool isEnabled, bool isRunAsAdmin);
+	int getAutoStartRegisterStatus(void);
 
-	bool GetLastSysEventTime(BYTE byEventType, DateTime& timeSysEvent);
-	bool SaveLastSysEventTime(BYTE byEventType, const DateTime& timeSysEvent);
+	bool getLastSysEventTime(BYTE eventType, DateTime& timeSysEvent);
+	bool saveLastSysEventTime(BYTE eventType, const DateTime& timeSysEvent);
 
 protected:
 	// Application message handlers

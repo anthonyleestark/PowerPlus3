@@ -62,19 +62,19 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CTitleTip message handlers
 
-BOOL CTitleTip::Create(CWnd * pParentWnd)
+BOOL CTitleTip::Create(CWnd * parentWnd)
 {
-	ASSERT_VALID(pParentWnd);
+	ASSERT_VALID(parentWnd);
 
     // Already created?
     if (m_bCreated)
         return TRUE;
 
-	DWORD dwStyle = WS_BORDER | WS_POPUP; 
+	DWORD style = WS_BORDER | WS_POPUP; 
 	DWORD dwExStyle = WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
-	m_pParentWnd = pParentWnd;
+	m_pParentWnd = parentWnd;
 
-	m_bCreated = CreateEx(dwExStyle, TITLETIP_CLASSNAME, NULL, dwStyle, 
+	m_bCreated = CreateEx(dwExStyle, TITLETIP_CLASSNAME, NULL, style, 
                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 
 		                  NULL, NULL, NULL );
 
@@ -202,7 +202,7 @@ void CTitleTip::Hide()
 	ShowWindow( SW_HIDE );
 }
 
-void CTitleTip::OnMouseMove(UINT nFlags, CPoint point) 
+void CTitleTip::OnMouseMove(UINT flags, CPoint point) 
 {
     if (!m_rectHover.PtInRect(point)) 
     {
@@ -210,30 +210,30 @@ void CTitleTip::OnMouseMove(UINT nFlags, CPoint point)
         
         // Forward the message
         ClientToScreen( &point );
-        CWnd *pWnd = WindowFromPoint( point );
-        if ( pWnd == this ) 
-            pWnd = m_pParentWnd;
+        CWnd *windowPtr = WindowFromPoint( point );
+        if ( windowPtr == this ) 
+            windowPtr = m_pParentWnd;
         
-        int hittest = (int)pWnd->SendMessage(WM_NCHITTEST,0,MAKELONG(point.x,point.y));
+        int hittest = (int)windowPtr->SendMessage(WM_NCHITTEST,0,MAKELONG(point.x,point.y));
         
         if (hittest == HTCLIENT) {
-            pWnd->ScreenToClient( &point );
-            pWnd->PostMessage( WM_MOUSEMOVE, nFlags, MAKELONG(point.x,point.y) );
+            windowPtr->ScreenToClient( &point );
+            windowPtr->PostMessage( WM_MOUSEMOVE, flags, MAKELONG(point.x,point.y) );
         } else {
-            pWnd->PostMessage( WM_NCMOUSEMOVE, hittest, MAKELONG(point.x,point.y) );
+            windowPtr->PostMessage( WM_NCMOUSEMOVE, hittest, MAKELONG(point.x,point.y) );
         }
     }
 }
 
-BOOL CTitleTip::PreTranslateMessage(MSG* pMsg) 
+BOOL CTitleTip::PreTranslateMessage(MSG* messagePtr) 
 {
     // Used to qualify WM_LBUTTONDOWN messages as double-clicks
     DWORD dwTick=0;
     BOOL bDoubleClick=FALSE;
 
-    CWnd *pWnd;
+    CWnd *windowPtr;
 	int hittest;
-	switch (pMsg->message)
+	switch (messagePtr->message)
 	{
 	case WM_LBUTTONDOWN:
 		{
@@ -247,7 +247,7 @@ BOOL CTitleTip::PreTranslateMessage(MSG* pMsg)
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 		{
-		POINTS pts = MAKEPOINTS( pMsg->lParam );
+		POINTS pts = MAKEPOINTS( messagePtr->lParam );
 		POINT  point;
 		point.x = pts.x;
 		point.y = pts.y;
@@ -255,50 +255,50 @@ BOOL CTitleTip::PreTranslateMessage(MSG* pMsg)
 		ClientToScreen( &point );
         Hide();
 
-		pWnd = WindowFromPoint( point );
-		if (!pWnd)
-			return CWnd::PreTranslateMessage(pMsg);
+		windowPtr = WindowFromPoint( point );
+		if (!windowPtr)
+			return CWnd::PreTranslateMessage(messagePtr);
 
-		if( pWnd->GetSafeHwnd() == GetSafeHwnd()) 
-			pWnd = m_pParentWnd;
+		if( windowPtr->GetSafeHwnd() == GetSafeHwnd()) 
+			windowPtr = m_pParentWnd;
 
-		hittest = (int)pWnd->SendMessage(WM_NCHITTEST,0,MAKELONG(point.x,point.y));
+		hittest = (int)windowPtr->SendMessage(WM_NCHITTEST,0,MAKELONG(point.x,point.y));
 
 		if (hittest == HTCLIENT) 
 		{
-			pWnd->ScreenToClient( &point );
-			pMsg->lParam = MAKELONG(point.x,point.y);
+			windowPtr->ScreenToClient( &point );
+			messagePtr->lParam = MAKELONG(point.x,point.y);
 		}
 		else 
 		{
-			switch (pMsg->message) {
+			switch (messagePtr->message) {
 			case WM_LBUTTONDOWN: 
-				pMsg->message = WM_NCLBUTTONDOWN;
+				messagePtr->message = WM_NCLBUTTONDOWN;
 				break;
 			case WM_RBUTTONDOWN: 
-				pMsg->message = WM_NCRBUTTONDOWN;
+				messagePtr->message = WM_NCRBUTTONDOWN;
 				break;
 			case WM_MBUTTONDOWN: 
-				pMsg->message = WM_NCMBUTTONDOWN;
+				messagePtr->message = WM_NCMBUTTONDOWN;
 				break;
 			}
-			pMsg->wParam = hittest;
-			pMsg->lParam = MAKELONG(point.x,point.y);
+			messagePtr->wParam = hittest;
+			messagePtr->lParam = MAKELONG(point.x,point.y);
 		}
 
 
         // If this is the 2nd WM_LBUTTONDOWN in x milliseconds,
         // post a WM_LBUTTONDBLCLK message instead of a single click.
-        pWnd->PostMessage(  bDoubleClick ? WM_LBUTTONDBLCLK : pMsg->message,
-                            pMsg->wParam,
-                            pMsg->lParam);
+        windowPtr->PostMessage(  bDoubleClick ? WM_LBUTTONDBLCLK : messagePtr->message,
+                            messagePtr->wParam,
+                            messagePtr->lParam);
 		return TRUE;
 		}
 		
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
         Hide();
-		m_pParentWnd->PostMessage( pMsg->message, pMsg->wParam, pMsg->lParam );
+		m_pParentWnd->PostMessage( messagePtr->message, messagePtr->wParam, messagePtr->lParam );
 		return TRUE;
 	}
 
@@ -308,7 +308,7 @@ BOOL CTitleTip::PreTranslateMessage(MSG* pMsg)
 		return TRUE;
 	}
 
-	return CWnd::PreTranslateMessage(pMsg);
+	return CWnd::PreTranslateMessage(messagePtr);
 }
 
 #endif // GRIDCONTROL_NO_TITLETIPS

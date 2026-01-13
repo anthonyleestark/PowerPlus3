@@ -33,37 +33,37 @@ public:
 
 private:
 	// Background/Text color settings
-	CButton*	m_pBkgrdColorPickBtn;
-	CButton*	m_pTextColorPickBtn;
+	CButton*	backgroundColorPickBtnPtr_;
+	CButton*	textColorPickBtnPtr_;
 
 	// Font settings
-	CComboBox*	m_pFontNamePickCombo;
-	CComboBox*	m_pFontSizePickCombo;
+	CComboBox*	fontNamePickComboPtr_;
+	CComboBox*	fontSizePickComboPtr_;
 
 	// Icon settings
-	CComboBox*	m_pIconIDPickCombo;
-	CEdit*		m_pIconSizeEdit;
-	CButton*	m_pIconPositionOnTopRad;
-	CButton*	m_pIconPositionOnLeftRad;
-	CStatic*	m_pIconPreviewStatic;
+	CComboBox*	iconIdPickComboPtr_;
+	CEdit*		iconSizeEditPtr_;
+	CButton*	iconPositionOnTopRadPtr_;
+	CButton*	iconPositionOnLeftRadPtr_;
+	CStatic*	iconPreviewStaticPtr_;
 
 	// Timeout settings
-	CEdit*			 m_pTimeoutEdit;
-	CSpinButtonCtrl* m_pTimeoutSpin;
+	CEdit*			 timeoutEditPtr_;
+	CSpinButtonCtrl* timeoutSpinPtr_;
 
 	// Display position setting
-	CComboBox* m_pDisplayPosCombo;
+	CComboBox* displayPosComboPtr_;
 
 	// Margin settings
-	CEdit* m_pHorizontalMarginEdit;
-	CEdit* m_pVerticalMarginEdit;
+	CEdit* horizontalMarginEditPtr_;
+	CEdit* verticalMarginEditPtr_;
 
 	// Data
-	RmdMsgStyleSet m_rmsMsgStyleData;
-	RmdMsgStyleSet m_rmsMsgStyleTemp;
-	COLORREF	   m_clrMsgBackground;
-	COLORREF	   m_clrMsgText;
-	DataSetFlag	   m_flagDataSet;
+	RmdMsgStyleSet messageStyleData_;
+	RmdMsgStyleSet tempMessageStyleData_;
+	COLORREF	   messageBackgroundColor_;
+	COLORREF	   messageTextColor_;
+	DataSetFlag	   flagDataSet_;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -84,37 +84,37 @@ public:
 
 protected:
 	// Dialog and items setup functions
-	virtual void SetupLanguage(void);
-	virtual void SetupComboBox(unsigned nComboID, LANGTABLE_PTR pLanguage);
-	virtual void SetupDialogItemState(void);
-	virtual void RefreshDialogItemState(bool bRecheckState = false);
+	virtual void setupLanguage(void);
+	virtual void setupComboBox(unsigned comboId, LANGTABLE_PTR languageTablePtr);
+	virtual void setupDialogItemState(void);
+	virtual void refreshDialogItemState(bool isRecheckState = false);
 
 	// Displaying functions
-	void RedrawIconPreview(LPDRAWITEMSTRUCT lpDrawItemStruct);
-	int  GetEditValue(HWND hEditCtrl, unsigned maxDigits);
-	bool ValidateEditValue(HWND hEditCtrl, int& inputVal, int minVal, int maxVal, bool showWarning = true);
+	void redrawIconPreview(LPDRAWITEMSTRUCT drawItemStructPtr);
+	int  getEditValue(HWND editCtrlHandle, unsigned maxDigits);
+	bool validateEditValue(HWND editCtrlHandle, int& inputVal, int minVal, int maxVal, bool showWarning = true);
 
 public:
 	// Data processing functions
-	void UpdateDialogData(bool bUpdate);
-	void GetData(RmdMsgStyleSet& msgStyleData) const {
-		msgStyleData.Copy(m_rmsMsgStyleData);
-	};
-	void SetData(const RmdMsgStyleSet& msgStyleData) {
-		m_rmsMsgStyleData.Copy(msgStyleData);
-		m_rmsMsgStyleTemp.Copy(m_rmsMsgStyleData);
-	};
-	DataSetFlag GetDataFlag(void) const {
-		return m_flagDataSet;
-	};
-	void SetDataFlag(DataSetFlag flag) {
-		m_flagDataSet = flag;
-	};
-	bool ValidateAndCorrect(int& inputVal, int minVal, int maxVal) {
+	void updateDialogData(bool updateFlag);
+	void getData(RmdMsgStyleSet& msgStyleData) const {
+		msgStyleData.copy(messageStyleData_);
+	}
+	void setData(const RmdMsgStyleSet& msgStyleData) {
+		messageStyleData_.copy(msgStyleData);
+		tempMessageStyleData_.copy(messageStyleData_);
+	}
+	DataSetFlag getDataFlag(void) const {
+		return flagDataSet_;
+	}
+	void setDataFlag(DataSetFlag flag) {
+		flagDataSet_ = flag;
+	}
+	bool validateAndCorrect(int& inputVal, int minVal, int maxVal) {
 		if (maxVal < minVal) std::swap(minVal, maxVal);
 		if (inputVal >= minVal && inputVal <= maxVal) return true;
 		if (inputVal < minVal) inputVal = minVal;
 		else if (inputVal > maxVal) inputVal = maxVal;
 		return false;
-	};
+	}
 };
